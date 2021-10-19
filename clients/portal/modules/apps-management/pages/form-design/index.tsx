@@ -35,7 +35,7 @@ function FormDesign() {
       return <FormBuild />;
     }
 
-    if (store.formStore.fields.length === 0) {
+    if (store.formStore.flattenFields.length === 0) {
       return <NoSchema />;
     }
 

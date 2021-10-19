@@ -15,12 +15,13 @@ import defaultValueLinkageEffect from './linkages/default-value';
 import formValueToFilter from './linkages/form-value-to-filter';
 import calculationFormulaEffect from './linkages/calculation-formula';
 import { wrapSchemaByMegaLayout, schemaPermissionTransformer } from './utils';
-import { INVISIBLE_NO_WRITE, PERMISSION, READONLY_NO_WRITE } from './constants';
+import { INVALID_READONLY_LEGACY, INVISIBLE_NO_WRITE, PERMISSION, READONLY_NO_WRITE } from './constants';
 
 setValidationLanguage('zh');
 
 type Props = {
   schema: ISchema;
+  value?: any;
   defaultValue?: any;
   className?: string;
   onSubmit?: (value: any) => void;
@@ -28,6 +29,7 @@ type Props = {
   children?: React.ReactElement | ((form: IForm) => React.ReactElement);
   additionalComponents?: Record<string, React.JSXElementConstructor<any>>;
   usePermission?: boolean;
+  readOnly?: boolean;
 }
 
 function FormRenderer({
@@ -36,15 +38,19 @@ function FormRenderer({
   className,
   onSubmit,
   onFormValueChange,
+  value,
   children,
   additionalComponents = {},
   usePermission,
+  readOnly,
 }: Props): JSX.Element {
   const [errorMessage, setErrorMessage] = useState('');
   const actions = createFormActions();
-  const schema = usePermission ? schemaPermissionTransformer(inputSchema) : inputSchema;
+  const schema = usePermission ? schemaPermissionTransformer(inputSchema, readOnly) : inputSchema;
   const fieldsToOmit = treeUtil.reduce((fields: string[], schema: ISchema, fieldId?: string | number) => {
-    if ([INVISIBLE_NO_WRITE, READONLY_NO_WRITE].includes(schema?.['x-internal']?.permission as PERMISSION)) {
+    if ([INVISIBLE_NO_WRITE, READONLY_NO_WRITE, INVALID_READONLY_LEGACY].includes(
+        schema?.['x-internal']?.permission as PERMISSION,
+    )) {
       fields.push(`${fieldId}`);
     }
     return fields;
@@ -99,6 +105,7 @@ function FormRenderer({
           <p className="text-red-600">{errorMessage}</p>
         )}
         <SchemaForm
+          value={value}
           previewPlaceholder='-'
           actions={actions}
           onSubmit={handleSubmit}

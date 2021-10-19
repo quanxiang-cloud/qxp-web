@@ -2,6 +2,7 @@ import { get, has } from 'lodash';
 
 import toast from '@lib/toast';
 import { getSchemaPermissionFromSchemaConfig, getDisplayModifierFromSchema } from '@c/form-builder/utils';
+import { ESParameter } from '@c/data-filter/utils';
 
 export type AggType = 'count' | 'sum' | 'max' | 'min' | 'avg';
 export type RoundMethod = 'round' | 'round-up' | 'round-down';
@@ -21,6 +22,7 @@ export interface AggregationRecordsConfig {
   roundDecimal: RoundMethod;
   displayFieldNull: '0' | '-';
   dataRange: 'all' | 'part';
+  condition: ESParameter,
 }
 
 export const defaultConfig: AggregationRecordsConfig = {
@@ -38,6 +40,11 @@ export const defaultConfig: AggregationRecordsConfig = {
   roundDecimal: 'round',
   displayFieldNull: '0',
   dataRange: 'all',
+  condition: {
+    bool: {
+      must: [],
+    },
+  },
 };
 
 export function toSchema(value: AggregationRecordsConfig): ISchema {
@@ -58,6 +65,7 @@ export function toSchema(value: AggregationRecordsConfig): ISchema {
       roundDecimal: value.roundDecimal,
       displayFieldNull: value.displayFieldNull,
       dataRange: value.dataRange,
+      condition: value.condition,
     },
     ['x-internal']: {
       permission: getSchemaPermissionFromSchemaConfig(value),
@@ -81,34 +89,51 @@ export function toConfig(schema: ISchema): AggregationRecordsConfig {
     roundDecimal: schema['x-component-props']?.roundDecimal,
     displayFieldNull: schema['x-component-props']?.displayFieldNull,
     dataRange: schema['x-component-props']?.dataRange,
+    condition: schema['x-component-props']?.condition,
   };
 }
 
 export function validate(value: AggregationRecordsConfig, schema?: ISchema): boolean {
   const props = get(schema, 'properties.Fields.properties', {});
+  const aggTypeValue = get(value, 'aggType', '');
   return Object.entries(props).every(([key, conf]: [string, any]) => {
     const rules = get(conf, 'x-rules', {}) as { required?: boolean, message?: string };
+
     if (has(conf, 'required')) {
       Object.assign(rules, { required: conf?.required, message: `${conf?.title}不能为空` });
     }
-    if (rules) {
-      // check field required
-      if (rules?.required) {
-        const val = get(value, key);
-        const valType = conf.type;
-        if (valType !== 'number' && !val) {
-          toast.error(rules?.message);
-          return false;
-        }
-      }
-      if (key === 'associateObject') {
-        if (rules?.required && !get(value, 'associateObject.tableID')) {
-          toast.error(rules?.message);
-          return false;
-        }
-      }
-      // todo: other rules
+
+    if (!rules) {
+      return true;
     }
+
+    // check field required
+    if (rules?.required) {
+      const val = get(value, key);
+      const valType = conf.type;
+
+      if (key === 'fieldName' && aggTypeValue === 'count') {
+        return true;
+      }
+
+      if (key === 'roundDecimal' && (aggTypeValue === 'max' || aggTypeValue === 'min')) {
+        return true;
+      }
+
+      if (valType !== 'number' && !val) {
+        toast.error(rules?.message);
+        return false;
+      }
+    }
+
+    if (key === 'associateObject') {
+      if (rules?.required && !get(value, 'associateObject.tableID')) {
+        toast.error(rules?.message);
+        return false;
+      }
+    }
+    // todo: other rules
+
     return true;
   });
 }

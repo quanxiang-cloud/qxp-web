@@ -1,3 +1,4 @@
+
 const schema: ISchema = {
   type: 'object',
   properties: {
@@ -29,6 +30,9 @@ const schema: ISchema = {
           title: '描述内容',
           maxLength: 50,
           'x-component': 'Input',
+          'x-component-props': {
+            placeholder: '请输入',
+          },
           'x-mega-props': {
             labelAlign: 'top',
           },
@@ -78,12 +82,12 @@ const schema: ISchema = {
           },
           'x-index': 4,
         },
-        sortable: {
-          title: '列表排序',
-          default: false,
-          'x-component': 'Switch',
-          'x-index': 5,
-        },
+        // sortable: {
+        //   title: '列表排序',
+        //   default: false,
+        //   'x-component': 'Switch',
+        //   'x-index': 5,
+        // },
         required: {
           title: '是否必填',
           default: false,
@@ -133,12 +137,22 @@ const schema: ISchema = {
             },
             {
               type: 'value:visible',
+              target: 'edit',
+              condition: '{{ $value === "customized" }}',
+            },
+            {
+              type: 'value:visible',
               target: 'linkageConfig',
               condition: '{{ $value === "linkage" }}',
             },
             {
               type: 'value:visible',
               target: 'datasetId',
+              condition: '{{ $value === "dataset" }}',
+            },
+            {
+              type: 'value:visible',
+              target: 'defaultValue',
               condition: '{{ $value === "dataset" }}',
             },
           ],
@@ -148,15 +162,18 @@ const schema: ISchema = {
           'x-index': 9,
         },
         availableOptions: {
-          type: 'array',
-          title: '选项列表',
-          description: '每行为一个选项，且选项不能超过 15 个字符',
-          'x-component': 'InputForLabels',
+          'x-component': 'OptionsConfig',
+          'x-component-props': {
+            mode: 'single',
+          },
           'x-mega-props': {
             labelAlign: 'top',
           },
           'x-index': 10,
-          items: { type: 'string' },
+        },
+        edit: {
+          type: 'string',
+          'x-component': 'EditLabels',
         },
         datasetId: {
           title: '选项集',
@@ -170,7 +187,16 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 11,
+          'x-index': 12,
+        },
+        defaultValue: {
+          type: 'string',
+          title: '默认值',
+          'x-component': 'Select',
+          'x-mega-props': {
+            labelAlign: 'top',
+          },
+          'x-index': 13,
         },
       },
     },

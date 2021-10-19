@@ -1,14 +1,17 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import { Radio, Input, Select, Switch, NumberPicker, ArrayTable, Checkbox } from '@formily/antd-components';
-import { SchemaForm, ISchema } from '@formily/antd';
+import {
+  SchemaForm, ISchema, IFormEffect, ISchemaFormActions, ISchemaFormAsyncActions,
+} from '@formily/antd';
 
 import { StoreContext } from '../../context';
 import { observer } from 'mobx-react';
 import { toJS } from 'mobx';
 
 import { FieldConfigContext } from './context';
-import { addOperate } from '../../registry/operates';
+import OptionsConfig from './options_config';
 import DefaultValueLinkageConfigBtn from './default-value-linkage-config-btn';
+import EditLabels from './edit-labels';
 import CalculationFormulaBtn from './calculation-formula-btn';
 import InputForLabels from './input-for-labels';
 
@@ -22,7 +25,8 @@ const COMMON_CONFIG_COMPONENTS = {
   CheckboxGroup: Checkbox.Group,
   Select,
   Switch,
-  addOperate,
+  EditLabels,
+  OptionsConfig,
   DefaultValueLinkageConfigBtn,
   CalculationFormulaBtn,
   InputForLabels,
@@ -33,7 +37,7 @@ type Props = {
   initialValue: any;
   schema: ISchema;
   components: Record<string, React.JSXElementConstructor<any>>;
-  effects?: () => void
+  effects?: IFormEffect<any, ISchemaFormActions | ISchemaFormAsyncActions>;
 }
 
 function SchemaFieldConfig({ onChange, initialValue, schema, components, effects }: Props): JSX.Element {
@@ -59,7 +63,7 @@ function FormFieldConfig(): JSX.Element {
     if (formFieldConfigWrap.current) {
       (formFieldConfigWrap.current.parentNode as HTMLDivElement).scrollTop = 0;
     }
-  }, [store.activeFieldName]);
+  }, [store.activeFieldId]);
 
   if (!store.activeField) {
     return (
@@ -71,13 +75,13 @@ function FormFieldConfig(): JSX.Element {
     return (
       <div ref={formFieldConfigWrap}>
         <SchemaFieldConfig
-          // assign key to FormFieldConfigTrue to force re-render when activeFieldName changed
-          effects={() => {
+          // assign key to FormFieldConfigTrue to force re-render when activeFieldId changed
+          effects={(selector, action) => {
             if (typeof store.activeFieldSourceElement?.effects === 'function') {
-              store.activeFieldSourceElement.effects();
+              store.activeFieldSourceElement.effects(selector, action);
             }
           }}
-          key={toJS(store.activeFieldName)}
+          key={toJS(store.activeFieldId)}
           onChange={(value) => store.updateFieldConfig(value)}
           initialValue={toJS(store.activeField.configValue)}
           schema={store.activeFieldSourceElement?.configSchema}
@@ -92,7 +96,7 @@ function FormFieldConfig(): JSX.Element {
 
   if (store.activeFieldSourceElement?.configForm) {
     return React.createElement(store.activeFieldSourceElement.configForm, {
-      key: toJS(store.activeFieldName),
+      key: toJS(store.activeFieldId),
       onChange: (value: any) => store.updateFieldConfig(value),
       initialValue: toJS(store.activeField.configValue),
     });

@@ -1,6 +1,7 @@
-import React, { useState, forwardRef, useImperativeHandle, useRef } from 'react';
+import React, { useState, forwardRef, useImperativeHandle, useRef, useEffect } from 'react';
 
 import DataFilter, { RefProps } from '@c/data-filter';
+import { toEs, ESParameter, toFilterConfig } from '@c/data-filter/utils';
 import Icon from '@c/icon';
 import Switch from '@c/switch';
 
@@ -13,18 +14,19 @@ type Props = {
   abled?: boolean
 }
 
-type Permission = {
-  arr: Condition[];
-  tag: 'or' | 'and';
+type DataPerType = 'custom' | 'all';
+
+type DataPer = FilterConfig & {
+  key: DataPerType;
 }
 
 type ConditionMap = {
-  find?: Permission;
-  delete?: Permission;
-  update?: Permission;
+  find?: ESParameter;
+  delete?: ESParameter;
+  update?: ESParameter;
 }
 
-const OPTIONS = [
+const OPTIONS: { value: DataPerType, label: string }[] = [
   { label: '全部', value: 'all' },
   { label: '自定义条件', value: 'custom' },
 ];
@@ -32,29 +34,33 @@ const OPTIONS = [
 function DataPermission({
   fields, className = '', dataPer, abled,
 }: Props, ref: React.Ref<any>): JSX.Element {
-  const [view, setViewPer] = useState({
-    key: dataPer.find?.arr ? 'custom' : 'all',
-    tag: dataPer.find?.tag,
-    conditions: dataPer.find?.arr || [],
-  });
-  const [edit, setEditPer] = useState({
-    key: dataPer.update?.arr ? 'custom' : 'all',
-    tag: dataPer.update?.tag,
-    conditions: dataPer.update?.arr || [],
-  });
-  const [del, setDelPer] = useState({
-    key: dataPer.delete?.arr ? 'custom' : 'all',
-    tag: dataPer.delete?.tag,
-    conditions: dataPer.delete?.arr || [],
-  });
+  const [view, setViewPer] = useState<DataPer>({ key: 'all', condition: [], tag: 'must' });
+  const [edit, setEditPer] = useState<DataPer>({ key: 'all', condition: [], tag: 'must' });
+  const [del, setDelPer] = useState<DataPer>({ key: 'all', condition: [], tag: 'must' });
+
+  useEffect(() => {
+    if (dataPer.find) {
+      const config = toFilterConfig(dataPer.find);
+      setViewPer({ ...config, key: config.condition && config.condition.length ? 'custom' : 'all' });
+    }
+    if (dataPer.update) {
+      const config = toFilterConfig(dataPer.update);
+      setEditPer({ ...config, key: config.condition && config.condition.length ? 'custom' : 'all' });
+    }
+    if (dataPer.delete) {
+      const config = toFilterConfig(dataPer.delete);
+      setDelPer({ ...config, key: config.condition && config.condition.length ? 'custom' : 'all' });
+    }
+  }, []);
+
   const viewRef = useRef<RefProps>(null);
   const editRef = useRef<RefProps>(null);
   const delRef = useRef<RefProps>(null);
 
   const getDataValues = async () => {
-    const viewFlag = await (view.key === 'custom' ? viewRef.current?.validate() : undefined);
-    const editFlag = await (edit.key === 'custom' ? editRef.current?.validate() : undefined);
-    const delFlag = await (del.key === 'custom' ? delRef.current?.validate() : undefined);
+    const viewFlag = await (view?.key === 'custom' ? viewRef.current?.validate() : undefined);
+    const editFlag = await (edit?.key === 'custom' ? editRef.current?.validate() : undefined);
+    const delFlag = await (del?.key === 'custom' ? delRef.current?.validate() : undefined);
 
     if (viewFlag === false || editFlag === false || delFlag === false) {
       return;
@@ -63,24 +69,15 @@ function DataPermission({
     const conditions: ConditionMap = {};
 
     if (viewFlag) {
-      conditions.find = {
-        arr: viewRef.current?.getDataValues().condition || [],
-        tag: viewRef.current?.getDataValues().tag || 'and',
-      };
+      conditions.find = toEs(viewRef.current?.getDataValues() || { condition: [], tag: 'must' });
     }
 
     if (editFlag) {
-      conditions.update = {
-        arr: editRef.current?.getDataValues().condition || [],
-        tag: editRef.current?.getDataValues().tag || 'and',
-      };
+      conditions.update = toEs(editRef.current?.getDataValues() || { condition: [], tag: 'must' });
     }
 
     if (delFlag) {
-      conditions.delete = {
-        arr: delRef.current?.getDataValues().condition || [],
-        tag: delRef.current?.getDataValues().tag || 'and',
-      };
+      conditions.delete = toEs(delRef.current?.getDataValues() || { condition: [], tag: 'must' });
     }
 
     return conditions;
@@ -88,24 +85,6 @@ function DataPermission({
 
   useImperativeHandle(ref, () => ({
     getDataValues: getDataValues,
-    reset: () => {
-      setViewPer({
-        key: dataPer.find?.arr ? 'custom' : 'all',
-        tag: dataPer.find?.tag,
-        conditions: dataPer.find?.arr || [],
-      });
-      setEditPer({
-        key: dataPer.update?.arr ? 'custom' : 'all',
-        tag: dataPer.update?.tag,
-        conditions: dataPer.update?.arr || [],
-      });
-      setDelPer({
-        key: dataPer.delete?.arr ? 'custom' : 'all',
-        tag: dataPer.delete?.tag,
-        conditions: dataPer.delete?.arr || [],
-      });
-      getDataValues();
-    },
   }));
 
   return (
@@ -114,7 +93,7 @@ function DataPermission({
         <div className='data-permission-item'>
           <div className='permission-name'>
             <div className='permission-name-icon'>
-              <Icon name="playlist_add_check" size={24}/>
+              <Icon name="playlist_add_check" size={24} />
             </div>
             <div className=''>
               <div className='text-14 text-gray-900 font-semibold'>可查看</div>
@@ -123,19 +102,19 @@ function DataPermission({
           </div>
           <Switch
             className='mr-0'
-            value={view.key}
+            value={view?.key}
             options={OPTIONS}
-            disabled = {store.currentRights.types === 1 || !abled}
+            disabled={store.currentRights.types === 1 || !abled}
             onChange={(value) => setViewPer({ ...view, key: value })}
           />
         </div>
-        {view.key === 'custom' && (
+        {view?.key === 'custom' && (
           <DataFilter
             className='data-filter'
-            initTag={view.tag}
+            initTag={view?.tag}
             ref={viewRef}
             fields={fields}
-            initConditions={view.conditions}
+            initConditions={view?.condition}
           />
         )}
       </div>
@@ -143,7 +122,7 @@ function DataPermission({
         <div className='data-permission-item'>
           <div className='permission-name'>
             <div className='permission-name-icon'>
-              <Icon name="edit" size={24}/>
+              <Icon name="edit" size={24} />
             </div>
             <div className=''>
               <div className='text-14 text-gray-900 font-semibold'>可编辑</div>
@@ -151,19 +130,19 @@ function DataPermission({
             </div>
           </div>
           <Switch
-            value={edit.key}
+            value={edit?.key}
             options={OPTIONS}
-            disabled = {store.currentRights.types === 1 || !abled}
+            disabled={store.currentRights.types === 1 || !abled}
             onChange={(value) => setEditPer({ ...edit, key: value })}
           />
         </div>
-        {edit.key === 'custom' && (
+        {edit?.key === 'custom' && (
           <DataFilter
             className='data-filter'
             initTag={edit.tag}
             ref={editRef}
             fields={fields}
-            initConditions={view.conditions}
+            initConditions={edit?.condition}
           />
         )}
       </div>
@@ -171,7 +150,7 @@ function DataPermission({
         <div className='data-permission-item'>
           <div className='permission-name'>
             <div className='permission-name-icon'>
-              <Icon name="delete_forever" size={24}/>
+              <Icon name="delete_forever" size={24} />
             </div>
             <div className=''>
               <div className='text-14 text-gray-900 font-semibold'>可删除</div>
@@ -179,19 +158,19 @@ function DataPermission({
             </div>
           </div>
           <Switch
-            value={del.key}
+            value={del?.key}
             options={OPTIONS}
-            disabled = {store.currentRights.types === 1 || !abled}
+            disabled={store.currentRights.types === 1 || !abled}
             onChange={(value) => setDelPer({ ...del, key: value })}
           />
         </div>
-        {del.key === 'custom' && (
+        {del?.key === 'custom' && (
           <DataFilter
             className='data-filter'
             initTag={del.tag}
             ref={delRef}
             fields={fields}
-            initConditions={del.conditions}
+            initConditions={del?.condition}
           />
         )}
       </div>

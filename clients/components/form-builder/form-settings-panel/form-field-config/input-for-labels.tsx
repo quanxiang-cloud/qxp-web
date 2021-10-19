@@ -1,25 +1,61 @@
-import React, { useState } from 'react';
-import { uniq } from 'lodash';
+import React from 'react';
 import { Input } from 'antd';
-import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
+import { SchemaForm, FormButtonGroup, IForm, createFormActions } from '@formily/antd';
+
+import Modal from '@c/modal';
+import Button from '@c/button';
 
 const TextArea = Input.TextArea;
 
-function InputForLabels(props: ISchemaFieldComponentProps): JSX.Element {
-  const [value, setValue] = useState(props.value.join('\n'));
-  function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>): void {
-    setValue(e.target.value);
-
-    const labels = e.target.value.trim().split(/\r?\n/).map((label) => {
-      return label.trim().slice(0, 15);
-    }).filter(Boolean);
-
-    props.mutators.change(uniq(labels));
-  }
-
-  return (<TextArea value={value} onChange={handleChange} rows={5} />);
+type Props = {
+  form: IForm;
+  defaultValue: string;
+  isLinkedFieldHide?: boolean;
+  isLinkedTableReadonly?: boolean;
+  onClose: () => void;
+  onSubmit: (labels: string[]) => void;
 }
 
-InputForLabels.isFieldComponent = true;
+function OptionLabels({ defaultValue, onClose, onSubmit }: Props): JSX.Element {
+  const actions = createFormActions();
 
-export default InputForLabels;
+  return (
+    <Modal
+      title="编辑多项"
+      className="edit-labels"
+      onClose={onClose}
+    >
+      <SchemaForm
+        className="p-20"
+        actions={actions}
+        schema={{
+          type: 'object',
+          properties: {
+            optionLabels: {
+              type: 'string',
+              'x-component': 'TextArea',
+              description: '每行为一个选项，且选项不能超过 15 个字符',
+              'x-component-props': {
+                style: {
+                  height: '150px',
+                },
+              },
+            },
+          },
+        }}
+        components={{ TextArea }}
+        defaultValue={{ optionLabels: defaultValue }}
+        onSubmit={(values) => onSubmit(values.optionLabels.split(/\r?\n/).map((label: any) => {
+          return label.trim().slice(0, 15);
+        }).filter(Boolean))}
+      >
+        <FormButtonGroup offset={8}>
+          <Button type="submit" modifier="primary">保存</Button>
+          <Button type="submit" onClick={onClose}>关闭</Button>
+        </FormButtonGroup>
+      </SchemaForm>
+    </Modal>
+  );
+}
+
+export default OptionLabels;

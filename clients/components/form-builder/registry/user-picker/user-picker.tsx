@@ -3,8 +3,9 @@ import cs from 'classnames';
 import { Select, SelectProps } from 'antd';
 import { debounce } from 'lodash';
 
+import { getNoLabelValues } from '@c/form-builder/utils';
 import { labelValueRenderer } from '@c/form-data-value-renderer';
-import { searchUser } from './messy/api';
+import { searchUser, getUserDetail } from './messy/api';
 import { Option } from './messy/enum';
 
 import './index.scss';
@@ -35,6 +36,7 @@ const UserPicker = ({
   onChange,
   editable = true,
   defaultValues,
+  value,
   ...componentsProps
 }: Props): JSX.Element => {
   const currentUser = [{
@@ -43,14 +45,34 @@ const UserPicker = ({
   }];
 
   useEffect(() => {
-    if (componentsProps.value && componentsProps.value.length) {
+    const noLabelValues = getNoLabelValues(value);
+
+    if (noLabelValues.length) {
+      getUserDetail<{ user: { id: string, userName: string }[] }>({
+        query: `{user(ids:${JSON.stringify(noLabelValues)}) {id, userName }}`,
+      }).then((res) => {
+        const newValue = (value as LabelValue[]).map(({ label, value }) => {
+          if (value && !label) {
+            const curUser = res.user.find(({ id }) => id === value);
+            return { label: curUser?.userName || '', value };
+          }
+
+          return { label, value };
+        });
+        onChange?.(newValue);
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (value && value.length) {
       return;
     }
 
     if (optionalRange === 'currentUser' || defaultRange === 'currentUser') {
       onChange?.(currentUser);
-    } else {
-      onChange?.(defaultValues || []);
+    } else if (defaultValues) {
+      onChange?.(defaultValues);
     }
   }, [optionalRange, componentsProps.mode, defaultRange]);
 
@@ -66,8 +88,8 @@ const UserPicker = ({
     return (
       <span>
         {
-          componentsProps.value && componentsProps.value.length ?
-            labelValueRenderer(componentsProps.value) : '—'
+          value && value.length ?
+            labelValueRenderer(value) : '—'
         }
       </span>
     );
@@ -77,6 +99,7 @@ const UserPicker = ({
     return (
       <AllUserPicker
         {...componentsProps}
+        value={value}
         labelInValue
         disabled={!editable}
         onChange={handleChange}
@@ -90,6 +113,7 @@ const UserPicker = ({
       {...componentsProps}
       labelInValue
       allowClear
+      value={value}
       disabled={!editable}
       onChange={handleChange}
       className={cs('user-selector', componentsProps.className || '')}
@@ -97,7 +121,7 @@ const UserPicker = ({
   );
 };
 
-const AllUserPicker = ({ appID, ...otherProps }: AllUserPickerProps): JSX.Element | null => {
+const AllUserPicker = ({ appID, value, ...otherProps }: AllUserPickerProps): JSX.Element | null => {
   const [options, setOptions] = useState<Option[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasNext, setHasNext] = useState<boolean>(false);
@@ -139,6 +163,7 @@ const AllUserPicker = ({ appID, ...otherProps }: AllUserPickerProps): JSX.Elemen
 
   const componentsProps = {
     ...otherProps,
+    value: value || undefined,
     loading,
     onSearch: debounce(_setKeyword, 500),
     showSearch: true,

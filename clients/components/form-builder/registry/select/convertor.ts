@@ -1,5 +1,7 @@
 import {
-  convertEnumsToLabels, getSchemaPermissionFromSchemaConfig, getDisplayModifierFromSchema,
+  convertSingleSelectDefault,
+  getDisplayModifierFromSchema,
+  getSchemaPermissionFromSchemaConfig,
 } from '@c/form-builder/utils';
 
 export interface SelectConfig {
@@ -11,7 +13,8 @@ export interface SelectConfig {
   allowCustom: boolean;
   defaultValueFrom: FormBuilder.DefaultValueFrom;
   datasetId: string;
-  availableOptions: string[],
+  availableOptions: Array<Record<string, string | boolean>>,
+  defaultValue: undefined | string,
 }
 
 export const defaultConfig: SelectConfig = {
@@ -23,7 +26,12 @@ export const defaultConfig: SelectConfig = {
   allowCustom: false,
   defaultValueFrom: 'customized',
   datasetId: '',
-  availableOptions: ['选项一', '选项二', '选项三'],
+  availableOptions: [
+    { label: '选项一', isDefault: false },
+    { label: '选项二', isDefault: false },
+    { label: '选项三', isDefault: false },
+  ],
+  defaultValue: undefined,
 };
 
 export function toSchema(value: SelectConfig): ISchema {
@@ -34,7 +42,11 @@ export function toSchema(value: SelectConfig): ISchema {
     required: value.required,
     readOnly: value.displayModifier === 'readonly',
     display: value.displayModifier !== 'hidden',
-    enum: value.availableOptions || [],
+    default: value.defaultValueFrom === 'dataset' ? value.defaultValue :
+      convertSingleSelectDefault(value.availableOptions.find(({ isDefault }) => isDefault) || {}),
+    enum: value.availableOptions.map((op) => {
+      return op.label as string;
+    }) || [],
     'x-component': 'Select',
     // todo support optionsLayout
     ['x-component-props']: {
@@ -59,6 +71,12 @@ export function toConfig(schema: ISchema): SelectConfig {
     allowCustom: schema['x-component-props']?.allowCustom,
     defaultValueFrom: schema['x-internal']?.defaultValueFrom || 'customized',
     datasetId: schema['x-component-props']?.datasetId,
-    availableOptions: convertEnumsToLabels(schema.enum as Array<string | LabelValue>),
+    availableOptions: schema.enum?.map((label) => {
+      return {
+        label: label,
+        isDefault: label === schema.default,
+      };
+    }) as any,
+    defaultValue: schema.default,
   };
 }

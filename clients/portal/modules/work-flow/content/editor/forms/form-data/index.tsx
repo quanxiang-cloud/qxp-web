@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from 'react';
+import React, { useEffect, useContext, useState, useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { useUpdateEffect } from 'react-use';
 
@@ -19,6 +19,7 @@ import type {
 import TriggerWay from './basic-config/trigger-way';
 import TriggerCondition from './basic-config/trigger-condition';
 import { getFormFieldOptions } from '../api';
+import { excludeComps } from '../utils';
 
 interface Props {
   defaultValue: FormDataData;
@@ -36,6 +37,7 @@ export default function FormDataForm({ defaultValue, onSubmit, onCancel, onChang
     ['GET_WORK_FORM_FIELD_LIST', tableID, appID],
     getFormFieldOptions, { enabled: !!tableID && !!appID },
   );
+  const schemaMap = useMemo(()=> schemaToMap(schema), [schema]);
 
   const isEmptyTable = !!tableID && !isLoading && !options.length;
 
@@ -90,7 +92,8 @@ export default function FormDataForm({ defaultValue, onSubmit, onCancel, onChang
   }
 
   const filteredConditionOptions = options?.filter(({ value }) => {
-    return !TRIGGER_CONDITION_EXCLUDE_FIELD_NAMES.includes(value);
+    const field = schemaMap[value] || {};
+    return !excludeComps.includes(field.componentName) && !TRIGGER_CONDITION_EXCLUDE_FIELD_NAMES.includes(value);
   });
 
   return (
@@ -120,7 +123,7 @@ export default function FormDataForm({ defaultValue, onSubmit, onCancel, onChang
               <TriggerCondition
                 validating={validating}
                 formFieldOptions={filteredConditionOptions}
-                schemaMap={schemaToMap(schema)}
+                schemaMap={schemaMap}
                 onChange={handleChange}
                 value={value.triggerCondition}
               />

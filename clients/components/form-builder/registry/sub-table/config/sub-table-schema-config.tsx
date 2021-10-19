@@ -53,8 +53,8 @@ export default function SubTableSchemaConfig({
           onChange={onChange}
           schema={currentSubSchemaDefault}
           actions={itemActions}
-          effects={() => {
-            currentConfigComponent?.effects?.();
+          effects={(selector, action) => {
+            currentConfigComponent?.effects?.(selector, action);
           }}
         />
       )}

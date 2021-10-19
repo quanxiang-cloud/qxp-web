@@ -1,21 +1,31 @@
 import React from 'react';
 import { UnionColumns } from 'react-table';
-import { action, observable, reaction, IReactionDisposer } from 'mobx';
+import { action, observable, reaction, computed, IReactionDisposer } from 'mobx';
+import { toPairs, fromPairs, set } from 'lodash';
+import { pipe, map } from 'lodash/fp';
 
-import httpClient from '@lib/http-client';
+import { fetchFormDataList } from '@lib/http-client';
 import schemaToFields, { schemaToMap } from '@lib/schema-convert';
 import { SYSTEM_FIELDS } from '@c/form-builder/constants';
+import { toEs } from '@c/data-filter/utils';
 
 import { TableHeaderBtn, TableConfig } from './type';
 import { Config, getPageDataSchema } from './utils';
 
 type Params = {
   condition?: Condition[] | [],
-  tag?: 'or' | 'and',
+  tag?: FilterTag,
   sort?: string[] | [],
   page?: number,
   size?: number,
 }
+
+type FormTableConfig = {
+  hidden: boolean;
+  fixed?: boolean
+}
+
+type ColumnConfig = Record<string, FormTableConfig>
 
 export type FormAppDataTableStoreSchema = Omit<ISchema, 'properties'> & {
   properties?: Record<string, SchemaFieldItem>
@@ -54,12 +64,13 @@ class AppPageDataStore {
   @observable filterData: FormData = {};
   @observable tableColumns: UnionColumns<FormData>[] = [];
   @observable tableHeaderBtnList: TableHeaderBtn[] = [];
+  @observable columnConfig: ColumnConfig = {};
   @observable params: Params = {
     condition: [],
     sort: [],
     page: 1,
     size: 10,
-    tag: 'and',
+    tag: 'must',
   };
 
   constructor({
@@ -96,6 +107,21 @@ class AppPageDataStore {
     }
   }
 
+  @computed get tableShowColumns(): UnionColumns<FormData>[] {
+    return this.tableColumns.reduce<UnionColumns<FormData>[]>((acc, col) => {
+      const curConfig = this.columnConfig[col.id || ''] || {};
+      if (col.id === 'action') {
+        return [...acc, col];
+      }
+
+      if (!curConfig.hidden) {
+        return [...acc, { ...col, fixed: 'fixed' in curConfig ? curConfig.fixed : col.fixed }];
+      }
+
+      return acc;
+    }, []);
+  }
+
   @action
   setSelected = (selected: string[]): void => {
     this.selected = selected;
@@ -129,7 +155,39 @@ class AppPageDataStore {
   }
 
   @action
+  resetColumnConfig = (): void => {
+    this.columnConfig = {};
+  }
+
+  @action
+  selectAllColumn = (type: boolean): void => {
+    if (type) {
+      const process = pipe(
+        toPairs,
+        map(([key, config]) => {
+          return [key, { ...config, hidden: false }];
+        }),
+        fromPairs,
+      );
+      this.columnConfig = process(this.columnConfig);
+    } else {
+      const newColumnConfig: ColumnConfig = {};
+      this.tableColumns.forEach(({ id = '' }) => {
+        set(newColumnConfig, `${id}.hidden`, true);
+      });
+
+      this.columnConfig = newColumnConfig;
+    }
+  }
+
+  @action
+  setColumnConfig = (newConfig: Partial<FormTableConfig>, id: string): void => {
+    this.columnConfig = { ...set(this.columnConfig, id, { ...this.columnConfig[id], ...newConfig }) };
+  }
+
+  @action
   setTableColumns = (tableColumns: UnionColumns<any>[]): void => {
+    this.columnConfig = {};
     this.tableColumns = tableColumns;
   }
 
@@ -140,15 +198,13 @@ class AppPageDataStore {
     }
 
     this.listLoading = true;
-    const { condition = [], tag, ...other } = params;
+    const { condition = [], tag = 'must', ...other } = params;
     const { condition: frontCondition = [], tag: frontTag } = this.filterConfig || {};
-    httpClient(`/api/v1/form/${this.appID}/home/form/${this.pageID}`, {
-      method: 'find',
-      page: 1,
-      conditions: { tag: frontTag || tag, condition: [...condition, ...frontCondition] },
+    fetchFormDataList(this.appID, this.pageID, {
+      query: toEs({ tag: frontTag || tag, condition: [...condition, ...frontCondition] }),
       sort: [],
       ...other,
-    }).then((res: any) => {
+    }).then((res) => {
       this.formDataList = res.entities;
       this.total = res.total || 0;
       this.listLoading = false;

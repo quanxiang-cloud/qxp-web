@@ -117,7 +117,7 @@ function ContentWithoutRef({
       uploaderRef?.current?.abort(currentFile.file_uid);
     }
     setFiles((prevFiles) => {
-      let curFiles:FileInfo[];
+      let curFiles: FileInfo[];
       if (currentFile.file_uid) {
         curFiles = prevFiles.filter((file) => file.uid !== currentFile.file_uid);
       } else {
@@ -237,7 +237,7 @@ function ContentWithoutRef({
     const validata = validateForm();
     if (!validata) return;
     const formData = Object.assign({}, validata, {
-      mes_attachment: files.map((itm) => {
+      mes_attachment: (files || []).map((itm) => {
         return {
           file_name: itm.filename,
           file_url: itm.url,
@@ -267,7 +267,7 @@ function ContentWithoutRef({
       is_send: send, // false: 保存为草稿
       // @ts-ignore
       recivers: prevData.receivers,
-      mes_attachment: files.map((itm) => {
+      mes_attachment: (files || []).map((itm) => {
         return {
           file_name: itm.filename,
           file_url: itm.url,
@@ -301,7 +301,7 @@ function ContentWithoutRef({
         is_send: false, // false: 保存为草稿
         // @ts-ignore
         recivers: formData.receivers,
-        mes_attachment: files.map((itm) => {
+        mes_attachment: (files || []).map((itm) => {
           return {
             file_name: itm.filename,
             file_url: itm.url,
@@ -423,7 +423,7 @@ function ContentWithoutRef({
                 <Filelist
                   candownload
                   deleteFiles={deleteFiles}
-                  files={files.map((itm) => ({
+                  files={(files || []).map((itm) => ({
                     file_uid: itm.uid,
                     file_url: itm.url,
                     file_name: itm.filename,

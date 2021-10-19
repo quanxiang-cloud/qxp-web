@@ -1,10 +1,11 @@
-import { NumberPicker } from '@formily/antd-components';
 import { FormEffectHooks, createFormActions } from '@formily/react';
 
 import { validateRegistryElement } from '@c/form-builder/utils';
 
+import NumberPicker from './number-picker';
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig, NumberPickerConfig } from './convertor';
+import Placeholder from './placeholder';
 
 const NumberPickerField: Omit<FormBuilder.SourceElement<NumberPickerConfig>, 'displayOrder'> = {
   configSchema,
@@ -14,6 +15,7 @@ const NumberPickerField: Omit<FormBuilder.SourceElement<NumberPickerConfig>, 'di
   defaultConfig: defaultConfig,
   toSchema,
   component: NumberPicker,
+  placeholderComponent: Placeholder,
   category: 'basic',
   componentName: 'NumberPicker',
   compareOperators: ['==', '!=', '>', '>=', '<=', '<'],
@@ -51,6 +53,16 @@ const NumberPickerField: Omit<FormBuilder.SourceElement<NumberPickerConfig>, 'di
     onFieldInputChange$('maxSet').subscribe(({ value }) => {
       setFieldState('maximum', (state) => {
         state.visible = value.length === 0 ? false : true;
+      });
+    });
+
+    onFieldInputChange$('precision').subscribe(({ value }) => {
+      setFieldState('precision', (state) => {
+        if (value < 0) {
+          state.value = 0;
+        } else if (value > 4) {
+          state.value = 4;
+        }
       });
     });
   },

@@ -18,7 +18,7 @@ function MultipleSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
     <Select
       mode="multiple"
       value={fieldProps.value}
-      onChange={fieldProps.mutators.change}
+      onChange={fieldProps?.mutators?.change}
     >
       {options.map((option): JSX.Element => (
         <Option key={option} value={option}>{option}</Option>

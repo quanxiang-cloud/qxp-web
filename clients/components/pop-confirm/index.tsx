@@ -32,7 +32,7 @@ function PopConfirm({
   onOk,
   cancelText = '取消',
   okText = '确定',
-}: Props ) {
+}: Props) {
   const popperRef = useRef<Popper>(null);
   const reference = useRef<any>(null);
 

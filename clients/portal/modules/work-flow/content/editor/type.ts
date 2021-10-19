@@ -95,7 +95,7 @@ export type Operator = 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | 'null' | 'no
 export type TriggerConditionValue = {
   key: string;
   op: Operator;
-  value: string | string[];
+  value: any;
 }
 export type TriggerConditionExpressionItem = TriggerCondition | TriggerConditionValue;
 export type TriggerConditionExpression = TriggerConditionExpressionItem[]
@@ -155,7 +155,14 @@ export type TimeRule = {
   deadLine: DeadLine;
   whenTimeout: WhenTimeout;
 }
-export type ApprovePersonType = 'person' | 'field' | 'position' | 'superior' | 'leadOfDepartment' | 'processInitiator';
+export type ApprovePersonType =
+|'person'
+| 'field'
+| 'position'
+| 'superior'
+| 'leadOfDepartment'
+| 'processInitiator';
+
 export type ApprovePerson = {
   type: ApprovePersonType;
   users: EmployeeOrDepartmentOfRole[];
@@ -195,6 +202,7 @@ export interface FillInData {
 export interface ProcessBranchData {
   ignore: boolean;
   rule: string;
+  formulaFields: Record<string, string>;
 }
 export interface ProcessBranchTargetData {
   processBranchEndStrategy: 'any' | 'all';
@@ -257,23 +265,20 @@ export type Receiver = {
   account: string,
 }
 export interface SendEmailData {
-  type: ApprovePersonType;
-  recivers: Receiver[];
+  approvePersons: ApprovePerson;
   content: string;
   templateId: string;
   title: string;
   mes_attachment: Attachment[];
 }
 export interface WebMessageData {
-  type: ApprovePersonType;
-  recivers: Receiver[];
+  approvePersons: ApprovePerson;
   sort: 1 | 2;
   content: string;
   title: string;
 }
 export interface CCData {
-  type: ApprovePersonType;
-  recivers: Receiver[];
+  approvePersons: ApprovePerson;
 }
 export interface FieldValue {
   variable: string;
@@ -295,7 +300,6 @@ export interface CustomFieldPermission {
 export interface SystemFieldPermission {
   fieldName: string;
   read: boolean;
-  invisible: boolean;
   id: string;
 }
 

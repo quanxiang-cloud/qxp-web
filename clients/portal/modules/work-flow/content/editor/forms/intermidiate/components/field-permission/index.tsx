@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useQuery } from 'react-query';
-import { groupBy, merge, first, isEqual } from 'lodash';
-import { useUpdateEffect } from 'react-use';
+import { groupBy, merge, first } from 'lodash';
 import fp from 'lodash/fp';
 
 import Toggle from '@c/toggle';
@@ -67,13 +66,6 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
     }
   }, [mergedFieldPermissions.custom]);
 
-  useUpdateEffect(() => {
-    const defaultPermissionChanged = !isEqual(fieldPermissionDecoder(value, schema), mergedFieldPermissions);
-    const isPermissionOldFormat = value.custom || value.system;
-    const shouldSetLatestPermission = defaultPermissionChanged || isPermissionOldFormat;
-    shouldSetLatestPermission && onChange(mergedFieldPermissions);
-  }, [mergedFieldPermissions]);
-
   function onChange(fieldPermission: FieldPermissionType): void {
     _onChange({ fieldPermission: fieldPermissionEncoder(fieldPermission) });
   }
@@ -97,7 +89,7 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
         id: field.value,
         hidden: field.isLayout,
         fieldName: field.label,
-        read: field.isLayout ? true : false,
+        read: !!field.isLayout,
         write: false,
         invisible: false,
         editable: false,
@@ -114,7 +106,6 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
         id: field.value,
         fieldName: field.label,
         read: field.read,
-        invisible: field.invisible,
       });
     });
     const sorter = fp.pipe(

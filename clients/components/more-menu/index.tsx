@@ -23,9 +23,10 @@ export type MenuItem<T extends React.Key = string> = {
 type MenusProps<T extends React.Key> = {
   onClick: (key: T) => void;
   items: MenuItem<T>[];
+  activeMenu?: T;
 }
 
-function Menus<T extends React.Key>({ items, onClick }: MenusProps<T>): JSX.Element {
+function Menus<T extends React.Key>({ items, onClick, activeMenu }: MenusProps<T>): JSX.Element {
   return (
     <div className="dropdown-options">
       {
@@ -33,7 +34,10 @@ function Menus<T extends React.Key>({ items, onClick }: MenusProps<T>): JSX.Elem
           return (
             <div
               key={key}
-              className={cs('dropdown-options__option', { 'select-option--disabled': disabled })}
+              className={cs('dropdown-options__option', {
+                'select-option--disabled': disabled,
+                'text-blue-600 bg-blue-50': activeMenu === key,
+              })}
               onClick={(e): void => {
                 e.stopPropagation();
                 !disabled && onClick(key);
@@ -56,10 +60,11 @@ type Props<T extends React.Key> = {
   menus: MenuItem<T>[];
   placement?: Placement;
   children?: React.ReactElement;
+  activeMenu?: T;
 }
 
 export default function MoreMenu<T extends React.Key>({
-  iconName, className, menus, children, onVisibilityChange, onMenuClick, placement,
+  iconName, className, menus, children, onVisibilityChange, onMenuClick, placement, activeMenu,
 }: Props<T>): JSX.Element {
   const reference = React.useRef<Element>(null);
   const popperRef = React.useRef<Popper>(null);
@@ -90,7 +95,7 @@ export default function MoreMenu<T extends React.Key>({
         placement={placement || 'bottom-start'}
         modifiers={modifiers}
       >
-        <Menus items={menus} onClick={handleMenuClick} />
+        <Menus activeMenu={activeMenu} items={menus} onClick={handleMenuClick} />
       </Popper>
     </>
   );

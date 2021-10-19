@@ -27,7 +27,7 @@ function FilterForm({ search, showMoreFilter }: Props, ref?: React.Ref<any>): JS
 
   useImperativeHandle(ref, () => ({
     getValues: getValues,
-    reset: () => store.filters.forEach((key) => setValue(key, '')),
+    reset: () => store.filters.forEach((key) => setValue(key, undefined)),
   }));
 
   if (filters.length === 0) {
@@ -64,7 +64,7 @@ function FilterForm({ search, showMoreFilter }: Props, ref?: React.Ref<any>): JS
                 <FieldSwitch
                   className='flex-1'
                   {...field}
-                  value={field.value ? field.value : ''}
+                  value={field.value ? field.value : undefined}
                   field={fieldMaps[key]}
                 />
               );

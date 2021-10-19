@@ -1,4 +1,4 @@
-import { omit } from 'lodash';
+import { omit, pick } from 'lodash';
 import { History } from 'history';
 import { mutateTree, TreeData, TreeItem } from '@atlaskit/tree';
 import { observable, action, toJS, reaction, IReactionDisposer } from 'mobx';
@@ -7,7 +7,7 @@ import toast from '@lib/toast';
 import { buildAppPagesTreeData } from '@lib/utils';
 import { getCustomPageInfo, getSchemaPageInfo, getTableSchema } from '@lib/http-client';
 
-import { CardList, CustomPageInfo, MenuType } from './type';
+import { BindState, CardList, CustomPageInfo, MenuType } from './type';
 import { fetchAppList } from '../entry/app-list/api';
 import { DefaultPageDescriptions } from './constants';
 import { getNextTreeItem } from './page-menu-design/app-pages-tree';
@@ -27,6 +27,8 @@ import {
   createGroup,
   deleteGroup,
   deletePage,
+  isHiddenMenu,
+  formDuplicate,
 } from './api';
 
 type DeletePageOrGroupParams = {
@@ -87,7 +89,7 @@ class AppDetailsStore {
   }
 
   @action
-  setPageID = (pageID: string) => {
+  setPageID = (pageID: string): void => {
     this.pageID = pageID;
   }
 
@@ -97,14 +99,14 @@ class AppDetailsStore {
   }
 
   @action
-  fetchAppList = () => {
+  fetchAppList = (): void => {
     fetchAppList({}).then((res: any) => {
       this.apps = res.data;
     });
   }
 
   @action
-  updateAppStatus = () => {
+  updateAppStatus = (): Promise<void> => {
     const { id, useStatus } = this.appDetails;
     return updateAppStatus({ id, useStatus: -1 * useStatus }).then(() => {
       this.appDetails.useStatus = -1 * useStatus;
@@ -120,7 +122,7 @@ class AppDetailsStore {
   }
 
   @action
-  fetchAppDetails = (appID: string) => {
+  fetchAppDetails = (appID: string): Promise<void> => {
     this.loading = true;
     this.appID = appID;
     return fetchAppDetails(appID).then((res: any) => {
@@ -133,7 +135,7 @@ class AppDetailsStore {
   }
 
   @action
-  updateApp = (appInfo: Pick<AppInfo, 'appName' | 'appIcon' | 'useStatus'>) => {
+  updateApp = (appInfo: Pick<AppInfo, 'appName' | 'appIcon' | 'useStatus'>): Promise<void> => {
     return updateApp({ id: this.appDetails.id, ...appInfo }).then(() => {
       this.appDetails = { ...this.appDetails, ...appInfo };
       this.apps = this.apps.map((_appInfo) => {
@@ -151,7 +153,7 @@ class AppDetailsStore {
   }
 
   @action
-  updatePagesTree = (treeData: TreeData) => {
+  updatePagesTree = (treeData: TreeData): void => {
     this.pagesTreeData = treeData;
   }
 
@@ -200,7 +202,7 @@ class AppDetailsStore {
   }
 
   @action
-  editGroup = (groupInfo: PageInfo) => {
+  editGroup = (groupInfo: PageInfo): Promise<void> => {
     if (groupInfo.id) {
       return updatePageOrGroup({ appID: this.appID, ...groupInfo }).then(() => {
         this.pagesTreeData = mutateTree(toJS(this.pagesTreeData), groupInfo.id as string, {
@@ -235,8 +237,8 @@ class AppDetailsStore {
   }
 
   @action
-  editPage = (pageInfo: PageInfo) => {
-    if (pageInfo.id) {
+  editPage = (pageInfo: PageInfo): Promise<void> => {
+    if (this.modalType === 'editPage') {
       return updatePageOrGroup(pageInfo).then(() => {
         toast.success('修改成功');
         this.pagesTreeData = mutateTree(toJS(this.pagesTreeData), pageInfo.id, {
@@ -250,46 +252,64 @@ class AppDetailsStore {
       });
     }
 
-    return createPage({ appID: this.appID, ...pageInfo }).then((res: any) => {
-      const newPage: PageInfo = {
-        ...res, ...pageInfo, menuType: 0, appID: this.appID, child: null, childCount: 0, sort: 0,
-      };
-      const items = toJS(this.pagesTreeData.items);
-      items[newPage.groupID || 'ROOT'].children.push(newPage.id);
-      items[newPage.id] = {
-        id: newPage.id,
-        data: newPage,
-        children: [],
-        hasChildren: false,
-      };
-
-      this.pagesTreeData = { items, rootId: 'ROOT' };
-
-      if (!newPage.groupID) {
-        this.pageInitList.push(newPage);
-        this.curPage = newPage;
-        toast.success('创建成功');
-        return res.id;
-      }
-
-      this.pageInitList = this.pageInitList.map((page) => {
-        if (page.id === newPage.groupID) {
-          const lastChildPage = page.child?.slice(-1) || [];
-          const sort = lastChildPage[0]?.sort || 0;
-          newPage.sort = sort + 1;
-
-          page.childCount = page.child?.push(newPage);
-          this.curPage = newPage;
-        }
-        return page;
+    if (pageInfo.bindingState === BindState.isBind && pageInfo.menuType === MenuType.schemaForm) {
+      return formDuplicate( this.appID, {
+        name: pageInfo.name || '',
+        icon: pageInfo.icon || '',
+        describe: pageInfo.describe || '',
+        groupID: pageInfo.groupID || '',
+        duplicateTableID: pageInfo.id,
+      } ).then((res: {id: string}) => {
+        this.addNewPageToList({ ...pageInfo, ...res }, res.id);
       });
-      toast.success('创建成功');
-      return res.id;
+    }
+
+    const PageInfoPick = pick(pageInfo, 'name', 'icon', 'describe', 'groupID');
+    return createPage({ appID: this.appID, ...PageInfoPick } ).then((res: {id: string}) => {
+      this.addNewPageToList(PageInfoPick, res.id);
     });
   }
 
   @action
-  setCurPage = (pageID: string) => {
+  addNewPageToList = (PageInfoPick: Partial<PageInfo>, id:string): string => {
+    const newPage: PageInfo = {
+      id, ...PageInfoPick, menuType: 0, appID: this.appID, child: null, childCount: 0, sort: 0,
+    };
+    const items = toJS(this.pagesTreeData.items);
+    items[newPage.groupID || 'ROOT'].children.push(newPage.id);
+    items[newPage.id] = {
+      id: newPage.id,
+      data: newPage,
+      children: [],
+      hasChildren: false,
+    };
+
+    this.pagesTreeData = { items, rootId: 'ROOT' };
+
+    if (!newPage.groupID) {
+      this.pageInitList.push(newPage);
+      this.curPage = newPage;
+      toast.success('创建成功');
+      return id;
+    }
+
+    this.pageInitList = this.pageInitList.map((page) => {
+      if (page.id === newPage.groupID) {
+        const lastChildPage = page.child?.slice(-1) || [];
+        const sort = lastChildPage[0]?.sort || 0;
+        newPage.sort = sort + 1;
+
+        page.childCount = page.child?.push(newPage);
+        this.curPage = newPage;
+      }
+      return page;
+    });
+    toast.success('创建成功');
+    return id;
+  }
+
+  @action
+  setCurPage = (pageID: string): void => {
     if (!pageID) {
       return;
     }
@@ -301,10 +321,12 @@ class AppDetailsStore {
     if (pageInfo.menuType === MenuType.schemaForm) {
       getTableSchema(this.appID, pageInfo.id).then((pageSchema) => {
         this.hasSchema = !!pageSchema;
+        if (!this.appID) return;
         if (this.hasSchema) {
           return getSchemaPageInfo(this.appID, pageID);
         }
       }).then((res) => {
+        if (!this.pageID) return;
         if (res) {
           const descriptions = this.pageDescriptions.map((description) => {
             return mapToSchemaPageDescription(description, res);
@@ -367,7 +389,22 @@ class AppDetailsStore {
   }
 
   @action
-  fetchPageList = (appID: string) => {
+  updatePageHideStatus = (appID: string, pageInfo: PageInfo) => {
+    return isHiddenMenu(appID, { id: pageInfo.id, hide: pageInfo.isHide ? false : true }).then(() => {
+      this.pagesTreeData = mutateTree(toJS(this.pagesTreeData), pageInfo.id, {
+        id: pageInfo.id,
+        data: { ...pageInfo, isHide: !pageInfo.isHide },
+      });
+
+      if (pageInfo.id === this.curPage.id) {
+        this.curPage = { ...pageInfo, isHide: !pageInfo.isHide };
+      }
+      toast.success(`${pageInfo.name}页面${!pageInfo.isHide ? '隐藏' : '显示' }成功`);
+    }).catch(() => toast.error('页面设置显示或者隐藏失败'));
+  }
+
+  @action
+  fetchPageList = (appID: string): void => {
     this.appID = appID;
     this.pageListLoading = true;
     fetchPageList(appID).then((res: any) => {
@@ -378,7 +415,7 @@ class AppDetailsStore {
   }
 
   @action
-  clear = () => {
+  clear = (): void => {
     this.curPage = { id: '' };
     this.pageListLoading = true;
     this.appID = '';
