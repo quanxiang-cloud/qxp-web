@@ -40,7 +40,7 @@ function AddOptionSetItem({ type, prefix = '' }: Props): JSX.Element {
   return (
     <Popconfirm
       title={(
-        <div className='-ml-24 text-gray-600'>
+        <div className='option-set-popper -ml-24 text-gray-600'>
           <span>选项数据名称</span>
           <textarea
             rows={2}
