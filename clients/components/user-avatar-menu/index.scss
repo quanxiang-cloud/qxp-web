@@ -6,9 +6,8 @@
   border: 1px solid #E2E8F0;
 }
 
-.user-avatar-popper {
-  margin-left: -20px !important;
-  border-radius: 12px 2px 12px 12px !important;
+.popper-container.user-avatar-popper {
+  border-radius: 12px 2px 12px 12px;
 }
 
 .user-avatar-bg {

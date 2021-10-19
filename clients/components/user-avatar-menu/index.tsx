@@ -52,6 +52,7 @@ export default function UserAvatarMenu({ className }: Props): JSX.Element {
         ref={popperRef}
         className='user-avatar-popper'
         onVisibilityChange={(visible)=> setShow(visible)}
+        placement='bottom-start'
         trigger='hover'
       >
         <div className='user-avatar'>
