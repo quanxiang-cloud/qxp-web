@@ -125,11 +125,12 @@
   border-width: 1px 1px 0 1px;
 }
 
-.help {
-  margin-left: 25% !important;
+.form-add-dataset.is-horizon-layout > .field .help {
+  display: flex;
+  margin-left: 25%;
 }
 
-input[name='search'] {
+.dataset-names--toolbar > .border-none input[name='search'] {
   width: 80px !important;
 }
 
@@ -141,10 +142,10 @@ input[name='search'] {
   border-color: var(--blue-600);
 }
 
-.is-danger {
+.form-add-dataset > .field .control input.is-danger {
   border-color: #ca2621 !important;
 }
 
-.input-default:focus, .textarea-default:focus {
+.option-set-popper > .input-default:focus, .textarea-default:focus {
   border-color: var(--blue-600) !important;
 }
