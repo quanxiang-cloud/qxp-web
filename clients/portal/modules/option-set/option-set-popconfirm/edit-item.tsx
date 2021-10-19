@@ -19,7 +19,7 @@ function EditOptionSetItem({ type, label, idx = 0, nodePath = '' }: Props): JSX.
   return (
     <Popconfirm
       title={(
-        <div className='-ml-24'>
+        <div className='option-set-popper -ml-24'>
           <div className='mb-8 text-blueGray-400'>
             修改选项集名称
           </div>
