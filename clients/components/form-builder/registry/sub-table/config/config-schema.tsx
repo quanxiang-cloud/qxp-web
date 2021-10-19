@@ -49,7 +49,37 @@ const schema: ISchema = {
             label: '多条',
             value: 'multiple',
           }],
+          'x-linkages': [
+            {
+              type: 'value:visible',
+              target: 'layout',
+              condition: '{{ $value === "single" }}',
+            },
+          ],
           'x-index': 2,
+        },
+        layout: {
+          type: 'string',
+          title: '布局',
+          default: 'default',
+          'x-component': 'RadioGroup',
+          'x-mega-props': {
+            labelAlign: 'top',
+          },
+          enum: [{
+            label: '默认',
+            value: 'default',
+          }, {
+            label: '一列',
+            value: 'one',
+          }, {
+            label: '两列',
+            value: 'two',
+          }, {
+            label: '三列',
+            value: 'three',
+          }],
+          'x-index': 3,
         },
         displayModifier: {
           type: 'string',
@@ -73,7 +103,7 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 3,
+          'x-index': 4,
         },
         subordination: {
           title: '子表来源',
@@ -93,7 +123,7 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 4,
+          'x-index': 5,
           'x-linkages': [
             {
               type: 'value:visible',
@@ -123,7 +153,7 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 5,
+          'x-index': 6,
         },
         subTableSchema: {
           type: 'object',
@@ -131,7 +161,7 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 6,
+          'x-index': 7,
         },
         subTableColumns: {
           type: 'array',
@@ -140,7 +170,7 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 7,
+          'x-index': 8,
         },
         curConfigSubTableKey: {
           type: 'string',
@@ -149,14 +179,14 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 8,
+          'x-index': 9,
           visible: false,
         },
         required: {
           title: '是否必填',
           default: false,
           'x-component': 'Switch',
-          'x-index': 9,
+          'x-index': 10,
         },
         tableID: {
           type: 'string',
@@ -165,7 +195,7 @@ const schema: ISchema = {
             className: 'hidden',
           },
           default: '',
-          'x-index': 10,
+          'x-index': 11,
         },
       },
     },
