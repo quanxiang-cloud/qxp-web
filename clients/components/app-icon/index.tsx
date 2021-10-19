@@ -30,14 +30,15 @@ ref: React.Ref<HTMLDivElement>,
       {...restProps}
       ref={ref}
       style={{
+        width: size,
+        height: size,
         borderRadius: (size * 0.27) + 'px',
         borderTopRightRadius: '2px',
         '--app-Icon-bg-offset': - size + 'px', // size / 44(single app icon size ) = offset / 44 ( total svg offset ) , so background offset = size
       } as React.CSSProperties}
       className={cs(
         'app-icon flex justify-center items-center relative overflow-hidden',
-        `app-icon-bg-${themeColor} w-${size} h-${size}`,
-        className,
+        `app-icon-bg-${themeColor}`, className,
       )}
     >
       {iconName ? (<Icon type='light' name={iconName} size={appIconSize.get(size)} />) : null}
