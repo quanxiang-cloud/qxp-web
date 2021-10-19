@@ -43,7 +43,7 @@ class UserAndPerStore {
   @observable currentRights: Rights = { id: '' };
   @observable Fields: SchemaFieldItem[] = [];
   @observable UserDetailList: [] =[]
-  @observable PerData: PerData = {
+  @observable perData: PerData = {
     conditions: {},
     schema: null,
     authority: 0,
@@ -281,7 +281,7 @@ class UserAndPerStore {
           this.Fields = (schemaToFields(schema));
           const { dataAccess, filter, opt } = perDataRes as any;
 
-          this.PerData = ({
+          this.perData = ({
             conditions: dataAccess ? dataAccess.conditions : {},
             schema: filter ? filter.schema : null,
             authority: opt ? opt.authority : 0,
@@ -297,7 +297,7 @@ class UserAndPerStore {
       });
       return;
     }
-    this.PerData = {
+    this.perData = {
       conditions: {},
       schema: null,
       authority: this.currentRights.types === 1 ? 1 : this.currentPage.authority,

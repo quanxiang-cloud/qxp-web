@@ -72,8 +72,14 @@ function RightsGroups(): JSX.Element {
 
     dataPerRef.current?.getDataValues().then((conditions) => {
       if (authority === 0) {
+        store.rightsLoading = true;
         store.deleteFormPer(store.currentPage.id, store.rightsGroupID).then(() => {
-          store.getPageSchema();
+          store.perData = ({
+            conditions: {},
+            schema: null,
+            authority: 0,
+          });
+          store.rightsLoading = false;
         });
         setOpenSet(false);
         return;
@@ -223,7 +229,7 @@ function RightsGroups(): JSX.Element {
                   />
                   <Authorized
                     abled={openset}
-                    authorized={store.PerData.authority}
+                    authorized={store.perData.authority}
                     ref={authorizedRef}
                     className={cs({ ['rights-hidden']: activeTab !== 'authorized' })}
                   />
@@ -231,14 +237,14 @@ function RightsGroups(): JSX.Element {
                     <>
                       <FieldPermissions
                         abled={openset}
-                        fieldPer={store.PerData.schema}
+                        fieldPer={store.perData.schema}
                         ref={fieldRef}
                         className={cs({ ['rights-hidden']: activeTab !== 'fieldPermissions' })}
                         fields={store.Fields}
                       />
                       <DataPermission
                         abled={openset}
-                        dataPer={store.PerData.conditions}
+                        dataPer={store.perData.conditions}
                         ref={dataPerRef}
                         className={cs({ ['rights-hidden']: activeTab !== 'dataPermission' })}
                         fields={store.Fields}
