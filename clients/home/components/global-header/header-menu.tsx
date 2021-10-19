@@ -1,7 +1,7 @@
 import React from 'react';
 
 import NavMsgBar from '@portal/modules/msg-center/nav-msg-bar';
-import UserProfile from '@c/user-profile';
+import UserAvatarMenu from '@c/user-avatar-menu';
 
 export default function HeaderMenu(): JSX.Element {
   return (
@@ -31,7 +31,7 @@ export default function HeaderMenu(): JSX.Element {
           size={20}
         />
       </div> */}
-      <UserProfile className='text-white hover:text-blue-300' />
+      <UserAvatarMenu className='text-white hover:text-blue-300' />
     </div>
   );
 }

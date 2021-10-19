@@ -6,7 +6,7 @@ import HeaderNav from '@c/header-nav';
 import toast from '@lib/toast';
 import Select from '@c/select';
 import AppsSwitcher from '@c/apps-switcher';
-import UserProfile from '@c/user-profile';
+import UserAvatarMenu from '@c/user-avatar-menu';
 
 import { fetchUserList, getPerOption, roleChange } from '../../../lib/api';
 import store from '../store';
@@ -77,7 +77,7 @@ function DetailsHeader(): JSX.Element {
             <Select value={curRole} onChange={handleRoleChange} className='w-144' options={options} />
           </div>
         )}
-        <UserProfile />
+        <UserAvatarMenu />
       </div>
     </div>
   );

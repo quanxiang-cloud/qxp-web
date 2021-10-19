@@ -2,7 +2,7 @@ import React from 'react';
 
 import NavMsgBar from '@portal/modules/msg-center/nav-msg-bar';
 import Icon from '@c/icon';
-import UserProfile from '@c/user-profile';
+import UserAvatarMenu from '@c/user-avatar-menu';
 
 export default function HeaderMenu(): JSX.Element {
   return (
@@ -26,7 +26,7 @@ export default function HeaderMenu(): JSX.Element {
         访问用户端
       </a>
       <div className="header-nav-btn group">
-        <UserProfile />
+        <UserAvatarMenu />
       </div>
     </div>
   );

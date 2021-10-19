@@ -1,4 +1,4 @@
-.avatar {
+.user-avatar {
   min-width: 216px;
   max-width: 284px;
   box-shadow: 0px 8px 24px 4px rgba(148, 163, 184, 0.25);
@@ -6,25 +6,34 @@
   border: 1px solid #E2E8F0;
 }
 
-.avatar-popper {
+.user-avatar-popper {
   margin-left: -20px !important;
   border-radius: 12px 2px 12px 12px !important;
 }
 
-.avatar-bg {
+.user-avatar-bg {
   background-image: url(/dist/images/avatar-bg.png);
   background-size: 100% 100%;
   border-top-left-radius: 12px;
   border-top-right-radius: 2px;
+  display: flex;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 
-.avatar-border {
+.password-item {
   border-bottom: 1px;
   border-color: #E2E8F0;
   border-style: solid;
+  display: flex;
+  align-items: center;
+  padding-top: 15px;
+  padding-bottom: 15px;
 }
 
-.py-15 {
+.logout-item {
+  display: flex;
+  align-items: center;
   padding-top: 15px;
   padding-bottom: 15px;
 }
