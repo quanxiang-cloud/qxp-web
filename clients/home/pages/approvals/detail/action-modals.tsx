@@ -226,6 +226,13 @@ function ActionModals({
       );
     }
 
+    // 撤回
+    if (action === TaskHandleType.hasCancelBtn) {
+      return (
+        <p>确定要撤回该任务吗？撤回后，任务将立即结束。</p>
+      );
+    }
+
     // 转交
     if (action === TaskHandleType.deliver) {
       return (

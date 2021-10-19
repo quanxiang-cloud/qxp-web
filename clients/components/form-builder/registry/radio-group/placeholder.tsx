@@ -1,13 +1,24 @@
 import React from 'react';
 import { Radio } from 'antd';
+import { ISchemaFieldComponentProps } from '@formily/antd';
 
-function Placeholder(): JSX.Element {
+import useEnumOptions from '@lib/hooks/use-enum-options';
+
+function Placeholder(fieldProps: ISchemaFieldComponentProps): JSX.Element {
+  const labels = useEnumOptions(fieldProps);
+
   return (
-    <Radio.Group>
-      <Radio value={1}>选项一</Radio>
-      <Radio value={2}>选项二</Radio>
-      <Radio value={3}>选项三</Radio>
-    </Radio.Group>
+    <>
+      {!labels.length ? (
+        <span>暂无可选项</span>
+      ) : (
+        <Radio.Group>
+          {labels?.map((label: string, index: number) => {
+            return <Radio key={index} value={index}>{label}</Radio>;
+          })}
+        </Radio.Group>
+      )}
+    </>
   );
 }
 

@@ -86,7 +86,8 @@ export default function CustomField(props: Props): JSX.Element {
       return (
         <Select
           options={getSchemaFields(tableSchema, {
-            matchTypeFn: (schema: ISchema)=> isFieldTypeMatch(fieldDataType, compType, schema),
+            matchTypeFn: (schema: ISchema) => isFieldTypeMatch(fieldDataType, compType, schema),
+            excludeComps: ['serial', 'aggregationrecords'],
           })}
           value={getVal() as string}
           onChange={onChangeFieldValue}

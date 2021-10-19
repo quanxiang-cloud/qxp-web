@@ -62,7 +62,7 @@ const UserPicker = ({
         onChange?.(newValue);
       });
     }
-  }, [value]);
+  }, []);
 
   useEffect(() => {
     if (value && value.length) {

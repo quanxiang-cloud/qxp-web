@@ -1,15 +1,17 @@
-import React, { useContext, useRef } from 'react';
+import React, { useContext, useMemo, useRef } from 'react';
 
 import Modal from '@c/modal';
-import { getSchemaFields, isAdvancedField } from '@flow/content/editor/forms/utils';
+import { getSchemaFields, getFieldValuePath } from '@flow/content/editor/forms/utils';
 import { COLLECTION_OPERATORS } from '@c/formula-editor/constants';
 import FormulaEditor, { CustomRule, RefProps } from '@c/formula-editor';
 import FlowTableContext from '@flow/content/editor/forms/flow-source-table';
 import schemaToFields from '@lib/schema-convert';
+import { SYSTEM_FIELDS } from '@c/form-builder/constants';
+import { FormulaFields } from './update-rules';
 
 interface Props {
   onClose: () => void;
-  onSave: (rule: string) => void;
+  onSave: (rule: string, formulaFields: FormulaFields) => void;
   defaultValue?: string;
   targetSchema?: ISchema;
 }
@@ -17,14 +19,22 @@ interface Props {
 function FormulaModal(props: Props): JSX.Element | null {
   const formulaRef = useRef<RefProps>();
   const { tableSchema: sourceSchema } = useContext(FlowTableContext);
+  const targetSchemaFields = useMemo(()=> schemaToFields(props.targetSchema), []);
+  const targetFields = getSchemaFields(targetSchemaFields);
+  const sourceFields = getSchemaFields(sourceSchema);
+  const allFields = useMemo(()=> [...targetFields, ...sourceFields], [targetFields, sourceFields]);
+  const formulaFields = useMemo(()=> allFields.filter(({ value })=> {
+    return !SYSTEM_FIELDS.includes(value);
+  }).reduce((acc: FormulaFields, { value }: LabelValue)=> {
+    const field = [...sourceSchema, ...targetSchemaFields].find((item)=> item.fieldName === value);
+    const valuePath = field && getFieldValuePath(field);
+    if (valuePath) {
+      acc[value] = [value, valuePath].join('.');
+    }
+    return acc;
+  }, {}), [allFields]);
 
-  const targetFields = getSchemaFields(schemaToFields(props.targetSchema), { matchTypeFn: (schema: ISchema)=> {
-    return !isAdvancedField(schema.type || 'string', schema['x-component']?.toLowerCase());
-  } });
-  const sourceFields = getSchemaFields(sourceSchema, { matchTypeFn: (schema: ISchema)=> {
-    return !isAdvancedField(schema.type || 'string', schema['x-component']?.toLowerCase());
-  } });
-  const formulaCustomRules: CustomRule[] = targetFields.concat(sourceFields).map(({ label, value }) => ({
+  const formulaCustomRules: CustomRule[] = allFields.map(({ label, value }) => ({
     key: value,
     name: label,
     type: 'field',
@@ -40,7 +50,7 @@ function FormulaModal(props: Props): JSX.Element | null {
 
   return (
     <Modal
-      title="设置过滤条件"
+      title="设置当前表字段"
       onClose={props.onClose}
       footerBtns={[
         {
@@ -53,7 +63,7 @@ function FormulaModal(props: Props): JSX.Element | null {
           text: '确认',
           onClick: () => {
             const formula = formulaRef.current?.getFormulaValue().trim() || '';
-            props.onSave(formula);
+            props.onSave(formula, formulaFields);
           },
           modifier: 'primary',
         },
@@ -124,7 +134,7 @@ function FormulaModal(props: Props): JSX.Element | null {
           </div>
         </div>
         <div>
-          <div>过滤公式</div>
+          <div>计算公式</div>
           <FormulaEditor
             ref={formulaRef}
             className="block mb-16"

@@ -95,7 +95,7 @@ export type Operator = 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | 'null' | 'no
 export type TriggerConditionValue = {
   key: string;
   op: Operator;
-  value: string | string[];
+  value: any;
 }
 export type TriggerConditionExpressionItem = TriggerCondition | TriggerConditionValue;
 export type TriggerConditionExpression = TriggerConditionExpressionItem[]
@@ -202,6 +202,7 @@ export interface FillInData {
 export interface ProcessBranchData {
   ignore: boolean;
   rule: string;
+  formulaFields: Record<string, string>;
 }
 export interface ProcessBranchTargetData {
   processBranchEndStrategy: 'any' | 'all';
@@ -296,8 +297,15 @@ export interface CustomFieldPermission {
   hidden: boolean;
 }
 
+export interface SystemFieldPermission {
+  fieldName: string;
+  read: boolean;
+  id: string;
+}
+
 export interface FieldPermission {
   custom: CustomFieldPermission[];
+  system: SystemFieldPermission[];
 }
 export interface NewFieldPermissionValue {
   fieldName: string;

@@ -95,29 +95,45 @@ export function toConfig(schema: ISchema): AggregationRecordsConfig {
 
 export function validate(value: AggregationRecordsConfig, schema?: ISchema): boolean {
   const props = get(schema, 'properties.Fields.properties', {});
+  const aggTypeValue = get(value, 'aggType', '');
   return Object.entries(props).every(([key, conf]: [string, any]) => {
     const rules = get(conf, 'x-rules', {}) as { required?: boolean, message?: string };
+
     if (has(conf, 'required')) {
       Object.assign(rules, { required: conf?.required, message: `${conf?.title}不能为空` });
     }
-    if (rules) {
-      // check field required
-      if (rules?.required) {
-        const val = get(value, key);
-        const valType = conf.type;
-        if (valType !== 'number' && !val) {
-          toast.error(rules?.message);
-          return false;
-        }
-      }
-      if (key === 'associateObject') {
-        if (rules?.required && !get(value, 'associateObject.tableID')) {
-          toast.error(rules?.message);
-          return false;
-        }
-      }
-      // todo: other rules
+
+    if (!rules) {
+      return true;
     }
+
+    // check field required
+    if (rules?.required) {
+      const val = get(value, key);
+      const valType = conf.type;
+
+      if (key === 'fieldName' && aggTypeValue === 'count') {
+        return true;
+      }
+
+      if (key === 'roundDecimal' && (aggTypeValue === 'max' || aggTypeValue === 'min')) {
+        return true;
+      }
+
+      if (valType !== 'number' && !val) {
+        toast.error(rules?.message);
+        return false;
+      }
+    }
+
+    if (key === 'associateObject') {
+      if (rules?.required && !get(value, 'associateObject.tableID')) {
+        toast.error(rules?.message);
+        return false;
+      }
+    }
+    // todo: other rules
+
     return true;
   });
 }

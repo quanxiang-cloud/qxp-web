@@ -80,9 +80,11 @@ export function schemaToOptions(schema?: ISchema, options?: SchemaToOptionsOptio
   });
 }
 
-export function schemaToFields(schema?: ISchema, filter?: FieldsFilterFunc): Array<SchemaFieldItem> {
-  let fields = schemaToArray(schema).map((schema) => schemaItemToSchemaFieldItem(schema));
-  fields = filter ? fields.filter((field) => filter(field)) : fields;
+export function schemaToFields(
+  schema?: ISchema, filter?: FieldsFilterFunc | null, options?: SchemaToArrayOptions,
+): Array<SchemaFieldItem> {
+  let fields = schemaToArray(schema, options).map((schema) => schemaItemToSchemaFieldItem(schema));
+  fields = filter ? fields.filter(filter) : fields;
   return sortSchemaArray(fields);
 }
 
