@@ -62,7 +62,11 @@ function CreateDataForm({ appID, pageID, rowID, onCancel, title }: Props): JSX.E
           pageID,
           rowID,
           buildFormDataReqParams(schema, 'updated', newValue),
-        );
+        ).then((res)=>{
+          if (res.errorCount !== 0) {
+            throw new Error('保存失败，没有权限');
+          }
+        });
       } else {
         await createFormDataRequest(
           appID,
