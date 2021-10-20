@@ -123,7 +123,6 @@ class AppModelStore {
       const { total = 0, list = [] } = res || {};
       this.dataModelTotal = total;
       this.dataModels = list;
-      this.curDataModel = list.find(({ tableID }) => tableID === this.curModelTableID) || list[0];
       this.dataModelsLoading = false;
     }).catch((err) => {
       this.dataModelsLoading = false;

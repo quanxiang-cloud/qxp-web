@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { observer } from 'mobx-react';
-import cs from 'classnames';
 
 import Icon from '@c/icon';
 import Tab from '@c/tab';
@@ -10,7 +9,7 @@ import toast from '@lib/toast';
 import Search from '@c/search';
 import MoreMenu from '@c/more-menu';
 import TextHeader from '@c/text-header';
-import { getQuery } from '@lib/utils';
+import TwoLevelMenu from '@c/two-level-menu';
 
 import EditRightModal from './edit-right-modal';
 import AssociatedPerson from './associated-personnel';
@@ -25,11 +24,10 @@ function UsersAndPermissions(): JSX.Element {
   const [tabCurrentKey, setTabCurrentKey] = useState('associate');
   const [showDeleteRightModal, setShowDeleteRightModal] = useState(false);
   const { appID } = useParams<AppParams>();
-  const { id } = getQuery<{ id: string }>();
 
   useEffect(() => {
     store.appID = appID;
-    store.fetchRights(id);
+    store.fetchRights();
     return () => {
       store.appID = '';
     };
@@ -38,6 +36,18 @@ function UsersAndPermissions(): JSX.Element {
   useEffect(() => {
     setTabCurrentKey('associate');
   }, [store.rightsGroupID]);
+
+  const roles = useMemo(() => {
+    return store.rightsList.map((role) => {
+      return {
+        id: role.id,
+        title: role.name || '',
+        type: 'leaf',
+        iconName: 'people_alt',
+        source: role,
+      };
+    });
+  }, [store.rightsList]);
 
   const menus = [
     {
@@ -84,7 +94,7 @@ function UsersAndPermissions(): JSX.Element {
       id: 'configuration',
       name: '配置访问权限',
       content: (
-        <RightsGroups/>
+        <RightsGroups />
       ),
     },
   ];
@@ -110,7 +120,7 @@ function UsersAndPermissions(): JSX.Element {
           itemTitleClassName="text-h5"
         />
         <div className='flex flex-1 w-full overflow-hidden'>
-          <div className='app-nav text-gray-600 flex h-full flex-col overflow-auto'
+          <div className='bg-gray-50 app-nav text-gray-600 flex h-full flex-col overflow-auto'
             style={{ width: '220px' }}
           >
             <Search
@@ -126,50 +136,40 @@ function UsersAndPermissions(): JSX.Element {
                 setShowEditRightModal(true);
               }}
             >
-              <Icon className='text-inherit' size={20} name='add'/>
+              <Icon className='text-inherit' size={20} name='add' />
               添加授权角色
             </div>
-            <ul className='flex-1 overflow-auto'>
-              {store.rightsList.map((rights: Rights) => (
-                <li
-                  key={rights.id}
-                  className={cs('group nav-item px-16', {
-                    'bg-gray-100 text-blue-600': rights.id === store.rightsGroupID,
-                  })}
-                  onClick={() => {
-                    store.currentRights = rights;
-                    store.rightsGroupID = rights.id;
-                  }}
-                >
-                  <Icon className='text-inherit mr-4' size={20} name='people_alt'/>{rights.name}
-                  <div
-                    className={cs('ml-auto opacity-0 group-hover:opacity-100 flex-shrink-0', {
-                      'opacity-100': rights.id === store.rightsGroupID,
-                    })}
+            {roles.length !== 0 && (
+              <TwoLevelMenu<Rights>
+                onSelect={(role) => {
+                  store.currentRights = role.source as Rights;
+                  store.rightsGroupID = role.id;
+                }}
+                defaultSelected={store.rightsGroupID}
+                menus={roles}
+                actions={(role) => (
+                  <MoreMenu
+                    menus={role.source?.types === 1 ? menus : menusTemp}
+                    placement="bottom-end"
+                    onMenuClick={(key) => {
+                      if (key === 'edit') {
+                        setModalType('edit');
+                        setShowEditRightModal(true);
+                      }
+                      if (key === 'delete') {
+                        setShowDeleteRightModal(true);
+                      }
+                    }}
                   >
-                    <MoreMenu
-                      menus={rights.types === 1 ? menus : menusTemp}
-                      placement="bottom-end"
-                      onMenuClick={(key) => {
-                        if (key === 'edit') {
-                          setModalType('edit');
-                          setShowEditRightModal(true);
-                        }
-                        if (key === 'delete') {
-                          setShowDeleteRightModal(true);
-                        }
-                      }}
-                    >
-                      <Icon
-                        changeable
-                        clickable
-                        name='more_horiz'
-                      />
-                    </MoreMenu>
-                  </div>
-                </li>
-              ))}
-            </ul>
+                    <Icon
+                      changeable
+                      clickable
+                      name='more_horiz'
+                    />
+                  </MoreMenu>
+                )}
+              />
+            )}
           </div>
           <div className='authority-detail flex-1 pt-5 overflow-hidden w-1'>
             <Tab
@@ -184,7 +184,7 @@ function UsersAndPermissions(): JSX.Element {
             <div
               className='rights-mes text-white '
             >
-              <Icon name="people_alt" className='text-white mr-8' size={32}/>
+              <Icon name="people_alt" className='text-white mr-8' size={32} />
               <div className=''>
                 <div className='text-14 font-semibold'>{store.currentRights.name}</div>
                 <div
