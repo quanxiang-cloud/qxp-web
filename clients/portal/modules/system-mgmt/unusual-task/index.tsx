@@ -11,9 +11,8 @@ function UnusualTask(): JSX.Element {
       <div className="h-full flex flex-col flex-grow overflow-hidden">
         <TextHeader
           title="异常任务"
-          desc="查询用户的操作历史"
-          action="📖 了解系统日志"
-          className="bg-gray-1000 px-20 py-16 header-background-image"
+          desc="集中管理所有应用中工作异常的流程。"
+          className="bg-gray-1000 px-20 header-background-image"
           itemTitleClassName="text-h5"
         />
         <UnusualTaskList />

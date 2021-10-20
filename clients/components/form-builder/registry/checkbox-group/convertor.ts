@@ -67,7 +67,7 @@ export function toConfig(schema: ISchema): CheckboxGroupConfig {
     title: schema.title as string,
     description: schema.description as string,
     displayModifier: getDisplayModifierFromSchema(schema),
-    optionsLayout: schema['x-component-props']?.layout as any,
+    optionsLayout: schema['x-component-props']?.optionsLayout,
     sortable: !!schema['x-internal']?.sortable,
     required: !!schema.required,
     defaultValueFrom: schema['x-internal']?.defaultValueFrom || 'customized',

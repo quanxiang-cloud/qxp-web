@@ -29,6 +29,7 @@ function DragDrop(props: Props): JSX.Element {
   const store = useContext(StoreContext);
   const boxRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState<DragPosition>('up');
+  const canvasEl = document.querySelector('.form-builder-canvas') as any;
 
   const [{ isDragging }, drag, dragPreview] = useDrag(() => ({
     type: 'CanvasDragEle',
@@ -48,6 +49,11 @@ function DragDrop(props: Props): JSX.Element {
     drop: (item: any, monitor: DropTargetMonitor) => {
       const didDrop = monitor.didDrop();
       if (didDrop) return;
+      if (dropId === 'root') {
+        if (canvasEl && canvasEl?.lastChild) {
+          canvasEl.lastChild.style.boxShadow = 'none';
+        }
+      }
 
       const { sourceId, dragId, from } = item;
       if (dragId === dropId) return;
@@ -111,6 +117,13 @@ function DragDrop(props: Props): JSX.Element {
         }
 
         setPosition(pos);
+        if (canvasEl && canvasEl?.lastChild) {
+          if (dropId === 'root') {
+            canvasEl.lastChild.style.boxShadow = '0 3px 0 var(--blue-600)';
+          } else {
+            canvasEl.lastChild.style.boxShadow = 'none';
+          }
+        }
       }
     },
   }), [position, store.schema, store.flattenFields]);

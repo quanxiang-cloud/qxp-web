@@ -11,7 +11,12 @@ import FormAddData, { FormAddDataRef } from './form-add-data';
 import store from './store';
 import { createOptionSet, updateOptionSet, deleteOptionSet } from './api';
 
-function ShowModal(): JSX.Element {
+interface Props {
+  modalType: string;
+  isNoData?: boolean;
+}
+
+function ShowModal({ modalType, isNoData = false }: Props): JSX.Element {
   const formAddRef = useRef<FormAddDataRef>(null);
 
   const history = useHistory();
@@ -34,13 +39,17 @@ function ShowModal(): JSX.Element {
           tag: option_set_tag,
           type: store.queryType === 'list' ? 1 : 2,
         }]);
-        store.setActive(data.id);
-        history.push(`/apps/option-set?type=${store.queryType}&id=${data.id}`);
+        if (!isNoData || option_set_name.search(store.search) !== -1) {
+          store.setActive(data.id);
+          history.push(`/apps/option-set?type=${store.queryType}&id=${data.id}`);
+        }
       } else {
         toast.error('创建失败');
       }
     }).catch((err: Error) => {
       toast.error(err.message);
+    }).finally(()=>{
+      store.fetchAllNames({ name: store.search });
     });
   };
 
@@ -126,7 +135,7 @@ function ShowModal(): JSX.Element {
     });
   };
 
-  if (store.modalType === 'add') {
+  if (modalType === 'add') {
     return (
       <Modal
         title="添加选项集"
@@ -155,7 +164,7 @@ function ShowModal(): JSX.Element {
       </Modal>
     );
   }
-  if (store.modalType === 'edit') {
+  if (modalType === 'edit') {
     return (
       <Modal
         title="编辑选项集"
@@ -188,7 +197,7 @@ function ShowModal(): JSX.Element {
       </Modal>
     );
   }
-  if (store.modalType === 'delete') {
+  if (modalType === 'delete') {
     return (
       <Modal
         title="删除选项集"

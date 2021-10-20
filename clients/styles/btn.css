@@ -25,7 +25,9 @@
 }
 
 .btn {
+  font-weight: 500;
   color: var(--gray-600);
+  transition: all 0.3s linear;
 }
 
 .btn:hover:not(.btn--forbidden) {
@@ -96,8 +98,13 @@
 }
 
 .btn--danger {
-  color: white;
+  color: #ddd;
   background-color: var(--red-500);
+  border-color: transparent;
+}
+.btn--danger:not(.btn--forbidden):is(:hover, :focus) {
+  color: #fff;
+  border-color: transparent;
 }
 
 .btn-badge {

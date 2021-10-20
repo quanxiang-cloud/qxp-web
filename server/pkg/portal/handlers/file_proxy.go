@@ -3,10 +3,12 @@ package handlers
 import (
 	"bytes"
 	"encoding/json"
+	"html/template"
 	"io"
 	"mime/multipart"
 	"net/http"
 	"qxp-web/server/pkg/contexts"
+	"strings"
 )
 
 func getFileTarget(r *http.Request) string {
@@ -55,6 +57,9 @@ func FileProxyHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Add("Cache-Control", cacheControl)
 	w.WriteHeader(resp.StatusCode)
+	if strings.HasSuffix(r.URL.Path, "index.html") {
+		body = renderTokenInHTML(r, body)
+	}
 	w.Write(body)
 }
 
@@ -129,4 +134,26 @@ func FileUploadHandler(w http.ResponseWriter, r *http.Request) {
 	json.Unmarshal(respBody, &result)
 
 	jsonResponse(w, result)
+}
+
+func renderTokenInHTML(r *http.Request, rawHTML []byte) []byte {
+	token := getToken(r)
+	if token == "" {
+		return rawHTML
+	}
+
+	tmpl, err := template.New("").Parse(string(rawHTML))
+	if err != nil {
+		contexts.Logger.Warningln("failed to parse raw html error: ", err.Error())
+		return rawHTML
+	}
+
+	htmlBuffer := &bytes.Buffer{}
+	err = tmpl.Execute(htmlBuffer, map[string]string{"token": token})
+	if err != nil {
+		contexts.Logger.Warningln("failed to render to token into html: ", err.Error())
+		return rawHTML
+	}
+
+	return htmlBuffer.Bytes()
 }

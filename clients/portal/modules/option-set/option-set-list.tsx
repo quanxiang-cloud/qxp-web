@@ -21,15 +21,15 @@ interface Props {
 }
 
 const TABS: TabProps[] = [
-  { label: '多层级', key: 'tree' },
   { label: '单层级', key: 'list' },
+  { label: '多层级', key: 'tree' },
 ];
 
 function OptionSetList({ className }: Props): JSX.Element {
   const [hoverID, setHoverID] = useState('');
   const [searchQuery] = useURLSearch();
   const id = searchQuery.get('id') as string;
-  const type = searchQuery.get('type') || 'tree';
+  const type = searchQuery.get('type') || 'list';
   store.queryID = id;
   store.queryType = type;
 
@@ -102,7 +102,6 @@ function OptionSetList({ className }: Props): JSX.Element {
                 onClick={() => {
                   history.push(`/apps/option-set?type=${store.queryType}&id=${id}`);
                   store.setActive(id);
-                  store.path = '';
                 }}
               >
                 {name === '职位' && (
@@ -123,14 +122,9 @@ function OptionSetList({ className }: Props): JSX.Element {
               </div>
             );
           })}
-          {!filteredList?.length && (
-            <div className="flex ml-24 mt-16 text-blueGray-400">暂无数据</div>
-          )}
         </div>
       )}
-      {store.modalOpen && (
-        <ShowModal />
-      )}
+      {store.modalOpen && <ShowModal modalType={store.modalType} />}
     </div>
   );
 }

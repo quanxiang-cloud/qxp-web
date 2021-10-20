@@ -20,6 +20,11 @@ type TaskDetailItem = {
   }
 }
 
+type AppDetailItem = {
+  appName: string;
+  id: string;
+}
+
 export const getAbnormalTask = async (params?: Record<string, unknown>)
   : Promise<{ dataList: UnusualTaskItem[], total: number }> => {
   return await httpClient('/api/v1/flow/abnormalTask/list', params);
@@ -69,4 +74,8 @@ export const getStepbackActivityList = async (processInstanceId: string): Promis
 // 获取流程信息
 export const getFlowInfo = async ({ queryKey }: QueryFunctionContext): Promise<any> => {
   return await httpClient(`/api/v1/flow/instance/flowInfo/${queryKey[1] as string}`);
+};
+
+export const getAppList = () => {
+  return httpClient<{ data: Array<AppDetailItem> }>('/api/v1/app-center/adminList', { page: 1, limit: 9999 });
 };

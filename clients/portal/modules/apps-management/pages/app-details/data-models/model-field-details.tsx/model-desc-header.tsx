@@ -10,10 +10,10 @@ function ModelDescHeader(): JSX.Element {
 
   return (
     <div className="model-info-header py-4 px-16 flex items-center">
-      <Icon name="base" type="light" size={33} />
+      <Icon name="model_test" type="light" size={33} />
       <div className="flex-1 desc">
         <span className="font-semibold">{curDataModel?.title}</span>
-        <span className="truncate">
+        <span className="truncate text-12">
           {curDataModel?.description || (
             curDataModel?.source === 1 ? `此数据模型根据表单 ${curDataModel.title} 自动生成` : '-'
           )}
