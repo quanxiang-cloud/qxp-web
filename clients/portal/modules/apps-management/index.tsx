@@ -29,7 +29,7 @@ function AppManagerEntry(): JSX.Element {
   return (
     <div className="app-entry-container">
       <SideNavCard
-        className='w-316'
+        className='w-280'
         cardTitle={(
           <div className="access-background-image p-20 opacity-90">
             <ItemWithTitleDesc
@@ -46,7 +46,7 @@ function AppManagerEntry(): JSX.Element {
         menuData={MENU}
         defaultActiveLink={{ basePath: '/apps', menuId: 'my-apps' }}
       />
-      <div className="app-right-box bg-opacity-50 bg-white">
+      <div className="app-right-box">
         <Switch>
           <Route exact path="/apps" component={AppList} />
           <Route path="/apps/my-apps" component={AppList} />
