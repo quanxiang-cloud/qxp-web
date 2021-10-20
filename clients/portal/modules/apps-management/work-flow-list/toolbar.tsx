@@ -54,7 +54,7 @@ export default function({ onTriggerTypeChange, onSearchInputChange }: Props): JS
         <div className="w-552 z-20 shadow-title bg-white rounded-6 mr-2 group">
           <TextHeader
             title="选择要新建的工作流触发方式："
-            action={<a className="ease-linear text-underline"> 📌 如何选择？</a>}
+            // action={<a className="ease-linear text-underline"> 📌 如何选择？</a>}
             className="px-16 py-7 whitespace-nowrap"
           />
           <div

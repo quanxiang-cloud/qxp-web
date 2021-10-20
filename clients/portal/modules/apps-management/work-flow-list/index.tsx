@@ -16,7 +16,7 @@ export default function WorkFlowCard(): JSX.Element {
         itemTitleClassName="text-12 font-semibold"
         desc="使用可视化工作流技术为业务高效流转提供支持，轻松创建业务流程应用"
         actionClassName="text-12"
-        action={<a className="ease-linear underline">📌 &nbsp;快速开始？</a>}
+        // action={<a className="ease-linear underline">📌 &nbsp;快速开始？</a>}
         className="bg-gray-1000 p-16 header-background-image h-44 shadow-header rounded-t-12"
         descClassName="text-gray-400"
       />
