@@ -7,6 +7,7 @@ import Icon from '@c/icon';
 
 import ListContent from './list-content';
 import TreeContent from './tree-content';
+import NoDataContent from './no-data-content';
 
 import store from './store';
 
@@ -15,31 +16,44 @@ interface Props {
 }
 
 function OptionSetContent({ className }: Props): JSX.Element {
+  const {
+    loadingOptionSet,
+    activeOptionSet,
+    showNoData,
+    queryType,
+    fetchOptionSet,
+    activeId,
+  } = store;
+
   useEffect(() => {
-    store.fetchOptionSet(store.activeId);
-  }, [store.activeId]);
+    fetchOptionSet(activeId);
+  }, [activeId]);
 
   return (
     <div className={cs('flex flex-1 flex-col overflow-auto', className)}>
-      <div className='flex min-h-52 m-16 rounded-8 datasetHeader'>
-        <span className='items-center ml-20 mt-10'>
-          <Icon
-            name={store.activeOptionSet?.name === '职位' ? 'folder_shared_white' : 'dataset_white'}
-            size={30}
-            type='light'
-          />
-        </span>
-        <div className='datasetHeader-right flex-col'>
-          <div className='pt-5 ml-10 text-white font-semibold'>
-            {store.activeOptionSet?.name || '-'}
-          </div><div className='ml-10 text-white text-12 truncate'>
-            {store.activeOptionSet?.tag || (store.activeOptionSet && '-')}
+      {!loadingOptionSet && activeOptionSet?.type && (
+        <div className='flex min-h-52 m-16 rounded-8 datasetHeader'>
+          <span className='items-center ml-20 mt-10'>
+            <Icon
+              name={activeOptionSet?.name === '职位' ? 'folder_shared_white' : 'dataset_white'}
+              size={30}
+              type='light'
+            />
+          </span>
+          <div className='datasetHeader-right flex-col'>
+            <div className='pt-5 ml-10 text-white font-semibold'>
+              {activeOptionSet?.name || '-'}
+            </div>
+            <div className='ml-10 text-white text-12 truncate'>
+              {activeOptionSet?.tag || (activeOptionSet && '-')}
+            </div>
           </div>
         </div>
-      </div>
-      {store.loadingOptionSet && <Loading />}
-      {!store.loadingOptionSet && store.activeOptionSet?.type === 1 && <ListContent />}
-      {!store.loadingOptionSet && store.activeOptionSet?.type === 2 && <TreeContent />}
+      )}
+      {loadingOptionSet && <Loading />}
+      {!loadingOptionSet && activeOptionSet?.type === 1 && <ListContent />}
+      {!loadingOptionSet && activeOptionSet?.type === 2 && <TreeContent />}
+      {!loadingOptionSet && !activeOptionSet && showNoData && <NoDataContent type={queryType} />}
     </div>
   );
 }

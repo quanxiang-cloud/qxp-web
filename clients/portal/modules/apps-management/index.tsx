@@ -18,7 +18,7 @@ const MENU = [
   },
   {
     id: 'option-set',
-    icon: 'dataset',
+    icon: 'option-set',
     name: '选项集',
     url: '/apps/option-set',
     authority: 'dataset/read',
