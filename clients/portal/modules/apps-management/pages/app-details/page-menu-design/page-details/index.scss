@@ -1,9 +1,10 @@
 .app-page-build-nav {
-  margin-top: 72px;
   display: flex;
+  height: calc(100% - 82px);
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  column-gap: 56px;
+  row-gap: 32px;
   background-color: #fff;
 }
 
@@ -112,53 +113,4 @@
 .upload-tips {
   font-size: 12px;
   line-height: 20px;
-}
-
-.app-page-build-nav-bg {
-  background-color: #F8FAFC;
-  border-radius: 8px 8px 0px 0px;
-  height: 178px;
-  column-gap: 56px;
-}
-
-.app-page-build-nav-bg-form-before {
-  transition-duration: .3s;
-  background: url('/dist/images/form-light.svg') 100%;
-}
-
-.app-page-build-nav-bg-form-after {
-  transition-duration: .3s;
-  background: url('/dist/images/form-dark.svg') 100%;
-}
-
-.app-page-build-nav-bg-customize-before {
-  transition-duration: .3s;
-  background: url('/dist/images/customize-dark.svg') 100%;
-}
-
-.app-page-build-nav-bg-customize-after {
-  transition-duration: .3s;
-  background: url('/dist/images/customize-light.svg') 100%;
-}
-
-.app-page-build-nav-form {
-  border: 1px solid #E2E8F0;
-  box-sizing: border-box;
-  border-radius: 8px;
-  width: 238px;
-}
-
-.app-page-build-nav-form-before {
-  box-shadow: 0px 8px 24px 4px rgba(148, 163, 184, 0.25);
-}
-
-.app-page-build-nav-customize {
-  border: 1px solid #E2E8F0;
-  box-sizing: border-box;
-  border-radius: 8px;
-  width: 238px;
-
-  &:hover {
-    box-shadow: 0px 8px 24px 4px rgba(148, 163, 184, 0.25);
-  }
 }
