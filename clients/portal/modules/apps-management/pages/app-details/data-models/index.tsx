@@ -34,7 +34,7 @@ function DataModels(): JSX.Element {
         itemTitleClassName="text-12 font-semibold"
         desc="支持可视化的构建数据模型，包括数据模型字段以及模型之间外键关联。"
         actionClassName="text-12"
-        action={<a className="ease-linear underline">📌 &nbsp;快速开始？</a>}
+        // action={<a className="ease-linear underline">📌 &nbsp;快速开始？</a>}
         className="bg-gray-1000 p-16 header-background-image h-44 shadow-header rounded-t-12"
         descClassName="text-gray-400"
       />
