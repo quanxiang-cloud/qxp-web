@@ -1,7 +1,15 @@
 import httpClient, { httpClientGraphQL } from '@lib/http-client';
 
-export const createPerGroup = (appID: string, data: RightsCreate) => {
+export const createPerGroup = (appID: string, data: RightsCreate): Promise<{ id: string }> => {
   return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/create`, data);
+};
+
+export const copyPerGroup = (appID: string, data: {
+  groupID?: string;
+  name?: string;
+  description?: string;
+}): Promise<{ id: string }> => {
+  return httpClient(`/api/v1/form/${appID}/m/permission/duplicatePer`, data);
 };
 
 export const fetchRights = (appID: string) => {

@@ -62,6 +62,15 @@ function UsersAndPermissions(): JSX.Element {
       ),
     },
     {
+      key: 'copy',
+      label: (
+        <div className="flex items-center">
+          <Icon name="create" size={16} className="mr-8" />
+          <span className="font-normal">复制权限组</span>
+        </div>
+      ),
+    },
+    {
       key: 'delete',
       label: (
         <div className="flex items-center" >
@@ -151,8 +160,8 @@ function UsersAndPermissions(): JSX.Element {
                       menus={rights.types === 1 ? menus : menusTemp}
                       placement="bottom-end"
                       onMenuClick={(key) => {
-                        if (key === 'edit') {
-                          setModalType('edit');
+                        if (key === 'edit' || key === 'copy') {
+                          setModalType(key);
                           setShowEditRightModal(true);
                         }
                         if (key === 'delete') {
