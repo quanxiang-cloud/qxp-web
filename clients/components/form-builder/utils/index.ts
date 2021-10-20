@@ -2,7 +2,7 @@ import { get, has, merge } from 'lodash';
 import { customAlphabet } from 'nanoid';
 import { Curry } from 'ts-toolbelt/out/Function/Curry';
 import fp, {
-  pipe, entries, filter, fromPairs, every, equals, property, curry, map, cond, values,
+  pipe, entries, filter, fromPairs, every, equals, property, curry, map, cond, values, stubTrue,
 } from 'lodash/fp';
 
 import toast from '@lib/toast';
@@ -158,7 +158,9 @@ export const validateRegistryElement: Curry<ValidateRegistryElement<unknown>> = 
 );
 
 type PermissionToOverwrite = { display?: boolean; readOnly?: boolean };
-export function schemaPermissionTransformer<T extends ISchema>(schema: T, readOnly?: boolean): T {
+export function schemaPermissionTransformer<T extends ISchema>(
+  schema: T, readOnly?: boolean, workFlowType?: string,
+): T {
   function isLayoutSchema(field: ISchema): boolean {
     return !!get(field, 'x-internal.isLayoutComponent');
   }
@@ -173,7 +175,11 @@ export function schemaPermissionTransformer<T extends ISchema>(schema: T, readOn
       [isPermissionInvisible, permissionTransformer({ display: false }, field)],
       [isPermissionNormal, permissionTransformer({ display: true, readOnly: false }, field)],
     ]);
-    transformer(permission);
+    const conditions = cond([
+      [(type) => type === 'APPLY_PAGE', permissionTransformer({ display: true, readOnly: true }, field)],
+      [stubTrue, () => transformer(permission)],
+    ]);
+    conditions(workFlowType);
   };
 
   const fieldTransform = pipe(

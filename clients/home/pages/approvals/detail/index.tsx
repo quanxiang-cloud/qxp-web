@@ -114,6 +114,7 @@ function ApprovalDetail(): JSX.Element {
           schema={(task.formSchema.table || task.formSchema) || {}}
           onFormValueChange={setFormValues}
           readOnly={taskEnd}
+          workFlowType={type}
           usePermission
         />
       </div>
