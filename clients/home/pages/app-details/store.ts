@@ -16,6 +16,8 @@ class UserAppDetailsStore {
   @observable fetchSchemeLoading = true;
   @observable pageName = '';
   @observable authority = 0;
+  @observable showPageNav = true;
+  @observable isMouseControl = false;
   @observable pageList: NodeItem<PageInfo>[] = [];
   @observable customPageInfo: CustomPageInfo | null = null;
 
@@ -96,6 +98,26 @@ class UserAppDetailsStore {
     this.pageList = [];
     this.curPage = { id: '' };
     this.customPageInfo = null;
+  }
+
+  @action
+  openPageNav = (): void => {
+    this.showPageNav = true;
+  }
+
+  @action
+  closePageNav = (): void => {
+    this.showPageNav = false;
+  }
+
+  @action
+  openMouseControl = (): void => {
+    this.isMouseControl = true;
+  }
+
+  @action
+  closeMouseControl = (): void => {
+    this.isMouseControl = false;
   }
 }
 

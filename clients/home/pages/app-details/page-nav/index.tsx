@@ -1,26 +1,50 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { observer } from 'mobx-react';
+import cs from 'classnames';
 
+import HeaderNav from '@c/header-nav';
+import AppsSwitcher from '@c/apps-switcher';
+import Icon from '@c/icon';
 import AbsoluteCentered from '@c/absolute-centered';
 import PageLoading from '@c/page-loading';
 import TwoLevelMenu from '@c/two-level-menu';
 import { getQuery } from '@lib/utils';
+import { fetchUserList } from '@home/lib/api';
+import toast from '@lib/toast';
 
 import store from '../store';
+
 import './index.scss';
 
 function PageNav(): JSX.Element {
   const history = useHistory();
   const { pageID } = getQuery<{ pageID: string }>();
   const { appID } = useParams<{ appID: string }>();
+  const [appList, setAppList] = useState([]);
 
   useEffect(() => {
     store.setPageID(pageID);
   }, [pageID]);
 
+  useEffect(() => {
+    fetchUserList().then((res: any) => {
+      if (res.data.findIndex(({ id }: AppInfo) => id === appID) === -1) {
+        toast.error('应用不存在！2秒后跳转到首页');
+        setTimeout(() => {
+          history.replace('/');
+        }, 2000);
+      }
+      setAppList(res.data);
+    });
+  }, [appID]);
+
   const onSelect = (pageNode: PageInfo): void => {
     history.replace(`/apps/${appID}?/page_setting?pageID=${pageNode.id}`);
+  };
+
+  const handleChange = (newAppId: string): void => {
+    history.replace(location.pathname.replace(appID, newAppId));
   };
 
   if (store.pageListLoading) {
@@ -28,21 +52,62 @@ function PageNav(): JSX.Element {
   }
 
   return (
-    <div className='app-details-nav bg-gray-50 py-10'>
-      {store.pageList.length ? (
-        <TwoLevelMenu<PageInfo>
-          menus={store.pageList}
-          defaultSelected={store.curPage.id}
-          onSelect={(page) => onSelect(page.source as PageInfo)}
-        />
-      ) : (
-        <AbsoluteCentered>
-          <div className='app-no-data'>
-            <img src='/dist/images/empty-tips.svg' />
-            <span>暂无页面，请联系管理员</span>
-          </div>
-        </AbsoluteCentered>
-      )}
+    <div className='app-details-nav'>
+      <div className={cs('nav-content ease-in-out duration-300', {
+        collapse: !store.showPageNav,
+      })}>
+        <div className='nav-content-header h-56 overflow-hidden flex items-center mx-12'>
+          <HeaderNav {...{ name: '', icon: 'home_add_task', inside: true, url: '/' }} />
+          <span className='mr-16'>/</span>
+          <AppsSwitcher
+            hiddenStatus={true}
+            apps={appList}
+            currentAppID={appID}
+            onChange={handleChange}
+          />
+        </div>
+        <div className='app-page-tree-wrapper'>
+          {store.pageList.length ? (
+            <TwoLevelMenu<PageInfo>
+              menus={store.pageList}
+              defaultSelected={store.curPage.id}
+              onSelect={(page) => onSelect(page.source as PageInfo)}
+              className='overflow-hidden'
+            />
+          ) : (
+            <AbsoluteCentered>
+              <div className='app-no-data'>
+                <img src='/dist/images/empty-tips.svg' />
+                <span>暂无页面，请联系管理员</span>
+              </div>
+            </AbsoluteCentered>
+          )}
+        </div>
+      </div>
+      <div className='control-hidden-button text-blue-600'>
+        {store.showPageNav && !store.isMouseControl && (
+          <Icon
+            name='arrow-left'
+            className='hover:text-current'
+            size={48}
+            onClick={() => {
+              store.closePageNav();
+              store.openMouseControl();
+            }}
+          />
+        )}
+        {store.isMouseControl && (
+          <Icon
+            name='arrow-right'
+            className='hover:text-current'
+            size={48}
+            onClick={() => {
+              store.openPageNav();
+              store.closeMouseControl();
+            }}
+          />
+        )}
+      </div>
     </div>
   );
 }
