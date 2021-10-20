@@ -2,8 +2,6 @@ import React, { JSXElementConstructor } from 'react';
 import { isArray } from 'lodash';
 import { set, lensPath } from 'ramda';
 import { FormItem, IForm } from '@formily/antd';
-import { useCss } from 'react-use';
-import cs from 'classnames';
 
 import type { Column } from './index';
 import type { Layout } from '../convertor';
@@ -15,7 +13,6 @@ interface Props {
   onChange: (path: string, form: IForm) => (value: unknown) => void;
   form: IForm;
   blackList: string[];
-  formItemClassName: string;
   name?: string;
 }
 
@@ -27,25 +24,14 @@ const layoutColumnMap = {
 };
 
 export default function ColumnLayout({
-  layout, componentColumns, name, item, onChange, form, blackList, formItemClassName,
+  layout, componentColumns, name, item, onChange, form, blackList,
 }: Props): JSX.Element {
-  const itemClassName = useCss({
-    '.ant-form-item-label': {
-      display: 'flex',
-    },
-  });
+  const subTableColumnLayoutStyle = {
+    gridTemplateColumns: `repeat(${layoutColumnMap[layout]}, minmax(120px, 1fr))`,
+  };
 
   return (
-    <div
-      style={{
-        gridTemplateColumns: `repeat(${layoutColumnMap[layout]}, minmax(120px, 1fr))`,
-        display: 'grid',
-        alignItems: 'center',
-        padding: 10,
-        overflow: 'auto',
-        rowGap: 20,
-      }}
-    >
+    <div className="subtable-column-layout" style={subTableColumnLayoutStyle}>
       {componentColumns.map(({
         props: prs,
         dataIndex,
@@ -75,7 +61,11 @@ export default function ColumnLayout({
         }
 
         return (
-          <div key={dataIndex} style={{ minHeight: 32 }} className={cs(formItemClassName, itemClassName)}>
+          <div
+            key={dataIndex}
+            style={{ minHeight: 32 }}
+            className='subtable-column-default-item subtable-column-layout-item'
+          >
             <FormItem
               {...prs}
               title={title}

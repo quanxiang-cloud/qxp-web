@@ -42,13 +42,16 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          enum: [{
-            label: '单条',
-            value: 'single',
-          }, {
-            label: '多条',
-            value: 'multiple',
-          }],
+          enum: [
+            {
+              label: '单条',
+              value: 'single',
+            },
+            {
+              label: '多条',
+              value: 'multiple',
+            },
+          ],
           'x-linkages': [
             {
               type: 'value:visible',
@@ -66,19 +69,24 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          enum: [{
-            label: '默认',
-            value: 'default',
-          }, {
-            label: '一列',
-            value: 'one',
-          }, {
-            label: '两列',
-            value: 'two',
-          }, {
-            label: '三列',
-            value: 'three',
-          }],
+          enum: [
+            {
+              label: '默认',
+              value: 'default',
+            },
+            {
+              label: '一列',
+              value: 'one',
+            },
+            {
+              label: '两列',
+              value: 'two',
+            },
+            {
+              label: '三列',
+              value: 'three',
+            },
+          ],
           'x-index': 3,
         },
         displayModifier: {

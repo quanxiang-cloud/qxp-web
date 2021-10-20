@@ -16,6 +16,8 @@ import { getDefaultValue, schemaRulesTransform } from './utils';
 import SubTableList from './list';
 import { components } from './components';
 
+import './style.scss';
+
 export type Rules = (ValidatePatternRules | ValidatePatternRules[]) & Rule[];
 export type Column = {
   title: string;
