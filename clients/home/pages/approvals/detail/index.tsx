@@ -175,7 +175,7 @@ function ApprovalDetail(): JSX.Element {
           }
 
         </Panel>
-        <Panel className="approval-detail-tab w-400">
+        <Panel className="approval-detail-tab w-400 opacity-95">
           <Tab
             items={[
               {
