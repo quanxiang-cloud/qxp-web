@@ -31,9 +31,9 @@ function Button(
       })}
       disabled={forbidden}
     >
-      {iconName && (
+      {(iconName || loading) && (
         <Icon
-          name={loading ? 'loading' : iconName}
+          name={loading ? 'refresh' : iconName || 'refresh'}
           type={modifier === 'primary' ? 'light' : 'dark'}
           size={20}
           className={cs('fill-current text-inherit mr-8', {
@@ -42,7 +42,7 @@ function Button(
           })}
         />
       )}
-      {children}
+      {!loading && children}
     </button>
   );
 }
