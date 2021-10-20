@@ -158,9 +158,9 @@ export default function Variables(): JSX.Element {
           titleClassName="text-h5"
           descClassName="text-caption mt-1"
           desc=""
-          action={(
-            <div className="text-underline text-body2 cursor-pointer">如何使用变量</div>
-          )}
+          // action={(
+          //   <div className="text-underline text-body2 cursor-pointer">如何使用变量</div>
+          // )}
         />
         <Card className="self-center rounded-12 overflow-hidden px-24 py-16 mb-100 w-full max-w-%90">
           <div className="w-full">
