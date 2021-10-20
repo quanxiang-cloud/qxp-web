@@ -3,7 +3,6 @@ import { useHistory, useParams } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import cs from 'classnames';
 
-import HeaderNav from '@c/header-nav';
 import AppsSwitcher from '@c/apps-switcher';
 import Icon from '@c/icon';
 import AbsoluteCentered from '@c/absolute-centered';
@@ -56,9 +55,14 @@ function PageNav(): JSX.Element {
       <div className={cs('nav-content ease-in-out duration-300', {
         collapse: !store.showPageNav,
       })}>
-        <div className='nav-content-header h-56 overflow-hidden flex items-center mx-12'>
-          <HeaderNav {...{ name: '', icon: 'home_add_task', inside: true, url: '/' }} />
-          <span className='mr-16'>/</span>
+        <div className='nav-content-header h-52 overflow-hidden flex items-center mx-12'>
+          <div
+            onClick={() => history.push('/')}
+            className='app-header-icon text-gray-400 corner-8-8-8-2'
+          >
+            <Icon size={21} className='m-6 text-current' name='home_qxp'/>
+          </div>
+          <span className='mx-8 text-14'>/</span>
           <AppsSwitcher
             hiddenStatus={true}
             apps={appList}
