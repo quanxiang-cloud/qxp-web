@@ -5,6 +5,7 @@
 
 ::-webkit-scrollbar {
   width: var(--scrollbar-size);
+  height: var(--scrollbar-size);
 }
 
 ::-webkit-scrollbar-thumb {
