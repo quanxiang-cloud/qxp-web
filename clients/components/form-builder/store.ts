@@ -172,6 +172,7 @@ export default class FormBuilderStore {
       set(cloneField, 'x-index', xIndex + 1);
       this.flattenFields.splice(xIndex, 0, cloneField);
       this.flattenFields = updateFieldIndex(this.flattenFields);
+      this.hasEdit = true;
     }
   }
 
@@ -186,6 +187,7 @@ export default class FormBuilderStore {
     this.flattenFields.splice(index, 0, newField as any);
     this.flattenFields = updateFieldIndex(this.flattenFields);
     this.setActiveFieldKey(getFieldId(newField as ISchema));
+    this.hasEdit = true;
   }
 
   @action update({
