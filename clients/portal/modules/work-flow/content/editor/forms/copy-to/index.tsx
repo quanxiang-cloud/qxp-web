@@ -7,6 +7,7 @@ import SaveButtonGroup from '@flow/content/editor/components/_common/action-save
 
 import { CCData } from '../../type';
 import PersonPicker from '../../components/_common/person-picker';
+import { approvePersonEncoder } from '../../components/_common/utils';
 
 type Props = {
   onSubmit: (v: CCData) => void;
@@ -17,6 +18,8 @@ type Props = {
 
 function CopyTo({ defaultValue, onSubmit, onCancel, onChange }: Props): JSX.Element {
   const { handleSubmit, control, reset, watch } = useForm();
+  const approvePersons = approvePersonEncoder(defaultValue);
+  const defaultValueTemp = { approvePersons };
 
   const allFields = watch(['approvePersons']);
   const previousFields = usePrevious(allFields);
@@ -28,7 +31,7 @@ function CopyTo({ defaultValue, onSubmit, onCancel, onChange }: Props): JSX.Elem
   }, [allFields]);
 
   useEffect(() => {
-    reset(defaultValue);
+    reset(defaultValueTemp);
   }, []);
 
   const handleSave = (data: CCData): void => {
@@ -41,7 +44,7 @@ function CopyTo({ defaultValue, onSubmit, onCancel, onChange }: Props): JSX.Elem
         name='approvePersons'
         control={control}
         rules={{ required: '请选择接收对象' }}
-        defaultValue={defaultValue.approvePersons}
+        defaultValue={approvePersons}
         render={({ field }) => {
           return (
             <PersonPicker
