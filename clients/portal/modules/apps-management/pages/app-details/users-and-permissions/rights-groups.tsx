@@ -121,9 +121,9 @@ function RightsGroups(): JSX.Element {
     return (
       <div className='h-full flex border border-b-0'>
         <div className='app-nav h-full menu-nav'>
-          <div className='text-14 text-gray-400 m-16'>选择菜单</div>
+          <div className='text-12 text-gray-600 font-semibold m-16'>选择菜单</div>
           <Search
-            className="search-menu mx-16 ml-18 mb-8"
+            className="mx-8 mb-8"
             placeholder="搜索菜单名称..."
             onChange={store.changeMenuKeyword}
           />
@@ -144,7 +144,7 @@ function RightsGroups(): JSX.Element {
         )}
         {!!store.menuList.length && (
           <div className='h-full flex-1 overflow-hidden flex flex-col'>
-            <div className='conf-title text-14'>
+            <div className='conf-title text-12'>
               <div className='text-gray-400 font-semibold'>
                 配置权限：<span className='text-gray-900'>{store.currentPage.name}</span>
               </div>
@@ -159,7 +159,9 @@ function RightsGroups(): JSX.Element {
                       onClick={() => setOpenSet(true)}
                       modifier='primary'
                       iconName="settings"
-                      className='mr-16'>
+                      iconSize={16}
+                      textClassName="text-12 leading-20"
+                      className='mr-16 px-16 py-6'>
                       配置权限
                     </Button>)
                   }
@@ -193,10 +195,12 @@ function RightsGroups(): JSX.Element {
                   <Tab
                     className='mb-16'
                     activeTab={activeTab}
+                    labelClassName="tab-label-item"
                     size='small'
                     onChange={(key: string) => setActiveTab(key)}
                     tabs={tabItem}
                   />
+                  <div className="w-full border-t-1 h-1 -mt-16 mb-16"></div>
                   <Authorized
                     abled={openset}
                     authorized={store.perData.authority}

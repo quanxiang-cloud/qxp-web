@@ -96,7 +96,6 @@ function AssociatedPerson(): JSX.Element {
       {
         Header: '姓名',
         id: 'userName',
-        fixed: true,
         width: 120,
         accessor: (user: any) => (
           <div className='flex'>
@@ -148,37 +147,38 @@ function AssociatedPerson(): JSX.Element {
   return (
     <>
       <div className='h-full flex flex-col'>
-        <div className='flex items-center mx-10 mb-16'>
+        <div className='flex items-center justify-between mb-8 access-btn'>
+          <div className="flex items-center">
+            <Button
+              modifier="primary"
+              className="ml-2"
+              iconName="link"
+              onClick={OnClickBind}
+            >
+                关联员工与部门
+            </Button>
+            { !!selectUser.length && (
+              <Button
+                modifier="primary"
+                className="ml-16"
+                iconName="delete"
+                onClick={() => handleBatchRemov(selectUser)}
+              >
+                批量移除
+              </Button>
+            )}
+          </div>
           <Switch
-            className=""
             value={1}
             options={[{
-              label: '员工',
+              label: '按员工',
               value: 1,
             }, {
-              label: '部门',
+              label: '按部门',
               value: 2,
             }]}
             onChange={setShowBindType}
           />
-          <Button
-            modifier="primary"
-            className="ml-2"
-            iconName="link"
-            onClick={OnClickBind}
-          >
-              关联员工与部门
-          </Button>
-          { !!selectUser.length && (
-            <Button
-              modifier="primary"
-              className="ml-16"
-              iconName="delete"
-              onClick={() => handleBatchRemov(selectUser)}
-            >
-              批量移除
-            </Button>
-          )}
         </div>
         <div className='flex-1'>
           <Table
@@ -186,7 +186,7 @@ function AssociatedPerson(): JSX.Element {
             showCheckbox
             rowKey="id"
             data={showBindType === 1 ? store.UserDetailList : userAndDept.deptList}
-            className="rounded-bl-none rounded-br-none"
+            className="rounded-bl-none rounded-br-none text-12"
             columns={columns}
             emptyTips={(
               <div className='flex flex-col justify-center items-center text-12 text-gray-400'>

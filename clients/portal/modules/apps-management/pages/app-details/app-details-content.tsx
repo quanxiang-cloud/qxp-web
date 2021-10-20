@@ -10,6 +10,9 @@ import PageMenuDesign from './page-menu-design';
 import UsersAndPermissions from './users-and-permissions';
 import ApiDocument from './api-documentation';
 import WorkFlows from '../../work-flow-list';
+import AppControl from './app-control';
+
+import './index.scss';
 
 import './index.scss';
 
@@ -26,6 +29,7 @@ function AppDetailsContent(): JSX.Element {
         <Route exact path='/apps/details/:appID/base_info' component={AppInfo} />
         <Route exact path='/apps/details/:appID/app_permission' component={UsersAndPermissions} />
         <Route exact path='/apps/details/:appID/app_manager' component={AppAdmin} />
+        <Route exact path='/apps/details/:appID/app_control' component={AppControl} />
       </div>
     </div>
   );

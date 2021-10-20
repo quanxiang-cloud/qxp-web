@@ -21,12 +21,27 @@
   align-items: center;
 
   &:hover {
-    color: var(--blue-600);
-    background-color: var(--gray-100);
+    background-color: #FFFFFF;
+  }
+}
+
+.nav-background-image {
+  position: relative;
+
+  & {
+    background-color: #F8FAFC !important;
+    background-image: url('/dist/images/maskHeaderBackgroundImage.png');
+    background-position: top right;
+    background-size: contain;
+    background-repeat: no-repeat;
   }
 }
 
 .tab-wrapper {
+  .tab-content {
+    padding: 0;
+  }
+
   .nav-background-image {
     position: relative;
 

@@ -6,7 +6,6 @@
   align-items: center;
   padding-left: 16px;
   padding-right: 16px;
-  height: 32px;
   line-height: 30px;
 
   font-weight: 400;
@@ -65,24 +64,49 @@
 .icon-btn {
   padding-left: 0;
   padding-right: 0;
-  width: 32px;
   border: 1px solid var(--gray-600);
 }
 
-.icon-btn:hover:not(.btn--forbidden) {
-  border-color: var(--gray-800);
+.button-bg-light { 
+  border-color: var(--gray-700);
+  background-color: var(--gray-700);
 }
 
-.icon-btn:hover:not(.btn--forbidden) svg {
+.button-bg-light:hover:not(.btn--forbidden) {
+  border-color: var(--gray-600);
+  background-color: var(--gray-600);
+}
+
+.button-bg-light:active:not(.btn--forbidden) {
+  border-color: var(--gray-800);
+  background-color: var(--gray-800);
+}
+
+.button-bg-dark {
+  border-color: var(--gray-600);
+  background-color: #FFF;
+}
+
+.button-bg-dark svg {
+  color: var(--gray-600);
+}
+
+.button-bg-dark:hover:not(.btn--forbidden) {
+  border-color: var(--gray-800);
+  background-color: #FFF;
+}
+
+.button-bg-dark:hover:not(.btn--forbidden) svg {
   color: var(--gray-800);
 }
 
-.icon-btn:hover:active {
-  background-color: var(--gray-900);
+.button-bg-dark:active:not(.btn--forbidden) {
+  border-color: var(--gray-800);
+  background-color: var(--gray-800);
 }
 
-.icon-btn:hover:active svg {
-  color: white;
+.button-bg-dark:active:not(.btn--forbidden) svg {
+  color: #FFF;
 }
 
 .header-nav-btn-icon {

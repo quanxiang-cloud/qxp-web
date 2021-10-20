@@ -179,7 +179,6 @@ function ApprovalDetail(): JSX.Element {
         <Panel className="approval-detail-tab w-400 opacity-95">
           <Tab
             style={{ backgroundColor: 'var(--gray-100)' }}
-            navsStyles={{ backgroundColor: 'var(--gray-100)' }}
             items={[
               {
                 id: 'history',
