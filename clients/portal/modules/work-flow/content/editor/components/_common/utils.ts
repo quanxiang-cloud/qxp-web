@@ -1,4 +1,4 @@
-import { ApprovePerson, BasicNodeConfig } from '../../type';
+import { ApprovePerson, BasicNodeConfig, BusinessData } from '../../type';
 
 export function getRule(basicConfig: BasicNodeConfig): string {
   return `常规填写; ${basicConfig.multiplePersonWay === 'or' ? '任填' : '全填'}`;
@@ -22,4 +22,23 @@ export function getPerson(
     ...approvePerson.users,
     ...approvePerson.departments,
   ].map((v) => v.ownerName || v.departmentName).join('; ');
+}
+
+export function approvePersonEncoder(businessData: BusinessData): ApprovePerson {
+  if ('approvePersons' in businessData) return businessData.approvePersons;
+  let users = [];
+  if ('recivers' in businessData) {
+    users = JSON.parse(JSON.stringify(
+      (businessData as any ).recivers).replace('name', 'ownerName'),
+    );
+  }
+
+  const approvePersons = {
+    type: (businessData as any ).type,
+    users,
+    departments: [],
+    positions: [],
+    fields: [],
+  };
+  return approvePersons;
 }
