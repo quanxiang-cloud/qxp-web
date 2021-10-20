@@ -147,10 +147,6 @@ export function departmentToTreeNode(department: Department): TreeNode<Departmen
   };
 }
 
-export const last = <T>(arg: T[]): T => {
-  return arg[arg.length - 1];
-};
-
 export function isPassword(pwd: string): boolean {
   // eslint-disable-next-line
   return /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&?*.`\(\)\-\+\[\]\|\"\'\_\,\、])[\da-zA-Z~!@#$%^&?*.`\(\)\-\+\[\]\|\"\'\_\,\、]{8,}$/.test(pwd);

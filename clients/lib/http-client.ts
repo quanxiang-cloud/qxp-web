@@ -1,47 +1,48 @@
 import qs from 'qs';
+
 import { CustomPageInfo, SchemaPageInfo } from '@portal/modules/apps-management/pages/app-details/type';
 import { ESParameter, toEs } from '@c/data-filter/utils';
 import schemaToFields from '@lib/schema-convert';
 
 let alreadyAlertUnauthorizedError = false;
 
-function httpClient<TData>(path: string, body?: unknown, additionalHeaders?: HeadersInit): Promise<TData> {
-  const headers = {
-    'X-Proxy': 'API',
-    'Content-Type': 'application/json',
-    ...additionalHeaders,
-  };
-
-  return fetch(path, {
+async function httpClient<TData, TBody = unknown>(
+  path: string, body?: TBody, additionalHeaders?: HeadersInit,
+): Promise<TData> {
+  const response = await fetch(path, {
     method: 'POST',
     body: JSON.stringify(body || {}),
-    headers: headers,
-  }).then((response) => {
-    if (response.status === 401) {
-      if (!alreadyAlertUnauthorizedError) {
-        alreadyAlertUnauthorizedError = true;
-        alert('当前会话已失效，请重新登录!');
-      }
-
-      window.location.reload();
-      return Promise.reject(new Error('当前会话已失效，请重新登录!'));
-    }
-    if ([404, 500].includes(response.status)) {
-      return Promise.reject(new Error('请求失败!'));
-    }
-    return response.json();
-  }).then((resp) => {
-    const { code, msg, data } = resp;
-    if (code !== 0) {
-      const e = new Error(msg);
-      if (data) {
-        Object.assign(e, { data });
-      }
-      return Promise.reject(e);
-    }
-
-    return data as TData;
+    headers: {
+      ...additionalHeaders,
+      'X-Proxy': 'API',
+      'Content-Type': 'application/json',
+    },
   });
+
+  if (response.status === 401) {
+    if (!alreadyAlertUnauthorizedError) {
+      alreadyAlertUnauthorizedError = true;
+      alert('当前会话已失效，请重新登录!');
+    }
+
+    window.location.reload();
+    return Promise.reject(new Error('当前会话已失效，请重新登录!'));
+  }
+
+  if ([404, 500].includes(response.status)) {
+    return Promise.reject(new Error('请求失败!'));
+  }
+
+  const { code, msg, data } = await response.json();
+  if (code !== 0) {
+    const e = new Error(msg);
+    if (data) {
+      Object.assign(e, { data });
+    }
+    return Promise.reject(e);
+  }
+
+  return data as TData;
 }
 
 type FormDataRequestQueryDeleteParams = {
@@ -285,7 +286,7 @@ export function saveTableSchema(
   );
 }
 
-export function httpClientGraphQL<TData>(
+export async function httpClientGraphQL<TData>(
   path: string,
   params?: unknown,
   additionalHeaders?: HeadersInit,
@@ -298,31 +299,28 @@ export function httpClientGraphQL<TData>(
 
   const _path = params ? `${path}?${qs.stringify(params)}` : path;
 
-  return fetch(_path, {
+  const response = await fetch(_path, {
     method: 'GET',
     headers: headers,
-  }).then((response) => {
-    if (response.status === 401) {
-      alert('当前会话已失效，请重新登录!');
-      window.location.reload();
-      return Promise.reject(new Error('当前会话已失效，请重新登录!'));
-    }
-    if (response.status === 500) {
-      return Promise.reject(new Error('请求失败!'));
-    }
-    return response.json();
-  }).then((resp) => {
-    const { code, msg, data } = resp;
-    if (code !== 0) {
-      const e = new Error(msg);
-      if (data) {
-        Object.assign(e, { data });
-      }
-      return Promise.reject(e);
-    }
-
-    return data as TData;
   });
+  if (response.status === 401) {
+    alert('当前会话已失效，请重新登录!');
+    window.location.reload();
+    return Promise.reject(new Error('当前会话已失效，请重新登录!'));
+  }
+  if (response.status === 500) {
+    return Promise.reject(new Error('请求失败!'));
+  }
+  const resp = await response.json();
+  const { code, msg, data } = resp;
+  if (code !== 0) {
+    const e = new Error(msg);
+    if (data) {
+      Object.assign(e, { data });
+    }
+    return Promise.reject(e);
+  }
+  return data as TData;
 }
 
 export default httpClient;

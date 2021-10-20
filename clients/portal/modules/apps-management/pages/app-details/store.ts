@@ -1,7 +1,7 @@
 import { omit, pick } from 'lodash';
 import { History } from 'history';
+import { observable, action, toJS, reaction, IReactionDisposer, runInAction } from 'mobx';
 import { mutateTree, TreeData, TreeItem } from '@atlaskit/tree';
-import { observable, action, toJS, reaction, IReactionDisposer } from 'mobx';
 
 import toast from '@lib/toast';
 import { buildAppPagesTreeData } from '@lib/utils';
@@ -83,7 +83,6 @@ class AppDetailsStore {
       if (!this.pageID || this.pageListLoading) {
         return '';
       }
-
       return this.pageID;
     }, this.setCurPage);
   }
@@ -126,11 +125,15 @@ class AppDetailsStore {
     this.loading = true;
     this.appID = appID;
     return fetchAppDetails(appID).then((res: any) => {
-      this.appDetails = res || {};
-      this.lastUpdateTime = res.updateTime;
-      this.loading = false;
+      runInAction(() => {
+        this.appDetails = res || {};
+        this.lastUpdateTime = res.updateTime;
+        this.loading = false;
+      });
     }).catch(() => {
-      this.loading = false;
+      runInAction(() => {
+        this.loading = false;
+      });
     });
   }
 
@@ -345,7 +348,9 @@ class AppDetailsStore {
       }).catch(() => {
         toast.error('获取表单信息失败');
       }).finally(() => {
-        this.fetchSchemeLoading = false;
+        runInAction(() => {
+          this.fetchSchemeLoading = false;
+        });
       });
     }
 
@@ -408,9 +413,11 @@ class AppDetailsStore {
     this.appID = appID;
     this.pageListLoading = true;
     fetchPageList(appID).then((res: any) => {
-      this.pageInitList = res.menu;
-      this.pagesTreeData = buildAppPagesTreeData(res.menu);
-      this.pageListLoading = false;
+      runInAction(() => {
+        this.pageInitList = res.menu;
+        this.pagesTreeData = buildAppPagesTreeData(res.menu);
+        this.pageListLoading = false;
+      });
     });
   }
 
