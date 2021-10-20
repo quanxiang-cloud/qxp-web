@@ -9,6 +9,7 @@ import {
   isPermissionHiddenAble,
   calculateFieldPermission,
   isPermissionEditable,
+  isPermissionReadOnly,
 } from '@c/form-builder/utils';
 import {
   FieldPermission, NewFieldPermission, CustomFieldPermission, SystemFieldPermission, NewFieldPermissionValue,
@@ -37,7 +38,7 @@ export function fieldPermissionEncoder(value: FieldPermission): NewFieldPermissi
     return acc;
   }, {});
   const systemEncoded = system.reduce((acc, cur) => {
-    const permission = calculateFieldPermission(false, true, false, cur.read);
+    const permission = calculateFieldPermission(false, false, false, cur.read);
     Object.assign(acc, {
       [cur.id]: {
         fieldName: cur.fieldName,
@@ -68,6 +69,7 @@ function fieldPermissionReducer(acc: FieldPermission, cur: FieldPermissionMergeT
     write: cur.write,
     invisible: cur.invisible,
     editable: cur.editable,
+    readonly: !cur.editable && !cur.invisible,
     initialValue: cur.initialValue,
     submitValue: cur.submitValue,
     id: cur.id,
@@ -77,19 +79,14 @@ function fieldPermissionReducer(acc: FieldPermission, cur: FieldPermissionMergeT
   return acc;
 }
 
-function getPermission(permission?: PERMISSION): PERMISSION_TYPE {
-  if (!permission) {
-    return {
-      read: false, write: false, invisible: false, editable: false,
-    };
-  }
-
+function getPermission(permission: PERMISSION): PERMISSION_TYPE {
   const readable = isPermissionReadable(permission);
   return {
     read: readable,
     write: readable ? isPermissionWriteable(permission) : false,
     invisible: readable ? isPermissionHiddenAble(permission) : false,
     editable: readable ? isPermissionEditable(permission) : false,
+    readonly: readable ? isPermissionReadOnly(permission) : false,
   };
 }
 
@@ -124,15 +121,16 @@ export function fieldPermissionDecoder(
   );
   const fields = convertor(value as NewFieldPermission) || [];
 
-  return fields.reduce(fieldPermissionReducer, { custom: [], system: [] });
+  return fields.reduce(fieldPermissionReducer, { system: [], custom: [] });
 }
 
 export function getInitFieldPermissionFromSchema(schema: ISchema): NewFieldPermission {
   const fields = schemaToArray(schema, { parseSubTable: true, keepLayout: true })
     .map((schema): FieldPermissionMergeType => {
+      const permission = schema['x-internal']?.permission || 0;
       const fieldId = schema['x-internal']?.fieldId;
       return {
-        ...getPermission(),
+        ...getPermission(permission),
         isSystem: INTERNAL_FIELD_NAMES.includes(fieldId || ''),
         fieldName: schema.title as string,
         id: fieldId || '',

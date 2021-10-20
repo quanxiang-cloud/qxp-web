@@ -43,7 +43,7 @@ class UserAndPerStore {
   @observable currentRights: Rights = { id: '' };
   @observable Fields: SchemaFieldItem[] = [];
   @observable UserDetailList: [] =[]
-  @observable PerData: PerData = {
+  @observable perData: PerData = {
     conditions: {},
     schema: null,
     authority: 0,
@@ -79,6 +79,7 @@ class UserAndPerStore {
         `${this.currentRights.name}  权限组删除成功`,
       );
       this.rightsList = delAfter;
+      this.rightsGroupID = '';
       this.tempRightList = deepClone(this.rightsList);
     });
   }
@@ -95,7 +96,7 @@ class UserAndPerStore {
   }
 
   @action
-  fetchRights = (rightId: string): void => {
+  fetchRights = (): void => {
     if (!this.appID) {
       return;
     }
@@ -104,13 +105,6 @@ class UserAndPerStore {
       const { list = [] } = res || {};
       this.rightsList = list;
       this.tempRightList = deepClone(this.rightsList);
-      if (rightId) {
-        this.currentRights = this.rightsList.find((rights) => rights.id === rightId) || INIT_CURRENT_RIGHTS;
-        this.rightsGroupID = rightId;
-        return;
-      }
-      this.currentRights = this.rightsList[0] || INIT_CURRENT_RIGHTS;
-      this.rightsGroupID = list[0]?.id;
     }).catch((err) => {
       toast.error(err);
     });
@@ -198,29 +192,6 @@ class UserAndPerStore {
     } else {
       this.menuList = deepClone(this.tempMenuList);
     }
-    this.findIniPage();
-  }
-
-  @action
-  findIniPage = (): void => {
-    if (this.menuList.length) {
-      let iniPageID = '';
-      for (const menu of this.menuList) {
-        if (menu.menuType !== 1) {
-          iniPageID = menu.id;
-          break;
-        }
-        if (menu.child && menu.child.length) {
-          iniPageID = menu.child[0].id;
-          break;
-        }
-      }
-      this.currentPage = this.perFormList.find((perForm) => perForm.id === iniPageID) as PerPageInfo;
-      this.currentPageGroup = this.menuList.find((menu) =>
-        menu.child && menu.child.some((page) => page.id === this.currentPage.id),
-      );
-      this.getPageSchema();
-    }
   }
 
   @action
@@ -259,7 +230,6 @@ class UserAndPerStore {
           const perCustomPage = pages.find((perCustomID) => perCustomID === page.id);
           return { ...page, authority: perCustomPage ? 1 : 0 };
         });
-        this.findIniPage();
       }
       this.perFormLoading = false;
     }).catch(() => {
@@ -281,7 +251,7 @@ class UserAndPerStore {
           this.Fields = (schemaToFields(schema));
           const { dataAccess, filter, opt } = perDataRes as any;
 
-          this.PerData = ({
+          this.perData = ({
             conditions: dataAccess ? dataAccess.conditions : {},
             schema: filter ? filter.schema : null,
             authority: opt ? opt.authority : 0,
@@ -297,7 +267,7 @@ class UserAndPerStore {
       });
       return;
     }
-    this.PerData = {
+    this.perData = {
       conditions: {},
       schema: null,
       authority: this.currentRights.types === 1 ? 1 : this.currentPage.authority,
@@ -334,7 +304,7 @@ class UserAndPerStore {
   deleteFormPer = (formID: string, perGroupID: string): Promise<void> => {
     return deleteFormPer(this.appID, { formID, perGroupID }).then(() => {
       this.updatePerFormList({ id: formID, authority: 0 }, perGroupID);
-      toast.success('清除成功');
+      toast.success('清除权限成功');
     });
   }
 

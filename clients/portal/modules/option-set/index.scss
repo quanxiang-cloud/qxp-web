@@ -1,22 +1,52 @@
-.-ml-184 {
-  margin-left: -184px;
+.option-set {
+  &-item {
+    width: 16.5vw;
+    min-width: 220px;
+  }
+
+  &-form-add {
+    margin-left: -184px;
+  }
+
+  &-no-data {
+    display: flex;
+    margin-top: 72px;
+    margin-left: 58px;
+
+    &--content {
+      width: 294px;
+    }
+
+    &--title {
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--gray-900);
+    }
+
+    &--des {
+      margin-bottom: 16px;
+      color: var(--gray-600);
+    }
+  }
+
+  &-add-alert {
+    height: 37px;
+
+    &:hover {
+      color: var(--blue-600);
+      background-color: var(--blue-100);
+    }
+  }
+
+  &-add-item {
+    height: 37px;
+  }
+
 }
 
-.h-37 {
-  height: 37px;
-}
-
-.h-38 {
-  height: 38px;
-}
-
-.text-null {
-  font-size: 30px;
-}
-
-.form-add-dataset {
+.form-add-dataset.is-horizon-layout {
   > .field .label {
-    width: 25% !important;
+    width: 25%;
   }
 }
 
@@ -101,7 +131,7 @@
   background-position: top right;
   background-size: contain;
   background-repeat: no-repeat;
-  background-image: url(/dist/images/datasetHeaderBg.png);
+  background-image: url(/dist/images/datasetHeaderBg.svg);
   box-shadow: 0px 8px 24px 8px rgba(245, 158, 11, 0.15);
 
   &-right {
@@ -130,22 +160,34 @@
   margin-left: 25%;
 }
 
-.dataset-names--toolbar > .border-none input[name='search'] {
-  width: 80px !important;
-}
-
-#option_set_name, #option_set_tag, .input-default, .textarea-default {
+#option_set_name, #option_set_tag, .option-set > .input-default, .option-set > .textarea-default {
   caret-color: var(--blue-600);
 }
 
-#option_set_name:focus, #option_set_tag:focus {
+.control > input.input:not([readonly]):not([disabled]):focus, textarea.textarea:not([readonly]):not([disabled]):focus#option_set_name {
   border-color: var(--blue-600);
 }
 
-.form-add-dataset > .field .control input.is-danger {
-  border-color: #ca2621 !important;
+.control > input.input:not([readonly]):not([disabled]):focus, textarea.textarea:not([readonly]):not([disabled]):focus#option_set_tag {
+  border-color: var(--blue-600);
+}
+
+.form-add-dataset.is-horizon-layout > .field .control input.is-danger#option_set_name {
+  border-color: #ca2621;
+}
+
+.form-add-dataset.is-horizon-layout > .field .control input.is-danger#option_set_tag {
+  border-color: #ca2621;
 }
 
 .option-set-popper > .input-default:focus, .textarea-default:focus {
-  border-color: var(--blue-600) !important;
+  border-color: var(--blue-600);
+}
+
+.option-set-popper > textarea.textarea:not([readonly]):not([disabled]):focus {
+  border-color: var(--blue-600);
+}
+
+.option-set-popper > input.input:not([readonly]):not([disabled]):focus, textarea.textarea:not([readonly]):not([disabled]):focus {
+  border-color: var(--blue-600);
 }

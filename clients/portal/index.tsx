@@ -4,6 +4,8 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider as MobxProvider } from 'mobx-react';
 import { LocaleProvider } from '@QCFE/lego-ui';
+import { ConfigProvider } from 'antd';
+import zhCN from 'antd/lib/locale/zh_CN';
 
 // ensure web socket connection
 // todo how about on app-manager page?
@@ -41,11 +43,13 @@ const queryClient = new QueryClient({
 ReactDOM.render(
   <MobxProvider {...stores}>
     <QueryClientProvider client={queryClient}>
-      <LocaleProvider locales={locales}>
-        <Router>
-          <App/>
-        </Router>
-      </LocaleProvider>
+      <ConfigProvider locale={zhCN}>
+        <LocaleProvider locales={locales}>
+          <Router>
+            <App/>
+          </Router>
+        </LocaleProvider>
+      </ConfigProvider>
     </QueryClientProvider>
   </MobxProvider>,
   document.getElementById('root'),

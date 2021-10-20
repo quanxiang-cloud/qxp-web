@@ -14,6 +14,7 @@ import SaveButtonGroup from '@flow/content/editor/components/_common/action-save
 
 import { WebMessageData } from '../../type';
 import PersonPicker from '../../components/_common/person-picker';
+import { approvePersonEncoder } from '../../components/_common/utils';
 
 import './index.css';
 
@@ -28,11 +29,18 @@ const Input = formFieldWrap({ field: <input className='input' /> });
 const FieldRadio = formFieldWrap({ FieldFC: Radio.Group });
 
 function WebMessage({ defaultValue, onSubmit, onCancel, onChange }: Props): JSX.Element {
+  const approvePersons = approvePersonEncoder(defaultValue);
+  const defaultValueEncode = {
+    approvePersons,
+    sort: defaultValue.sort,
+    content: defaultValue.content,
+    title: defaultValue.title,
+  };
   const { register, handleSubmit, control, reset, formState: { errors }, watch } = useForm();
-  const [editorCont, setEditorCont] = useState(defaultValue?.content ?
+  const [editorCont, setEditorCont] = useState(defaultValueEncode?.content ?
     EditorState.createWithContent(
       ContentState.createFromBlockArray(
-        htmlToDraft(defaultValue.content).contentBlocks),
+        htmlToDraft(defaultValueEncode.content).contentBlocks),
     ) : EditorState.createEmpty());
 
   const allFields = watch(['content', 'sort', 'title', 'approvePersons']);
@@ -67,7 +75,7 @@ function WebMessage({ defaultValue, onSubmit, onCancel, onChange }: Props): JSX.
   };
 
   useEffect(() => {
-    reset(defaultValue);
+    reset(defaultValueEncode);
   }, []);
 
   return (
@@ -76,7 +84,7 @@ function WebMessage({ defaultValue, onSubmit, onCancel, onChange }: Props): JSX.
         name='approvePersons'
         control={control}
         rules={{ required: '请选择接收对象' }}
-        defaultValue={defaultValue.approvePersons}
+        defaultValue={approvePersons}
         render={({ field }) => {
           return (
             <PersonPicker
@@ -110,7 +118,7 @@ function WebMessage({ defaultValue, onSubmit, onCancel, onChange }: Props): JSX.
       />
       <Input
         label={<><span className='text-red-600'>*</span>标题</>}
-        defaultValue={defaultValue?.title || ''}
+        defaultValue={defaultValueEncode?.title || ''}
         placeholder='请输入'
         error={errors.title}
         register={register('title', { required: '请输入标题' })}

@@ -1,10 +1,9 @@
 .app-details-nav {
   position: relative;
-  background-color: #fff;
   min-width: 236px;
   max-width: 236px;
   border-right: 1px solid var(--gray-300);
-  overflow: auto;
+  height: 100%;
 }
 
 .app-page-add-group {
@@ -22,12 +21,6 @@
 
   &:hover {
     color: var(--blue-600);
-  }
-}
-
-.app-page-tree-wrapper {
-  .tree-node {
-    padding: 0 16px;
   }
 }
 
