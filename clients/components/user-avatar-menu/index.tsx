@@ -50,13 +50,13 @@ export default function UserAvatarMenu({ className }: Props): JSX.Element {
       <Popper
         reference={reference}
         ref={popperRef}
-        className='user-avatar-popper'
+        className='corner-12-2-12-12'
         onVisibilityChange={(visible)=> setShow(visible)}
         placement='bottom-start'
         trigger='hover'
       >
-        <div className='user-avatar'>
-          <div className='user-avatar-bg'>
+        <div className='user-avatar-menu'>
+          <div className='user-avatar-menu-bg'>
             <div className='pl-20'>
               <Avatar
                 username={window.USER?.userName || ''}
@@ -75,13 +75,13 @@ export default function UserAvatarMenu({ className }: Props): JSX.Element {
           </div>
           <div className='text-gray-600 flex flex-col mx-16 cursor-pointer'>
             <div
-              className='password-item'
+              className='user-avatar-menu-password'
               onClick={handleEditPasswordClick}
             >
               <Icon name='password' />
               <span className='ml-4'>修改密码</span>
             </div>
-            <div className='logout-item' onClick={handleLogOutClick}>
+            <div className='user-avatar-menu-logout' onClick={handleLogOutClick}>
               <Icon name='logout' />
               <span className='ml-4'>退出登录</span>
             </div>
