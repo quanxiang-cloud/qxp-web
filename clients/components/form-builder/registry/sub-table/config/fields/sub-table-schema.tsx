@@ -1,7 +1,6 @@
 import React, { useContext, useState, Ref, CSSProperties } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { usePopper } from 'react-popper';
-import { nanoid } from 'nanoid';
 import { useClickAway } from 'react-use';
 import fp from 'lodash/fp';
 import {
@@ -10,7 +9,7 @@ import {
 
 import Icon from '@c/icon';
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
-import { numberTransform } from '@c/form-builder/utils';
+import { generateRandomFormFieldID, numberTransform } from '@c/form-builder/utils';
 import { FieldConfigContext } from '@c/form-builder/form-settings-panel/form-field-config/context';
 
 import { SUB_TABLE_TYPES_SCHEMA_MAP, SUB_TABLE_TYPES } from '../constants';
@@ -88,7 +87,7 @@ function SubTableSchema(props: ISchemaFieldComponentProps): JSX.Element {
         _id: getSchemaFromOptionType('id'),
         ...fields.reduce((cur: ISchema, next: Field) => {
           const { schema, sort, value } = next;
-          cur[(value || nanoid()) as keyof ISchema] = {
+          cur[(value || `subtable_${generateRandomFormFieldID()}`) as keyof ISchema] = {
             ...schema,
             'x-index': sort,
           };
