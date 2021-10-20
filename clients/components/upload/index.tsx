@@ -36,7 +36,7 @@ const FileUpload = forwardRef((props: Props, ref:any) => {
 
   // @ts-ignore
   const handleFileSuccessUpload = (res) => {
-    if (res.code == 200) {
+    if (res.code === 200) {
       updateFile(res.data.filename, {
         filename: res.data.filename,
         url: res.data.url,

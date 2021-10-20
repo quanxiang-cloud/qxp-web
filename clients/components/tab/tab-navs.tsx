@@ -35,7 +35,7 @@ ref?: React.Ref<HTMLDivElement>): JSX.Element {
         className={cs('tab-navs', navsClassName)}>
         {
           navs.map((item) => {
-            const active = item.id == currentKey;
+            const active = item.id === currentKey;
             return (
               <div
                 key={item.id}

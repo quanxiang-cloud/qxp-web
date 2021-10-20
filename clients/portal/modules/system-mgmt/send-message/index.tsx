@@ -197,7 +197,7 @@ function ContentWithoutRef({
 
   const removeReceiver = (key: number) => {
     // @ts-ignore
-    setChosenDepOrPerson((current) => current.filter((_, idx) => idx != key));
+    setChosenDepOrPerson((current) => current.filter((_, idx) => idx !== key));
   };
 
   const byteCount = (s: string) => {
@@ -323,7 +323,7 @@ function ContentWithoutRef({
   // @ts-ignore
   const handleFileSuccessUpload = (res, file) => {
     const { uid } = file;
-    if (res.code == 200) {
+    if (res.code === 200) {
       updateFile(res.data.filename, {
         uid,
         filename: res.data.filename,
@@ -521,9 +521,9 @@ function ContentWithoutRef({
           title="选择员工或部门"
           submitText="确定选择"
           // @ts-ignore
-          departments={_chosenDepOrPerson.filter((itm) => itm.type == 2)}
+          departments={_chosenDepOrPerson.filter((itm) => itm.type === 2)}
           // @ts-ignore
-          employees={_chosenDepOrPerson.filter((itm) => itm.type == 1)}
+          employees={_chosenDepOrPerson.filter((itm) => itm.type === 1)}
         />
       )}
       {openPreviewModal && (<Modal

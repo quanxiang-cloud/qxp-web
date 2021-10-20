@@ -20,7 +20,7 @@ const statusMap = {
 
 const MsgStatus = ({ className, status, fail, success }: Props): JSX.Element => {
   const sendInfo = status !== MsgSendStatus.success ? null : (
-    <span className={fail == 0 ? styles.simple_text : styles.warning_text}>
+    <span className={fail === 0 ? styles.simple_text : styles.warning_text}>
       &nbsp;({ success}/{success + fail}人)
     </span>
   );
@@ -39,7 +39,7 @@ const MsgStatus = ({ className, status, fail, success }: Props): JSX.Element => 
 
   if (status !== MsgSendStatus.success) return <div>{baseInfo}</div>;
 
-  const msg = fail == 0 ? `共${success}人, 已全部发送` :
+  const msg = fail === 0 ? `共${success}人, 已全部发送` :
     `共 ${fail + success} 人, 发送失败${fail}人, 发送成功${success}人`;
 
   return (

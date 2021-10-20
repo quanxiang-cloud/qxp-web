@@ -54,8 +54,8 @@ class MsgMgmt {
     return {
       limit: pageSize,
       page: current,
-      status: status == MsgSendStatus.all ? undefined : status,
-      sort: sort == MsgType.all ? undefined : sort,
+      status: status === MsgSendStatus.all ? undefined : status,
+      sort: sort === MsgType.all ? undefined : sort,
     };
   }
 

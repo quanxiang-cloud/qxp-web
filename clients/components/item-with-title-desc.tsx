@@ -37,8 +37,8 @@ export default function ItemWithTitleDesc({
         className={cs(
           'justify-between flex flex-1',
           {
-            'flex-row': textDirection == 'row',
-            'flex-col': textDirection != 'row',
+            'flex-row': textDirection === 'row',
+            'flex-col': textDirection !== 'row',
             'ml-8': !textClassName?.startsWith('ml'),
           },
           textClassName,

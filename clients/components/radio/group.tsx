@@ -12,7 +12,7 @@ function RadioGroup({ children, onChange }: Props): JSX.Element {
     <>
       {
         Children.map(children, (child, index) => {
-          if (isValidElement(child) && child.props.value != null) {
+          if (isValidElement(child) && child.props.value !== null) {
             return React.cloneElement(child as ReactElement, {
               onChange: (value: string | number | boolean) => {
                 setCheckedIndex(index);
