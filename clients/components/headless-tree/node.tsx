@@ -1,9 +1,10 @@
-import * as React from 'react';
+import React from 'react';
 import cs from 'classnames';
-import { Icon } from '@QCFE/lego-ui';
+
+import Icon from '@c/icon';
 
 import TreeStore from './store';
-import { TreeNode } from './types';
+import type { TreeNode } from './types';
 
 type Props<T> = {
   node: TreeNode<T>;
@@ -30,13 +31,13 @@ function renderSwitcherIcon({
   onClick,
 }: Pick<TreeNode<any>, 'childrenStatus' | 'expanded'> & { onClick: () => void }): JSX.Element {
   if (childrenStatus === 'loading') {
-    return (<Icon name="loading" size={20} />);
+    return (<Icon name="refresh" className="animate-spin" size={16} />);
   }
 
   return (
     <Icon
       name="caret-down"
-      size={16}
+      size={12}
       className={cs('tree-node__toggle-icon', {
         'tree-node__toggle-icon--opened': expanded,
       })}

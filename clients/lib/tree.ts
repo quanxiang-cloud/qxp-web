@@ -111,8 +111,8 @@ function getChildKey<S extends Record<string, any>>(_childKey: string | string[]
 }
 
 const treeUtil = {
-  hasChildren: curry(hasChildren),
-  map: curry(treeMap),
+  hasChildren: hasChildren,
+  map: treeMap,
   reduce: treeReduce,
   toArray,
 };

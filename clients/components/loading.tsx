@@ -7,7 +7,7 @@ export interface ILoading {
   className?: string;
 }
 
-export default function Loading({ desc = 'Loading...', className }: ILoading) {
+export default function Loading({ desc = 'Loading...', className }: ILoading): JSX.Element {
   return (
     <div
       className={cs(

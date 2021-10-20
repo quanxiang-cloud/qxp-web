@@ -47,13 +47,10 @@ function Pagination({
   });
 
   useEffect(() => {
-    if (!pageSize) {
-      return;
-    }
-    setPageParams({ ...pageParams, pageSize });
-  }, [pageSize]);
+    setPageParams((params) => ({ ...params, current, pageSize: pageSize || params.pageSize }));
+  }, [pageSize, current]);
 
-  function calcPage(p?: number) {
+  function calcPage(p?: number): number {
     let pageSizes = p;
     if (typeof pageSizes === 'undefined') {
       pageSizes = pageParams.pageSize;
@@ -61,11 +58,11 @@ function Pagination({
     return Math.floor((total - 1) / pageSizes) + 1;
   }
 
-  function isValid(page: number) {
+  function isValid(page: number): boolean {
     return typeof page === 'number' && page >= 1 && page !== pageParams.current;
   }
 
-  function handleChange(p: number) {
+  function handleChange(p: number): number {
     let page = p;
     if (isValid(page)) {
       if (page > calcPage()) {
@@ -84,7 +81,7 @@ function Pagination({
     return pageParams.current;
   }
 
-  function changePageSize(size: number) {
+  function changePageSize(size: number): void {
     setPageParams({
       current: 1,
       pageSize: size,
@@ -93,49 +90,49 @@ function Pagination({
     onChange && onChange(1, size);
   }
 
-  function handleInputOnblur() {
+  function handleInputOnblur(): void {
     const isNumber = pageParams._current !== '' && !isNaN(Number(pageParams._current));
     if (isNumber) {
       handleChange(Number(pageParams._current));
     }
   }
 
-  function handleInputKeydown(e: React.KeyboardEvent) {
+  function handleInputKeydown(e: React.KeyboardEvent): void {
     if (e.key !== 'Enter') {
       return;
     }
     handleInputOnblur();
   }
 
-  function handPrev() {
+  function handPrev(): void {
     if (hasPrev()) {
       handleChange(pageParams.current - 1);
     }
   }
 
-  function handleNext() {
+  function handleNext(): void {
     if (hasNext()) {
       handleChange(pageParams.current + 1);
     }
   }
 
-  function handleJumpPrev() {
+  function handleJumpPrev(): void {
     handleChange(Math.max(1, pageParams.current - 5));
   }
 
-  function handleJumpNext() {
+  function handleJumpNext(): void {
     handleChange(Math.min(calcPage(), pageParams.current + 5));
   }
 
-  function hasPrev() {
+  function hasPrev(): boolean {
     return pageParams.current > 1;
   }
 
-  function hasNext() {
+  function hasNext(): boolean {
     return pageParams.current < calcPage();
   }
 
-  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>): void {
     setPageParams({
       pageSize: pageParams.pageSize,
       current: pageParams.current,

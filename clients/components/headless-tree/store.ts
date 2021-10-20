@@ -20,6 +20,7 @@ export type TreeStoreProps<T> = {
   rootNode: TreeNode<T>;
   onGetChildren?: (parentNode: TreeNode<T>) => Promise<TreeNode<T>[]>;
   singleMode?: boolean;
+  disableExpandNodeOnSelect?: boolean;
 }
 
 export default class TreeStore<T> {
@@ -30,12 +31,16 @@ export default class TreeStore<T> {
   @observable renamingNodeID = '';
   @observable draggingNode: TreeNode<T> | null = null;
   @observable autoSelect?: boolean;
+  @observable disableExpandNodeOnSelect?: boolean;
 
   onGetChildren: (parentNode: TreeNode<T>) => Promise<TreeNode<T>[]> = defaultGetChildren;
 
-  constructor({ rootNode, onGetChildren }: TreeStoreProps<T>, autoSelect?: boolean) {
+  constructor({
+    rootNode, onGetChildren, disableExpandNodeOnSelect,
+  }: TreeStoreProps<T>, autoSelect?: boolean) {
     this.rootNode = rootNode;
     this.autoSelect = autoSelect !== false;
+    this.disableExpandNodeOnSelect = disableExpandNodeOnSelect;
     if (autoSelect) {
       this.currentFocusedNodeID = rootNode.id;
     }
@@ -297,11 +302,11 @@ export default class TreeStore<T> {
     }
 
     // expand non leaf node for better user experience
-    this.expandNode(this.currentFocusedNode);
+    !this.disableExpandNodeOnSelect && this.expandNode(this.currentFocusedNode);
   }
 
   @action
-  loadChildren(node: TreeNode<T>): void {
+  loadChildren(node: TreeNode<T>, isOverwrite = false): void {
     this.updateNode({
       ...node,
       childrenStatus: 'loading',
@@ -315,7 +320,7 @@ export default class TreeStore<T> {
       }
 
       this.updateNode({
-        ...addChildren(_node, subNodes),
+        ...addChildren(_node, subNodes, isOverwrite),
         childrenStatus: 'resolved',
       });
     });

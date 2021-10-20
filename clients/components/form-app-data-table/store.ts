@@ -6,8 +6,8 @@ import { pipe, map } from 'lodash/fp';
 
 import { fetchFormDataList } from '@lib/http-client';
 import schemaToFields, { schemaToMap } from '@lib/schema-convert';
-import { SYSTEM_FIELDS } from '@c/form-builder/constants';
 import { toEs } from '@c/data-filter/utils';
+import { SYSTEM_FIELDS } from '@c/form-builder/constants';
 
 import { TableHeaderBtn, TableConfig } from './type';
 import { Config, getPageDataSchema } from './utils';

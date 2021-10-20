@@ -52,7 +52,7 @@ class OptionSetStore {
     try {
       const { list } = await apis.getOptionSetNames(params);
       this.optionSetNames = list;
-    } catch (err) {
+    } catch (err: any) {
       toast.error(err.message);
     }
     this.loadingNames = false;
@@ -68,7 +68,7 @@ class OptionSetStore {
     this.loadingOptionSet = true;
     try {
       this.activeOptionSet = await apis.getOptionSetById(id);
-    } catch (err) {
+    } catch (err: any) {
       toast.error(err.message);
     }
     this.loadingOptionSet = false;

@@ -44,10 +44,13 @@ export function getNodeParents(
   return false;
 }
 
-export function addChildren(parentNode: TreeNode<any>, nodes: TreeNode<any>[]): TreeNode<any> {
+export function addChildren(
+  parentNode: TreeNode<any>, nodes: TreeNode<any>[], isOverwrite = false,
+): TreeNode<any> {
   const _parentNode = { ...parentNode };
   const idSet = new Set();
-  const childrenNodes = nodes.concat((parentNode.children || []).slice())
+  const nodesToConcat = isOverwrite ? [] : parentNode.children || [];
+  const childrenNodes = nodes.concat((nodesToConcat).slice())
     .filter((node: TreeNode<any>) => {
       if (idSet.has(node.id)) {
         return false;
