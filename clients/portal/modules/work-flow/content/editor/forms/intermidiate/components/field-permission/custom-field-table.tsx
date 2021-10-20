@@ -3,19 +3,19 @@ import { noop } from 'lodash';
 import { without } from 'ramda';
 import { UnionColumns } from 'react-table';
 
-import Table from '@c/table';
-import Checkbox from '@c/checkbox';
-import ToolTip from '@c/tooltip';
 import Icon from '@c/icon';
+import Table from '@c/table';
 import Radio from '@c/radio';
-import useRequest from '@lib/hooks/use-request';
-import type { CustomFieldPermission, FieldValue } from '@flow/content/editor/type';
+import ToolTip from '@c/tooltip';
+import Checkbox from '@c/checkbox';
 import flowContext from '@flow/flow-context';
-import { FORM_COMPONENT_VARIABLE_MAP } from '@flow/content/editor/utils/constants';
+import useRequest from '@lib/hooks/use-request';
 import type { PERMISSION_KEY } from '@c/form-builder/constants';
+import { schemaToArray, schemaToMap } from '@lib/schema-convert';
+import type { CustomFieldPermission, FieldValue } from '@flow/content/editor/type';
+import { FORM_COMPONENT_VARIABLE_MAP } from '@flow/content/editor/utils/constants';
 
 import FieldValueEditor from './field-value-editor';
-import { schemaToArray, schemaToMap } from '@lib/schema-convert';
 
 interface Props {
   fields: CustomFieldPermission[];
@@ -222,12 +222,15 @@ export default function CustomFieldTable({
     const componentName = schema?.componentName;
     const isSubTable = componentName === 'subtable';
     const isAssociatedRecords = componentName === 'associatedrecords';
+    const isFileUpload = componentName === 'fileupload';
+
     if (editable && schema && !isSubTable && !isAssociatedRecords) {
       if (schema['x-mega-props']) {
         schema['x-mega-props'].labelAlign = 'top';
       }
       return (
         <FieldValueEditor
+          valueVariable={!isFileUpload}
           variableOptions={variableOptions?.filter(variableOptionsFilterByType(schema))}
           defaultValue={model.cell.value}
           schema={{
