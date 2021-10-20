@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { omit, isArray, isEmpty } from 'lodash';
+import { omit, isArray, isEmpty, isEqual } from 'lodash';
 import cs from 'classnames';
 import { useCss } from 'react-use';
 import { DatePicker } from 'antd';
@@ -80,7 +80,8 @@ export default function ConditionItem({ condition, options, onChange, schemaMap 
   const hiddenInput = condition.op === 'null' || condition.op === 'not-null' || showDateRange;
   const dateFormat = currentSchema?.['x-component-props']?.format || 'YYYY-MM-DD';
   let rangePickerDefaultValue: [Moment, Moment] | undefined = undefined;
-  if (currentSchema.componentName === 'datepicker' && isArray(condition.value)) {
+  if (currentSchema.componentName === 'datepicker' && isArray(condition.value) &&
+    !isEqual(condition.value, ['', ''])) {
     rangePickerDefaultValue = condition.value?.map?.((v) => {
       return moment(v);
     }) as unknown as typeof rangePickerDefaultValue;

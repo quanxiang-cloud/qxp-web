@@ -31,7 +31,7 @@ function ListContent({ className }: Props): JSX.Element {
           store.list.map(({ label }: OptionSetListItem, idx: number) => {
             return (
               <div
-                className='flex items-center px-16 h-38 hover:bg-blue-100 cursor-pointer action-shows'
+                className='flex items-center px-16 hover:bg-blue-100 cursor-pointer action-shows'
                 key={idx}
               >
                 <span className='items-center w-5/6 py-8 text-gray-900'>

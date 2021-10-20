@@ -1,10 +1,33 @@
 .app-details-nav {
   position: relative;
-  background-color: #fff;
-  min-width: 236px;
-  max-width: 236px;
-  border-right: 1px solid var(--gray-300);
+}
+
+.nav-content {
+  position: relative;
   overflow: auto;
+  z-index: 11;
+  width: 208px;
+  height: 100%;
+  background: #F8FAFC;
+  box-shadow: 8px 0px 24px 4px rgba(148, 163, 184, 0.25);
+  .nav-content-header .truncate{
+    width: 110px;
+  }
+}
+
+.collapse {
+  width: 0;
+}
+
+.control-hidden-button {
+  cursor: pointer;
+  position: absolute;
+  z-index: 10;
+  top: calc(50% - 24px);
+  right: -16px;
+  svg {
+    width: 16px !important;
+  }
 }
 
 .app-page-add-group {
@@ -25,22 +48,16 @@
   }
 }
 
-.app-page-tree-wrapper {
-  .tree-node {
-    padding: 0 16px;
-  }
-}
-
 .app-page-tree-node-tail{
   position: relative;
   &::after{
     content: '';
-    width: 3px;
+    width: 4px;
     height: 100%;
     position: absolute;
     top: 0;
     right: 0;
     border-radius: 4px 0px 0px 4px;
-    background-color: var(--gray-600);
+    background-color: var(--blue-600);
   }
 }

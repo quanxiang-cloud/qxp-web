@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
 import Button from '@c/button';
+import Search from '@c/search';
 import TextHeader from '@c/text-header';
 import ItemWithTitleDesc from '@c/item-with-title-desc';
 import Icon from '@c/icon';
@@ -11,9 +12,10 @@ import './style.scss';
 
 interface Props {
   onTriggerTypeChange: (value: 'FORM_DATA' | 'FORM_TIME' | '') => void;
+  onSearchInputChange: (value: string) => void;
 }
 
-export default function({ onTriggerTypeChange }: Props): JSX.Element {
+export default function({ onTriggerTypeChange, onSearchInputChange }: Props): JSX.Element {
   const history = useHistory();
   const { appID } = useParams<{ appID: string; }>();
   const reference = useRef<HTMLButtonElement>(null);
@@ -23,7 +25,7 @@ export default function({ onTriggerTypeChange }: Props): JSX.Element {
   }
 
   return (
-    <div className="flex flex-row self-start">
+    <div className="flex justify-between mb-16">
       {/* <Switch
         className="mr-20"
         value=""
@@ -95,6 +97,11 @@ export default function({ onTriggerTypeChange }: Props): JSX.Element {
           </div> */}
         </div>
       </Popper>
+      <Search
+        className="w-259"
+        placeholder="搜索工作流名称……"
+        onChange={onSearchInputChange}
+      />
     </div>
   );
 }

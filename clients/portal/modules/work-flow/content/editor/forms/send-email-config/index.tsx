@@ -33,6 +33,7 @@ import type {
 import schemaToFields from '@lib/schema-convert';
 
 import PersonPicker from '../../components/_common/person-picker';
+import { approvePersonEncoder } from '../../components/_common/utils';
 
 import './index.scss';
 
@@ -98,12 +99,20 @@ function FieldOption({ onChange, editorState, options }: FieldOPType): JSX.Eleme
 }
 
 function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props): JSX.Element {
+  const approvePersons = approvePersonEncoder(defaultValue);
+  const defaultValueEncode = {
+    approvePersons,
+    content: defaultValue.content,
+    templateId: defaultValue.templateId,
+    title: defaultValue.title,
+    mes_attachment: defaultValue.mes_attachment,
+  };
   const { register, handleSubmit, control, reset, formState: { errors }, watch } = useForm();
   const { appID } = useContext(FlowContext);
-  const [editorCont, setEditorCont] = useState(defaultValue?.content ?
+  const [editorCont, setEditorCont] = useState(defaultValueEncode?.content ?
     EditorState.createWithContent(
       ContentState.createFromBlockArray(
-        htmlToDraft(defaultValue.content).contentBlocks),
+        htmlToDraft(defaultValueEncode.content).contentBlocks),
     ) : EditorState.createEmpty());
   const { elements = [] } = useObservable<StoreValue>(store);
   const formDataElement = elements?.find(({ type }) => type === 'formData') as CurrentElement;
@@ -149,7 +158,7 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
   };
 
   useEffect(() => {
-    reset(defaultValue);
+    reset(defaultValueEncode);
   }, []);
 
   const fieldOption = React.useMemo(() => {
@@ -164,7 +173,7 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
         name='approvePersons'
         control={control}
         rules={{ required: '请选择接收对象' }}
-        defaultValue={defaultValue.approvePersons}
+        defaultValue={approvePersons}
         render={({ field }) => {
           return (
             <PersonPicker
@@ -178,7 +187,7 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
       <Input
         label={<><span className='text-red-600'>*</span>主题</>}
         placeholder='请输入'
-        defaultValue={defaultValue?.title || ''}
+        defaultValue={defaultValueEncode?.title || ''}
         error={errors.title}
         register={register('title', { required: '请输入主题' })}
       />
@@ -225,7 +234,7 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
             <Upload
               {...props}
               defaultFileList={
-                (defaultValue?.mes_attachment || []).map(({ file_name, file_url }: Attachment) => {
+                (defaultValueEncode?.mes_attachment || []).map(({ file_name, file_url }: Attachment) => {
                   return {
                     uid: file_url,
                     name: file_name,
