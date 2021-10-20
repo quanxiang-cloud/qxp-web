@@ -7,6 +7,9 @@ interface Props extends Omit<
   React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>,
   'children'
 > {
+  size?: number;
+  iconSize?: number;
+  btnType?: 'dark' | 'primary' | 'light';
   iconName: string;
   iconProps?: Omit<Partial<IconProps>, 'ref'>;
   loading?: boolean;
@@ -14,14 +17,27 @@ interface Props extends Omit<
 }
 
 function IconBtn(
-  { iconName, className, loading, forbidden, iconProps = {}, ...restProps }: Props,
+  {
+    size = 32,
+    iconSize = 16,
+    btnType = 'dark',
+    iconName,
+    className,
+    loading,
+    forbidden,
+    iconProps = {}, ...restProps }: Props,
   ref?: React.Ref<HTMLButtonElement>,
 ): JSX.Element {
+  const _style: React.CSSProperties = {
+    width: `${size}px`,
+    height: `${size}px`,
+  };
   return (
     <button
       {...restProps}
       ref={ref}
-      className={cs('btn', 'icon-btn', className, {
+      style={_style}
+      className={cs('btn', 'icon-btn', `button-bg-${btnType}`, className, {
         'btn--loading': loading,
         'btn--forbidden': forbidden,
         'opacity-50': forbidden,
@@ -30,6 +46,8 @@ function IconBtn(
       disabled={forbidden}
     >
       <Icon
+        size={iconSize}
+        type={btnType}
         name={loading ? 'loading' : iconName}
         className={cs({ 'animate-spin': loading })}
         {...iconProps}

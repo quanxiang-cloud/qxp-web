@@ -145,7 +145,7 @@ function TwoLevelMenu<T>({ menus, actions, onSelect, defaultSelected, className 
   }
 
   return (
-    <div className={`text-14 overflow-auto beauty-scroll bg-gray-50 ${className}`}>
+    <div className={`text-12 overflow-auto beauty-scroll bg-gray-50 ${className}`}>
       <NodeList
         handleToggle={handleToggle}
         nodes={menus}

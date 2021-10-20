@@ -14,7 +14,7 @@
     right: 0;
     top: 0;
     z-index: 1;
-    touch-action:none;
+    touch-action: none;
     border-radius: 10px;
     cursor: col-resize;
 
@@ -28,7 +28,9 @@
   }
 
   .qxp-table-small {
-    th, td {
+
+    th,
+    td {
       padding: 8px;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -37,11 +39,13 @@
   }
 
   .qxp-table-middle {
-    th, td {
+
+    th,
+    td {
       padding: 16px;
     }
   }
-  
+
   .qxp-table {
     max-height: 100%;
     overflow: auto;
@@ -52,9 +56,11 @@
       border-collapse: separate;
       text-align: left;
       color: var(--gray-900);
+      font-size: 12px;
     }
 
-    th, td {
+    th,
+    td {
       word-break: break-all;
       background-color: white;
       vertical-align: middle;
@@ -66,6 +72,8 @@
       position: sticky;
       // todo support group header
       top: 0;
+      line-height: 20px;
+      padding: 8px;
       font-weight: 400;
       user-select: none;
       color: var(--gray-600);
@@ -99,6 +107,10 @@
         }
 
         td {
+          height: 40px;
+          line-height: 20px;
+          padding: 7px 8px;
+
           &.table__cell-fixed {
             position: sticky;
           }
@@ -147,7 +159,9 @@
   }
 }
 
-.qxp-table-loading-block-1,.qxp-table-loading-block-2,.qxp-table-loading-block-3 {
+.qxp-table-loading-block-1,
+.qxp-table-loading-block-2,
+.qxp-table-loading-block-3 {
   background: linear-gradient(90deg, #fff, #edeff1, #fff);
   background-size: 200px 50px;
   animation: skeleton-stripes .8s linear infinite;
@@ -169,6 +183,11 @@
 }
 
 @keyframes skeleton-stripes {
-  0% { background-position: 0 0 }
-  to { background-position: 200px 0 }
+  0% {
+    background-position: 0 0
+  }
+
+  to {
+    background-position: 200px 0
+  }
 }

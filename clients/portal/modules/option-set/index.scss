@@ -45,7 +45,7 @@
 }
 
 .form-add-dataset.is-horizon-layout {
-  > .field .label {
+  >.field .label {
     width: 25%;
   }
 }
@@ -161,34 +161,41 @@
   margin-left: 25%;
 }
 
-#option_set_name, #option_set_tag, .option-set > .input-default, .option-set > .textarea-default {
+#option_set_name,
+#option_set_tag,
+.option-set>.input-default,
+.option-set>.textarea-default {
   caret-color: var(--blue-600);
 }
 
-.control > input.input:not([readonly]):not([disabled]):focus, textarea.textarea:not([readonly]):not([disabled]):focus#option_set_name {
+.control>input.input:not([readonly]):not([disabled]):focus,
+textarea.textarea:not([readonly]):not([disabled]):focus#option_set_name {
   border-color: var(--blue-600);
 }
 
-.control > input.input:not([readonly]):not([disabled]):focus, textarea.textarea:not([readonly]):not([disabled]):focus#option_set_tag {
+.control>input.input:not([readonly]):not([disabled]):focus,
+textarea.textarea:not([readonly]):not([disabled]):focus#option_set_tag {
   border-color: var(--blue-600);
 }
 
-.form-add-dataset.is-horizon-layout > .field .control input.is-danger#option_set_name {
+.form-add-dataset.is-horizon-layout>.field .control input.is-danger#option_set_name {
   border-color: #ca2621;
 }
 
-.form-add-dataset.is-horizon-layout > .field .control input.is-danger#option_set_tag {
+.form-add-dataset.is-horizon-layout>.field .control input.is-danger#option_set_tag {
   border-color: #ca2621;
 }
 
-.option-set-popper > .input-default:focus, .textarea-default:focus {
+.option-set-popper>.input-default:focus,
+.textarea-default:focus {
   border-color: var(--blue-600);
 }
 
-.option-set-popper > textarea.textarea:not([readonly]):not([disabled]):focus {
+.option-set-popper>textarea.textarea:not([readonly]):not([disabled]):focus {
   border-color: var(--blue-600);
 }
 
-.option-set-popper > input.input:not([readonly]):not([disabled]):focus, textarea.textarea:not([readonly]):not([disabled]):focus {
+.option-set-popper>input.input:not([readonly]):not([disabled]):focus,
+textarea.textarea:not([readonly]):not([disabled]):focus {
   border-color: var(--blue-600);
 }
