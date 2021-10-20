@@ -19,13 +19,13 @@ function AssociativeConfig({ props, value, mutators }: ISchemaFieldComponentProp
     setRules(mapAssociativeRules(value.rules));
   }
 
-  function mapAssociativeRules(associativeRules: FormBuilder.DataAssignment[]):FormBuilder.DataAssignment[] {
+  function mapAssociativeRules(associativeRules: FormBuilder.DataAssignment[]): FormBuilder.DataAssignment[] {
     if (associativeRules) {
       return associativeRules.map(({ dataSource, match, dataTarget }: FormBuilder.DataAssignment) => {
-        const sourceValue = sourceTableFields.find(({ id }: SchemaFieldItem) => id === dataSource).title;
+        const sourceValue = sourceTableFields.find(({ id }: SchemaFieldItem) => id === dataSource)?.title;
         const targetValue = currentFormFields.find(({ fieldName }: SchemaFieldItem) => {
           return fieldName === dataTarget;
-        }).title;
+        })?.title;
 
         return { dataSource: sourceValue, match, dataTarget: targetValue };
       });

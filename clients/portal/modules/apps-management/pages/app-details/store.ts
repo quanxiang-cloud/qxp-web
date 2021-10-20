@@ -1,7 +1,7 @@
 import { omit, pick } from 'lodash';
 import { History } from 'history';
+import { observable, action, toJS, reaction, IReactionDisposer, runInAction } from 'mobx';
 import { mutateTree, TreeData, TreeItem } from '@atlaskit/tree';
-import { observable, action, toJS, reaction, IReactionDisposer } from 'mobx';
 
 import toast from '@lib/toast';
 import { buildAppPagesTreeData } from '@lib/utils';
@@ -83,7 +83,6 @@ class AppDetailsStore {
       if (!this.pageID || this.pageListLoading) {
         return '';
       }
-
       return this.pageID;
     }, this.setCurPage);
   }
@@ -126,11 +125,15 @@ class AppDetailsStore {
     this.loading = true;
     this.appID = appID;
     return fetchAppDetails(appID).then((res: any) => {
-      this.appDetails = res || {};
-      this.lastUpdateTime = res.updateTime;
-      this.loading = false;
+      runInAction(() => {
+        this.appDetails = res || {};
+        this.lastUpdateTime = res.updateTime;
+        this.loading = false;
+      });
     }).catch(() => {
-      this.loading = false;
+      runInAction(() => {
+        this.loading = false;
+      });
     });
   }
 
@@ -251,7 +254,7 @@ class AppDetailsStore {
         }
       });
     }
-    const PageInfoPick = pick(pageInfo, 'name', 'icon', 'describe', 'groupID');
+
     if (pageInfo.bindingState === BindState.isBind && pageInfo.menuType === MenuType.schemaForm) {
       return formDuplicate( this.appID, {
         name: pageInfo.name || '',
@@ -260,9 +263,11 @@ class AppDetailsStore {
         groupID: pageInfo.groupID || '',
         duplicateTableID: pageInfo.id,
       } ).then((res: {id: string}) => {
-        this.addNewPageToList(PageInfoPick, res.id);
+        this.addNewPageToList({ ...pageInfo, ...res }, res.id);
       });
     }
+
+    const PageInfoPick = pick(pageInfo, 'name', 'icon', 'describe', 'groupID');
     return createPage({ appID: this.appID, ...PageInfoPick } ).then((res: {id: string}) => {
       this.addNewPageToList(PageInfoPick, res.id);
     });
@@ -319,10 +324,12 @@ class AppDetailsStore {
     if (pageInfo.menuType === MenuType.schemaForm) {
       getTableSchema(this.appID, pageInfo.id).then((pageSchema) => {
         this.hasSchema = !!pageSchema;
+        if (!this.appID) return;
         if (this.hasSchema) {
           return getSchemaPageInfo(this.appID, pageID);
         }
       }).then((res) => {
+        if (!this.pageID) return;
         if (res) {
           const descriptions = this.pageDescriptions.map((description) => {
             return mapToSchemaPageDescription(description, res);
@@ -341,7 +348,9 @@ class AppDetailsStore {
       }).catch(() => {
         toast.error('获取表单信息失败');
       }).finally(() => {
-        this.fetchSchemeLoading = false;
+        runInAction(() => {
+          this.fetchSchemeLoading = false;
+        });
       });
     }
 
@@ -404,9 +413,11 @@ class AppDetailsStore {
     this.appID = appID;
     this.pageListLoading = true;
     fetchPageList(appID).then((res: any) => {
-      this.pageInitList = res.menu;
-      this.pagesTreeData = buildAppPagesTreeData(res.menu);
-      this.pageListLoading = false;
+      runInAction(() => {
+        this.pageInitList = res.menu;
+        this.pagesTreeData = buildAppPagesTreeData(res.menu);
+        this.pageListLoading = false;
+      });
     });
   }
 

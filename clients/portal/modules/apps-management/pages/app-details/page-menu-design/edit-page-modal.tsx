@@ -45,7 +45,7 @@ function EditPageModal({ pageInfo, onCancel, onSubmit, appID }: Props): JSX.Elem
   const validateRepeat = (value: string): boolean => {
     let noRepeated = true;
     for (const pageInfoTmp of store.pageInitList) {
-      if (pageInfoTmp.id === pageInfo?.id) {
+      if (modalType !== 'copyPage' && pageInfoTmp.id === pageInfo?.id) {
         continue;
       }
 

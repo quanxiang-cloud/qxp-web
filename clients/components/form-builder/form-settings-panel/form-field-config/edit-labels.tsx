@@ -15,7 +15,7 @@ function EditLabels({ props, form, mutators }: ISchemaFieldComponentProps): JSX.
 
   return (
     <>
-      <Button onClick={() => setShowModal(true)}>编辑多项</Button>
+      <Button onClick={() => setShowModal(true)}>编辑选项</Button>
       {showModal && (
         <OptionLabels
           form={form}
