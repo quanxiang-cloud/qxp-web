@@ -10,9 +10,9 @@ import { compareOperatorMap } from '@c/form-builder/constants';
 
 const { onFieldValueChange$ } = FormEffectHooks;
 
-function getFieldPath(linkageRulePath: string, fieldRealPath: string): string {
+export function getFieldPath(linkageRulePath: string, fieldRealPath: string): string {
   const [match] = /\.\d+\./.exec(fieldRealPath) || [];
-  return linkageRulePath.replace('.*.', match);
+  return match ? linkageRulePath.replace('.*.', match) : linkageRulePath;
 }
 
 function fetchLinkedTableData$(

@@ -21,16 +21,16 @@ export default observer(function DepartmentNode({ node, store, onChange }: Props
   const isChecked = status === 'checked';
   const isIndeterminate = status === 'indeterminate';
 
-  const getSelectedData = (departments: Department[][]) => {
+  const getSelectedData = (departments: Department[][]): Department[] => {
     const arr: Department[] = [];
     departments.forEach((dps) => {
-      const dp = last(dps);
+      const dp = last<Department>(dps);
       dp && arr.push(dp);
     });
     return arr;
   };
 
-  const handleClick = () => {
+  const handleClick = (): void => {
     const prevData = getSelectedData(st.selectedDataPaths);
     st.toggleCheck(node.id);
     const currentData = getSelectedData(st.selectedDataPaths);

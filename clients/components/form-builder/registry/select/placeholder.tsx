@@ -1,14 +1,13 @@
 import React from 'react';
-import { Select } from 'antd';
 
-const { Option } = Select;
+import Icon from '@c/icon';
 
 function Placeholder(): JSX.Element {
   return (
-    <Select placeholder='请选择选项' style={{ width: '100%' }}>
-      {['选项一', '选项二', '选项三'].map((item) =>
-        <Option key={item} value={item}>{item}</Option>)}
-    </Select>
+    <div className='placeholder-multiple-select'>
+      <span className='ml-10 text-gray-300'>请选择选项</span>
+      <Icon name='expand_more' className='arrow' />
+    </div>
   );
 }
 

@@ -1,9 +1,8 @@
-import { NumberPicker } from '@formily/antd-components';
-
 import { FormEffectHooks, createFormActions } from '@formily/react';
 
 import { validateRegistryElement } from '@c/form-builder/utils';
 
+import NumberPicker from './number-picker';
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig, NumberPickerConfig } from './convertor';
 import Placeholder from './placeholder';

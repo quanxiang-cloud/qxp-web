@@ -24,7 +24,7 @@ export default observer(function DepartmentNode({ node, store, onChange }: Props
   const getSelectedData = (departments: Department[][]) => {
     const arr: Department[] = [];
     departments.forEach((dps) => {
-      const dp = last(dps);
+      const dp = last<Department>(dps);
       dp && arr.push(dp);
     });
     return arr;

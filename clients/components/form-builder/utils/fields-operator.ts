@@ -127,22 +127,22 @@ export function getFieldId(field: ISchema): string {
 
 export function flattenSchemaToFields(schema: ISchema): FormItem[] {
   const fieldsArr: FormItem[] = [];
-  const recu = ({ properties }: ISchema): void => {
+  const recu = ({ properties }: ISchema, pid?: string): void => {
     if (isEmpty(properties)) return;
-    values(properties).forEach((_field) => {
+    Object.keys(properties || {}).forEach((key: string) => {
+      const _field = properties?.[key] || {};
+      if (get(_field, 'x-internal.isSystem')) return;
       const field = formatFieldWithConfig(_field);
       const currentField = omit(cloneDeep(field), 'properties');
 
       // fallback: will remove this code!
-      if (field?.['x-internal']?.parentField) {
-        set(field, 'x-internal.parentFieldId', field?.['x-internal']?.parentField);
-      }
-      if (field?.fieldName) {
-        set(field, 'x-internal.fieldId', field?.fieldName);
+      if (currentField) {
+        set(currentField, 'x-internal.parentFieldId', pid);
+        set(currentField, 'x-internal.fieldId', key);
       }
 
       fieldsArr[(currentField?.['x-index'] || 0)] = currentField;
-      if (!isEmpty(_field?.properties)) recu(_field);
+      if (!isEmpty(_field?.properties)) recu(_field, key);
     });
   };
 

@@ -1,5 +1,6 @@
 import { get, has, merge } from 'lodash';
 import { customAlphabet } from 'nanoid';
+import { Curry } from 'ts-toolbelt/out/Function/Curry';
 import fp, {
   pipe, entries, filter, fromPairs, every, equals, property, curry, map, cond, values,
 } from 'lodash/fp';
@@ -137,22 +138,23 @@ export const getValidateMessageMap = <T>(schema: ISchema, configValue: T): Recor
 
   return getMessageMap(schema);
 };
-type ValidateRegistryElement<T> = (configSchema: ISchema, configValue: T) => boolean
-export const validateRegistryElement: Curried<ValidateRegistryElement<unknown>> = curry(
-  <T>(configSchema: ISchema, configValue: T) => {
-    const messageMap = getValidateMessageMap<T>(configSchema, configValue);
-    const validator = pipe(
-      entries,
-      map(([fieldName, message]: [string, string]) => {
-        const isValid = configValue[fieldName as keyof typeof configValue];
-        !isValid && toast.error(message);
-        return isValid;
-      }),
-      every(Boolean),
-    );
 
-    return validator(messageMap);
-  },
+type ValidateRegistryElement<T> = (configSchema: ISchema, configValue?: T) => boolean
+export const validateRegistryElement: Curry<ValidateRegistryElement<unknown>> = curry(
+ <T>(configSchema: ISchema, configValue: T) => {
+   const messageMap = getValidateMessageMap<T>(configSchema, configValue);
+   const validator = pipe(
+     entries,
+     map(([fieldName, message]: [string, string]) => {
+       const isValid = configValue[fieldName as keyof typeof configValue];
+       !isValid && toast.error(message);
+       return isValid;
+     }),
+     every(Boolean),
+   );
+
+   return validator(messageMap);
+ },
 );
 
 type PermissionToOverwrite = { display?: boolean; readOnly?: boolean };

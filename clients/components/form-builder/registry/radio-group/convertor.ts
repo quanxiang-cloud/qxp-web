@@ -15,6 +15,7 @@ export interface RadioGroupConfig {
   defaultValueFrom: FormBuilder.DefaultValueFrom;
   datasetId: string;
   availableOptions: Array<Record<string, string | boolean>>,
+  defaultValue: undefined | string,
 }
 
 export const defaultConfig: RadioGroupConfig = {
@@ -32,6 +33,7 @@ export const defaultConfig: RadioGroupConfig = {
     { label: '选项二', isDefault: false },
     { label: '选项三', isDefault: false },
   ],
+  defaultValue: undefined,
 };
 
 export function toSchema(value: typeof defaultConfig): ISchema {
@@ -42,7 +44,8 @@ export function toSchema(value: typeof defaultConfig): ISchema {
     required: value.required,
     readOnly: value.displayModifier === 'readonly',
     display: value.displayModifier !== 'hidden',
-    default: convertSingleSelectDefault(value.availableOptions.find(({ isDefault }) => isDefault) || {}),
+    default: value.defaultValueFrom === 'dataset' ? value.defaultValue :
+      convertSingleSelectDefault(value.availableOptions.find(({ isDefault }) => isDefault) || {}),
     enum: value.availableOptions.map((op) => {
       return op.label as string;
     }) || [],
@@ -58,6 +61,7 @@ export function toSchema(value: typeof defaultConfig): ISchema {
       sortable: value.sortable,
       permission: getSchemaPermissionFromSchemaConfig(value),
       defaultValueFrom: value.defaultValueFrom,
+      defaultValue: value.defaultValue,
     },
   };
 }
@@ -79,5 +83,6 @@ export function toConfig(schema: ISchema): RadioGroupConfig {
         isDefault: label === schema.default,
       };
     }) as any,
+    defaultValue: schema.default,
   };
 }

@@ -60,6 +60,7 @@ function DragDrop(props: Props): JSX.Element {
       }
       if (dropId === 'root') {
         index = store.flattenFields.length || 0;
+        setPosition('down');
       }
 
       const changedField: AddOrUpdateField = {

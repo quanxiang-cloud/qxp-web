@@ -1,11 +1,18 @@
 import React from 'react';
 import { Checkbox } from 'antd';
+import { ISchemaFieldComponentProps } from '@formily/antd';
+
+import useEnumOptions from '@lib/hooks/use-enum-options';
 
 const CheckboxGroup = Checkbox.Group;
 
-function Placeholder(): JSX.Element {
+function Placeholder(fieldProps: ISchemaFieldComponentProps): JSX.Element {
+  const labels = useEnumOptions(fieldProps);
+
   return (
-    <CheckboxGroup options={['选项一', '选项二', '选项三']} />
+    <>
+      {!labels.length ? <span>暂无可选项</span> : <CheckboxGroup options={labels} />}
+    </>
   );
 }
 

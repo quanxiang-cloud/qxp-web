@@ -176,6 +176,5 @@ export default function UpdateTableData({
         )}
       </div>
     </Context.Provider>
-
   );
 }
