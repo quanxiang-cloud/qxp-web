@@ -63,23 +63,19 @@ function RadioGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
     <div className="flex items-center">
       <Radio.Group onChange={handleRadioChange} value={realValue}>
         <Space direction={optionsLayout}>
-          {
-            labels.map((label) => {
-              return (<Radio key={label} value={label}>{label}</Radio>);
-            })
-          }
-          {
-            isAllowCustom && (
-              <Radio value={CUSTOM_OTHER_VALUE}>
-                <Input
-                  value={otherValue}
-                  onChange={handleOtherValueChange}
-                  placeholder="请输入"
-                  maxLength={15}
-                />
-              </Radio>
-            )
-          }
+          {labels.map((label) => {
+            return (<Radio key={label} value={label}>{label}</Radio>);
+          })}
+          {isAllowCustom && (
+            <Radio value={CUSTOM_OTHER_VALUE}>
+              <Input
+                value={otherValue}
+                onChange={handleOtherValueChange}
+                placeholder="请输入"
+                maxLength={15}
+              />
+            </Radio>
+          )}
         </Space>
       </Radio.Group>
     </div>

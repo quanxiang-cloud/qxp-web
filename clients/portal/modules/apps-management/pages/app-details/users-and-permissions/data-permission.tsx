@@ -45,11 +45,11 @@ function DataPermission({
     }
     if (dataPer.update) {
       const config = toFilterConfig(dataPer.update);
-      setViewPer({ ...config, key: config.condition && config.condition.length ? 'custom' : 'all' });
+      setEditPer({ ...config, key: config.condition && config.condition.length ? 'custom' : 'all' });
     }
     if (dataPer.delete) {
       const config = toFilterConfig(dataPer.delete);
-      setViewPer({ ...config, key: config.condition && config.condition.length ? 'custom' : 'all' });
+      setDelPer({ ...config, key: config.condition && config.condition.length ? 'custom' : 'all' });
     }
   }, []);
 
@@ -142,7 +142,7 @@ function DataPermission({
             initTag={edit.tag}
             ref={editRef}
             fields={fields}
-            initConditions={view?.condition}
+            initConditions={edit?.condition}
           />
         )}
       </div>

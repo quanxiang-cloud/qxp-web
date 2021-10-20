@@ -1,0 +1,26 @@
+.option-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 80px;
+}
+
+.options-content {
+  display: grid;
+  align-items: center;
+  grid-template-columns: 2fr 1fr;
+  padding: 0 16px;
+  height: 38px; 
+  border-bottom: 1px solid var(--gray-300);
+}
+
+.options-item {
+  @extend .options-content;
+  color: var(--gray-900);
+}
+
+.options-config-title {
+  @extend .options-content;
+  border-radius: 8px 8px 0 0;
+  background: var(--gray-100);
+}

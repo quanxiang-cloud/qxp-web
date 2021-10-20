@@ -120,10 +120,6 @@ const schema: ISchema = {
               label: '自定义',
               value: 'customized',
             },
-            {
-              label: '关联已有数据',
-              value: 'linkage',
-            },
             // {
             //   label: '通过公式计算',
             //   value: 'formula',

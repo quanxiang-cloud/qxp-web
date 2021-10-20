@@ -61,8 +61,11 @@ export default function TaskCard({ task, type }: Props): JSX.Element {
     formSchema, status, keyFields, dueDate, urgeNum,
   } = task;
   const taskCardData = (multiTask ? formData : flowInstanceEntity?.formData) || {};
-  const properties = multiTask ? formSchema?.properties : flowInstanceEntity?.formSchema?.properties;
+  const properties = (multiTask ? formSchema?.properties : flowInstanceEntity?.formSchema?.properties) || {};
   const taskKeyFields = (multiTask ? keyFields : flowInstanceEntity?.keyFields) || [];
+  const filterTaskKeyFields = taskKeyFields.filter(
+    (keyField) => keyField in properties,
+  );
 
   return (
     <div className="corner-2-8-8-8 bg-white mb-16 approval-card">
@@ -115,7 +118,7 @@ export default function TaskCard({ task, type }: Props): JSX.Element {
         <div className="right-info px-20 py-12 flex flex-1 justify-between pl-40 overflow-hidden">
           <div className="flex flex-col">
             {
-              taskKeyFields.slice(0, 6).map((taskCardName) => {
+              filterTaskKeyFields.slice(0, 6).map((taskCardName) => {
                 const taskCardField = get(properties, taskCardName, {});
                 return (
                   <p key={taskCardName} className="mb-4 form-data-item">

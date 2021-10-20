@@ -1,12 +1,17 @@
-import { FormEffectHooks, createFormActions } from '@formily/react';
+import { createFormActions } from '@formily/antd';
 
 import { validateDatasetElement } from '@c/form-builder/utils';
 
+import Placeholder from './placeholder';
+import configSchema from './config-schema';
 import CheckboxGroup from './checkboxGroup';
 import DatasetConfig from '../../form-settings-panel/form-field-config/dataset-config';
-import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig } from './convertor';
-import Placeholder from './placeholder';
+import {
+  updateLabelsOnMultipleEdit,
+  initDefaultValueOnOptionsFromDataset,
+  updateDefaultValueOnDatasetIdChanged,
+} from '../options-effects';
 
 const CheckboxGroupField: Omit<FormBuilder.SourceElement<typeof defaultConfig>, 'displayOrder'> = {
   configSchema,
@@ -23,15 +28,11 @@ const CheckboxGroupField: Omit<FormBuilder.SourceElement<typeof defaultConfig>, 
   configDependencies: { DatasetConfig },
   validate: validateDatasetElement,
   effects: () => {
-    const { setFieldValue, getFieldValue } = createFormActions();
-    const { onFieldValueChange$ } = FormEffectHooks;
+    const actions = createFormActions();
 
-    onFieldValueChange$('edit').subscribe(({ value }) => {
-      const availableOptions = getFieldValue('availableOptions');
-      setFieldValue('availableOptions', availableOptions.map((op: any, index: number) => {
-        return { label: value[index], isDefault: op.isDefault };
-      }));
-    });
+    updateLabelsOnMultipleEdit(actions);
+    initDefaultValueOnOptionsFromDataset(actions);
+    updateDefaultValueOnDatasetIdChanged(actions);
   },
 };
 

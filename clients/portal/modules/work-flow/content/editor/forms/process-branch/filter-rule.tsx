@@ -9,7 +9,6 @@ import FormulaEditor, { CustomRule, RefProps } from '@c/formula-editor';
 import { getFlowVariables } from '../api';
 import FlowTableContext from '../flow-source-table';
 import RuleItem from './rule-item';
-import { isAdvancedField } from '../utils';
 
 const COLLECTION_OPERATORS = [
   {
@@ -88,11 +87,10 @@ function FilterRule({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
       key: item.code,
       type: item.fieldType?.toLowerCase(),
     };
-  }) || []).filter(({ type })=> !isAdvancedField(type));
+  }) || []);
 
   const tableSchemaRules = tableSchema.filter((schema) => {
-    return !SYSTEM_FIELDS.includes(schema.fieldName) &&
-      !isAdvancedField(schema.type || '', schema.componentName);
+    return !SYSTEM_FIELDS.includes(schema.fieldName);
   }).map((schema) => ({
     name: schema.title as string, key: schema.id, type: schema.type || '',
   }));

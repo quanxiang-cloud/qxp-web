@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useQuery } from 'react-query';
-import { groupBy, merge, first, isEqual } from 'lodash';
-import { useUpdateEffect } from 'react-use';
+import { groupBy, merge, first } from 'lodash';
 import fp from 'lodash/fp';
 
 import Toggle from '@c/toggle';
@@ -15,6 +14,7 @@ import type {
   StoreValue,
   FieldPermission as FieldPermissionType,
   CustomFieldPermission,
+  SystemFieldPermission,
   CurrentElement,
   FillInData,
   FormDataData,
@@ -22,6 +22,7 @@ import type {
 } from '@flow/content/editor/type';
 
 import CustomFieldTable from './custom-field-table';
+import SystemFieldTable from './system-field-table';
 import { fieldPermissionDecoder, fieldPermissionEncoder } from './util';
 import { INITIAL_VALUE } from './constants';
 
@@ -40,6 +41,7 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
   const workFormValue = (formDataElement?.data?.businessData as FormDataData)?.form?.value;
   const [mergedFieldPermissions, setMergedFieldPermissions] = useState<FieldPermissionType>({
     custom: [],
+    system: [],
   });
 
   const { data: { options: data, schema = {} } = { options: [] }, isLoading, isError } = useQuery(
@@ -64,19 +66,12 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
     }
   }, [mergedFieldPermissions.custom]);
 
-  useUpdateEffect(() => {
-    const defaultPermissionChanged = !isEqual(fieldPermissionDecoder(value, schema), mergedFieldPermissions);
-    const isPermissionOldFormat = value.custom;
-    const shouldSetLatestPermission = defaultPermissionChanged || isPermissionOldFormat;
-    shouldSetLatestPermission && onChange(mergedFieldPermissions);
-  }, [mergedFieldPermissions]);
-
   function onChange(fieldPermission: FieldPermissionType): void {
     _onChange({ fieldPermission: fieldPermissionEncoder(fieldPermission) });
   }
 
-  function onUpdateFields(type: 'custom') {
-    return (val: CustomFieldPermission[]) => {
+  function onUpdateFields(type: 'custom' | 'system') {
+    return (val: (CustomFieldPermission | SystemFieldPermission)[]) => {
       onChange({
         ...mergedFieldPermissions,
         [type]: val,
@@ -85,8 +80,8 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
   }
 
   function mergeField(): void {
-    const { custom = [] } = fieldPermissionDecoder(value, schema) || {};
-    const { false: customData } = groupBy(data, ({ isSystem }) => isSystem);
+    const { custom = [], system = [] } = fieldPermissionDecoder(value, schema) || {};
+    const { true: systemData, false: customData } = groupBy(data, ({ isSystem }) => isSystem);
     customData?.forEach((field) => {
       const oldCustomField = custom.find(({ id }) => id === field.value);
       const newCustomField = {
@@ -106,6 +101,13 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
         path: newCustomField.path,
       });
     });
+    systemData?.forEach((field) => {
+      !system.find(({ id }) => id === field.value) && system.push({
+        id: field.value,
+        fieldName: field.label,
+        read: field.read,
+      });
+    });
     const sorter = fp.pipe(
       fp.groupBy((opt: FormFieldOption) => first(opt.path?.split('.'))),
       fp.map((customDataOptions: FormFieldOption[]) => {
@@ -113,7 +115,7 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
       }),
       fp.flattenDeep,
     );
-    setMergedFieldPermissions({ custom: sorter(custom) });
+    setMergedFieldPermissions({ system, custom: sorter(custom) });
   }
 
   function handleEditableChange(): void {
@@ -153,7 +155,18 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
           />
         </section>
       )}
-      {!mergedFieldPermissions.custom.length && (
+      {!!mergedFieldPermissions.system.length && (
+        <section className="pb-56">
+          <header className="flex justify-between items-center mb-12 mt-32">
+            <div className="text-caption-no-color text-gray-400">系统字段</div>
+          </header>
+          <SystemFieldTable
+            fields={mergedFieldPermissions.system}
+            updateFields={onUpdateFields('system')}
+          />
+        </section>
+      )}
+      {!mergedFieldPermissions.custom.length && !mergedFieldPermissions.system.length && (
         <div className="mt-20 flex justify-center text-gray-400">该工作表未设置字段</div>
       )}
     </>

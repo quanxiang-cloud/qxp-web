@@ -19,7 +19,12 @@ export default function useEnumOptions(fieldProps: ISchemaFieldComponentProps): 
       return;
     }
 
-    if (datasetId && defaultValueFrom === 'dataset') {
+    if (defaultValueFrom === 'dataset') {
+      if (!datasetId) {
+        setOptions([]);
+        return;
+      }
+
       getOptionSetById(datasetId).then(({ content = '' }) => {
         const labels = parseJSON<LabelValue[]>(content, []).map(({ label }) => label);
         setOptions(uniq(labels));
