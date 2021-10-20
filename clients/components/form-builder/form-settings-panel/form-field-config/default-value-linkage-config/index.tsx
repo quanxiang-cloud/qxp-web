@@ -249,7 +249,6 @@ function LinkageConfig({
       }
 
       if (currentCompareToValue === 'fixedValue') {
-        console.log(222);
         state.props['x-component'] = linkTableField?.componentName || 'input';
         state.props.enum = undefined;
 
