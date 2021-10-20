@@ -36,7 +36,7 @@ export default function Tab<T extends React.Key>({
   separator,
   currentKey,
   onChange,
-}: Props<T>) {
+}: Props<T>): JSX.Element {
   const navsRef = useRef(null);
   const [key, setKey] = useState<string | number>(currentKey || items[0].id);
 
@@ -44,11 +44,11 @@ export default function Tab<T extends React.Key>({
     setKey(currentKey || items[0].id);
   }, [currentKey]);
 
-  const tabContentRender = (items: TabItem<T>[], key: string | number) => {
+  const tabContentRender = (items: TabItem<T>[], key: string | number): React.ReactNode => {
     return items.find((item) => item.id === key)?.content;
   };
 
-  const handleNavItemClick = (id: any) => {
+  const handleNavItemClick = (id: any): void => {
     setKey(id);
     onChange?.(id);
   };

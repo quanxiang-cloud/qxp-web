@@ -1,7 +1,6 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
 
-import './index.scss';
 import SideNavs from './side-navs';
 import AppAdmin from './app-admin';
 import AppInfo from './app-info';
@@ -11,6 +10,8 @@ import PageMenuDesign from './page-menu-design';
 import UsersAndPermissions from './users-and-permissions';
 import ApiDocument from './api-documentation';
 import WorkFlows from '../../work-flow-list';
+
+import './index.scss';
 
 function AppDetailsContent(): JSX.Element {
   return (

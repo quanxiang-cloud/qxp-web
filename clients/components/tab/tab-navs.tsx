@@ -24,7 +24,7 @@ function TabNavs<T extends React.Key>({
   navsClassName,
   onClick,
 }: Props<T>,
-ref?: React.Ref<HTMLDivElement>) {
+ref?: React.Ref<HTMLDivElement>): JSX.Element {
   return (
     <div className='z-10'> {/* This layer of div is used to solve the overflow-x auto */}
       <div

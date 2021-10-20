@@ -15,7 +15,7 @@
 }
 
 .form-add-dataset {
-  > .field .label {
+  >.field .label {
     width: 25% !important;
   }
 }
@@ -46,6 +46,7 @@
           visibility: visible;
         }
       }
+
       .action-more {
         visibility: hidden;
       }
@@ -125,27 +126,32 @@
   border-width: 1px 1px 0 1px;
 }
 
-.form-add-dataset.is-horizon-layout > .field .help {
+.form-add-dataset.is-horizon-layout>.field .help {
   display: flex;
   margin-left: 25%;
 }
 
-.dataset-names--toolbar > .border-none input[name='search'] {
+.dataset-names--toolbar>.border-none input[name='search'] {
   width: 80px !important;
 }
 
-#option_set_name, #option_set_tag, .input-default, .textarea-default {
+#option_set_name,
+#option_set_tag,
+.input-default,
+.textarea-default {
   caret-color: var(--blue-600);
 }
 
-#option_set_name:focus, #option_set_tag:focus {
+#option_set_name:focus,
+#option_set_tag:focus {
   border-color: var(--blue-600);
 }
 
-.form-add-dataset > .field .control input.is-danger {
+.form-add-dataset>.field .control input.is-danger {
   border-color: #ca2621 !important;
 }
 
-.option-set-popper > .input-default:focus, .textarea-default:focus {
+.option-set-popper>.input-default:focus,
+.textarea-default:focus {
   border-color: var(--blue-600) !important;
 }

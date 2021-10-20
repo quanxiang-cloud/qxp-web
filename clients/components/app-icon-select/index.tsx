@@ -13,23 +13,76 @@ type Props = {
 }
 
 export const APP_ICON_LIST = [
-  'event_available',
-  'people_alt',
-  'person_add_alt_1',
-  'insights',
-  'addchart',
-  'account_balance_wallet',
-  'track_changes',
-  'approval',
-  'workspaces_outline',
-  'tune',
+  'assignment_ind',
+  'card_travel',
   'fact_check',
-  'insert_chart',
-  'request_quote',
-  'flight_takeoff',
-  'donut_large',
+  'rule',
+  'rule_folder',
+  'book',
+  'bookmarks',
+  'date_range',
+  'schedule',
+  'table_view',
+  'addchart',
+  'donut_small',
+  'chrome_reader_mode',
+  'account_balance_wallet',
+  'layers',
+  'dashboard',
+  'dns',
+  'assessment',
+  'confirmation_number',
+  'monetization_on',
+  'request_page',
+  'loyalty',
+  'room',
+  'favorite_border',
+  'devices_other',
+  'apps',
+  'post_add',
+  'home_work',
+  'airplay',
+  'payments',
+  'campaign',
+  'extension',
+  'important_devices',
+  'lightbulb',
+  'leaderboard',
+  'thumb_up',
   'school',
-  'science',
+  'emoji_emotions',
+  'folder_shared',
+  'support_agent',
+  'groups',
+  'engineering',
+  'domain',
+  'public',
+  'explore',
+  'location_searching',
+  'notifications_none',
+  'settings',
+  'construction',
+  'military_tech',
+  'pest_control',
+  'masks',
+  'wifi_tethering',
+  'speed',
+  'hourglass_top',
+  'flight_takeoff',
+  'meeting_room',
+  'business_center',
+  'free_breakfast',
+  'assignment',
+  'text_snippet',
+  'star_half',
+  'storefront',
+  'print',
+  'support',
+  'verified_user',
+  'verified',
+  'trending_up',
+  'palette',
+  'all_inclusive',
 ];
 
 const modifiers = [
@@ -46,23 +99,23 @@ function IconSelect({
   value,
   options,
   placeholder = '请选择',
-}: Props, ref?: React.LegacyRef<Control>) {
+}: Props, ref?: React.LegacyRef<Control>): JSX.Element {
   const [isVisible, setIsVisible] = useState(false);
   const [iconName, setIconName] = useState(value);
   const popperRef = useRef<any>();
   const reference = useRef<any>();
 
-  const optionsVisibilityChange = (visible: boolean) => {
+  const optionsVisibilityChange = (visible: boolean): void => {
     setIsVisible(visible);
   };
 
-  const optionClick = (_value: string) => {
+  const optionClick = (_value: string): void => {
     popperRef.current?.close();
     onChange(_value);
     setIconName(_value);
   };
 
-  const renderOptions = () => {
+  const renderOptions = (): JSX.Element => {
     const width = reference.current ? reference.current.clientWidth : 200;
 
     return (

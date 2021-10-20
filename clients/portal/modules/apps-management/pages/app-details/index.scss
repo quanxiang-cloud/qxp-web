@@ -20,8 +20,31 @@
   height: 40px;
   display: flex;
   align-items: center;
+
   &:hover {
     color: var(--blue-600);
     background-color: var(--gray-100);
-  };
+  }
+}
+
+.tab-wrapper {
+  .nav-background-image {
+    position: relative;
+
+    & {
+      background-color: var(--blueGray-50);
+      background-image: url('/dist/images/maskHeaderBackgroundImage.png');
+      background-position: top right;
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+  }
+
+  .nav-content {
+    padding: 16px 57px;
+  }
+}
+
+.nav-card-header {
+  box-shadow: inset 0px -1px 0px #e2e8f0;
 }
