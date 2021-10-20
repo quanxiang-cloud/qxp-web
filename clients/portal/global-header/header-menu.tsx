@@ -16,25 +16,25 @@ export default function HeaderMenu() {
         visible={openResetPasswordModal}
         onCancel={() => setOpenResetPasswordModal(false)}
       />
-      <NavMsgBar className="mr-8" />
       <a
-        href={`//${window.CONFIG.docs_hostname}`}
-        target="_blank"
-        rel="noreferrer"
-        className="app-nav-button corner-8-8-8-2 mr-8"
-      >
-        <Icon size={20} className='mr-4 app-icon-color-inherit' name="book" />
-        帮助文档
-      </a>
-      <a
-        className="btn mr-8"
+        className="btn mr-16"
         target="_blank"
         rel="noreferrer"
         href={`//${window.CONFIG.home_hostname}`}
       >
-        访问用户端
+        进入应用访问
       </a>
-      <div className="header-nav-btn group">
+      <hr className='w-1 h-20 bg-gray-200'/>
+      <NavMsgBar type='portal' className="mx-16"/>
+      <a
+        href={`//${window.CONFIG.docs_hostname}`}
+        target="_blank"
+        rel="noreferrer"
+        className="cursor-pointer corner-4-0-4-4 text-white hover:bg-gray-100 hover:text-gray-600"
+      >
+        <Icon name="help_doc" size={21} className='app-icon-color-inherit m-6'/>
+      </a>
+      <div className="header-nav-btn group ml-16">
         <MoreMenu
           menus={[
             { key: 'resetPassword', label: '重置密码' },

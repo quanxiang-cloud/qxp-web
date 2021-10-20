@@ -1,13 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { observer } from 'mobx-react';
 
 import Icon from '@c/icon';
 import PopConfirm from '@c/pop-confirm';
 import Button from '@c/button';
-import HeaderNav from '@c/header-nav';
 
 import AppsSwitcher from '@c/apps-switcher';
+import MoreMenu from '@c/more-menu';
+import Avatar from '@c/avatar';
+import ResetPasswordModal from '@portal/global-header/reset-password-modal';
+import NavMsgBar from '@portal/modules/msg-center/nav-msg-bar';
+
 import appDetailsStore from '../store';
 import './index.scss';
 
@@ -15,6 +19,7 @@ function DetailsHeader(): JSX.Element {
   const history = useHistory();
   const { appID } = useParams<{appID: string}>();
   const { updateAppStatus, appDetails, apps } = appDetailsStore;
+  const [openResetPasswordModal, setOpenResetPasswordModal] = useState<boolean>(false);
 
   useEffect(() => {
     appDetailsStore.fetchAppList();
@@ -50,43 +55,71 @@ function DetailsHeader(): JSX.Element {
   return (
     <div className="app-global-header app-details-header">
       <div className='flex items-center'>
-        <HeaderNav
-          {...{
-            name: '应用管理',
-            icon: 'dashboard_customize',
-            inside: true,
-            url: '/apps',
-          }}
-        />
-        <span className='mr-16 ml-8'>/</span>
+        <div
+          onClick={() => history.push('/apps')}
+          className='app-header-icon text-gray-400 corner-8-8-8-2 flex items-center justify-center'
+        >
+          <Icon size={20} className='mr-4 text-current' name='home_qxp'/>
+        </div>
+        <span className='ml-8 mr-16'>/</span>
         <AppsSwitcher apps={apps} currentAppID={appID} onChange={handleChange} />
       </div>
-      <div className='flex'>
-        {isPublish ? (
-          <PopConfirm content={statusTipsContent(false)} onOk={updateAppStatus}>
-            <Button iconName='toggle_on' modifier='primary'>
-              下线应用
-            </Button>
-          </PopConfirm>
-        ) : (
-          <PopConfirm content={statusTipsContent(true)} onOk={updateAppStatus}>
-            <Button iconName='toggle_on' modifier='primary'>
-              发布应用
-            </Button>
-          </PopConfirm>
-        )}
+      <div className='flex items-center'>
+        <PopConfirm content={statusTipsContent(false)} onOk={updateAppStatus}>
+          <Button modifier='primary'>
+            {isPublish ? '下线应用' : '发布应用'}
+          </Button>
+        </PopConfirm>
+        <hr className='app-global-header-hr mx-16' />
+        <a
+          className="btn mr-16"
+          target="_blank"
+          rel="noreferrer"
+          href={`//${window.CONFIG.home_hostname}`}
+        >
+          访问应用端
+        </a>
         <hr className='app-global-header-hr' />
+        <NavMsgBar type='portal' className='mx-16'/>
         <a
           href={`//${window.CONFIG.docs_hostname}`}
           target="_blank"
           rel="noreferrer"
-          className="app-nav-button corner-8-8-8-2"
+          className="app-header-icon corner-4-0-4-4 text-white"
         >
-          <Icon size={20} className='mr-4 app-icon-color-inherit' name="book" />
-          帮助文档
+          <Icon name="help_doc" size={21} className='app-icon-color-inherit m-6'/>
         </a>
+        <div className="header-nav-btn group ml-16">
+          <MoreMenu
+            menus={[
+              { key: 'resetPassword', label: '重置密码' },
+              { key: 'logout', label: '登出' },
+            ]}
+            onMenuClick={(menuKey) => {
+              if (menuKey === 'logout') {
+                window.location.href = '/logout';
+                return;
+              }
+
+              setOpenResetPasswordModal(true);
+            }}
+          >
+            <div
+              className="cursor-pointer flex items-center h-36
+            hover:blue-100 transition group-hover:text-blue-600"
+            >
+              <Avatar username={window.USER.userName}/>
+              <Icon name="arrow_drop_down" size={20} />
+            </div>
+          </MoreMenu>
+        </div>
       </div>
+      <ResetPasswordModal
+        visible={openResetPasswordModal}
+        onCancel={() => setOpenResetPasswordModal(false)}
+      />
     </div>
+
   );
 }
 

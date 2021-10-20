@@ -1,4 +1,4 @@
 :root {
-  --global-header-height: 62px;
+  --global-header-height: 52px;
   --main-content-height: calc(100vh - var(--global-header-height));
 }
