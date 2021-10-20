@@ -34,10 +34,11 @@ export default function UserAvatarMenu({ className }: Props): JSX.Element {
 
   return (
     <div>
-      <ResetPasswordModal
-        visible={openResetPasswordModal}
-        onCancel={() => setOpenResetPasswordModal(false)}
-      />
+      {openResetPasswordModal && (
+        <ResetPasswordModal
+          visible={openResetPasswordModal}
+          onCancel={() => setOpenResetPasswordModal(false)}
+        />)}
       <div
         className={cs('cursor-pointer flex items-center h-36 transition', className)}
         ref={reference}
@@ -55,8 +56,8 @@ export default function UserAvatarMenu({ className }: Props): JSX.Element {
         placement='bottom-start'
         trigger='hover'
       >
-        <div className='user-avatar-menu'>
-          <div className='user-avatar-menu-bg'>
+        <div className='user-avatar-menu corner-12-2-12-12'>
+          <div className='user-avatar-menu-bg flex py-20'>
             <div className='pl-20'>
               <Avatar
                 username={window.USER?.userName || ''}
