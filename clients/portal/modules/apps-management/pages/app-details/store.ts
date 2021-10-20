@@ -251,7 +251,7 @@ class AppDetailsStore {
         }
       });
     }
-    const PageInfoPick = pick(pageInfo, 'name', 'icon', 'describe', 'groupID');
+
     if (pageInfo.bindingState === BindState.isBind && pageInfo.menuType === MenuType.schemaForm) {
       return formDuplicate( this.appID, {
         name: pageInfo.name || '',
@@ -260,9 +260,11 @@ class AppDetailsStore {
         groupID: pageInfo.groupID || '',
         duplicateTableID: pageInfo.id,
       } ).then((res: {id: string}) => {
-        this.addNewPageToList(PageInfoPick, res.id);
+        this.addNewPageToList({ ...pageInfo, ...res }, res.id);
       });
     }
+
+    const PageInfoPick = pick(pageInfo, 'name', 'icon', 'describe', 'groupID');
     return createPage({ appID: this.appID, ...PageInfoPick } ).then((res: {id: string}) => {
       this.addNewPageToList(PageInfoPick, res.id);
     });
@@ -319,10 +321,12 @@ class AppDetailsStore {
     if (pageInfo.menuType === MenuType.schemaForm) {
       getTableSchema(this.appID, pageInfo.id).then((pageSchema) => {
         this.hasSchema = !!pageSchema;
+        if (!this.appID) return;
         if (this.hasSchema) {
           return getSchemaPageInfo(this.appID, pageID);
         }
       }).then((res) => {
+        if (!this.pageID) return;
         if (res) {
           const descriptions = this.pageDescriptions.map((description) => {
             return mapToSchemaPageDescription(description, res);

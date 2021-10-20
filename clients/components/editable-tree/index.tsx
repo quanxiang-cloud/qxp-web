@@ -36,6 +36,12 @@ function TreeContent({
   });
 
   function handleAddSubNode(nodePath: string): void {
+    const level = getLevelFromPrefix(nodePath);
+    if (level > 3) {
+      toast.error('最多可设置四级!');
+      return;
+    }
+
     const bakTree = cloneDeep(toJS(tree));
     const path = `${nodePath}.children`;
     let cur = get(bakTree, path);

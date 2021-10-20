@@ -1,4 +1,3 @@
-import { deleteOperate, extraOperations } from '../operates';
 
 const schema: ISchema = {
   type: 'object',
@@ -115,13 +114,6 @@ const schema: ISchema = {
               },
             },
             {
-              type: 'value:state',
-              target: 'add',
-              state: {
-                display: '{{ $value === "customized" }}',
-              },
-            },
-            {
               type: 'value:visible',
               target: 'edit',
               condition: '{{ $value === "customized" }}',
@@ -136,6 +128,11 @@ const schema: ISchema = {
               target: 'datasetId',
               condition: '{{ $value === "dataset" }}',
             },
+            {
+              type: 'value:visible',
+              target: 'defaultValue',
+              condition: '{{ $value === "dataset" }}',
+            },
           ],
         },
         linkageConfig: {
@@ -146,54 +143,18 @@ const schema: ISchema = {
           'x-index': 9,
         },
         availableOptions: {
-          type: 'array',
-          'x-component': 'ArrayTable',
+          'x-component': 'OptionsConfig',
           'x-component-props': {
-            operationsWidth: 80,
-            renderRemove: deleteOperate,
-            renderMoveDown: () => null,
-            renderMoveUp: () => null,
-            renderExtraOperations: extraOperations,
-            renderAddition: () => null,
+            mode: 'single',
+          },
+          'x-mega-props': {
+            labelAlign: 'top',
           },
           'x-index': 10,
-          items: {
-            type: 'object',
-            properties: {
-              label: {
-                title: '选项',
-                type: 'string',
-                required: true,
-                'x-component': 'Input',
-                'x-component-props': {
-                  maxLength: 50,
-                },
-              },
-              isDefault: {
-                type: 'string',
-                'x-component': 'CheckBox',
-              },
-            },
-          },
         },
-        operates: {
-          type: 'object',
-          'x-component': 'mega-layout',
-          'x-index': 11,
-          'x-component-props': {
-            grid: true,
-            columns: 2,
-          },
-          properties: {
-            add: {
-              type: 'string',
-              'x-component': 'AddOperate',
-            },
-            edit: {
-              type: 'string',
-              'x-component': 'EditLabels',
-            },
-          },
+        edit: {
+          type: 'string',
+          'x-component': 'EditLabels',
         },
         datasetId: {
           title: '选项集',
@@ -208,6 +169,15 @@ const schema: ISchema = {
             labelAlign: 'top',
           },
           'x-index': 12,
+        },
+        defaultValue: {
+          type: 'string',
+          title: '默认值',
+          'x-component': 'Select',
+          'x-mega-props': {
+            labelAlign: 'top',
+          },
+          'x-index': 13,
         },
       },
     },

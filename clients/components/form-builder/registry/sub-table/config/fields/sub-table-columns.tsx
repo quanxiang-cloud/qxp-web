@@ -7,8 +7,8 @@ import Toggle from '@c/toggle';
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 import schemaToFields from '@lib/schema-convert';
 import { FieldConfigContext } from '@c/form-builder/form-settings-panel/form-field-config/context';
+import { getTableSchema } from '@lib/http-client';
 
-import { getFormTableSchema } from '../api';
 import { SUPPORTED_COMPONENTS_NAMES } from '../constants';
 
 const { onFieldValueChange$ } = FormEffectHooks;
@@ -24,9 +24,7 @@ function SubTableColumns({ value, mutators }: ISchemaFieldComponentProps): JSX.E
   const subRef = useRef<any>();
 
   useEffect(() => {
-    if (!currentSchema && value?.length) {
-      actions.getFieldState('Fields.linkedTable', handleLinkedTableChange);
-    }
+    !currentSchema && actions.getFieldState('Fields.linkedTable', handleLinkedTableChange);
     return () => subRef.current?.unsubscribe();
   }, []);
 
@@ -38,11 +36,7 @@ function SubTableColumns({ value, mutators }: ISchemaFieldComponentProps): JSX.E
   function fetchSchema(tableID: string, appID: string): void {
     actions.getFieldState('Fields.subordination', async (st) => {
       if (tableID && appID && st.value === 'foreign_table') {
-        const resp = await getFormTableSchema<{
-            schema: ISchema;
-            tableID: string;
-            tableName: string;
-          }>({ tableID, appID });
+        const resp = await getTableSchema(appID, tableID);
         if (resp?.schema) {
           setCurrentSchema(resp.schema);
         }

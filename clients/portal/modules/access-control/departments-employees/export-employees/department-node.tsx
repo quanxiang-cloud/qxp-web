@@ -1,10 +1,10 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import cs from 'classnames';
+import { last } from 'lodash';
 
 import { NodeRenderProps } from '@c/headless-tree/types';
 import Checkbox from '@c/checkbox';
-import { last } from '@lib/utils';
 
 import DepartmentTreeStore from './store';
 
@@ -21,15 +21,16 @@ export default observer(function DepartmentNode({ node, store, onChange }: Props
   const isChecked = status === 'checked';
   const isIndeterminate = status === 'indeterminate';
 
-  const getSelectedData = (departments: Department[][]) => {
+  const getSelectedData = (departments: Department[][]): Department[] => {
     const arr: Department[] = [];
     departments.forEach((dps) => {
-      arr.push(last<Department>(dps));
+      const dp = last<Department>(dps);
+      dp && arr.push(dp);
     });
     return arr;
   };
 
-  const handleClick = () => {
+  const handleClick = (): void => {
     const prevData = getSelectedData(st.selectedDataPaths);
     st.toggleCheck(node.id);
     const currentData = getSelectedData(st.selectedDataPaths);

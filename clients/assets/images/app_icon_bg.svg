@@ -1,0 +1,61 @@
+<svg width="352" height="44" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <linearGradient id="app_icon_teal" x1="0" y1="0" x2="0" y2="1">
+   <stop stop-color="#5EEAD4" offset="0"/>
+   <stop stop-color="#2DD4BF" offset="1"/>
+  </linearGradient>
+  <linearGradient id="app_icon_red" x1="0" y1="0" x2="0" y2="1">
+   <stop stop-color="#FCA5A5" offset="0"/>
+   <stop stop-color="#F87171" offset="1"/>
+  </linearGradient>
+  <linearGradient id="app_icon_orange" x1="0" y1="0" x2="0" y2="1">
+   <stop stop-color="#FDBA74" offset="0"/>
+   <stop stop-color="#FB923C" offset="1"/>
+  </linearGradient>
+  <linearGradient id="app_icon_indigo" x1="0" y1="0" x2="0" y2="1">
+   <stop stop-color="#A5B4FC" offset="0"/>
+   <stop stop-color="#818CF8" offset="1"/>
+  </linearGradient>
+  <linearGradient y2="1" x2="0" y1="0" x1="0" id="app_icon_fuchsia">
+   <stop offset="0" stop-color="#D8B4FE"/>
+   <stop offset="1" stop-color="#C084FC"/>
+  </linearGradient>
+  <linearGradient id="app_icon_emerald" x1="0" y1="0" x2="0" y2="1">
+   <stop stop-color="#6EE7B7" offset="0"/>
+   <stop stop-color="#34D399" offset="1"/>
+  </linearGradient>
+  <linearGradient y2="1" x2="0" y1="0" x1="0" id="app_icon_cyan">
+   <stop offset="0" stop-color="#67E8F9"/>
+   <stop offset="1" stop-color="#22D3EE"/>
+  </linearGradient>
+  <linearGradient id="app_icon_amber" x1="0" y1="0" x2="0" y2="1">
+   <stop stop-color="#FCD34D" offset="0"/>
+   <stop stop-color="#FBBF24" offset="1"/>
+  </linearGradient>
+ </defs>
+  <rect fill="url(#app_icon_amber)" height="44" width="44" y="0" x="308" />
+  <path fill="#F59E0B" d="m308,43c0,-12.15026 9.84974,-22 22,-22c12.1503,0 22,9.84974 22,22c0,12.1503 -9.8497,22 -22,22c-12.15026,0 -22,-9.8497 -22,-22z" opacity="0.3" />
+  <path fill="#F59E0B" d="m286.29852,22c0,-12.15026 9.8497,-22 21.99998,-22c12.15022,0 22.00002,9.84974 22.00002,22c0,12.1503 -9.8498,22 -22.00002,22c-12.15028,0 -21.99998,-9.8497 -21.99998,-22z" opacity="0.3" />
+  <rect x="264" y="0" width="44" height="44" fill="url(#app_icon_cyan)" />
+  <path opacity="0.3" d="m264,43c0,-12.15026 9.84974,-22 22,-22c12.1503,0 22,9.84974 22,22c0,12.1503 -9.8497,22 -22,22c-12.15026,0 -22,-9.8497 -22,-22z" fill="#06B6D4" />
+  <path opacity="0.3" d="m242.00001,22c0,-12.15026 9.8497,-22 21.99998,-22c12.15022,0 22.00002,9.84974 22.00002,22c0,12.1503 -9.8498,22 -22.00002,22c-12.15028,0 -21.99998,-9.8497 -21.99998,-22z" fill="#06B6D4" />
+  <rect fill="url(#app_icon_emerald)" height="44" width="44" y="0" x="220" />
+  <path fill="#10B981" d="m197.70149,22.35088c0,-12.15026 9.8497,-22 21.99998,-22c12.15022,0 22.00002,9.84974 22.00002,22c0,12.1503 -9.8498,22 -22.00002,22c-12.15028,0 -21.99998,-9.8497 -21.99998,-22z" opacity="0.3" />
+  <rect x="176" y="0" width="44" height="44" fill="url(#app_icon_fuchsia)" />
+  <path opacity="0.3" d="m176,43c0,-12.15026 9.84974,-22 22,-22c12.1503,0 22,9.84974 22,22c0,12.1503 -9.8497,22 -22,22c-12.15026,0 -22,-9.8497 -22,-22z" fill="#A855F7" />
+  <path fill="#10B981" d="m220,43.32258c0,-12.15026 9.84974,-22 22,-22c12.1503,0 22,9.84974 22,22c0,12.1503 -9.8497,22 -22,22c-12.15026,0 -22,-9.8497 -22,-22z" opacity="0.3" />
+  <path opacity="0.3" d="m154.00001,22c0,-12.15026 9.8497,-22 21.99998,-22c12.15022,0 22.00002,9.84974 22.00002,22c0,12.1503 -9.8498,22 -22.00002,22c-12.15028,0 -21.99998,-9.8497 -21.99998,-22z" fill="#A855F7" />
+  <rect fill="url(#app_icon_indigo)" height="44" width="44" y="0" x="132" />
+  <path fill="#6366F1" d="m110,22c0,-12.15026 9.8497,-22 21.99998,-22c12.15022,0 22.00002,9.84974 22.00002,22c0,12.1503 -9.8498,22 -22.00002,22c-12.15028,0 -21.99998,-9.8497 -21.99998,-22z" opacity="0.3" />
+  <rect fill="url(#app_icon_orange)" height="44" width="44" y="0" x="88" />
+  <path fill="#F97316" d="m66,22c0,-12.15026 9.8497,-22 21.99998,-22c12.15022,0 22.00002,9.84974 22.00002,22c0,12.1503 -9.8498,22 -22.00002,22c-12.15028,0 -21.99998,-9.8497 -21.99998,-22z" opacity="0.3" />
+  <rect fill="url(#app_icon_red)" height="44" width="44" y="0" x="44" />
+  <path fill="#EF4444" d="m22,22c0,-12.15026 9.8497,-22 21.99998,-22c12.15022,0 22.00002,9.84974 22.00002,22c0,12.1503 -9.8498,22 -22.00002,22c-12.15028,0 -21.99998,-9.8497 -21.99998,-22z" opacity="0.3" />
+  <rect fill="url(#app_icon_teal)" height="44" width="44" y="0" x="0" />
+  <path fill="#14B8A6" d="m-0.21506,43c0,-12.15026 9.84974,-22 22,-22c12.1503,0 22,9.84974 22,22c0,12.1503 -9.8497,22 -22,22c-12.15026,0 -22,-9.8497 -22,-22z" opacity="0.3"/>
+  <path fill="#14B8A6" d="m-22,22.24154c0,-12.15026 9.8497,-22 21.99998,-22c12.15022,0 22.00002,9.84974 22.00002,22c0,12.1503 -9.8498,22 -22.00002,22c-12.15028,0 -21.99998,-9.8497 -21.99998,-22z" opacity="0.3" />
+  <path fill="#EF4444" d="m44,43c0,-12.15026 9.84974,-22 22,-22c12.1503,0 22,9.84974 22,22c0,12.1503 -9.8497,22 -22,22c-12.15026,0 -22,-9.8497 -22,-22z" opacity="0.3" />
+  <path fill="#EF4444" d="m100,100a50,50 0 1 1 100,0l-100,0z" opacity="0.3" />
+  <path fill="#F97316" d="m88,43c0,-12.15026 9.84974,-22 22,-22c12.1503,0 22,9.84974 22,22c0,12.1503 -9.8497,22 -22,22c-12.15026,0 -22,-9.8497 -22,-22z" opacity="0.3" />
+  <path fill="#6366F1" d="m132.00001,42.78495c0,-12.15026 9.84974,-22 22,-22c12.1503,0 22,9.84974 22,22c0,12.1503 -9.8497,22 -22,22c-12.15026,0 -22,-9.8497 -22,-22z" opacity="0.3" />
+</svg>

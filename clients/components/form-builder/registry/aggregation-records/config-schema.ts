@@ -106,6 +106,18 @@ const schema: ISchema = {
             message: '请选择统计类型',
           },
           'x-component': 'Select',
+          'x-linkages': [
+            {
+              type: 'value:visible',
+              target: 'fieldName',
+              condition: '{{ $value !== "count" }}',
+            },
+            {
+              type: 'value:visible',
+              target: 'roundDecimal',
+              condition: '{{ $value !== "max" && $value !== "min" }}',
+            },
+          ],
           'x-mega-props': {
             labelAlign: 'top',
           },
@@ -116,6 +128,7 @@ const schema: ISchema = {
           title: '统计字段',
           default: '',
           required: true,
+          visible: true,
           enum: [],
           'x-component': 'Select',
           'x-mega-props': {
@@ -143,6 +156,7 @@ const schema: ISchema = {
           type: 'string',
           title: '取整方式',
           default: 'round',
+          visible: true,
           enum: [
             {
               label: '四舍五入',
