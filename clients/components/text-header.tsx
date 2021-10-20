@@ -45,7 +45,7 @@ export default function TextHeader({
           </div>)
         }
         descClassName={cs(
-          'transition ease-linear text-12 text-blueGray-400',
+          'transition ease-linear text-12',
           descClassName,
         )}
         textDirection={textDirection}
