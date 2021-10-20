@@ -1,0 +1,22 @@
+.menu-tree {
+  .menu-item {
+    cursor: grab;
+    display: flex;
+    justify-content: space-between;
+    user-select: none;
+  }
+  .item-title {
+    max-width: 80px;
+    display: inline-block;
+  }
+  ul {
+    padding-left: 10px;
+  }
+}
+
+.none {
+  position: fixed;
+  z-index: 9;
+  left: -1000px;
+  pointer-events: none;
+}

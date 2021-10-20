@@ -1,4 +1,4 @@
-import { omit, pick } from 'lodash';
+import { cloneDeep, omit, pick } from 'lodash';
 import { History } from 'history';
 import { observable, action, toJS, reaction, IReactionDisposer, runInAction } from 'mobx';
 import { mutateTree, TreeData, TreeItem } from '@atlaskit/tree';
@@ -51,6 +51,34 @@ const DEFAULT_CARD_LIST = [
   },
 ];
 
+const DEFAULT_MENU = { id: '' };
+
+function getDefaultMenu(extraInfo: Record<string, unknown>): Menu {
+  const DEFAULT_INSERT_MENU = {
+    id: '',
+    bindingState: 20,
+    child: null,
+    childCount: 0,
+    describe: '',
+    groupID: '',
+    icon: '',
+    isHide: false,
+    menuType: 0,
+    name: '',
+  };
+
+  return { ...DEFAULT_INSERT_MENU, ...extraInfo };
+}
+function getFirstMenu(menus: Menu[] = []): Menu {
+  if (!menus.length) return DEFAULT_MENU;
+  if (menus[0]?.menuType !== MenuType.group) {
+    return menus?.[0] || DEFAULT_MENU;
+  }
+  if (menus[0]?.menuType === MenuType.group && !menus[0].child?.length) {
+    return getFirstMenu(menus.slice(1));
+  }
+  return menus[0]?.child?.[0] || DEFAULT_MENU;
+}
 class AppDetailsStore {
   destroySetCurPage: IReactionDisposer;
   @observable appDetails: AppInfo = {
@@ -77,6 +105,9 @@ class AppDetailsStore {
   @observable curPreviewUrl = '';
   @observable curPageCardList: CardList[] = DEFAULT_CARD_LIST;
   @observable pageDescriptions = DefaultPageDescriptions;
+  @observable menuTree = [];
+  @observable activeMenu: Menu = DEFAULT_MENU;
+  @observable lastHover: Menu = DEFAULT_MENU;
 
   constructor() {
     this.destroySetCurPage = reaction(() => {
@@ -93,7 +124,7 @@ class AppDetailsStore {
   }
 
   @action
-  setModalType = (modalType : string): void => {
+  setModalType = (modalType: string): void => {
     this.modalType = modalType;
   }
 
@@ -160,12 +191,42 @@ class AppDetailsStore {
     this.pagesTreeData = treeData;
   }
 
+  @action del = async (delItem: Menu, type: string, pathname: string, history?: History): Promise<void> => {
+    const dto = {
+      id: delItem.id,
+      appID: delItem.appID,
+      sort: delItem.sort,
+      groupID: type === 'delGroup' ? '' : delItem.groupID,
+    };
+    const delMethod = type === 'delGroup' ? deleteGroup : deletePage;
+
+    await delMethod(dto);
+    toast.success('删除成功');
+    if (!delItem.groupID) {
+      const filteredPageList = this.pageInitList.filter((item) => item.id !== delItem.id);
+      this.update(filteredPageList);
+    } else {
+      const _pageInitList = cloneDeep(this.pageInitList);
+      _pageInitList.forEach((item) => {
+        if (item.id === delItem.groupID) {
+          item.child?.forEach((ch, index) => {
+            if (ch.id === delItem.id) {
+              item.child?.splice(index, 1);
+            }
+          });
+        }
+      });
+      this.update(_pageInitList);
+    }
+    this.activeMenu = getFirstMenu(this.pageInitList);
+  }
+
   @action
   deletePageOrGroup = async ({
     treeItem, type, history, pathname,
   }: DeletePageOrGroupParams): Promise<void> => {
     const data = {
-      id: treeItem.data.id,
+      id: treeItem.id,
       appID: treeItem.data.appID,
       sort: treeItem.data.sort,
       groupID: type === 'delGroup' ? '' : treeItem.data.groupID,
@@ -174,6 +235,7 @@ class AppDetailsStore {
     const method = type === 'delGroup' ? deleteGroup : deletePage;
 
     await method(data);
+
     const treeItems = toJS(this.pagesTreeData.items);
     const items = omit(treeItems, treeItem.id as string);
     const nextTreeItem = getNextTreeItem(treeItem, treeItems);
@@ -208,105 +270,102 @@ class AppDetailsStore {
   editGroup = (groupInfo: PageInfo): Promise<void> => {
     if (groupInfo.id) {
       return updatePageOrGroup({ appID: this.appID, ...groupInfo }).then(() => {
-        this.pagesTreeData = mutateTree(toJS(this.pagesTreeData), groupInfo.id as string, {
-          id: groupInfo.id,
-          data: groupInfo,
+        const editGroupData = this.pageInitList.map((item) => {
+          if (item.id === groupInfo.id) {
+            item.name = groupInfo.name;
+          }
+          return item;
         });
-
+        this.update(editGroupData);
         toast.success('修改成功');
       });
     }
 
     return createGroup({ appID: this.appID, ...groupInfo }).then((res: any) => {
-      const newGroup = { ...res, name: groupInfo.name, menuType: 1, appID: this.appID };
-      const items = toJS(this.pagesTreeData.items);
-      items.ROOT.children.push(newGroup.id);
-      items[newGroup.id] = {
-        id: newGroup.id,
-        children: [],
-        hasChildren: true,
-        isExpanded: true,
-        isChildrenLoading: false,
-        data: newGroup,
-      };
-
-      this.pagesTreeData = {
-        items,
-        rootId: 'ROOT',
-      };
-
+      const newGroup = getDefaultMenu({
+        ...res,
+        name: groupInfo.name,
+        menuType: 1,
+        appID: this.appID,
+        sort: Math.max.apply(null, this.pageInitList.map((item: Menu) => Number(item.sort))) + 1,
+      });
+      this.pageInitList.push(newGroup);
       toast.success('创建成功');
     });
   }
-
+  // 'editPage', 'createPage', 'copyPage'
   @action
   editPage = (pageInfo: PageInfo): Promise<void> => {
     if (this.modalType === 'editPage') {
       return updatePageOrGroup(pageInfo).then(() => {
         toast.success('修改成功');
-        this.pagesTreeData = mutateTree(toJS(this.pagesTreeData), pageInfo.id, {
-          id: pageInfo.id,
-          data: pageInfo,
-        });
 
-        if (pageInfo.id === this.curPage.id) {
-          this.curPage = pageInfo;
-        }
+        const editName = (pageInitList: Menu[]): Menu[] => {
+          return (pageInitList || []).map((item: Menu) => {
+            if (item.id === pageInfo.id) {
+              this.setActiveMenu(pageInfo);
+              return pageInfo;
+            } else if (item.child?.length) {
+              item.child = editName(item.child);
+            }
+            return item;
+          });
+        };
+        this.update(editName(this.pageInitList));
       });
     }
-
+    // copyPage
+    const PageInfoPick = pick(pageInfo, 'name', 'icon', 'describe', 'groupID');
     if (pageInfo.bindingState === BindState.isBind && pageInfo.menuType === MenuType.schemaForm) {
-      return formDuplicate( this.appID, {
+      return formDuplicate(this.appID, {
         name: pageInfo.name || '',
         icon: pageInfo.icon || '',
         describe: pageInfo.describe || '',
         groupID: pageInfo.groupID || '',
         duplicateTableID: pageInfo.id,
-      } ).then((res: {id: string}) => {
-        this.addNewPageToList({ ...pageInfo, ...res }, res.id);
+      }).then((res: { id: string }) => {
+        this.addNewPageToList(PageInfoPick, res.id);
       });
     }
-
-    const PageInfoPick = pick(pageInfo, 'name', 'icon', 'describe', 'groupID');
-    return createPage({ appID: this.appID, ...PageInfoPick } ).then((res: {id: string}) => {
+    // create
+    return createPage({ appID: this.appID, ...PageInfoPick }).then((res: { id: string }) => {
       this.addNewPageToList(PageInfoPick, res.id);
     });
   }
 
   @action
-  addNewPageToList = (PageInfoPick: Partial<PageInfo>, id:string): string => {
+  addNewPageToList = (PageInfoPick: Partial<PageInfo>, id: string): string => {
     const newPage: PageInfo = {
-      id, ...PageInfoPick, menuType: 0, appID: this.appID, child: null, childCount: 0, sort: 0,
-    };
-    const items = toJS(this.pagesTreeData.items);
-    items[newPage.groupID || 'ROOT'].children.push(newPage.id);
-    items[newPage.id] = {
-      id: newPage.id,
-      data: newPage,
-      children: [],
-      hasChildren: false,
+      ...getDefaultMenu({
+        id,
+        appID: this.appID,
+        sort: Math.max.apply(null, this.pageInitList.map((item: Menu) => Number(item.sort))) + 1,
+      }),
+      ...PageInfoPick,
     };
 
-    this.pagesTreeData = { items, rootId: 'ROOT' };
-
+    // edit
     if (!newPage.groupID) {
       this.pageInitList.push(newPage);
-      this.curPage = newPage;
+      // this.curPage = newPage;
+      this.activeMenu = newPage;
       toast.success('创建成功');
       return id;
     }
 
     this.pageInitList = this.pageInitList.map((page) => {
       if (page.id === newPage.groupID) {
-        const lastChildPage = page.child?.slice(-1) || [];
-        const sort = lastChildPage[0]?.sort || 0;
+        // const lastChildPage = page.child?.slice(-1) || [];
+        const sort = Math.max.apply(null, (page?.child || []).map((item: Menu) => Number(item.sort))) || 0;
         newPage.sort = sort + 1;
-
-        page.childCount = page.child?.push(newPage);
-        this.curPage = newPage;
+        page.child = ((page?.child || [])?.concat([newPage]));
+        page.childCount = page.child.length;
+        // this.curPage = newPage;
+        this.activeMenu = newPage;
       }
       return page;
     });
+
     toast.success('创建成功');
     return id;
   }
@@ -317,7 +376,8 @@ class AppDetailsStore {
       return;
     }
 
-    const pageInfo = this.pagesTreeData.items[pageID].data;
+    // const pageInfo = this.pagesTreeData.items[pageID].data;
+    const pageInfo = this.activeMenu;
     this.fetchSchemeLoading = true;
     this.curPageCardList = DEFAULT_CARD_LIST;
 
@@ -396,15 +456,20 @@ class AppDetailsStore {
   @action
   updatePageHideStatus = (appID: string, pageInfo: PageInfo) => {
     return isHiddenMenu(appID, { id: pageInfo.id, hide: pageInfo.isHide ? false : true }).then(() => {
-      this.pagesTreeData = mutateTree(toJS(this.pagesTreeData), pageInfo.id, {
-        id: pageInfo.id,
-        data: { ...pageInfo, isHide: !pageInfo.isHide },
-      });
+      const hideMenu = (pageInitList: Menu[]): Menu[] => {
+        return (pageInitList || []).map((item: Menu) => {
+          if (item.id === pageInfo.id) {
+            this.setActiveMenu(pageInfo);
+            item.isHide = !pageInfo.isHide;
+          } else if (item.child?.length) {
+            item.child = hideMenu(item.child);
+          }
+          return item;
+        });
+      };
 
-      if (pageInfo.id === this.curPage.id) {
-        this.curPage = { ...pageInfo, isHide: !pageInfo.isHide };
-      }
-      toast.success(`${pageInfo.name}页面${!pageInfo.isHide ? '隐藏' : '显示' }成功`);
+      this.update(hideMenu(this.pageInitList));
+      toast.success(`${pageInfo.name}页面${!pageInfo.isHide ? '隐藏' : '显示'}成功`);
     }).catch(() => toast.error('页面设置显示或者隐藏失败'));
   }
 
@@ -413,11 +478,17 @@ class AppDetailsStore {
     this.appID = appID;
     this.pageListLoading = true;
     fetchPageList(appID).then((res: any) => {
-      runInAction(() => {
-        this.pageInitList = res.menu;
-        this.pagesTreeData = buildAppPagesTreeData(res.menu);
-        this.pageListLoading = false;
+      this.pageInitList = res.menu.map((item: Menu) => {
+        if (item.child?.length) {
+          item.child = item.child.map((ch: Menu) => {
+            ch['open'] = true; return ch;
+          });
+        }
+        return item;
       });
+      this.activeMenu = getFirstMenu(res.menu);
+      this.pagesTreeData = buildAppPagesTreeData(res.menu);
+      this.pageListLoading = false;
     });
   }
 
@@ -431,6 +502,18 @@ class AppDetailsStore {
       rootId: 'ROOT',
       items: {},
     };
+  }
+
+  @action setActiveMenu = (menuItem: Menu): void => {
+    this.activeMenu = menuItem;
+  }
+
+  @action update = (newPageList: PageInfo[]): void => {
+    this.pageInitList = newPageList;
+  }
+
+  @action setLastHover = (menuItem: Menu): void => {
+    this.lastHover = menuItem;
   }
 }
 
