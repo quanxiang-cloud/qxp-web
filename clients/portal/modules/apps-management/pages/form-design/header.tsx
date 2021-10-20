@@ -100,6 +100,13 @@ function FormDesignHeader(): JSX.Element {
         >
           保存
         </Button>
+        <Button
+          onClick={goBack}
+          iconName='cancel_presentation'
+          modifier='primary'
+        >
+          退出
+        </Button>
         {/* <span className='text-underline-no-color cursor-pointer'>
           🎬 查看新手指引
         </span> */}
