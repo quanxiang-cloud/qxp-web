@@ -46,11 +46,11 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel, onChange: _onCh
     data: allTables = [],
     isLoading,
     isError,
-  } = useQuery(['GET_WORK_FORM_LIST', appID], getFormDataOptions, {
+  } = useQuery(['GET_WORK_FORM_LIST', appID], () => getFormDataOptions(appID), {
     enabled: !!appID,
   });
 
-  const onSave = () => {
+  const onSave = (): void => {
     // todo: validate
     if (!value.targetTableId) {
       toast.error('请选择目标数据表');
@@ -59,7 +59,7 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel, onChange: _onCh
     onSubmit(value);
   };
 
-  const onClose = () => {
+  const onClose = (): void => {
     onCancel();
   };
 
@@ -67,7 +67,7 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel, onChange: _onCh
     setValue((v) => ({ ...v, ...val }));
   };
 
-  const onChangeTargetTable = (table_id: string) => {
+  const onChangeTargetTable = (table_id: string): void => {
     if (!value.targetTableId) {
       onChange({ targetTableId: table_id });
       return;

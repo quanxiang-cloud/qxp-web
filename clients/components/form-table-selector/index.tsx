@@ -10,32 +10,32 @@ import Icon from '@c/icon';
 import ToolTip from '@c/tooltip';
 import toast from '@lib/toast';
 
-import { getLinkageTables } from '../form-builder/utils/api';
-
-export type Value = { name?: string; value: string }
+import { getFormDataMenuList } from './api';
 
 interface Props {
-  value: Value;
+  value: { name?: string; value: string };
   changeable?: boolean;
-  onChange?: (value: Value) => void;
   validating?: boolean;
   errorMessage?: string;
   exclude?: string[];
+  onChange?: (value: { name?: string; value: string }) => void;
 }
 
-function FormTableSelector(
-  { value, changeable = true, onChange = noop, validating, errorMessage, exclude }: Props,
-  ref?: Ref<Cascader>,
-): JSX.Element {
-  const { appID } = useParams<{appID: string}>();
+function FormTableSelector({
+  value,
+  validating,
+  errorMessage,
+  onChange = noop,
+  changeable = true,
+}: Props,
+ref?: Ref<Cascader>): JSX.Element {
+  const { appID } = useParams<{ appID: string }>();
 
   const {
-    data: pages = [],
     isError,
+    data: optionsData = [],
     error = '获取工作表失败',
-  } = useQuery(['GET_WORK_FORM_LIST', appID], () => getLinkageTables(appID));
-
-  const options = [...pages];
+  } = useQuery(['GET_WORK_FORM_LIST', appID], () => getFormDataMenuList(appID), { enabled: !!appID });
 
   useEffect(() => {
     isError && toast.error(error as string);
@@ -43,7 +43,7 @@ function FormTableSelector(
 
   function onWorkFormChange(_: unknown, selectedOptions?: CascaderOptionType[]): void {
     const table = last(selectedOptions);
-    onChange({
+    table && onChange({
       value: table?.value as string,
       name: table?.label as string,
     });
@@ -71,7 +71,7 @@ function FormTableSelector(
             {...extra}
             allowClear={false}
             bordered={false}
-            options={options}
+            options={optionsData}
             expandTrigger={'hover'}
             onChange={onWorkFormChange}
             placeholder="请选择"
@@ -98,16 +98,13 @@ function FormTableSelector(
               disabled
               allowClear={false}
               bordered={false}
-              options={options}
+              options={optionsData}
               expandTrigger={'hover'}
               onChange={onWorkFormChange}
               placeholder="请选择"
               value={currentValue}
               popupClassName="ml-12"
-              className={cs(
-                'h-28 border-none px-12 text-12 flex items-center',
-                'flex-1 work-flow-form-selector',
-              )}
+              className="h-28 border-none px-12 text-12 flex items-center flex-1 work-flow-form-selector"
             />
           </ToolTip>
         )}

@@ -54,11 +54,11 @@ export default function UpdateTableData({
     data: allTables = [],
     isLoading,
     isError,
-  } = useQuery(['GET_WORK_FORM_LIST', appID], getFormDataOptions, {
+  } = useQuery(['GET_WORK_FORM_LIST', appID], () => getFormDataOptions(appID), {
     enabled: !!appID,
   });
 
-  const onSave = () => {
+  const onSave = (): void => {
     if (!value.targetTableId) {
       toast.error('请选择目标数据表');
       return;
@@ -81,7 +81,7 @@ export default function UpdateTableData({
     onSubmit(value);
   };
 
-  const onClose = () => {
+  const onClose = (): void => {
     onCancel();
   };
 
