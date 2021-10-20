@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { toJS } from 'mobx';
 import { omit } from 'lodash';
 import { from } from 'rxjs';
 import { switchMap, filter, tap, skip } from 'rxjs/operators';
@@ -25,10 +24,8 @@ import Modal from '@c/modal';
 import Button from '@c/button';
 import { StoreContext } from '@c/form-builder/context';
 import { JoinOperatorSelect, RulesList } from '@c/form-builder/customized-fields';
-import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 import { getCompareOperatorOptions, getSourceElementOperator } from '@c/form-builder/utils/operator';
 import { getLinkageTables } from '@c/form-builder/utils/api';
-import schemaToFields from '@lib/schema-convert';
 
 import { fetchLinkedTableFields } from './get-tables';
 import SCHEMA from './schema';
@@ -74,6 +71,8 @@ type Option = {
 
 type Props = {
   form: IForm;
+  targetField: SchemaFieldItem | undefined;
+  currentFormFields: SchemaFieldItem[];
   onClose: () => void;
   onSubmit: (linkage: FormBuilder.DefaultValueLinkage) => void;
   linkage?: FormBuilder.DefaultValueLinkage;
@@ -82,7 +81,7 @@ type Props = {
 }
 
 function LinkageConfig({
-  onClose, onSubmit, linkage, isLinkedFieldHide, isLinkedTableReadonly, form,
+  onClose, onSubmit, linkage, isLinkedFieldHide, isLinkedTableReadonly, form, currentFormFields, targetField,
 }: Props): JSX.Element {
   const actions = createFormActions();
   const { setFieldState, getFieldValue, setFieldValue } = actions;
@@ -90,14 +89,6 @@ function LinkageConfig({
   const linkedTableFieldsRef = useRef<LinkedTableFieldOptions[]>([]);
   const store = useContext(StoreContext);
   const defaultValue = linkage || DEFAULT_VALUE_LINKAGE;
-
-  const currentFormFields = schemaToFields(toJS(store.schema)).filter((field) => {
-    if (INTERNAL_FIELD_NAMES.includes(field.id) || field.id === store.activeField?.fieldName) {
-      return false;
-    }
-    // todo match type
-    return true;
-  });
 
   function resetFormDefaultValueOnLinkTableChanged(fields: LinkedTableFieldOptions[]): void {
     setFieldValue('sortBy', fields[0]?.value);
@@ -112,9 +103,11 @@ function LinkageConfig({
 
     setFieldState('rules.*.fieldName', (state) => state.props.enum = options);
     setFieldState('linkedField', (state) => {
+      const currentComponent = targetField ? targetField.componentName :
+        store.activeField?.componentName.toLowerCase();
       state.props.enum = fields.filter((field) => {
         // todo match type
-        return field.componentName === store.activeField?.componentName.toLowerCase();
+        return field.componentName === currentComponent;
       }).map(({ label, value }) => ({ label, value }));
     });
     setFieldState('sortBy', (state) => state.props.enum = options);
@@ -322,7 +315,7 @@ function LinkageConfig({
 
   return (
     <Modal
-      title={`设置数据联动: ${store.activeField?.configValue.title}`}
+      title={`设置数据联动: ${targetField ? targetField.title : store.activeField?.configValue.title}`}
       className="setting-data-linkage"
       onClose={onClose}
     >
