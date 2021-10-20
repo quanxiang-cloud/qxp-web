@@ -12,7 +12,7 @@ type Props = {
 }
 
 function ModelMoreMenu({ model }: Props): JSX.Element {
-  const { curDataModel, delDataModel, setEditModalType } = store;
+  const { delDataModel, setEditModalType } = store;
   const [visible, setVisible] = useState(false);
 
   function delConfirm(): void {
@@ -34,9 +34,7 @@ function ModelMoreMenu({ model }: Props): JSX.Element {
 
   return (
     <div
-      className={cs('ml-auto opacity-0 group-hover:opacity-100 flex-shrink-0', {
-        'opacity-100': model.id === curDataModel?.id,
-      })}
+      className={cs('ml-auto group-hover:flex-shrink-0')}
     >
       <MoreMenu
         menus={[

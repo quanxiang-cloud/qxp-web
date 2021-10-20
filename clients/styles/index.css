@@ -25,11 +25,10 @@ html {
 }
 
 .beauty-scroll::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 .beauty-scroll::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.1);
-  background: var(--gray-300);
+  border-radius: 12px;
+  background: rgba(71, 85, 105, 0.45);
 }
