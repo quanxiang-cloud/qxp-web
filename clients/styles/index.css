@@ -10,6 +10,7 @@
 @import "./border.css";
 @import "./btn.css";
 @import "./animation.css";
+@import "./scrollbar.css";
 
 /* todo delete this */
 .right-content-container {
