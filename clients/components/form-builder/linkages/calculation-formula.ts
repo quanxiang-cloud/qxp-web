@@ -49,7 +49,7 @@ function executeFormula({ rawFormula, formActions, targetField }: ExecuteFormula
   }
   dependentFields = dependentFields.map((dependentField) => {
     const prefix = targetField.split('.').slice(0, -1).join('.');
-    if (dependentField.startsWith('field_')) {
+    if (!dependentField.startsWith('subtable_')) {
       return dependentField;
     }
     return `${prefix}.${dependentField}`;
