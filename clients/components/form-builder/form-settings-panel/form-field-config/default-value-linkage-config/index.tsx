@@ -96,8 +96,8 @@ function LinkageConfig({
       return false;
     }
     // todo match type
-    return ['string', 'number', 'datetime'].includes(field.type || '');
-  }).map((field) => ({ label: field.title as string, value: field.id }));
+    return true;
+  });
 
   function resetFormDefaultValueOnLinkTableChanged(fields: LinkedTableFieldOptions[]): void {
     setFieldValue('sortBy', fields[0]?.value);
@@ -192,7 +192,7 @@ function LinkageConfig({
   }
 
   function updateCompareValueFieldOnCompareOperatorChanged({ name, value }: IFieldState): void {
-    const isMultiple = ['⊇', '∩', '∈', '∉'].includes(value);
+    const isMultiple = ['∩', '∈', '∉'].includes(value);
     const fieldNamePath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.fieldName`);
     const compareToPath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.compareTo`);
     const currentFieldNameValue = getFieldValue(fieldNamePath);
@@ -204,7 +204,8 @@ function LinkageConfig({
       )?.fieldEnum.map(({ label, value })=> ({ label, value }));
     }
     if (currentCompareToValue === 'currentFormValue') {
-      compareValueOptions = currentFormFields;
+      compareValueOptions = currentFormFields
+        .map((field) => ({ label: field.title as string, value: field.id }));
     }
 
     updateCompareValueFieldMode(name, isMultiple, compareValueOptions);
@@ -212,6 +213,7 @@ function LinkageConfig({
 
   function updateCompareValueFieldEnumAndComponent({ name }: IFieldState): void {
     const fieldNamePath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.fieldName`);
+    const operatePath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.compareOperator`);
     const compareToPath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.compareTo`);
     const compareValuePath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.compareValue`);
     const currentFieldNameValue = getFieldValue(fieldNamePath);
@@ -227,11 +229,15 @@ function LinkageConfig({
     }
 
     setFieldState(compareValuePath, (state) => {
+      const compareOperator = getFieldValue(operatePath);
+
       if (currentCompareToValue === 'fixedValue' && enumerable) {
         state.props['x-component'] = 'AntdSelect';
+        state.props['x-component-props'] = ['⊇', '⊋', '∩', '∈', '∉']
+          .includes(compareOperator) ? { mode: 'multiple' } : {};
         state.props.enum = linkTableField?.fieldEnum;
         if (linkTableField?.fieldEnum && !!linkTableField?.fieldEnum?.length) {
-          const optionValues = linkTableField?.fieldEnum.map(({ value }) => value);
+          const optionValues = linkTableField?.fieldEnum;
           if (Array.isArray(currentCompareValue)) {
             state.value = currentCompareValue.filter((value: any) => optionValues.includes(value));
             return;
@@ -252,10 +258,18 @@ function LinkageConfig({
         return;
       }
 
+      const compareFields = currentFormFields
+        .filter(({ componentName }) => {
+          return componentName === linkTableField?.componentName;
+        })
+        .map((field) => ({ label: field.title as string, value: field.id }));
       state.props['x-component'] = 'AntdSelect';
-      state.props.enum = currentFormFields;
-      if (currentFormFields && !!currentFormFields.length) {
-        const optionValues = currentFormFields.map(({ value }) => value);
+      state.props.enum = compareFields;
+      state.props['x-component-props'] = ['∩', '∈', '∉']
+        .includes(compareOperator) ? { mode: 'multiple' } : {};
+      if (compareFields.length) {
+        const optionValues = compareFields
+          .map(({ value }) => value);
         if (Array.isArray(currentCompareValue)) {
           state.value = currentCompareValue.filter((value: any) => optionValues.includes(value));
           return;
