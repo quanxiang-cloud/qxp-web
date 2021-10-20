@@ -6,7 +6,6 @@ import Avatar from '@c/avatar';
 import ApprovalStatus from '../components/approval-status';
 import CustomAvatar from '../components/custom-avatar';
 import UserList from '../components/user-list';
-// import WarnTips from '../components/warn-tips';
 import Describe from '../components/describe';
 
 type FlowStatusValue = Record<string, any>;
@@ -61,16 +60,16 @@ export default function Fill({ workData, clickHandle }: Props): JSX.Element {
   return (
     <div className="flex w-full">
       {isHandle && <CustomAvatar name="hourglass_empty" />}
-      { (!isHandle && isSingle) && <Avatar username={username.substring(0, 1)} />}
-      { (!isHandle && !isSingle) && <CustomAvatar name="edit" style={{ background: '#14B8A6' }} />}
+      {(!isHandle && isSingle) && <Avatar username={username.substring(0, 1)} />}
+      {(!isHandle && !isSingle) && <CustomAvatar name="edit" style={{ background: '#14B8A6' }} />}
       <div className="ml-8 flex-1">
         {
           isHandle ? (
             <div className="h-24 flex items-center justify-between">
               {isHandle &&
-              (<div className="text-12 text-gray-600">
-                {taskName}（{operationRecords?.length}人处理中 · {NoOperationValue[taskType]}）
-              </div>)
+                (<div className="text-gray-600 mb-8">
+                  {taskName}（{operationRecords?.length}人处理中 · {NoOperationValue[taskType]}）
+                </div>)
               }
             </div>
           ) : (
@@ -93,7 +92,6 @@ export default function Fill({ workData, clickHandle }: Props): JSX.Element {
             describeInfo={showDetailText(status)}
           />)
         }
-        {/* <WarnTips status="handle" /> */}
         <div className="text-12 text-gray-400 mt-4">
           {dayjs(modifyTime).format('YYYY-MM-DD HH:mm')}
         </div>

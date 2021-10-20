@@ -13,14 +13,15 @@ import DirectLeaderApproval from '../dynamic-info';
 import Deliver from './deliver';
 import Reading from './reading';
 import CarbonCopy from './carbon-copy';
+import WarnTips from '../components/warn-tips';
 import * as apis from '../../api';
 
 interface Props {
-  onTaskEnd: (end: boolean)=> void;
+  onTaskEnd: (end: boolean) => void;
 }
 
 export default function ProcessHistory(props: Props) {
-  const { processInstanceID } = useParams<{ processInstanceID: string}>();
+  const { processInstanceID } = useParams<{ processInstanceID: string }>();
   const [showType, setShowType] = React.useState<'list' | 'detail'>('list');
   const [currWork, setCurrWork] = React.useState<any>({});
 
@@ -31,9 +32,9 @@ export default function ProcessHistory(props: Props) {
     () => apis.getProcessHistories(processInstanceID),
   );
 
-  useEffect(()=> {
+  useEffect(() => {
     if (Array.isArray(data) &&
-      data.some((v: {taskType: string, status: string})=> v.taskType === 'END' && v.status === 'END')) {
+      data.some((v: { taskType: string, status: string }) => v.taskType === 'END' && v.status === 'END')) {
       props.onTaskEnd(true);
     }
   }, [data]);
@@ -68,6 +69,10 @@ export default function ProcessHistory(props: Props) {
 
     if (taskType === 'READ') {
       return <Reading workData={flow} clickHandle={clickHandle} />;
+    }
+
+    if (['AUTO_SKIP', 'AUTO_REVIEW'].includes(taskType)) {
+      return <WarnTips workData={flow} />;
     }
 
     return <NoApprovalStatus workData={flow} />;

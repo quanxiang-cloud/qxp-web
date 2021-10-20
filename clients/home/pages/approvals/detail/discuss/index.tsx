@@ -126,10 +126,16 @@ export default function Discuss(): JSX.Element {
           })
         }
       </div>
-      <div className="px-16 py-12 bg-gray-100 corner-2-8-8-8 send-message-box-shadow">
+      <div className="py-12 bg-gray-100 corner-2-8-8-8 send-message-box-shadow">
         <div>
           <textarea
-            style={{ maxHeight: 110, minHeight: 45, height: 45 }}
+            style={{
+              maxHeight: 110,
+              minHeight: 45,
+              height: 45,
+              padding: '12px 16px',
+              borderRadius: '2px 8px 8px 8px',
+            }}
             maxLength={200}
             onChange={inputChange}
             value={inputValue}
