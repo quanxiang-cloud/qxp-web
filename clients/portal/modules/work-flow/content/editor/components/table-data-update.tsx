@@ -10,7 +10,7 @@ import { filterTables } from '../forms/utils';
 
 export default function TableDataUpdateNodeComponent(props: Props): JSX.Element {
   const { appID } = useContext(FlowContext);
-  const { data: allTables = [] } = useQuery(['GET_WORK_FORM_LIST', appID], getFormDataOptions, {
+  const { data: allTables = [] } = useQuery(['GET_WORK_FORM_LIST', appID], () => getFormDataOptions(appID), {
     enabled: !!appID,
   });
   const targetTableId = get(props, 'data.businessData.targetTableId');

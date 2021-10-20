@@ -1,13 +1,16 @@
-import { QueryFunctionContext } from 'react-query';
-
 import httpClient from '@lib/http-client';
 
-interface MenuListItem {
+export type MenuListItem = {
   id: string;
   name: string;
   groupID: string;
   menuType: 0 | 1;
   child: MenuListItem[];
+}
+
+type MenuListPageItem = {
+  id: string;
+  name: string;
 }
 
 export type Option = {
@@ -17,30 +20,26 @@ export type Option = {
   children?: Option[];
 };
 
-export type Options = Option[];
+export async function getFormDataOptions(appID: string): Promise<Option[]> {
+  const { menu } = await httpClient(
+    `/api/v1/structor/${appID}/${window.SIDE === 'portal' ? 'm' : 'home'}/menu/list`,
+    { appID });
+  return parseMenuListWithOptions(menu ? menu : []);
+}
 
-export async function getFormDataOptions({ queryKey }: QueryFunctionContext): Promise<Options> {
-  const data = await httpClient<{
-    menu: MenuListItem[],
-  }>(`/api/v1/structor/${queryKey[1]}/${window.SIDE === 'portal' ? 'm' : 'home'}/menu/list`, {
-    appID: queryKey[1],
-  });
-  function parseMenuList(menuList: MenuListItem[]): Options {
-    if (!menuList) {
-      return [];
-    }
-    return menuList.reduce((prev: Options, current) => {
-      prev.push({
-        label: current.name,
-        value: current.id,
-        isGroup: current.menuType === 1,
-        children: [
-          ...parseMenuList(current.child),
-        ],
-      });
-      return prev;
-    }, []);
-  }
+export async function getFormDataMenuList(appID: string): Promise<LabelValue[]> {
+  const { pages } = await httpClient(`/api/v1/structor/${appID}/m/menu/listPage`, { appID });
+  return pages ? pages.map(({ id, name }: MenuListPageItem) => ({ label: name, value: id })) : [];
+}
 
-  return parseMenuList(data.menu);
+function parseMenuListWithOptions(menuList: MenuListItem[]): Option[] {
+  return menuList?.reduce((prev: Option[], current) => {
+    prev.push({
+      label: current.name,
+      value: current.id,
+      isGroup: current.menuType === 1,
+      children: [...parseMenuListWithOptions(current.child)],
+    });
+    return prev;
+  }, []);
 }
