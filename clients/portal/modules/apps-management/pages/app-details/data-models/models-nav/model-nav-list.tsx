@@ -14,7 +14,7 @@ function ModelNavList(): JSX.Element {
       return {
         id: model.id,
         title: model.title,
-        iconName: 'database_active',
+        iconName: 'models',
         type: 'leaf',
         source: model,
       };
