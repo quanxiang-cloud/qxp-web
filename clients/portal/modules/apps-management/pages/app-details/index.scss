@@ -37,25 +37,27 @@
   }
 }
 
-.tab-wrapper {
-  .tab-content {
-    padding: 0;
-  }
-
-  .nav-background-image {
-    position: relative;
-
-    & {
-      background-color: var(--blueGray-50);
-      background-image: url('/dist/images/maskHeaderBackgroundImage.png');
-      background-position: top right;
-      background-size: contain;
-      background-repeat: no-repeat;
+.access-control {
+  .tab-wrapper {
+    .tab-content {
+      padding: 0;
     }
-  }
 
-  .nav-content {
-    padding: 16px 57px;
+    .nav-background-image {
+      position: relative;
+
+      & {
+        background-color: var(--blueGray-50);
+        background-image: url('/dist/images/maskHeaderBackgroundImage.png');
+        background-position: top right;
+        background-size: contain;
+        background-repeat: no-repeat;
+      }
+    }
+
+    .nav-content {
+      padding: 16px 57px;
+    }
   }
 }
 

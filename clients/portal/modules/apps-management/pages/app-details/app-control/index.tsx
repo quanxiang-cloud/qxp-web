@@ -7,7 +7,7 @@ import UserPermission from '../users-and-permissions';
 
 function AppControl(): JSX.Element {
   return (
-    <div className="flex-1 h-full opacity-95">
+    <div className="flex-1 h-full opacity-95 access-control">
       <Tab
         strechNavs={false}
         separator={false}
