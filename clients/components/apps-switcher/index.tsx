@@ -25,9 +25,9 @@ function AppsSwitcher({ apps, currentAppID, hiddenStatus }: Props): JSX.Element 
 
   return (
     <>
-      <div ref={reference} className='flex items-center cursor-pointer app-dropdown-cur-app'>
+      <div ref={reference} className='flex items-center cursor-pointer app-dropdown-cur-app text-14'>
         <AppIcon className='mr-8' size={20} themeColor={bgColor} iconName={iconName} />
-        <span className="truncate text-14">{appName}</span>
+        <span className="truncate">{appName}</span>
         {!hiddenStatus && (
           <span className='ml-6 text-gray-400 mr-4'>({useStatus > 0 ? '已发布' : '未发布'})</span>
         )}
