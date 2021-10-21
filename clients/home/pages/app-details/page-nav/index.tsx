@@ -39,7 +39,7 @@ function PageNav(): JSX.Element {
   }, [appID]);
 
   const onSelect = (pageNode: PageInfo): void => {
-    history.replace(`/apps/${appID}?/page_setting?pageID=${pageNode.id}`);
+    history.replace(`/apps/${appID}?pageID=${pageNode.id}`);
   };
 
   const handleChange = (newAppId: string): void => {
