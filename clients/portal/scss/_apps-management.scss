@@ -38,14 +38,15 @@
   position: relative;
   overflow: hidden;
   height:100%;
+  background-color: #fff;
 }
 
 .app-entry-container {
   @apply flex justify-center items-start gap-x-20 mx-auto;
-  padding: 20px 20px 0;;
+  padding: 20px 20px 0px 20px;
   width: 100%;
-  max-width: 1324px;
-  height: calc(100vh - 64px);
+  height: calc(100vh - 52px);
+
 }
 
 .app-list-header {

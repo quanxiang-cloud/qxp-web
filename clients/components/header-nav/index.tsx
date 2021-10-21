@@ -32,7 +32,7 @@ function HeaderNav(nav: Props): JSX.Element {
     <div
       onClick={() => jump(nav.url, nav.inside)}
       className={cs(
-        'app-nav-button corner-8-8-8-2',
+        'app-nav-button corner-8-8-8-2 p-6',
         { 'app-nav-button-active': nav.active },
       )}
     >

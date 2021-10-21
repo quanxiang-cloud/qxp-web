@@ -1,9 +1,8 @@
-import { NumberPicker } from '@formily/antd-components';
-
 import { FormEffectHooks, createFormActions } from '@formily/react';
 
 import { validateRegistryElement } from '@c/form-builder/utils';
 
+import NumberPicker from './number-picker';
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig, NumberPickerConfig } from './convertor';
 import Placeholder from './placeholder';
@@ -25,23 +24,39 @@ const NumberPickerField: Omit<FormBuilder.SourceElement<NumberPickerConfig>, 'di
     const { onFieldInputChange$, onFieldInit$ } = FormEffectHooks;
     const { setFieldState } = createFormActions();
 
-    onFieldInit$('minSet').subscribe((field) => {
-      let visible = false;
-      if (field.value !== undefined) {
-        visible = field.value.length === 0 ? false : true;
+    onFieldInit$('minimum').subscribe((field) => {
+      if (!field.initialValue) {
+        setFieldState('minimum', (state) => {
+          state.visible = false;
+        });
+        setFieldState('minSet', (state) => {
+          state.initialValue = [false];
+        });
+        return;
       }
+      setFieldState('minSet', (state) => {
+        state.value = [true];
+      });
       setFieldState('minimum', (state) => {
-        state.visible = visible;
+        state.visible = true;
       });
     });
 
-    onFieldInit$('maxSet').subscribe((field) => {
-      let visible = false;
-      if (field.value !== undefined) {
-        visible = field.value.length === 0 ? false : true;
+    onFieldInit$('maximum').subscribe((field) => {
+      if (!field.initialValue) {
+        setFieldState('maxSet', (state) => {
+          state.initialValue = [false];
+        });
+        setFieldState('maximum', (state) => {
+          state.visible = false;
+        });
+        return;
       }
+      setFieldState('maxSet', (state) => {
+        state.value = [true];
+      });
       setFieldState('maximum', (state) => {
-        state.visible = visible;
+        state.visible = true;
       });
     });
 

@@ -58,7 +58,7 @@ export default function DepartmentsEmployees(): JSX.Element {
   }
 
   return (
-    <div className="h-full flex flex-col flex-grow  bg-white rounded-12" >
+    <div className="h-full flex flex-col flex-grow  bg-white" >
       <TextHeader
         title='企业通讯录'
         desc="管理账号，如添加、编辑、删除账号等，同时还能关联每个账号的角色；用户可用账号名称或邮件登录全象云平台。"

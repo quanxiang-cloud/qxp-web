@@ -11,7 +11,7 @@ function FormSettingPanel(): JSX.Element {
   const isDragging = store.isDragging;
 
   return (
-    <div className="panel">
+    <div className="panel opacity-95">
       {isDragging ? null : (<Tab
         strechNavs
         separator

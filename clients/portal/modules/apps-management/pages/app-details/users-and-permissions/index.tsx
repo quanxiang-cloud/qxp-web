@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { observer } from 'mobx-react';
-import cs from 'classnames';
 
 import Icon from '@c/icon';
+import IconButton from '@c/icon-btn';
 import Tab from '@c/tab';
 import Modal from '@c/modal';
 import toast from '@lib/toast';
 import Search from '@c/search';
+import Popper from '@c/popper';
 import MoreMenu from '@c/more-menu';
-import TextHeader from '@c/text-header';
 import { getQuery } from '@lib/utils';
+import TwoLevelMenu from '@c/two-level-menu';
 
 import EditRightModal from './edit-right-modal';
 import AssociatedPerson from './associated-personnel';
@@ -19,6 +20,15 @@ import store from './store';
 
 import './index.scss';
 
+const modifiers = [
+  {
+    name: 'offset',
+    options: {
+      offset: [0, 4],
+    },
+  },
+];
+
 function UsersAndPermissions(): JSX.Element {
   const [modalType, setModalType] = useState('');
   const [showEditRightModal, setShowEditRightModal] = useState(false);
@@ -26,10 +36,12 @@ function UsersAndPermissions(): JSX.Element {
   const [showDeleteRightModal, setShowDeleteRightModal] = useState(false);
   const { appID } = useParams<AppParams>();
   const { id } = getQuery<{ id: string }>();
+  const reference = React.useRef<Element>(null);
+  const popperRef = React.useRef<Popper>(null);
 
   useEffect(() => {
     store.appID = appID;
-    store.fetchRights(id);
+    store.fetchRights();
     return () => {
       store.appID = '';
     };
@@ -38,6 +50,18 @@ function UsersAndPermissions(): JSX.Element {
   useEffect(() => {
     setTabCurrentKey('associate');
   }, [store.rightsGroupID]);
+
+  const roles = useMemo(() => {
+    return store.rightsList.map((role) => {
+      return {
+        id: role.id,
+        title: role.name || '',
+        type: 'leaf',
+        iconName: 'people_alt',
+        source: role,
+      };
+    });
+  }, [store.rightsList]);
 
   const menus = [
     {
@@ -62,6 +86,15 @@ function UsersAndPermissions(): JSX.Element {
       ),
     },
     {
+      key: 'copy',
+      label: (
+        <div className="flex items-center">
+          <Icon name="create" size={16} className="mr-8" />
+          <span className="font-normal">复制权限组</span>
+        </div>
+      ),
+    },
+    {
       key: 'delete',
       label: (
         <div className="flex items-center" >
@@ -76,16 +109,12 @@ function UsersAndPermissions(): JSX.Element {
     {
       id: 'associate',
       name: '关联员工与部门',
-      content: (
-        <AssociatedPerson></AssociatedPerson>
-      ),
+      content: <AssociatedPerson />,
     },
     {
       id: 'configuration',
       name: '配置访问权限',
-      content: (
-        <RightsGroups/>
-      ),
+      content: <RightsGroups/>,
     },
   ];
 
@@ -102,91 +131,90 @@ function UsersAndPermissions(): JSX.Element {
   return (
     <>
       <div className="flex flex-col h-full flex-1 bg-white rounded-t-12 overflow-hidden">
-        <TextHeader
-          title='业务功能授权'
-          desc='控制该应用允许哪些员工使用，可以查看哪些模块，查看哪些数据，允许使用什么操作。'
-          className="bg-gray-1000 px-20 py-16 header-background-image"
-          itemClassName='items-center'
-          itemTitleClassName="text-h5"
-        />
         <div className='flex flex-1 w-full overflow-hidden'>
-          <div className='app-nav text-gray-600 flex h-full flex-col overflow-auto'
+          <div className='app-nav flex h-full flex-col overflow-auto bg-gray-50'
             style={{ width: '220px' }}
           >
-            <Search
-              className="m-10"
-              placeholder="搜索应用角色名称..."
-              onChange={store.changeKeyword}
-            />
-            <div className='ml-10'>共{store.rightsList.length}条数据</div>
-            <div
-              className='nav-item pl-16'
-              onClick={() => {
-                setModalType('add');
-                setShowEditRightModal(true);
-              }}
-            >
-              <Icon className='text-inherit' size={20} name='add'/>
-              添加授权角色
+            <div className="px-8 pt-16 py-8 flex items-center">
+              <div className="flex-1">
+                <Search
+                  placeholder="搜索名称..."
+                  onChange={store.changeKeyword}
+                />
+              </div>
+              <IconButton
+                className="ml-8"
+                size={28}
+                iconSize={16}
+                btnType="light"
+                ref={reference as any}
+                iconName="add"
+                onClick={() => {
+                  setModalType('add');
+                  setShowEditRightModal(true);
+                }}
+              />
+              <Popper
+                ref={popperRef}
+                trigger="hover"
+                reference={reference}
+                placement="bottom"
+                modifiers={modifiers}
+              >
+                <div className="px-16 py-8 bg-gray-700 text-12 text-white rounded-8">
+                  新建角色
+                </div>
+              </Popper>
             </div>
-            <ul className='flex-1 overflow-auto'>
-              {store.rightsList.map((rights: Rights) => (
-                <li
-                  key={rights.id}
-                  className={cs('group nav-item px-16', {
-                    'bg-gray-100 text-blue-600': rights.id === store.rightsGroupID,
-                  })}
-                  onClick={() => {
-                    store.currentRights = rights;
-                    store.rightsGroupID = rights.id;
-                  }}
-                >
-                  <Icon className='text-inherit mr-4' size={20} name='people_alt'/>{rights.name}
-                  <div
-                    className={cs('ml-auto opacity-0 group-hover:opacity-100 flex-shrink-0', {
-                      'opacity-100': rights.id === store.rightsGroupID,
-                    })}
+            {roles.length !== 0 && (
+              <TwoLevelMenu<Rights>
+                onSelect={(role) => {
+                  store.currentRights = role.source as Rights;
+                  store.rightsGroupID = role.id;
+                }}
+                defaultSelected={store.rightsGroupID}
+                menus={roles}
+                actions={(role) => (
+                  <MoreMenu
+                    menus={role.source?.types === 1 ? menus : menusTemp}
+                    placement="bottom-end"
+                    onMenuClick={(key) => {
+                      if (key === 'edit' || key === 'copy') {
+                        setModalType(key);
+                        setShowEditRightModal(true);
+                      }
+                      if (key === 'delete') {
+                        setShowDeleteRightModal(true);
+                      }
+                    }}
                   >
-                    <MoreMenu
-                      menus={rights.types === 1 ? menus : menusTemp}
-                      placement="bottom-end"
-                      onMenuClick={(key) => {
-                        if (key === 'edit') {
-                          setModalType('edit');
-                          setShowEditRightModal(true);
-                        }
-                        if (key === 'delete') {
-                          setShowDeleteRightModal(true);
-                        }
-                      }}
-                    >
-                      <Icon
-                        changeable
-                        clickable
-                        name='more_horiz'
-                      />
-                    </MoreMenu>
-                  </div>
-                </li>
-              ))}
-            </ul>
+                    <Icon
+                      changeable
+                      clickable
+                      name='more_horiz'
+                    />
+                  </MoreMenu>
+                )}
+              />
+            )}
           </div>
-          <div className='authority-detail flex-1 pt-5 overflow-hidden w-1'>
+          <div className='authority-detail flex-1 pt-16 overflow-hidden w-1'>
             <Tab
               currentKey={tabCurrentKey}
               strechNavs={false}
               items={tabItems}
               className='w-full h-full rights-tab'
               navsClassName='tab-title'
+              navTitleClassName="tab-label-item"
               contentClassName='m-16 mb-0'
               onChange={setTabCurrentKey}
             />
             <div
               className='rights-mes text-white '
             >
-              <Icon name="people_alt" className='text-white mr-8' size={32}/>
+              <Icon name="people_alt" className='text-white mr-8' size={32} />
               <div className=''>
-                <div className='text-14 font-semibold'>{store.currentRights.name}</div>
+                <div className='text-12 font-semibold'>{store.currentRights.name}</div>
                 <div
                   className='rights-des text-12'
                   title={store.currentRights.description}

@@ -111,9 +111,10 @@ function ApprovalDetail(): JSX.Element {
       <div className='task-form'>
         <FormRenderer
           value={formData}
-          schema={task.formSchema || {}}
+          schema={(task.formSchema.table || task.formSchema) || {}}
           onFormValueChange={setFormValues}
           readOnly={taskEnd}
+          workFlowType={type}
           usePermission
         />
       </div>
@@ -175,8 +176,9 @@ function ApprovalDetail(): JSX.Element {
           }
 
         </Panel>
-        <Panel className="approval-detail-tab w-400">
+        <Panel className="approval-detail-tab w-400 opacity-95">
           <Tab
+            style={{ backgroundColor: 'var(--gray-100)' }}
             items={[
               {
                 id: 'history',

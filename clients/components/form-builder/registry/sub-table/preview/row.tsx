@@ -2,11 +2,13 @@ import React from 'react';
 import cs from 'classnames';
 import { isArray } from 'lodash';
 import { FormItem, IForm, IMutators } from '@formily/antd';
-import { useCss } from 'react-use';
+import { set, lensPath } from 'ramda';
 
 import Icon from '@c/icon';
 
 import type { Column } from './index';
+import type { Layout } from '../convertor';
+import ColumnLayout from './column-layout';
 
 interface Props {
   index: number;
@@ -14,23 +16,13 @@ interface Props {
   item: Record<string, FormDataValue>;
   form: IForm;
   mutators: IMutators;
-  portalReadOnlyClassName: string;
+  layout: Layout;
   name?: string;
 }
 
 export default function SubTableRow({
-  index, item, componentColumns, name, form, mutators, portalReadOnlyClassName,
+  index, item, componentColumns, name, form, mutators, layout,
 }: Props): JSX.Element {
-  const formItemClassName = useCss({
-    '.ant-form-item': {
-      marginBottom: 0,
-    },
-    '&>*': {
-      width: 'calc(100% - 20px)',
-      overflow: 'auto',
-    },
-  });
-
   function onRemoveRow(mutators: IMutators, index: number): void {
     mutators.remove(index);
   }
@@ -39,6 +31,22 @@ export default function SubTableRow({
     return (value: unknown): void => {
       form.setFieldValue(path, value);
     };
+  }
+
+  const blackList = ['userpicker', 'organizationpicker', 'datepicker'];
+
+  if (layout && layout !== 'default') {
+    return (
+      <ColumnLayout
+        layout={layout}
+        componentColumns={componentColumns}
+        name={name}
+        item={item}
+        onChange={onChange}
+        form={form}
+        blackList={blackList}
+      />
+    );
   }
 
   return (
@@ -75,13 +83,17 @@ export default function SubTableRow({
           }}
         >
           {componentColumns.map(({
-            dataIndex, component, props, dataSource, required, rules, schema, readOnly, render,
+            dataIndex, component, props: prs, dataSource, required, rules, schema, readOnly, render, componentName,
           }, idx) => {
             const path = `${name}.${index}.${dataIndex}`;
             let value = item?.[dataIndex];
             if (schema.type === 'array') {
               value = isArray(value) ? value : [value].filter(Boolean) as FormDataValue;
             }
+            prs['x-internal'] = { ...prs['x-internal'], fieldPath: path };
+            Object.assign(schema, { fieldPath: path });
+            const sc = set(lensPath(['x-internal', 'fieldPath']), path, JSON.parse(JSON.stringify(schema)));
+
             return (
               <div
                 key={dataIndex}
@@ -89,26 +101,28 @@ export default function SubTableRow({
                 className={cs(
                   {
                     'border-r-1 border-gray-300': idx < componentColumns.length,
-                  }, 'flex items-center justify-center', formItemClassName, portalReadOnlyClassName,
+                  }, 'flex items-center justify-center subtable-column-default-item',
                 )}
               >
-                {!readOnly && component && (
-                  <FormItem
-                    {...props}
-                    className="mx-8 my-8 w-full"
-                    name={path}
-                    component={component}
-                    form={form}
-                    props={{ ...props, props }}
-                    mutators={{ change: onChange(path, form) }}
-                    rules={rules}
-                    dataSource={dataSource}
-                    required={required}
-                    value={value}
-                    path={path}
-                  />
-                )}
-                {readOnly && render?.(value)}
+                <FormItem
+                  {...prs}
+                  props={{ ...prs, props: prs }}
+                  schema={sc}
+                  className="mx-8 my-8 w-full"
+                  name={path}
+                  path={path}
+                  readOnly={readOnly}
+                  form={form}
+                  mutators={{ change: onChange(path, form) }}
+                  rules={rules}
+                  dataSource={dataSource}
+                  required={required}
+                  value={value}
+                  component={
+                    readOnly && !blackList.includes(componentName) ?
+                      ({ value }) => render?.(value) || null : component
+                  }
+                />
               </div>
             );
           })}
@@ -117,7 +131,6 @@ export default function SubTableRow({
           className="px-22 border-gray-300 border-t-1 self-stretch flex items-center"
         >
           <Icon
-            className={cs(portalReadOnlyClassName)}
             name="delete"
             size={29}
             clickable

@@ -74,7 +74,7 @@ function Uploader(props: Props & ISchemaFieldComponentProps): JSX.Element {
   // @ts-ignore
   const handleSuccess = (res, file) => {
     const { uid } = file;
-    if (res.code == 200) {
+    if (res.code === 200) {
       updateFile(res.data.filename, {
         filename: res.data.filename,
         url: res.data.url,

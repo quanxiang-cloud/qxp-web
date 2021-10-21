@@ -1,6 +1,4 @@
-type FlowStatus = 'SUBMIT' | 'RE_SUBMIT' | 'CANCEL' | 'AGREE' | 'REFUSE' | 'FILL_IN' | 'DELIVER' |
-  'STEP_BACK' | 'SEND_BACK' | 'CC' | 'ADD_SIGN' | 'READ' | 'REVIEW' | 'IN_REVIEW'
-  | 'AUTO_REVIEW' | 'AUTO_SKIP' | 'ABANDON';
+type FlowStatus = 'REVIEW' | 'IN_REVIEW' | 'SEND_BACK' | 'AGREE' | 'REFUSE' | 'CANCEL' | 'ABANDON' | 'ABEND';
 
 type UnusualTaskItem = {
   id: string;

@@ -1,0 +1,33 @@
+.menu-tree {
+  .menu-item {
+    cursor: grab;
+    display: flex;
+    justify-content: space-between;
+    user-select: none;
+
+    &-block {
+      content: "";
+      width: 4px;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      right: 0;
+      border-radius: 4px 0 0 4px;
+      background-color: var(--blue-600);
+    }
+  }
+  .item-title {
+    max-width: 80px;
+    display: inline-block;
+  }
+  ul {
+    padding-left: 10px;
+  }
+}
+
+.none {
+  position: fixed;
+  z-index: 9;
+  left: -1000px;
+  pointer-events: none;
+}

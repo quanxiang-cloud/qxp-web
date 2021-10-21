@@ -8,6 +8,7 @@ import { labelValueRenderer } from '@c/form-data-value-renderer';
 import { getUserDepartment } from '@lib/utils';
 import { getNoLabelValues } from '@c/form-builder/utils';
 import { searchOrganization, Organization, getOrganizationDetail } from './messy/api';
+
 import './index.scss';
 
 type Props = TreeSelectProps<any> & {
@@ -72,8 +73,11 @@ const OrganizationPicker = ({
 
     if (defaultRange === 'currentUserDep' || optionalRange === 'currentUserDep') {
       onChange?.([{ label: departmentName, value: id }]);
-    } else {
-      onChange?.(defaultValues || []);
+      return;
+    }
+
+    if (defaultValues && defaultValues.length) {
+      onChange?.(defaultValues);
     }
   }, []);
 
@@ -95,7 +99,7 @@ const OrganizationPicker = ({
         onChange?.(newValue);
       });
     }
-  }, [value]);
+  }, []);
 
   const { data } = useQuery(['query_user_picker', appID], () => searchOrganization(appID));
   const treeData = React.useMemo(() => {
@@ -143,6 +147,11 @@ const OrganizationPicker = ({
   }, [data, optionalRange, rangeList, defaultRange]);
 
   const handleChange = (selected: LabelValue | LabelValue[]): void => {
+    if (!selected) {
+      onChange([]);
+      return;
+    }
+
     onChange(([] as LabelValue[]).concat(selected));
   };
 

@@ -110,7 +110,7 @@ const AuditLogPage = () => {
         <TextHeader
           title="系统日志"
           desc="查询用户的操作历史"
-          action="📖 了解系统日志"
+          // action="📖 了解系统日志"
           className="bg-gray-1000 px-20 py-16 header-background-image"
           itemTitleClassName="text-h5"
         />

@@ -48,33 +48,35 @@ function Header({ changeParams, params, setModalType, countMaps }: Props) {
 
   return (
     <div className='app-filter-column'>
-      <Search
-        className="w-214"
-        placeholder='请输入应用名称'
-        onChange={clear}
-        onKeyDown={search}
-      />
-      <RadioGroup
-        wrapClassName='mb-0-i'
-        value={params.useStatus}
-        onChange={(useStatus) => {
-          changeParams({ useStatus });
-        }}
-        buttonWidth="104px"
-        style={{
-          marginBottom: 0,
-        }}
-      >
-        {STATUS_LIST.map(({ value, name, key }) => (
-          <RadioButton className='rounded-8' key={value} value={value}>
-            {name}·
-            {countMaps[key]}
-          </RadioButton>
-        ))}
-      </RadioGroup>
       <Button onClick={() => setModalType('CreatedApp')} modifier='primary' iconName="add">
         新建应用
       </Button>
+      <div className="flex">
+        <RadioGroup
+          wrapClassName='mb-0-i'
+          value={params.useStatus}
+          onChange={(useStatus) => {
+            changeParams({ useStatus });
+          }}
+          buttonWidth="104px"
+          style={{
+            marginBottom: 0,
+          }}
+        >
+          {STATUS_LIST.map(({ value, name, key }) => (
+            <RadioButton className='rounded-8' key={value} value={value}>
+              {name}·
+              {countMaps[key]}
+            </RadioButton>
+          ))}
+        </RadioGroup>
+        <Search
+          className="w-214 ml-16"
+          placeholder='请输入应用名称'
+          onChange={clear}
+          onKeyDown={search}
+        />
+      </div>
     </div>
   );
 }

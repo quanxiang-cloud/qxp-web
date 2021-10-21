@@ -252,7 +252,7 @@ export default function Employees({
               </>
             ) : (
               <>
-                <div>
+                <div className="flex">
                   <Button
                     modifier="primary"
                     iconName="create_new_folder"

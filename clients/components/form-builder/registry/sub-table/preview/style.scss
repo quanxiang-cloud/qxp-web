@@ -1,0 +1,26 @@
+.subtable-column-layout {
+  display: grid;
+  align-items: center;
+  padding: 10px;
+  overflow: auto;
+  row-gap: 20px;
+
+  .subtable-column-layout-item {
+
+    .ant-form-item-label {
+      display: flex;
+    }
+  }
+}
+
+.subtable-column-default-item {
+  .ant-form-item {
+    margin-bottom: 0;
+  }
+
+  &>* {
+    width: calc(100% - 20px);
+    overflow: auto;
+  }
+}
+

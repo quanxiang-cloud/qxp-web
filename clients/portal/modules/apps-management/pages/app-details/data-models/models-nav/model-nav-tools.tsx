@@ -7,31 +7,29 @@ import Search from '@c/search';
 import store from '../store';
 
 function ModelNavTools(): JSX.Element {
-  const { initDataModelSchema, dataModelList, setSearchModelInput, setEditModalType } = store;
+  const { initDataModelSchema, setSearchModelInput, setEditModalType } = store;
 
   function handleSearchChange(val: string): void {
     setSearchModelInput(val);
   }
 
   return (
-    <>
+    <div className="inline-flex items-center mb-8 px-8 text-12">
       <Search
         placeholder='搜索数据模型名称'
-        className="w-208 border-none border-r-1"
+        className="model-search"
         onChange={handleSearchChange}
       />
-      <div className="px-16 pt-16">{`共 ${dataModelList.length} 条数据`}</div>
       <div
-        className="add-data-model"
+        className="model-add"
         onClick={() => {
           initDataModelSchema();
           setEditModalType('create');
         }}
       >
-        <Icon name="add" size={20} />
-        <span className="ml-4">添加数据模型</span>
+        <Icon name="add" className="text-current flex-shrink-0" size={20} />
       </div>
-    </>
+    </div>
   );
 }
 

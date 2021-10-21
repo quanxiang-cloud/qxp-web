@@ -1,0 +1,34 @@
+.app-icon {
+  background: url(/dist/images/app_icon_bg.svg) 0 / cover no-repeat;
+}
+.app-icon-bg-teal {
+  background-position: calc(var(--app-Icon-bg-offset) * 0)  0px;
+}
+
+.app-icon-bg-red {
+  background-position: calc(var(--app-Icon-bg-offset) * 1)  0px;
+}
+
+.app-icon-bg-orange {
+  background-position: calc(var(--app-Icon-bg-offset) * 2)  0px;
+}
+
+.app-icon-bg-indigo {
+  background-position: calc(var(--app-Icon-bg-offset) * 3)  0px;
+}
+
+.app-icon-bg-fuchsia {
+  background-position: calc(var(--app-Icon-bg-offset) * 4)  0px;
+}
+
+.app-icon-bg-emerald {
+  background-position: calc(var(--app-Icon-bg-offset) * 5)  0px;
+}
+
+.app-icon-bg-cyan {
+  background-position: calc(var(--app-Icon-bg-offset) * 6)  0px;
+}
+
+.app-icon-bg-amber {
+  background-position: calc(var(--app-Icon-bg-offset) * 7)  0px;
+}

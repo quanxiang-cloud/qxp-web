@@ -6,7 +6,6 @@
   align-items: center;
   padding-left: 16px;
   padding-right: 16px;
-  height: 32px;
   line-height: 30px;
 
   font-weight: 400;
@@ -25,7 +24,9 @@
 }
 
 .btn {
+  font-weight: 500;
   color: var(--gray-600);
+  transition: all 0.3s linear;
 }
 
 .btn:hover:not(.btn--forbidden) {
@@ -63,24 +64,49 @@
 .icon-btn {
   padding-left: 0;
   padding-right: 0;
-  width: 32px;
   border: 1px solid var(--gray-600);
 }
 
-.icon-btn:hover:not(.btn--forbidden) {
-  border-color: var(--gray-800);
+.button-bg-light { 
+  border-color: var(--gray-700);
+  background-color: var(--gray-700);
 }
 
-.icon-btn:hover:not(.btn--forbidden) svg {
+.button-bg-light:hover:not(.btn--forbidden) {
+  border-color: var(--gray-600);
+  background-color: var(--gray-600);
+}
+
+.button-bg-light:active:not(.btn--forbidden) {
+  border-color: var(--gray-800);
+  background-color: var(--gray-800);
+}
+
+.button-bg-dark {
+  border-color: var(--gray-600);
+  background-color: #FFF;
+}
+
+.button-bg-dark svg {
+  color: var(--gray-600);
+}
+
+.button-bg-dark:hover:not(.btn--forbidden) {
+  border-color: var(--gray-800);
+  background-color: #FFF;
+}
+
+.button-bg-dark:hover:not(.btn--forbidden) svg {
   color: var(--gray-800);
 }
 
-.icon-btn:hover:active {
-  background-color: var(--gray-900);
+.button-bg-dark:active:not(.btn--forbidden) {
+  border-color: var(--gray-800);
+  background-color: var(--gray-800);
 }
 
-.icon-btn:hover:active svg {
-  color: white;
+.button-bg-dark:active:not(.btn--forbidden) svg {
+  color: #FFF;
 }
 
 .header-nav-btn-icon {
@@ -96,8 +122,13 @@
 }
 
 .btn--danger {
-  color: white;
+  color: #ddd;
   background-color: var(--red-500);
+  border-color: transparent;
+}
+.btn--danger:not(.btn--forbidden):is(:hover, :focus) {
+  color: #fff;
+  border-color: transparent;
 }
 
 .btn-badge {
@@ -126,11 +157,11 @@
 
   /* todo remove this */
   .header-nav-btn {
-    @apply flex justify-between items-center px-8 py-5 transition-all hover:bg-blue-100 button-reverse-border-radius cursor-pointer;
+    @apply flex justify-between items-center transition-all hover:bg-gray-100 button-reverse-border-radius cursor-pointer;
   }
 
   .global-header-nav {
-    @apply h-32 flex justify-between items-center px-8 hover:text-blue-600 corner-8-8-8-2 cursor-pointer;
+    @apply h-32 flex font-semibold justify-between items-center px-8 text-gray-400 corner-8-8-8-2 cursor-pointer hover:text-gray-600 hover:bg-gray-100;
   }
 
   .global-header-nav:not(:last-child) {
@@ -138,11 +169,11 @@
   }
 
   .global-header-nav:hover .svg-icon, .global-header-nav--active .svg-icon {
-    @apply text-blue-600;
+    @apply text-gray-600;
   }
 
   .global-header-nav--active {
-    @apply bg-blue-100 text-blue-600;
+    @apply text-gray-900 font-semibold;
   }
 }
 

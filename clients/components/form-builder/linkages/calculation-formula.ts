@@ -1,26 +1,36 @@
 import { get } from 'lodash';
 import { of } from 'rxjs';
 import { switchMap, debounceTime, filter } from 'rxjs/operators';
-import { FormEffectHooks, ISchemaFormActions } from '@formily/antd';
+import { FormEffectHooks, ISchemaFormActions, IFieldState } from '@formily/antd';
+import { flattenDeep, last, isArray } from 'lodash';
 import { findVariables, parse, resolve } from 'qxp-formula';
 
 import logger from '@lib/logger';
+import { getFieldPath } from '@c/form-builder/linkages/default-value';
 
 const { onFieldValueChange$ } = FormEffectHooks;
 
 type Linkage = { rawFormula: string; targetField: string; };
 
-function findAllFormula(schema: ISchema): Array<Linkage> {
-  return Object.keys(schema.properties || {}).map<Linkage | null>((fieldName) => {
-    const defaultValueFrom = get(schema, `properties.${fieldName}.x-internal.defaultValueFrom`);
-    const calculationFormula = get(schema, `properties.${fieldName}.x-internal.calculationFormula`);
-
-    if (!calculationFormula || defaultValueFrom !== 'formula') {
-      return null;
+export function findAllFormula(schema: ISchema, subTableFieldName?: string): Array<Linkage> {
+  const linkages = Object.keys(schema.properties || {}).map<Linkage | Linkage[]>((fieldName) => {
+    const field = get(schema, `properties.${fieldName}`);
+    const defaultValueFrom = get(field, 'x-internal.defaultValueFrom');
+    const calculationFormula = get(field, 'x-internal.calculationFormula');
+    if (field.items && field['x-component']?.toLowerCase() === 'subtable') {
+      return findAllFormula(field.items as ISchema, fieldName);
     }
 
-    return { rawFormula: calculationFormula, targetField: fieldName };
-  }).filter((linkage): linkage is Linkage => !!linkage);
+    if (!calculationFormula || defaultValueFrom !== 'formula') {
+      return [];
+    }
+
+    return {
+      rawFormula: calculationFormula,
+      targetField: subTableFieldName ? `${subTableFieldName}.*.${fieldName}` : fieldName,
+    };
+  });
+  return flattenDeep(linkages).filter((linkage): linkage is Linkage => !!linkage);
 }
 
 type ExecuteFormulaProps = {
@@ -32,27 +42,40 @@ type ExecuteFormulaProps = {
 function executeFormula({ rawFormula, formActions, targetField }: ExecuteFormulaProps): void {
   const { setFieldState, getFieldValue } = formActions;
   const ast = parse(rawFormula);
-  const dependentFields = [...findVariables(ast)];
+  let dependentFields = [...findVariables(ast)];
   if (!dependentFields.length) {
     logger.warn('skip execution for formula: [%{rawFormula}], due to no dependentFields found.');
     return;
   }
+  dependentFields = dependentFields.map((dependentField) => {
+    const prefix = targetField.split('.').slice(0, -1).join('.');
+    if (!dependentField.startsWith('subtable_')) {
+      return dependentField;
+    }
+    return `${prefix}.${dependentField}`;
+  });
+
   // *(abc,def,gij)
   onFieldValueChange$(`*(${dependentFields.join(',')})`).pipe(
     debounceTime(200),
-    switchMap(() => {
+    switchMap((state) => {
       let missingValueField = false;
       const values = dependentFields.reduce<{ [key: string]: any }>((acc, fieldName) => {
-        const value = getFieldValue(fieldName);
-        if (value === undefined) {
+        let path = getFieldPath(fieldName, state.path);
+        path = path.includes('.*.') ? path.split('.*.').slice(0, -1).join('.') : path;
+        const value = getFieldValue(path);
+        if (value === undefined || value === null) {
           missingValueField = true;
         }
-        acc[fieldName] = value;
+        const lastLevelFieldName = last(fieldName.split('.'));
+        if (lastLevelFieldName) {
+          acc[lastLevelFieldName] = value;
+        }
         return acc;
       }, {});
-      return of([missingValueField, values]);
+      return of([missingValueField, values, state]);
     }),
-    filter((input): input is [true, Record<string, any>] => {
+    filter((input): input is [true, Record<string, any>, IFieldState<any>] => {
       const [missingValueField] = input;
       if (missingValueField) {
         return false;
@@ -60,11 +83,26 @@ function executeFormula({ rawFormula, formActions, targetField }: ExecuteFormula
 
       return true;
     }),
-  ).subscribe(([, values]) => {
+  ).subscribe(([, values, state]) => {
     logger.debug('execute calculation formula on form field', 'todo');
     try {
+      const arrayKey = Object.keys(values).find((key) => isArray(values[key])) || '';
+      const arrayValue = values[arrayKey];
+      if (isArray(arrayValue)) {
+        return arrayValue.forEach((val: any, index: number) => {
+          const currentValues = { ...values, [arrayKey]: val[arrayKey] };
+          const value = resolve(ast, currentValues);
+          setFieldState(
+            getFieldPath(targetField, targetField.replace('.*.', `.${index}.`)),
+            (state) => state.value = value,
+          );
+        });
+      }
       const value = resolve(ast, values);
-      setFieldState(targetField, (state) => state.value = value);
+      setFieldState(
+        getFieldPath(targetField, state.path),
+        (state) => state.value = value,
+      );
     } catch (err) {
       logger.error('failed to calculate value from formula', err);
     }

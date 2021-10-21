@@ -5,6 +5,10 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     colors: colors,
+    transitionDuration:{
+      240: '240ms',
+      300: '300ms'
+    },
     spacing: {
       0: '0px',
       1: '1px',
@@ -33,6 +37,7 @@ module.exports = {
       52: '52px',
       56: '56px',
       58: '58px',
+      64: '64px',
       72: '72px',
       80: '80px',
       96: '96px',
@@ -94,11 +99,13 @@ module.exports = {
         100: '100px',
         142: '142px',
         172: '172px',
+        180: '180px',
         188: '188px',
         200: '200px',
         208: '208px',
         214: '214px',
         259: '259px',
+        280: '280px',
         316: '316px',
         588: '588px',
         552: '552px',
@@ -147,6 +154,7 @@ module.exports = {
         64: '64px',
       },
       zIndex: {
+        'z-5': 5,
         '-z-1': -1,
       },
       cursor: {

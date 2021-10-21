@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { toJS } from 'mobx';
-import { TreeItem } from '@atlaskit/tree';
+import React, { useEffect } from 'react';
 import { useParams, useHistory, useLocation } from 'react-router-dom';
 import { observer } from 'mobx-react';
+import { toJS } from 'mobx';
 import { Tooltip } from '@QCFE/lego-ui';
 
 import PageLoading from '@c/page-loading';
@@ -12,33 +11,33 @@ import { getQuery } from '@lib/utils';
 import DelModal from './del-modal';
 import appPagesStore from '../store';
 import PageDetails from './page-details';
-import AppPagesTree from './app-pages-tree';
 import AddGroupPoper from './add-group-poper';
 import EditPageModal from './edit-page-modal';
 import EditGroupModal from './edit-group-modal';
 import HidePageConfirmModal from './hide-modal';
+import MenuTree from './menu-tree/menu-tree';
 
 import './index.scss';
 
 function PageList(): JSX.Element {
   const history = useHistory();
   const { pathname } = useLocation();
-  const [curEditNode, setCurEditNode] = useState<null | TreeItem>(null);
+
   const { appID } = useParams<{ appID: string }>();
   const { pageID } = getQuery<{ pageID: string }>();
   const {
-    curPage,
     editPage,
     setPageID,
     modalType,
     editGroup,
     setModalType,
-    pagesTreeData,
     fetchPageList,
-    deletePageOrGroup,
     updatePageHideStatus,
     pageListLoading,
-    updatePagesTree,
+    activeMenu,
+    pageInitList,
+    setActiveMenu,
+    del,
   } = appPagesStore;
 
   useEffect(() => {
@@ -49,32 +48,17 @@ function PageList(): JSX.Element {
     setPageID(pageID);
   }, [pageID]);
 
-  const handleSelectPage = (treeItem: TreeItem): void => {
-    if (treeItem?.data) {
-      history.push(`/apps/details/${appID}/page_setting?pageID=${treeItem.data.id}`);
-      setCurEditNode(treeItem);
-    }
-  };
-
   async function delPageOrGroup(): Promise<void> {
-    if (!curEditNode) {
-      return;
-    }
-
-    await deletePageOrGroup({ treeItem: curEditNode, type: modalType, history, pathname });
+    await del(toJS(activeMenu), modalType, pathname, history);
     closeModal();
   }
 
   function handleEditPage(pageInfo: PageInfo): void {
-    editPage(pageInfo).then(() => {
-      closeModal();
-    });
+    editPage(pageInfo).then(closeModal);
   }
 
-  function handleVisibleHiddenPage(pageInfo: PageInfo): void {
-    updatePageHideStatus(appID, pageInfo).then(() => {
-      closeModal();
-    });
+  function handleVisibleHiddenPage(): void {
+    updatePageHideStatus(appID, activeMenu).then(closeModal);
   }
 
   const handleEditGroup = (groupInfo: PageInfo): Promise<void> => {
@@ -83,11 +67,15 @@ function PageList(): JSX.Element {
 
   const closeModal = (): void => {
     setModalType('');
-    setCurEditNode(null);
   };
 
-  const handleMenuClick = (key: string, treeItem: TreeItem): void => {
-    setCurEditNode(treeItem);
+  useEffect(() => {
+    if (activeMenu.menuType === 1) return;
+    history.push(`/apps/details/${appID}/page_setting?pageID=${activeMenu.id}`);
+  }, [activeMenu]);
+
+  const handleMenuClick = (key: string, menu: Menu): void => {
+    setActiveMenu(menu);
     setModalType(key);
   };
 
@@ -97,9 +85,16 @@ function PageList(): JSX.Element {
 
   return (
     <div className="flex h-full">
-      <div className='app-details-nav rounded-tl-12'>
-        <div className='flex flex-end px-16 py-20 justify-center'>
-          <span className='text-h6-bold text-gray-400 mr-auto'>菜单</span>
+      <div className='app-details-nav rounded-tl-12 app-details-nav-bg'>
+        <div className='flex flex-end px-16 py-12 items-center'>
+          <span className='text-12 text-gray-900 font-semibold mr-auto'>菜单</span>
+          <Tooltip content='新建表单'>
+            <Icon
+              name='post_add'
+              className='mr-10 cursor-pointer hover:text-blue-600'
+              onClick={() => setModalType('createPage')}
+            />
+          </Tooltip>
           <Tooltip content='添加分组'>
             <AddGroupPoper
               onSubmit={handleEditGroup}
@@ -107,19 +102,9 @@ function PageList(): JSX.Element {
           </Tooltip>
         </div>
         <div className='app-page-tree-wrapper'>
-          <div
-            className="cursor-pointer h-40 flex items-center px-18 group hover:bg-gray-100"
-            onClick={() => setModalType('createPage')}
-          >
-            <Icon className='app-page-add-group mr-4' size={20} name='add'/>
-            新建菜单
-          </div>
-          <AppPagesTree
-            tree={toJS(pagesTreeData)}
-            onMenuClick={handleMenuClick}
-            selectedPage={curPage}
-            onSelectPage={handleSelectPage}
-            onChange={updatePagesTree}
+          <MenuTree
+            menus={toJS(pageInitList).sort((a, b) => (a?.sort || 0) - (b?.sort || 0))}
+            handleMenuClick={handleMenuClick}
           />
         </div>
       </div>
@@ -133,7 +118,7 @@ function PageList(): JSX.Element {
       )}
       {modalType === 'editGroup' && (
         <EditGroupModal
-          groupInfo={curEditNode?.data as PageInfo}
+          groupInfo={activeMenu as any}
           onCancel={closeModal}
           onSubmit={handleEditGroup}
         />
@@ -141,16 +126,15 @@ function PageList(): JSX.Element {
       {['editPage', 'createPage', 'copyPage'].includes(modalType) && (
         <EditPageModal
           appID={appID}
-          pageInfo={modalType === 'createPage' ? undefined : curPage}
+          pageInfo={modalType === 'createPage' ? undefined : activeMenu as any}
           onCancel={closeModal}
           onSubmit={handleEditPage}
         />
       )}
       {modalType === 'hide' && (
         <HidePageConfirmModal
-          pageInfo={curPage}
           onCancel={closeModal}
-          onOk={() => handleVisibleHiddenPage(curPage)}
+          onOk={handleVisibleHiddenPage}
         />
       )}
     </div>

@@ -74,7 +74,7 @@ const MessagesPage = (): JSX.Element => {
         <TextHeader
           title="消息管理"
           desc="重要信息定向通知，全员播报"
-          action="📖 了解消息管理"
+          // action="📖 了解消息管理"
           className="bg-gray-1000 px-20 py-16 header-background-image"
           itemTitleClassName="text-h5"
         />

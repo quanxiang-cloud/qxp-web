@@ -8798,7 +8798,7 @@ sver-compat@^1.5.0:
     es6-iterator "^2.0.1"
     es6-symbol "^3.1.1"
 
-svg-spreact@^1.3.1:
+svg-spreact@1.3.1:
   version "1.3.1"
   resolved "http://r.npm.internal.yunify.com/svg-spreact/download/svg-spreact-1.3.1.tgz#872f78cdd8e25915f383fa33fe7e874f067a6501"
   integrity sha1-hy94zdjiWRXzg/oz/n6HTwZ6ZQE=

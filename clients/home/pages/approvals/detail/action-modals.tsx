@@ -167,7 +167,14 @@ function ActionModals({
 
     // 重新提交
     if (action === TaskHandleType.hasResubmitBtn) {
-      return apis.resubmit(processInstanceID);
+      let _formData = {};
+      if (isEmpty(defaultValue)) {
+        _formData = buildFormDataReqParams(schema, 'create', formData);
+      } else {
+        const newValue = formDataDiff(formData, defaultValue, schema);
+        _formData = buildFormDataReqParams(schema, 'updated', newValue);
+      }
+      return apis.resubmit(processInstanceID, _formData);
     }
 
     // 撤回
@@ -223,6 +230,13 @@ function ActionModals({
     if (action === TaskHandleType.cancel) {
       return (
         <p>确定要撤销该任务吗？撤销后，任务将立即结束。</p>
+      );
+    }
+
+    // 撤回
+    if (action === TaskHandleType.hasCancelBtn) {
+      return (
+        <p>确定要撤回该任务吗？撤回后，任务将立即结束。</p>
       );
     }
 

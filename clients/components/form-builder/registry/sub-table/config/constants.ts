@@ -27,8 +27,12 @@ import fileupload from '@c/form-builder/registry/file-upload';
 import imageupload from '@c/form-builder/registry/image-upload';
 import cascadeselector from '@c/form-builder/registry/cascade-selector';
 import associateddata from '@c/form-builder/registry/associated-data';
+import aggregationrecords from '@c/form-builder/registry/aggregation-records';
+import serial from '@c/form-builder/registry/serial-number';
 import DefaultValueLinkageConfigBtn from
   '@c/form-builder/form-settings-panel/form-field-config/default-value-linkage-config-btn';
+import OptionsConfig from
+  '@c/form-builder/form-settings-panel/form-field-config/options_config';
 import CalculationFormulaBtn
   from '@c/form-builder/form-settings-panel/form-field-config/calculation-formula-btn';
 
@@ -45,6 +49,8 @@ import * as fileUploadConvertor from '@c/form-builder/registry/file-upload/conve
 import * as imageUploadConvertor from '@c/form-builder/registry/image-upload/convertor';
 import * as cascadeSelectorConvertor from '@c/form-builder/registry/cascade-selector/convertor';
 import * as associatedDataConvertor from '@c/form-builder/registry/associated-data/convertor';
+import * as aggregationRecordsConvertor from '@c/form-builder/registry/aggregation-records/convertor';
+import * as serialNumberConvertor from '@c/form-builder/registry/serial-number/convertor';
 import * as multipleSelectorConvertor
   from '@c/form-builder/registry/multiple-select/convertor';
 
@@ -52,10 +58,11 @@ import SubTableSchema from './fields/sub-table-schema';
 import SubTableColumns from './fields/sub-table-columns';
 import Subordination from './fields/subordination';
 import LinkedTable from './fields/linked-table';
-import { AddOperate } from './fields/operates';
 import CustomizedDatasetBtn from '../../cascade-selector/customized-dataset-btn';
 import DataSetSelector from '../../cascade-selector/dataset-selector';
 import CheckboxGroup from '../../checkbox-group/checkboxGroup';
+import AggregationRecords from '@c/form-builder/registry/aggregation-records/summary-field';
+import Serial from '@c/form-builder/registry/serial-number/serial';
 
 export const COMPONENTS: Record<string, JSXElementConstructor<ISchemaFieldComponentProps>> = {
   textarea: Input.TextArea,
@@ -70,16 +77,18 @@ export const COMPONENTS: Record<string, JSXElementConstructor<ISchemaFieldCompon
   // todo delete this
   arraytable: ArrayTable,
   editlabels: EditLabels,
-  addoperate: AddOperate,
   numberpicker: NumberPicker,
   datepicker: DatePicker,
   defaultvaluelinkageconfigbtn: DefaultValueLinkageConfigBtn,
+  optionsconfig: OptionsConfig,
   radiogroup: Radio.Group,
   customizeddatasetbtn: CustomizedDatasetBtn,
   datasetselector: DataSetSelector,
   datasetconfig: DatasetConfig,
   checkboxgroup: CheckboxGroup,
   calculationformulabtn: CalculationFormulaBtn,
+  aggregationrecords: AggregationRecords,
+  serial: Serial,
 };
 
 export type KeyOfConfigComponent = keyof typeof CONFIG_COMPONENTS;
@@ -99,6 +108,8 @@ export const CONFIG_COMPONENTS = {
   imageupload,
   cascadeselector,
   associateddata,
+  aggregationrecords,
+  serial,
 };
 
 export const SUPPORTED_COMPONENTS_NAMES = [
@@ -108,7 +119,7 @@ export const SUPPORTED_COMPONENTS_NAMES = [
   'select', 'multipleselect',
   'userpicker', 'organizationpicker',
   'fileupload', 'imageupload',
-  'cascadeselector', 'associateddata', 'serial',
+  'cascadeselector', 'associateddata', 'serial', 'aggregationrecords',
 ];
 
 export const LINKED_TABLE = { appID: '', tableID: '', tableName: '' };
@@ -139,6 +150,8 @@ export const SUB_TABLE_TYPES_SCHEMA_MAP: Record<string, ISchema> = {
   imageupload: imageUploadConvertor.toSchema(imageUploadConvertor.defaultConfig),
   cascadeselector: cascadeSelectorConvertor.toSchema(cascadeSelectorConvertor.defaultConfig),
   associateddata: associatedDataConvertor.toSchema(associatedDataConvertor.defaultConfig),
+  aggregationrecords: aggregationRecordsConvertor.toSchema(aggregationRecordsConvertor.defaultConfig),
+  serial: serialNumberConvertor.toSchema(serialNumberConvertor.defaultConfig),
 };
 
 export const SUB_TABLE_TYPES = [
@@ -156,4 +169,6 @@ export const SUB_TABLE_TYPES = [
   { label: '图片', value: 'imageupload' },
   { label: '级联选择', value: 'cascadeselector' },
   { label: '关联数据', value: 'associateddata' },
+  { label: '流水号', value: 'serial' },
+  { label: '统计', value: 'aggregationrecords' },
 ];

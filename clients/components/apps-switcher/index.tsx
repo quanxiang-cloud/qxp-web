@@ -1,9 +1,5 @@
-import React, { useRef, useState } from 'react';
-import cs from 'classnames';
+import React, { useRef } from 'react';
 
-import Popper from '@c/popper';
-import Icon from '@c/icon';
-import AppInfoView from '@c/app-info-view';
 import AppIcon from '@c/app-icon';
 import { parseJSON } from '@lib/utils';
 
@@ -16,42 +12,9 @@ type Props = {
   hiddenStatus?: boolean
 }
 
-const modifiers = [
-  {
-    name: 'offset',
-    options: {
-      offset: [0, 4],
-    },
-  },
-];
-
-function AppsSwitcher({ apps, onChange, currentAppID, hiddenStatus }: Props) {
+function AppsSwitcher({ apps, currentAppID, hiddenStatus }: Props): JSX.Element | null {
   const currentApp = apps.find(({ id }) => id === currentAppID);
-  const [isVisible, setIsVisible] = useState(false);
-  const popperRef = useRef<any>();
   const reference = useRef<any>();
-
-  const optionsVisibilityChange = (visible: boolean) => {
-    setIsVisible(visible);
-  };
-
-  const handleClick = (appID:string) =>{
-    onChange(appID);
-    popperRef.current?.close();
-  };
-
-  const appListItems: JSX.Element[] = React.useMemo(() => {
-    return apps.map((appInfo: AppInfo) => (
-      <div
-        key={appInfo.id}
-        onClick={() => handleClick(appInfo.id)}
-        className={cs('app-dropdown-drop-item',
-          { 'app-dropdown-drop-item-active': currentApp?.id === appInfo.id })}
-      >
-        <AppInfoView appInfo={appInfo} />
-      </div>
-    ));
-  }, [apps, currentApp?.id]);
 
   if (!currentApp) {
     return null;
@@ -63,24 +26,12 @@ function AppsSwitcher({ apps, onChange, currentAppID, hiddenStatus }: Props) {
   return (
     <>
       <div ref={reference} className='flex items-center cursor-pointer app-dropdown-cur-app'>
-        <AppIcon className='mr-8' size={32} themeColor={bgColor} iconName={iconName} />
-        <span className="truncate">{appName}</span>
+        <AppIcon className='mr-8' size={20} themeColor={bgColor} iconName={iconName} />
+        <span className="truncate text-14">{appName}</span>
         {!hiddenStatus && (
-          <span className='ml-6 text-gray-500 mr-4'>({useStatus > 0 ? '已发布' : '未发布'})</span>
+          <span className='ml-6 text-gray-400 mr-4'>({useStatus > 0 ? '已发布' : '未发布'})</span>
         )}
-        <Icon style={{ minWidth: '20px' }} size={20} name={isVisible ? 'expand_less' : 'expand_more'} />
       </div>
-      <Popper
-        ref={popperRef}
-        reference={reference}
-        placement="bottom-start"
-        modifiers={modifiers}
-        onVisibilityChange={optionsVisibilityChange}
-      >
-        <div className='app-dropdown-drop-more beauty-scroll'>
-          {appListItems}
-        </div>
-      </Popper>
     </>
   );
 }

@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { lazy } from 'react';
 import { Route } from 'react-router-dom';
 
-import './index.scss';
 import SideNavs from './side-navs';
 import AppAdmin from './app-admin';
 import AppInfo from './app-info';
@@ -11,8 +10,11 @@ import PageMenuDesign from './page-menu-design';
 import UsersAndPermissions from './users-and-permissions';
 import ApiDocument from './api-documentation';
 
-const WorkFlows = React.lazy(() => import('../../work-flow-list'));
-const ApiProxy = React.lazy(() => import('./api-proxy'));
+const WorkFlows = lazy(() => import('../../work-flow-list'));
+const ApiProxy = lazy(() => import('./api-proxy'));
+const AppControl = lazy(()=> import('./app-control'));
+
+import './index.scss';
 
 function AppDetailsContent(): JSX.Element {
   return (
@@ -28,6 +30,7 @@ function AppDetailsContent(): JSX.Element {
         <Route exact path='/apps/details/:appID/app_permission' component={UsersAndPermissions} />
         <Route exact path='/apps/details/:appID/app_manager' component={AppAdmin} />
         <Route path='/apps/details/:appID/api_proxy' component={ApiProxy} />
+        <Route exact path='/apps/details/:appID/app_control' component={AppControl} />
       </div>
     </div>
   );

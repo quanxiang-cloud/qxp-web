@@ -1,0 +1,30 @@
+.search_unusual {
+  input {
+    width:195px !important;
+  }
+}
+
+.unusual_table {
+  tr:hover .current_node {
+    color: #375FF3;
+  }
+
+  .high-light {
+    color: #375FF3;
+  }
+
+  .red_theme {
+    color: var(--rose-600);
+    background-color: var(--rose-50);
+  }
+  
+  .blue_theme {
+    color: var(--blue-600);
+    background-color: var(--blue-50);
+  }
+  
+  .green_theme {
+    color: var(--green-600);
+    background-color: var(--green-50);
+  }
+}

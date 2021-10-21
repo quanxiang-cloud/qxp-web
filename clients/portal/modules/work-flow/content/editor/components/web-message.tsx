@@ -1,12 +1,11 @@
 import React from 'react';
 
 import NodeComponentWrapper, { Props } from './node-component-wrapper';
-
-import { WebMessageData } from '../type';
-import { getPerson } from './_common/utils';
+import { getPerson, approvePersonEncoder } from './_common/utils';
 
 export default function WebMessageNodeComponent(props: Props): JSX.Element {
-  const { approvePersons } = props.data.businessData as WebMessageData;
+  const approvePersons = approvePersonEncoder(props.data.businessData);
+
   return (
     <NodeComponentWrapper {...props} iconName="message">
       <div className="text-caption-no-color bg-gray-100 py-4 px-8 rounded-4">

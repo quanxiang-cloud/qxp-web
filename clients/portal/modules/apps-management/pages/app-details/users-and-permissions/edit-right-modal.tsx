@@ -29,6 +29,17 @@ function EditRightModal({ type, onCancel }: Props): JSX.Element {
         return;
       }
 
+      if (type === 'copy') {
+        store.copyRightsGroup({ id: store.currentRights.id, ...rights }).then(() => {
+          setLoading(false);
+          onCancel();
+        }).catch((err) => {
+          toast.error(err);
+          setLoading(false);
+        });
+        return;
+      }
+
       store.updatePerGroup({ id: store.currentRights.id, ...rights }).then(()=>{
         setLoading(false);
         onCancel();
@@ -42,7 +53,7 @@ function EditRightModal({ type, onCancel }: Props): JSX.Element {
   return (
     <Modal
       className="static-modal"
-      title={type === 'add' ? '添加角色' : '修改信息'}
+      title={type === 'edit' ? '修改信息' : '添加角色'}
       onClose={onCancel}
       footerBtns={[
         {
@@ -62,9 +73,10 @@ function EditRightModal({ type, onCancel }: Props): JSX.Element {
       ]}
     >
       <BasicInfoForm
+        type={type}
         className="p-20"
         ref={formRef}
-        defaultValue={type === 'edit' ? store.currentRights : {}}/>
+        defaultValue={type === 'add' ? {} : store.currentRights}/>
     </Modal>
   );
 }

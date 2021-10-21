@@ -6,10 +6,12 @@
   padding-right: 16px;
   border: 1px solid var(--gray-200);
   justify-content: space-between;
-  align-items:  center;
+  align-items: center;
+
   .menu-name {
     display: flex;
     align-items: center;
+
     .menu-name-icon {
       margin-right: 8px;
     }
@@ -29,12 +31,14 @@
   align-items: center;
   flex: 1;
   color: var(--blue-600);
+
   >span {
     cursor: pointer;
   }
 }
 
-.pb-form-right-user, .pb-form-right-dep {
+.pb-form-right-user,
+.pb-form-right-dep {
   max-width: 150px;
   position: relative;
   display: flex;
@@ -57,7 +61,7 @@
 }
 
 .pb-form-right-user {
-  color:var(--blue-600);
+  color: var(--blue-600);
   background-color: var(--blue-100);
 
   span {
@@ -77,18 +81,22 @@
 .authority-detail {
   height: 100%;
   overflow: hidden;
+
   .qxp-tab-container {
-    height: auto ;
+    height: auto;
   }
+
   position: relative;
-  & > .rights-mes {
+
+  &>.rights-mes {
     position: absolute;
-    top: 4px;
-    left: 40px;
+    top: 16px;
+    left: 32px;
     height: 50px;
     display: flex;
     align-items: center;
     z-index: 20;
+
     .rights-des {
       max-width: 160px;
       overflow: hidden;
@@ -96,21 +104,81 @@
       white-space: nowrap;
     }
   }
+
+  .rights-image {
+    position: absolute;
+    top: 5px;
+    right: 20px;
+    width: 104px;
+    height: 48px;
+    overflow: hidden;
+    border-radius: 8px;
+    z-index: 10;
+
+    &-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+
+
+      .yellow {
+        width: 104px;
+        height: 52px;
+        position: absolute;
+        left: 55.64%;
+        right: 0%;
+        top: -101.14%;
+        bottom: 86.36%;
+        background: linear-gradient(180deg, #FCD34D 0%, #FBBF24 100%);
+        border-radius: 26px;
+        transform: rotate(120deg);
+      }
+
+      .purple {
+        width: 104px;
+        height: 52px;
+        position: absolute;
+        left: 62.64%;
+        right: 22.13%;
+        top: 27.86%;
+        bottom: 86.36%;
+        background: linear-gradient(180deg, #F0ABFC 0%, #E879F9 100%);
+        opacity: 0.65;
+        border-radius: 26px;
+      }
+
+      .orange {
+        width: 104px;
+        height: 52px;
+        border: 1px solid orange;
+        position: absolute;
+        left: 8.97%;
+        right: -1.19%;
+        bottom: 85.2%;
+        border-radius: 26px;
+        transform: rotate(-105deg);
+      }
+    }
+  }
+
   .rights-tab {
-    .tab-navs{
-      width: 96%;
-      height: 52px;
-      margin: 0 auto;
+    .tab-navs {
+      width: auto;
+      height: 48px;
+      margin: 0 16px;
       border-radius: 8px;
       justify-content: center;
-      background: url(/dist/images/authority-bg.svg);
-      box-shadow: 0px 8px 24px 8px rgb(99 102 241 / 25%);
-      background-size: cover;
+      background: url(/dist/images/authority-line.png) top right no-repeat, linear-gradient(90deg, #638AFF 0%, #375FF3 100%);
+      background-size: contain;
+      box-shadow: 0px 8px 24px 8px rgba(55, 95, 243, 0.15);
+
       .tab-nav-item {
         color: #fff;
+
         &:hover {
           color: #fff;
         }
+
         &::after {
           background: #fff;
         }
@@ -119,22 +187,17 @@
 
     .tab-content {
       padding: 0;
-      border-radius: 12px 12px 0px 0px;
+      border-radius: 0;
     }
   }
 }
 
 .menu-nav {
-  background: var(--gray-100);
-  .search-menu {
-    height: 40px;
-    padding: 0;
-    border: 0;
-    background-color: var(--gray-100);
-  }
+  background: var(--gray-50);
 
-  .ant-menu-submenu:hover>.ant-menu-submenu-title>.ant-menu-submenu-expand-icon, .ant-menu-submenu:hover>.ant-menu-submenu-title>.ant-menu-submenu-arrow {
-     color: inherit;
+  .ant-menu-submenu:hover>.ant-menu-submenu-title>.ant-menu-submenu-expand-icon,
+  .ant-menu-submenu:hover>.ant-menu-submenu-title>.ant-menu-submenu-arrow {
+    color: inherit;
   }
 
   .ant-menu-submenu-selected {
@@ -168,14 +231,15 @@
       font-size: 16px;
       font-weight: 600;
       background-color: #fff;
-  }
+    }
 
-    .ant-menu-item::after{
+    .ant-menu-item::after {
       opacity: 0;
     }
 
     .ant-menu-submenu-title {
       padding-left: 50px !important;
+
       .ant-menu-submenu-arrow {
         left: 21px
       }
@@ -237,7 +301,8 @@
   color: var(--gray-900);
 }
 
-.pb-field-item, .pb-field-item-title {
+.pb-field-item,
+.pb-field-item-title {
   display: grid;
   padding: 0 24px;
   align-items: center;
@@ -248,20 +313,20 @@
   font-size: 14px;
   line-height: 22px;
 
-  &> span:first-of-type {
+  &>span:first-of-type {
     justify-self: start;
   }
 }
 
 .rights-hidden {
- position: absolute;
- height: 0;
- z-index: -1;
- opacity: 0;
- pointer-events:none；
+  position: absolute;
+  height: 0;
+  z-index: -1;
+  opacity: 0;
+  pointer-events: none；
 }
 
-.suffix-text{
+.suffix-text {
   color: var(--teal-500);
 }
 
@@ -281,14 +346,17 @@
   margin-bottom: 8px;
   border: 1px solid var(--gray-200);
   overflow-x: auto;
-  .data-permission-item{
+
+  .data-permission-item {
     display: flex;
     justify-content: space-between;
     padding-left: 16px;
-    align-items:  center;
+    align-items: center;
+
     .permission-name {
       display: flex;
       align-items: center;
+
       .menu-permission-icon {
         margin-right: 8px;
       }
@@ -300,7 +368,60 @@
 .data-filter {
   padding: 16px;
   border-top: 1px solid var(--gray-200);
+
   .ant-select .ant-select-selector {
     border-radius: 2px 8px 8px 8px;
+  }
+}
+
+.antd-menu {
+  .ant-menu-submenu {
+    .ant-menu-submenu-title {
+      .ant-menu-title-content {
+        font-size: 12px;
+      }
+    }
+  }
+
+  .ant-menu-item {
+    font-size: 12px;
+
+    &:hover {
+      .ant-menu-title-content {
+        font-size: 12px;
+      }
+    }
+  }
+
+  .ant-menu-item-selected {
+    .ant-menu-title-content {
+      font-size: 12px;
+    }
+  }
+}
+
+.tab-label-item {
+  font-size: 12px !important;
+  line-height: 24px !important;
+}
+
+
+.access-btn {
+  .btn {
+    font-size: 12px;
+  }
+
+  div {
+    &:nth-child(2) {
+      margin-right: 0;
+    }
+  }
+
+  label.radio-button {
+    margin-right: 0;
+
+    span {
+      font-size: 12px;
+    }
   }
 }

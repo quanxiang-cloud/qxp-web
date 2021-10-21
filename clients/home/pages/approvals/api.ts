@@ -151,8 +151,12 @@ export const getStepbackActivityList = async (processInstanceId: string): Promis
 };
 
 // 处理阅示
-export const handleReadTask = async (processInstanceId: string, taskId: string, remark?: string) => {
-  return await httpClient(`/api/v1/flow/instance/handleRead/${processInstanceId}/${taskId}`, remark);
+export const handleReadTask = async (
+  processInstanceId: string,
+  taskId: string,
+  remark?: string,
+): Promise<{ data: any }> => {
+  return await httpClient(`/api/v1/flow/instance/handleRead/${processInstanceId}/${taskId}`, { remark });
 };
 
 // 获取流程处理记录
@@ -171,6 +175,6 @@ export const addComment = async (params: any): Promise<any> => {
 };
 
 // 重新提交
-export const resubmit = async (processInstanceId: string): Promise<any> => {
-  return await httpClient(`/api/v1/flow/instance/resubmit/${processInstanceId}`);
+export const resubmit = async (processInstanceId: string, formData?: Record<string, any>): Promise<any> => {
+  return await httpClient(`/api/v1/flow/instance/resubmit/${processInstanceId}`, { formData });
 };

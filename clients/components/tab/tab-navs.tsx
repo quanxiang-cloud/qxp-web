@@ -24,7 +24,7 @@ function TabNavs<T extends React.Key>({
   navsClassName,
   onClick,
 }: Props<T>,
-ref?: React.Ref<HTMLDivElement>) {
+ref?: React.Ref<HTMLDivElement>): JSX.Element {
   return (
     <div className='z-10'> {/* This layer of div is used to solve the overflow-x auto */}
       <div
@@ -32,7 +32,7 @@ ref?: React.Ref<HTMLDivElement>) {
         className={cs('tab-navs', navsClassName)}>
         {
           navs.map((item) => {
-            const active = item.id == currentKey;
+            const active = item.id === currentKey;
             return (
               <div
                 key={item.id}

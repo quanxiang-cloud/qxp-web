@@ -141,7 +141,7 @@ module.exports = {
         varsIgnorePattern: '^_',
       },
     ],
-    eqeqeq: 'warn',
+    eqeqeq: ['error', 'always'],
   },
   settings: {
     react: {

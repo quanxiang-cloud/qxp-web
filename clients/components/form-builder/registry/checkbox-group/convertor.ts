@@ -14,6 +14,7 @@ export interface CheckboxGroupConfig {
   defaultValueFrom: FormBuilder.DefaultValueFrom;
   datasetId: string;
   availableOptions: Array<Record<string, string | boolean>>,
+  defaultValue: undefined | string,
 }
 
 export const defaultConfig: CheckboxGroupConfig = {
@@ -30,6 +31,7 @@ export const defaultConfig: CheckboxGroupConfig = {
     { label: '选项二', isDefault: false },
     { label: '选项三', isDefault: false },
   ],
+  defaultValue: undefined,
 };
 
 export function toSchema(value: CheckboxGroupConfig): ISchema {
@@ -40,7 +42,8 @@ export function toSchema(value: CheckboxGroupConfig): ISchema {
     required: value.required,
     readOnly: value.displayModifier === 'readonly',
     display: value.displayModifier !== 'hidden',
-    default: convertMultipleSelectDefaults(value.availableOptions),
+    default: value.defaultValueFrom === 'dataset' ?
+      value.defaultValue : convertMultipleSelectDefaults(value.availableOptions),
     enum: value.availableOptions.map((op) => {
       return op.label as string;
     }) || [],
@@ -64,7 +67,7 @@ export function toConfig(schema: ISchema): CheckboxGroupConfig {
     title: schema.title as string,
     description: schema.description as string,
     displayModifier: getDisplayModifierFromSchema(schema),
-    optionsLayout: schema['x-component-props']?.layout as any,
+    optionsLayout: schema['x-component-props']?.optionsLayout,
     sortable: !!schema['x-internal']?.sortable,
     required: !!schema.required,
     defaultValueFrom: schema['x-internal']?.defaultValueFrom || 'customized',
@@ -75,5 +78,6 @@ export function toConfig(schema: ISchema): CheckboxGroupConfig {
         isDefault: (!schema.default || !schema.default.length) ? false : schema.default.includes(label),
       };
     }) as any,
+    defaultValue: schema.default,
   };
 }

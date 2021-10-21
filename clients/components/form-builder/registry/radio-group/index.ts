@@ -1,11 +1,17 @@
+import { createFormActions } from '@formily/antd';
+
 import { validateDatasetElement } from '@c/form-builder/utils';
-import { FormEffectHooks, createFormActions } from '@formily/react';
 import DatasetConfig from '@c/form-builder/form-settings-panel/form-field-config/dataset-config';
 
 import Placeholder from './placeholder';
 import RadioGroup from './radioGroup';
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig, RadioGroupConfig } from './convertor';
+import {
+  updateLabelsOnSimpleEdit,
+  initDefaultValueOnOptionsFromDataset,
+  updateDefaultValueOnDatasetIdChanged,
+} from '../options-effects';
 
 const RadioField: Omit<FormBuilder.SourceElement<RadioGroupConfig>, 'displayOrder'> = {
   displayName: '单选框',
@@ -22,27 +28,11 @@ const RadioField: Omit<FormBuilder.SourceElement<RadioGroupConfig>, 'displayOrde
   configDependencies: { DatasetConfig },
   validate: validateDatasetElement,
   effects: () => {
-    const { setFieldValue, getFieldValue } = createFormActions();
-    const { onFieldInputChange$, onFieldValueChange$ } = FormEffectHooks;
+    const actions = createFormActions();
 
-    onFieldInputChange$('availableOptions.*.isDefault').subscribe(({ name, value }) => {
-      const currentAvailableOptions = getFieldValue('availableOptions');
-      const currentIndex = Number(name.split('.')[1]);
-      setFieldValue('availableOptions', currentAvailableOptions.map((op: any, index: number) => {
-        if (index === currentIndex) {
-          return { label: op.label, isDefault: value };
-        }
-
-        return { label: op.label, isDefault: false };
-      }));
-    });
-
-    onFieldValueChange$('edit').subscribe(({ value }) => {
-      const availableOptions = getFieldValue('availableOptions');
-      setFieldValue('availableOptions', availableOptions.map((op: any, index: number) => {
-        return { label: value[index], isDefault: op.isDefault };
-      }));
-    });
+    updateLabelsOnSimpleEdit(actions);
+    initDefaultValueOnOptionsFromDataset(actions);
+    updateDefaultValueOnDatasetIdChanged(actions);
   },
 };
 

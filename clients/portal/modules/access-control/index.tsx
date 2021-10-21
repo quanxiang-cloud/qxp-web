@@ -36,14 +36,14 @@ export default function Index(): JSX.Element {
     );
   }
   return (
-    <div className="py-20 px-58 flex justify-center items-start flex-grow "
-      style={{ height: 'calc(100vh - 62px)' }} >
-      <div className="w-316  rounded-12 mr-20">
-        <SideNavCard cardTitle={(
+    <div className="app-entry-container">
+      <SideNavCard
+        className='w-280'
+        cardTitle={(
           <div className="access-background-image p-20 opacity-90">
             <ItemWithTitleDesc
               title="访问控制"
-              desc="对企业通讯录、角色权限进行统一管理"
+              desc="管理端的访问权限控制"
               itemRender={
                 (<AppIcon themeColor="teal" size={48} iconName="admin"/>)
               }
@@ -54,9 +54,8 @@ export default function Index(): JSX.Element {
         )}
         menuData={MENU}
         defaultActiveLink={{ basePath: '/access-control', menuId: 'departments-employees' }}
-        />
-      </div>
-      <div className="h-full transition-opacity flex flex-col flex-1 overflow-hidden">
+      />
+      <div className="app-right-box">
         <Switch>
           <Route exact path="/access-control" component={DepartmentsEmployees} />
           <Route path="/access-control/departments-employees" component={DepartmentsEmployees} />

@@ -34,6 +34,7 @@ function parseDisplayValue(value: any): any {
 }
 
 interface Props {
+  valueVariable: boolean;
   defaultValue?: FieldValue;
   onSave: (value: FieldValue) => void;
   variableOptions?: FlowVariableOption[];
@@ -41,6 +42,7 @@ interface Props {
 }
 
 function FieldValueEditor({
+  valueVariable,
   defaultValue = { variable: '', staticValue: '' },
   variableOptions,
   onSave,
@@ -129,12 +131,13 @@ function FieldValueEditor({
           <p className="mb-12 text-body2">设置字段初始值</p>
           <div className="flex items-center mb-8">
             <RadioGroup onChange={(value) => setType(value as string)}>
-              <Radio
+              {valueVariable && (<Radio
                 defaultChecked={type === 'variable'}
                 value="variable"
                 label="使用工作流变量"
                 className="mr-16"
-              />
+              />)
+              }
               <Radio
                 defaultChecked={type === 'staticValue'}
                 value="staticValue"
@@ -142,39 +145,33 @@ function FieldValueEditor({
               />
             </RadioGroup>
           </div>
-          {
-            type === 'variable' && !!variableOptions?.length && (
-              <>
-                <Select<string>
-                  options={variableOptions || []}
-                  defaultValue={value.variable}
-                  onChange={(value: string) => setValue((v) => ({ ...v, variable: value }))}
-                  placeholder="选择工作流中的变量"
-                  className="h-32 py-4 border border-gray-300 corner-2-8-8-8
+          {type === 'variable' && !!variableOptions?.length && (
+            <>
+              <Select<string>
+                options={variableOptions || []}
+                defaultValue={value.variable}
+                onChange={(value: string) => setValue((v) => ({ ...v, variable: value }))}
+                placeholder="选择工作流中的变量"
+                className="h-32 py-4 border border-gray-300 corner-2-8-8-8
                   px-12 text-12 flex items-center flex-1 mb-8 mt-8"
-                />
+              />
+              <ActionButtonGroup className="mt-16" onCancel={onCancel} onSubmit={onSubmit} />
+            </>
+          )}
+          {type === 'variable' && !variableOptions?.length && (
+            <p className="my-12 text-gray-500">无可用的工作流变量</p>
+          )}
+          {type === 'staticValue' && schema && (
+            <>
+              <FormRenderer
+                schema={schema}
+                defaultValue={{ [Object.keys(schema.properties || {})[0]]: value.staticValue }}
+                onFormValueChange={onFormValueChange}
+              >
                 <ActionButtonGroup className="mt-16" onCancel={onCancel} onSubmit={onSubmit} />
-              </>
-            )
-          }
-          {
-            type === 'variable' && !variableOptions?.length && (
-              <p className="my-12 text-gray-500">无可用的工作流变量</p>
-            )
-          }
-          {
-            type === 'staticValue' && schema && (
-              <>
-                <FormRenderer
-                  schema={schema}
-                  defaultValue={{ [Object.keys(schema.properties || {})[0]]: value.staticValue }}
-                  onFormValueChange={onFormValueChange}
-                >
-                  <ActionButtonGroup className="mt-16" onCancel={onCancel} onSubmit={onSubmit} />
-                </FormRenderer>
-              </>
-            )
-          }
+              </FormRenderer>
+            </>
+          )}
         </div>,
         document.body,
       )}

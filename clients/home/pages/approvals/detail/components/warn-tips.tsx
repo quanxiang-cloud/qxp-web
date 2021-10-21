@@ -1,25 +1,34 @@
 import React from 'react';
+import dayjs from 'dayjs';
 
 import Icon from '@c/icon';
 
-type Status = 'overtime' | 'jump' | 'handle';
-
-const StatusText: Record<Status, string> = {
-  overtime: '超时未处理，已自动跳至“设计部填写',
-  jump: '该节点下无相关负责人，已自动跳过',
-  handle: '该节点下无相关负责人，已交给管理员处理',
-};
+import CustomAvatar from '../components/custom-avatar';
 
 interface Props {
-  status: Status;
+  workData: FlowItem;
 }
 
-export default function WarnTips({ status }: Props) {
-  const text = StatusText[status];
+export default function WarnTips({ workData }: Props): JSX.Element {
+  const { taskName, operationRecords, modifyTime } = workData;
+
   return (
-    <div className="mt-8 px-16 py-8 bg-white text-yellow-600 text-12 flex">
-      <div className="h-20 flex justify-center items-center"><Icon name="info" /></div>
-      <div className="ml-4">{text}</div>
+    <div className="flex w-full">
+      <CustomAvatar name="approval" color="bg-indigo-500" />
+      <div className="ml-8 flex-1">
+        <div className="text-gray-600">{taskName || '设计部填写'}</div>
+        <div className="mt-8 px-16 py-8 corner-2-8-8-8 bg-white text-yellow-600 text-12 flex">
+          <div className="h-20 flex justify-center items-center">
+            <Icon name="info" className="text-current" />
+          </div>
+          <div className="ml-4">
+            {operationRecords.length && operationRecords[0].handleDesc}
+          </div>
+        </div>
+        <div className="text-12 text-gray-400 mt-4">
+          {dayjs(modifyTime).format('YYYY-MM-DD HH:mm')}
+        </div>
+      </div>
     </div>
   );
 }

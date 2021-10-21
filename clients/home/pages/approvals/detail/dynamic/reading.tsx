@@ -30,7 +30,7 @@ export default function Reading({ workData, clickHandle }: Props): JSX.Element {
         <div className="h-24 flex justify-between">
           <div className="flex items-center">
             <span className="text-h6-bold mr-4">{creatorName}</span>
-            <span className="text-gray-600">
+            <span className="text-gray-600 mb-8">
               邀请{operationRecords.length}人进行阅示，{filterRead(operationRecords)}人已阅
             </span>
           </div>
