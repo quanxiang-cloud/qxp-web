@@ -69,6 +69,10 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
+          'x-rules': {
+            required: true,
+            message: '请选择关联表',
+          },
           'x-component': 'LinkedTable',
           'x-index': 3,
         },
