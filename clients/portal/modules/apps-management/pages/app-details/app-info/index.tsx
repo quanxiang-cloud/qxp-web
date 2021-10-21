@@ -6,7 +6,7 @@ import BasicInfo from './basic-info';
 
 function AppInfo(): JSX.Element {
   return (
-    <div className="flex-1 h-full custom">
+    <div className="flex-1 h-full opacity-95">
       <Tab
         strechNavs={false}
         separator={false}
