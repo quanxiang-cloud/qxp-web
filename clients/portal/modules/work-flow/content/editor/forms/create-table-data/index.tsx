@@ -4,18 +4,15 @@ import { useUpdateEffect } from 'react-use';
 
 import Select from '@c/select';
 import Toggle from '@c/toggle';
-
 import SaveButtonGroup from '@flow/content/editor/components/_common/action-save-button-group';
-import { getFormDataOptions } from '@c/form-table-selector/api';
+import { getFormDataMenuList } from '@c/form-table-selector/api';
 import FlowContext from '@flow/flow-context';
-import FlowTableContext from '../flow-source-table';
 import toast from '@lib/toast';
 import Modal from '@c/modal';
+import { BusinessData, TableDataCreateData } from '@flow/content/editor/type';
 
 import TargetTableFields from './target-table-fields';
-import { BusinessData, TableDataCreateData } from '@flow/content/editor/type';
 import Context from './context';
-import { filterTables } from '../utils';
 
 interface Props {
   defaultValue: TableDataCreateData;
@@ -33,7 +30,6 @@ const initialValue = {
 
 function FormCreateTableData({ defaultValue, onSubmit, onCancel, onChange: _onChange }: Props): JSX.Element {
   const { appID } = useContext(FlowContext);
-  const { tableID } = useContext(FlowTableContext);
   const [value, setValue] = useState<TableDataCreateData>(defaultValue || {});
   const [nextTable, setNextTable] = useState<string>('');
   const [switchTableModal, setSwitchTableModal] = useState(false);
@@ -46,7 +42,7 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel, onChange: _onCh
     data: allTables = [],
     isLoading,
     isError,
-  } = useQuery(['GET_WORK_FORM_LIST', appID], () => getFormDataOptions(appID), {
+  } = useQuery(['GET_WORK_FORM_LIST', appID], () => getFormDataMenuList(appID), {
     enabled: !!appID,
   });
 
@@ -96,7 +92,7 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel, onChange: _onCh
         <div className="inline-flex items-center">
           <span className="text-body mr-10">目标数据表:</span>
           <Select
-            options={filterTables(allTables).filter((tb) => tb.value !== tableID)}
+            options={allTables}
             placeholder="选择数据表"
             value={value.targetTableId}
             onChange={onChangeTargetTable}
