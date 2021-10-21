@@ -29,11 +29,6 @@ func getRedirectSK(state string) string {
 // JumpToHome redirect user to home page
 func JumpToHome(w http.ResponseWriter, r *http.Request) {
 	to := r.URL.Query().Get("to")
-	if to == "" {
-		renderErrorPage(w, r, 400, "query 'to' required!")
-		return
-	}
-
 	homePath, err := url.QueryUnescape(to)
 	if err != nil {
 		renderErrorPage(w, r, 400, "invalid 'to' value!")
