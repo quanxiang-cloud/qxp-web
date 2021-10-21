@@ -98,7 +98,7 @@ function AssociatedPerson(): JSX.Element {
         id: 'userName',
         width: 120,
         accessor: (user: any) => (
-          <div className='flex'>
+          <div className='flex items-center'>
             <Avatar username={user.userName} size={24}/>
             <span className='ml-4'>{user.userName}</span>
           </div>
