@@ -1,9 +1,12 @@
 .app-details-nav {
   position: relative;
-  min-width: 236px;
-  max-width: 236px;
+  width: 212px;
   border-right: 1px solid var(--gray-300);
   overflow: auto;
+
+  &-bg {
+    background-color: var(--gray-50);
+  }
 }
 
 .app-page-add-group {

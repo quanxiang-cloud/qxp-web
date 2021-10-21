@@ -68,7 +68,7 @@ function AddGroupPoper({ onCancel, onSubmit }: Props, ref: React.Ref<HTMLDivElem
         <Icon
           name="create_new_folder"
           size={16}
-          className='app-page-add-group block'
+          className='app-page-add-group '
         />
       </PopConfirm>
     </div>

@@ -89,7 +89,9 @@ function PageList(): JSX.Element {
         <div className='flex flex-end items-center px-16 py-20 justify-center'>
           <span className='text-h6-bold text-gray-400 mr-auto'>菜单</span>
           <div onClick={() => setModalType('createPage')}>
-            <Icon className='app-page-add-group mr-8 block' size={16} name='post_add' />
+            <Tooltip content='添加菜单'>
+              <Icon className='app-page-add-group mr-8' size={16} name='post_add' />
+            </Tooltip>
           </div>
           <Tooltip content='添加分组'>
             <AddGroupPoper
@@ -98,13 +100,6 @@ function PageList(): JSX.Element {
           </Tooltip>
         </div>
         <div className='app-page-tree-wrapper'>
-          {/* <div
-            className="cursor-pointer h-40 flex items-center px-18 group hover:bg-gray-100"
-            onClick={() => setModalType('createPage')}
-          >
-            <Icon className='app-page-add-group mr-4' size={20} name='add' />
-            新建菜单
-          </div> */}
           <MenuTree
             menus={toJS(pageInitList).sort((a, b) => (a?.sort || 0) - (b?.sort || 0))}
             handleMenuClick={handleMenuClick}

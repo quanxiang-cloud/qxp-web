@@ -128,7 +128,7 @@ function MenuItem({ menu, handleMenuClick }: Props): JSX.Element {
         <span className='menu-op'>
           <MenuOp menu={menu} handleMenuClick={handleMenuClick} />
         </span>
-      </div>
+      </div >
       {
         !isEmpty(menu?.child) &&
         (<MenuTree

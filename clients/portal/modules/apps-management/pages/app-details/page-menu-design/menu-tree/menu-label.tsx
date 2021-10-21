@@ -23,7 +23,7 @@ function getGroupIcon(menu: Menu): string {
 
 const MenuLabel = ({ activeMenu, menu }: Props): JSX.Element => {
   const cls = classNames('items-center flex', {
-    'text-blue-600': activeMenu.id === menu.id,
+    'text-gray-900': activeMenu.id === menu.id,
   });
 
   return (
