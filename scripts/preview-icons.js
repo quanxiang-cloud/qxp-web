@@ -63,10 +63,7 @@ ${svgIcons}
 
 const server = http.createServer((req, res) => {
   res.setHeader('Content-Type', 'text/html');
-  getSprite(sprite=> {
-    // fs.createReadStream(getContent(sprite)).pipe(res);
-    res.end(getContent(sprite));
-  })
+  getSprite().then(sprite => res.end(getContent(sprite)));
 });
 
 server.listen(PORT, () => console.log(`Open http://localhost:${PORT} to preview svg icons..`));
