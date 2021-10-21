@@ -9,7 +9,6 @@ import {
   isPermissionHiddenAble,
   calculateFieldPermission,
   isPermissionEditable,
-  isPermissionReadOnly,
 } from '@c/form-builder/utils';
 import {
   FieldPermission, NewFieldPermission, CustomFieldPermission, SystemFieldPermission, NewFieldPermissionValue,
@@ -79,14 +78,27 @@ function fieldPermissionReducer(acc: FieldPermission, cur: FieldPermissionMergeT
   return acc;
 }
 
-function getPermission(permission: PERMISSION): PERMISSION_TYPE {
+function getPermission(permission?: PERMISSION, isLayoutComponent?: boolean): PERMISSION_TYPE {
+  if (!permission) {
+    return {
+      read: !!isLayoutComponent,
+      write: false,
+      invisible: false,
+      editable: false,
+      readonly: !!isLayoutComponent,
+    };
+  }
+
   const readable = isPermissionReadable(permission);
+  const invisible = readable ? isPermissionHiddenAble(permission) : false;
+  const editable = readable ? isPermissionEditable(permission) : false;
+
   return {
     read: readable,
     write: readable ? isPermissionWriteable(permission) : false,
-    invisible: readable ? isPermissionHiddenAble(permission) : false,
-    editable: readable ? isPermissionEditable(permission) : false,
-    readonly: readable ? isPermissionReadOnly(permission) : false,
+    invisible,
+    editable,
+    readonly: readable && !invisible && !editable,
   };
 }
 
@@ -127,17 +139,17 @@ export function fieldPermissionDecoder(
 export function getInitFieldPermissionFromSchema(schema: ISchema): NewFieldPermission {
   const fields = schemaToArray(schema, { parseSubTable: true, keepLayout: true })
     .map((schema): FieldPermissionMergeType => {
-      const permission = schema['x-internal']?.permission || 0;
       const fieldId = schema['x-internal']?.fieldId;
+      const isLayoutComponent = !!schema['x-internal']?.isLayoutComponent;
       return {
-        ...getPermission(permission),
+        ...getPermission(undefined, isLayoutComponent),
         isSystem: INTERNAL_FIELD_NAMES.includes(fieldId || ''),
         fieldName: schema.title as string,
         id: fieldId || '',
         initialValue: EDIT_VALUE,
         submitValue: EDIT_VALUE,
         path: schema['x-internal']?.fieldPath || '',
-        hidden: !!schema['x-internal']?.isLayoutComponent,
+        hidden: isLayoutComponent,
       };
     });
 
