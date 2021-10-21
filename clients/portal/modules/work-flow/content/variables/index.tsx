@@ -2,10 +2,9 @@ import React, { useContext, useState } from 'react';
 import { useQuery } from 'react-query';
 
 import TextHeader from '@c/text-header';
-import Card from '@c/card';
-import Table from '@c/table';
 import Button from '@c/button';
 import Modal from '@c/modal';
+import Table from '@c/table';
 import toast from '@lib/toast';
 import flowContext from '@flow/flow-context';
 import { deleteFlowVariable, getVariableList } from '@flow/api';
@@ -64,13 +63,13 @@ export default function Variables(): JSX.Element {
         return (
           <>
             <span
-              className="mr-16 cursor-pointer hover:text-blue-600"
+              className="text-blue-600 cursor-pointer mr-16"
               onClick={() => updateCurrentAction(variable, 'edit')}
             >
               编辑
             </span>
             <span
-              className="mr-16 cursor-pointer hover:text-blue-600"
+              className="text-red-600 cursor-pointer"
               onClick={() => updateCurrentAction(variable, 'remove')}
             >
               删除
@@ -113,7 +112,33 @@ export default function Variables(): JSX.Element {
   }
 
   return (
-    <>
+    <div className="flex-1 m-16 f overflow-auto mb-0 bg-white rounded-t-12">
+      <TextHeader
+        title="工作流变量"
+        itemTitleClassName="text-12 font-semibold"
+        desc="设置工作流变量"
+        actionClassName="text-12"
+        // action={<a className="ease-linear underline">📌 &nbsp;快速开始？</a>}
+        className="bg-gray-1000 p-16 header-background-image h-44 shadow-header rounded-t-12"
+        descClassName="text-gray-400"
+      />
+      <div className="flex flex-col w-full p-16 h-full" style={{ height: 'calc(100% - 44px)' }}>
+        <div className="flex justify-between mb-16">
+          <Button
+            iconName="add"
+            modifier="primary"
+            onClick={() => updateCurrentAction(currentVariable, 'add')}
+          >新增变量</Button>
+        </div>
+        <div className="flex-1 flex flex-col flow-table">
+          <Table<any>
+            rowKey="code"
+            data={data || []}
+            loading={isLoading}
+            columns={columns}
+          />
+        </div>
+      </div>
       {currentAction === 'remove' && (
         <Modal
           title={'删除变量'}
@@ -151,35 +176,6 @@ export default function Variables(): JSX.Element {
           onAdded={handleAddSubmit}
         />
       )}
-      <div className="w-full flex flex-col">
-        <TextHeader
-          className="h-56 items-center flex px-20 bg-gray-1000 shadow-header text-gray-900 mb-20"
-          title="工作流变量"
-          titleClassName="text-h5"
-          descClassName="text-caption mt-1"
-          desc=""
-          // action={(
-          //   <div className="text-underline text-body2 cursor-pointer">如何使用变量</div>
-          // )}
-        />
-        <Card className="self-center rounded-12 overflow-hidden px-24 py-16 mb-100 w-full max-w-%90">
-          <div className="w-full">
-            <Button
-              iconName="add"
-              onClick={() => updateCurrentAction(currentVariable, 'add')}
-              className="mr-16"
-            >
-              新增变量
-            </Button>
-            <Table<any>
-              rowKey="code"
-              data={data || []}
-              loading={isLoading}
-              columns={columns}
-            />
-          </div>
-        </Card>
-      </div>
-    </>
+    </div>
   );
 }
