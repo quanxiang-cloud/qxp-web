@@ -75,7 +75,7 @@ function DetailsHeader(): JSX.Element {
           className="btn mr-16"
           target="_blank"
           rel="noreferrer"
-          href={`//${window.CONFIG.home_hostname}`}
+          href={`/_jump_to_home?to=/apps/${appID}`}
         >
           访问应用端
         </a>

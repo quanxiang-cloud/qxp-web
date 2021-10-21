@@ -11,9 +11,9 @@ export default function HeaderMenu(): JSX.Element {
         className="btn mr-16"
         target="_blank"
         rel="noreferrer"
-        href={`//${window.CONFIG.home_hostname}`}
+        href="/_jump_to_home"
       >
-        进入应用访问
+        访问用户端
       </a>
       <hr className='w-1 h-20 bg-gray-200'/>
       <NavMsgBar type='portal' className="mx-16"/>
