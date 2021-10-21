@@ -2,6 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import { has, isEmpty } from 'lodash';
 import { toJS } from 'mobx';
+import cs from 'classnames';
 
 import toast from '@lib/toast';
 
@@ -82,8 +83,12 @@ function MenuItem({ menu, handleMenuClick }: Props): JSX.Element {
 
   function handleClick(e: React.MouseEvent<HTMLDivElement, MouseEvent>, menu: Menu): void {
     e.stopPropagation();
-    setActiveMenu(menu);
-    update(collapse(menu, pageInitList));
+
+    if (menu?.child) {
+      update(collapse(menu, pageInitList));
+    } else {
+      setActiveMenu(menu);
+    }
   }
 
   const style: React.CSSProperties = {
@@ -99,30 +104,39 @@ function MenuItem({ menu, handleMenuClick }: Props): JSX.Element {
       .filter((item: Menu) => (menu.child?.length && (!has(item, 'open') || item.open))) ?? [];
   }
 
+  const isActive = activeMenu.id === menu.id && !menu.child?.length;
+
   return (
     <li
       key={menu?.id}
       data-id={menu?.id}
       style={style}
+      className={cs({ 'bg-white': isActive })}
     >
       <div
         draggable
-        className='h-40 menu-item px-18'
+        className={cs('h-40 menu-item', {
+          'menu-item-active': isActive,
+          'menu-item-indent': menu?.groupID,
+        })}
         onClick={(e) => handleClick(e, menu)}
         onDragStart={(e) => handleDragStart(e, menu)}
         onDragOver={(e) => handleDragOver(e, menu)}
         onDragEnd={(e) => handleDragEnd(e)}
       >
         <MenuLabel menu={menu} activeMenu={activeMenu} />
-        <MenuOp menu={menu} handleMenuClick={handleMenuClick} />
+        <span className='menu-op'>
+          <MenuOp menu={menu} handleMenuClick={handleMenuClick} />
+        </span>
       </div>
-      {!isEmpty(menu?.child) &&
+      {
+        !isEmpty(menu?.child) &&
         (<MenuTree
           handleMenuClick={handleMenuClick}
           menus={getMenuList(toJS(menu?.child) as Menu[])}
         />)
       }
-    </li>
+    </li >
   );
 }
 
