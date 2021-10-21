@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import cs from 'classnames';
 
 import ResetPasswordModal from '@portal/global-header/reset-password-modal';
@@ -14,14 +14,9 @@ interface Props {
 
 export default function UserAvatarMenu({ className }: Props): JSX.Element {
   const [openResetPasswordModal, setOpenResetPasswordModal] = useState<boolean>(false);
-  const [side, setSide] = useState('');
   const reference = useRef<HTMLDivElement>(null);
   const popperRef = useRef<Popper>(null);
   const [show, setShow] = useState(popperRef.current?.state.popVisible);
-
-  useEffect(() => {
-    setSide(window.SIDE);
-  }, []);
 
   function handleEditPasswordClick(): void {
     setOpenResetPasswordModal(true);
@@ -69,7 +64,7 @@ export default function UserAvatarMenu({ className }: Props): JSX.Element {
                 {window.USER.userName}
               </span>
               <span className='pr-20 text-12 text-gray-600'>
-                {side === 'portal' ?
+                {window.SIDE === 'portal' ?
                   `角色: ${window.USER_ADMIN_ROLES[0]?.name || '-'}` : (window.USER.email || window.USER.phone)}
               </span>
             </div>
