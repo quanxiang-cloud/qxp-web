@@ -290,10 +290,10 @@ function PageDetails({ pageID }: Props): JSX.Element {
   return (
     <>
       <div className='relative flex-1 overflow-hidden bg-white rounded-tr-12'>
-        <div className='page-details-nav header-background-image border-b-1'>
-          <div className='px-16 py-20'>
-            <span className='text-h5 text-gray-400 mr-12'>{curPage.name}</span>
-            <span className='text-caption align-top'>{curPage.describe}</span>
+        <div className='page-details-nav header-background-image border-b-1 bg-gray-50'>
+          <div className='px-16 py-12 flex items-center'>
+            <span className='text-12 font-semibold text-gray-900 mr-8'>{curPage.name}</span>
+            <span className='text-12 text-gray-400'>{curPage.describe}</span>
           </div>
         </div>
         {fetchSchemeLoading && <PageLoading />}
