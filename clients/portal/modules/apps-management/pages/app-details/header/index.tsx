@@ -65,7 +65,7 @@ function DetailsHeader(): JSX.Element {
         <AppsSwitcher apps={apps} currentAppID={appID} onChange={handleChange} />
       </div>
       <div className='flex items-center'>
-        <PopConfirm content={statusTipsContent(false)} onOk={updateAppStatus}>
+        <PopConfirm content={statusTipsContent(!isPublish)} onOk={updateAppStatus}>
           <Button modifier='primary'>
             {isPublish ? '下线应用' : '发布应用'}
           </Button>
