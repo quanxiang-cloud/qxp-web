@@ -30,12 +30,12 @@ function PageDetails({ pageID }: Props): JSX.Element {
   const [modalType, setModalType] = useState('');
   const [file, setFile] = useState<FileInfo | null>(null);
   const {
-    curPage, curPageCardList, appID, fetchSchemeLoading, setCurPageMenuType, pageDescriptions,
+    activeMenu, curPageCardList, appID, fetchSchemeLoading, setCurPageMenuType, pageDescriptions,
   } = appPagesStore;
 
   function goFormBuild(): void {
     if (appPagesStore.hasSchema) {
-      history.push(`/apps/formDesign/formBuild/${curPage.id}/${appID}?pageName=${curPage.name}`);
+      history.push(`/apps/formDesign/formBuild/${activeMenu.id}/${appID}?pageName=${activeMenu.name}`);
     }
   }
 
@@ -62,7 +62,8 @@ function PageDetails({ pageID }: Props): JSX.Element {
     }
 
     updateCustomPage(appID, {
-      id: pageID, fileSize: fileSizeStr, fileUrl: file?.url || '' },
+      id: pageID, fileSize: fileSizeStr, fileUrl: file?.url || '',
+    },
     ).then((res) => {
       setCurPageMenuType(MenuType.customPage, res);
       toast.success('修改成功');
@@ -120,12 +121,12 @@ function PageDetails({ pageID }: Props): JSX.Element {
   }
 
   function RenderPageDetails(): JSX.Element {
-    if ((curPage.menuType === MenuType.schemaForm && !appPagesStore.hasSchema)) {
+    if ((activeMenu.menuType === MenuType.schemaForm && !appPagesStore.hasSchema)) {
       return (
         <PageBuildNav
           appID={appID}
-          pageId={curPage.id}
-          pageName={curPage.name}
+          pageId={activeMenu.id}
+          pageName={activeMenu.name}
           setOpenModal={setModalType}
         />
       );
@@ -139,7 +140,7 @@ function PageDetails({ pageID }: Props): JSX.Element {
               <Icon
                 size={25}
                 type="dark"
-                name={curPage.menuType === MenuType.schemaForm ? 'schema-form' : 'custom-page'}
+                name={activeMenu.menuType === MenuType.schemaForm ? 'schema-form' : 'custom-page'}
               />
             </div>
             <div className='flex-1 grid grid-cols-6 mr-48'>
@@ -152,7 +153,7 @@ function PageDetails({ pageID }: Props): JSX.Element {
                 );
               })}
             </div>
-            {curPage.menuType === MenuType.customPage ? (<>
+            {activeMenu.menuType === MenuType.customPage ? (<>
               <Button
                 iconName='edit'
                 className="mr-18"
@@ -180,7 +181,7 @@ function PageDetails({ pageID }: Props): JSX.Element {
           </div>
           <div className='rounded-12 flex select-none py-16'>
             {curPageCardList.map(({ title, list, id: cardID }) => {
-              if (curPage.menuType === MenuType.customPage && cardID === 'linkedFlows') {
+              if (activeMenu.menuType === MenuType.customPage && cardID === 'linkedFlows') {
                 return;
               }
               return (
@@ -190,7 +191,7 @@ function PageDetails({ pageID }: Props): JSX.Element {
                   headerClassName="p-16"
                   title={(
                     <div className="flex items-center text-h6">
-                      <Icon name="link" size={21}/>
+                      <Icon name="link" size={21} />
                       <span className="mx-8">{title}</span>
                       <span className="text-gray-400">{`(${list.length})`}</span>
                     </div>
@@ -283,17 +284,17 @@ function PageDetails({ pageID }: Props): JSX.Element {
     );
   }
 
-  if (!curPage?.id) {
-    return <EmptyTips className="py-32 m-auto" text='暂无页面数据,请先新建页面'/>;
+  if (!activeMenu?.id) {
+    return <EmptyTips className="py-32 m-auto" text='暂无页面数据,请先新建页面' />;
   }
 
   return (
     <>
       <div className='relative flex-1 overflow-hidden bg-white rounded-tr-12'>
-        <div className='page-details-nav header-background-image border-b-1 bg-gray-50'>
-          <div className='px-16 py-12 flex items-center'>
-            <span className='text-12 font-semibold text-gray-900 mr-8'>{curPage.name}</span>
-            <span className='text-12 text-gray-400'>{curPage.describe}</span>
+        <div className='page-details-nav header-background-image border-b-1'>
+          <div className='px-16 py-20 flex item-center'>
+            <span className='text-12 mr-8 font-semibold'>{activeMenu.name}</span>
+            <span className='text-caption align-top'>{activeMenu.describe}</span>
           </div>
         </div>
         {fetchSchemeLoading && <PageLoading />}
