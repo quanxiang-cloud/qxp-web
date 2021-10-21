@@ -2,6 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import { has, isEmpty } from 'lodash';
 import { toJS } from 'mobx';
+import cs from 'classnames';
 
 import toast from '@lib/toast';
 
@@ -107,7 +108,9 @@ function MenuItem({ menu, handleMenuClick }: Props): JSX.Element {
     >
       <div
         draggable
-        className='h-40 menu-item px-18'
+        className={cs('h-36 menu-item px-18 hover:bg-white hover:text-gray-900', {
+          'bg-white': activeMenu.id === menu.id,
+        })}
         onClick={(e) => handleClick(e, menu)}
         onDragStart={(e) => handleDragStart(e, menu)}
         onDragOver={(e) => handleDragOver(e, menu)}
@@ -115,6 +118,9 @@ function MenuItem({ menu, handleMenuClick }: Props): JSX.Element {
       >
         <MenuLabel menu={menu} activeMenu={activeMenu} />
         <MenuOp menu={menu} handleMenuClick={handleMenuClick} />
+        {activeMenu.id === menu.id && (
+          <div className='menu-item-block' />
+        )}
       </div>
       {!isEmpty(menu?.child) &&
         (<MenuTree

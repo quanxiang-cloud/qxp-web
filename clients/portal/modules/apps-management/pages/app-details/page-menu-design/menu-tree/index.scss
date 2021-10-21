@@ -4,6 +4,17 @@
     display: flex;
     justify-content: space-between;
     user-select: none;
+
+    &-block {
+      content: "";
+      width: 4px;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      right: 0;
+      border-radius: 4px 0 0 4px;
+      background-color: var(--blue-600);
+    }
   }
   .item-title {
     max-width: 80px;
