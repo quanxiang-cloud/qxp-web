@@ -7,8 +7,6 @@ import store from '../store';
 import ModelMoreMenu from './model-more-menu';
 
 function ModelNavList(): JSX.Element {
-  const { setCurDataModal } = store;
-
   const menus = useMemo(() => {
     return store.dataModelList.map((model) => {
       return {
@@ -28,7 +26,7 @@ function ModelNavList(): JSX.Element {
           menus={menus}
           defaultSelected={store.curDataModel?.id}
           actions={(node) => <ModelMoreMenu model={node.source as DataModel} />}
-          onSelect={(node) => setCurDataModal(node.source as DataModel)}
+          onSelect={(node) => store.setCurDataModal(node.source as DataModel)}
         />
       ) : null}
     </div>

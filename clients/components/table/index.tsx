@@ -7,7 +7,8 @@ import {
   useRowSelect,
 } from 'react-table';
 
-import TableLoading from './table-loading';
+import PageLoading from '@c/page-loading';
+
 import { getDefaultSelectMap, useExtendColumns, DEFAULT_WIDTH, MINIMUM_WIDTH } from './utils';
 import useSticky from './use-sticky';
 import AdjustHandle from './adjust-handle';
@@ -100,22 +101,17 @@ export default function Table<T extends Record<string, any>>({
   }, [Object.keys(selectedRowIds).length]);
 
   const tableFooterRender = (): JSX.Element | undefined => {
-    if (loading) {
-      return <TableLoading />;
-    }
-
     if (rows.length === 0) {
       return (<div className="qxp-table-empty">{emptyTips}</div>);
     }
   };
 
   if (!headerGroups.length) {
-    // todo render error tips
-    return <TableLoading />;
+    return <div>data error</div>;
   }
 
   return (
-    <div className="qxp-table-wrapper">
+    <div className="qxp-table-wrapper relative">
       <div className={cs('qxp-table', className, `qxp-table-${size}`)} style={style}>
         <table {...getTableProps()}>
           <colgroup id="colgroup">
@@ -180,6 +176,7 @@ export default function Table<T extends Record<string, any>>({
           </tbody>
         </table>
         {tableFooterRender()}
+        {loading && (<div className='qxp-table-loading-box'><PageLoading /></div>)}
       </div>
     </div>
   );

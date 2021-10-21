@@ -8,18 +8,23 @@
 
   .adjust-handle {
     display: inline-block;
-    width: 0;
+    width: 1px;
     height: 100%;
     position: absolute;
     right: 0;
     top: 0;
     z-index: 1;
     touch-action: none;
-    border-radius: 10px;
+    background-color: var(--gray-200);
     cursor: col-resize;
+    &:hover {
+      width: 4px;
+      background-color: var(--blue-500);
+    }
 
     &:active {
-      background-color: var(--blue-600) !important;
+      width: 4px;
+      background-color: var(--blue-600) ;
     }
   }
 
@@ -42,7 +47,7 @@
 
     th,
     td {
-      padding: 16px;
+      padding: 12px;
     }
   }
 
@@ -73,18 +78,10 @@
       // todo support group header
       top: 0;
       line-height: 20px;
-      padding: 8px;
       font-weight: 400;
       user-select: none;
       color: var(--gray-600);
       z-index: 2;
-
-      &:hover {
-        .adjust-handle {
-          width: 6px;
-          background-color: var(--blue-500);
-        }
-      }
     }
 
     [data-sticky-td] {
@@ -107,10 +104,6 @@
         }
 
         td {
-          height: 40px;
-          line-height: 20px;
-          padding: 7px 8px;
-
           &.table__cell-fixed {
             position: sticky;
           }
@@ -147,6 +140,16 @@
       background-color: var(--gray-100);
     }
   }
+}
+
+.qxp-table-loading-box {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(255, 255, 255, 0.7);
+  z-index: 5;
 }
 
 .qxp-table-loading {
