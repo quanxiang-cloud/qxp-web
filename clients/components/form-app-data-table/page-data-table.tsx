@@ -88,6 +88,7 @@ function PageDataTable(): JSX.Element {
           rowKey="_id"
           loading={store.listLoading}
           initialSelectedRowKeys={selected || []}
+          canAcrossPageChoose={store.canAcrossPageChoose}
           onSelectChange={handleSelectChange}
           columns={store.tableShowColumns}
           data={toJS(store.formDataList)}
