@@ -287,6 +287,7 @@ class AppDetailsStore {
         name: groupInfo.name,
         menuType: 1,
         appID: this.appID,
+        icon: 'folder',
         sort: Math.max.apply(null, this.pageInitList.map((item: Menu) => Number(item.sort))) + 1,
       });
       this.pageInitList.push(newGroup);

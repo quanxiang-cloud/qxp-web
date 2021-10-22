@@ -111,7 +111,7 @@ function ModelFields(): JSX.Element {
                 )}
               />
             )}
-            loading={false}
+            loading={store.modelDetailsLoading}
           />
         </div>
         <div className="data-model-count">{`共 ${fields.length || 0} 条数据`}</div>

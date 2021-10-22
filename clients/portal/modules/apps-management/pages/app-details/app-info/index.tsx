@@ -19,11 +19,12 @@ function AppInfo(): JSX.Element {
             name: '应用基本信息',
             content: (<BasicInfo />),
           },
-          {
-            id: 'formAttr',
-            name: '访问端个性化设置',
-            content: (<div></div>),
-          }]}
+          // {
+          //   id: 'formAttr',
+          //   name: '访问端个性化设置',
+          //   content: (<div></div>),
+          // },
+        ]}
       />
     </div>
   );

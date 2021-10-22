@@ -3,7 +3,7 @@ import { Loading } from '@QCFE/lego-ui';
 
 import AbsoluteCentered from '@c/absolute-centered';
 
-function PageLoading() {
+function PageLoading(): JSX.Element {
   return (<AbsoluteCentered><Loading /></AbsoluteCentered>);
 }
 

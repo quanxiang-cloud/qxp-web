@@ -9,6 +9,24 @@ import { deleteSchema, modelDuplicate, saveTableSchema } from './api';
 import { fetchDataModels } from '../api';
 import { INIT_MODEL_SCHEMA } from '../utils';
 
+function getFields(schema: ISchema, type: number): ModelField[] {
+  let fieldList = [];
+  if (type === 1) {
+    fieldList = schemaToFields(toJS(schema)) as ModelField[];
+  } else {
+    fieldList = Object.entries(schema.properties || {}).map(([key, fieldSchema]) => {
+      return {
+        id: key,
+        ...fieldSchema,
+      };
+    }).sort((a, b) => {
+      return (b['x-index'] || 0) - (a['x-index'] || 0);
+    });
+  }
+
+  return fieldList;
+}
+
 class AppModelStore {
   fetchDataModelDisposer: IReactionDisposer
   constructor() {
@@ -26,6 +44,7 @@ class AppModelStore {
   @observable modelDetailsLoading = false;
   @observable dataModelTotal = 0;
   @observable dataModelSchema: DataModelSchema = INIT_MODEL_SCHEMA;
+  @observable allFields: ModelField[] = [];
   @observable params: DataModelParams = {
     page: 1,
     size: 10000,
@@ -36,21 +55,7 @@ class AppModelStore {
   @observable searchModelFieldInput = '';
 
   @computed get fields(): ModelField[] {
-    let fieldList = [];
-    if (this.curDataModel?.source === 1) {
-      fieldList = schemaToFields(toJS(this.dataModelSchema.schema)) as ModelField[];
-    } else {
-      fieldList = Object.entries(this.dataModelSchema.schema.properties || {}).map(([key, fieldSchema]) => {
-        return {
-          id: key,
-          ...fieldSchema,
-        };
-      }).sort((a, b) => {
-        return (b['x-index'] || 0) - (a['x-index'] || 0);
-      });
-    }
-
-    return fieldList.filter(({ id, title }) => {
+    return this.allFields.filter(({ id, title }) => {
       if (!this.searchModelFieldInput) {
         return true;
       }
@@ -78,7 +83,7 @@ class AppModelStore {
   }
 
   @computed get existingFields(): string[] {
-    return this.fields.map(({ id }) => id);
+    return this.allFields.map(({ id }) => id);
   }
 
   @action
@@ -143,7 +148,7 @@ class AppModelStore {
         `${this.appID}_${basicInfo.tableID}`,
         basicInfo.title,
         basicInfo.description || '',
-      ).then(() =>{
+      ).then(() => {
         toast.success('复制成功');
         this.setParams({});
         this.curModelTableID = `${this.appID}_${basicInfo.tableID}`;
@@ -209,6 +214,7 @@ class AppModelStore {
     getTableSchema(this.appID, modelID).then((res: any) => {
       this.dataModelSchema = { ...res, tableID: res.tableID };
       this.modelDetailsLoading = false;
+      this.allFields = getFields(this.dataModelSchema.schema, this.curDataModel?.source as number);
     }).catch((err) => {
       this.modelDetailsLoading = false;
       toast.error(err);
@@ -226,7 +232,7 @@ class AppModelStore {
     this.dataModelSchema = set(
       this.dataModelSchema,
       `schema.properties.${field.id}`,
-      { ...field, 'x-index': this.fields.length },
+      { ...field, 'x-index': this.allFields.length },
     );
   }
 

@@ -25,7 +25,7 @@ export default function({ onTriggerTypeChange, onSearchInputChange }: Props): JS
   }
 
   return (
-    <div className="flex justify-between mb-16">
+    <div className="flex justify-between mb-8">
       {/* <Switch
         className="mr-20"
         value=""
