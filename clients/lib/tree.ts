@@ -22,7 +22,10 @@ function treeReduce<T, S extends Record<string, any>>(
   const currentReducer = (
     accumulator: T, child: S, currentIndex: number | string | undefined, _?: any, _fieldPath?: string,
   ): T => {
-    const currentPath = `${fieldPath ? `${fieldPath}.` : ''}${_fieldPath || currentIndex}`;
+    const currentFieldPath = `${_fieldPath || currentIndex}`;
+    const currentPath = `${fieldPath ? `${fieldPath}.` : ''}${
+      currentFieldPath.startsWith('subtable_') ? `*.${currentFieldPath}` : currentFieldPath
+    }`;
     return treeReduce(reducer, _childKey, accumulator, child, currentIndex, currentPath);
   };
 
