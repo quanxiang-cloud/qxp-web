@@ -18,7 +18,7 @@ import './index.scss';
 
 function AppDetailsContent(): JSX.Element {
   return (
-    <div className='apps-management-height flex'>
+    <div className='main-content flex'>
       <SideNavs />
       <div className="m-16 flex-1 mb-0 overflow-auto">
         <Route exact path='/apps/details/:appID/page_setting' component={PageMenuDesign} />
