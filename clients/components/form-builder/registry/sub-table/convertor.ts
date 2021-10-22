@@ -43,6 +43,7 @@ export const defaultConfig: SubTableConfig = {
 
 export function toSchema(value: SubTableConfig): ISchema {
   const isFromLinkedTable = value.subordination === 'foreign_table';
+  const rules = value.required ? [{ min: 1 }] : [];
 
   return {
     type: 'array',
@@ -53,6 +54,7 @@ export function toSchema(value: SubTableConfig): ISchema {
     display: value.displayModifier !== 'hidden',
     items: isFromLinkedTable ? undefined : value.subTableSchema,
     'x-component': 'SubTable',
+    'x-rules': rules,
     ['x-component-props']: {
       columns: value.subTableColumns,
       subordination: value.subordination,
