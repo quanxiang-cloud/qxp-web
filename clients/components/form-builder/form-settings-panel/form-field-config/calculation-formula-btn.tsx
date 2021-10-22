@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
+import { ISchemaFieldComponentProps, IFieldState } from '@formily/react-schema-renderer';
+import { pipe, filter } from 'ramda';
 
 import Button from '@c/button';
 import { StoreContext } from '@c/form-builder/context';
@@ -15,16 +16,20 @@ interface Variable {
   title: string;
 }
 
-function getVariables(schema: ISchema): Array<Variable> {
-  return schemaToFields(schema, null, { parseSubTable: true }).filter((field) => {
+function getVariables(schema: ISchema, parseSubTable = false): Array<Variable> {
+  return schemaToFields(schema, null, { parseSubTable }).filter((field) => {
     if (INTERNAL_FIELD_NAMES.includes(field.id)) {
       return false;
     }
-
     return field.type === 'number';
   }).sort((currentField, nextField) => {
     return numberTransform(currentField) - numberTransform(nextField);
-  }).map((field) => ({ fieldName: field.id, title: field.title as string }));
+  }).map((field) => ({
+    fieldName: field.id.includes('subtable_') ?
+      field['x-internal']?.fieldPath?.replace('.*.', '_dot_star_dot_') || '' :
+      field.id,
+    title: field.title as string,
+  }));
 }
 
 function CalculationFormulaBtn(props: ISchemaFieldComponentProps): JSX.Element {
@@ -37,11 +42,20 @@ function CalculationFormulaBtn(props: ISchemaFieldComponentProps): JSX.Element {
     function variableFilter({ fieldName }: { fieldName: string }): boolean {
       return fieldName !== store.activeFieldId;
     }
-    const variables = getVariables(store.schema).filter(variableFilter);
-    setVariables(variables);
-    actions.getFieldState('curConfigSubTableKey', (state) => {
-      setVariables((variables) => variables.filter(({ fieldName }) => fieldName !== state.value));
-    });
+
+    const initVariables = pipe(() => getVariables(store.schema), filter(variableFilter), setVariables);
+    initVariables();
+
+    function onGetCurrentConfigSubtableKey(state: IFieldState): void {
+      const updateVariables = pipe(
+        () => getVariables(store.schema, true),
+        filter(({ fieldName }: { fieldName: string }) => !fieldName.endsWith(state.value)),
+        setVariables,
+      );
+      updateVariables();
+    }
+
+    actions.getFieldState('curConfigSubTableKey', onGetCurrentConfigSubtableKey);
   }, [store.schema]);
 
   return (

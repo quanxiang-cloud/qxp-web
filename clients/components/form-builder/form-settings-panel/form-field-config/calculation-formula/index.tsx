@@ -1,10 +1,13 @@
 import React, { useState, useRef } from 'react';
 import { parse } from 'qxp-formula';
+import { groupBy } from 'ramda';
 
 import FormulaEditor, { RefProps } from '@c/formula-editor';
 import { FUNCS, COLLECTION_OPERATORS } from '@c/formula-editor/constants';
 import Modal from '@c/modal';
 import logger from '@lib/logger';
+
+import FieldItem from './field-item';
 
 type Props = {
   rawFormula: string;
@@ -51,6 +54,11 @@ function EditFormulaModal({ onClose, onSubmit, rawFormula, variables }: Props): 
     );
   }
 
+  const { subtableVariables = [], maintableVariables = [] } = groupBy(
+    ({ fieldName }) => fieldName.includes('_dot_star_dot_') ? 'subtableVariables' : 'maintableVariables',
+    variables,
+  );
+
   return (
     <Modal
       title="编辑计算公式"
@@ -66,20 +74,30 @@ function EditFormulaModal({ onClose, onSubmit, rawFormula, variables }: Props): 
           {errorMessage && (
             <p className="text-red-600">{errorMessage}</p>
           )}
-          <div className="mb-8">表单字段:</div>
-          <div className="mb-16">
-            {variables.map(({ fieldName, title }) => {
-              return (
-                <span
-                  key={fieldName}
-                  onClick={() => addField({ key: fieldName, name: title })}
-                  className="inline-block mb-8 p-2 bg-gray-100 mr-4 border border-gray-300 cursor-pointer"
-                >
-                  {title}
-                </span>
-              );
-            })}
-          </div>
+          {!!subtableVariables.length && (
+            <>
+              <div className="mb-8">子表字段:</div>
+              <div className="mb-16">
+                {subtableVariables.map(({ fieldName, title }) => {
+                  return (
+                    <FieldItem key={fieldName} fieldName={fieldName} title={title} onAddField={addField} />
+                  );
+                })}
+              </div>
+            </>
+          )}
+          {!!maintableVariables.length && (
+            <>
+              <div className="mb-8">主表字段:</div>
+              <div className="mb-16">
+                {maintableVariables.map(({ fieldName, title }) => {
+                  return (
+                    <FieldItem key={fieldName} fieldName={fieldName} title={title} onAddField={addField} />
+                  );
+                })}
+              </div>
+            </>
+          )}
         </div>
         <div className="mb-8">函数:</div>
         <div className="mb-16">
