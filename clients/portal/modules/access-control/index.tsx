@@ -36,7 +36,7 @@ export default function Index(): JSX.Element {
     );
   }
   return (
-    <div className="app-entry-container">
+    <div className="app-entry-container main-content">
       <SideNavCard
         className='w-280'
         cardTitle={(

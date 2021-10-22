@@ -18,12 +18,10 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="min-h-screen">
-        <BrowserRouter>
-          <GlobalHeader />
-          {routers}
-        </BrowserRouter>
-      </div>
+      <BrowserRouter>
+        <GlobalHeader />
+        {routers}
+      </BrowserRouter>
     </QueryClientProvider>
   );
 }
