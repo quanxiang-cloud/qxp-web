@@ -113,11 +113,11 @@ function PageDetails({ pageID }: Props): JSX.Element {
 
   function goLink(cardID: string): void {
     if (cardID === 'linkedFlows') {
-      history.push(`/apps/flow/new/form-data/${appID}`);
+      history.push(`/apps/details/${appID}/setting_flow`);
       return;
     }
 
-    history.push(`/apps/details/${appID}/app_permission`);
+    history.push(`/apps/details/${appID}/app_control`);
   }
 
   function RenderPageDetails(): JSX.Element {
