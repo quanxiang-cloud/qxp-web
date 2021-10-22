@@ -69,6 +69,7 @@ function PageDetails(): JSX.Element | null {
   const customColumns = [{
     id: 'action',
     Header: '操作',
+    fixed: true,
     accessor: (rowData: any) => {
       return (
         <div>

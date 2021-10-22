@@ -23,6 +23,9 @@ type Props = {
   className?: string;
   style?: React.CSSProperties;
   filterConfig?: FilterConfig;
+  canAcrossPageChoose?: boolean;
+  onSelect?: (ids: string[]) => void;
+  defaultSelect?: string[];
 }
 
 function FormAppDataTableWrap({
@@ -35,6 +38,9 @@ function FormAppDataTableWrap({
   allowRequestData = false,
   className = '',
   style,
+  defaultSelect,
+  onSelect,
+  canAcrossPageChoose = false,
 }: Props, ref: React.Ref<Ref>): JSX.Element | null {
   const [store, setStore] = useState<Store | null>(null);
   const [loading, setLoading] = useState(true);
@@ -47,6 +53,14 @@ function FormAppDataTableWrap({
       getSchema: () => ({ ...store?.schema, properties: schemaToMap(store?.schema) }),
     }),
   );
+
+  useEffect(() => {
+    if (!store) {
+      return;
+    }
+
+    store.customColumns = customColumns || [];
+  }, [customColumns]);
 
   useEffect(() => {
     setLoading(true);
@@ -66,7 +80,10 @@ function FormAppDataTableWrap({
         showCheckbox,
         allowRequestData,
         appID,
+        onSelect,
         pageID,
+        defaultSelect,
+        canAcrossPageChoose,
       }) : null);
       setLoading(false);
     }).catch(() => {
