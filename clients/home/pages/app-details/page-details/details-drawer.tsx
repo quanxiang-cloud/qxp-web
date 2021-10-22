@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { observer } from 'mobx-react';
 import cs from 'classnames';
+import useCss from 'react-use/lib/useCss';
 
 import Icon from '@c/icon';
 import PopConfirm from '@c/pop-confirm';
@@ -19,6 +20,7 @@ type Props = {
 function DetailsDrawer({ onCancel, rowID, goEdit, delData }: Props): JSX.Element {
   const [beganClose, setBeganClose] = useState<boolean>(false);
   const [visible, setVisible] = useState<boolean>(false);
+  const [fullScreen, setFullScreen] = useState<boolean>(false);
 
   const handleCancel = (): void => {
     setBeganClose(true);
@@ -41,10 +43,16 @@ function DetailsDrawer({ onCancel, rowID, goEdit, delData }: Props): JSX.Element
         'page-data-drawer-close': visible,
       })}
     >
-      <div className='page-data-drawer-container'>
+      <div className={cs('page-data-drawer-container', useCss({
+        width: fullScreen ? '100%' : '66%',
+      }))}>
         <div className='page-data-drawer-header'>
           <span className='text-h5'>{store.pageName}</span>
           <div className='flex items-center gap-x-12'>
+            <span onClick={() => setFullScreen(!fullScreen)} className='icon-text-btn'>
+              <Icon size={20} name={fullScreen ? 'unfull_screen' : 'full_screen'} />
+              {fullScreen ? '非' : ''}全屏
+            </span>
             {getOperateButtonPer(3, store.authority) && (
               <span onClick={() => goEdit(rowID)} className='icon-text-btn'>
                 <Icon size={20} name='edit' />
