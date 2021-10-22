@@ -65,7 +65,7 @@ function FieldPermissions({
           editable: isPermissionEditable(defaultPermission),
           invisible: isPermissionInvisible(defaultPermission),
           writeable: isInitialPermissionGroup ? true : writeable,
-          readable: isInitialPermissionGroup ? true : readable,
+          readable: isInitialPermissionGroup || fieldSchema.title === '_id' ? true : readable,
           fieldTitle: fieldSchema.title,
           fieldComponentName: fieldSchema?.['x-component'],
           isSystem: fieldSchema?.['x-internal']?.isSystem,
