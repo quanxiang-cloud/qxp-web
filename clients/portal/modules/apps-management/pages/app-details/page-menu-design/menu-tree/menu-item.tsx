@@ -115,8 +115,8 @@ function MenuItem({ menu, handleMenuClick }: Props): JSX.Element {
     >
       <div
         draggable
-        className={cs('h-40 menu-item', {
-          'menu-item-active': isActive,
+        className={cs('h-36 menu-item', {
+          'menu-item--active': isActive,
           'menu-item-indent': menu?.groupID,
         })}
         onClick={(e) => handleClick(e, menu)}
@@ -125,7 +125,7 @@ function MenuItem({ menu, handleMenuClick }: Props): JSX.Element {
         onDragEnd={(e) => handleDragEnd(e)}
       >
         <MenuLabel menu={menu} activeMenu={activeMenu} />
-        <span className='menu-op'>
+        <span className={`${menu.id === activeMenu.id ? 'block' : 'menu-item--operate'}`}>
           <MenuOp menu={menu} handleMenuClick={handleMenuClick} />
         </span>
       </div >

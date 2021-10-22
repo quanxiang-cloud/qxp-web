@@ -62,6 +62,9 @@ function PageList(): JSX.Element {
   }
 
   const handleEditGroup = (groupInfo: PageInfo): Promise<void> => {
+    if (!groupInfo.icon) {
+      groupInfo.icon = 'folder_empty';
+    }
     return editGroup(groupInfo);
   };
 
@@ -85,15 +88,15 @@ function PageList(): JSX.Element {
 
   return (
     <div className="flex h-full">
-      <div className='app-details-nav rounded-tl-12 bg-gray-50'>
-        <div className='flex flex-end items-center px-16 py-20 justify-center'>
+      <div className='app-details-nav rounded-tl-8 bg-gray-50'>
+        <div className='h-44 flex flex-end items-center px-16 py-20 justify-center'>
           <span className='text-h6-bold text-gray-400 mr-auto'>菜单</span>
           <div onClick={() => setModalType('createPage')}>
-            <Tooltip content='添加菜单'>
+            <Tooltip content='新建菜单'>
               <Icon className='app-page-add-group mr-8' size={16} name='post_add' />
             </Tooltip>
           </div>
-          <Tooltip content='添加分组'>
+          <Tooltip content='新建分组'>
             <AddGroupPoper
               onSubmit={handleEditGroup}
             />

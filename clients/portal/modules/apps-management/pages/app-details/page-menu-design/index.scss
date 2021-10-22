@@ -1,7 +1,8 @@
 .app-details-nav {
   position: relative;
   width: 212px;
-  border-right: 1px solid var(--gray-300);
+  border-right: 1px solid var(--gray-200);
+  box-shadow: inset -1px 0px 0px var(--gray-200);
   overflow: auto;
 
   &-bg {
