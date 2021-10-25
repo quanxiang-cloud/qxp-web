@@ -33,6 +33,16 @@ function TargetTableFields({ appId, tableId }: Props): JSX.Element {
     return key;
   };
 
+  function getSubtableTypeByKey(key: string): string {
+    return get(tableSchemaMap[key], 'x-component-props.subordination', 'sub_table');
+  }
+
+  if (data.ref) {
+    Object.keys(data.ref).forEach((itm) => {
+      set(data, `ref[${itm}].type`, getSubtableTypeByKey(itm));
+    });
+  }
+
   const onChangeFixedValue = (values: any): void => {
     const fieldVals = pickBy(values, (v, k) => k.startsWith('field_'));
 
@@ -51,6 +61,7 @@ function TargetTableFields({ appId, tableId }: Props): JSX.Element {
       if (v !== undefined && k.indexOf('@') > 0) {
         const [parentKey, subKey] = k.split('@');
         const tableId = getTableIdByFieldKey(parentKey);
+        const type = getSubtableTypeByKey(parentKey);
         const subVal = get(data.ref, parentKey);
         if (subVal) {
           if (subVal.tableId === tableId) {
@@ -62,6 +73,7 @@ function TargetTableFields({ appId, tableId }: Props): JSX.Element {
           }
         } else {
           set(data, `ref[${parentKey}]`, {
+            type,
             tableId,
             createRules: [{
               [subKey]: {
