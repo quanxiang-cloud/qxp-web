@@ -227,6 +227,7 @@ export interface TableDataCreateData {
   };
   ref: {
     [key: string]: {
+      type: string;
       tableId: string;
       // todo: refactor structure
       createRules: Array<{
