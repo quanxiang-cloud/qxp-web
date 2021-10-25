@@ -1,56 +1,80 @@
 import React from 'react';
-import { Form } from '@QCFE/lego-ui';
+import { toJS } from 'mobx';
+import { Form, Input } from 'antd';
 
-import AppIconPicker from '@c/app-icon-picker';
-import { parseJSON } from '@lib/utils';
+import AppIconPicker from './app-icon-picker';
 
 const DISABLE_SPECIAL_SYMBOL_REG = /[#$@^&=`'":;,.~¥-。、（）「」·“”；：？，《》【】+/\\()<>{}[\] ]/gi;
 
 type Props = {
   className?: string;
   appInfo?: AppInfo;
+  onSubmitCallback?: () => void;
 }
 
-const AppIconPickerField = Form.getFormField(AppIconPicker);
+function CreatedEditApp({ appInfo, className, onSubmitCallback }: Props, ref?: any): JSX.Element {
+  const [form] = Form.useForm();
 
-function CreatedEditApp({ appInfo, className }: Props, ref?: React.ForwardedRef<Form>): JSX.Element {
-  const { appName, appIcon = '{}' } = appInfo || {};
+  function handleFinish(): void {
+    onSubmitCallback && onSubmitCallback();
+  }
+
+  const initData = appInfo && toJS(appInfo);
+  const { appName, appIcon = '{}' } = initData || {};
 
   return (
-    <Form className={className} ref={ref} layout='vertical'>
-      <Form.TextField
+    <Form
+      layout="vertical"
+      className={className}
+      form={form}
+      ref={ref}
+      initialValues={{
+        appName,
+        appIcon,
+      }}
+      onFinish={handleFinish}
+    >
+      <Form.Item
         name='appName'
         label='应用名称:'
-        placeholder='请输入应用名称'
-        help='不超过 30 个字符，应用名称不可重复。'
-        defaultValue={appName}
-        schemas={[
+        extra='不超过 30 个字符，应用名称不可重复。'
+        rules={[
           {
-            help: '请输入应用名称',
-            rule: { required: true },
+            required: true,
+            message: '请输入应用名称',
           },
           {
-            help: '不超过 30 个字符',
-            rule: { maxLength: 30 },
+            type: 'string',
+            max: 30,
+            message: '不能超过 30 个字符',
           },
           {
-            help: '不能包含特殊字符',
-            rule: (value: string) => !DISABLE_SPECIAL_SYMBOL_REG.test(value),
-            status: 'error',
+            validator: (rule, value) => {
+              if (!value) {
+                return Promise.resolve();
+              } else if (DISABLE_SPECIAL_SYMBOL_REG.test(value)) {
+                return Promise.reject(new Error('不能包含特殊字符'));
+              } else {
+                return Promise.resolve();
+              }
+            },
           },
         ]}
-      />
-      <AppIconPickerField
-        name='appIcon'
-        label='应用图标'
-        defaultAppIcon={parseJSON<AppIconInfo | undefined>(appIcon, undefined)}
-        schemas={[
+      >
+        <Input placeholder="请输入应用名称" />
+      </Form.Item>
+      <Form.Item
+        name="appIcon"
+        label="应用图标:"
+        rules={[
           {
-            help: '请选择应用图标',
-            status: 'error',
-            rule: { required: true },
+            required: true,
+            message: '请选择应用图标',
           },
-        ]} />
+        ]}
+      >
+        <AppIconPicker />
+      </Form.Item>
     </Form>
   );
 }
