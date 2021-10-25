@@ -11,6 +11,7 @@ import Toggle from '@c/toggle';
 import Loading from '@c/loading';
 import Tooltip from '@c/tooltip';
 import EmptyTips from '@c/empty-tips';
+import TextHeader from '@c/text-header';
 import { copyContent } from '@lib/utils';
 
 import store from './store';
@@ -44,7 +45,7 @@ export const FIELD_COLUMNS: UnionColumns<ModelField>[] = [
           <Icon
             name="content_copy"
             size={16}
-            className='text-inherit m-10'
+            className='text-inherit ml-10'
             onClick={() => copyContent(rowData.id, '标志已复制')}
           />
         </Tooltip>
@@ -140,7 +141,7 @@ function ApiDocumentDetails(): JSX.Element {
         <>
           <div style={{ maxHeight: 'calc(100% - 45px)' }} className='flex w-full'>
             <Table
-              className='massage_table text-14'
+              className='massage_table'
               rowKey="id"
               columns={FIELD_COLUMNS}
               data={store.fields}
@@ -185,11 +186,11 @@ function ApiDocumentDetails(): JSX.Element {
     <div
       className='relative flex-1 overflow-hidden bg-white rounded-tr-12 w-1 flex flex-col'
     >
-      <div className='header-background-image border-b-1 h-62'>
-        <div className='px-16 py-20 text-gray-900 font-semibold text-16'>
-          {store.currentDataModel.title || '------'}
-        </div>
-      </div>
+      <TextHeader
+        title={store.currentDataModel.title || '------'}
+        itemTitleClassName="text-12 font-semibold"
+        className="bg-gray-1000 p-16 header-background-image h-44 shadow-header rounded-t-12"
+      />
       <div className='relative flex-1 overflow-hidden'>
         <Tab
           items={tabItems}
