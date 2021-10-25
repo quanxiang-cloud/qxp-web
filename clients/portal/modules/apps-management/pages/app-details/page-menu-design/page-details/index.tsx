@@ -113,11 +113,11 @@ function PageDetails({ pageID }: Props): JSX.Element {
 
   function goLink(cardID: string): void {
     if (cardID === 'linkedFlows') {
-      history.push(`/apps/flow/new/form-data/${appID}`);
+      history.push(`/apps/details/${appID}/setting_flow`);
       return;
     }
 
-    history.push(`/apps/details/${appID}/app_permission`);
+    history.push(`/apps/details/${appID}/app_control`);
   }
 
   function RenderPageDetails(): JSX.Element {
@@ -290,12 +290,10 @@ function PageDetails({ pageID }: Props): JSX.Element {
 
   return (
     <>
-      <div className='relative flex-1 overflow-hidden bg-white rounded-tr-12'>
-        <div className='page-details-nav header-background-image border-b-1'>
-          <div className='px-16 py-20 flex item-center'>
-            <span className='text-12 mr-8 font-semibold'>{activeMenu.name}</span>
-            <span className='text-caption align-top'>{activeMenu.describe}</span>
-          </div>
+      <div className='relative flex-1 overflow-hidden bg-white rounded-tr-8'>
+        <div className='h-44 page-details-nav header-background-image border-b-1 px-16 flex items-center'>
+          <span className='text-12 mr-8 font-semibold'>{activeMenu.name}</span>
+          <span className='text-caption align-top'>{activeMenu.describe}</span>
         </div>
         {fetchSchemeLoading && <PageLoading />}
         {!fetchSchemeLoading && <RenderPageDetails />}

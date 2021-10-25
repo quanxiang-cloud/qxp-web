@@ -86,7 +86,7 @@ const MenuOp = (props: Props): JSX.Element => {
       <Icon
         changeable
         clickable
-        className='mr-10 cursor-grab menu-item-drag'
+        className='mr-10 cursor-grab menu-item--drag'
         size={16}
         name='drag_indicator'
       />

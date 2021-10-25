@@ -158,7 +158,7 @@ function buildRef(
           window[`schema-${field.id}`] : field.items as ISchema, type);
         const _ref = subRef;
 
-        if (values?.[field.id].length) {
+        if (values?.[field.id]?.length) {
           ref[field.id] = {
             type: subordination || 'sub_table',
             appID,
