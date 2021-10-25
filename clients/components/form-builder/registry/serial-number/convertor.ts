@@ -46,7 +46,6 @@ export function toSchema(value: SerialConfig): ISchema {
     readOnly: value.displayModifier === 'readonly',
     display: value.displayModifier !== 'hidden',
     'x-component': 'Serial',
-    default: '',
     ['x-component-props']: {
       template: `${value.prefix?.frontward}.date{${value.prefix?.backward}}.incr[name]{${
         value.initialPosition
