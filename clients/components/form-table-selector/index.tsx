@@ -1,4 +1,4 @@
-import React, { forwardRef, Ref, useEffect } from 'react';
+import React, { forwardRef, Ref, useEffect, useRef } from 'react';
 import cs from 'classnames';
 import { useParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
@@ -30,6 +30,7 @@ function FormTableSelector({
 }: Props,
 ref?: Ref<Cascader>): JSX.Element {
   const { appID } = useParams<{ appID: string }>();
+  const popupRef = useRef<HTMLDivElement>(null);
 
   const {
     isError,
@@ -49,16 +50,15 @@ ref?: Ref<Cascader>): JSX.Element {
     });
   }
 
-  const currentValue = value.value ? [value.value] : [];
-
-  const extra = {};
-  if (ref) {
-    Object.assign(extra, { ref });
+  function getPopupContainer(el: HTMLElement): HTMLElement {
+    return popupRef.current || el;
   }
+
+  const currentValue = value.value ? [value.value] : [];
 
   return (
     <>
-      <div className={cs('px-16 py-10 border flex items-center corner-2-8-8-8 h-40 mt-24', {
+      <div ref={popupRef} className={cs('px-16 py-10 border flex items-center corner-2-8-8-8 h-40 mt-24', {
         'bg-gray-100 mb-18': !validating || value.value,
         'bg-red-50 border-red-600': validating && !value.value,
       })}>
@@ -68,7 +68,8 @@ ref?: Ref<Cascader>): JSX.Element {
         </div>
         {changeable && (
           <Cascader
-            {...extra}
+            ref={ref}
+            getPopupContainer={getPopupContainer}
             allowClear={false}
             bordered={false}
             options={optionsData}
@@ -94,7 +95,7 @@ ref?: Ref<Cascader>): JSX.Element {
             labelClassName="whitespace-nowrap"
           >
             <Cascader
-              {...extra}
+              ref={ref}
               disabled
               allowClear={false}
               bordered={false}
