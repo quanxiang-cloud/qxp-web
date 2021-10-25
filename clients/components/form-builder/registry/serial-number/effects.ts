@@ -6,7 +6,7 @@ import { Format } from './prefix';
 type PreviewProps = {
   prefix: PrefixType,
   initialPosition: number,
-  initialValue: number,
+  startingValue: number,
   suffix: string,
 }
 
@@ -33,21 +33,21 @@ const getMoment = (value: Format | ''): string => {
   }
 };
 
-const getPreview = ({ prefix, initialPosition, initialValue, suffix }: PreviewProps): string => {
+const getPreview = ({ prefix, initialPosition, startingValue, suffix }: PreviewProps): string => {
   return prefix.frontward + getMoment(prefix.backward) +
-    addZeroFromValue(initialPosition, initialValue) + suffix;
+    addZeroFromValue(initialPosition, startingValue) + suffix;
 };
 
 export default function effects(): void {
   const { setFieldState, getFieldValue } = createFormActions();
 
-  onFieldValueChange$('*(prefix, initialPosition, initialValue, suffix)').subscribe(() => {
+  onFieldValueChange$('*(prefix, initialPosition, startingValue, suffix)').subscribe(() => {
     setFieldState('numberPreview', (state) => {
       const prefix = getFieldValue('prefix');
       const suffix = getFieldValue('suffix');
       const initialPosition = getFieldValue('initialPosition');
-      const initialValue = getFieldValue('initialValue');
-      state.value = getPreview({ prefix, initialPosition, initialValue, suffix });
+      const startingValue = getFieldValue('startingValue');
+      state.value = getPreview({ prefix, initialPosition, startingValue, suffix });
     });
   });
 }

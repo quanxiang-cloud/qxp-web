@@ -17,7 +17,7 @@ export interface SerialConfig {
   numberPreview?: string;
   prefix?: PrefixType;
   initialPosition: number;
-  initialValue: number;
+  startingValue: number;
   suffix?: string;
   appID?: string;
   id?: string;
@@ -33,7 +33,7 @@ export const defaultConfig: SerialConfig = {
     backward: 'yyyyMMdd',
   },
   initialPosition: 5,
-  initialValue: 1,
+  startingValue: 1,
   suffix: '',
 };
 
@@ -50,12 +50,12 @@ export function toSchema(value: SerialConfig): ISchema {
     ['x-component-props']: {
       template: `${value.prefix?.frontward}.date{${value.prefix?.backward}}.incr[name]{${
         value.initialPosition
-      },${value.initialValue}}.step[name]{1}.${value.suffix}`,
+      },${value.startingValue}}.step[name]{1}.${value.suffix}`,
       appID: value.appID || '',
       id: value.id,
       prefix: value.prefix,
       suffix: value.suffix,
-      initialValue: value.initialValue,
+      startingValue: value.startingValue,
       initialPosition: value.initialPosition,
       numberPreview: value.numberPreview,
     },
@@ -74,7 +74,7 @@ export function toConfig(schema: ISchema): SerialConfig {
     prefix: schema['x-component-props']?.prefix,
     suffix: schema['x-component-props']?.suffix,
     initialPosition: schema['x-component-props']?.initialPosition as number,
-    initialValue: schema['x-component-props']?.initialValue as number,
+    startingValue: schema['x-component-props']?.startingValue as number,
     appID: schema['x-component-props']?.appID,
     id: schema['x-component-props']?.id as string,
   };
