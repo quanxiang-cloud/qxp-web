@@ -118,9 +118,8 @@ class UserAndPerStore {
   }
 
   @action
-  updateUserAndPerStore = (rights: RightsCreate, id: {id: string}): void => {
-    this.rightsList = [...this.rightsList, { ...rights, ...id }];
-    this.currentRights = { ...rights, ...id };
+  updateUserAndPerStore = (): void => {
+    this.rightsList = [...this.rightsList, this.currentRights];
     this.rightsGroupID = this.currentRights.id;
     this.tempRightList = [...this.rightsList];
   }
@@ -128,7 +127,8 @@ class UserAndPerStore {
   @action
   addRightsGroup = (rights: RightsCreate): Promise<void> => {
     return createPerGroup(this.appID, rights).then((res: {id: string}) => {
-      this.updateUserAndPerStore(rights, res);
+      this.currentRights = { ...rights, ...res };
+      this.updateUserAndPerStore();
     });
   }
 
@@ -139,8 +139,9 @@ class UserAndPerStore {
       name: rights.name,
       description: rights.description,
     }).then((res: {id: string}) => {
-      this.updateUserAndPerStore(rights, res);
-      toast.success('修改成功！');
+      this.currentRights = { ...this.currentRights, ...rights, ...res, scopes: [] };
+      this.updateUserAndPerStore();
+      toast.success('复制成功！');
     });
   }
 

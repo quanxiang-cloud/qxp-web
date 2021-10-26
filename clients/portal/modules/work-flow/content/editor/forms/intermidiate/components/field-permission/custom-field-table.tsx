@@ -1,5 +1,5 @@
 import React, { useCallback, useContext } from 'react';
-import { noop } from 'lodash';
+import { noop, get } from 'lodash';
 import { without } from 'ramda';
 import { UnionColumns } from 'react-table';
 
@@ -123,9 +123,12 @@ export default function CustomFieldTable({
 
   function getCell(model: any, key?: PERMISSION_KEY): JSX.Element {
     const isChecked = model.cell.value;
-    const handleClickCheckbox = useCallback(()=> {
+    const fieldId = model.cell.row.id;
+    const origPath = model.cell.row.original.path;
+    const disabledComps = ['serial', 'aggregationrecords'];
+    const handleClickCheckbox = useCallback(() => {
       updateFields(model.data.map((dt: CustomFieldPermission) => {
-        if (dt.id === model.cell.row.id) {
+        if (dt.id === fieldId) {
           return {
             ...dt,
             [key as string]: !isChecked,
@@ -141,12 +144,12 @@ export default function CustomFieldTable({
         return dt;
       }));
     }, []);
-    const handleClickRadio = useCallback(()=> {
+    const handleClickRadio = useCallback(() => {
       updateFields(model.data.map((dt: CustomFieldPermission) => {
         const paths = dt.path.split('.');
         const isSubTableChild = paths.length > 1 && schemaMap[paths[0]]?.componentName === 'subtable';
 
-        if (dt.id === model.cell.row.id) {
+        if (dt.id === fieldId) {
           Object.assign(dt, { [key as string]: true });
           if (key === 'invisible') {
             Object.assign(dt, { read: true, editable: false, readonly: false });
@@ -161,7 +164,7 @@ export default function CustomFieldTable({
 
         if (isSubTableChild) {
           // sub table child link with parent field permission
-          const { invisible, readonly } = model.data.find(({ id }: {id: string})=> id === paths[0]) || {};
+          const { invisible, readonly } = model.data.find(({ id }: { id: string }) => id === paths[0]) || {};
           if (invisible) {
             Object.assign(dt, { invisible: true, editable: false, readonly: false });
           }
@@ -188,12 +191,22 @@ export default function CustomFieldTable({
     }
 
     if (['readonly', 'invisible', 'editable'].includes(key)) {
+      let shouldDisable = false;
+      const [id, subId] = origPath.split('.');
+      const compName = schemaMap[id]?.componentName;
+      if (!subId) {
+        shouldDisable = disabledComps.includes(compName);
+      } else if (compName === 'subtable') {
+        const subCompName = get(schemaMap, `${id}.items.properties.${subId}.x-component`, '');
+        shouldDisable = disabledComps.includes(String(subCompName).toLocaleLowerCase());
+      }
       return (
         <Radio
           value={isChecked}
           defaultChecked={isChecked}
           onChange={handleClickRadio}
           onClick={noop}
+          disabled={key === 'editable' && shouldDisable}
         />
       );
     }
@@ -263,50 +276,58 @@ export default function CustomFieldTable({
       columns={[
         {
           Header: <span className="whitespace-nowrap">字段</span>,
+          id: 'fieldName',
           accessor: 'fieldName',
           Cell: (model: any) => getCell(model),
           fixed: true,
         },
         {
           Header: (model: any) => getHeader(model, 'readonly', '只读'),
+          id: 'readonly',
           accessor: 'readonly',
           Cell: (model: any) => getCell(model, 'readonly'),
           width: 80,
         },
         {
           Header: (model: any) => getHeader(model, 'editable', '编辑'),
+          id: 'editable',
           accessor: 'editable',
           Cell: (model: any) => getCell(model, 'editable'),
           width: 80,
         },
         {
           Header: (model: any) => getHeader(model, 'invisible', '隐藏'),
+          id: 'invisible',
           accessor: 'invisible',
           Cell: (model: any) => getCell(model, 'invisible'),
           width: 80,
         },
         dataPermEditable ? {
           Header: (model: any) => getHeader(model, 'read', '读'),
+          id: 'read',
           accessor: 'read',
           Cell: (model: any) => getCell(model, 'read'),
           width: 80,
         } : null,
         dataPermEditable ? {
           Header: (model: any) => getHeader(model, 'write', '写'),
+          id: 'write',
           accessor: 'write',
           Cell: (model: any) => getCell(model, 'write'),
           width: 80,
         } : null,
         {
           Header: () => getValueHeader('初始值', '该节点初次打开工作表时对应字段呈现初始值'),
+          id: 'initialValue',
           accessor: 'initialValue',
           Cell: (model: any) => getValueCell(model, 'initialValue', editable),
         },
         {
           Header: () => getValueHeader('提交值', '该节点提交工作表后对应字段呈现提交值'),
+          id: 'submitValue',
           accessor: 'submitValue',
           Cell: (model: any) => model.cell.row.original.write &&
-              getValueCell(model, 'submitValue', editable),
+            getValueCell(model, 'submitValue', editable),
         }].filter(Boolean) as UnionColumns<CustomFieldPermission>[]
       }
       data={fields.filter((field) => !field.hidden)}
