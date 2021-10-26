@@ -98,11 +98,12 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
         id: field.value,
         hidden: !!field.isLayout,
         fieldName: field.label,
-        read: !!field.isLayout,
-        write: false,
+        // 默认后端数据读写权限是rw
+        read: true,
+        write: true,
         invisible: false,
         editable: false,
-        readonly: !!field.isLayout,
+        readonly: true,
         path: field.path,
       };
       !oldCustomField && custom.push(newCustomField);
