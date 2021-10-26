@@ -55,28 +55,28 @@ function GroupNodeRender({ node, store }: NodeRenderProps<APIGroup>): JSX.Elemen
   const editNamePopperRef = useRef<any>(null);
   const editNamePopper = usePopper(editNameRef.current, editNamePopperRef.current, POPPER_PARAMS);
 
-  const handleClickMenu = (key: string) => {
+  function handleClickMenu(key: string):void {
     setModalType(key);
     setModalOpen(true);
-  };
+  }
 
-  const saveGroup = () => {
+  function saveGroup():void {
     // todo
     formInst.handleSubmit(async (data)=> {
       console.log('add group node: ', data);
     })();
-  };
+  }
 
-  const saveName = ()=> {
+  function saveName():void {
 
-  };
+  }
 
-  const toGroup = (id: string)=> {
+  function toGroup(id: string):void {
     const prefix = `/apps/details/${appID}/api_proxy`;
     history.push(`${prefix}?ns=${id}`);
-  };
+  }
 
-  const renderModals = (): React.ReactNode => {
+  function renderModals(): React.ReactNode {
     if (!modalOpen) {
       return null;
     }
@@ -144,7 +144,7 @@ function GroupNodeRender({ node, store }: NodeRenderProps<APIGroup>): JSX.Elemen
         </Modal>
       );
     }
-  };
+  }
 
   return (
     <div className="flex items-center flex-grow max-w-full">

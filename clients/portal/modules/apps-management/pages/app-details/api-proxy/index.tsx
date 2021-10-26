@@ -8,10 +8,9 @@ import List from './api-list';
 import Add from './add-api';
 import Detail from './api-detail';
 import AddSwagger from './add-swagger';
-import NoData from './no-data';
-
-import store from './stores';
-import { useQueryString } from './hooks';
+import NoData from './comps/no-data';
+import store from './store';
+import { useQueryString, useNamespace } from './hooks';
 
 import './styles.scss';
 
@@ -29,6 +28,7 @@ function SubPage({ namespace, apiId, action }: SubPageProps) {
     if (action === 'add-swagger') {
       return <AddSwagger />;
     }
+    // todo: remove
     if (apiId) {
       return <Detail />;
     }
@@ -36,10 +36,11 @@ function SubPage({ namespace, apiId, action }: SubPageProps) {
   return <List />;
 }
 
-function ApiProxy() {
+function ApiProxy(): JSX.Element {
   const qs = useQueryString();
+  const ns = useNamespace();
 
-  const renderMain = (): JSX.Element=> {
+  function renderMain(): JSX.Element {
     if (!store.treeStore) {
       return <Loading />;
     }
@@ -51,13 +52,13 @@ function ApiProxy() {
     return (
       <div className='w-full h-full overflow-auto api-proxy--main-cont'>
         <SubPage
-          namespace={qs.get('ns')}
+          namespace={ns}
           apiId={qs.get('api')}
           action={qs.get('action')}
         />
       </div>
     );
-  };
+  }
 
   return (
     <div className='flex flex-grow bg-white mt-20 mx-20 api-proxy'>

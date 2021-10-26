@@ -5,6 +5,8 @@ type Paging={
   pageSize: number;
 }
 
+type AppPathType = 'root' | 'raw' | 'poly' | 'serviceForm' | 'form' | 'custom';
+
 /*
  namespace crud apis
  */
@@ -29,11 +31,15 @@ export const getNamespaceList = async (namespacePath: string, params: Paging): P
   page: number;
   list: Array<PolyAPI.NamespaceInfo & {parent: string; name: string}>
 }>=> {
-  return await httpClient(`/api/v1/polyapi/namespace/list/${namespacePath}`, params);
+  return await httpClient(['/api/v1/polyapi/namespace/list', namespacePath].join('/'), params);
 };
 
 export const getNamespace = async (namespacePath: string): Promise<PolyAPI.NamespaceInfo & {parent: string; name: string}> => {
   return await httpClient(`/api/v1/polyapi/namespace/query/${namespacePath}`);
+};
+
+export const getAppPath = async (appID: string, pathType: AppPathType = 'root'): Promise<{appID: string, pathType: string, appPath: string}> => {
+  return await httpClient('/api/v1/polyapi/namespace/appPath', { appID, pathType });
 };
 
 /*

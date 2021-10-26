@@ -1,6 +1,6 @@
 import { useLocation } from 'react-router-dom';
 
-import store from './stores';
+import store from './store';
 
 export function useQueryString() {
   return new URLSearchParams(useLocation().search);

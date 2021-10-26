@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import { Tooltip } from '@QCFE/lego-ui';
 import { observer } from 'mobx-react';
@@ -14,11 +15,9 @@ import Modal from '@c/modal';
 
 import GroupNode from './group-node';
 import FormAddGroup from './form-add-group';
-import TreeStore from '../stores/api-groups';
-import { mockGetApiGroups } from '../mock';
-import store from '../stores';
+import store, { ApiGroupStore } from '../store';
 import { useNamespace } from '../hooks';
-// import {getServiceList} from '../api'
+import * as apis from '../api';
 
 import '../styles.scss';
 
@@ -29,35 +28,39 @@ interface Props {
 function SideNav(props: Props): JSX.Element {
   const [search, setSearch] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
-  const { data: groups, isLoading } = useQuery(['api-proxy-get-svc-list'], () => {
-    return mockGetApiGroups().then((res) => res.data);
-    // getServiceList().then((list)=> {
-    //   console.log('svc list: ', list)
-    // });
+  const { appID } = useParams<{appID: string}>();
+  const { data: appPathData } = useQuery(['api-proxy', 'get-app-path'], ()=> {
+    return apis.getAppPath(appID);
+  });
+  const { data: groups, isLoading } = useQuery(['api-proxy', 'get-svc-list'], () => {
+    return apis.getNamespaceList('', { page: 1, pageSize: -1 }).then((list)=> {
+      console.log('ns list: ', list);
+      return list;
+    });
   });
   const ns = useNamespace();
   const formInst = useForm();
 
-  const handleSelect = (data: APIGroup): void => {
+  function handleSelect(data: APIGroup): void {
     store.setActiveGroup(data);
-  };
+  }
 
-  const handleSearch = (ev: any) => {
+  function handleSearch(ev: any): void {
 
-  };
+  }
 
-  const handleAddGroup = () => {
+  function handleAddGroup(): void {
     // todo
     formInst.handleSubmit(async (data: any)=> {
       console.log('add group: ', data);
     })();
-  };
+  }
 
   useEffect(() => {
     if (groups && !isLoading) {
-      store.setTreeStore(new TreeStore(groups));
+      store.setTreeStore(new ApiGroupStore(groups));
     }
-  }, [groups]);
+  }, [groups, isLoading]);
 
   useEffect(()=> {
     if (store.treeStore) {
@@ -73,14 +76,14 @@ function SideNav(props: Props): JSX.Element {
     }
   }, [ns, store.treeStore]);
 
-  if (!store.treeStore) {
+  if (isLoading) {
     return <Loading />;
   }
 
   return (
     <div className='flex flex-col min-w-259 bg-white border-r api-proxy--sider'>
       <div className='py-20 px-16 flex justify-between items-center'>
-        <span className='text-h6-bold text-gray-400 mr-auto'>API 目录</span>
+        <span className='text-h6-bold text-gray-400 mr-auto'>菜单</span>
         <Tooltip content='新建分组'>
           <Icon
             name='create_new_folder'
@@ -91,7 +94,7 @@ function SideNav(props: Props): JSX.Element {
           />
         </Tooltip>
       </div>
-      {!store.treeStore?.noLeafNodes && (
+      {store.treeStore && !store.treeStore?.noLeafNodes && (
         <div className='px-10'>
           <Search
             className="bg-gray-100 mb-20"

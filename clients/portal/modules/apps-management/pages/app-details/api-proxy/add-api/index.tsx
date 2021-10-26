@@ -7,10 +7,10 @@ import cs from 'classnames';
 import Select from '@c/select';
 import Button from '@c/button';
 
-import Header from '../header';
+import Header from '../comps/header';
+import { ErrorMsg } from '../comps/form';
 import ParamSection from './param-section';
 import ParamForm from './param-form';
-import { ErrorMsg } from '../form';
 
 import './styles.scss';
 
@@ -35,11 +35,11 @@ function Add(props: Props) {
   const [method, setMethod] = useState('get');
   const history = useHistory();
 
-  const onSubmit = ()=> {
+  function onSubmit(): void {
     handleSubmit(async (d: any)=> {
       console.log('add api: ', d);
     })();
-  };
+  }
 
   return (
     <>

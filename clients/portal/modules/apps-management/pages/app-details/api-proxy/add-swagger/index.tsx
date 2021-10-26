@@ -8,7 +8,7 @@ import Icon from '@c/icon';
 import Table from '@c/table';
 import Button from '@c/button';
 
-import Header from '../header';
+import Header from '../comps/header';
 import ParamSection from '../add-api/param-section';
 
 interface Props {
@@ -21,9 +21,9 @@ function AddSwagger(props: Props) {
   const [apis, setApis] = useState([]);
   const history = useHistory();
 
-  const onSubmit = ()=> {
+  function onSubmit(): void {
 
-  };
+  }
 
   const COLS: UnionColumns<any>[] = [
     {
@@ -43,13 +43,13 @@ function AddSwagger(props: Props) {
     },
   ];
 
-  const beforeUpload = ()=> {
+  function beforeUpload(): void {
 
-  };
+  }
 
-  const deleteFile = (idx: number): void=> {
+  function deleteFile(idx: number): void {
 
-  };
+  }
 
   return (
     <>

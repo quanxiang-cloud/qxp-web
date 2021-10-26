@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import cs from 'classnames';
 import { UseFormReturn } from 'react-hook-form';
 
-import { FormItem, ErrorMsg } from '../form';
+import { FormItem, ErrorMsg } from '../comps/form';
 
 interface Props {
   form: UseFormReturn,

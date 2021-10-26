@@ -6,7 +6,7 @@ import Select from '@c/select';
 import Button from '@c/button';
 
 import ParamSection from '../add-api/param-section';
-import { ErrorMsg } from '../form';
+import { ErrorMsg } from '../comps/form';
 
 interface Props {
   className?: string;

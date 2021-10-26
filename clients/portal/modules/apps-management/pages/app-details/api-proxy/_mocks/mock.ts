@@ -17,7 +17,7 @@ export const mockAPI = async (apiName: string, data: any, timeout?: number) => {
 };
 
 export const mockGetApiGroups = () => {
-  return import('./_mocks/api-groups').then(({ default: groups }) => {
+  return import('./api-groups').then(({ default: groups }) => {
     return mockAPI('get-api-groups', groups);
   });
 };

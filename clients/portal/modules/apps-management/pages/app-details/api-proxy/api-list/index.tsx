@@ -3,12 +3,12 @@ import { observer } from 'mobx-react';
 
 import Tab from '@c/tab';
 
-import Header from '../header';
+import Header from '../comps/header';
 import ApiList from './list';
 import GroupSetting from './group-setting';
 import ApiKeys from './api-keys';
 
-import store from '../stores';
+import store from '../store';
 
 function ListPage() {
   return (
