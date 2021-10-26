@@ -65,6 +65,10 @@ export default function UpdateTableData({
       toast.error('请设置过滤条件的类型');
       return;
     }
+    if (!filterRule.conditions.length) {
+      toast.error('过滤条件不能为空');
+      return;
+    }
     if (!every(filterRule.conditions, (v) => !!v.fieldName)) {
       toast.error('过滤条件的目标表字段不能为空');
       return;
@@ -85,7 +89,7 @@ export default function UpdateTableData({
     setValue((v) => ({ ...v, ...val }));
   };
 
-  const onChangeTargetTable = (table_id: string) => {
+  function onChangeTargetTable(table_id: string): void {
     if (!value.targetTableId) {
       onChange({ targetTableId: table_id });
       return;
@@ -94,7 +98,7 @@ export default function UpdateTableData({
       setNextTable(table_id);
       setSwitchTableModal(true);
     }
-  };
+  }
 
   if (isLoading) {
     return (
