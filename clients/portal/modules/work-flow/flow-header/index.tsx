@@ -45,7 +45,7 @@ export default function FlowHeader(): JSX.Element {
   }
 
   return (
-    <header className="flex justify-between items-center py-18 px-24 bg-white shadow-flow-header">
+    <header className="flex justify-between items-center py-10 px-24 bg-white shadow-flow-header">
       <section className="flex flex-row items-center">
         <div className="cursor-pointer flex items-center" onClick={onGoBack}>
           <Icon

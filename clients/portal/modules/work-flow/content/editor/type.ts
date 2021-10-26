@@ -227,6 +227,7 @@ export interface TableDataCreateData {
   };
   ref: {
     [key: string]: {
+      type: string;
       tableId: string;
       // todo: refactor structure
       createRules: Array<{
@@ -288,6 +289,7 @@ export interface CustomFieldPermission {
   fieldName: string;
   editable: boolean;
   invisible: boolean;
+  readonly: boolean;
   write: boolean;
   read: boolean;
   initialValue: FieldValue;

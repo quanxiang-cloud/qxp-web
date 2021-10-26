@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 
 import Modal, { FooterBtnProps } from '@c/modal';
 import FormDataTable from '@c/form-app-data-table';
@@ -20,12 +20,14 @@ export default function SelectRecordsModal({
   onClose, appID, tableID, multiple, onSubmit, filterConfig, defaultValues,
 }: Props): JSX.Element {
   const tableRef: React.Ref<any> = useRef<Ref>();
+  const [selected, setSelected] = useState<string[]>(defaultValues || []);
+
   const handleSubmit = (): void => {
     if (!tableRef.current) {
       return;
     }
 
-    onSubmit(tableRef.current.getSelected());
+    onSubmit(selected);
   };
 
   const btns: FooterBtnProps[] = [
@@ -42,10 +44,11 @@ export default function SelectRecordsModal({
     },
   ];
 
-  const customColumns = [
+  const customColumns = multiple ? undefined : [
     {
       id: 'action',
-      Headers: '操作',
+      Header: '操作',
+      fixed: true,
       accessor: (rowData: any) => {
         if (defaultValues.includes(rowData._id)) {
           return (<div>已选择</div>);
@@ -62,13 +65,17 @@ export default function SelectRecordsModal({
       onClose={onClose}
       footerBtns={multiple ? btns : undefined}
     >
+      <div className='px-20 py-10'>已选{selected.length}条</div>
       <FormDataTable
+        canAcrossPageChoose
         className="p-20"
         allowRequestData
         filterConfig={filterConfig}
         showCheckbox={multiple}
-        customColumns={multiple ? [] : customColumns}
+        customColumns={customColumns}
         ref={tableRef}
+        defaultSelect={selected}
+        onSelect={setSelected}
         pageID={tableID}
         appID={appID}
       />

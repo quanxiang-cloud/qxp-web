@@ -7,8 +7,7 @@
 
 .app-global-header-hr {
   width: 1px;
-  height: 32px;
-  margin: 0 24px;
+  height: 20px;
   background-color: #E2E8F0;
 }
 
@@ -19,6 +18,14 @@
 }
 
 .app-global-header {
- @apply flex justify-between px-24 bg-white items-center;
- height: 62px;
+ @apply flex justify-between px-20 bg-white items-center;
+ height: 52px;
+}
+
+.app-header-icon {
+  @apply w-32 h-32 cursor-pointer;
+  &:hover {
+    color: var(--gray-600);
+    background-color: var(--gray-100);
+  }
 }

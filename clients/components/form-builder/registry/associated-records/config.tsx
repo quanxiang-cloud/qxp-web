@@ -42,7 +42,7 @@ function AssociatedRecordsConfig({ initialValue, onChange }: Props): JSX.Element
   useEffect(() => {
     actions.setFieldState('filterConfig', (state) => {
       state.props['x-component-props'] = {
-        appID, tableID: initialValue.linkedTable.tableID, currentFormSchema: schema,
+        appID, tableID: initialValue.linkedTable?.tableID, currentFormSchema: schema,
       };
     });
   }, [appID, initialValue.linkedTable]);

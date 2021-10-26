@@ -16,14 +16,13 @@
 }
 
 .todo-list-bg {
-  @apply bg-white bg-no-repeat bg-right-bottom;
   background-image: url('/dist/images/todo-card-bgc.svg');
+  @apply bg-white bg-no-repeat bg-right-bottom;
 }
 
 .user-card {
   align-self: stretch;
-  padding: 20px;
-  margin-right: 16px;
+  margin-top: 20px;
 }
 
 .user-card-last {
@@ -33,7 +32,7 @@
 }
 
 .backlog {
-  width: 96px;
+  width: 126px;
   height: 70px;
   padding: 5px 16px;
   margin-right: 8px;
@@ -50,11 +49,12 @@
 }
 
 .message-handel-list {
+  cursor: pointer;
   position: relative;
   display: flex;
   align-items: center;
-  height: 38px;
-  line-height: 38px;
+  height: 56px;
+  line-height: 56px;
 }
 
 .nav-icon {

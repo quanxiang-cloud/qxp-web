@@ -154,22 +154,16 @@ function buildRef(
       switch (field['x-component']) {
       case 'SubTable': {
         const { subordination, appID, tableID } = field?.['x-component-props'] || {};
-        let _ref = {};
-        if (subordination === 'foreign_table') {
-          const [subRef] = buildRef(window[`schema-${field.id}`] as ISchema, type);
-          _ref = subRef;
-        }
+        const [subRef] = buildRef(subordination === 'foreign_table' ?
+          window[`schema-${field.id}`] : field.items as ISchema, type);
+        const _ref = subRef;
 
-        const _values = values?.[field.id].filter((_value: any) => {
-          return !isEmpty(_value) || Array.isArray(_value);
-        });
-
-        if (_values.length) {
+        if (values?.[field.id]?.length) {
           ref[field.id] = {
             type: subordination || 'sub_table',
             appID,
             tableID,
-            ...buildSubTableParams(type, _values, _ref),
+            ...buildSubTableParams(type, values[field.id], _ref),
           };
         }
       }

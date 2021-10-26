@@ -2,12 +2,13 @@ import React from 'react';
 import cs from 'classnames';
 import { isArray } from 'lodash';
 import { FormItem, IForm, IMutators } from '@formily/antd';
-import { useCss } from 'react-use';
 import { set, lensPath } from 'ramda';
 
 import Icon from '@c/icon';
 
 import type { Column } from './index';
+import type { Layout } from '../convertor';
+import ColumnLayout from './column-layout';
 
 interface Props {
   index: number;
@@ -15,23 +16,13 @@ interface Props {
   item: Record<string, FormDataValue>;
   form: IForm;
   mutators: IMutators;
-  portalReadOnlyClassName: string;
+  layout: Layout;
   name?: string;
 }
 
 export default function SubTableRow({
-  index, item, componentColumns, name, form, mutators, portalReadOnlyClassName,
+  index, item, componentColumns, name, form, mutators, layout,
 }: Props): JSX.Element {
-  const formItemClassName = useCss({
-    '.ant-form-item': {
-      marginBottom: 0,
-    },
-    '&>*': {
-      width: 'calc(100% - 20px)',
-      overflow: 'auto',
-    },
-  });
-
   function onRemoveRow(mutators: IMutators, index: number): void {
     mutators.remove(index);
   }
@@ -43,6 +34,20 @@ export default function SubTableRow({
   }
 
   const blackList = ['userpicker', 'organizationpicker', 'datepicker'];
+
+  if (layout && layout !== 'default') {
+    return (
+      <ColumnLayout
+        layout={layout}
+        componentColumns={componentColumns}
+        name={name}
+        item={item}
+        onChange={onChange}
+        form={form}
+        blackList={blackList}
+      />
+    );
+  }
 
   return (
     <div>
@@ -96,7 +101,7 @@ export default function SubTableRow({
                 className={cs(
                   {
                     'border-r-1 border-gray-300': idx < componentColumns.length,
-                  }, 'flex items-center justify-center', formItemClassName, portalReadOnlyClassName,
+                  }, 'flex items-center justify-center subtable-column-default-item',
                 )}
               >
                 <FormItem
@@ -126,7 +131,6 @@ export default function SubTableRow({
           className="px-22 border-gray-300 border-t-1 self-stretch flex items-center"
         >
           <Icon
-            className={cs(portalReadOnlyClassName)}
             name="delete"
             size={29}
             clickable

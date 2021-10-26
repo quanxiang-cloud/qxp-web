@@ -8,18 +8,23 @@
 
   .adjust-handle {
     display: inline-block;
-    width: 0;
+    width: 1px;
     height: 100%;
     position: absolute;
     right: 0;
     top: 0;
     z-index: 1;
-    touch-action:none;
-    border-radius: 10px;
+    touch-action: none;
+    background-color: var(--gray-200);
     cursor: col-resize;
+    &:hover {
+      width: 4px;
+      background-color: var(--blue-500);
+    }
 
     &:active {
-      background-color: var(--blue-600) !important;
+      width: 4px;
+      background-color: var(--blue-600) ;
     }
   }
 
@@ -28,7 +33,9 @@
   }
 
   .qxp-table-small {
-    th, td {
+
+    th,
+    td {
       padding: 8px;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -37,11 +44,13 @@
   }
 
   .qxp-table-middle {
-    th, td {
-      padding: 16px;
+
+    th,
+    td {
+      padding: 12px;
     }
   }
-  
+
   .qxp-table {
     max-height: 100%;
     overflow: auto;
@@ -52,9 +61,11 @@
       border-collapse: separate;
       text-align: left;
       color: var(--gray-900);
+      font-size: 12px;
     }
 
-    th, td {
+    th,
+    td {
       word-break: break-all;
       background-color: white;
       vertical-align: middle;
@@ -66,17 +77,11 @@
       position: sticky;
       // todo support group header
       top: 0;
+      line-height: 20px;
       font-weight: 400;
       user-select: none;
       color: var(--gray-600);
       z-index: 2;
-
-      &:hover {
-        .adjust-handle {
-          width: 6px;
-          background-color: var(--blue-500);
-        }
-      }
     }
 
     [data-sticky-td] {
@@ -137,6 +142,16 @@
   }
 }
 
+.qxp-table-loading-box {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(255, 255, 255, 0.7);
+  z-index: 5;
+}
+
 .qxp-table-loading {
   padding: 0 16px;
 
@@ -147,7 +162,9 @@
   }
 }
 
-.qxp-table-loading-block-1,.qxp-table-loading-block-2,.qxp-table-loading-block-3 {
+.qxp-table-loading-block-1,
+.qxp-table-loading-block-2,
+.qxp-table-loading-block-3 {
   background: linear-gradient(90deg, #fff, #edeff1, #fff);
   background-size: 200px 50px;
   animation: skeleton-stripes .8s linear infinite;
@@ -169,6 +186,11 @@
 }
 
 @keyframes skeleton-stripes {
-  0% { background-position: 0 0 }
-  to { background-position: 200px 0 }
+  0% {
+    background-position: 0 0
+  }
+
+  to {
+    background-position: 200px 0
+  }
 }

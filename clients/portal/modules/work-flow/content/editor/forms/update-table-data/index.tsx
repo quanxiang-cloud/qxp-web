@@ -6,18 +6,15 @@ import { useUpdateEffect } from 'react-use';
 import Select from '@c/select';
 import Toggle from '@c/toggle';
 import Modal from '@c/modal';
-
 import SaveButtonGroup from '@flow/content/editor/components/_common/action-save-button-group';
-import { getFormDataOptions } from '@c/form-table-selector/api';
+import { getFormDataMenuList } from '@c/form-table-selector/api';
 import FlowContext from '@flow/flow-context';
-import FlowTableContext from '../flow-source-table';
 import toast from '@lib/toast';
-
 import { BusinessData, TableDataUpdateData } from '@flow/content/editor/type';
+
 import Context from './context';
 import FilterRules, { RefType as FilterRuleRef } from './filter-rules';
 import UpdateRules, { RefType as UpdateRuleRef } from './update-rules';
-import { filterTables } from '../utils';
 
 import './styles.scss';
 
@@ -39,7 +36,6 @@ export default function UpdateTableData({
   defaultValue, onSubmit, onCancel, onChange: _onChange,
 }: Props): JSX.Element {
   const { appID } = useContext(FlowContext);
-  const { tableID } = useContext(FlowTableContext);
   const [value, setValue] = useState<TableDataUpdateData>(defaultValue || {});
   const filterRef = useRef<FilterRuleRef>(null);
   const updateRef = useRef<UpdateRuleRef>(null);
@@ -54,11 +50,11 @@ export default function UpdateTableData({
     data: allTables = [],
     isLoading,
     isError,
-  } = useQuery(['GET_WORK_FORM_LIST', appID], getFormDataOptions, {
+  } = useQuery(['GET_WORK_FORM_LIST', appID], () => getFormDataMenuList(appID), {
     enabled: !!appID,
   });
 
-  const onSave = () => {
+  const onSave = (): void => {
     if (!value.targetTableId) {
       toast.error('请选择目标数据表');
       return;
@@ -67,6 +63,10 @@ export default function UpdateTableData({
     const updateRule = updateRef.current?.getValues();
     if (!filterRule.tag) {
       toast.error('请设置过滤条件的类型');
+      return;
+    }
+    if (!filterRule.conditions.length) {
+      toast.error('过滤条件不能为空');
       return;
     }
     if (!every(filterRule.conditions, (v) => !!v.fieldName)) {
@@ -81,7 +81,7 @@ export default function UpdateTableData({
     onSubmit(value);
   };
 
-  const onClose = () => {
+  const onClose = (): void => {
     onCancel();
   };
 
@@ -89,7 +89,7 @@ export default function UpdateTableData({
     setValue((v) => ({ ...v, ...val }));
   };
 
-  const onChangeTargetTable = (table_id: string) => {
+  function onChangeTargetTable(table_id: string): void {
     if (!value.targetTableId) {
       onChange({ targetTableId: table_id });
       return;
@@ -98,7 +98,7 @@ export default function UpdateTableData({
       setNextTable(table_id);
       setSwitchTableModal(true);
     }
-  };
+  }
 
   if (isLoading) {
     return (
@@ -118,7 +118,7 @@ export default function UpdateTableData({
         <div className="inline-flex items-center">
           <span className="text-body mr-10">目标数据表:</span>
           <Select
-            options={filterTables(allTables).filter((tb) => tb.value !== tableID)}
+            options={allTables}
             placeholder="选择数据表"
             value={value.targetTableId}
             onChange={onChangeTargetTable}

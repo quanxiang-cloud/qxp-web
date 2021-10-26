@@ -39,7 +39,6 @@ function ActionButtons({ onOpen }: Props, ref?: Ref<HTMLButtonElement>): JSX.Ele
             modifier="primary"
             forbidden={forbidden}
             iconName="toggle_on"
-            className="py-5"
             onClick={onConfirmSubmit}
             ref={ref}
           >
@@ -51,7 +50,6 @@ function ActionButtons({ onOpen }: Props, ref?: Ref<HTMLButtonElement>): JSX.Ele
         <Button
           forbidden={!id}
           iconName="toggle_on"
-          className="py-5"
           onClick={onConfirmSubmit}
           ref={ref}
         >

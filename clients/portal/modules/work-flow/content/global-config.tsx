@@ -8,6 +8,7 @@ import Icon from '@c/icon';
 import ToolTip from '@c/tooltip';
 import Loading from '@c/loading';
 import Select from '@c/select';
+import TextHeader from '@c/text-header';
 import useObservable from '@lib/hooks/use-observable';
 import toast from '@lib/toast';
 import CheckBoxGroup from '@c/checkbox/checkbox-group';
@@ -200,14 +201,19 @@ export default function GlobalConfig(): JSX.Element | null {
   const spanClass = 'inline-block mb-8 p-2 bg-gray-100 mr-4 border border-gray-300';
 
   return (
-    <div className="w-full flex-col flex items-center">
-      <div
-        className="w-full h-56 items-center flex px-20 bg-gray-1000
-        shadow-header text-gray-900 mb-20">
-        全局配置
-      </div>
-      <div className="bg-white rounded-12 p-28 mb-16 w-full max-w-%90">
-        <form onSubmit={handleSubmit(handleSaveConfig)}>
+
+    <div className="m-16 flex-1 mb-0 overflow-auto">
+      <div className="h-full flex-1 bg-white rounded-t-12">
+        <TextHeader
+          title="全局配置"
+          itemTitleClassName="text-12 font-semibold"
+          desc="设置工作流全局配置"
+          actionClassName="text-12"
+          // action={<a className="ease-linear underline">📌 &nbsp;快速开始？</a>}
+          className="bg-gray-1000 p-16 header-background-image h-44 shadow-header rounded-t-12"
+          descClassName="text-gray-400"
+        />
+        <form onSubmit={handleSubmit(handleSaveConfig)} className='p-16'>
           {options.map((option) => (
             <div key={option.field} className='mb-16'>
               <div

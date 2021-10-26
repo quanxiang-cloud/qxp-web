@@ -167,7 +167,14 @@ function ActionModals({
 
     // 重新提交
     if (action === TaskHandleType.hasResubmitBtn) {
-      return apis.resubmit(processInstanceID);
+      let _formData = {};
+      if (isEmpty(defaultValue)) {
+        _formData = buildFormDataReqParams(schema, 'create', formData);
+      } else {
+        const newValue = formDataDiff(formData, defaultValue, schema);
+        _formData = buildFormDataReqParams(schema, 'updated', newValue);
+      }
+      return apis.resubmit(processInstanceID, _formData);
     }
 
     // 撤回

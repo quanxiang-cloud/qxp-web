@@ -5,7 +5,7 @@ import Modal from '@c/modal';
 type Props = {
   onOk: () => void;
   onCancel: () => void;
-  pageInfo?: PageInfo;
+  pageInfo?: Menu;
 }
 
 function HidePageConfirmModal({ onCancel, onOk, pageInfo }: Props): JSX.Element {

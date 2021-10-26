@@ -66,6 +66,7 @@ export default function({ fields, updateFields }: Props): JSX.Element {
               return {
                 ...dt,
                 [key]: !isChecked,
+                ...(key === 'read' && isChecked ? { invisible: false } : {}),
               };
             }
             return dt;
@@ -78,14 +79,17 @@ export default function({ fields, updateFields }: Props): JSX.Element {
   return (
     <Table
       rowKey="id"
-      columns={[{
-        accessor: 'fieldName',
-        Header: '字段',
-      }, {
-        Header: (model: any) => getHeader(model, 'read', '查看'),
-        accessor: 'read',
-        Cell: (model: any) => getCell(model, 'read'),
-      }]}
+      columns={[
+        {
+          accessor: 'fieldName',
+          Header: '字段',
+        },
+        {
+          Header: (model: any) => getHeader(model, 'read', '读'),
+          accessor: 'read',
+          Cell: (model: any) => getCell(model, 'read'),
+        },
+      ]}
       data={fields}
     />
   );

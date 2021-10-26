@@ -1,9 +1,12 @@
 import { getDisplayModifierFromSchema, getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
 
+export type Layout = 'default' | 'one' | 'two' | 'three';
+
 export type SubTableConfig = {
   title: string;
   description: string;
   rowLimit: string;
+  layout: Layout;
   subordination: string;
   subTableSchema: ISchema;
   displayModifier: FormBuilder.DisplayModifier;
@@ -20,6 +23,7 @@ export type SubTableConfig = {
 export const defaultConfig: SubTableConfig = {
   title: '子表单',
   rowLimit: 'multiple',
+  layout: 'default',
   description: '',
   subordination: 'sub_table',
   displayModifier: 'normal',
@@ -39,6 +43,7 @@ export const defaultConfig: SubTableConfig = {
 
 export function toSchema(value: SubTableConfig): ISchema {
   const isFromLinkedTable = value.subordination === 'foreign_table';
+  const rules = value.required ? [{ min: 1 }] : [];
 
   return {
     type: 'array',
@@ -49,6 +54,7 @@ export function toSchema(value: SubTableConfig): ISchema {
     display: value.displayModifier !== 'hidden',
     items: isFromLinkedTable ? undefined : value.subTableSchema,
     'x-component': 'SubTable',
+    'x-rules': rules,
     ['x-component-props']: {
       columns: value.subTableColumns,
       subordination: value.subordination,
@@ -56,6 +62,7 @@ export function toSchema(value: SubTableConfig): ISchema {
       tableID: isFromLinkedTable ? value.linkedTable?.tableID : value.tableID,
       tableName: value.linkedTable?.tableName,
       rowLimit: value.rowLimit,
+      layout: value.layout,
     },
     ['x-internal']: {
       permission: getSchemaPermissionFromSchemaConfig(value),
@@ -71,6 +78,7 @@ export function toConfig(schema: ISchema): SubTableConfig {
     title: schema.title as string,
     description: schema.description as string,
     rowLimit: schema['x-component-props']?.rowLimit,
+    layout: schema['x-component-props']?.layout,
     subordination: schema['x-component-props']?.subordination,
     displayModifier: getDisplayModifierFromSchema(schema),
     subTableSchema: schema.items as ISchema,

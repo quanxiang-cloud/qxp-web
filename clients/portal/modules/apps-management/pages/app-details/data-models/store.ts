@@ -123,7 +123,6 @@ class AppModelStore {
       const { total = 0, list = [] } = res || {};
       this.dataModelTotal = total;
       this.dataModels = list;
-      this.curDataModel = list.find(({ tableID }) => tableID === this.curModelTableID) || list[0];
       this.dataModelsLoading = false;
     }).catch((err) => {
       this.dataModelsLoading = false;
@@ -144,7 +143,7 @@ class AppModelStore {
         `${this.appID}_${basicInfo.tableID}`,
         basicInfo.title,
         basicInfo.description || '',
-      ).then(() =>{
+      ).then(() => {
         toast.success('复制成功');
         this.setParams({});
         this.curModelTableID = `${this.appID}_${basicInfo.tableID}`;

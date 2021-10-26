@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useQuery } from 'react-query';
-import { groupBy, merge, first } from 'lodash';
+import { useUpdateEffect } from 'react-use';
+import { groupBy, merge, first, isEqual } from 'lodash';
 import fp from 'lodash/fp';
 
 import Toggle from '@c/toggle';
@@ -36,6 +37,7 @@ interface Props {
 export default function FieldPermission({ value, onChange: _onChange }: Props): JSX.Element {
   const { appID } = useContext(FlowContext);
   const [editable, setEditable] = useState(false);
+  const [dataPermEditable, setDataPermEditable] = useState(false);
   const { elements = [] } = useObservable<StoreValue>(store);
   const formDataElement = elements?.find(({ type }) => type === 'formData') as CurrentElement;
   const workFormValue = (formDataElement?.data?.businessData as FormDataData)?.form?.value;
@@ -66,12 +68,19 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
     }
   }, [mergedFieldPermissions.custom]);
 
+  useUpdateEffect(() => {
+    const defaultPermissionChanged = !isEqual(fieldPermissionDecoder(value, schema), mergedFieldPermissions);
+    const isPermissionOldFormat = value.custom || value.system;
+    const shouldSetLatestPermission = defaultPermissionChanged || isPermissionOldFormat;
+    shouldSetLatestPermission && onChange(mergedFieldPermissions);
+  }, [mergedFieldPermissions]);
+
   function onChange(fieldPermission: FieldPermissionType): void {
     _onChange({ fieldPermission: fieldPermissionEncoder(fieldPermission) });
   }
 
   function onUpdateFields(type: 'custom' | 'system') {
-    return (val: (CustomFieldPermission | SystemFieldPermission)[]) => {
+    return (val: CustomFieldPermission[] | SystemFieldPermission[]) => {
       onChange({
         ...mergedFieldPermissions,
         [type]: val,
@@ -87,12 +96,14 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
       const newCustomField = {
         ...INITIAL_VALUE,
         id: field.value,
-        hidden: field.isLayout,
+        hidden: !!field.isLayout,
         fieldName: field.label,
-        read: !!field.isLayout,
-        write: false,
+        // 默认后端数据读写权限是rw
+        read: true,
+        write: true,
         invisible: false,
         editable: false,
+        readonly: true,
         path: field.path,
       };
       !oldCustomField && custom.push(newCustomField);
@@ -128,6 +139,10 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
     setEditable((s) => !s);
   }
 
+  function handleDataPermEditableChange(): void {
+    setDataPermEditable((checked)=> !checked);
+  }
+
   if (isLoading) {
     return <Loading desc="加载中..." />;
   }
@@ -143,19 +158,26 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
           <header className="flex justify-between items-center mb-10">
             <div className="text-caption-no-color text-gray-400">自定义字段</div>
             <div className="flex justify-between items-center">
-              <span className="mr-8">为字段赋值</span>
-              <Toggle defaultChecked={editable} onChange={handleEditableChange} />
+              <div className="flex items-center mr-10">
+                <span className="mr-8">为字段赋值</span>
+                <Toggle defaultChecked={editable} onChange={handleEditableChange} />
+              </div>
+              <div className="flex items-center">
+                <span className="mr-8">数据权限修改</span>
+                <Toggle defaultChecked={dataPermEditable} onChange={handleDataPermEditableChange} />
+              </div>
             </div>
           </header>
           <CustomFieldTable
             editable={editable}
+            dataPermEditable={dataPermEditable}
             fields={mergedFieldPermissions.custom}
             schema={schema}
             updateFields={onUpdateFields('custom')}
           />
         </section>
       )}
-      {!!mergedFieldPermissions.system.length && (
+      {!!mergedFieldPermissions.system.length && dataPermEditable && (
         <section className="pb-56">
           <header className="flex justify-between items-center mb-12 mt-32">
             <div className="text-caption-no-color text-gray-400">系统字段</div>
@@ -166,7 +188,7 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
           />
         </section>
       )}
-      {!mergedFieldPermissions.custom.length && !mergedFieldPermissions.system.length && (
+      {!mergedFieldPermissions.custom.length && (
         <div className="mt-20 flex justify-center text-gray-400">该工作表未设置字段</div>
       )}
     </>

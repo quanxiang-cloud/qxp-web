@@ -31,9 +31,9 @@ export default function TextHeader({
   descClassName,
   textClassName,
   itemTitleClassName,
-}: Props) {
+}: Props): JSX.Element {
   return (
-    <header className={cs('flex justify-between items-center py-20 opacity-95', className)}>
+    <header className={cs('flex justify-between items-center py-10 opacity-95', className)}>
       <ItemWithTitleDesc
         desc={desc}
         itemRender={
@@ -45,7 +45,7 @@ export default function TextHeader({
           </div>)
         }
         descClassName={cs(
-          'transition ease-linear text-12 text-blueGray-400',
+          'transition ease-linear text-12',
           descClassName,
         )}
         textDirection={textDirection}

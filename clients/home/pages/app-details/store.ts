@@ -1,10 +1,9 @@
 import { action, reaction, IReactionDisposer, observable } from 'mobx';
-import { TreeData } from '@atlaskit/tree';
 
 import toast from '@lib/toast';
-import { buildAppPagesTreeData } from '@lib/utils';
 import { getCustomPageInfo, delFormDataRequest } from '@lib/http-client';
 import { CustomPageInfo, MenuType } from '@portal/modules/apps-management/pages/app-details/type';
+import { treeFind, pageListToTree, NodeItem } from '@c/two-level-menu';
 
 import { fetchPageList, getOperate } from './api';
 
@@ -17,19 +16,21 @@ class UserAppDetailsStore {
   @observable fetchSchemeLoading = true;
   @observable pageName = '';
   @observable authority = 0;
-  @observable pagesTreeData: TreeData = {
-    rootId: 'ROOT',
-    items: {},
-  };
+  @observable showPageNav = true;
+  @observable operationType = '';
+  @observable isMouseControl = false;
+  @observable pageList: NodeItem<PageInfo>[] = [];
   @observable customPageInfo: CustomPageInfo | null = null;
 
   constructor() {
     this.destroySetCurPage = reaction(() => {
-      if (!this.pageID || this.pageListLoading || !this.pagesTreeData.items[this.pageID]) {
+      if (!this.pageID || this.pageListLoading) {
         return;
       }
 
-      return this.pagesTreeData.items[this.pageID].data;
+      const _page = treeFind(this.pageList, this.pageID);
+
+      return _page?.source;
     }, this.setCurPage);
   }
 
@@ -41,7 +42,7 @@ class UserAppDetailsStore {
       const treeMenu = res.menu.filter(({ isHide }: PageInfo) => {
         return !isHide;
       });
-      this.pagesTreeData = buildAppPagesTreeData(treeMenu);
+      this.pageList = pageListToTree(treeMenu);
       this.pageListLoading = false;
     });
   }
@@ -52,7 +53,7 @@ class UserAppDetailsStore {
   }
 
   @action
-  setCurPage = (pageInfo: PageInfo): void => {
+  setCurPage = (pageInfo: PageInfo | undefined): void => {
     if (!pageInfo) {
       return;
     }
@@ -95,12 +96,29 @@ class UserAppDetailsStore {
   @action
   clear = (): void => {
     this.pageListLoading = true;
-    this.pagesTreeData = {
-      rootId: 'ROOT',
-      items: {},
-    };
+    this.pageList = [];
     this.curPage = { id: '' };
     this.customPageInfo = null;
+  }
+
+  @action
+  openPageNav = (): void => {
+    this.showPageNav = true;
+  }
+
+  @action
+  closePageNav = (): void => {
+    this.showPageNav = false;
+  }
+
+  @action
+  openMouseControl = (): void => {
+    this.isMouseControl = true;
+  }
+
+  @action
+  closeMouseControl = (): void => {
+    this.isMouseControl = false;
   }
 }
 

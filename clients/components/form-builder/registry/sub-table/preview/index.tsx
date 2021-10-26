@@ -4,7 +4,7 @@ import { Table } from 'antd';
 import { isObject } from 'lodash';
 import { useQuery } from 'react-query';
 import { ValidatePatternRules } from '@formily/antd';
-import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
+import { ISchemaFieldComponentProps, IMutators } from '@formily/react-schema-renderer';
 
 import logger from '@lib/logger';
 import FormDataValueRenderer from '@c/form-data-value-renderer';
@@ -12,9 +12,11 @@ import { isEmpty } from '@lib/utils';
 import schemaToFields from '@lib/schema-convert';
 import { getTableSchema } from '@lib/http-client';
 
-import SubTablePreview from './sub-table-preview';
 import { getDefaultValue, schemaRulesTransform } from './utils';
+import SubTableList from './list';
 import { components } from './components';
+
+import './style.scss';
 
 export type Rules = (ValidatePatternRules | ValidatePatternRules[]) & Rule[];
 export type Column = {
@@ -49,15 +51,17 @@ function SubTable({
     componentColumns: [], rowPlaceHolder: {},
   });
 
+  const {
+    subordination, columns, appID, tableID, rowLimit, layout,
+  } = definedSchema?.['x-component-props'] || {};
   let schema = definedSchema?.items as ISchema | undefined;
-  const { subordination, columns, appID, tableID, rowLimit } = definedSchema?.['x-component-props'] || {};
   const isFromForeign = subordination === 'foreign_table';
   const { data } = useQuery(
     ['GET_SUB_TABLE_CONFIG_SCHEMA', appID, tableID],
     () => getTableSchema(appID, tableID),
     { enabled: !!(isFromForeign && tableID && appID) },
   );
-
+  const isInitialValueEmpty = value?.every((v: Record<string, unknown>) => isEmpty(v));
   schema = isFromForeign ? data?.schema : schema;
 
   useEffect(() => {
@@ -65,7 +69,7 @@ function SubTable({
       return;
     }
     window[`schema-${definedSchema?.key}`] = schema;
-    const rowPlaceHolder = { };
+    const rowPlaceHolder = {};
     const componentColumns: Column[] = schemaToFields(schema).reduce((acc: Column[], field) => {
       const isHidden = !field.display;
       if ((isFromForeign && !columns?.includes(field.id)) || field.id === '_id' || isHidden) {
@@ -83,6 +87,10 @@ function SubTable({
       delete window[`schema-${definedSchema?.key}`];
     };
   }, [schema, columns]);
+
+  useEffect(() => {
+    isInitialValueEmpty && mutators?.change([rowPlaceHolder]);
+  }, []);
 
   function buildColumnFromSchema(dataIndex: string, sc: ISchema): Column | null {
     const componentName = sc['x-component']?.toLowerCase() as keyof Components;
@@ -121,6 +129,10 @@ function SubTable({
     };
   }
 
+  function onAddRow(mutators: IMutators): void {
+    mutators.push(rowPlaceHolder);
+  }
+
   if (!componentColumns.length) {
     return null;
   }
@@ -131,23 +143,23 @@ function SubTable({
         pagination={false}
         rowKey="_id"
         columns={componentColumns}
-        dataSource={componentColumns.length ? value : []}
+        dataSource={value}
       />
     );
   }
 
   return (
-    <SubTablePreview
-      rowLimit={rowLimit}
-      mutators={mutators}
-      rowPlaceHolder={rowPlaceHolder}
-      className={props?.className}
-      schema={schema}
-      value={value}
+    <SubTableList
       name={name}
+      value={value}
+      props={props}
       componentColumns={componentColumns}
+      layout={layout}
+      rowLimit={rowLimit}
+      onAddRow={onAddRow}
       isFromForeign={isFromForeign}
       columns={columns}
+      schema={schema}
     />
   );
 }

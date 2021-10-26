@@ -68,8 +68,8 @@ const PanelList = () => {
 
   const canIUseReadBtn = useMemo(() => {
     return msgList
-      .filter((itm: any) => selectedRows.some((id) => id == itm.id))
-      .filter((itm: any) => itm.read_status == MsgReadStatus.unread)
+      .filter((itm: any) => selectedRows.some((id) => id === itm.id))
+      .filter((itm: any) => itm.read_status === MsgReadStatus.unread)
       .length > 0;
   }, [selectedRows, msgList]);
 
@@ -175,7 +175,7 @@ const PanelList = () => {
     onChange(keys: any) {
       setSelectedRows(keys);
       // todo
-      if (keys.length == msgList.length) {
+      if (keys.length === msgList.length) {
         toolbarRef.current.allcheck(true);
         toolbarRef.current.interm(false);
       } else if (keys.length > 0) {

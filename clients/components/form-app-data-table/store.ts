@@ -6,8 +6,8 @@ import { pipe, map } from 'lodash/fp';
 
 import { fetchFormDataList } from '@lib/http-client';
 import schemaToFields, { schemaToMap } from '@lib/schema-convert';
-import { SYSTEM_FIELDS } from '@c/form-builder/constants';
 import { toEs } from '@c/data-filter/utils';
+import { SYSTEM_FIELDS } from '@c/form-builder/constants';
 
 import { TableHeaderBtn, TableConfig } from './type';
 import { Config, getPageDataSchema } from './utils';
@@ -41,12 +41,16 @@ type InitData = {
   tableHeaderBtnList?: TableHeaderBtn[];
   customColumns?: UnionColumns<any>[];
   filterConfig?: FilterConfig;
+  canAcrossPageChoose?: boolean;
+  onSelect?: (ids: string[]) => void
+  defaultSelect?: string[]
 }
 
 export type FormData = Record<string, any>;
 class AppPageDataStore {
   destroyFetchTableData: IReactionDisposer;
   destroySetTableConfig: IReactionDisposer;
+  onSelect: ((ids: string[]) => void) | undefined = undefined;
   @observable tableConfig: TableConfig = { pageSize: 10, order: undefined };
   @observable noFiltersTips: React.ReactNode = '尚未配置筛选条件。';
   @observable listLoading = false;
@@ -65,6 +69,8 @@ class AppPageDataStore {
   @observable tableColumns: UnionColumns<FormData>[] = [];
   @observable tableHeaderBtnList: TableHeaderBtn[] = [];
   @observable columnConfig: ColumnConfig = {};
+  @observable canAcrossPageChoose = false;
+  @observable customColumns: UnionColumns<FormData>[] = [];
   @observable params: Params = {
     condition: [],
     sort: [],
@@ -83,10 +89,17 @@ class AppPageDataStore {
     customColumns = [],
     showCheckbox = true,
     filterConfig,
+    canAcrossPageChoose = false,
+    defaultSelect,
+    onSelect,
   }: InitData) {
-    const { tableColumns, pageTableShowRule } = getPageDataSchema(config || {}, schema, customColumns);
+    const { tableColumns, pageTableShowRule } = getPageDataSchema(config || {}, schema);
     this.setSchema(schema);
     this.filterConfig = filterConfig || null;
+    this.onSelect = onSelect;
+    this.canAcrossPageChoose = canAcrossPageChoose;
+    this.selected = defaultSelect || [];
+    this.customColumns = customColumns;
     this.showCheckbox = showCheckbox;
     this.tableHeaderBtnList = tableHeaderBtnList;
     this.setTableColumns(tableColumns);
@@ -108,23 +121,22 @@ class AppPageDataStore {
   }
 
   @computed get tableShowColumns(): UnionColumns<FormData>[] {
-    return this.tableColumns.reduce<UnionColumns<FormData>[]>((acc, col) => {
+    const _columns = this.tableColumns.reduce<UnionColumns<FormData>[]>((acc, col) => {
       const curConfig = this.columnConfig[col.id || ''] || {};
-      if (col.id === 'action') {
-        return [...acc, col];
-      }
-
       if (!curConfig.hidden) {
         return [...acc, { ...col, fixed: 'fixed' in curConfig ? curConfig.fixed : col.fixed }];
       }
 
       return acc;
     }, []);
+
+    return [..._columns, ...this.customColumns];
   }
 
   @action
   setSelected = (selected: string[]): void => {
     this.selected = selected;
+    this.onSelect?.(selected);
   }
 
   @action

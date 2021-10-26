@@ -70,7 +70,7 @@ function TreeContent({ className }: Props): JSX.Element {
       <div
         key={prefix}
         className={cs(
-          'flex flex-col w-221 h-full rounded-lg box-border text-blueGray-400',
+          'flex flex-col option-set-item h-full rounded-lg box-border text-blueGray-400',
           { 'border-r-1': level !== 3 })
         }>
         <div className={cs('flex flex-row items-center bg-gray-100', { 'rounded-tl-8': level === 0 }) }>
@@ -121,36 +121,36 @@ function TreeContent({ className }: Props): JSX.Element {
   function additionalItem(level: number): JSX.Element | undefined {
     if (level > 2) return;
     return (
-      <div className='flex flex-col flex-1 w-221 h-full text-blueGray-400 rounded-lg box-border'>
+      <div className='flex flex-col flex-1 option-set-item h-full text-blueGray-400 rounded-lg box-border'>
         <div
-          className='flex items-center h-37 bg-gray-100'
+          className='option-set-add-item flex items-center bg-gray-100'
           onClick={() => {
             setAddLevel(true);
           }}
         >
           { addLevel ?
-            (<span className='pl-12 py-8 w-221 border-r-1'>
+            (<span className='pl-12 py-8 option-set-item border-r-1'>
               {getZhCNLevel(level + 1)}级可选项
             </span>) :
             (<span
-              className='pl-16 py-8 w-5/6 hover:text-blue-600 cursor-pointer w-221 border-r-1'
+              className='pl-16 py-8 w-5/6 hover:text-blue-600 cursor-pointer option-set-item border-r-1'
             >
               <Icon name='add' size={20} className='mr-4 pb-3 text-current' />
               添加分级
             </span>)
           }
         </div>
-        <div className='flex h-full w-221 border-r-1'>
+        <div className='flex h-full option-set-item border-r-1'>
           {addLevel && (
             <span
-              className='h-38 w-221 pl-12 py-8 mt-8 hover:bg-blue-100 cursor-pointer hover:text-blue-600'
+              className='option-set-add-alert option-set-item pl-12 py-8 mt-8 cursor-pointer'
               onClick={() => {
                 toast.error('请先选择一个左侧的上级数据。');
               }}
             >
               <Icon name='add' size={20} className='items-center pb-3 text-current'/>
               <span className='ml-8'>
-              添加选项数据
+                添加选项数据
               </span>
             </span>
           )}

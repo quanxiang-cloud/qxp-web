@@ -13,7 +13,7 @@ export interface DefaultConfig {
   defaultRange?: 'customize' | 'currentUser';
   multiple?: 'single' | 'multiple';
   rangeList: EmployeeOrDepartmentOfRole[];
-  defaultValues: string | string[];
+  defaultValues?: string | string[];
   enums?: Option[];
   loading?: boolean;
   onSearch?: (value: string) => string | void;
@@ -32,7 +32,6 @@ export const defaultConfig: DefaultConfig = {
   defaultRange: 'customize',
   multiple: 'single',
   rangeList: [],
-  defaultValues: [],
   loading: false,
   type: 'array',
 };

@@ -1,7 +1,8 @@
 import { get, has, merge } from 'lodash';
 import { customAlphabet } from 'nanoid';
+import { Curry } from 'ts-toolbelt/out/Function/Curry';
 import fp, {
-  pipe, entries, filter, fromPairs, every, equals, property, curry, map, cond, values,
+  pipe, entries, filter, fromPairs, every, equals, property, curry, map, cond, values, stubTrue,
 } from 'lodash/fp';
 
 import toast from '@lib/toast';
@@ -137,8 +138,9 @@ export const getValidateMessageMap = <T>(schema: ISchema, configValue: T): Recor
 
   return getMessageMap(schema);
 };
-type ValidateRegistryElement<T> = (configSchema: ISchema, configValue: T) => boolean
-export const validateRegistryElement: Curried<ValidateRegistryElement<unknown>> = curry(
+
+type ValidateRegistryElement<T> = (configSchema: ISchema, configValue?: T) => boolean
+export const validateRegistryElement: Curry<ValidateRegistryElement<unknown>> = curry(
   <T>(configSchema: ISchema, configValue: T) => {
     const messageMap = getValidateMessageMap<T>(configSchema, configValue);
     const validator = pipe(
@@ -156,7 +158,9 @@ export const validateRegistryElement: Curried<ValidateRegistryElement<unknown>> 
 );
 
 type PermissionToOverwrite = { display?: boolean; readOnly?: boolean };
-export function schemaPermissionTransformer<T extends ISchema>(schema: T, readOnly?: boolean): T {
+export function schemaPermissionTransformer<T extends ISchema>(
+  schema: T, readOnly?: boolean, workFlowType?: string,
+): T {
   function isLayoutSchema(field: ISchema): boolean {
     return !!get(field, 'x-internal.isLayoutComponent');
   }
@@ -171,7 +175,11 @@ export function schemaPermissionTransformer<T extends ISchema>(schema: T, readOn
       [isPermissionInvisible, permissionTransformer({ display: false }, field)],
       [isPermissionNormal, permissionTransformer({ display: true, readOnly: false }, field)],
     ]);
-    transformer(permission);
+    const conditions = cond([
+      [(type) => type === 'APPLY_PAGE', permissionTransformer({ display: true, readOnly: true }, field)],
+      [stubTrue, () => transformer(permission)],
+    ]);
+    conditions(workFlowType);
   };
 
   const fieldTransform = pipe(
@@ -333,6 +341,9 @@ export function calculateFieldPermission(
   }, 0b0000) as PERMISSION;
   const availablePermisssions = [0, 1, 3, 5, 7, 11];
   !isFromWorkFlow && availablePermisssions.push(...[4, 8, 9]);
+  if (permission === INVALID_INVISIBLE && isFromWorkFlow) {
+    return INVISIBLE_NO_READ;
+  }
   if (!availablePermisssions.includes(permission)) {
     toast.error(`权限配置错误 ${permission}`);
     throw new Error(`${permission}`);
@@ -375,8 +386,11 @@ export function updateFieldIndex(fields: FormItem[]): FormItem[] {
   });
 }
 
-export function convertMultipleSelectDefaults(Enum: Array<Record<string, string | boolean>>): string[] {
-  return Enum.filter(({ isDefault }) => isDefault).map(({ label }) => label as string);
+export function convertMultipleSelectDefaults(Enum: Array<Record<string, string | boolean>>): string[] | void {
+  const defaults = Enum.filter(({ isDefault }) => isDefault);
+  if (defaults.length) {
+    return defaults.map(({ label }) => label as string);
+  }
 }
 
 export function convertSingleSelectDefault(defaultOption: Record<string, string | boolean>): string {

@@ -48,6 +48,26 @@ const schema: ISchema = {
           },
           'x-index': 2,
         },
+        displayModifier: {
+          type: 'string',
+          title: '字段属性',
+          default: 'readonly',
+          enum: [
+            {
+              label: '只读',
+              value: 'readonly',
+            },
+            {
+              label: '隐藏',
+              value: 'hidden',
+            },
+          ],
+          'x-component': 'RadioGroup',
+          'x-mega-props': {
+            labelAlign: 'top',
+          },
+          'x-index': 3,
+        },
         prefix: {
           type: 'string',
           title: '前缀',
@@ -55,7 +75,7 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 3,
+          'x-index': 4,
         },
         initialPosition: {
           type: 'number',
@@ -72,9 +92,9 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 4,
+          'x-index': 5,
         },
-        initialValue: {
+        startingValue: {
           type: 'number',
           title: '编号起始值',
           default: 1,
@@ -89,7 +109,7 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 5,
+          'x-index': 6,
         },
         suffix: {
           type: 'string',
@@ -103,7 +123,7 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 6,
+          'x-index': 7,
         },
       },
     },

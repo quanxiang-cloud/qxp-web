@@ -31,7 +31,7 @@ const formSchema: ISchema = {
       },
       default: 'any',
       enum: [{
-        label: '任一分支结束则拒绝本流程',
+        label: '任一分支拒绝则结束本流程',
         value: 'any',
       }, {
         label: '所有分支都拒绝时结束本流程',

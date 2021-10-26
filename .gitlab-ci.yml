@@ -39,7 +39,7 @@ build_all:
   stage: build
   only:
     - tags
-    - /^release\/.*/
+    - release
   script:
     - node_modules/.bin/gulp buildAssets
     - NODE_ENV=production ./node_modules/.bin/webpack --config webpack.config.js
@@ -70,7 +70,7 @@ deploy_testing:
     - qxp-web-runner
   stage: release
   only:
-    - /^release\/.*/
+    - release
   script:
     - IMAGE_TAG="v$(date "+%Y%m%d")-$(git rev-parse --short HEAD)"
     - bash -c "helm upgrade qxp-web-portal /root/deployment/qxp-web-portal --set image.tag=$IMAGE_TAG --set namespace=low-code"

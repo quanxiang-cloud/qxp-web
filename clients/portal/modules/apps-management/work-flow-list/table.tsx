@@ -1,22 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { useQuery, useMutation } from 'react-query';
 import cs from 'classnames';
-import { Link, useParams, useHistory } from 'react-router-dom';
 import moment from 'moment';
+import { observer } from 'mobx-react';
+import { useQuery, useMutation } from 'react-query';
+import { useParams, useHistory } from 'react-router-dom';
 
+import Icon from '@c/icon';
 import Table from '@c/table';
 import Modal from '@c/modal';
-import ErrorTips from '@c/error-tips';
 import toast from '@lib/toast';
-import TableMoreFilterMenu from '@c/more-menu/table-filter';
-import MoreMenu from '@c/more-menu';
-import Icon from '@c/icon';
+import ErrorTips from '@c/error-tips';
 import Pagination from '@c/pagination';
+import TableMoreFilterMenu from '@c/more-menu/table-filter';
 
 import { deleteFlow, getFlowList } from './api';
 
 interface Props {
   type: 'FORM_DATA' | 'FORM_TIME' | '';
+  searchInput: string;
 }
 
 interface State {
@@ -36,7 +37,7 @@ const statusMap = {
   DISABLE: '草稿',
 };
 
-export default function WorkFlowTable({ type }: Props): JSX.Element {
+function WorkFlowTable({ type, searchInput }: Props): JSX.Element {
   const { appID } = useParams<{appID: string}>();
   const history = useHistory();
   const [state, setState] = useState<State>({
@@ -69,26 +70,13 @@ export default function WorkFlowTable({ type }: Props): JSX.Element {
       toast.error(typeof err === 'string' ? err : err.message);
     },
   });
-
-  useEffect(() => {
-    setStatusFilter('');
-  }, [type]);
-
-  useEffect(() => {
-    if (state.currentEditWorkFlow) {
-      history.push(`/apps/flow/${appID}/${state.currentEditWorkFlow.id}`);
+  const hasData = !!data?.dataList.length;
+  const filteredData = data?.dataList.filter(({ status }) => {
+    if (!statusFilter || statusFilter === status) {
+      return true;
     }
-  }, [state.currentEditWorkFlow]);
-
-  function onRowActionChange(key: 'edit' | 'delete', row: Flow): void {
-    const actionMap = {
-      edit: 'currentEditWorkFlow',
-      delete: 'currentDeleteWorkFlow',
-    };
-    const sk = actionMap[key];
-    setState((s) => ({ ...s, [sk]: row }));
-  }
-
+    return false;
+  });
   const columns = [
     {
       Header: '名称',
@@ -147,43 +135,100 @@ export default function WorkFlowTable({ type }: Props): JSX.Element {
       Cell: (model: {
         cell: { value: moment.MomentInput; }; }) => moment(model.cell.value).format('YYYY-MM-DD HH:mm:ss'),
     }, {
+      Header: '操作',
       accessor: 'id',
       Cell: (model: Model) => {
         return (
-          <MoreMenu
-            menus={[
-              { key: 'edit', label: (<span><Icon name="edit" className="mr-6"/>修改</span>) },
-              { key: 'delete', label: (<span><Icon name="delete" className="mr-6"/>删除</span>) },
-            ]}
-            onMenuClick={(key) => onRowActionChange(key, model.cell.row.original)}
-          >
-            <Icon
-              changeable
-              clickable
-              name="more_horiz"
-            />
-          </MoreMenu>
+          <>
+            <span
+              className="text-blue-600 cursor-pointer mr-16"
+              onClick={() => onRowActionChange('edit', model.cell.row.original)}
+            >
+              修改
+            </span>
+            <span
+              className="text-red-600 cursor-pointer"
+              onClick={() => onRowActionChange('delete', model.cell.row.original)}
+            >
+              删除
+            </span>
+          </>
         );
       },
     },
   ];
 
-  const filteredData = data?.dataList.filter(({ status }) => {
-    if (!statusFilter || statusFilter === status) {
-      return true;
+  useEffect(() => {
+    setStatusFilter('');
+  }, [type]);
+
+  useEffect(() => {
+    if (state.currentEditWorkFlow) {
+      history.push(`/apps/flow/${appID}/${state.currentEditWorkFlow.id}`);
     }
-    return false;
-  });
-  const hasData = !!data?.dataList.length;
-  const hasFilteredData = !!filteredData?.length;
+  }, [state.currentEditWorkFlow]);
+
+  useEffect(() => {
+    if (state.currentDeleteWorkFlow?.status === 'ENABLE') {
+      toast.error('已发布的流程不能删除，需要先下架后再删除');
+    }
+  }, [state.currentDeleteWorkFlow]);
+
+  function onRowActionChange(key: 'edit' | 'delete', row: Flow): void {
+    const actionMap = {
+      edit: 'currentEditWorkFlow',
+      delete: 'currentDeleteWorkFlow',
+    };
+    const sk = actionMap[key];
+    setState((s) => ({ ...s, [sk]: row }));
+  }
+
+  function filterFlowOfName(): Flow[] {
+    return filteredData?.filter(({ name }) => {
+      if (searchInput) {
+        return name.match(searchInput);
+      }
+
+      return true;
+    }) || [];
+  }
+
+  function EmptyTipsRender(): JSX.Element {
+    return (
+      <div className='app-no-data mt-96 text-12'>
+        <img
+          className="cursor-pointer"
+          src='/dist/images/data_empty.svg'
+          onClick={() => history.push(`/apps/flow/new/form-data/${appID}`)}
+        />
+        <p>
+          {!hasData && (
+            <>
+              暂无工作流。点击
+              <span
+                onClick={() => history.push(`/apps/flow/new/form-data/${appID}`)}
+                className='ml-4 text-blue-600 cursor-pointer'
+              >
+                新建工作流
+              </span>
+              ，开始构建工作流
+            </>
+          )}
+          {!filteredData?.length && '无符合筛选状态的工作流'}
+          {!filterFlowOfName().length && '无符合筛选名称的工作流'}
+        </p>
+      </div>
+    );
+  }
 
   return (
-    <div className="mt-32 flex flex-col flex-1">
+    <div className="flex-1 flex flex-col flow-table">
       {!isError && (
         <Table<any>
           style={{ maxHeight: 'calc(100vh - 350px)' }}
           rowKey="id"
-          data={filteredData || []}
+          data={filterFlowOfName()}
+          emptyTips={<EmptyTipsRender />}
           columns={columns}
           loading={isLoading}
         />
@@ -191,28 +236,7 @@ export default function WorkFlowTable({ type }: Props): JSX.Element {
       {isError && (
         <ErrorTips desc="something wrong..."/>
       )}
-      {!hasData && !isLoading && !isError && (
-        <div className="mt-72 mb-16 flex flex-col items-center">
-          <Icon name="workflow-list-empty" size={120} />
-          <p className="text-caption">
-            暂无工作流。点击
-            <Link
-              to={`/apps/flow/new/form-data/${appID}`}
-              className="text-blue-600">
-                新建工作流
-            </Link>，开始构建工作流
-          </p>
-        </div>
-      )}
-      {hasData && !hasFilteredData && !isLoading && (
-        <div className="mt-72 mb-16 flex flex-col items-center">
-          <Icon name="workflow-list-empty" size={120} />
-          <p className="text-caption">
-            无符合筛选状态的工作流
-          </p>
-        </div>
-      )}
-      {!isLoading && hasData && hasFilteredData && (
+      {!isLoading && hasData && !!filteredData?.length && (
         <Pagination
           {...pagination}
           total={data?.total}
@@ -220,7 +244,7 @@ export default function WorkFlowTable({ type }: Props): JSX.Element {
           onChange={(current, pageSize) => setPagination({ current, pageSize })}
         />
       )}
-      {!!state.currentDeleteWorkFlow && (
+      {!!state.currentDeleteWorkFlow && state.currentDeleteWorkFlow.status === 'DISABLE' && (
         <Modal
           title="删除工作流"
           onClose={() => {
@@ -256,3 +280,5 @@ export default function WorkFlowTable({ type }: Props): JSX.Element {
     </div>
   );
 }
+
+export default observer(WorkFlowTable);

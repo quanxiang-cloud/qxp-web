@@ -1,5 +1,5 @@
 .app-filter-column {
-  @apply flex p-20 gap-x-20 items-center;
+  @apply flex p-16 items-center justify-between;
   .radio-group label.radio-button.checked {
     border-color: #375FF3;
     color: #375FF3;
@@ -26,9 +26,14 @@
 .app-list-container {
   display: grid;
   height: 100%;
-  grid-gap: 20px;
-  padding: 0 20px;
+  grid-gap: 16px;
+  padding: 0 16px;
   overflow-y: auto;
-  grid-template-columns: repeat(3, minmax(100px, 33%));
+  grid-template-columns: repeat(4, minmax(255px, 25%));
   grid-template-rows: repeat(auto-fill, 76px); 
+}
+@media screen and (max-width: 1400px) {
+  .app-list-container {
+    grid-template-columns: repeat(3, minmax(100px, 1fr));
+  }
 }

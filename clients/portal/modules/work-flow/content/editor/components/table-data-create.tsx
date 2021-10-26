@@ -3,18 +3,17 @@ import { useQuery } from 'react-query';
 import { get } from 'lodash';
 
 import FlowContext from '@flow/flow-context';
-import { getFormDataOptions } from '@c/form-table-selector/api';
+import { getFormDataMenuList } from '@c/form-table-selector/api';
 
 import NodeComponentWrapper, { Props } from './node-component-wrapper';
-import { filterTables } from '../forms/utils';
 
 export default function TableDataCreateNodeComponent(props: Props): JSX.Element {
   const { appID } = useContext(FlowContext);
-  const { data: allTables = [] } = useQuery(['GET_WORK_FORM_LIST', appID], getFormDataOptions, {
+  const { data: allTables = [] } = useQuery(['GET_WORK_FORM_LIST', appID], () => getFormDataMenuList(appID), {
     enabled: !!appID,
   });
   const targetTableId = get(props, 'data.businessData.targetTableId');
-  const tableName = filterTables(allTables).find((v) => v.value === targetTableId)?.label || '';
+  const tableName = allTables.find((v) => v.value === targetTableId)?.label || '';
 
   return (
     <NodeComponentWrapper {...props} iconName="create_new_folder">

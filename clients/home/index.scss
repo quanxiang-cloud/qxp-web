@@ -6,10 +6,6 @@ body {
   background-color: initial;
 }
 
-.apps-management-height {
-  height: calc(100vh - var(--global-header-height));
-}
-
 .app-icon-color-inherit {
   color: inherit;
 }
@@ -56,5 +52,5 @@ body {
 .home-global-header {
   position: relative;
   z-index: 2;
-  box-shadow: 0px 8px 24px 4px rgba(148, 163, 184, 0.25);
+  box-shadow: 0px 8px 24px rgba(55, 95, 243, 0.25);
 }

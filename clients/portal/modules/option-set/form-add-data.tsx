@@ -44,7 +44,7 @@ function FormAddData({
       <TextField
         name="option_set_name"
         placeholder="选项集名称"
-        className='-ml-184'
+        className='option-set-form-add'
         defaultValue={editInfo?.name || ''}
         schemas={[
           {
@@ -71,7 +71,7 @@ function FormAddData({
         name="option_set_tag"
         defaultValue={editInfo?.tag || ''}
         placeholder="选填(不超过 100 字符)"
-        className='-ml-184'
+        className='option-set-form-add'
         rows='2'
         validateOnChange
         schemas={[

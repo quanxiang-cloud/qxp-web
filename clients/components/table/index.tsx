@@ -7,7 +7,8 @@ import {
   useRowSelect,
 } from 'react-table';
 
-import TableLoading from './table-loading';
+import PageLoading from '@c/page-loading';
+
 import { getDefaultSelectMap, useExtendColumns, DEFAULT_WIDTH, MINIMUM_WIDTH } from './utils';
 import useSticky from './use-sticky';
 import AdjustHandle from './adjust-handle';
@@ -31,9 +32,9 @@ interface Props<T extends Record<string, any>> {
   showCheckbox?: boolean;
   style?: React.CSSProperties;
   canSetColumnWidth?: boolean;
+  canAcrossPageChoose?: boolean;
 }
-
-export default function Table<T extends Record<string, any>>({
+function Table<T extends Record<string, any>>({
   className,
   columns,
   data,
@@ -47,6 +48,7 @@ export default function Table<T extends Record<string, any>>({
   showCheckbox,
   style,
   canSetColumnWidth,
+  canAcrossPageChoose,
 }: Props<T>): JSX.Element {
   const _columns = useExtendColumns(columns, showCheckbox);
   const widthMapRef = useRef<WidthMap>({});
@@ -65,7 +67,7 @@ export default function Table<T extends Record<string, any>>({
     data,
     columns: _columns,
     getRowId: (row) => row[rowKey],
-    initialState: { selectedRowIds: getDefaultSelectMap(initialSelectedRowKeys) },
+    initialState: { selectedRowIds: getDefaultSelectMap(initialSelectedRowKeys || []) },
   }) as TableOptions<T>, useRowSelect, useSticky);
 
   const handleWidthChange = (x: number, columnID: string): void => {
@@ -82,10 +84,15 @@ export default function Table<T extends Record<string, any>>({
   useEffect(() => {
     const _widthMap: WidthMap = {};
     _columns.forEach((col) => {
-      _widthMap[`${col.id || col.accessor}`] = col.width || DEFAULT_WIDTH;
+      const _width = widthMapRef.current[col.id];
+      if (!_width) {
+        _widthMap[col.id] = col.width || DEFAULT_WIDTH;
+      } else {
+        _widthMap[col.id] = _width;
+      }
     });
 
-    setWidthMap(_widthMap);
+    setWidthMap({ ...widthMapRef.current, ..._widthMap });
   }, [_columns]);
 
   useEffect(() => {
@@ -94,28 +101,24 @@ export default function Table<T extends Record<string, any>>({
     }
 
     const selectedRows = selectedFlatRows.map(({ original }) => original);
-    const selectedKeys = selectedRows.map((row) => row[rowKey] as string);
+    const selectedKeys = canAcrossPageChoose ?
+      Object.keys(selectedRowIds) : selectedRows.map((row) => row[rowKey] as string);
     onSelectChange(selectedKeys, selectedRows);
     // todo fix this
   }, [Object.keys(selectedRowIds).length]);
 
   const tableFooterRender = (): JSX.Element | undefined => {
-    if (loading) {
-      return <TableLoading />;
-    }
-
     if (rows.length === 0) {
       return (<div className="qxp-table-empty">{emptyTips}</div>);
     }
   };
 
   if (!headerGroups.length) {
-    // todo render error tips
-    return <TableLoading />;
+    return <div>data error</div>;
   }
 
   return (
-    <div className="qxp-table-wrapper">
+    <div className="qxp-table-wrapper relative">
       <div className={cs('qxp-table', className, `qxp-table-${size}`)} style={style}>
         <table {...getTableProps()}>
           <colgroup id="colgroup">
@@ -180,7 +183,10 @@ export default function Table<T extends Record<string, any>>({
           </tbody>
         </table>
         {tableFooterRender()}
+        {loading && (<div className='qxp-table-loading-box'><PageLoading /></div>)}
       </div>
     </div>
   );
 }
+
+export default Table;

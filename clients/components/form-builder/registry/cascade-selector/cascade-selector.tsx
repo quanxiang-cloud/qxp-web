@@ -76,13 +76,15 @@ function CascadeSelector({
     cascadeProps && cascadeProps.onChange({ label: labelToSave, value: valueToSave });
   }
 
+  const _value = value ? (value.value as string || '').split('/') : undefined;
+
   return (
     <Cascader
       {...omit(cascadeProps, ['options', 'onChange'])}
       displayRender={(labels) => {
         return showFullPath ? labels.join(' / ') : last(labels);
       }}
-      value={(value?.value as string || '').split('/')}
+      value={_value}
       onChange={handleChange}
       options={options}
     />

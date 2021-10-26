@@ -5,8 +5,6 @@ import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
 import { isEmpty } from 'lodash';
 
-import Breadcrumb from '@c/breadcrumb';
-import Icon from '@c/icon';
 import Button from '@c/button';
 import Loading from '@c/loading';
 import toast from '@lib/toast';
@@ -26,7 +24,7 @@ type Props = {
   rowID?: string;
 }
 
-function CreateDataForm({ appID, pageID, rowID, onCancel, title }: Props): JSX.Element {
+function CreateDataForm({ appID, pageID, rowID, onCancel }: Props): JSX.Element {
   const [loading, setLoading] = useState(false);
 
   const {
@@ -62,7 +60,11 @@ function CreateDataForm({ appID, pageID, rowID, onCancel, title }: Props): JSX.E
           pageID,
           rowID,
           buildFormDataReqParams(schema, 'updated', newValue),
-        );
+        ).then((res)=>{
+          if (res.errorCount !== 0) {
+            throw new Error('保存失败，没有权限');
+          }
+        });
       } else {
         await createFormDataRequest(
           appID,
@@ -81,19 +83,6 @@ function CreateDataForm({ appID, pageID, rowID, onCancel, title }: Props): JSX.E
 
   return (
     <div style={{ maxHeight: 'calc(100% - 62px)' }} className='flex flex-col flex-1 px-20 pt-20'>
-      <div className='mb-16'>
-        <Breadcrumb className='flex items-center'>
-          <Breadcrumb.Item>
-            <a>
-              <Icon size={23} name='reply' />
-              <span onClick={onCancel}>{title}</span>
-            </a>
-          </Breadcrumb.Item>
-          <Breadcrumb.Item>
-            {defaultValues ? '编辑申请' : '新建申请'}
-          </Breadcrumb.Item>
-        </Breadcrumb>
-      </div>
       <div className='user-app-schema-form'>
         <FormRenderer
           className='p-40'

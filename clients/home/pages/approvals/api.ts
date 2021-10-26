@@ -175,6 +175,6 @@ export const addComment = async (params: any): Promise<any> => {
 };
 
 // 重新提交
-export const resubmit = async (processInstanceId: string): Promise<any> => {
-  return await httpClient(`/api/v1/flow/instance/resubmit/${processInstanceId}`);
+export const resubmit = async (processInstanceId: string, formData?: Record<string, any>): Promise<any> => {
+  return await httpClient(`/api/v1/flow/instance/resubmit/${processInstanceId}`, { formData });
 };

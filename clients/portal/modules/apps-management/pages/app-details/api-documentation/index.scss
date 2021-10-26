@@ -1,6 +1,6 @@
 .api-doc-details-nav {
   position: relative;
-  background-color: #fff;
+  background-color: var(--gray-50);
   min-width: 236px;
   max-width: 236px;
   border-right: 1px solid var(--gray-300);
@@ -48,12 +48,11 @@
       transform: translateX(-50%);
   }
     .qxp-table-wrapper {
-      margin-top: 16px;
+      .copy-tooltip {
+        padding: 0;
+      }
       .massage_table tr:hover .field-id .copy-tooltip{
         visibility: visible;   
-      }
-      .foreign-key-col {
-        @apply w-32 h-24 bg-gray-100 rounded-tl-4 rounded-br-4 px-8 py-4;
       }
     }
     .api-content {
@@ -63,11 +62,19 @@
         top: 30px;
         right: 30px;
         cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        padding: 5px 8px;
+        color: var(--gray-50);
+        &:hover {
+          color: var(--blue-600);
+        }
       }
     }   
     .api-details {
+      @apply text-12;
       border: 1px solid #F1F5F9;
-      border-radius: 4px;
+      border-radius: 8px;
     }
     .api-content-title {
       font-weight: 600;

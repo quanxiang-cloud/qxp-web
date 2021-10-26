@@ -182,14 +182,20 @@ export const SYSTEM_FIELDS = [
 // 1        1      1     1    x
 export type INVALID_PERMISSION = 4 | 8 | 9;
 export type PERMISSION = 0 | 1 | 3 | 5 | 7 | 11 | INVALID_PERMISSION;
-export type PERMISSION_KEY = keyof PERMISSION_TYPE;
-export type PERMISSION_TYPE = { read: boolean; write: boolean; invisible: boolean; editable: boolean; }
 export const INVISIBLE_NO_READ = 0;
 export const INVISIBLE_NO_WRITE = 5;
 export const INVISIBLE_WITH_WRITE = 7;
 export const READONLY_NO_WRITE = 1;
 export const READONLY_WITH_WRITE = 3;
 export const NORMAL = 11;
+export type PERMISSION_TYPE = {
+  read: boolean;
+  write: boolean;
+  invisible: boolean;
+  editable: boolean;
+  readonly: boolean
+};
+export type PERMISSION_KEY = keyof PERMISSION_TYPE;
 
 export const INVALID_READONLY = 0;
 export const INVALID_INVISIBLE = 4;

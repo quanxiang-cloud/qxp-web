@@ -27,7 +27,7 @@ export default function TimerSelector({
   validating: _validating,
 }: Props): JSX.Element {
   const { validating: __validating } = useObservable<StoreValue>(store);
-  const validating = _validating != null ? _validating : __validating;
+  const validating = _validating !== null ? _validating : __validating;
 
   function onWheel(e: WheelEvent<HTMLInputElement>): void {
     (e.target as HTMLInputElement).blur();

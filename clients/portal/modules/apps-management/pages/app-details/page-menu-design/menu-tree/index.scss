@@ -1,0 +1,41 @@
+.menu-tree {
+  .menu-item {
+    display: flex;
+    justify-content: space-between;
+    user-select: none;
+    &:hover {
+      background-color: #fff;
+      background-size: 100%;
+    }
+    &-indent {
+      padding-left: 32px;
+    }
+    &:hover .menu-item--operate {
+      display: block;
+    }
+  }
+
+  .menu-item--active::after {
+    content: "";
+    width: 4px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-radius: 4px 0 0 4px;
+    background-color: var(--blue-600);
+  }
+
+  .menu-item--drag:active {
+    color: var(--blue-600);
+  }
+
+  .menu-item--title {
+    max-width: 80px;
+    display: inline-block;
+  }
+
+  .menu-item--operate {
+    display: none;
+  }
+}

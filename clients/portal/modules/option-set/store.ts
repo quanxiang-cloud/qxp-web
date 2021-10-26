@@ -19,6 +19,7 @@ class OptionSetStore {
   @observable modalType = 'add';
   @observable queryID = '';
   @observable queryType = 'tree';
+  @observable showNoData = false;
 
   constructor() {
     reaction(() => this.dataList, this.setTreeList);
@@ -52,12 +53,19 @@ class OptionSetStore {
     try {
       const { list } = await apis.getOptionSetNames(params);
       this.optionSetNames = list;
-    } catch (err) {
+    } catch (err: any) {
       toast.error(err.message);
     }
     this.loadingNames = false;
     this.setActive(this.queryID, this.queryType);
+    this.showNoData = true;
   };
+
+  LEVEL = ['[0].children[0].children[0]', '[0].children[0]', '[0]'];
+  getDefaultPrefix = (): string => {
+    const idx = this.LEVEL.findIndex((prefix) => get(this.tree, prefix) !== undefined);
+    return idx === -1 ? '' : this.LEVEL[idx];
+  }
 
   @action
   fetchOptionSet = async (id: string): Promise<void> => {
@@ -68,10 +76,11 @@ class OptionSetStore {
     this.loadingOptionSet = true;
     try {
       this.activeOptionSet = await apis.getOptionSetById(id);
-    } catch (err) {
+    } catch (err: any) {
       toast.error(err.message);
     }
     this.loadingOptionSet = false;
+    this.path = this.getDefaultPrefix();
   }
 
   @action
@@ -327,6 +336,7 @@ class OptionSetStore {
     this.list = [];
     this.modalOpen = false;
     this.path = '';
+    this.showNoData = false;
   }
 }
 

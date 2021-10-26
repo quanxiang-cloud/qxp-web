@@ -23,10 +23,10 @@ export default function GlobalHeader() {
 
   return (
     <>
-      <div className="flex justify-between items-center py-8 px-24 bg-white">
+      <div className="flex justify-between items-center px-24 bg-white shadow-flow-header">
         <HeaderNav />
         <img
-          className="flex-1 h-46"
+          className="flex-1 h-52"
           src="/dist/images/quanxiangyun.svg"
           alt="quanxiangyun"
         />

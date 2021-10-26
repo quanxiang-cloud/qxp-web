@@ -11,10 +11,23 @@ interface Props extends React.DetailedHTMLProps<
   loading?: boolean;
   forbidden?: boolean;
   iconName?: string;
+  iconSize?: number;
+  textClassName?: string;
 }
 
 function Button(
-  { children, iconName, className, modifier, forbidden, loading, type = 'button', ...rest }: Props,
+  {
+    children,
+    iconName,
+    className,
+    modifier,
+    forbidden,
+    loading,
+    iconSize = 20,
+    textClassName,
+    type = 'button',
+    ...rest
+  }: Props,
   ref?: Ref<HTMLButtonElement>,
 ): JSX.Element {
   return (
@@ -31,18 +44,18 @@ function Button(
       })}
       disabled={forbidden}
     >
-      {iconName && (
+      {(iconName || loading) && (
         <Icon
-          name={loading ? 'loading' : iconName}
+          name={loading ? 'refresh' : iconName || 'refresh'}
           type={modifier === 'primary' ? 'light' : 'dark'}
-          size={20}
+          size={iconSize}
           className={cs('fill-current text-inherit mr-8', {
             'animate-spin': loading,
             'pointer-events-none': loading || forbidden,
           })}
         />
       )}
-      {children}
+      <span className={textClassName}>{!loading && children}</span>
     </button>
   );
 }

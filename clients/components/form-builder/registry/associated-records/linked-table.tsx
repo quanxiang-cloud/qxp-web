@@ -15,7 +15,7 @@ type Option = {
 function LinkedTable({ mutators, value }: ISchemaFieldComponentProps): JSX.Element {
   const store = useContext(StoreContext);
   const [linkageTables, setLinkageTables] = useState<Array<Option>>([]);
-  const [tableID, setTableID] = useState<string>(value.tableID);
+  const [tableID, setTableID] = useState<string>(value?.tableID);
 
   useEffect(() => {
     getLinkageTables(store.appID).then((options) => {
@@ -41,7 +41,7 @@ function LinkedTable({ mutators, value }: ISchemaFieldComponentProps): JSX.Eleme
 
   return (
     <Select
-      defaultValue={value.tableID}
+      defaultValue={value?.tableID}
       options={linkageTables}
       onChange={(tableID: string) => {
         setTableID(tableID);

@@ -1,11 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { observer } from 'mobx-react';
+import { toJS } from 'mobx';
 import cs from 'classnames';
-import { Menu } from 'antd';
 import { useHistory } from 'react-router-dom';
 
 import Tab from '@c/no-content-tab';
-import Icon from '@c/icon';
 import Button from '@c/button';
 import Search from '@c/search';
 import { savePer } from './api';
@@ -13,21 +12,20 @@ import toast from '@lib/toast';
 import Loading from '@c/loading';
 import PageLoading from '@c/page-loading';
 import AbsoluteCentered from '@c/absolute-centered';
+import TwoLevelMenu, { NodeItem, pageListToTree } from '@c/two-level-menu';
 
 import store from './store';
 import Authorized from './authorized';
 import DataPermission from './data-permission';
 import FieldPermissions from './field-permissions';
 
-const { SubMenu } = Menu;
-
 function RightsGroups(): JSX.Element {
   const history = useHistory();
   const { rightsList, perFormLoading } = store;
   const [activeTab, setActiveTab] = useState('authorized');
   const [openset, setOpenSet] = useState(false);
-  const fieldRef = useRef<{ getFieldPer:() => any, reset: () => void}>(null);
-  const authorizedRef = useRef<{ getAuthorizedPer:() => number, reset: () => void}>(null);
+  const fieldRef = useRef<{ getFieldPer:() => any, reset: () => void }>(null);
+  const authorizedRef = useRef<{ getAuthorizedPer:() => number, reset: () => void }>(null);
   const dataPerRef = useRef<{ getDataValues:() => Promise<ConditionMap>, reset: () => void }>(null);
 
   useEffect(() => {
@@ -36,8 +34,8 @@ function RightsGroups(): JSX.Element {
     setActiveTab('authorized');
   }, [store.rightsGroupID]);
 
-  const handleClickMenu = async (item: any): Promise<void> => {
-    store.currentPage = store.perFormList.find((page) => page.id === item.key) as PerPageInfo;
+  const handleClickMenu = (node: NodeItem<PageInfo>): void => {
+    store.currentPage = store.perFormList.find((page) => page.id === node.id) as PerPageInfo;
     store.getPageSchema();
     setOpenSet(false);
     setActiveTab('authorized');
@@ -61,14 +59,30 @@ function RightsGroups(): JSX.Element {
     ]);
   }
 
-  const handleSave = (): void=> {
+  const handleSave = (): void => {
     const authority = authorizedRef.current?.getAuthorizedPer() || 0;
+
     if (store.currentPage.menuType === 2) {
       store.updatePerCustom(authority);
       setOpenSet(false);
       return;
     }
+
     dataPerRef.current?.getDataValues().then((conditions) => {
+      if (authority === 0) {
+        store.rightsLoading = true;
+        store.deleteFormPer(store.currentPage.id, store.rightsGroupID).then(() => {
+          store.perData = ({
+            conditions: {},
+            schema: null,
+            authority: 0,
+          });
+          store.rightsLoading = false;
+        });
+        setOpenSet(false);
+        return;
+      }
+
       if (conditions) {
         savePer(store.appID, {
           formID: store.currentPage.id,
@@ -97,75 +111,46 @@ function RightsGroups(): JSX.Element {
     setOpenSet(false);
   };
 
+  const menus = useMemo(() => pageListToTree(toJS(store.menuList)), [store.menuList]);
+
   if (perFormLoading) {
-    return <Loading/>;
+    return <Loading />;
   }
 
   if (rightsList.length) {
     return (
       <div className='h-full flex border border-b-0'>
         <div className='app-nav h-full menu-nav'>
-          <div className='text-14 text-gray-400 m-16'>选择菜单</div>
+          <div className='text-12 text-gray-600 font-semibold m-16'>选择菜单</div>
           <Search
-            className="search-menu mx-16 ml-18"
+            className="mx-8 mb-8"
             placeholder="搜索菜单名称..."
             onChange={store.changeMenuKeyword}
           />
-          {store.currentPage.id && !!store.menuList.length && (
-            <Menu
-              onClick={handleClickMenu}
-              className = 'text-16'
-              defaultSelectedKeys={[store.currentPage.id]}
-              defaultOpenKeys={[store.currentPageGroup?.id || '']}
-              mode="inline"
-            >
-              {store.menuList.map((menu) => {
-                if (menu.menuType === 1) {
-                  return (
-                    <SubMenu key={menu.id} title={menu.name}>
-                      {menu.child && menu.child.map((PageInfo: PageInfo) => (
-                        <Menu.Item key={PageInfo.id}>
-                          <Icon
-                            name={PageInfo.icon || 'event_available'}
-                            className='text-inherit mr-8'
-                            size={20}
-                          />
-                          {PageInfo.name}
-                        </Menu.Item>
-                      ))}
-                    </SubMenu>
-                  );
-                }
-                return (
-                  <Menu.Item key={menu.id} >
-                    <Icon
-                      name={menu.icon || 'event_available'}
-                      className='text-inherit font-inherit mr-8'
-                      size={20}
-                    />
-                    {menu.name}
-                  </Menu.Item>
-                );
-              })}
-            </Menu>
+          { !!store.menuList.length && (
+            <TwoLevelMenu<PageInfo>
+              defaultSelected={store.currentPage.id}
+              menus={menus}
+              onSelect={handleClickMenu}
+            />
           )}
         </div>
-        { !store.menuList.length && (
+        {!store.menuList.length && (
           <div className='app-no-data mt-58'>
             <img src='/dist/images/new_tips.svg' />
             <span>无{store.MenuKeyword}菜单。
             </span>
           </div>
         )}
-        { !!store.menuList.length && (
+        {!!store.menuList.length && (
           <div className='h-full flex-1 overflow-hidden flex flex-col'>
-            <div className='conf-title text-14'>
+            <div className='conf-title text-12'>
               <div className='text-gray-400 font-semibold'>
-              配置权限：<span className='text-gray-900'>{store.currentPage.name}</span>
+                配置权限：<span className='text-gray-900'>{store.currentPage.name}</span>
               </div>
               {store.currentRights.types !== 1 && !store.noSchema && (
                 <div>
-                  { openset ? (
+                  {openset ? (
                     <>
                       <Button onClick={handleCancel} iconName="close" className='mr-16'>取消</Button>
                       <Button onClick={handleSave} modifier='primary' iconName="check">保存配置</Button>
@@ -174,7 +159,9 @@ function RightsGroups(): JSX.Element {
                       onClick={() => setOpenSet(true)}
                       modifier='primary'
                       iconName="settings"
-                      className='mr-16'>
+                      iconSize={16}
+                      textClassName="text-12 leading-20"
+                      className='mr-16 px-16 py-6'>
                       配置权限
                     </Button>)
                   }
@@ -191,13 +178,14 @@ function RightsGroups(): JSX.Element {
               {store.noSchema && (
                 <div className='h-56 p-20'>
                   <AbsoluteCentered>
-                未配置页面，请点击
+                    未配置页面，请点击
                     <span
                       className='text-btn'
                       onClick={() =>
-                        history.push(`/apps/details/${store.appID}/page_setting?pageID=${store.currentPage.id}`)}
+                        history.push(`/apps/details/${store.appID}/page_setting?pageID=${store.currentPage.id}`)
+                      }
                     >
-                    前往配置
+                      前往配置
                     </span>
                   </AbsoluteCentered>
                 </div>
@@ -207,13 +195,15 @@ function RightsGroups(): JSX.Element {
                   <Tab
                     className='mb-16'
                     activeTab={activeTab}
+                    labelClassName="tab-label-item"
                     size='small'
                     onChange={(key: string) => setActiveTab(key)}
                     tabs={tabItem}
                   />
+                  <div className="w-full border-t-1 h-1 -mt-16 mb-16"></div>
                   <Authorized
                     abled={openset}
-                    authorized={store.PerData.authority}
+                    authorized={store.perData.authority}
                     ref={authorizedRef}
                     className={cs({ ['rights-hidden']: activeTab !== 'authorized' })}
                   />
@@ -221,14 +211,14 @@ function RightsGroups(): JSX.Element {
                     <>
                       <FieldPermissions
                         abled={openset}
-                        fieldPer={store.PerData.schema}
+                        fieldPer={store.perData.schema}
                         ref={fieldRef}
                         className={cs({ ['rights-hidden']: activeTab !== 'fieldPermissions' })}
                         fields={store.Fields}
                       />
                       <DataPermission
                         abled={openset}
-                        dataPer={store.PerData.conditions}
+                        dataPer={store.perData.conditions}
                         ref={dataPerRef}
                         className={cs({ ['rights-hidden']: activeTab !== 'dataPermission' })}
                         fields={store.Fields}

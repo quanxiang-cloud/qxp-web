@@ -44,7 +44,7 @@ export default function RoleManagement(): JSX.Element | null {
       title="角色管理"
       itemTitleClassName="text-h5"
       desc="可以定义平台内的账号拥有的权限。"
-      action={<a className="ease-linear text-underline">📌 如何管理角色？</a>}
+      // action={<a className="ease-linear text-underline">📌 如何管理角色？</a>}
       contentClassName={contentHeight}
       descClassName="text-caption"
     >
@@ -53,7 +53,7 @@ export default function RoleManagement(): JSX.Element | null {
           <RoleList items={roleList} onChange={setRoleId} />
         </div>
         <div className="h-full flex-grow p-20 pb-0">
-          <RoleDetail role={roleList.find(({ id }) => id == roleId)} />
+          <RoleDetail role={roleList.find(({ id }) => id === roleId)} />
         </div>
       </div>
     </Card>

@@ -14,6 +14,7 @@ type Props = {
 
 function EditGroupModal({ groupInfo, onCancel, onSubmit }: Props): JSX.Element {
   const ref: any = useRef();
+
   const handleSubmit = (): void => {
     const formRef = ref.current;
     if (formRef.validateFields()) {

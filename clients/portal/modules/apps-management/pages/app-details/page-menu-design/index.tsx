@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { toJS } from 'mobx';
-import { TreeItem } from '@atlaskit/tree';
+import React, { useEffect } from 'react';
 import { useParams, useHistory, useLocation } from 'react-router-dom';
 import { observer } from 'mobx-react';
+import { toJS } from 'mobx';
 import { Tooltip } from '@QCFE/lego-ui';
 
 import PageLoading from '@c/page-loading';
@@ -12,33 +11,33 @@ import { getQuery } from '@lib/utils';
 import DelModal from './del-modal';
 import appPagesStore from '../store';
 import PageDetails from './page-details';
-import AppPagesTree from './app-pages-tree';
 import AddGroupPoper from './add-group-poper';
 import EditPageModal from './edit-page-modal';
 import EditGroupModal from './edit-group-modal';
 import HidePageConfirmModal from './hide-modal';
+import MenuTree from './menu-tree/menu-tree';
 
 import './index.scss';
 
 function PageList(): JSX.Element {
   const history = useHistory();
   const { pathname } = useLocation();
-  const [curEditNode, setCurEditNode] = useState<null | TreeItem>(null);
+
   const { appID } = useParams<{ appID: string }>();
   const { pageID } = getQuery<{ pageID: string }>();
   const {
-    curPage,
     editPage,
     setPageID,
     modalType,
     editGroup,
     setModalType,
-    pagesTreeData,
     fetchPageList,
-    deletePageOrGroup,
     updatePageHideStatus,
     pageListLoading,
-    updatePagesTree,
+    activeMenu,
+    pageInitList,
+    setActiveMenu,
+    del,
   } = appPagesStore;
 
   useEffect(() => {
@@ -49,45 +48,37 @@ function PageList(): JSX.Element {
     setPageID(pageID);
   }, [pageID]);
 
-  const handleSelectPage = (treeItem: TreeItem): void => {
-    if (treeItem?.data) {
-      history.push(`/apps/details/${appID}/page_setting?pageID=${treeItem.data.id}`);
-      setCurEditNode(treeItem);
-    }
-  };
-
   async function delPageOrGroup(): Promise<void> {
-    if (!curEditNode) {
-      return;
-    }
-
-    await deletePageOrGroup({ treeItem: curEditNode, type: modalType, history, pathname });
+    await del(toJS(activeMenu), modalType, pathname, history);
     closeModal();
   }
 
   function handleEditPage(pageInfo: PageInfo): void {
-    editPage(pageInfo).then(() => {
-      closeModal();
-    });
+    editPage(pageInfo).then(closeModal);
   }
 
-  function handleVisibleHiddenPage(pageInfo: PageInfo): void {
-    updatePageHideStatus(appID, pageInfo).then(() => {
-      closeModal();
-    });
+  function handleVisibleHiddenPage(): void {
+    updatePageHideStatus(appID, activeMenu).then(closeModal);
   }
 
   const handleEditGroup = (groupInfo: PageInfo): Promise<void> => {
+    if (!groupInfo.icon) {
+      groupInfo.icon = 'folder_empty';
+    }
     return editGroup(groupInfo);
   };
 
   const closeModal = (): void => {
     setModalType('');
-    setCurEditNode(null);
   };
 
-  const handleMenuClick = (key: string, treeItem: TreeItem): void => {
-    setCurEditNode(treeItem);
+  useEffect(() => {
+    if (activeMenu.menuType === 1) return;
+    history.push(`/apps/details/${appID}/page_setting?pageID=${activeMenu.id}`);
+  }, [activeMenu]);
+
+  const handleMenuClick = (key: string, menu: Menu): void => {
+    setActiveMenu(menu);
     setModalType(key);
   };
 
@@ -97,63 +88,65 @@ function PageList(): JSX.Element {
 
   return (
     <div className="flex h-full">
-      <div className='app-details-nav rounded-tl-12'>
-        <div className='flex flex-end px-16 py-20 justify-center'>
+      <div className='app-details-nav rounded-tl-8 bg-gray-50'>
+        <div className='h-44 flex flex-end items-center px-16 py-20 justify-center'>
           <span className='text-h6-bold text-gray-400 mr-auto'>菜单</span>
-          <Tooltip content='添加分组'>
+          <div onClick={() => setModalType('createPage')}>
+            <Tooltip content='新建菜单'>
+              <Icon className='app-page-add-group mr-8' size={16} name='post_add' />
+            </Tooltip>
+          </div>
+          <Tooltip content='新建分组'>
             <AddGroupPoper
               onSubmit={handleEditGroup}
             />
           </Tooltip>
         </div>
         <div className='app-page-tree-wrapper'>
-          <div
-            className="cursor-pointer h-40 flex items-center px-18 group hover:bg-gray-100"
-            onClick={() => setModalType('createPage')}
-          >
-            <Icon className='app-page-add-group mr-4' size={20} name='add'/>
-            新建菜单
-          </div>
-          <AppPagesTree
-            tree={toJS(pagesTreeData)}
-            onMenuClick={handleMenuClick}
-            selectedPage={curPage}
-            onSelectPage={handleSelectPage}
-            onChange={updatePagesTree}
+          <MenuTree
+            menus={toJS(pageInitList).sort((a, b) => (a?.sort || 0) - (b?.sort || 0))}
+            handleMenuClick={handleMenuClick}
           />
         </div>
       </div>
       <PageDetails pageID={pageID} />
-      {['delPage', 'delGroup'].includes(modalType) && (
-        <DelModal
-          type={modalType === 'delGroup' ? 'group' : 'page'}
-          onOk={delPageOrGroup}
-          onCancel={closeModal}
-        />
-      )}
-      {modalType === 'editGroup' && (
-        <EditGroupModal
-          groupInfo={curEditNode?.data as PageInfo}
-          onCancel={closeModal}
-          onSubmit={handleEditGroup}
-        />
-      )}
-      {['editPage', 'createPage', 'copyPage'].includes(modalType) && (
-        <EditPageModal
-          appID={appID}
-          pageInfo={modalType === 'createPage' ? undefined : curPage}
-          onCancel={closeModal}
-          onSubmit={handleEditPage}
-        />
-      )}
-      {modalType === 'hide' && (
-        <HidePageConfirmModal
-          pageInfo={curPage}
-          onCancel={closeModal}
-          onOk={() => handleVisibleHiddenPage(curPage)}
-        />
-      )}
-    </div>
+      {
+        ['delPage', 'delGroup'].includes(modalType) && (
+          <DelModal
+            type={modalType === 'delGroup' ? 'group' : 'page'}
+            onOk={delPageOrGroup}
+            onCancel={closeModal}
+          />
+        )
+      }
+      {
+        modalType === 'editGroup' && (
+          <EditGroupModal
+            groupInfo={activeMenu as any}
+            onCancel={closeModal}
+            onSubmit={handleEditGroup}
+          />
+        )
+      }
+      {
+        ['editPage', 'createPage', 'copyPage'].includes(modalType) && (
+          <EditPageModal
+            appID={appID}
+            pageInfo={modalType === 'createPage' ? undefined : activeMenu as any}
+            onCancel={closeModal}
+            onSubmit={handleEditPage}
+          />
+        )
+      }
+      {
+        modalType === 'hide' && (
+          <HidePageConfirmModal
+            onCancel={closeModal}
+            onOk={handleVisibleHiddenPage}
+          />
+        )
+      }
+    </div >
   );
 }
 

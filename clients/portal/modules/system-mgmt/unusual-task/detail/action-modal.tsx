@@ -75,7 +75,7 @@ function ActionModal({ closeModal, action }: Props): JSX.Element {
             className="mb-24"
             receivers={chosenEmployees}
             onRemove={(id) => {
-              setChosenEmployees((current) => current.filter((item: { id: string }) => item.id != id));
+              setChosenEmployees((current) => current.filter((item: { id: string }) => item.id !== id));
             }} />
           <TextArea
             rows={4}

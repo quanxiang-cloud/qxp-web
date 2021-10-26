@@ -48,7 +48,7 @@ function TodoApprovals(): JSX.Element {
         history.go(0);
       }
       setOpenReadFlow(false);
-    } catch (err) {
+    } catch (err: any) {
       toast.error(`操作失败: ${err.message}`);
     }
   };
