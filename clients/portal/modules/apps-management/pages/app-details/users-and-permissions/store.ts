@@ -139,9 +139,9 @@ class UserAndPerStore {
       name: rights.name,
       description: rights.description,
     }).then((res: {id: string}) => {
-      this.currentRights = { ...this.currentRights, ...rights, ...res };
+      this.currentRights = { ...this.currentRights, ...rights, ...res, scopes: [] };
       this.updateUserAndPerStore();
-      toast.success('修改成功！');
+      toast.success('复制成功！');
     });
   }
 
