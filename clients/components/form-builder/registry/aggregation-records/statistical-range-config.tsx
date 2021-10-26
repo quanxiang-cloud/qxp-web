@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react';
 
 import FilterConfig from '@c/form-builder/registry/associated-data/filter-config';
 import schemaToFields, { schemaToMap } from '@lib/schema-convert';
-import logger from '@lib/logger';
 import { StoreContext } from '@c/form-builder/context';
 
 type Props = {
@@ -22,18 +21,16 @@ function StatisticalRangeConfig(props: Props): JSX.Element {
       return;
     }
 
-    const schemaMap = schemaToMap(schema)[sourceFieldId];
+    const schemaField = schemaToMap(schema)[sourceFieldId];
     setCustomSchemaFields(undefined);
-    switch (schemaMap['x-component']) {
+    switch (schemaField?.['x-component']) {
     case 'AssociatedRecords':
       if (appID && tableID) {
         setFormInfo({ appID, tableID });
-      } else {
-        logger.error('The information is not complete');
       }
       break;
     case 'SubTable':
-      setCustomSchemaFields(schemaToFields(schemaMap.items as ISchema));
+      setCustomSchemaFields(schemaToFields(schemaField.items as ISchema));
       break;
     }
 
