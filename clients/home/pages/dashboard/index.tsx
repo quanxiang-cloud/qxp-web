@@ -108,7 +108,7 @@ function Dashboard(): JSX.Element {
         </div>
         <div>
           <Card
-            className="p-20 mt-16"
+            className="applist-card p-20 mt-16"
             headerClassName="ml-8 pt-0"
             title={(
               <>
@@ -117,7 +117,7 @@ function Dashboard(): JSX.Element {
               </>
             )}
             itemTitleClassName="text-h6"
-            contentClassName="grid grid-cols-4 gap-16"
+            contentClassName="app-list grid gap-16"
             content={(<>
               {store.appList.map((appInfo: AppInfo) => (
                 <AppInfoView
