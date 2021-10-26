@@ -15,7 +15,7 @@ import TextHeader from '@c/text-header';
 import { copyContent } from '@lib/utils';
 
 import store from './store';
-import 'highlight.js/styles/stackoverflow-light.css';
+import 'highlight.js/styles/atelier-sulphurpool-dark.css';
 
 const DOC_TYPE_LIST = [
   { label: 'cURL', value: 'curl' },
@@ -117,7 +117,7 @@ function renderApiDetails(): JSX.Element {
             <Icon
               name="content_copy"
               size={20}
-              className='text-inherit m-10'
+              className='text-inherit'
               onClick={() => copyContent(store.APiContent.input)}
             />
           </Tooltip>
@@ -168,8 +168,13 @@ function ApiDocumentDetails(): JSX.Element {
       content: renderApiDetails(),
     },
     {
+      id: 'get',
+      name: '查询单条',
+      content: renderApiDetails(),
+    },
+    {
       id: 'search',
-      name: '查询',
+      name: '查询多条',
       content: renderApiDetails(),
     },
   ];
