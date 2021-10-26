@@ -124,7 +124,7 @@ export default function CustomFieldTable({
   function getCell(model: any, key?: PERMISSION_KEY): JSX.Element {
     const isChecked = model.cell.value;
     const fieldId = model.cell.row.id;
-    const origPath = model.cell.row.original.path;
+    const origPath = get(model.cell.row, 'original.path', '');
     const disabledComps = ['serial', 'aggregationrecords'];
     const handleClickCheckbox = useCallback(() => {
       updateFields(model.data.map((dt: CustomFieldPermission) => {
@@ -192,12 +192,12 @@ export default function CustomFieldTable({
 
     if (['readonly', 'invisible', 'editable'].includes(key)) {
       let shouldDisable = false;
-      const [id, subId] = origPath.split('.');
-      const compName = schemaMap[id]?.componentName;
+      const [, subId] = origPath.split('.');
+      const compName = schemaMap[fieldId]?.componentName;
       if (!subId) {
         shouldDisable = disabledComps.includes(compName);
       } else if (compName === 'subtable') {
-        const subCompName = get(schemaMap, `${id}.items.properties.${subId}.x-component`, '');
+        const subCompName = get(schemaMap, `${fieldId}.items.properties.${subId}.x-component`, '');
         shouldDisable = disabledComps.includes(String(subCompName).toLocaleLowerCase());
       }
       return (
