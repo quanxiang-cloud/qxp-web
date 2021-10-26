@@ -341,6 +341,9 @@ export function calculateFieldPermission(
   }, 0b0000) as PERMISSION;
   const availablePermisssions = [0, 1, 3, 5, 7, 11];
   !isFromWorkFlow && availablePermisssions.push(...[4, 8, 9]);
+  if (permission === INVALID_INVISIBLE && isFromWorkFlow) {
+    return INVISIBLE_NO_READ;
+  }
   if (!availablePermisssions.includes(permission)) {
     toast.error(`权限配置错误 ${permission}`);
     throw new Error(`${permission}`);
