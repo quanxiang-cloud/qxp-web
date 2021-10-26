@@ -83,8 +83,12 @@ function MenuItem({ menu, handleMenuClick }: Props): JSX.Element {
 
   function handleClick(e: React.MouseEvent<HTMLDivElement, MouseEvent>, menu: Menu): void {
     e.stopPropagation();
-    setActiveMenu(menu);
-    update(collapse(menu, pageInitList));
+
+    if (menu?.child) {
+      update(collapse(menu, pageInitList));
+    } else {
+      setActiveMenu(menu);
+    }
   }
 
   const style: React.CSSProperties = {
@@ -100,16 +104,20 @@ function MenuItem({ menu, handleMenuClick }: Props): JSX.Element {
       .filter((item: Menu) => (menu.child?.length && (!has(item, 'open') || item.open))) ?? [];
   }
 
+  const isActive = activeMenu.id === menu.id && !menu.child?.length;
+
   return (
     <li
       key={menu?.id}
       data-id={menu?.id}
       style={style}
+      className={cs({ 'bg-white': isActive })}
     >
       <div
         draggable
-        className={cs('h-36 menu-item px-18 hover:bg-white hover:text-gray-900', {
-          'bg-white': activeMenu.id === menu.id,
+        className={cs('h-36 menu-item', {
+          'menu-item--active': isActive,
+          'menu-item-indent': menu?.groupID,
         })}
         onClick={(e) => handleClick(e, menu)}
         onDragStart={(e) => handleDragStart(e, menu)}
@@ -117,18 +125,18 @@ function MenuItem({ menu, handleMenuClick }: Props): JSX.Element {
         onDragEnd={(e) => handleDragEnd(e)}
       >
         <MenuLabel menu={menu} activeMenu={activeMenu} />
-        <MenuOp menu={menu} handleMenuClick={handleMenuClick} />
-        {activeMenu.id === menu.id && (
-          <div className='menu-item-block' />
-        )}
-      </div>
-      {!isEmpty(menu?.child) &&
+        <span className={`${menu.id === activeMenu.id ? 'block' : 'menu-item--operate'}`}>
+          <MenuOp menu={menu} handleMenuClick={handleMenuClick} />
+        </span>
+      </div >
+      {
+        !isEmpty(menu?.child) &&
         (<MenuTree
           handleMenuClick={handleMenuClick}
           menus={getMenuList(toJS(menu?.child) as Menu[])}
         />)
       }
-    </li>
+    </li >
   );
 }
 

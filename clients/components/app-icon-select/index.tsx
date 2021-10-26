@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react';
 import cs from 'classnames';
-import { Control } from '@QCFE/lego-ui';
 
 import Icon from '@c/icon';
 import Popper from '@c/popper';
@@ -99,7 +98,7 @@ function IconSelect({
   value,
   options,
   placeholder = '请选择',
-}: Props, ref?: React.LegacyRef<Control>): JSX.Element {
+}: Props): JSX.Element {
   const [isVisible, setIsVisible] = useState(false);
   const [iconName, setIconName] = useState(value);
   const popperRef = useRef<any>();
@@ -136,7 +135,7 @@ function IconSelect({
   };
 
   return (
-    <Control ref={ref}>
+    <>
       <div ref={reference} className='app-bg-icon-select'>
         <div>{iconName ? <Icon name={iconName} size={24} /> : placeholder}</div>
         <Icon size={20} name={isVisible ? 'expand_less' : 'expand_more'} />
@@ -150,8 +149,8 @@ function IconSelect({
       >
         {renderOptions()}
       </Popper>
-    </Control>
+    </>
   );
 }
 
-export default React.forwardRef(IconSelect);
+export default IconSelect;

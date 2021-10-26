@@ -1,33 +1,41 @@
 .menu-tree {
   .menu-item {
-    cursor: grab;
     display: flex;
     justify-content: space-between;
     user-select: none;
-
-    &-block {
-      content: "";
-      width: 4px;
-      height: 100%;
-      position: absolute;
-      top: 0;
-      right: 0;
-      border-radius: 4px 0 0 4px;
-      background-color: var(--blue-600);
+    &:hover {
+      background-color: #fff;
+      background-size: 100%;
+    }
+    &-indent {
+      padding-left: 32px;
+    }
+    &:hover .menu-item--operate {
+      display: block;
     }
   }
-  .item-title {
+
+  .menu-item--active::after {
+    content: "";
+    width: 4px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-radius: 4px 0 0 4px;
+    background-color: var(--blue-600);
+  }
+
+  .menu-item--drag:active {
+    color: var(--blue-600);
+  }
+
+  .menu-item--title {
     max-width: 80px;
     display: inline-block;
   }
-  ul {
-    padding-left: 10px;
-  }
-}
 
-.none {
-  position: fixed;
-  z-index: 9;
-  left: -1000px;
-  pointer-events: none;
+  .menu-item--operate {
+    display: none;
+  }
 }

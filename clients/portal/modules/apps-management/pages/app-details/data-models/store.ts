@@ -143,7 +143,7 @@ class AppModelStore {
         `${this.appID}_${basicInfo.tableID}`,
         basicInfo.title,
         basicInfo.description || '',
-      ).then(() =>{
+      ).then(() => {
         toast.success('复制成功');
         this.setParams({});
         this.curModelTableID = `${this.appID}_${basicInfo.tableID}`;

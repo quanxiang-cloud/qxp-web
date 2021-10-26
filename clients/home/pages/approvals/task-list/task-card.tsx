@@ -62,6 +62,13 @@ export default function TaskCard({ task, type }: Props): JSX.Element {
   } = task;
   const taskCardData = (multiTask ? formData : flowInstanceEntity?.formData) || {};
   const properties = (multiTask ? formSchema?.properties : flowInstanceEntity?.formSchema?.properties) || {};
+  Object.entries(properties).map(([fieldName, fieldValue]) => {
+    if (fieldValue?.properties) {
+      Object.entries(fieldValue?.properties).map(([layoutFieldName, layoutFieldValue]) => {
+        properties[layoutFieldName] = layoutFieldValue;
+      });
+    }
+  });
   const taskKeyFields = (multiTask ? keyFields : flowInstanceEntity?.keyFields) || [];
   const filterTaskKeyFields = taskKeyFields.filter(
     (keyField) => keyField in properties,

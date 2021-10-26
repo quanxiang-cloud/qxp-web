@@ -9,7 +9,7 @@ export interface AssociatedRecordsConfig {
     tableID: string;
     tableName: string;
     associatedTable?: ISchema;
-  };
+  } | undefined;
   multiple: boolean;
   enableFilter: boolean;
   filter?: {
@@ -26,12 +26,7 @@ export const defaultConfig: AssociatedRecordsConfig = {
   title: '关联记录',
   description: '',
   displayModifier: 'normal',
-  linkedTable: {
-    appID: '',
-    tableID: '',
-    tableName: '',
-    associatedTable: undefined,
-  },
+  linkedTable: undefined,
   multiple: false,
   enableFilter: false,
   filter: undefined,
@@ -56,7 +51,7 @@ export function toSchema(value: AssociatedRecordsConfig): ISchema {
       tableName: value?.linkedTable?.tableName,
       multiple: !!value.multiple,
       columns: value.columns || [],
-      associatedTable: value.linkedTable.associatedTable,
+      associatedTable: value.linkedTable?.associatedTable,
       filterConfig: value.filterConfig || null,
     },
     ['x-internal']: {

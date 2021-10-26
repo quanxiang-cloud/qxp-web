@@ -48,11 +48,6 @@ export function setFixedParameters(
   fixedRule: string | undefined,
   tableColumns: UnionColumns<Record<string, any>>[],
 ): UnionColumns<any>[] {
-  const actionIndex = tableColumns.findIndex(({ id }) => id === 'action');
-  if (actionIndex > -1) {
-    addFixedParameters([actionIndex], tableColumns);
-  }
-
   switch (fixedRule) {
   case 'one':
     addFixedParameters([0], tableColumns);
@@ -79,7 +74,6 @@ export function columnStringToObject(pageTableColumns: string[] | TableColumnCon
 export function getPageDataSchema(
   config: Config,
   schema: ISchema,
-  customColumns: UnionColumns<any>[],
 ): {
   tableColumns: UnionColumns<any>[];
   pageTableShowRule: TableConfig;
@@ -105,7 +99,7 @@ export function getPageDataSchema(
   });
 
   return {
-    tableColumns: setFixedParameters(pageTableShowRule.fixedRule, [...tableColumns, ...customColumns]),
+    tableColumns: setFixedParameters(pageTableShowRule.fixedRule, tableColumns),
     pageTableShowRule,
   };
 }

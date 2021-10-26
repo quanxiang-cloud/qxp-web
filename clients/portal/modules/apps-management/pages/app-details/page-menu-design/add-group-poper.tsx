@@ -25,7 +25,7 @@ function AddGroupPoper({ onCancel, onSubmit }: Props, ref: React.Ref<HTMLDivElem
 
   const validateRepeat = (value: string) => {
     return store.pageInitList.findIndex((pageInfo: PageInfo) => {
-      if (pageInfo.menuType === 1 ) {
+      if (pageInfo.menuType === 1) {
         return pageInfo.name === value;
       }
     }) === -1;
@@ -61,13 +61,14 @@ function AddGroupPoper({ onCancel, onSubmit }: Props, ref: React.Ref<HTMLDivElem
           </div>)
         }
         onOk={handleSubmit}
-        onCancel={()=> {
+        onCancel={() => {
           onCancel && onCancel();
         }}
       >
         <Icon
           name="icon_folder"
-          className='app-page-add-group block'
+          size={16}
+          className='app-page-add-group '
         />
       </PopConfirm>
     </div>

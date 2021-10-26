@@ -2,7 +2,7 @@ import React from 'react';
 import cs from 'classnames';
 import { isArray } from 'lodash';
 import { FormItem, IForm, IMutators } from '@formily/antd';
-import { set, lensPath } from 'ramda';
+import { set, lensPath, omit } from 'ramda';
 
 import Icon from '@c/icon';
 
@@ -92,7 +92,11 @@ export default function SubTableRow({
             }
             prs['x-internal'] = { ...prs['x-internal'], fieldPath: path };
             Object.assign(schema, { fieldPath: path });
-            const sc = set(lensPath(['x-internal', 'fieldPath']), path, JSON.parse(JSON.stringify(schema)));
+            const sc = set(
+              lensPath(['x-internal', 'fieldPath']),
+              path,
+              JSON.parse(JSON.stringify(omit(['parent'], schema))),
+            );
 
             return (
               <div

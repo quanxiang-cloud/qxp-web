@@ -26,6 +26,7 @@ export default function SelectAssociationModal({
   const customColumns = [
     {
       id: 'action',
+      fixed: true,
       Headers: '操作',
       accessor: (rowData: any) => {
         return (

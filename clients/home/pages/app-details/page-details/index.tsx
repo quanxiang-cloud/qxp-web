@@ -69,6 +69,7 @@ function PageDetails(): JSX.Element | null {
   const customColumns = [{
     id: 'action',
     Header: '操作',
+    fixed: true,
     accessor: (rowData: any) => {
       return (
         <div>
@@ -151,7 +152,7 @@ function PageDetails(): JSX.Element | null {
   return (
     <div className='flex-1 overflow-auto'>
       <Header onCancel={() => handleCancel(true)}/>
-      <div style={{ height: 'calc(100vh - 52px)' }} className='relative h-full flex-1 overflow-hidden'>
+      <div className='main-content relative flex-1 overflow-hidden'>
         {renderPageBody()}
         {modalType === 'dataForm' && (
           <CreateDataForm

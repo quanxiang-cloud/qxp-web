@@ -83,7 +83,13 @@ const MenuOp = (props: Props): JSX.Element => {
 
   return (
     <span className='flex-shrink-0'>
-      <Icon changeable clickable className='mr-16 cursor-grab' name='drag_indicator' />
+      <Icon
+        changeable
+        clickable
+        className='mr-10 cursor-grab menu-item--drag'
+        size={16}
+        name='drag_indicator'
+      />
       <MoreMenu
         menus={getMenu(menu)}
         placement="bottom-end"
@@ -96,6 +102,7 @@ const MenuOp = (props: Props): JSX.Element => {
         <Icon
           changeable
           clickable
+          size={16}
           name='more_horiz'
         />
       </MoreMenu>

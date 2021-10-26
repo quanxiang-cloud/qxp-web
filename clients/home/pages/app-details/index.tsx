@@ -29,7 +29,7 @@ function AppDetails(): JSX.Element {
   }
 
   return (
-    <div className='h-screen flex' onMouseMove={handleShowPageNav}>
+    <div className='main-content-without-header flex' onMouseMove={handleShowPageNav}>
       <PageNav />
       <PageDetails />
     </div>

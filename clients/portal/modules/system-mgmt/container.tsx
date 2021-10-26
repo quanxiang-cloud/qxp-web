@@ -45,7 +45,7 @@ const Container = ({
 
   return (
     <div
-      className={cs('app-entry-container', className)}
+      className={cs('app-entry-container main-content', className)}
       style={style}
     >
       {!hideInfoCard && <InfoCard/>}

@@ -8,6 +8,7 @@ import Table from '@c/table';
 import Button from '@c/button';
 import Search from '@c/search';
 import EmptyTips from '@c/empty-tips';
+import PageLoading from '@c/page-loading';
 
 import store from '../store';
 import { FIELD_COLUMNS } from '../../utils';
@@ -85,34 +86,35 @@ function ModelFields(): JSX.Element {
         />
       </div>
       <div className="flex-1 text-14 flex flex-col overflow-auto">
-        <div className="flex-1 overflow-auto model-field-table">
-          <Table
-            rowKey="id"
-            data={fields}
-            columns={COLUMNS}
-            emptyTips={(
-              <EmptyTips
-                className="pt-40 m-auto"
-                text={(
-                  <>
-                    暂无数据，开始
-                    <span
-                      onClick={() => {
-                        if (curDataModel?.source === 2) {
-                          setCurModelField(undefined);
-                          setFieldModalType('create');
-                        }
-                      }}
-                      className="text-blue-600 cursor-pointer ml-4"
-                    >
-                      添加字段
-                    </span>
-                  </>
-                )}
-              />
-            )}
-            loading={false}
-          />
+        <div className="flex-1 overflow-auto model-field-table relative">
+          {store.modelDetailsLoading ? <PageLoading /> : (
+            <Table
+              rowKey="id"
+              data={fields}
+              columns={COLUMNS}
+              emptyTips={(
+                <EmptyTips
+                  className="pt-40 m-auto"
+                  text={(
+                    <>
+                      暂无数据，开始
+                      <span
+                        onClick={() => {
+                          if (curDataModel?.source === 2) {
+                            setCurModelField(undefined);
+                            setFieldModalType('create');
+                          }
+                        }}
+                        className="text-blue-600 cursor-pointer ml-4"
+                      >
+                        添加字段
+                      </span>
+                    </>
+                  )}
+                />
+              )}
+            />
+          )}
         </div>
         <div className="data-model-count">{`共 ${fields.length || 0} 条数据`}</div>
       </div>

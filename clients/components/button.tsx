@@ -55,7 +55,7 @@ function Button(
           })}
         />
       )}
-      <div className={textClassName}>{!loading && children}</div>
+      <span className={textClassName}>{!loading && children}</span>
     </button>
   );
 }
