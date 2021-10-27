@@ -94,7 +94,7 @@ const schema: ISchema = {
           },
           'x-index': 5,
         },
-        initialValue: {
+        startingValue: {
           type: 'number',
           title: '编号起始值',
           default: 1,

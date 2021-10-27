@@ -16,11 +16,12 @@ export type Props = DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTM
   label?: string;
   value: string | number | boolean;
   error?: boolean;
+  disabled?: boolean;
 };
 
 function InternalRadio(props: Props, ref?: Ref<HTMLInputElement>): JSX.Element {
   const {
-    defaultChecked, error, className, onChange, label, checked: isChecked, ...inputProps
+    defaultChecked, error, className, onChange, label, checked: isChecked, disabled, ...inputProps
   } = props;
   const [checked, setChecked] = useState(defaultChecked);
   const id = uuid();
@@ -34,6 +35,9 @@ function InternalRadio(props: Props, ref?: Ref<HTMLInputElement>): JSX.Element {
   }, [defaultChecked]);
 
   function handleChange(checked: boolean): void {
+    if (disabled) {
+      return;
+    }
     setChecked(checked);
     onChange && onChange(props.value);
   }
@@ -47,7 +51,8 @@ function InternalRadio(props: Props, ref?: Ref<HTMLInputElement>): JSX.Element {
             'bg-blue-600': checked,
             'border-red-600': error,
             'border-gray-400': !error,
-          }, 'cursor-pointer')}
+            'bg-gray-200': disabled,
+          }, disabled ? 'cursor-not-allowed' : 'cursor-pointer')}
         style={{ borderRadius: '50%' }}
         onClick={() => handleChange(true)}
       >
@@ -58,6 +63,7 @@ function InternalRadio(props: Props, ref?: Ref<HTMLInputElement>): JSX.Element {
           type="radio"
           id={id}
           className="hidden"
+          disabled={disabled}
           onChange={(e: ChangeEvent<HTMLInputElement>) => {
             const { checked } = e.target;
             handleChange(checked);

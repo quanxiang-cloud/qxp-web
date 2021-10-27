@@ -168,6 +168,12 @@ function WorkFlowTable({ type, searchInput }: Props): JSX.Element {
     }
   }, [state.currentEditWorkFlow]);
 
+  useEffect(() => {
+    if (state.currentDeleteWorkFlow?.status === 'ENABLE') {
+      toast.error('已发布的流程不能删除，需要先下架后再删除');
+    }
+  }, [state.currentDeleteWorkFlow]);
+
   function onRowActionChange(key: 'edit' | 'delete', row: Flow): void {
     const actionMap = {
       edit: 'currentEditWorkFlow',
@@ -187,7 +193,7 @@ function WorkFlowTable({ type, searchInput }: Props): JSX.Element {
     }) || [];
   }
 
-  function EmptyTipsRender() {
+  function EmptyTipsRender(): JSX.Element {
     return (
       <div className='app-no-data mt-96 text-12'>
         <img
@@ -238,7 +244,7 @@ function WorkFlowTable({ type, searchInput }: Props): JSX.Element {
           onChange={(current, pageSize) => setPagination({ current, pageSize })}
         />
       )}
-      {!!state.currentDeleteWorkFlow && (
+      {!!state.currentDeleteWorkFlow && state.currentDeleteWorkFlow.status === 'DISABLE' && (
         <Modal
           title="删除工作流"
           onClose={() => {

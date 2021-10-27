@@ -141,20 +141,20 @@ export const getValidateMessageMap = <T>(schema: ISchema, configValue: T): Recor
 
 type ValidateRegistryElement<T> = (configSchema: ISchema, configValue?: T) => boolean
 export const validateRegistryElement: Curry<ValidateRegistryElement<unknown>> = curry(
- <T>(configSchema: ISchema, configValue: T) => {
-   const messageMap = getValidateMessageMap<T>(configSchema, configValue);
-   const validator = pipe(
-     entries,
-     map(([fieldName, message]: [string, string]) => {
-       const isValid = configValue[fieldName as keyof typeof configValue];
-       !isValid && toast.error(message);
-       return isValid;
-     }),
-     every(Boolean),
-   );
+  <T>(configSchema: ISchema, configValue: T) => {
+    const messageMap = getValidateMessageMap<T>(configSchema, configValue);
+    const validator = pipe(
+      entries,
+      map(([fieldName, message]: [string, string]) => {
+        const isValid = configValue[fieldName as keyof typeof configValue];
+        !isValid && toast.error(message);
+        return isValid;
+      }),
+      every(Boolean),
+    );
 
-   return validator(messageMap);
- },
+    return validator(messageMap);
+  },
 );
 
 type PermissionToOverwrite = { display?: boolean; readOnly?: boolean };
@@ -341,6 +341,9 @@ export function calculateFieldPermission(
   }, 0b0000) as PERMISSION;
   const availablePermisssions = [0, 1, 3, 5, 7, 11];
   !isFromWorkFlow && availablePermisssions.push(...[4, 8, 9]);
+  if (permission === INVALID_INVISIBLE && isFromWorkFlow) {
+    return INVISIBLE_NO_READ;
+  }
   if (!availablePermisssions.includes(permission)) {
     toast.error(`权限配置错误 ${permission}`);
     throw new Error(`${permission}`);
@@ -383,8 +386,11 @@ export function updateFieldIndex(fields: FormItem[]): FormItem[] {
   });
 }
 
-export function convertMultipleSelectDefaults(Enum: Array<Record<string, string | boolean>>): string[] {
-  return Enum.filter(({ isDefault }) => isDefault).map(({ label }) => label as string);
+export function convertMultipleSelectDefaults(Enum: Array<Record<string, string | boolean>>): string[] | void {
+  const defaults = Enum.filter(({ isDefault }) => isDefault);
+  if (defaults.length) {
+    return defaults.map(({ label }) => label as string);
+  }
 }
 
 export function convertSingleSelectDefault(defaultOption: Record<string, string | boolean>): string {

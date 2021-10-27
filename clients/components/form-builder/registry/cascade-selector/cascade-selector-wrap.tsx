@@ -13,7 +13,7 @@ function CascadeSelectorWarp(props: ISchemaFieldComponentProps): JSX.Element {
     // clear cascade when change value source
     // when initialValue not undefined, is edit mode
     if (!props.initialValue) {
-      if (props?.mutators?.change) props.mutators.change({ label: '', value: '' });
+      if (props?.mutators?.change) props.mutators.change(undefined);
     }
   }, [defaultValueFrom]);
 

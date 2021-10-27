@@ -29,7 +29,9 @@ function Placeholder({ props }: any): JSX.Element {
             return acc;
           }, {});
 
-        const availableCols = (columns || []).filter((v: string) => !EXCLUDE_FIELDS.includes(v));
+        const availableCols = (columns || []).filter((v: string) => {
+          return !EXCLUDE_FIELDS.includes(v) && flattenTableMap[v];
+        });
 
         const _cols = availableCols.reduce((acc: UnionColumns<any>[], id: string) => {
           acc.push({ id, Header: flattenTableMap[id], accessor: () => <span>--</span> });
