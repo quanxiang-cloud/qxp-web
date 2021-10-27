@@ -11,7 +11,7 @@ window.onload = function() {
 
   let counter = 60;
   let isSending = false;
-  let tid: NodeJS.Timeout;
+  let tid: number;
 
   function resetVars(errorMessage?: string): void {
     captchaBtn.classList.remove('disabled');
@@ -34,7 +34,7 @@ window.onload = function() {
 
     callSendApi().then(() => {
       captchaBtn.innerText = `${counter} 后重新获取`;
-      tid = global.setInterval(() => {
+      tid = window.setInterval(() => {
         counter -= 1;
         captchaBtn.innerText = `${counter} 后重新获取`;
         if (counter <= 0) {
