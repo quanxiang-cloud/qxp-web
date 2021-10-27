@@ -1,3 +1,35 @@
+export function httpClient<TData>(
+  path: string, body?: unknown, additionalHeaders?: HeadersInit,
+): Promise<TData> {
+  const headers = {
+    'X-Proxy': 'API',
+    'Content-Type': 'application/json',
+    ...additionalHeaders,
+  };
+
+  return fetch(path, {
+    method: 'POST',
+    body: JSON.stringify(body || {}),
+    headers: headers,
+  }).then((response) => {
+    if ([404, 500].includes(response.status)) {
+      return Promise.reject(new Error('请求失败!'));
+    }
+    return response.json();
+  }).then((resp) => {
+    const { code, msg, data } = resp;
+    if (code !== 0) {
+      const e = new Error(msg);
+      if (data) {
+        Object.assign(e, { data });
+      }
+      return Promise.reject(e);
+    }
+
+    return data as TData;
+  });
+}
+
 export function validateUsername(username: HTMLInputElement, message: HTMLElement): boolean {
   if (!username.value) {
     message.innerText = '用户名不能为空';

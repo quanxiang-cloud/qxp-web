@@ -1,5 +1,4 @@
-import httpClient from '@lib/http-client';
-import { imgChange, removeError, validateCaptcha, validateUsername } from './login-common';
+import { imgChange, removeError, validateCaptcha, validateUsername, httpClient } from './login-common';
 import './style.scss';
 
 window.onload = function() {
