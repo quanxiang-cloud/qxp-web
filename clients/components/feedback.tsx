@@ -6,7 +6,7 @@ const feedbackPagePath = '/apps/07be4956-33d2-4bd2-b78b-3822a470f5cb?pageID=2219
 export default function FeedbackBtn(): JSX.Element {
   return (
     <a
-      className="btn"
+      className="btn mr-8"
       target="_blank"
       rel="noreferrer"
       href={`//${window.CONFIG.home_hostname}${feedbackPagePath}`}
