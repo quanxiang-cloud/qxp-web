@@ -17,7 +17,9 @@ import store, {
 
 import { getFlowInfo } from '../api';
 
-import '@flow/style.scss';
+// rollup can not resolve this path
+// import '@flow/style.scss';
+import '../../../work-flow/style.scss';
 
 interface Props {
   processInstanceId: string;

@@ -1,0 +1,32 @@
+{{define "_import-map"}}
+<script type="systemjs-importmap">
+  {
+    "imports": {
+      "@formily/antd-components": "/dist/externals/formily/antd-components.1.3.13{{if not .debugMode}}.min{{end}}.js",
+      "@formily/antd": "/dist/externals/formily/antd.1.3.13{{if not .debugMode}}.min{{end}}.js",
+      "@formily/core": "/dist/externals/formily/core.1.3.13{{if not .debugMode}}.min{{end}}.js",
+      "@formily/react-schema-renderer": "/dist/externals/formily/react-schema-render.1.3.13{{if not .debugMode}}.min{{end}}.js",
+      "@formily/react-shared-components": "/dist/externals/formily/react-shared-components.1.3.13{{if not .debugMode}}.min{{end}}.js",
+      "@formily/react": "/dist/externals/formily/react.1.3.13{{if not .debugMode}}.min{{end}}.js",
+      "@formily/shared": "/dist/externals/formily/shared.1.3.13{{if not .debugMode}}.min{{end}}.js",
+      "@formily/validator": "/dist/externals/formily/validator.1.3.13{{if not .debugMode}}.min{{end}}.js",
+      "@QCFE/lego-ui": "/dist/externals/lego-ui.0.1.30{{if not .debugMode}}.min{{end}}.js",
+      "antd": "/dist/externals/antd.4.15.0{{if not .debugMode}}.min{{end}}.js",
+      "lodash": "/dist/externals/lodash.js",
+      "moment": "/dist/externals/moment.js",
+      "react-dom": "/dist/externals/react-dom.17.0.1{{if not .debugMode}}.min{{end}}.js",
+      "react-is": "/dist/externals/react-is.17.0.1{{if not .debugMode}}.min{{end}}.js",
+      "react": "/dist/externals/react.17.0.1{{if not .debugMode}}.min{{end}}.js",
+      "rxjs": "/dist/externals/rxjs.umd.6.6.7{{if not .debugMode}}.min{{end}}.js"
+    }
+  }
+</script>
+{{end}}
+
+{{define "_systemjs"}}
+<script src="/dist/externals/system.6.10.3{{if not .debugMode}}.min{{end}}.js"></script>
+{{end}}
+
+{{define "_jsEntry"}}
+<script type="systemjs-module" src="/dist/{{ .jsEntrySrc }}"></script>
+{{end}}

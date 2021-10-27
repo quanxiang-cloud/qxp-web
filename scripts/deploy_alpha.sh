@@ -9,7 +9,7 @@ rm -rf dist
 
 node_modules/.bin/gulp buildAssets
 
-NODE_ENV=production ./node_modules/.bin/webpack --config webpack.config.js
+NODE_ENV=production ./node_modules/.bin/rollup --config rollup.config.js
 
 GOOS=linux go build -o ./dist/portal server/cmd/portal/main.go
 GOOS=linux go build -o ./dist/home server/cmd/home/main.go
