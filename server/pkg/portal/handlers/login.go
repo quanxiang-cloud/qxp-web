@@ -6,10 +6,17 @@ import (
 	"qxp-web/server/pkg/contexts"
 	"strings"
 	"time"
+
+	"github.com/gorilla/mux"
 )
 
+func getLoginType(r *http.Request) string {
+	vars := mux.Vars(r)
+	return vars["type"]
+}
+
 func getLoginTemplate(r *http.Request) string {
-	loginType := getPathParam(r, "type")
+	loginType := getLoginType(r)
 	templateName := "login-by-password.html"
 	if loginType == "captcha" {
 		templateName = "login-by-captcha.html"
@@ -27,7 +34,7 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	template := getLoginTemplate(r)
-	renderTemplate(w, template, map[string]interface{}{
+	render(w, template, map[string]interface{}{
 		// todo delete this
 		"redirectUrl": r.URL.Query().Get("redirectUrl"),
 	})
@@ -35,7 +42,7 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 
 // HandleLoginSubmit resolve login request
 func HandleLoginSubmit(w http.ResponseWriter, r *http.Request) {
-	loginType := getPathParam(r, "type")
+	loginType := getLoginType(r)
 	templateName := getLoginTemplate(r)
 	loginType4API := ""
 	username := r.FormValue("username")
@@ -52,12 +59,12 @@ func HandleLoginSubmit(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if loginType4API == "" {
-		renderTemplate(w, templateName, map[string]interface{}{"errorMessage": http.StatusText(http.StatusBadRequest)})
+		render(w, templateName, map[string]interface{}{"errorMessage": http.StatusText(http.StatusBadRequest)})
 		return
 	}
 
 	if password == "" || username == "" {
-		renderTemplate(w, templateName, map[string]interface{}{"errorMessage": "请输入用户名和密码"})
+		render(w, templateName, map[string]interface{}{"errorMessage": "请输入用户名和密码"})
 		return
 	}
 
@@ -71,7 +78,7 @@ func HandleLoginSubmit(w http.ResponseWriter, r *http.Request) {
 	requestID := contexts.GetRequestID(r)
 	if err != nil {
 		contexts.Logger.Errorf("failed to marshal login request body: %s, request_id: %s", err.Error(), requestID)
-		renderTemplate(w, templateName, map[string]interface{}{"errorMessage": http.StatusText(http.StatusBadRequest)})
+		render(w, templateName, map[string]interface{}{"errorMessage": http.StatusText(http.StatusBadRequest)})
 		return
 	}
 
@@ -81,26 +88,26 @@ func HandleLoginSubmit(w http.ResponseWriter, r *http.Request) {
 
 	if errMsg != "" {
 		contexts.Logger.Errorf("failed to login, err: %s, request_id: %s", errMsg, requestID)
-		renderTemplate(w, templateName, map[string]interface{}{"errorMessage": errMsg})
+		render(w, templateName, map[string]interface{}{"errorMessage": errMsg})
 		return
 	}
 
 	var loginResponse LoginResponse
 	if err := json.Unmarshal(respBody, &loginResponse); err != nil {
 		contexts.Logger.Errorf("failed to unmarshal login response body, err: %s, request_id: %s", err.Error(), requestID)
-		renderTemplate(w, templateName, map[string]interface{}{"errorMessage": http.StatusText(http.StatusInternalServerError)})
+		render(w, templateName, map[string]interface{}{"errorMessage": http.StatusText(http.StatusInternalServerError)})
 		return
 	}
 
 	if loginResponse.Code != 0 {
-		renderTemplate(w, templateName, map[string]interface{}{"errorMessage": loginResponse.Message})
+		render(w, templateName, map[string]interface{}{"errorMessage": loginResponse.Message})
 		return
 	}
 
 	expireTime, err := time.Parse(time.RFC3339, loginResponse.Data.Expire)
 	if err != nil {
 		contexts.Logger.Errorf("failed to parse login response: %s", err.Error())
-		renderTemplate(w, templateName, map[string]interface{}{"errorMessage": http.StatusText(http.StatusInternalServerError)})
+		render(w, templateName, map[string]interface{}{"errorMessage": http.StatusText(http.StatusInternalServerError)})
 		return
 	}
 
