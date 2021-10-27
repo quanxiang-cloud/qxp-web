@@ -41,6 +41,11 @@ export default function FormDataForm({ defaultValue, onSubmit, onCancel, onChang
 
   const isEmptyTable = !!tableID && !isLoading && !options.length;
 
+  const fieldOptions = options.filter((field) => {
+    return !['serial', 'aggregationrecords', 'associatedrecords'].includes(
+      schema.properties?.[field.path]['x-component']?.toLowerCase() || '');
+  });
+
   function emptyTableNotify(): void {
     toast.error('该工作表没有设置字段, 请更换工作表!');
   }
@@ -113,7 +118,7 @@ export default function FormDataForm({ defaultValue, onSubmit, onCancel, onChang
             <div className="mt-24">
               <TriggerWay
                 validating={validating}
-                formFieldOptions={options}
+                formFieldOptions={fieldOptions}
                 onValueChange={handleChange}
                 triggerWayValue={{
                   triggerWay: value.triggerWay,
