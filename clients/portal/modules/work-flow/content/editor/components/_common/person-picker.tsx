@@ -181,7 +181,7 @@ export default function PersonPicker({ value, typeText, onChange } : Props): JSX
           </div>
           <ValidatingTips
             validating={validating && !value.users?.length}
-            tips={`请添加${typeText}人`}
+            tips={`请添加${typeText}`}
           />
         </>
       )}
