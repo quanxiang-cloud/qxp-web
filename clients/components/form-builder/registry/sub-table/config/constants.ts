@@ -29,6 +29,7 @@ import cascadeselector from '@c/form-builder/registry/cascade-selector';
 import associateddata from '@c/form-builder/registry/associated-data';
 import aggregationrecords from '@c/form-builder/registry/aggregation-records';
 import serial from '@c/form-builder/registry/serial-number';
+import Prefix from '@c/form-builder/registry/serial-number/prefix';
 import DefaultValueLinkageConfigBtn from
   '@c/form-builder/form-settings-panel/form-field-config/default-value-linkage-config-btn';
 import OptionsConfig from
@@ -89,6 +90,7 @@ export const COMPONENTS: Record<string, JSXElementConstructor<ISchemaFieldCompon
   calculationformulabtn: CalculationFormulaBtn,
   aggregationrecords: AggregationRecords,
   serial: Serial,
+  prefix: Prefix,
 };
 
 export type KeyOfConfigComponent = keyof typeof CONFIG_COMPONENTS;
