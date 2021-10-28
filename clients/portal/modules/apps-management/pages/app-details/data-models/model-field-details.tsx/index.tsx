@@ -29,7 +29,7 @@ function ModelFieldDetails(): JSX.Element {
   }
 
   return (
-    <div className="p-16 flex-1 flex flex-col overflow-auto">
+    <div className="px-16 pt-16 flex-1 flex flex-col overflow-auto">
       <ModelDescHeader />
       <ModalFields />
     </div>
