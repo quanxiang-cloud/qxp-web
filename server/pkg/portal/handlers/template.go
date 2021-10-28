@@ -45,7 +45,7 @@ func getJsFileSrc(templateName string) string {
 	jsEntryName := strings.TrimSuffix(templateName, ".html") + ".js"
 	src, ok := manifest[jsEntryName]
 	if !ok {
-		log.Fatalln("failed to find js entry for template: ", templateName, jsEntryName)
+		contexts.Logger.Errorln("failed to find js entry for template: ", templateName, jsEntryName)
 	}
 
 	return src
