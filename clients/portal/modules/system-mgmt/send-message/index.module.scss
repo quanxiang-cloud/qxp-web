@@ -1,5 +1,5 @@
-:global{
-  .form.is-horizon-layout > .field > .control {
+:global {
+  .form.is-horizon-layout>.field>.control {
     max-width: 80%;
   }
 
@@ -10,13 +10,14 @@
   }
 }
 
-body{
+body {
   .wrap {
     display: flex;
     justify-content: flex-start;
     padding-bottom: 0;
     flex-direction: column;
   }
+
   .panel {
     position: relative;
     width: 100%;
@@ -25,31 +26,35 @@ body{
     background: #FFFFFF;
     border-radius: 12px 12px 0px 0px;
 
-    :global{
-      .form.is-horizon-layout{
+    :global {
+      .form.is-horizon-layout {
         padding-top: 48px;
-        max-width: initial ;
+        max-width: initial;
       }
-      .form.is-horizon-layout > .field > .control{
+
+      .form.is-horizon-layout>.field>.control {
         max-width: 764px;
-        label.radio.checked:before, label.radio.checked:hover:before {
+
+        label.radio.checked:before,
+        label.radio.checked:hover:before {
           background-color: var(--blue-600);
         }
-        label > .label-value {
+
+        label>.label-value {
           padding-left: 8px;
         }
       }
 
-      .form.is-horizon-layout > .field .label{
+      .form.is-horizon-layout>.field .label {
         width: 240px;
       }
 
-      .form.is-horizon-layout > .field{
+      .form.is-horizon-layout>.field {
         position: relative;
         margin-bottom: 36px;
       }
 
-      .form.is-horizon-layout > .field .help{
+      .form.is-horizon-layout>.field .help {
         position: absolute;
         left: 240px;
         line-height: 22px;
@@ -68,6 +73,7 @@ body{
       padding-right: 20px;
       height: 56px;
       border-bottom: 1px solid #E2E8F0;
+
       &::after {
         content: '';
         background-image: url(/dist/images/md-header-bg.jpg);
@@ -89,6 +95,7 @@ body{
         color: #0F172A;
       }
     }
+
     .body {
       height: auto;
       margin: auto;
@@ -108,15 +115,16 @@ body{
         align-items: flex-start !important;
       }
 
-      :global{
-        .rdw-editor-main{
+      :global {
+        .rdw-editor-main {
           height: 340px;
         }
-        .DraftEditor-root{
+
+        .DraftEditor-root {
           padding: 0 16px
         }
 
-        form > .field:last-child {
+        form>.field:last-child {
           margin-bottom: 10px;
         }
       }
@@ -130,6 +138,7 @@ body{
         padding-bottom: 42px;
       }
     }
+
     .footer {
       //position: absolute;
       display: flex;
@@ -155,13 +164,13 @@ body{
   color: #375FF3;
   margin-right: 8px;
   margin-bottom: 8px;
+
   &.isDep {
     color: #D97706;
     background: #FFFBEB;
   }
-  &.isPerson {
 
-  }
+  &.isPerson {}
 
   .close {
     position: relative;
@@ -177,16 +186,16 @@ body{
 .previewMsg {
   width: 100%;
 
-  .pre_receivers{
+  .pre_receivers {
     padding: 12px 0;
     border-top: 1px solid #E2E8F0;
   }
 
-  .pre_receivers_title{
+  .pre_receivers_title {
     margin: 8px 0;
   }
 
-  .previewMsgContent{
+  .previewMsgContent {
     margin-bottom: 50px;
 
     .title {
@@ -196,7 +205,7 @@ body{
       color: #0F172A;
     }
 
-    .info{
+    .info {
       margin-top: 8px;
       line-height: 20px;
       color: #94A3B8;
@@ -206,9 +215,11 @@ body{
 }
 
 
-.upload{
+.upload {
   align-items: center;
-  div,span{
+
+  div,
+  span {
     cursor: pointer;
   }
 }
@@ -216,17 +227,18 @@ body{
 .fileList {
   margin-top: 40px;
 
-  .file_itm{
+  .file_itm {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: var( --blue-100);
+    background-color: var(--blue-100);
     border-radius: 4px;
     padding: 4px;
     padding-left: 12px;
     margin-bottom: 10px;
     position: relative;
-    &>svg{
+
+    &>svg {
       position: absolute;
       top: -3px;
       bottom: 0;
@@ -235,7 +247,8 @@ body{
       margin: auto;
       opacity: 0;
     }
-    &:hover > svg{
+
+    &:hover>svg {
       opacity: 1;
     }
 
@@ -249,6 +262,7 @@ body{
       background-position: center;
       margin-right: 8px;
     }
+
     .typeImage {
       @extend .typeFile;
       background-color: #F59E0B;
@@ -265,7 +279,7 @@ body{
       margin-bottom: 40px;
       padding: 20px;
 
-      > legend {
+      >legend {
         width: 110px;
         font-size: 12px;
         line-height: 20px;
@@ -279,6 +293,6 @@ body{
 }
 
 
-.upload_warp{
+.upload_warp {
   padding: 16px;
 }
