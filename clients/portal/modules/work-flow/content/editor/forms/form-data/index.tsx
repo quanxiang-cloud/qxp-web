@@ -10,7 +10,7 @@ import FormSelector from '@c/form-table-selector';
 import SaveButtonGroup from '@flow/content/editor/components/_common/action-save-button-group';
 import { TRIGGER_CONDITION_EXCLUDE_FIELD_NAMES } from '@flow/content/editor/utils/constants';
 import store, { updateStore } from '@flow/content/editor/store';
-import { schemaToMap } from '@lib/schema-convert';
+import { schemaToMap, schemaToOptions } from '@lib/schema-convert';
 import type {
   FormDataData, NodeWorkForm, StoreValue, TriggerConditionExpression,
   TriggerCondition as TriggerConditionType, TriggerConditionValue,
@@ -41,10 +41,9 @@ export default function FormDataForm({ defaultValue, onSubmit, onCancel, onChang
 
   const isEmptyTable = !!tableID && !isLoading && !options.length;
 
-  const fieldOptions = options.filter((field) => {
-    return !['serial', 'aggregationrecords', 'associatedrecords'].includes(
-      schema.properties?.[field.path]['x-component']?.toLowerCase() || '');
-  });
+  const fieldOptions = schemaToOptions(schema, {
+    filter: (field) => !['Serial', 'AggregationRecords', 'AssociatedRecords'].includes(
+      field['x-component'] || '') });
 
   function emptyTableNotify(): void {
     toast.error('该工作表没有设置字段, 请更换工作表!');
