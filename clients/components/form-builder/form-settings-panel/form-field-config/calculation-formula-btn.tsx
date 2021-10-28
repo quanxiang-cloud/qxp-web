@@ -16,6 +16,12 @@ interface Variable {
   title: string;
 }
 
+function getPath(path?: string): string {
+  const _path = path?.replace('.*.', '_dot_star_dot_');
+  // Ignore layout fields
+  return _path?.split('.').pop() || '';
+}
+
 function getVariables(schema: ISchema, parseSubTable = false): Array<Variable> {
   return schemaToFields(schema, null, { parseSubTable }).filter((field) => {
     if (INTERNAL_FIELD_NAMES.includes(field.id)) {
@@ -24,12 +30,14 @@ function getVariables(schema: ISchema, parseSubTable = false): Array<Variable> {
     return field.type === 'number';
   }).sort((currentField, nextField) => {
     return numberTransform(currentField) - numberTransform(nextField);
-  }).map((field) => ({
-    fieldName: field.id.includes('subtable_') ?
-      field['x-internal']?.fieldPath?.replace('.*.', '_dot_star_dot_') || '' :
-      field.id,
-    title: field.title as string,
-  }));
+  }).map((field) => {
+    return ({
+      fieldName: field.id.includes('subtable_') ?
+        getPath(field['x-internal']?.fieldPath) :
+        field.id,
+      title: field.title as string,
+    });
+  });
 }
 
 function CalculationFormulaBtn(props: ISchemaFieldComponentProps): JSX.Element {
