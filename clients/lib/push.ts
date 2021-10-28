@@ -1,4 +1,4 @@
-import logger from '@lib/logger';
+import logger from './logger';
 
 type SocketEventListener = (data: Record<string, any>) => any;
 type SocketData = { Type: string; [key: string]: any };

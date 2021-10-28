@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { MouseEventHandler } from 'react';
 import {
   TableInstance,

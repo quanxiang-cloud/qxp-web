@@ -17,6 +17,8 @@ import { copyContent } from '@lib/utils';
 import store from './store';
 import 'highlight.js/styles/atelier-sulphurpool-dark.css';
 
+const Highlight = lazy(() => import('react-highlight').then((m) => m.default));
+
 const DOC_TYPE_LIST = [
   { label: 'CURL', value: 'curl' },
   { label: 'JavaScript', value: 'javascript' },
@@ -72,8 +74,6 @@ export const FIELD_COLUMNS: UnionColumns<ModelField>[] = [
     ),
   },
 ];
-
-const Highlight = lazy(() => import('react-highlight'));
 
 function renderApiDetails(): JSX.Element {
   if (store.isAPILoading) {
