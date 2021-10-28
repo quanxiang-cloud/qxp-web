@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
+import cs from 'classnames';
 import { useHistory, useParams } from 'react-router-dom';
-import useCss from 'react-use/lib/useCss';
 
 import Icon from '@c/icon';
-import cs from 'classnames';
 
 type Props = {
   id: string | number;
@@ -49,10 +48,10 @@ export default function TreeNode({
 
   return (
     <div
-      className={cs('app-menu-tree-node duration-300 mb-16 w-40', `node-level-${level}`,
-        {
-          'w-180': !defaultCollapse || level !== 1,
-        })}
+      className={cs(
+        'app-menu-tree-node duration-300 mb-16 w-40', `node-level-${level}`,
+        { 'w-180': !defaultCollapse || level !== 1 },
+      )}
     >
       <div
         className={cs(
@@ -61,7 +60,8 @@ export default function TreeNode({
           {
             active: id === menuType,
             collapse: !expand && isChildActive(),
-          })}
+          },
+        )}
         onClick={() => {
           setExpand((prevExpand) => !prevExpand);
           !children && history.push(`/apps/details/${appID}/${id}`);
@@ -70,43 +70,36 @@ export default function TreeNode({
         <span className="menu-icon flex items-center">
           <Icon
             name={icon}
-            className={cs('text-current flex-shrink-0 duration-0', useCss(
-              {
-                fill: expand ? 'var(--gray-400)' : 'var(--blue-400)',
-              }))}
+            className={cs('flex-shrink-0 duration-0')}
             size={children || level === 1 ? 25 : 21}
           />
-          <span
-            className={cs(
-              'text-12 pl-8 transition-opacity duration-300',
-              {
-                'opacity-0': defaultCollapse,
-              })}>
+          <span className={cs(
+            'text-12 pl-8 transition-opacity duration-300',
+            { 'opacity-0': defaultCollapse },
+          )}>
             {title}
           </span>
         </span>
-        {
-          children && !defaultCollapse && (
-            <span>
-              <Icon
-                size={22}
-                name={'keyboard_arrow_down'}
-                className={cs(
-                  'text-current mr-4 flex-shrink-0 transform transition-transform duration-300',
-                  {
-                    'rotate-180': expand,
-                  })}
-              />
-            </span>)
-        }
+        {children && !defaultCollapse && (
+          <span>
+            <Icon
+              size={22}
+              name={'keyboard_arrow_down'}
+              className={cs(
+                'text-current mr-4 flex-shrink-0 transform transition-transform duration-300',
+                { 'rotate-180': expand },
+              )}
+            />
+          </span>
+        )}
       </div>
       <div
         ref={nodeRef}
         style={{ height: getSubTreeHeight() }}
-        className={cs('tree-child-node transition-all duration-300 transform origin-top',
-          {
-            'opacity-0 scale-y-0': !expand,
-          })}>
+        className={cs(
+          'tree-child-node transition-all duration-300 transform origin-top',
+          { 'opacity-0 scale-y-0': !expand },
+        )}>
         {children?.map((item) => <TreeNode {...item} key={item.id} level={level + 1} maxLevel={maxLevel} />)}
       </div>
     </div>

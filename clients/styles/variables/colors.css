@@ -269,13 +269,17 @@
   --black-100: #020508;
   --black-200: #697886;
 
+  /* primary */
+  --primary-600: var(--blue-600);
+  --primary-400: var(--blue-400);
+
   /* todo remove this */
   --icon-light-color: rgba(255, 255, 255, 0.9);
   --icon-light-fill: rgba(255, 255, 255, 0.4);
   --icon-dark-color: var(--gray-600);
-  --icon-dark-fill: var(--gray-500);
-  --icon-coloured-color: var(--primary-color-light-1);
-  --icon-coloured-fill: var(--primary-color-light-2);
+  --icon-dark-fill: var(--gray-400);
+  --icon-primary-color: var(--blue-600);
+  --icon-primary-fill: var(--blue-400);
 
   --danger-color-light-2: var(--red-50);
   --danger-color-light-1: var(--red-200);

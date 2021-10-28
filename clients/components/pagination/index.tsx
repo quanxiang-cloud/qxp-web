@@ -191,7 +191,7 @@ function Pagination({
         onClick={handleJumpPrev}>
         <SvgIcon className="icon" name="more_horiz" />
         <SvgIcon className="prev" name="double_arrow"
-          color="#375FF3" style={{ transform: 'rotate(180deg)' }} />
+          style={{ transform: 'rotate(180deg)', color: 'var(--blue-600)' }} />
       </li>);
     jumpNext = (
       <li
@@ -199,7 +199,7 @@ function Pagination({
         className="pagination-comp-page pagination-comp-jump pagination-comp-jump-next"
         onClick={handleJumpNext}>
         <SvgIcon className="icon" name="more_horiz" />
-        <SvgIcon className="next" name="double_arrow" color="#375FF3" />
+        <SvgIcon className="next" name="double_arrow" style={{ color: 'var(--blue-600)' }} />
       </li>);
 
     const num = showLessItems ? 2 : 4;

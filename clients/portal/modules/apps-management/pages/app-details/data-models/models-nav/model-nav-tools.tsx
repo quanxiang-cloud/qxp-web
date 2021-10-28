@@ -27,7 +27,7 @@ function ModelNavTools(): JSX.Element {
           setEditModalType('create');
         }}
       >
-        <Icon name="add" className="text-current flex-shrink-0" size={20} />
+        <Icon name="add" type="light" className="flex-shrink-0" size={20} />
       </div>
     </div>
   );

@@ -89,7 +89,7 @@ function DetailsHeader({ onCancel }: Props): JSX.Element {
                   onClick={() => history.push('/')}
                   className='app-header-icon text-gray-400 corner-8-8-8-2'
                 >
-                  <Icon size={21} className='text-current m-6' name='home_qxp'/>
+                  <Icon size={21} className='m-6' name='home_qxp'/>
                 </div>
                 <span className='mx-8 text-14'>/</span>
                 <AppsSwitcher
