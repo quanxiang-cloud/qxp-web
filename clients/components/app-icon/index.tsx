@@ -41,7 +41,7 @@ ref: React.Ref<HTMLDivElement>,
         `app-icon-bg-${themeColor}`, className,
       )}
     >
-      {iconName ? (<Icon type='light' name={iconName} size={appIconSize.get(size)} />) : null}
+      {iconName ? (<Icon name={iconName} size={appIconSize.get(size)} />) : null}
     </div>
   );
 }
