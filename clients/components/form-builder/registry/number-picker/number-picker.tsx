@@ -1,20 +1,20 @@
 import React, { useEffect } from 'react';
-import { NumberPicker as NumberPickerAnt } from '@formily/antd-components';
-import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
+import { InputNumber, InputNumberProps } from 'antd';
 
-function NumberPicker(p: ISchemaFieldComponentProps): JSX.Element {
+function NumberPicker({ defaultValue, ...other }: InputNumberProps): JSX.Element {
   useEffect(() => {
-    const defaultValue = p.props['x-component-props']?.defaultValue;
+    if (other.value || defaultValue === undefined) {
+      return;
+    }
+
     if (typeof defaultValue === 'number' || !isNaN(Number(defaultValue))) {
-      p.mutators.change(defaultValue);
+      other.onChange?.(defaultValue);
     }
   }, []);
 
   return (
-    <NumberPickerAnt {...p} />
+    <InputNumber {...other} />
   );
 }
-
-NumberPicker.isFieldComponent = true;
 
 export default NumberPicker;
