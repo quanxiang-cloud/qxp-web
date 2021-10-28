@@ -58,7 +58,7 @@ export default function SideNavCard({
                     }}
                   >
                     <Icon className='mr-8' size={24} name={icon} />
-                    <span className='text-gray-400 text-h5'>{name}</span>
+                    <span>{name}</span>
                     <div className='side-nav-link-active-bar bg-gray-600 rounded-l-8'></div>
                   </NavLink>
                 </li>

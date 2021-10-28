@@ -6,8 +6,6 @@ import PageNav from './page-nav';
 import PageDetails from './page-details';
 import store from './store';
 
-import './index.scss';
-
 function AppDetails(): JSX.Element {
   const { appID } = useParams<{ appID: string }>();
 

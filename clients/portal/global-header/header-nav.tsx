@@ -23,7 +23,7 @@ export default function HeaderLeft(): JSX.Element {
         className="global-header-nav"
         isActive={() => location.pathname.startsWith('/apps')}
       >
-        <Icon name="dashboard_customize" className="mr-4 text-inherit" size={20} />
+        <Icon name="dashboard_customize" className="mr-4 fill-current" size={20} />
         应用管理
       </NavLink>
       <NavLink
@@ -32,7 +32,7 @@ export default function HeaderLeft(): JSX.Element {
         className="global-header-nav"
         isActive={() => location.pathname.startsWith('/access-control')}
       >
-        <Icon name="admin_panel_settings" className="mr-4 text-inherit" size={20} />
+        <Icon name="admin_panel_settings" className="mr-4" style={{ fill: 'var(--gray-400)' }} size={20} />
         访问控制
       </NavLink>
       <NavLink
@@ -41,7 +41,7 @@ export default function HeaderLeft(): JSX.Element {
         className="global-header-nav"
         isActive={() => location.pathname.startsWith('/system')}
       >
-        <Icon name="system_management" className="mr-4 text-inherit" size={20} />
+        <Icon name="system_management" className="mr-4 fill-current" size={20} />
         系统管理
       </NavLink>
     </div>

@@ -23,7 +23,7 @@ export default function HeaderMenu(): JSX.Element {
         rel="noreferrer"
         className="cursor-pointer corner-4-0-4-4 text-white hover:bg-gray-100 hover:text-gray-600"
       >
-        <Icon name="help_doc" size={21} className='app-icon-color-inherit m-6'/>
+        <Icon name="help_doc" size={21} style={{ fill: 'var(--gray-400)' }} className='text-current m-6'/>
       </a>
       <div className="header-nav-btn group ml-16">
         <UserAvatarMenu />

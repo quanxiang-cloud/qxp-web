@@ -85,7 +85,8 @@ const NavMsgBar = ({ type, className }: Props): JSX.Element => {
           className={cs(
             'relative cursor-pointer text-blue-100',
             styles.navItem,
-            { 'text-gray-50 group-hover:bg-blue-500': type !== 'portal',
+            {
+              'text-gray-50 group-hover:bg-blue-500': type !== 'portal',
               'text-gray-400 group-hover:bg-gray-100 hover:text-gray-600': type === 'portal',
             },
           )}
@@ -93,9 +94,10 @@ const NavMsgBar = ({ type, className }: Props): JSX.Element => {
           ref={toggleRef}
         >
           <Icon
-            name={type === 'portal' ? 'portal_bell' : 'home_bell'}
-            className='text-current m-6'
-            size={21}
+            size={20}
+            name="home_bell"
+            style={{ fill: `${type === 'portal' ? 'var(--gray-400)' : 'var(--blue-100)'}` }}
+            className="m-6"
           />
           {countUnread > 0 && <BtnBadge className={styles.count_btn} count={countUnread}/>}
         </div>
