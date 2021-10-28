@@ -38,7 +38,7 @@ function EditModal({ modalType, onClose, handleEditModel }: Props): JSX.Element 
                 message: '请输入模型名称',
               },
               {
-                maxLength: 30,
+                max: 30,
                 message: '名称不超过 30 字符，请修改！',
               },
               {
@@ -65,6 +65,10 @@ function EditModal({ modalType, onClose, handleEditModel }: Props): JSX.Element 
                 message: '请输入模型编码',
               },
               {
+                max: 30,
+                message: '字段标识不超过 30 字符，请修改！',
+              },
+              {
                 pattern: /^[a-zA-Z][a-zA-Z0-9_]*$/,
                 message: '必须以字母开头,由字母、数字、下划线组成',
               },
@@ -86,7 +90,7 @@ function EditModal({ modalType, onClose, handleEditModel }: Props): JSX.Element 
               labelAlign: 'top',
             },
             'x-rules': {
-              maxLength: 100,
+              max: 100,
               message: '备注超过 100 字符!',
             },
             'x-index': 2,
