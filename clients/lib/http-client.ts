@@ -77,14 +77,14 @@ export type FormDataListResponse = { entities: Record<string, any>[]; total: num
 
 // new
 
-export type SubTableUpdateData = {
+export type RefData = {
   updated?: Record<string, any>[];
-  new?: Record<string, any>[];
+  new?: (Record<string, any> | string)[];
   deleted?: string[];
 }
 
-export type FormDataRequestUpdateParamsRef = Record<string, SubTableUpdateData & {
-  type: 'sub_table' | 'foreign_table' | 'serial' | 'aggregation';
+export type FormDataRequestUpdateParamsRef = Record<string, RefData & {
+  type: 'sub_table' | 'foreign_table' | 'serial' | 'aggregation' | 'associated_records';
   appID?: string;
   tableID?: string;
   sourceFieldId?: string;
@@ -150,7 +150,7 @@ export function editFormDataRequest(
 
 export function buildQueryRef(schema: ISchema): FormDataRequestUpdateParamsRef {
   const refFields = schemaToFields(schema, (schemaField) => {
-    return ['SubTable', 'AggregationRecords'].includes(schemaField['x-component'] || '');
+    return ['SubTable', 'AggregationRecords', 'AssociatedRecords'].includes(schemaField['x-component'] || '');
   });
 
   const ref: FormDataRequestUpdateParamsRef = {};
@@ -161,6 +161,15 @@ export function buildQueryRef(schema: ISchema): FormDataRequestUpdateParamsRef {
         const { subordination, appID, tableID } = field?.['x-component-props'] || {};
         ref[field.id] = {
           type: subordination || 'sub_table',
+          appID,
+          tableID,
+        };
+        break;
+      }
+      case 'associatedrecords': {
+        const { appID, tableID } = field?.['x-component-props'] || {};
+        ref[field.id] = {
+          type: 'associated_records',
           appID,
           tableID,
         };
