@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useParams, useHistory, useLocation } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import { toJS } from 'mobx';
 import { Tooltip } from '@QCFE/lego-ui';
@@ -21,7 +21,6 @@ import './index.scss';
 
 function PageList(): JSX.Element {
   const history = useHistory();
-  const { pathname } = useLocation();
 
   const { appID } = useParams<{ appID: string }>();
   const { pageID } = getQuery<{ pageID: string }>();
@@ -49,7 +48,7 @@ function PageList(): JSX.Element {
   }, [pageID]);
 
   async function delPageOrGroup(): Promise<void> {
-    await del(toJS(activeMenu), modalType, pathname, history);
+    await del(toJS(activeMenu), modalType);
     closeModal();
   }
 
@@ -75,7 +74,7 @@ function PageList(): JSX.Element {
   useEffect(() => {
     if (activeMenu.menuType === 1) return;
     history.push(`/apps/details/${appID}/page_setting?pageID=${activeMenu.id}`);
-  }, [activeMenu]);
+  }, [activeMenu, appID]);
 
   const handleMenuClick = (key: string, menu: Menu): void => {
     setActiveMenu(menu);
