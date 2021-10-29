@@ -1,10 +1,11 @@
-import React, { createRef } from 'react';
+import React from 'react';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
-import { Form, Loading } from '@QCFE/lego-ui';
+import { Form } from 'antd';
 
-import DepartmentPicker from '@c/form/input/tree-picker-field';
 import toast from '@lib/toast';
 import Modal from '@c/modal';
+import Loading from '@c/loading';
+import DepartmentPicker from '@c/form/input/tree-picker-field';
 import { departmentToTreeNode } from '@lib/utils';
 
 import { getERPTree, batchAdjustDep } from '../api';
@@ -21,8 +22,8 @@ interface Props {
   closeModal(): void;
 }
 
-export default function AdjustDepModal({ users: userList, closeModal }: Props) {
-  const formRef = createRef<Form>();
+function AdjustDepModal({ users: userList, closeModal }: Props): JSX.Element {
+  const [form] = Form.useForm();
   const queryClient = useQueryClient();
 
   const { data: depData, isLoading } = useQuery('GET_ERP_TREE', getERPTree, {
@@ -41,27 +42,22 @@ export default function AdjustDepModal({ users: userList, closeModal }: Props) {
     },
   });
 
-  function handleSubmit() {
-    if (!formRef.current?.validateForm()) {
-      return;
-    }
+  function handleSubmit(): void {
+    form.submit();
+  }
 
+  function handleFinish(values: any): void {
     const isHaveLeader = userList.find((user) => user.isDEPLeader === LeaderStatus.true);
     if (isHaveLeader) {
       toast.error('当前已选择员工列表中存在部门主管，不能参与调整部门！');
       return;
     }
+
     const params: BatchDepParams = {
       usersID: [],
       oldDepID: '',
       newDepID: '',
     };
-
-    const values = formRef.current?.getFieldsValue();
-    if (!values?.pid) {
-      toast.error('请选择部门');
-      return;
-    }
 
     params.newDepID = values.pid;
     params.oldDepID = (userList && userList[0] && userList[0].dep?.id) || '';
@@ -104,21 +100,27 @@ export default function AdjustDepModal({ users: userList, closeModal }: Props) {
             })}
           </ul>
         </div>
-        <Form layout="vertical" ref={formRef}>
+        <Form layout="vertical" form={form} onFinish={handleFinish}>
           {isLoading ? (
             <Loading />
           ) : (
-            <DepartmentPicker
-              treeData={departmentToTreeNode(depData as Department)}
-              labelKey="departmentName"
+            <Form.Item
               name="pid"
-              required
               label="选择要调整的部门"
-              help="请选择部门"
-            />
+              rules={[
+                { required: true, message: '请选择部门' },
+              ]}
+            >
+              <DepartmentPicker
+                treeData={departmentToTreeNode(depData as Department)}
+                labelKey="departmentName"
+              />
+            </Form.Item>
           )}
         </Form>
       </div>
     </Modal>
   );
 }
+
+export default AdjustDepModal;

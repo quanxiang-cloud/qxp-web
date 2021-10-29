@@ -6,15 +6,14 @@ import cs from 'classnames';
 import TextHeader from '@c/text-header';
 import SearchInput from '@c/form/input/search-input';
 import Loading from '@c/loading';
-
 import {
   getDepartmentStructure,
 } from '@portal/modules/access-control/role-management/api';
 import ErrorTips from '@c/error-tips';
+import OwnerStore from '@c/employee-or-department-picker/store';
+import EmployeeSelectTree from '@c/employee-or-department-picker/employee-select-tree';
 
 import EmployeeTable from './employee-table';
-import EmployeeSelectTree from '@c/employee-or-department-picker/employee-select-tree';
-import OwnerStore from '@c/employee-or-department-picker/store';
 
 interface Props {
   onChange: (leader: Leader) => void;
