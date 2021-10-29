@@ -2,13 +2,14 @@ import React from 'react';
 import cs from 'classnames';
 import { isArray } from 'lodash';
 import { FormItem, IForm, IMutators } from '@formily/antd';
-import { set, lensPath, omit } from 'ramda';
+import { set, lensPath } from 'ramda';
 
 import Icon from '@c/icon';
 
 import type { Column } from './index';
 import type { Layout } from '../convertor';
 import ColumnLayout from './column-layout';
+import { omitParentFromSchema } from './utils';
 
 interface Props {
   index: number;
@@ -95,7 +96,7 @@ export default function SubTableRow({
             const sc = set(
               lensPath(['x-internal', 'fieldPath']),
               path,
-              JSON.parse(JSON.stringify(omit(['parent'], schema))),
+              omitParentFromSchema(schema),
             );
 
             return (
