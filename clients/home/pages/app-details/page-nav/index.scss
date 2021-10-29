@@ -30,6 +30,10 @@
   }
 }
 
+.role-switcher-popover{
+  @apply shadow-more-action overflow-hidden rounded-12;
+}
+
 .collapse {
   width: 0;
 }
