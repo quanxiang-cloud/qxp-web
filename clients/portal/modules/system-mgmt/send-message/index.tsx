@@ -1,34 +1,29 @@
-import React, { useState, useEffect, useRef, useMemo, forwardRef, useImperativeHandle } from 'react';
-import ReactDom from 'react-dom';
+import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
+import { useHistory } from 'react-router-dom';
 import cs from 'classnames';
 import draftToHtml from 'draftjs-to-html';
-import htmlToDraft from 'html-to-draftjs';
 import { debounce } from 'lodash';
-import { toJS } from 'mobx';
 import { useMutation, useQueryClient } from 'react-query';
-import { useHistory } from 'react-router-dom';
-import { Form, Field, Label, Control, Radio, RadioGroup, Message, Upload } from '@QCFE/lego-ui';
-import { Editor } from 'react-draft-wysiwyg';
-import { EditorState, convertToRaw, ContentState } from 'draft-js';
+import { EditorState, ContentState, convertToRaw } from 'draft-js';
+import htmlToDraft from 'html-to-draftjs';
+import { Form, Input } from 'antd';
 
 import Button from '@c/button';
-import Icon from '@c/icon';
 import Modal from '@c/modal';
-import Container from '../container';
-import Filelist from './filelist';
-import editorToolbarOptions from './editor-toolbar';
-import PreviewMsg from './preview-msg';
-import ModalSelectReceiver from '@c/employee-or-department-picker';
+import toast from '@lib/toast';
 import { createMsg } from '@portal/modules/system-mgmt/api';
 import { MsgType } from '@portal/modules/system-mgmt/constants';
-import { FileInfo as FileListItemInfo } from '@portal/modules/system-mgmt/send-message/filelist';
+
+import RadioField from './radio-field';
+import EditorField from './editor-field';
+import ButtonField, { CheckedInfo } from './button-field';
+import Container from '../container';
+import PreviewMsg from './preview-msg';
 
 import styles from './index.module.scss';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
-const { TextField } = Form;
-
-type FileInfo = {
+export type FileInfo = {
   uid: string;
   url: string;
   filename: string;
@@ -37,7 +32,7 @@ type FileInfo = {
   percentage?: number;
 }
 
-const SendMessage = () => {
+const SendMessage = (): JSX.Element => {
   useEffect(() => {
     document.title = '消息管理 - 发送消息';
   }, []);
@@ -62,7 +57,7 @@ interface data {
   sort?: MsgType
   title?: string
   content?: any
-  recivers?: Array<Record<string, any>>, // fixme: typo
+  recivers?: any[], // fixme: typo
   mes_attachment?: Array<FileInfo> | null
 }
 
@@ -81,64 +76,11 @@ function ContentWithoutRef({
   footer,
   modifyData,
   handleClose,
-}: ContentProps, ref: React.Ref<unknown> | undefined) {
-  const uploaderRef = useRef<Upload>(null);
-  const [msgType, setMsgType] = useState(modifyData?.sort || MsgType.notify);
-  const [title, setTitle] = useState(modifyData?.title || '');
+}: ContentProps, ref: React.Ref<unknown> | undefined): JSX.Element {
+  const [form] = Form.useForm();
   const [prevData, setPrevData] = useState<Qxp.DraftData | null>(null);
-
-  const [editorCont, setEditorCont] = useState(modifyData?.content ?
-    EditorState.createWithContent(
-      ContentState.createFromBlockArray(
-        htmlToDraft(modifyData.content).contentBlocks),
-    ) : EditorState.createEmpty());
-
-  const [openReceiverModal, setOpenReceiverModal] = useState(false);
+  const [confirmStatus, setConfirmStatus] = useState<'draft' | 'browse' | 'send'>('draft');
   const [openPreviewModal, setOpenPreviewModal] = useState(false);
-
-  const [_chosenDepOrPerson, setChosenDepOrPerson] = useState(modifyData?.recivers || []); // 已选中的员工或部门
-  // @ts-ignore
-  // eslint-disable-next-line max-len
-  const [files, setFiles] = useState<Array<FileInfo>>((modifyData?.mes_attachment || []).map((itm: { file_name: string, file_url: string }) => ({
-    filename: itm.file_name,
-    url: itm.file_url,
-    status: 'success',
-  })));
-  const chosenDepOrPerson = useMemo(() => {
-    // @ts-ignore
-    return _chosenDepOrPerson.map(({ id, type, name, ownerName, departmentName }) => (
-      { id, type, name: name || ownerName || departmentName }
-    ));
-  }, [_chosenDepOrPerson]);
-  const [dom, setDom] = useState<Element | null>(null);
-
-  const deleteFiles = (currentFile: FileListItemInfo) => {
-    if (currentFile.file_uid) {
-      uploaderRef?.current?.abort(currentFile.file_uid);
-    }
-    setFiles((prevFiles) => {
-      let curFiles: FileInfo[];
-      if (currentFile.file_uid) {
-        curFiles = prevFiles.filter((file) => file.uid !== currentFile.file_uid);
-      } else {
-        curFiles = prevFiles.filter((file) => file.filename !== currentFile.file_name);
-      }
-      return curFiles;
-    });
-  };
-
-  useEffect(() => {
-    setDom(document.getElementById('rdw-wrapper-8888'));
-  }, []);
-
-  const addFile = (file: FileInfo) => setFiles((currentFiles) => ([...currentFiles, file]));
-  const updateFile = (name: string, data: Partial<FileInfo>) => {
-    setFiles((currentFiles) => {
-      const curFile = currentFiles.find((f) => f.filename === name);
-      Object.assign(curFile, data);
-      return [...currentFiles];
-    });
-  };
 
   const queryClient = useQueryClient();
   const history = useHistory();
@@ -147,7 +89,7 @@ function ContentWithoutRef({
   const createMsgMutation = useMutation(createMsg, {
     onSuccess: (data: any) => {
       if (data) {
-        Message.success('操作成功');
+        toast.success('操作成功');
         // todo: prefix all msg related query keys
         queryClient.invalidateQueries('msg-mgmt-msg-list');
         queryClient.invalidateQueries('count-unread-msg');
@@ -157,193 +99,123 @@ function ContentWithoutRef({
           history.push('/system/message');
         }, 500);
       } else {
-        Message.error('操作失败');
+        toast.error('操作失败');
       }
       setOpenPreviewModal(false);
     },
     onError: (err: Error) => {
-      Message.error(err.message);
+      toast.error(err.message);
     },
   });
 
-  const handleChangeEditor = (editorState: EditorState) => {
-    setEditorCont(editorState);
-  };
-
-  const getEditorCont = (cont: EditorState, asRaw?: boolean) => {
+  const getEditorCont = (cont: EditorState, asRaw?: boolean): any => {
     const raw = convertToRaw(cont.getCurrentContent());
-    // console.log('raw: ', raw);
-    // console.log('html: ', draftToHtml(raw))
     return asRaw ? raw : draftToHtml(raw);
   };
 
-  const isEditorEmpty = () => {
-    const rawCont = getEditorCont(editorCont, true);
+  function isEditorEmpty(value: EditorState): boolean {
+    const _value = EditorState.createWithContent(
+      ContentState.createFromBlockArray(
+        htmlToDraft(value).contentBlocks),
+    );
+    const rawCont = getEditorCont(_value, true);
     return !rawCont.blocks.some((v: any) => !!String(v.text).trim());
-  };
+  }
 
-  const chooseReceiver = (departments: any[], employees: any[]) => {
-    const receivers = [...departments, ...employees].map((d) => toJS(d));
-    if (!receivers.length) {
-      Message.warning('请至少选择一个员工或部门');
-      return Promise.reject(new Error('请至少选择一个员工或部门'));
-    }
-    setOpenReceiverModal(false);
-    // console.log('receivers: ', receivers);
-    // @ts-ignore
-    setChosenDepOrPerson(receivers);
-    return Promise.resolve(true);
-  };
-
-  const removeReceiver = (key: number) => {
-    // @ts-ignore
-    setChosenDepOrPerson((current) => current.filter((_, idx) => idx !== key));
-  };
-
-  const byteCount = (s: string) => {
+  function byteCount(s: string): number {
     return encodeURI(s).split(/%..|./).length - 1;
+  }
+
+  const getCurrentFiles = (): FileInfo[] => {
+    const { args } = form.getFieldsValue();
+    return [...args.files];
   };
 
-  const validateForm = () => {
-    const editorContent = getEditorCont(editorCont);
-    const formData = {
-      type: msgType,
-      title: title,
-      content: editorContent,
-      receivers: chosenDepOrPerson,
+  useImperativeHandle(ref, () => {
+    return {
+      saveDraft: () => handleSubmit('draft'),
+      previewAndPublish: handlePreviewAndPublish,
+      getCurrentFiles,
     };
-    if (!title) {
-      Message.warning('请输入消息标题');
-      return;
-    }
-    if (isEditorEmpty()) {
-      Message.warning('消息内容不能为空');
-      return;
-    }
-    if (!chosenDepOrPerson.length) {
-      Message.warning('请选择发送人');
-      return;
-    }
+  });
 
-    if (byteCount(editorContent) > 10240) {
-      Message.warning('消息内容文本过长，请修改，或使用附件进行发送。');
-      return;
-    }
+  function handleSubmit(val: 'draft' | 'browse' | 'send'): void {
+    setConfirmStatus(val);
+    form.submit();
+  }
 
-    return formData;
-  };
+  function handleFinishFailed(errors: any): void {
+    const { errorFields = [] } = errors;
+    const msg = errorFields.length && errorFields[0].errors[0];
+    toast.error(msg || '');
+  }
 
-  const previewAndPublish = () => {
-    const validata = validateForm();
-    if (!validata) return;
-    const formData = Object.assign({}, validata, {
-      mes_attachment: (files || []).map((itm) => {
-        return {
-          file_name: itm.filename,
-          file_url: itm.url,
-        };
-      }).filter(Boolean),
+  function handleReceivers(recivers: CheckedInfo[]): {id:string, type: '1 | 2', name: string}[] {
+    let newRecovers: any[] = [];
+    newRecovers = recivers.map(({ id, name, ownerName, departmentName, type }) => {
+      return {
+        id,
+        type,
+        name: name || ownerName || departmentName,
+      };
     });
-    if (formData) {
-      // @ts-ignore
-      setPrevData(formData);
-      setOpenPreviewModal(true);
-    }
-  };
+    return newRecovers;
+  }
 
-  const confirmSend = (send = true) => {
-    const params = {
-      template_id: 'quanliang',
-      // @ts-ignore
-      title: prevData.title || '',
-      args: [{
-        key: 'code',
-        value: prevData?.content || '',
-      }],
-      channel: 'letter', // letter: 站内信，email: 邮件
-      type: 2, // 1. verifycode 2、not verifycode
-      // @ts-ignore
-      sort: prevData.type,
-      is_send: send, // false: 保存为草稿
-      // @ts-ignore
-      recivers: prevData.receivers,
-      mes_attachment: (files || []).map((itm) => {
-        return {
-          file_name: itm.filename,
-          file_url: itm.url,
-        };
-      }).filter(Boolean),
-      // url: string
-      // filename:
-    };
-    // @ts-ignore
-    if (modifyData) params.id = modifyData.id;
-
-    createMsgMutation.mutate(params);
-  };
-
-  const saveDraft = (options?: { toParams?: boolean }) => {
-    const formData = validateForm();
-    if (formData) {
-      const params = {
-        id: modifyData?.id,
-        template_id: 'quanliang',
-        // @ts-ignore
-        title: formData.title || '',
-        args: [{
-          key: 'code',
-          value: formData?.content || '',
-        }],
-        channel: 'letter', // letter: 站内信，email: 邮件
-        type: 2, // 1. verifycode 2、not verifycode
-        // @ts-ignore
-        sort: formData.type,
-        is_send: false, // false: 保存为草稿
-        // @ts-ignore
-        recivers: formData.receivers,
-        mes_attachment: (files || []).map((itm) => {
+  function handleFinish(values: any): void {
+    const { title, args, type, recivers } = values;
+    if (confirmStatus === 'browse') {
+      const _currDate = Math.floor(new Date().getTime() / 1000);
+      const formData: any = {
+        title,
+        content: args.content || '',
+        receivers: handleReceivers(recivers),
+        type,
+        create_at: _currDate,
+        update_at: _currDate,
+        mes_attachment: (args.files || []).map((itm: FileInfo) => {
           return {
             file_name: itm.filename,
             file_url: itm.url,
           };
         }).filter(Boolean),
       };
-      if (options?.toParams) {
-        return params;
-      }
-      // @ts-ignore
-      createMsgMutation.mutate(params);
+      setPrevData(formData);
+      setConfirmStatus('browse');
+      setOpenPreviewModal(true);
+      return;
     }
-  };
 
-  const getCurrentFiles = () => {
-    return [...files];
-  };
-
-  // @ts-ignore
-  const handleFileSuccessUpload = (res, file) => {
-    const { uid } = file;
-    if (res.code === 200) {
-      updateFile(res.data.filename, {
-        uid,
-        filename: res.data.filename,
-        url: res.data.url,
-        percentage: 100,
-        status: 'success',
-        showProgress: false,
-      });
-    } else {
-      Message.warning('上传失败');
-    }
-  };
-
-  useImperativeHandle(ref, () => {
-    return {
-      saveDraft,
-      previewAndPublish,
-      getCurrentFiles,
+    const isSend = confirmStatus === 'draft' ? false : true;
+    const params: any = {
+      template_id: 'quanliang',
+      title,
+      args: [{
+        key: 'code',
+        value: args.content || '',
+      }],
+      channel: 'letter', // letter: 站内信，email: 邮件
+      type: 2, // 1. verifycode 2、not verifycode
+      sort: type,
+      is_send: isSend, // false: 保存为草稿
+      recivers: handleReceivers(recivers),
+      mes_attachment: (args.files || []).map((itm: FileInfo) => {
+        return {
+          file_name: itm.filename,
+          file_url: itm.url,
+        };
+      }).filter(Boolean),
     };
-  });
+
+    if (modifyData) params.id = modifyData.id;
+
+    createMsgMutation.mutate(params);
+  }
+
+  function handlePreviewAndPublish(): void {
+    setConfirmStatus('browse');
+    form.submit();
+  }
 
   return (
     <div
@@ -359,144 +231,75 @@ function ContentWithoutRef({
           style={{ height: 'calc(100% - 56px)' }}
         >
           <div className='h-full overflow-auto w-full' style={{ height: 'calc(100% - 64px)' }}>
-            <Form className='w-full' >
-              <Field>
-                <Label>消息类型:</Label>
-                <Control>
-                  <RadioGroup name='type' value={msgType} onChange={setMsgType}>
-                    <Radio value={MsgType.notify}>通知公告</Radio>
-                    <Radio value={MsgType.system}>系统消息</Radio>
-                  </RadioGroup>
-                </Control>
-              </Field>
-              <TextField
-                // @ts-ignore
-                validateOnBlur
-                validateOnChange
-                name="title"
-                label="标题:"
-                placeholder="请输入消息标题"
-                help='不超过 50 个字符。'
-                maxLength={50}
-                value={title}
-                onChange={setTitle}
-                schemas={[
-                  {
-                    rule: { required: true },
-                    help: '标题不能为空 ',
-                  },
+            <Form
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 16 }}
+              form={form}
+              onFinish={handleFinish}
+              onFinishFailed={handleFinishFailed}
+              initialValues={{
+                type: modifyData?.sort || MsgType.notify,
+                title: modifyData?.title,
+                args: {
+                  content: modifyData?.content,
+                  files: modifyData?.mes_attachment,
+                },
+                recivers: modifyData?.recivers,
+              }}
+            >
+              <Form.Item
+                name='type'
+                label="消息类型"
+                rules={[
+                  { required: true, message: '请选择消息类型' },
                 ]}
-              />
-              <Field>
-                <Label className={styles.labelCont}>内容:</Label>
-                <Control>
-                  <Editor
-                    wrapperId={8888}
-                    editorState={editorCont}
-                    wrapperClassName={styles.editorWrap}
-                    editorClassName={styles.editor}
-                    onEditorStateChange={handleChangeEditor}
-                    // onContentStateChange={handleChangeEditor}
-                    toolbar={editorToolbarOptions}
-                    placeholder='在此输入正文'
-                    localization={{
-                      locale: 'zh',
-                    }}
-                  />
-                </Control>
-              </Field>
-              <Field>
-                <Label>发送至:</Label>
-                <Control>
-                  <Button
-                    onClick={() => setOpenReceiverModal(true)}
-                    iconName="add"
-                  >
-                    选择
-                  </Button>
-                </Control>
-              </Field>
+              >
+                <RadioField />
+              </Form.Item>
+              <Form.Item
+                name="title"
+                label="标题"
+                extra="不超过 50 个字符。"
+                rules={[
+                  { required: true, message: '请输入消息标题' },
+                  { type: 'string', max: 50, message: '不超过 50 个字符' },
+                ]}
+              >
+                <Input placeholder="请输入消息标题" />
+              </Form.Item>
+              <Form.Item
+                name="args"
+                label="内容"
+                rules={[
+                  { required: true, message: '请输入内容' },
+                  { validator: (_, value) => {
+                    if (!value.content || value.content === '<p></p>\n') {
+                      return Promise.reject(new Error('请输入内容'));
+                    } else if (isEditorEmpty(value.content)) {
+                      return Promise.reject(new Error('消息内容不能为空'));
+                    } else if (byteCount(value.content) > 10240) {
+                      return Promise.reject(new Error('消息内容文本过长，请修改，或使用附件进行发送。'));
+                    }
+                    return Promise.resolve();
+                  } },
+                ]}
+              >
+                <EditorField />
+              </Form.Item>
+              <Form.Item
+                name="recivers"
+                label="发送至"
+                rules={[
+                  { required: true, message: '请选择人员' },
+                ]}
+              >
+                <ButtonField/>
+              </Form.Item>
             </Form>
-
-            {dom && ReactDom.createPortal(
-              <div className={styles.upload_warp}>
-                <Filelist
-                  candownload
-                  deleteFiles={deleteFiles}
-                  files={(files || []).map((itm) => ({
-                    file_uid: itm.uid,
-                    file_url: itm.url,
-                    file_name: itm.filename,
-                    percent: itm.percentage,
-                    showProgress: itm.showProgress,
-                    status: itm.status,
-                  }))}
-                />
-                <Upload
-                  ref={uploaderRef}
-                  headers={{ 'X-Proxy': 'API' }}
-                  multiple
-                  action="/api/v1/fileserver/uploadFile"
-                  beforeUpload={(file) => {
-                    if (file.size > 1024 * 1024 * 5) {
-                      Message.error('文件大小不能超过5M');
-                      return false;
-                    }
-                    if (files.find((f) => f.filename === file.name)) {
-                      Message.warning('文件已存在，请勿重复上传');
-                      return false;
-                    }
-                    return true;
-                  }}
-                  onStart={(file) => {
-                    addFile({
-                      uid: file.uid,
-                      filename: file.name,
-                      url: '',
-                      percentage: 0,
-                      showProgress: true,
-                      status: 'active',
-                    });
-                  }}
-                  onProgress={(step, file) => {
-                    // @ts-ignore
-                    const percent = typeof step.percent === 'number' ? Math.round(step.percent) : 0;
-                    updateFile(file.name, {
-                      percentage: percent,
-                      showProgress: true,
-                    });
-                  }}
-                  onSuccess={handleFileSuccessUpload}
-                  onError={(err) => Message.error(err.message)}
-                >
-                  <div className={`${styles.upload} flex align-center`}>
-                    <Icon name="attachment" />
-                    <div>上传附件</div>
-                  </div>
-                </Upload>
-              </div>,
-              dom,
-            )}
-
-            <div className={styles.chosenPersons}>
-              {/* @ts-ignore */}
-              {chosenDepOrPerson.map(({ id, name, type }: Qxp.MsgReceiver, key) => {
-                return (
-                  <span className={cs(styles.person, {
-                    [styles.isDep]: type === 2,
-                    [styles.isPerson]: type === 1,
-                  })} key={id}>
-                    <span>{name}</span>
-                    <Icon name='close' className={styles.close} onClick={() => removeReceiver(key)} />
-                  </span>
-                );
-              })}
-            </div>
           </div>
           {footer ? footer() : (<div className={styles.footer}>
             <Button
-              // @ts-ignore
-              onClick={debounce(saveDraft, 1000)}
+              onClick={debounce(() => handleSubmit('draft'), 1000)}
               iconName="book"
               className='mr-20'
             >
@@ -505,7 +308,7 @@ function ContentWithoutRef({
             <Button
               className="bg-gray-700 mr-20"
               modifier="primary"
-              onClick={previewAndPublish}
+              onClick={handlePreviewAndPublish}
               iconName="send"
             >
               预览并发送
@@ -513,19 +316,6 @@ function ContentWithoutRef({
           </div>)}
         </div>
       </div>
-
-      {openReceiverModal && (
-        <ModalSelectReceiver
-          onSubmit={chooseReceiver}
-          onCancel={() => setOpenReceiverModal(false)}
-          title="选择员工或部门"
-          submitText="确定选择"
-          // @ts-ignore
-          departments={_chosenDepOrPerson.filter((itm) => itm.type === 2)}
-          // @ts-ignore
-          employees={_chosenDepOrPerson.filter((itm) => itm.type === 1)}
-        />
-      )}
       {openPreviewModal && (<Modal
         title='消息预览并发送'
         width={960}
@@ -542,7 +332,7 @@ function ContentWithoutRef({
             key: 'confirm',
             iconName: 'done',
             modifier: 'primary',
-            onClick: debounce(() => confirmSend(true), 1000),
+            onClick: debounce(() => handleSubmit('send'), 1000),
           },
         ]}
       >

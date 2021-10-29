@@ -1,6 +1,6 @@
 import { Observable, of, combineLatest } from 'rxjs';
 import { switchMap, debounceTime, filter, map, catchError } from 'rxjs/operators';
-import { fromPromise } from 'rxjs/observable/fromPromise';
+import { from } from 'rxjs';
 import { FormEffectHooks, ISchemaFormActions } from '@formily/antd';
 
 import logger from '@lib/logger';
@@ -33,7 +33,7 @@ function fetchLinkedTableData$(
     },
   };
 
-  return fromPromise(
+  return from(
     fetchFormDataList(linkage.linkedAppID, linkage.linkedTable.id, {
       sort: (linkage.linkedTableSortRules || []).filter(Boolean),
       query,
