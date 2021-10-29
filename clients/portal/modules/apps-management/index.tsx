@@ -2,6 +2,7 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 
 import SideNavCard from '@c/side-nav-card';
+import NotFoundError from '@c/404-error';
 import ItemWithTitleDesc from '@c/item-with-title-desc';
 import AppIcon from '@c/app-icon';
 
@@ -51,6 +52,7 @@ function AppManagerEntry(): JSX.Element {
           <Route exact path="/apps" component={AppList} />
           <Route path="/apps/my-apps" component={AppList} />
           <Route path="/apps/option-set" component={OptionSet} />
+          <Route component={NotFoundError}/>
         </Switch>
       </div>
     </div>

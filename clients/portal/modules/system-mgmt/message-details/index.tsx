@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import { MsgType } from '@portal/modules/system-mgmt/constants';
 import { getMsgById } from '@portal/modules/system-mgmt/api';
 import Loading from '@c/loading';
+import NotFoundError from '@c/404-error';
 
 import Container from '../container';
 import FileList from '../send-message/filelist';
@@ -40,6 +41,10 @@ function ContentWithoutRef() {
 
   if (isLoading && !msgDetail) {
     return <Loading desc="数据加载中..." />;
+  }
+
+  if (!isLoading && !msgDetail) {
+    return <NotFoundError url='/'/>;
   }
 
   const { recivers = [] }: any = msgDetail;
