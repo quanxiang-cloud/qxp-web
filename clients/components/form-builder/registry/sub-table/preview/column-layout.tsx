@@ -5,6 +5,7 @@ import { FormItem, IForm } from '@formily/antd';
 
 import type { Column } from './index';
 import type { Layout } from '../convertor';
+import { omitParentFromSchema } from './utils';
 
 interface Props {
   componentColumns: Column[];
@@ -52,7 +53,7 @@ export default function ColumnLayout({
         }
         prs['x-internal'] = { ...prs['x-internal'], fieldPath: path };
         Object.assign(schema, { fieldPath: path });
-        const sc = set(lensPath(['x-internal', 'fieldPath']), path, JSON.parse(JSON.stringify(schema)));
+        const sc = set(lensPath(['x-internal', 'fieldPath']), path, omitParentFromSchema(schema));
 
         function getComponent(): JSXElementConstructor<any> | undefined {
           return readOnly && !blackList.includes(componentName) ?
