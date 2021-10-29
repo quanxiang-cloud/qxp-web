@@ -13,6 +13,11 @@ declare module '*.module.sass' {
   export default classes;
 }
 
+declare module 'web-worker:*' {
+  const WorkerFactory: new () => Worker;
+  export default WorkerFactory;
+}
+
 declare module 'draftjs-to-html';
 declare module 'html-to-draftjs';
 declare module 'react-highlight';

@@ -20,7 +20,6 @@ const FIELD_FORM_SCHEMA = {
           type: 'string',
           title: '变量名称',
           required: true,
-          maxLength: 20,
           'x-rules': [
             {
               required: true,
@@ -52,6 +51,9 @@ const FIELD_FORM_SCHEMA = {
           type: 'string',
           title: '默认值',
           'x-component': 'Input',
+          'x-component-props': {
+            maxLength: 100,
+          },
           'x-index': 2,
           'x-mega-props': {
             labelAlign: 'top',
@@ -103,9 +105,29 @@ export default function EditVariableModal({ variable, closeModal, onAdded }: Pro
           number: 'NumberPicker',
           string: 'Input',
         };
+
+        if (variable.id) {
+          setFieldState('fieldType', (state) => {
+            state.props['x-component-props'] = {
+              disabled: true,
+            };
+          });
+        }
+
         setFieldState('defaultValue', (state) => {
           state.props['x-component'] = componentMap[type];
           state.props.enum = undefined;
+          if (type === 'string') {
+            state.props['x-component-props'] = {
+              maxLength: 100,
+            };
+          }
+          if (type === 'number') {
+            state.props['x-component-props'] = {
+              max: 999999,
+              min: -999999,
+            };
+          }
           if ( type === 'boolean') {
             state.props.enum = [
               { value: 'False', label: 'false' },

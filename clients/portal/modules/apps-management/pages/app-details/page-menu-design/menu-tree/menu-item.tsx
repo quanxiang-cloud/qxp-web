@@ -83,7 +83,6 @@ function MenuItem({ menu, handleMenuClick }: Props): JSX.Element {
 
   function handleClick(e: React.MouseEvent<HTMLDivElement, MouseEvent>, menu: Menu): void {
     e.stopPropagation();
-
     if (menu?.child) {
       update(collapse(menu, pageInitList));
     } else {

@@ -16,7 +16,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	adminUserFuncTags := getAdminUserFuncTags(r)
 	userAdminRoles := getUserAdminRoles(r)
 
-	renderTemplate(w, "home.html", map[string]interface{}{
+	renderWebAppPage(w, "home.html", map[string]interface{}{
 		"user":              user,
 		"adminUserFuncTags": adminUserFuncTags,
 		"userAdminRoles":    userAdminRoles,

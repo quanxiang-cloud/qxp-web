@@ -63,7 +63,7 @@ function ModelMoreMenu({ model }: Props): JSX.Element {
             label: (
               <div className="flex items-center">
                 <Icon name="restore_from_trash" size={16} className="mr-8" />
-                <span className="font-normal">删除数据表</span>
+                <span className="font-normal">删除数据模型</span>
               </div>
             ),
             disabled: model.source !== 2,

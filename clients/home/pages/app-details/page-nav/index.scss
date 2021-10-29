@@ -67,5 +67,9 @@
   &:hover {
     color: var(--gray-600);
     background-color: var(--gray-100);
+
+    >svg {
+      fill: var(--gray-400);
+    }
   }
 }

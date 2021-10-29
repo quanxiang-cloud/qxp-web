@@ -9,7 +9,7 @@ import (
 // HandleResetPassword render reset password page
 func HandleResetPassword(w http.ResponseWriter, r *http.Request) {
 	redirectURL := r.URL.Query().Get("redirectUrl")
-	renderTemplate(w, "reset-password.html", map[string]interface{}{
+	render(w, "reset-password.html", map[string]interface{}{
 		"redirectUrl": redirectURL,
 	})
 }
@@ -25,7 +25,7 @@ func HandleResetPasswordSubmit(w http.ResponseWriter, r *http.Request) {
 	})
 	if err != nil {
 		contexts.Logger.Errorf("failed to marshal request body: %s, request_id: %s", err.Error(), requestID)
-		renderTemplate(w, templateName, map[string]interface{}{
+		render(w, templateName, map[string]interface{}{
 			"errorMessage": "重置密码失败",
 		})
 		return
@@ -33,7 +33,7 @@ func HandleResetPasswordSubmit(w http.ResponseWriter, r *http.Request) {
 	session := contexts.GetCurrentRequestSession(r)
 	if session == nil {
 		contexts.Logger.Errorf("failed to get request session for resetPassword: %s, request_id: %s", err.Error(), requestID)
-		renderTemplate(w, templateName, map[string]interface{}{
+		render(w, templateName, map[string]interface{}{
 			"errorMessage": "重置密码失败",
 		})
 		return
@@ -44,7 +44,7 @@ func HandleResetPasswordSubmit(w http.ResponseWriter, r *http.Request) {
 	})
 	if errMsg != "" {
 		contexts.Logger.Errorf("failed to reset password: %s, response: %s request_id: %s", errMsg, string(respBody), requestID)
-		renderTemplate(w, templateName, map[string]interface{}{
+		render(w, templateName, map[string]interface{}{
 			"errorMessage": "重置密码失败",
 		})
 		return
@@ -52,14 +52,14 @@ func HandleResetPasswordSubmit(w http.ResponseWriter, r *http.Request) {
 	var resetPasswordResponse ResetPasswordResponse
 	if err := json.Unmarshal(respBody, &resetPasswordResponse); err != nil {
 		contexts.Logger.Errorf("failed to unmarshal reset password response body, err: %s, request_id: %s", err.Error(), requestID)
-		renderTemplate(w, templateName, map[string]interface{}{
+		render(w, templateName, map[string]interface{}{
 			"errorMessage": "重置密码失败",
 		})
 		return
 	}
 	if resetPasswordResponse.Code != 0 {
 		contexts.Logger.Debugf("failed to reset password, err: %s, request_id: %s", resetPasswordResponse.Message, requestID)
-		renderTemplate(w, templateName, map[string]interface{}{
+		render(w, templateName, map[string]interface{}{
 			"errorMessage": resetPasswordResponse.Message,
 		})
 		return

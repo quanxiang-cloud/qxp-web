@@ -3,7 +3,8 @@ import cs from 'classnames';
 
 import Icon from '@c/icon';
 
-import '@c/drawer/index.scss';
+// rollup can not resolve this path
+import '../../../../../../components/drawer/index.scss';
 
 type Props = {
   onCancel: () => boolean | void;

@@ -31,6 +31,7 @@ function PageDetails({ pageID }: Props): JSX.Element {
   const [file, setFile] = useState<FileInfo | null>(null);
   const {
     activeMenu, curPageCardList, appID, fetchSchemeLoading, setCurPageMenuType, pageDescriptions,
+    setActiveMenu,
   } = appPagesStore;
 
   function goFormBuild(): void {
@@ -52,6 +53,7 @@ function PageDetails({ pageID }: Props): JSX.Element {
         menuId: pageID, fileSize: fileSizeStr, fileUrl: file?.url || '',
       }).then((res) => {
         setCurPageMenuType(2, res);
+        setActiveMenu({ ...res, menuType: 2 });
         toast.success('新建成功');
         setModalType('');
         setFile(null);
@@ -66,6 +68,7 @@ function PageDetails({ pageID }: Props): JSX.Element {
     },
     ).then((res) => {
       setCurPageMenuType(MenuType.customPage, res);
+      setActiveMenu({ ...res, menuType: 2 });
       toast.success('修改成功');
       setModalType('');
       setFile(null);

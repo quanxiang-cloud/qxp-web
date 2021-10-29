@@ -16,7 +16,7 @@ func PortalHandler(w http.ResponseWriter, r *http.Request) {
 	adminUserFuncTags := getAdminUserFuncTags(r)
 	userAdminRoles := getUserAdminRoles(r)
 
-	renderTemplate(w, "portal.html", map[string]interface{}{
+	renderWebAppPage(w, "portal.html", map[string]interface{}{
 		"user":              user,
 		"adminUserFuncTags": adminUserFuncTags,
 		"userAdminRoles":    userAdminRoles,

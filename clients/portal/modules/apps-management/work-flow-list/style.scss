@@ -1,3 +1,8 @@
+.flow-search {
+  width: 254px;
+  @apply text-12;
+}
+
 .create-flow-menu-group {
   &:hover {
     @apply bg-gray-1000;

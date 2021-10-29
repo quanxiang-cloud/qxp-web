@@ -1,11 +1,11 @@
-{{template "layout" .}}
-
-{{define "header_styles"}}
-<title>登录</title>
-<link rel="stylesheet" href="<%= htmlWebpackPlugin.files.css[0] %>">
-{{end}}
-
-{{define "content"}}
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <title>登录</title>
+  {{template "_common_head_meta"}}
+  {{template "_login-by-captcha_links"}}
+</head>
+<body>
 <main class="flex va-top flex-1 column align-center bg-main">
   <header class="flex row space-between align-center w-p-100">
     <div class="logo-company">
@@ -13,13 +13,8 @@
       <span class="text-black-100 fs-16 va-middle">全象云</span>
     </div>
   </header>
-
-  <form
-    id="loginForm"
-    action="/login/captcha{{if .redirectUrl}}?redirectUrl={{.redirectUrl}}{{end}}"
-    method="post"
-    class="inline-flex column text-left w360 w-m-p-100 flex-1 justify-center"
-  >
+  <form id="loginForm" action="/login/captcha{{if .redirectUrl}}?redirectUrl={{.redirectUrl}}{{end}}" method="post"
+    class="inline-flex column text-left w360 w-m-p-100 flex-1 justify-center">
     <h1 class="flex space-between mb-40 text-h3">
       欢迎登录
       <!-- <a class="text-button flex align-center text-blue-b10" href="/login/password">
@@ -37,11 +32,8 @@
     </div>
     <div class="input-field with-appendix flex relative">
       <input id="captcha" name="captcha" type="text" class="captcha flex-1 text-body2" placeholder="输入验证码">
-      <span
-        id="captchaBtn"
-        type="button"
-        class="captcha-btn clickable fs-12 pr-4 py-1 send text-body2 absolute right-10 top-center text-blue-b10"
-      >
+      <span id="captchaBtn" type="button"
+        class="captcha-btn clickable fs-12 pr-4 py-1 send text-body2 absolute right-10 top-center text-blue-b10">
         获取验证码
       </span>
     </div>
@@ -49,12 +41,8 @@
     <button type="submit"
       class="btn-login text-white-n00 bg-gray-7 py-5 text-center bd-none outline-none clickable text-button">登录</button>
   </form>
-
 </main>
-
 <aside class="right-aside"></aside>
-{{end}}
-
-{{define "bottom_scripts"}}
-<script src="<%= htmlWebpackPlugin.files.js[0] %>"></script>
-{{end}}
+{{template "_login-by-captcha_scripts"}}
+</body>
+</html>

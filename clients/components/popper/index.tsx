@@ -57,8 +57,8 @@ export default class Popper2 extends React.Component<Props, State> {
   }
 
   componentDidMount(): void {
+    this.appendContainer();
     this.bindEventsOnReference();
-
     this.createPopperInstance();
   }
 
@@ -81,6 +81,7 @@ export default class Popper2 extends React.Component<Props, State> {
 
   componentWillUnmount(): void {
     this.cleanUp();
+    this.popperContainer.remove();
   }
 
   createPopperInstance = (): void => {
@@ -214,7 +215,6 @@ export default class Popper2 extends React.Component<Props, State> {
 
   cleanUp(): void {
     this.instance?.destroy();
-    this.popperContainer.remove();
   }
 
   render(): React.ReactPortal | null {
@@ -222,8 +222,6 @@ export default class Popper2 extends React.Component<Props, State> {
       this.cleanUp();
       return null;
     }
-
-    this.appendContainer();
 
     return ReactDOM.createPortal(
       this.props.children,

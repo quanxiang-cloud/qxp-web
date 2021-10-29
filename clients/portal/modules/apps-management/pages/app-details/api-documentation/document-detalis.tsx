@@ -17,10 +17,12 @@ import { copyContent } from '@lib/utils';
 import store from './store';
 import 'highlight.js/styles/atelier-sulphurpool-dark.css';
 
+const Highlight = lazy(() => import('react-highlight').then((m) => m.default));
+
 const DOC_TYPE_LIST = [
-  { label: 'cURL', value: 'curl' },
-  { label: 'javaScript', value: 'javascript' },
-  { label: 'python', value: 'python' },
+  { label: 'CURL', value: 'curl' },
+  { label: 'JavaScript', value: 'javascript' },
+  { label: 'Python', value: 'python' },
 ];
 
 export const FIELD_COLUMNS: UnionColumns<ModelField>[] = [
@@ -73,8 +75,6 @@ export const FIELD_COLUMNS: UnionColumns<ModelField>[] = [
   },
 ];
 
-const Highlight = lazy(() => import('react-highlight'));
-
 function renderApiDetails(): JSX.Element {
   if (store.isAPILoading) {
     return <Loading/>;
@@ -121,10 +121,18 @@ function renderApiDetails(): JSX.Element {
               onClick={() => copyContent(store.APiContent.input)}
             />
           </Tooltip>
-          <Highlight language={store.docType} className='api-details'>{store.APiContent.input}</Highlight>
+          <Highlight
+            className='api-details'
+            language={store.docType === 'curl' ? 'bash' : store.docType}
+          >
+            {store.APiContent.input}
+          </Highlight>
         </div>
         <div className='api-content-title'>返回示例</div>
-        <Highlight language={store.docType} className='api-details mb-20'>
+        <Highlight
+          className='api-details mb-20'
+          language={store.docType === 'curl' ? 'bash' : store.docType}
+        >
           {store.APiContent.output}
         </Highlight>
       </Suspense>

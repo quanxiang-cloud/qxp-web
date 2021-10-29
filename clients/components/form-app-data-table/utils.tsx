@@ -31,6 +31,7 @@ export const SHOW_FIELD = [
   'OrganizationPicker',
   'AssociatedData',
   'Serial',
+  'Textarea',
 ];
 
 function addFixedParameters(
