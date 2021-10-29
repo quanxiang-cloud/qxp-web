@@ -13,6 +13,7 @@ import { fetchUserList } from '@home/lib/api';
 import toast from '@lib/toast';
 
 import store from '../store';
+import RoleSwitcher from '../role-switcher';
 
 import './index.scss';
 
@@ -36,6 +37,7 @@ function PageNav(): JSX.Element {
       }
       setAppList(res.data);
     });
+    store.getRoleInfo(appID);
   }, [appID]);
 
   const onSelect = (pageNode: PageInfo): void => {
@@ -51,11 +53,11 @@ function PageNav(): JSX.Element {
   }
 
   return (
-    <div className='app-details-nav'>
-      <div className={cs('nav-content ease-in-out duration-300', {
+    <div className='app-page-nav relative'>
+      <div className={cs('nav-content ease-in-out duration-300 shadow-more-action', {
         collapse: !store.showPageNav,
       })}>
-        <div className='nav-content-header h-52 overflow-hidden flex items-center mx-12'>
+        <div className='nav-content-header w-208 h-52 overflow-hidden flex items-center justify-center sticky top-0 z-20 bg-gray-50'>
           <div
             onClick={() => history.push('/')}
             className='app-header-icon text-gray-400 corner-8-8-8-2'
@@ -70,13 +72,15 @@ function PageNav(): JSX.Element {
             onChange={handleChange}
           />
         </div>
-        <div className='app-page-tree-wrapper'>
+        <div className='app-page-tree-wrapper flex flex-col-reverse'>
+          <RoleSwitcher />
+
           {store.pageList.length ? (
             <TwoLevelMenu<PageInfo>
               menus={store.pageList}
               defaultSelected={store.curPage.id}
               onSelect={(page) => onSelect(page.source as PageInfo)}
-              className='overflow-hidden'
+              className='app-page-tree overflow-x-hidden'
             />
           ) : (
             <AbsoluteCentered>
