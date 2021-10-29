@@ -1,12 +1,11 @@
 import React from 'react';
 import cs from 'classnames';
-import { useCss } from 'react-use';
 
 import svgHash from './svg-hash';
 
 export interface Props extends React.SVGProps<SVGSVGElement> {
   name: string;
-  color?: string;
+  color?: 'red' | 'yellow' | 'green' | 'gray' | 'blue' | 'rose' | 'pink' | 'purple' | 'orange' | 'primary';
   size?: number;
   disabled?: boolean;
   changeable?: boolean;
@@ -27,19 +26,11 @@ function Icon(
   }: Props,
   ref?: React.Ref<SVGSVGElement>,
 ): JSX.Element {
-  let iconColor;
   const _style: React.CSSProperties = {
     ...style,
-    width: `${size - 1}px`,
-    height: `${size - 1}px`,
+    width: `${size}px`,
+    height: `${size}px`,
   };
-
-  if (color) {
-    iconColor = useCss({
-      color: `var(--${color}-600)`,
-      fill: `var(--${color}-400)`,
-    });
-  }
 
   return (
     <svg
@@ -47,10 +38,11 @@ function Icon(
       ref={ref}
       data-name={name}
       style={_style}
-      className={cs('svg-icon', className, iconColor, {
+      className={cs('svg-icon', className, {
         'svg-icon--changeable': changeable,
         'svg-icon--clickable': clickable,
         'svg-icon--disabled': disabled,
+        [`svg-icon--${color}`]: color,
       })}
     >
       <use xlinkHref={`${svgHash}#${name}`} />
