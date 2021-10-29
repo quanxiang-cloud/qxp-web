@@ -5,6 +5,7 @@ import toast from '@lib/toast';
 
 import { fetchCorrelationFlows, fetchCorrelationRoles } from './api';
 import { CardListInfo, CardList, CustomPageInfo, Description, SchemaPageInfo, MenuType } from './type';
+import { flattenDeep, isEmpty } from 'lodash';
 
 export const SYSTEM_FIELDS: Record<string, ModelFieldSchema> = {
   _id: {
@@ -237,4 +238,21 @@ export function formatFileSize(fileSize: number): string {
   const i = Math.floor(Math.log(fileSize) / Math.log(1024));
 
   return parseFloat((fileSize / Math.pow(1024, i)).toFixed(2)) + ' ' + units[i];
+}
+
+function getFlatMenu(menus: Menu[] = []): Menu[] {
+  return flattenDeep(menus.map((menu: Menu) => menu.child?.length ? [menu, menu.child] : menu));
+}
+
+type MenuMap = Record<string, Menu>;
+function getReduceMap(menus: Menu[]): MenuMap {
+  const reducerFn = (acc: MenuMap, menu: Menu): MenuMap => {
+    acc[menu.id] = menu;
+    return acc;
+  };
+  return getFlatMenu(menus).reduce(reducerFn, {});
+}
+
+export function hasActiveMenu(list: Menu[], { id }: Menu): boolean {
+  return !!id && !isEmpty(getReduceMap(list)?.[id]);
 }
