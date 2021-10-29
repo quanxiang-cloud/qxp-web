@@ -23,7 +23,9 @@ function TargetTableFields({ appId, tableId }: Props): JSX.Element {
     getFormFieldSchema, {
       enabled: !!appId && !!tableId,
     });
-  const tableSchemaMap = schemaToMap(schema);
+  const tableSchemaMap = schemaToMap(schema, (currentSchema: SchemaFieldItem) => {
+    return currentSchema.componentName !== 'associatedrecords';
+  });
 
   const getTableIdByFieldKey = (key: string): string => {
     const field = tableSchemaMap[key];
