@@ -27,7 +27,7 @@ export const output = {
 };
 
 export default {
-  treeshake: true,
+  treeshake: isProduction,
   preserveEntrySignatures: false,
 
   input: {
@@ -38,6 +38,7 @@ export default {
   external: [
     'react',
     'react-dom',
+    'react-is',
 
     '@formily/antd-components',
     '@formily/antd',
@@ -48,13 +49,27 @@ export default {
     '@formily/shared',
     '@formily/validator',
     'antd',
+    '@QCFE/lego-ui',
 
     'rxjs',
-    'rxjs-compat',
+    /rxjs\/.*/,
+    'moment',
     'lodash',
+    // 'lodash/fp',
+    'ramda',
+    // 'react-use',
+    // /react-use\/.*/,
 
-    '@QCFE/lego-ui',
-    'react-is',
+    // 'draft-js',
+    // 'html-to-draftjs',
+    // 'react-draft-wysiwyg',
+    'jszip',
+    'react-beautiful-dnd',
+    'react-dnd',
+    // 'react-dnd-html5-backend',
+    'react-flow-renderer',
+    'react-highlight',
+    'xlsx',
   ],
 
   plugins: [
