@@ -10,7 +10,7 @@ type AppPathType = 'root' | 'raw' | 'poly' | 'serviceForm' | 'form' | 'custom';
 /*
  namespace crud apis
  */
-export const createNamespace = async (namespace: string, params: PolyAPI.CreateNamespaceParams): Promise<PolyAPI.NamespaceInfo> => {
+export const createNamespace = async (namespace: string, params: PolyAPI.CreateNamespaceParams): Promise<PolyAPI.Namespace> => {
   return await httpClient(`/api/v1/polyapi/namespace/create/${namespace}`, params);
 };
 
@@ -26,20 +26,29 @@ export const activateNamespace = async (namespacePath: string, params: {active: 
   return await httpClient(`/api/v1/polyapi/namespace/active/${namespacePath}`, params);
 };
 
-export const getNamespaceList = async (namespacePath: string, params: Paging): Promise<{
+export const getNamespaceList = async (namespacePath = '', params: Paging): Promise<{
   total: number;
   page: number;
-  list: Array<PolyAPI.NamespaceInfo & {parent: string; name: string}>
+  list: Array<PolyAPI.Namespace>
 }>=> {
-  return await httpClient(['/api/v1/polyapi/namespace/list', namespacePath].join('/'), params);
+  return await httpClient(`/api/v1/polyapi/namespace/list${namespacePath.startsWith('/') ? namespacePath : '/' + namespacePath}`, params);
 };
 
-export const getNamespace = async (namespacePath: string): Promise<PolyAPI.NamespaceInfo & {parent: string; name: string}> => {
+export const getNamespace = async (namespacePath: string): Promise<PolyAPI.Namespace> => {
   return await httpClient(`/api/v1/polyapi/namespace/query/${namespacePath}`);
 };
 
-export const getAppPath = async (appID: string, pathType: AppPathType = 'root'): Promise<{appID: string, pathType: string, appPath: string}> => {
+export const getAppPath = async (appID: string, pathType: AppPathType = 'raw'): Promise<{appID: string, pathType: string, appPath: string}> => {
   return await httpClient('/api/v1/polyapi/namespace/appPath', { appID, pathType });
+};
+
+export const searchNamespace = async (ns: string, params: Record<string, any>): Promise<{
+  total: number;
+  page: number;
+  list: Array<PolyAPI.Namespace>
+}> => {
+  const defaultParams = { active: -1, page: 1, pageSize: -1, withSub: true };
+  return await httpClient(`/api/v1/polyapi/namespace/search/${ns.startsWith('/') ? ns.slice(1) : ns}`, { ...params, ...defaultParams });
 };
 
 /*
@@ -65,12 +74,12 @@ export const activateService = async (servicePath: string, params: {active: numb
 export const getServiceList = async (namespacePath?: string, params?: Paging): Promise<{
   total: number;
   page: number;
-  list: Array<PolyAPI.ServiceInfo>
+  list: Array<PolyAPI.Service>
 }> => {
   return await httpClient(['/api/v1/polyapi/service/list', namespacePath || ''].join('/'), params || {});
 };
 
-export const getService = async (servicePath: string): Promise<PolyAPI.ServiceInfo> => {
+export const getService = async (servicePath: string): Promise<PolyAPI.Service> => {
   return await httpClient(`/api/v1/polyapi/service/query/${servicePath}`);
 };
 
@@ -89,7 +98,7 @@ export const uploadSwagger = async (servicePath: string, params: PolyAPI.UploadA
 export const getNamespaceApiList = async (namespacePath: string, params: Paging): Promise<{
   total: number;
   page: number;
-  list: Array<PolyAPI.ApiInfo>
+  list: Array<PolyAPI.Api>
 }> => {
   return await httpClient(`/api/v1/polyapi/raw/list/${namespacePath}`, params);
 };
@@ -97,7 +106,7 @@ export const getNamespaceApiList = async (namespacePath: string, params: Paging)
 export const getServiceApiList = async (servicePath: string, params: Paging): Promise<{
   total: number;
   page: number;
-  list: Array<PolyAPI.ApiInfo>
+  list: Array<PolyAPI.Api>
 }> => {
   return await httpClient(`/api/v1/polyapi/raw/listInService/${servicePath}`, params);
 };

@@ -21,7 +21,7 @@ function ApiList(props: Props) {
   const [apiList, setApiList] = useState([]);
   const ns = useNamespace();
 
-  const COLS: UnionColumns<PolyAPI.ApiInfo>[] = [
+  const COLS: UnionColumns<PolyAPI.Api>[] = [
     {
       Header: 'API 名称',
       id: 'title',

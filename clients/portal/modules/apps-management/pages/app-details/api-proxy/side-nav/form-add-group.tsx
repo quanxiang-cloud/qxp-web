@@ -29,18 +29,28 @@ function FormAddGroup({
         <input
           type="text"
           className={cs('input', { error: errors.title })}
-          {...register('title', { required: '请填写分组名称', shouldUnregister: true })}
+          maxLength={20}
+          placeholder='请输入，例如：公司系统'
+          {...register('title', { required: '请填写分组名称', shouldUnregister: true, maxLength: 20 })}
         />
+        <p className='text-gray-600 text-12'>不超过 20 个字符，分组名称不可重复</p>
         <ErrorMsg errors={errors} name='title'/>
       </FormItem>
       <FormItem label='分组标识'>
         <input
           type="text"
           className={cs('input', { error: errors.name })}
-          {...register('name', { required: '请填写分组标识', shouldUnregister: true })}
+          maxLength={20}
+          placeholder='请输入，例如：sys_001'
+          {...register('name', {
+            required: '请填写分组标识',
+            shouldUnregister: true,
+            pattern: /^[a-zA-Z][\w-]+$/,
+            maxLength: 20,
+          })}
         />
+        <p className='text-gray-600 text-12'>不超过 20 字符，必须以英文字母开头，只能包含字母、数字、下划线，中划线，标识不可重复。</p>
         <ErrorMsg errors={errors} name='name'/>
-        <p className='text-gray-600 text-12'>该标识用于确定唯一路径，新建后不可修改。例如：Qingcloud123</p>
       </FormItem>
       <FormItem label='描述'>
         <textarea

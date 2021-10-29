@@ -13,7 +13,7 @@ import store from '../store';
 function ListPage() {
   return (
     <>
-      <Header name={store.activeGroup?.name} />
+      <Header name={store.activeNs?.title || store.activeNs?.name} />
       <Tab
         items={[
           {

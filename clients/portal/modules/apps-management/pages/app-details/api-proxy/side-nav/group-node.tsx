@@ -15,7 +15,7 @@ import FormAddGroup from './form-add-group';
 
 type ModalType = 'add' | 'edit' | 'del' | string;
 
-function MenuItem(props: { icon: string; name: string }) {
+function MenuItem(props: { icon: string; name: string }): JSX.Element {
   return (
     <div className="flex items-center">
       <Icon name={props.icon || 'add'} size={16} className="mr-8" />
@@ -45,7 +45,7 @@ const menus = [
   },
 ];
 
-function GroupNodeRender({ node, store }: NodeRenderProps<APIGroup>): JSX.Element {
+function GroupNodeRender({ node, store }: NodeRenderProps<PolyAPI.Namespace>): JSX.Element {
   const [modalType, setModalType] = useState<ModalType>('');
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const history = useHistory();
@@ -153,7 +153,10 @@ function GroupNodeRender({ node, store }: NodeRenderProps<APIGroup>): JSX.Elemen
         title={node.name}
         onClick={()=> toGroup(node.id)}
       >
-        {node.name}
+        <span className='inline-flex items-center'>
+          <Icon name={node.expanded ? 'folder_open' : 'folder_empty'} size={20} />
+          <span className='ml-5 text-body1'>{node.name}</span>
+        </span>
       </span>
       <MoreMenu onMenuClick={handleClickMenu} menus={menus} innerRef={editNameRef}/>
       {renderModals()}

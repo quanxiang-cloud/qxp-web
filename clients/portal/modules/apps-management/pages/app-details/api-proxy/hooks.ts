@@ -8,5 +8,5 @@ export function useQueryString() {
 
 export function useNamespace() {
   const qs = useQueryString();
-  return qs.get('ns') || store.activeGroup?.id || '';
+  return qs.get('ns') || store.activeNs?.id || '';
 }

@@ -15,7 +15,7 @@ export type TreeNode<T> = Readonly<{
   level: number;
   visible: boolean;
   positionY?: number;
-  childrenStatus: 'resolved' | 'unknown' | 'loading';
+  childrenStatus: 'resolved' | 'unknown' | 'loading' | string;
 
   children?: TreeNode<T>[];
 }>;

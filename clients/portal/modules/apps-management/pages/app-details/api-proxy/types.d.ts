@@ -1,32 +1,25 @@
-interface APIGroup {
-  // todo: missing api doc
-  id: string;
-  name: string;
-  level?: number;
-  visible?: boolean;
-  pid?: string;
-  child?: Array<APIGroup>;
-}
+type ApiStatus = 0 | 1; // 0: 未激活，1: 已激活
 
 declare namespace PolyAPI {
-  interface NamespaceInfo {
+  interface Namespace {
     id: string;
     owner: string;
+    ownerName: string;
+    parent: string;
     name: string;
+    subCount: number;
     title: string;
     desc: string;
-    active: number; // 是否激活
+    active: ApiStatus;
     createAt: string;
     updateAt: string;
   }
 
-  interface ServiceInfo extends NamespaceInfo {
+  interface Service extends Namespace {
     namespace: string;
-    name: string;
   }
 
-  interface ApiInfo extends NamespaceInfo{
-    name: string;
+  interface Api extends Namespace {
     fullPath: string; // 代理路径
     url: string; // 原始路径
     version: string;
@@ -100,8 +93,8 @@ declare namespace PolyAPI {
   type CreateNamespaceParams={
     name: string;
     title: string;
-    desc: string;
+    desc?: string;
   }
 
-  type CreateServiceResult = Omit<ServiceInfo, 'owner'>
+  type CreateServiceResult = Omit<Service, 'owner'>
 }

@@ -1,53 +1,32 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { useQuery } from 'react-query';
 import { Tooltip } from '@QCFE/lego-ui';
 import { observer } from 'mobx-react';
 import { toJS } from 'mobx';
 import { useForm } from 'react-hook-form';
+import { useUpdateEffect, useDebounce } from 'react-use';
+import { useParams } from 'react-router-dom';
 
 import Tree from '@c/headless-tree';
 import { flatTree } from '@c/headless-tree/utils';
-import Loading from '@c/loading';
 import Search from '@c/search';
 import Icon from '@c/icon';
 import Modal from '@c/modal';
+import Loading from '@c/loading';
 
 import GroupNode from './group-node';
 import FormAddGroup from './form-add-group';
-import store, { ApiGroupStore } from '../store';
+import store from '../store';
 import { useNamespace } from '../hooks';
-import * as apis from '../api';
 
 import '../styles.scss';
 
-interface Props {
-  className?: string;
-}
-
-function SideNav(props: Props): JSX.Element {
+function SideNav(): JSX.Element | null {
   const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState(search);
   const [modalOpen, setModalOpen] = useState(false);
-  const { appID } = useParams<{appID: string}>();
-  const { data: appPathData } = useQuery(['api-proxy', 'get-app-path'], ()=> {
-    return apis.getAppPath(appID);
-  });
-  const { data: groups, isLoading } = useQuery(['api-proxy', 'get-svc-list'], () => {
-    return apis.getNamespaceList('', { page: 1, pageSize: -1 }).then((list)=> {
-      console.log('ns list: ', list);
-      return list;
-    });
-  });
   const ns = useNamespace();
   const formInst = useForm();
-
-  function handleSelect(data: APIGroup): void {
-    store.setActiveGroup(data);
-  }
-
-  function handleSearch(ev: any): void {
-
-  }
+  const { appID } = useParams<{appID: string}>();
 
   function handleAddGroup(): void {
     // todo
@@ -56,34 +35,60 @@ function SideNav(props: Props): JSX.Element {
     })();
   }
 
-  useEffect(() => {
-    if (groups && !isLoading) {
-      store.setTreeStore(new ApiGroupStore(groups));
-    }
-  }, [groups, isLoading]);
-
   useEffect(()=> {
     if (store.treeStore) {
       const flattenGroups = flatTree(toJS(store.treeStore.rootNode));
       if (ns) {
         const checked = flattenGroups.find((v)=> v.id === ns);
-        checked && handleSelect(checked);
+        checked && store.setActiveNs(checked.data);
       } else {
         // auto select first none-root node
         const firstNode = flattenGroups.find((v)=> v.visible && v.id);
-        firstNode && handleSelect(firstNode);
+        firstNode && store.setActiveNs(firstNode.data);
       }
     }
   }, [ns, store.treeStore]);
 
-  if (isLoading) {
-    return <Loading />;
+  useDebounce(()=> {
+    setDebouncedSearch(search);
+  }, 500, [search]);
+
+  // handle search
+  useUpdateEffect(()=> {
+    if (search) {
+      store.searchNamespace(search);
+    } else {
+      store.fetchNamespaces(appID);
+      store.clearFilterNs();
+    }
+  }, [debouncedSearch]);
+
+  function renderNsList(): JSX.Element {
+    if (store.isLoading) {
+      return <Loading />;
+    }
+    if (Array.isArray(store.filterNsList) && !store.filterNsList.length) {
+      return (
+        <div className='flex justify-center items-center text-body1'>
+          暂无数据
+        </div>
+      );
+    }
+    return (
+      <Tree
+        store={store.treeStore as any}
+        NodeRender={GroupNode}
+        RootNodeRender={()=> null}
+        onSelect={store.setActiveNs}
+        itemClassName='tree-node-item'
+      />
+    );
   }
 
   return (
-    <div className='flex flex-col min-w-259 bg-white border-r api-proxy--sider'>
+    <div className='flex flex-col bg-white border-r api-proxy--sider'>
       <div className='py-20 px-16 flex justify-between items-center'>
-        <span className='text-h6-bold text-gray-400 mr-auto'>菜单</span>
+        <span className='text-h6-bold text-gray-400 mr-auto'>API 分组</span>
         <Tooltip content='新建分组'>
           <Icon
             name='create_new_folder'
@@ -94,22 +99,16 @@ function SideNav(props: Props): JSX.Element {
           />
         </Tooltip>
       </div>
-      {store.treeStore && !store.treeStore?.noLeafNodes && (
+      {store.treeStore && (
         <div className='px-10'>
           <Search
             className="bg-gray-100 mb-20"
-            placeholder="输入选项名称"
+            placeholder="输入分组名称"
             value={search}
             onChange={setSearch}
-            onKeyDown={handleSearch}
+            onKeyDown={()=>{}}
           />
-          <Tree
-            store={store.treeStore}
-            NodeRender={GroupNode}
-            RootNodeRender={()=> null}
-            onSelect={handleSelect}
-            itemClassName='tree-node-item'
-          />
+          {renderNsList()}
         </div>
       )}
       {modalOpen && (
@@ -117,8 +116,8 @@ function SideNav(props: Props): JSX.Element {
           title='新增分组'
           onClose={() => setModalOpen(false)}
           footerBtns={[
-            { key: 'cancel', text: '取消', onClick: ()=> setModalOpen(false) },
-            { key: 'confirm', text: '确认新建', onClick: handleAddGroup, modifier: 'primary' },
+            { key: 'cancel', text: '取消', iconName: 'close', onClick: ()=> setModalOpen(false) },
+            { key: 'confirm', text: '确认新建', iconName: 'check', onClick: handleAddGroup, modifier: 'primary' },
           ]}
         >
           <FormAddGroup form={formInst} onSubmit={handleAddGroup} />

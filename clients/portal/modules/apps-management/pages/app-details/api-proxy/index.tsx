@@ -1,26 +1,27 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { observer } from 'mobx-react';
+import { ReactQueryDevtools } from 'react-query/devtools';
+import { useParams } from 'react-router-dom';
 
 import Loading from '@c/loading';
 
 import SideNav from './side-nav';
 import List from './api-list';
 import Add from './add-api';
-import Detail from './api-detail';
 import AddSwagger from './add-swagger';
-import NoData from './comps/no-data';
+import GuidePage from './guide-page';
 import store from './store';
 import { useQueryString, useNamespace } from './hooks';
 
 import './styles.scss';
 
 interface SubPageProps {
-  namespace?: string | null;
-  apiId?: string | null;
-  action?: string | null;
+  namespace?: string;
+  id?: string;
+  action?: string;
 }
 
-function SubPage({ namespace, apiId, action }: SubPageProps) {
+function SubPage({ namespace, id, action }: SubPageProps): JSX.Element {
   if (namespace) {
     if (['add', 'edit'].includes(action || '')) {
       return <Add />;
@@ -28,42 +29,43 @@ function SubPage({ namespace, apiId, action }: SubPageProps) {
     if (action === 'add-swagger') {
       return <AddSwagger />;
     }
-    // todo: remove
-    if (apiId) {
-      return <Detail />;
-    }
   }
   return <List />;
 }
 
-function ApiProxy(): JSX.Element {
+function ApiProxy(): JSX.Element | null {
   const qs = useQueryString();
   const ns = useNamespace();
+  const { appID } = useParams<{appID: string}>();
 
-  function renderMain(): JSX.Element {
-    if (!store.treeStore) {
-      return <Loading />;
-    }
+  useEffect(()=> {
+    store.setAppId(appID);
+    store.fetchNamespaces(appID);
 
-    if (!store.activeGroup || store.treeStore.noLeafNodes) {
-      return <NoData/>;
-    }
+    return ()=> {
+      store.reset();
+    };
+  }, []);
 
-    return (
-      <div className='w-full h-full overflow-auto api-proxy--main-cont'>
-        <SubPage
-          namespace={ns}
-          apiId={qs.get('api')}
-          action={qs.get('action')}
-        />
-      </div>
-    );
+  if (!store.treeStore) {
+    return <Loading />;
+  }
+
+  if (!store.namespaces.length) {
+    return <GuidePage />;
   }
 
   return (
     <div className='flex flex-grow bg-white mt-20 mx-20 api-proxy'>
       <SideNav />
-      {renderMain()}
+      <div className='w-full h-full overflow-auto api-proxy--main-cont'>
+        <SubPage
+          namespace={ns}
+          id={qs.get('id') || ''}
+          action={qs.get('action') || ''}
+        />
+      </div>
+      <ReactQueryDevtools initialIsOpen={false} />
     </div>
   );
 }
