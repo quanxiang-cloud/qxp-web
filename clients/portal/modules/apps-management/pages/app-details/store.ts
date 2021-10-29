@@ -16,6 +16,7 @@ import {
   filterDeletedPage,
   mapToSchemaPageDescription,
   mapToCustomPageDescription,
+  hasActiveMenu,
 } from './utils';
 import {
   fetchAppDetails,
@@ -191,7 +192,7 @@ class AppDetailsStore {
     this.pagesTreeData = treeData;
   }
 
-  @action del = async (delItem: Menu, type: string, pathname: string, history?: History): Promise<void> => {
+  @action del = async (delItem: Menu, type: string): Promise<void> => {
     const dto = {
       id: delItem.id,
       appID: delItem.appID,
@@ -487,7 +488,9 @@ class AppDetailsStore {
         }
         return item;
       });
-      this.activeMenu = getFirstMenu(res.menu);
+      if (!hasActiveMenu(res.menu, this.activeMenu)) {
+        this.activeMenu = getFirstMenu(res.menu);
+      }
       this.pagesTreeData = buildAppPagesTreeData(res.menu);
       this.pageListLoading = false;
     });
@@ -499,6 +502,7 @@ class AppDetailsStore {
     this.pageListLoading = true;
     this.appID = '';
     this.pageID = '';
+    this.activeMenu = DEFAULT_MENU;
     this.pagesTreeData = {
       rootId: 'ROOT',
       items: {},

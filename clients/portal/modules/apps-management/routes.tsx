@@ -3,7 +3,7 @@ import { Route, Switch } from 'react-router-dom';
 
 import ErrorTips from '@c/error-tips';
 
-const AppsIndex = React.lazy( () => import('./index'));
+const AppsIndex = React.lazy(() => import('./index'));
 const AppDetails = React.lazy(() => import('./pages/app-details'));
 const FormDesign = React.lazy(() => import('./pages/form-design'));
 const FlowDetail = React.lazy(() => import('../work-flow'));
