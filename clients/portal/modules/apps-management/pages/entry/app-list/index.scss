@@ -29,9 +29,16 @@
   grid-gap: 16px;
   padding: 0 16px;
   overflow-y: auto;
-  grid-template-columns: repeat(4, minmax(255px, 25%));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   grid-template-rows: repeat(auto-fill, 76px); 
 }
+
+@media screen and (max-width: 1440px) {
+  .app-list-container {
+    grid-template-columns: repeat(4, minmax(100px, 1fr));
+  }
+}
+
 @media screen and (max-width: 1400px) {
   .app-list-container {
     grid-template-columns: repeat(3, minmax(100px, 1fr));
