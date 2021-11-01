@@ -13,20 +13,21 @@ export type Props = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivEle
   inline?: boolean;
   wrapperClassName?: string;
   relative?: boolean;
+  always?: boolean;
 }
 
 export default function ToolTip(props: Props) {
-  const [show, setShow] = useState(false);
   const {
-    className, children, inline, wrapperClassName, labelClassName, relative = true, ...otp
+    className, children, inline, wrapperClassName, labelClassName, always, relative = true, ...otp
   } = props;
+  const [show, setShow] = useState(!!always);
 
   function onMouseEnter() {
-    setShow(true);
+    !always && setShow(true);
   }
 
   function onMouseLeave() {
-    setShow(false);
+    !always && setShow(false);
   }
 
   return (

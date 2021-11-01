@@ -29,6 +29,13 @@
         color: var(--blue-600);
       }
 
+      &.disabled {
+        cursor: not-allowed;
+        &:hover {
+          color: var(--gray-400);
+        }
+      }
+
       &::after {
         @apply transition;
         opacity: 0;

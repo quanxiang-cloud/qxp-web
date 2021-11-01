@@ -15,8 +15,20 @@ declare namespace PolyAPI {
     updateAt: string;
   }
 
-  interface Service extends Namespace {
-    namespace: string;
+  interface Service {
+    id: string;
+    owner: string;
+    ownerName: string;
+    fullPath: string;
+    title: string;
+    desc: string;
+    active: ApiStatus,
+    schema: 'http' | 'https',
+    host: string;
+    authType: 'none' | 'signature',
+    authContent: string;
+    createAt: string;
+    updateAt: string;
   }
 
   interface Api extends Namespace {
@@ -81,13 +93,11 @@ declare namespace PolyAPI {
   }
 
   type CreateServiceParams={
-    name: string;
-    title: string;
-    desc: string;
     schema: string;
     host: string;
     authType: string;
     authorize: string;
+    name: string;
   }
 
   type CreateNamespaceParams={

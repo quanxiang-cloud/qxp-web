@@ -58,16 +58,16 @@ export const searchNamespace = async (ns: string, params: Record<string, any>): 
 /*
   service crud apis
  */
-export const createService = async (namespacePath:string, params: PolyAPI.CreateServiceParams): Promise<PolyAPI.CreateServiceResult> => {
-  return await httpClient(`/api/v1/polyapi/service/create/${namespacePath}`, params);
+export const createService = async (ns:string, params: PolyAPI.CreateServiceParams): Promise<PolyAPI.CreateServiceResult> => {
+  return await httpClient(`/api/v1/polyapi/service/create/${normalizeSuffix(ns)}`, params);
 };
 
 export const deleteService = async (servicePath: string): Promise<{fullPath: string}> => {
   return await httpClient(`/api/v1/polyapi/service/delete/${servicePath}`);
 };
 
-export const updateService = async (servicePath: string, params: {title: string; desc: string}): Promise<{fullPath: string}> => {
-  return await httpClient(`/api/v1/polyapi/service/update/${servicePath}`, params);
+export const updateService = async (servicePath: string, params: Omit<PolyAPI.CreateServiceParams, 'name'>): Promise<{fullPath: string}> => {
+  return await httpClient(`/api/v1/polyapi/service/updateProperty/${normalizeSuffix(servicePath)}`, params);
 };
 
 // 激活服务
@@ -84,7 +84,7 @@ export const getServiceList = async (namespacePath: string, params?: Paging): Pr
 };
 
 export const getService = async (servicePath: string): Promise<PolyAPI.Service> => {
-  return await httpClient(`/api/v1/polyapi/service/query/${servicePath}`);
+  return await httpClient(`/api/v1/polyapi/service/query/${normalizeSuffix(servicePath)}`);
 };
 
 /*
