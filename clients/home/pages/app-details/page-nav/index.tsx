@@ -73,7 +73,7 @@ function PageNav(): JSX.Element {
           />
         </div>
         <div className='app-page-tree-wrapper flex flex-col-reverse'>
-          <RoleSwitcher />
+          {store.roleOptions.length > 1 && <RoleSwitcher />}
 
           {store.pageList.length ? (
             <TwoLevelMenu<PageInfo>

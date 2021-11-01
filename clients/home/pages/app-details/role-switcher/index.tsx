@@ -42,63 +42,67 @@ function RoleSwitcher(): JSX.Element {
             name="keyboard_arrow_down"
             className={cs('transition-transform duration-100 transform flex-shrink-0',
               {
-                'rotate-180': isShowRoleList,
+                '-rotate-90': isShowRoleList,
               })}
           />
         </div>
       </div>
-      {
-        roleOptions.length > 1 && (
-          <Popper
-            trigger='hover'
-            ref={popperRef}
-            placement="top-start"
-            reference={roleSwitcherRef}
-            className='rounded-12'
-            onVisibilityChange={(visible)=> setIsShowRoleList(visible)}
-          >
-            <div
-              className={cs(
-                'w-208 h-160 top-0 left-4 py-10 flex flex-col justify-start',
-                'bg-white overflow-x-hidden role-selector-pop-wrap',
-              )}
-            >
-              {
-                roleOptions.map((option: LabelValue) => {
-                  const { label, value } = option;
-                  const isActive = value === currentRoleInfo.id;
-                  return (
-                    <div
-                      key={value}
-                      className={cs('flex justify-between items-center py-8 px-16 group cursor-pointer')}
-                      onClick={() => {
-                        if (currentRoleInfo.id === value) return;
-                        handleRoleChange(value, label);
-                      }}
-                    >
-                      <div
-                        className={cs('text-14 text-current group-hover:text-blue-600 w-142 break-words',
-                          {
-                            'text-blue-600': isActive,
-                          })}>
-                        { label }
-                      </div>
+      <Popper
+        trigger='hover'
+        ref={popperRef}
+        placement="right-start"
+        reference={roleSwitcherRef}
+        className='role-switcher-popover'
+        onVisibilityChange={(visible)=> setIsShowRoleList(visible)}
+        modifiers={[
+          {
+            name: 'offset',
+            options: {
+              offset: [-4, 4],
+            },
+          },
+        ]}
+      >
+        <div
+          className={cs(
+            'w-208 h-160 top-0 left-4 py-10 flex flex-col justify-start',
+            'bg-white overflow-x-hidden role-selector-pop-wrap',
+          )}
+        >
+          {
+            roleOptions.map((option: LabelValue) => {
+              const { label, value } = option;
+              const isActive = value === currentRoleInfo.id;
+              return (
+                <div
+                  key={value}
+                  className={cs('flex justify-between items-center py-8 px-16 group cursor-pointer')}
+                  onClick={() => {
+                    if (currentRoleInfo.id === value) return;
+                    handleRoleChange(value, label);
+                  }}
+                >
+                  <div
+                    className={cs('text-14 text-current group-hover:text-blue-600 w-142 break-words',
                       {
-                        isActive && (
-                          <Icon
-                            size={20}
-                            name="check"
-                            className="text-blue-600 flex-shrink-0"
-                          />)
-                      }
-                    </div>
-                  );
-                })
-              }
-            </div>
-          </Popper>
-        )
-      }
+                        'text-blue-600': isActive,
+                      })}>
+                    { label }
+                  </div>
+                  {
+                    isActive && (
+                      <Icon
+                        size={20}
+                        name="check"
+                        className="text-blue-600 flex-shrink-0"
+                      />)
+                  }
+                </div>
+              );
+            })
+          }
+        </div>
+      </Popper>
     </>
   );
 }
