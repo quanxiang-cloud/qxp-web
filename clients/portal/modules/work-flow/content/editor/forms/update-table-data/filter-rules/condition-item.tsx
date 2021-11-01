@@ -49,7 +49,7 @@ function ConditionItem(props: Props): JSX.Element {
     <div className="flex items-center mb-10">
       <span className="text-caption">目标字段:</span>
       <Select
-        options={getSchemaFields(Object.values(props.targetSchema))}
+        options={getSchemaFields(Object.values(props.targetSchema), { excludeComps: ['associatedrecords'] })}
         value={normalizeFieldName}
         onChange={(fieldName: string) => onChange({ fieldName } as Condition)}
       />

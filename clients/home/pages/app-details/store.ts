@@ -7,6 +7,18 @@ import { treeFind, pageListToTree, NodeItem } from '@c/two-level-menu';
 
 import { fetchPageList, getOperate } from './api';
 
+import { getPerOption, roleChange } from '@home/lib/api';
+
+type PerItem = {
+  id: string;
+  name: string;
+}
+
+type PerRes = {
+  optionPer: PerItem[];
+  selectPer: PerItem;
+}
+
 class UserAppDetailsStore {
   destroySetCurPage: IReactionDisposer;
   @observable appID = '';
@@ -21,6 +33,8 @@ class UserAppDetailsStore {
   @observable isMouseControl = false;
   @observable pageList: NodeItem<PageInfo>[] = [];
   @observable customPageInfo: CustomPageInfo | null = null;
+  @observable currentRoleInfo = { name: '', id: '' };
+  @observable roleOptions: LabelValue[] = []
 
   constructor() {
     this.destroySetCurPage = reaction(() => {
@@ -120,6 +134,25 @@ class UserAppDetailsStore {
   closeMouseControl = (): void => {
     this.isMouseControl = false;
   }
-}
 
+  @action
+  getRoleInfo = (appID: string): void => {
+    getPerOption<PerRes>(appID).then((res: any) => {
+      const { optionPer = [], selectPer = { id: '' } } = res;
+      this.currentRoleInfo = { name: selectPer.name, id: selectPer.id };
+      this.roleOptions = (optionPer.map((option:PerItem) => ({ value: option.id, label: option.name })));
+    }).catch((reason) => {
+      toast.error(reason);
+    });
+  }
+  @action
+  handleRoleChange = (roleID: string, roleName: string): void => {
+    if (!roleID || !this.appID) return;
+    this.currentRoleInfo = { name: roleName, id: roleID };
+    roleChange(this.appID, roleID).then(() => {
+      this.clear();
+      this.fetchPageList(this.appID);
+    });
+  }
+}
 export default new UserAppDetailsStore();

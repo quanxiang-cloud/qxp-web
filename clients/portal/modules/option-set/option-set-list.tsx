@@ -85,17 +85,19 @@ function OptionSetList({ className }: Props): JSX.Element {
             store.modalOpen = true;
           }}
         >
-          <Icon name='add' size={20} className='text-current' />
+          <Icon name='add' size={20} />
           <span className='ml-8'>添加选项集</span>
         </span>)}
       </div>
       {store.loadingNames && <Loading />}
       {!store.loadingNames && (
-        <div className='dataset-itm flex flex-col overflow-auto'>
+        <div className='flex flex-col overflow-auto'>
           {!!filteredList?.length && filteredList.map(({ id, name }) => {
             return (
               <div
-                className='name-item flex items-center cursor-pointer pl-16 py-8 hover:bg-blue-100'
+                className={cs('name-item flex items-center cursor-pointer pl-16 py-8', {
+                  'item-active': store.activeId === id || hoverID === id,
+                })}
                 key={id}
                 onMouseEnter={() => setHoverID(id)}
                 onMouseLeave={() => setHoverID('')}
@@ -104,20 +106,9 @@ function OptionSetList({ className }: Props): JSX.Element {
                   store.setActive(id);
                 }}
               >
-                {name === '职位' && (
-                  <Icon name={(store.activeId === id || hoverID === id) ?
-                    'folder_shared_blue' : 'folder_gray'} />
-                )}
-                {name !== '职位' && (
-                  <Icon name={(store.activeId === id || hoverID === id) ? 'dataset_blue' : 'dataset'} />
-                )}
-                <span
-                  className={cs('ml-8 flex-grow w-0 truncate', {
-                    'text-blue-600 font-semibold': store.activeId === id || hoverID === id,
-                  })}
-                >
-                  {name}
-                </span>
+                {name === '职位' && <Icon name="folder_shared_qxp" />}
+                {name !== '职位' && <Icon name="database" />}
+                <span className="ml-8 flex-grow w-0 truncate">{name}</span>
                 <MoreIconMenu tabKey={store.queryType} />
               </div>
             );
