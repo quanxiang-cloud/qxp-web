@@ -89,7 +89,7 @@ function UsersAndPermissions(): JSX.Element {
       key: 'copy',
       label: (
         <div className="flex items-center">
-          <Icon name="create" size={16} className="mr-8" />
+          <Icon name="content_copy" size={16} className="mr-8" />
           <span className="font-normal">复制权限组</span>
         </div>
       ),
