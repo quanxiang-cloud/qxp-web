@@ -35,9 +35,9 @@ function OptionSetContent({ className }: Props): JSX.Element {
         <div className='flex min-h-52 m-16 rounded-8 datasetHeader'>
           <span className='items-center ml-20 mt-10'>
             <Icon
-              name={activeOptionSet?.name === '职位' ? 'folder_shared_white' : 'dataset_white'}
               size={30}
-              type='light'
+              color="white"
+              name={activeOptionSet?.name === '职位' ? 'folder_shared_qxp' : 'database'}
             />
           </span>
           <div className='datasetHeader-right flex-col'>

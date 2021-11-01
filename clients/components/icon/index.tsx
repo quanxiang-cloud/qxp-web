@@ -5,7 +5,7 @@ import svgHash from './svg-hash';
 
 export interface Props extends React.SVGProps<SVGSVGElement> {
   name: string;
-  color?: 'red' | 'yellow' | 'green' | 'gray' | 'blue' | 'rose' | 'pink' | 'purple' | 'orange' | 'primary';
+  color?: 'red' | 'yellow' | 'green' | 'gray' | 'blue' | 'white' |'rose' | 'pink' | 'purple' | 'orange' | 'primary';
   size?: number;
   disabled?: boolean;
   changeable?: boolean;
