@@ -1,5 +1,5 @@
 .page-details-nav {
-  box-shadow: inset 0px -1px 0px var(--gray-200);
+  border-bottom: 1px solid var(--gray-200);
 }
 
 .app-page-build-nav {
@@ -165,4 +165,8 @@
   &:hover {
     box-shadow: 0px 8px 24px 4px rgba(148, 163, 184, 0.25);
   }
+}
+
+.app-content--op_btn {
+  font-size: 12px;
 }

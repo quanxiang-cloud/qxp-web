@@ -15,9 +15,10 @@ import AddGroupPoper from './add-group-poper';
 import EditPageModal from './edit-page-modal';
 import EditGroupModal from './edit-group-modal';
 import HidePageConfirmModal from './hide-modal';
-import MenuTree from './menu-tree/menu-tree';
+import AppMenuTree from './menu-tree';
 
 import './index.scss';
+import { Menu } from './menu-tree/type';
 
 function PageList(): JSX.Element {
   const history = useHistory();
@@ -89,10 +90,10 @@ function PageList(): JSX.Element {
     <div className="flex h-full">
       <div className='app-details-nav rounded-tl-8 bg-gray-50'>
         <div className='h-44 flex flex-end items-center px-16 py-20 justify-center'>
-          <span className='text-h6-bold text-gray-400 mr-auto'>菜单</span>
+          <span className='font-semibold text-gray-400 mr-auto text-12'>菜单</span>
           <div onClick={() => setModalType('createPage')}>
             <Tooltip content='新建菜单'>
-              <Icon className='app-page-add-group mr-8' size={16} name='post_add' />
+              <Icon className='app-page-add-group mr-8' size={17} name='post_add' />
             </Tooltip>
           </div>
           <Tooltip content='新建分组'>
@@ -102,7 +103,7 @@ function PageList(): JSX.Element {
           </Tooltip>
         </div>
         <div className='app-page-tree-wrapper'>
-          <MenuTree
+          <AppMenuTree
             menus={toJS(pageInitList).sort((a, b) => (a?.sort || 0) - (b?.sort || 0))}
             handleMenuClick={handleMenuClick}
           />
