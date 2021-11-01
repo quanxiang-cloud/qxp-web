@@ -1,9 +1,8 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { observer } from 'mobx-react';
 import { useMutation } from 'react-query';
 import { useHistory, useParams } from 'react-router-dom';
-import { TextArea, Form } from '@QCFE/lego-ui';
-import { Radio } from 'antd';
+import { Form, Radio, Input } from 'antd';
 import { toJS } from 'mobx';
 import { isEmpty } from 'lodash';
 
@@ -21,6 +20,8 @@ import * as apis from '../api';
 import { TaskHandleType } from '../constant';
 import actionMap from './action-map';
 
+const { TextArea } = Input;
+
 interface Props {
   flowName?: string;
   schema: ISchema;
@@ -35,7 +36,7 @@ function ActionModals({
 }: Props): JSX.Element | null {
   const { processInstanceID, taskID } = useParams<{ processInstanceID: string; taskID: string; }>();
   const history = useHistory();
-  const ref = useRef<any>();
+  const [form] = Form.useForm();
   const [showReceiverPicker, setShowPicker] = useState(false);
   const [chosenEmployees, setChosenEmployees] = useState<EmployeeOrDepartmentOfRole[]>([]);
   const [stepBackId, setStepBackId] = useState('');
@@ -43,9 +44,16 @@ function ActionModals({
   const [addSignType, setAddSignType] = useState('');
   const [addSignValue, setAddSignValue] = useState('');
 
-  const handleSubmit = (): void => {
-    ref.current.validateFields() && handleTaskMutation.mutate();
-  };
+  function handleSubmit(): void {
+    form.submit();
+  }
+
+  function handleFinish(values: any): void {
+    if (values.comment !== undefined) {
+      store.setModalInfo({ payload: { remark: values.comment || '' } });
+    }
+    handleTaskMutation.mutate();
+  }
 
   const handleTaskMutation = useMutation((): Promise<any> => {
     if (modalInfo.payload.remark !== undefined) {
@@ -211,18 +219,18 @@ function ActionModals({
       TaskHandleType.fill_in].includes(action as TaskHandleType)
     ) {
       return (
-        <Form.TextAreaField
-          schemas={[
-            {
-              rule: { required: store.modalInfo.require },
-              help: `输入${actionMap[action]?.text}意见`,
-              status: 'error',
-            }]}
+        <Form.Item
           className="w-full"
           name="comment"
-          placeholder={`输入${actionMap[action]?.text}意见`}
-          onChange={(value: string) => store.setModalInfo({ payload: { remark: value } })}
-        />
+          rules={[
+            { required: store.modalInfo.require, message: `输入${actionMap[action]?.text}意见` },
+          ]}
+        >
+          <TextArea
+            rows={4}
+            placeholder={`输入${actionMap[action]?.text}意见`}
+          />
+        </Form.Item>
       );
     }
 
@@ -260,7 +268,7 @@ function ActionModals({
             rows={4}
             name="comment"
             placeholder={`输入${actionMap[action]?.text}原因 (选填)`}
-            onChange={(ev: unknown, value: string) => store.setModalInfo({ payload: { remark: value } })}
+            onChange={(e) => store.setModalInfo({ payload: { remark: e.target.value } })}
           />
         </div>
       );
@@ -282,8 +290,8 @@ function ActionModals({
               rows={4}
               name="comment"
               placeholder={`输入${actionMap[action]?.text}原因 (选填)`}
-              onChange={(ev: unknown, value: string) => {
-                store.setModalInfo({ payload: { remark: value } });
+              onChange={(e) => {
+                store.setModalInfo({ payload: { remark: e.target.value } });
               }}
             />
           </div>
@@ -304,9 +312,9 @@ function ActionModals({
               rows={4}
               name="comment"
               placeholder={`输入${actionMap[action]?.text}原因`}
-              onChange={(ev: unknown, value: string) => {
-                store.setShowTips(!!value);
-                store.setModalInfo({ payload: { remark: value } });
+              onChange={(e) => {
+                store.setShowTips(!!e.target.value);
+                store.setModalInfo({ payload: { remark: e.target.value } });
               }}
             />
             {store.showTips && !payload.remark && <p className="text-red-600">请输入打回重填原因</p>}
@@ -335,7 +343,7 @@ function ActionModals({
             rows={4}
             name="comment"
             placeholder={`输入${actionMap[action]?.text}原因 (选填)`}
-            onChange={(ev: unknown, value: string) => store.setModalInfo({ payload: { remark: value } })}
+            onChange={(e) => store.setModalInfo({ payload: { remark: e.target.value } })}
           />
         </div>
       );
@@ -401,7 +409,7 @@ function ActionModals({
             rows={4}
             name="comment"
             placeholder={`输入${actionMap[action]?.text}原因 (选填)`}
-            onChange={(ev: unknown, value: string) => store.setModalInfo({ payload: { remark: value } })}
+            onChange={(e) => store.setModalInfo({ payload: { remark: e.target.value } })}
           />
         </div>
       );
@@ -415,7 +423,7 @@ function ActionModals({
             rows={4}
             name="comment"
             placeholder={`输入${actionMap[action]?.text}原因 (选填)`}
-            onChange={(ev: unknown, value: string) => store.setModalInfo({ payload: { remark: value } })}
+            onChange={(e) => store.setModalInfo({ payload: { remark: e.target.value } })}
           />
         </div>
       );
@@ -466,7 +474,7 @@ function ActionModals({
           setStepBackId('');
         }}
       >
-        <Form className="p-20" ref={ref} layout="vertical">
+        <Form className="p-20" form={form} layout="vertical" onFinish={handleFinish}>
           {renderContent()}
         </Form>
       </Modal>
