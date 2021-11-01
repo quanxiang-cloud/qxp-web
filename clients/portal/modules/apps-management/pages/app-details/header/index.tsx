@@ -59,7 +59,7 @@ function DetailsHeader(): JSX.Element {
           onClick={() => history.push('/apps')}
           className='app-header-icon text-gray-400 corner-8-8-8-2 flex items-center justify-center'
         >
-          <Icon size={20} className='mr-4 text-current' name='home_qxp'/>
+          <Icon size={20} className='mr-4' name='home_qxp'/>
         </div>
         <span className='ml-8 mr-16'>/</span>
         <AppsSwitcher apps={apps} currentAppID={appID} onChange={handleChange} />
@@ -87,7 +87,7 @@ function DetailsHeader(): JSX.Element {
           rel="noreferrer"
           className="app-header-icon corner-4-0-4-4 text-white"
         >
-          <Icon name="help_doc" size={21} className='app-icon-color-inherit m-6'/>
+          <Icon name="help_doc" size={21} style={{ fill: 'var(--gray-400)' }} className='m-6'/>
         </a>
         <div className="header-nav-btn group ml-16">
           <MoreMenu

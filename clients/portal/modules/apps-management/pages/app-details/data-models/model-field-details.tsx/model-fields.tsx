@@ -8,6 +8,7 @@ import Table from '@c/table';
 import Button from '@c/button';
 import Search from '@c/search';
 import EmptyTips from '@c/empty-tips';
+import { deepClone } from '@lib/utils';
 import PageLoading from '@c/page-loading';
 
 import store from '../store';
@@ -40,7 +41,7 @@ function ModelFields(): JSX.Element {
       id: 'action',
       accessor: (rowData) => {
         if (rowData?.['x-internal']?.isSystem || curDataModel?.source !== 2) {
-          return '——';
+          return '-';
         }
 
         return (
@@ -91,7 +92,7 @@ function ModelFields(): JSX.Element {
             <Table
               rowKey="id"
               data={fields}
-              columns={COLUMNS}
+              columns={curDataModel?.source === 1 ? deepClone(COLUMNS.slice(0, COLUMNS.length - 1)) : COLUMNS}
               emptyTips={(
                 <EmptyTips
                   className="pt-40 m-auto"

@@ -9,11 +9,14 @@ export const FIELD_FORM_SCHEMA = {
           type: 'string',
           title: '名称',
           required: true,
-          maxLength: 20,
           'x-rules': [
             {
               required: true,
               message: '请输入名称',
+            },
+            {
+              max: 30,
+              message: '名称不超过 30 字符，请修改！',
             },
             {
               message: '不能以空白字符开头',
@@ -34,6 +37,10 @@ export const FIELD_FORM_SCHEMA = {
             {
               required: true,
               message: '请输入模型编码',
+            },
+            {
+              max: 30,
+              message: '字段编码不超过 30 字符，请修改！',
             },
             {
               message: '必须以字母开头,由字母、数字、下划线组成',

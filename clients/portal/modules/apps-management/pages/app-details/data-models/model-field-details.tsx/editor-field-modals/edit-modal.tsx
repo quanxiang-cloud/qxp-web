@@ -88,7 +88,7 @@ function EditModal({ onCancel, onSubmit, field }: Props): JSX.Element {
       });
 
       $(LifeCycleTypes.ON_FORM_INIT).subscribe(() => {
-        setFieldState('id', (state) => {
+        setFieldState('*(id, type)', (state) => {
           state.props.readOnly = !!field;
         });
       });

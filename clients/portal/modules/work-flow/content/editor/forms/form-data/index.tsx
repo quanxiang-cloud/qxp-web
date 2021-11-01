@@ -10,7 +10,7 @@ import FormSelector from '@c/form-table-selector';
 import SaveButtonGroup from '@flow/content/editor/components/_common/action-save-button-group';
 import { TRIGGER_CONDITION_EXCLUDE_FIELD_NAMES } from '@flow/content/editor/utils/constants';
 import store, { updateStore } from '@flow/content/editor/store';
-import { schemaToMap } from '@lib/schema-convert';
+import { schemaToMap, schemaToOptions } from '@lib/schema-convert';
 import type {
   FormDataData, NodeWorkForm, StoreValue, TriggerConditionExpression,
   TriggerCondition as TriggerConditionType, TriggerConditionValue,
@@ -40,6 +40,10 @@ export default function FormDataForm({ defaultValue, onSubmit, onCancel, onChang
   const schemaMap = useMemo(()=> schemaToMap(schema), [schema]);
 
   const isEmptyTable = !!tableID && !isLoading && !options.length;
+
+  const fieldOptions = schemaToOptions(schema, {
+    filter: (field) => !['Serial', 'AggregationRecords', 'AssociatedRecords'].includes(
+      field['x-component'] || '') });
 
   function emptyTableNotify(): void {
     toast.error('该工作表没有设置字段, 请更换工作表!');
@@ -113,7 +117,7 @@ export default function FormDataForm({ defaultValue, onSubmit, onCancel, onChang
             <div className="mt-24">
               <TriggerWay
                 validating={validating}
-                formFieldOptions={options}
+                formFieldOptions={fieldOptions}
                 onValueChange={handleChange}
                 triggerWayValue={{
                   triggerWay: value.triggerWay,

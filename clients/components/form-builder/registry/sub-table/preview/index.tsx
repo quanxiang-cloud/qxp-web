@@ -83,14 +83,11 @@ function SubTable({
       return acc;
     }, []);
     setSubTableState({ componentColumns, rowPlaceHolder });
+    isInitialValueEmpty && mutators?.change([rowPlaceHolder]);
     return () => {
       delete window[`schema-${definedSchema?.key}`];
     };
   }, [schema, columns]);
-
-  useEffect(() => {
-    isInitialValueEmpty && mutators?.change([rowPlaceHolder]);
-  }, []);
 
   function buildColumnFromSchema(dataIndex: string, sc: ISchema): Column | null {
     const componentName = sc['x-component']?.toLowerCase() as keyof Components;

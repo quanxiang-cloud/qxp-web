@@ -1,5 +1,6 @@
 import { isObject, isEmpty, isArray } from 'lodash';
 import fp from 'lodash/fp';
+import { omit } from 'ramda';
 
 import { Rules } from './index';
 
@@ -42,4 +43,8 @@ export function schemaRulesTransform(schema: ISchema): Rules {
     toArray,
   );
   return [...getRules(schema), ...getFormats(schema)];
+}
+
+export function omitParentFromSchema(schema: ISchema): ISchema {
+  return JSON.parse(JSON.stringify(omit(['parent'], schema)));
 }

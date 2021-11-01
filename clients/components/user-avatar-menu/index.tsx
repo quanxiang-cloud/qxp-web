@@ -35,7 +35,7 @@ export default function UserAvatarMenu({ className }: Props): JSX.Element {
           onCancel={() => setOpenResetPasswordModal(false)}
         />)}
       <div
-        className={cs('cursor-pointer flex items-center h-36 transition', className)}
+        className={cs('cursor-pointer flex items-center h-36 transition pl-6', className)}
         ref={reference}
       >
         <Avatar

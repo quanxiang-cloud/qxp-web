@@ -17,5 +17,6 @@ COPY --from=builder /build/portal /qxp-web/bin/
 EXPOSE 80
 
 COPY ./dist/templates/ /qxp-web/dist/templates/
+COPY ./dist/manifest.json /qxp-web/dist/manifest.json
 
 CMD ["/qxp-web/bin/portal", "-c", "/qxp-web/etc/config.yaml"]

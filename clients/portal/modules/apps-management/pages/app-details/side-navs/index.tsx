@@ -60,14 +60,12 @@ export default function CollapseMenu(): JSX.Element {
         className={cs(
           'app-menu-tree w-64 h-full absolute left-0 top-0 overflow-x-hidden bg-white px-12',
           'z-z-5 pt-24 pb-0 ease-in-out duration-300 :hover:',
-          {
-            'collapse overflow-y-hidden': menuCollapse,
-          })}
+          { 'collapse overflow-y-hidden': menuCollapse },
+        )}
       >
-        {
-          SIDE_NAV.map((menu) =>
-            <TreeNode defaultCollapse={menuCollapse} {...menu} key={menu.id} level={1} maxLevel={2} />)
-        }
+        {SIDE_NAV.map((menu) => {
+          return <TreeNode defaultCollapse={menuCollapse} {...menu} key={menu.id} level={1} maxLevel={2} />;
+        })}
       </div>
     </div>
   );
