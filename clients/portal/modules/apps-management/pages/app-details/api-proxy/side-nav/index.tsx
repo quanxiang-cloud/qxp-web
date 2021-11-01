@@ -118,7 +118,7 @@ function SideNav(): JSX.Element | null {
       )}
       {nsModalOpen && (
         <Modal
-          title='新增分组'
+          title='新建分组'
           onClose={() => setNsModalOpen(false)}
           footerBtns={[
             { key: 'cancel', text: '取消', iconName: 'close', onClick: ()=> setNsModalOpen(false) },

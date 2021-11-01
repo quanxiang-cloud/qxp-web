@@ -1,5 +1,6 @@
 .tree-node-item {
   height: 32px;
+
   &.tree-node--focused {
     background-color: #F1F5F9;
   }
@@ -16,7 +17,81 @@
     border-top-left-radius: 12px;
     border-right: 1px solid var(--gray-300);
   }
+
   &--main-cont {
     border-top-right-radius: 12px;
   }
+}
+
+.guide-page {
+  display: grid;
+  grid-template-rows: 92px 1fr 161px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+
+  &--header {
+    border-bottom: 1px solid var(--gray-200);
+  }
+
+  &--body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding-top: 100px;
+    padding-bottom: 150px;
+
+    > .empty-api-group {
+      background: url("/dist/images/empty-api-list.svg") no-repeat;
+      width: 120px;
+      height: 120px;
+    }
+  }
+
+  &--footer {
+    border-top: 1px solid var(--gray-200);
+
+    .guide-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-column-gap: 20px;
+
+      .guide-item-caption {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+
+        > .guide-item-idx {
+          display: inline-flex;
+          width: 20px;
+          height: 20px;
+          border-radius: 4px;
+          background: var(--blue-600);
+          align-items: center;
+          justify-content: center;
+          margin-right: 4px;
+          color: white;
+          padding-bottom: 1px;
+        }
+
+        > .guide-item-txt {
+
+        }
+
+        > .guide-item-divider {
+          flex: 1;
+          height: 2px;
+          width: calc(30vw - 40px);
+          background: #E4EBF1;
+          margin-left: 16px;
+        }
+      }
+
+      .guide-item-desc {
+        max-width: calc(30vw);
+        margin-top: 15px;
+      }
+    }
+  }
+
 }

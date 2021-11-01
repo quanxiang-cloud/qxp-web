@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { observer } from 'mobx-react';
-import { ReactQueryDevtools } from 'react-query/devtools';
 import { useParams } from 'react-router-dom';
 
 import Loading from '@c/loading';
@@ -65,7 +64,6 @@ function ApiProxy(): JSX.Element | null {
           action={qs.get('action') || ''}
         />
       </div>
-      <ReactQueryDevtools initialIsOpen={false} />
     </div>
   );
 }
