@@ -25,6 +25,7 @@ export default function ApproveForm({
   defaultValue, onSubmit, onCancel, nodeType, onChange,
 }: Props): JSX.Element {
   const [value, setValue] = useState<FillInData>(defaultValue || {});
+  const [tabKey, setTabKey] = useState('basicConfig');
 
   useUpdateEffect(() => {
     onChange(value);
@@ -61,6 +62,7 @@ export default function ApproveForm({
       } },
     ]);
     if ((timeRule.enabled && deadLineValidate) || userPickValidate) {
+      setTabKey('basicConfig');
       return updateStore((s) => ({ ...s, validating: true }));
     }
     onSubmit(value);
@@ -100,6 +102,8 @@ export default function ApproveForm({
             />
           ),
         }]}
+        currentKey={tabKey}
+        onChange={(id) => setTabKey(id)}
       />
       <SaveButtonGroup onSave={onSave} onCancel={onCancel} />
     </>

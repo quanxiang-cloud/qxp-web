@@ -129,7 +129,7 @@ function EditFormulaModal({ onClose, onSubmit, rawFormula, variables }: Props): 
           customRules={variables.map(({ title, fieldName }) => {
             return { key: fieldName, name: title, type: 'field' };
           })}
-          className="block border border-gray-600 w-full mb-16"
+          className="block w-full mb-16"
           defaultValue={rawFormula}
         />
       </div>

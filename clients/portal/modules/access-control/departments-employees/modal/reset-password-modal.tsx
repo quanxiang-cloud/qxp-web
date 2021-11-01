@@ -1,14 +1,13 @@
-import React, { createRef } from 'react';
+import React from 'react';
 import { useMutation } from 'react-query';
-import { Form } from '@QCFE/lego-ui';
+import { Form } from 'antd';
 
 import Icon from '@c/icon';
 import toast from '@lib/toast';
 import Modal from '@c/modal';
+import CheckboxGroup from '@c/checkbox/checkbox-group';
 
 import { resetUserPWD } from '../api';
-
-const { CheckboxGroupField } = Form;
 
 export type sendPasswordBy = {
   sendPhone: -1 | 1;
@@ -26,7 +25,7 @@ export default function ResetPasswordModal({
   closeModal,
   clearSelectRows,
 }: Props): JSX.Element {
-  const formRef = createRef<Form>();
+  const [form] = Form.useForm();
 
   const resetMutation = useMutation(resetUserPWD, {
     onSuccess: () => {
@@ -41,28 +40,22 @@ export default function ResetPasswordModal({
     },
   });
 
-  const handleReset = (): void => {
-    if (!formRef.current?.validateForm()) {
-      return;
-    }
-    const values: {
-      sendPasswordBy: string[];
-    } = formRef.current?.getFieldsValue();
+  function handleSubmit(): void {
+    form.submit();
+  }
+
+  function handleFinish(values: {sendPasswordBy: string}): void {
     const { sendPasswordBy } = values;
-    if (sendPasswordBy.length === 0) {
-      toast.error('请选择发送方式');
-      return;
-    }
     const checkedWay: sendPasswordBy = {
       sendEmail: -1,
       sendPhone: -1,
     };
-    if (sendPasswordBy.length > 0) {
-      sendPasswordBy.includes('email') && (checkedWay.sendEmail = 1);
-      sendPasswordBy.includes('phone') && (checkedWay.sendPhone = 1);
-    }
+
+    sendPasswordBy.includes('email') && (checkedWay.sendEmail = 1);
+    sendPasswordBy.includes('phone') && (checkedWay.sendPhone = 1);
+
     resetMutation.mutate({ userIDs: userIds, ...checkedWay });
-  };
+  }
 
   return (
     <Modal
@@ -81,7 +74,7 @@ export default function ResetPasswordModal({
           key: 'confirm',
           iconName: 'check',
           modifier: 'primary',
-          onClick: handleReset,
+          onClick: handleSubmit,
         },
       ]}
     >
@@ -98,21 +91,27 @@ export default function ResetPasswordModal({
             系统将自动生成一个随机密码发送给员工。
           </span>
         </div>
-        <Form layout="vertical" ref={formRef}>
-          <CheckboxGroupField
+        <Form layout="vertical" form={form} onFinish={handleFinish}>
+          <Form.Item
             name="sendPasswordBy"
             label="选择重置密码的发送方式"
-            options={[
-              {
-                label: '通过邮箱',
-                value: 'email',
-              },
-              {
-                label: '通过短信',
-                value: 'phone',
-              },
+            rules={[
+              { required: true, message: '请选择重置密码的发送方式' },
             ]}
-          />
+          >
+            <CheckboxGroup
+              options={[
+                {
+                  label: '通过邮箱',
+                  value: 'email',
+                },
+                {
+                  label: '通过短信',
+                  value: 'phone',
+                },
+              ]}
+            />
+          </Form.Item>
         </Form>
       </div>
     </Modal>

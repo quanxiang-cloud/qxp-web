@@ -68,19 +68,33 @@
     }
 
     .name-item {
-      &.active {
-        background-color: var(--gray-100);
+      >svg:first-child {
+        fill: var(--gray-400);
       }
 
       &:hover {
+        @apply text-blue-600 bg-blue-100;
+
         .action-more {
           visibility: visible;
+        }
+
+        >svg:first-child {
+          fill: var(--blue-400);
         }
       }
 
       .action-more {
         visibility: hidden;
       }
+    }
+  }
+
+  .item-active {
+    @apply text-blue-600 font-semibold bg-blue-100;
+
+    >svg:first-child {
+      fill: var(--blue-400);
     }
   }
 
