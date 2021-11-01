@@ -2,8 +2,9 @@ import React, { useCallback } from 'react';
 import Icon from '@c/icon';
 import MoreMenu from '@c/more-menu';
 
-import { MenuType } from '../../type';
+import { MenuType } from '@portal/modules/apps-management/pages/app-details/type';
 
+import { Menu } from './type';
 import './index.scss';
 
 type Props = {
@@ -20,7 +21,6 @@ const MenuOp = (props: Props): JSX.Element => {
     const MENUS = [
       {
         key: isPage ? 'delPage' : 'delGroup',
-        disabled: !isPage && (menu?.child?.length || 0) > 0,
         label: (
           <div className="flex items-center">
             <Icon name="restore_from_trash" size={16} className="mr-8" />
@@ -87,7 +87,7 @@ const MenuOp = (props: Props): JSX.Element => {
         changeable
         clickable
         className='mr-10 cursor-grab menu-item--drag'
-        size={16}
+        size={17}
         name='drag_indicator'
       />
       <MoreMenu
@@ -102,7 +102,7 @@ const MenuOp = (props: Props): JSX.Element => {
         <Icon
           changeable
           clickable
-          size={16}
+          size={17}
           name='more_horiz'
         />
       </MoreMenu>
