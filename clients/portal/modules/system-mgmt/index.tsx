@@ -2,6 +2,8 @@ import React, { lazy } from 'react';
 import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom';
 
 import ErrorTips from '@c/error-tips';
+import NotFoundError from '@c/404-error';
+import GlobalHeader from '@portal/global-header';
 
 const Message = lazy(() => import('./message'));
 const SendMessage = lazy(() => import('./send-message'));
@@ -24,17 +26,20 @@ export default function Index(): JSX.Element {
   }
 
   return (
-    <Switch>
-      <Route exact path={`${path}/message`} component={Message} />
-      <Route exact path={`${path}/log`} component={Log} />
-      <Route path={`${path}/message/send`} component={SendMessage} />
-      <Route path={`${path}/message/details/:id`} component={MessageDetails} />
-      <Route
-        path={`${path}/unusual/detail/:id/:status/:processInstanceId/:taskId/:flowInstanceId`}
-        component={UnusualTaskDetail} />
-      <Route path={`${path}/unusual`} component={UnusualTask} />
-      <Redirect from={path} to={`${path}/message`} />
-      <Route component={(): JSX.Element => (<ErrorTips desc={'Menu page is not found'} />)} />
-    </Switch>
+    <>
+      <GlobalHeader />
+      <Switch>
+        <Route exact path={`${path}/message`} component={Message} />
+        <Route exact path={`${path}/log`} component={Log} />
+        <Route path={`${path}/message/send`} component={SendMessage} />
+        <Route path={`${path}/message/details/:id`} component={MessageDetails} />
+        <Route
+          path={`${path}/unusual/detail/:id/:status/:processInstanceId/:taskId/:flowInstanceId`}
+          component={UnusualTaskDetail} />
+        <Route path={`${path}/unusual`} component={UnusualTask} />
+        <Redirect from={path} to={`${path}/message`} />
+        <Route component={() => <NotFoundError url={`${path}/message`}/>} />
+      </Switch>
+    </>
   );
 }
