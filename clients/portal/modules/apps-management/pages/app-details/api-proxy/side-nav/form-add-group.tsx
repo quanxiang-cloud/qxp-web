@@ -8,16 +8,27 @@ interface Props {
   form: UseFormReturn,
   className?: string;
   onSubmit?: (formData: any)=> void;
+  isEdit?: boolean;
+  defaultValues?: Record<string, any>;
 }
 
 function FormAddGroup({
   className,
   form,
   onSubmit,
+  isEdit,
+  defaultValues,
 }: Props): JSX.Element {
-  const { register, formState: { errors } } = form;
+  const { register, formState: { errors }, setValue } = form;
 
   useEffect(()=> {
+    // set default values
+    if (defaultValues) {
+      Object.entries(defaultValues).forEach(([k, v])=> {
+        setValue(k, v);
+      });
+    }
+
     return ()=> {
       form.clearErrors();
     };
@@ -31,7 +42,11 @@ function FormAddGroup({
           className={cs('input', { error: errors.title })}
           maxLength={20}
           placeholder='请输入，例如：公司系统'
-          {...register('title', { required: '请填写分组名称', shouldUnregister: true, maxLength: 20 })}
+          {...register('title', {
+            required: '请填写分组名称',
+            shouldUnregister: true,
+            maxLength: 20,
+          })}
         />
         <p className='text-gray-600 text-12'>不超过 20 个字符，分组名称不可重复</p>
         <ErrorMsg errors={errors} name='title'/>
@@ -40,16 +55,18 @@ function FormAddGroup({
         <input
           type="text"
           className={cs('input', { error: errors.name })}
-          maxLength={20}
+          maxLength={32}
           placeholder='请输入，例如：sys_001'
+          style={isEdit ? { backgroundColor: 'var(--gray-200)' } : {}}
+          disabled={isEdit}
           {...register('name', {
             required: '请填写分组标识',
             shouldUnregister: true,
             pattern: /^[a-zA-Z][\w-]+$/,
-            maxLength: 20,
+            maxLength: 32,
           })}
         />
-        <p className='text-gray-600 text-12'>不超过 20 字符，必须以英文字母开头，只能包含字母、数字、下划线，中划线，标识不可重复。</p>
+        <p className='text-gray-600 text-12'>不超过 32 字符，必须以英文字母开头，只能包含字母、数字、下划线，中划线，标识不可重复。</p>
         <ErrorMsg errors={errors} name='name'/>
       </FormItem>
       <FormItem label='描述'>

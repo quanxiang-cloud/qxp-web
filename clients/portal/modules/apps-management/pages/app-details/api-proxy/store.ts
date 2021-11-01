@@ -1,4 +1,4 @@
-import { action, observable } from 'mobx';
+import { action, computed, observable, toJS, extendObservable } from 'mobx';
 
 import TreeStore from '@c/headless-tree/store';
 import { TreeNode } from '@c/headless-tree/types';
@@ -7,13 +7,14 @@ import toast from '@lib/toast';
 import * as apis from './api';
 
 const nsPattern = /system\/app\/[\w-]+\/customer\/?(.*)/;
+const ROOT_NODE_ID = 'api-ns-root';
 
 /*
   ns pattern, root level: /system/app/46ec66c8-280e-4a2d-92ca-3785cde3ea27/customer
   level-1 example: /system/app/46ec66c8-280e-4a2d-92ca-3785cde3ea27/customer/ns-1
   level-2 example:  /system/app/46ec66c8-280e-4a2d-92ca-3785cde3ea27/customer/ns-1/ns-2
  */
-function getLevelByNs(ns: string): number {
+export function getLevelByNs(ns: string): number {
   const match = ns.match(nsPattern);
   if (match && match[1]) {
     return match[1].split('/').filter(Boolean).length;
@@ -21,8 +22,8 @@ function getLevelByNs(ns: string): number {
   return 0;
 }
 
-function convertGroupsToTreeNodes(parent: TreeNode<PolyAPI.Namespace> | null, groups?: PolyAPI.Namespace[]): TreeNode<PolyAPI.Namespace> {
-  const mapGroups = (groups || []).map((group)=> {
+function mapGroupsToTreeNodes(groups?: PolyAPI.Namespace[]): TreeNode<PolyAPI.Namespace>[] {
+  return (groups || []).map((group) => {
     return {
       data: group,
       name: group.title || group.name,
@@ -37,16 +38,18 @@ function convertGroupsToTreeNodes(parent: TreeNode<PolyAPI.Namespace> | null, gr
       level: getLevelByNs([group.parent, group.name].join('/')),
     };
   });
+}
 
+function getFullNode(parent: TreeNode<PolyAPI.Namespace> | null, nodes: TreeNode<PolyAPI.Namespace>[]): TreeNode<PolyAPI.Namespace> {
   if (parent === null) {
     // auto generate root node
     return {
-      id: 'api-ns-root',
+      id: ROOT_NODE_ID,
       parentId: '',
       name: '',
       path: '',
       isLeaf: false,
-      children: mapGroups,
+      children: nodes,
       visible: false,
       data: null as any,
       expanded: true,
@@ -55,61 +58,73 @@ function convertGroupsToTreeNodes(parent: TreeNode<PolyAPI.Namespace> | null, gr
       childrenStatus: 'unknown',
     };
   }
-  return { ...parent, children: mapGroups };
+  return { ...parent, children: nodes };
+}
+
+function onGetChildren(parent: TreeNode<PolyAPI.Namespace>): Promise<TreeNode<PolyAPI.Namespace>[]> {
+  const ns = [parent.data.parent, parent.data.name].join('/');
+  return apis.getNamespaceList(ns, { page: 1, pageSize: -1 }).then(({ list }) => {
+    return mapGroupsToTreeNodes(list);
+  });
 }
 
 export class ApiGroupStore extends TreeStore<PolyAPI.Namespace> {
   constructor(groups?: PolyAPI.Namespace[]) {
-    const rootNode = convertGroupsToTreeNodes(null, groups);
+    const rootNode = getFullNode(null, mapGroupsToTreeNodes(groups));
     super({ rootNode, onGetChildren, treeNodeHeight: 40 }, false);
+    // init other observables
+    extendObservable(this, {
+      gpSetting: null,
+      get gpSettingReady() {
+        // todo
+        return false;
+      },
+    });
+  }
+
+  @computed get curNodeTitle(): string {
+    return this.currentFocusedNode?.data?.title || this.currentFocusedNode.name;
   }
 }
 
-function onGetChildren(parent: TreeNode<PolyAPI.Namespace>): Promise<TreeNode<PolyAPI.Namespace>[]> {
-  const ns = [parent.parentId, parent.data.name].join('/');
-  return apis.getNamespaceList(ns, { page: 1, pageSize: -1 }).then(({ list })=> {
-    return convertGroupsToTreeNodes(parent, list).children as any;
-  });
-}
-
 class ApiProxyStore {
-  @observable appId='';
+  @observable appId = '';
   @observable namespaces: PolyAPI.Namespace[] = []; // all namespaces
   @observable activeNs: PolyAPI.Namespace | null = null;
-  @observable appRootNs='';
+  @observable appRootNs = '';
   @observable treeStore: ApiGroupStore | null = null;
-  @observable loadingNs=false;
-  @observable filterNsList: PolyAPI.Namespace[] | null=null; // filtered ns list, like search
-  @observable isLoading=false; // fetching sub page's data
+  @observable loadingNs = false;
+  @observable filterNsList: PolyAPI.Namespace[] | null = null; // filtered ns list, like search
+  @observable isLoading = false; // fetching sub page's data
 
   @action
-  setNamespaces=(namespaces: PolyAPI.Namespace[])=> {
+  setNamespaces = (namespaces: PolyAPI.Namespace[]) => {
     this.namespaces = namespaces;
   }
 
   @action
-  setAppRooNs=(ns: string)=> {
+  setAppRooNs = (ns: string) => {
     this.appRootNs = ns;
   }
 
   @action
-  setAppId=(appId: string)=>{
+  setAppId = (appId: string) => {
     this.appId = appId;
   }
 
   @action
-  setActiveNs=(ns: PolyAPI.Namespace)=> {
+  setActiveNs = (ns: PolyAPI.Namespace) => {
     this.activeNs = ns;
     this.treeStore?.onSelectNode(ns?.id);
   }
 
   @action
-  setTreeStore=(store: ApiGroupStore)=> {
+  setTreeStore = (store: ApiGroupStore) => {
     this.treeStore = store;
   }
 
   @action
-  fetchNamespaces=async (appId: string): Promise<PolyAPI.Namespace[] | void> => {
+  fetchNamespaces = async (appId: string): Promise<PolyAPI.Namespace[] | void> => {
     this.loadingNs = true;
     try {
       if (!this.appRootNs) {
@@ -129,8 +144,8 @@ class ApiProxyStore {
   }
 
   @action
-  searchNamespace=async (word: string): Promise<PolyAPI.Namespace[] | void> => {
-    this.isLoading = true;
+  searchNamespace = async (word: string): Promise<PolyAPI.Namespace[] | void> => {
+    this.loadingNs = true;
     try {
       const { list } = await apis.searchNamespace(this.appRootNs, { title: word });
       this.filterNsList = list;
@@ -138,21 +153,38 @@ class ApiProxyStore {
     } catch (err) {
       toast.error(err);
     } finally {
-      this.isLoading = false;
+      this.loadingNs = false;
     }
   }
 
   @action
-  clearFilterNs=()=> {
+  clearFilterNs = () => {
     this.filterNsList = null;
   }
 
-  createNs=()=> {
-
+  @action
+  createNs = async (ns: string, params: PolyAPI.CreateNamespaceParams) => {
+    await apis.createNamespace(ns, params);
+    // this.treeStore?.addChildren(ROOT_NODE_ID, mapGroupsToTreeNodes([newNs]));
+    await this.fetchNamespaces(this.appId);
+    toast.success('添加分组成功');
   }
 
   @action
-  reset=()=> {
+  updateNs = async (ns: string, params: Omit<PolyAPI.CreateNamespaceParams, 'name'>, node: any) => {
+    await apis.updateNamespace(ns, params);
+    this.treeStore?.patchNode(node.id, node.name, toJS(node));
+    toast.success('修改分组成功');
+  }
+
+  @action
+  deleteNs = async (ns: string) => {
+    await apis.deleteNamespace(ns);
+    await this.fetchNamespaces(this.appId);
+  }
+
+  @action
+  reset = () => {
     this.appId = '';
     this.appRootNs = '';
     this.treeStore = null;

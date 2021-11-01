@@ -27,7 +27,7 @@ const methodOptions = [
   { label: 'PATCH', value: 'patch' },
 ];
 
-function Add(props: Props) {
+function AddApi(props: Props) {
   const { path } = useRouteMatch();
   const isEdit = path.endsWith(':apiId/edit');
   const formInst = useForm();
@@ -98,4 +98,4 @@ function Add(props: Props) {
   );
 }
 
-export default observer(Add);
+export default observer(AddApi);

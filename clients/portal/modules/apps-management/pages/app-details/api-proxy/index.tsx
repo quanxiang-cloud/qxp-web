@@ -21,9 +21,9 @@ interface SubPageProps {
   action?: string;
 }
 
-function SubPage({ namespace, id, action }: SubPageProps): JSX.Element {
+function SubPage({ namespace, id, action = '' }: SubPageProps): JSX.Element {
   if (namespace) {
-    if (['add', 'edit'].includes(action || '')) {
+    if (action === 'add' || id) {
       return <Add />;
     }
     if (action === 'add-swagger') {
@@ -56,7 +56,7 @@ function ApiProxy(): JSX.Element | null {
   }
 
   return (
-    <div className='flex flex-grow bg-white mt-20 mx-20 api-proxy'>
+    <div className='bg-white mt-20 mx-20 api-proxy'>
       <SideNav />
       <div className='w-full h-full overflow-auto api-proxy--main-cont'>
         <SubPage

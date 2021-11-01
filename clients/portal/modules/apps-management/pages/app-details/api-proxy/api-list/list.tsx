@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 // import {useQuery} from 'react-query';
 import { UnionColumns } from 'react-table';
+import { observer } from 'mobx-react';
 
 import Button from '@c/button';
 import Search from '@c/search';
 import Table from '@c/table';
+import Icon from '@c/icon';
 
 import { useNamespace } from '../hooks';
 
@@ -48,6 +50,11 @@ function ApiList(props: Props) {
       id: 'active',
       accessor: 'active',
     },
+    {
+      Header: '操作',
+      id: '',
+      accessor: ()=> null,
+    },
   ];
 
   const handleSearch = (ev: any)=>{
@@ -56,7 +63,21 @@ function ApiList(props: Props) {
 
   return (
     <div className='w-full'>
-      <div className='mb-20 flex items-center'>
+      <div className='mb-20 flex items-center justify-between'>
+        <div className='flex items-center'>
+          <Button
+            className='mr-20'
+            modifier='primary'
+            iconName='add'
+            onClick={()=> history.push(`${url}?ns=${ns}&action=add`)}
+          >
+            新建 API
+          </Button>
+          <span onClick={()=> history.push(`${url}?ns=${ns}&action=add-swagger`)} className='cursor-pointer'>
+            <Icon name='archive' />
+            <span className='ml-5'>批量导入</span>
+          </span>
+        </div>
         <Search
           className="mr-20"
           placeholder="输入 API 名称"
@@ -64,14 +85,6 @@ function ApiList(props: Props) {
           onChange={setSearch}
           onKeyDown={handleSearch}
         />
-        <Button
-          className='mr-20'
-          modifier='primary'
-          onClick={()=> history.push(`${url}?ns=${ns}&action=add`)}
-        >
-          新增 API
-        </Button>
-        <Button onClick={()=> history.push(`${url}?ns=${ns}&action=add-swagger`)}>批量导入</Button>
       </div>
       <div className='api-list-wrap'>
         <Table
@@ -86,4 +99,4 @@ function ApiList(props: Props) {
   );
 }
 
-export default ApiList;
+export default observer(ApiList);

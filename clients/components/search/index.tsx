@@ -5,7 +5,6 @@ import Icon from '../icon';
 
 const InputCss: CSSProperties = {
   background: 'none',
-  width: '0px',
   height: '20px',
   boxShadow: 'none',
   border: 'none',

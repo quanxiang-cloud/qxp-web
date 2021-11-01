@@ -13,8 +13,9 @@ import store from '../store';
 function ListPage() {
   return (
     <>
-      <Header name={store.activeNs?.title || store.activeNs?.name} />
+      <Header name={store.treeStore?.curNodeTitle}/>
       <Tab
+        currentKey='group-setting'
         items={[
           {
             id: 'api-list',
@@ -23,13 +24,13 @@ function ListPage() {
           },
           {
             id: 'group-setting',
-            name: '分组配置',
+            name: '配置分组',
             content: <GroupSetting/>,
           },
           {
             id: 'api-keys',
             name: 'API 密钥',
-            content: <ApiKeys />,
+            content: <ApiKeys/>,
           },
         ]}
       />

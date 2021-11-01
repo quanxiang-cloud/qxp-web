@@ -1,4 +1,5 @@
 import React from 'react';
+import { observer } from 'mobx-react';
 
 interface Props {
   className?: string;
@@ -13,4 +14,4 @@ function Header({ name }: Props) {
   );
 }
 
-export default Header;
+export default observer(Header);

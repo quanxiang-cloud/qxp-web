@@ -1,47 +1,55 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { NodeRenderProps } from '@c/headless-tree/types';
 import { useHistory, useParams } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import { useForm } from 'react-hook-form';
-import { usePopper } from 'react-popper';
+import cs from 'classnames';
+import { pick, omit } from 'lodash';
 
 import MoreMenu from '@c/more-menu';
 import Icon from '@c/icon';
 import Modal from '@c/modal';
-import Button from '@c/button';
-import { POPPER_PARAMS } from '@flow/flow-header/constants';
+import toast from '@lib/toast';
 
 import FormAddGroup from './form-add-group';
+import proxyStore, { getLevelByNs } from '../store';
 
 type ModalType = 'add' | 'edit' | 'del' | string;
 
-function MenuItem(props: { icon: string; name: string }): JSX.Element {
+const labelMaps: Record<ModalType, string> = {
+  add: '新建子分组',
+  edit: '修改组信息',
+  del: '删除',
+};
+
+const MAX_LIMIT_NS_LEVEL = 2;
+
+function MenuItem({ icon, name }: { icon: string; name: ModalType}): JSX.Element {
   return (
-    <div className="flex items-center">
-      <Icon name={props.icon || 'add'} size={16} className="mr-8" />
-      <span className="font-normal">{props.name}</span>
+    <div className={cs('flex items-center', { 'text-red-600': name === 'del' })}>
+      <Icon
+        name={icon || 'add'}
+        size={16}
+        className="mr-8"
+        style={name === 'del' ? { color: 'var(--red-600)' } : {}}
+      />
+      <span className="font-normal">{labelMaps[name]}</span>
     </div>
   );
 }
 
-const labelMaps: Record<ModalType, string> = {
-  add: '新建子分组',
-  edit: '修改名称',
-  del: '删除',
-};
-
 const menus = [
   {
-    key: 'edit',
-    label: <MenuItem icon='create' name={labelMaps.edit} />,
+    key: 'add',
+    label: <MenuItem icon='add' name='add' />,
   },
   {
-    key: 'add',
-    label: <MenuItem icon='add' name={labelMaps.add} />,
+    key: 'edit',
+    label: <MenuItem icon='create' name='edit' />,
   },
   {
     key: 'del',
-    label: <MenuItem icon='restore_from_trash' name={labelMaps.del} />,
+    label: <MenuItem icon='restore_from_trash' name='del' />,
   },
 ];
 
@@ -51,24 +59,43 @@ function GroupNodeRender({ node, store }: NodeRenderProps<PolyAPI.Namespace>): J
   const history = useHistory();
   const { appID } = useParams<{appID: string}>();
   const formInst = useForm();
-  const editNameRef = useRef<Element>(null);
-  const editNamePopperRef = useRef<any>(null);
-  const editNamePopper = usePopper(editNameRef.current, editNamePopperRef.current, POPPER_PARAMS);
 
   function handleClickMenu(key: string):void {
     setModalType(key);
     setModalOpen(true);
   }
 
+  function getFullNs(): string {
+    return [node.data.parent, node.data.name].join('/');
+  }
+
+  function exceedMaxLevel(): boolean {
+    return getLevelByNs(getFullNs()) > MAX_LIMIT_NS_LEVEL;
+  }
+
   function saveGroup():void {
-    // todo
-    formInst.handleSubmit(async (data)=> {
-      console.log('add group node: ', data);
+    formInst.handleSubmit(async (data: PolyAPI.CreateNamespaceParams)=> {
+      try {
+        if (modalType === 'add') {
+          await proxyStore.createNs(getFullNs(), data);
+        }
+        if (modalType === 'edit') {
+          await proxyStore.updateNs(getFullNs(), data, Object.assign({}, node.data, omit(data, 'name')));
+        }
+        setModalOpen(false);
+      } catch (err) {
+        toast.error(err);
+      }
     })();
   }
 
-  function saveName():void {
-
+  async function deleteGroup() {
+    try {
+      await proxyStore.deleteNs(getFullNs());
+      setModalOpen(false);
+    } catch (err) {
+      toast.error(err);
+    }
   }
 
   function toGroup(id: string):void {
@@ -80,85 +107,87 @@ function GroupNodeRender({ node, store }: NodeRenderProps<PolyAPI.Namespace>): J
     if (!modalOpen) {
       return null;
     }
-    if (modalType === 'edit') {
-      const { left, top } = editNameRef.current?.getBoundingClientRect() || { left: 0, top: 0 };
-      const parentRect = editNameRef.current?.closest('.tree-node')?.getBoundingClientRect() || { left: 0, top: 0 };
-
-      return (
-        <div
-          {...editNamePopper.attributes.popper}
-          ref={editNamePopperRef}
-          style={{
-            position: 'absolute',
-            left: `${left - parentRect.left + 20}px`,
-            top: `${top - parentRect.top}px`,
-          }}
-          className="rounded-8 flex flex-col px-20 pt-20 w-316 border border-gray-300 z-1000 bg-white"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <div className="font-normal text-gray-600 mb-8">分组名称</div>
-          <input className="input mb-4" defaultValue={node.name} />
-          <span className="text-caption text-gray-600">不超过20个字符, 分组名称不可重复</span>
-          <div className='flex justify-end items-center py-16'>
-            <Button className='mr-10' onClick={()=> setModalOpen(false)}>取消</Button>
-            <Button modifier='primary' onClick={()=> {}}>确认</Button>
-          </div>
-        </div>
-      );
-    }
-
     if (modalType === 'add') {
       return (
         <Modal
           title='新建子分组'
           onClose={() => setModalOpen(false)}
           footerBtns={[
-            { key: 'cancel', text: '取消', onClick: ()=> setModalOpen(false) },
-            { key: 'confirm', text: '确认新建', onClick: saveGroup, modifier: 'primary' },
+            { key: 'cancel', text: '取消', iconName: 'close', onClick: ()=> setModalOpen(false) },
+            { key: 'confirm', text: '确认新建', iconName: 'check', onClick: saveGroup, modifier: 'primary' },
           ]}
         >
-          <FormAddGroup form={formInst} onSubmit={saveGroup}/>
+          <FormAddGroup form={formInst} onSubmit={saveGroup} />
+        </Modal>
+      );
+    }
+    if (modalType === 'edit') {
+      return (
+        <Modal
+          title='修改组信息'
+          onClose={() => setModalOpen(false)}
+          footerBtns={[
+            { key: 'cancel', text: '取消', iconName: 'close', onClick: ()=> setModalOpen(false) },
+            { key: 'confirm', text: '确认修改', iconName: 'check', onClick: saveGroup, modifier: 'primary' },
+          ]}
+        >
+          <FormAddGroup
+            form={formInst}
+            onSubmit={saveGroup}
+            defaultValues={pick(node.data, ['title', 'name', 'desc'])}
+            isEdit />
         </Modal>
       );
     }
     if (modalType === 'del') {
       return (
         <Modal
-          title='删除分组'
+          title='提示'
           onClose={() => setModalOpen(false)}
           footerBtns={[
             {
               key: 'cancel',
               text: '取消',
+              iconName: 'close',
               onClick: () => setModalOpen(false),
             },
             {
               key: 'confirm',
-              text: '确认',
+              text: '确认删除',
+              iconName: 'check',
               modifier: 'primary',
-              onClick: () => {},
+              onClick: deleteGroup,
             },
           ]}
         >
-          <p className='px-20 py-20'>确认删除该分组?</p>
+          <div className='px-40 py-24'>
+            <p className='flex items-center text-yellow-600'>
+              <Icon name="info" size={20} style={{ color: 'var(--yellow-600)' }} className='mr-8' />
+              <span>确认要删除该分组吗?</span>
+            </p>
+            <p className='ml-28 mt-8'>删除分组后，该分组下的所有数据将无法找回。</p>
+          </div>
         </Modal>
       );
     }
   }
 
+  const nodeLabel = node.data.title || node.name;
+
   return (
     <div className="flex items-center flex-grow max-w-full">
       <span
         className='truncate mr-auto inline-flex flex-1'
-        title={node.name}
+        title={nodeLabel}
         onClick={()=> toGroup(node.id)}
       >
         <span className='inline-flex items-center'>
           <Icon name={node.expanded ? 'folder_open' : 'folder_empty'} size={20} />
-          <span className='ml-5 text-body1'>{node.name}</span>
+          <span className='ml-5 text-body1 truncate w-142'>{nodeLabel}</span>
         </span>
       </span>
-      <MoreMenu onMenuClick={handleClickMenu} menus={menus} innerRef={editNameRef}/>
+      <MoreMenu onMenuClick={handleClickMenu} menus={exceedMaxLevel() ?
+        menus.filter(({ key })=> key !== 'add') : menus} />
       {renderModals()}
     </div>
   );

@@ -6,12 +6,13 @@
 }
 
 .api-proxy {
+  display: grid;
+  grid-template-columns: 236px 1fr;
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
-  height: calc(100vh - 100px);
+  height: calc(100% - 50px);
 
   &--sider {
-    min-width: 236px;
     border-top-left-radius: 12px;
     border-right: 1px solid var(--gray-300);
   }

@@ -12,6 +12,7 @@ import Search from '@c/search';
 import Icon from '@c/icon';
 import Modal from '@c/modal';
 import Loading from '@c/loading';
+import toast from '@lib/toast';
 
 import GroupNode from './group-node';
 import FormAddGroup from './form-add-group';
@@ -22,16 +23,20 @@ import '../styles.scss';
 
 function SideNav(): JSX.Element | null {
   const [search, setSearch] = useState('');
+  const [nsModalOpen, setNsModalOpen] = useState(false);
   const [debouncedSearch, setDebouncedSearch] = useState(search);
-  const [modalOpen, setModalOpen] = useState(false);
   const ns = useNamespace();
   const formInst = useForm();
   const { appID } = useParams<{appID: string}>();
 
   function handleAddGroup(): void {
-    // todo
     formInst.handleSubmit(async (data: any)=> {
-      console.log('add group: ', data);
+      try {
+        await store.createNs(store.appRootNs, data);
+        setNsModalOpen(false);
+      } catch (err) {
+        toast.error(err);
+      }
     })();
   }
 
@@ -64,7 +69,7 @@ function SideNav(): JSX.Element | null {
   }, [debouncedSearch]);
 
   function renderNsList(): JSX.Element {
-    if (store.isLoading) {
+    if (store.loadingNs) {
       return <Loading />;
     }
     if (Array.isArray(store.filterNsList) && !store.filterNsList.length) {
@@ -86,7 +91,7 @@ function SideNav(): JSX.Element | null {
   }
 
   return (
-    <div className='flex flex-col bg-white border-r api-proxy--sider'>
+    <div className='flex flex-col bg-white border-r api-proxy--sider max-h-full overflow-auto'>
       <div className='py-20 px-16 flex justify-between items-center'>
         <span className='text-h6-bold text-gray-400 mr-auto'>API 分组</span>
         <Tooltip content='新建分组'>
@@ -94,7 +99,7 @@ function SideNav(): JSX.Element | null {
             name='create_new_folder'
             className='cursor-pointer'
             size={20}
-            onClick={() => setModalOpen(true)}
+            onClick={() => setNsModalOpen(true)}
             clickable
           />
         </Tooltip>
@@ -111,12 +116,12 @@ function SideNav(): JSX.Element | null {
           {renderNsList()}
         </div>
       )}
-      {modalOpen && (
+      {nsModalOpen && (
         <Modal
           title='新增分组'
-          onClose={() => setModalOpen(false)}
+          onClose={() => setNsModalOpen(false)}
           footerBtns={[
-            { key: 'cancel', text: '取消', iconName: 'close', onClick: ()=> setModalOpen(false) },
+            { key: 'cancel', text: '取消', iconName: 'close', onClick: ()=> setNsModalOpen(false) },
             { key: 'confirm', text: '确认新建', iconName: 'check', onClick: handleAddGroup, modifier: 'primary' },
           ]}
         >

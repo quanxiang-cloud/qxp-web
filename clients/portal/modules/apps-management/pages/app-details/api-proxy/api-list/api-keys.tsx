@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { UnionColumns } from 'react-table';
+import { observer } from 'mobx-react';
 
 import Button from '@c/button';
 import Table from '@c/table';
@@ -57,4 +58,4 @@ function ApiKeys(props: Props) {
   );
 }
 
-export default ApiKeys;
+export default observer(ApiKeys);

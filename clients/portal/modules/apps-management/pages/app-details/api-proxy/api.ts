@@ -7,19 +7,23 @@ type Paging={
 
 type AppPathType = 'root' | 'raw' | 'poly' | 'serviceForm' | 'form' | 'custom';
 
+function normalizeSuffix(suffix: string): string {
+  return suffix.startsWith('/') ? suffix.slice(1) : suffix;
+}
+
 /*
  namespace crud apis
  */
 export const createNamespace = async (namespace: string, params: PolyAPI.CreateNamespaceParams): Promise<PolyAPI.Namespace> => {
-  return await httpClient(`/api/v1/polyapi/namespace/create/${namespace}`, params);
+  return await httpClient(`/api/v1/polyapi/namespace/create/${normalizeSuffix(namespace)}`, params);
 };
 
-export const deleteNamespace = async (namespacePath: string): Promise<{fullPath: string}> => {
-  return await httpClient(`/api/v1/polyapi/namespace/delete/${namespacePath}`);
+export const deleteNamespace = async (ns: string): Promise<{fullPath: string}> => {
+  return await httpClient(`/api/v1/polyapi/namespace/delete/${normalizeSuffix(ns)}`);
 };
 
-export const updateNamespace = async (namespacePath: string, params: {title: string; desc: string}): Promise<{fullPath: string}> => {
-  return await httpClient(`/api/v1/polyapi/namespace/update/${namespacePath}`, params);
+export const updateNamespace = async (ns: string, params: Omit<PolyAPI.CreateNamespaceParams, 'name'>): Promise<{fullPath: string}> => {
+  return await httpClient(`/api/v1/polyapi/namespace/update/${normalizeSuffix(ns)}`, params);
 };
 
 export const activateNamespace = async (namespacePath: string, params: {active: number}): Promise<{fullPath: string; active: number}> => {
@@ -31,7 +35,7 @@ export const getNamespaceList = async (namespacePath = '', params: Paging): Prom
   page: number;
   list: Array<PolyAPI.Namespace>
 }>=> {
-  return await httpClient(`/api/v1/polyapi/namespace/list${namespacePath.startsWith('/') ? namespacePath : '/' + namespacePath}`, params);
+  return await httpClient(`/api/v1/polyapi/namespace/list/${normalizeSuffix(namespacePath)}`, params);
 };
 
 export const getNamespace = async (namespacePath: string): Promise<PolyAPI.Namespace> => {
@@ -48,7 +52,7 @@ export const searchNamespace = async (ns: string, params: Record<string, any>): 
   list: Array<PolyAPI.Namespace>
 }> => {
   const defaultParams = { active: -1, page: 1, pageSize: -1, withSub: true };
-  return await httpClient(`/api/v1/polyapi/namespace/search/${ns.startsWith('/') ? ns.slice(1) : ns}`, { ...params, ...defaultParams });
+  return await httpClient(`/api/v1/polyapi/namespace/search/${normalizeSuffix(ns)}`, { ...params, ...defaultParams });
 };
 
 /*
@@ -71,12 +75,12 @@ export const activateService = async (servicePath: string, params: {active: numb
   return await httpClient(`/api/v1/polyapi/service/active/${servicePath}`, params);
 };
 
-export const getServiceList = async (namespacePath?: string, params?: Paging): Promise<{
+export const getServiceList = async (namespacePath: string, params?: Paging): Promise<{
   total: number;
   page: number;
   list: Array<PolyAPI.Service>
 }> => {
-  return await httpClient(['/api/v1/polyapi/service/list', namespacePath || ''].join('/'), params || {});
+  return await httpClient(`/api/v1/polyapi/service/list/${normalizeSuffix(namespacePath)}`, params || {});
 };
 
 export const getService = async (servicePath: string): Promise<PolyAPI.Service> => {
