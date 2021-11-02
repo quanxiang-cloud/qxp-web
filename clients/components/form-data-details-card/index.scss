@@ -7,29 +7,6 @@
  }
 }
 
-
-@keyframes open {
-  from {
-    height: 36;
-  }
-  to {
-    height: var(--group-box-height);
-  }
-}
-
-@keyframes close {
-  from {
-    height: var(--group-box-height);
-  }
-  to {
-    height: 36px;
-  }
-}
-
-.form-group-box-open {
-  animation: open .1s forwards;
-}
-
-.form-group-box-close {
-  animation: close .1s forwards;
+.card-value .ant-table  {
+  @apply text-12;
 }

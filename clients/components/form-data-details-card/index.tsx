@@ -30,8 +30,8 @@ function FormDataDetailsCard({
   const [formData, setFormData] = useState<{ schema: ISchema, record: Record<string, any> } | null>(null);
 
   const groupTitleMap: Record<string, string> = {
-    LayoutGrid: '栅格分组',
-    LayoutTabs: '选项卡分组',
+    LayoutGrid: '栅格',
+    LayoutTabs: '选项卡',
   };
 
   useEffect(() => {
@@ -119,7 +119,11 @@ function FormDataDetailsCard({
   return (
 
     <div className={cs('flex-1 overflow-auto', className)}>
-      <InfoCard list={details} className={fullScreen ? 'grid-cols-4' : 'grid-cols-2'}/>
+      <InfoCard
+        list={details}
+        fullScreen={fullScreen}
+        className={fullScreen ? 'grid-cols-4' : 'grid-cols-2'}
+      />
 
       { groups?.map((group, key) => (
         <GroupCard
