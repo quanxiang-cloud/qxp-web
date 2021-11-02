@@ -140,13 +140,13 @@ class AppModelStore {
       return modelDuplicate(
         this.appID,
         this.curDataModel?.tableID || '',
-        `${this.appID}_${basicInfo.tableID}`,
+        basicInfo.tableID,
         basicInfo.title,
         basicInfo.description || '',
       ).then(() => {
         toast.success('复制成功');
         this.setParams({});
-        this.curModelTableID = `${this.appID}_${basicInfo.tableID}`;
+        this.curModelTableID = basicInfo.tableID;
       }).catch((err) => {
         toast.error(err);
       });
@@ -154,12 +154,12 @@ class AppModelStore {
 
     return saveTableSchema(
       this.appID,
-      `${this.appID}_${basicInfo.tableID}`,
+      basicInfo.tableID,
       { ...this.dataModelSchema.schema, ...omit(basicInfo, 'tableID') },
       2,
     ).then(() => {
       this.setParams({});
-      this.curModelTableID = `${this.appID}_${basicInfo.tableID}`;
+      this.curModelTableID = basicInfo.tableID;
 
       if (modalType === 'create') {
         toast.success('添加成功！');

@@ -102,7 +102,7 @@ function EditModal({ modalType, onClose, handleEditModel }: Props): JSX.Element 
   const form = useForm({
     initialValues: {
       title: modalType === 'copy' ? `${modelInfo?.title}-副本` : modelInfo?.title,
-      tableID: modalType === 'copy' ? '' : modelInfo?.tableID.split('_').pop(),
+      tableID: modalType === 'copy' ? '' : modelInfo?.tableID,
       description: modelInfo?.description,
     },
     onSubmit: (formData) => {
@@ -138,7 +138,7 @@ function EditModal({ modalType, onClose, handleEditModel }: Props): JSX.Element 
         continue;
       }
 
-      if (value === modalInfoTmp.tableID.split('_').pop()) {
+      if (value === modalInfoTmp.tableID) {
         repeated = true;
       }
     }
