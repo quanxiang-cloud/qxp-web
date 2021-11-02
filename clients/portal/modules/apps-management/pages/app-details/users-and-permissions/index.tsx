@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 import { observer } from 'mobx-react';
 
 import Icon from '@c/icon';
-import IconButton from '@c/icon-btn';
 import Tab from '@c/tab';
 import Modal from '@c/modal';
 import toast from '@lib/toast';
@@ -135,25 +134,23 @@ function UsersAndPermissions(): JSX.Element {
           <div className='app-nav flex h-full flex-col overflow-auto bg-gray-50'
             style={{ width: '220px' }}
           >
-            <div className="px-8 pt-16 py-8 flex items-center">
+            <div className="px-8 pt-16 py-8 flex items-center text-12">
               <div className="flex-1">
                 <Search
                   placeholder="搜索名称..."
                   onChange={store.changeKeyword}
                 />
               </div>
-              <IconButton
-                className="ml-8"
-                size={28}
-                iconSize={16}
-                btnType="light"
+              <div
+                className="rights-add ml-8"
                 ref={reference as any}
-                iconName="add"
                 onClick={() => {
                   setModalType('add');
                   setShowEditRightModal(true);
                 }}
-              />
+              >
+                <Icon name="add" type="light" className="flex-shrink-0" size={20} />
+              </div>
               <Popper
                 ref={popperRef}
                 trigger="hover"
