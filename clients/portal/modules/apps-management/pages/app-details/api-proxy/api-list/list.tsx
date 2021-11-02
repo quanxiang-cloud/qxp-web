@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 // import {useQuery} from 'react-query';
 import { UnionColumns } from 'react-table';
@@ -8,8 +8,11 @@ import Button from '@c/button';
 import Search from '@c/search';
 import Table from '@c/table';
 import Icon from '@c/icon';
+import EmptyTips from '@c/empty-tips';
+import Loading from '@c/loading';
 
 import { useNamespace } from '../hooks';
+import store from '../store';
 
 interface Props {
   className?: string;
@@ -57,9 +60,25 @@ function ApiList(props: Props) {
     },
   ];
 
-  const handleSearch = (ev: any)=>{
+  useEffect(()=> {
+    store.fetchApiListInSvc();
+  }, [store.treeStore?.currentFocusedNodeID]);
 
-  };
+  function handleSearch(ev: any): void {
+
+  }
+
+  function toCreateApiPage(): void {
+    history.push(`${url}?ns=${ns}&action=add`);
+  }
+
+  function toAddSwaggerPage(): void {
+    history.push(`${url}?ns=${ns}&action=add-swagger`);
+  }
+
+  if (store.isLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className='w-full'>
@@ -69,11 +88,11 @@ function ApiList(props: Props) {
             className='mr-20'
             modifier='primary'
             iconName='add'
-            onClick={()=> history.push(`${url}?ns=${ns}&action=add`)}
+            onClick={toCreateApiPage}
           >
             新建 API
           </Button>
-          <span onClick={()=> history.push(`${url}?ns=${ns}&action=add-swagger`)} className='cursor-pointer'>
+          <span onClick={toAddSwaggerPage} className='cursor-pointer'>
             <Icon name='archive' />
             <span className='ml-5'>批量导入</span>
           </span>
@@ -88,7 +107,11 @@ function ApiList(props: Props) {
       </div>
       <div className='api-list-wrap'>
         <Table
-          emptyTips='暂无数据'
+          emptyTips={(<EmptyTips text={
+            (<div>暂无数据，选择
+              <span onClick={toCreateApiPage} className='text-blue-600 cursor-pointer ml-4'>新建 API</span>
+            </div>)
+          } />)}
           loading={loading}
           rowKey='id'
           columns={COLS}

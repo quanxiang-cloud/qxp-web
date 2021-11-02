@@ -104,7 +104,7 @@ export const getNamespaceApiList = async (namespacePath: string, params: Paging)
   page: number;
   list: Array<PolyAPI.Api>
 }> => {
-  return await httpClient(`/api/v1/polyapi/raw/list/${namespacePath}`, params);
+  return await httpClient(`/api/v1/polyapi/raw/list/${normalizeSuffix(namespacePath)}`, params);
 };
 
 export const getServiceApiList = async (servicePath: string, params: Paging): Promise<{
@@ -112,7 +112,7 @@ export const getServiceApiList = async (servicePath: string, params: Paging): Pr
   page: number;
   list: Array<PolyAPI.Api>
 }> => {
-  return await httpClient(`/api/v1/polyapi/raw/listInService/${servicePath}`, params);
+  return await httpClient(`/api/v1/polyapi/raw/listInService/${normalizeSuffix(servicePath)}`, params);
 };
 
 export const queryNativeApi = async (apiPath: string): Promise<PolyAPI.NativeApi>=> {

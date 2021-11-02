@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import cs from 'classnames';
 import { observer } from 'mobx-react';
 import { toJS } from 'mobx';
-import { omit } from 'lodash';
+import { omit, isEqual, pick } from 'lodash';
 
 import Select from '@c/select';
 import Button from '@c/button';
@@ -40,10 +40,6 @@ function GroupSetting(props: Props) {
   const [auth, setAuth] = useState<AuthType>(svcData ? svcData.authType : 'none');
 
   useEffect(()=> {
-    store.fetchSvc();
-  }, [store.treeStore?.currentFocusedNodeID]);
-
-  useEffect(()=> {
     const defaultValues = { hostname: 'www.qingcloud.com', port: 8080 };
     if (svcData) {
       const [hostname, port] = svcData.host.split(':');
@@ -52,7 +48,7 @@ function GroupSetting(props: Props) {
     Object.entries(defaultValues).forEach(([k, v])=> {
       setValue(k, v);
     });
-  }, [svcData]);
+  }, [store.svc]);
 
   const onSubmit = ()=> {
     handleSubmit(async ({ hostname, port, authorize }: {hostname: string; port: string; authorize:string})=> {
@@ -86,7 +82,13 @@ function GroupSetting(props: Props) {
         if (!store.svc) {
           await store.createSvc(store.treeStore?.curNodefullNs || '', data);
         } else {
-          await store.updateSvc(omit(data, 'name'));
+          const finalData = omit(data, 'name');
+          const prevData = pick(svcData, ['schema', 'host', 'authType', 'authorize']);
+          if (isEqual(finalData, prevData)) {
+            toast.success('数据未修改');
+            return;
+          }
+          await store.updateSvc(finalData);
         }
         toast.success('提交成功');
       } catch (err) {
@@ -153,7 +155,7 @@ function GroupSetting(props: Props) {
                   className={cs('textarea', { error: errors.authorize })}
                   rows={3}
                   placeholder='请输入'
-                  {...register('authorize', { required: '请输入鉴权方法', shouldUnregister: true })}
+                  {...register('authorize', { required: '请输入鉴权方法' })}
                 />
                 <ErrorMsg errors={errors} name='authorize' />
               </div>

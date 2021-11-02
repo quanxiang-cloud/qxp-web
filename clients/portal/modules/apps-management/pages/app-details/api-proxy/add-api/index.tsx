@@ -64,21 +64,35 @@ function AddApi(props: Props) {
           />
         </div>
 
-        <div className='flex items-center'>
-          <Select options={methodOptions} value={method} onChange={setMethod}/>
-          <input
-            placeholder='请补全 API 标识 (最多32个字符，支持英文、下划线、数字)。例如: loginUser'
-            className={cs('input ml-12', { error: errors.url })}
-            {...register('url', { required: true })}
-          />
-          <ErrorMsg errors={errors} name='url' />
+        <div className='flex items-center mb-16'>
+          <div className='w-120 mr-12'>
+            <p>请求方法</p>
+            <Select options={methodOptions} value={method} onChange={setMethod}/>
+          </div>
+          <div className='mr-12'>
+            <p>接口路径</p>
+            <input
+              className={cs('input bg-gray-100 w-214', { error: errors.fullPath })}
+              // defaultValue='/system/app/xxx/customer/ss-01'
+              readOnly
+              {...register('fullPath', { required: true })}
+            />
+          </div>
+          <div className='flex-1'>
+            <p>API 标识</p>
+            <input
+              placeholder='请输入 API 标识 (最多32个字符，支持英文、下划线、数字)。例如: loginUser'
+              className={cs('input', { error: errors.url })}
+              {...register('url', { required: true })}
+            />
+          </div>
         </div>
 
         <ParamSection title='请求参数' toggleable>
+          <ParamForm title='Path' />
           <ParamForm title='Query' />
           <ParamForm title='Header' />
           <ParamForm title='Body' />
-          <ParamForm title='Path' />
           <ParamForm title='常量参数' />
         </ParamSection>
 

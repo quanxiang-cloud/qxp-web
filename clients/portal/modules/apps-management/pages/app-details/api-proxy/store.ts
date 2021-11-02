@@ -109,6 +109,7 @@ class ApiProxyStore {
   @observable filterNsList: PolyAPI.Namespace[] | null = null; // filtered ns list, like search
   @observable isLoading = false; // fetching sub page's data
   @observable svc: PolyAPI.Service | null=null;
+  @observable apiList: PolyAPI.Api[] = []
 
   @action
   setNamespaces = (namespaces: PolyAPI.Namespace[]) => {
@@ -199,14 +200,13 @@ class ApiProxyStore {
   @action
   createSvc=async (ns: string, params: PolyAPI.CreateServiceParams)=> {
     await apis.createService(ns, params);
-    this.svc = Object.assign({}, this.svc, params);
+    this.svc = Object.assign({}, this.svc, params, { authContent: params.authorize });
   }
 
   @action
   updateSvc=async (params: Omit<PolyAPI.CreateServiceParams, 'name'>)=> {
-    await apis.updateService(this.treeStore?.curNodeSvcPath || '', params);
-    this.svc = Object.assign({}, this.svc, params);
-    Object.assign(this.svc, params);
+    await apis.updateService(this.svc?.fullPath || '', params);
+    this.svc = Object.assign({}, this.svc, params, { authContent: params.authorize });
   }
 
   @action
@@ -218,6 +218,25 @@ class ApiProxyStore {
     } catch (err) {
       // toast.error(err);
       this.svc = null;
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  @action
+  fetchApiListInSvc=async ()=> {
+    this.isLoading = true;
+    try {
+      // todo
+      const params = {
+        page: 1,
+        pageSize: -1,
+        active: -1,
+      };
+      const { list } = await apis.getServiceApiList(this.svc?.fullPath || '', params);
+      this.apiList = list;
+    } catch (err) {
+      toast.error(err);
     } finally {
       this.isLoading = false;
     }

@@ -15,13 +15,34 @@ const defaultKey = 'group-setting';
 
 function ListPage() {
   const [tabKey, setTabKey] = useState(defaultKey);
+  const tabs = [
+    {
+      id: 'api-list',
+      name: 'API 列表',
+      content: <ApiList/>,
+      disabled: !store.svc,
+    },
+    {
+      id: 'group-setting',
+      name: '配置分组',
+      content: <GroupSetting/>,
+    },
+    {
+      id: 'api-keys',
+      name: 'API 密钥',
+      content: <ApiKeys/>,
+    },
+  ];
 
   useEffect(()=> {
-    setTabKey(defaultKey);
-    // if (tabKey === defaultKey) {
-    //   store.fetchSvc();
-    // }
+    store.fetchSvc();
   }, [store.treeStore?.currentFocusedNodeID]);
+
+  useEffect(()=> {
+    if (!store.svc && ['api-list', 'api-keys'].includes(tabKey)) {
+      setTabKey(defaultKey);
+    }
+  }, [store.svc]);
 
   if (!store.treeStore?.currentFocusedNodeID) {
     return <NoData />;
@@ -33,24 +54,7 @@ function ListPage() {
       <Tab
         currentKey={tabKey}
         onChange={setTabKey}
-        items={[
-          {
-            id: 'api-list',
-            name: 'API 列表',
-            content: <ApiList/>,
-            disabled: !store.svc,
-          },
-          {
-            id: 'group-setting',
-            name: '配置分组',
-            content: <GroupSetting/>,
-          },
-          {
-            id: 'api-keys',
-            name: 'API 密钥',
-            content: <ApiKeys/>,
-          },
-        ]}
+        items={store.svc ? tabs : tabs.filter((tab) => tab.id !== 'api-keys')}
       />
     </>
   );
