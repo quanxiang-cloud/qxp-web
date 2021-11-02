@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
 import { useHistory, useParams } from 'react-router-dom';
 
-import FeedbackBtn from '@c/feedback';
 import toast from '@lib/toast';
 import Select from '@c/select';
 import AppsSwitcher from '@c/apps-switcher';
@@ -109,7 +108,6 @@ function DetailsHeader({ onCancel }: Props): JSX.Element {
         </div>
       </div>
       <div className='flex items-center'>
-        <FeedbackBtn />
         {options.length > 1 && (
           <div className='flex items-center'>
             切换角色：

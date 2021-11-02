@@ -1,6 +1,5 @@
 import React from 'react';
 
-import FeedbackBtn from '@c/feedback';
 import NavMsgBar from '@portal/modules/msg-center/nav-msg-bar';
 import Icon from '@c/icon';
 import UserAvatarMenu from '@c/user-avatar-menu';
@@ -26,7 +25,6 @@ export default function HeaderMenu(): JSX.Element {
       >
         <Icon name="help_doc" size={21} style={{ fill: 'var(--gray-400)' }} className='text-current m-6'/>
       </a>
-      <FeedbackBtn />
       <div className="header-nav-btn group ml-16">
         <UserAvatarMenu />
       </div>
