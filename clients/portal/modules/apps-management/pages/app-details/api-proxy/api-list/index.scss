@@ -1,0 +1,42 @@
+.inside-api-key {
+  .qxp-ui-tooltip.top {
+    bottom: calc(100% + 1px);
+    left: 40%;
+    transform: translateX(-50%);
+  }
+  .qxp-table-wrapper {
+    margin-top: 16px;
+    .key-id:hover .copy-tooltip{
+      visibility: visible;
+    }
+  }
+  .ant-switch {
+    width: 54px;
+    height: 20px;
+    .ant-switch-handle {
+      width: 16px;
+      height: 16px;
+    }
+    .ant-switch-inner {
+      margin: 0 8px 0 22px;
+    }
+  }
+  .ant-switch-checked {
+    background-color: #375FF3;
+    .ant-switch-handle {
+      left: calc(100% - 16px - 2px);
+    }
+    .ant-switch-inner {
+      margin: 0 22px 0 8px;
+    }
+  }
+  .qxp-table-loading-box {
+    background-color: rgba(255, 255, 255, 1);
+  }
+}
+
+.key-form {
+  .ant-input {
+    border-radius: 2px 8px 8px 8px;
+  }
+}

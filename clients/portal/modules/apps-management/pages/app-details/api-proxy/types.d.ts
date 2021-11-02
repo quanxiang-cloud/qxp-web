@@ -106,5 +106,20 @@ declare namespace PolyAPI {
     desc?: string;
   }
 
+  type ApiKeyParams = {
+    service: string;
+    keyID: string;
+    keySecret: string;
+    description?: string;
+  }
+  type ApiKeyList={
+    id: string,
+    keyID: string,
+    keySecret: string,
+    description: string,
+    active: number,
+    createAt: string,
+  };
+
   type CreateServiceResult = Omit<Service, 'owner'>
 }

@@ -126,3 +126,31 @@ export const deleteNativeApi = async (apiPath: string): Promise<any> => {
 export const queryNativeApiDoc = async (apiPath: string, params: PolyAPI.ApiDocParams): Promise<PolyAPI.QueryApiDocResult> => {
   return await httpClient(`/api/v1/polyapi/raw/doc/${apiPath}`, params);
 };
+
+// 第三方api密钥管理
+export const uploadApiKey = async (params: PolyAPI.ApiKeyParams): Promise<any> => {
+  return await httpClient('/api/v1/polyapi/holdingkey/upload', params);
+};
+
+export const deleteApiKey = async (params: { id: string; service?: string }): Promise<any> => {
+  return await httpClient('/api/v1/polyapi/holdingkey/delete', params);
+};
+
+export const updateApiKey = async (params: PolyAPI.ApiKeyParams): Promise<any> => {
+  return await httpClient('/api/v1/polyapi/holdingkey/update', params);
+};
+
+export const getApiKeyList = async (params: { page: number, limit: number, service?: string }): Promise<{
+  keys: Array<PolyAPI.ApiKeyList>,
+  total: number,
+}> => {
+  return await httpClient('/api/v1/polyapi/holdingkey/list', params);
+};
+
+export const queryApiKey = async ( id: string ): Promise<PolyAPI.ApiKeyList> => {
+  return await httpClient('/api/v1/polyapi/holdingkey/query', { id });
+};
+
+export const activeApiKey = async (params: { id: string; active: number; service?: string }): Promise<any> => {
+  return await httpClient('/api/v1/polyapi/holdingkey/active', params);
+};
