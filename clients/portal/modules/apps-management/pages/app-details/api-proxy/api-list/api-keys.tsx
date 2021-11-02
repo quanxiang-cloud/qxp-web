@@ -76,8 +76,12 @@ function ApiKeys(): JSX.Element {
       uploadApiKey(apiKeyMsg).then(() => {
         updateApiKeyList(pageParams);
         setShowFormModal(false);
-      }).catch(() => {
-        toast.error('创建失败');
+      }).catch((err) => {
+        if (err.message === 'failded to upload, the key uploaded has exists') {
+          toast.error('密钥ID重复，请重新输入');
+        } else {
+          toast.error('创建失败');
+        }
       });
     }).catch(() => null);
   }
