@@ -6,6 +6,7 @@ import DetailPanel from './panel-detail';
 import msgCenter from '@portal/stores/msg-center';
 
 import styles from './index.module.scss';
+import './index.scss';
 
 interface Props {
   className?: string;
@@ -21,8 +22,8 @@ const MsgBox = ({ className }: Props) => {
   return (
     <div className={`${styles.wrap} ${className}`}>
       <Types />
-      <ListPanel/>
-      <DetailPanel/>
+      <ListPanel />
+      <DetailPanel />
     </div>
   );
 };

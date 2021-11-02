@@ -1,15 +1,12 @@
-import React, { useState, useRef, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useMutation, useQuery } from 'react-query';
-import cs from 'classnames';
 import { observer } from 'mobx-react';
-import { Message, Table } from '@QCFE/lego-ui';
 import { get } from 'lodash';
 
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
-import MoreMenu from '@c/more-menu';
-import MsgItem from '@portal/modules/msg-center/msg-item';
-import SvgIcon from '@c/icon';
+import Modal from '@c/modal';
+import toast from '@lib/toast';
 import {
   getMessageList,
   deleteMsgByIds,
@@ -20,24 +17,33 @@ import {
 import { MsgType, MsgReadStatus } from '@portal/modules/system-mgmt/constants';
 import Pagination from '@c/pagination';
 import msgCenter from '@portal/stores/msg-center';
+
 import Toolbar from './toolbar';
-import Modal from '@c/modal';
-import { useRouting } from '../../../hooks';
+import MsgItem from './msg-item';
 import NoMsg from '../no-msg';
+import { useRouting } from '../../../hooks';
 
-import styles from '../index.module.scss';
+export type MsgInfo = {
+  id: string;
+  title: string;
+  read_status: MsgReadStatus.unread | MsgReadStatus.read | MsgReadStatus. all,
+  sort: MsgType.all | MsgType.notify | MsgType.system,
+  updated_at: number;
+}
 
-const PanelList = () => {
+function PanelList(): JSX.Element {
+  const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const { paging, selectType, filterCheckUnread } = msgCenter;
   const queryPage = useRouting();
-  const getQueryParams = () => {
+  const toolbarRef = useRef<any>();
+  const getQueryParams = (): any => {
     const params = {
       read_status: filterCheckUnread ? MsgReadStatus.unread : undefined,
       sort: selectType === MsgType.all ? undefined : selectType,
     };
     return { ...params, ...paging };
   };
-  const [selectedRows, setSelectedRows] = useState<string[]>([]);
+
   const { isLoading,
     isError,
     data,
@@ -54,11 +60,8 @@ const PanelList = () => {
     'count-unread-msg',
     getUnreadMsgCount,
   );
-
-  const toolbarRef = useRef<any>();
-
   const msgList = useMemo(() => {
-    msgCenter.setUnreadTypeCounts(get(countUnreadMsg, 'data.type_num', []));
+    msgCenter.setUnreadTypeCounts(get(countUnreadMsg, 'type_num', []));
     return data?.mes_list || [];
   }, [data]);
 
@@ -83,11 +86,9 @@ const PanelList = () => {
       queryPage('', { id: undefined });
       refetch();
       unReadRefetch();
-      // console.log('msgList: ', msgList, ', msgTotal: ', msgTotal);
-      // console.log('success data: ', data);
     },
     onError: (err: Error) => {
-      Message.warning(`删除失败: ${err.message}`);
+      toast.error(`删除失败: ${err.message}`);
     },
   });
 
@@ -112,7 +113,7 @@ const PanelList = () => {
     return <ErrorTips desc='获取数据失败' />;
   }
 
-  const handleAllReaded = () => {
+  function handleAllReaded(): void {
     const allReadedModal = Modal.open({
       title: '全部已读',
       content: (<p className="p-20">确定要将全部类型的消息标记为已读吗?</p>),
@@ -127,15 +128,15 @@ const PanelList = () => {
           });
       },
     });
-  };
+  }
 
-  const handleCheckedReaded = (title?:string, id?:string) => {
+  function handleCheckedReaded(title?: string, id?: string): void {
     const checkedReadedModal = Modal.open({
       title: '标记已读',
       content: (
         <p
           className="p-20">
-          { id ? `确定要将${title}信息标记为已读?` : `确定要将已选中的${selectedRows.length}条消息标记为已读吗?`}
+          {id ? `确定要将${title}信息标记为已读?` : `确定要将已选中的${selectedRows.length}条消息标记为已读吗?`}
         </p>),
       onConfirm: () => {
         setMsgAsReadByIds(id ? [id] : selectedRows)
@@ -149,9 +150,9 @@ const PanelList = () => {
           });
       },
     });
-  };
+  }
 
-  const handleDeleteMessage = (title?:string, id?:string) => {
+  function handleDeleteMessage(title?: string, id?: string): void {
     const deleteMessageModal = Modal.open({
       title: '删除消息',
       content: (
@@ -164,113 +165,67 @@ const PanelList = () => {
         deleteMessageModal.close();
       },
     });
-  };
+  }
 
-  const rowSelection = {
-    selectedRowKeys: selectedRows,
-    getCheckboxProps: (record: any) => ({
-      // disabled: record.read_status === MsgReadStatus.read,
-      name: record.id,
-    }),
-    onChange(keys: any) {
-      setSelectedRows(keys);
-      // todo
-      if (keys.length === msgList.length) {
-        toolbarRef.current.allcheck(true);
-        toolbarRef.current.interm(false);
-      } else if (keys.length > 0) {
-        toolbarRef.current.allcheck(false);
-        toolbarRef.current.interm(true);
-      } else {
-        toolbarRef.current.allcheck(false);
-        toolbarRef.current.interm(false);
-      }
-    },
-  };
-
-  const setAllChecked = () => {
+  function handleAllChecked(): void {
     setSelectedRows(msgList.map((itm: any) => itm.id));
-  };
+  }
 
-  const setAllUnchecked = () => setSelectedRows([]);
+  function handleAllUnchecked(): void {
+    setSelectedRows([]);
+  }
 
-  const renderTable = () => {
+  function handleCheckboxChange(e: any, id: string): void {
+    let _selectRows = [...selectedRows];
+    if (e.target.checked) {
+      _selectRows.push(id);
+    } else {
+      _selectRows = _selectRows.filter((row) => row !== id);
+    }
+    if (_selectRows.length === msgList.length) {
+      toolbarRef.current.setIndeterminate(false);
+      toolbarRef.current.setCheckedAll(true);
+    } else if (_selectRows.length > 0) {
+      toolbarRef.current.setIndeterminate(true);
+      toolbarRef.current.setCheckedAll(false);
+    } else {
+      toolbarRef.current.setIndeterminate(false);
+      toolbarRef.current.setCheckedAll(false);
+    }
+
+    setSelectedRows(_selectRows);
+  }
+
+  function renderTable(): JSX.Element {
     const toolbarOptions = {
-      setAllChecked,
-      setAllUnchecked,
-      handleAllReaded,
-      handleCheckedReaded,
-      selectedRows,
       canIUseReadBtn,
       canIUseDelBtn,
+      handleAllChecked,
+      handleAllUnchecked,
+      handleAllReaded,
+      handleCheckedReaded,
       handleDeleteMessage,
     };
-
     return (
-      <div className={styles.message_list_warp}>
-        <div className={styles.message_list}>
+      <div className="flex flex-col w-full h-full">
+        <div className="flex-1 mb-12">
           <Toolbar ref={toolbarRef} {...toolbarOptions} />
-          <Table
-            className={cs('text-14 table-full', styles.table)}
-            rowKey='id'
-            rowSelection={rowSelection}
-            columns={[
-              {
-                title: '',
-                render: (msg: Qxp.MsgItem) => (
+          <ul className="flex flex-col items-center">
+            {
+              msgList.map((msg: MsgInfo) => {
+                return (
                   <MsgItem
-                    className={styles.msgItem}
-                    {...msg}
-                    hideType
+                    key={msg.id}
+                    msgData={msg}
+                    selectedRows={selectedRows}
+                    handleCheckboxChange={handleCheckboxChange}
+                    handleDeleteMessage={handleDeleteMessage}
+                    handleCheckedReaded={handleCheckedReaded}
                   />
-                ),
-              },
-              {
-                title: '',
-                render: (msg: Qxp.MsgItem) => {
-                  const { title, id } = msg;
-                  const menus = [
-                    {
-                      key: 'delete',
-                      label: (
-                        <div className="flex items-center">
-                          <SvgIcon name="restore_from_trash" size={16} className="mr-8" />
-                          <span className="font-normal">删除&emsp;&emsp;</span>
-                        </div>
-
-                      ),
-                    },
-                    {
-                      key: 'remark',
-                      label: (
-                        <div className="flex items-center" >
-                          <SvgIcon name="done_all" size={16} className="mr-8" />
-                          <span className="font-normal">标记为已读&emsp;&emsp;</span>
-                        </div>
-
-                      ),
-                    },
-                  ];
-                  return (
-                    <MoreMenu
-                      menus={menus}
-                      onMenuClick={(menuKey) => {
-                        if (menuKey === 'delete') {
-                          handleDeleteMessage(title, id);
-                          return;
-                        }
-                        if (menuKey === 'remark') {
-                          handleCheckedReaded(title, id);
-                          return;
-                        }
-                      }}
-                    />
-                  );
-                },
-              },
-            ]}
-            dataSource={msgList}
-          />
+                );
+              })
+            }
+          </ul>
         </div>
         <div>
           <Pagination
@@ -283,13 +238,13 @@ const PanelList = () => {
         </div>
       </div>
     );
-  };
+  }
 
   return (
-    <div className={styles.listPanel}>
+    <div className="px-16 py-20 li-border border-r border-gray-200">
       {msgList.length ? renderTable() : <NoMsg tips='暂无消息' />}
     </div>
   );
-};
+}
 
 export default observer(PanelList);
