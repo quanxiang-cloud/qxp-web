@@ -6,13 +6,13 @@ import cs from 'classnames';
 import Tab from '@c/tab';
 import Icon from '@c/icon';
 import Table from '@c/table';
-import Switch from '@c/switch';
 import Toggle from '@c/toggle';
 import Loading from '@c/loading';
 import Tooltip from '@c/tooltip';
 import EmptyTips from '@c/empty-tips';
 import TextHeader from '@c/text-header';
 import { copyContent } from '@lib/utils';
+import RadioButtonGroup from '@c/radio/radio-button-group';
 
 import store from './store';
 import 'highlight.js/styles/atelier-sulphurpool-dark.css';
@@ -89,10 +89,13 @@ function renderApiDetails(): JSX.Element {
     <>
       <Suspense fallback={<Loading />}>
         <div className='h-56 flex items-center justify-between'>
-          <Switch
-            value='curl'
-            options={DOC_TYPE_LIST}
-            onChange={(v) => handleDocTypeChange(v as DocType)}
+          <RadioButtonGroup
+            radioBtnClass="bg-white"
+            onChange={(value) => {
+              handleDocTypeChange(value as DocType);
+            }}
+            listData={DOC_TYPE_LIST}
+            currentValue={store.docType}
           />
           <div className='flex items-center'>
             使用字段名称:

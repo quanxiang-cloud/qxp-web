@@ -3,11 +3,11 @@ import { observer } from 'mobx-react';
 import { useQuery } from 'react-query';
 import { useHistory, useLocation } from 'react-router-dom';
 
-import Switch from '@c/switch';
 import Select from '@c/select';
 import Search from '@c/search';
 import Pagination from '@c/pagination';
 import IconBtn from '@c/icon-btn';
+import RadioButtonGroup from '@c/radio/radio-button-group';
 
 import store from './store';
 import TaskList from '../task-list';
@@ -54,15 +54,16 @@ function TodoApprovals(): JSX.Element {
     <div>
       <div className="flex justify-between items-center mb-16">
         <div className="flex flex-1">
-          <Switch
+          <RadioButtonGroup
             className="mr-16"
+            radioBtnClass="bg-white"
             onChange={(value) => {
               history.push(`${pathname}${value ? '?tagType=' : ''}${value}`);
-              store.changeTagType(value);
+              store.changeTagType(value as string);
             }}
-            value={store.tagType}
-            options={status}
-            optionRenderer={({ value, label }) => {
+            listData={status as any}
+            currentValue={store.tagType}
+            radioLabelRender={({ value, label }) => {
               let count = 0;
               if (value === '') {
                 count = flowInstCount?.waitHandleCount || 0;
@@ -73,9 +74,7 @@ function TodoApprovals(): JSX.Element {
               if (value === 'URGE') {
                 count = flowInstCount?.urgeCount || 0;
               }
-              return (
-                <span>{label + ' · ' + count}</span>
-              );
+              return label + ' · ' + count;
             }}
           />
           <Select
