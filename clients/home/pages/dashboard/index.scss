@@ -31,6 +31,18 @@
   font-size: 14px;
 }
 
+.applist-card .app-list {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+
+  @media screen and (max-width:1440px) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  @media screen and (max-width: 1400px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 .backlog {
   width: 126px;
   height: 70px;

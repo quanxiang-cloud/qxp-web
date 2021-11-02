@@ -67,7 +67,13 @@ function DetailsDrawer({ onCancel, rowID, goEdit, delData }: Props): JSX.Element
             <Icon onClick={handleCancel} clickable changeable name='close' size={24} />
           </div>
         </div>
-        <FormDataDetailsCard className='p-10' appID={store.appID} tableID={store.pageID} rowID={rowID} />
+        <FormDataDetailsCard
+          className='px-20 py-16'
+          rowID={rowID}
+          appID={store.appID}
+          tableID={store.pageID}
+          fullScreen={fullScreen}
+        />
       </div>
     </div>
   );

@@ -10,4 +10,3 @@ rollup.*.js
 scripts/*
 tailwind.config.js
 webpack.*.js
-externals/**/*.js

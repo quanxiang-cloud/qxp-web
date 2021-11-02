@@ -1,11 +1,12 @@
 import moment from 'moment';
 import { UnionColumns } from 'react-table';
+import { flattenDeep, isEmpty } from 'lodash';
 
 import toast from '@lib/toast';
 
 import { fetchCorrelationFlows, fetchCorrelationRoles } from './api';
 import { CardListInfo, CardList, CustomPageInfo, Description, SchemaPageInfo, MenuType } from './type';
-import { flattenDeep, isEmpty } from 'lodash';
+import { Menu } from './page-menu-design/menu-tree/type';
 
 export const SYSTEM_FIELDS: Record<string, ModelFieldSchema> = {
   _id: {

@@ -1,188 +1,106 @@
-import { cloneDeep } from 'lodash';
+import { omit } from 'lodash';
+import { MenuType } from '@portal/modules/apps-management/pages/app-details/type';
+import { Menu } from './type';
 
-export function willNest(from: Menu, to: Menu): boolean {
-  return !!((from?.child?.length || 0) > 0 && to?.groupID);
+export function css(
+  el: HTMLElement,
+  cssProps: Record<string, string>): void {
+  const style: CSSStyleDeclaration = el && el.style;
+
+  Object.entries(cssProps).forEach(([prop, val]: [string, string]) => {
+    if (prop in style) {
+      // @ts-ignore
+      style[prop] = val + (typeof val === 'string' ? '' : 'px');
+    }
+  });
 }
 
-/**
- * pageInitList mutation
- * @param {Menu} activeMenu dragArea data
- * @param {Menu} hoverMenu dropArea data
- * @param {Menu[]} pageInitList store list
- * @return {Menu[]} list
- */
-export const insertBefore = (activeMenu: Menu, hoverMenu: Menu, pageInitList: Menu[]): Menu[] => {
-  if (willNest(activeMenu, hoverMenu)) {
-    return pageInitList;
-  }
+export function animate(prevRect: any, target: any, ms?: number, animation?: boolean): void {
+  let cachePrevRect = prevRect;
+  if (ms) {
+    const currentRect = target.getBoundingClientRect();
 
-  let _pageInitList = cloneDeep(pageInitList);
-  const hoverSort = hoverMenu.sort || 0;
-
-  // pageInitList activeMenu menu
-  if (!activeMenu.groupID && !hoverMenu.groupID) {
-    _pageInitList = cloneDeep(pageInitList).map((item: Menu) => {
-      if ((item.sort || 0) >= (hoverMenu.sort || 0)) {
-        item.sort = (item.sort || 0) + 1;
-      }
-
-      if (item.id === activeMenu.id) {
-        item.sort = hoverSort;
-      }
-      return item;
-    });
-  }
-
-  if (activeMenu.groupID && !hoverMenu.groupID) {
-    const _child = pageInitList.find((item: Menu) => item.id === activeMenu.groupID)?.child;
-    const filteredChild = _child?.filter((item: Menu) => item.id !== activeMenu.id);
-    _pageInitList = pageInitList.map((item: Menu) => {
-      if (item.id === activeMenu.groupID) {
-        item.child = filteredChild;
-      }
-      if ((item.sort || 0) >= (hoverMenu.sort || 0)) {
-        item.sort = (item.sort || 0) + 1;
-      }
-      return item;
-    });
-    const insertIndex = _pageInitList.findIndex((item) => item.id === hoverMenu.id);
-    _pageInitList.splice(insertIndex, 0, { ...activeMenu, sort: hoverSort, groupID: '' });
-  }
-
-  if (!activeMenu.groupID && hoverMenu.groupID) {
-    _pageInitList = pageInitList.filter((item) => item.id !== activeMenu.id);
-    const _child = pageInitList.find((item) => item.id === hoverMenu.groupID)?.child || [];
-    _child.forEach((item) => {
-      if ((item.sort || 0) >= hoverSort) {
-        item.sort = (item.sort || 0) + 1;
-      }
-    });
-
-    const insertIndex = _child.findIndex((item) => item.id === hoverMenu.id);
-    _child.splice(insertIndex, 0, { ...activeMenu, sort: hoverSort, groupID: hoverMenu.groupID });
-    _pageInitList = _pageInitList.map((item: Menu) => {
-      if (item.id === hoverMenu.groupID) {
-        item.child = _child;
-      }
-      return item;
-    });
-  }
-
-  if (activeMenu.groupID && hoverMenu.groupID) {
-    const _dragChild = pageInitList
-      .find((item) => item.id === activeMenu.groupID)?.child?.filter((item) => item.id !== activeMenu.id);
-    const _activeMenu = Object.assign({}, { ...activeMenu }, { groupID: hoverMenu.groupID, sort: hoverSort });
-
-    let _hoverChild = pageInitList
-      .find((item) => item.id === hoverMenu.groupID)?.child || [];
-    if (activeMenu.groupID === hoverMenu.groupID) {
-      _hoverChild = _hoverChild.filter((item) => item.id !== activeMenu.id);
+    if (cachePrevRect.nodeType === Node.ELEMENT_NODE) {
+      cachePrevRect = cachePrevRect.getBoundingClientRect();
     }
-    _hoverChild = _hoverChild.map((item: Menu) => {
-      if ((item.sort || 0) >= hoverSort) {
-        item.sort = (item.sort || 0) + 1;
-      }
+    if (animation) {
+      css(target, {
+        transition: 'none',
+        transform: `translate3d(${cachePrevRect.left - currentRect.left}px,${cachePrevRect.top - currentRect.top}px,0)`,
+      });
+      target.offsetWidth; // for rerender
+      css(target, {
+        transition: `all ${ms}ms`,
+        transform: 'translate3d(0,0,0)',
+      });
+    }
 
-      return item;
-    });
+    clearTimeout(target.animated);
+    target.animated = setTimeout(() => {
+      css(target, {
+        transition: '',
+        transform: '',
+      });
 
-    const insertIndex = _hoverChild.findIndex((item) => item.id === hoverMenu.id);
-    _hoverChild.splice(insertIndex, 0, _activeMenu);
-    _pageInitList = _pageInitList.map((item) => {
-      if (activeMenu.groupID !== hoverMenu.groupID) {
-        if (item.id === activeMenu.groupID) {
-          item.child = _dragChild;
-        }
-      }
-      if (item.id === hoverMenu.groupID) {
-        item.child = _hoverChild;
-      }
-      return item;
-    });
+      target.animated = false;
+    }, ms);
   }
+}
 
-  return _pageInitList;
-};
+export function getAttribute(node: HTMLElement | null, prop: string): any {
+  if (!node || !prop) return '';
+  return node.getAttribute(prop);
+}
 
-/**
- * close menu when dragging group
- * @param {Menu} menu
- * @param {Menu} pageInitList
- * @param {boolean?} keepClose
- * @return {Menu[]}
- */
-export const collapse = (menu: Menu, pageInitList: Menu[], keepClose?: boolean): Menu[] => {
-  if (menu.child?.length) {
-    const open = menu.child.some((item: Menu) => item?.open);
-    const _child = menu.child.map((item: Menu) => {
-      item['open'] = keepClose ? false : !open;
-      return item;
-    });
-    const _pageInitList = pageInitList.map((item: Menu) => {
-      if (item.id === menu.id) {
-        item.child = _child;
-        item['icon'] = open ? 'arrow_drop_down' : 'arrow_drop_up';
-      }
-      return item;
-    });
+export function getLastChild(node: HTMLElement): ChildNode | null {
+  return node?.lastChild;
+}
 
-    return _pageInitList;
+export function getNode(nodeId: string): HTMLElement | null {
+  return document?.querySelector(`[data-id='${nodeId}']`) || null;
+}
+
+export function getLITarget(node: HTMLElement): HTMLElement | null {
+  if (!node) return null;
+  if (node?.tagName === 'LI') return node;
+
+  return getLITarget(<HTMLElement>node?.parentNode);
+}
+
+export function getEleIndex(el: Element | null): number {
+  let cacheEl = el;
+  let index = 0;
+  if (!cacheEl || !cacheEl.parentNode) {
+    return -1;
   }
-  return pageInitList;
-};
+  while (cacheEl && (cacheEl = cacheEl.previousElementSibling)) {
+    index += 1;
+  }
+  return index;
+}
 
-/**
- * clear animation property
- * @param {Menu[]} menus
- * @return {Menu[]}
- */
-export const clearTranslate = (menus: Menu[]): Menu[] => {
-  return menus.map((item: Menu) => {
-    delete item['translate'];
+export function flatMnues(lists: Menu[], arr: Menu[] = []): Record<string, Menu> {
+  const res: Menu[] = arr;
+  lists.forEach((item: Menu) => {
     if (item.child?.length) {
-      item.child = clearTranslate(item?.child as Menu[]);
+      flatMnues(item.child, res);
     }
-    return item;
+    res.push(omit(item, ['child']) as Menu);
   });
-};
 
-/**
- * Add dragging animation
- * @param {Menu} menu
- * @param {Menu[]}pageInitList
- * @return {Menu[]}
- */
-export const animation = (menu: Menu, pageInitList: Menu[]): Menu[] => {
-  const currentHoverSort = menu.sort || 0;
-  let _pageInitList: Menu[] = clearTranslate(pageInitList);
-  if (!menu.groupID) {
-    _pageInitList = _pageInitList.map((item: Menu) => {
-      if ((item.sort || 0) >= currentHoverSort) {
-        item['translate'] = '40px';
-      }
-      return item;
-    });
+  return res.reduce((acc: Record<string, Menu>, item: Menu) => {
+    acc[item.id] = item;
+    return acc;
+  }, {});
+}
+
+export function getFirstMenu(menus: Menu[] = []): Menu {
+  if (!menus.length) return { id: '' };
+  if (menus[0]?.menuType !== MenuType.group) {
+    return menus?.[0] || { id: '' };
   }
-  // drag to inner
-  if (menu.groupID) {
-    const { sort, child = [] } = pageInitList.find((item) => item.id === menu.groupID) as Menu;
-    const _child = child?.map((item: Menu) => {
-      if ((item.sort || 0) >= currentHoverSort) {
-        item['translate'] = '40px';
-      }
-      return item;
-    });
-
-    _pageInitList = _pageInitList.map((item: Menu) => {
-      if (((item.sort || 0) || 0) > (sort || 0)) {
-        item['translate'] = '40px';
-      }
-      if (item.id === menu.groupID) {
-        item.child = _child;
-      }
-      return item;
-    });
+  if (menus[0]?.menuType === MenuType.group && !menus[0].child?.length) {
+    return getFirstMenu(menus.slice(1));
   }
-
-  return _pageInitList;
-};
+  return menus[0]?.child?.[0] || { id: '' };
+}
