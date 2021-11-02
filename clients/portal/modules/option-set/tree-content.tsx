@@ -94,7 +94,8 @@ function TreeContent({ className }: Props): JSX.Element {
                   data-idx={idx}
                 >
                   <span
-                    className='w-2/3 items-center text-gray-900'
+                    title={itm.label}
+                    className='w-2/3 items-center text-gray-900 overflow-hidden overflow-ellipsis whitespace-nowrap flex-1'
                     onClick={() => {
                       store.path = nodePath;
                       setAddLevel(false);

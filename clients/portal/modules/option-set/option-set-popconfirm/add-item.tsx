@@ -43,6 +43,7 @@ function AddOptionSetItem({ type, prefix = '' }: Props): JSX.Element {
         <div className='option-set-popper -ml-24 text-gray-600'>
           <span>选项数据名称</span>
           <textarea
+            maxLength={100}
             rows={2}
             className='textarea textarea-default my-8'
             value={label}
@@ -50,7 +51,7 @@ function AddOptionSetItem({ type, prefix = '' }: Props): JSX.Element {
           />
           <div>每行对应一个选项。</div>
           <div>选项数据名称不可重复。</div>
-          <div>每个选项名称建议不超过20字符。</div>
+          <div>每个选项名称不超过100字符。</div>
         </div>
       )}
       icon=''
