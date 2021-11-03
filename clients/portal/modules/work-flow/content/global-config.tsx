@@ -48,8 +48,8 @@ export default function GlobalConfig(): JSX.Element | null {
   const formDataElement = getFormDataElement();
   const { data: fieldList, isLoading } = useQuery(
     ['GET_FIELD_LIST', formDataElement.data.businessData.form.value, appID],
-    async ({ queryKey }) => {
-      const schema = await getFormFieldSchema({ queryKey });
+    async ({ queryKey, meta }) => {
+      const schema = await getFormFieldSchema({ queryKey, meta });
       const schemaFields = schemaToFields(schema);
       return schemaFields.filter((fieldSchema) => {
         return fieldSchema.id !== '_id' && !['subtable', 'associatedrecords'].includes(

@@ -1,15 +1,15 @@
 import { useMemo } from 'react';
-import { useStoreState, Node, useStoreActions } from 'react-flow-renderer';
+import { useStoreState, useStoreActions } from 'react-flow-renderer';
 import { merge } from 'ramda';
 
 export default function useNode(nodeId: string): [
-  Node<POLY_API.PolyNode> | undefined, (node: Node<POLY_API.PolyNode>) => void
+  POLY_API.NodeElement | undefined, (node: POLY_API.NodeElement) => void
 ] {
   const nodes = useStoreState((elements) => elements.nodes);
   const edges = useStoreState((elements) => elements.edges);
   const setElements = useStoreActions((actions) => actions.setElements);
 
-  function setCurrentNode(node: Node<POLY_API.PolyNode>): void {
+  function setCurrentNode(node: POLY_API.NodeElement): void {
     setElements([
       ...nodes.map((curNode) => node.id === curNode.id ? merge(curNode, node) : curNode),
       ...edges,

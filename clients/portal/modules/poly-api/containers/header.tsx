@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
 import cs from 'classnames';
 import { useHistory } from 'react-router-dom';
-import { fromPromise } from 'rxjs/observable/fromPromise';
+import { from, of } from 'rxjs';
 import { map, concatAll } from 'rxjs/operators';
-import { of } from 'rxjs/Observable/of';
 
 import Icon from '@c/icon';
 import Button from '@c/button';
@@ -22,7 +21,7 @@ function PolyDetailsHeader({ className }: Props): JSX.Element {
   useEffect(() => {
     const types = ['node', 'value', 'oper', 'cond', 'cmp', 'in'];
     const response$ = of(...types).pipe(
-      map((type) => fromPromise(httpClient(`/api/v1/polyapi/poly/enums/${type}`, { sample: true }))),
+      map((type) => from(httpClient(`/api/v1/polyapi/poly/enums/${type}`, { sample: true }))),
       concatAll(),
     );
     response$.subscribe((values) => {

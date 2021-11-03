@@ -1,90 +1,48 @@
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { map } from 'rxjs/operators';
-import { pipe, entries, fromPairs } from 'lodash/fp';
-import { lensPath, set, dissocPath, or, path } from 'ramda';
+import { BehaviorSubject } from 'rxjs';
+import { omit, merge } from 'ramda';
+import { isEdge, isNode } from 'react-flow-renderer';
 
-interface SingleNodeState {
-  isHovered: boolean;
-  isSelected: boolean;
-  zIndex: '3' | '10',
-  trigger: {
-    right: {
-      isHovered: boolean;
-      isVisible: boolean;
-      action: {
-        isHoverd: boolean;
-        isVisible: boolean;
+export class PolyCanvasStore extends BehaviorSubject<POLY_API.Element[]> {
+  constructor(initialValue: POLY_API.Element[]) {
+    super(initialValue);
+  }
+
+  get nodes(): POLY_API.NodeElement[] {
+    return this.value.filter((node) => isNode(node)) as POLY_API.NodeElement[];
+  }
+
+  get edges(): POLY_API.EdgeElement[] {
+    return this.value.filter((edge) => isEdge(edge)) as POLY_API.EdgeElement[];
+  }
+
+  add(element: POLY_API.Element): void {
+    this.next([...this.value, element]);
+  }
+
+  set(elements: POLY_API.Element[]): void {
+    const elementsMap = elements.reduce((acc: Record<string, POLY_API.Element>, element) => {
+      acc[element.id] = element;
+      return acc;
+    }, {});
+    const idToRemove: string[] = [];
+    const newValue: POLY_API.Element[] = [];
+    this.value.forEach((element) => {
+      const newElement = elementsMap[element.id];
+      if (newElement) {
+        newValue.push(merge(element, newElement));
+        idToRemove.push(element.id);
       }
-    },
-    bottom: {
-      isHovered: boolean;
-      isVisible: boolean;
-      action: {
-        isHoverd: boolean;
-        isVisible: boolean;
-      }
-    },
+    });
+    const newElements: POLY_API.Element[] = Object.values(omit(idToRemove, elementsMap));
+    this.next([...newValue, ...newElements]);
+  }
+
+  getElementsValue(): POLY_API.PlainElement[] {
+    return this.value.map((element): POLY_API.PlainElement => {
+      const { data, ...elementWithoutData } = element;
+      return { ...elementWithoutData, data: data?.value };
+    });
   }
 }
 
-interface State {
-  [nodeId: string]: SingleNodeState | undefined;
-}
-
-const defaultValue: SingleNodeState = {
-  isHovered: false,
-  isSelected: false,
-  zIndex: '3',
-  trigger: {
-    right: {
-      isHovered: false,
-      isVisible: false,
-      action: {
-        isHoverd: false,
-        isVisible: false,
-      },
-    },
-    bottom: {
-      isHovered: false,
-      isVisible: false,
-      action: {
-        isHoverd: false,
-        isVisible: false,
-      },
-    },
-  },
-};
-
-const originalStore$ = new BehaviorSubject<State>({});
-
-const valueProcessor = pipe(
-  entries,
-  ([key, value]: [string, SingleNodeState]) => {
-    const isActionVisible = or(
-      path(['trigger', 'right', 'action', 'isVisible'], value),
-      path(['trigger', 'bottom', 'action', 'isVisible'], value),
-    );
-    set(lensPath(['zIndex']), value?.isHovered || value?.isSelected || isActionVisible ? '10' : '3', value);
-    set(lensPath(['trigger', 'right', 'isVisible']), value?.isHovered, value);
-    set(lensPath(['trigger', 'bottom', 'isVisible']), value?.isHovered, value);
-    return value ? [key, value] : [];
-  },
-  fromPairs,
-);
-
-export const store$ = originalStore$.pipe(
-  map((value) => ({
-    add: (id: string) => {
-      if (value?.[id]) {
-        return;
-      }
-      originalStore$.next({ ...value, [id]: { ...defaultValue } });
-    },
-    set: (path: string, val: any) => originalStore$.next(set(lensPath(path.split('.')), val, value)),
-    remove: (path: string) => originalStore$.next(dissocPath(path.split('.'), value)),
-    value: (() => {
-      return valueProcessor(value);
-    })(),
-  })),
-);
-
+export default PolyCanvasStore;

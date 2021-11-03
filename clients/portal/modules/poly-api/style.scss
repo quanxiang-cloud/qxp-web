@@ -27,6 +27,7 @@
 $nodeTypes: input, request, if, end, default, output;
 @each $var in $nodeTypes {
   .react-flow__node-#{$var} {
+    background: transparent !important;
     footer {
       transition: box-shadow .2s linear;
     }
@@ -34,11 +35,13 @@ $nodeTypes: input, request, if, end, default, output;
     border: transparent !important;
     border-radius: 8px !important;
     width: auto !important;
-    &:hover, &.selected {
-      footer {
-        box-shadow: 0px 4px 24px rgba(148, 163, 184, 0.25) !important;
+    &:not(.react-flow__node-if) {
+      &:hover, &.selected {
+        footer {
+          box-shadow: 0px 4px 24px rgba(148, 163, 184, 0.25) !important;
+        }
+        box-shadow: none !important;
       }
-      box-shadow: none !important;
     }
   }
 }
@@ -75,4 +78,36 @@ $nodeTypes: input, request, if, end, default, output;
       opacity: 1;
     }
   }
+}
+
+.node-title-editor-wrap {
+  position: relative;
+  &::after {
+    content: '';
+    height: 1px;
+    width: 0;
+    background: var(--blue-600);
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transition: all .3s ease-out;
+  }
+  &:focus-within {
+    &::after {
+      width: 100%;
+      left: 0;
+    }
+  }
+  .node-title-editor {
+    background: transparent !important;
+    border: none !important;
+    transition: all .3s linear !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+}
+
+.poly-condition use {
+  transform: scale(2) translate(-12.6px, -8.8px);
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
 }

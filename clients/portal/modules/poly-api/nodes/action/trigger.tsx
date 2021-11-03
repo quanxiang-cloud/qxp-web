@@ -2,13 +2,15 @@ import React, { forwardRef, useRef, ForwardedRef } from 'react';
 import cs from 'classnames';
 
 import Action from './index';
-import { mergeRefs } from '@polyApi/utils';
+import { mergeRefs } from '@portal/modules/poly-api/utils';
 
 interface Props {
   type: 'right' | 'bottom';
+  id: string;
+  isCondition: boolean;
 }
 
-function NodeActionTrigger({ type }: Props, ref: ForwardedRef<HTMLDivElement | null>): JSX.Element {
+function NodeActionTrigger({ type, id, isCondition }: Props, ref: ForwardedRef<HTMLDivElement | null>): JSX.Element {
   const triggerRef = useRef<HTMLDivElement | null>(null);
   const actionRef = useRef<HTMLDivElement | null>(null);
   const baseClass = 'border-blue-600 w-8 h-8 border-1 rounded-full transition-all duration-240';
@@ -22,11 +24,11 @@ function NodeActionTrigger({ type }: Props, ref: ForwardedRef<HTMLDivElement | n
   }
 
   function offAnimation(): void {
-    actionRef.current?.style.opacity === '0' && toggleAnimation(false);
+    (actionRef.current?.style.opacity === '0' || !actionRef.current?.style.opacity) && toggleAnimation(false);
   }
 
-  function handleHideAction(e: Event): void {
-    if (e.target === triggerRef.current) {
+  function handleHideAction(e?: Event): void {
+    if (e?.target === triggerRef.current) {
       return;
     }
     if (actionRef.current) {
@@ -62,6 +64,8 @@ function NodeActionTrigger({ type }: Props, ref: ForwardedRef<HTMLDivElement | n
         position={type}
         ref={actionRef}
         onHide={handleHideAction}
+        currentNodeId={id}
+        isCondition={isCondition}
       />
     </div>
   );

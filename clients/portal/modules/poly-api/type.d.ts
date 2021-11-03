@@ -1,4 +1,23 @@
 declare namespace POLY_API {
+  export type SubjectPolyNode = import('@polyApi/store/node').PolyNodeStore;
+  export type NodeElement = import('react-flow-renderer').Node<SubjectPolyNode>;
+  export type EdgeElement = import('react-flow-renderer').Edge<SubjectPolyNode>;
+  export type PlainNodeElement = import('react-flow-renderer').Node<PolyNode>;
+  export type PlainEdgeElement = import('react-flow-renderer').Edge<PolyNode>;
+  export type Element = NodeElement | EdgeElement;
+  export type PlainElement = PlainNodeElement | PlainEdgeElement;
+  export type Root = RootObject<import('@polyApi/store/canvas').PolyCanvasStore>;
+  export type PlainRoot = RootObject<PlainElement[]>;
+
+  export type NodeProps = import('react-flow-renderer').NodeProps<POLY_API.SubjectPolyNode>;
+  export type NodeWrapperProps = import('react').PropsWithChildren<{
+    bottomTrigger?: boolean;
+    rightTrigger?: boolean;
+    noPadding?: boolean;
+    title?: string;
+    noBg?: boolean;
+  }> & NodeProps;
+
   export type PolyParams = {
     appID: string;
     polyID: string;
@@ -48,48 +67,33 @@ declare namespace POLY_API {
   export type PolyNodeType = 'input' | 'if' | 'request' | 'end';
 
   export interface PolyStartNodeDetail {
-    type: 'input';
-    data: {
-      inputs: PolyNodeInput[];
-      consts: PolyConst[];
-    }
+    inputs: PolyNodeInput[];
+    consts: PolyConst[];
   }
 
   export interface PolyCondNodeDetail {
-    type: 'if';
-    data: {
-      cond: PolyNodeCond;
-      yes: string;
-      no: string;
-    }
+    cond: PolyNodeCond;
+    yes: string;
+    no: string;
   }
 
   export interface PolyRequestNodeDetail {
-    type: 'request';
-    data: {
-      rawPath: string;
-      apiName: string;
-      inputs: PolyNodeInput[];
-    }
+    rawPath: string;
+    apiName: string;
+    inputs: PolyNodeInput[];
   }
 
   export interface PolyEndNodeDetail {
-    type: 'end';
-    data: {
-      body: PolyEndBody;
-    }
+    body: PolyEndBody;
   }
 
-  export type PolyNodeDetail = PolyStartNodeDetail | PolyRequestNodeDetail | PolyCondNodeDetail |
-    PolyEndNodeDetail;
-
-  export interface PolyNode {
-    name?: string;
-    title?: string;
-    type?: PolyNodeType;
-    nextNodes?: string[];
+  export interface PolyNodeGeneric<T, D> {
+    name: string;
+    type: T;
+    nextNodes: string[];
+    detail: D;
+    title: string;
     label?: JSX.Element | string;
-    detail?: PolyNodeDetail;
     handles: {
       left?: string;
       right?: string;
@@ -98,13 +102,18 @@ declare namespace POLY_API {
     },
   }
 
-  export interface RootObject {
+  export type PolyStartNode = PolyNodeGeneric<'input', PolyStartNodeDetail>;
+  export type PolyRequestNode = PolyNodeGeneric<'request', PolyRequestNodeDetail>;
+  export type PolyIfNode = PolyNodeGeneric<'if', PolyCondNodeDetail>;
+  export type PolyEndNode = PolyNodeGeneric<'end', PolyEndNodeDetail>;
+  export type PolyNode = PolyStartNode | PolyRequestNode | PolyIfNode | PolyEndNode;
+  export interface RootObject<T> {
     namespace: string;
     name: string;
     desc: string;
     version: string;
     id: string;
     encoding: string;
-    nodes: PolyNode[];
+    nodes: T;
   }
 }
