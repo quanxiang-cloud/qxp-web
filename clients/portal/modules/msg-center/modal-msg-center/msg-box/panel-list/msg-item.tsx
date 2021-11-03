@@ -105,7 +105,7 @@ function MsgItem({
   return (
     <li
       key={msgData.id}
-      className={cs('p-8 w-full flex items-center li-border cursor-pointer hover:bg-blue-100', {
+      className={cs('p-8 w-full flex items-center nav-card-header cursor-pointer hover:bg-blue-100', {
         'bg-gray-100': selectedRows.includes(msgData.id),
         'bg-blue-100': msgId === msgData.id,
       })}
@@ -121,10 +121,13 @@ function MsgItem({
         )}
       </div>
       <div className="flex-1">
-        <div className={cs('whitespace-nowrap overflow-ellipsis overflow-hidden text-title', {
-          'text-gray-600': read === MsgReadStatus.read,
-          'text-gray-900': read === MsgReadStatus.unread,
-        })}>
+        <div
+          className={cs('whitespace-nowrap overflow-ellipsis overflow-hidden', {
+            'text-gray-600': read === MsgReadStatus.read,
+            'text-gray-900': read === MsgReadStatus.unread,
+          })}
+          style={{ maxWidth: 300 }}
+        >
           {msgData.title}
         </div>
         <div className="text-12 text-gray-400">

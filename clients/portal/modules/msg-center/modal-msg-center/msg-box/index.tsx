@@ -6,7 +6,6 @@ import DetailPanel from './panel-detail';
 import msgCenter from '@portal/stores/msg-center';
 
 import styles from './index.module.scss';
-import './index.scss';
 
 interface Props {
   className?: string;

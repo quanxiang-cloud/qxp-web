@@ -241,7 +241,7 @@ function PanelList(): JSX.Element {
   }
 
   return (
-    <div className="px-16 py-20 li-border border-r border-gray-200">
+    <div className="px-16 py-20 nav-card-header border-r border-gray-200">
       {msgList.length ? renderTable() : <NoMsg tips='暂无消息' />}
     </div>
   );
