@@ -7,7 +7,6 @@ import { pipe, map } from 'lodash/fp';
 import { fetchFormDataList } from '@lib/http-client';
 import schemaToFields, { schemaToMap } from '@lib/schema-convert';
 import { toEs } from '@c/data-filter/utils';
-import { SYSTEM_FIELDS } from '@c/form-builder/constants';
 
 import { TableHeaderBtn, TableConfig } from './type';
 import { Config, getPageDataSchema } from './utils';
@@ -162,7 +161,7 @@ class AppPageDataStore {
   @action
   setFilters = (filters: Filters): void => {
     this.filters = filters.filter((key) => {
-      return SYSTEM_FIELDS.includes(key) || key in (schemaToMap(this.schema) || {});
+      return key in (schemaToMap(this.schema) || {});
     });
   }
 

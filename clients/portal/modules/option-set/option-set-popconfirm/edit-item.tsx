@@ -26,10 +26,11 @@ function EditOptionSetItem({ type, label, idx = 0, nodePath = '' }: Props): JSX.
           <input
             value={labelValue}
             className='input input-default mb-4'
+            maxLength={100}
             onChange={(ev) => setLabelValue(ev.currentTarget.value)}
           />
           <div className='text-12 text-blueGray-400'>
-            建议不超过 20 个字符，选项集名称不可重复。
+            不超过 100 个字符，选项集名称不可重复。
           </div>
         </div>
       )}
