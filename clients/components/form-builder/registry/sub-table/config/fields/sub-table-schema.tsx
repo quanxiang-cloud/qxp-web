@@ -9,6 +9,7 @@ import {
 
 import Icon from '@c/icon';
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
+import { StoreContext } from '@c/form-builder/context';
 import { generateRandomFormFieldID, numberTransform } from '@c/form-builder/utils';
 import { FieldConfigContext } from '@c/form-builder/form-settings-panel/form-field-config/context';
 
@@ -33,6 +34,7 @@ function getItemStyle(draggableStyle?: DraggingStyle | NotDraggingStyle): CSSPro
 }
 
 function SubTableSchema(props: ISchemaFieldComponentProps): JSX.Element {
+  const store = useContext(StoreContext);
   const { actions } = useContext(FieldConfigContext);
   const [currentFieldLabel, setCurrentFieldLabel] = useState('添加');
   const [referenceElRef, setReferenceElRef] = useState<HTMLDivElement>();
@@ -220,7 +222,10 @@ function SubTableSchema(props: ISchemaFieldComponentProps): JSX.Element {
                         key={field.value}
                         className="truncate border-b border-r px-6 cursor-pointer"
                         title={field.label}
-                        onClick={() => onShowSubTableConfig(field.value)}
+                        onClick={() => {
+                          store.activeSubtableFieldId = field.value;
+                          onShowSubTableConfig(field.value);
+                        }}
                       >
                         {field.label}
                       </div>

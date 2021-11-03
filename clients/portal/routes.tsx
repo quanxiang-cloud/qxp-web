@@ -2,8 +2,8 @@ import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 
-import ErrorTips from '@c/error-tips';
 import Loading from '@c/loading';
+import NotFoundError from '@c/404-error';
 import { getNestedPropertyToArray } from '@lib/utils';
 
 import AppsRoutes from './modules/apps-management/routes';
@@ -29,7 +29,7 @@ export default function Routes(): JSX.Element {
         <Route path="/system" component={SystemMgmt} />
         <Route path="/apps" component={AppsRoutes} />
         <Route path="/poly/:appID/:polyID" component={PolyAPI}/>
-        <Route component={ErrorTips} />
+        <Route component={NotFoundError} />
       </Switch>
     </React.Suspense>
   );

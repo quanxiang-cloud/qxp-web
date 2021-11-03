@@ -4,7 +4,7 @@ import schemaToFields, { schemaToMap } from '@lib/schema-convert';
 import {
   FormDataRequestUpdateParamsRef,
   FormDataBody,
-  SubTableUpdateData,
+  RefData,
 } from '@lib/http-client';
 import { SYSTEM_FIELDS } from '@c/form-builder/constants';
 
@@ -74,9 +74,16 @@ export function formDataDiff(
       }
       break;
     }
-    case 'CheckboxGroup':
-    case 'MultipleSelect':
     case 'AssociatedRecords': {
+      const deleted: string[] = (oldValue || []).filter((value: string) => !(cValue || []).includes(value));
+      const newValues = (cValue || []).filter((value: string) => !(oldValue || []).includes(value));
+      if (newValues.length || deleted.length) {
+        resultValue[fieldKey] = [newValues, deleted];
+      }
+      break;
+    }
+    case 'CheckboxGroup':
+    case 'MultipleSelect': {
       if (oldValue?.sort().toString() !== cValue.sort().toString()) {
         resultValue[fieldKey] = cValue;
       }
@@ -100,11 +107,27 @@ export function formDataDiff(
   return resultValue;
 }
 
+function buildRecordsParams(
+  type: string,
+  valueList = [],
+): RefData {
+  if (type === 'create') {
+    return {
+      new: valueList,
+    };
+  }
+  const [newValues = [], deleted = []] = valueList;
+  return {
+    new: newValues,
+    deleted: deleted,
+  };
+}
+
 function buildSubTableParams(
   type: string,
   valueList = [],
   ref?: FormDataRequestUpdateParamsRef,
-): SubTableUpdateData {
+): RefData {
   switch (type) {
   case 'create':
     return {
@@ -146,7 +169,7 @@ function buildRef(
 ): [FormDataRequestUpdateParamsRef, string[]] {
   const ref: FormDataRequestUpdateParamsRef = {};
   const refFields = schemaToFields(schema, (schemaField) => {
-    return ['SubTable', 'Serial'].includes(schemaField['x-component'] || '');
+    return ['SubTable', 'Serial', 'AssociatedRecords'].includes(schemaField['x-component'] || '');
   });
 
   if (refFields.length) {
@@ -172,6 +195,18 @@ function buildRef(
         ref[field.id] = {
           type: 'serial',
         };
+        break;
+      case 'AssociatedRecords': {
+        const { appID, tableID } = field?.['x-component-props'] || {};
+        if (values?.[field.id]?.length) {
+          ref[field.id] = {
+            type: 'associated_records',
+            appID,
+            tableID,
+            ...buildRecordsParams(type, values[field.id]),
+          };
+        }
+      }
         break;
       }
     });

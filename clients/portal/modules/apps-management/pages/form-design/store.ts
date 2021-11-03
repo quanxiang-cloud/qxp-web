@@ -290,6 +290,7 @@ class FormDesignStore {
       toast.success(this.hasSchema ? '保存成功!' : '创建成功!');
       (this.formStore as FormStore).hasEdit = false;
       this.saveSchemeLoading = false;
+      this.formStore.setSerialFieldIds(this.formStore.schema);
       return true;
     } catch (error: any) {
       toast.error(error.message);

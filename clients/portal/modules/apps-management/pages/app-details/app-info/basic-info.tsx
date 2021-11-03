@@ -14,11 +14,13 @@ function BasicInfo(): JSX.Element {
 
   function handleSubmit(): void {
     const formDom = formRef.current;
-    if (formDom.validateFields()) {
-      const data = formDom.getFieldsValue();
-      data.appIcon = JSON.stringify(data.appIcon);
-      appDetailsStore.updateApp(data);
-    }
+    formDom.submit();
+  }
+
+  function submitCallback(): void {
+    const formDom = formRef.current;
+    const data = formDom.getFieldsValue();
+    appDetailsStore.updateApp(data);
   }
 
   if (appDetailsStore.loading) {
@@ -43,7 +45,11 @@ function BasicInfo(): JSX.Element {
         descClassName="text-caption"
       >
         <div className='mx-20 mt-20 bg-white rounded-12'>
-          <CreatedEditApp appInfo={appDetailsStore.appDetails} ref={formRef} />
+          <CreatedEditApp
+            appInfo={appDetailsStore.appDetails}
+            ref={formRef}
+            onSubmitCallback={submitCallback}
+          />
         </div>
       </Card>
     </div>

@@ -55,7 +55,12 @@ func FileProxyHandler(w http.ResponseWriter, r *http.Request) {
 	if len(cacheControl) == 0 {
 		cacheControl = "public, max-age=31536000"
 	}
-	w.Header().Add("Cache-Control", cacheControl)
+
+	// only set cacheControl on none html file
+	if !strings.HasSuffix(r.URL.Path, "index.html") {
+		w.Header().Add("Cache-Control", cacheControl)
+	}
+
 	w.WriteHeader(resp.StatusCode)
 	if strings.HasSuffix(r.URL.Path, "index.html") {
 		body = renderTokenInHTML(r, body)

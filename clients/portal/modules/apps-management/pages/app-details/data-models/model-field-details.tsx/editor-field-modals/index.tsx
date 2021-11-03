@@ -19,7 +19,7 @@ function Modals({ type, curModelField, onClose }: Props): JSX.Element {
       delModelField(curModelField.id);
       saveDataModel({
         ...basicInfo,
-        tableID: basicInfo.tableID.split('_').pop() || '',
+        tableID: basicInfo.tableID || '',
       }, 'delete');
     }
 
@@ -30,7 +30,7 @@ function Modals({ type, curModelField, onClose }: Props): JSX.Element {
     addModelField(value);
     saveDataModel({
       ...basicInfo,
-      tableID: basicInfo.tableID.split('_').pop() || '',
+      tableID: basicInfo.tableID || '',
     }, type);
   }
 

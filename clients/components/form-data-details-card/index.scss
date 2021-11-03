@@ -1,0 +1,35 @@
+.form-group-title {
+ .title-line {
+   display: inline-block;
+   background: linear-gradient(90deg, #638AFF 0%, #375FF3 100%);
+   box-shadow: 2px 0px 24px rgba(55, 95, 243, 0.25);
+   border-radius: 8px;
+ }
+}
+
+
+@keyframes open {
+  from {
+    height: 36;
+  }
+  to {
+    height: var(--group-box-height);
+  }
+}
+
+@keyframes close {
+  from {
+    height: var(--group-box-height);
+  }
+  to {
+    height: 36px;
+  }
+}
+
+.form-group-box-open {
+  animation: open .1s forwards;
+}
+
+.form-group-box-close {
+  animation: close .1s forwards;
+}

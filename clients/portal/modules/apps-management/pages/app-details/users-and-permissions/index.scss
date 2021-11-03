@@ -425,3 +425,9 @@
     }
   }
 }
+
+.rights-add {
+  width: 28px;
+  height: 28px;
+  @apply text-white bg-gray-700 rounded-8 rounded-tr-2 text-center leading-28 cursor-pointer hover:bg-gray-600;
+}

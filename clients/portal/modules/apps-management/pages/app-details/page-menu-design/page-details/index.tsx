@@ -30,7 +30,12 @@ function PageDetails({ pageID }: Props): JSX.Element {
   const [modalType, setModalType] = useState('');
   const [file, setFile] = useState<FileInfo | null>(null);
   const {
-    activeMenu, curPageCardList, appID, fetchSchemeLoading, setCurPageMenuType, pageDescriptions,
+    activeMenu,
+    curPageCardList,
+    appID,
+    fetchSchemeLoading,
+    pageDescriptions,
+    setActiveMenu,
   } = appPagesStore;
 
   function goFormBuild(): void {
@@ -51,7 +56,7 @@ function PageDetails({ pageID }: Props): JSX.Element {
       createCustomPage(appID, {
         menuId: pageID, fileSize: fileSizeStr, fileUrl: file?.url || '',
       }).then((res) => {
-        setCurPageMenuType(2, res);
+        setActiveMenu({ ...res, menuType: 2 });
         toast.success('新建成功');
         setModalType('');
         setFile(null);
@@ -65,7 +70,7 @@ function PageDetails({ pageID }: Props): JSX.Element {
       id: pageID, fileSize: fileSizeStr, fileUrl: file?.url || '',
     },
     ).then((res) => {
-      setCurPageMenuType(MenuType.customPage, res);
+      setActiveMenu({ ...res, menuType: 2 });
       toast.success('修改成功');
       setModalType('');
       setFile(null);
@@ -158,12 +163,14 @@ function PageDetails({ pageID }: Props): JSX.Element {
                 iconName='edit'
                 className="mr-18"
                 modifier='primary'
+                textClassName='app-content--op_btn'
                 onClick={() => setModalType('edit')}
               >
                 修改页面
               </Button>
               <Button
                 iconName="preview"
+                textClassName='app-content--op_btn'
                 onClick={() => history.push(`/apps/preview/customPage/${appID}/${pageID}`)}
               >
                 预览
@@ -173,6 +180,7 @@ function PageDetails({ pageID }: Props): JSX.Element {
               <Button
                 iconName="edit"
                 modifier="primary"
+                textClassName='app-content--op_btn'
                 onClick={goFormBuild}
               >
                 设计表单
@@ -291,7 +299,7 @@ function PageDetails({ pageID }: Props): JSX.Element {
   return (
     <>
       <div className='relative flex-1 overflow-hidden bg-white rounded-tr-8'>
-        <div className='h-44 page-details-nav header-background-image border-b-1 px-16 flex items-center'>
+        <div className='h-44 page-details-nav header-background-image border-b-1 px-16 flex items-center bg-gray-50'>
           <span className='text-12 mr-8 font-semibold'>{activeMenu.name}</span>
           <span className='text-caption align-top'>{activeMenu.describe}</span>
         </div>

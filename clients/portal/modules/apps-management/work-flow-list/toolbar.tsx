@@ -43,7 +43,7 @@ export default function({ onTriggerTypeChange, onSearchInputChange }: Props): JS
         ]}
         onChange={(value) => onTriggerTypeChange(value)}
       /> */}
-      <Button ref={reference} iconName="add" modifier="primary">
+      <Button ref={reference} iconName="add" textClassName="text-12" modifier="primary">
         新建工作流
       </Button>
       <Popper
@@ -98,7 +98,7 @@ export default function({ onTriggerTypeChange, onSearchInputChange }: Props): JS
         </div>
       </Popper>
       <Search
-        className="w-259"
+        className="flow-search"
         placeholder="搜索工作流名称……"
         onChange={onSearchInputChange}
       />

@@ -9,7 +9,7 @@ export interface TextareaConfig {
   valueFormat: 'phone' | 'post_code' | 'mobile_phone' | 'id_number' | 'email' | string;
   required: boolean;
   defaultValueFrom: FormBuilder.DefaultValueFrom;
-  defaultValue: string;
+  defaultValue?: string;
 }
 
 export const defaultConfig: TextareaConfig = {
@@ -21,7 +21,6 @@ export const defaultConfig: TextareaConfig = {
   valueFormat: '',
   required: false,
   defaultValueFrom: 'customized',
-  defaultValue: '',
 };
 
 export function toSchema(value: TextareaConfig): ISchema {

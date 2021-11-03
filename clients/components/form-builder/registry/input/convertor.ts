@@ -9,7 +9,7 @@ export interface InputConfig {
   valueFormat: 'phone' | 'post_code' | 'mobile_phone' | 'id_number' | 'email' | string;
   required: boolean;
   defaultValueFrom: FormBuilder.DefaultValueFrom;
-  defaultValue: string;
+  defaultValue?: string;
   defaultValueLinkage?: FormBuilder.DefaultValueLinkage;
 }
 
@@ -22,7 +22,6 @@ export const defaultConfig: InputConfig = {
   valueFormat: '',
   required: false,
   defaultValueFrom: 'customized',
-  defaultValue: '',
   defaultValueLinkage: undefined,
 };
 

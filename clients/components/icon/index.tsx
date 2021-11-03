@@ -5,7 +5,7 @@ import svgHash from './svg-hash';
 
 export interface Props extends React.SVGProps<SVGSVGElement> {
   name: string;
-  type?: 'dark' | 'primary' | 'light';
+  color?: 'red' | 'yellow' | 'green' | 'gray' | 'blue' | 'white' |'rose' | 'pink' | 'purple' | 'orange' | 'primary';
   size?: number;
   disabled?: boolean;
   changeable?: boolean;
@@ -16,7 +16,7 @@ function Icon(
   {
     name,
     size = 16,
-    type = 'dark',
+    color,
     changeable,
     disabled,
     clickable,
@@ -28,8 +28,8 @@ function Icon(
 ): JSX.Element {
   const _style: React.CSSProperties = {
     ...style,
-    width: `${size - 1}px`,
-    height: `${size - 1}px`,
+    width: `${size}px`,
+    height: `${size}px`,
   };
 
   return (
@@ -38,10 +38,11 @@ function Icon(
       ref={ref}
       data-name={name}
       style={_style}
-      className={cs('svg-icon', `svg-icon--${type}`, className, {
+      className={cs('svg-icon', className, {
         'svg-icon--changeable': changeable,
         'svg-icon--clickable': clickable,
         'svg-icon--disabled': disabled,
+        [`svg-icon--${color}`]: color,
       })}
     >
       <use xlinkHref={`${svgHash}#${name}`} />

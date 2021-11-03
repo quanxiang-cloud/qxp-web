@@ -56,9 +56,9 @@ function DocumentNav(): JSX.Element {
 
   return (
     <div className='api-doc-details-nav rounded-tl-12 flex flex-col'>
-      <div className='h-62 text-gray-400 text-14 font-semibold py-20 pl-16'>文档目录</div>
+      <div className='h-44 text-gray-400 text-14 font-semibold flex items-center pl-16'>API文档</div>
       <Search
-        className="mx-8 mb-8"
+        className="mx-8 mb-8 text-12"
         placeholder="输入目录名称..."
         onChange={store.changeKeyword}
       />

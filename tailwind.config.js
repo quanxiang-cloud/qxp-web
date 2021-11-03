@@ -6,6 +6,7 @@ module.exports = {
   theme: {
     colors: colors,
     transitionDuration:{
+      100: '100ms',
       240: '240ms',
       300: '300ms'
     },

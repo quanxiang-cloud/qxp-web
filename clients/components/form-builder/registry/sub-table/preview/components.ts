@@ -1,4 +1,4 @@
-import { Input, NumberPicker } from '@formily/antd-components';
+import { Input } from '@formily/antd-components';
 
 import OrganizationPicker from '@c/form-builder/registry/organization-select/organization-select-wrap';
 import FileUpload from '@c/form-builder/registry/file-upload/uploader';
@@ -12,6 +12,7 @@ import DatePicker from '@c/form-builder/registry/date-picker/date-picker';
 import Select from '@c/form-builder/registry/select/custom-select';
 import MultipleSelect from '@c/form-builder/registry/multiple-select/multiple-select';
 import Serial from '@c/form-builder/registry/serial-number/serial';
+import NumberPicker from '@c/form-builder/registry/number-picker/number-picker';
 
 export const components = {
   input: Input,

@@ -9,6 +9,7 @@ import Icon from '@c/icon';
 import type { Column } from './index';
 import type { Layout } from '../convertor';
 import ColumnLayout from './column-layout';
+import { omitParentFromSchema } from './utils';
 
 interface Props {
   index: number;
@@ -92,7 +93,11 @@ export default function SubTableRow({
             }
             prs['x-internal'] = { ...prs['x-internal'], fieldPath: path };
             Object.assign(schema, { fieldPath: path });
-            const sc = set(lensPath(['x-internal', 'fieldPath']), path, JSON.parse(JSON.stringify(schema)));
+            const sc = set(
+              lensPath(['x-internal', 'fieldPath']),
+              path,
+              omitParentFromSchema(schema),
+            );
 
             return (
               <div

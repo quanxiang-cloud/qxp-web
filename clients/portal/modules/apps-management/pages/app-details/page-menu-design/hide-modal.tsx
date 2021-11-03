@@ -1,6 +1,7 @@
 import React from 'react';
 
 import Modal from '@c/modal';
+import { Menu } from './menu-tree/type';
 
 type Props = {
   onOk: () => void;

@@ -1,18 +1,8 @@
 .svg-icon {
   @apply align-middle;
   display: inline-block;
-}
-
-.svg-icon--light {
-  @apply text-white fill-current;
-}
-
-.svg-icon--dark {
-  @apply text-gray-600 fill-current;
-}
-
-.svg-icon--primary {
-  @apply text-blue-600 fill-current;
+  color: currentColor;
+  fill: currentColor;
 }
 
 .svg-icon--disabled {
@@ -32,40 +22,52 @@
   cursor: pointer;
 }
 
-// .svg-icon[data-name='loading'] {
-//   animation-name: spinner;
-//   animation-duration: 2s;
-//   animation-timing-function: linear;
-//   animation-iteration-count: infinite;
-// }
+.svg-icon--blue {
+  color: var(--blue-600);
+  fill: var(--blue-400);
+}
 
-// .icons-group {
-//   display: flex;
+.svg-icon--red {
+  color: var(--red-600);
+  fill: var(--red-400);
+}
 
-//   .svg-icon {
-//     cursor: pointer;
-//     flex-shrink: 0;
-//   }
+.svg-icon--green {
+  color: var(--green-600);
+  fill: var(--green-400);
+}
 
-//   .svg-icon:not(:last-child) {
-//     @apply mr-12;
-//   }
-// }
+.svg-icon--yellow {
+  color: var(--yellow-600);
+  fill: var(--yellow-400);
+}
 
-// .icons-group--large {
-//   .svg-icon {
-//     @apply w-20 h-20;
-//   }
+.svg-icon--gray {
+  color: var(--gray-600);
+  fill: var(--gray-400);
+}
 
-//   .svg-icon:not(:last-child) {
-//     @apply mr-16;
-//   }
-// }
+.svg-icon--pink {
+  color: var(--pink-600);
+  fill: var(--pink-400);
+}
 
-// .confirm-check-icon svg {
-//   @apply text-green-50;
-// }
+.svg-icon--rose {
+  color: var(--rose-600);
+  fill: var(--rose-400);
+}
 
-// .cancel-close-icon svg {
-//   @apply text-red-50;
-// }
+.svg-icon--orange {
+  color: var(--orange-600);
+  fill: var(--orange-400);
+}
+
+.svg-icon--white {
+  color: var(--icon-light-color);
+  fill: var(--icon-light-fill);
+}
+
+.svg-icon--primary {
+  color: var(--primary-600);
+  fill: var(--primary-400);
+}

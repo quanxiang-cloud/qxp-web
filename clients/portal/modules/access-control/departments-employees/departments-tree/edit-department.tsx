@@ -1,16 +1,15 @@
-import React, { createRef, useState } from 'react';
+import React from 'react';
 import { useQuery, useQueryClient } from 'react-query';
-import { Form } from '@QCFE/lego-ui';
+import { Form, Input } from 'antd';
 
-import Modal from '@c/modal';
 import DepartmentPicker from '@c/form/input/tree-picker-field';
+import Modal from '@c/modal';
 import Loading from '@c/loading';
 import toast from '@lib/toast';
 import { departmentToTreeNode } from '@lib/utils';
 
-import { createDepartment, editDepartment, getERPTree } from '../api';
+import { getERPTree, createDepartment, editDepartment } from '../api';
 
-const { TextField } = Form;
 const HELP_TEXT_NORMAL = '部门名称不超过 30 个字符';
 const HELP_TEXT_REG_ERROR = '只能包含汉字、英文、横线("-")以及下划线("_")，请修改！';
 
@@ -19,22 +18,15 @@ interface Props {
   closeModal(): void;
 }
 
-export default function EditDepartment({ department, closeModal }: Props) {
-  const [depNameStatus, setDepNameState] = useState('');
-  const [depNameHelpText, setDepNameHelpText] = useState(HELP_TEXT_NORMAL);
-
-  const formRef = createRef<Form>();
+function EditDepartment({ department, closeModal }: Props): JSX.Element {
+  const [form] = Form.useForm();
   const queryClient = useQueryClient();
-
   const title = department.id ? '修改部门' : '添加部门';
   const submitBtnText = department.id ? '确认修改' : '确认添加';
+
   let { data: depData, isLoading } = useQuery('getERPTree', getERPTree, {
     refetchOnWindowFocus: false,
   });
-
-  if (isLoading || !depData) {
-    return <Loading desc="加载中..." />;
-  }
 
   if (depData && (depData.id === department.id)) {
     depData = undefined;
@@ -52,30 +44,13 @@ export default function EditDepartment({ department, closeModal }: Props) {
 
   depData = removeSelf(depData);
 
-  // validate departmentName after input blur
-  const handleDepBlur = (value?: string) => {
-    if (!value) {
-      return;
-    }
-    const departmentName = value?.trim();
-    const reg = /^[\u4e00-\u9fa5A-Za-z0-9-_]+$/g;
-    if (!reg.test(departmentName)) {
-      setDepNameHelpText(HELP_TEXT_REG_ERROR);
-      setDepNameState('error');
-    } else {
-      setDepNameHelpText(HELP_TEXT_NORMAL);
-      setDepNameState('');
-    }
-  };
+  function handleSubmit(): void {
+    form.submit();
+  }
 
-  const okModalHandle = () => {
-    if (!formRef.current?.validateForm()) {
-      return;
-    }
-
+  function handleFinish(values: any): void {
     const requestAPI = department.id ? editDepartment : createDepartment;
-    const params = formRef.current?.getFieldsValue();
-
+    const params = { ...values };
     if (department.id) {
       params.id = department?.id;
     }
@@ -92,7 +67,11 @@ export default function EditDepartment({ department, closeModal }: Props) {
     }).catch((error) => {
       toast.error('发生未知错误:' + error);
     });
-  };
+  }
+
+  if (isLoading || !depData) {
+    return <Loading desc="加载中..." />;
+  }
 
   return (
     <Modal
@@ -111,43 +90,58 @@ export default function EditDepartment({ department, closeModal }: Props) {
           key: 'confirm',
           iconName: 'check',
           modifier: 'primary',
-          onClick: okModalHandle,
+          onClick: handleSubmit,
         },
       ]}
     >
-      <Form className="p-20" layout="vertical" ref={formRef}>
-        <TextField
+      <Form
+        className="p-20"
+        layout="vertical"
+        form={form}
+        onFinish={handleFinish}
+        initialValues={{
+          departmentName: department.departmentName,
+          pid: department.pid,
+        }}
+      >
+        <Form.Item
           name="departmentName"
           label="部门名称"
-          placeholder="请输入部门名称"
-          help={HELP_TEXT_NORMAL}
-          validateHelp={depNameHelpText}
-          validateStatus={depNameStatus}
-          // @ts-ignore
-          maxLength={30}
-          validateOnBlur
-          defaultValue={department.departmentName}
-          onBlur={handleDepBlur}
-          schemas={[
-            {
-              rule: { required: true },
-              help: HELP_TEXT_NORMAL,
-              status: 'error',
-            },
+          extra={HELP_TEXT_NORMAL}
+          rules={[
+            { required: true, message: '请输入部门名称' },
+            { type: 'string', max: 30, message: HELP_TEXT_NORMAL },
+            { validator: (_, value) => {
+              const departmentName = value && value.trim();
+              const reg = /^[\u4e00-\u9fa5A-Za-z0-9-_]+$/g;
+              if (departmentName && !reg.test(departmentName)) {
+                return Promise.reject(new Error(HELP_TEXT_REG_ERROR));
+              }
+              return Promise.resolve();
+            } },
           ]}
-        />
-        {depData && (
-          <DepartmentPicker
-            label="所属部门"
-            treeData={departmentToTreeNode(depData as Department)}
-            labelKey="departmentName"
-            name="pid"
-            defaultValue={department.pid}
-            required
-            help="请选择部门"
-          />
-        )}
+        >
+          <Input maxLength={30} placeholder="请输入部门名称" />
+        </Form.Item>
+        {
+          depData && (
+            <Form.Item
+              name="pid"
+              label="部门"
+              rules={[
+                { required: true, message: '请选择部门' },
+              ]}
+            >
+              <DepartmentPicker
+                treeData={departmentToTreeNode(depData as Department)}
+                labelKey="departmentName"
+              />
+            </Form.Item>
+          )
+        }
       </Form>
     </Modal>
   );
 }
+
+export default EditDepartment;
