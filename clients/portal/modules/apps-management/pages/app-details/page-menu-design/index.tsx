@@ -16,9 +16,10 @@ import EditPageModal from './edit-page-modal';
 import EditGroupModal from './edit-group-modal';
 import HidePageConfirmModal from './hide-modal';
 import AppMenuTree from './menu-tree';
+import { Menu } from './menu-tree/type';
+import { MenuType } from '../type';
 
 import './index.scss';
-import { Menu } from './menu-tree/type';
 
 function PageList(): JSX.Element {
   const history = useHistory();
@@ -73,8 +74,10 @@ function PageList(): JSX.Element {
   };
 
   useEffect(() => {
-    if (activeMenu.menuType === 1) return;
-    history.push(`/apps/details/${appID}/page_setting?pageID=${activeMenu.id}`);
+    if (!activeMenu.id || activeMenu.menuType === MenuType.group) {
+      return;
+    }
+    history.replace(`/apps/details/${appID}/page_setting?pageID=${activeMenu.id}`);
   }, [activeMenu, appID]);
 
   const handleMenuClick = (key: string, menu: Menu): void => {
