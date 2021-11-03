@@ -96,6 +96,8 @@ class UserAndPerStore {
       const { list = [] } = res || {};
       this.rightsList = list;
       this.tempRightList = deepClone(this.rightsList);
+      this.currentRights = this.rightsList[0] || INIT_CURRENT_RIGHTS;
+      this.rightsGroupID = this.rightsList[0]?.id;
     }).catch((err) => {
       toast.error(err);
     });

@@ -127,7 +127,13 @@ export default function Variables(): JSX.Element {
           <Button
             iconName="add"
             modifier="primary"
-            onClick={() => updateCurrentAction(currentVariable, 'add')}
+            onClick={() => {
+              if (!currentVariable.flowId) {
+                toast.error('请先在工作流设计中选择工作表');
+              } else {
+                updateCurrentAction(currentVariable, 'add');
+              }
+            }}
           >新增变量</Button>
         </div>
         <div className="flex-1 flex flex-col flow-table">

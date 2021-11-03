@@ -17,12 +17,12 @@ function AppControl(): JSX.Element {
         items={[
           {
             id: 'homePermission',
-            name: '配置访问端权限',
+            name: '访问端权限',
             content: (<UserPermission />),
           },
           {
             id: 'managePermission',
-            name: '配置管理端权限',
+            name: '管理端权限',
             content: (<ManagePermission />),
           }]}
       />

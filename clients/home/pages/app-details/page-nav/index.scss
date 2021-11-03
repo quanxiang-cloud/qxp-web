@@ -1,5 +1,7 @@
-.app-details-nav {
-  position: relative;
+.app-page-nav {
+  ::-webkit-scrollbar:horizontal{
+    display: none;
+  }
 }
 
 .nav-content {
@@ -9,10 +11,27 @@
   width: 208px;
   height: 100%;
   background: #F8FAFC;
-  box-shadow: 8px 0px 24px 4px rgba(148, 163, 184, 0.25);
   .nav-content-header .truncate{
     width: 110px;
   }
+  .app-page-tree-wrapper{
+    height: calc(100vh - 52px);
+    .app-page-tree{
+      flex: 1;
+    }
+  }
+  @media screen and (max-width: 1280px) {
+    .app-page-tree-wrapper {
+      height: calc(100vh - 52px - var(--scrollbar-size));
+    }
+  }
+  .role-switcher-wrap {
+    background-image: url(/dist/images/role_bg.png);
+  }
+}
+
+.role-switcher-popover{
+  @apply shadow-more-action overflow-hidden rounded-12;
 }
 
 .collapse {

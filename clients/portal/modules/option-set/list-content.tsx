@@ -34,7 +34,9 @@ function ListContent({ className }: Props): JSX.Element {
                 className='flex items-center px-16 hover:bg-blue-100 cursor-pointer action-shows'
                 key={idx}
               >
-                <span className='items-center w-5/6 py-8 text-gray-900'>
+                <span
+                  title={label}
+                  className='items-center w-5/6 py-8 text-gray-900 overflow-hidden overflow-ellipsis whitespace-nowrap flex-1'>
                   {label}
                 </span>
                 <span className='action-show'>

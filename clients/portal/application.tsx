@@ -1,12 +1,10 @@
 import React from 'react';
 
-import GlobalHeader from './global-header';
 import Routes from './routes';
 
-export default function Application() {
+export default function Application(): JSX.Element {
   return (
     <>
-      <GlobalHeader />
       <Routes />
     </>
   );

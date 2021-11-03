@@ -1,0 +1,23 @@
+.notfound-body {
+  width: 100%;
+  display: flex;
+  padding-top: 196px;
+  justify-content: center;
+  background-color: #fff;
+  .notfound-left {
+    width: 402px;
+  }
+  .notfound-right {
+    width: 472px;
+    height: 360px; 
+    background: url(/dist/images/empty_404.png) no-repeat;
+    background-size: contain;
+  }
+}
+
+.notfound-image {
+  width: 138px;
+  height: 74px;
+  background: url(/dist/images/404.png) no-repeat;
+  background-size: contain;
+}

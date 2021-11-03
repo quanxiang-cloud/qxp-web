@@ -34,7 +34,7 @@ const getMoment = (value: Format | ''): string => {
 };
 
 const getPreview = ({ prefix, initialPosition, startingValue, suffix }: PreviewProps): string => {
-  return prefix.frontward + getMoment(prefix.backward) +
+  return prefix?.frontward + getMoment(prefix?.backward) +
     addZeroFromValue(initialPosition, startingValue) + suffix;
 };
 

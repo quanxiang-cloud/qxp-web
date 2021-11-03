@@ -134,7 +134,7 @@ function Table<T extends Record<string, any>>({
             })}
           </colgroup>
           <thead>
-            <tr>
+            <tr className={cs({ 'qxp-table-adjust-header': canSetColumnWidth })}>
               {headerGroups[0].headers.map((header, index) => {
                 return (
                   <th

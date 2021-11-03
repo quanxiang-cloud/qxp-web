@@ -31,6 +31,8 @@ import {
   isHiddenMenu,
   formDuplicate,
 } from './api';
+import { getFirstMenu } from './page-menu-design/menu-tree/utils';
+import { Menu } from './page-menu-design/menu-tree/type';
 
 type DeletePageOrGroupParams = {
   treeItem: TreeItem;
@@ -70,16 +72,6 @@ function getDefaultMenu(extraInfo: Record<string, unknown>): Menu {
 
   return { ...DEFAULT_INSERT_MENU, ...extraInfo };
 }
-function getFirstMenu(menus: Menu[] = []): Menu {
-  if (!menus.length) return DEFAULT_MENU;
-  if (menus[0]?.menuType !== MenuType.group) {
-    return menus?.[0] || DEFAULT_MENU;
-  }
-  if (menus[0]?.menuType === MenuType.group && !menus[0].child?.length) {
-    return getFirstMenu(menus.slice(1));
-  }
-  return menus[0]?.child?.[0] || DEFAULT_MENU;
-}
 class AppDetailsStore {
   destroySetCurPage: IReactionDisposer;
   @observable appDetails: AppInfo = {
@@ -109,6 +101,7 @@ class AppDetailsStore {
   @observable menuTree = [];
   @observable activeMenu: Menu = DEFAULT_MENU;
   @observable lastHover: Menu = DEFAULT_MENU;
+  @observable draggingNode: any = null;
 
   constructor() {
     this.destroySetCurPage = reaction(() => {
@@ -201,25 +194,26 @@ class AppDetailsStore {
     };
     const delMethod = type === 'delGroup' ? deleteGroup : deletePage;
 
-    await delMethod(dto);
-    toast.success('删除成功');
-    if (!delItem.groupID) {
-      const filteredPageList = this.pageInitList.filter((item) => item.id !== delItem.id);
-      this.update(filteredPageList);
-    } else {
-      const _pageInitList = cloneDeep(this.pageInitList);
-      _pageInitList.forEach((item) => {
-        if (item.id === delItem.groupID) {
-          item.child?.forEach((ch, index) => {
-            if (ch.id === delItem.id) {
-              item.child?.splice(index, 1);
+    return delMethod(dto)
+      .then(() => {
+        toast.success('删除成功');
+        let deletedList = cloneDeep(this.pageInitList);
+        if (!dto.groupID) {
+          deletedList = this.pageInitList.filter((item: Menu) => item.id !== dto.id);
+        } else {
+          const child = deletedList.find((item: Menu) => item.id === dto.groupID)?.child || [];
+          deletedList.forEach((item: Menu) => {
+            if (item.id === dto.groupID) {
+              item.child = child.filter((item: Menu) => item.id !== dto.id);
             }
           });
         }
+        this.pageInitList = deletedList;
+        this.activeMenu = getFirstMenu(deletedList);
+      })
+      .catch((err) => {
+        toast.error(err || '删除是啊比');
       });
-      this.update(_pageInitList);
-    }
-    this.activeMenu = getFirstMenu(this.pageInitList);
   }
 
   @action
@@ -277,7 +271,7 @@ class AppDetailsStore {
           }
           return item;
         });
-        this.update(editGroupData);
+        this.updatePageInitList(editGroupData);
         toast.success('修改成功');
       });
     }
@@ -288,7 +282,6 @@ class AppDetailsStore {
         name: groupInfo.name,
         menuType: 1,
         appID: this.appID,
-        icon: 'folder_empty',
         sort: Math.max.apply(null, this.pageInitList.map((item: Menu) => Number(item.sort))) + 1,
       });
       this.pageInitList.push(newGroup);
@@ -313,7 +306,7 @@ class AppDetailsStore {
             return item;
           });
         };
-        this.update(editName(this.pageInitList));
+        this.updatePageInitList(editName(this.pageInitList));
       });
     }
     // copyPage
@@ -341,15 +334,14 @@ class AppDetailsStore {
       ...getDefaultMenu({
         id,
         appID: this.appID,
-        sort: Math.max.apply(null, this.pageInitList.map((item: Menu) => Number(item.sort))) + 1,
       }),
       ...PageInfoPick,
     };
 
     // edit
     if (!newPage.groupID) {
+      newPage.sort = this.pageInitList.length + 1;
       this.pageInitList.push(newPage);
-      // this.curPage = newPage;
       this.activeMenu = newPage;
       toast.success('创建成功');
       return id;
@@ -357,12 +349,12 @@ class AppDetailsStore {
 
     this.pageInitList = this.pageInitList.map((page) => {
       if (page.id === newPage.groupID) {
-        // const lastChildPage = page.child?.slice(-1) || [];
-        const sort = Math.max.apply(null, (page?.child || []).map((item: Menu) => Number(item.sort))) || 0;
+        const lastChildPage = page.child?.slice(-1) || [];
+        const sort = lastChildPage[0]?.sort || 0;
         newPage.sort = sort + 1;
+
         page.child = ((page?.child || [])?.concat([newPage]));
         page.childCount = page.child.length;
-        // this.curPage = newPage;
         this.activeMenu = newPage;
       }
       return page;
@@ -378,7 +370,6 @@ class AppDetailsStore {
       return;
     }
 
-    // const pageInfo = this.pagesTreeData.items[pageID].data;
     const pageInfo = this.activeMenu;
     this.fetchSchemeLoading = true;
     this.curPageCardList = DEFAULT_CARD_LIST;
@@ -470,7 +461,7 @@ class AppDetailsStore {
         });
       };
 
-      this.update(hideMenu(this.pageInitList));
+      this.updatePageInitList(hideMenu(this.pageInitList));
       toast.success(`${pageInfo.name}页面${!pageInfo.isHide ? '隐藏' : '显示'}成功`);
     }).catch(() => toast.error('页面设置显示或者隐藏失败'));
   }
@@ -480,14 +471,7 @@ class AppDetailsStore {
     this.appID = appID;
     this.pageListLoading = true;
     fetchPageList(appID).then((res: any) => {
-      this.pageInitList = res.menu.map((item: Menu) => {
-        if (item.child?.length) {
-          item.child = item.child.map((ch: Menu) => {
-            ch['open'] = true; return ch;
-          });
-        }
-        return item;
-      });
+      this.pageInitList = res.menu;
       if (!hasActiveMenu(res.menu, this.activeMenu)) {
         this.activeMenu = getFirstMenu(res.menu);
       }
@@ -513,12 +497,16 @@ class AppDetailsStore {
     this.activeMenu = menuItem;
   }
 
-  @action update = (newPageList: PageInfo[]): void => {
+  @action updatePageInitList = (newPageList: PageInfo[]): void => {
     this.pageInitList = newPageList;
   }
 
   @action setLastHover = (menuItem: Menu): void => {
     this.lastHover = menuItem;
+  }
+
+  @action setDraggingNode = (node: any): void => {
+    this.draggingNode = node;
   }
 }
 

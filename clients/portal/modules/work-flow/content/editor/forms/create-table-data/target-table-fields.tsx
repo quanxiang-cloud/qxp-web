@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { pick, pickBy, each, get, set } from 'lodash';
 
@@ -11,6 +11,7 @@ import CustomField from './custom-field';
 import SubTableFields from './sub-table-fields';
 import Context from './context';
 import { transformSchema } from '../utils';
+import { getTableSchema } from '@lib/http-client';
 
 interface Props {
   appId: string;
@@ -23,7 +24,38 @@ function TargetTableFields({ appId, tableId }: Props): JSX.Element {
     getFormFieldSchema, {
       enabled: !!appId && !!tableId,
     });
-  const tableSchemaMap = schemaToMap(schema);
+  const tableSchemaMap = schemaToMap(schema, (currentSchema: SchemaFieldItem) => {
+    return currentSchema.componentName !== 'associatedrecords';
+  });
+  const [schemaToTransform, setSchemaToTransform] = useState({ ...schema, properties: tableSchemaMap });
+
+  useEffect(() => {
+    const initSchemaToTransform = { ...schema, properties: tableSchemaMap };
+    Promise.all(
+      Object.entries(initSchemaToTransform.properties).map(([fieldName, fieldSchema]) => {
+        const compProps = get(fieldSchema, 'x-component-props');
+        const subordination = get(compProps, 'subordination', '');
+
+        if (subordination === 'foreign_table') {
+          const foreignAppId = get(compProps, 'appID', '');
+          const foreignTableId = get(compProps, 'tableID', '');
+          const foreignTableFields = get(compProps, 'columns', []);
+          return getTableSchema(foreignAppId, foreignTableId).then((res) => {
+            const foreignTableSchema = res?.schema.properties || {};
+            Object.entries(foreignTableSchema).forEach(([foreignKey, foreignSchema]) => {
+              if (foreignTableFields.includes(foreignKey)) {
+                set(
+                  initSchemaToTransform.properties[fieldName],
+                  `items.properties.${foreignKey}`, foreignSchema,
+                );
+              }
+            });
+          });
+        }
+      })).then(() => {
+      setSchemaToTransform(initSchemaToTransform);
+    });
+  }, [schema]);
 
   const getTableIdByFieldKey = (key: string): string => {
     const field = tableSchemaMap[key];
@@ -100,8 +132,6 @@ function TargetTableFields({ appId, tableId }: Props): JSX.Element {
       <div>Load table schema failed</div>
     );
   }
-
-  const schemaToTransform = { ...schema, properties: tableSchemaMap };
 
   const renderNormalFields = (): JSX.Element => {
     return (

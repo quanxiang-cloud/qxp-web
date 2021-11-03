@@ -31,13 +31,13 @@ function BasicInfoForm(
         error={errors.name}
         defaultValue={type === 'edit' ? defaultValue?.name : ''}
         readOnly={defaultValue?.types === 1 || false}
-        register={register('name', { required: '请输入权限组名称', maxLength: { value: 30, message: '不能超过30个字符' } })}
+        register={register('name', { required: '请输入权限组名称', maxLength: { value: 20, message: '不能超过20个字符' } })}
       />
       <Textarea
         className='h-58'
         label='描述'
-        help='对权限组的补充说明。以便于区分不同的权限组控制的数据范围。'
-        placeholder='选填（不超过 100 字符）'
+        help='对角色的补充说明，以便于区分不同的角色所控制权限和数据范围。'
+        placeholder='选填（不超过 50 字符）'
         error={errors.description}
         defaultValue={type === 'edit' ? defaultValue?.description : ''}
         register={register('description', { maxLength: { value: 50, message: '不能超过50个字符' } })}
