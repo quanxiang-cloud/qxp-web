@@ -213,7 +213,7 @@ function AddApi(props: Props) {
             <div className='w-259'>
               <p>API 标识</p>
               <input
-                placeholder='请输入 API 标识 (最多32个字符，支持英文、下划线、数字)。例如: getUserById'
+                placeholder='请输入，分组内不可重复'
                 maxLength={32}
                 className={cs('input', { error: errors.apiName })}
                 {...register('apiName', { required: true, pattern: regApiName })}
