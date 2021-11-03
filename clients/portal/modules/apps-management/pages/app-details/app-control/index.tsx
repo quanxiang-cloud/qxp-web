@@ -12,6 +12,7 @@ function AppControl(): JSX.Element {
         strechNavs={false}
         separator={false}
         navsClassName="overflow-auto nav-background-image"
+        navTitleClassName="text-12"
         className="corner-8-8-0-0"
         contentClassName="control-content"
         items={[
