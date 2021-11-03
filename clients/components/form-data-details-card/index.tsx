@@ -46,21 +46,24 @@ function FormDataDetailsCard({
     });
   }, [appID, tableID]);
 
-  const [details, systems, groups] = useMemo(() => {
+  const [systems, formDatas] = useMemo(() => {
     if (!formData) {
       return [[], []];
     }
 
     const { record, schema } = formData;
-    const _details: FormInfoCardDataProp[] = [];
-    const _systems: FormInfoCardDataProp[] = [];
-    const _groups: {title: string, group:FormInfoCardDataProp[]}[] = [];
 
     if (!schema && appID && tableID) {
-      return [[], [], []];
+      return [[], []];
     }
 
-    Object.entries(schema.properties || {}).forEach(([fieldId, fieldSchema]) => {
+    const _systems: FormInfoCardDataProp[] = [];
+    const _formDatas: FormDetailData[] = [];
+    const tempSchema = Object.entries(schema.properties || {}).sort((schemaA, schemaB) => {
+      return (schemaA[1]?.['x-index'] || 0) - (schemaB[1]?.['x-index'] || 0);
+    });
+
+    tempSchema.forEach(([fieldId, fieldSchema]) => {
       const fieldKey = fieldId;
       const hasValue = record && !isEmpty(record[fieldKey]);
       if ((fieldSchema as ISchema)['x-internal']?.isSystem) {
@@ -79,7 +82,10 @@ function FormDataDetailsCard({
         const title = (fieldSchema as ISchema).title ? (fieldSchema as ISchema).title as string :
           groupTitleMap[component];
         const _group: FormInfoCardDataProp[] = [];
-        schemaToFields(fieldSchema).forEach((field) => {
+        const fieldSchemaTemp = schemaToFields(fieldSchema).sort((fieldSchemaA, fieldSchemaB) => {
+          return (fieldSchemaA?.['x-index'] || 0) - (fieldSchemaB?.['x-index'] || 0);
+        });
+        fieldSchemaTemp.forEach((field) => {
           const fieldKey = field.id;
           const fieldSchema = field;
           const hasValue = record && !isEmpty(record[fieldKey]);
@@ -92,24 +98,30 @@ function FormDataDetailsCard({
             fieldSchema,
           });
         });
-        _groups.push({
-          title,
-          group: _group,
+        _formDatas.push({
+          type: 'group',
+          itemInfo: {
+            title,
+            key: fieldKey,
+            groups: _group,
+          },
         });
         return;
       }
-      _details.push({
-        label: fieldSchema.title as string,
-        key: fieldKey,
-        value: hasValue ? (
-          <FormDataValueRenderer schema={fieldSchema as ISchema} value={record?.[fieldKey]} />
-        ) : <span className='text-gray-900'>—</span>,
-        fieldSchema,
-      });
-    },
-    );
 
-    return [_details, _systems, _groups];
+      _formDatas.push({
+        type: 'details',
+        itemInfo: {
+          label: fieldSchema.title as string,
+          key: fieldKey,
+          value: hasValue ? (
+            <FormDataValueRenderer schema={fieldSchema as ISchema} value={record?.[fieldKey]} />
+          ) : <span className='text-gray-900'>—</span>,
+          fieldSchema,
+        },
+      });
+    });
+    return [_systems, _formDatas];
   }, [formData]);
 
   if (loading) {
@@ -119,27 +131,36 @@ function FormDataDetailsCard({
   return (
 
     <div className={cs('flex-1 overflow-auto', className)}>
-      <InfoCard
-        list={details}
-        fullScreen={fullScreen}
-        className={fullScreen ? 'grid-cols-4' : 'grid-cols-2'}
-      />
-
-      { groups?.map((group, key) => (
+      <div className={cs('grid gap-x-16 grid-flow-row-dense p-16 pr-0',
+        fullScreen ? 'grid-cols-4' : 'grid-cols-2')}
+      >
+        {formDatas.map(({ type, itemInfo }) => {
+          if (type === 'details') {
+            const { key } = itemInfo;
+            return (
+              <InfoCard
+                key={key}
+                list={itemInfo as FormInfoCardDataProp}
+              />
+            );
+          }
+          const { key, groups, title } = itemInfo as GroupInfo;
+          return (
+            <GroupCard
+              key={key}
+              list={groups}
+              title={title || ''}
+              fullScreen={fullScreen}
+            />
+          );
+        })}
         <GroupCard
-          key={key}
-          list={group.group}
-          title={group.title || ''}
+          key='system'
+          list={systems}
+          title='系统字段'
           fullScreen={fullScreen}
         />
-      ))}
-
-      <GroupCard
-        key='system'
-        list={systems}
-        title='系统字段'
-        fullScreen={fullScreen}
-      />
+      </div>
     </div>
   );
 }
