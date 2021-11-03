@@ -243,6 +243,11 @@ class ApiProxyStore {
   }
 
   @action
+  registerApi=async (params: PolyAPI.CreateApiParams)=> {
+    await apis.registerApi(this.svc?.fullPath || '', params);
+  }
+
+  @action
   reset = () => {
     this.appId = '';
     this.appRootNs = '';

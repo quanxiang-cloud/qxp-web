@@ -92,7 +92,7 @@ export const getService = async (servicePath: string): Promise<PolyAPI.Service> 
  */
 // 创建api，以swagger格式注册原生api
 export const registerApi = async (servicePath: string, params: PolyAPI.CreateApiParams): Promise<PolyAPI.CreateApiResult> => {
-  return await httpClient(`/api/v1/polyapi/raw/reg/${servicePath}`, params);
+  return await httpClient(`/api/v1/polyapi/raw/reg/${normalizeSuffix(servicePath)}`, params);
 };
 
 export const uploadSwagger = async (servicePath: string, params: PolyAPI.UploadApiParams): Promise<PolyAPI.CreateApiResult> => {

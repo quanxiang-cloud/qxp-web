@@ -10,7 +10,7 @@ interface Props {
   toggleable?: boolean;
 }
 
-function ParamSection({
+function ParamsSection({
   title,
   children,
   className,
@@ -33,7 +33,7 @@ function ParamSection({
               className='justify-center items-center w-20 h-20 hover:bg-gray-200 self-center mr-10'
               name={expand ? 'expand_more' : 'expand_less'}
               size={20}
-              onClick={()=> setExpand(!expand)}
+              onClick={() => setExpand(!expand)}
               clickable
             />)}
         </div>
@@ -45,4 +45,4 @@ function ParamSection({
   );
 }
 
-export default ParamSection;
+export default ParamsSection;

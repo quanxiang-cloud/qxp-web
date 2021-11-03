@@ -9,7 +9,7 @@ import Table from '@c/table';
 import Button from '@c/button';
 
 import Header from '../comps/header';
-import ParamSection from '../add-api/param-section';
+import ParamsSection from '../add-api/params-section';
 
 interface Props {
   className?: string;
@@ -101,7 +101,7 @@ function AddSwagger(props: Props) {
           })}
         </div>
 
-        <ParamSection title='API 列表预览'>
+        <ParamsSection title='API 列表预览'>
           <Table
             loading={loading}
             emptyTips='暂无数据'
@@ -109,7 +109,7 @@ function AddSwagger(props: Props) {
             data={apis}
             rowKey='name'
           />
-        </ParamSection>
+        </ParamsSection>
 
         <div className='flex items-center justify-end w-full h-64 bg-gray-100 px-20 absolute left-0 bottom-0'>
           <Button onClick={()=> history.goBack()} className='mr-20'>

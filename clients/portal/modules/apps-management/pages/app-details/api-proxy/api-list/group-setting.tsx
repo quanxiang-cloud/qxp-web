@@ -12,7 +12,7 @@ import Icon from '@c/icon';
 import toast from '@lib/toast';
 import Loading from '@c/loading';
 
-import ParamSection from '../add-api/param-section';
+import ParamsSection from '../add-api/params-section';
 import { ErrorMsg } from '../comps/form';
 import store from '../store';
 
@@ -104,7 +104,7 @@ function GroupSetting(props: Props) {
   return (
     <>
       <form onSubmit={onSubmit} className='flex flex-col w-full'>
-        <ParamSection title='请求协议'>
+        <ParamsSection title='请求协议'>
           <div className='flex items-center'>
             <div className='mr-8 w-100'>
               <p className='mb-8'>协议</p>
@@ -127,9 +127,9 @@ function GroupSetting(props: Props) {
               />
             </div>
           </div>
-        </ParamSection>
+        </ParamsSection>
 
-        <ParamSection title='鉴权'>
+        <ParamsSection title='鉴权'>
           <div className='mb-16'>
             <p className='flex items-center'>
               <span>鉴权方式</span>
@@ -168,7 +168,7 @@ function GroupSetting(props: Props) {
             </>
 
           )}
-        </ParamSection>
+        </ParamsSection>
       </form>
 
       <div className='flex items-center justify-end w-full h-64 bg-gray-100 px-20 absolute left-0 bottom-0'>

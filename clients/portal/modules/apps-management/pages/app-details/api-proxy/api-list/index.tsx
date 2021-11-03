@@ -35,7 +35,11 @@ function ListPage() {
   ];
 
   useEffect(()=> {
-    store.fetchSvc();
+    store.fetchSvc().then(()=> {
+      if (store.svc) {
+        setTabKey('api-list');
+      }
+    });
   }, [store.treeStore?.currentFocusedNodeID]);
 
   useEffect(()=> {

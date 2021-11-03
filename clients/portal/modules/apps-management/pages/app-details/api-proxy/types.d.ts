@@ -56,7 +56,7 @@ declare namespace PolyAPI {
 
   type CreateApiParams={
     version: string;
-    namespace: string;
+    namespace?: string;
     swagger: string;
   }
 
