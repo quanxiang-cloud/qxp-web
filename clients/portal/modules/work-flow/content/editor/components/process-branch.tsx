@@ -19,7 +19,7 @@ export default function ProcessBranchNodeComponent(props: Props): JSX.Element {
           <span className="text-gray-600">else 条件</span>
         </div>
       )}
-      {!rule && '请配置筛选条件'}
+      {!rule && !ignore && '请配置筛选条件'}
     </NodeComponentWrapper>
   );
 }
