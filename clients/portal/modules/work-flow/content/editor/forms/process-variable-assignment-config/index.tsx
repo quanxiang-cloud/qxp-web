@@ -56,6 +56,7 @@ export default function AssignmentConfig({ defaultValue, onSubmit, onCancel }: P
       const variableType = variables?.find(({ code }) => code === variableCode)?.fieldType;
       if (state.value === 'currentFormValue') {
         setFieldState(valueOfPath, (valueOfFieldState) => {
+          valueOfFieldState.value = '';
           valueOfFieldState.props.enum = tableFields.filter((field) => {
             return field.type === variableType;
           });
@@ -67,6 +68,7 @@ export default function AssignmentConfig({ defaultValue, onSubmit, onCancel }: P
       setFieldState(valueOfPath, (valueOfFieldState) => {
         // formily will render every field like Select component,
         // if it's props has enum
+        valueOfFieldState.value = '';
         valueOfFieldState.props.enum = undefined;
         if (variableType === 'string') {
           valueOfFieldState.props['x-component'] = 'Input';

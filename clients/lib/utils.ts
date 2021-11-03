@@ -128,8 +128,8 @@ export const getNestedPropertyToArray = <T>(
   return arrData;
 };
 
-export function departmentToTreeNode(department: Department): TreeNode<Department> {
-  const children = (department.child || []).map((dep) => departmentToTreeNode(dep));
+export function departmentToTreeNode(department: Department, level = 0): TreeNode<Department> {
+  const children = (department.child || []).map((dep) => departmentToTreeNode(dep, level + 1));
 
   return {
     data: department,
@@ -140,7 +140,7 @@ export function departmentToTreeNode(department: Department): TreeNode<Departmen
     isLeaf: !department.child?.length,
     visible: true,
     childrenStatus: 'resolved',
-    expanded: true,
+    expanded: level === 0,
     order: 0,
     level: department.grade,
     children: children,

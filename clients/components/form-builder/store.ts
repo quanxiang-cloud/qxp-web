@@ -4,6 +4,7 @@ import { nanoid } from 'nanoid';
 
 import logger from '@lib/logger';
 import Modal from '@c/modal';
+import { schemaToOptions } from '@lib/schema-convert';
 
 import registry from './registry';
 import { INTERNAL_FIELDS } from './constants';
@@ -53,6 +54,8 @@ export default class FormBuilderStore {
   @observable tabsActiveList: Record<string, string> = {};
   @observable activeObj: Record<string, any> = {};
   @observable flattenFields: FormItem[] = [];
+  @observable activeSubtableFieldId = '';
+  @observable serialFieldIds: Array<string> = [];
 
   constructor({ schema, appID, pageID }: Props) {
     this.flattenFields = flattenSchemaToFields(schema);
@@ -63,6 +66,7 @@ export default class FormBuilderStore {
     this.columnsCount = schema['x-internal']?.columns || 1;
     this.labelAlign = schema?.['x-internal']?.labelAlign || 'right';
     this.validations = schema['x-internal']?.validations || [];
+    this.setSerialFieldIds(schema);
   }
 
   @computed get activeField(): FormItem | undefined {
@@ -273,6 +277,7 @@ export default class FormBuilderStore {
   @action
   setActiveFieldKey(fieldId: string): void {
     this.activeFieldId = fieldId;
+    this.activeSubtableFieldId = '';
   }
 
   @action setTabsActiveList(tabId: string, activeId: string): void {
@@ -369,5 +374,14 @@ export default class FormBuilderStore {
     this.validations = this.validations.filter((rule) => {
       return rule.id !== id;
     });
+  }
+
+  @action
+  setSerialFieldIds(schema: ISchema): void {
+    this.serialFieldIds = schemaToOptions(schema, {
+      keepLayout: true,
+      parseSubTable: true,
+      filter: (schema) => schema['x-component'] === 'Serial',
+    }).map((itm) => itm.value);
   }
 }

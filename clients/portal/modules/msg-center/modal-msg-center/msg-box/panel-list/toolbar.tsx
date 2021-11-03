@@ -1,66 +1,81 @@
 import React, { useState, forwardRef, useImperativeHandle } from 'react';
+
 import Checkbox from '@c/checkbox';
 import Button from '@c/button';
 
-import styles from '../index.module.scss';
+interface Props {
+  canIUseReadBtn: boolean;
+  canIUseDelBtn: boolean;
+  handleAllChecked: () => void;
+  handleAllUnchecked: () => void;
+  handleCheckedReaded: () => void;
+  handleDeleteMessage: () => void;
+  handleAllReaded: () => void;
+}
 
-const Toolbar = forwardRef((props: any, ref) => {
-  const [checkAll, setCheckAll] = useState(false);
-  const [interm, setInterm] = useState(false);
+function Toolbar({
+  canIUseDelBtn,
+  canIUseReadBtn,
+  handleAllChecked,
+  handleAllUnchecked,
+  handleCheckedReaded,
+  handleAllReaded,
+  handleDeleteMessage,
+}: Props, ref: any): JSX.Element {
+  const [checkedAll, setCheckedAll] = useState(false);
+  const [indeterminate, setIndeterminate] = useState(false);
 
   useImperativeHandle(ref, () => {
     return {
-      allcheck(checked: boolean) {
-        setCheckAll(checked);
+      setCheckedAll(checked: boolean) {
+        setCheckedAll(checked);
       },
-      interm(checked: boolean) {
-        setInterm(checked);
+      setIndeterminate(checked: boolean) {
+        setIndeterminate(checked);
       },
     };
   });
 
   return (
-    <div className={styles.toolbar}>
-      <div className={`flex align-center flex-1 ${styles.toolbar_content}`}>
+    <div className="flex items-center justify-between mb-16">
+      <div className="flex items-center pl-8">
         <Checkbox
-          checked={checkAll}
-          indeterminate={interm}
+          checked={checkedAll}
+          indeterminate={indeterminate}
           onChange={(e) => {
-            setCheckAll(e.target.checked);
+            setCheckedAll(e.target.checked);
             if (e.target.checked) {
-              props.setAllChecked();
+              handleAllChecked();
             } else {
-              props.setAllUnchecked();
+              handleAllUnchecked();
             }
           }}
           className='mr-16'
         />
         <Button
-          forbidden={!props.canIUseReadBtn}
-          onClick={props.handleCheckedReaded}
+          forbidden={!canIUseReadBtn}
+          onClick={() => handleCheckedReaded()}
           className='mr-16'
         >
-          标为已读
+        标为已读
         </Button>
         <Button
-          forbidden={!props.canIUseDelBtn}
-          onClick={props.handleDeleteMessage}
+          forbidden={!canIUseDelBtn}
+          onClick={() => handleDeleteMessage()}
         >
-          删除
+        删除
         </Button>
       </div>
-      <div>
-        <Button
-          className="bg-gray-700"
-          onClick={props.handleAllReaded}
-          modifier="primary"
-          iconName="done_all"
-        >
-          全部已读
-        </Button>
-      </div>
+      <Button
+        className="bg-gray-700"
+        onClick={() => handleAllReaded()}
+        modifier="primary"
+        iconName="done_all"
+      >
+      全部已读
+      </Button>
     </div>
   );
-});
+}
 
-export default Toolbar;
+export default forwardRef(Toolbar);

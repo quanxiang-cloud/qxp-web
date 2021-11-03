@@ -150,7 +150,7 @@ function ApprovalDetail(): JSX.Element {
       />
 
       <div className="approval-detail w-full h-full flex px-20">
-        <Panel className="flex flex-col flex-1 mr-20 px-24 py-24">
+        <Panel className="flex flex-col flex-1 px-24 py-24">
           {
             <>
               {showSwitch && (
@@ -176,23 +176,27 @@ function ApprovalDetail(): JSX.Element {
           }
 
         </Panel>
-        <Panel className="approval-detail-tab w-400 opacity-95">
-          <Tab
-            style={{ backgroundColor: 'var(--gray-100)' }}
-            items={[
-              {
-                id: 'history',
-                name: '动态',
-                content: (<Dynamic onTaskEnd={setTaskEnd}/>),
-              },
-              {
-                id: 'discuss',
-                name: '讨论',
-                content: (<Discuss />),
-              },
-            ]}
-          />
-        </Panel>
+        {
+          data.canViewStatusAndMsg && (
+            <Panel className="ml-20 approval-detail-tab w-400 opacity-95">
+              <Tab
+                style={{ backgroundColor: 'var(--gray-100)' }}
+                items={[
+                  {
+                    id: 'history',
+                    name: '动态',
+                    content: (<Dynamic onTaskEnd={setTaskEnd}/>),
+                  },
+                  {
+                    id: 'discuss',
+                    name: '讨论',
+                    content: (<Discuss showInput={data.canMsg} />),
+                  },
+                ]}
+              />
+            </Panel>
+          )
+        }
       </div>
       {appID && tableID && (
         <ActionModals

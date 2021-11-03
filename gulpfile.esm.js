@@ -16,12 +16,6 @@ function copyTemplates() {
     .pipe(gulp.dest('./dist/templates'));
 }
 
-function copyExternals() {
-  return gulp
-    .src('./externals/**/*')
-    .pipe(gulp.dest('./dist/externals'));
-}
-
 function copyStatics() {
   return gulp
     .src('./clients/assets/**/*')
@@ -51,7 +45,7 @@ export function rollupWatch() {
   return childProcess;
 }
 
-const buildAssetsTask = gulp.parallel(copyStatics, copyTemplates, buildIcons, copyExternals);
+const buildAssetsTask = gulp.parallel(copyStatics, copyTemplates, buildIcons);
 const serverTask = gulp.parallel(getServerTask('portal'), getServerTask('home'));
 
 
