@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import cs from 'classnames';
 
 import Icon from '@c/icon';
@@ -11,12 +11,14 @@ type Props = {
 
 type InfoCardProps = {
   list: FormInfoCardDataProp[],
-  className: string
+  className: string;
+  fullScreen?: boolean;
 }
 
+const GROUP_TITLE_HEIGHT = 36;
 const FULL_COMP = ['AssociatedRecords', 'SubTable'];
 
-export function InfoCard({ list, className }: InfoCardProps): JSX.Element {
+export function InfoCard({ list, className, fullScreen }: InfoCardProps): JSX.Element {
   return (
     <div className={cs('grid gap-x-16 grid-flow-row-dense p-16 pr-0', className)}>
       {list.map(({ label, value, key, fieldSchema }) => (
@@ -24,11 +26,14 @@ export function InfoCard({ list, className }: InfoCardProps): JSX.Element {
           key={key}
           className={cs(
             'flex text-12 p-8 items-center ',
-            { 'col-span-2': FULL_COMP.includes(fieldSchema['x-component'] as string) },
+            {
+              'col-span-2': !fullScreen && FULL_COMP.includes(fieldSchema['x-component'] as string),
+              'col-span-4': fullScreen && FULL_COMP.includes(fieldSchema['x-component'] as string),
+            },
           )}
         >
           <div className='text-gray-600'>{label}：</div>
-          <div className='text-gray-900'>{value}</div>
+          <div className='text-gray-900 flex-1 card-value'>{value}</div>
         </div>),
       )}
     </div>
@@ -36,21 +41,21 @@ export function InfoCard({ list, className }: InfoCardProps): JSX.Element {
 }
 
 function GroupCard({ title, list, fullScreen }: Props): JSX.Element {
+  const cardRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(true);
-  const infoHeigh = 36;
-  const groupCol = fullScreen ? 4 : 2;
-  const groupLine = Math.ceil((list?.length || 0) / groupCol);
-  const groupHeigh = (infoHeigh * groupLine);
+  const [height, setHeight] = useState(0);
+
+  useEffect(()=> {
+    setHeight(cardRef.current?.offsetHeight || 0);
+  }, [fullScreen, list]);
   return (
     <div
       style={{
-        '--group-box-height': (groupHeigh + 68) + 'px',
+        height: isOpen ? height + GROUP_TITLE_HEIGHT : GROUP_TITLE_HEIGHT,
       } as React.CSSProperties}
-      className={cs('border rounded-8 mt-16 overflow-hidden',
-        isOpen ? 'form-group-box-open' : 'form-group-box-close',
-      )}
+      className='border rounded-8 mt-16 overflow-hidden transition-all duration-300'
     >
-      <div className="form-group-title flex justify-between items-center py-8 px-16">
+      <div className="form-group-title flex justify-between items-center py-8 px-16 bg-gray-50">
         <div className='flex items-center'>
           <hr className='title-line h-20 w-4'/>
           <div className='font-semibold text-12 text-gray-600 ml-4 inline-block'>{title}</div>
@@ -63,7 +68,9 @@ function GroupCard({ title, list, fullScreen }: Props): JSX.Element {
         />
       </div>
 
-      <InfoCard list={list} className ={fullScreen ? 'grid-cols-4' : 'grid-cols-2'}/>
+      <div ref={cardRef}>
+        <InfoCard list={list} className ={fullScreen ? 'grid-cols-4' : 'grid-cols-2'}/>
+      </div>
     </div>
   );
 }
