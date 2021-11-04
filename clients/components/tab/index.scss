@@ -17,13 +17,6 @@
     box-shadow: inset 0px -1px 0px #E2E8F0;
 
     .tab-nav-item {
-      @apply transition;
-      font-size: 14px;
-      text-align: center;
-      white-space: nowrap;
-      padding: 12px;
-      cursor: pointer;
-      position: relative;
 
       &:hover {
         color: var(--blue-600);
