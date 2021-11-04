@@ -53,21 +53,6 @@ const SIDE_NAV = [
     title: '应用设置',
     icon: 'app_setting',
   },
-  {
-    id: 'rdp',
-    title: '报表管理',
-    icon: 'trending_up',
-  },
-  {
-    id: 'obddp',
-    title: '大屏管理',
-    icon: 'airplay',
-  },
-  {
-    id: 'rdpDataConfig',
-    title: '数据源管理',
-    icon: 'all_inclusive',
-  },
 ];
 
 export default function CollapseMenu(): JSX.Element {

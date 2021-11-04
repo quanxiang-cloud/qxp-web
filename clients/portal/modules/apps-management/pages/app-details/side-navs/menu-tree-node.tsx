@@ -62,21 +62,6 @@ export default function TreeNode({
           },
         )}
         onClick={() => {
-          if (id === 'rdp') {
-            window.location.href = 'http://demo.cuafoo.cn/RDP-SERVER/modules/rdp/list.html';
-            return;
-          }
-
-          if (id === 'obddp') {
-            window.location.href = 'http://demo.cuafoo.cn/RDP-SERVER/modules/obddp/home.html';
-            return;
-          }
-
-          if (id === 'rdpDataConfig') {
-            window.location.href = 'http://demo.cuafoo.cn/RDP-SERVER/modules/ser/config/rdpDataConfig.html';
-            return;
-          }
-
           setExpand((prevExpand) => !prevExpand);
           !children && history.push(`/apps/details/${appID}/${id}`);
         }}
