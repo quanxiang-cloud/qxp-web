@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
 
 import Tab from '@c/tab';
+import Tooltip from '@c/tooltip';
 
 import Header from '../comps/header';
 import ApiList from './list';
@@ -11,6 +12,8 @@ import NoData from '../comps/no-data';
 
 import store from '../store';
 
+import './index.scss';
+
 const defaultKey = 'group-setting';
 
 function ListPage() {
@@ -18,7 +21,15 @@ function ListPage() {
   const tabs = [
     {
       id: 'api-list',
-      name: 'API 列表',
+      name: store.svc?.fullPath ? 'API 列表' : (
+        <Tooltip
+          position='bottom'
+          label='请先配置分组'
+          relative={false}
+        >
+          <span>API 列表</span>
+        </Tooltip>
+      ),
       content: <ApiList/>,
       disabled: !store.svc,
     },
@@ -40,7 +51,7 @@ function ListPage() {
         setTabKey('api-list');
       }
     });
-  }, [store.treeStore?.currentFocusedNodeID]);
+  }, [store.treeStore?.actualFocusedNodeID]);
 
   useEffect(()=> {
     if (!store.svc && ['api-list', 'api-keys'].includes(tabKey)) {
@@ -48,7 +59,7 @@ function ListPage() {
     }
   }, [store.svc]);
 
-  if (!store.treeStore?.currentFocusedNodeID) {
+  if (!store.treeStore?.actualFocusedNodeID) {
     return <NoData />;
   }
 
@@ -58,7 +69,8 @@ function ListPage() {
       <Tab
         currentKey={tabKey}
         onChange={setTabKey}
-        items={store.svc ? tabs : tabs.filter((tab) => tab.id !== 'api-keys')}
+        navsClassName='api-list-tabs'
+        items={(!store.svc || store.svc.authType === 'none') ? tabs.filter((tab) => tab.id !== 'api-keys') : tabs}
       />
     </>
   );

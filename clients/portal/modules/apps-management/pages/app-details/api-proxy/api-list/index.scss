@@ -1,3 +1,19 @@
+.api-list-tabs {
+  overflow-x: inherit !important;
+  .qxp-ui-tooltip {
+    font-size: 12px;
+    font-weight: normal;
+    transform: translateX(-40%);
+    > .qxp-ui-tooltip-arrow {
+      border-bottom-color: var(--blue-600);
+    }
+    > .qxp-ui-tooltip-label{
+      background: var(--blue-600);
+      border-radius: 8px;
+    }
+  }
+}
+
 .inside-api-key {
   .qxp-ui-tooltip.top {
     bottom: calc(100% + 1px);

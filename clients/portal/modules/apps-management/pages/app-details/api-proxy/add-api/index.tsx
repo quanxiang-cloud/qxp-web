@@ -116,7 +116,7 @@ function AddApi(props: Props) {
   }
 
   function buildSwagger(
-    { parameters, constants, response }: Record<'constants' | 'parameters' | 'response', any>,
+    { parameters, constants, responses }: Record<'constants' | 'parameters' | 'responses', any>,
     { title, apiName, apiPath, description }: MetaInfo,
   ): Record<string, any> {
     return {
@@ -135,7 +135,7 @@ function AddApi(props: Props) {
             operationId: apiName,
             consumes: ['application/json'],
             parameters,
-            response,
+            responses,
           },
         },
       },
@@ -145,7 +145,7 @@ function AddApi(props: Props) {
   function onSubmit(): void {
     handleSubmit(async (formData: any)=> {
       const swagger = buildSwagger(paramsStore.swaggerParameters, formData);
-      // console.log('add api swagger: ', swagger);
+      console.log('add api swagger: ', swagger);
 
       const params = {
         version: 'v1',

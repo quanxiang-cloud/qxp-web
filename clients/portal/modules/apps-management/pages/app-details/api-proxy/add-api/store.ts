@@ -1,6 +1,6 @@
 import { observable, action, computed, toJS } from 'mobx';
 import { nanoid } from 'nanoid';
-import { set, pick, omit } from 'lodash';
+import { get, set, pick, omit } from 'lodash';
 
 import type { ApiParam, ParamType, ParamGroup } from './params-config';
 
@@ -20,18 +20,37 @@ export function getDefaultParam(options?: Record<string, any>): ApiParam {
   }, options || {});
 }
 
+const reservedKeys = ['name', 'type', 'required', 'description', '_object_nodes_', '_array_nodes_'];
+
 function mapRawParams(params: ApiParam[], mergeOptions?: Record<string, any>): ParamItem[] {
   return params.filter(({ name })=> !!name).map((v)=> {
-    return Object.assign(pick(v, ['name', 'type', 'required', 'description']), mergeOptions || {});
+    const item = Object.assign(pick(v, reservedKeys), mergeOptions || {});
+    const { _array_nodes_: arrayNodes, _object_nodes_: objectNodes } = item;
+
+    if (item.in === 'body') {
+      item.schema = {
+        type: item.type,
+      };
+
+      if (arrayNodes) {
+        item.schema.items = mapRawParams(arrayNodes).reduce((acc, cur)=> {
+          acc[cur.name] = omit(cur, 'name', 'required');
+          return acc;
+        }, {});
+      }
+      if (objectNodes) {
+        item.schema.properties = mapRawParams(objectNodes).reduce((acc, cur)=> {
+          acc[cur.name] = omit(cur, 'name', 'required');
+          return acc;
+        }, {});
+      }
+      delete item.type;
+    }
+
+    delete item._array_nodes_;
+    delete item._object_nodes_;
+    return item;
   });
-}
-
-function mapObjectParam(): void {
-  // todo
-}
-
-function mapArrayParam(): void {
-  // todo
 }
 
 function getDefaultParameters(): Record<ParamGroup, ApiParam[]> {
@@ -48,7 +67,7 @@ function getDefaultParameters(): Record<ParamGroup, ApiParam[]> {
 export default class Store {
   @observable parameters: Record<ParamGroup, ApiParam[]> = getDefaultParameters()
 
-  @computed get swaggerParameters(): Record<'constants' | 'parameters' | 'response', any> {
+  @computed get swaggerParameters(): Record<'constants' | 'parameters' | 'responses', any> {
     const { path, query, header, body, constant, response } = toJS(this.parameters);
 
     return {
@@ -57,9 +76,11 @@ export default class Store {
         ...mapRawParams(path, { in: 'path' }),
         ...mapRawParams(query, { in: 'query' }),
         ...mapRawParams(header, { in: 'header' }),
+        // in-body 参数都放在schema属性里
         ...mapRawParams(body, { in: 'body' }),
       ],
-      response: {
+      responses: {
+        // todo: 暂时写死
         200: {
           description: 'successful operation',
           schema: {
@@ -97,16 +118,49 @@ export default class Store {
   }
 
   @action
-  addSubParam=()=> {
-    // todo: handle sub level params, object, array
+  addSubParam=(group: string, parentPath: string, idx: number, isArray = false)=> {
+    /*
+      body_params: {
+        name: '',
+        type: 'object',
+        _object_nodes_: [
+          {
+            name: '',
+            type: 'object',
+            _object_nodes_: [
+              {...}
+            ]
+          }
+        ]
+      }
+     */
+    const finalPath = [[parentPath || group, idx].join('.'), isArray ? '_array_nodes_' : '_object_nodes_'].join('.');
+    if (!get(this.parameters, finalPath)) {
+      set(this.parameters, finalPath, []);
+    }
+    const target = get(this.parameters, finalPath);
+    target.push(getDefaultParam());
+    set(this.parameters, finalPath, target);
   }
 
   @action
-  removeParam=(group: ParamGroup, rowId: string)=> {
+  resetSubNodesByType=(path: string, type: string)=> {
+    if (!['object', 'array'].includes(type)) {
+      const parentPath = path.slice(0, path.lastIndexOf('.'));
+      set(this.parameters, [parentPath, '_object_nodes_'].join('.'), null);
+      set(this.parameters, [parentPath, '_array_nodes_'].join('.'), null);
+    }
+  }
+
+  @action
+  removeParam=(group: ParamGroup, parentPath: string, idx: number)=> {
+    const prefix = parentPath || group;
     if (group === 'path') {
       return;
     }
-    this.parameters[group] = this.parameters[group].filter(({ id })=> id !== rowId);
+    const target = get(this.parameters, prefix);
+    target && target.splice(idx, 1);
+    // always keep at least one item
     if (!this.parameters[group].length) {
       this.parameters[group] = [getDefaultParam()];
     }

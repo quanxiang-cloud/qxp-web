@@ -40,7 +40,7 @@ function GroupSetting(props: Props) {
   const [auth, setAuth] = useState<AuthType>(svcData ? svcData.authType : 'none');
 
   useEffect(()=> {
-    const defaultValues = { hostname: 'www.qingcloud.com', port: 8080 };
+    const defaultValues = { hostname: 'www.quanxiang.cloud', port: 433 };
     if (svcData) {
       const [hostname, port] = svcData.host.split(':');
       Object.assign(defaultValues, { hostname, port, authorize: svcData.authContent });
@@ -49,6 +49,10 @@ function GroupSetting(props: Props) {
       setValue(k, v);
     });
   }, [store.svc]);
+
+  useEffect(()=> {
+    setValue('port', protocol === 'https' ? 443 : 80);
+  }, [protocol]);
 
   const onSubmit = ()=> {
     handleSubmit(async ({ hostname, port, authorize }: {hostname: string; port: string; authorize:string})=> {

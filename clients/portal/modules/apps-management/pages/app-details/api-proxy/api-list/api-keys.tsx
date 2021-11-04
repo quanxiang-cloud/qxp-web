@@ -19,8 +19,6 @@ import CreatApiKeyTable from './creat-api-key-table';
 import store from '../store';
 import { uploadApiKey, deleteApiKey, updateApiKey, getApiKeyList, queryApiKey, activeApiKey } from '../api';
 
-import './index.scss';
-
 type MsgApiKey = {
   keyID: string,
   keySecret: string,

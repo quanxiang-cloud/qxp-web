@@ -7,7 +7,6 @@ import { observer } from 'mobx-react';
 import Button from '@c/button';
 import Search from '@c/search';
 import Table from '@c/table';
-import Icon from '@c/icon';
 import EmptyTips from '@c/empty-tips';
 import Loading from '@c/loading';
 
@@ -92,10 +91,10 @@ function ApiList(props: Props) {
           >
             新建 API
           </Button>
-          <span onClick={toAddSwaggerPage} className='cursor-pointer'>
-            <Icon name='archive' />
-            <span className='ml-5'>批量导入</span>
-          </span>
+          {/* <span onClick={toAddSwaggerPage} className='cursor-pointer'>*/}
+          {/*  <Icon name='archive' />*/}
+          {/*  <span className='ml-5'>批量导入</span>*/}
+          {/* </span>*/}
         </div>
         <Search
           className="mr-20"
