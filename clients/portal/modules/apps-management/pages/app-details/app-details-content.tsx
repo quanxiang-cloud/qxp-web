@@ -14,6 +14,7 @@ import UsersAndPermissions from './users-and-permissions';
 import ApiDocument from './api-documentation';
 import WorkFlows from '../../work-flow-list';
 import AppControl from './app-control';
+import EnfiIFrame from './enfi-iframe';
 
 import './index.scss';
 
@@ -34,6 +35,21 @@ function AppDetailsContent(): JSX.Element {
             <Route exact path='/apps/details/:appID/app_permission' component={UsersAndPermissions} />
             <Route exact path='/apps/details/:appID/app_manager' component={AppAdmin} />
             <Route exact path='/apps/details/:appID/app_control' component={AppControl} />
+            <Route
+              exact
+              path='/apps/details/:appID/rdp'
+              component={() => (<EnfiIFrame url="http://demo.cuafoo.cn/RDP-SERVER/modules/rdp/list.html" />)}
+            />
+            <Route
+              exact
+              path='/apps/details/:appID/obddp'
+              component={() => (<EnfiIFrame url="http://demo.cuafoo.cn/RDP-SERVER/modules/obddp/home.html" />)}
+            />
+            <Route
+              exact
+              path='/apps/details/:appID/rdpDataConfig'
+              component={() => (<EnfiIFrame url="http://demo.cuafoo.cn/RDP-SERVER/modules/ser/config/rdpDataConfig.html" />)}
+            />
             <Route
               component={() =>
                 (<NotFoundError url='/apps' classnames='h-full'/>)
