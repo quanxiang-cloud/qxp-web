@@ -72,11 +72,12 @@ deploy_testing:
   only:
     - release
   script:
-    - IMAGE_TAG="v$(date "+%Y%m%d")-$(git rev-parse --short HEAD)"
-    - bash -c "helm upgrade qxp-web-portal /root/deployment/qxp-web-portal --set image.tag=$IMAGE_TAG --set namespace=low-code"
-    - bash -c "helm upgrade qxp-web-home /root/deployment/qxp-web-home --set image.tag=$IMAGE_TAG --set namespace=low-code"
-    - bash -c "helm upgrade qxp-web-nginx /root/deployment/qxp-web-nginx --set image.tag=$IMAGE_TAG --set namespace=low-code"
-    - echo "deploy testing done!"
+    # - IMAGE_TAG="v$(date "+%Y%m%d")-$(git rev-parse --short HEAD)"
+    # - bash -c "helm upgrade qxp-web-portal /root/deployment/qxp-web-portal --set image.tag=$IMAGE_TAG --set namespace=low-code"
+    # - bash -c "helm upgrade qxp-web-home /root/deployment/qxp-web-home --set image.tag=$IMAGE_TAG --set namespace=low-code"
+    # - bash -c "helm upgrade qxp-web-nginx /root/deployment/qxp-web-nginx --set image.tag=$IMAGE_TAG --set namespace=low-code"
+    # - echo "deploy testing done!"
+    - echo "Please manually update testing with image tag $IMAGE_TAG"
 
 deploy_staging:
   tags:
