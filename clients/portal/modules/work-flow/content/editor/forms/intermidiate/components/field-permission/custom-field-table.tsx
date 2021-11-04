@@ -246,13 +246,7 @@ export default function CustomFieldTable({
           valueVariable={!isFileUpload}
           variableOptions={variableOptions?.filter(variableOptionsFilterByType(schema))}
           defaultValue={model.cell.value}
-          schema={{
-            title: '',
-            type: 'object',
-            properties: {
-              [model.cell.row.id]: schema,
-            },
-          }}
+          fieldSchema={schema}
           onSave={(value: FieldValue) => {
             updateFields(model.data.map((dt: CustomFieldPermission) => {
               if (dt.id === model.cell.row.id) {
