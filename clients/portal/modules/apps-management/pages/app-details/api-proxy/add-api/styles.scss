@@ -33,7 +33,7 @@
         &:last-child{
           border-right: none;
         }
-        &.param-type {
+        &.param-type, &.param-in {
           > div {
             border: none;
             box-shadow: none;

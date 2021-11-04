@@ -17,10 +17,21 @@ export function getDefaultParam(options?: Record<string, any>): ApiParam {
     type: 'string' as ParamType,
     required: false,
     description: '',
+    constIn: '',
+    constData: '',
   }, options || {});
 }
 
-const reservedKeys = ['name', 'type', 'required', 'description', '_object_nodes_', '_array_nodes_'];
+const reservedKeys = [
+  'name',
+  'type',
+  'required',
+  'description',
+  'constIn',
+  'constData',
+  '_object_nodes_',
+  '_array_nodes_',
+];
 
 function mapRawParams(params: ApiParam[], mergeOptions?: Record<string, any>): ParamItem[] {
   return params.filter(({ name })=> !!name).map((v)=> {
@@ -47,8 +58,18 @@ function mapRawParams(params: ApiParam[], mergeOptions?: Record<string, any>): P
       delete item.type;
     }
 
+    if (!mergeOptions?.in && item.constIn) {
+      // constant
+      item.in = item.constIn;
+      item.data = item.constData;
+      delete item.required;
+    }
+
     delete item._array_nodes_;
     delete item._object_nodes_;
+    delete item.constIn;
+    delete item.constData;
+
     return item;
   });
 }
@@ -66,6 +87,8 @@ function getDefaultParameters(): Record<ParamGroup, ApiParam[]> {
 
 export default class Store {
   @observable parameters: Record<ParamGroup, ApiParam[]> = getDefaultParameters()
+
+  @observable method = 'post'
 
   @computed get swaggerParameters(): Record<'constants' | 'parameters' | 'responses', any> {
     const { path, query, header, body, constant, response } = toJS(this.parameters);
@@ -94,6 +117,11 @@ export default class Store {
         },
       },
     };
+  }
+
+  @action
+  setMethod=(method: string)=> {
+    this.method = method;
   }
 
   @action
@@ -169,5 +197,6 @@ export default class Store {
   @action
   reset=()=> {
     this.parameters = getDefaultParameters();
+    this.method = 'post';
   }
 }

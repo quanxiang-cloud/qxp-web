@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import cs from 'classnames';
 import { get } from 'lodash';
@@ -34,12 +34,23 @@ function ParamRow({
   group,
   idx,
   parentPath,
+  constIn,
+  constData,
   _object_nodes_,
   _array_nodes_,
 }: Props & ApiParam) {
   const store = useContext(paramsContext);
   const { register, formState: { errors }, control, watch } = useFormContext();
   const [expand, setExpand] = useState(false);
+  const watchName = watch(getFieldName('name'));
+
+  useEffect(()=> {
+    if (group !== 'constant') {
+      return;
+    }
+    const constIn = ['post', 'put'].includes(store.method) ? 'body' : 'query';
+    store.setFieldValue(getFieldName('constIn'), constIn);
+  }, [store.method]);
 
   /*
   level:
@@ -59,7 +70,7 @@ function ParamRow({
   }
 
   function getValidTypes(): LabelValue[] {
-    if (group === 'path') {
+    if (['path', 'constant'].includes(group)) {
       return paramTypes.filter(({ value })=> ['string', 'number'].includes(value));
     }
     if (['query', 'header'].includes(group)) {
@@ -112,7 +123,10 @@ function ParamRow({
                 placeholder='新建参数'
                 {...field}
                 value={name}
-                onChange={(ev)=> handleChangeField(getFieldName('name'), ev.target.value)}
+                onChange={(ev)=> {
+                  field.onChange(ev.target.value);
+                  handleChangeField(getFieldName('name'), ev.target.value);
+                }}
                 onKeyDown={()=> store.addParam(group, idx)}
                 readOnly={readonly}
               />
@@ -122,7 +136,6 @@ function ParamRow({
           control={control}
           rules={{
             validate: (val)=> {
-              // ignore empty string
               if (!val) {
                 return true;
               }
@@ -151,27 +164,84 @@ function ParamRow({
           shouldUnregister
         />
       </td>
-      <td className='param-required'>
-        <Controller
-          render={({ field })=> {
-            const readonly = readonlyKeys?.includes('required');
-            return (
-              <Checkbox
-                className={cs({
-                  'cursor-not-allowed': readonly,
-                })}
-                {...field}
-                checked={required}
-                disabled={readonly}
-                onChange={(ev)=> handleChangeField(getFieldName('required'), ev.target.checked)}
-              />
-            );
-          }}
-          name={getFieldName('required')}
-          control={control}
-          shouldUnregister
-        />
-      </td>
+      {group === 'constant' && (
+        <>
+          <td className='param-data'>
+            <Controller
+              render={({ field })=> {
+                return (
+                  <input
+                    type={type === 'number' ? 'number' : 'text'}
+                    className={cs('input', {
+                      error: get(errors, getFieldName('constData')),
+                    })}
+                    maxLength={128}
+                    placeholder='请输入'
+                    {...field}
+                    value={constData}
+                    onChange={(ev)=> {
+                      field.onChange(ev.target.value);
+                      handleChangeField(getFieldName('constData'), ev.target.value);
+                    }}
+                  />
+                );
+              }}
+              name={getFieldName('constData')}
+              control={control}
+              rules={{
+                validate: (val)=> {
+                  if (!watchName) {
+                    return true;
+                  }
+                  return !!val;
+                },
+              }}
+              shouldUnregister
+            />
+          </td>
+          <td className='param-in'>
+            <Controller
+              render={({ field })=> (
+                <Select
+                  options={[
+                    { label: 'query', value: 'query' },
+                    { label: 'body', value: 'body' },
+                  ]}
+                  {...field}
+                  value={constIn}
+                  onChange={(val)=> handleChangeField(getFieldName('constIn'), val)}
+                />
+              )}
+              control={control}
+              name={getFieldName('constIn')}
+              shouldUnregister
+            />
+          </td>
+        </>
+      )}
+      {group !== 'constant' && (
+        <td className='param-required'>
+          <Controller
+            render={({ field })=> {
+              const readonly = readonlyKeys?.includes('required');
+              return (
+                <Checkbox
+                  className={cs({
+                    'cursor-not-allowed': readonly,
+                  })}
+                  {...field}
+                  checked={required}
+                  disabled={readonly}
+                  onChange={(ev)=> handleChangeField(getFieldName('required'), ev.target.checked)}
+                />
+              );
+            }}
+            name={getFieldName('required')}
+            control={control}
+            shouldUnregister
+          />
+        </td>
+      )}
       <td className='param-desc relative'>
         <Controller
           render={({ field })=> (

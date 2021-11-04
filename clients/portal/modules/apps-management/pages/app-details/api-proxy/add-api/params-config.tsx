@@ -22,6 +22,8 @@ export interface ApiParam {
   type: ParamType,
   required: boolean;
   description: string;
+  constIn: 'query' | 'body' | string; // only used in constant group
+  constData: any;
   readonlyKeys?: string[];
   _object_nodes_?: Array<ApiParam>; // type=object sub nodes
   _array_nodes_?: Array<ApiParam>; // type=array sub nodes
@@ -70,6 +72,7 @@ function ParamsConfig({ title, group, defaultValues }: ConfigProps) {
           <colgroup>
             <col style={{ width: '40%', overflowX: 'auto' }} />
             <col width={150} />
+            {group === 'constant' && <col width={120} />}
             <col width={80} />
             <col />
           </colgroup>
@@ -77,7 +80,13 @@ function ParamsConfig({ title, group, defaultValues }: ConfigProps) {
             <tr>
               <th>参数名</th>
               <th>参数类型</th>
-              <th>是否必填</th>
+              {group === 'constant' && (
+                <>
+                  <th>数值</th>
+                  <th>in</th>
+                </>
+              )}
+              {group !== 'constant' && <th>是否必填</th>}
               <th>描述</th>
             </tr>
           </thead>

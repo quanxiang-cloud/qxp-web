@@ -51,7 +51,6 @@ function AddApi(props: Props) {
   const paramsStore = useContext(paramsContext);
   const formInst = useForm();
   const { register, handleSubmit, formState: { errors }, watch, setValue } = formInst;
-  const [method, setMethod] = useState('post');
   const history = useHistory();
   const ns = useNamespace();
   const { appID } = useParams<{appID: string}>();
@@ -129,7 +128,7 @@ function AddApi(props: Props) {
       'x-consts': constants,
       paths: {
         [apiPath]: {
-          [method]: {
+          [paramsStore.method]: {
             summary: title,
             description,
             operationId: apiName,
@@ -199,7 +198,7 @@ function AddApi(props: Props) {
           <div className='flex items-center mb-16'>
             <div className='w-120 mr-12'>
               <p>请求方法</p>
-              <Select options={methodOptions} value={method} onChange={setMethod}/>
+              <Select options={methodOptions} value={paramsStore.method} onChange={paramsStore.setMethod}/>
             </div>
             <div className='mr-12 flex-1'>
               <p>代理路径</p>
