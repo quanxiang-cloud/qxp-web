@@ -38,7 +38,7 @@ interface Props {
   defaultValue?: FieldValue;
   onSave: (value: FieldValue) => void;
   variableOptions?: FlowVariableOption[];
-  schema: ISchema;
+  fieldSchema: SchemaFieldItem;
 }
 
 function FieldValueEditor({
@@ -46,7 +46,7 @@ function FieldValueEditor({
   defaultValue = { variable: '', staticValue: '' },
   variableOptions,
   onSave,
-  schema,
+  fieldSchema,
 }: Props): JSX.Element {
   const [type, setType] = useState(defaultValue.variable ? 'variable' : 'staticValue');
   const [referenceElRef, setReferenceElRef] = useState(null);
@@ -87,7 +87,7 @@ function FieldValueEditor({
   });
 
   let { staticValue, variable } = defaultValue;
-  const staticValueOptions = Object.values(schema?.properties || {})[0]?.enum as {
+  const staticValueOptions = fieldSchema?.enum as {
     label: string;
     value: string;
   }[];
@@ -161,11 +161,17 @@ function FieldValueEditor({
           {type === 'variable' && !variableOptions?.length && (
             <p className="my-12 text-gray-500">无可用的工作流变量</p>
           )}
-          {type === 'staticValue' && schema && (
+          {type === 'staticValue' && fieldSchema && (
             <>
               <FormRenderer
-                schema={schema}
-                defaultValue={{ [Object.keys(schema.properties || {})[0]]: value.staticValue }}
+                schema={{
+                  title: '',
+                  type: 'object',
+                  properties: {
+                    [fieldSchema.id]: fieldSchema,
+                  },
+                }}
+                defaultValue={{ [fieldSchema.id]: value.staticValue }}
                 onFormValueChange={onFormValueChange}
               >
                 <ActionButtonGroup className="mt-16" onCancel={onCancel} onSubmit={onSubmit} />
