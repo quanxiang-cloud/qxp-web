@@ -37,15 +37,18 @@ ref?: React.Ref<HTMLDivElement>): JSX.Element {
               <div
                 key={item.id}
                 onClick={() => onClick?.(item)}
-                className={cs('tab-nav-item', navTitleClassName, {
-                  active: active,
-                  disabled: item.disabled,
-                  'tab-nav-item-separator': separator,
-                  'strech-navs': strechNavs,
-                  'text-blue-600': active,
-                  'font-semibold': active,
-                  'text-gray-600': !active,
-                })}
+                className={cs(
+                  'tab-nav-item transition text-center whitespace-nowrap p-12 cursor-pointer relative',
+                  navTitleClassName,
+                  {
+                    active: active,
+                    disabled: item.disabled,
+                    'tab-nav-item-separator': separator,
+                    'strech-navs': strechNavs,
+                    'text-blue-600': active,
+                    'font-semibold': active,
+                    'text-gray-600': !active,
+                  })}
               >
                 {item.name}
               </div>
