@@ -38,6 +38,10 @@ function EditModal({ modalType, onClose, handleEditModel }: Props): JSX.Element 
                 message: '请输入模型名称',
               },
               {
+                pattern: /^((?!(\ud83c[\udf00-\udfff])|(\ud83d[\udc00-\ude4f])|(\ud83d[\ude80-\udeff])).)*$/,
+                message: '不能输入emoji表情符号',
+              },
+              {
                 max: 30,
                 message: '名称不超过 30 字符，请修改！',
               },
