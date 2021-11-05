@@ -71,6 +71,11 @@ declare namespace PolyAPI {
     path: string;
   }
 
+  type ActiveApiResult={
+    fullPath: string;
+    active: number;
+  }
+
   type DocType = 'raw' | 'swag' | 'curl' | 'javascript' | 'python';
 
   type ApiDocParams={

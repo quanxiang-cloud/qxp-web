@@ -144,7 +144,7 @@ function AddApi(props: Props) {
   function onSubmit(): void {
     handleSubmit(async (formData: any)=> {
       const swagger = buildSwagger(paramsStore.swaggerParameters, formData);
-      console.log('add api swagger: ', swagger);
+      // console.log('add api swagger: ', paramsStore.swaggerParameters, swagger);
 
       const params = {
         version: 'v1',
@@ -168,7 +168,7 @@ function AddApi(props: Props) {
     <>
       <Header name='新建 API' />
       <FormProvider {...formInst}>
-        <form onSubmit={onSubmit} className='flex flex-col px-20 py-16 w-full'>
+        <form onSubmit={onSubmit} className='flex flex-col px-20 py-16 w-full overflow-auto'>
           <div className='mb-16'>
             <p>API 名称</p>
             <input

@@ -2,6 +2,8 @@ import { observable, action, computed, toJS } from 'mobx';
 import { nanoid } from 'nanoid';
 import { get, set, pick, omit } from 'lodash';
 
+import toast from '@lib/toast';
+
 import type { ApiParam, ParamType, ParamGroup } from './params-config';
 
 type ParamItem=Record<string, any>
@@ -103,9 +105,7 @@ export default class Store {
         ...mapRawParams(body, { in: 'body' }),
       ],
       responses: {
-        // todo: 暂时写死
         200: {
-          description: 'successful operation',
           schema: {
             type: 'object',
             title: 'api result',
@@ -167,17 +167,19 @@ export default class Store {
       set(this.parameters, finalPath, []);
     }
     const target = get(this.parameters, finalPath);
+    if (isArray && target.length) {
+      toast.error('数组项下只能添加一种类型');
+      return;
+    }
     target.push(getDefaultParam());
     set(this.parameters, finalPath, target);
   }
 
   @action
-  resetSubNodesByType=(path: string, type: string)=> {
-    if (!['object', 'array'].includes(type)) {
-      const parentPath = path.slice(0, path.lastIndexOf('.'));
-      set(this.parameters, [parentPath, '_object_nodes_'].join('.'), null);
-      set(this.parameters, [parentPath, '_array_nodes_'].join('.'), null);
-    }
+  resetSubNodesByType=(path: string)=> {
+    const parentPath = path.slice(0, path.lastIndexOf('.'));
+    set(this.parameters, [parentPath, '_object_nodes_'].join('.'), null);
+    set(this.parameters, [parentPath, '_array_nodes_'].join('.'), null);
   }
 
   @action

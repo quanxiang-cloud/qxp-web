@@ -45,7 +45,7 @@
           vertical-align: middle;
           padding-left: 8px;
         }
-        &.param-desc {
+        &.param-name {
           &:hover {
             > .param-actions {
               visibility: visible;
@@ -54,9 +54,9 @@
           > .param-actions {
             visibility: hidden;
           }
-          > input:focus + .param-actions {
-            visibility: hidden;
-          }
+          //> input:focus + .param-actions {
+          //  visibility: hidden;
+          //}
         }
 
         // fix chrome auto-fill background color

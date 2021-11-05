@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import cs from 'classnames';
 import { observer } from 'mobx-react';
-import { toJS } from 'mobx';
 import { omit, isEqual, pick } from 'lodash';
 
 import Select from '@c/select';
@@ -33,17 +32,25 @@ const authTypes = [
 ];
 
 function GroupSetting(props: Props) {
-  const svcData = toJS(store.svc);
   const formInst = useForm();
   const { register, handleSubmit, setValue, formState: { errors } } = formInst;
-  const [protocol, setProtocol] = useState<string>(svcData ? svcData.schema : 'https');
-  const [auth, setAuth] = useState<AuthType>(svcData ? svcData.authType : 'none');
+  const [protocol, setProtocol] = useState<string>('https');
+  const [auth, setAuth] = useState<AuthType>('none');
+
+  useEffect(()=> {
+    if (store.currentSvcPath) {
+      store.fetchSvc();
+    }
+  }, [store.currentSvcPath]);
 
   useEffect(()=> {
     const defaultValues = { hostname: 'www.quanxiang.cloud', port: 433 };
-    if (svcData) {
-      const [hostname, port] = svcData.host.split(':');
-      Object.assign(defaultValues, { hostname, port, authorize: svcData.authContent });
+    if (store.svc) {
+      const { schema, host, authType, authContent } = store.svc;
+      const [hostname, port] = host.split(':');
+      Object.assign(defaultValues, { hostname, port, authorize: authContent });
+      setProtocol(schema);
+      setAuth(authType);
     }
     Object.entries(defaultValues).forEach(([k, v])=> {
       setValue(k, v);
@@ -87,7 +94,7 @@ function GroupSetting(props: Props) {
           await store.createSvc(store.treeStore?.curNodefullNs || '', data);
         } else {
           const finalData = omit(data, 'name');
-          const prevData = pick(svcData, ['schema', 'host', 'authType', 'authorize']);
+          const prevData = pick(store.svc, ['schema', 'host', 'authType', 'authorize']);
           if (isEqual(finalData, prevData)) {
             toast.success('数据未修改');
             return;

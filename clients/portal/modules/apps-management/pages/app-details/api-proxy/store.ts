@@ -102,7 +102,7 @@ export class ApiGroupStore extends TreeStore<PolyAPI.Namespace> {
 class ApiProxyStore {
   @observable appId = '';
   @observable namespaces: PolyAPI.Namespace[] = []; // all namespaces
-  @observable activeNs: PolyAPI.Namespace | null = null;
+  @observable currentNs: PolyAPI.Namespace | null = null;
   @observable appRootNs = '';
   @observable treeStore: ApiGroupStore | null = null;
   @observable loadingNs = false;
@@ -110,6 +110,14 @@ class ApiProxyStore {
   @observable isLoading = false; // fetching sub page's data
   @observable svc: PolyAPI.Service | null=null;
   @observable apiList: PolyAPI.Api[] = []
+
+  @computed get currentSvcPath() {
+    if (this.currentNs) {
+      const { parent, name } = this.currentNs;
+      return [parent, name, name].join('/');
+    }
+    return '';
+  }
 
   @action
   setNamespaces = (namespaces: PolyAPI.Namespace[]) => {
@@ -128,7 +136,7 @@ class ApiProxyStore {
 
   @action
   setActiveNs = (ns: PolyAPI.Namespace) => {
-    this.activeNs = ns;
+    this.currentNs = ns;
     this.treeStore?.onSelectNode(ns?.id);
   }
 
@@ -213,8 +221,7 @@ class ApiProxyStore {
   fetchSvc=async ()=> {
     this.isLoading = true;
     try {
-      const svc = await apis.getService(this.treeStore?.curNodeSvcPath || '');
-      this.svc = svc;
+      this.svc = await apis.getService(this.currentSvcPath);
     } catch (err) {
       // toast.error(err);
       this.svc = null;
@@ -224,16 +231,10 @@ class ApiProxyStore {
   }
 
   @action
-  fetchApiListInSvc=async ()=> {
+  fetchApiListInSvc=async (paging: {page: number; pageSize: number})=> {
     this.isLoading = true;
     try {
-      // todo
-      const params = {
-        page: 1,
-        pageSize: -1,
-        active: -1,
-      };
-      const { list } = await apis.getServiceApiList(this.svc?.fullPath || '', params);
+      const { list } = await apis.getServiceApiList(this.svc?.fullPath || '', paging);
       this.apiList = list;
     } catch (err) {
       toast.error(err);
@@ -248,11 +249,17 @@ class ApiProxyStore {
   }
 
   @action
+  disableApi=async (apiPath: string, active: number)=> {
+    await apis.activeApi(apiPath, { active });
+  }
+
+  @action
   reset = () => {
     this.appId = '';
     this.appRootNs = '';
     this.treeStore = null;
     this.namespaces = [];
+    this.currentNs = null;
     this.filterNsList = null;
     this.loadingNs = false;
     this.isLoading = false;

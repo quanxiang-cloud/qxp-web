@@ -127,6 +127,11 @@ export const queryNativeApiDoc = async (apiPath: string, params: PolyAPI.ApiDocP
   return await httpClient(`/api/v1/polyapi/raw/doc/${apiPath}`, params);
 };
 
+// 激活api
+export const activeApi = async (apiPath: string, params: {active: number}): Promise<PolyAPI.ActiveApiResult> => {
+  return await httpClient(`/api/v1/polyapi/raw/active/${apiPath}`, params);
+};
+
 // 第三方api密钥管理
 export const uploadApiKey = async (params: PolyAPI.ApiKeyParams): Promise<any> => {
   return await httpClient('/api/v1/polyapi/holdingkey/upload', params);

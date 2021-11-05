@@ -91,8 +91,8 @@ function SideNav(): JSX.Element | null {
   }
 
   return (
-    <div className='flex flex-col bg-white border-r api-proxy--sider max-h-full overflow-auto'>
-      <div className='py-20 px-16 flex justify-between items-center'>
+    <div className='flex flex-col api-proxy--sider max-h-full overflow-auto app-details-nav bg-white'>
+      <div className='py-10 px-16 flex justify-between items-center'>
         <span className='text-h6-bold text-gray-400 mr-auto'>API 分组</span>
         <Tooltip content='新建分组'>
           <Icon
@@ -104,18 +104,14 @@ function SideNav(): JSX.Element | null {
           />
         </Tooltip>
       </div>
-      {store.treeStore && (
-        <div className='px-10'>
-          <Search
-            className="bg-gray-100 mb-20"
-            placeholder="输入分组名称"
-            value={search}
-            onChange={setSearch}
-            onKeyDown={()=>{}}
-          />
-          {renderNsList()}
-        </div>
-      )}
+      <Search
+        className="mb-8 mx-8 side-search"
+        placeholder="输入分组名称"
+        value={search}
+        onChange={setSearch}
+        onKeyDown={()=>{}}
+      />
+      {store.treeStore && renderNsList()}
       {nsModalOpen && (
         <Modal
           title='新建分组'

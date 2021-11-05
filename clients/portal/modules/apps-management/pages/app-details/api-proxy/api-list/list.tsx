@@ -3,15 +3,19 @@ import { useHistory, useRouteMatch } from 'react-router-dom';
 // import {useQuery} from 'react-query';
 import { UnionColumns } from 'react-table';
 import { observer } from 'mobx-react';
+import { Switch } from 'antd';
 
 import Button from '@c/button';
 import Search from '@c/search';
 import Table from '@c/table';
 import EmptyTips from '@c/empty-tips';
 import Loading from '@c/loading';
+import Modal from '@c/modal';
 
 import { useNamespace } from '../hooks';
 import store from '../store';
+import Icon from '@c/icon';
+import toast from '@lib/toast';
 
 interface Props {
   className?: string;
@@ -21,47 +25,126 @@ function ApiList(props: Props) {
   const history = useHistory();
   const { url } = useRouteMatch();
   const [search, setSearch] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [apiList, setApiList] = useState([]);
+  const [paging, setPaging] = useState({
+    page: 1,
+    pageSize: 10,
+    active: -1,
+  });
   const ns = useNamespace();
+  const [activeModalOpen, setActiveModalOpen] = useState(false);
 
   const COLS: UnionColumns<PolyAPI.Api>[] = [
     {
       Header: 'API 名称',
       id: 'title',
+      width: 'auto',
       accessor: 'title',
     },
     {
-      // todo
       Header: '协议 / 方法',
+      width: 100,
       id: 'method',
       accessor: 'method',
     },
     {
       Header: 'URL',
+      width: 'auto',
       id: 'url',
-      accessor: 'url',
+      accessor: ({ url }: PolyAPI.Api)=> {
+        return (
+          <span className='flex w-200 overflow-x-auto' title={url}>{url}</span>
+        );
+      },
     },
     {
       Header: '代理路径',
+      width: 'auto',
       id: 'fullPath',
-      accessor: 'fullPath',
+      accessor: ({ fullPath }: PolyAPI.Api)=> {
+        return (
+          <span className='flex w-200 overflow-x-auto' title={fullPath}>{fullPath}</span>
+        );
+      },
     },
     {
       Header: '状态',
       id: 'active',
-      accessor: 'active',
+      width: 80,
+      accessor: ({ active, fullPath }: PolyAPI.Api)=> {
+        return (
+          <div className='flex gap-6'>
+            <div
+              onClick={() => {
+                if (active) {
+                  setActiveModalOpen(true);
+                }
+              }}
+            >
+              <Switch
+                checkedChildren="开启"
+                unCheckedChildren="关闭"
+                className='text-12'
+                defaultChecked={false}
+                checked={!!active}
+                onChange={async (checked) => {
+                  if (!active) {
+                    try {
+                      await store.disableApi(fullPath, active);
+                      setActiveModalOpen(false);
+                      await store.fetchApiListInSvc(paging);
+                    } catch (err) {
+                      toast.error(err);
+                    }
+                  }
+                }}
+              />
+            </div>
+          </div>
+        );
+      },
     },
     {
       Header: '操作',
-      id: '',
-      accessor: ()=> null,
+      id: 'action',
+      width: 150,
+      accessor: ({ id, active }: PolyAPI.Api) => {
+        return (
+          <div className='flex'>
+            <span
+              className='text-btn mr-16'
+              onClick={() => {
+                //
+              }}
+            >
+              修改
+            </span>
+            {!active && (
+              <span
+                className='delete-text-btn'
+                onClick={() =>{
+                  //
+                }}
+              >
+               删除
+              </span>
+            )}
+          </div>
+        );
+      },
     },
   ];
 
   useEffect(()=> {
-    store.fetchApiListInSvc();
-  }, [store.treeStore?.currentFocusedNodeID]);
+    const fetchData = async () => {
+      await store.fetchSvc();
+      if (store.svc?.fullPath) {
+        await store.fetchApiListInSvc(paging);
+      }
+    };
+    if (store.currentSvcPath) {
+      fetchData();
+    }
+  }, [store.currentSvcPath]);
 
   function handleSearch(ev: any): void {
 
@@ -111,12 +194,53 @@ function ApiList(props: Props) {
               <span onClick={toCreateApiPage} className='text-blue-600 cursor-pointer ml-4'>新建 API</span>
             </div>)
           } />)}
-          loading={loading}
+          loading={store.isLoading}
           rowKey='id'
           columns={COLS}
-          data={apiList}
+          data={store.apiList}
         />
       </div>
+      {activeModalOpen && (
+        <Modal
+          title='提示'
+          onClose={()=> setActiveModalOpen(false)}
+          footerBtns={[
+            {
+              text: '取消',
+              key: 'cancel',
+              iconName: 'close',
+              onClick: () => setActiveModalOpen(false),
+            },
+            {
+              text: '确认关闭',
+              key: 'confirm',
+              iconName: 'check',
+              modifier: 'primary',
+              onClick: () => {
+                // try {
+                //   await store.disableApi(fullPath, active);
+                //   setActiveModalOpen(false);
+                //   await store.fetchApiListInSvc(paging);
+                // } catch (err) {
+                //   toast.error(err);
+                // }
+              },
+            },
+          ]}
+        >
+          <div className='px-40 py-24'>
+            <div className='flex items-center mb-8'>
+              <Icon name='info' className='text-yellow-600' type='primary' size={18}/>
+              <span className='ml-10 text-14 text-yellow-600'>
+                确认要关闭吗？
+              </span>
+            </div>
+            <div className='pl-28'>
+              如果设置关闭状态后，会导致相关 API 请求失败。
+            </div>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { observer } from 'mobx-react';
 
 import Tab from '@c/tab';
@@ -18,60 +18,54 @@ const defaultKey = 'group-setting';
 
 function ListPage() {
   const [tabKey, setTabKey] = useState(defaultKey);
-  const tabs = [
-    {
-      id: 'api-list',
-      name: store.svc?.fullPath ? 'API 列表' : (
-        <Tooltip
-          position='bottom'
-          label='请先配置分组'
-          relative={false}
-        >
-          <span>API 列表</span>
-        </Tooltip>
-      ),
-      content: <ApiList/>,
-      disabled: !store.svc,
-    },
-    {
-      id: 'group-setting',
-      name: '配置分组',
-      content: <GroupSetting/>,
-    },
-    {
-      id: 'api-keys',
-      name: 'API 密钥',
-      content: <ApiKeys/>,
-    },
-  ];
+  const tabs = useMemo(()=> {
+    return [
+      {
+        id: 'api-list',
+        name: store.svc?.fullPath ? 'API 列表' : (
+          <Tooltip
+            position='bottom'
+            label='请先配置分组'
+            relative={false}
+          >
+            <span>API 列表</span>
+          </Tooltip>
+        ),
+        content: <ApiList/>,
+        disabled: !store.svc,
+      },
+      {
+        id: 'group-setting',
+        name: '配置分组',
+        content: <GroupSetting/>,
+      },
+      (!store.svc || store.svc.authType === 'none') ? null : {
+        id: 'api-keys',
+        name: 'API 密钥',
+        content: <ApiKeys/>,
+      },
+    ].filter(Boolean);
+  }, [store.currentNs?.id, store.svc]);
 
   useEffect(()=> {
-    store.fetchSvc().then(()=> {
-      if (store.svc) {
-        setTabKey('api-list');
-      }
-    });
-  }, [store.treeStore?.actualFocusedNodeID]);
-
-  useEffect(()=> {
-    if (!store.svc && ['api-list', 'api-keys'].includes(tabKey)) {
+    if (!store.svc) {
       setTabKey(defaultKey);
     }
   }, [store.svc]);
 
-  if (!store.treeStore?.actualFocusedNodeID) {
-    return <NoData />;
-  }
-
   return (
     <>
       <Header name={store.treeStore?.curNodeTitle}/>
-      <Tab
-        currentKey={tabKey}
-        onChange={setTabKey}
-        navsClassName='api-list-tabs'
-        items={(!store.svc || store.svc.authType === 'none') ? tabs.filter((tab) => tab.id !== 'api-keys') : tabs}
-      />
+      {!store.currentNs ? <NoData /> : (
+        <Tab
+          currentKey={tabKey}
+          onChange={setTabKey}
+          navsClassName='api-list-tabs'
+          // @ts-ignore
+          items={tabs}
+        />
+      )}
+
     </>
   );
 }

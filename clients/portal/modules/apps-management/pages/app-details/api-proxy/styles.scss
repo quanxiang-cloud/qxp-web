@@ -8,17 +8,35 @@
 
 .api-proxy {
   display: grid;
-  grid-template-columns: 236px 1fr;
+  grid-template-columns: 212px 1fr;
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
-  height: calc(100% - 50px);
+  height: calc(100% - 20px);
 
   &--sider {
     border-top-left-radius: 12px;
-    border-right: 1px solid var(--gray-300);
+    .side-search {
+      > input {
+        width: 100px;
+      }
+    }
+    .tree-node-item {
+      padding-left: 16px;
+      padding-right: 16px;
+      height: 40px;
+      font-size: 16px;
+      line-height: 24px;
+      color: #0F172A;
+      background: transparent;
+      &:hover, &.tree-node--focused {
+        background: var(--gray-100);
+      }
+    }
   }
 
   &--main-cont {
+    display: grid;
+    grid-template-rows: min-content 1fr;
     border-top-right-radius: 12px;
   }
 }

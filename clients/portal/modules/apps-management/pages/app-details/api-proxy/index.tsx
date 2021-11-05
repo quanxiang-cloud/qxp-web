@@ -41,9 +41,7 @@ function ApiProxy(): JSX.Element | null {
     store.setAppId(appID);
     store.fetchNamespaces(appID);
 
-    return ()=> {
-      store.reset();
-    };
+    return store.reset;
   }, []);
 
   if (!store.treeStore) {

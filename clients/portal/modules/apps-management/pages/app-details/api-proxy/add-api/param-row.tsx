@@ -99,7 +99,7 @@ function ParamRow({
 
   return (
     <tr key={id}>
-      <td className={cs('param-name flex items-center')} style={{
+      <td className={cs('param-name flex items-center relative')} style={{
         paddingLeft: (getLevel() * 20) + 'px',
       }}>
         <input
@@ -144,6 +144,28 @@ function ParamRow({
           }}
           shouldUnregister
         />
+        <div className='param-actions absolute right-5 flex items-center'>
+          {group !== 'path' && (
+            <>
+              {['array', 'object'].includes(type) && (
+                <Icon
+                  name='playlist_add'
+                  onClick={()=> store.addSubParam(group, parentPath || '', idx, type === 'array')}
+                  className='cursor-pointer mr-8'
+                  color='gray'
+                  clickable
+                />
+              )}
+              <Icon
+                name='delete'
+                onClick={()=> store.removeParam(group, parentPath || '', idx)}
+                className='cursor-pointer'
+                color='gray'
+                clickable
+              />
+            </>
+          )}
+        </div>
       </td>
       <td className='param-type'>
         <Controller
@@ -154,8 +176,10 @@ function ParamRow({
               value={type}
               onChange={(val)=> {
                 handleChangeField(getFieldName('type'), val);
-                // if type not object or array, should reset its sub nodes
-                store.resetSubNodesByType(getFieldName('type'), val);
+                // if type changed, should reset sub nodes
+                if (type !== val) {
+                  store.resetSubNodesByType(getFieldName('type'));
+                }
               }}
             />
           )}
@@ -259,28 +283,6 @@ function ParamRow({
           control={control}
           shouldUnregister
         />
-        <div className='param-actions absolute right-5 top-5'>
-          {group !== 'path' && (
-            <>
-              {['array', 'object'].includes(type) && (
-                <Icon
-                  name='playlist_add'
-                  onClick={()=> store.addSubParam(group, parentPath || '', idx, type === 'array')}
-                  className='cursor-pointer mr-8'
-                  color='gray'
-                  clickable
-                />
-              )}
-              <Icon
-                name='delete'
-                onClick={()=> store.removeParam(group, parentPath || '', idx)}
-                className='cursor-pointer'
-                color='gray'
-                clickable
-              />
-            </>
-          )}
-        </div>
       </td>
     </tr>
   );
