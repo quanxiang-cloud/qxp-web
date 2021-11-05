@@ -359,9 +359,9 @@ function ApiKey(): JSX.Element {
         >
           <div className='px-20 pt-24'>
             {!isEditor && (
-              <div className='flex items-center creat-api-key-tips bg-blue-100 py-12 pl-18 mb-24'>
-                <Icon name='info' type='primary' className='w-16 h-16' size={18}/>
-                <span className='ml-10 text-14 text-blue-600'>
+              <div className='flex items-center creat-api-key-tips bg-blue-100 text-blue-600 py-12 pl-18 mb-24'>
+                <Icon name='info' color='blue' className='w-16 h-16 fill-current' size={18}/>
+                <span className='ml-10 text-14'>
                   密钥新建成功，请务必妥善保存。该页面只存在一次，如有丢失请重新创建
                 </span>
               </div>

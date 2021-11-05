@@ -24,7 +24,7 @@ const SIDE_NAV = [
       {
         id: 'api_proxy',
         title: '第三方API代理',
-        icon: 'link',
+        icon: 'api_proxy',
       },
       {
         id: 'file_api',
@@ -34,7 +34,7 @@ const SIDE_NAV = [
       {
         id: 'key_api',
         title: 'API密钥管理',
-        icon: 'api_doc',
+        icon: 'api_key',
       },
     ],
   },
