@@ -37,8 +37,8 @@ function renderSwitcherIcon({
   return (
     <Icon
       name="caret-down"
-      size={12}
-      className={cs('tree-node__toggle-icon', {
+      size={16}
+      className={cs('tree-node__toggle-icon p-2', {
         'tree-node__toggle-icon--opened': expanded,
       })}
       onClick={(e): void => {

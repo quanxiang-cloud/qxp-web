@@ -21,8 +21,8 @@ const MsgBox = ({ className }: Props) => {
   return (
     <div className={`${styles.wrap} ${className}`}>
       <Types />
-      <ListPanel/>
-      <DetailPanel/>
+      <ListPanel />
+      <DetailPanel />
     </div>
   );
 };
