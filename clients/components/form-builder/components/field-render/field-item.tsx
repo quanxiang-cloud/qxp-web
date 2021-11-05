@@ -56,7 +56,6 @@ function FieldItem(field: ISchema): JSX.Element {
   const setActiveFieldId = (e: ReactMouseEvent, fieldId: string): void => {
     e.stopPropagation();
     e.preventDefault();
-
     store.setActiveFieldKey(fieldId);
   };
 
@@ -75,6 +74,7 @@ function FieldItem(field: ISchema): JSX.Element {
           { 'opacity-40': !display },
           { 'field-item-active': store.activeFieldId === fieldId },
         )}
+        data-id={fieldId}
         onClick={(e) => setActiveFieldId(e, fieldId)}
       >
         {/* <span style={{ color: 'red' }}>{fieldId}+{field['x-index']}</span> */}

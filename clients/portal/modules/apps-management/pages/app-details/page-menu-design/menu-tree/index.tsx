@@ -3,7 +3,6 @@ import { observer } from 'mobx-react';
 import { toJS } from 'mobx';
 
 import toast from '@lib/toast';
-
 import appPagesStore from '@portal/modules/apps-management/pages/app-details/store';
 import { MenuType } from '@portal/modules/apps-management/pages/app-details/type';
 import { movePage } from '@portal/modules/apps-management/pages/app-details/api';
