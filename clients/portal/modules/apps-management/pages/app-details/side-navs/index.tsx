@@ -22,6 +22,11 @@ const SIDE_NAV = [
         icon: 'database',
       },
       {
+        id: 'api_proxy',
+        title: '第三方API代理',
+        icon: 'link',
+      },
+      {
         id: 'file_api',
         title: 'API文档',
         icon: 'api_doc',

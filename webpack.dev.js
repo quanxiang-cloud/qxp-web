@@ -83,7 +83,7 @@ module.exports={
     new HtmlWebpackPlugin({
       inject: false,
       chunks: ['portal'],
-      template: './clients/templates/portal.html',
+      template: './clients/templates/portal-without-systemjs.html',
       filename: `${__dirname}/dist/templates/portal.html`,
     }),
     new HtmlWebpackPlugin({

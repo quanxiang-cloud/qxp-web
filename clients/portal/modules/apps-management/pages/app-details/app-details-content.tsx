@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { lazy } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
 import NotFoundError from '@c/404-error';
@@ -12,9 +12,11 @@ import DataModels from './data-models';
 import PageMenuDesign from './page-menu-design';
 import UsersAndPermissions from './users-and-permissions';
 import ApiDocument from './api-documentation';
-import WorkFlows from '../../work-flow-list';
 import ApiKey from './api-key';
-import AppControl from './app-control';
+
+const WorkFlows = lazy(() => import('../../work-flow-list'));
+const ApiProxy = lazy(() => import('./api-proxy'));
+const AppControl = lazy(()=> import('./app-control'));
 
 import './index.scss';
 
@@ -36,6 +38,7 @@ function AppDetailsContent(): JSX.Element {
             <Route exact path='/apps/details/:appID/app_permission' component={UsersAndPermissions} />
             <Route exact path='/apps/details/:appID/app_manager' component={AppAdmin} />
             <Route exact path='/apps/details/:appID/app_control' component={AppControl} />
+            <Route exact path='/apps/details/:appID/api_proxy' component={ApiProxy} />
             <Route
               component={() =>
                 (<NotFoundError url='/apps' classnames='h-full'/>)

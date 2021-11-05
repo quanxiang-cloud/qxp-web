@@ -11,3 +11,7 @@ tmp
 *.rdb
 
 .vscode/launch.json
+
+# used for local dev
+clients/templates/layout.html
+clients/templates/portal-without-systemjs.html

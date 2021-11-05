@@ -8,8 +8,9 @@ import './index.scss';
 
 export type TabItem<T extends React.Key = string> = {
   id: T;
-  name: string;
+  name: string | React.ReactNode;
   content: React.ReactNode;
+  disabled?: boolean;
 }
 
 export type Props<T extends React.Key> = {
@@ -48,7 +49,10 @@ export default function Tab<T extends React.Key>({
     return items.find((item) => item.id === key)?.content;
   };
 
-  const handleNavItemClick = (id: any): void => {
+  const handleNavItemClick = ({ id, disabled }: any): void => {
+    if (disabled) {
+      return;
+    }
     setKey(id);
     onChange?.(id);
   };

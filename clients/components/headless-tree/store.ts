@@ -21,6 +21,7 @@ export type TreeStoreProps<T> = {
   onGetChildren?: (parentNode: TreeNode<T>) => Promise<TreeNode<T>[]>;
   singleMode?: boolean;
   disableExpandNodeOnSelect?: boolean;
+  treeNodeHeight?: number;
 }
 
 export default class TreeStore<T> {
@@ -32,11 +33,12 @@ export default class TreeStore<T> {
   @observable draggingNode: TreeNode<T> | null = null;
   @observable autoSelect?: boolean;
   @observable disableExpandNodeOnSelect?: boolean;
+  treeNodeHeight: number;
 
   onGetChildren: (parentNode: TreeNode<T>) => Promise<TreeNode<T>[]> = defaultGetChildren;
 
   constructor({
-    rootNode, onGetChildren, disableExpandNodeOnSelect,
+    rootNode, onGetChildren, disableExpandNodeOnSelect, treeNodeHeight,
   }: TreeStoreProps<T>, autoSelect?: boolean) {
     this.rootNode = rootNode;
     this.autoSelect = autoSelect !== false;
@@ -48,6 +50,7 @@ export default class TreeStore<T> {
     if (onGetChildren) {
       this.onGetChildren = onGetChildren;
     }
+    this.treeNodeHeight = treeNodeHeight || TREE_NODE_HEIGHT;
   }
 
   @computed get currentFocusedNode(): TreeNode<T> | any {
@@ -78,13 +81,13 @@ export default class TreeStore<T> {
     let invisibleNodeCount = 0;
 
     return nodeList.map((node, index) => {
-      if (node.level > expandLevel) {
+      if (node.level > expandLevel || !node.visible) {
         invisibleNodeCount = invisibleNodeCount + 1;
 
         return {
           ...node,
           visible: false,
-          positionY: (index - invisibleNodeCount) * TREE_NODE_HEIGHT,
+          positionY: (index - invisibleNodeCount) * this.treeNodeHeight,
         };
       }
 
@@ -96,12 +99,12 @@ export default class TreeStore<T> {
         expandLevel = node.level;
       }
 
-      return { ...node, positionY: (index - invisibleNodeCount) * TREE_NODE_HEIGHT };
+      return { ...node, positionY: (index - invisibleNodeCount) * this.treeNodeHeight };
     });
   }
 
   @computed get scrollHeight(): number {
-    return this.nodeList.filter(({ visible }) => visible).length * TREE_NODE_HEIGHT;
+    return this.nodeList.filter(({ visible }) => visible).length * this.treeNodeHeight;
   }
 
   @action
