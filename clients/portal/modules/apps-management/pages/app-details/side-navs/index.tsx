@@ -31,6 +31,11 @@ const SIDE_NAV = [
         title: 'API文档',
         icon: 'api_doc',
       },
+      {
+        id: 'key_api',
+        title: 'API密钥管理',
+        icon: 'api_doc',
+      },
     ],
   },
   {
@@ -47,6 +52,21 @@ const SIDE_NAV = [
     id: 'base_info',
     title: '应用设置',
     icon: 'app_setting',
+  },
+  {
+    id: 'rdp',
+    title: '报表管理',
+    icon: 'trending_up',
+  },
+  {
+    id: 'obddp',
+    title: '大屏管理',
+    icon: 'airplay',
+  },
+  {
+    id: 'rdpDataConfig',
+    title: '数据源管理',
+    icon: 'all_inclusive',
   },
 ];
 

@@ -34,13 +34,16 @@ function SourceElement(props: Props): JSX.Element {
   }));
 
   // quick insert field
-  const quickInsert = (curFieldName: string): void => {
+  const quickInsert = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, curFieldName: string): void => {
     const dropField = [...store.flattenFields].find(
       (v) => getFieldId(v) === store.activeFieldId);
 
-    const index = (dropField?.['x-index'] || 0) + 1;
     const { parentFieldId, tabIndex } = dropField?.['x-internal'] || {};
-
+    let index = (dropField?.['x-index'] || 0) + 1;
+    if (e.shiftKey) {
+      index = (dropField?.['x-index'] || 0);
+    }
+    index = Math.max(index, 0);
     const quickInsertParam: any = {
       fieldId: curFieldName,
       index,
@@ -64,7 +67,7 @@ function SourceElement(props: Props): JSX.Element {
             },
           }))
       }
-      onClick={() => quickInsert(formItem.componentName)}
+      onClick={(e) => quickInsert(e, formItem.componentName)}
     >
       <Icon name={formItem.icon} size={20} className="mr-6" />
       {formItem.displayName}

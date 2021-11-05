@@ -26,9 +26,10 @@ export default function GlobalHeader() {
       <div className="flex justify-between items-center px-24 bg-white shadow-flow-header">
         <HeaderNav />
         <img
-          className="flex-1 h-52"
-          src="/dist/images/quanxiangyun.svg"
+          className="flex-1 h-46 max-w-full"
+          src="/dist/images/enfei/chain-enfi.png"
           alt="quanxiangyun"
+          style={{ maxWidth: '214px' }}
         />
         <HeaderMenu />
       </div>

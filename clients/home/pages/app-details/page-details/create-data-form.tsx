@@ -55,6 +55,7 @@ function CreateDataForm({ appID, pageID, rowID, onCancel }: Props): JSX.Element 
           return;
         }
 
+        setLoading(true);
         await editFormDataRequest(
           appID,
           pageID,
@@ -66,6 +67,7 @@ function CreateDataForm({ appID, pageID, rowID, onCancel }: Props): JSX.Element 
           }
         });
       } else {
+        setLoading(true);
         await createFormDataRequest(
           appID,
           pageID,
