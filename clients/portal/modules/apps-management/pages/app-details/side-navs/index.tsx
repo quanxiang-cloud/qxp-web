@@ -36,6 +36,11 @@ const SIDE_NAV = [
         title: 'API密钥管理',
         icon: 'api_key',
       },
+      {
+        id: 'faas',
+        title: 'Faas函数管理',
+        icon: 'api_doc',
+      },
     ],
   },
   {

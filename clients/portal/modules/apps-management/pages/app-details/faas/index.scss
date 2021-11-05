@@ -1,0 +1,48 @@
+.guide {
+  box-shadow: 0px 8px 24px 4px rgba(148, 163, 184, 0.25);
+  @apply px-16 py-8 rounded-b-8 flex items-center justify-between;
+}
+
+.steps {
+  @apply flex-5 flex items-center;
+
+  >div:not(:last-child) {
+    &::after {
+      content: "";
+      width: 243px;
+      height: 1px;
+      margin-left: 12px;
+      margin-right: 12px;
+      border: 1.5px solid var(--gray-100);
+      background-color: var(--gray-100);
+    }
+  }
+}
+
+.step {
+  @apply w-20 rounded-4 bg-blue-600 text-white text-center mr-4;
+}
+
+.operate {
+  @apply text-blue-600 cursor-pointer;
+}
+
+.func-search {
+  width: 254px;
+}
+
+.description {
+  max-width: 200px;
+  @apply flex items-center;
+
+  &:hover {
+    >svg {
+      display: block;
+    }
+  }
+}
+
+.description-input {
+  @apply h-32 w-316 mb-4 px-12 py-6 text-14 border outline-none border-blue-600 rounded-8 rounded-tl-none;
+}
+
