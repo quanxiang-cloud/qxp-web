@@ -26,8 +26,7 @@ export default function TreeNode({
 
   useEffect(() => {
     if (nodeRef.current && children) {
-      currentChildrenHeight.current =
-        nodeRef.current.children.length * nodeRef.current.children[0].clientHeight;
+      currentChildrenHeight.current = nodeRef.current.children.length * 40;
     }
   }, []);
 

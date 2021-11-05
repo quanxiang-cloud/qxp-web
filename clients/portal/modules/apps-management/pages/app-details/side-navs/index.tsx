@@ -75,7 +75,9 @@ export default function CollapseMenu(): JSX.Element {
   return (
     <div className='w-64 relative overflow-visible'>
       <div
-        onMouseEnter={() => setMenuCollapse(false)}
+        onMouseOver={() => {
+          if (menuCollapse) setMenuCollapse(false);
+        }}
         onMouseLeave={() => setMenuCollapse(true)}
         className={cs(
           'app-menu-tree w-64 h-full absolute left-0 top-0 overflow-x-hidden bg-white px-12',
