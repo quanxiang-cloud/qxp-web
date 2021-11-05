@@ -43,7 +43,6 @@ function applySubNodes(item: any, isRoot: boolean, objectNodes?: Array<any>, arr
     if (item.in === 'body') {
       item.schema = {
         type: item.type,
-        // required: [],
       };
       target = item.schema;
     }
@@ -73,8 +72,9 @@ function applySubNodes(item: any, isRoot: boolean, objectNodes?: Array<any>, arr
     });
   }
 
-  delete item.type;
-  delete item.required;
+  if (['object', 'array'].includes(item.type)) {
+    delete item.required;
+  }
 }
 
 function mapRawParams(params: ApiParam[], mergeOptions?: Record<string, any>): ParamItem[] {
@@ -132,8 +132,9 @@ export default class Store {
         200: {
           schema: {
             type: 'object',
+            required: response.filter((v: ApiParam)=> v.required).map((v: ApiParam)=> v.name),
             properties: mapRawParams(response).reduce((acc, cur)=> {
-              acc[cur.name] = omit(cur, 'name');
+              acc[cur.name] = omit(cur, 'name', 'required');
               return acc;
             }, {}),
           },

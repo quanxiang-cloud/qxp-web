@@ -64,7 +64,7 @@ function AddApi(props: Props) {
     },
     onSuccess: (data)=> {
       toast.success('创建成功');
-      toListPage();
+      setTimeout(toListPage, 500);
     },
     onError: (err)=> {
       toast.error(err);
@@ -144,7 +144,7 @@ function AddApi(props: Props) {
   function onSubmit(): void {
     handleSubmit(async (formData: any)=> {
       const swagger = buildSwagger(paramsStore.swaggerParameters, formData);
-      // console.log('add api swagger: ', paramsStore.swaggerParameters, swagger);
+      console.log('add api swagger: ', paramsStore.swaggerParameters, swagger);
 
       const params = {
         version: 'v1',
