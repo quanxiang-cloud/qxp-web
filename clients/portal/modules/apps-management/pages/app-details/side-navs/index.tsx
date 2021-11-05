@@ -26,6 +26,11 @@ const SIDE_NAV = [
         title: 'API文档',
         icon: 'api_doc',
       },
+      {
+        id: 'key_api',
+        title: 'API密钥管理',
+        icon: 'api_doc',
+      },
     ],
   },
   {
