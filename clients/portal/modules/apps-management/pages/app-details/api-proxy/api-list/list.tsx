@@ -37,7 +37,7 @@ function ApiList(props: Props) {
     {
       Header: 'API 名称',
       id: 'title',
-      width: 'auto',
+      width: 120,
       accessor: 'title',
     },
     {
