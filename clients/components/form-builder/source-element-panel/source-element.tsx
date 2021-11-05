@@ -50,7 +50,6 @@ function SourceElement(props: Props): JSX.Element {
       parentFieldId,
       tabIndex,
     };
-
     store.insert(quickInsertParam);
   };
 
