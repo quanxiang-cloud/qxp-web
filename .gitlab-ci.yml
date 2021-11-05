@@ -73,9 +73,9 @@ deploy_testing:
     - release
   script:
     - IMAGE_TAG="v$(date "+%Y%m%d")-$(git rev-parse --short HEAD)"
-    - bash -c "helm upgrade quanxiang /root/quanxiang_charts --set qxp-web-portal.image.tag=$IMAGE_TAG qxp-web-portal.image.repo=$IMAGE_REPO -n lowcode"
-    - bash -c "helm upgrade quanxiang /root/quanxiang_charts --set qxp-web-home.image.tag=$IMAGE_TAG qxp-web-home.image.repo=$IMAGE_REPO -n lowcode"
-    - bash -c "helm upgrade quanxiang /root/quanxiang_charts --set qxp-web-nginx.image.tag=$IMAGE_TAG qxp-web-nginx.image.repo=$IMAGE_REPO -n lowcode"
+    - bash -c "helm upgrade quanxiang /root/quanxiang_charts --set qxp-web-portal.image.tag=$IMAGE_TAG --set qxp-web-portal.image.repo=$IMAGE_REPO -n lowcode"
+    - bash -c "helm upgrade quanxiang /root/quanxiang_charts --set qxp-web-home.image.tag=$IMAGE_TAG --set qxp-web-home.image.repo=$IMAGE_REPO -n lowcode"
+    - bash -c "helm upgrade quanxiang /root/quanxiang_charts --set qxp-web-nginx.image.tag=$IMAGE_TAG --set qxp-web-nginx.image.repo=$IMAGE_REPO -n lowcode"
     - echo "deploy testing done!"
 
 deploy_staging:
@@ -89,7 +89,7 @@ deploy_staging:
     - branches
   script:
     - IMAGE_TAG="v$(date "+%Y%m%d")-$(git rev-parse --short HEAD)"
-    - bash -c "helm upgrade quanxiang /root/quanxiang_charts --set qxp-web-portal.image.tag=$IMAGE_TAG qxp-web-portal.image.repo=$IMAGE_REPO -n lowcode --kubeconfig ~/.kube/config_staging"
-    - bash -c "helm upgrade quanxiang /root/quanxiang_charts --set qxp-web-home.image.tag=$IMAGE_TAG qxp-web-home.image.repo=$IMAGE_REPO -n lowcode --kubeconfig ~/.kube/config_staging"
-    - bash -c "helm upgrade quanxiang /root/quanxiang_charts --set qxp-web-nginx.image.tag=$IMAGE_TAG qxp-web-nginx.image.repo=$IMAGE_REPO -n lowcode --kubeconfig ~/.kube/config_staging"
+    - bash -c "helm upgrade quanxiang /root/quanxiang_charts --set qxp-web-portal.image.tag=$IMAGE_TAG --set qxp-web-portal.image.repo=$IMAGE_REPO -n lowcode --kubeconfig ~/.kube/config_staging"
+    - bash -c "helm upgrade quanxiang /root/quanxiang_charts --set qxp-web-home.image.tag=$IMAGE_TAG --set qxp-web-home.image.repo=$IMAGE_REPO -n lowcode --kubeconfig ~/.kube/config_staging"
+    - bash -c "helm upgrade quanxiang /root/quanxiang_charts --set qxp-web-nginx.image.tag=$IMAGE_TAG --set qxp-web-nginx.image.repo=$IMAGE_REPO -n lowcode --kubeconfig ~/.kube/config_staging"
     - echo "deploy staging done!"
