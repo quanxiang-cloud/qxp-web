@@ -1,7 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { observer } from 'mobx-react';
+import { useUpdateEffect } from 'react-use';
 
-import Tab from '@c/tab';
+import Tab, { TabItem } from '@c/tab';
 import Tooltip from '@c/tooltip';
 
 import Header from '../comps/header';
@@ -14,7 +15,7 @@ import store from '../store';
 
 import './index.scss';
 
-const defaultKey = 'group-setting';
+const defaultKey = 'api-list';
 
 function ListPage() {
   const [tabKey, setTabKey] = useState(defaultKey);
@@ -31,7 +32,7 @@ function ListPage() {
             <span>API 列表</span>
           </Tooltip>
         ),
-        content: <ApiList/>,
+        content: store.svc?.fullPath && <ApiList />,
         disabled: !store.svc,
       },
       {
@@ -45,13 +46,17 @@ function ListPage() {
         content: <ApiKeys/>,
       },
     ].filter(Boolean);
-  }, [store.currentNs?.id, store.svc]);
+  }, [store.currentNs?.id, store.svc?.fullPath, store.svc?.authType]);
 
-  useEffect(()=> {
-    if (!store.svc) {
-      setTabKey(defaultKey);
-    }
-  }, [store.svc]);
+  useUpdateEffect(()=> {
+    store.fetchSvc().then(()=> {
+      if (!store.svc) {
+        setTabKey('group-setting');
+      } else {
+        setTabKey(defaultKey);
+      }
+    });
+  }, [store.currentSvcPath]);
 
   return (
     <>
@@ -61,11 +66,9 @@ function ListPage() {
           currentKey={tabKey}
           onChange={setTabKey}
           navsClassName='api-list-tabs'
-          // @ts-ignore
-          items={tabs}
+          items={tabs as TabItem<string>[]}
         />
       )}
-
     </>
   );
 }

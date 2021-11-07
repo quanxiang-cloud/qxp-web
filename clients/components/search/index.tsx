@@ -56,7 +56,7 @@ export default function Search(
       <Icon name="search" size={20} className='mr-8' />
       <input
         style={InputCss}
-        className="flex-grow"
+        className="flex-grow w-100"
         type="text"
         placeholder={placeholder}
         name="search"

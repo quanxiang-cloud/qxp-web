@@ -65,7 +65,7 @@ function ParamRow({
   }
 
   function handleChangeField(fieldName: string, val: any): void {
-    console.log('change field: ', fieldName, val);
+    // console.log('change field: ', fieldName, val);
     store.setFieldValue(fieldName, val);
   }
 

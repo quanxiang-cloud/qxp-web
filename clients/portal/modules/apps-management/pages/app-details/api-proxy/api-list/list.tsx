@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
-// import {useQuery} from 'react-query';
 import { UnionColumns } from 'react-table';
 import { observer } from 'mobx-react';
 import { Switch } from 'antd';
+import { useDebounce, useUpdateEffect } from 'react-use';
 
 import Button from '@c/button';
 import Search from '@c/search';
@@ -11,11 +11,13 @@ import Table from '@c/table';
 import EmptyTips from '@c/empty-tips';
 import Loading from '@c/loading';
 import Modal from '@c/modal';
-
-import { useNamespace } from '../hooks';
-import store from '../store';
 import Icon from '@c/icon';
 import toast from '@lib/toast';
+import Pagination from '@c/pagination';
+
+import { deleteNativeApi, activeApi } from '../api';
+import { useNamespace } from '../hooks';
+import store from '../store';
 
 interface Props {
   className?: string;
@@ -24,14 +26,13 @@ interface Props {
 function ApiList(props: Props) {
   const history = useHistory();
   const { url } = useRouteMatch();
+  const [pageParams, setPageParams] = useState<PolyAPI.SearchApiParams>({ page: 1, pageSize: 10 });
   const [search, setSearch] = useState('');
-  const [paging, setPaging] = useState({
-    page: 1,
-    pageSize: 10,
-    active: -1,
-  });
   const ns = useNamespace();
-  const [activeModalOpen, setActiveModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalType, setModalType] = useState<'disable' | 'delete' | ''>('');
+  const [curRow, setCurRow] = useState<PolyAPI.Api | null>(null);
+  const [debouncedSearch, setDebouncedSearch] = useState('');
 
   const COLS: UnionColumns<PolyAPI.Api>[] = [
     {
@@ -41,7 +42,7 @@ function ApiList(props: Props) {
       accessor: 'title',
     },
     {
-      Header: '协议 / 方法',
+      Header: '请求方法',
       width: 100,
       id: 'method',
       accessor: 'method',
@@ -70,31 +71,30 @@ function ApiList(props: Props) {
       Header: '状态',
       id: 'active',
       width: 80,
-      accessor: ({ active, fullPath }: PolyAPI.Api)=> {
+      accessor: (row: PolyAPI.Api)=> {
         return (
           <div className='flex gap-6'>
-            <div
-              onClick={() => {
-                if (active) {
-                  setActiveModalOpen(true);
-                }
-              }}
-            >
+            <div onClick={() => {
+              if (row.active) {
+                setCurRow(row);
+                setModalType('disable');
+                setModalOpen(true);
+              }
+            }}>
               <Switch
                 checkedChildren="开启"
                 unCheckedChildren="关闭"
                 className='text-12'
                 defaultChecked={false}
-                checked={!!active}
-                onChange={async (checked) => {
-                  if (!active) {
-                    try {
-                      await store.disableApi(fullPath, active);
-                      setActiveModalOpen(false);
-                      await store.fetchApiListInSvc(paging);
-                    } catch (err) {
-                      toast.error(err);
-                    }
+                checked={!!row.active}
+                onChange={() => {
+                  if (!row.active) {
+                    activeApi(row.fullPath, { active: 1 }).then(() => {
+                      toast.success('开启 API 成功');
+                      fetchApis();
+                    }).catch(() => {
+                      toast.error('更新状态失败');
+                    });
                   }
                 }}
               />
@@ -107,22 +107,17 @@ function ApiList(props: Props) {
       Header: '操作',
       id: 'action',
       width: 150,
-      accessor: ({ id, active }: PolyAPI.Api) => {
+      accessor: (row: PolyAPI.Api) => {
         return (
           <div className='flex'>
-            <span
-              className='text-btn mr-16'
-              onClick={() => {
-                //
-              }}
-            >
-              修改
-            </span>
-            {!active && (
+            <span className='text-btn mr-16' onClick={() => toModifyApiPage(row.fullPath)}>修改</span>
+            {!row.active && (
               <span
                 className='delete-text-btn'
                 onClick={() =>{
-                  //
+                  setCurRow(row);
+                  setModalType('delete');
+                  setModalOpen(true);
                 }}
               >
                删除
@@ -135,19 +130,25 @@ function ApiList(props: Props) {
   ];
 
   useEffect(()=> {
-    const fetchData = async () => {
-      await store.fetchSvc();
-      if (store.svc?.fullPath) {
-        await store.fetchApiListInSvc(paging);
-      }
-    };
-    if (store.currentSvcPath) {
-      fetchData();
+    if (store.svc?.fullPath) {
+      fetchApis();
     }
-  }, [store.currentSvcPath]);
+  }, [store.svc?.fullPath]);
 
-  function handleSearch(ev: any): void {
+  useDebounce(()=> {
+    setDebouncedSearch(search);
+  }, 500, [search]);
 
+  useUpdateEffect(()=> {
+    fetchApis();
+  }, [debouncedSearch, pageParams]);
+
+  function fetchApis(): void {
+    store.fetchApiListInSvc(search ? { ...pageParams, search } : pageParams);
+  }
+
+  function pageChange(current: number, pageSize: number): void {
+    setPageParams({ ...pageParams, page: current, pageSize });
   }
 
   function toCreateApiPage(): void {
@@ -156,6 +157,31 @@ function ApiList(props: Props) {
 
   function toAddSwaggerPage(): void {
     history.push(`${url}?ns=${ns}&action=add-swagger`);
+  }
+
+  function toModifyApiPage(apiPath: string): void {
+    history.push(`${url}?ns=${ns}&action=edit&api_path=${apiPath}`);
+  }
+
+  function handleSubmitModal(): void {
+    if (modalType === 'disable') {
+      activeApi(curRow?.fullPath as string, { active: 0 }).then(()=> {
+        toast.success('关闭 API 成功');
+        setModalOpen(false);
+        fetchApis();
+      }).catch((err)=> toast.error(err));
+    }
+
+    if (modalType === 'delete') {
+      deleteNativeApi(store.currentSvcPath, [curRow?.name || '']).then(()=> {
+        toast.success('删除 API 成功');
+        if (store.svcApis?.list?.length === 1 && pageParams.page > 1) {
+          setPageParams({ ...pageParams, page: pageParams.page - 1 });
+        }
+        setModalOpen(false);
+        fetchApis();
+      }).catch((err)=> toast.error(err));
+    }
   }
 
   if (store.isLoading) {
@@ -180,11 +206,11 @@ function ApiList(props: Props) {
           {/* </span>*/}
         </div>
         <Search
-          className="mr-20"
+          className="mr-20 w-220"
           placeholder="输入 API 名称"
           value={search}
           onChange={setSearch}
-          onKeyDown={handleSearch}
+          onKeyDown={()=> {}}
         />
       </div>
       <div className='api-list-wrap'>
@@ -197,34 +223,41 @@ function ApiList(props: Props) {
           loading={store.isLoading}
           rowKey='id'
           columns={COLS}
-          data={store.apiList}
+          data={store.svcApis?.list || []}
         />
+        {!!store.svcApis?.total && (
+          <Pagination
+            current={pageParams.page}
+            pageSize={pageParams.pageSize}
+            total={store.svcApis?.total || 0}
+            showSizeChanger
+            onChange={pageChange}
+            className={'pt-10'}
+            renderTotalTip={() => (
+              <div className="text-12 text-gray-600">
+              共<span className="mx-4">{store.svcApis?.total || 0}</span>条数据
+              </div>
+            )}
+          />
+        )}
       </div>
-      {activeModalOpen && (
+      {modalOpen && (
         <Modal
           title='提示'
-          onClose={()=> setActiveModalOpen(false)}
+          onClose={() => setModalOpen(false)}
           footerBtns={[
             {
               text: '取消',
               key: 'cancel',
               iconName: 'close',
-              onClick: () => setActiveModalOpen(false),
+              onClick: () => setModalOpen(false),
             },
             {
-              text: '确认关闭',
+              text: modalType === 'disable' ? '确认关闭' : '确认删除',
               key: 'confirm',
               iconName: 'check',
               modifier: 'primary',
-              onClick: () => {
-                // try {
-                //   await store.disableApi(fullPath, active);
-                //   setActiveModalOpen(false);
-                //   await store.fetchApiListInSvc(paging);
-                // } catch (err) {
-                //   toast.error(err);
-                // }
-              },
+              onClick: handleSubmitModal,
             },
           ]}
         >
@@ -232,11 +265,13 @@ function ApiList(props: Props) {
             <div className='flex items-center mb-8'>
               <Icon name='info' className='text-yellow-600' type='primary' size={18}/>
               <span className='ml-10 text-14 text-yellow-600'>
-                确认要关闭吗？
+                {modalType === 'disable' && '确认要关闭吗？'}
+                {modalType === 'delete' && '确认要删除吗？'}
               </span>
             </div>
             <div className='pl-28'>
-              如果设置关闭状态后，会导致相关 API 请求失败。
+              {modalType === 'disable' && '如果设置关闭状态后，会导致相关 API 请求失败。'}
+              {modalType === 'delete' && '如果该 API 被删除，将无法恢复。'}
             </div>
           </div>
         </Modal>
