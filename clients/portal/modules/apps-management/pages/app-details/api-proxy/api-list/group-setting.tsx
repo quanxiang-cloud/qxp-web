@@ -38,12 +38,6 @@ function GroupSetting(props: Props) {
   const [auth, setAuth] = useState<AuthType>('none');
 
   useEffect(()=> {
-    if (store.currentSvcPath) {
-      store.fetchSvc();
-    }
-  }, [store.currentSvcPath]);
-
-  useEffect(()=> {
     const defaultValues = { hostname: 'www.quanxiang.cloud', port: 433 };
     if (store.svc) {
       const { schema, host, authType, authContent } = store.svc;
@@ -92,6 +86,7 @@ function GroupSetting(props: Props) {
         };
         if (!store.svc) {
           await store.createSvc(store.treeStore?.curNodefullNs || '', data);
+          toast.success('提交成功');
         } else {
           const finalData = omit(data, 'name');
           const prevData = pick(store.svc, ['schema', 'host', 'authType', 'authorize']);
@@ -100,8 +95,9 @@ function GroupSetting(props: Props) {
             return;
           }
           await store.updateSvc(finalData);
+          toast.success('修改成功');
         }
-        toast.success('提交成功');
+        await store.fetchSvc();
       } catch (err) {
         toast.error(err);
       }
@@ -166,7 +162,7 @@ function GroupSetting(props: Props) {
                   className={cs('textarea', { error: errors.authorize })}
                   rows={3}
                   placeholder='请输入'
-                  {...register('authorize', { required: '请输入鉴权方法' })}
+                  {...register('authorize', { required: '请输入鉴权方法', shouldUnregister: true })}
                 />
                 <ErrorMsg errors={errors} name='authorize' />
               </div>

@@ -1,4 +1,5 @@
 import { action, computed, observable, toJS, extendObservable } from 'mobx';
+import { pick } from 'lodash';
 
 import TreeStore from '@c/headless-tree/store';
 import { TreeNode } from '@c/headless-tree/types';
@@ -109,7 +110,7 @@ class ApiProxyStore {
   @observable filterNsList: PolyAPI.Namespace[] | null = null; // filtered ns list, like search
   @observable isLoading = false; // fetching sub page's data
   @observable svc: PolyAPI.Service | null=null;
-  @observable apiList: PolyAPI.Api[] = []
+  @observable svcApis: {list?: PolyAPI.Api[], total?: number} | null=null
 
   @computed get currentSvcPath() {
     if (this.currentNs) {
@@ -213,7 +214,7 @@ class ApiProxyStore {
 
   @action
   updateSvc=async (params: Omit<PolyAPI.CreateServiceParams, 'name'>)=> {
-    await apis.updateService(this.svc?.fullPath || '', params);
+    await apis.updateService(this.currentSvcPath, params);
     this.svc = Object.assign({}, this.svc, params, { authContent: params.authorize });
   }
 
@@ -223,7 +224,6 @@ class ApiProxyStore {
     try {
       this.svc = await apis.getService(this.currentSvcPath);
     } catch (err) {
-      // toast.error(err);
       this.svc = null;
     } finally {
       this.isLoading = false;
@@ -231,11 +231,19 @@ class ApiProxyStore {
   }
 
   @action
-  fetchApiListInSvc=async (paging: {page: number; pageSize: number})=> {
+  fetchApiListInSvc=async (paging: {page: number; pageSize: number, search?: string})=> {
     this.isLoading = true;
     try {
-      const { list } = await apis.getServiceApiList(this.svc?.fullPath || '', paging);
-      this.apiList = list;
+      if (paging.search) {
+        this.svcApis = await apis.searchNativeApi(this.currentSvcPath, {
+          ...pick(paging, ['page', 'pageSize']),
+          title: paging.search,
+          active: -1,
+          withSub: false,
+        });
+      } else {
+        this.svcApis = await apis.getServiceApiList(this.currentSvcPath, paging);
+      }
     } catch (err) {
       toast.error(err);
     } finally {
@@ -263,6 +271,7 @@ class ApiProxyStore {
     this.filterNsList = null;
     this.loadingNs = false;
     this.isLoading = false;
+    this.svcApis = null;
   }
 }
 

@@ -8,6 +8,7 @@ import { useMutation } from 'react-query';
 import Select from '@c/select';
 import Button from '@c/button';
 import toast from '@lib/toast';
+import Loading from '@c/loading';
 
 import Header from '../comps/header';
 import { ErrorMsg } from '../comps/form';
@@ -16,7 +17,8 @@ import ParamsConfig from './params-config';
 import store from '../store';
 import paramsContext from './context';
 import { getDefaultParam } from './store';
-import { useNamespace } from '../hooks';
+import { useNamespace, useQueryString } from '../hooks';
+import { queryNativeApi } from '../api';
 
 import './styles.scss';
 
@@ -57,6 +59,10 @@ function AddApi(props: Props) {
   const [submitting, setSubmitting] = useState(false);
   const watchApiPath = watch('apiPath');
   const watchApiName = watch('apiName');
+  const qs = useQueryString();
+  const isEdit = qs.get('action') === 'edit';
+  const apiPath = qs.get('api_path');
+  const [apiDetail, setApiDetail] = useState<PolyAPI.NativeApi | null>(null);
 
   const createApiMutation = useMutation(store.registerApi, {
     onMutate: ()=> {
@@ -64,6 +70,7 @@ function AddApi(props: Props) {
     },
     onSuccess: (data)=> {
       toast.success('创建成功');
+      paramsStore.reset();
       setTimeout(toListPage, 500);
     },
     onError: (err)=> {
@@ -75,8 +82,20 @@ function AddApi(props: Props) {
   });
 
   useEffect(()=> {
-    return paramsStore.reset;
-  }, []);
+    if (isEdit && apiPath) {
+      queryNativeApi(apiPath).then((apiDetail)=> {
+        setApiDetail(apiDetail);
+        // todo: set initial param store's parameters
+        // paramsStore.setParams(apiData)
+        setInitialValues({
+          title: apiDetail.title,
+          apiPath: apiDetail.url.slice(`${apiDetail.schema}://${apiDetail.host}`.length),
+          apiName: apiDetail.name,
+          description: apiDetail.desc,
+        });
+      });
+    }
+  }, [apiPath]);
 
   useEffect(()=> {
     if (!store.svc) {
@@ -100,6 +119,12 @@ function AddApi(props: Props) {
     const prefix = getProxyPath();
     setValue('proxyPath', watchApiName ? [prefix, watchApiName].join('/') : prefix);
   }, [watchApiName, store.svc]);
+
+  function setInitialValues(values: Record<string, any>) {
+    Object.entries(values).map(([name, val])=> {
+      setValue(name, val);
+    });
+  }
 
   function toListPage():void {
     history.push(`/apps/details/${appID}/api_proxy?ns=${ns}`);
@@ -144,7 +169,7 @@ function AddApi(props: Props) {
   function onSubmit(): void {
     handleSubmit(async (formData: any)=> {
       const swagger = buildSwagger(paramsStore.swaggerParameters, formData);
-      console.log('add api swagger: ', paramsStore.swaggerParameters, swagger);
+      // console.log('add api swagger: ', paramsStore.swaggerParameters, swagger);
 
       const params = {
         version: 'v1',
@@ -164,9 +189,13 @@ function AddApi(props: Props) {
     }
   }
 
+  if (isEdit && !apiDetail) {
+    return <Loading />;
+  }
+
   return (
     <>
-      <Header name='新建 API' />
+      <Header name={isEdit ? '修改 API' : '新建 API'} />
       <FormProvider {...formInst}>
         <form onSubmit={onSubmit} className='flex flex-col px-20 py-16 w-full overflow-auto'>
           <div className='mb-16'>

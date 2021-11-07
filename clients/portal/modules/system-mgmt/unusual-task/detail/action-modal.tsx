@@ -114,7 +114,6 @@ function ActionModal({ closeModal, action }: Props): JSX.Element {
 
   function onOkClick(): void {
     if (action === 'STEP_BACK') {
-      console.log(stepBackId);
       setShowTips(stepBackId === '' ? true : false);
       if (!stepBackId) return;
       stepTask({ processInstanceId, taskId }, { activityInstanceId: stepBackId, remark: textValue }).then(
@@ -166,7 +165,6 @@ function ActionModal({ closeModal, action }: Props): JSX.Element {
       setShowTips(textValue === '' ? true : false);
       if (!textValue) return;
       sendTask({ processInstanceId, taskId }, { remark: textValue }).then((res) => {
-        console.log(res);
         if (res) {
           closeModal();
           Toast.success('操作成功！');

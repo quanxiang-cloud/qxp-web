@@ -90,6 +90,14 @@ declare namespace PolyAPI {
     }
   }
 
+  type SearchApiParams={
+    page: number;
+    pageSize: number;
+    title?: string;
+    active?: number;
+    withSub?: boolean;
+  }
+
   type QueryApiDocResult={
     docType: string;
     name: string;
@@ -111,12 +119,13 @@ declare namespace PolyAPI {
     desc?: string;
   }
 
-  type ApiKeyParams = {
+  type ApiKeyParams={
     service: string;
     keyID: string;
     keySecret: string;
     description?: string;
   }
+
   type ApiKeyList={
     id: string,
     keyID: string,
