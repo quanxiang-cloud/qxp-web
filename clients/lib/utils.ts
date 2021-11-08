@@ -350,7 +350,7 @@ export async function copyContent(content: string, successMes?: string, errorMes
 // macOS X:1000 KB = 1 MB Non-macOS X : 1024 KB = 1 MB
 export const isMacosX = /macintosh|mac os x/i.test(navigator.userAgent);
 
-export function isAcceptedFileType(file: File | QXPUploadFileTask, accept: string | string[]): boolean {
+export function isAcceptedFileType(file: File | QXPUploadFileBaseProps, accept: string | string[]): boolean {
   if (!accept) return false;
   const fileType = file.type || file.name.split('.').pop();
   return accept.toString().indexOf(fileType || '') !== -1;
