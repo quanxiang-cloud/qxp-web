@@ -95,7 +95,7 @@ function AddApi(props: Props) {
         const { parameters = [], responses = {}, ['x-consts']: constants = [] } = values(get(doc, `doc.paths.${apiPath}`))[0] || {};
         // todo: set initial param store's parameters
         paramGroups.forEach((gp)=> {
-          const gpItems = _.map(parameters, (v)=> {
+          const gpItems = parameters.map((v: {in: string})=> {
             if (v.in === gp) {
               return omit(v, 'in');
             }
