@@ -1,14 +1,15 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { Form } from '@QCFE/lego-ui';
+import React, { useEffect, useState } from 'react';
+import { Form, Input } from 'antd';
 
 import Modal from '@c/modal';
-
 import { APP_ICON_LIST } from '@c/app-icon-select';
-import AppIconSelect from '@c/app-icon-select';
 
+import IconSelected from './icon-selected';
 import SelectField from './select-field';
-import store from '../store';
 import { fetchGroupList } from '../api';
+import store from '../store';
+
+const { TextArea } = Input;
 
 type Props = {
   onCancel: () => void;
@@ -22,17 +23,15 @@ type GroupList = {
   name: string;
 }
 
-type Option = {
-  value: string;
-  label: string;
-}
-
-const IconSelectField = Form.getFormField(AppIconSelect);
-
 function EditPageModal({ pageInfo, onCancel, onSubmit, appID }: Props): JSX.Element {
-  const [groupList, setGroupList] = useState<Option[]>([]);
+  const [groupList, setGroupList] = useState<LabelValue[]>([]);
   const { modalType } = store;
-  const ref: any = useRef();
+  const [form] = Form.useForm();
+  let allPageNames = dataFormat(store.pageInitList).map((pageInfo: PageInfo) => pageInfo.name);
+
+  if (modalType === 'editPage') {
+    allPageNames = allPageNames.filter((name) => name !== pageInfo?.name);
+  }
 
   useEffect(() => {
     fetchGroupList(appID).then((res: any) => {
@@ -42,43 +41,32 @@ function EditPageModal({ pageInfo, onCancel, onSubmit, appID }: Props): JSX.Elem
     });
   }, [appID]);
 
-  const validateRepeat = (value: string): boolean => {
-    let noRepeated = true;
-    for (const pageInfoTmp of store.pageInitList) {
-      if (modalType !== 'copyPage' && pageInfoTmp.id === pageInfo?.id) {
-        continue;
+  function dataFormat(data: PageInfo[]): PageInfo[] {
+    const newData: PageInfo[] = [];
+    data.map((pageInfo: PageInfo) => {
+      if (pageInfo.menuType === 1 && pageInfo.child?.length) {
+        const _newData = dataFormat(pageInfo.child);
+        newData.push(..._newData);
+        return;
       }
 
-      if (pageInfoTmp.menuType === 1) {
-        if (pageInfoTmp.child?.length) {
-          for (const _pageInfo of pageInfoTmp.child) {
-            if (_pageInfo.id === pageInfo?.id) {
-              continue;
-            }
+      pageInfo.menuType === 0 && newData.push(pageInfo);
+      return;
+    });
+    return newData;
+  }
 
-            if (_pageInfo.name === value) {
-              noRepeated = false;
-              break;
-            }
-          }
-        }
-      } else {
-        if (pageInfoTmp.name === value) {
-          noRepeated = false;
-          break;
-        }
-      }
-    }
+  function handleSubmit(): void {
+    form.submit();
+  }
 
-    return noRepeated;
-  };
+  function handleFinish(values: any): void {
+    onSubmit({ ...(pageInfo || {}), ...values });
+  }
 
-  const handleSubmit = (): void => {
-    const formRef = ref.current;
-    if (formRef.validateFields()) {
-      onSubmit({ ...(pageInfo || {}), ...formRef.getFieldsValue() });
-    }
-  };
+  function validateRepeat(value: string): boolean {
+    return allPageNames.includes(value);
+  }
 
   const { name, icon, describe, groupID, appID: curAppID } = pageInfo || { icon: APP_ICON_LIST[0] };
 
@@ -99,59 +87,72 @@ function EditPageModal({ pageInfo, onCancel, onSubmit, appID }: Props): JSX.Elem
         text: '确定',
       }]}
     >
-      <Form className="p-20" layout='vertical' ref={ref}>
-        <Form.TextField
-          name='name'
-          defaultValue={store.modalType === 'copyPage' ? `${name}-副本` : name}
-          label='页面名称'
-          placeholder='请输入页面名称'
-          help='不超过 30 个字符，页面名称不可重复。'
-          schemas={[
+      <Form
+        className="p-20"
+        layout='vertical'
+        form={form}
+        onFinish={handleFinish}
+        initialValues={{
+          name: store.modalType === 'copyPage' ? `${name}-副本` : name,
+          icon,
+          describe,
+          groupID,
+        }}
+      >
+        <Form.Item
+          name="name"
+          label="页面名称"
+          extra="不超过 30 个字符，页面名称不可重复。"
+          rules={[
             {
-              help: '请输入页面名称',
-              rule: { required: true },
-            },
-            {
-              help: '名称不超过 30 字符，请修改！ ',
-              rule: { maxLength: 30 },
-            },
-            {
-              help: '页面名称重复',
-              rule: validateRepeat,
-            },
-          ]}
-        />
-        <IconSelectField
-          name='icon'
-          label='显示图标'
-          defaultValue={icon}
-          schemas={[
-            {
-              help: '请选择显示图标',
-              rule: { required: true },
-            },
-          ]}
-        />
-        <Form.TextAreaField
-          name='describe'
-          defaultValue={describe}
-          label='描述'
-          placeholder='选填（不超过 100 字符）'
-          schemas={[
-            {
-              help: '备注超过 100 字符!',
-              rule: { maxLength: 100 },
+              required: true,
+              message: '请输入页面名称',
+            }, {
+              type: 'string',
+              message: '名称不超过 30 字符，请修改！ ',
+            }, {
+              validator: (_, value) => {
+                if (!value) {
+                  return Promise.resolve();
+                } else if (validateRepeat(value)) {
+                  return Promise.reject(new Error('页面名称重复'));
+                } else {
+                  return Promise.resolve();
+                }
+              },
             },
           ]}
-        />
+        >
+          <Input placeholder='请输入页面名称' />
+        </Form.Item>
+        <Form.Item
+          name="icon"
+          label="显示图标"
+          rules={[
+            {
+              required: true,
+              message: '请选择显示图标',
+            },
+          ]}
+        >
+          <IconSelected />
+        </Form.Item>
+        <Form.Item
+          name="describe"
+          label="描述"
+          rules={[
+            {
+              type: 'string',
+              message: '备注超过 100 字符!',
+            },
+          ]}
+        >
+          <TextArea placeholder='选填（不超过 100 字符）' />
+        </Form.Item>
         {(!curAppID || modalType === 'copyPage') && groupList.length > 0 && (
-          <SelectField
-            name='groupID'
-            defaultValue={groupID}
-            label='所属分组'
-            placeholder='选填'
-            options={groupList}
-          />
+          <Form.Item name='groupID' label="所属分组">
+            <SelectField options={groupList} />
+          </Form.Item>
         )}
       </Form>
     </Modal>

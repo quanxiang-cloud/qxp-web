@@ -1,5 +1,5 @@
-import React, { useRef } from 'react';
-import { Form } from '@QCFE/lego-ui';
+import React from 'react';
+import { Form, Input } from 'antd';
 
 import Modal from '@c/modal';
 
@@ -13,24 +13,24 @@ type Props = {
 };
 
 function EditGroupModal({ groupInfo, onCancel, onSubmit }: Props): JSX.Element {
-  const ref: any = useRef();
+  const [form] = Form.useForm();
+  const otherGroupNames = store.pageInitList.filter((pageInfo: PageInfo) => (
+    pageInfo.menuType === MenuType.group && pageInfo.id !== groupInfo.id
+  )).map((pageInfo: PageInfo) => pageInfo.name);
 
-  const handleSubmit = (): void => {
-    const formRef = ref.current;
-    if (formRef.validateFields()) {
-      onSubmit({ ...(groupInfo || {}), ...formRef.getFieldsValue() }).then(() => {
-        onCancel();
-      });
-    }
-  };
+  function handleSubmit(): void {
+    form.submit();
+  }
 
-  const validateRepeat = (value: string): boolean => {
-    return store.pageInitList.findIndex((pageInfo: PageInfo) => {
-      if (pageInfo.menuType === MenuType.group && pageInfo.id !== groupInfo.id) {
-        return pageInfo.name === value;
-      }
-    }) === -1;
-  };
+  function handleFinish(values: any): void {
+    onSubmit({ ...(groupInfo || {}), ...values }).then(() => {
+      onCancel();
+    });
+  }
+
+  function validateRepeat(value: string): boolean {
+    return otherGroupNames.includes(value);
+  }
 
   return (
     <Modal
@@ -49,27 +49,41 @@ function EditGroupModal({ groupInfo, onCancel, onSubmit }: Props): JSX.Element {
         text: '确定',
       }]}
     >
-      <Form className="p-20" layout='vertical' ref={ref}>
-        <Form.TextField
-          name='name'
-          defaultValue={groupInfo.name}
-          placeholder='请输入分组名称'
-          help='不超过 30 个字符，分组名称不可重复。'
-          schemas={[
+      <Form
+        className="p-20"
+        layout='vertical'
+        form={form}
+        onFinish={handleFinish}
+        initialValues={{
+          name: groupInfo.name,
+        }}
+      >
+        <Form.Item
+          name="name"
+          extra="不超过 30 个字符，分组名称不可重复。"
+          rules={[
             {
-              help: '请输入分组名称',
-              rule: { required: true },
-            },
-            {
-              help: '不能超过30个字符',
-              rule: { maxLength: 30 },
-            },
-            {
-              rule: validateRepeat,
-              help: '分组名称重复',
+              required: true,
+              message: '请输入分组名称',
+            }, {
+              type: 'string',
+              max: 30,
+              message: '不能超过30个字符',
+            }, {
+              validator: (_, value) => {
+                if (!value) {
+                  return Promise.resolve();
+                } else if (validateRepeat(value)) {
+                  return Promise.reject(new Error('分组名称重复'));
+                } else {
+                  return Promise.resolve();
+                }
+              },
             },
           ]}
-        />
+        >
+          <Input placeholder='请输入分组名称' />
+        </Form.Item>
       </Form>
     </Modal>
   );
