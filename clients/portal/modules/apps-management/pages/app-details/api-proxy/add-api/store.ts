@@ -150,7 +150,7 @@ export default class Store {
 
   @action
   setParams=(group: ParamGroup, params: ApiParam[])=> {
-    Object.assign(this.parameters, { [group]: params });
+    Object.assign(this.parameters, { [group]: params && params.length ? params : [getDefaultParam()] });
   }
 
   @action
