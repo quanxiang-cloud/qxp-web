@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Modal } from '@QCFE/lego-ui';
 import { observer } from 'mobx-react';
 
 import Icon from '@c/icon';
-import Button from '@c/button';
 import Checkbox from '@c/checkbox';
+import Modal from '@c/modal';
 import { FILTER_FIELD } from '@c/data-filter/utils';
 
 import './index.scss';
+
 import store from '../store';
 
 function getFieldType(field: PageField): string {
@@ -84,27 +84,26 @@ function FilterSetting(): JSX.Element {
       </div>
       {store.filterModalVisible && (
         <Modal
-          visible
-          title='筛选条件配置'
-          onCancel={handleCancel}
+          title="筛选条件配置"
+          onClose={handleCancel}
           className="static-modal"
-          footer={(
-            <div className="flex items-center">
-              <Button iconName='close' onClick={handleCancel}>
-                取消
-              </Button>
-              <div className="px-2"></div>
-              <Button
-                onClick={onSave}
-                modifier='primary'
-                iconName='check'
-              >
-                保存筛选配置
-              </Button>
-            </div>
-          )}
+          footerBtns={[
+            {
+              text: '取消',
+              key: 'cancel',
+              iconName: 'close',
+              onClick: handleCancel,
+            },
+            {
+              text: '保存筛选配置',
+              key: 'confirm',
+              iconName: 'check',
+              modifier: 'primary',
+              onClick: onSave,
+            },
+          ]}
         >
-          <div className='w-full'>
+          <div className='w-full px-20 py-32'>
             {fieldList.map((field: PageField) => fieldFilterRender(field))}
           </div>
         </Modal>

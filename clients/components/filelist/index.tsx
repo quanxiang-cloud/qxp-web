@@ -2,9 +2,10 @@ import React from 'react';
 import cs from 'classnames';
 import { saveAs } from 'file-saver';
 import jsZip from 'jszip';
-import { Progress, Message } from '@QCFE/lego-ui';
+import { Progress } from '@QCFE/lego-ui';
 
 import Icon from '@c/icon';
+import toast from '@lib/toast';
 
 import styles from './index.module.scss';
 
@@ -42,7 +43,7 @@ const Filelist = ({
   hideProgress,
   isPreview,
   messageTitle,
-}: Props) => {
+}: Props): (JSX.Element | null) => {
   const handleDownload = (link: string, filename: string) => {
     if (!canDownload) {
       return;
@@ -53,7 +54,7 @@ const Filelist = ({
   const dlViaBlob = (url: string)=> {
     return fetch(url)
       .then((res) => ({ url, blob: res.blob() }))
-      .catch((err: Error) => Message.error(err.message));
+      .catch((err: Error) => toast.error(err.message));
   };
 
   const exportZip = (blobs: Array<{ url: string, blob: any }>) => {
@@ -80,7 +81,7 @@ const Filelist = ({
     dlAndZip(files.map((file) => file.url));
   };
 
-  const renderList = () => {
+  const renderList = (): JSX.Element => {
     return (
       <>
         {files.map((itm, idx) => (
