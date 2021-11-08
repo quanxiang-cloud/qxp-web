@@ -173,7 +173,7 @@ function ApiList(props: Props) {
     }
 
     if (modalType === 'delete') {
-      deleteNativeApi(store.currentSvcPath, [curRow?.name || '']).then(()=> {
+      deleteNativeApi(store.currentSvcPath.slice(0, store.currentSvcPath.lastIndexOf('/')), [curRow?.name || '']).then(()=> {
         toast.success('删除 API 成功');
         if (store.svcApis?.list?.length === 1 && pageParams.page > 1) {
           setPageParams({ ...pageParams, page: pageParams.page - 1 });
@@ -200,10 +200,10 @@ function ApiList(props: Props) {
           >
             新建 API
           </Button>
-          {/* <span onClick={toAddSwaggerPage} className='cursor-pointer'>*/}
-          {/*  <Icon name='archive' />*/}
-          {/*  <span className='ml-5'>批量导入</span>*/}
-          {/* </span>*/}
+          <span onClick={toAddSwaggerPage} className='cursor-pointer'>
+            <Icon name='archive' />
+            <span className='ml-5'>批量导入</span>
+          </span>
         </div>
         <Search
           className="mr-20 w-220"

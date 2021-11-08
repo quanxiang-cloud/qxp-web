@@ -1,30 +1,37 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import cs from 'classnames';
 import { UnionColumns } from 'react-table';
 import { useHistory } from 'react-router-dom';
+import { observer } from 'mobx-react';
 
 import { Upload } from '@QCFE/lego-ui';
 import Icon from '@c/icon';
 import Table from '@c/table';
 import Button from '@c/button';
+import toast from '@lib/toast';
 
 import Header from '../comps/header';
 import ParamsSection from '../add-api/params-section';
+import store from '../store';
 
 interface Props {
   className?: string;
 }
 
 function AddSwagger(props: Props) {
-  const [fileList, setFileList] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
   const [apis, setApis] = useState([]);
   const history = useHistory();
+
+  useEffect(()=> {
+    store.fetchSvc();
+  }, []);
 
   function onSubmit(): void {
 
   }
 
+  // todo
   const COLS: UnionColumns<any>[] = [
     {
       Header: 'API 名称',
@@ -43,22 +50,36 @@ function AddSwagger(props: Props) {
     },
   ];
 
-  function beforeUpload(): void {
-
-  }
-
-  function deleteFile(idx: number): void {
-
-  }
-
   return (
     <>
       <Header name='批量导入' />
       <div className="w-full h-full px-16 py-16 relative">
         <Upload
           style={{ width: '100%' }}
-          beforeUpload={beforeUpload}
+          headers={{ 'X-Proxy': 'API', 'Content-Type': 'application/json' }}
+          disabled={!store.currentSvcPath}
+          action={`/api/v1/polyapi/raw/upload${store.currentSvcPath}`}
+          data={(file:File)=> {
+            return {
+              version: 'v1',
+            };
+          }}
           accept=".json"
+          beforeUpload={(file)=> {
+            if (file.type !== 'application/json') {
+              toast.error('请上传 swagger 2.0 的json文件');
+              return false;
+            }
+          }}
+          onSuccess={(res)=> {
+            if (res && res.code !== 0) {
+              toast.error(res.msg);
+            }
+            console.log('upload suc: ', res);
+          }}
+          onError={(err)=> {
+            toast.error(err);
+          }}
         >
           <div
             className={cs(
@@ -74,34 +95,8 @@ function AddSwagger(props: Props) {
             <p className="group-hover:text-blue-600">点击或拖拽上传文件到该区域，支持 Swagger2.0 数据导入</p>
           </div>
         </Upload>
-        <div className="mt-8 flex flex-col">
-          {fileList.map((file, index) => {
-            return (
-              <div
-                key={index}
-                className="px-8 py-4 cursor-pointer flex
-                        items-center justify-between bg-blue-100"
-              >
-                <div className="flex items-center">
-                  <div
-                    className="w-16 h-16 bg-blue-600 corner-12-2-12-12
-                          flex items-center justify-center mr-8"
-                  >
-                    <Icon size={12} name="book" type="light" />
-                  </div>
-                  <span>{file.name}</span>
-                </div>
-                <Icon
-                  size={16}
-                  name="restore_from_trash"
-                  onClick={() => deleteFile(index)}
-                />
-              </div>
-            );
-          })}
-        </div>
 
-        <ParamsSection title='API 列表预览'>
+        <ParamsSection title='API 列表预览' className='mt-16'>
           <Table
             loading={loading}
             emptyTips='暂无数据'
@@ -115,8 +110,8 @@ function AddSwagger(props: Props) {
           <Button onClick={()=> history.goBack()} className='mr-20'>
             取消
           </Button>
-          <Button modifier='primary' onClick={onSubmit}>
-            确认提交
+          <Button modifier='primary' onClick={onSubmit} forbidden={!apis.length}>
+            确认导入
           </Button>
         </div>
       </div>
@@ -124,4 +119,4 @@ function AddSwagger(props: Props) {
   );
 }
 
-export default AddSwagger;
+export default observer(AddSwagger);
