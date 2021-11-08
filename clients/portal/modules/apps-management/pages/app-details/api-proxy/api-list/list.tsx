@@ -200,10 +200,10 @@ function ApiList(props: Props) {
           >
             新建 API
           </Button>
-          {/* <span onClick={toAddSwaggerPage} className='cursor-pointer'>*/}
-          {/*  <Icon name='archive' />*/}
-          {/*  <span className='ml-5'>批量导入</span>*/}
-          {/* </span>*/}
+          <span onClick={toAddSwaggerPage} className='cursor-pointer'>
+            <Icon name='archive' />
+            <span className='ml-5'>批量导入</span>
+          </span>
         </div>
         <Search
           className="mr-20 w-220"
