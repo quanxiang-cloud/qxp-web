@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { toJS } from 'mobx';
-import { TextArea } from '@QCFE/lego-ui';
+import { Input } from 'antd';
 
 import Icon from '@c/icon';
 import Modal from '@c/modal';
@@ -13,6 +13,8 @@ import ReceiverList from '@c/employee-receiver-list';
 import SelectStepBackNode from './select-step-back-node';
 import { Actions } from './index';
 import { abandonTask, deliverTask, sendTask, stepTask } from '../api';
+
+const { TextArea } = Input;
 
 interface Props {
   action: Actions;
