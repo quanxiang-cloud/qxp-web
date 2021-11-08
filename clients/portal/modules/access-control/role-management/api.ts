@@ -43,13 +43,14 @@ interface GetRoleAssociationParams {
   page?: number;
   limit?: number;
 }
+
 export async function getRoleAssociations({ queryKey }: QueryFunctionContext<[
   string, GetRoleAssociationParams
 ]>) {
   const data: any = await httpClient('/api/v1/goalie/listRoleOwner', queryKey[1]);
   return ({
-    departments: data.owners.filter(({ type }: {type: number}) => type === 2) || [],
-    employees: data.owners.filter(({ type }: {type: number}) => type === 1) || [],
+    departments: data.owners.filter(({ type }: { type: number }) => type === RoleBindType.employee) || [],
+    employees: data.owners.filter(({ type }: { type: number }) => type === RoleBindType.department) || [],
     departmentsOrEmployees: data?.owners || [],
     total: data.total || 0,
   });
@@ -102,4 +103,8 @@ export async function adminSearchUserList({ queryKey }: QueryFunctionContext) {
     },
   );
   return { users: data.data, total: data.total_count };
+}
+
+export async function transferRoleSuper(id: string): Promise<{ code: number, msg: string }> {
+  return await httpClient('/api/v1/goalie/transferRoleSuper', { transferee: id });
 }
