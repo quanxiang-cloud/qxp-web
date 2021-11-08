@@ -48,8 +48,8 @@ function ApprovalDetail(): JSX.Element {
   const {
     isLoading, data, isError, error,
   } = useQuery<any, Error>(
-    [processInstanceID, type],
-    () => getTaskFormById(processInstanceID, { type }).then((res) => {
+    [processInstanceID, type, currentTaskId],
+    () => getTaskFormById(processInstanceID, { type, taskId: currentTaskId }).then((res) => {
       if (!currentTaskId) {
         setCurrentTaskId(get(res, 'taskDetailModels[0].taskId', '').toString());
       }
@@ -74,7 +74,7 @@ function ApprovalDetail(): JSX.Element {
 
   const task = useMemo(() => {
     const taskDetailData = get(data, 'taskDetailModels', []).find(
-      (taskItem: Record<string, any>) => taskItem?.formData !== null,
+      (taskItem: Record<string, any>) => taskItem?.formSchema !== null,
     );
     return taskDetailData ? taskDetailData : get(data, 'taskDetailModels[0]', {});
   }, [data]);
