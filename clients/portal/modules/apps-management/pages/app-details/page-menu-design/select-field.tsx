@@ -1,26 +1,22 @@
 import React from 'react';
-import { Control, Form } from '@QCFE/lego-ui';
 
 import Select from '@c/select';
 
-type Props = Form.SelectFieldProps & { placeholder: string | undefined }
+interface Props {
+  options: LabelValue[];
+  value?: string;
+  onChange?: (val: string) => void;
+}
 
-function SelectField({
-  options,
-  onChange,
-  placeholder,
-  value,
-}: Props, ref?: React.LegacyRef<Control>) {
+function SelectField({ value, onChange, options }: Props): JSX.Element {
   return (
-    <Control ref={ref}>
-      <Select
-        placeholder={placeholder}
-        options={options}
-        onChange={onChange}
-        defaultValue={value}
-      />
-    </Control>
+    <Select
+      placeholder="选填"
+      options={options}
+      onChange={onChange}
+      defaultValue={value}
+    />
   );
 }
 
-export default Form.getFormField(React.forwardRef(SelectField));
+export default SelectField;
