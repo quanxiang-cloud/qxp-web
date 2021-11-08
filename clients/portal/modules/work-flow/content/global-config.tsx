@@ -106,7 +106,9 @@ export default function GlobalConfig(): JSX.Element | null {
     });
   };
 
-  const approveNodes = store.value.elements.filter(({ type }) => type === 'approve').map((node) => {
+  const approveNodes = store.value.elements.filter(
+    ({ type }) => type === 'approve' || type === 'fillIn',
+  ).map((node) => {
     return {
       label: node.data?.nodeData.name,
       value: node.id,
