@@ -19,6 +19,11 @@ export const PAGINATION = {
   pageSize: 10,
 };
 
+export const ROLE_BIND_TYPE = {
+  department: 1,
+  employee: 2,
+};
+
 interface Props {
   isSuper: boolean;
   onCancelAssociation: (records: EmployeeOrDepartmentOfRole[]) => void;
@@ -64,9 +69,9 @@ export default function DepartmentTable(
   useEffect(() => {
     if (data) {
       setPagination((p) => ({ ...p, total: data.total }));
-      if (type === RoleBindType.department) {
+      if (type === ROLE_BIND_TYPE.department) {
         setMembers(data?.employees);
-      } else if (type === RoleBindType.employee) {
+      } else if (type === ROLE_BIND_TYPE.employee) {
         setMembers(data?.departments);
       }
     }
@@ -126,7 +131,7 @@ export default function DepartmentTable(
   }
 
   const columns: any[] = [];
-  if (type === RoleBindType.department) {
+  if (type === ROLE_BIND_TYPE.department) {
     columns.push(...[
       {
         Header: '名称',
@@ -150,7 +155,7 @@ export default function DepartmentTable(
       },
     ]);
   }
-  if (type === RoleBindType.employee) {
+  if (type === ROLE_BIND_TYPE.employee) {
     columns.push({
       Header: '名称',
       id: 'departmentName',
@@ -158,7 +163,7 @@ export default function DepartmentTable(
     });
   }
 
-  if (type === RoleBindType.department && isSuper && members.length) {
+  if (type === ROLE_BIND_TYPE.department && isSuper && members.length) {
     columns.push({
       Header: '操作',
       id: 'action',
@@ -221,7 +226,7 @@ export default function DepartmentTable(
         onSelectChange={handleSelectChange}
         columns={columns}
         emptyTips={(
-          <EmptyData text={type === RoleBindType.department ? '无成员数据' : '无部门数据'} className="py-10" />
+          <EmptyData text={type === ROLE_BIND_TYPE.department ? '无成员数据' : '无部门数据'} className="py-10" />
         )}
         rowKey="id"
         initialSelectedRowKeys={selectedKeys || []}
