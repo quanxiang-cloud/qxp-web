@@ -10,13 +10,15 @@ interface Props {
   aggType: AggType,
   decimalPlaces: number,
   displayFieldNull: '0' | '-',
+  value?: number;
   roundDecimal: RoundMethod,
 }
 
 function SummaryField(props: Props): JSX.Element {
   // todo: compute statistic value by props
+
   return (
-    <div>{props.displayFieldNull}</div>
+    <div>{typeof props.value === 'number' ? props.value : props.displayFieldNull}</div>
   );
 }
 
@@ -26,7 +28,7 @@ function SummaryFieldWrap(props: ISchemaFieldComponentProps): JSX.Element {
   // todo handle props.readOnly
 
   return (
-    <SummaryField {...comProps} />
+    <SummaryField {...comProps} value={props.value} />
   );
 }
 
