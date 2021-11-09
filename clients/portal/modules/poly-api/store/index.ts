@@ -4,7 +4,7 @@ import { lensPath, set, dissocPath, path } from 'ramda';
 import { PolyCanvasStore } from './canvas';
 
 export class PolyStore extends BehaviorSubject<POLY_API.Root> {
-  constructor(initialState: any) {
+  constructor(initialState: POLY_API.Root) {
     super(initialState);
   }
 
@@ -33,6 +33,11 @@ const store$ = new PolyStore({
   version: '',
   id: '',
   encoding: '',
+  currentNodeConfigParams: {
+    currentNode: undefined,
+    schema: {},
+    onClose: undefined,
+  },
   nodes: new PolyCanvasStore([]),
 });
 

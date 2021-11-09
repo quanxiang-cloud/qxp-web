@@ -114,6 +114,11 @@ declare namespace POLY_API {
     version: string;
     id: string;
     encoding: string;
+    currentNodeConfigParams: {
+      schema: ISchema;
+      currentNode?: import('@polyApi/store/node').PolyNodeStore;
+      onClose?: () => void;
+    }
     nodes: T;
   }
 }

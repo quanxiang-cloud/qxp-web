@@ -3,6 +3,7 @@ import { ReactFlowProvider } from 'react-flow-renderer';
 
 import PolyDetailsHeader from './header';
 import PolyDetailsDesigner from './designer';
+import NodeConfigDrawer from './node-config';
 
 function PolyDetails(): JSX.Element {
   return (
@@ -10,6 +11,7 @@ function PolyDetails(): JSX.Element {
       <ReactFlowProvider>
         <PolyDetailsHeader className="h-48 w-full bg-white" />
         <PolyDetailsDesigner className="flex-1 w-full" />
+        <NodeConfigDrawer />
       </ReactFlowProvider>
     </div>
   );
