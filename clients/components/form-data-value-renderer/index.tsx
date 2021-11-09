@@ -46,6 +46,10 @@ function AssociatedRecordsValueRender({ value, schema, className }: ValueRendere
   );
 }
 
+function numberPickerValueRender({ schema, value }: ValueRendererProps): string {
+  return (value as number).toFixed(schema?.['x-component-props']?.precision || 0);
+}
+
 export function labelValueRenderer(value: FormDataValue): string {
   if (Array.isArray(value)) {
     const labels = (value as FormBuilder.Option[]).map(({ label }) => label).join(', ');
@@ -97,12 +101,13 @@ export default function FormDataValueRenderer({ value, schema, className }: Prop
 export function getBasicValue(schema: ISchema, value: FormDataValue): string {
   switch (schema['x-component']?.toLowerCase()) {
   case 'input':
-  case 'numberpicker':
   case 'textarea':
   case 'radiogroup':
   case 'select':
   case 'serial':
     return value as string;
+  case 'numberpicker':
+    return numberPickerValueRender({ schema, value });
   case 'checkboxgroup':
   case 'multipleselect':
     return stringListValue({ schema, value });
