@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Input, Field, Label, Control, Icon } from '@QCFE/lego-ui';
 import { useDebounce } from 'react-use';
 import cs from 'classnames';
 
+import Icon from '@c/icon';
 import usePrevious from '@lib/hooks/use-previous';
 
 export interface ISearchInput {
@@ -35,23 +35,26 @@ export default function SearchInput({
     [val],
   );
 
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>): void {
+    const value = e.target.value;
+    setVal(value);
+    setIsVisible(value !== '');
+  }
+
   return (
     <div className={cs('flex flex-row items-center', className)}>
-      <Field className="flex flex-row items-center w-full">
-        {typeof prefix === 'string' && <Label>{prefix}</Label>}
+      <div className="flex flex-row items-center w-full">
+        {typeof prefix === 'string' && <div>{prefix}</div>}
         {typeof prefix !== 'string' && prefix && <>{prefix}</>}
-        <Control className="flex flex-row items-center w-full relative">
-          <Icon name="magnifier" className="absolute left-16 z-10" />
-          <Input
-            className={cs('search-input', {
+        <div className="flex flex-row items-center w-full relative">
+          <Icon name="search" className="absolute left-16 z-10" />
+          <input
+            className={cs('search-input w-full py-4', {
               'pr-28': appendix,
             })}
             type="text"
             placeholder={placeholder}
-            onChange={(e: Event, value: string) => {
-              setVal(value);
-              setIsVisible(value !== '');
-            }}
+            onChange={handleInputChange}
             name={name}
             value={val}
           />
@@ -68,9 +71,8 @@ export default function SearchInput({
             />
           )}
           {isVisible && typeof appendix !== 'string' && appendix && <>{appendix}</>}
-        </Control>
-        <Label></Label>
-      </Field>
+        </div>
+      </div>
     </div>
   );
 }
