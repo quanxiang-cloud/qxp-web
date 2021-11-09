@@ -27,13 +27,17 @@ export default function NodeConfigDrawer(): JSX.Element {
   }
 
   return (
-    <Drawer
-      title="node config"
-      onCancel={onCancel}
-      visible={!!(schema && currentNode)}
-      position="right"
-    >
-      <SchemaForm schema={schema} components={{ input: Input }} />
-    </Drawer>
+    <>
+      {!isEmpty(schema) && (
+        <Drawer
+          title="node config"
+          onCancel={onCancel}
+          visible={!!(schema && currentNode)}
+          position="right"
+        >
+          <SchemaForm schema={schema} components={{ input: Input }} />
+        </Drawer>
+      )}
+    </>
   );
 }
