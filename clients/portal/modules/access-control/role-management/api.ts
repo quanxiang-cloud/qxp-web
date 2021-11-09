@@ -1,7 +1,9 @@
 import { QueryFunctionContext } from 'react-query';
 
 import httpClient from '@lib/http-client';
+
 import { IRoleListItem } from './role-list-item';
+import { ROLE_BIND_TYPE } from './role-detail/associate-department-employee/department-or-employee-table';
 
 export async function getRoles() {
   const { roles } = await httpClient('/api/v1/goalie/listRole');
@@ -49,8 +51,8 @@ export async function getRoleAssociations({ queryKey }: QueryFunctionContext<[
 ]>) {
   const data: any = await httpClient('/api/v1/goalie/listRoleOwner', queryKey[1]);
   return ({
-    departments: data.owners.filter(({ type }: { type: number }) => type === RoleBindType.employee) || [],
-    employees: data.owners.filter(({ type }: { type: number }) => type === RoleBindType.department) || [],
+    departments: data.owners.filter(({ type }: { type: number }) => type === ROLE_BIND_TYPE.employee) || [],
+    employees: data.owners.filter(({ type }: { type: number }) => type === ROLE_BIND_TYPE.department) || [],
     departmentsOrEmployees: data?.owners || [],
     total: data.total || 0,
   });
