@@ -1,11 +1,11 @@
 import React, { useMemo, useRef } from 'react';
 import cs from 'classnames';
-import { Sortable } from '@QCFE/lego-ui';
 import { Slider } from 'antd';
 
 import Popover from '@c/popover';
 import ToolTip from '@c/tooltip';
 import Checkbox from '@c/checkbox';
+import Sortable from '@c/sortable';
 import Icon from '@c/icon';
 import { TableColumnConfig } from '@c/form-app-data-table/type';
 
@@ -88,7 +88,7 @@ function FieldItem({ field, selected, onChange }: FieldItemProps): JSX.Element {
 }
 
 function TableColumnConfig({ onChange, fieldList, sortChange, selectFields }: Props): JSX.Element {
-  const [_selectFields, noSelectFields] = useMemo(() => {
+  const _selectFields = useMemo(() => {
     const noSelectFieldsTmp: ColumnConfigView[] = [];
     const selectFieldsTmp: ColumnConfigView[] = selectFields.map((field) => {
       const selected = fieldList.find(({ id }) => id === field.id);
@@ -102,7 +102,21 @@ function TableColumnConfig({ onChange, fieldList, sortChange, selectFields }: Pr
       }
     });
 
-    return [selectFieldsTmp, noSelectFieldsTmp];
+    return [...selectFieldsTmp, ...noSelectFieldsTmp].map((field, index) => {
+      const _selected = index <= selectFieldsTmp.length - 1;
+      return {
+        id: field.id,
+        forbidden: !_selected,
+        render: () => (
+          <FieldItem
+            selected={_selected}
+            key={field.id}
+            field={field}
+            onChange={onChange}
+          />
+        ),
+      };
+    });
   }, [selectFields, fieldList]);
 
   return (
@@ -112,26 +126,9 @@ function TableColumnConfig({ onChange, fieldList, sortChange, selectFields }: Pr
         <span>显示</span>
       </div>
       <Sortable
-        tag="div"
-        options={{
-          handle: '.page-field-drag',
-          draggable: '.field-sort',
-          animation: 150,
-        }}
         onChange={sortChange}
-      >
-        {_selectFields.map((field) => (
-          <FieldItem
-            selected
-            key={field.id}
-            field={field}
-            onChange={onChange}
-          />
-        ))}
-        {noSelectFields.map((field) => (
-          <FieldItem key={field.id} field={field} onChange={onChange} />
-        ))}
-      </Sortable>
+        list={_selectFields}
+      />
     </div>
   );
 }
