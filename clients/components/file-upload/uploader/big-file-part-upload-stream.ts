@@ -31,7 +31,7 @@ export default function fileMultiPartUpload({
   onSuccess,
 }: FileUploadStreamProps): () => void {
   const { uid: path, uploadID, fileChunks, size } = file;
-  const percentPreChunk = 100 / (size / CHUNK_SIZE);
+  const percentPreChunk = 100 / Math.ceil(size / CHUNK_SIZE);
   let totalProgress = 0;
 
   if (!path && !uploadID && fileChunks) throw new Error('No path or uploadID provided');

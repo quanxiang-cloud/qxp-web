@@ -78,7 +78,7 @@ export default {
       targetPlatform: 'browser',
       inline: false,
       extensions: ['js', 'ts'],
-      loadPath: 'dist',
+      loadPath: '/dist',
       skipPlugins: ['rollup-plugin-output-manifest'],
     }),
     replace({
