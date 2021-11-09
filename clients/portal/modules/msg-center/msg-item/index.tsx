@@ -5,7 +5,7 @@ import { MsgReadStatus, MsgType } from '@portal/modules/system-mgmt/constants';
 import msgCenter from '@portal/stores/msg-center';
 import dayjs from 'dayjs';
 
-import { Message } from '@QCFE/lego-ui';
+import toast from '@lib/toast';
 import { useQueryClient, useMutation } from 'react-query';
 import { getMsgById } from '@portal/modules/msg-center/api';
 
@@ -31,7 +31,7 @@ const MsgItem = ({
   hideType,
   onClick,
   readonly,
-}: Qxp.MsgItem & Props) => {
+}: Qxp.MsgItem & Props): JSX.Element => {
   const [read, setRead] = useState(read_status);
   const refItem = useRef(null);
   const queryPage = useRouting();
@@ -82,7 +82,7 @@ const MsgItem = ({
     },
     onError: (err: Error) => {
       msgCenter.setLoadingDetail(false);
-      Message.error(err.message);
+      toast.error(err.message);
     },
   });
 

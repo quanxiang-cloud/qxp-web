@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { observer } from 'mobx-react';
 
-import Switch from '@c/switch';
 import Button from '@c/button';
 import store from './store';
 
@@ -10,6 +9,7 @@ import EmployeeOrDepartmentPickerModal from '@c/employee-or-department-picker';
 import Table from '@c/table';
 import Avatar from '@c/avatar';
 import toast from '@lib/toast';
+import RadioButtonGroup from '@c/radio/radio-button-group';
 
 type UserOrDept = {
   id: string,
@@ -168,16 +168,19 @@ function AssociatedPerson(): JSX.Element {
               </Button>
             )}
           </div>
-          <Switch
-            value={1}
-            options={[{
-              label: '按员工',
+          <RadioButtonGroup
+            radioBtnClass="bg-white text-12"
+            onChange={(value) => {
+              setShowBindType(value as number);
+            }}
+            listData={[{
+              label: '员工',
               value: 1,
             }, {
-              label: '按部门',
+              label: '部门',
               value: 2,
-            }]}
-            onChange={setShowBindType}
+            }] as any}
+            currentValue={showBindType}
           />
         </div>
         <div className='flex-1'>

@@ -35,33 +35,57 @@ const reservedKeys = [
   '_array_nodes_',
 ];
 
-function mapRawParams(params: ApiParam[], mergeOptions?: Record<string, any>): ParamItem[] {
-  return params.filter(({ name })=> !!name).map((v)=> {
-    const item = Object.assign(pick(v, reservedKeys), mergeOptions || {});
-    const { _array_nodes_: arrayNodes, _object_nodes_: objectNodes } = item;
+// todo: refine
+function applySubNodes(item: any, isRoot: boolean, objectNodes?: Array<any>, arrayNodes?: Array<any>): void {
+  let target = item;
 
+  if (isRoot) {
     if (item.in === 'body') {
       item.schema = {
         type: item.type,
       };
-
-      if (arrayNodes) {
-        item.schema.items = mapRawParams(arrayNodes).reduce((acc, cur)=> {
-          acc[cur.name] = omit(cur, 'name', 'required');
-          return acc;
-        }, {});
-      }
-      if (objectNodes) {
-        item.schema.properties = mapRawParams(objectNodes).reduce((acc, cur)=> {
-          acc[cur.name] = omit(cur, 'name', 'required');
-          return acc;
-        }, {});
-      }
-      delete item.type;
+      target = item.schema;
     }
+  }
 
+  if (arrayNodes) {
+    const items = mapRawParams(arrayNodes).reduce((acc, cur)=> {
+      acc[cur.name] = omit(cur, 'name', 'required');
+      return acc;
+    }, {});
+    const requiredKeys: string[] = arrayNodes.filter((v: ApiParam)=> v.required).map((v: ApiParam)=> v.name);
+
+    Object.assign(target, {
+      required: requiredKeys.filter(Boolean),
+      items,
+    });
+  }
+  if (objectNodes) {
+    const properties = mapRawParams(objectNodes).reduce((acc, cur)=> {
+      acc[cur.name] = omit(cur, 'name', 'required');
+      return acc;
+    }, {});
+    const requiredKeys: string[] = objectNodes.filter((v: ApiParam)=> v.required).map((v: ApiParam)=> v.name);
+    Object.assign(target, {
+      required: requiredKeys.filter(Boolean),
+      properties,
+    });
+  }
+
+  if (['object', 'array'].includes(item.type)) {
+    delete item.required;
+  }
+}
+
+function mapRawParams(params: ApiParam[], mergeOptions?: Record<string, any>): ParamItem[] {
+  return params.filter(({ name })=> !!name).map((v)=> {
+    const item = Object.assign(pick(v, reservedKeys), pick(mergeOptions || {}, 'in'));
+    const { _array_nodes_: arrayNodes, _object_nodes_: objectNodes } = item;
+
+    applySubNodes(item, mergeOptions?.root, objectNodes, arrayNodes);
+
+    // constant
     if (!mergeOptions?.in && item.constIn) {
-      // constant
       item.in = item.constIn;
       item.data = item.constData;
       delete item.required;
@@ -98,19 +122,19 @@ export default class Store {
     return {
       constants: mapRawParams(constant),
       parameters: [
-        ...mapRawParams(path, { in: 'path' }),
-        ...mapRawParams(query, { in: 'query' }),
-        ...mapRawParams(header, { in: 'header' }),
+        ...mapRawParams(path, { in: 'path', root: true }),
+        ...mapRawParams(query, { in: 'query', root: true }),
+        ...mapRawParams(header, { in: 'header', root: true }),
         // in-body 参数都放在schema属性里
-        ...mapRawParams(body, { in: 'body' }),
+        ...mapRawParams(body, { in: 'body', root: true }),
       ],
       responses: {
         200: {
           schema: {
             type: 'object',
-            title: 'api result',
+            required: response.filter((v: ApiParam)=> v.required).map((v: ApiParam)=> v.name),
             properties: mapRawParams(response).reduce((acc, cur)=> {
-              acc[cur.name] = omit(cur, 'name');
+              acc[cur.name] = omit(cur, 'name', 'required');
               return acc;
             }, {}),
           },
@@ -126,7 +150,7 @@ export default class Store {
 
   @action
   setParams=(group: ParamGroup, params: ApiParam[])=> {
-    Object.assign(this.parameters, { [group]: params });
+    Object.assign(this.parameters, { [group]: params && params.length ? params : [getDefaultParam()] });
   }
 
   @action

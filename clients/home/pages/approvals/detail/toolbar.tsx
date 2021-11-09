@@ -3,7 +3,7 @@ import Icon from '@c/icon';
 import Button from '@c/button';
 import cs from 'classnames';
 import { useHistory, useParams } from 'react-router-dom';
-import { TextArea } from '@QCFE/lego-ui';
+import { Input } from 'antd';
 
 import MoreMenu from '@c/more-menu';
 import PopConfirm from '@c/pop-confirm';
@@ -12,6 +12,7 @@ import toast from '@lib/toast';
 import { handleReadTask } from '../api';
 import actionMap from './action-map';
 
+const { TextArea } = Input;
 interface Props {
   currTask: any;
   className?: string;

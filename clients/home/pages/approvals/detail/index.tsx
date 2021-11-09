@@ -5,7 +5,7 @@ import { observer } from 'mobx-react';
 import { pick, get } from 'lodash';
 
 import Breadcrumb from '@c/breadcrumb';
-import Switch from '@c/switch';
+import RadioButtonGroup from '@c/radio/radio-button-group';
 import { useURLSearch } from '@lib/hooks';
 import Tab from '@c/tab';
 import Icon from '@c/icon';
@@ -48,8 +48,8 @@ function ApprovalDetail(): JSX.Element {
   const {
     isLoading, data, isError, error,
   } = useQuery<any, Error>(
-    [processInstanceID, type],
-    () => getTaskFormById(processInstanceID, { type }).then((res) => {
+    [processInstanceID, type, currentTaskId],
+    () => getTaskFormById(processInstanceID, { type, taskId: currentTaskId }).then((res) => {
       if (!currentTaskId) {
         setCurrentTaskId(get(res, 'taskDetailModels[0].taskId', '').toString());
       }
@@ -74,7 +74,7 @@ function ApprovalDetail(): JSX.Element {
 
   const task = useMemo(() => {
     const taskDetailData = get(data, 'taskDetailModels', []).find(
-      (taskItem: Record<string, any>) => taskItem?.formData !== null,
+      (taskItem: Record<string, any>) => taskItem?.formSchema !== null,
     );
     return taskDetailData ? taskDetailData : get(data, 'taskDetailModels[0]', {});
   }, [data]);
@@ -153,18 +153,16 @@ function ApprovalDetail(): JSX.Element {
         <Panel className="flex flex-col flex-1 px-24 py-24">
           {
             <>
-              {showSwitch && (
-                <Switch
-                  className="pb-24"
-                  onChange={
-                    (value: string) => {
-                      setCurrentTaskId(value);
-                    }
-                  }
-                  value={currentTaskId}
-                  options={status}
-                />
-              )}
+              {showSwitch &&
+              (<RadioButtonGroup
+                radioBtnClass="bg-white"
+                onChange={(value) => {
+                  setCurrentTaskId(value as string);
+                }}
+                listData={status as any}
+                currentValue={currentTaskId}
+              />)
+              }
               <Toolbar
                 currTask={task}
                 permission={task?.operatorPermission || {}}

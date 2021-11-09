@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { toJS } from 'mobx';
-import { TextArea } from '@QCFE/lego-ui';
+import { Input } from 'antd';
 
 import Icon from '@c/icon';
 import Modal from '@c/modal';
@@ -13,6 +13,8 @@ import ReceiverList from '@c/employee-receiver-list';
 import SelectStepBackNode from './select-step-back-node';
 import { Actions } from './index';
 import { abandonTask, deliverTask, sendTask, stepTask } from '../api';
+
+const { TextArea } = Input;
 
 interface Props {
   action: Actions;
@@ -114,7 +116,6 @@ function ActionModal({ closeModal, action }: Props): JSX.Element {
 
   function onOkClick(): void {
     if (action === 'STEP_BACK') {
-      console.log(stepBackId);
       setShowTips(stepBackId === '' ? true : false);
       if (!stepBackId) return;
       stepTask({ processInstanceId, taskId }, { activityInstanceId: stepBackId, remark: textValue }).then(
@@ -166,7 +167,6 @@ function ActionModal({ closeModal, action }: Props): JSX.Element {
       setShowTips(textValue === '' ? true : false);
       if (!textValue) return;
       sendTask({ processInstanceId, taskId }, { remark: textValue }).then((res) => {
-        console.log(res);
         if (res) {
           closeModal();
           Toast.success('操作成功！');

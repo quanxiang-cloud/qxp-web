@@ -1,36 +1,39 @@
 import React, { useState } from 'react';
 import { useMutation } from 'react-query';
+import { UnionColumns } from 'react-table';
 import cs from 'classnames';
-import { CheckboxGroup, Checkbox, Table, Upload } from '@QCFE/lego-ui';
+import { Upload } from '@QCFE/lego-ui';
 
 import Icon from '@c/icon';
 import toast from '@lib/toast';
 import Modal from '@c/modal';
+import Table from '@c/table';
+import CheckboxGroup from '@c/checkbox/checkbox-group';
 
 import { FileUploadStatus } from '../type';
 import { exportEmployeesFail } from '../utils';
 import { getUserTemplate, importTempFile, resetUserPWD } from '../api';
 
-const columns: EmployeeTableColumn[] = [
+const columns: UnionColumns<any>[] = [
   {
-    title: '姓名',
-    dataIndex: 'userName',
-    key: 'userName',
+    Header: '姓名',
+    id: 'userName',
+    accessor: 'userName',
   },
   {
-    title: '手机号',
-    dataIndex: 'phone',
-    key: 'phone',
+    Header: '手机号',
+    id: 'phone',
+    accessor: 'phone',
   },
   {
-    title: '邮箱',
-    dataIndex: 'email',
-    key: 'email',
+    Header: '邮箱',
+    id: 'email',
+    accessor: 'email',
   },
   {
-    title: '原因',
-    dataIndex: 'remarks',
-    key: 'remarks',
+    Header: '原因',
+    id: 'remarks',
+    accessor: 'remarks',
   },
 ];
 
@@ -52,7 +55,7 @@ interface Props {
   closeModal(): void;
 }
 
-export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
+function ImportEmployeesModal({ currDepId, closeModal }: Props): JSX.Element {
   const [fileList, setFileList] = useState<File[]>([]);
   const [checkWay, setCheckWay] = useState<CheckedWay>({
     sendPhone: -1,
@@ -122,7 +125,7 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
     },
   });
 
-  function downEmployeesTemp(url: string, fileName: string) {
+  function downEmployeesTemp(url: string, fileName: string): void {
     const aElem = document.createElement('a');
     document.body.appendChild(aElem);
     aElem.href = url;
@@ -131,7 +134,7 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
     document.body.removeChild(aElem);
   }
 
-  function beforeUpload(file: File) {
+  function beforeUpload(file: File): boolean | void {
     const { size } = file;
     if (size > 1024 * 1024 * 5) {
       toast.error('文件过大，超过 5M 不能上传！');
@@ -141,16 +144,16 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
     return false;
   }
 
-  const downTemp = () => {
+  function downTemp(): void {
     tempMutation.mutate();
-  };
+  }
 
-  function deleteUploadFile(Index: number) {
+  function deleteUploadFile(Index: number): void {
     const newFileList = fileList.filter((item, index) => index !== Index);
     setFileList(newFileList);
   }
 
-  function importEmployeesTemp() {
+  function importEmployeesTemp(): void {
     if (fileList.length === 0) {
       toast.error('请上传文件');
       return;
@@ -163,11 +166,11 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
     uploadMutation.mutate(params);
   }
 
-  function exportEmployees() {
+  function exportEmployees(): void {
     exportEmployeesFail(columns, failUsers, '失败人员列表.xlsx');
   }
 
-  const changeCheckbox = (val: string[]) => {
+  function changeCheckbox(val: Array<string | number>): void {
     const checkedWay: CheckedWay = {
       sendEmail: -1,
       sendPhone: -1,
@@ -177,9 +180,9 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
       val.includes('phone') && (checkedWay.sendPhone = 1);
     }
     setCheckWay(checkedWay);
-  };
+  }
 
-  function handleSubmit() {
+  function handleSubmit(): void {
     if (checkWay && checkWay.sendEmail === -1 && checkWay.sendPhone === -1) {
       toast.error('请选择发送方式');
       return;
@@ -329,12 +332,18 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
                 </p>
                 <p className="text-14 py-8">向已导入的员工发送随机密码</p>
                 <CheckboxGroup
-                  name="states"
-                  onChange={(value: string[]) => changeCheckbox(value)}
-                >
-                  <Checkbox value="email">通过邮箱</Checkbox>
-                  <Checkbox value="phone">通过短信</Checkbox>
-                </CheckboxGroup>
+                  onChange={(value: Array<string | number>) => changeCheckbox(value)}
+                  options={[
+                    {
+                      label: '通过邮箱',
+                      value: 'email',
+                    },
+                    {
+                      label: '通过短信',
+                      value: 'phone',
+                    },
+                  ]}
+                />
               </div>
             )
           }
@@ -356,7 +365,7 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
                   <Table
                     className="text-14 table-full"
                     rowKey="phone"
-                    dataSource={failUsers}
+                    data={failUsers}
                     columns={columns}
                   />
                 </div>
@@ -368,3 +377,5 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
     </>
   );
 }
+
+export default ImportEmployeesModal;

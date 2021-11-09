@@ -1,5 +1,5 @@
 variables:
-  IMAGE_PREFIX: dockerhub.qingcloud.com/qxpdev
+  IMAGE_REPO: dockerhub.qingcloud.com/lowcode
 
 stages:
   - install
@@ -46,15 +46,15 @@ build_all:
     - go mod tidy
     - go mod vendor
     - IMAGE_TAG="v$(date "+%Y%m%d")-$(git rev-parse --short HEAD)"
-    - docker build -t "$IMAGE_PREFIX/qxp-web-portal:$IMAGE_TAG" -f ./deploy/Dockerfile-portal .
-    - docker build -t "$IMAGE_PREFIX/qxp-web-home:$IMAGE_TAG" -f ./deploy/Dockerfile-home .
-    - docker build -t "$IMAGE_PREFIX/qxp-web-nginx:$IMAGE_TAG" -f ./deploy/Dockerfile-nginx .
-    - docker push "$IMAGE_PREFIX/qxp-web-nginx:$IMAGE_TAG"
-    - docker push "$IMAGE_PREFIX/qxp-web-portal:$IMAGE_TAG"
-    - docker push "$IMAGE_PREFIX/qxp-web-home:$IMAGE_TAG"
-    - docker rmi "$IMAGE_PREFIX/qxp-web-nginx:$IMAGE_TAG"
-    - docker rmi "$IMAGE_PREFIX/qxp-web-portal:$IMAGE_TAG"
-    - docker rmi "$IMAGE_PREFIX/qxp-web-home:$IMAGE_TAG"
+    - docker build -t "$IMAGE_REPO/qxp-web-portal:$IMAGE_TAG" -f ./deploy/Dockerfile-portal .
+    - docker build -t "$IMAGE_REPO/qxp-web-home:$IMAGE_TAG" -f ./deploy/Dockerfile-home .
+    - docker build -t "$IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG" -f ./deploy/Dockerfile-nginx .
+    - docker push "$IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG"
+    - docker push "$IMAGE_REPO/qxp-web-portal:$IMAGE_TAG"
+    - docker push "$IMAGE_REPO/qxp-web-home:$IMAGE_TAG"
+    - docker rmi "$IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG"
+    - docker rmi "$IMAGE_REPO/qxp-web-portal:$IMAGE_TAG"
+    - docker rmi "$IMAGE_REPO/qxp-web-home:$IMAGE_TAG"
 
 deploy_alpha:
   tags:
@@ -73,9 +73,9 @@ deploy_testing:
     - release
   script:
     - IMAGE_TAG="v$(date "+%Y%m%d")-$(git rev-parse --short HEAD)"
-    - bash -c "helm upgrade qxp-web-portal /root/deployment/qxp-web-portal --set image.tag=$IMAGE_TAG --set namespace=low-code"
-    - bash -c "helm upgrade qxp-web-home /root/deployment/qxp-web-home --set image.tag=$IMAGE_TAG --set namespace=low-code"
-    - bash -c "helm upgrade qxp-web-nginx /root/deployment/qxp-web-nginx --set image.tag=$IMAGE_TAG --set namespace=low-code"
+    - bash -c "helm upgrade qxp-web-portal /root/quanxiang_charts_test/qxp-web-portal --set image.tag=$IMAGE_TAG --set image.repo=dockerhub.qingcloud.com/lowcode -n lowcode"
+    - bash -c "helm upgrade qxp-web-home /root/quanxiang_charts_test/qxp-web-home --set image.tag=$IMAGE_TAG --set image.repo=dockerhub.qingcloud.com/lowcode -n lowcode"
+    - bash -c "helm upgrade qxp-web-nginx /root/quanxiang_charts_test/qxp-web-nginx --set image.tag=$IMAGE_TAG --set image.repo=dockerhub.qingcloud.com/lowcode -n lowcode"
     - echo "deploy testing done!"
 
 deploy_staging:
@@ -89,7 +89,7 @@ deploy_staging:
     - branches
   script:
     - IMAGE_TAG="v$(date "+%Y%m%d")-$(git rev-parse --short HEAD)"
-    - bash -c "helm --host=$HELM_STAGING upgrade qxp-web-portal /root/deployment/qxp-web-portal --set image.tag=$IMAGE_TAG --set namespace=lowcode"
-    - bash -c "helm --host=$HELM_STAGING upgrade qxp-web-home /root/deployment/qxp-web-home --set image.tag=$IMAGE_TAG --set namespace=lowcode"
-    - bash -c "helm --host=$HELM_STAGING upgrade qxp-web-nginx /root/deployment/qxp-web-nginx --set image.tag=$IMAGE_TAG --set namespace=lowcode"
+    - bash -c "helm upgrade qxp-web-portal /root/quanxiang_charts_staging/qxp-web-portal --kubeconfig ~/.kube/config_staging --set image.tag=$IMAGE_TAG --set image.repo=dockerhub.qingcloud.com/lowcode -n lowcode"
+    - bash -c "helm upgrade qxp-web-home /root/quanxiang_charts_staging/qxp-web-home --kubeconfig ~/.kube/config_staging --set image.tag=$IMAGE_TAG --set image.repo=dockerhub.qingcloud.com/lowcode -n lowcode"
+    - bash -c "helm upgrade qxp-web-nginx /root/quanxiang_charts_staging/qxp-web-nginx --kubeconfig ~/.kube/config_staging --set image.tag=$IMAGE_TAG --set image.repo=dockerhub.qingcloud.com/lowcode -n lowcode"
     - echo "deploy staging done!"

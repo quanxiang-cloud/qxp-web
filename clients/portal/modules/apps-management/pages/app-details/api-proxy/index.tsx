@@ -16,13 +16,13 @@ import './styles.scss';
 
 interface SubPageProps {
   namespace?: string;
-  id?: string;
+  api_path?: string;
   action?: string;
 }
 
-function SubPage({ namespace, id, action = '' }: SubPageProps): JSX.Element {
+function SubPage({ namespace, action = '' }: SubPageProps): JSX.Element {
   if (namespace) {
-    if (action === 'add' || id) {
+    if (['add', 'edit'].includes(action)) {
       return <Add />;
     }
     if (action === 'add-swagger') {
@@ -58,7 +58,6 @@ function ApiProxy(): JSX.Element | null {
       <div className='w-full h-full overflow-auto api-proxy--main-cont'>
         <SubPage
           namespace={ns}
-          id={qs.get('id') || ''}
           action={qs.get('action') || ''}
         />
       </div>

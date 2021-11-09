@@ -116,20 +116,24 @@ export const getServiceApiList = async (servicePath: string, params: Paging): Pr
 };
 
 export const queryNativeApi = async (apiPath: string): Promise<PolyAPI.NativeApi>=> {
-  return await httpClient(`/api/v1/polyapi/raw/query/${apiPath}`);
+  return await httpClient(`/api/v1/polyapi/raw/query/${normalizeSuffix(apiPath)}`);
 };
 
-export const deleteNativeApi = async (apiPath: string): Promise<any> => {
-  return await httpClient(`/api/v1/polyapi/raw/delete/${apiPath}`);
+export const deleteNativeApi = async (nsPath: string, names: string[]): Promise<any> => {
+  return await httpClient(`/api/v1/polyapi/raw/delete/${normalizeSuffix(nsPath)}`, { names });
+};
+
+export const searchNativeApi = async (servicePath: string, params: PolyAPI.SearchApiParams): Promise<any> => {
+  return await httpClient(`/api/v1/polyapi/raw/search/${normalizeSuffix(servicePath)}`, params);
 };
 
 export const queryNativeApiDoc = async (apiPath: string, params: PolyAPI.ApiDocParams): Promise<PolyAPI.QueryApiDocResult> => {
-  return await httpClient(`/api/v1/polyapi/raw/doc/${apiPath}`, params);
+  return await httpClient(`/api/v1/polyapi/raw/doc/${normalizeSuffix(apiPath)}`, params);
 };
 
 // 激活api
 export const activeApi = async (apiPath: string, params: {active: number}): Promise<PolyAPI.ActiveApiResult> => {
-  return await httpClient(`/api/v1/polyapi/raw/active/${apiPath}`, params);
+  return await httpClient(`/api/v1/polyapi/raw/active/${normalizeSuffix(apiPath)}`, params);
 };
 
 // 第三方api密钥管理

@@ -65,13 +65,16 @@ function ParamRow({
   }
 
   function handleChangeField(fieldName: string, val: any): void {
-    console.log('change field: ', fieldName, val);
+    // console.log('change field: ', fieldName, val);
     store.setFieldValue(fieldName, val);
   }
 
   function getValidTypes(): LabelValue[] {
-    if (['path', 'constant'].includes(group)) {
+    if (group === 'path') {
       return paramTypes.filter(({ value })=> ['string', 'number'].includes(value));
+    }
+    if (group === 'constant') {
+      return paramTypes.filter(({ value })=> ['string', 'number', 'boolean'].includes(value));
     }
     if (['query', 'header'].includes(group)) {
       return paramTypes.filter(({ value })=> ['string', 'number', 'boolean'].includes(value));
@@ -124,8 +127,11 @@ function ParamRow({
                 {...field}
                 value={name}
                 onChange={(ev)=> {
-                  field.onChange(ev.target.value);
-                  handleChangeField(getFieldName('name'), ev.target.value);
+                  const { value } = ev.target;
+                  if (!value || /^[a-zA-Z_][\w-]*$/.test(value)) {
+                    field.onChange(ev.target.value);
+                    handleChangeField(getFieldName('name'), ev.target.value);
+                  }
                 }}
                 onKeyDown={()=> store.addParam(group, idx)}
                 readOnly={readonly}
@@ -212,14 +218,14 @@ function ParamRow({
               }}
               name={getFieldName('constData')}
               control={control}
-              rules={{
-                validate: (val)=> {
-                  if (!watchName) {
-                    return true;
-                  }
-                  return !!val;
-                },
-              }}
+              // rules={{
+              //   validate: (val)=> {
+              //     if (!watchName) {
+              //       return true;
+              //     }
+              //     return !!val;
+              //   },
+              // }}
               shouldUnregister
             />
           </td>
@@ -229,6 +235,7 @@ function ParamRow({
                 <Select
                   options={[
                     { label: 'query', value: 'query' },
+                    { label: 'header', value: 'header' },
                     { label: 'body', value: 'body' },
                   ]}
                   {...field}

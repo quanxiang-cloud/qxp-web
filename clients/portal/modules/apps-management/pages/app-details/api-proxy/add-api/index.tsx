@@ -4,19 +4,22 @@ import { useHistory, useParams } from 'react-router-dom';
 import { useForm, FormProvider } from 'react-hook-form';
 import cs from 'classnames';
 import { useMutation } from 'react-query';
+import { get, values, omit } from 'lodash';
 
 import Select from '@c/select';
 import Button from '@c/button';
 import toast from '@lib/toast';
+import Loading from '@c/loading';
 
 import Header from '../comps/header';
 import { ErrorMsg } from '../comps/form';
 import ParamsSection from './params-section';
-import ParamsConfig from './params-config';
+import ParamsConfig, { ParamGroup } from './params-config';
 import store from '../store';
 import paramsContext from './context';
 import { getDefaultParam } from './store';
-import { useNamespace } from '../hooks';
+import { useNamespace, useQueryString } from '../hooks';
+import { queryNativeApi, queryNativeApiDoc } from '../api';
 
 import './styles.scss';
 
@@ -43,6 +46,8 @@ const methodOptions = [
 const regApiName = /^[a-zA-Z_]\w+$/; // api标识，swagger的 api path部分
 const regPathParam = /:([^/:]+)/g;
 
+const paramGroups = ['path', 'query', 'header', 'body'];
+
 function getAllPathParamNames(url: string): string[] {
   return url.match(regPathParam) || [];
 }
@@ -57,6 +62,10 @@ function AddApi(props: Props) {
   const [submitting, setSubmitting] = useState(false);
   const watchApiPath = watch('apiPath');
   const watchApiName = watch('apiName');
+  const qs = useQueryString();
+  const isEdit = qs.get('action') === 'edit';
+  const apiPath = qs.get('api_path');
+  const [apiDetail, setApiDetail] = useState<PolyAPI.NativeApi | null>(null);
 
   const createApiMutation = useMutation(store.registerApi, {
     onMutate: ()=> {
@@ -64,7 +73,8 @@ function AddApi(props: Props) {
     },
     onSuccess: (data)=> {
       toast.success('创建成功');
-      toListPage();
+      paramsStore.reset();
+      setTimeout(toListPage, 500);
     },
     onError: (err)=> {
       toast.error(err);
@@ -75,8 +85,34 @@ function AddApi(props: Props) {
   });
 
   useEffect(()=> {
-    return paramsStore.reset;
-  }, []);
+    if (isEdit && apiPath) {
+      Promise.all([
+        queryNativeApi(apiPath),
+        queryNativeApiDoc(apiPath, { docType: 'swag' }),
+      ]).then(([detail, doc])=> {
+        console.log('api doc: ', doc);
+        const apiPath = detail.url.slice(`${detail.schema}://${detail.host}`.length);
+        const { parameters = [], responses = {}, ['x-consts']: constants = [] } = values(get(doc, `doc.paths.${apiPath}`))[0] || {};
+        // todo: set initial param store's parameters
+        paramGroups.forEach((gp)=> {
+          const gpItems = parameters.map((v: {in: string})=> {
+            if (v.in === gp) {
+              return omit(v, 'in');
+            }
+          }).filter(Boolean);
+          paramsStore.setParams(gp as ParamGroup, gpItems as any);
+        });
+
+        setApiDetail(detail);
+        setInitialValues({
+          title: detail.title,
+          apiPath,
+          apiName: detail.name,
+          description: detail.desc,
+        });
+      });
+    }
+  }, [apiPath]);
 
   useEffect(()=> {
     if (!store.svc) {
@@ -100,6 +136,12 @@ function AddApi(props: Props) {
     const prefix = getProxyPath();
     setValue('proxyPath', watchApiName ? [prefix, watchApiName].join('/') : prefix);
   }, [watchApiName, store.svc]);
+
+  function setInitialValues(values: Record<string, any>) {
+    Object.entries(values).map(([name, val])=> {
+      setValue(name, val);
+    });
+  }
 
   function toListPage():void {
     history.push(`/apps/details/${appID}/api_proxy?ns=${ns}`);
@@ -164,9 +206,13 @@ function AddApi(props: Props) {
     }
   }
 
+  if (isEdit && !apiDetail) {
+    return <Loading />;
+  }
+
   return (
     <>
-      <Header name='新建 API' />
+      <Header name={isEdit ? '修改 API' : '新建 API'} />
       <FormProvider {...formInst}>
         <form onSubmit={onSubmit} className='flex flex-col px-20 py-16 w-full overflow-auto'>
           <div className='mb-16'>
@@ -198,7 +244,12 @@ function AddApi(props: Props) {
           <div className='flex items-center mb-16'>
             <div className='w-120 mr-12'>
               <p>请求方法</p>
-              <Select options={methodOptions} value={paramsStore.method} onChange={paramsStore.setMethod}/>
+              <Select
+                options={methodOptions}
+                value={paramsStore.method}
+                onChange={paramsStore.setMethod}
+                disabled={isEdit}
+              />
             </div>
             <div className='mr-12 flex-1'>
               <p>代理路径</p>
@@ -214,7 +265,11 @@ function AddApi(props: Props) {
               <input
                 placeholder='请输入，分组内不可重复'
                 maxLength={32}
-                className={cs('input', { error: errors.apiName })}
+                readOnly={isEdit}
+                className={cs('input', {
+                  error: errors.apiName,
+                  'bg-gray-100': isEdit,
+                })}
                 {...register('apiName', { required: true, pattern: regApiName })}
               />
             </div>

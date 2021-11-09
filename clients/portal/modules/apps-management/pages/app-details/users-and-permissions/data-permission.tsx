@@ -3,9 +3,9 @@ import React, { useState, forwardRef, useImperativeHandle, useRef, useEffect } f
 import DataFilter, { RefProps } from '@c/data-filter';
 import { toEs, ESParameter, toFilterConfig } from '@c/data-filter/utils';
 import Icon from '@c/icon';
-import Switch from '@c/switch';
 
 import store from './store';
+import RadioButtonGroup from '@c/radio/radio-button-group';
 
 type Props = {
   fields: SchemaFieldItem[];
@@ -100,12 +100,13 @@ function DataPermission({
               <div className='text-12 text-gray-400'>数据范围</div>
             </div>
           </div>
-          <Switch
-            className='mr-0'
-            value={view?.key}
-            options={OPTIONS}
+          <RadioButtonGroup
+            className="mr-16"
+            radioBtnClass="bg-white"
+            onChange={(value) => setViewPer({ ...view, key: value as DataPerType })}
+            listData={OPTIONS}
             disabled={store.currentRights.types === 1 || !abled}
-            onChange={(value) => setViewPer({ ...view, key: value })}
+            currentValue={view?.key}
           />
         </div>
         {view?.key === 'custom' && (
@@ -129,11 +130,13 @@ function DataPermission({
               <div className='text-12 text-gray-400'>数据范围</div>
             </div>
           </div>
-          <Switch
-            value={edit?.key}
-            options={OPTIONS}
+          <RadioButtonGroup
+            className="mr-16"
+            radioBtnClass="bg-white"
+            onChange={(value) => setEditPer({ ...edit, key: value as DataPerType })}
+            listData={OPTIONS}
             disabled={store.currentRights.types === 1 || !abled}
-            onChange={(value) => setEditPer({ ...edit, key: value })}
+            currentValue={edit?.key}
           />
         </div>
         {edit?.key === 'custom' && (
@@ -157,11 +160,13 @@ function DataPermission({
               <div className='text-12 text-gray-400'>数据范围</div>
             </div>
           </div>
-          <Switch
-            value={del?.key}
-            options={OPTIONS}
+          <RadioButtonGroup
+            className="mr-16"
+            radioBtnClass="bg-white"
+            onChange={(value) => setDelPer({ ...del, key: value as DataPerType })}
+            listData={OPTIONS}
             disabled={store.currentRights.types === 1 || !abled}
-            onChange={(value) => setDelPer({ ...del, key: value })}
+            currentValue={del?.key}
           />
         </div>
         {del?.key === 'custom' && (
