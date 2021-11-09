@@ -2,7 +2,7 @@ import React, { useState, useEffect, useImperativeHandle, forwardRef, useRef } f
 import { get, transform } from 'lodash';
 
 import Checkbox from '@c/checkbox';
-import { NORMAL, PERMISSION } from '@c/form-builder/constants';
+import { NORMAL, PERMISSION, INVISIBLE_NO_WRITE } from '@c/form-builder/constants';
 import {
   calculateFieldPermission,
   isPermissionEditable,
@@ -65,7 +65,7 @@ function FieldPermissions({
           editable: isPermissionEditable(defaultPermission),
           invisible: isPermissionInvisible(defaultPermission),
           writeable: isInitialPermissionGroup ? true : writeable,
-          readable: isInitialPermissionGroup || fieldSchema.title === '_id' ? true : readable,
+          readable: (isInitialPermissionGroup || fieldSchema.id === '_id') ? true : readable,
           fieldTitle: fieldSchema.title,
           fieldComponentName: fieldSchema?.['x-component'],
           isSystem: fieldSchema?.['x-internal']?.isSystem,
@@ -88,7 +88,7 @@ function FieldPermissions({
         const configPermission = config?.[fieldKey];
         const newPermissionSchema: ISchema = configPermission ? {
           'x-internal': {
-            permission: calculateFieldPermission(
+            permission: fieldKey === '_id' ? INVISIBLE_NO_WRITE : calculateFieldPermission(
               configPermission.editable,
               configPermission.invisible,
               configPermission.writeable,
