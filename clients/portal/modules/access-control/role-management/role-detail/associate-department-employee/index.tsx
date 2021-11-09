@@ -3,7 +3,7 @@ import { useMutation, useQueryClient, useQuery } from 'react-query';
 
 import Button from '@c/button';
 import Authorized from '@c/authorized';
-import Switch from '@c/switch';
+import RadioButtonGroup from '@c/radio/radio-button-group';
 import EmployeeOrDepartmentPickerModal from '@c/employee-or-department-picker';
 import toast from '@lib/toast';
 
@@ -90,24 +90,26 @@ export default function AssociateDepartmentEmployee({ roleID, isSuper }: Props):
           departments={data?.departments}
         />
       )}
-      <div className="flex items-center">
-        <Switch
-          className="mb-16"
-          value={1}
-          options={[{
+      <div className="flex items-center mb-8">
+        <RadioButtonGroup
+          className="mr-16"
+          radioBtnClass="bg-white"
+          onChange={(value) => {
+            setShowBindType(value as number);
+          }}
+          listData={[{
             label: '员工',
             value: 1,
           }, {
             label: '部门',
             value: 2,
-          }]}
-          onChange={setShowBindType}
+          }] as any}
+          currentValue={showBindType}
         />
         {!isSuper && (
           <Authorized authority={['accessControl/role/manage']}>
             <Button
               modifier="primary"
-              className="mb-16 ml-2"
               iconName="link"
               onClick={() => setShowBindModal(true)}
             >

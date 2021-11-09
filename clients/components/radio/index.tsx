@@ -17,11 +17,13 @@ export type Props = DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTM
   value: string | number | boolean;
   error?: boolean;
   disabled?: boolean;
+  radioClass?: string;
+  className?: string;
 };
 
 function InternalRadio(props: Props, ref?: Ref<HTMLInputElement>): JSX.Element {
   const {
-    defaultChecked, error, className, onChange, label, checked: isChecked, disabled, ...inputProps
+    defaultChecked, error, className, radioClass, onChange, label, checked: isChecked, disabled, ...inputProps
   } = props;
   const [checked, setChecked] = useState(defaultChecked);
   const id = uuid();
@@ -46,13 +48,15 @@ function InternalRadio(props: Props, ref?: Ref<HTMLInputElement>): JSX.Element {
     <div className={cs('flex items-center', className)}>
       <div
         className={cs(
-          'w-16 h-16 mr-8 border flex justify-center items-center transition', {
+          'w-16 h-16 mr-8 border flex justify-center items-center transition cursor-pointer', {
             'bg-white': !checked,
             'bg-blue-600': checked,
             'border-red-600': error,
             'border-gray-400': !error,
             'bg-gray-200': disabled,
-          }, disabled ? 'cursor-not-allowed' : 'cursor-pointer')}
+          },
+          disabled ? 'cursor-not-allowed' : 'cursor-pointer',
+          radioClass)}
         style={{ borderRadius: '50%' }}
         onClick={() => handleChange(true)}
       >
@@ -77,7 +81,11 @@ function InternalRadio(props: Props, ref?: Ref<HTMLInputElement>): JSX.Element {
           style={{ borderRadius: '50%' }}
         ></span>
       </div>
-      <label htmlFor={id} className="text-body2 cursor-pointer">{label}</label>
+      <label htmlFor={id} className={cs('cursor-pointer',
+        {
+          'cursor-not-allowed': disabled,
+        })
+      }>{label}</label>
     </div>
   );
 }
