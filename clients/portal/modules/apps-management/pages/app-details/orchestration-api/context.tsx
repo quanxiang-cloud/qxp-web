@@ -1,6 +1,8 @@
 import React, { createContext, useContext, PropsWithChildren, useMemo, useEffect } from 'react';
-import { useLocalStorage } from 'react-use';
+import { useLocalStorage, usePrevious } from 'react-use';
 import { first } from 'lodash';
+
+import { apiNamespaceToTreeNode } from '@orchestrationAPI/utils';
 
 import orchestrationAPIStoreFactory, { OrchestrationAPIStore } from './store';
 import APINamespaceTreeStore from './store/namespace';
@@ -28,6 +30,12 @@ export function ApiNamespaceStoreProvider(
   { children, root, child }: APINamespaceStoreProviderProps,
 ): JSX.Element {
   const apiNamespaceStore = useMemo(() => root && new APINamespaceTreeStore(root, child), []);
+  const previousChildLength = usePrevious(child.length);
+  useEffect(() => {
+    if (previousChildLength && previousChildLength !== child.length && root) {
+      apiNamespaceStore?.setRoot(apiNamespaceToTreeNode(root, child));
+    }
+  }, [child.length, root, child]);
   const orchestrationAPIStore = useOrchestrationAPIStore();
   const [nameSpaceID = '', setNameSpaceID] = useLocalStorage('portal.namespace.current.id', '');
   useEffect(() => {

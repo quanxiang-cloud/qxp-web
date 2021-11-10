@@ -68,6 +68,7 @@ export default function useModal<I, O, D>(
   return (
     <Modal
       title={title}
+      onClose={onClose}
       footerBtns={[
         { key: 'cancel', text: '取消', onClick: onClose },
         { key: 'submit', text: '确定', onClick: handleSubmit, modifier, loading },

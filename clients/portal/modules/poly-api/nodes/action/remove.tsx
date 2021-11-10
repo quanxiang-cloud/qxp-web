@@ -4,7 +4,7 @@ import cs from 'classnames';
 import Icon from '@c/icon';
 import store$ from '@polyApi/store';
 import useObservable from '@lib/hooks/use-observable';
-import { removeNodes } from '@portal/modules/poly-api/utils';
+import { removeNode } from '@polyApi/utils';
 
 interface Props {
   id: string;
@@ -19,11 +19,11 @@ function NodeRemove({ id }: Props, ref: ForwardedRef<HTMLDivElement | null>): JS
   };
 
   const handleRemoveNode = useCallback(() => {
-    const elementsToRemove = elements.filter((element) => element.id === id);
-    if (!elementsToRemove.length) {
+    const elementToRemove = elements.find((element) => element.id === id) as POLY_API.NodeElement;
+    if (!elementToRemove) {
       return;
     }
-    const newElements: POLY_API.Element[] = removeNodes(elementsToRemove, elements);
+    const newElements: POLY_API.Element[] = removeNode(elementToRemove, elements);
     elements$.set(newElements);
   }, [elements, id]);
 

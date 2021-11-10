@@ -1,6 +1,6 @@
 import React, { MutableRefObject, Ref } from 'react';
 import { Edge, isEdge, removeElements } from 'react-flow-renderer';
-import { ifElse, groupBy, flatten } from 'ramda';
+import { ifElse, flatten } from 'ramda';
 import { fromEvent, of, Subscription } from 'rxjs';
 import { map, mergeAll } from 'rxjs/operators';
 
@@ -107,8 +107,8 @@ export function buildConditionNode(): POLY_API.NodeElement {
           type: 'direct_expr',
           data: '',
         },
-        yes: '1',
-        no: '2',
+        yes: '',
+        no: '',
       },
       handles: { top: `${id}__top`, left: `${id}__left`, right: `${id}__right`, bottom: `${id}__bottom` },
     }),
@@ -198,52 +198,150 @@ export async function layoutPolyCanvas(
   store$.value.nodes.set(layoutResult);
 }
 
-function hasIntersection(a: string[], b: string[]): boolean {
-  return a.some((item) => b.includes(item));
-}
-
-export function removeNodes(
-  nodesToRemove: POLY_API.Element[], nodes: POLY_API.Element[],
-): POLY_API.Element[] {
-  const nodeIdsToRemove = nodesToRemove.map((node) => node.id);
-  const sourceNodes: POLY_API.Element[] = [];
-  const elementIDMap = nodes.reduce((acc: Record<string, POLY_API.Element>, element) => {
-    const nextIds = element.data?.get<string[]>('nextNodes') || [];
-    hasIntersection(nextIds, nodeIdsToRemove) && sourceNodes.push(element);
+export function elementsToMap(
+  elements: POLY_API.Element[], effect?: (element: POLY_API.Element) => void,
+): Record<string, POLY_API.Element> {
+  const elementIDMap = elements.reduce((acc: Record<string, POLY_API.Element>, element) => {
+    effect?.(element);
     acc[element.id] = element;
     return acc;
   }, {});
+  return elementIDMap;
+}
 
-  const edgesToBuild: POLY_API.EdgeElement[] = [];
-  sourceNodes.forEach((sourceNode) => {
-    const nextIds = sourceNode.data?.get<string[]>('nextNodes') || [];
-    const { nextRemovedNodeIds = [], nextKeepNodeIds = [] } = groupBy(
-      (id) => nodeIdsToRemove.includes(id) ? 'nextRemovedNodeIds' : 'nextKeepNodeIds',
-      nextIds,
+function removeCurrentRequestNodeFromRequestToRequestOrCondition(
+  parent: POLY_API.NodeElement,
+  current: POLY_API.NodeElement,
+  next: POLY_API.NodeElement,
+  elements: POLY_API.Element[],
+): POLY_API.Element[] {
+  const edges = [buildEdge(parent.id, next.id)];
+  parent.data?.set('nextNodes', [next.id]);
+  const newElements = removeElements([current], elements);
+  return newElements.concat(edges);
+}
+
+function removeCurrentRequestNodeFromConditionToRequest(
+  parent: POLY_API.NodeElement,
+  current: POLY_API.NodeElement,
+  next: POLY_API.NodeElement,
+  elements: POLY_API.Element[],
+): POLY_API.Element[] {
+  const isYes = parent.data?.get('detail.yes') === current.id;
+  const isNo = parent.data?.get('detail.no') === current.id;
+
+  const edgesToAdd = [];
+  isYes && edgesToAdd.push(buildEdge(parent.id, next.id));
+  isNo && edgesToAdd.push(
+    buildEdge(parent.id, next.id, { sourceHandle: `${parent.id}__bottom`, targetHandle: `${next.id}__left` }),
+  );
+  isYes && parent.data?.set('detail.yes', next.id);
+  isNo && parent.data?.set('detail.no', next.id);
+
+  const parentPreviousNextNodes = parent.data?.get<string[]>('nextNodes') || [];
+  parent.data?.set(
+    'nextNodes', parentPreviousNextNodes.filter((id) => id !== current.id).concat([next.id]),
+  );
+  const newElements = removeElements([current], elements);
+  return newElements.concat(edgesToAdd);
+  // return elements.filter((element) => {
+  //   const shouldRemove = (element.id === current.id) ||
+  //     (isEdge(element) && (element.target === current.id || element.source === current.id));
+  //   return !shouldRemove;
+  // }).concat(edgesToAdd);
+}
+
+function getCurrentNodeParentNode(
+  current: POLY_API.NodeElement, elements: POLY_API.Element[],
+): POLY_API.NodeElement | undefined {
+  return elements.find((element) => {
+    const nextNodes = element.data?.get<string[]>('nextNodes') || [];
+    return nextNodes.includes(current.id);
+  }) as POLY_API.NodeElement | undefined;
+}
+
+function removeCurrentRequestNode(
+  nodeToRemove: POLY_API.NodeElement, elements: POLY_API.Element[],
+): POLY_API.Element[] {
+  // 1. 当前节点是请求节点, 节点在请求节点之间, 或者节点在请求与判断节点之间
+  // 2. 当前节点是请求节点, 节点在判断与请求节点之间
+  const currentNodeParentNode = getCurrentNodeParentNode(nodeToRemove, elements);
+  const currentNodeNextNodeId = nodeToRemove.data?.get<string>('nextNodes')?.[0];
+  const currentNodeNextNode = elements.find(
+    (element) => element.id === currentNodeNextNodeId,
+  ) as POLY_API.NodeElement | undefined;
+  if (!currentNodeNextNode?.type || !currentNodeParentNode?.type) {
+    return elements;
+  }
+  const belongsToRequest = ['request', 'input', 'end'];
+  if (
+    belongsToRequest.includes(currentNodeParentNode.type) &&
+    [...belongsToRequest, 'if'].includes(currentNodeNextNode.type)
+  ) {
+    return removeCurrentRequestNodeFromRequestToRequestOrCondition(
+      currentNodeParentNode, nodeToRemove, currentNodeNextNode, elements,
     );
-    console.log('shape', nextKeepNodeIds);
+  }
 
-    if (nextKeepNodeIds.length) {
-      sourceNode.data?.set('nextNodes', nextKeepNodeIds);
-      return;
+  if (currentNodeParentNode.type === 'if' && belongsToRequest.includes(currentNodeNextNode.type)) {
+    return removeCurrentRequestNodeFromConditionToRequest(
+      currentNodeParentNode, nodeToRemove, currentNodeNextNode, elements,
+    );
+  }
+
+  return elements;
+}
+
+function getDescendantNodes(
+  current: POLY_API.NodeElement,
+  elements: POLY_API.Element[],
+  filter?: (element: POLY_API.Element) => boolean,
+): POLY_API.NodeElement[] {
+  const nextNodes = current.data?.get<string[]>('nextNodes') || [];
+  if (!nextNodes.length) {
+    return [];
+  }
+  const elementsMap = elementsToMap(elements);
+  const allNodes = nextNodes.map((id) => {
+    const element = elementsMap[id] as POLY_API.NodeElement;
+    if (!filter?.(element)) {
+      return [];
     }
-    const allNextRemovedNodeNextIds: string[] = [];
-    nextRemovedNodeIds.forEach((nodeId) => {
-      const nextRemovedNode = elementIDMap[nodeId];
-      const nextRemovedNodeNextIds = nextRemovedNode.data?.get<string[]>('nextNodes') || [];
-      return nextRemovedNodeNextIds.filter((id) => !nodeIdsToRemove.includes(id))
-        .map((nextRemovedNodeNextId) => {
-          allNextRemovedNodeNextIds.push(nextRemovedNodeNextId);
-          const nextRemovedNodeNextNode = elementIDMap[nextRemovedNodeNextId];
-          const edge = buildEdge(sourceNode.id, nextRemovedNodeNextId);
-          edgesToBuild.push(edge);
-        });
-    });
-    sourceNode.data?.set('nextNodes', allNextRemovedNodeNextIds);
+    return [element].concat(getDescendantNodes(element, elements));
   });
+  return flatten(allNodes);
+}
 
-  const newElements = removeElements(nodesToRemove, nodes);
-  return newElements.concat(edgesToBuild);
+function removeCurrentConditionNode(
+  nodeToRemove: POLY_API.NodeElement, elements: POLY_API.Element[],
+): POLY_API.Element[] {
+  // 1. 当前节点是判断节点, 节点在请求节点之间
+  const currentNodeParentNode = getCurrentNodeParentNode(nodeToRemove, elements);
+  const descendantNodes = getDescendantNodes(nodeToRemove, elements, (element) => element.type !== 'end');
+  const endNode = elements.find((element) => element.type === 'end') as POLY_API.NodeElement | undefined;
+  if (!currentNodeParentNode || !endNode) {
+    return elements;
+  }
+  const edges = [buildEdge(currentNodeParentNode.id, endNode.id)];
+  const newElements = removeElements(descendantNodes, elements);
+  return newElements.concat(edges);
+}
+
+type RemoveNodeStrategy = Record<
+  'if' | 'request', (nodeToRemove: POLY_API.NodeElement, elements: POLY_API.Element[]) => POLY_API.Element[]
+>;
+export function removeNode(
+  nodeToRemove: POLY_API.NodeElement, elements: POLY_API.Element[],
+): POLY_API.Element[] {
+  const removeNodeStrategy: RemoveNodeStrategy = {
+    request: removeCurrentRequestNode,
+    if: removeCurrentConditionNode,
+  };
+  if (nodeToRemove.type !== 'if' && nodeToRemove.type !== 'request') {
+    return elements;
+  }
+  const strategy = removeNodeStrategy[nodeToRemove.type];
+  return strategy(nodeToRemove, elements);
 }
 
 function addRequestNodeOnBottom(
@@ -343,6 +441,8 @@ function addRequestNodeOnCondition(
         sourceHandle: `${currentNode.id}__bottom`, targetHandle: `${requestNode.id}__left`, label: '否',
       }),
   ]);
+  direction === 'right' && currentNode.data?.set('detail.yes', requestNode.id);
+  direction === 'bottom' && currentNode.data?.set('detail.no', requestNode.id);
   return nodes.filter((node) => {
     return !edgeToRemoveIds.includes(node.id);
   }).concat([
@@ -356,6 +456,8 @@ function addConditionNodeOnRight(
 ): POLY_API.Element[] {
   const currentNodeNextNodeIds = currentNode.data?.get<string[]>('nextNodes') || [];
   const twoDimensionalEdges = currentNodeNextNodeIds.map((nodeId) => {
+    conditionNode.data?.set('detail.yes', nodeId);
+    conditionNode.data?.set('detail.no', nodeId);
     return [
       buildEdge(
         conditionNode.id,

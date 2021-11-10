@@ -1,4 +1,4 @@
-import React, { useRef, ChangeEvent } from 'react';
+import React, { useRef, ChangeEvent, useCallback } from 'react';
 import cs from 'classnames';
 import { useKey } from 'react-use';
 import { isEmpty } from 'ramda';
@@ -42,6 +42,10 @@ export default function({
     [titleEditorRef.current],
   );
 
+  const handleTitleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    data.set('title', e.target.value.replace(' ', ''));
+  }, [data]);
+
   function setSectionParentIndex(zIndex: string): void {
     if (!nodeWrapperRef.current?.parentElement) {
       return;
@@ -78,10 +82,6 @@ export default function({
     !selected && setSectionParentIndex('3');
   }
 
-  function handleTitleChange(e: ChangeEvent<HTMLInputElement>): void {
-    data.set('title', e.target.value.replace(' ', ''));
-  }
-
   if (isEmpty(nodeData)) {
     return null;
   }
@@ -111,8 +111,8 @@ export default function({
                   <input
                     ref={titleEditorRef}
                     className="text-caption-no-weight node-title-editor"
-                    onChange={handleTitleChange}
                     value={title}
+                    onChange={handleTitleChange}
                   />
                 </div>
               </div>
