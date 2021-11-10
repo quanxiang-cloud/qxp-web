@@ -111,3 +111,15 @@ $nodeTypes: input, request, if, end, default, output;
   transform: scale(2) translate(-12.6px, -8.8px);
   clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
 }
+
+.request-op {
+  border: 1px solid var(--gray-500);
+  box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.15);
+  @apply w-24 text-12 font-medium text-center rounded-4 cursor-pointer;
+}
+
+.node-config-drawer.drawer-position-right {
+  &>div {
+    @apply rounded-l-none;
+  }
+}
