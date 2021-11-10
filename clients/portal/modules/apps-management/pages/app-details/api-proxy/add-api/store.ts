@@ -89,9 +89,9 @@ function applySubNodes(item: any, isRoot: boolean, objectNodes?: Array<any>, arr
     });
   }
 
-  if (['object', 'array'].includes(item.type)) {
-    delete item.required;
-  }
+  // if (['object', 'array'].includes(item.type)) {
+  //   delete item.required;
+  // }
 }
 
 function mapRawParams(params: ApiParam[], mergeOptions?: Record<string, any>): ParamItem[] {
@@ -176,7 +176,7 @@ export default class Store {
             type: 'object',
             required: response.filter((v: ApiParam)=> v.required).map((v: ApiParam)=> v.name),
             properties: mapRawParams(response).reduce((acc, cur)=> {
-              acc[cur.name] = omit(cur, 'name', 'required');
+              acc[cur.name] = omit(cur, 'name');
               return acc;
             }, {}),
           },
@@ -232,7 +232,8 @@ export default class Store {
 
   @action
   setResponse=(resp: Record<string, any>)=> {
-    //
+    const respItems = mapObjectNode(get(resp, '200.schema'));
+    this.setParams('response', respItems._object_nodes_ || []);
   }
 
   @action
