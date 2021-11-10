@@ -6,6 +6,7 @@ import Icon from '@c/icon';
 import useObservable from '@lib/hooks/use-observable';
 
 import useNodeConfig from '../effects/hooks/use-node-config';
+import RequestConfigForm from './node-config-form/request-config-form';
 
 import NodeWrapper from './wrapper';
 
@@ -24,6 +25,7 @@ export default function RequestNode(props: NodeProps<POLY_API.SubjectPolyNode>):
         },
       },
     },
+    configForm: RequestConfigForm,
     currentNode: props.data,
     onClose: () => setIsConfigShow(false),
   });
