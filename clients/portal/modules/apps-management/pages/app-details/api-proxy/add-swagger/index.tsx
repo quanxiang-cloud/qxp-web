@@ -56,7 +56,10 @@ function AddSwagger(props: Props) {
       <div className="w-full h-full px-16 py-16 relative">
         <Upload
           style={{ width: '100%' }}
-          headers={{ 'X-Proxy': 'API', 'Content-Type': 'application/json' }}
+          headers={{
+            'X-Proxy': 'API',
+            'Content-Type': 'multipart/form-data',
+          }}
           disabled={!store.currentSvcPath}
           action={`/api/v1/polyapi/raw/upload${store.currentSvcPath}`}
           data={(file:File)=> {
