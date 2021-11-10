@@ -182,8 +182,8 @@ function GroupNodeRender({ node, store }: NodeRenderProps<PolyAPI.Namespace>): J
         onClick={()=> toGroup(node.id)}
       >
         <span className='inline-flex items-center'>
-          <Icon name={node.expanded ? 'folder_open' : 'folder_empty'} size={20} />
-          <span className='ml-5 text-body1 truncate w-142'>{nodeLabel}</span>
+          <Icon name={node.expanded ? 'folder_open' : 'folder_empty'} size={16} />
+          <span className='ml-5 text-12 truncate w-142'>{nodeLabel}</span>
         </span>
       </span>
       <MoreMenu onMenuClick={handleClickMenu} menus={exceedMaxLevel() ?

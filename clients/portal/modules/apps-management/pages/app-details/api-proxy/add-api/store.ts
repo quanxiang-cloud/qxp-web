@@ -8,6 +8,14 @@ import type { ApiParam, ParamType, ParamGroup } from './params-config';
 
 type ParamItem=Record<string, any>
 
+type MetaInfo={
+  title: string;
+  apiPath: string;
+  apiName: string;
+  method: string;
+  description: string;
+}
+
 function randomId(): string {
   return nanoid(8);
 }
@@ -34,6 +42,15 @@ const reservedKeys = [
   '_object_nodes_',
   '_array_nodes_',
 ];
+
+const paramGroups = ['path', 'query', 'header', 'body'];
+const defaultMetaInfo: MetaInfo = {
+  title: '',
+  method: 'post',
+  apiName: '',
+  apiPath: '',
+  description: '',
+};
 
 // todo: refine
 function applySubNodes(item: any, isRoot: boolean, objectNodes?: Array<any>, arrayNodes?: Array<any>): void {
@@ -72,9 +89,9 @@ function applySubNodes(item: any, isRoot: boolean, objectNodes?: Array<any>, arr
     });
   }
 
-  if (['object', 'array'].includes(item.type)) {
-    delete item.required;
-  }
+  // if (['object', 'array'].includes(item.type)) {
+  //   delete item.required;
+  // }
 }
 
 function mapRawParams(params: ApiParam[], mergeOptions?: Record<string, any>): ParamItem[] {
@@ -111,10 +128,35 @@ function getDefaultParameters(): Record<ParamGroup, ApiParam[]> {
   };
 }
 
+// map object/array node schema to _object_nodes_, _array_nodes_ structure recursively
+function mapObjectNode(node: Record<string, any>, isRoot?: boolean): Record<string, any> {
+  const { required: requiredKeys = [], properties = {}, items = {} } = isRoot ? node.schema : node;
+  delete node.schema;
+  delete node.required;
+  delete node.properties;
+
+  function applyProperties(properties: any) {
+    return Object.entries(properties).map(([name, conf]: [string, any])=> {
+      const preload = getDefaultParam({ name, required: requiredKeys.includes(name) });
+      if (['object', 'array'].includes(conf.type)) {
+        return { ...preload, ...mapObjectNode(conf) };
+      }
+      return { ...preload, ...conf };
+    });
+  }
+
+  if (node.type === 'object') {
+    node._object_nodes_ = applyProperties(properties);
+  }
+  if (node.type === 'array') {
+    node._array_nodes_ = applyProperties(items);
+  }
+  return node;
+}
+
 export default class Store {
   @observable parameters: Record<ParamGroup, ApiParam[]> = getDefaultParameters()
-
-  @observable method = 'post'
+  @observable metaInfo: MetaInfo={ ...defaultMetaInfo }
 
   @computed get swaggerParameters(): Record<'constants' | 'parameters' | 'responses', any> {
     const { path, query, header, body, constant, response } = toJS(this.parameters);
@@ -134,7 +176,7 @@ export default class Store {
             type: 'object',
             required: response.filter((v: ApiParam)=> v.required).map((v: ApiParam)=> v.name),
             properties: mapRawParams(response).reduce((acc, cur)=> {
-              acc[cur.name] = omit(cur, 'name', 'required');
+              acc[cur.name] = omit(cur, 'name');
               return acc;
             }, {}),
           },
@@ -144,13 +186,54 @@ export default class Store {
   }
 
   @action
-  setMethod=(method: string)=> {
-    this.method = method;
+  setMetaInfo=(info: Partial<MetaInfo>)=> {
+    this.metaInfo = { ...this.metaInfo, ...info };
   }
 
   @action
   setParams=(group: ParamGroup, params: ApiParam[])=> {
     Object.assign(this.parameters, { [group]: params && params.length ? params : [getDefaultParam()] });
+  }
+
+  @action
+  setAllParameters=(params: ApiParam[])=>{
+    paramGroups.forEach((gp)=> {
+      const items = params.map((v)=> {
+        if (v.in !== gp) {
+          return;
+        }
+
+        const preload = getDefaultParam();
+        if (v.in !== 'body' || !['object', 'array'].includes(v.type)) {
+          return { ...preload, ...omit(v, 'in') };
+        }
+
+        if (['object', 'array'].includes(v.type)) {
+          return mapObjectNode(v, true);
+        }
+      }).filter(Boolean);
+      // @ts-ignore
+      this.setParams(gp, items);
+    });
+  }
+
+  @action
+  setConstants=(consts: ApiParam[])=> {
+    const constItems = consts.map((v)=> {
+      return {
+        ...getDefaultParam(),
+        ...omit(v, ['in', 'data']),
+        constIn: v.in || 'body',
+        constData: v.data || '',
+      };
+    });
+    this.setParams('constant', constItems);
+  }
+
+  @action
+  setResponse=(resp: Record<string, any>)=> {
+    const respItems = mapObjectNode(get(resp, '200.schema'));
+    this.setParams('response', respItems._object_nodes_ || []);
   }
 
   @action
@@ -223,6 +306,6 @@ export default class Store {
   @action
   reset=()=> {
     this.parameters = getDefaultParameters();
-    this.method = 'post';
+    this.setMetaInfo({ ...defaultMetaInfo });
   }
 }
