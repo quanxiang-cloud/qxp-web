@@ -8,10 +8,9 @@
 
 .api-proxy {
   display: grid;
-  grid-template-columns: 212px 1fr;
+  grid-template-columns: 236px 1fr;
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
-  height: calc(100% - 20px);
 
   &--sider {
     border-top-left-radius: 12px;
@@ -23,13 +22,24 @@
     .tree-node-item {
       padding-left: 16px;
       padding-right: 16px;
-      height: 40px;
-      font-size: 16px;
+      height: 36px;
+      font-size: 12px;
+      font-weight: normal;
       line-height: 24px;
-      color: #0F172A;
+      color: var(--gray-900);
       background: transparent;
       &:hover, &.tree-node--focused {
-        background: var(--gray-100);
+        background: white;
+        &::after {
+          content: "";
+          width: 4px;
+          height: 100%;
+          position: absolute;
+          top: 0;
+          right: 0;
+          border-radius: 4px 0 0 4px;
+          background-color: var(--blue-600);
+        }
       }
     }
   }

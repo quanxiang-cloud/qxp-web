@@ -54,7 +54,7 @@ function ApiProxy(): JSX.Element | null {
   }
 
   return (
-    <div className='bg-white mt-20 mx-20 api-proxy'>
+    <div className='bg-white api-proxy h-full'>
       <SideNav />
       <div className='w-full h-full overflow-auto api-proxy--main-cont'>
         {renderMain()}
