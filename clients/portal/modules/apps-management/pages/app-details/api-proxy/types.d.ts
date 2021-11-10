@@ -43,6 +43,7 @@ declare namespace PolyAPI {
     id: string;
     url: string;
     namespace: string;
+    method: string;
     name: string;
     title: string;
     desc: string;

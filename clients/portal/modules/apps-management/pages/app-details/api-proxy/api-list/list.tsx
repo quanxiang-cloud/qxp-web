@@ -4,6 +4,7 @@ import { UnionColumns } from 'react-table';
 import { observer } from 'mobx-react';
 import { Switch } from 'antd';
 import { useDebounce, useUpdateEffect } from 'react-use';
+import { orderBy } from 'lodash';
 
 import Button from '@c/button';
 import Search from '@c/search';
@@ -223,7 +224,7 @@ function ApiList(props: Props) {
           loading={store.isLoading}
           rowKey='id'
           columns={COLS}
-          data={store.svcApis?.list || []}
+          data={orderBy(store.svcApis?.list || [], ['updateAt'], ['desc'])}
         />
         {!!store.svcApis?.total && (
           <Pagination

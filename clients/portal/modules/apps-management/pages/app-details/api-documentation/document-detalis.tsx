@@ -17,7 +17,7 @@ import { copyContent } from '@lib/utils';
 import store from './store';
 import 'highlight.js/styles/atelier-sulphurpool-dark.css';
 
-const Highlight = lazy(() => import('react-highlight').then((m) => m.default));
+const Highlight = lazy(() => import('react-highlight'));
 
 const DOC_TYPE_LIST = [
   { label: 'CURL', value: 'curl' },

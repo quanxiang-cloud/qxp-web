@@ -14,7 +14,7 @@ import Loading from '@c/loading';
 import Header from '../comps/header';
 import { ErrorMsg } from '../comps/form';
 import ParamsSection from './params-section';
-import ParamsConfig, { ParamGroup } from './params-config';
+import ParamsConfig from './params-config';
 import store from '../store';
 import paramsContext from './context';
 import { getDefaultParam } from './store';
@@ -46,8 +46,6 @@ const methodOptions = [
 const regApiName = /^[a-zA-Z_]\w+$/; // api标识，swagger的 api path部分
 const regPathParam = /:([^/:]+)/g;
 
-const paramGroups = ['path', 'query', 'header', 'body'];
-
 function getAllPathParamNames(url: string): string[] {
   return url.match(regPathParam) || [];
 }
@@ -72,9 +70,11 @@ function AddApi(props: Props) {
       setSubmitting(true);
     },
     onSuccess: (data)=> {
-      toast.success('创建成功');
-      paramsStore.reset();
-      setTimeout(toListPage, 500);
+      toast.success(isEdit ? '修改成功' : '创建成功');
+      setTimeout(()=> {
+        toListPage();
+        paramsStore.reset();
+      }, 500);
     },
     onError: (err)=> {
       toast.error(err);
@@ -90,20 +90,15 @@ function AddApi(props: Props) {
         queryNativeApi(apiPath),
         queryNativeApiDoc(apiPath, { docType: 'swag' }),
       ]).then(([detail, doc])=> {
-        console.log('api doc: ', doc);
+        console.log('api doc, api detail: ', doc, detail);
         const apiPath = detail.url.slice(`${detail.schema}://${detail.host}`.length);
         const { parameters = [], responses = {}, ['x-consts']: constants = [] } = values(get(doc, `doc.paths.${apiPath}`))[0] || {};
-        // todo: set initial param store's parameters
-        paramGroups.forEach((gp)=> {
-          const gpItems = parameters.map((v: {in: string})=> {
-            if (v.in === gp) {
-              return omit(v, 'in');
-            }
-          }).filter(Boolean);
-          paramsStore.setParams(gp as ParamGroup, gpItems as any);
-        });
+        paramsStore.setAllParameters(parameters);
+        paramsStore.setConstants(constants);
+        paramsStore.setResponse(responses);
 
         setApiDetail(detail);
+        paramsStore.setMetaInfo({ method: detail.method.toLowerCase() });
         setInitialValues({
           title: detail.title,
           apiPath,
@@ -136,6 +131,10 @@ function AddApi(props: Props) {
     const prefix = getProxyPath();
     setValue('proxyPath', watchApiName ? [prefix, watchApiName].join('/') : prefix);
   }, [watchApiName, store.svc]);
+
+  if (!isEdit) {
+    paramsStore.reset();
+  }
 
   function setInitialValues(values: Record<string, any>) {
     Object.entries(values).map(([name, val])=> {
@@ -170,7 +169,7 @@ function AddApi(props: Props) {
       'x-consts': constants,
       paths: {
         [apiPath]: {
-          [paramsStore.method]: {
+          [paramsStore.metaInfo.method]: {
             summary: title,
             description,
             operationId: apiName,
@@ -230,9 +229,13 @@ function AddApi(props: Props) {
           <div className='mb-16'>
             <p>API 路径</p>
             <input
-              className={cs('input', { error: errors.apiPath })}
+              className={cs('input', {
+                error: errors.apiPath,
+                'bg-gray-100': isEdit,
+              })}
               placeholder='请输入'
               maxLength={200}
+              readOnly={isEdit}
               {...register('apiPath', {
                 required: '请填写 API 路径',
               })}
@@ -246,8 +249,8 @@ function AddApi(props: Props) {
               <p>请求方法</p>
               <Select
                 options={methodOptions}
-                value={paramsStore.method}
-                onChange={paramsStore.setMethod}
+                value={paramsStore.metaInfo.method}
+                onChange={(method: string)=> paramsStore.setMetaInfo({ method })}
                 disabled={isEdit}
               />
             </div>
@@ -256,7 +259,6 @@ function AddApi(props: Props) {
               <input
                 className='input min-w-259 bg-gray-100'
                 readOnly
-                defaultValue=''
                 {...register('proxyPath')}
               />
             </div>
@@ -308,7 +310,7 @@ function AddApi(props: Props) {
           forbidden={submitting}
           onClick={onSubmit}
         >
-          确认新建
+          {isEdit ? '确认修改' : '确认新建'}
         </Button>
       </div>
     </>
