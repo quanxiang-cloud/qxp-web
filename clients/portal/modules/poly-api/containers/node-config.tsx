@@ -37,7 +37,7 @@ export default function NodeConfigDrawer(): JSX.Element {
       visible={!!((schema || ConfigForm) && currentNode)}
     >
       {ConfigForm && <ConfigForm />}
-      {!ConfigForm && isEmpty(schema) && <SchemaForm schema={schema} components={{ input: Input }} />}
+      {!ConfigForm && !isEmpty(schema) && <SchemaForm schema={schema} components={{ input: Input }} />}
     </Drawer>
   );
 }

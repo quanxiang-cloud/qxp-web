@@ -2,7 +2,6 @@ import React from 'react';
 import { Cascader } from 'antd';
 import { useQueryNameSpaceRawRootPath } from '../../effects/api/namespace';
 import { useParams } from 'react-router';
-import { useGetRequestNodeApiList } from '../../effects/api/poly';
 
 const options = [
   {
@@ -51,7 +50,6 @@ const polyList: Record<string, Array<any>> = {
 function RequestConfigForm(): JSX.Element {
   const { appID } = useParams<{ appID: string }>();
   const { data: namespace } = useQueryNameSpaceRawRootPath(appID);
-  const { data } = useGetRequestNodeApiList({ path: namespace?.appPath || '', body: { appID: appID } });
 
   return (
     <>
