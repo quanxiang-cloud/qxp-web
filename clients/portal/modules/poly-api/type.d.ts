@@ -115,7 +115,7 @@ declare namespace POLY_API {
     id: string;
     encoding: string;
     currentNodeConfigParams: {
-      schema: ISchema;
+      schema?: ISchema;
       configForm?: React.JSXElementConstructor<any>;
       currentNode?: import('@polyApi/store/node').PolyNodeStore;
       onClose?: () => void;

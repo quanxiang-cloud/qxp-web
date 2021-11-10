@@ -1,7 +1,7 @@
 import React from 'react';
 import { isEmpty } from 'ramda';
-// import { Input } from '@formily/antd-components';
-// import { SchemaForm } from '@formily/react-schema-renderer';
+import { Input } from '@formily/antd-components';
+import { SchemaForm } from '@formily/react-schema-renderer';
 
 import Drawer from '@c/drawer';
 import useObservable from '@lib/hooks/use-observable';
@@ -34,10 +34,10 @@ export default function NodeConfigDrawer(): JSX.Element {
       className="node-config-drawer"
       title={`配置${currentNode?.value.type}节点`}
       onCancel={onCancel}
-      visible={!!(schema && currentNode)}
+      visible={!!((schema || ConfigForm) && currentNode)}
     >
       {ConfigForm && <ConfigForm />}
-      {/* {!ConfigForm && isEmpty(schema) && <SchemaForm schema={schema} components={{ input: Input }} />} */}
+      {!ConfigForm && isEmpty(schema) && <SchemaForm schema={schema} components={{ input: Input }} />}
     </Drawer>
   );
 }

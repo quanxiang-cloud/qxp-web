@@ -7,7 +7,7 @@ interface Props {
   visible: boolean;
   currentNode: PolyNodeStore;
   onClose: () => void;
-  schema: ISchema;
+  schema?: ISchema;
   configForm?: React.JSXElementConstructor<any>,
 }
 

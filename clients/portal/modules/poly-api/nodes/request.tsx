@@ -16,15 +16,6 @@ export default function RequestNode(props: NodeProps<POLY_API.SubjectPolyNode>):
 
   useNodeConfig({
     visible: isConfigShow,
-    schema: {
-      type: 'object',
-      properties: {
-        name: {
-          type: 'string',
-          'x-component': 'Input',
-        },
-      },
-    },
     configForm: RequestConfigForm,
     currentNode: props.data,
     onClose: () => setIsConfigShow(false),
