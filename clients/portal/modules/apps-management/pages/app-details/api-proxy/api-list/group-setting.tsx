@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import cs from 'classnames';
 import { observer } from 'mobx-react';
 import { omit, isEqual, pick } from 'lodash';
+import { useUpdateEffect } from 'react-use';
 
 import Select from '@c/select';
 import Button from '@c/button';
@@ -51,8 +52,10 @@ function GroupSetting(props: Props) {
     });
   }, [store.svc]);
 
-  useEffect(()=> {
-    setValue('port', protocol === 'https' ? 443 : 80);
+  useUpdateEffect(()=> {
+    if (!store.svc) {
+      setValue('port', protocol === 'https' ? 443 : 80);
+    }
   }, [protocol]);
 
   const onSubmit = ()=> {
