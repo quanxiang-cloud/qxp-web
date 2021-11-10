@@ -1,14 +1,12 @@
 import { action, observable } from 'mobx';
 
-import { FuncListParams } from 'clients/types/faas';
-
 class FaasStore {
   @observable hasGroup = false;
   @observable developerInGroup = false;
   @observable initLoading = false;
   @observable funcListLoading = false;
   @observable modalType = '';
-  @observable funcList = [{
+  @observable funcList: FuncField[] = [{
     name: 'Mock数据',
     id: 'mock',
     state: 'SUCCESS',

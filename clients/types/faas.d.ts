@@ -1,15 +1,17 @@
-export type FuncField = {
+type FuncField = {
   name: string,
   id: string,
-  state: string,
+  state: ProcessStatus,
   description: string,
   creator: string,
   createdAt: string,
 }
 
-export type FuncListParams = {
+type FuncListParams = {
   appID: string,
   size: string,
   page: string,
   alias?: string,
 }
+
+type ProcessStatus = 'SUCCESS' | 'ING' | 'FAILED' | 'ONLINE';
