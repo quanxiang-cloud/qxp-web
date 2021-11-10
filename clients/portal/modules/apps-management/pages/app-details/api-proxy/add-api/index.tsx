@@ -65,6 +65,10 @@ function AddApi(props: Props) {
   const apiPath = qs.get('api_path');
   const [apiDetail, setApiDetail] = useState<PolyAPI.NativeApi | null>(null);
 
+  useEffect(()=> {
+    return paramsStore.reset;
+  }, []);
+
   const createApiMutation = useMutation(store.registerApi, {
     onMutate: ()=> {
       setSubmitting(true);
@@ -131,10 +135,6 @@ function AddApi(props: Props) {
     const prefix = getProxyPath();
     setValue('proxyPath', watchApiName ? [prefix, watchApiName].join('/') : prefix);
   }, [watchApiName, store.svc]);
-
-  if (!isEdit) {
-    paramsStore.reset();
-  }
 
   function setInitialValues(values: Record<string, any>) {
     Object.entries(values).map(([name, val])=> {

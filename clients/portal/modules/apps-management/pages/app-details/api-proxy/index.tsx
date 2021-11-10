@@ -20,21 +20,10 @@ interface SubPageProps {
   action?: string;
 }
 
-function SubPage({ namespace, action = '' }: SubPageProps): JSX.Element {
-  if (namespace) {
-    if (['add', 'edit'].includes(action)) {
-      return <Add />;
-    }
-    if (action === 'add-swagger') {
-      return <AddSwagger />;
-    }
-  }
-  return <List />;
-}
-
 function ApiProxy(): JSX.Element | null {
   const qs = useQueryString();
   const ns = useNamespace();
+  const action = qs.get('action');
   const { appID } = useParams<{appID: string}>();
 
   useEffect(()=> {
@@ -52,14 +41,23 @@ function ApiProxy(): JSX.Element | null {
     return <GuidePage />;
   }
 
+  function renderMain(): JSX.Element {
+    if (action) {
+      if (['add', 'edit'].includes(action)) {
+        return <Add />;
+      }
+      if (action === 'add-swagger') {
+        return <AddSwagger />;
+      }
+    }
+    return <List />;
+  }
+
   return (
     <div className='bg-white mt-20 mx-20 api-proxy'>
       <SideNav />
       <div className='w-full h-full overflow-auto api-proxy--main-cont'>
-        <SubPage
-          namespace={ns}
-          action={qs.get('action') || ''}
-        />
+        {renderMain()}
       </div>
     </div>
   );
