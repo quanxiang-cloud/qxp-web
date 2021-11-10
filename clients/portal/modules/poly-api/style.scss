@@ -123,3 +123,20 @@ $nodeTypes: input, request, if, end, default, output;
     @apply rounded-l-none;
   }
 }
+
+.config-params-container {
+  &>div:first-child {
+    @apply mt-0;
+  }
+  &>div:last-child {
+    @apply mb-0;
+  }  
+}
+
+.config-param {
+  @apply border-1 rounded-8 border-gray-200;
+
+  &>div {
+    @apply border-b-1;
+  }
+}

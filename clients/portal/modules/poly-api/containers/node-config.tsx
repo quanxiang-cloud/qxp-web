@@ -3,6 +3,7 @@ import { isEmpty } from 'ramda';
 import { Input } from '@formily/antd-components';
 import { SchemaForm } from '@formily/react-schema-renderer';
 
+import Button from '@c/button';
 import Drawer from '@c/drawer';
 import useObservable from '@lib/hooks/use-observable';
 
@@ -16,6 +17,11 @@ export default function NodeConfigDrawer(): JSX.Element {
   const {
     currentNodeConfigParams: { schema, currentNode, onClose, configForm: ConfigForm },
   } = isEmpty(store) ? initialConfigParams : store;
+
+  function onSave(): void {
+    // todo save config value
+    onCancel();
+  }
 
   function onCancel(): void {
     onClose?.();
@@ -38,6 +44,10 @@ export default function NodeConfigDrawer(): JSX.Element {
     >
       {ConfigForm && <ConfigForm />}
       {!ConfigForm && !isEmpty(schema) && <SchemaForm schema={schema} components={{ input: Input }} />}
+      <div className="bg-gray-50 text-right py-8 border-t-1 border-gray-200">
+        <Button className="mr-12" iconName="check" onClick={onCancel}>取消</Button>
+        <Button modifier="primary" iconName="close" onClick={onSave}>保存</Button>
+      </div>
     </Drawer>
   );
 }
