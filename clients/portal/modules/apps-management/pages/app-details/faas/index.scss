@@ -46,3 +46,52 @@
   @apply h-32 w-316 mb-4 px-12 py-6 text-14 border outline-none border-blue-600 rounded-8 rounded-tl-none;
 }
 
+.page-data-drawer-modal-mask {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  background-color: rgba(2, 5, 8, 0.7);
+  animation: fadeIn .2s forwards;
+  z-index: 20;
+}
+
+.page-data-drawer-began-close {
+  animation: fadeOut .3s forwards;
+  .page-data-drawer-container {
+    animation: quitRight .3s ease forwards;
+  }
+}
+
+.page-data-drawer-close {
+  display: none;
+}
+
+.page-data-drawer-container {
+  position: absolute;
+  right: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  animation: enterRight .3s ease forwards;
+  transition: transform .3s;
+}
+
+.page-data-drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 56px;
+  padding: 0 20px;
+  box-shadow: inset 0px -1px 0px var(--gray-200);
+  background-image: url('/dist/images/maskHeaderBackgroundImage.png');
+  background-position: top right;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.version-detail-tab {
+  
+}

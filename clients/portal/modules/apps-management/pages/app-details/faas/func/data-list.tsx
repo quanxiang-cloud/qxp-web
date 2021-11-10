@@ -31,7 +31,8 @@ function DataList(): JSX.Element {
         return (
           <span
             className="text-blue-600 cursor-pointer"
-            onClick={() => console.log('show details')} >
+            onClick={() => store.setModalType('funDetail') }
+          >
             {name}
           </span>
         );
