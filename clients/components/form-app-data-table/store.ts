@@ -53,6 +53,7 @@ class AppPageDataStore {
   @observable tableConfig: TableConfig = { pageSize: 10, order: undefined };
   @observable noFiltersTips: React.ReactNode = '尚未配置筛选条件。';
   @observable listLoading = false;
+  @observable canSetColumnWidth = true;
   @observable showCheckbox = true;
   @observable pageID = '';
   @observable appID = '';
