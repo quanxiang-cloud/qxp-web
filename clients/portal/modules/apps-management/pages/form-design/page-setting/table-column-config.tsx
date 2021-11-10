@@ -33,7 +33,9 @@ function FieldItem({ field, selected, onChange }: FieldItemProps): JSX.Element {
       className={cs('page-field-sort-item bg-white', { 'field-sort': selected })}
       data-id={field.id}
     >
-      {field.label}
+      <div className='break-all'>
+        {field.label}
+      </div>
       <div className='page-field-sort-action'>
         <Checkbox
           value={field.id}
