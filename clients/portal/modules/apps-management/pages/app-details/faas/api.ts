@@ -1,7 +1,5 @@
 import httpClient from '@lib/http-client';
 
-import { FuncListParams } from 'clients/types/faas';
-
 export function checkHasGroup(
   data:{group: string, appID: string},
 ): Promise<{groupID: string}> {

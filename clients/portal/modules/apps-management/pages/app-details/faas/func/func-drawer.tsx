@@ -10,7 +10,6 @@ import Table from '@c/table';
 import Popper from '@c/popper';
 import store from '../store';
 import { UnionColumns } from 'react-table';
-import { FuncField } from 'clients/types/faas';
 import TableMoreFilterMenu from '@c/more-menu/table-filter';
 
 type Props = {

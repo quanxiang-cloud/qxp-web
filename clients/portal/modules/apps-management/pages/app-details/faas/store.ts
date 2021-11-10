@@ -1,6 +1,5 @@
 import { action, observable } from 'mobx';
 
-import { FuncListParams } from 'clients/types/faas';
 import {
   checkHasGroup,
   checkInGroup,
