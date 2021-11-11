@@ -77,7 +77,11 @@ const UserPicker = ({
   }, [optionalRange, componentsProps.mode, defaultRange]);
 
   const handleChange = (_selected: LabelValue | LabelValue[]): void => {
-    onChange && onChange(_selected ? ([] as LabelValue[]).concat(_selected) : []);
+    let selectedValues: LabelValue[] = _selected ? ([] as LabelValue[]).concat(_selected) : [];
+    selectedValues = selectedValues.map(({ label, value }) => {
+      return { label, value };
+    });
+    onChange && onChange(selectedValues);
   };
 
   if (optionalRange === 'currentUser') {
@@ -166,6 +170,7 @@ const AllUserPicker = ({ appID, value, ...otherProps }: AllUserPickerProps): JSX
     value: value || undefined,
     loading,
     onSearch: debounce(_setKeyword, 500),
+    onClear: () => _setKeyword(''),
     showSearch: true,
     notFoundContent: '暂无人员',
     filterOption: false,

@@ -22,7 +22,7 @@ function DropdownRender({ menu, isAllowCustom, onOtherCustomValueChange }: Dropd
   }
 
   function handleAddOption(): void {
-    if (!inputValue) {
+    if (!inputValue.trim()) {
       toast.error('内容不能为空');
       return;
     }
