@@ -154,20 +154,21 @@ function ApprovalDetail(): JSX.Element {
           {
             <>
               {showSwitch &&
-              (<RadioButtonGroup
-                radioBtnClass="bg-white"
-                onChange={(value) => {
-                  setCurrentTaskId(value as string);
-                }}
-                listData={status as any}
-                currentValue={currentTaskId}
-              />)
+                (<RadioButtonGroup
+                  radioBtnClass="bg-white"
+                  onChange={(value) => {
+                    setCurrentTaskId(value as string);
+                  }}
+                  listData={status as any}
+                  currentValue={currentTaskId}
+                />)
               }
               <Toolbar
                 currTask={task}
                 permission={task?.operatorPermission || {}}
                 globalActions={pick(task, globalActionKeys)}
                 onClickAction={store.handleClickAction}
+                workFlowType={type}
               />
               {renderSchemaForm(task)}
             </>
@@ -183,7 +184,7 @@ function ApprovalDetail(): JSX.Element {
                   {
                     id: 'history',
                     name: '动态',
-                    content: (<Dynamic onTaskEnd={setTaskEnd}/>),
+                    content: (<Dynamic onTaskEnd={setTaskEnd} />),
                   },
                   {
                     id: 'discuss',

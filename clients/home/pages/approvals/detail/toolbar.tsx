@@ -19,6 +19,7 @@ interface Props {
   permission: { custom: PermissionItem[], system: PermissionItem[], default?: PermissionItem[] };
   globalActions: Record<string, boolean>;
   onClickAction: (actionKey: TaskHandleType, task: any, reasonRequired?: boolean) => void;
+  workFlowType?: string;
 }
 
 const moreActions = [
@@ -31,10 +32,10 @@ const getIconByAction = (action: string): string => {
   return actionMap[action]?.icon || 'arrow_circle_up';
 };
 
-function Toolbar({ currTask, permission, onClickAction, globalActions }: Props): JSX.Element {
+function Toolbar({ currTask, permission, onClickAction, globalActions, workFlowType }: Props): JSX.Element {
   const { processInstanceID, taskID } = useParams<{ processInstanceID: string; taskID: string }>();
   const [comment, setComment] = useState('');
-  const commentRef = useRef<{node: HTMLTextAreaElement}>(null);
+  const commentRef = useRef<{ node: HTMLTextAreaElement }>(null);
   const history = useHistory();
 
   const { custom = [], system = [] } = permission;
@@ -76,7 +77,7 @@ function Toolbar({ currTask, permission, onClickAction, globalActions }: Props):
       } else {
         toast.error('操作失败');
       }
-    }).catch((err)=> toast.error(err.message || '操作失败'));
+    }).catch((err) => toast.error(err.message || '操作失败'));
   }
 
   return (
@@ -86,6 +87,11 @@ function Toolbar({ currTask, permission, onClickAction, globalActions }: Props):
           if (!enabled) {
             return null;
           }
+
+          if (workFlowType === 'APPLY_PAGE' && !['hasCancelBtn', 'hasUrgeBtn'].includes(value)) {
+            return null;
+          }
+
           return (
             <span key={`${value}-${idx}`} onClick={(ev) => onClickAction(value, currTask)}>
               <Icon name={getIconByAction(value)} className="mr-8" />{text ?? name ?? defaultText}
@@ -122,6 +128,10 @@ function Toolbar({ currTask, permission, onClickAction, globalActions }: Props):
               return null;
             }
 
+            if (workFlowType === 'APPLY_PAGE' && !['hasCancelBtn', 'hasUrgeBtn'].includes(value)) {
+              return null;
+            }
+
             return (
               <Button
                 iconName={getIconByAction(value)}
@@ -141,6 +151,10 @@ function Toolbar({ currTask, permission, onClickAction, globalActions }: Props):
               return null;
             }
 
+            if (workFlowType === 'APPLY_PAGE' && !['hasCancelBtn', 'hasUrgeBtn'].includes(action)) {
+              return null;
+            }
+
             if (action === 'hasReadHandleBtn') {
               return (
                 <PopConfirm content={(
@@ -153,7 +167,7 @@ function Toolbar({ currTask, permission, onClickAction, globalActions }: Props):
                       name="comment"
                       placeholder=''
                       defaultValue={comment}
-                      // onChange={(ev: unknown, value: string) => setComment(value)}
+                    // onChange={(ev: unknown, value: string) => setComment(value)}
                     />
                     <MoreMenu
                       menus={[
