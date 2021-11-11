@@ -57,13 +57,13 @@ type RefreshTokenData struct {
 
 // Department represents department fields
 type Department struct {
-	ID                 string `json:"id"`
-	Grade              int    `json:"grade"`
-	Pid                string `json:"pid"`
-	SuperID            string `json:"superID"`
-	DepartmentLeaderID string `json:"departmentLeaderID"`
-	DepartmentName     string `json:"departmentName"`
-	Child *Department `json:"child"`
+	ID                 string      `json:"id"`
+	Grade              int         `json:"grade"`
+	Pid                string      `json:"pid"`
+	SuperID            string      `json:"superID"`
+	DepartmentLeaderID string      `json:"departmentLeaderID"`
+	DepartmentName     string      `json:"departmentName"`
+	Child              *Department `json:"child"`
 }
 
 // User represents user fields
@@ -97,8 +97,8 @@ func getRefreshToken(r *http.Request) string {
 // renewToken refresh token
 func renewToken(r *http.Request, refreshToken string) bool {
 	requestID := contexts.GetRequestID(r)
-	respBody, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/oauth2s/jwt/refresh", nil, map[string]string{
-		"Content-Type":  "application/x-www-form-urlencoded",
+	respBody, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/jwt/refresh", nil, map[string]string{
+		"Content-Type":  "application/json",
 		"Refresh-Token": refreshToken,
 	})
 

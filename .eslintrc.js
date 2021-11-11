@@ -131,7 +131,7 @@ module.exports = {
     'require-jsdoc': 'off',
     semi: ['error', 'always'],
     'space-infix-ops': ['error', { int32Hint: false }],
-    'unused-imports/no-unused-imports': 'error',
+    // 'unused-imports/no-unused-imports': 'error',
     'unused-imports/no-unused-vars': [
       'warn',
       {

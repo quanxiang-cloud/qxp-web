@@ -47,7 +47,7 @@ function AssociatedRecordsValueRender({ value, schema, className }: ValueRendere
 }
 
 function numberPickerValueRender({ schema, value }: ValueRendererProps): string {
-  return (value as number).toFixed(schema?.['x-component-props']?.precision || 0);
+  return Number(value).toFixed(schema?.['x-component-props']?.precision || 0);
 }
 
 export function labelValueRenderer(value: FormDataValue): string {

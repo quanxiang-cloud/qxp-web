@@ -81,7 +81,7 @@ function PageDataTable(): JSX.Element {
       </div>
       <div className='flex flex-1 overflow-hidden'>
         <Table
-          canSetColumnWidth
+          canSetColumnWidth={store.canSetColumnWidth}
           showCheckbox={store.showCheckbox}
           emptyTips='暂无数据'
           size={tableSize}

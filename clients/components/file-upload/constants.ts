@@ -17,7 +17,7 @@ export const PARALLEL_UPLOAD_SIZE = 3;
 export const MAX_SMALL_FILE_SIZE = 1024 * 1024 * 20; // 20 MB
 
 // File list icon config
-export const FILE_LIST_ICON: Record<string, Record<string, string | number>> = {
+export const FILE_LIST_ICON: Record<string, { name: string, size: number, className: string }> = {
   failed: { name: 'error', size: 20, className: 'text-red-600' },
   retry: { name: 'refresh', size: 24, className: 'text-red-600' },
   success: { name: 'done', size: 20, className: 'text-green-500' },
@@ -38,4 +38,4 @@ export const DEFAULT_IMG_TYPES: string[] = [
   'image/jpeg',
 ];
 
-export const THUMBNAIL_SIZE = 30;
+export const THUMBNAIL_SIZE = 52;
