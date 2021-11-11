@@ -26,13 +26,20 @@ const schema: ISchema = {
           title: '描述内容',
           maxLength: 50,
           'x-component': 'Input',
-          'x-component-props': {
-            placeholder: '请输入',
-          },
           'x-mega-props': {
             labelAlign: 'top',
           },
           'x-index': 1,
+        },
+        uploaderDescription: {
+          title: '附件内描述',
+          default: '',
+          'x-mega-props': {
+            labelAlign: 'top',
+          },
+          maxLength: 30,
+          'x-component': 'Input',
+          'x-index': 2,
         },
         displayModifier: {
           type: 'string',
@@ -56,19 +63,36 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 2,
+          'x-index': 3,
         },
+
         required: {
           title: '是否必填',
           default: false,
           'x-component': 'Switch',
-          'x-index': 3,
+          'x-index': 4,
         },
         multiple: {
           title: '允许上传多个附件',
           default: false,
           'x-component': 'Switch',
           'x-index': 4,
+        },
+        maxFileSize: {
+          title: '附件最大体积(MB)',
+          required: true,
+          maxLength: 4,
+          'x-component': 'NumberPicker',
+          'x-index': 6,
+          'x-rules': {
+            required: true,
+            message: '请输入附件最大体积',
+          },
+          'x-component-props': {
+            min: 10,
+            max: 5000,
+            precision: 0,
+          },
         },
       },
     },

@@ -118,6 +118,7 @@ module.exports = {
         120: '120px',
       },
       maxWidth: {
+        '290': 290,
         '%90': '90%',
       },
       height: {

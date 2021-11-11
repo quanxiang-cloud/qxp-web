@@ -1,18 +1,19 @@
 import { validateRegistryElement } from '@c/form-builder/utils';
-import FileList from '@portal/modules/system-mgmt/send-message/filelist';
+import FileList from '@c/file-upload/file-list'
+;
+import FormImgUploader from './uploader';
 
 import configSchema from './config-schema';
-import { defaultConfig, toSchema, toConfig, ImageUploadConfig } from './convertor';
-import Uploader from './uploader';
+import { defaultConfig, toSchema, toConfig } from './convertor';
 
-const Field: Omit<FormBuilder.SourceElement<ImageUploadConfig>, 'displayOrder'> = {
+const Field: Omit<FormBuilder.SourceElement<typeof defaultConfig>, 'displayOrder'> = {
   configSchema,
   displayName: '图片',
   icon: 'image',
-  defaultConfig: defaultConfig,
+  defaultConfig,
   toSchema,
   toConfig,
-  component: Uploader,
+  component: FormImgUploader,
   category: 'advance',
   componentName: 'ImageUpload',
   configDependencies: { FileList },
