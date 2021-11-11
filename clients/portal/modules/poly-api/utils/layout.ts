@@ -14,8 +14,6 @@ const createGraphLayoutElk = async (
         'org.eclipse.elk.portConstraints': 'FIXED_SIDE',
       },
     };
-    // const pos = node.__rf?.position;
-    // or(pos?.x, pos?.y) && Object.assign(elkNode, { x: pos.x, y: pos.y });
     return elkNode;
   });
 

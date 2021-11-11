@@ -3,8 +3,7 @@ import { Cascader } from 'antd';
 import { useParams } from 'react-router';
 
 import Icon from '@c/icon';
-
-import { useQueryNameSpaceRawRootPath } from '../../effects/api/namespace';
+import { useQueryNameSpaceRawRootPath } from '@polyApi/effects/api/namespace';
 
 const options = [
   {

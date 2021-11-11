@@ -106,6 +106,8 @@ declare namespace POLY_API {
   export type PolyRequestNode = PolyNodeGeneric<'request', PolyRequestNodeDetail>;
   export type PolyIfNode = PolyNodeGeneric<'if', PolyCondNodeDetail>;
   export type PolyEndNode = PolyNodeGeneric<'end', PolyEndNodeDetail>;
+  export type PolyNodeDetail = PolyStartNodeDetail | PolyCondNodeDetail | PolyRequestNodeDetail |
+    PolyEndNodeDetail;
   export type PolyNode = PolyStartNode | PolyRequestNode | PolyIfNode | PolyEndNode;
   export interface RootObject<T> {
     namespace: string;

@@ -120,11 +120,21 @@ export default function({
             {children}
           </footer>
           {showBottomTrigger && (
-            <ActionTrigger ref={bottomTriggerRef} type="bottom" id={id} isCondition={isCondition} />
+            <ActionTrigger
+              ref={bottomTriggerRef}
+              type="bottom"
+              id={id}
+              hideConditionSelect={isCondition}
+            />
           )}
         </div>
         {showrightTrigger && (
-          <ActionTrigger ref={rightTriggerRef} type="right" id={id} isCondition={isCondition} />
+          <ActionTrigger
+            ref={rightTriggerRef}
+            type="right"
+            id={id}
+            hideConditionSelect={isCondition}
+          />
         )}
         {!isEnd && !isInput && <NodeRemove ref={removeRef} id={id} />}
       </section>

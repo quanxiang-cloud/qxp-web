@@ -16,25 +16,19 @@ interface BuildEdgeOption {
   label?: string;
   sourceHandle?: string;
   targetHandle?: string;
-  idAppend?: number;
-}
-interface BuildEdgeProps {
-  source: string;
-  target: string;
-  options?: BuildEdgeOption;
 }
 export function buildEdge(
   source: string,
   target: string,
   {
-    direction, label, sourceHandle, targetHandle, idAppend,
+    direction, label, sourceHandle, targetHandle,
   }: BuildEdgeOption = { direction: 'right' },
 ): POLY_API.EdgeElement {
   const sourceHandleI = sourceHandle || (direction === 'right' ? `${source}__right` : `${source}__bottom`);
   const targetHandleI = targetHandle || (direction === 'right' ? `${target}__left` : `${target}__top`);
   function getEdge(): Edge {
     return {
-      id: `e${source}-${target}${idAppend ? `-${idAppend }` : ''}`, source, target,
+      id: `e${source}-${target}-${nanoid()}`, source, target,
       type: POLY_DESIGN_CONFIG.EDGE_TYPE,
       style: { stroke: POLY_DESIGN_CONFIG.EDGE_COLOR },
       arrowHeadType: POLY_DESIGN_CONFIG.ARROW_HEAD_TYPE,
@@ -215,8 +209,13 @@ function removeCurrentRequestNodeFromRequestToRequestOrCondition(
   next: POLY_API.NodeElement,
   elements: POLY_API.Element[],
 ): POLY_API.Element[] {
-  const edges = [buildEdge(parent.id, next.id)];
-  parent.data?.set('nextNodes', [next.id]);
+  const parentPreviousNextNodeIds = parent.data?.get<string[]>('nextNodes') || [];
+  const isParentPreviousMultipleChild = parentPreviousNextNodeIds.length > 1;
+  const edges = isParentPreviousMultipleChild ? [] : [buildEdge(parent.id, next.id)];
+  parent.data?.set(
+    'nextNodes',
+    !isParentPreviousMultipleChild ? [next.id] : parentPreviousNextNodeIds.filter((id) => id !== current.id),
+  );
   const newElements = removeElements([current], elements);
   return newElements.concat(edges);
 }
@@ -231,40 +230,36 @@ function removeCurrentRequestNodeFromConditionToRequest(
   const isNo = parent.data?.get('detail.no') === current.id;
 
   const edgesToAdd = [];
-  isYes && edgesToAdd.push(buildEdge(parent.id, next.id));
-  isNo && edgesToAdd.push(
-    buildEdge(parent.id, next.id, { sourceHandle: `${parent.id}__bottom`, targetHandle: `${next.id}__left` }),
-  );
+  isYes && edgesToAdd.push(buildEdge(parent.id, next.id, { label: '是' }));
+  isNo && edgesToAdd.push(buildEdge(
+    parent.id,
+    next.id,
+    { sourceHandle: `${parent.id}__bottom`, targetHandle: `${next.id}__left`, label: '否' },
+  ));
   isYes && parent.data?.set('detail.yes', next.id);
   isNo && parent.data?.set('detail.no', next.id);
 
-  const parentPreviousNextNodes = parent.data?.get<string[]>('nextNodes') || [];
+  const parentPreviousNextNodeIds = parent.data?.get<string[]>('nextNodes') || [];
   parent.data?.set(
-    'nextNodes', parentPreviousNextNodes.filter((id) => id !== current.id).concat([next.id]),
+    'nextNodes', parentPreviousNextNodeIds.filter((id) => id !== current.id).concat([next.id]),
   );
   const newElements = removeElements([current], elements);
+
   return newElements.concat(edgesToAdd);
-  // return elements.filter((element) => {
-  //   const shouldRemove = (element.id === current.id) ||
-  //     (isEdge(element) && (element.target === current.id || element.source === current.id));
-  //   return !shouldRemove;
-  // }).concat(edgesToAdd);
 }
 
 function getCurrentNodeParentNode(
   current: POLY_API.NodeElement, elements: POLY_API.Element[],
 ): POLY_API.NodeElement | undefined {
   return elements.find((element) => {
-    const nextNodes = element.data?.get<string[]>('nextNodes') || [];
-    return nextNodes.includes(current.id);
+    const elementNextNodeIds = element.data?.get<string[]>('nextNodes') || [];
+    return elementNextNodeIds.includes(current.id);
   }) as POLY_API.NodeElement | undefined;
 }
 
 function removeCurrentRequestNode(
   nodeToRemove: POLY_API.NodeElement, elements: POLY_API.Element[],
 ): POLY_API.Element[] {
-  // 1. 当前节点是请求节点, 节点在请求节点之间, 或者节点在请求与判断节点之间
-  // 2. 当前节点是请求节点, 节点在判断与请求节点之间
   const currentNodeParentNode = getCurrentNodeParentNode(nodeToRemove, elements);
   const currentNodeNextNodeId = nodeToRemove.data?.get<string>('nextNodes')?.[0];
   const currentNodeNextNode = elements.find(
@@ -297,17 +292,17 @@ function getDescendantNodes(
   elements: POLY_API.Element[],
   filter?: (element: POLY_API.Element) => boolean,
 ): POLY_API.NodeElement[] {
-  const nextNodes = current.data?.get<string[]>('nextNodes') || [];
-  if (!nextNodes.length) {
+  const currentNodeNextNodeIds = current.data?.get<string[]>('nextNodes') || [];
+  if (!currentNodeNextNodeIds.length) {
     return [];
   }
   const elementsMap = elementsToMap(elements);
-  const allNodes = nextNodes.map((id) => {
+  const allNodes = currentNodeNextNodeIds.map((id) => {
     const element = elementsMap[id] as POLY_API.NodeElement;
-    if (!filter?.(element)) {
+    if (filter && !filter?.(element)) {
       return [];
     }
-    return [element].concat(getDescendantNodes(element, elements));
+    return [element].concat(getDescendantNodes(element, elements, filter));
   });
   return flatten(allNodes);
 }
@@ -315,15 +310,25 @@ function getDescendantNodes(
 function removeCurrentConditionNode(
   nodeToRemove: POLY_API.NodeElement, elements: POLY_API.Element[],
 ): POLY_API.Element[] {
-  // 1. 当前节点是判断节点, 节点在请求节点之间
   const currentNodeParentNode = getCurrentNodeParentNode(nodeToRemove, elements);
   const descendantNodes = getDescendantNodes(nodeToRemove, elements, (element) => element.type !== 'end');
   const endNode = elements.find((element) => element.type === 'end') as POLY_API.NodeElement | undefined;
   if (!currentNodeParentNode || !endNode) {
     return elements;
   }
-  const edges = [buildEdge(currentNodeParentNode.id, endNode.id)];
-  const newElements = removeElements(descendantNodes, elements);
+  const isParentInput = currentNodeParentNode.type === 'input';
+  const isParentInputMultipleChild = isParentInput && (currentNodeParentNode.data?.get<string[]>(
+    'nextNodes',
+  ) || []).length > 1;
+  const currentNodeParentNodeNextNodeIds = currentNodeParentNode.data?.get<string[]>('nextNodes') || [];
+  currentNodeParentNode.data?.set(
+    'nextNodes',
+    !isParentInputMultipleChild ?
+      [endNode.id] :
+      currentNodeParentNodeNextNodeIds.filter((id) => id !== nodeToRemove.id),
+  );
+  const edges = isParentInputMultipleChild ? [] : [buildEdge(currentNodeParentNode.id, endNode.id)];
+  const newElements = removeElements([...descendantNodes, nodeToRemove], elements);
   return newElements.concat(edges);
 }
 
@@ -345,187 +350,181 @@ export function removeNode(
 }
 
 function addRequestNodeOnBottom(
-  requestNode: POLY_API.Element, nodes: POLY_API.Element[],
+  requestNode: POLY_API.Element, elements: POLY_API.Element[],
 ): POLY_API.Element[] {
-  let inputNode;
-  let endNode;
-  for (let index = 0; index < nodes.length; index += 1) {
-    const element = nodes[index];
-    if (element.type === 'input') {
-      inputNode = element;
-    } else if (element.type === 'end') {
-      endNode = element;
-    }
-    if (inputNode && endNode) {
-      break;
-    }
-  }
+  const inputNode = elements.find((element) => element.type === 'input') as POLY_API.NodeElement | undefined;
+  const endNode = elements.find((element) => element.type === 'end') as POLY_API.NodeElement | undefined;
   if (!inputNode || !endNode) {
-    return nodes;
+    return elements;
   }
-  const inputNodeNextIds = inputNode.data?.get<string[]>('nextNodes') || [];
-  inputNode.data?.set('nextNodes', [...inputNodeNextIds, requestNode.id]);
+  const inputNodeNextNodeIds = inputNode.data?.get<string[]>('nextNodes') || [];
+  inputNode.data?.set('nextNodes', [...inputNodeNextNodeIds, requestNode.id]);
   requestNode.data?.set('nextNodes', [endNode.id]);
 
-  return nodes.concat([
+  return elements.concat([
     buildEdge(inputNode.id, requestNode.id), buildEdge(requestNode.id, endNode.id), requestNode,
   ]);
 }
 
-export function addConditionNodeOnBottom(
-  currentNode: POLY_API.Element, conditionNode: POLY_API.Element, nodes: POLY_API.Element[],
-): POLY_API.Element[] {
-  const endNode = nodes.find((node) => node.type === 'end');
-  if (!endNode) {
-    return nodes;
-  }
-  const currentNodeNextNodeIds = currentNode.data?.get<string[]>('nextNodes') || [];
-  currentNode.data?.set('nextNodes', [...currentNodeNextNodeIds, conditionNode.id]);
-  conditionNode.data?.set('nextNodes', [endNode.id]);
-  return nodes.concat([
-    buildEdge(
-      currentNode.id,
-      conditionNode.id,
-      { sourceHandle: `${currentNode.id}__bottom`, targetHandle: `${conditionNode.id}__left` },
-    ),
-    buildEdge(conditionNode.id, endNode.id, { direction: 'right', idAppend: 1 }),
-    buildEdge(
-      conditionNode.id,
-      endNode.id,
-      { sourceHandle: `${conditionNode.id}__bottom`, targetHandle: `${endNode.id}__left`, idAppend: 2 },
-    ),
-    conditionNode,
-  ]);
-}
-
 function addRequestNodeOnRight(
-  currentNode: POLY_API.Element, requestNode: POLY_API.Element, nodes: POLY_API.Element[],
+  currentNode: POLY_API.NodeElement, requestNode: POLY_API.NodeElement, elements: POLY_API.Element[],
 ): POLY_API.Element[] {
   const currentNodeNextNodeIds = currentNode.data?.get<string[]>('nextNodes') || [];
-  const edges = currentNodeNextNodeIds.map((nodeId) => {
-    return buildEdge(requestNode.id, nodeId, { direction: 'right' });
-  }).concat(buildEdge(currentNode.id, requestNode.id, { direction: 'right' }));
-  currentNode.data?.set('nextNodes', [requestNode.id]);
-  requestNode.data?.set('nextNodes', currentNodeNextNodeIds);
+  if (currentNodeNextNodeIds.length > 1) {
+    return addRequestNodeOnBottom(requestNode, elements);
+  }
+  const currentNodeNextNodeId = currentNodeNextNodeIds[0];
+  const currentNodeNextNode = elements.find(
+    (element) => element.id === currentNodeNextNodeId,
+  ) as POLY_API.NodeElement | undefined;
+  if (!currentNodeNextNode) {
+    return elements;
+  }
 
-  return nodes
-    .filter((node) => {
-      const edgeToRemove = isEdge(node) &&
-        node.source === currentNode.id &&
-        currentNodeNextNodeIds.includes(node.target);
-      return !edgeToRemove;
-    }).concat([...edges, requestNode]);
+  const edges = [
+    buildEdge(currentNode.id, requestNode.id),
+    buildEdge(requestNode.id, currentNodeNextNode.id),
+  ];
+  currentNode.data?.set('nextNodes', [requestNode.id]);
+  requestNode.data?.set('nextNodes', [currentNodeNextNode.id]);
+
+  return elements.filter((element) => {
+    const shouldRemove = isEdge(element) && element.source === currentNode.id &&
+      element.target === currentNodeNextNode.id;
+    return !shouldRemove;
+  }).concat([...edges, requestNode]);
 }
 
 function addRequestNodeOnCondition(
-  currentNode: POLY_API.Element,
-  requestNode: POLY_API.Element,
-  nodes: POLY_API.Element[],
+  currentNode: POLY_API.NodeElement,
+  requestNode: POLY_API.NodeElement,
+  elements: POLY_API.Element[],
   direction: 'right' | 'bottom',
 ): POLY_API.Element[] {
-  const edgeToRemove = nodes.filter(
-    (node) => isEdge(node) && node.sourceHandle === `${currentNode.id}__${direction}`,
-  );
-  const edgeToRemoveIds = edgeToRemove.map((edge) => edge.id);
-  const currentNodeNextRightNodeIds = edgeToRemove.map((edge) => (edge as POLY_API.EdgeElement).target);
-  const previousNextNodes = currentNode.data?.get<string[]>('nextNodes') || [];
-  const currentNewNextNodes = previousNextNodes.filter((id) => !currentNodeNextRightNodeIds.includes(id));
+  let yesOrNo;
+  if (direction === 'right') {
+    yesOrNo = 'yes';
+  }
+  if (direction === 'bottom') {
+    yesOrNo = 'no';
+  }
+  const currentNodeNextNodeId = currentNode.data?.get<string | undefined>(`detail.${yesOrNo}`);
+  if (!currentNodeNextNodeId) {
+    return elements;
+  }
+  const previousNextNodeIds = currentNode.data?.get<string[]>('nextNodes') || [];
+  const currentNewNextNodes = previousNextNodeIds.filter((id) => id !== currentNodeNextNodeId);
   currentNode.data?.set('nextNodes', [requestNode.id, ...currentNewNextNodes]);
-  requestNode.data?.set('nextNodes', currentNodeNextRightNodeIds);
-  const edges = currentNodeNextRightNodeIds.map((nodeId) => {
-    return buildEdge(requestNode.id, nodeId, { direction: 'right' });
-  }).concat([
-    direction === 'right' ?
-      buildEdge(currentNode.id, requestNode.id, { direction: 'right', label: '是' }) :
-      buildEdge(currentNode.id, requestNode.id, {
-        sourceHandle: `${currentNode.id}__bottom`, targetHandle: `${requestNode.id}__left`, label: '否',
-      }),
-  ]);
+  requestNode.data?.set('nextNodes', [currentNodeNextNodeId]);
+
+  const edges = [
+    buildEdge(
+      currentNode.id,
+      requestNode.id,
+      {
+        sourceHandle: `${currentNode.id}__${direction}`,
+        targetHandle: `${requestNode.id}__left`,
+        label: direction === 'right' ? '是' : '否',
+      },
+    ),
+    buildEdge(requestNode.id, currentNodeNextNodeId, { direction: 'right' }),
+  ];
+
   direction === 'right' && currentNode.data?.set('detail.yes', requestNode.id);
   direction === 'bottom' && currentNode.data?.set('detail.no', requestNode.id);
-  return nodes.filter((node) => {
-    return !edgeToRemoveIds.includes(node.id);
+
+  return elements.filter((element) => {
+    const shouldRemove = isEdge(element) && element.source === currentNode.id &&
+      element.target === currentNodeNextNodeId;
+    return !shouldRemove;
   }).concat([
     ...edges,
     requestNode,
   ]);
 }
 
-function addConditionNodeOnRight(
-  currentNode: POLY_API.Element, conditionNode: POLY_API.Element, nodes: POLY_API.Element[],
+function addConditionNodeOnRequest(
+  currentNode: POLY_API.NodeElement,
+  conditionNode: POLY_API.NodeElement,
+  elements: POLY_API.Element[],
+  direction: 'right' | 'bottom',
 ): POLY_API.Element[] {
   const currentNodeNextNodeIds = currentNode.data?.get<string[]>('nextNodes') || [];
-  const twoDimensionalEdges = currentNodeNextNodeIds.map((nodeId) => {
-    conditionNode.data?.set('detail.yes', nodeId);
-    conditionNode.data?.set('detail.no', nodeId);
-    return [
-      buildEdge(
-        conditionNode.id,
-        nodeId,
-        { direction: 'right', idAppend: 1, label: '是' },
-      ),
-      buildEdge(
-        conditionNode.id,
-        nodeId,
-        {
-          sourceHandle: `${conditionNode.id}__bottom`,
-          targetHandle: `${nodeId}__left`,
-          idAppend: 2,
-          label: '否',
-        },
-      ),
-    ];
-  });
-  const edges = flatten(twoDimensionalEdges).concat(
-    buildEdge(currentNode.id, conditionNode.id, { direction: 'right' }),
-  );
-  currentNode.data?.set('nextNodes', [conditionNode.id]);
-  conditionNode.data?.set('nextNodes', currentNodeNextNodeIds);
+  const isCurrentNodeNextNodeMultipleChild = currentNodeNextNodeIds.length > 1;
+  const endNode = elements.find((element) => element.type === 'end') as POLY_API.NodeElement | undefined;
+  const currentNodeNextNodeId = isCurrentNodeNextNodeMultipleChild ? endNode?.id : currentNodeNextNodeIds[0];
+  if (!currentNodeNextNodeId) {
+    return elements;
+  }
 
-  return nodes
-    .filter((node) => {
-      const edgeToRemove = isEdge(node) &&
-        node.source === currentNode.id &&
-        currentNodeNextNodeIds.includes(node.target);
-      return !edgeToRemove;
-    }).concat([...edges, conditionNode]);
+  conditionNode.data?.set('nextNodes', [currentNodeNextNodeId]);
+  conditionNode.data?.set('detail.yes', currentNodeNextNodeId);
+  conditionNode.data?.set('detail.no', currentNodeNextNodeId);
+  currentNode.data?.set(
+    'nextNodes', [conditionNode.id, ...currentNodeNextNodeIds.filter((id) => id !== conditionNode.id)],
+  );
+
+  const edges = [
+    buildEdge(currentNode.id, conditionNode.id, {
+      sourceHandle: `${currentNode.id}__${direction}`,
+      targetHandle: `${conditionNode.id}__left`,
+    }),
+    buildEdge(
+      conditionNode.id,
+      currentNodeNextNodeId,
+      { direction: 'right', label: '是' },
+    ),
+    buildEdge(
+      conditionNode.id,
+      currentNodeNextNodeId,
+      {
+        sourceHandle: `${conditionNode.id}__bottom`,
+        targetHandle: `${currentNodeNextNodeId}__left`,
+        label: '否',
+      },
+    ),
+  ];
+
+  return elements.filter((element) => {
+    const edgeToRemove = isEdge(element) && element.source === currentNode.id &&
+        element.target === currentNodeNextNodeId;
+    return !edgeToRemove;
+  }).concat([...edges, conditionNode]);
 }
 
 export function addRequestNode(
-  currentNodeId: string, position: 'right' | 'bottom', nodes: POLY_API.Element[],
+  currentNodeId: string, position: 'right' | 'bottom', elements: POLY_API.Element[],
 ): POLY_API.Element[] {
-  const currentNode = nodes.find((node) => node.id === currentNodeId);
+  const currentNode = elements.find((el) => el.id === currentNodeId) as POLY_API.NodeElement | undefined;
   const isCondition = currentNode?.type === 'if';
   if (!currentNode) {
-    return nodes;
+    return elements;
   }
 
   const requestNode = buildRequestNode();
 
   if (position === 'right') {
     return isCondition ?
-      addRequestNodeOnCondition(currentNode, requestNode, nodes, 'right') :
-      addRequestNodeOnRight(currentNode, requestNode, nodes);
+      addRequestNodeOnCondition(currentNode, requestNode, elements, 'right') :
+      addRequestNodeOnRight(currentNode, requestNode, elements);
   }
 
   return isCondition ?
-    addRequestNodeOnCondition(currentNode, requestNode, nodes, 'bottom') :
-    addRequestNodeOnBottom(requestNode, nodes);
+    addRequestNodeOnCondition(currentNode, requestNode, elements, 'bottom') :
+    addRequestNodeOnBottom(requestNode, elements);
 }
 
 export function addConditionNode(
-  currentNodeId: string, position: 'right' | 'bottom', nodes: POLY_API.Element[],
+  currentNodeId: string, position: 'right' | 'bottom', elements: POLY_API.Element[],
 ): POLY_API.Element[] {
-  const currentNode = nodes.find((node) => node.id === currentNodeId);
+  const currentNode = elements.find(
+    (element) => element.id === currentNodeId,
+  ) as POLY_API.NodeElement | undefined;
   if (!currentNode) {
-    return nodes;
+    return elements;
   }
 
   const conditionNode = buildConditionNode();
 
-  if (position === 'right') {
-    return addConditionNodeOnRight(currentNode, conditionNode, nodes);
-  }
-
-  return addConditionNodeOnBottom(currentNode, conditionNode, nodes);
+  return addConditionNodeOnRequest(currentNode, conditionNode, elements, position);
 }

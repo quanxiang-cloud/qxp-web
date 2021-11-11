@@ -130,7 +130,7 @@ $nodeTypes: input, request, if, end, default, output;
   }
   &>div:last-child {
     @apply mb-0;
-  }  
+  }
 }
 
 .config-param {
@@ -138,5 +138,16 @@ $nodeTypes: input, request, if, end, default, output;
 
   &>div {
     @apply border-b-1;
+  }
+}
+
+.node-config-drawer {
+  &.drawer-fullscreen {
+    .drawer-container {
+      width: 100%;
+    }
+  }
+  .drawer-container {
+    transition: all .3s ease-in-out;
   }
 }

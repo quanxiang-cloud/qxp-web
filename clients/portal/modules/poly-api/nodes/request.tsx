@@ -6,7 +6,7 @@ import Icon from '@c/icon';
 import useObservable from '@lib/hooks/use-observable';
 
 import useNodeConfig from '../effects/hooks/use-node-config';
-import RequestConfigForm from './node-config-form/request-config-form';
+import RequestConfigForm from './form/request-config-form';
 
 import NodeWrapper from './wrapper';
 

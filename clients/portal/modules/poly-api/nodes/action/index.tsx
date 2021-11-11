@@ -11,11 +11,11 @@ interface Props {
   position: 'right' | 'bottom';
   onHide: (e?: Event) => void;
   currentNodeId: string;
-  isCondition: boolean;
+  hideConditionSelect: boolean;
 }
 
 function NodeAction(
-  { position, onHide, currentNodeId, isCondition }: Props, ref: ForwardedRef<HTMLElement | null>,
+  { position, onHide, currentNodeId, hideConditionSelect }: Props, ref: ForwardedRef<HTMLElement | null>,
 ): JSX.Element {
   const actionRef = useRef<HTMLElement | null>(null);
   const elements$ = store$.value.nodes;
@@ -50,7 +50,7 @@ function NodeAction(
 
   if (position === 'bottom') {
     Object.assign(style, {
-      top: isCondition ? '-5px' : '-14px',
+      top: hideConditionSelect ? '-5px' : '-14px',
       left: '50%',
       transform: 'translateX(-50%) scale(0.5)',
     });
@@ -71,7 +71,7 @@ function NodeAction(
           <Icon className="mr-8" name="add-request-node-action" />
           <span className="text-button whitespace-nowrap">请求节点</span>
         </li>
-        {!isCondition && (
+        {!hideConditionSelect && (
           <li
             className="hover:bg-blue-100 transition duration-300 py-7 px-16 flex items-center cursor-pointer"
             onClick={handleAddConditionNode}
