@@ -1,7 +1,9 @@
 import React from 'react';
 import SchemaForm, { useForm } from '@formily/antd';
 import { Input } from '@formily/antd-components';
+import { Radio } from '@formily/antd-components';
 
+import store from '../store';
 import Modal from '@c/modal';
 
 type Props = {
@@ -17,9 +19,10 @@ function EditModal({ modalType, onClose }: Props): JSX.Element {
         type: 'object',
         'x-component': 'mega-layout',
         properties: {
-          title: {
+          alias: {
             type: 'string',
-            title: '新建函数',
+            title: '函数名称',
+            description: '最多 20 个字符，支持中文、英文、下划线、数字。函数名称不可重复',
             'x-component': 'Input',
             'x-component-props': {
               placeholder: '请输入，例如：计算函数',
@@ -37,15 +40,16 @@ function EditModal({ modalType, onClose }: Props): JSX.Element {
                 message: '名称不能输入emoji表情符号',
               },
               {
-                max: 30,
-                message: '名称不超过 30 字符，请修改！',
+                max: 20,
+                message: '名称不超过 20 字符，请修改！',
               },
             ],
             'x-index': 0,
           },
-          funcID: {
+          name: {
             type: 'string',
             title: '函数标识',
+            description: '最多 20 字符，必须以字母开头，只能包含字母、数字、下划线，标识不可重复。',
             'x-component': 'Input',
             'x-component-props': {
               placeholder: '请输入，例如：sys_001',
@@ -59,8 +63,8 @@ function EditModal({ modalType, onClose }: Props): JSX.Element {
                 message: '请输入函数标识',
               },
               {
-                max: 30,
-                message: '函数标识不超过 30 字符，请修改！',
+                max: 20,
+                message: '函数标识不超过 20 字符，请修改！',
               },
               {
                 pattern: /^[a-zA-Z]+([_]?[a-zA-Z0-9])*$/,
@@ -70,11 +74,22 @@ function EditModal({ modalType, onClose }: Props): JSX.Element {
             'x-index': 1,
           },
           language: {
+
             type: 'string',
             title: '语言',
-            default: 'Go语言',
-            readOnly: true,
-            'x-component': 'Input',
+            ['x-component']: 'RadioGroup',
+            default: 'go',
+            // readOnly: true,
+            enum: [{
+              label: 'GO语言',
+              value: 'go',
+            }],
+            'x-rules': [
+              {
+                required: true,
+                message: '请输入函数标识',
+              },
+            ],
             'x-mega-props': {
               labelAlign: 'top',
             },
@@ -101,15 +116,19 @@ function EditModal({ modalType, onClose }: Props): JSX.Element {
     },
   };
   const form = useForm({
+    // initialValues: {
+    //   title: modalType === 'copy' ? `${modelInfo?.title}-副本` : modelInfo?.title,
+    //   tableID: modalType === 'copy' ? '' : modelInfo?.tableID,
+    //   description: modelInfo?.description,
+    // },
     onSubmit: (formData) => {
-      console.log(formData);
-      onClose();
+      store.createFunc(formData);
     },
   });
 
   function handleSubmit(): void {
     form.submit().then(() => {
-      onClose();
+      store.setModalType('');
     }).catch(() => null);
   }
 
@@ -123,7 +142,7 @@ function EditModal({ modalType, onClose }: Props): JSX.Element {
           text: '取消',
           key: 'cancel',
           iconName: 'close',
-          onClick: onClose,
+          onClick: () => store.setModalType(''),
         },
         {
           text: `${modalType === 'edit' ? '确定修改' : '确定添加'}`,
@@ -138,7 +157,7 @@ function EditModal({ modalType, onClose }: Props): JSX.Element {
         className="p-20"
         schema={SCHEMA}
         form={form as any}
-        components={{ Input, TextArea: Input.TextArea }}
+        components={{ Input, TextArea: Input.TextArea, RadioGroup: Radio.Group }}
       />
     </Modal>
   );

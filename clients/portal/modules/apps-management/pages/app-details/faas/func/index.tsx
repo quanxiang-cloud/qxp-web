@@ -17,7 +17,7 @@ function FuncList(): JSX.Element {
   const { funcList, fetchDataList, modalType, setModalType } = store;
 
   useEffect(() => {
-    fetchDataList('', { appID: '', size: '', page: '' });
+    fetchDataList();
   }, []);
 
   return (

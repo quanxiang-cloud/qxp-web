@@ -7,8 +7,11 @@ import {
   createGroup,
   createDeveloper,
   addToGroup,
+  fetchFuncList,
+  createFaasFunc,
 } from './api';
 import toast from '@lib/toast';
+import TimerSelector from '@portal/modules/work-flow/content/editor/forms/intermidiate/components/basic-config/timer-selector';
 
 class FaasStore {
   @observable appDetails: AppInfo = {
@@ -26,19 +29,15 @@ class FaasStore {
   @observable isDeveloper = false;
   @observable developerInGroup = false;
   @observable initLoading = false;
-  @observable funcListLoading = false;
+  @observable funcListLoading = true;
   @observable modalType = '';
   @observable buildIsError = true;
+  @observable checkUserLoading = true;
   @observable apiIsError = false;
   @observable groupID = '';
-  @observable funcList: FuncField[] = [{
-    name: 'Mock数据',
-    id: 'mock',
-    state: 'SUCCESS',
-    description: 'Go语言',
-    creator: 'miao',
-    createdAt: '2021',
-  }];
+  @observable funcList: FuncField[] = [];
+  @observable count = 0;
+  @observable currentFuncID = '';
 
   @action
   setModalType = (type: string): void => {
@@ -46,36 +45,60 @@ class FaasStore {
   }
 
   @action
-  isGroup = (): void => {
-    checkHasGroup({
+  isaDeveloper = (): Promise<void>=> {
+    return checkIsDeveloper().then((res) => {
+      this.isDeveloper = res.isDeveloper;
+    }).catch((err) => toast.error(err));
+  }
+
+  @action
+  isGroup = (): Promise<void> => {
+    return checkHasGroup({
       group: this.appDetails.appSign,
       appID: this.appDetails.id,
     }).then((res) => {
       this.hasGroup = Boolean(res.groupID);
       this.groupID = res.groupID;
-      if (this.hasGroup && this.isDeveloper) {
-        this.isDeveloperInGroup();
-      }
+    }).catch((err) => {
+      toast.error(err);
     });
   }
 
   @action
-  isaDeveloper = (): void => {
-    checkIsDeveloper().then((res) => {
-      this.isDeveloper = res.isDeveloper;
-      this.isGroup();
-    },
-    ).catch((err) => toast.error(err));
-  }
-
-  @action
-  isDeveloperInGroup = (): void => {
-    checkInGroup({
+  isDeveloperInGroup = (): Promise<void> => {
+    return checkInGroup({
       group: this.appDetails.appSign,
     }).then((res) =>{
       this.developerInGroup = res.isMember;
     },
-    ).catch((err) => toast.error(err));
+    ).catch((err) => {
+      toast.error(err);
+    });
+  }
+
+  @action
+  checkUserSate = async (): Promise<void>=> {
+    this.checkUserLoading = true;
+    await this.isaDeveloper();
+    await this.isGroup();
+    if (this.hasGroup && this.isDeveloper) await this.isDeveloperInGroup();
+    this.checkUserLoading = false;
+  }
+
+  @action
+  createDeveloper = (email: string) => {
+    return createDeveloper({
+      email,
+    }).then(() => {
+      const intervalBox = setInterval(async () => {
+        await this.isaDeveloper();
+        if (this.isDeveloper) {
+          clearInterval(intervalBox);
+        }
+      }, 5000);
+    }).catch((err) => {
+      toast.error(err);
+    });
   }
 
   @action
@@ -92,20 +115,9 @@ class FaasStore {
   }
 
   @action
-  createDeveloper = (email: string) => {
-    createDeveloper({
-      email,
-    }).then(() => {
-      this.isDeveloper = true;
-    }).catch((err) => {
-      toast.error(err);
-    });
-  }
-
-  @action
   addUserToGroup = () => {
     addToGroup(this.groupID, { memberID: this.User.id }).then((res) => {
-      console.log(res);
+      this.developerInGroup = true;
     }).catch((err) => {
       toast.error(err);
     });
@@ -116,53 +128,48 @@ class FaasStore {
     if (!this.isDeveloper) {
       await this.createDeveloper(email);
     }
-    if (!this.hasGroup) {
+
+    if (!this.hasGroup && this.isDeveloper) {
+      console.log(11);
       await this.createGroup();
     }
-    if (!this.developerInGroup) {
+
+    if (!this.developerInGroup && this.isDeveloper && this.hasGroup) {
       await this.addUserToGroup();
     }
   }
 
   @action
-  fetchDataList = (groupID: string, params: FuncListParams): void => {
-    this.funcListLoading = true;
-    this.funcList = [
-      {
-        name: 'Mock数据1',
-        id: 'mock1',
-        state: 'SUCCESS',
-        description: 'Go',
-        creator: 'miao',
-        createdAt: '2021',
-      },
-      {
-        name: 'Mock数据2',
-        id: 'mock2',
-        state: 'ING',
-        description: 'Go',
-        creator: 'miao',
-        createdAt: '2021',
-      },
-      {
-        name: 'Mock数据3',
-        id: 'mock3',
-        state: 'FAILED',
-        description: 'Go',
-        creator: 'miao',
-        createdAt: '2021',
-      },
-    ];
-    // fetchFuncList(groupID, params).then((res) => {
-    //   // todo update funcList
-    //   this.funcList = [];
-    // }).catch((err) => {
-    //   toast.error(err);
-    //   this.funcList = [];
-    // }).finally(() => {
-    //   this.funcListLoading = false;
-    // });
+  fetchDataList = (): void => {
+    fetchFuncList(this.groupID, {
+      appID: this.appDetails.id,
+      size: 20,
+      page: 1,
+    }).then((res) => {
+      const { count, projects } = res;
+      this.count = count;
+      this.funcList = projects;
+      // todo update funcList
+
+      console.log(res);
+      // this.funcList = [];
+    }).catch((err) => {
+      toast.error(err);
+      this.funcList = [];
+    }).finally(() => {
+      this.funcListLoading = false;
+    });
   }
+
+  @action
+createFunc = (data: any) => {
+  createFaasFunc(this.groupID, data).then((res) => {
+    this.currentFuncID = res.id;
+    this.fetchDataList();
+  }).catch((err) => {
+    console.log(err);
+  });
+}
 }
 
 export default new FaasStore();

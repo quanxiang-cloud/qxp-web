@@ -26,51 +26,51 @@ function DataList(): JSX.Element {
   const COLUMNS: UnionColumns<FuncField>[] = [
     {
       Header: '名称',
-      id: 'name',
-      accessor: ({ name }: FuncField) => {
+      id: 'alias',
+      accessor: ({ alias }: FuncField) => {
         return (
           <span
             className="text-blue-600 cursor-pointer"
             onClick={() => store.setModalType('funDetail') }
           >
-            {name}
+            {alias}
           </span>
         );
       },
     },
     {
       Header: '标识',
-      id: 'id',
-      accessor: 'id',
+      id: 'name',
+      accessor: 'name',
     },
-    {
-      Header: () => {
-        // todo make filter state effect
-        return (
-          <TableMoreFilterMenu
-            menus={[
-              { key: 'SUCCESS', label: '成功' },
-              { key: 'ING', label: '进行中' },
-              { key: 'FAILED', label: '失败' },
-            ]}
-            onChange={() => console.log('')}
-          >
-            <div className={cs('flex items-center cursor-pointer', {
-              'pointer-events-none': true,
-            })}>
-              <span className="mr-4">状态</span>
-              <Icon name="funnel" />
-            </div>
-          </TableMoreFilterMenu>
-        );
-      },
-      id: 'status',
-      accessor: ({ state }: FuncField) => {
-        return (
-          <StatusDisplay status={state} />
-        );
-      },
-    },
+    // {
+    //   Header: () => {
+    //     // todo make filter state effect
+    //     return (
+    //       <TableMoreFilterMenu
+    //         menus={[
+    //           { key: 'SUCCESS', label: '成功' },
+    //           { key: 'ING', label: '进行中' },
+    //           { key: 'FAILED', label: '失败' },
+    //         ]}
+    //         onChange={() => console.log('')}
+    //       >
+    //         <div className={cs('flex items-center cursor-pointer', {
+    //           'pointer-events-none': true,
+    //         })}>
+    //           <span className="mr-4">状态</span>
+    //           <Icon name="funnel" />
+    //         </div>
+    //       </TableMoreFilterMenu>
+    //     );
+    //   },
+    //   id: 'status',
+    //   accessor: ({ state }: FuncField) => {
+    //     return (
+    //       <StatusDisplay status={state} />
+    //     );
+    //   },
+    // },
     {
       Header: '描述',
       id: 'description',
@@ -153,7 +153,7 @@ function DataList(): JSX.Element {
           iconName="add"
           modifier="primary"
           textClassName="text-12"
-          onClick={() => setModalType('create')}
+          onClick={() => setModalType('editModel')}
         >
           新建函数
         </Button>

@@ -1,16 +1,23 @@
+
 type FuncField = {
-  name: string,
   id: string,
+  name: string,
   state: ProcessStatus,
   description: string,
   creator: string,
-  createdAt: string,
+  createdAt: number,
+  message: string,
+  updatedAt: number,
+  alias: string,
+  tag: string,
+  language: string,
+  versionNum: number,
 }
 
 type FuncListParams = {
   appID: string,
-  size: string,
-  page: string,
+  size: number,
+  page: number,
   alias?: string,
 }
 

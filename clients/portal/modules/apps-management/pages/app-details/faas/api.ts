@@ -18,7 +18,7 @@ export function createGroup(data:{group: string, appID: string}): Promise<{id: s
   return httpClient('/api/v1/midfielder/group', data);
 }
 
-export function createDeveloper(data:{email: string}) {
+export function createDeveloper(data:{email: string}): Promise<void> {
   return httpClient('/api/v1/midfielder/user', data);
 }
 
@@ -29,6 +29,13 @@ export function addToGroup(groupID: string, data:{memberID: string}): Promise<vo
 export function fetchFuncList(
   groupID: string,
   params: FuncListParams,
-): Promise<void> {
-  return httpClient(`/api/v1/faas/group/${groupID}/list`, params);
+): Promise<{count: number, projects: FuncField[]}> {
+  return httpClient(`/api/v1/midfielder/group/${groupID}/list`, params);
+}
+
+export function createFaasFunc(
+  groupID: string,
+  data: FuncListParams,
+): Promise<{id: string}> {
+  return httpClient(`/api/v1/midfielder/group/${groupID}/project`, data);
 }
