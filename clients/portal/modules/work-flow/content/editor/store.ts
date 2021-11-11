@@ -154,7 +154,7 @@ export function buildWorkFlowSaveData(
 ): SaveWorkFlowParamsType {
   const {
     version, nodeIdForDrawerForm, name, triggerMode, cancelable, urgeable, nodeAdminMsg,
-    seeStatusAndMsg,
+    seeStatusAndMsg, keyFields, instanceName, canCancelNodes, canCancelType,
   } = store.value;
   return {
     bpmnText: buildBpmnText(version, nodeIdForDrawerForm, saveData),
@@ -165,6 +165,10 @@ export function buildWorkFlowSaveData(
     canMsg: nodeAdminMsg ? 1 : 0,
     canViewStatusMsg: seeStatusAndMsg ? 1 : 0,
     appId: appID,
+    keyFields,
+    instanceName,
+    canCancelNodes,
+    canCancelType,
   };
 }
 
