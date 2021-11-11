@@ -6,7 +6,7 @@ import Icon from '@c/icon';
 import useObservable from '@lib/hooks/use-observable';
 
 import useNodeConfig from '../effects/hooks/use-node-config';
-import RequestConfigForm from './form/request-config-form';
+import RequestConfigForm from './forms/request-config-form';
 
 import NodeWrapper from './wrapper';
 
@@ -31,12 +31,7 @@ export default function RequestNode(props: NodeProps<POLY_API.SubjectPolyNode>):
   }
 
   return (
-    <NodeWrapper
-      noPadding
-      rightTrigger
-      bottomTrigger
-      {...props}
-    >
+    <NodeWrapper noPadding {...props}>
       <div className="p-8" onClick={showConfig}>
         <div
           className={cs(

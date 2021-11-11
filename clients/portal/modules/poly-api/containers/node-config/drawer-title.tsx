@@ -13,7 +13,7 @@ export default function DrawerTitle({ title, doc, desc, onToggleFullscreen }: Pr
 
   return (
     <header className="flex items-center justify-between flex-1">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mr-10">
         <h5 className="text-h6-bold mr-10">配置{title}节点</h5>
         <span className="mr-10 text-caption-no-color-weight text-gray-400">{desc}</span>
         <a

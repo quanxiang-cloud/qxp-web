@@ -149,5 +149,18 @@ $nodeTypes: input, request, if, end, default, output;
   }
   .drawer-container {
     transition: all .3s ease-in-out;
+    .drawer-main-content {
+      display: flex;
+      flex-flow: column nowrap;
+      justify-content: space-between;
+      .node-config-form-section {
+        flex: 1;
+        overflow: auto;
+        max-height: calc(100% - 44px);
+        &+div {
+          flex: 0 1 44px;
+        }
+      }
+    }
   }
 }

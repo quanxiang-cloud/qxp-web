@@ -16,8 +16,6 @@ export default function ConditionNode(props: NodeProps<POLY_API.SubjectPolyNode>
   return (
     <NodeWrapper
       noPadding
-      rightTrigger
-      bottomTrigger
       noBg
       {...props}
     >

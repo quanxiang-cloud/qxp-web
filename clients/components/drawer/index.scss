@@ -26,7 +26,7 @@
 .drawer-position-right {
   .drawer-container {
     height: 100%;
-    width: 40%;
+    min-width: 40%;
     border-top-left-radius: 12px;
     border-bottom-left-radius: 12px;
     right: 0;

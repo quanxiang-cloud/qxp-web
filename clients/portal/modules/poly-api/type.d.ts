@@ -11,10 +11,7 @@ declare namespace POLY_API {
 
   export type NodeProps = import('react-flow-renderer').NodeProps<POLY_API.SubjectPolyNode>;
   export type NodeWrapperProps = import('react').PropsWithChildren<{
-    bottomTrigger?: boolean;
-    rightTrigger?: boolean;
     noPadding?: boolean;
-    title?: string;
     noBg?: boolean;
   }> & NodeProps;
 
@@ -101,6 +98,8 @@ declare namespace POLY_API {
       bottom?: string;
     },
   }
+
+  export type API_FIELD_TYPE = 'string' | 'number' | 'object' | 'array' | 'boolean';
 
   export type PolyStartNode = PolyNodeGeneric<'input', PolyStartNodeDetail>;
   export type PolyRequestNode = PolyNodeGeneric<'request', PolyRequestNodeDetail>;
