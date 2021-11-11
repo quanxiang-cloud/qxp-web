@@ -1,4 +1,4 @@
-import { action, computed, observable, toJS, extendObservable } from 'mobx';
+import { action, computed, observable, toJS } from 'mobx';
 import { pick } from 'lodash';
 
 import TreeStore from '@c/headless-tree/store';
@@ -72,15 +72,7 @@ function onGetChildren(parent: TreeNode<PolyAPI.Namespace>): Promise<TreeNode<Po
 export class ApiGroupStore extends TreeStore<PolyAPI.Namespace> {
   constructor(groups?: PolyAPI.Namespace[]) {
     const rootNode = getFullNode(null, mapGroupsToTreeNodes(groups));
-    super({ rootNode, onGetChildren, treeNodeHeight: 40 }, false);
-    // init other observables
-    extendObservable(this, {
-      gpSetting: null,
-      get gpSettingReady() {
-        // todo
-        return false;
-      },
-    });
+    super({ rootNode, onGetChildren, treeNodeHeight: 36 }, false);
   }
 
   @computed get curNodeTitle(): string {

@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import cs from 'classnames';
 import { get } from 'lodash';
+import { useUpdateEffect } from 'react-use';
 
 import Select from '@c/select';
 import Checkbox from '@c/checkbox';
@@ -9,6 +10,7 @@ import Icon from '@c/icon';
 
 import { ApiParam, ParamGroup } from './params-config';
 import paramsContext from './context';
+import { useQueryString } from '../hooks';
 
 interface Props {
   className?: string;
@@ -40,17 +42,22 @@ function ParamRow({
   _array_nodes_,
 }: Props & ApiParam) {
   const store = useContext(paramsContext);
-  const { register, formState: { errors }, control, watch } = useFormContext();
+  const { register, formState: { errors }, control, watch, getValues } = useFormContext();
   const [expand, setExpand] = useState(false);
   const watchName = watch(getFieldName('name'));
+  const qs = useQueryString();
+  const isEdit = qs.get('action') === 'edit';
 
-  useEffect(()=> {
+  useUpdateEffect(()=> {
     if (group !== 'constant') {
       return;
     }
-    const constIn = ['post', 'put'].includes(store.method) ? 'body' : 'query';
-    store.setFieldValue(getFieldName('constIn'), constIn);
-  }, [store.method]);
+    if (!isEdit) {
+      // set default constIn value when change method on create mode
+      const constIn = ['post', 'put'].includes(store.metaInfo.method) ? 'body' : 'query';
+      store.setFieldValue(getFieldName('constIn'), constIn);
+    }
+  }, [store.metaInfo.method]);
 
   /*
   level:

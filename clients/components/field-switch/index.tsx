@@ -1,15 +1,17 @@
 import React from 'react';
 import zhCN from 'antd/lib/date-picker/locale/zh_CN';
-import { DatePicker, Select, Input, InputNumber } from 'antd';
-
-import { getPicker } from '@c/form-builder/registry/date-picker/date-picker';
 import { omit } from 'lodash';
+import { Option } from 'antd/lib/mentions';
+import { DatePicker, Input, InputNumber } from 'antd';
+
 import OrganizationPicker from '@c/form-builder/registry/organization-select/organization-select';
 import UserPicker from '@c/form-builder/registry/user-picker/user-picker';
+import { getPicker } from '@c/form-builder/registry/date-picker/date-picker';
 import CascadeSelector, {
   DefaultValueFrom, CascadeSelectorProps,
 } from '@c/form-builder/registry/cascade-selector/cascade-selector';
-import { Option } from 'antd/lib/mentions';
+
+import SelectField from './select-field';
 
 type Props<T> = {
   field: ISchema;
@@ -25,33 +27,17 @@ type Option = {
   value: string;
 }
 
-function toOptions(initOptions: string[] | LabelValue[]): LabelValue[] {
-  return initOptions.map((option) => {
-    if (typeof option === 'object') {
-      return option;
-    }
-
-    return {
-      label: option,
-      value: option,
-    };
-  });
-}
-
-function FieldSwitch({ field, className, ...otherProps }: Props<any>, ref: React.Ref<any>): JSX.Element {
+function FieldSwitch({ field, className = '', ...otherProps }: Props<any>, ref: React.Ref<any>): JSX.Element {
   switch (field['x-component']) {
   case 'CheckboxGroup':
   case 'Select':
   case 'RadioGroup':
   case 'MultipleSelect':
     return (
-      <Select
+      <SelectField
+        fieldSchema={field}
+        className={className}
         {...otherProps}
-        value={otherProps.value || []}
-        mode='multiple'
-        className={`'w-full ${className}`}
-        ref={ref}
-        options={toOptions(field?.enum as unknown as string[] || [])}
       />
     );
   case 'NumberPicker':

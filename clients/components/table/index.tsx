@@ -85,7 +85,7 @@ function Table<T extends Record<string, any>>({
     const _widthMap: WidthMap = {};
     _columns.forEach((col) => {
       const _width = widthMapRef.current[col.id];
-      if (!_width) {
+      if (!_width || !canSetColumnWidth) {
         _widthMap[col.id] = col.width || DEFAULT_WIDTH;
       } else {
         _widthMap[col.id] = _width;

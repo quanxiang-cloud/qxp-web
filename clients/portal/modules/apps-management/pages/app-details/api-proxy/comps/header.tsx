@@ -8,7 +8,7 @@ interface Props {
 
 function Header({ name }: Props) {
   return (
-    <div className='py-10 px-10 flex items-center bg-white h-44 border-b-1 header-background-image rounded-tr-12'>
+    <div className='flex justify-between items-center py-10 opacity-95 bg-gray-1000 p-16 header-background-image h-44 shadow-header rounded-t-12'>
       <span className='text-gray-900 font-medium'>{name || ''}</span>
     </div>
   );

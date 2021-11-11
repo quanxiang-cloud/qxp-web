@@ -104,7 +104,7 @@ class FileStore {
       const { blob } = file;
       const worker = new Md5Worker();
       file.md5Worker = worker;
-      worker.postMessage({ blob, CHUNK_SIZE, MAX_SMALL_FILE_SIZE });
+      worker.postMessage({ blob, chunkSize: CHUNK_SIZE, maxSmallFileSize: MAX_SMALL_FILE_SIZE });
       worker.onmessage = (e: MessageEvent<{ percentage: number, md5: string, fileChunks: Blob[] }>) => {
         const { percentage, md5, fileChunks } = e.data;
         if (fileChunks) {
