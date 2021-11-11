@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useMemo } from 'react';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 import { usePrevious, useUpdateEffect } from 'react-use';
 import { useQuery } from 'react-query';
-import { isEqual } from 'lodash';
+import { get, isEqual } from 'lodash';
 import { Upload } from 'antd';
 import { useForm, Controller } from 'react-hook-form';
 import {
@@ -31,9 +31,11 @@ import type {
   Attachment,
 } from '@flow/content/editor/type';
 import schemaToFields from '@lib/schema-convert';
+import { SYSTEM_FIELDS } from '@c/form-builder/constants';
 
 import PersonPicker from '../../components/_common/person-picker';
 import { approvePersonEncoder } from '../../components/_common/utils';
+import FlowTableContext from '../flow-source-table';
 
 import './index.scss';
 
@@ -60,6 +62,22 @@ const props = {
 
 const Input = formFieldWrap({ field: <input className='input' /> });
 const FieldEditor = formFieldWrap({ FieldFC: Editor });
+const LablePathMap = {
+  // AssociatedRecords: '', // string[]
+  UserPicker: '[].label', // {label, value}[]
+  OrganizationPicker: '[].label',
+  FileUpload: '[].label',
+  ImageUpload: '[].label',
+  CascadeSelector: 'label',
+  AssociatedData: 'label',
+};
+
+function getFieldLabelPath(fieldSchema?: ISchema): string {
+  if (!fieldSchema) {
+    return '';
+  }
+  return get(LablePathMap, fieldSchema['x-component'] || '', '');
+}
 
 function FieldOption({ onChange, editorState, options }: FieldOPType): JSX.Element {
   const insertText = (text: string, hasSpacing = true): void => {
@@ -117,8 +135,22 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
   const { elements = [] } = useObservable<StoreValue>(store);
   const formDataElement = elements?.find(({ type }) => type === 'formData') as CurrentElement;
   const workFormValue = (formDataElement?.data?.businessData as FormDataData)?.form?.value;
-  const allFields = watch(['content', 'recivers', 'title', 'mes_attachment', 'type', 'approvePersons']);
+  const allFields = watch(
+    ['content', 'recivers', 'title', 'mes_attachment', 'type', 'approvePersons', 'formulaFields'],
+  );
   const previousFields = usePrevious(allFields);
+  const { tableSchema } = useContext(FlowTableContext);
+  const formulaFields = useMemo(()=> tableSchema.filter((schema) => {
+    return !SYSTEM_FIELDS.includes(schema.fieldName);
+  }).reduce((acc: Record<string, string>, field) => {
+    const labelPath = getFieldLabelPath(field);
+    if (labelPath) {
+      const { fieldName } = field;
+      acc[fieldName] = [fieldName, labelPath].join('.');
+    }
+    return acc;
+  }, {}), [tableSchema]);
+
   useUpdateEffect(() => {
     const value = {
       content: allFields[0],
@@ -128,6 +160,7 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
       type: allFields[4],
       templateId: 'quanliang',
       approvePersons: allFields[5],
+      formulaFields: allFields[6],
     } as SendEmailData;
     if (!isEqual(allFields, previousFields)) {
       onChange(value);
@@ -147,7 +180,7 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
   };
 
   const handleSave = (data: SendEmailData): void => {
-    onSubmit({ ...data, templateId: 'quanliang' });
+    onSubmit({ ...data, templateId: 'quanliang', formulaFields });
   };
   const handleChangeEditor = (editorCont: EditorState): void => {
     setEditorCont(editorCont);

@@ -271,6 +271,7 @@ export interface SendEmailData {
   templateId: string;
   title: string;
   mes_attachment: Attachment[];
+  formulaFields: Record<string, string>;
 }
 export interface WebMessageData {
   approvePersons: ApprovePerson;
