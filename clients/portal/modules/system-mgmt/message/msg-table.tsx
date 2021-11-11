@@ -415,9 +415,9 @@ const MsgTable = ({ refresh }: Props): JSX.Element => {
 
   return (
     <>
-      <div className={cs('w-full', styles.tableWrap)}>
+      <div className={cs('w-full flex', styles.tableWrap)}>
         <Table
-          className={cs('massage_table text-14 table-full', styles.massage_table)}
+          className={cs('massage_table text-14', styles.massage_table)}
           data={msgList}
           // @ts-ignore
           columns={cols}
