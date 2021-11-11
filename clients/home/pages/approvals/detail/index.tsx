@@ -44,11 +44,12 @@ function ApprovalDetail(): JSX.Element {
     type: string
   }>();
   const history = useHistory();
+  const queryRelationKey = showSwitch ? [processInstanceID, type, currentTaskId] : [processInstanceID, type];
 
   const {
     isLoading, data, isError, error,
   } = useQuery<any, Error>(
-    [processInstanceID, type, currentTaskId],
+    queryRelationKey,
     () => getTaskFormById(processInstanceID, { type, taskId: currentTaskId }).then((res) => {
       if (!currentTaskId) {
         setCurrentTaskId(get(res, 'taskDetailModels[0].taskId', '').toString());
@@ -82,7 +83,7 @@ function ApprovalDetail(): JSX.Element {
   const {
     data: formData,
   } = useQuery<any, Error>(
-    [processInstanceID, currentTaskId, task?.formSchema],
+    [processInstanceID, currentTaskId, task?.taskId],
     () => {
       if (!currentTaskId || !task?.formSchema) {
         return Promise.resolve({});
