@@ -46,6 +46,7 @@ function FormAddGroup({
             required: '请填写分组名称',
             shouldUnregister: true,
             maxLength: 20,
+            pattern: /\w+/,
           })}
         />
         <p className='text-gray-600 text-12'>不超过 20 个字符，分组名称不可重复</p>

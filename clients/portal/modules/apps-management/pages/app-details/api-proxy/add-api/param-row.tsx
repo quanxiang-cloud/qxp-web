@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import cs from 'classnames';
 import { get } from 'lodash';

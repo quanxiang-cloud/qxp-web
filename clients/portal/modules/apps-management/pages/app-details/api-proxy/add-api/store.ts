@@ -232,7 +232,7 @@ export default class Store {
 
   @action
   setResponse=(resp: Record<string, any>)=> {
-    const respItems = mapObjectNode(get(resp, '200.schema'));
+    const respItems = mapObjectNode(get(resp, '200.schema', {}));
     this.setParams('response', respItems._object_nodes_ || []);
   }
 

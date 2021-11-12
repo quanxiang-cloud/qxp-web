@@ -98,7 +98,7 @@ const MessagesPage = (): JSX.Element => {
               className={styles.search}
             />
           </div>
-          <div className="qxp-table my-20 px-20 w-full flex overflow-auto flex-col">
+          <div className="qxp-table my-20 px-20 w-full flex overflow-hidden flex-col justify-between flex-1">
             <MsgTable refresh={refresh}/>
           </div>
         </div>

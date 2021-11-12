@@ -13,6 +13,7 @@ declare namespace PolyAPI {
     active: ApiStatus;
     createAt: string;
     updateAt: string;
+    child?: Namespace[];
   }
 
   interface Service {
@@ -62,9 +63,9 @@ declare namespace PolyAPI {
   }
 
   type UploadApiParams={
-    version: string;
-    namespace: string;
-    file: string;
+    file: File;
+    version?: string;
+    namespace?: string;
   }
 
   type CreateApiResult={

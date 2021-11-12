@@ -55,7 +55,12 @@ function FilterForm({ search, showMoreFilter }: Props, ref?: React.Ref<any>): JS
       <input className='hidden' type="submit"></input>
       {(showMoreFilter ? filters : filters.slice(0, 3)).map((key) => (
         <div className='flex items-center' key={key}>
-          <label className='app-page-filter-label'>{fieldMaps[key]?.title}：</label>
+          <label
+            className='app-page-filter-label'
+            title={fieldMaps[key]?.title as string}
+          >
+            {fieldMaps[key]?.title}：
+          </label>
           <Controller
             name={key}
             control={control}
