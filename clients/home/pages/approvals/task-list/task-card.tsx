@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import { map, get } from 'lodash';
 import duration from 'dayjs/plugin/duration';
 
-import Status from '@c/process-node-status';
+import Status, { StatusValue } from '@c/process-node-status';
 import Icon from '@c/icon';
 import { getBasicValue } from '@c/form-data-value-renderer';
 
@@ -40,6 +40,7 @@ function formatOverTime(dueDate?: string): string {
 export default function TaskCard({ task, type }: Props): JSX.Element {
   const history = useHistory();
   const multiTask = ['ALL_PAGE', 'APPLY_PAGE', 'HANDLED_PAGE'].includes(type);
+  const isWaitHandlePage = type === 'WAIT_HANDLE_PAGE';
 
   const handleClick = (): void => {
     const procInstId = multiTask ? task.processInstanceId : task.flowInstanceEntity.processInstanceId;
@@ -58,11 +59,11 @@ export default function TaskCard({ task, type }: Props): JSX.Element {
 
   const {
     name, flowInstanceEntity, startTime, createTime, creatorName, creatorAvatar, appName, formData,
-    formSchema, status, keyFields, dueDate, urgeNum,
+    formSchema, status, keyFields, dueDate, urgeNum, description,
   } = task;
   const taskCardData = (multiTask ? formData : flowInstanceEntity?.formData) || {};
   const properties = (multiTask ? formSchema?.properties : flowInstanceEntity?.formSchema?.properties) || {};
-  Object.entries(properties).map(([fieldName, fieldValue]) => {
+  Object.entries(properties).map(([_, fieldValue]) => {
     if (fieldValue?.properties) {
       Object.entries(fieldValue?.properties).map(([layoutFieldName, layoutFieldValue]) => {
         properties[layoutFieldName] = layoutFieldValue;
@@ -73,6 +74,9 @@ export default function TaskCard({ task, type }: Props): JSX.Element {
   const filterTaskKeyFields = taskKeyFields.filter(
     (keyField) => keyField in properties,
   );
+
+  const _status = isWaitHandlePage ? `${flowInstanceEntity?.status}-${description}` :
+    flowInstanceEntity?.status;
 
   return (
     <div className="corner-2-8-8-8 bg-white mb-16 approval-card">
@@ -93,8 +97,10 @@ export default function TaskCard({ task, type }: Props): JSX.Element {
                   <span className="ml-8">{multiTask ? name : flowInstanceEntity?.name}</span>
                 </div>
               </div>
-              {/* @ts-ignore */}
-              <Status value={multiTask ? status : flowInstanceEntity?.status} className='task-status' />
+              <Status
+                value={(multiTask ? status : _status) as StatusValue}
+                className='task-status'
+              />
             </div>
 
             <div className="flex mt-24 bottom-info">

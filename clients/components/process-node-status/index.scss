@@ -1,5 +1,6 @@
 .status {
   display: inline-flex;
+
   &-indicator {
     width: 8px;
     height: 8px;
@@ -10,41 +11,48 @@
     //filter: blur(20px);
 
     &-review {
-      background: var(--gray-300);
+      background: var(--blue-600);
     }
 
     &-in_review {
       background: var(--blue-600);
     }
 
-    &-agree, &-complete {
-      background: #16A34A;
+    &-agree,
+    &-complete {
+      background: var(--green-600);
     }
 
     &-refuse {
-      background: #F59E0B;
+      background: var(--red-600);
     }
 
     &-cancel {
-      background: #DC2626;
+      background: var(--gray-400);
     }
 
-    &-send_back {
-      background: #D97706;
+    &-send_back,
+    &-review-review,
+    &-in_review-review,
+    &-review-write,
+    &-in_review-write,
+    &-review-read,
+    &-in_review-read {
+      background: var(--yellow-600)
     }
 
     &-abandon {
-      background: var(--gray-300);
+      background: var(--gray-400);
     }
 
     &-abend {
-      background: #DC2626;
+      background: var(--red-600);
     }
   }
 
   &-label {
     font-size: 12px;
     line-height: 20px;
-    color: #475569;
+    color: var(--gray-600);
   }
 }
