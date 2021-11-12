@@ -1,4 +1,4 @@
-import { action, observable } from 'mobx';
+import { action, observable, toJS } from 'mobx';
 
 import {
   checkHasGroup,
@@ -9,9 +9,39 @@ import {
   addToGroup,
   fetchFuncList,
   createFaasFunc,
+  getFuncInfo,
+  updateFuncDesc,
+  getFuncVersionList,
 } from './api';
 import toast from '@lib/toast';
 import TimerSelector from '@portal/modules/work-flow/content/editor/forms/intermidiate/components/basic-config/timer-selector';
+
+const INIT_CURRENT_FUNC = {
+  id: '',
+  name: '',
+  state: 'SUCCESS',
+  description: '',
+  creator: '',
+  createdAt: 0,
+  message: '',
+  updatedAt: 0,
+  alias: '',
+  tag: '',
+  language: '',
+  versionNum: 0,
+};
+
+const INIT_VERSION = {
+  id: '',
+  state: '',
+  message: '',
+  creator: '',
+  createAt: 0,
+  updatedAt: 0,
+  tag: '',
+  visibility: '',
+  describe: '',
+};
 
 class FaasStore {
   @observable appDetails: AppInfo = {
@@ -36,7 +66,11 @@ class FaasStore {
   @observable apiIsError = false;
   @observable groupID = '';
   @observable funcList: FuncField[] = [];
+  @observable currentFunc: FuncField= INIT_CURRENT_FUNC;
+  @observable VersionList: VersionField[] = [];
+  @observable currentVersionFunc: VersionField= INIT_VERSION;
   @observable count = 0;
+
   @observable currentFuncID = '';
 
   @action
@@ -149,10 +183,7 @@ class FaasStore {
       const { count, projects } = res;
       this.count = count;
       this.funcList = projects;
-      // todo update funcList
-
-      console.log(res);
-      // this.funcList = [];
+      this.currentFunc = projects[0] || INIT_VERSION;
     }).catch((err) => {
       toast.error(err);
       this.funcList = [];
@@ -162,14 +193,59 @@ class FaasStore {
   }
 
   @action
-createFunc = (data: any) => {
-  createFaasFunc(this.groupID, data).then((res) => {
-    this.currentFuncID = res.id;
-    this.fetchDataList();
-  }).catch((err) => {
-    console.log(err);
-  });
-}
+  fetchVersionList = (id: string): void => {
+    getFuncVersionList(this.groupID, id, {
+      state: '',
+      size: 20,
+      page: 1,
+    }).then((res) => {
+      const { count, Builds } = res;
+      this.count = count;
+      this.VersionList = Builds;
+      this.currentVersionFunc = Builds[0] || INIT_CURRENT_FUNC;
+
+      console.log(res);
+    }).catch((err) => {
+      toast.error(err);
+      this.funcList = [];
+    }).finally(() => {
+      this.funcListLoading = false;
+    });
+  }
+
+  @action
+  createFunc = (data: any) => {
+    createFaasFunc(this.groupID, data).then((res) => {
+      this.currentFuncID = res.id;
+      this.fetchFuncInfo();
+    }).catch((err) => {
+      console.log(err);
+    });
+  }
+
+  @action
+  fetchFuncInfo = () => {
+    getFuncInfo(this.groupID, this.currentFuncID).then((res) => {
+      this.currentFunc = res.info;
+      this.funcList = [...this.funcList, this.currentFunc];
+    });
+  }
+
+  @action
+  updateFuncDesc = (id: string, describe: string): void => {
+    this.currentFuncID = id;
+    updateFuncDesc(this.groupID, id, { describe }).then((res) => {
+      this.funcList = this.funcList.map((_func) => {
+        if (_func.id === id) {
+          this.currentFunc = { ..._func, description: describe };
+          return { ..._func, description: describe };
+        }
+        return _func;
+      });
+    }).catch((err) => {
+      toast.error(err);
+    });
+  }
 }
 
 export default new FaasStore();

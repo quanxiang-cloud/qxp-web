@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { observer } from 'mobx-react';
 
 import TextHeader from '@c/text-header';
+import Loading from '@c/loading';
 
 import store from '../store';
 import DataList from './data-list';
@@ -14,11 +15,15 @@ import FuncDetailsDrawer from './func-drawer';
 import '../index.scss';
 
 function FuncList(): JSX.Element {
-  const { funcList, fetchDataList, modalType, setModalType } = store;
+  const { funcList, fetchDataList, modalType, setModalType, funcListLoading } = store;
 
   useEffect(() => {
     fetchDataList();
   }, []);
+
+  if (funcListLoading) {
+    return <Loading/>;
+  }
 
   return (
     <>

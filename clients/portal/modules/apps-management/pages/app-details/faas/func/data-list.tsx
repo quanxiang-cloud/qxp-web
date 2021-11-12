@@ -1,7 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import cs from 'classnames';
 import { Input } from 'antd';
 import { UnionColumns } from 'react-table';
+import { observer } from 'mobx-react';
 
 import Icon from '@c/icon';
 import Table from '@c/table';
@@ -9,20 +10,21 @@ import Button from '@c/button';
 import Search from '@c/search';
 import MoreMenu from '@c/more-menu';
 import PopConfirm from '@c/pop-confirm';
-import TableMoreFilterMenu from '@c/more-menu/table-filter';
+// import TableMoreFilterMenu from '@c/more-menu/table-filter';
 
 import store from '../store';
 import BuildModal from './build-modal';
-import StatusDisplay from '../component/status';
+// import StatusDisplay from '../component/status';
 
 import '../index.scss';
+import { toJS } from 'mobx';
 
 const { TextArea } = Input;
 
 function DataList(): JSX.Element {
   const [visible, setVisible] = useState(false);
-  const { funcList, setModalType } = store;
-  const inputRef: any = useRef(null);
+  const { funcList, setModalType, updateFuncDesc } = store;
+
   const COLUMNS: UnionColumns<FuncField>[] = [
     {
       Header: '名称',
@@ -31,7 +33,7 @@ function DataList(): JSX.Element {
         return (
           <span
             className="text-blue-600 cursor-pointer"
-            onClick={() => store.setModalType('funDetail') }
+            onClick={() => store.setModalType('VersionDetail') }
           >
             {alias}
           </span>
@@ -74,10 +76,11 @@ function DataList(): JSX.Element {
     {
       Header: '描述',
       id: 'description',
-      accessor: ({ description }: FuncField) => {
+      accessor: ( { id, description }: FuncField) => {
+        let descriptionValue = description;
         return (
           <div className="description">
-            <span ref={inputRef} className="turncate">{description}</span>
+            <span className="turncate">{description}</span>
             <PopConfirm
               content={(
                 <div
@@ -87,15 +90,15 @@ function DataList(): JSX.Element {
                   <div className="text-body2 text-gray-600 mb-8">描述</div>
                   <TextArea
                     name="name"
-                    ref={inputRef}
+                    defaultValue={description}
                     maxLength={30}
                     className="description-input"
+                    onChange={(e) => descriptionValue = e.target.value}
                   />
                 </div>
               )}
               okText="保存"
-              onOk={() => console.log()}
-              onCancel={() => console.log()}
+              onOk={() => updateFuncDesc(id, descriptionValue)}
             >
               <Icon clickable name='edit' className="ml-4 hidden cursor-pointer"/>
             </PopConfirm>
@@ -119,7 +122,7 @@ function DataList(): JSX.Element {
       accessor: (row) => {
         return (
           <div className="flex gap-20">
-            {row.state === 'SUCCESS' ? (
+            {row.state === 'True' ? (
               <>
                 <span className="operate">定义</span>
                 <span className="operate" onClick={() => setVisible(true)}>构建</span>
@@ -161,12 +164,13 @@ function DataList(): JSX.Element {
       </div>
       <Table
         rowKey="id"
-        data={funcList}
+        data={toJS(funcList)}
         columns={COLUMNS}
+        loading={store.funcListLoading}
       />
       {visible && <BuildModal onClose={() => setVisible(false)}/>}
     </>
   );
 }
 
-export default DataList;
+export default observer(DataList);

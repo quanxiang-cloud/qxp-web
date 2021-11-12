@@ -109,6 +109,7 @@ function renderApiDetails(): JSX.Element {
             />
           </div>
         </div>
+        <div className='api-content-title'>请求示例</div>
         <div className='api-content'>
           <Tooltip
             position="top"

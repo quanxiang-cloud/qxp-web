@@ -17,7 +17,6 @@ function FaaS(): JSX.Element {
     store.appDetails = AppDetailsStore.appDetails;
     store.User = pick(User, ['id', 'email']);
     if (appDetails.id) {
-      // isaDeveloper();
       checkUserSate();
     }
   }, [appDetails, User.id]);
@@ -29,8 +28,6 @@ function FaaS(): JSX.Element {
   return (
     <div className="flex-1 bg-white rounded-t-12 h-full">
       {hasGroup && developerInGroup ? <FuncList /> : <NotAvailable />}
-      {/* <FuncList /> */}
-      {/* {store.listShow ? <FuncList /> : <NotAvailable />} */}
     </div>
   );
 }

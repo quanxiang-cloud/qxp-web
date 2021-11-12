@@ -33,9 +33,30 @@ export function fetchFuncList(
   return httpClient(`/api/v1/midfielder/group/${groupID}/list`, params);
 }
 
+export function getFuncVersionList(
+  groupID: string,
+  projectID: string,
+  params: VersionListParams,
+) : Promise<{count: number, Builds: VersionField[]}> {
+  return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/list`, params);
+}
+
 export function createFaasFunc(
   groupID: string,
   data: FuncListParams,
 ): Promise<{id: string}> {
   return httpClient(`/api/v1/midfielder/group/${groupID}/project`, data);
 }
+
+export function getFuncInfo(groupID: string, projectID: string): Promise<{info: FuncField}> {
+  return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/info`);
+}
+
+export function updateFuncDesc(
+  groupID: string,
+  projectID: string,
+  data:{describe: string},
+): Promise<void> {
+  return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/updateDesc`, data);
+}
+

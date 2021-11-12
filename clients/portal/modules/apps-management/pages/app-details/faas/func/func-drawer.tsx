@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { observer } from 'mobx-react';
+import { Input } from 'antd';
 import cs from 'classnames';
 import useCss from 'react-use/lib/useCss';
 
 import Icon from '@c/icon';
+import MoreMenu from '@c/more-menu';
 import PopConfirm from '@c/pop-confirm';
 
 import Table from '@c/table';
@@ -16,6 +18,7 @@ type Props = {
   onCancel: () => void;
   rowID: string;
 }
+const { TextArea } = Input;
 const STATUS_ENUM: Record<string, Record<string, string>> = {
   SUCCESS: { label: '成功', color: 'green' },
   ING: { label: '进行中', color: 'yellow' },
@@ -38,82 +41,30 @@ function FuncDetailsDrawer(): JSX.Element {
   const reference = React.useRef<Element>(null);
   const popperRef = React.useRef<Popper>(null);
 
-  const COLUMNS: UnionColumns<FuncField>[] = [
+  const COLUMNS: UnionColumns<VersionField>[] = [
     {
       Header: '版本号',
-      id: 'name',
-      accessor: ({ name }: FuncField) => {
+      id: 'tag',
+      accessor: ({ tag }: VersionField) => {
         return (
           <span
             className="text-blue-600 cursor-pointer"
             onClick={() => store.setModalType('VersionDetail') }
           >
-            {name}
+            {tag}
           </span>
         );
       },
     },
     {
-      Header: () => {
-        // todo make filter state effect
-        return (
-          <TableMoreFilterMenu
-            menus={[
-              { key: 'SUCCESS', label: '在线' },
-              { key: 'ING', label: '构建中' },
-              { key: 'FAILED', label: '成功' },
-              { key: 'FAILED', label: '失败' },
-            ]}
-            onChange={(v) => console.log(v)}
-          >
-            <div className={cs('flex items-center cursor-pointer', {
-              'pointer-events-none': true,
-            })}>
-              <span className="mr-4">状态</span>
-              <Icon name="funnel" />
-            </div>
-          </TableMoreFilterMenu>
-        );
-      },
-      id: 'status',
-      accessor: ({ state }: FuncField) => {
-        return (
-          <div className="flex items-center">
-            <Icon
-              size={8}
-              name="status"
-              className={`text-${STATUS_ENUM[state].color}-600`}
-            />
-            <span className="ml-10">{STATUS_ENUM[state].label}</span>
-            {state === 'FAILED' && (
-              <Icon ref={reference as any} clickable className="ml-8" name="error" style={{ color: 'red' }} />
-            )}
-            <Popper
-              ref={popperRef}
-              trigger="hover"
-              reference={reference}
-              placement="bottom"
-              modifiers={modifiers}
-            >
-              <div className="px-16 py-8 bg-gray-700 text-12 text-white rounded-8">
-                错误原因提示，暂时无法做到语意化
-              </div>
-            </Popper>
-          </div>
-        );
-      },
+      Header: '状态',
+      id: 'state',
+      accessor: () => '状态',
     },
     {
-      Header: '耗时时间',
-      id: 'timeconsum',
-      accessor: ({ description }: FuncField) => {
-        return (
-          <div className="description">
-            <span className="turncate">{description}</span>
-            <Icon clickable name='edit' className="ml-4 hidden cursor-pointer"/>
-          </div>
-        );
-      },
+      Header: '构建时间',
+      id: 'build',
+      accessor: () => '构建时间',
     },
     {
       Header: '创建人',
@@ -122,8 +73,8 @@ function FuncDetailsDrawer(): JSX.Element {
     },
     {
       Header: '创建时间',
-      id: 'createdAt',
-      accessor: 'createdAt',
+      id: 'createAt',
+      accessor: 'createAt',
     },
     {
       Header: '操作',
@@ -191,7 +142,7 @@ function FuncDetailsDrawer(): JSX.Element {
         <div className='flex-1 overflow-auto mb-20 mx-20'>
           <Table
             rowKey="id"
-            data={store.funcList}
+            data={store.VersionList}
             columns={COLUMNS}
             className='h-full'
           />

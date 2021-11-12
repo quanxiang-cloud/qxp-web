@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { setValidationLanguage } from '@formily/antd';
 import { observer } from 'mobx-react';
 
@@ -8,6 +8,11 @@ import Tab from '@c/tab';
 import { useState } from 'react';
 
 setValidationLanguage('zh');
+
+import 'highlight.js/styles/atelier-sulphurpool-dark.css';
+import Loading from '@c/loading';
+
+const Highlight = lazy(() => import('react-highlight').then((m) => m.default));
 
 function VersionDetails(): JSX.Element {
   const [tabNow, setTabNow] = useState((store.buildIsError));
@@ -27,14 +32,33 @@ function VersionDetails(): JSX.Element {
       id: 'create',
       name: 'API文档',
       // content: renderApiDetails(),
-      content: <div className='bg-red-900 h-full'>222222222222</div>,
+      content: <div className='h-full'>
+        <Suspense fallback={<Loading />}>
+          <div className='api-content-title'>请求示例</div>
+          <div className='api-content'>
+            <Highlight
+              className='api-details'
+              // language={store.docType === 'curl' ? 'bash' : store.docType}
+            >
+              {/* {store.APiContent.input} */}
+            </Highlight>
+          </div>
+          <div className='api-content-title mt-16'>返回示例</div>
+          <Highlight
+            className='api-details'
+            // language={store.docType === 'curl' ? 'bash' : store.docType}
+          >
+            {/* {store.APiContent.output} */}
+          </Highlight>
+        </Suspense>
+      </div>,
     },
   ];
   function onClick(): void {
     store.modalType = '';
   }
   return (
-    <div className='flex flex-col flex-1 h-full px-20'>
+    <div className='flex flex-col flex-1 h-full px-20 version-detail'>
       <div className='flex items-center justify-between h-48'>
         <div className='flex'>
           <div
@@ -100,7 +124,7 @@ function VersionDetails(): JSX.Element {
       </div>
       <Tab
         items={tabItems}
-        className='w-full h-full version-detail-tab'
+        className='w-full h-full opacity-95'
       />
     </div>
   );
