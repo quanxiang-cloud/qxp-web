@@ -227,7 +227,8 @@ class ApiProxyStore {
     this.isLoading = true;
     try {
       if (paging.search) {
-        this.svcApis = await apis.searchNativeApi(this.currentSvcPath, {
+        const curNs = [this.currentNs?.parent, this.currentNs?.name].join('/');
+        this.svcApis = await apis.searchNativeApi(curNs, {
           ...pick(paging, ['page', 'pageSize']),
           title: paging.search,
           active: -1,

@@ -9,6 +9,7 @@ import Icon from '@c/icon';
 import Table from '@c/table';
 import Button from '@c/button';
 import toast from '@lib/toast';
+// import { FilePicker } from '@c/file-upload';
 
 import Header from '../comps/header';
 import ParamsSection from '../add-api/params-section';
@@ -54,6 +55,18 @@ function AddSwagger(props: Props) {
     <>
       <Header name='批量导入' />
       <div className="w-full h-full px-16 py-16 relative">
+        {/* <FilePicker*/}
+        {/*  accept='application/json'*/}
+        {/*  description='点击或拖拽上传文件到该区域，支持 Swagger2.0 数据导入'*/}
+        {/*  className={cs(*/}
+        {/*    'w-full h-86 border rounded-8 border-dashed border-gray-700',*/}
+        {/*    'flex flex-col items-center justify-center group-hover:border-blue-600',*/}
+        {/*  )}*/}
+        {/*  onSelectFiles={(files)=> {*/}
+        {/*    console.log('select files: ', files);*/}
+        {/*  }}*/}
+        {/* />*/}
+
         <Upload
           style={{ width: '100%' }}
           headers={{
