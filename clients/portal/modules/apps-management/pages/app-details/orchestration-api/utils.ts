@@ -11,9 +11,10 @@ export function apiNamespaceToTreeNode(
   visible = false,
   expanded = true,
   parentId = namespace.id,
+  order = 0,
 ): TreeNode<NameSpace> {
   const children = child?.map(
-    (dir) => apiNamespaceToTreeNode(dir, [], level + 1, true, false, namespace.id),
+    (dir, index) => apiNamespaceToTreeNode(dir, [], level + 1, true, false, namespace.id, index + 1),
   );
 
   return {
@@ -26,7 +27,7 @@ export function apiNamespaceToTreeNode(
     visible: visible,
     childrenStatus: 'unknown',
     expanded,
-    order: 0,
+    order,
     level,
     children,
   };

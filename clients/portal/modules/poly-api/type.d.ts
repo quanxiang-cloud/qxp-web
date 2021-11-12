@@ -21,11 +21,11 @@ declare namespace POLY_API {
   }
 
   export interface PolyNodeInput {
-    type: string;
+    type: 'string' | 'number' | 'boolean' | 'object' | 'array';
     name: string;
     desc: string;
-    data?: string;
-    in: string;
+    data: PolyNodeInput[];
+    in: 'body';
     required: boolean;
   }
 

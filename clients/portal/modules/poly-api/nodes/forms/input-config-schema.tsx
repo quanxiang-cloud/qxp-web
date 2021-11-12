@@ -13,9 +13,9 @@ export default {
     },
     constants: {
       type: 'array',
-      'x-component': 'ObjectEditor',
+      'x-component': 'Input',
       'x-component-props': {
-        nested: false,
+        // nested: false,
       },
       'x-props': {
         itemStyle: {

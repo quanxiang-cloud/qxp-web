@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { UseMutationOptions, UseMutationResult } from 'react-query';
+import { toJS } from 'mobx';
 import { createFormActions, SchemaForm } from '@formily/react-schema-renderer';
 import { Input, Select } from '@formily/antd-components';
 
@@ -78,7 +79,7 @@ export default function useModal<I, O, D>(
         {content ? content : (
           <SchemaForm
             onSubmit={onSubmit}
-            defaultValue={defaultValue}
+            defaultValue={toJS(defaultValue)}
             schema={schema}
             effects={effects}
             actions={actions}
