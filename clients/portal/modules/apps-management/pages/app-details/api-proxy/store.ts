@@ -256,14 +256,11 @@ class ApiProxyStore {
 
   @action
   uploadSwagger=async (file: File)=> {
-    this.isLoading = true;
-    try {
-      await apis.uploadSwagger(this.currentSvcPath, { file, version: 'v1' });
-    } catch (err) {
-      toast.error(err);
-    } finally {
-      this.isLoading = false;
-    }
+    const fd = new FormData();
+    fd.append('version', 'v1');
+    fd.append('file', file);
+    fd.append('svcPath', this.currentSvcPath);
+    await apis.uploadSwagger(fd);
   }
 
   @action

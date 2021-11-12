@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import cs from 'classnames';
 import { UnionColumns } from 'react-table';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { observer } from 'mobx-react';
+import { useMutation } from 'react-query';
 
-import Icon from '@c/icon';
 import Table from '@c/table';
 import Button from '@c/button';
 import toast from '@lib/toast';
@@ -13,6 +13,7 @@ import { FilePicker } from '@c/file-upload';
 import Header from '../comps/header';
 import ParamsSection from '../add-api/params-section';
 import store from '../store';
+import { useNamespace } from '../hooks';
 
 interface Props {
   className?: string;
@@ -28,12 +29,25 @@ function AddSwagger(props: Props) {
   const [apis, setApis] = useState<ApiItem[]>([]);
   const [file, setFile] = useState<File | null>(null);
   const history = useHistory();
+  const { appID } = useParams<{appID: string}>();
+  const ns = useNamespace();
+  const [submitting, setSubmitting] = useState(false);
+  const uploadSwaggerMutation = useMutation(store.uploadSwagger, {
+    onMutate: ()=> {
+      setSubmitting(true);
+    },
+    onSuccess: ()=> {
+      toast.success('批量导入成功');
+      setTimeout(toListPage, 500);
+    },
+    onError: (err)=> {
+      toast.error(err);
+    },
+    onSettled: ()=> {
+      setSubmitting(false);
+    },
+  });
 
-  useEffect(()=> {
-    store.fetchSvc();
-  }, []);
-
-  // todo
   const COLS: UnionColumns<any>[] = [
     {
       Header: 'API 名称',
@@ -52,10 +66,18 @@ function AddSwagger(props: Props) {
     },
   ];
 
+  useEffect(()=> {
+    store.fetchSvc();
+  }, []);
+
   function onSubmit(): void {
     if (file && apis) {
-      store.uploadSwagger(file);
+      uploadSwaggerMutation.mutate(file);
     }
+  }
+
+  function toListPage():void {
+    history.push(`/apps/details/${appID}/api_proxy?ns=${ns}`);
   }
 
   function handleFiles(files: File[]): void {
@@ -112,7 +134,12 @@ function AddSwagger(props: Props) {
           <Button onClick={()=> history.goBack()} className='mr-20'>
             取消
           </Button>
-          <Button modifier='primary' onClick={onSubmit} forbidden={!apis.length || store.isLoading}>
+          <Button
+            modifier='primary'
+            onClick={onSubmit}
+            forbidden={!apis.length || submitting}
+            loading={submitting}
+          >
             确认导入
           </Button>
         </div>
