@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment, useMemo } from 'react';
 import cs from 'classnames';
 
 import Icon from '@c/icon';
@@ -16,6 +16,11 @@ export type NodeItem<T> = {
   child?: NodeItem<T>[];
   source?: T;
   parentID?: string;
+  root?: boolean;
+  hasChild?: boolean;
+  childResolved?: boolean;
+  disableSelect?: boolean;
+  [key: string]: any;
 }
 
 type Props<T> = {
@@ -23,95 +28,87 @@ type Props<T> = {
   actions?: (node: NodeItem<T>) => React.ReactNode;
   defaultSelected?: string;
   className?: string;
+  style?: React.CSSProperties;
   onSelect?: (node: NodeItem<T>) => void;
 }
 
-type NodeListProps<T> = {
-  nodes: NodeItem<T>[];
-  handleSelect: (node: NodeItem<T>) => void;
-  handleToggle: (id: string) => void;
-  visibleList: string[];
-  actions?: (node: NodeItem<T>) => React.ReactNode;
-  willCloseMap: Record<string, boolean>;
+interface NavItemProps<T> {
+  node: NodeItem<T>;
   level?: number;
+  onSelect?: (node: NodeItem<T>)=> void;
+  onToggle?: (node: NodeItem<T>, expand: boolean)=> void;
+  actions?: (node: NodeItem<T>) => React.ReactNode;
   activeNode?: NodeItem<T>;
 }
 
-const ACTIVE_NODE = 'two-level-menu-node-active bg-white text-gray-900 relative';
-const NODE_CLASS = 'two-level-menu-node select-none px-16 h-36 cursor-pointer hover:bg-white hover:text-gray-900 flex items-center';
+function NavItem<T>({
+  node,
+  level = 0,
+  activeNode,
+  onSelect,
+  onToggle,
+  actions,
+}: NavItemProps<T>): JSX.Element {
+  const [expand, setExpand] = useState(!!node.root);
+  const iconName = useMemo(()=> {
+    const hasChild = !!(node.child && node.child.length) || !!node.hasChild;
+    if (node.type === 'group') {
+      if (hasChild) {
+        return expand ? 'folder_open' : 'folder';
+      }
+      return 'folder_empty';
+    }
+    return node.iconName || '';
+  }, [node, expand]);
 
-function getGroupIcon(hasChild: boolean, isOpen: boolean): string {
-  if (hasChild) {
-    return isOpen ? 'folder_open' : 'folder';
-  }
-
-  return 'folder_empty';
-}
-
-function NodeList<T>({ nodes, level = 0, ...other }: NodeListProps<T>): JSX.Element {
-  const { handleSelect, handleToggle, visibleList, actions, willCloseMap, activeNode } = other;
   return (
-    <>
-      {nodes.map((node) => {
-        if (node.type === 'group') {
-          const hasChild = !!(node.child && node.child.length);
-          const isOpen = visibleList.includes(node.id);
-
-          const dom = [
-            <div onClick={() => handleToggle(node.id)} className={NODE_CLASS} key={node.id}>
-              <Icon className='mr-4' size={16} name={getGroupIcon(hasChild, isOpen)} />
-              <span className='flex-1 truncate'>{node.title}</span>
-              <div className='two-level-menu-actions'>{actions?.(node)}</div>
-            </div>,
-          ];
-
-          if (hasChild && isOpen) {
-            dom.push(
-              <div
-                style={{
-                  '--node-box-height': (36 * (node.child?.length || 0)) + 'px',
-                } as React.CSSProperties}
-                key={'child-' + node.id}
-                className={`two-level-menu-child-box-${willCloseMap[node.id] ? 'close' : 'open'} overflow-hidden h-0`}
-              >
-                <NodeList
-                  nodes={node.child as NodeItem<T>[]}
-                  level={level + 1}
-                  {...other}
-                />
-              </div>,
-            );
-          }
-
-          return dom;
-        }
-
-        return (
-          <div
-            onClick={() => handleSelect(node)}
-            className={cs(NODE_CLASS, { [ACTIVE_NODE]: activeNode?.id === node.id })}
-            style={{ paddingLeft: (16 * (level + 1)) + 'px' }}
-            key={node.id}
-          >
-            {!!node.iconName && <Icon className='mr-4' size={16} name={node.iconName} />}
-            <span
-              style={{ lineHeight: '36px' }}
-              className='flex-1 truncate'
-            >
-              {node.title}
-            </span>
-            <div className='two-level-menu-actions'>{actions?.(node)}</div>
-          </div>
-        );
-      })}
-    </>
+    <Fragment key={node.id}>
+      <div
+        className={cs('two-level-menu-node select-none px-16 cursor-pointer hover:bg-white hover:text-gray-900 flex items-center h-36', {
+          'two-level-menu-node-active bg-white text-gray-900 relative': activeNode?.id === node.id,
+        })}
+        onClick={() => {
+          setExpand(!expand);
+          onToggle?.(node, !expand);
+          onSelect?.(node);
+        }}
+        style={{ paddingLeft: (16 * (level + 1)) + 'px' }}
+        key={node.id}
+      >
+        {iconName && <Icon className='mr-4' size={16} name={iconName} />}
+        <span
+          style={{ lineHeight: '36px' }}
+          className='flex-1 truncate'
+        >
+          {node.title}
+        </span>
+        <div className='two-level-menu-actions'>{actions?.(node)}</div>
+      </div>
+      {node.child && (
+        <div
+          className={cs(
+            'two-level-menu-sub-nodes flex flex-col overflow-hidden',
+            `two-level-menu-child-box-${expand ? 'open' : 'close'}`)}
+        >
+          {node.child.map((c)=> (
+            <NavItem
+              key={c.id}
+              node={c}
+              level={level + 1}
+              onSelect={onSelect}
+              onToggle={onToggle}
+              actions={actions}
+              activeNode={activeNode}
+            />
+          ))}
+        </div>
+      )}
+    </Fragment>
   );
 }
 
-function TwoLevelMenu<T>({ menus, actions, onSelect, defaultSelected, className }: Props<T>): JSX.Element {
-  const [visibleList, setVisible] = useState<string[]>([]);
+function TwoLevelMenu<T>({ menus, actions, onSelect, defaultSelected, className, style }: Props<T>): JSX.Element {
   const [activeNode, setActiveNode] = useState<NodeItem<T> | undefined>(undefined);
-  const [willCloseMap, setWillClose] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     let _activeNode = undefined;
@@ -122,39 +119,27 @@ function TwoLevelMenu<T>({ menus, actions, onSelect, defaultSelected, className 
     }
 
     _activeNode && handleSelect(_activeNode);
-    _activeNode?.parentID && setVisible([...visibleList, _activeNode?.parentID]);
   }, [defaultSelected]);
 
   function handleSelect(node: NodeItem<T>): void {
-    setActiveNode(node);
+    !node.disableSelect && setActiveNode(node);
     onSelect?.(node);
   }
 
-  function handleToggle(id: string): void {
-    if (visibleList.includes(id)) {
-      setWillClose({ ...willCloseMap, [id]: true });
-      setTimeout(() => {
-        setVisible(
-          visibleList.filter((_id) => _id !== id),
-        );
-        setWillClose({ ...willCloseMap, [id]: false });
-      }, 100);
-    } else {
-      setVisible([...visibleList, id]);
-    }
-  }
-
   return (
-    <div className={`text-12 overflow-auto beauty-scroll bg-gray-50 ${className}`}>
-      <NodeList
-        handleToggle={handleToggle}
-        nodes={menus}
-        handleSelect={handleSelect}
-        visibleList={visibleList}
-        actions={actions}
-        willCloseMap={willCloseMap}
-        activeNode={activeNode}
-      />
+    <div
+      className={`text-12 overflow-auto beauty-scroll bg-gray-50 ${className}`}
+      style={style}
+    >
+      {menus.map((menu)=> (
+        <NavItem
+          key={menu.id}
+          node={menu}
+          onSelect={handleSelect}
+          actions={actions}
+          activeNode={activeNode}
+        />
+      ))}
     </div>
   );
 }

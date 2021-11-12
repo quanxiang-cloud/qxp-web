@@ -185,10 +185,6 @@ function ApiList(props: Props) {
     }
   }
 
-  if (store.isLoading) {
-    return <Loading />;
-  }
-
   return (
     <div className='w-full'>
       <div className='mb-20 flex items-center justify-between'>

@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { observer } from 'mobx-react';
+import { isObject } from 'lodash';
 
 import Search from '@c/search';
 import TwoLevelMenu, { NodeItem } from '@c/two-level-menu';
 
-import store from './store';
+import store, { mapNsToNodeItem } from './store';
 
 function DocumentNav(): JSX.Element {
   const [loading, setLoading] = useState(true);
@@ -22,6 +23,8 @@ function DocumentNav(): JSX.Element {
       title: '页面表单API',
       type: 'group',
       child: [],
+      root: true,
+      disableSelect: true,
     };
 
     const dataModel: NodeItem<DataModel> = {
@@ -29,6 +32,8 @@ function DocumentNav(): JSX.Element {
       title: '数据模型API',
       type: 'group',
       child: [],
+      root: true,
+      disableSelect: true,
     };
 
     store.dataModels.forEach((model) => {
@@ -51,8 +56,21 @@ function DocumentNav(): JSX.Element {
       }
     });
 
-    return [form, dataModel];
-  }, [store.dataModels]);
+    const proxyApis: NodeItem<PolyAPI.Namespace> = {
+      id: 'proxy_api',
+      title: '第三方代理API',
+      type: 'group',
+      child: [],
+      root: true,
+      disableSelect: true,
+    };
+
+    store.apiNsList.forEach((item)=> {
+      proxyApis.child?.push(mapNsToNodeItem(item));
+    });
+
+    return [form, dataModel, proxyApis];
+  }, [store.dataModels, store.apiNsList]);
 
   return (
     <div className='api-doc-details-nav rounded-tl-12 flex flex-col'>
@@ -63,11 +81,29 @@ function DocumentNav(): JSX.Element {
         onChange={store.changeKeyword}
       />
       {!loading && store.dataModels.length !== 0 && (
-        <TwoLevelMenu<DataModel>
+        <TwoLevelMenu<any>
           menus={menus}
-          onSelect={(dataModel) => {
-            store.currentDataModel = dataModel.source as DataModel;
-            store.tableID = dataModel.source?.tableID || '';
+          style={{
+            height: 'calc(100% - 76px)',
+          }}
+          onSelect={(node) => {
+            if (!node.disableSelect) {
+              store.currentDataModel = node.source;
+              if (node.source?.tableID) {
+                store.tableID = node.source?.tableID || '';
+              }
+            }
+
+            // @ts-ignore
+            if (isObject(node.source) && node.source.parent && ('subCount' in node.source)) {
+              if (node.hasChild && !node.childResolved) {
+                store.fetchSubNamespaces(node);
+              }
+              // leaf ns node, fetch its apis
+              if (!node.hasChild && !node.apisResolved && node.type === 'group') {
+                store.fetchNsApis(node);
+              }
+            }
           }}
         />
       )}

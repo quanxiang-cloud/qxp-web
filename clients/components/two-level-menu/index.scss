@@ -1,27 +1,35 @@
-.two-level-menu-actions {
-  display: none;
-}
+.two-level-menu {
+  &-node {
+    &:hover {
+      &-actions {
+        display: block;
+      }
+    }
 
-.two-level-menu-node:hover {
-  .two-level-menu-actions {
-    display: block;
-  }
-}
+    &-active {
+      &::after {
+        content: "";
+        width: 4px;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        right: 0;
+        border-radius: 4px 0 0 4px;
+        background-color: var(--blue-600);
+      }
 
-.two-level-menu-node-active {
-  &::after {
-    content: "";
-    width: 4px;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    right: 0;
-    border-radius: 4px 0 0 4px;
-    background-color: var(--blue-600);
+      .two-level-menu-actions {
+        display: block;
+      }
+    }
   }
-  
-  .two-level-menu-actions {
-    display: block;
+
+  &-actions {
+    display: none;
+  }
+
+  &-sub-nodes {
+
   }
 }
 
