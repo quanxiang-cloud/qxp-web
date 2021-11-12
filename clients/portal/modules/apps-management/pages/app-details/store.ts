@@ -476,6 +476,9 @@ class AppDetailsStore {
         this.activeMenu = getFirstMenu(res.menu);
       }
       this.pagesTreeData = buildAppPagesTreeData(res.menu);
+    }).catch(() => {
+      toast.error('获取菜单列表失败');
+    }).finally(() => {
       this.pageListLoading = false;
     });
   }
