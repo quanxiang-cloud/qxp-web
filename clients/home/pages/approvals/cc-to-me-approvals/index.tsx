@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { observer } from 'mobx-react';
 
-import Switch from '@c/switch';
 import Search from '@c/search';
 import Pagination from '@c/pagination';
 import Button from '@c/button';
@@ -10,6 +9,7 @@ import Modal from '@c/modal';
 import toast from '@lib/toast';
 import Select from '@c/select';
 import IconBtn from '@c/icon-btn';
+import RadioButtonGroup from '@c/radio/radio-button-group';
 
 import store from './store';
 import TaskList from '../task-list';
@@ -57,10 +57,13 @@ function TodoApprovals(): JSX.Element {
     <div>
       <div className="flex justify-between items-center mb-16">
         <div className="flex flex-1">
-          <Switch
-            className="mr-16"
-            onChange={store.changeStatus}
-            options={status}
+          <RadioButtonGroup
+            radioBtnClass="bg-white"
+            onChange={(value) => {
+              store.changeStatus(value as number);
+            }}
+            listData={status as any}
+            currentValue={store.status}
           />
         </div>
         <Search className="w-259 mr-16" placeholder="搜索流程、发起人、应用" value={store.keyword}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { UnionColumns } from 'react-table';
 
 import Table from '@c/table';
@@ -14,18 +14,22 @@ const DEFAULT_COL = [{
 }];
 
 function Placeholder({ props }: Props): JSX.Element {
-  const { items } = props;
-  const cols: UnionColumns<any>[] = [];
-  const properties = items?.properties || {};
+  const cols: UnionColumns<any>[] = useMemo(() => {
+    const schema: ISchema = props?.items;
+    return Object.entries(schema?.properties || {}).sort((a, b) => {
+      return (a[1]?.['x-index'] || 0) - (b[1]?.['x-index'] || 0);
+    }).reduce<UnionColumns<any>[]>((acc, [key, val]) => {
+      if (!EXCLUDE_FIELDS.includes(key)) {
+        return [...acc, {
+          id: key,
+          Header: val?.title || '',
+          accessor: () => <Empty />,
+        }];
+      }
 
-  Object.entries(properties).forEach(([key, val]: [string, any]) => {
-    if (EXCLUDE_FIELDS.includes(key)) return;
-    cols.push({
-      id: key,
-      Header: val?.title || '',
-      accessor: () => <Empty />,
-    });
-  });
+      return acc;
+    }, []);
+  }, [props?.items]);
 
   if (cols.length <= 0) {
     return <>暂无数据</>;

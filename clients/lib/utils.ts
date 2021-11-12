@@ -128,8 +128,8 @@ export const getNestedPropertyToArray = <T>(
   return arrData;
 };
 
-export function departmentToTreeNode(department: Department): TreeNode<Department> {
-  const children = (department.child || []).map((dep) => departmentToTreeNode(dep));
+export function departmentToTreeNode(department: Department, level = 0): TreeNode<Department> {
+  const children = (department.child || []).map((dep) => departmentToTreeNode(dep, level + 1));
 
   return {
     data: department,
@@ -140,7 +140,7 @@ export function departmentToTreeNode(department: Department): TreeNode<Departmen
     isLeaf: !department.child?.length,
     visible: true,
     childrenStatus: 'resolved',
-    expanded: true,
+    expanded: level === 0,
     order: 0,
     level: department.grade,
     children: children,
@@ -345,4 +345,42 @@ export async function copyContent(content: string, successMes?: string, errorMes
     toast.error(errorMes || '复制失败，请手动复制！');
   }
   document.body.removeChild(el);
+}
+
+// macOS X:1000 KB = 1 MB Non-macOS X : 1024 KB = 1 MB
+export const isMacosX = /macintosh|mac os x/i.test(navigator.userAgent);
+
+export function isAcceptedFileType(file: File | QXPUploadFileBaseProps, accept: string | string[]): boolean {
+  if (!accept) return false;
+  const fileType = file.type || file.name.split('.').pop();
+  return accept.toString().indexOf(fileType || '') !== -1;
+}
+
+export function createQueue(
+  tasks: (() => Promise<void>)[],
+  maxNumOfWorkers = 1,
+): Promise<void> {
+  let numOfWorkers = 0;
+  let taskIndex = 0;
+
+  return new Promise((done, failed) => {
+    const getNextTask = (): void => {
+      if (numOfWorkers < maxNumOfWorkers && taskIndex < tasks.length) {
+        tasks[taskIndex]()
+          .then(() => {
+            numOfWorkers -= 1;
+            getNextTask();
+          })
+          .catch((error: Error)=> {
+            failed(error);
+          });
+        taskIndex += 1;
+        numOfWorkers += 1;
+        getNextTask();
+      } else if (numOfWorkers === 0 && taskIndex === tasks.length) {
+        done();
+      }
+    };
+    getNextTask();
+  });
 }

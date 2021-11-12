@@ -13,7 +13,7 @@ type Props<T extends React.Key> = {
   separator?: boolean;
   navTitleClassName?: string;
   navsClassName?: string;
-  onClick?: (id: T) => void;
+  onClick?: (item: TabItem<T>) => void;
 }
 function TabNavs<T extends React.Key>({
   navs,
@@ -36,15 +36,19 @@ ref?: React.Ref<HTMLDivElement>): JSX.Element {
             return (
               <div
                 key={item.id}
-                onClick={() => onClick?.(item.id)}
-                className={cs('tab-nav-item', navTitleClassName, {
-                  active: active,
-                  'tab-nav-item-separator': separator,
-                  'strech-navs': strechNavs,
-                  'text-blue-600': active,
-                  'font-semibold': active,
-                  'text-gray-600': !active,
-                })}
+                onClick={() => onClick?.(item)}
+                className={cs(
+                  'tab-nav-item transition text-center whitespace-nowrap p-12 cursor-pointer relative',
+                  navTitleClassName,
+                  {
+                    active: active,
+                    disabled: item.disabled,
+                    'tab-nav-item-separator': separator,
+                    'strech-navs': strechNavs,
+                    'text-blue-600': active,
+                    'font-semibold': active,
+                    'text-gray-600': !active,
+                  })}
               >
                 {item.name}
               </div>

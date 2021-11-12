@@ -24,6 +24,7 @@ export default function UserAvatarMenu({ className }: Props): JSX.Element {
   }
 
   function handleLogOutClick(): void {
+    localStorage.removeItem('HOME_APP_PAGE_NAV_STATUS_v1');
     window.location.href = '/logout';
   }
 

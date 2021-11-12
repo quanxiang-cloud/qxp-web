@@ -5,6 +5,8 @@ import toast from '@lib/toast';
 
 import DirectLeaderPicker from './direct-leader-picker';
 
+export type ActionStatus = 'transfer' | 'direct';
+
 interface Props {
   title: string;
   submitText: string;
@@ -14,6 +16,7 @@ interface Props {
   ) => Promise<boolean | void>;
   onCancel: () => void;
   employee?: Employee;
+  actionStatus?: ActionStatus;
 }
 
 export default function DirectLeaderChoose({
@@ -22,12 +25,15 @@ export default function DirectLeaderChoose({
   title,
   submitText,
   current,
-}: Props) {
+  actionStatus = 'direct',
+}: Props): JSX.Element {
   const [isOnGetSelected, setIsOnGetSelected] = useState(false);
   const [leader, setLeader] = useState<Leader>(current);
-  function onGetSelected() {
-    if (!leader.id.length) {
-      toast.error('您还未关联直属上级');
+
+  function onGetSelected(): void {
+    if (!leader.id) {
+      toast.error('您还未选择指定人员！');
+      return;
     }
     setIsOnGetSelected(true);
     onSubmit(leader);
@@ -60,6 +66,7 @@ export default function DirectLeaderChoose({
         className="p-20"
         currentLeader={leader}
         onChange={setLeader}
+        actionStatus={actionStatus}
       />
     </Modal>
   );

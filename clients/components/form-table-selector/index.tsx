@@ -1,13 +1,12 @@
 import React, { forwardRef, Ref, useEffect, useRef } from 'react';
-import cs from 'classnames';
 import { useParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
-import { Cascader } from 'antd';
-import { CascaderOptionType } from 'antd/lib/cascader';
-import { noop, last } from 'lodash';
+import cs from 'classnames';
+import { noop } from 'lodash';
 
 import Icon from '@c/icon';
 import ToolTip from '@c/tooltip';
+import Select from '@c/select';
 import toast from '@lib/toast';
 
 import { getFormDataMenuList } from './api';
@@ -28,8 +27,8 @@ function FormTableSelector({
   onChange = noop,
   changeable = true,
 }: Props,
-ref?: Ref<Cascader>): JSX.Element {
-  const { appID } = useParams<{ appID: string }>();
+ref?: Ref<any>): JSX.Element {
+  const { appID, pageId } = useParams<{ appID: string, pageId: string }>();
   const popupRef = useRef<HTMLDivElement>(null);
 
   const {
@@ -42,19 +41,15 @@ ref?: Ref<Cascader>): JSX.Element {
     isError && toast.error(error as string);
   }, [isError]);
 
-  function onWorkFormChange(_: unknown, selectedOptions?: CascaderOptionType[]): void {
-    const table = last(selectedOptions);
-    table && onChange({
-      value: table?.value as string,
-      name: table?.label as string,
+  function onWorkFormChange(value: string): void {
+    const currOption = optionsData.find((option) => option.value === value);
+    onChange({
+      value: currOption?.value || '',
+      name: currOption?.label || '',
     });
   }
 
-  function getPopupContainer(el: HTMLElement): HTMLElement {
-    return popupRef.current || el;
-  }
-
-  const currentValue = value.value ? [value.value] : [];
+  const _optionsData = optionsData.filter((option) => option.value !== pageId);
 
   return (
     <>
@@ -67,17 +62,12 @@ ref?: Ref<Cascader>): JSX.Element {
           <span className="text-body2">工作表:</span>
         </div>
         {changeable && (
-          <Cascader
+          <Select
             ref={ref}
-            getPopupContainer={getPopupContainer}
-            allowClear={false}
-            bordered={false}
-            options={optionsData}
-            expandTrigger={'hover'}
-            onChange={onWorkFormChange}
+            options={_optionsData}
             placeholder="请选择"
-            value={currentValue}
-            popupClassName="ml-12"
+            value={value.value}
+            onChange={onWorkFormChange}
             className={cs(
               'h-28 border-none px-12 text-12 flex items-center',
               'flex-1 work-flow-form-selector text-body2-no-color',
@@ -94,17 +84,13 @@ ref?: Ref<Cascader>): JSX.Element {
             label="已自动关联开始节点工作表，暂不支持更改"
             labelClassName="whitespace-nowrap"
           >
-            <Cascader
-              ref={ref}
+            <Select
               disabled
-              allowClear={false}
-              bordered={false}
-              options={optionsData}
-              expandTrigger={'hover'}
-              onChange={onWorkFormChange}
+              ref={ref}
+              options={_optionsData}
               placeholder="请选择"
-              value={currentValue}
-              popupClassName="ml-12"
+              value={value.value}
+              onChange={onWorkFormChange}
               className="h-28 border-none px-12 text-12 flex items-center flex-1 work-flow-form-selector"
             />
           </ToolTip>

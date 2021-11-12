@@ -19,7 +19,7 @@ const TABLE_SIZE_MENUS: (LabelValue & { key: SizeType })[] = [
 ];
 
 function PageDataTable(): JSX.Element {
-  const [tableSize, setTableSize] = useState<SizeType>('small');
+  const [tableSize, setTableSize] = useState<SizeType>('middle');
   const store = useContext(StoreContext);
   const { selected, setSelected } = store;
 
@@ -81,7 +81,7 @@ function PageDataTable(): JSX.Element {
       </div>
       <div className='flex flex-1 overflow-hidden'>
         <Table
-          canSetColumnWidth
+          canSetColumnWidth={store.canSetColumnWidth}
           showCheckbox={store.showCheckbox}
           emptyTips='暂无数据'
           size={tableSize}

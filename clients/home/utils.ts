@@ -144,6 +144,7 @@ function buildSubTableParams(
       new: (newValues as Record<string, any>[]).map((value) => {
         return {
           entity: value,
+          ref,
         };
       }),
       deleted: deleted,
@@ -178,7 +179,7 @@ function buildRef(
       case 'SubTable': {
         const { subordination, appID, tableID } = field?.['x-component-props'] || {};
         const [subRef] = buildRef(subordination === 'foreign_table' ?
-          window[`schema-${field.id}`] : field.items as ISchema, type);
+          window[`schema-${field.id}`] : field.items as ISchema, 'create');
         const _ref = subRef;
 
         if (values?.[field.id]?.length) {
@@ -191,10 +192,13 @@ function buildRef(
         }
       }
         break;
-      case 'Serial':
-        ref[field.id] = {
-          type: 'serial',
-        };
+      case 'Serial': {
+        if (type === 'create') {
+          ref[field.id] = {
+            type: 'serial',
+          };
+        }
+      }
         break;
       case 'AssociatedRecords': {
         const { appID, tableID } = field?.['x-component-props'] || {};

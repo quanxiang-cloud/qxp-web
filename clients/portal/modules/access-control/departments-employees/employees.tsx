@@ -158,6 +158,7 @@ export default function Employees({
     columns.push({
       Header: '操作',
       id: 'action',
+      fixed: true,
       width: 40,
       accessor: (record: Employee) => {
         const menu = EmployeesActions.filter((menu) => {

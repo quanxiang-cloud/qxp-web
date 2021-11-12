@@ -6,15 +6,16 @@ import cs from 'classnames';
 import TextHeader from '@c/text-header';
 import SearchInput from '@c/form/input/search-input';
 import Loading from '@c/loading';
-
 import {
   getDepartmentStructure,
 } from '@portal/modules/access-control/role-management/api';
 import ErrorTips from '@c/error-tips';
+import OwnerStore from '@c/employee-or-department-picker/store';
+import EmployeeSelectTree from '@c/employee-or-department-picker/employee-select-tree';
 
 import EmployeeTable from './employee-table';
-import EmployeeSelectTree from '@c/employee-or-department-picker/employee-select-tree';
-import OwnerStore from '@c/employee-or-department-picker/store';
+
+import { ActionStatus } from '.';
 
 interface Props {
   onChange: (leader: Leader) => void;
@@ -23,13 +24,15 @@ interface Props {
   labelKey?: string;
   defaultValue?: string;
   className?: string;
+  actionStatus: ActionStatus;
 }
 
-export default observer(function DirectLeaderPicker<T extends { id: string; }>({
+export default observer(function DirectLeaderPicker({
   currentLeader,
   employee,
   onChange,
   className,
+  actionStatus,
 }: Props) {
   const [store, setStore] = useState<OwnerStore>();
   const { data: department, isLoading, isError } = useQuery(
@@ -84,11 +87,12 @@ export default observer(function DirectLeaderPicker<T extends { id: string; }>({
               itemTitleClassName="text-h6-no-color-weight font-semibold"
             />
             <EmployeeTable
+              actionStatus={actionStatus}
               userName={store.usernameKeyword}
               depID={store.employeeTreeStore.currentFocusedNode.id || ''}
               ownerStore={store}
-              userLeader = {currentLeader as Leader}
-              onChange= {onChange}
+              userLeader={currentLeader as Leader}
+              onChange={onChange}
             />
           </div>
         </div>

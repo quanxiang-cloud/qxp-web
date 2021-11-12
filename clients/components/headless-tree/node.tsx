@@ -37,8 +37,8 @@ function renderSwitcherIcon({
   return (
     <Icon
       name="caret-down"
-      size={12}
-      className={cs('tree-node__toggle-icon', {
+      size={16}
+      className={cs('tree-node__toggle-icon p-2', {
         'tree-node__toggle-icon--opened': expanded,
       })}
       onClick={(e): void => {
@@ -81,11 +81,18 @@ export default function renderNode<T>({
   // When focused not is invisible,
   // apply focused style on the first visible parent.
   const bubbledFocusedStyle = node.id === actualFocusedNodeID && upwardFocusedStyleToParent;
+  let transformStyle = '';
+  if (node.isLeaf && !node.visible) {
+    // hide leaf node when parent collapsed
+    transformStyle = `translateX(-9999px) translateY(${node.positionY}px)`;
+  } else {
+    transformStyle = `translateY(${node.positionY}px)`;
+  }
 
   return (
     <div
       key={node.id}
-      style={{ transform: `translateY(${node.positionY}px)`, zIndex: 100 - node.level }}
+      style={{ transform: transformStyle, zIndex: 100 - node.level }}
       onClick={(): void => onClick(node)}
       onDragLeave={(): void => setAcceptDrop(false)}
       onDragOver={(e): void => {

@@ -53,6 +53,9 @@ export default function Detail(): JSX.Element {
 
   const previousElementsLength = usePrevious(elements?.length);
   useEffect(() => {
+    if (status === 'ENABLE') {
+      return;
+    }
     if (flowID && !apiFetched) {
       return;
     }

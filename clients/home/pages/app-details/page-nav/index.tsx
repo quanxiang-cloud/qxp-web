@@ -22,6 +22,18 @@ function PageNav(): JSX.Element {
   const { pageID } = getQuery<{ pageID: string }>();
   const { appID } = useParams<{ appID: string }>();
   const [appList, setAppList] = useState([]);
+  const homeAppNavStatus = localStorage?.getItem('HOME_APP_PAGE_NAV_STATUS_v1')?.split(':') || [];
+  const currentPageNavStatus = homeAppNavStatus[0] === appID ? homeAppNavStatus[1] : 'open';
+
+  useEffect(() => {
+    if (!currentPageNavStatus) {
+      store.showPageNav = true;
+      store.isMouseControl = false;
+    } else {
+      store.showPageNav = currentPageNavStatus === 'open';
+      store.isMouseControl = currentPageNavStatus === 'close';
+    }
+  }, []);
 
   useEffect(() => {
     store.setPageID(pageID);
@@ -96,9 +108,11 @@ function PageNav(): JSX.Element {
         {store.showPageNav && !store.isMouseControl && (
           <Icon
             name='arrow-left'
+            color='gray'
             className='hover:text-current'
             size={48}
             onClick={() => {
+              localStorage?.setItem('HOME_APP_PAGE_NAV_STATUS_v1', `${appID}:close`);
               store.closePageNav();
               store.openMouseControl();
             }}
@@ -107,9 +121,11 @@ function PageNav(): JSX.Element {
         {store.isMouseControl && (
           <Icon
             name='arrow-right'
+            color='gray'
             className='hover:text-current'
             size={48}
             onClick={() => {
+              localStorage?.setItem('HOME_APP_PAGE_NAV_STATUS_v1', `${appID}:open`);
               store.openPageNav();
               store.closeMouseControl();
             }}
