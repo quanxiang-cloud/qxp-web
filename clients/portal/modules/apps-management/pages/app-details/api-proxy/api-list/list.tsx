@@ -38,7 +38,7 @@ function ApiList(props: Props) {
     {
       Header: 'API 名称',
       id: 'title',
-      width: 120,
+      width: '240px',
       accessor: 'title',
     },
     {
@@ -53,7 +53,7 @@ function ApiList(props: Props) {
       id: 'url',
       accessor: ({ url }: PolyAPI.Api)=> {
         return (
-          <span className='flex w-200 overflow-x-auto' title={url}>{url}</span>
+          <span className='flex overflow-x-auto' title={url}>{url}</span>
         );
       },
     },
@@ -63,7 +63,7 @@ function ApiList(props: Props) {
       id: 'fullPath',
       accessor: ({ fullPath }: PolyAPI.Api)=> {
         return (
-          <span className='flex w-200 overflow-x-auto' title={fullPath}>{fullPath}</span>
+          <span className='flex overflow-x-auto' title={fullPath}>{fullPath}</span>
         );
       },
     },

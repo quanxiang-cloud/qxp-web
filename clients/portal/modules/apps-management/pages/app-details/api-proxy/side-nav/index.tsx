@@ -32,6 +32,12 @@ function SideNav(): JSX.Element | null {
   function handleAddGroup(): void {
     formInst.handleSubmit(async (data: any)=> {
       try {
+        if (!data.title || !data.name) {
+          toast.error('分组名称或标识不能为空');
+          return;
+        }
+        data.title = data.title.trim();
+        data.name = data.name.trim();
         await store.createNs(store.appRootNs, data);
         setNsModalOpen(false);
       } catch (err) {
