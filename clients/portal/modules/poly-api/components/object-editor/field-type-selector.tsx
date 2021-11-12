@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { usePopper } from 'react-popper';
 import cs from 'classnames';
+import { useClickAway } from 'react-use';
 
 import Icon from '@c/icon';
 
@@ -21,28 +22,65 @@ function FieldTypeSelector({ type, onChange }: Props): JSX.Element {
     placement: 'bottom-start',
   });
 
+  useEffect(() => {
+    popperRef.update?.();
+  }, [isSelectorShow]);
+
+  useClickAway({ current: popperElRef }, onHideSelector);
+
+  function onHideSelector(e: Event): void {
+    !referenceElRef?.contains(e.target as HTMLElement) && setIsSelectorShow(false);
+  }
+
   function toggle(): void {
-    setIsSelectorShow((show) => !show);
+    popperRef.update?.();
+    setTimeout(() => {
+      setIsSelectorShow((show) => !show);
+    }, 200);
+  }
+
+  function onSelect(type: POLY_API.API_FIELD_TYPE) {
+    return () => {
+      onChange?.(type);
+      setIsSelectorShow(false);
+    };
   }
 
   return (
     <>
-      <div className="flex content-center" ref={(node) => setReferenceElRef(node)} onClick={toggle}>
-        <span className="capitalize">{type}</span>
-        <Icon name="keyword_arrow_up" className="mr-5" />
+      <div className="flex items-center" ref={(node) => setReferenceElRef(node)}>
+        <p className="capitalize text-caption-no-color-weight text-gray-900 w-52">{type}</p>
+        <Icon
+          clickable
+          name="caret-down"
+          className={cs('ml-8 transition duration-240 transform', {
+            '-rotate-180': isSelectorShow,
+          })}
+          onClick={toggle}
+        />
       </div>
       <ul
         {...popperRef.attributes.popper}
         ref={(node) => setPopperElRef(node)}
-        style={{ ...popperRef.styles.popper }}
-        className={cs('transition duration-300', {
+        style={{
+          ...popperRef.styles.popper,
+          transition: 'all .2s linear',
+          boxShadow: '0 0 10px rgba(200, 200, 200, .4)',
+        }}
+        className={cs('bg-white z-10 rounded-8', {
           'opacity-0 pointer-events-none': !isSelectorShow,
           'opacity-1 pointer-events-auto': isSelectorShow,
         })}
       >
         {types.map((type: POLY_API.API_FIELD_TYPE) => {
           return (
-            <li key={type} className="capitalize" onClick={() => onChange?.(type)}>{type}</li>
+            <li
+              key={type}
+              className="capitalize hover:bg-gray-100 px-6 py-8 cursor-pointer"
+              onClick={onSelect(type)}
+            >
+              {type}
+            </li>
           );
         })}
       </ul>

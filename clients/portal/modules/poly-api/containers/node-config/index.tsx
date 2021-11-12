@@ -14,6 +14,7 @@ import DrawerTitle from './drawer-title';
 
 export default function NodeConfigDrawer(): JSX.Element {
   const store = useObservable(store$);
+  const [isFullScreen, setIsFullScreen] = useState(false);
   const drawerRef = useRef<HTMLDivElement | null>(null);
   const {
     currentNodeConfigParams: { schema, currentNode, onClose, configForm: ConfigForm },
@@ -44,6 +45,7 @@ export default function NodeConfigDrawer(): JSX.Element {
 
   function onToggleFullscreen(): void {
     drawerRef.current?.classList.toggle('drawer-fullscreen');
+    setIsFullScreen(!!drawerRef.current?.classList.contains('drawer-fullscreen'));
   }
 
   const { title, doc, desc } = NODE_TYPE_MAPPER[nodeData.type] || {};
@@ -53,7 +55,15 @@ export default function NodeConfigDrawer(): JSX.Element {
       ref={drawerRef}
       position="right"
       className="node-config-drawer"
-      title={<DrawerTitle title={title} desc={desc} doc={doc} onToggleFullscreen={onToggleFullscreen} />}
+      title={(
+        <DrawerTitle
+          title={title}
+          desc={desc}
+          doc={doc}
+          onToggleFullscreen={onToggleFullscreen}
+          isFullScreen={isFullScreen}
+        />
+      )}
       onCancel={onCancel}
       visible={!!((schema || ConfigForm) && currentNode)}
     >

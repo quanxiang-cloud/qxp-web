@@ -148,6 +148,7 @@ $nodeTypes: input, request, if, end, default, output;
     }
   }
   .drawer-container {
+    width: 732px;
     transition: all .3s ease-in-out;
     .drawer-main-content {
       display: flex;
