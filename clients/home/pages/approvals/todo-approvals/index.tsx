@@ -24,7 +24,7 @@ const handleTypes = [
   { label: '待审批', value: 'REVIEW' },
   { label: '待填写', value: 'WRITE' },
   { label: '待阅示', value: 'READ' },
-  { label: '其他', value: 'OTHER' },
+  { label: '待补充', value: 'SEND_BACK' },
 ];
 
 const sortOptions = [
