@@ -63,9 +63,9 @@ declare namespace PolyAPI {
   }
 
   type UploadApiParams={
-    version: string;
-    namespace: string;
-    file: string;
+    file: File;
+    version?: string;
+    namespace?: string;
   }
 
   type CreateApiResult={

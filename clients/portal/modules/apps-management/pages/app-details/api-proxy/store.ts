@@ -255,6 +255,15 @@ class ApiProxyStore {
   }
 
   @action
+  uploadSwagger=async (file: File)=> {
+    const fd = new FormData();
+    fd.append('version', 'v1');
+    fd.append('file', file);
+    fd.append('svcPath', this.currentSvcPath);
+    await apis.uploadSwagger(fd);
+  }
+
+  @action
   reset = () => {
     this.appId = '';
     this.appRootNs = '';
