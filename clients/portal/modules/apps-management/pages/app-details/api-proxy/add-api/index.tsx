@@ -4,7 +4,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { useForm, FormProvider } from 'react-hook-form';
 import cs from 'classnames';
 import { useMutation } from 'react-query';
-import { get, values, omit } from 'lodash';
+import { get, values } from 'lodash';
 
 import Select from '@c/select';
 import Button from '@c/button';

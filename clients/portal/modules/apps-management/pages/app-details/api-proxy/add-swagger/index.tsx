@@ -19,7 +19,7 @@ interface Props {
   className?: string;
 }
 
-type ApiItem={
+type ApiItem = {
   name: string;
   method: string;
   path: string;
@@ -29,21 +29,21 @@ function AddSwagger(props: Props) {
   const [apis, setApis] = useState<ApiItem[]>([]);
   const [file, setFile] = useState<File | null>(null);
   const history = useHistory();
-  const { appID } = useParams<{appID: string}>();
+  const { appID } = useParams<{ appID: string }>();
   const ns = useNamespace();
   const [submitting, setSubmitting] = useState(false);
   const uploadSwaggerMutation = useMutation(store.uploadSwagger, {
-    onMutate: ()=> {
+    onMutate: () => {
       setSubmitting(true);
     },
-    onSuccess: ()=> {
+    onSuccess: () => {
       toast.success('批量导入成功');
       setTimeout(toListPage, 500);
     },
-    onError: (err)=> {
+    onError: (err) => {
       toast.error(err);
     },
-    onSettled: ()=> {
+    onSettled: () => {
       setSubmitting(false);
     },
   });
@@ -66,7 +66,7 @@ function AddSwagger(props: Props) {
     },
   ];
 
-  useEffect(()=> {
+  useEffect(() => {
     store.fetchSvc();
   }, []);
 
@@ -76,7 +76,7 @@ function AddSwagger(props: Props) {
     }
   }
 
-  function toListPage():void {
+  function toListPage(): void {
     history.push(`/apps/details/${appID}/api_proxy?ns=${ns}`);
   }
 
@@ -106,7 +106,7 @@ function AddSwagger(props: Props) {
 
   return (
     <>
-      <Header name='批量导入' />
+      <Header name='批量导入'/>
       <div className="w-full h-full px-16 py-16 relative">
         <FilePicker
           accept='application/json'
@@ -131,7 +131,7 @@ function AddSwagger(props: Props) {
         )}
 
         <div className='flex items-center justify-end w-full h-64 bg-gray-100 px-20 absolute left-0 bottom-0'>
-          <Button onClick={()=> history.goBack()} className='mr-20'>
+          <Button onClick={() => history.goBack()} className='mr-20'>
             取消
           </Button>
           <Button

@@ -10,7 +10,6 @@ import Button from '@c/button';
 import Search from '@c/search';
 import Table from '@c/table';
 import EmptyTips from '@c/empty-tips';
-import Loading from '@c/loading';
 import Modal from '@c/modal';
 import Icon from '@c/icon';
 import toast from '@lib/toast';
