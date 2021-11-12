@@ -96,7 +96,7 @@ export const registerApi = async (servicePath: string, params: PolyAPI.CreateApi
 };
 
 export const uploadSwagger = async (servicePath: string, params: PolyAPI.UploadApiParams): Promise<PolyAPI.CreateApiResult> => {
-  return await httpClient(`/api/v1/polyapi/raw/upload/${servicePath}`, params);
+  return await httpClient(`/api/v1/polyapi/raw/upload/${normalizeSuffix(servicePath)}`, params);
 };
 
 export const getNamespaceApiList = async (namespacePath: string, params: Paging): Promise<{

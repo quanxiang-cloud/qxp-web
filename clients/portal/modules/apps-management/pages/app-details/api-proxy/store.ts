@@ -255,6 +255,18 @@ class ApiProxyStore {
   }
 
   @action
+  uploadSwagger=async (file: File)=> {
+    this.isLoading = true;
+    try {
+      await apis.uploadSwagger(this.currentSvcPath, { file, version: 'v1' });
+    } catch (err) {
+      toast.error(err);
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  @action
   reset = () => {
     this.appId = '';
     this.appRootNs = '';
