@@ -78,6 +78,7 @@ declare namespace POLY_API {
     rawPath: string;
     apiName: string;
     inputs: PolyNodeInput[];
+    outputs: PolyNodeInput[];
   }
 
   export interface PolyEndNodeDetail {
@@ -100,6 +101,23 @@ declare namespace POLY_API {
   }
 
   export type API_FIELD_TYPE = 'string' | 'number' | 'object' | 'array' | 'boolean';
+  export type RawApi = {
+    id: string;
+    owner: string;
+    ownerName: string;
+    url: string;
+    method: string;
+    namespace: string;
+    name: string;
+    title: string;
+    desc: string;
+    active: number;
+    service: string;
+    schema: string;
+    host: string;
+    authType: string;
+    updateAt: string;
+  }
 
   export type PolyStartNode = PolyNodeGeneric<'input', PolyStartNodeDetail>;
   export type PolyRequestNode = PolyNodeGeneric<'request', PolyRequestNodeDetail>;

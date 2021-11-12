@@ -87,12 +87,12 @@ export default function NodeConfigDrawer(): JSX.Element {
         className="bg-gray-50 text-right px-20 py-8 border-t-1 border-gray-200 flex justify-end
         content-center"
       >
-        <Button iconSize={14} className="mr-12 h-28" iconName="check" onClick={onCancel}>取消</Button>
+        <Button iconSize={14} className="mr-12 h-28" iconName="close" onClick={onCancel}>取消</Button>
         <Button
           iconSize={14}
           className="h-28"
           modifier="primary"
-          iconName="close"
+          iconName="save"
           onClick={onSave}
         >
           保存

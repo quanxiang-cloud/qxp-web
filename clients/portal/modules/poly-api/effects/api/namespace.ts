@@ -20,7 +20,7 @@ export function useQueryNameSpaceRawRootPath(
 ): UseQueryResult<QueryRootPathResponse, Error> {
   return useQuery<QueryRootPathResponse, Error>(
     [NAMESPACE_ROW, appID],
-    () => httpClient('/api/v1/polyapi/namespace/appPath', { pathType: 'raw', appID }),
+    () => httpClient('/api/v1/polyapi/namespace/appPath', { pathType: 'root', appID }),
     options,
   );
 }

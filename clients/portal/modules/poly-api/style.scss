@@ -139,6 +139,10 @@ $nodeTypes: input, request, if, end, default, output;
   &>div {
     @apply border-b-1;
   }
+
+  &>div:last-child {
+    @apply border-0;
+  }
 }
 
 .node-config-drawer {
@@ -154,6 +158,7 @@ $nodeTypes: input, request, if, end, default, output;
       display: flex;
       flex-flow: column nowrap;
       justify-content: space-between;
+      max-height: calc(100% - 56px);
       .node-config-form-section {
         flex: 1;
         overflow: auto;
@@ -164,4 +169,25 @@ $nodeTypes: input, request, if, end, default, output;
       }
     }
   }
+}
+
+.formula-config {
+  width: 242px;
+  @apply border-l-1 border-gray-200 flex flex-col;
+}
+
+.poly-api-selector {
+  @apply flex items-center mr-16 w-280;
+
+  .cascader {
+    @apply flex-1;
+    
+    &>input {
+      border-radius: 2px 8px 8px 8px;
+    }
+  }
+}
+
+.poly-node-tree {
+  margin-top: -56px;
 }

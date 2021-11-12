@@ -9,16 +9,35 @@ export interface Input<I> {
   body?: I;
 }
 
-interface QueryPolyApiListItem {
-  name: string;
-  path: string;
-  children: QueryPolyApiListItem[];
+export type DirectoryPath = {
+  id: string,
+  owner: string,
+  ownerName: string,
+  name: string,
+  title: string,
+  desc: string,
+  fullPath: string,
+  url: string,
+  version: string,
+  method: string,
+  action: string,
+  creatAt: string,
 }
 
-type QueryRequestNodeApiListInput = Input<{
-  appID: string
-}>
-type QueryRequestNodeApiListResponse = undefined | QueryPolyApiListItem[];
+type QueryRequestNodeApiListInputBody = {
+  name?: string;
+  title?: string;
+  active?: number;
+  page?: number;
+  pageSize?: number;
+  withSub?: boolean;
+}
+type QueryRequestNodeApiListInput = Input<QueryRequestNodeApiListInputBody>;
+type QueryRequestNodeApiListResponse = {
+  list: DirectoryPath[];
+  page: number;
+  total: number;
+}
 
 export function useGetRequestNodeApiList(
   input: QueryRequestNodeApiListInput, options?: UseQueryOptions<QueryRequestNodeApiListResponse, Error>,
@@ -27,7 +46,38 @@ export function useGetRequestNodeApiList(
     [GET_REQUEST_NODE_API_LIST],
     (): Promise<QueryRequestNodeApiListResponse> => {
       return httpClient<QueryRequestNodeApiListResponse>(
-        `/api/v1/polyapi/poly/list/${input.path}`, input.body,
+        `/api/v1/polyapi/raw/search/${input.path}`, input.body,
+      );
+    },
+    options,
+  );
+}
+
+export type ApiDetails = {
+  docType: string,
+  name: string,
+  id: string,
+  doc: any,
+  apiPath: string,
+}
+
+type QueryRequestNodeApiInputBody = {
+  docType: 'raw' | 'swag' | 'curl' | 'javascript' | 'python'
+  titleFirst?: boolean,
+  _hide?: any,
+  _signature?: any,
+}
+type QueryRequestNodeApiInput = Input<QueryRequestNodeApiInputBody>;
+type QueryRequestNodeApiResponse = ApiDetails
+
+export function useGetRequestNodeApi(
+  input: QueryRequestNodeApiInput, options?: UseQueryOptions<QueryRequestNodeApiResponse, Error>,
+): UseQueryResult<QueryRequestNodeApiResponse, Error> {
+  return useQuery<QueryRequestNodeApiResponse, Error>(
+    [GET_REQUEST_NODE_API_LIST, input.path],
+    (): Promise<QueryRequestNodeApiResponse> => {
+      return httpClient<QueryRequestNodeApiResponse>(
+        `/api/v1/polyapi/raw/doc/${input.path}`, input.body,
       );
     },
     options,
