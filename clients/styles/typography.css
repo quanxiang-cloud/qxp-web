@@ -89,7 +89,12 @@
   color: var(--gray-600);
 }
 
-.text-caption-no-color,
+.text-caption-no-color {
+  font-size: 12px;
+  line-height: 20px;
+  font-weight: 400;
+}
+
 .text-caption-no-color-weight {
   font-size: 12px;
   line-height: 20px;

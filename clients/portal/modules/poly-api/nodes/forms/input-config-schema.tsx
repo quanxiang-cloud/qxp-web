@@ -3,7 +3,7 @@ export default {
   properties: {
     inputs: {
       type: 'array',
-      'x-component': 'ObjectEditor',
+      'x-component': 'BodyEditor',
       'x-props': {
         itemStyle: {
           marginBottom: '8px',

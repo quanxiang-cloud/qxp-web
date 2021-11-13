@@ -25,7 +25,7 @@ declare namespace POLY_API {
     name: string;
     desc: string;
     data: PolyNodeInput[];
-    in: 'body';
+    in: 'body' | 'path' | 'header' | 'query';
     required: boolean;
   }
 
@@ -98,6 +98,17 @@ declare namespace POLY_API {
       top?: string;
       bottom?: string;
     },
+  }
+
+  export interface ObjectSchema {
+    type: 'number' | 'string' | 'boolean' | 'object' | 'array';
+    in: 'body' | 'header' | 'query' | 'path',
+    name: string | null;
+    index: number | null;
+    parentPath: string | null;
+    required: boolean;
+    desc: string;
+    children: ObjectSchema[];
   }
 
   export type API_FIELD_TYPE = 'string' | 'number' | 'object' | 'array' | 'boolean';

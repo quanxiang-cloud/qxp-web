@@ -1,21 +1,13 @@
 import { BehaviorSubject } from 'rxjs';
 import { lensPath, set, dissocPath, path } from 'ramda';
 
-export interface ObjectSchema {
-  type: 'number' | 'string' | 'boolean' | 'object' | 'array';
-  name: string | null;
-  index: number | null;
-  parentPath: string | null;
-  required: boolean;
-  desc: string;
-  children: ObjectSchema[];
-}
+export class ItemStore<T extends { children: T[] }> extends BehaviorSubject<T> {
+  parent$?: Store<T> | ItemStore<T>;
+  children$: ItemStore<T>[]
+  isChildrenHidden = false;
+  isHidden = false;
 
-export class ItemStore extends BehaviorSubject<ObjectSchema> {
-  parent$?: Store | ItemStore;
-  children$: ItemStore[];
-
-  constructor(initialValue: ObjectSchema, parent?: ItemStore | Store) {
+  constructor(initialValue: T, parent?: ItemStore<T> | Store<T>) {
     super(initialValue);
     this.parent$ = parent;
     this.children$ = this.value.children.map((child) => new ItemStore(child, this));
@@ -32,10 +24,30 @@ export class ItemStore extends BehaviorSubject<ObjectSchema> {
   unset(key: string): void {
     this.next(dissocPath(key.split('.'), this.value));
   }
+
+  hide(): void {
+    this.isHidden = true;
+    this.hideChildren();
+  }
+
+  show(): void {
+    this.isHidden = false;
+    this.showChidren();
+  }
+
+  hideChildren(): void {
+    this.children$.forEach((child) => child.hide());
+    this.isChildrenHidden = true;
+  }
+
+  showChidren(): void {
+    this.children$.forEach((child) => child.show());
+    this.isChildrenHidden = false;
+  }
 }
 
-export class Store extends BehaviorSubject<ItemStore[]> {
-  constructor(initialValue: ItemStore[]) {
+export class Store<T extends { children: T[] }> extends BehaviorSubject<ItemStore<T>[]> {
+  constructor(initialValue: ItemStore<T>[]) {
     super(initialValue);
   }
 
@@ -56,6 +68,6 @@ export class Store extends BehaviorSubject<ItemStore[]> {
   }
 }
 
-export function createStore(initialValue: ObjectSchema[]): Store {
-  return new Store(initialValue.map((value) => new ItemStore(value)));
+export function createStore<T extends { children: T[] }>(initialValue: T[]): Store<T> {
+  return new Store(initialValue.map((value) => new ItemStore<T>(value)));
 }

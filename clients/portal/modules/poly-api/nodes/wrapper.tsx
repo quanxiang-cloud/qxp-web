@@ -107,10 +107,10 @@ export default function({
             {showTitle && (
               <div className="py-6 px-12 bg-gray-50 flex items-center self-stretch rounded-t-8">
                 <Icon className="mr-4 rounded-4" name="request-node" />
-                <div className="node-title-editor-wrap">
+                <div className="input-editor-wrap">
                   <input
                     ref={titleEditorRef}
-                    className="text-caption-no-weight node-title-editor"
+                    className="text-caption-no-weight input-editor"
                     value={title}
                     onChange={handleTitleChange}
                   />

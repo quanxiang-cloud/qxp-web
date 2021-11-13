@@ -80,7 +80,7 @@ $nodeTypes: input, request, if, end, default, output;
   }
 }
 
-.node-title-editor-wrap {
+.input-editor-wrap {
   position: relative;
   &::after {
     content: '';
@@ -98,7 +98,7 @@ $nodeTypes: input, request, if, end, default, output;
       left: 0;
     }
   }
-  .node-title-editor {
+  .input-editor {
     background: transparent !important;
     border: none !important;
     transition: all .3s linear !important;

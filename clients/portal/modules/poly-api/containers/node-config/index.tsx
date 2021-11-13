@@ -8,7 +8,7 @@ import Drawer from '@c/drawer';
 import useObservable from '@lib/hooks/use-observable';
 import store$ from '@polyApi/store';
 import { NODE_INIT_CONFIG_PARAMS, NODE_TYPE_MAPPER } from '@polyApi/constants';
-import ObjectEditor from '@portal/modules/poly-api/components/object-editor';
+import BodyEditor from '@polyApi/components/body-editor';
 
 import DrawerTitle from './drawer-title';
 
@@ -79,13 +79,13 @@ export default function NodeConfigDrawer(): JSX.Element {
             schema={schema}
             value={configValue}
             onChange={setConfigValue}
-            components={{ input: Input, objecteditor: ObjectEditor }}
+            components={{ input: Input, bodyEditor: BodyEditor }}
           />
         )}
       </section>
       <div
         className="bg-gray-50 text-right px-20 py-8 border-t-1 border-gray-200 flex justify-end
-        content-center"
+        content-center items-center"
       >
         <Button iconSize={14} className="mr-12 h-28" iconName="close" onClick={onCancel}>取消</Button>
         <Button
