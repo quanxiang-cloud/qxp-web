@@ -5,6 +5,7 @@ import Tree from '@c/headless-tree';
 
 import Store from './store';
 import NodeRender from './poly-tree-node';
+import { addNodeNamePrefix2PolyNodeInput } from '../../utils/request-node';
 
 const startNodeInputs: POLY_API.PolyNodeInput[] = [
   {
@@ -51,14 +52,15 @@ const startNodeInputs: POLY_API.PolyNodeInput[] = [
   },
 ];
 
-export function addNodeNamePrefix2PolyNodeInput(
-  inputs: POLY_API.PolyNodeInput[], prefix: POLY_API.PolyNodeInput,
-): POLY_API.PolyNodeInput {
-  prefix.data = inputs;
-  return prefix;
-}
-
 function FormulaConfigTree(): JSX.Element {
+  const root: POLY_API.PolyNodeInput = {
+    type: 'object',
+    name: '',
+    desc: '',
+    data: [],
+    in: 'body',
+    required: false,
+  };
   const child: POLY_API.PolyNodeInput[] = [
     addNodeNamePrefix2PolyNodeInput(clone(startNodeInputs), {
       type: 'object',
@@ -86,14 +88,6 @@ function FormulaConfigTree(): JSX.Element {
     }),
   ];
 
-  const root: POLY_API.PolyNodeInput = {
-    type: 'object',
-    name: '',
-    desc: '',
-    data: [],
-    in: 'body',
-    required: false,
-  };
   const store = useMemo(() => new Store(root, child), [root, child]);
 
   return (

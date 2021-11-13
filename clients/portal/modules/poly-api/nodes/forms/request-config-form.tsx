@@ -1,46 +1,13 @@
 import React, { useState } from 'react';
-import { isEmpty } from 'lodash';
 
 import { ApiDetails } from '../../effects/api/poly';
 import ApiSelector from './request-config/api-selector';
 import ApiFormulaConfig from './request-config/api-formula';
 import ApiParamsConfig from './request-config/api-params-config';
+import { convertToParamsConfig } from '../../utils/request-node';
 
 function RequestConfigForm(): JSX.Element {
   const [params, setParams] = useState<ApiDetails>();
-
-  function convertToParamsConfig(apiData: ApiDetails | undefined): any[] {
-    if (apiData) {
-      const { doc } = apiData;
-      const { url, input } = doc;
-
-      let path = {};
-      const pathArr = url.split('/:');
-      pathArr.shift();
-      if (!isEmpty(pathArr)) {
-        path = {
-          path: pathArr.map((path: string) => {
-            return { name: path.split('/')[0].split('?')[0], required: true };
-          }),
-        };
-      }
-
-      const test = input.inputs.map((input: any) => {
-        const { title, name } = input;
-        return [input.in, { title, name }];
-      });
-
-      const test1: any = {};
-      test.forEach((item: any) => {
-        test1[item[0]] = test1[item[0]] || [];
-        test1[item[0]].push(item[1]);
-      });
-
-      return Object.assign(path, test1);
-    }
-
-    return [];
-  }
 
   return (
     <>
