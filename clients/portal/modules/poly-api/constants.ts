@@ -41,3 +41,11 @@ export const NODE_TYPE_MAPPER: Record<POLY_API.PolyNodeType, NODE_TYPE_MAPPER_VA
     doc: '查看文档',
   },
 };
+
+export const OPERATES_MAP = {
+  '+': '加',
+  '-': '减',
+  '*': '乘',
+  '/': '除',
+  '()': '括号',
+};

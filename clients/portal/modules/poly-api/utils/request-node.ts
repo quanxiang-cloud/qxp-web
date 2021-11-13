@@ -1,8 +1,8 @@
 import { isEmpty } from 'lodash';
 
-import { ApiDetails } from '../effects/api/poly';
+import { RawApiDocDetail } from '../effects/api/poly';
 
-function parsePathParam(url: string): Record<string, any> {
+function parseParamOfPath(url: string): Record<string, any> {
   const pathArr = url.split('/:');
   pathArr.shift();
   if (!isEmpty(pathArr)) {
@@ -27,23 +27,39 @@ type ApiDocInput = {
   in: 'header' | 'body' | 'query';
 }
 
-export function convertToParamsConfig(apiData: ApiDetails | undefined): any[] {
+function findAvailableBodyParams(data: any[], path?: string): any[] {
+  return data.reduce<any[]>((bodyInputs, input, index) => {
+    if (input.type !== 'object' && input.type !== 'array' && input.type !== 'timestamp') {
+      bodyInputs.push({ title: input.title, name: input.name, required: input.required, path: path ? `${path}.${index}` : index });
+    } else {
+      input.data && bodyInputs.push(...findAvailableBodyParams(input.data, index.toString()));
+    }
+
+    return bodyInputs;
+  }, []);
+}
+
+export function convertToParamsConfig(apiData: RawApiDocDetail | undefined): any[] {
   if (apiData) {
     const paramsConfig: any = {};
     const { url, input } = apiData.doc;
 
     input.inputs.forEach((apiDocInput: ApiDocInput) => {
-      const { title, name } = apiDocInput;
+      const { title, name, required } = apiDocInput;
       paramsConfig[apiDocInput.in] = paramsConfig[apiDocInput.in] || [];
-      paramsConfig[apiDocInput.in].push({ title, name });
+      if (apiDocInput.in === 'body' && apiDocInput.data.length) {
+        paramsConfig[apiDocInput.in] = paramsConfig[apiDocInput.in].concat(
+          findAvailableBodyParams(apiDocInput.data),
+        );
+      }
+      paramsConfig[apiDocInput.in].push({ title, name, required });
     });
 
-    return Object.assign(parsePathParam(url), paramsConfig);
+    return Object.assign(parseParamOfPath(url), paramsConfig);
   }
 
   return [];
 }
-
 export function addNodeNamePrefix2PolyNodeInput(
   inputs: POLY_API.PolyNodeInput[], prefix: POLY_API.PolyNodeInput,
 ): POLY_API.PolyNodeInput {

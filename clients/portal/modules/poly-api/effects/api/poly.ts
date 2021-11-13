@@ -2,14 +2,14 @@ import { useQuery, UseQueryOptions, UseQueryResult } from 'react-query';
 
 import httpClient from '@lib/http-client';
 
-import { GET_REQUEST_NODE_API_LIST } from './names';
+import { GET_REQUEST_NODE_API_LIST, GET_NAMESPACE_FULL_PATH } from './names';
 
 export interface Input<I> {
   path: string;
   body?: I;
 }
 
-export type DirectoryPath = {
+export type RawApiDetail = {
   id: string,
   owner: string,
   ownerName: string,
@@ -34,7 +34,7 @@ type QueryRequestNodeApiListInputBody = {
 }
 type QueryRequestNodeApiListInput = Input<QueryRequestNodeApiListInputBody>;
 type QueryRequestNodeApiListResponse = {
-  list: DirectoryPath[];
+  list: RawApiDetail[];
   page: number;
   total: number;
 }
@@ -53,7 +53,7 @@ export function useGetRequestNodeApiList(
   );
 }
 
-export type ApiDetails = {
+export type RawApiDocDetail = {
   docType: string,
   name: string,
   id: string,
@@ -68,7 +68,7 @@ type QueryRequestNodeApiInputBody = {
   _signature?: any,
 }
 type QueryRequestNodeApiInput = Input<QueryRequestNodeApiInputBody>;
-type QueryRequestNodeApiResponse = ApiDetails
+type QueryRequestNodeApiResponse = RawApiDocDetail
 
 export function useGetRequestNodeApi(
   input: QueryRequestNodeApiInput, options?: UseQueryOptions<QueryRequestNodeApiResponse, Error>,
@@ -78,6 +78,26 @@ export function useGetRequestNodeApi(
     (): Promise<QueryRequestNodeApiResponse> => {
       return httpClient<QueryRequestNodeApiResponse>(
         `/api/v1/polyapi/raw/doc/${input.path}`, input.body,
+      );
+    },
+    options,
+  );
+}
+
+type QueryNamespaceFullPathInputBody = {
+  active: number;
+}
+type QueryNamespaceFullPathInput = Input<QueryNamespaceFullPathInputBody>;
+type QueryNamespaceFullPathResponse = any
+
+export function useGetNamespaceFullPath(
+  input: QueryNamespaceFullPathInput, options?: UseQueryOptions<QueryNamespaceFullPathResponse, Error>,
+): UseQueryResult<QueryNamespaceFullPathResponse, Error> {
+  return useQuery<QueryNamespaceFullPathResponse, Error>(
+    [GET_NAMESPACE_FULL_PATH, input.path],
+    (): Promise<QueryNamespaceFullPathResponse> => {
+      return httpClient<QueryRequestNodeApiResponse>(
+        `/api/v1/polyapi/namespace/tree/${input.path}`, input.body,
       );
     },
     options,

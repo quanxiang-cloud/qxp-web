@@ -28,7 +28,7 @@ function ApiParamsConfig({ configs }: Props): JSX.Element {
                       <Icon className="ml-8" name="arrow_left_alt" />
                     </div>
                     <div className="flex-2 border-l-1 border-gray-200 p-8">
-                      {/* <FormulaEditor /> */}
+                      {/* <FormulaEditor help="" maxLength={undefined} /> */}
                     </div>
                   </div>
                 );
