@@ -9,6 +9,7 @@ import useObservable from '@lib/hooks/use-observable';
 import store$ from '@polyApi/store';
 import { NODE_INIT_CONFIG_PARAMS, NODE_TYPE_MAPPER } from '@polyApi/constants';
 import BodyEditor from '@polyApi/components/body-editor';
+import ConstantsEditor from '@polyApi/components/constants-editor';
 
 import DrawerTitle from './drawer-title';
 
@@ -79,7 +80,7 @@ export default function NodeConfigDrawer(): JSX.Element {
             schema={schema}
             value={configValue}
             onChange={setConfigValue}
-            components={{ input: Input, bodyEditor: BodyEditor }}
+            components={{ input: Input, bodyEditor: BodyEditor, constantsEditor: ConstantsEditor }}
           />
         )}
       </section>

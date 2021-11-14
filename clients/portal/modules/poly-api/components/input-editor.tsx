@@ -18,10 +18,10 @@ export default function InputEditor({ value, onChange, className = '' }: Props):
   );
 
   return (
-    <div className="input-editor-wrap">
+    <div className={cs('input-editor-wrap', className)}>
       <input
         ref={ref}
-        className={cs('text-caption-no-color-weight text-gray-400 input-editor', className)}
+        className="text-caption-no-color-weight text-gray-400 input-editor"
         value={value}
         onChange={onChange}
       />

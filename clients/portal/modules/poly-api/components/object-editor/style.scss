@@ -1,0 +1,10 @@
+.object-editor-table {
+  th, td {
+    background: white;
+    &:last-child {
+      position: sticky;
+      right: 0;
+      box-shadow: -2px 0px 24px rgba(165, 167, 175, 0.25);
+    }
+  }
+}

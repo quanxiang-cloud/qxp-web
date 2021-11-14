@@ -13,10 +13,7 @@ export default {
     },
     constants: {
       type: 'array',
-      'x-component': 'Input',
-      'x-component-props': {
-        // nested: false,
-      },
+      'x-component': 'ConstantsEditor',
       'x-props': {
         itemStyle: {
           marginBottom: '8px',

@@ -30,11 +30,16 @@ declare namespace POLY_API {
   }
 
   export interface PolyConst {
-    type: string;
+    type: 'string' | 'number' | 'boolean';
     name: string;
     desc: string;
     data: string;
     in: 'hide';
+  }
+
+  export type PolyConstSchema = PolyConst & {
+    children: [];
+    index: number;
   }
 
   export type PolyConditionType = 'direct_expr';
@@ -104,7 +109,7 @@ declare namespace POLY_API {
     type: 'number' | 'string' | 'boolean' | 'object' | 'array';
     in: 'body' | 'header' | 'query' | 'path',
     name: string | null;
-    index: number | null;
+    index: number;
     parentPath: string | null;
     required: boolean;
     desc: string;
@@ -112,23 +117,6 @@ declare namespace POLY_API {
   }
 
   export type API_FIELD_TYPE = 'string' | 'number' | 'object' | 'array' | 'boolean';
-  export type RawApi = {
-    id: string;
-    owner: string;
-    ownerName: string;
-    url: string;
-    method: string;
-    namespace: string;
-    name: string;
-    title: string;
-    desc: string;
-    active: number;
-    service: string;
-    schema: string;
-    host: string;
-    authType: string;
-    updateAt: string;
-  }
 
   export type PolyStartNode = PolyNodeGeneric<'input', PolyStartNodeDetail>;
   export type PolyRequestNode = PolyNodeGeneric<'request', PolyRequestNodeDetail>;

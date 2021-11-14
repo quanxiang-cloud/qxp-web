@@ -181,7 +181,7 @@ $nodeTypes: input, request, if, end, default, output;
 
   .cascader {
     @apply flex-1;
-    
+
     &>input {
       border-radius: 2px 8px 8px 8px;
     }
@@ -191,3 +191,4 @@ $nodeTypes: input, request, if, end, default, output;
 .poly-node-tree {
   margin-top: -56px;
 }
+
