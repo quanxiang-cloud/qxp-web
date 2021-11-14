@@ -1,35 +1,16 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+
+import toast from '@lib/toast';
+import PageLoading from '@c/page-loading';
 
 import ApiSelector from './request-config/api-selector';
 import ApiFormulaConfig from './request-config/api-formula';
+import { useGetRequestNodeApi } from '../../effects/api/poly';
 import ApiParamsConfig from './request-config/api-params-config';
 import { convertToParamsConfig } from '../../utils/request-node';
-import { useQueryNameSpaceRawRootPath } from '../../effects/api/namespace';
-import {
-  useGetNamespaceFullPath,
-  useGetRequestNodeApi,
-} from '../../effects/api/poly';
-import PageLoading from '@c/page-loading';
-import toast from '@lib/toast';
 
 function RequestConfigForm(): JSX.Element {
-  const { appID } = useParams<{ appID: string }>();
   const [apiPath, setApiPath] = useState('');
-
-  const { data: namespace } = useQueryNameSpaceRawRootPath(appID);
-
-  const { data: namespacePaths } = useGetNamespaceFullPath({
-    path: namespace?.appPath?.slice(1) || '',
-    body: { active: -1 },
-  }, { enabled: !!namespace?.appPath });
-
-  // const { data: currentRawApiList } = useGetRequestNodeApiList({
-  //   path: apiPath.slice(1) || '',
-  //   body: { withSub: true, active: -1, page: 1, pageSize: -1 },
-  // }, { enabled: !!apiPath });
-
-  // apiPath && console.log(111, currentRawApiList);
 
   const { data: apiDocDetail, isLoading, isSuccess, isError, error } = useGetRequestNodeApi({
     path: apiPath.slice(1),
@@ -43,7 +24,7 @@ function RequestConfigForm(): JSX.Element {
   return (
     <>
       <ApiSelector
-        setApiDocPath={setApiPath}
+        setApiPath={setApiPath}
         apiDocDetail={apiDocDetail}
       />
       <div className="flex flex-1 border-t-1" style={{ height: 'calc(100% - 56px)' }}>

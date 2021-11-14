@@ -1,21 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { clone } from 'ramda';
+import { Cascader } from 'antd';
 import { useParams } from 'react-router-dom';
 
 import { useQueryNameSpaceRawRootPath } from '@portal/modules/poly-api/effects/api/namespace';
 import { useGetNamespaceFullPath, useGetRequestNodeApiList } from '@portal/modules/poly-api/effects/api/poly';
-import { mapNamespacePathsToLabelValue } from '@portal/modules/poly-api/utils/request-node';
-import TestCascader from './test';
+import {
+  convertRawApiListToOptions, getChildrenOfCurrentSelectOption,
+} from '@portal/modules/poly-api/utils/request-node';
 
 type Props = {
   apiDocDetail: any;
-  setApiDocPath: (apiPath: string) => void;
+  setApiPath: (apiPath: string) => void;
 }
 
-function ApiSelector({ apiDocDetail, setApiDocPath }: Props): JSX.Element {
+function ApiSelector({ apiDocDetail, setApiPath }: Props): JSX.Element {
   const { appID } = useParams<{ appID: string }>();
   const [selectValue, setSelectValue] = useState<any>();
-  const [currentOptionPath, setCurrentOptionPath] = useState('');
   const [apiNamespacePath, setApiNamespacePath] = useState('');
   const [allApiOptions, setAllApiOptions] = useState<any[]>();
 
@@ -24,60 +25,64 @@ function ApiSelector({ apiDocDetail, setApiDocPath }: Props): JSX.Element {
     path: namespace?.appPath?.slice(1) || '',
     body: { active: -1 },
   }, { enabled: !!namespace?.appPath });
-  const { data: currentRawApiList, isSuccess, isLoading } = useGetRequestNodeApiList({
+  const { data: currentRawApiDetails } = useGetRequestNodeApiList({
     path: apiNamespacePath.slice(1) || '',
     body: { withSub: true, active: -1, page: 1, pageSize: -1 },
   }, { enabled: !!apiNamespacePath });
 
+  function updateApiLeafOptions(option: any): any {
+    if (!option) {
+      return;
+    }
+
+    if (option.path === apiNamespacePath) {
+      return {
+        ...option,
+        children: convertRawApiListToOptions(currentRawApiDetails?.list || []),
+        childrenData: currentRawApiDetails?.list,
+      };
+    } else if (option.children) {
+      option.children = option.children.map(updateApiLeafOptions);
+    }
+
+    return option;
+  }
+
   useEffect(() => {
-    setAllApiOptions(mapNamespacePathsToLabelValue(namespacePaths?.root.children));
+    setAllApiOptions(clone(allApiOptions)?.map(updateApiLeafOptions));
+  }, [currentRawApiDetails]);
+
+  function onChange(value: any, selectedOptions: any): any {
+    const leafOption = clone(selectedOptions).pop();
+    if (leafOption.isLeaf) {
+      setApiPath(leafOption.path);
+      setSelectValue(value);
+    }
+  }
+
+  function loadData(selectedOptions: any): void {
+    const targetOption = selectedOptions[selectedOptions.length - 1];
+
+    targetOption.children = getChildrenOfCurrentSelectOption(targetOption.childrenData) ||
+    setApiNamespacePath(targetOption.path);
+  }
+
+  useEffect(() => {
+    setAllApiOptions(getChildrenOfCurrentSelectOption(namespacePaths?.root.children));
   }, [namespacePaths?.root.children]);
-
-  function updateAllApiOptions(option: any): string {
-    if (isLoading || !isSuccess) {
-      return '';
-    }
-
-    if (allApiOptions && !currentRawApiList?.list.length) {
-      console.log(option);
-      const indexOfCurrentOptions = currentOptionPath.split('.');
-      // if (!allApiOptions[Number(indexOfCurrentOptions[0])].children) {
-      //   allApiOptions[Number(indexOfCurrentOptions[0])].children[Number(indexOfCurrentOptions[1])]
-      // }
-      // .disabled = true;
-      // setAllApiOptions([...allApiOptions]);
-      return '';
-    }
-
-    return '';
-  }
-
-  function onChange(value: any, selectedOptions: any): void {
-    const namespacePathOption = selectedOptions?.pop();
-    setCurrentOptionPath(namespacePathOption?.path);
-    if (
-      namespacePathOption?.children?.length === 1 && namespacePathOption?.children[0].value === ''
-    ) {
-      setApiNamespacePath(clone(value).pop().toString());
-      updateAllApiOptions(namespacePathOption) && setSelectValue([]);
-    }
-  }
 
   return (
     <div className="px-20 py-12 flex">
       <div className="poly-api-selector">
         全部API：
-        {/* <Cascader
+        <Cascader
           changeOnSelect
           className="cascader"
-          options={allApiOptions}
           value={selectValue}
+          options={allApiOptions}
+          loadData={loadData}
           onChange={onChange}
-          // onPopupVisibleChange={(p) => {
-          //   console.log(p);
-          // }}
-        /> */}
-        <TestCascader />
+        />
       </div>
       {apiDocDetail && (
         <div className="flex-1 flex items-center justify-between overflow-auto">

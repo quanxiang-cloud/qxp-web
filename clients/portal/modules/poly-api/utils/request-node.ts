@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash';
 
-import { RawApiDocDetail } from '../effects/api/poly';
+import { RawApiDetail, RawApiDocDetail } from '../effects/api/poly';
 
 function parseParamOfPath(url: string): Record<string, any> {
   const pathArr = url.split('/:');
@@ -100,4 +100,31 @@ export function addNodeNamePrefix2PolyNodeInput(
 ): POLY_API.PolyNodeInput {
   prefix.data = inputs;
   return prefix;
+}
+
+export function convertRawApiListToOptions(rawApiList: RawApiDetail[]) {
+  return rawApiList.length ? rawApiList.map(({ name, fullPath }: RawApiDetail) => {
+    return {
+      label: name,
+      value: fullPath,
+      path: fullPath,
+      isLeaf: true,
+    };
+  }) : [{ label: '暂无api', value: '', isLeaf: true, disabled: true }];
+}
+
+export function getChildrenOfCurrentSelectOption(currentChildrenData: any): any {
+  if (!currentChildrenData) {
+    return null;
+  }
+
+  return currentChildrenData.map(({ name, children, parent }: any) => {
+    return {
+      label: name,
+      value: name,
+      childrenData: children,
+      isLeaf: false,
+      path: `${parent}/${name}`,
+    };
+  });
 }
