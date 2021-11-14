@@ -9,9 +9,9 @@ import { useQueryNameSpaceRawRootPath } from '../../effects/api/namespace';
 import {
   useGetNamespaceFullPath,
   useGetRequestNodeApi,
-  useGetRequestNodeApiList,
 } from '../../effects/api/poly';
 import PageLoading from '@c/page-loading';
+import toast from '@lib/toast';
 
 function RequestConfigForm(): JSX.Element {
   const { appID } = useParams<{ appID: string }>();
@@ -19,37 +19,32 @@ function RequestConfigForm(): JSX.Element {
 
   const { data: namespace } = useQueryNameSpaceRawRootPath(appID);
 
-  const { data } = useGetRequestNodeApiList({
-    path: namespace?.appPath?.slice(1) || '',
-    body: { withSub: true, active: -1, page: 1, pageSize: -1 },
-  }, { enabled: !!namespace?.appPath });
-
-  const { data: testData } = useGetNamespaceFullPath({
+  const { data: namespacePaths } = useGetNamespaceFullPath({
     path: namespace?.appPath?.slice(1) || '',
     body: { active: -1 },
   }, { enabled: !!namespace?.appPath });
 
-  function mapToLabelValue(test: Array<any> | null): any {
-    if (!test) {
-      return;
-    }
+  // const { data: currentRawApiList } = useGetRequestNodeApiList({
+  //   path: apiPath.slice(1) || '',
+  //   body: { withSub: true, active: -1, page: 1, pageSize: -1 },
+  // }, { enabled: !!apiPath });
 
-    return test.map(({ name, parent, children }: any) => {
-      return { label: name, value: `${parent}/${name}`, children: mapToLabelValue(children) };
-    });
-  }
+  // apiPath && console.log(111, currentRawApiList);
 
-  const { data: apiDocDetail, isLoading, isSuccess } = useGetRequestNodeApi({
+  const { data: apiDocDetail, isLoading, isSuccess, isError, error } = useGetRequestNodeApi({
     path: apiPath.slice(1),
     body: { docType: 'raw', titleFirst: true },
   }, { enabled: !!apiPath });
+
+  if (isError) {
+    toast.error(error?.message);
+  }
 
   return (
     <>
       <ApiSelector
         setApiDocPath={setApiPath}
         apiDocDetail={apiDocDetail}
-        options={mapToLabelValue(testData?.root.children)}
       />
       <div className="flex flex-1 border-t-1" style={{ height: 'calc(100% - 56px)' }}>
         {isLoading && <PageLoading />}

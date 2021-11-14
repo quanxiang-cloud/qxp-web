@@ -43,7 +43,7 @@ export function useGetRequestNodeApiList(
   input: QueryRequestNodeApiListInput, options?: UseQueryOptions<QueryRequestNodeApiListResponse, Error>,
 ): UseQueryResult<QueryRequestNodeApiListResponse, Error> {
   return useQuery<QueryRequestNodeApiListResponse, Error>(
-    [GET_REQUEST_NODE_API_LIST],
+    [GET_REQUEST_NODE_API_LIST, input.path],
     (): Promise<QueryRequestNodeApiListResponse> => {
       return httpClient<QueryRequestNodeApiListResponse>(
         `/api/v1/polyapi/raw/search/${input.path}`, input.body,

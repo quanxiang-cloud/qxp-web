@@ -29,14 +29,49 @@ type ApiDocInput = {
 
 function findAvailableBodyParams(data: any[], path?: string): any[] {
   return data.reduce<any[]>((bodyInputs, input, index) => {
+    const paramPath = path ? `${path}.${index}` : `${index}`;
     if (input.type !== 'object' && input.type !== 'array' && input.type !== 'timestamp') {
-      bodyInputs.push({ title: input.title, name: input.name, required: input.required, path: path ? `${path}.${index}` : index });
+      bodyInputs.push({ title: input.title, name: input.name, required: input.required, path: paramPath });
     } else {
-      input.data && bodyInputs.push(...findAvailableBodyParams(input.data, index.toString()));
+      input.data && bodyInputs.push(...findAvailableBodyParams(input.data, paramPath));
     }
 
     return bodyInputs;
   }, []);
+}
+
+export function mapNamespacePathsToLabelValue1(namespacePath: Array<any> | null): any {
+  if (!namespacePath) {
+    return;
+  }
+
+  return namespacePath.map(({ name, parent, children }: any) => {
+    return {
+      label: name,
+      value: `${parent}/${name}`,
+      path: `${parent}/${name}`,
+      isLeaf: false,
+      childrenData: mapNamespacePathsToLabelValue1(children),
+    };
+  });
+}
+
+export function mapNamespacePathsToLabelValue(namespacePath: Array<any> | null, path?: string): any {
+  if (!namespacePath) {
+    return;
+  }
+
+  return namespacePath.map(({ name, parent, children }: any, index: number) => {
+    const optionPath = path ? `${path}.${index}` : `${index}`;
+
+    return {
+      label: name,
+      value: `${parent}/${name}`,
+      children: children ? mapNamespacePathsToLabelValue(children, optionPath) :
+        [{ label: '暂无API', value: '', isLeaf: true, disabled: true }],
+      path: optionPath,
+    };
+  });
 }
 
 export function convertToParamsConfig(apiData: RawApiDocDetail | undefined): any[] {
