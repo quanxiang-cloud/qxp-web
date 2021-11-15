@@ -1,15 +1,19 @@
-import React, { useRef } from 'react';
+import React from 'react';
 
 import Icon from '@c/icon';
-import FormulaEditor from '@c/formula-editor';
+import FormulaEditor, { RefProps } from '@c/formula-editor';
+import { observer } from 'mobx-react';
 
 type Props = {
-  configs?: any,
+  setCurrentFormulaRef: (ref: any) => void;
+  configs?: any;
 }
 
-function ApiParamsConfig({ configs }: Props): JSX.Element {
+function ApiParamsConfig({ configs, setCurrentFormulaRef }: Props): JSX.Element {
   const polyParams = Object.entries(configs);
-  const currentFormulaRef = useRef<any>();
+
+  function formulaEditorChange(value: string): void {
+  }
 
   return (
     <div className="p-12 flex-2 bg-gray-50 overflow-auto config-params-container">
@@ -19,11 +23,14 @@ function ApiParamsConfig({ configs }: Props): JSX.Element {
             <div className="pb-4 text-gray-900">{type.replace(/^\S/, (s: string) => s.toUpperCase())}</div>
             <div className="config-param">
               {params.map(({ title, name, required, path }: any) => {
+                const configParmaTag = path ? path : name;
+                const formulaRef = React.useRef<RefProps>();
+
                 return (
                   <div
-                    key={path ? path : name}
+                    key={configParmaTag}
                     className="flex justify-between"
-                    onClick={() => console.log(path ? path : name)}
+                    onClick={() => setCurrentFormulaRef(formulaRef)}
                   >
                     <div className="flex items-center justify-between w-142 p-8 flex-1">
                       <div className="flex-1 truncate">
@@ -35,7 +42,9 @@ function ApiParamsConfig({ configs }: Props): JSX.Element {
                     </div>
                     <FormulaEditor
                       help=""
+                      ref={formulaRef}
                       className="node-formulaEditor"
+                      onChange={formulaEditorChange}
                     />
                   </div>
                 );
@@ -48,4 +57,4 @@ function ApiParamsConfig({ configs }: Props): JSX.Element {
   );
 }
 
-export default ApiParamsConfig;
+export default observer(ApiParamsConfig);

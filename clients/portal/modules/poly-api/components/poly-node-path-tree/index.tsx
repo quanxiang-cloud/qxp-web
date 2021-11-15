@@ -52,50 +52,54 @@ const startNodeInputs: POLY_API.PolyNodeInput[] = [
   },
 ];
 
-function FormulaConfigTree(): JSX.Element {
-  const root: POLY_API.PolyNodeInput = {
+const root: POLY_API.PolyNodeInput = {
+  type: 'object',
+  name: '',
+  desc: '',
+  data: [{} as POLY_API.PolyNodeInput],
+  in: 'body',
+  required: false,
+};
+const child: POLY_API.PolyNodeInput[] = [
+  addNodeNamePrefix2PolyNodeInput(clone(startNodeInputs), {
     type: 'object',
-    name: '',
-    desc: '',
+    name: 'start',
+    desc: 'start node',
     data: [],
     in: 'body',
-    required: false,
-  };
-  const child: POLY_API.PolyNodeInput[] = [
-    addNodeNamePrefix2PolyNodeInput(clone(startNodeInputs), {
-      type: 'object',
-      name: 'start',
-      desc: 'start node',
-      data: [],
-      in: 'body',
-      required: true,
-    }),
-    addNodeNamePrefix2PolyNodeInput(clone(startNodeInputs), {
-      type: 'object',
-      name: 'req1',
-      desc: 'request node1',
-      data: [],
-      in: 'body',
-      required: true,
-    }),
-    addNodeNamePrefix2PolyNodeInput(clone(startNodeInputs), {
-      type: 'object',
-      name: 'req2',
-      desc: 'request node2',
-      data: [],
-      in: 'body',
-      required: true,
-    }),
-  ];
+    required: true,
+  }),
+  addNodeNamePrefix2PolyNodeInput(clone(startNodeInputs), {
+    type: 'object',
+    name: 'req1',
+    desc: 'request node1',
+    data: [],
+    in: 'body',
+    required: true,
+  }),
+  addNodeNamePrefix2PolyNodeInput(clone(startNodeInputs), {
+    type: 'object',
+    name: 'req2',
+    desc: 'request node2',
+    data: [],
+    in: 'body',
+    required: true,
+  }),
+];
 
+interface Props {
+  onSelect: (value: POLY_API.PolyNodeInput, currentNodePath: string) => void;
+}
+
+function FormulaConfigTree({ onSelect }: Props): JSX.Element {
   const store = useMemo(() => new Store(root, child), [root, child]);
 
   return (
     <Tree
-      className="poly-node-tree"
       store={store}
       NodeRender={NodeRender}
       RootNodeRender={() => null}
+      onSelect={(value) => onSelect(value, store.currentNodePath)}
     />
   );
 }
