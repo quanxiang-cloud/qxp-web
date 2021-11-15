@@ -7,8 +7,9 @@ export default {
       'x-component': 'BodyEditor',
       'x-props': {
         itemStyle: {
-          marginBottom: '8px',
+          marginBottom: 0,
         },
+        itemClassName: 'px-20',
       },
       'x-index': 0,
     },
@@ -18,8 +19,9 @@ export default {
       'x-component': 'ConstantsEditor',
       'x-props': {
         itemStyle: {
-          marginBottom: '8px',
+          marginBottom: 0,
         },
+        itemClassName: 'px-20',
       },
       'x-index': 1,
     },

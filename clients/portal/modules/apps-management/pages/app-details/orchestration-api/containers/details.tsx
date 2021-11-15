@@ -154,8 +154,8 @@ function APINamespaceDetails(): JSX.Element {
     setNames([data.original.name]);
   }
 
-  function handleEditPoly(polyID: string): void {
-    history.push(`/poly/${appID}/${polyID}`);
+  function handleEditPoly(polyFullPath: string): void {
+    history.push(`/poly/${appID}${polyFullPath}`);
   }
 
   const columns: UnionColumns<PolyListItem>[] = [{
@@ -196,7 +196,7 @@ function APINamespaceDetails(): JSX.Element {
     Cell: (model: CellProps<PolyListItem>) => (
       <div>
         <span
-          onClick={() => handleEditPoly(model.cell.row.id)}
+          onClick={() => handleEditPoly(model.cell.row.original.fullPath)}
           className="mr-16 text-blue-600 text-h6-no-color-weight cursor-pointer"
         >
           编辑

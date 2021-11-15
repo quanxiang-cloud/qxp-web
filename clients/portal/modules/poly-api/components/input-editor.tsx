@@ -1,4 +1,4 @@
-import React, { useRef, ChangeEvent } from 'react';
+import React, { useCallback, useRef, ChangeEvent } from 'react';
 import { useKey } from 'react-use';
 import cs from 'classnames';
 
@@ -6,7 +6,7 @@ interface Props {
   type?: 'text' | 'number';
   className?: string;
   value: string;
-  onChange: (e: ChangeEvent<HTMLInputElement> | string) => void;
+  onChange: (value: string) => void;
 }
 
 export default function InputEditor({ value, onChange, type = 'text', className = '' }: Props): JSX.Element {
@@ -18,13 +18,17 @@ export default function InputEditor({ value, onChange, type = 'text', className 
     [ref.current],
   );
 
+  const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    onChange(e.target.value);
+  }, [onChange]);
+
   return (
     <div className={cs('input-editor-wrap', className)}>
       <input
         ref={ref}
         className="text-caption-no-color-weight text-gray-400 input-editor"
         value={value}
-        onChange={onChange}
+        onChange={handleChange}
         type={type}
       />
     </div>

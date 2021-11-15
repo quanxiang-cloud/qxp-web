@@ -1,12 +1,12 @@
 import React from 'react';
 import cs from 'classnames';
 
-export interface ILoading {
+export interface Props {
   desc?: string | JSX.Element;
   className?: string;
 }
 
-function Loading({ desc = '加载中...', className }: ILoading): JSX.Element {
+export default function Loading({ desc = 'Loading...', className }: Props): JSX.Element {
   return (
     <div
       className={cs(
@@ -19,5 +19,3 @@ function Loading({ desc = '加载中...', className }: ILoading): JSX.Element {
     </div>
   );
 }
-
-export default Loading;

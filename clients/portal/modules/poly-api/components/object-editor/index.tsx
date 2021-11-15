@@ -73,7 +73,7 @@ function ObjectEditor<T extends { children: T[] }>(
   }, [columns]);
 
   return (
-    <section className="container mx-auto p-6 font-mono">
+    <section className="mx-auto font-mono">
       <div className="w-full mb-8 shadow-lg rounded-8">
         <div className="w-full overflow-x-auto">
           <table className="w-full object-editor-table">

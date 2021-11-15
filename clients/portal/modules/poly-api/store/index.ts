@@ -28,7 +28,7 @@ export class PolyStore extends BehaviorSubject<POLY_API.Root> {
 
 const store$ = new PolyStore({
   namespace: '',
-  name: '',
+  name: 'PAI名称',
   desc: '',
   version: '',
   id: '',

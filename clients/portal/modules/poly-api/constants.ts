@@ -49,3 +49,8 @@ export const OPERATES_MAP = {
   '/': '除',
   '()': '括号',
 };
+
+export const POLY_STATUS_MAP = {
+  0: '未启用',
+  1: '已启用',
+};

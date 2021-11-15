@@ -28,7 +28,7 @@ export default function Routes(): JSX.Element {
         <Route path="/access-control" component={AccessControl} />
         <Route path="/system" component={SystemMgmt} />
         <Route path="/apps" component={AppsRoutes} />
-        <Route path="/poly/:appID/:polyID" component={PolyAPI}/>
+        <Route path="/poly/:appID/:polyFullPath+" component={PolyAPI}/>
         <Route component={NotFoundError} />
       </Switch>
     </React.Suspense>

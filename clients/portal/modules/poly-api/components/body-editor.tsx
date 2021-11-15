@@ -150,12 +150,15 @@ function BodyEditor(props: ISchemaFieldComponentProps): JSX.Element {
   ];
 
   return (
-    <ObjectEditor<POLY_API.ObjectSchema>
-      columns={columns}
-      initialValues={fromApiDataToObjectSchema((props.initialValue || []) as POLY_API.PolyNodeInput[])}
-      onAddField={handleAddField}
-      onChange={handleChange}
-    />
+    <>
+      <p className="mt-12 mb-4 text-h6-no-color-weight text-gray-900">Body</p>
+      <ObjectEditor<POLY_API.ObjectSchema>
+        columns={columns}
+        initialValues={fromApiDataToObjectSchema((props.initialValue || []) as POLY_API.PolyNodeInput[])}
+        onAddField={handleAddField}
+        onChange={handleChange}
+      />
+    </>
   );
 }
 

@@ -126,12 +126,15 @@ function BodyEditor(props: ISchemaFieldComponentProps): JSX.Element {
   ];
 
   return (
-    <ObjectEditor<POLY_API.PolyConstSchema>
-      columns={columns}
-      initialValues={fromApiDataToPolyConstSchema((props.initialValue || []) as POLY_API.PolyConstSchema[])}
-      onAddField={handleAddField}
-      onChange={handleChange}
-    />
+    <>
+      <p className="mt-8 mb-4 text-h6-no-color-weight text-gray-900">常量参数</p>
+      <ObjectEditor<POLY_API.PolyConstSchema>
+        columns={columns}
+        initialValues={fromApiDataToPolyConstSchema((props.initialValue || []) as POLY_API.PolyConstSchema[])}
+        onAddField={handleAddField}
+        onChange={handleChange}
+      />
+    </>
   );
 }
 

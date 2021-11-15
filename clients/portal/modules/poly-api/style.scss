@@ -207,3 +207,9 @@ $nodeTypes: input, request, if, end, default, output;
   }
 }
 
+.poly-name-editor {
+  input {
+    color: var(--gray-900);
+    font-weight: 600;
+  }
+}

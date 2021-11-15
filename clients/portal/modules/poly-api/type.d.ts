@@ -17,7 +17,7 @@ declare namespace POLY_API {
 
   export type PolyParams = {
     appID: string;
-    polyID: string;
+    polyFullPath: string;
   }
 
   export interface PolyNodeInput {
@@ -118,6 +118,24 @@ declare namespace POLY_API {
 
   export type API_FIELD_TYPE = 'string' | 'number' | 'object' | 'array' | 'boolean';
 
+  export type POLY_INFO = {
+    id: string;
+    owner: string;
+    ownerName: string;
+    namespace: string;
+    name: string;
+    title: string;
+    active: 0 | 1;
+    arrange: string;
+    desc: string;
+    access: string[];
+    item: string;
+    method: string;
+    createAt: string;
+    updateAt: string;
+    buildAt: string;
+  }
+
   export type PolyStartNode = PolyNodeGeneric<'input', PolyStartNodeDetail>;
   export type PolyRequestNode = PolyNodeGeneric<'request', PolyRequestNodeDetail>;
   export type PolyIfNode = PolyNodeGeneric<'if', PolyCondNodeDetail>;
@@ -139,5 +157,6 @@ declare namespace POLY_API {
       onClose?: () => void;
     }
     nodes: T;
+    polyInfo?: POLY_INFO;
   }
 }
