@@ -7,6 +7,7 @@ import useObservable from '@lib/hooks/use-observable';
 
 import useNodeConfig from '../effects/hooks/use-node-config';
 import RequestConfigForm from './forms/request-config';
+import getPathTreeSource from '../utils/get-path-tree-source';
 
 import NodeWrapper from './wrapper';
 
@@ -28,6 +29,7 @@ export default function RequestNode(props: NodeProps<POLY_API.SubjectPolyNode>):
 
   function showConfig(): void {
     setIsConfigShow(true);
+    console.log('show previous source nodes', getPathTreeSource(props.id));
   }
 
   return (
