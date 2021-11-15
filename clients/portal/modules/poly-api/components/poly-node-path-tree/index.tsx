@@ -1,11 +1,14 @@
 import React, { useMemo } from 'react';
-import { clone } from 'ramda';
+import { clone, isEmpty } from 'ramda';
 
 import Tree from '@c/headless-tree';
+import store$ from '@polyApi/store';
+import useObservable from '@lib/hooks/use-observable';
+import getPathTreeSource from '@polyApi/utils/get-path-tree-source';
+import { addNodeNamePrefix2PolyNodeInput } from '@polyApi/utils/request-node';
 
 import Store from './store';
 import NodeRender from './poly-tree-node';
-import { addNodeNamePrefix2PolyNodeInput } from '../../utils/request-node';
 
 const startNodeInputs: POLY_API.PolyNodeInput[] = [
   {
@@ -56,10 +59,11 @@ const root: POLY_API.PolyNodeInput = {
   type: 'object',
   name: '',
   desc: '',
-  data: [{} as POLY_API.PolyNodeInput],
+  data: [],
   in: 'body',
   required: false,
 };
+
 const child: POLY_API.PolyNodeInput[] = [
   addNodeNamePrefix2PolyNodeInput(clone(startNodeInputs), {
     type: 'object',
@@ -87,12 +91,30 @@ const child: POLY_API.PolyNodeInput[] = [
   }),
 ];
 
+const AVAILABLE_NODE_TYPE = ['input', 'request'];
+
 type Props = {
-  onSelect: (node: any) => void
+  onSelect: (node: any) => void;
 }
 
 function FormulaConfigTree({ onSelect }: Props ): JSX.Element {
-  const store = useMemo(() => new Store(root, child), [root, child]);
+  const polyNodeStore = useObservable(store$);
+  const apiRequestNodeId = polyNodeStore.currentNodeConfigParams?.currentNode?.get('name') as string;
+  let sourceNodes: any = [];
+
+  if (polyNodeStore && apiRequestNodeId) {
+    sourceNodes = getPathTreeSource(apiRequestNodeId).filter(({ type }) => {
+      return AVAILABLE_NODE_TYPE.includes(type || '');
+    })?.filter(Boolean).map((field: any) => {
+      if (field.type === 'input') {
+        return isEmpty(field.data?.detail.inputs) ? undefined : field.data?.detail.inputs;
+      }
+
+      return isEmpty(field.data?.detail.outputs) ? undefined : field.data?.detail.outputs;
+    }).filter(Boolean);
+  }
+
+  const store = useMemo(() => new Store(root, sourceNodes), [root, sourceNodes]);
 
   return (
     <Tree
