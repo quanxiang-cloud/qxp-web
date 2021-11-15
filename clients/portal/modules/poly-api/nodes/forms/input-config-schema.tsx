@@ -3,6 +3,7 @@ export default {
   properties: {
     inputs: {
       type: 'array',
+      default: [],
       'x-component': 'BodyEditor',
       'x-props': {
         itemStyle: {
@@ -13,6 +14,7 @@ export default {
     },
     constants: {
       type: 'array',
+      default: [],
       'x-component': 'ConstantsEditor',
       'x-props': {
         itemStyle: {

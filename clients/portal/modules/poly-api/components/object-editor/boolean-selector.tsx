@@ -4,6 +4,7 @@ import SelectValue from '../select-value';
 
 interface Props {
   value: boolean;
+  options?: Option[];
   onChange?: (value: boolean) => void;
 }
 
@@ -23,8 +24,8 @@ const options = [
   },
 ];
 
-function RequiredSelector({ value, onChange }: Props): JSX.Element {
-  const val = options.find((o) => o.value === value);
+function BooleanSelector({ value, onChange, options: _options }: Props): JSX.Element {
+  const val = (_options || options).find((o) => o.value === value);
 
   function handleChange(option: Option): void {
     onChange?.(option.value);
@@ -41,4 +42,4 @@ function RequiredSelector({ value, onChange }: Props): JSX.Element {
   );
 }
 
-export default RequiredSelector;
+export default BooleanSelector;

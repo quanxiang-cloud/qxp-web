@@ -1,34 +1,24 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, useCallback } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
-import { isString, isBoolean } from 'lodash';
+import { isString, isBoolean, isNumber } from 'lodash';
 
-import { getObjectEditorNewConstantField } from '@polyApi/utils/object-editor';
+import {
+  getObjectEditorNewConstantField, fromApiDataToPolyConstSchema, fromPolyConstSchemaToApiData,
+} from '@polyApi/utils/object-editor';
 
 import InputEditor from './input-editor';
 import FieldTypeSelector from './object-editor/field-type-selector';
 import ObjectEditor, { Row } from './object-editor';
 import { Store, ItemStore } from './object-editor/store';
-
-const initialValues: POLY_API.PolyConstSchema[] = [{
-  type: 'string',
-  name: '',
-  desc: '',
-  data: '',
-  in: 'hide',
-  children: [],
-  index: 0,
-}, {
-  type: 'string',
-  name: '',
-  desc: '',
-  data: '',
-  in: 'hide',
-  children: [],
-  index: 1,
-}];
+import BooleanSelector from './object-editor/boolean-selector';
 
 function BodyEditor(props: ISchemaFieldComponentProps): JSX.Element {
   props;
+  const handleChange = useCallback((value: POLY_API.PolyConstSchema[]) => {
+    const distValue = fromPolyConstSchemaToApiData(value);
+    console.log('到底是啥', value, distValue);
+    props.mutators.change(distValue);
+  }, [props.mutators]);
   // const componentProps = props.props?.['x-component-props'] as Props;
   function isObjectField(type: string): boolean {
     return ['object', 'array'].includes(type);
@@ -39,21 +29,12 @@ function BodyEditor(props: ISchemaFieldComponentProps): JSX.Element {
     current$: ItemStore<POLY_API.PolyConstSchema>,
     store$: Store<POLY_API.PolyConstSchema>,
   ) {
-    return (e: ChangeEvent<HTMLInputElement> | string | boolean) => {
-      const value = isString(e) || isBoolean(e) ? e : e.target.value;
+    return (e: ChangeEvent<HTMLInputElement> | string | number | boolean) => {
+      const value = isString(e) || isBoolean(e) || isNumber(e) ? e : e.target.value;
       if (keyType === 'type' && isObjectField(current$.get('type')) && !isObjectField(`${value}`)) {
         current$.removeChild();
       }
       current$.set(keyType, value);
-      store$.update();
-    };
-  }
-
-  function handleHideChildren(
-    current$: ItemStore<POLY_API.PolyConstSchema>, store$: Store<POLY_API.PolyConstSchema>,
-  ) {
-    return () => {
-      current$.isChildrenHidden ? current$.showChidren() : current$.hideChildren();
       store$.update();
     };
   }
@@ -79,13 +60,22 @@ function BodyEditor(props: ISchemaFieldComponentProps): JSX.Element {
   }
 
   function valueRender(
-    { data, current$ }: Row<POLY_API.PolyConstSchema>,
+    { data, type, current$ }: Row<POLY_API.PolyConstSchema>,
     store$: Store<POLY_API.PolyConstSchema>,
   ): JSX.Element {
+    if (type === 'boolean' || isBoolean(data)) {
+      return (
+        <BooleanSelector value={!!data} onChange={handleRowChange('data', current$, store$)} />
+      );
+    }
+
     return (
-      <>
-        {data}
-      </>
+      <InputEditor
+        className="ml-2"
+        type={type === 'number' ? 'number' : 'text'}
+        value={data}
+        onChange={handleRowChange('data', current$, store$)}
+      />
     );
   }
 
@@ -100,13 +90,13 @@ function BodyEditor(props: ISchemaFieldComponentProps): JSX.Element {
     row: Row<POLY_API.PolyConstSchema> | null,
     store$: Store<POLY_API.PolyConstSchema>,
   ): void {
-    if (!row) {
+    if (!row || !row?.parent$) {
       return store$?.addChild(getObjectEditorNewConstantField(), store$.value.length);
     }
-    const { type, current$, parent$, children$, name, index } = row;
+    const { parent$, index, type } = row;
     const defaultNewField = getObjectEditorNewConstantField();
-    if (!parent$) {
-      return;
+    if (type === 'boolean') {
+      defaultNewField.data = false;
     }
     parent$.addChild(defaultNewField, index + 1);
     return store$.update();
@@ -138,8 +128,9 @@ function BodyEditor(props: ISchemaFieldComponentProps): JSX.Element {
   return (
     <ObjectEditor<POLY_API.PolyConstSchema>
       columns={columns}
-      initialValues={initialValues}
+      initialValues={fromApiDataToPolyConstSchema((props.initialValue || []) as POLY_API.PolyConstSchema[])}
       onAddField={handleAddField}
+      onChange={handleChange}
     />
   );
 }

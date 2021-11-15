@@ -33,7 +33,7 @@ declare namespace POLY_API {
     type: 'string' | 'number' | 'boolean';
     name: string;
     desc: string;
-    data: string;
+    data: string | boolean;
     in: 'hide';
   }
 

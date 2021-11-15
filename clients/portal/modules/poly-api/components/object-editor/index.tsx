@@ -1,5 +1,7 @@
 import React, { useMemo, useCallback } from 'react';
 import { isFunction, isString } from 'lodash';
+import { equals } from 'ramda';
+import { useUpdateEffect, usePrevious } from 'react-use';
 
 import useObservable from '@lib/hooks/use-observable';
 import { storeValuesToDataSource } from '@polyApi/utils/object-editor';
@@ -24,15 +26,21 @@ interface Column<T extends { children: T[] }> {
 interface Props<T extends { children: T[] }> {
   columns: Column<T>[];
   initialValues: T[];
+  onChange: (value: T[]) => void;
   onAddField: (row: Row<T> | null, store: Store<T>) => void;
 }
 
 function ObjectEditor<T extends { children: T[] }>(
-  { columns, initialValues, onAddField }: Props<T>,
+  { columns, initialValues, onAddField, onChange }: Props<T>,
 ): JSX.Element | null {
-  const store$: Store<T> = useMemo(() => createStore(initialValues || []), [initialValues]);
+  const store$: Store<T> = useMemo(() => createStore(initialValues || []), []);
   const storeValues$ = useObservable(store$, []);
   const dataSource = useMemo(() => storeValuesToDataSource(storeValues$), [storeValues$]);
+
+  const previousDataSource = usePrevious(dataSource);
+  useUpdateEffect(() => {
+    !equals(dataSource, previousDataSource) && onChange(dataSource);
+  }, [dataSource, onChange]);
 
   const handleAddField = useCallback((row: Row<T> | null, store$: Store<T>) => {
     return () => onAddField(row, store$);

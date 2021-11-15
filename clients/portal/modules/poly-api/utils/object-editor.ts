@@ -8,18 +8,39 @@ export function getFullPath(parentPath: string | null, name: string | null, inde
   return isNull(parentPath) ? currentName : `${parentPath}.${currentName}`;
 }
 
-export function fromObjectSchemaToApiData(objectSchema: POLY_API.ObjectSchema[]): POLY_API.PolyNodeInput[] {
-  return objectSchema.map(({ type, name, required, desc, children, in: _in }) => {
-    const childrenData = fromObjectSchemaToApiData(children);
-    return {
-      type,
-      name: name || '',
-      desc,
-      data: childrenData,
-      in: _in,
-      required,
-    };
-  });
+function objectSchemaToNodeInput(
+  schema: POLY_API.ObjectSchema, data: POLY_API.PolyNodeInput[],
+): POLY_API.PolyNodeInput {
+  const { type, name, required, desc, in: _in } = schema;
+  return {
+    type,
+    name: name || '',
+    desc,
+    data,
+    in: _in,
+    required,
+  };
+}
+
+export function fromObjectSchemaToApiData(
+  objectSchema: POLY_API.ObjectSchema[], searchSet: POLY_API.ObjectSchema[] = objectSchema,
+): POLY_API.PolyNodeInput[] {
+  const schemaTraversTable = new Map<POLY_API.ObjectSchema, boolean>();
+  return objectSchema.reduce((acc: POLY_API.PolyNodeInput[], schema) => {
+    if (schemaTraversTable.get(schema)) {
+      return acc;
+    }
+    const { name, parentPath, index } = schema;
+    const currentPath = getFullPath(parentPath, name, index);
+    const data = searchSet.filter((schema) => {
+      if (schema.parentPath === currentPath) {
+        schemaTraversTable.set(schema, true);
+        return true;
+      }
+    });
+    acc.push(objectSchemaToNodeInput(schema, fromObjectSchemaToApiData(data, searchSet)));
+    return acc;
+  }, []);
 }
 
 export function fromApiDataToObjectSchema(
@@ -39,6 +60,28 @@ export function fromApiDataToObjectSchema(
       parentPath: _parentPath,
     };
   });
+}
+
+export function fromApiDataToPolyConstSchema(data: POLY_API.PolyConst[]): POLY_API.PolyConstSchema[] {
+  return data.map(({ type, name, desc, data, in: _in }, index) => ({
+    type,
+    name,
+    desc,
+    data,
+    in: _in,
+    index,
+    children: [],
+  }));
+}
+
+export function fromPolyConstSchemaToApiData(data: POLY_API.PolyConstSchema[]): POLY_API.PolyConst[] {
+  return data.map(({ type, name, desc, data, in: _in }) => ({
+    type,
+    name,
+    desc,
+    data,
+    in: _in,
+  }));
 }
 
 export function storeValuesToDataSource<T extends { children: T[] }>(storeValues$: ItemStore<T>[]): Row<T>[] {
