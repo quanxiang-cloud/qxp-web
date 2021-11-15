@@ -1,18 +1,18 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
 import type { NodeRenderProps } from '@c/headless-tree/types';
 
-import ApiFormulaTreeStore from './store';
+import { ApiRequestNodeConfigContext } from '../../nodes/forms/request-config/context';
 
 type Props = NodeRenderProps<POLY_API.PolyNodeInput>
 
-function NamespaceNode({ node, store: _store }: Props): JSX.Element | null {
-  const { currentNodePath, setCurrentNodePath } = _store as ApiFormulaTreeStore;
+function NamespaceNode({ node }: Props): JSX.Element | null {
+  const currentFormulaEditorRef = useContext(ApiRequestNodeConfigContext);
 
   function handleClick(): void {
     if (node.isLeaf) {
-      setCurrentNodePath(node.path);
+      currentFormulaEditorRef.current.insertEntity({ key: node.path, name: node.path + 'hh' });
     }
   }
 

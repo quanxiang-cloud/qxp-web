@@ -6,22 +6,9 @@ import { OPERATES_MAP } from '@portal/modules/poly-api/constants';
 
 import FormulaTree from '../../../components/poly-node-path-tree';
 import { ApiRequestNodeConfigContext } from './context';
-import { isEmpty } from 'lodash';
 
-type Props = {
-  currentRef: any;
-  currentExpressionStr: string;
-  setExpressionStr: (expressionStr: string) => void;
-}
-
-function ApiFormulaConfig({ currentRef, currentExpressionStr, setExpressionStr } : Props): JSX.Element {
+function ApiFormulaConfig(): JSX.Element {
   const currentFormulaEditorRef = useContext(ApiRequestNodeConfigContext);
-
-  function handleSelect(value: POLY_API.PolyNodeInput, currentNodePath: string): void {
-    if (isEmpty(value.data)) {
-      currentFormulaEditorRef?.current.insertEntity({ key: currentNodePath, name: currentNodePath + 'hh' });
-    }
-  }
 
   return (
     <div className="formula-config">
@@ -43,7 +30,7 @@ function ApiFormulaConfig({ currentRef, currentExpressionStr, setExpressionStr }
         </div>
       </div>
       <div className="pt-6 border-gray-200 flex-1 text-12 overflow-auto">
-        <FormulaTree onSelect={handleSelect}/>
+        <FormulaTree />
       </div>
     </div>
   );

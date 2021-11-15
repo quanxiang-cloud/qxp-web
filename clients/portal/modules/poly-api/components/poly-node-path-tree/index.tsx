@@ -87,11 +87,7 @@ const child: POLY_API.PolyNodeInput[] = [
   }),
 ];
 
-interface Props {
-  onSelect: (value: POLY_API.PolyNodeInput, currentNodePath: string) => void;
-}
-
-function FormulaConfigTree({ onSelect }: Props): JSX.Element {
+function FormulaConfigTree(): JSX.Element {
   const store = useMemo(() => new Store(root, child), [root, child]);
 
   return (
@@ -99,7 +95,6 @@ function FormulaConfigTree({ onSelect }: Props): JSX.Element {
       store={store}
       NodeRender={NodeRender}
       RootNodeRender={() => null}
-      onSelect={(value) => onSelect(value, store.currentNodePath)}
     />
   );
 }

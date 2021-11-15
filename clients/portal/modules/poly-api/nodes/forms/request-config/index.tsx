@@ -12,7 +12,6 @@ import { ApiRequestNodeConfigContext } from './context';
 
 function RequestConfigForm(): JSX.Element {
   const [apiPath, setApiPath] = useState('');
-  const [expressionStr, setExpressionStr] = useState('');
   const [currentFormulaEditorRef, setCurrentFormulaRef] = useState<HTMLDivElement>();
 
   const { data: apiDocDetail, isLoading, isSuccess, isError, error } = useGetRequestNodeApi({
@@ -39,11 +38,7 @@ function RequestConfigForm(): JSX.Element {
                 setCurrentFormulaRef={setCurrentFormulaRef}
                 configs={convertToParamsConfig(apiDocDetail)}
               />
-              <ApiFormulaConfig
-                currentRef={currentFormulaEditorRef}
-                currentExpressionStr={expressionStr}
-                setExpressionStr={setExpressionStr}
-              />
+              <ApiFormulaConfig />
             </>
           )}
           {(!apiPath || (isSuccess && !apiDocDetail)) && (

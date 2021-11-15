@@ -1,7 +1,6 @@
 
 import TreeStore from '@c/headless-tree/store';
 import { TreeNode } from '@c/headless-tree/types';
-import { observable } from 'mobx';
 
 export type Formula = {
   id: string;
@@ -58,11 +57,5 @@ function apiRequestFormulaTreeNode(
 export default class ApiFormulaTreeStore extends TreeStore<POLY_API.PolyNodeInput> {
   constructor(root: POLY_API.PolyNodeInput, child: POLY_API.PolyNodeInput[]) {
     super({ rootNode: apiRequestFormulaTreeNode(root, child), disableExpandNodeOnSelect: true }, true);
-  }
-
-  @observable currentNodePath = '';
-
-  setCurrentNodePath = (path: string): void => {
-    this.currentNodePath = path;
   }
 }
