@@ -12,6 +12,7 @@ import {
   convertRawApiListToOptions,
   getChildrenOfCurrentSelectOption,
 } from '@portal/modules/poly-api/utils/request-node';
+import ApiDocDetail from '@polyApi/components/api-doc-detail';
 
 type Props = {
   apiDocDetail: any;
@@ -89,11 +90,12 @@ function ApiSelector({ apiDocDetail, setApiPath }: Props): JSX.Element {
         />
       </div>
       {apiDocDetail && (
-        <div className="flex-1 flex items-center justify-between overflow-auto">
-          请求方法：<span className="text-green-600 mr-8">{apiDocDetail.doc.method}</span>
-          接口路径：<span className="flex-2 truncate mr-8">{apiDocDetail.doc.url}</span>
-          API标识：<span className="flex-1 truncate">{apiDocDetail.apiPath.split('/').pop()}</span>
-        </div>
+        <ApiDocDetail
+          className="flex-1"
+          method={apiDocDetail.doc.method}
+          url={apiDocDetail.doc.url}
+          identifier={apiDocDetail.apiPath.split('/').pop()}
+        />
       )}
     </div>
   );

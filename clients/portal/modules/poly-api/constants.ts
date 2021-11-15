@@ -11,7 +11,13 @@ export const POLY_DESIGN_CONFIG = {
 };
 
 export const NODE_INIT_CONFIG_PARAMS = {
-  currentNodeConfigParams: { schema: {}, currentNode: undefined, onClose: undefined, configForm: null },
+  currentNodeConfigParams: {
+    schema: {},
+    currentNode: undefined,
+    onClose: undefined,
+    configForm: null,
+    excludedFields: [],
+  },
 };
 
 export type NODE_TYPE_MAPPER_VALUE = {

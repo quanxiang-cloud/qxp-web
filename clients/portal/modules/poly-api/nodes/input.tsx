@@ -14,6 +14,7 @@ export default function InputNode(props: POLY_API.NodeProps): JSX.Element | null
     currentNode: props.data,
     schema: InputConfigSchema,
     onClose: () => setIsConfigShow(false),
+    excludedFields: ['apiDoc'],
   });
 
   function showConfig(): void {

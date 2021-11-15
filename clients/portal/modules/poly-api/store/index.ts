@@ -37,6 +37,7 @@ const store$ = new PolyStore({
     currentNode: undefined,
     schema: {},
     onClose: undefined,
+    excludedFields: [],
   },
   nodes: new PolyCanvasStore([]),
 });

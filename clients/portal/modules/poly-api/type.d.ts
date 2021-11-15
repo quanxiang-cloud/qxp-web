@@ -155,6 +155,7 @@ declare namespace POLY_API {
       configForm?: React.JSXElementConstructor<any>;
       currentNode?: import('@polyApi/store/node').PolyNodeStore;
       onClose?: () => void;
+      excludedFields?: string[];
     }
     nodes: T;
     polyInfo?: POLY_INFO;

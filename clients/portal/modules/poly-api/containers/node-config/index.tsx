@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { isEmpty } from 'ramda';
+import { isEmpty, omit } from 'ramda';
 import { Input } from '@formily/antd-components';
 import { SchemaForm } from '@formily/react-schema-renderer';
 
@@ -10,6 +10,14 @@ import store$ from '@polyApi/store';
 import { NODE_INIT_CONFIG_PARAMS, NODE_TYPE_MAPPER } from '@polyApi/constants';
 import BodyEditor from '@polyApi/components/body-editor';
 import ConstantsEditor from '@polyApi/components/constants-editor';
+import PolyDocDetail from '@polyApi/components/poly-doc-detail';
+
+const schemaFormComponents = {
+  input: Input,
+  bodyEditor: BodyEditor,
+  constantsEditor: ConstantsEditor,
+  polyDocDetail: PolyDocDetail,
+};
 
 import DrawerTitle from './drawer-title';
 
@@ -18,7 +26,7 @@ export default function NodeConfigDrawer(): JSX.Element {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const drawerRef = useRef<HTMLDivElement | null>(null);
   const {
-    currentNodeConfigParams: { schema, currentNode, onClose, configForm: ConfigForm },
+    currentNodeConfigParams: { schema, currentNode, onClose, configForm: ConfigForm, excludedFields },
   } = isEmpty(store) ? NODE_INIT_CONFIG_PARAMS : store;
   const nodeData = useObservable(currentNode);
   const [configValue, setConfigValue] = useState<POLY_API.PolyNodeDetail>(nodeData.detail);
@@ -29,7 +37,7 @@ export default function NodeConfigDrawer(): JSX.Element {
   }, [nodeData.detail]);
 
   function onSave(): void {
-    currentNode?.set('detail', configValue);
+    currentNode?.set('detail', omit(excludedFields || [], configValue) );
     onCancel();
   }
 
@@ -71,6 +79,7 @@ export default function NodeConfigDrawer(): JSX.Element {
       <section className="node-config-form-section">
         {ConfigForm && (
           <ConfigForm
+            initialValues={nodeData.detail}
             value={configValue}
             onChange={setConfigValue}
           />
@@ -78,9 +87,10 @@ export default function NodeConfigDrawer(): JSX.Element {
         {!ConfigForm && !isEmpty(schema) && (
           <SchemaForm
             schema={schema}
+            initialValues={nodeData.detail}
             value={configValue}
             onChange={setConfigValue}
-            components={{ input: Input, bodyEditor: BodyEditor, constantsEditor: ConstantsEditor }}
+            components={schemaFormComponents}
           />
         )}
       </section>

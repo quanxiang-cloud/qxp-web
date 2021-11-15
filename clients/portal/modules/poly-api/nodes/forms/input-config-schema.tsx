@@ -1,6 +1,18 @@
 export default {
   type: 'object',
   properties: {
+    apiDoc: {
+      type: 'string',
+      default: '',
+      'x-component': 'polyDocDetail',
+      'x-props': {
+        itemStyle: {
+          marginBottom: 0,
+        },
+        itemClassName: 'px-20 py-8 bg-gray-100',
+      },
+      'x-index': 0,
+    },
     inputs: {
       type: 'array',
       default: [],
@@ -11,7 +23,7 @@ export default {
         },
         itemClassName: 'px-20',
       },
-      'x-index': 0,
+      'x-index': 1,
     },
     constants: {
       type: 'array',
@@ -23,7 +35,7 @@ export default {
         },
         itemClassName: 'px-20',
       },
-      'x-index': 1,
+      'x-index': 2,
     },
   },
 };
