@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash';
 
-import { RawApiDetail, RawApiDocDetail } from '../effects/api/poly';
+import { RawApiDetail, RawApiDocDetail } from '../effects/api/raw';
 
 function parseParamOfPath(url: string): Record<string, any> {
   const pathArr = url.split('/:');
