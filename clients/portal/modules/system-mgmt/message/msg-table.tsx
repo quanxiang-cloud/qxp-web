@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import dayjs from 'dayjs';
 import { useHistory } from 'react-router-dom';
-import { Message } from '@QCFE/lego-ui';
 import { observer } from 'mobx-react';
 import { debounce } from 'lodash';
 import cs from 'classnames';
@@ -22,6 +21,7 @@ import { useQueryClient } from 'react-query';
 import EmptyTips from '@c/empty-tips';
 import Select from '@c/select';
 import Table from '@c/table';
+import toast from '@lib/toast';
 
 import Status from './status';
 import { ModalContent } from './preview-modal';
@@ -115,14 +115,14 @@ const MsgTable = ({ refresh }: Props): JSX.Element => {
       onConfirm: () => {
         deleteMsgById(delMsgIdRef.current)
           .then(() => {
-            Message.success('操作成功');
+            toast.success('操作成功');
             refresh();
             refreshMsg();
             closeModal();
             msgDelModal.close();
           })
           .catch(() => {
-            Message.error('操作失败');
+            toast.error('操作失败');
           });
       },
       onCancel: closeModal,
@@ -151,7 +151,7 @@ const MsgTable = ({ refresh }: Props): JSX.Element => {
         const { recivers } = response;
         setPreviewData(Object.assign({}, response, { receivers: recivers }));
       }).catch(() => {
-        Message.warning('异常查询');
+        toast.error('异常查询');
       });
   }, [previewInfo]);
 
@@ -166,7 +166,7 @@ const MsgTable = ({ refresh }: Props): JSX.Element => {
         const { recivers } = response;
         setModifyData(Object.assign({}, response, { receivers: recivers }));
       }).catch(() => {
-        Message.warning('异常查询');
+        toast.error('异常查询');
       });
   }, [modifyModal]);
 
@@ -198,12 +198,12 @@ const MsgTable = ({ refresh }: Props): JSX.Element => {
     createMsg(params)
       .then((data) => {
         if (data) {
-          Message.success('操作成功');
+          toast.success('操作成功');
           setPreviewInfo({ id: '', visible: false, title: '', status: MsgSendStatus.all });
           refresh();
           refreshMsg();
         } else {
-          Message.error('操作失败');
+          toast.error('操作失败');
         }
       });
   };
@@ -402,22 +402,22 @@ const MsgTable = ({ refresh }: Props): JSX.Element => {
     params && createMsg(params)
       .then((data) => {
         if (data) {
-          Message.success('操作成功');
+          toast.success('操作成功');
           setPreviewInfo({ id: '', visible: false, title: '', status: MsgSendStatus.all });
           refresh(); // fixme
           refreshMsg();
           handleModifyModalClose();
         } else {
-          Message.error('操作失败');
+          toast.error('操作失败');
         }
-      }).catch((err: Error) => Message.error(err.message));
+      }).catch((err: Error) => toast.error(err.message));
   };
 
   return (
     <>
-      <div className={cs('w-full', styles.tableWrap)}>
+      <div className={cs('w-full flex', styles.tableWrap)}>
         <Table
-          className={cs('massage_table text-14 table-full', styles.massage_table)}
+          className={cs('massage_table text-14', styles.massage_table)}
           data={msgList}
           // @ts-ignore
           columns={cols}

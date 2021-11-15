@@ -2,10 +2,10 @@ import React, { useEffect } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import { toJS } from 'mobx';
-import { Tooltip } from '@QCFE/lego-ui';
 
 import PageLoading from '@c/page-loading';
 import Icon from '@c/icon';
+import Tooltip from '@c/tooltip';
 import { getQuery } from '@lib/utils';
 
 import DelModal from './del-modal';
@@ -16,9 +16,10 @@ import EditPageModal from './edit-page-modal';
 import EditGroupModal from './edit-group-modal';
 import HidePageConfirmModal from './hide-modal';
 import AppMenuTree from './menu-tree';
+import { Menu } from './menu-tree/type';
+import { MenuType } from '../type';
 
 import './index.scss';
-import { Menu } from './menu-tree/type';
 
 function PageList(): JSX.Element {
   const history = useHistory();
@@ -73,8 +74,10 @@ function PageList(): JSX.Element {
   };
 
   useEffect(() => {
-    if (activeMenu.menuType === 1) return;
-    history.push(`/apps/details/${appID}/page_setting?pageID=${activeMenu.id}`);
+    if (!activeMenu.id || activeMenu.menuType === MenuType.group) {
+      return;
+    }
+    history.replace(`/apps/details/${appID}/page_setting?pageID=${activeMenu.id}`);
   }, [activeMenu, appID]);
 
   const handleMenuClick = (key: string, menu: Menu): void => {
@@ -91,16 +94,18 @@ function PageList(): JSX.Element {
       <div className='app-details-nav rounded-tl-8 bg-gray-50'>
         <div className='h-44 flex flex-end items-center px-16 py-20 justify-center'>
           <span className='font-semibold text-gray-400 mr-auto text-12'>菜单</span>
-          <div onClick={() => setModalType('createPage')}>
-            <Tooltip content='新建菜单'>
-              <Icon className='app-page-add-group mr-8' size={17} name='post_add' />
+          <div className="flex items-center">
+            <div onClick={() => setModalType('createPage')}>
+              <Tooltip label='新建菜单' position='bottom' wrapperClassName="whitespace-nowrap">
+                <Icon className='app-page-add-group mr-8' size={17} name='post_add' />
+              </Tooltip>
+            </div>
+            <Tooltip label='新建分组' position='bottom' wrapperClassName="whitespace-nowrap">
+              <AddGroupPoper
+                onSubmit={handleEditGroup}
+              />
             </Tooltip>
           </div>
-          <Tooltip content='新建分组'>
-            <AddGroupPoper
-              onSubmit={handleEditGroup}
-            />
-          </Tooltip>
         </div>
         <div className='app-page-tree-wrapper'>
           <AppMenuTree

@@ -6,11 +6,11 @@ import cs from 'classnames';
 import Table from '@c/table';
 import Pagination from '@c/pagination';
 import EmptyTips from '@c/empty-tips';
-
 import { adminSearchUserList } from '@portal/modules/access-control/role-management/api';
 import Loading from '@c/loading';
-
 import OwnerStore from '@c/employee-or-department-picker/store';
+
+import { ActionStatus } from '.';
 
 interface IEmployeeTable {
   className?: string;
@@ -19,6 +19,7 @@ interface IEmployeeTable {
   ownerStore: OwnerStore;
   userLeader: Leader;
   onChange: (leader: Leader) => void;
+  actionStatus: ActionStatus;
 }
 
 export default observer(function EmployeeTable({
@@ -28,6 +29,7 @@ export default observer(function EmployeeTable({
   userName,
   ownerStore,
   userLeader,
+  actionStatus,
 }: IEmployeeTable) {
   const store = ownerStore.employeeStore;
   const { current, pageSize } = store.pagination;
@@ -69,16 +71,16 @@ export default observer(function EmployeeTable({
     return <Loading desc="加载中..." />;
   }
 
-  function renderTotalTip() {
+  const isDirect = actionStatus === 'direct';
+
+  function renderTotalTip(): JSX.Element {
     return (
       <div className="text-12 text-gray-600 ">
         {userLeader.userName && (
           <>
-            关联
-            <span className="mx-4">
-              {userLeader.userName}
-            </span>
-            为直属上级
+            {isDirect ? '关联' : '转让'}
+            <span className="mx-4">{userLeader.userName}</span>
+            {isDirect ? '为直属上级' : '为超级管理员'}
           </>
         )}
       </div>
@@ -105,7 +107,7 @@ export default observer(function EmployeeTable({
               width: 120,
               accessor: ({ id, userName }: Employee) => {
                 const checked = (userLeader.id === id) || (leader.id === id);
-                const handleModifyModal = () => {
+                const handleModifyModal = (): void => {
                   setLeader(id, userName);
                   onChange({ id, userName });
                 };

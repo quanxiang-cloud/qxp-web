@@ -5,7 +5,7 @@ import { observer } from 'mobx-react';
 import { pick, get } from 'lodash';
 
 import Breadcrumb from '@c/breadcrumb';
-import Switch from '@c/switch';
+import RadioButtonGroup from '@c/radio/radio-button-group';
 import { useURLSearch } from '@lib/hooks';
 import Tab from '@c/tab';
 import Icon from '@c/icon';
@@ -44,12 +44,13 @@ function ApprovalDetail(): JSX.Element {
     type: string
   }>();
   const history = useHistory();
+  const queryRelationKey = showSwitch ? [processInstanceID, type, currentTaskId] : [processInstanceID, type];
 
   const {
     isLoading, data, isError, error,
   } = useQuery<any, Error>(
-    [processInstanceID, type],
-    () => getTaskFormById(processInstanceID, { type }).then((res) => {
+    queryRelationKey,
+    () => getTaskFormById(processInstanceID, { type, taskId: currentTaskId }).then((res) => {
       if (!currentTaskId) {
         setCurrentTaskId(get(res, 'taskDetailModels[0].taskId', '').toString());
       }
@@ -74,7 +75,7 @@ function ApprovalDetail(): JSX.Element {
 
   const task = useMemo(() => {
     const taskDetailData = get(data, 'taskDetailModels', []).find(
-      (taskItem: Record<string, any>) => taskItem?.formData !== null,
+      (taskItem: Record<string, any>) => taskItem?.formSchema !== null,
     );
     return taskDetailData ? taskDetailData : get(data, 'taskDetailModels[0]', {});
   }, [data]);
@@ -82,7 +83,7 @@ function ApprovalDetail(): JSX.Element {
   const {
     data: formData,
   } = useQuery<any, Error>(
-    [processInstanceID, currentTaskId, task?.formSchema],
+    [processInstanceID, currentTaskId, task?.taskId],
     () => {
       if (!currentTaskId || !task?.formSchema) {
         return Promise.resolve({});
@@ -111,7 +112,7 @@ function ApprovalDetail(): JSX.Element {
       <div className='task-form'>
         <FormRenderer
           value={formData}
-          schema={(task.formSchema.table || task.formSchema) || {}}
+          schema={task.formSchema || {}}
           onFormValueChange={setFormValues}
           readOnly={taskEnd}
           workFlowType={type}
@@ -150,49 +151,52 @@ function ApprovalDetail(): JSX.Element {
       />
 
       <div className="approval-detail w-full h-full flex px-20">
-        <Panel className="flex flex-col flex-1 mr-20 px-24 py-24">
+        <Panel className="flex flex-col flex-1 px-24 py-24">
           {
             <>
-              {showSwitch && (
-                <Switch
-                  className="pb-24"
-                  onChange={
-                    (value: string) => {
-                      setCurrentTaskId(value);
-                    }
-                  }
-                  value={currentTaskId}
-                  options={status}
-                />
-              )}
+              {showSwitch &&
+                (<RadioButtonGroup
+                  radioBtnClass="bg-white"
+                  onChange={(value) => {
+                    setCurrentTaskId(value as string);
+                  }}
+                  listData={status as any}
+                  currentValue={currentTaskId}
+                />)
+              }
               <Toolbar
                 currTask={task}
                 permission={task?.operatorPermission || {}}
                 globalActions={pick(task, globalActionKeys)}
                 onClickAction={store.handleClickAction}
+                workFlowType={type}
               />
               {renderSchemaForm(task)}
             </>
           }
 
         </Panel>
-        <Panel className="approval-detail-tab w-400 opacity-95">
-          <Tab
-            style={{ backgroundColor: 'var(--gray-100)' }}
-            items={[
-              {
-                id: 'history',
-                name: '动态',
-                content: (<Dynamic onTaskEnd={setTaskEnd}/>),
-              },
-              {
-                id: 'discuss',
-                name: '讨论',
-                content: (<Discuss />),
-              },
-            ]}
-          />
-        </Panel>
+        {
+          data.canViewStatusAndMsg && (
+            <Panel className="ml-20 approval-detail-tab w-400 opacity-95">
+              <Tab
+                style={{ backgroundColor: 'var(--gray-100)' }}
+                items={[
+                  {
+                    id: 'history',
+                    name: '动态',
+                    content: (<Dynamic onTaskEnd={setTaskEnd} />),
+                  },
+                  {
+                    id: 'discuss',
+                    name: '讨论',
+                    content: (<Discuss showInput={data.canMsg} />),
+                  },
+                ]}
+              />
+            </Panel>
+          )
+        }
       </div>
       {appID && tableID && (
         <ActionModals

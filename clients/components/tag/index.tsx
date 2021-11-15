@@ -1,7 +1,7 @@
 import React, { CSSProperties } from 'react';
 import cs from 'classnames';
 
-import { Icon } from '@QCFE/lego-ui';
+import Icon from '@c/icon';
 
 type Props<T> = {
   value: React.ReactNode;

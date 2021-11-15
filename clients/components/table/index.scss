@@ -9,17 +9,18 @@
   .adjust-handle {
     display: inline-block;
     width: 1px;
-    height: 100%;
+    height: 20px;
     position: absolute;
     right: 0;
-    top: 0;
+    top: 50%;
+    transform: translateY(-50%);
     z-index: 1;
     touch-action: none;
     background-color: var(--gray-200);
     cursor: col-resize;
     &:hover {
       width: 4px;
-      background-color: var(--blue-500);
+      background-color: var(--gray-400);
     }
 
     &:active {
@@ -44,16 +45,27 @@
   }
 
   .qxp-table-middle {
-
-    th,
     td {
       padding: 12px;
+    }
+
+    th {
+      padding-left: 12px;
+      padding-right: 12px;
     }
   }
 
   .qxp-table {
     max-height: 100%;
     overflow: auto;
+
+    .qxp-table-adjust-header {
+      th {
+        background: #F8FAFC;
+        box-shadow: inset 0px -1px 0px var(--gray-200);
+        border-bottom-width: 0;
+      }
+    }
 
     table {
       width: 100%;
@@ -64,10 +76,13 @@
       font-size: 12px;
     }
 
+    td {
+      background-color: white;
+    }
+
     th,
     td {
       word-break: break-all;
-      background-color: white;
       vertical-align: middle;
       border-bottom: 1px solid var(--gray-200);
       transition: padding .3s;
@@ -76,6 +91,9 @@
     th {
       position: sticky;
       // todo support group header
+      background: #fff;
+      padding-top: 8px;
+      padding-bottom: 8px;
       top: 0;
       line-height: 20px;
       font-weight: 400;

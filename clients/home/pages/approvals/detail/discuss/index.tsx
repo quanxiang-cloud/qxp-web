@@ -31,7 +31,11 @@ export type CommentItem = {
   attachments?: FileItem[];
 }
 
-export default function Discuss(): JSX.Element {
+interface Props {
+  showInput: boolean;
+}
+
+export default function Discuss({ showInput }: Props): JSX.Element {
   const [file, setFile] = useState<Array<FileInfo>>(([]).map((itm: FileInfo) => ({
     filename: itm.filename,
     url: itm.url,
@@ -113,7 +117,7 @@ export default function Discuss(): JSX.Element {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex-1 overflow-auto mb-16 pr-5">
+      <div className="flex-1 overflow-autopr-5">
         {
           commentsData.map((msg: CommentItem) => {
             return (
@@ -126,33 +130,37 @@ export default function Discuss(): JSX.Element {
           })
         }
       </div>
-      <div className="py-12 bg-gray-100 corner-2-8-8-8 send-message-box-shadow">
-        <div>
-          <textarea
-            style={{
-              maxHeight: 110,
-              minHeight: 45,
-              height: 45,
-              padding: '12px 16px',
-              borderRadius: '2px 8px 8px 8px',
-            }}
-            maxLength={200}
-            onChange={inputChange}
-            value={inputValue}
-            onKeyDown={(e) => handleKeyDown(e)}
-            placeholder="发表评论（Enter 快速发送）"
-            className="w-full focus:outline-none"
-          />
-        </div>
-        <FileUpload
-          showFiles={showFiles}
-          addSend={
-            (<div className="flex items-center">
-              <span className="text-12 text-gray-400 mr-8">{inputValue.length}/200</span>
-              <div className="text-blue-600 cursor-pointer" onClick={handleSend}>发送</div>
-            </div>)}
-          ref={fileRef} />
-      </div>
+      {
+        showInput && (
+          <div className="py-12 mt-16 bg-gray-100 corner-2-8-8-8 send-message-box-shadow">
+            <div>
+              <textarea
+                style={{
+                  maxHeight: 110,
+                  minHeight: 45,
+                  height: 45,
+                  padding: '12px 16px',
+                  borderRadius: '2px 8px 8px 8px',
+                }}
+                maxLength={200}
+                onChange={inputChange}
+                value={inputValue}
+                onKeyDown={(e) => handleKeyDown(e)}
+                placeholder="发表评论（Enter 快速发送）"
+                className="w-full focus:outline-none"
+              />
+            </div>
+            <FileUpload
+              showFiles={showFiles}
+              addSend={
+                (<div className="flex items-center">
+                  <span className="text-12 text-gray-400 mr-8">{inputValue.length}/200</span>
+                  <div className="text-blue-600 cursor-pointer" onClick={handleSend}>发送</div>
+                </div>)}
+              ref={fileRef} />
+          </div>
+        )
+      }
     </div>
   );
 }

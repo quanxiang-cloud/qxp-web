@@ -6,9 +6,10 @@ import { observable, action } from 'mobx';
 
 import Popper from '@c/popper';
 import Icon from '@c/icon';
-import Switch from '@c/switch';
 import Calendar from '@c/calendar';
 import Custom from './custom';
+import RadioButtonGroup from '@c/radio/radio-button-group';
+
 import { getInputValue } from './utils';
 
 type Props = {
@@ -110,10 +111,13 @@ export default class RangePicker extends React.Component<Props> {
   renderCalendar(): JSX.Element {
     return (
       <div className="date-picker">
-        <Switch
-          onChange={this.handleChangeRangeType}
-          className="range-picker__range-type"
-          options={[
+        <RadioButtonGroup
+          className="pl-12 pt-12"
+          onChange={(value) => {
+            this.handleChangeRangeType(value as RangeType);
+          }}
+          currentValue={this.rangeType}
+          listData={[
             {
               label: '最近',
               value: 'customized',
@@ -130,7 +134,8 @@ export default class RangePicker extends React.Component<Props> {
               label: '月',
               value: 'month',
             },
-          ]} />
+          ]}
+        />
         {this.renderBody()}
       </div>
     );

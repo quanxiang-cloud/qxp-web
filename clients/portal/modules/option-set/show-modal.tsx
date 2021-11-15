@@ -18,13 +18,14 @@ interface Props {
 
 function ShowModal({ modalType, isNoData = false }: Props): JSX.Element {
   const formAddRef = useRef<FormAddDataRef>(null);
-
   const history = useHistory();
 
-  const handleAddConfirm = (): void => {
+  function handleSubmit(): void {
+    formAddRef.current?.submit();
+  }
+
+  function handleAddCallback(): void {
     const { option_set_name, option_set_tag } = formAddRef?.current?.getValues();
-    const formStatus = formAddRef?.current?.validate();
-    if (!formStatus) return;
     createOptionSet({
       name: option_set_name,
       tag: option_set_tag,
@@ -48,15 +49,13 @@ function ShowModal({ modalType, isNoData = false }: Props): JSX.Element {
       }
     }).catch((err: Error) => {
       toast.error(err.message);
-    }).finally(()=>{
+    }).finally(() => {
       store.fetchAllNames({ name: store.search });
     });
-  };
+  }
 
-  const handleEditConfirm = (): void => {
+  function handleEditCallback(): void {
     const { option_set_name, option_set_tag } = formAddRef?.current?.getValues();
-    const formStatus = formAddRef?.current?.validate();
-    if (!formStatus) return;
     if (store.activeOptionSet?.name === option_set_name && store.activeOptionSet?.tag === option_set_tag) {
       toast.error('数据未更改');
       return;
@@ -84,9 +83,9 @@ function ShowModal({ modalType, isNoData = false }: Props): JSX.Element {
     }).catch((err: Error) => {
       toast.error(err.message);
     });
-  };
+  }
 
-  const handleDeleteConfirm = (): void => {
+  function handleDeleteSubmit(): void {
     deleteOptionSet(store.activeId).then(async (data) => {
       if (data) {
         toast.success('删除成功');
@@ -98,16 +97,14 @@ function ShowModal({ modalType, isNoData = false }: Props): JSX.Element {
         toast.error('删除失败');
       }
     }).catch((err: Error) => toast.error(err.message));
-  };
+  }
 
-  const handleCopyConfirm = (): void => {
+  function handleCopyCallback(): void {
     const {
       option_set_name, option_set_tag, option_set_expand,
     } = formAddRef?.current?.getValues();
     const apiType = option_set_expand.length === 1 ? 1 : 2;
     const queryType = option_set_expand.length === 1 ? 'list' : 'tree';
-    const formStatus = formAddRef?.current?.validate();
-    if (!formStatus) return;
     createOptionSet({
       name: option_set_name,
       tag: option_set_tag,
@@ -133,7 +130,7 @@ function ShowModal({ modalType, isNoData = false }: Props): JSX.Element {
     }).catch((err: Error) => {
       toast.error(err.message);
     });
-  };
+  }
 
   if (modalType === 'add') {
     return (
@@ -156,11 +153,11 @@ function ShowModal({ modalType, isNoData = false }: Props): JSX.Element {
             key: 'confirm',
             iconName: 'check',
             modifier: 'primary',
-            onClick: handleAddConfirm,
+            onClick: handleSubmit,
           },
         ]}
       >
-        <FormAddData className="p-20" ref={formAddRef} />
+        <FormAddData className="p-20" ref={formAddRef} onCallback={handleAddCallback} />
       </Modal>
     );
   }
@@ -185,7 +182,7 @@ function ShowModal({ modalType, isNoData = false }: Props): JSX.Element {
             key: 'confirm',
             iconName: 'check',
             modifier: 'primary',
-            onClick: handleEditConfirm,
+            onClick: handleSubmit,
           },
         ]}
       >
@@ -193,6 +190,7 @@ function ShowModal({ modalType, isNoData = false }: Props): JSX.Element {
           className="p-20"
           ref={formAddRef}
           editInfo={toJS(store.activeOptionSet) as OptionSetItem & { type: OptionSetType }}
+          onCallback={handleEditCallback}
         />
       </Modal>
     );
@@ -218,12 +216,12 @@ function ShowModal({ modalType, isNoData = false }: Props): JSX.Element {
             key: 'confirm',
             iconName: 'check',
             modifier: 'primary',
-            onClick: handleDeleteConfirm,
+            onClick: handleDeleteSubmit,
           },
         ]}
       >
         <p className="p-20 font-semibold">
-            确定删除该选项集吗?
+          确定删除该选项集吗?
         </p>
       </Modal>
     );
@@ -249,7 +247,7 @@ function ShowModal({ modalType, isNoData = false }: Props): JSX.Element {
           key: 'confirm',
           iconName: 'check',
           modifier: 'primary',
-          onClick: handleCopyConfirm,
+          onClick: handleSubmit,
         },
       ]}
     >
@@ -263,6 +261,7 @@ function ShowModal({ modalType, isNoData = false }: Props): JSX.Element {
             tag: store.activeOptionSet?.tag,
           }
         }
+        onCallback={handleCopyCallback}
       />
     </Modal>
   );

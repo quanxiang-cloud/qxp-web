@@ -169,8 +169,8 @@ class OptionSetStore {
       cur = get(bakTree, path);
     }
     for (const label of labels) {
-      if (label.length > 20) {
-        toast.error('选项名称超过20个字');
+      if (label.length > 100) {
+        toast.error('选项名称超过100个字');
         return;
       }
     }
@@ -240,8 +240,8 @@ class OptionSetStore {
       toast.error('选项集名称不可为空');
       return;
     }
-    if (val.length > 20) {
-      toast.error('选项名称超过20个字');
+    if (val.length > 100) {
+      toast.error('选项名称超过100个字');
       return;
     }
     const bakTree = cloneDeep(this.tree);
@@ -290,8 +290,8 @@ class OptionSetStore {
       return;
     }
     for (const item of itemLabels) {
-      if (item.length > 20) {
-        toast.error('选项名称超过20个字');
+      if (item.length > 100) {
+        toast.error('选项名称不能超过100个字符');
         return;
       }
     }
@@ -312,8 +312,8 @@ class OptionSetStore {
       toast.error('选项集名称不可为空');
       return;
     }
-    if (val.length > 20) {
-      toast.error('选项名称超过20个字');
+    if (val.length > 100) {
+      toast.error('选项名称超过100个字');
       return;
     }
     const newStagingItems = this.list.map((v, index) => {

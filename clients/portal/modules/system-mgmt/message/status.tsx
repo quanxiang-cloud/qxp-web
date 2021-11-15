@@ -1,7 +1,8 @@
 import React from 'react';
 import cs from 'classnames';
+
+import Tooltip from '@c/tooltip';
 import { MsgSendStatus } from '@portal/modules/system-mgmt/constants';
-import { Tooltip } from '@QCFE/lego-ui';
 
 import styles from './index.module.scss';
 
@@ -43,8 +44,8 @@ const MsgStatus = ({ className, status, fail, success }: Props): JSX.Element => 
     `共 ${fail + success} 人, 发送失败${fail}人, 发送成功${success}人`;
 
   return (
-    <Tooltip content={<span>{msg}</span>} trigger="hover">
-      <div>{baseInfo}</div>
+    <Tooltip label={<div className="whitespace-nowrap">{msg}</div>} position="top">
+      {baseInfo}
     </Tooltip>
   );
 };

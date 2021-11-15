@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import cs from 'classnames';
-import { Input } from '@QCFE/lego-ui';
 
 import SvgIcon from '@c/icon';
 import Select from '@c/select';
@@ -266,7 +265,7 @@ function Pagination({
       <li className="ml-16">
         <div className="flex items-center">
           <div className="text-12 mr-6 text-center leading-28">跳至</div>
-          <Input
+          <input
             value={pageParams._current}
             onChange={handleInputChange}
             onBlur={handleInputOnblur}

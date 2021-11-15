@@ -10,7 +10,6 @@ import Loading from '@c/loading';
 import Select from '@c/select';
 import TextHeader from '@c/text-header';
 import useObservable from '@lib/hooks/use-observable';
-import toast from '@lib/toast';
 import CheckBoxGroup from '@c/checkbox/checkbox-group';
 import Button from '@c/button';
 import FormulaEditor, { RefProps } from '@c/formula-editor';
@@ -107,7 +106,9 @@ export default function GlobalConfig(): JSX.Element | null {
     });
   };
 
-  const approveNodes = store.value.elements.filter(({ type }) => type === 'approve').map((node) => {
+  const approveNodes = store.value.elements.filter(
+    ({ type }) => type === 'approve' || type === 'fillIn',
+  ).map((node) => {
     return {
       label: node.data?.nodeData.name,
       value: node.id,
@@ -133,11 +134,16 @@ export default function GlobalConfig(): JSX.Element | null {
   const options = [{
     field: 'cancelable',
     title: '流程发起后允许撤回',
-    desc: '流程发起后允许撤回',
+    desc: '在工作流中途节点可以进行撤回操作，回退至表单未提交状态',
     subTitle: cancelable && (
       <div className='mt-16'>
         <div className='flex gap-x-16'>
-          <Radio.Group options={WITHDRAW_OPTIONS} onChange={handleCancelTypeChange} value={canCancelType} />
+          <Radio.Group
+            disabled={status === 'ENABLE'}
+            options={WITHDRAW_OPTIONS}
+            onChange={handleCancelTypeChange}
+            value={canCancelType}
+          />
         </div>
         {canCancelType === 3 && (
           <div className='mt-10 text-body2-no-color text-gray-600 flex items-center'>
@@ -168,20 +174,20 @@ export default function GlobalConfig(): JSX.Element | null {
   }, {
     field: 'urgeable',
     title: '允许工作流发起人催办',
-    desc: '允许工作流发起人催办',
-    subTitle: '表单元素输入帮助提示，表单元素输入帮助提示。',
+    desc: '在工作流中途节点中，流程发起人可以催促当前节点处理人进行业务处理',
+    subTitle: '在工作流中途节点中，流程发起人可以催促当前节点处理人进行业务处理。',
     checked: urgeable,
   }, {
     field: 'seeStatusAndMsg',
     title: '允许查看工作流状态与留言',
-    desc: '允许查看工作流状态与留言',
-    subTitle: '表单元素输入帮助提示，表单元素输入帮助提示。',
+    desc: '允许查看工作流中途节点中的节点状态和历史留言',
+    subTitle: '允许查看工作流中途节点中的节点状态和历史留言。',
     checked: seeStatusAndMsg,
   }, {
     field: 'nodeAdminMsg',
     title: '允许节点负责人留言',
-    desc: '允许节点负责人留言',
-    subTitle: '表单元素输入帮助提示，表单元素输入帮助提示。',
+    desc: '允许节点负责人在当前节点进行留言',
+    subTitle: '允许节点负责人在当前节点进行留言。',
     checked: nodeAdminMsg,
   }];
 
@@ -211,13 +217,7 @@ export default function GlobalConfig(): JSX.Element | null {
         <form onSubmit={handleSubmit(handleSaveConfig)} className='p-16'>
           {options.map((option) => (
             <div key={option.field} className='mb-16'>
-              <div
-                className='flex'
-                onClick={() => {
-                  if (status === 'ENABLE') {
-                    return toast.error('启用状态的流程无法编辑');
-                  }
-                }}>
+              <div className='flex'>
                 <div className="text-body2-no-color text-gray-600 mb-4 flex items-center">
                   <span className="mr-8">{option.title}</span>
                   <ToolTip
@@ -317,7 +317,7 @@ export default function GlobalConfig(): JSX.Element | null {
             />
           </div>
           <div>
-            <Button modifier='primary' type='submit'>保存</Button>
+            <Button modifier='primary' type='submit' forbidden={status === 'ENABLE'}>保存</Button>
           </div>
         </form>
       </div>

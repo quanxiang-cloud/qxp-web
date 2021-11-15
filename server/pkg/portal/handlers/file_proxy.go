@@ -141,6 +141,80 @@ func FileUploadHandler(w http.ResponseWriter, r *http.Request) {
 	jsonResponse(w, result)
 }
 
+func SwaggerUploadHandler(w http.ResponseWriter, r *http.Request) {
+	requestID := contexts.GetRequestID(r)
+
+	svcPath := r.FormValue("svcPath")
+	version := r.FormValue("version")
+	_, fh, _ := r.FormFile("file")
+
+	bodyBuf := &bytes.Buffer{}
+	bodyWriter := multipart.NewWriter(bodyBuf)
+	writer, err := bodyWriter.CreatePart(fh.Header)
+	if err != nil {
+		contexts.Logger.Errorf("failed to create file writer: %s, request_id: %s", err.Error(), requestID)
+		jsonResponse(w, map[string]interface{}{
+			"code": -1,
+			"msg":  err.Error(),
+		})
+		return
+	}
+
+	f, err := fh.Open()
+	if err != nil {
+		contexts.Logger.Errorf("failed to open uploaded file: %s, request_id: %s", err.Error(), requestID)
+		jsonResponse(w, map[string]interface{}{
+			"code": -1,
+			"msg":  err.Error(),
+		})
+		return
+	}
+
+	defer f.Close()
+
+	// copy file stream
+	io.Copy(writer, f)
+
+	// append extra field
+	bodyWriter.WriteField("version", version)
+	bodyWriter.Close()
+
+	// build request
+	req, err := http.NewRequest(http.MethodPost, contexts.APIEndpoint+"/api/v1/polyapi/raw/upload"+svcPath, bodyBuf)
+
+	if err != nil {
+		contexts.Logger.Errorf("proxy upload req error: %s, request_id: %s", err.Error(), requestID)
+		jsonResponse(w, map[string]interface{}{
+			"code": -1,
+			"msg":  err.Error(),
+		})
+		return
+	}
+
+	req.Header.Set("Access-Token", getToken(r))
+	req.Header.Set("Content-Type", bodyWriter.FormDataContentType())
+	req.Header.Set("User-Agent", r.Header.Get("User-Agent"))
+	req.Header.Set("X-Request-ID", requestID)
+
+	req.ContentLength = int64(bodyBuf.Len())
+
+	_, respBody, errMsg := contexts.RetrieveResponse(req)
+
+	if errMsg != "" {
+		contexts.Logger.Errorf("failed to upload file, err: %s, request_id: %s", errMsg, requestID)
+		jsonResponse(w, map[string]interface{}{
+			"code": -1,
+			"msg":  errMsg,
+		})
+		return
+	}
+
+	var result map[string]interface{}
+	json.Unmarshal(respBody, &result)
+
+	jsonResponse(w, result)
+}
+
 func renderTokenInHTML(r *http.Request, rawHTML []byte) []byte {
 	token := getToken(r)
 	if token == "" {

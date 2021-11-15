@@ -1,18 +1,19 @@
-import React, { lazy, Suspense } from 'react';
+import React, { lazy, Suspense, useEffect } from 'react';
 import { observer } from 'mobx-react';
 import { UnionColumns } from 'react-table';
 import cs from 'classnames';
+import { toJS } from 'mobx';
 
 import Tab from '@c/tab';
 import Icon from '@c/icon';
 import Table from '@c/table';
-import Switch from '@c/switch';
 import Toggle from '@c/toggle';
 import Loading from '@c/loading';
 import Tooltip from '@c/tooltip';
 import EmptyTips from '@c/empty-tips';
 import TextHeader from '@c/text-header';
 import { copyContent } from '@lib/utils';
+import RadioButtonGroup from '@c/radio/radio-button-group';
 
 import store from './store';
 import 'highlight.js/styles/atelier-sulphurpool-dark.css';
@@ -76,9 +77,9 @@ export const FIELD_COLUMNS: UnionColumns<ModelField>[] = [
 ];
 
 function renderApiDetails(): JSX.Element {
-  if (store.isAPILoading) {
-    return <Loading/>;
-  }
+  // if (store.isAPILoading) {
+  //   return <Loading/>;
+  // }
 
   function handleDocTypeChange(docType: DocType): void {
     store.docType = docType;
@@ -89,10 +90,13 @@ function renderApiDetails(): JSX.Element {
     <>
       <Suspense fallback={<Loading />}>
         <div className='h-56 flex items-center justify-between'>
-          <Switch
-            value='curl'
-            options={DOC_TYPE_LIST}
-            onChange={(v) => handleDocTypeChange(v as DocType)}
+          <RadioButtonGroup
+            radioBtnClass="bg-white"
+            onChange={(value) => {
+              handleDocTypeChange(value as DocType);
+            }}
+            listData={DOC_TYPE_LIST}
+            currentValue={store.docType}
           />
           <div className='flex items-center'>
             使用字段名称:
@@ -106,38 +110,54 @@ function renderApiDetails(): JSX.Element {
             />
           </div>
         </div>
-        <div className='api-content'>
-          <Tooltip
-            position="top"
-            label="复制"
-            relative={false}
-            wrapperClassName="copy-button icon-text-btn"
-            labelClassName="whitespace-nowrap"
-          >
-            <Icon
-              name="content_copy"
-              size={20}
-              className='text-inherit'
-              onClick={() => copyContent(store.APiContent.input)}
-            />
-          </Tooltip>
-          <Highlight
-            className='api-details'
-            language={store.docType === 'curl' ? 'bash' : store.docType}
-          >
-            {store.APiContent.input}
-          </Highlight>
-        </div>
-        <div className='api-content-title'>返回示例</div>
-        <Highlight
-          className='api-details mb-20'
-          language={store.docType === 'curl' ? 'bash' : store.docType}
-        >
-          {store.APiContent.output}
-        </Highlight>
+        {
+          store.isAPILoading ? <Loading /> : (
+            <>
+              <div className='api-content'>
+                <Tooltip
+                  position="top"
+                  label="复制"
+                  relative={false}
+                  wrapperClassName="copy-button icon-text-btn"
+                  labelClassName="whitespace-nowrap"
+                >
+                  <Icon
+                    name="content_copy"
+                    size={20}
+                    className='text-inherit'
+                    onClick={() => copyContent(store.APiContent.input)}
+                  />
+                </Tooltip>
+                <Highlight
+                  className='api-details'
+                  language={store.docType === 'curl' ? 'bash' : store.docType}
+                >
+                  {store.APiContent.input}
+                </Highlight>
+              </div>
+              <div className='api-content-title'>返回示例</div>
+              <Highlight
+                className='api-details mb-20'
+                language={store.docType === 'curl' ? 'bash' : store.docType}
+              >
+                {store.APiContent.output}
+              </Highlight>
+            </>
+          )
+        }
       </Suspense>
     </>
   );
+}
+
+function isNsNode(): boolean {
+  const curNode = toJS(store.currentDataModel);
+  return 'parent' in curNode && 'subCount' in curNode;
+}
+
+function isApiNode(): boolean {
+  const curNode = toJS(store.currentDataModel);
+  return 'fullPath' in curNode && 'url' in curNode;
 }
 
 function ApiDocumentDetails(): JSX.Element {
@@ -187,6 +207,16 @@ function ApiDocumentDetails(): JSX.Element {
     },
   ];
 
+  useEffect(()=> {
+    if (isApiNode()) {
+      store.useFieldsID = false;
+      store.docType = 'curl';
+      // @ts-ignore
+      store.setApiPath(store.currentDataModel.fullPath);
+      store.fetchApiDoc();
+    }
+  }, [store.currentDataModel]);
+
   if (!store.tableID) {
     return <EmptyTips text='暂无数据模型' className="pt-40 m-auto" />;
   }
@@ -195,28 +225,46 @@ function ApiDocumentDetails(): JSX.Element {
     return <Loading />;
   }
 
+  function renderMain(): JSX.Element {
+    if (isNsNode()) {
+      return (
+        <div className='px-20 py-20 text-14'>选择 namespace 下的 API 来查看接口文档</div>
+      );
+    }
+    if (isApiNode()) {
+      return (
+        <div className='px-20'>
+          {renderApiDetails()}
+        </div>
+      );
+    }
+
+    return (
+      <Tab
+        items={tabItems}
+        className='w-full h-full api-tab'
+        onChange={(v) => {
+          if (v !== 'fields') {
+            store.useFieldsID = false;
+            store.docType = 'curl';
+            store.fetchXName(v as ApiType);
+          }
+        }}
+      />
+    );
+  }
+
   return (
     <div
       className='relative flex-1 overflow-hidden bg-white rounded-tr-12 w-1 flex flex-col'
     >
       <TextHeader
-        title={store.currentDataModel.title || '------'}
+        title={store.currentDataModel?.title || '------'}
         itemTitleClassName="text-12 font-semibold"
         className="bg-gray-1000 p-16 header-background-image h-44 shadow-header rounded-t-12"
       />
-      <div className='relative flex-1 overflow-hidden'>
-        <Tab
-          items={tabItems}
-          className='w-full h-full api-tab'
-          onChange={(v) => {
-            if (v !== 'fields') {
-              store.useFieldsID = false;
-              store.docType = 'curl';
-              store.fetchXName(v as ApiType)
-              ;
-            }
-          }}
-        />
+      <div className='relative flex-1 overflow-auto'>
+        {renderMain()}
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import React from 'react';
-import { RadioButton, RadioGroup } from '@QCFE/lego-ui';
 
+import RadioButtonGroup from '@c/radio/radio-button-group';
 import Button from '@c/button';
 import Search from '@c/search';
 
@@ -24,13 +24,13 @@ type Props = {
 type Status = {
   value: number;
   key: 'all' | 'published' | 'unPublished';
-  name: string;
+  label: string;
 }
 
-const STATUS_LIST: Array<Status> = [
-  { value: 0, key: 'all', name: '全部应用' },
-  { value: 1, key: 'published', name: '已发布' },
-  { value: -1, key: 'unPublished', name: '未发布' },
+const STATUS_LIST: Status[] = [
+  { value: 0, key: 'all', label: '全部应用' },
+  { value: 1, key: 'published', label: '已发布' },
+  { value: -1, key: 'unPublished', label: '未发布' },
 ];
 
 function Header({ changeParams, params, setModalType, countMaps }: Props) {
@@ -52,24 +52,18 @@ function Header({ changeParams, params, setModalType, countMaps }: Props) {
         新建应用
       </Button>
       <div className="flex">
-        <RadioGroup
-          wrapClassName='mb-0-i'
-          value={params.useStatus}
-          onChange={(useStatus) => {
-            changeParams({ useStatus });
+        <RadioButtonGroup
+          radioBtnClass="min-w-120"
+          listData={STATUS_LIST as []}
+          radioLabelRender={({ label })=>{
+            const currentKey = STATUS_LIST.find((item) => item.label === label)?.key;
+            return label + '·' + countMaps[currentKey || 'all'];
           }}
-          buttonWidth="104px"
-          style={{
-            marginBottom: 0,
+          onChange={(value)=> {
+            params.useStatus !== value && changeParams({ useStatus: value as number });
           }}
-        >
-          {STATUS_LIST.map(({ value, name, key }) => (
-            <RadioButton className='rounded-8' key={value} value={value}>
-              {name}·
-              {countMaps[key]}
-            </RadioButton>
-          ))}
-        </RadioGroup>
+          currentValue={params.useStatus}
+        />
         <Search
           className="w-214 ml-16"
           placeholder='请输入应用名称'

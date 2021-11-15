@@ -22,6 +22,11 @@ const SIDE_NAV = [
         icon: 'database',
       },
       {
+        id: 'api_proxy',
+        title: '第三方API代理',
+        icon: 'api_proxy',
+      },
+      {
         id: 'file_api',
         title: 'API文档',
         icon: 'api_doc',
@@ -30,6 +35,11 @@ const SIDE_NAV = [
         id: 'orchestration_api',
         title: 'API编排管理',
         icon: 'electrical_services',
+      },
+      {
+        id: 'key_api',
+        title: 'API密钥管理',
+        icon: 'api_key',
       },
     ],
   },
@@ -48,6 +58,21 @@ const SIDE_NAV = [
     title: '应用设置',
     icon: 'app_setting',
   },
+  {
+    id: 'rdp',
+    title: '报表管理',
+    icon: 'trending_up',
+  },
+  {
+    id: 'obddp',
+    title: '大屏管理',
+    icon: 'airplay',
+  },
+  {
+    id: 'rdpDataConfig',
+    title: '数据源管理',
+    icon: 'all_inclusive',
+  },
 ];
 
 export default function CollapseMenu(): JSX.Element {
@@ -55,7 +80,9 @@ export default function CollapseMenu(): JSX.Element {
   return (
     <div className='w-64 relative overflow-visible'>
       <div
-        onMouseEnter={() => setMenuCollapse(false)}
+        onMouseOver={() => {
+          if (menuCollapse) setMenuCollapse(false);
+        }}
         onMouseLeave={() => setMenuCollapse(true)}
         className={cs(
           'app-menu-tree w-64 h-full absolute left-0 top-0 overflow-x-hidden bg-white px-12',

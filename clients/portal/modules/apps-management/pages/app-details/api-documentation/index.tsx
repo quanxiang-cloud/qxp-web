@@ -13,9 +13,8 @@ function ApiDocument(): JSX.Element {
   useEffect(() => {
     store.appID = appID;
     store.fetchDataModels();
-    return () => {
-      store.tableID = '';
-    };
+    store.fetchApiNamespaces();
+    return store.reset;
   }, [appID]);
 
   return (

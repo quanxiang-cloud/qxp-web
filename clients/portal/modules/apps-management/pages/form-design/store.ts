@@ -123,6 +123,7 @@ class FormDesignStore {
   }
 
   constructor() {
+    this.appPageStore.canSetColumnWidth = false;
     this.destroyFetchScheme = reaction(() => {
       return { pageID: this.pageID, appID: this.appID };
     }, this.fetchFormScheme);

@@ -1,20 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 
 import EmptyData from '@c/empty-tips';
 import Pagination from '@c/pagination';
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
-import Table from '@c/lego-table';
+import Table from '@c/table';
 import Icon from '@c/icon';
 import MoreMenu from '@c/more-menu';
+import toast from '@lib/toast';
+import CheckedUserModal from '@portal/modules/access-control/departments-employees/modal/direct-leader-modal';
 
-import { getRoleAssociations } from '../../api';
+import { getRoleAssociations, transferRoleSuper } from '../../api';
 
 export const PAGINATION = {
   total: 0,
   current: 1,
   pageSize: 10,
+};
+
+export const ROLE_BIND_TYPE = {
+  department: 1,
+  employee: 2,
 };
 
 interface Props {
@@ -33,11 +40,13 @@ export default function DepartmentTable(
     Map<string, EmployeeOrDepartmentOfRole>
   >();
   const [members, setMembers] = useState<EmployeeOrDepartmentOfRole[]>([]);
+  const [showUserModal, setShowUserModal] = useState(false);
   useEffect(() => {
     const map = new Map<string, EmployeeOrDepartmentOfRole>();
     members.forEach((member) => map.set(member.ownerID, member));
     setMemberIDMap(map);
   }, [members.length]);
+  const queryClient = useQueryClient();
 
   const { data, isLoading, isError } = useQuery(
     [
@@ -60,30 +69,16 @@ export default function DepartmentTable(
   useEffect(() => {
     if (data) {
       setPagination((p) => ({ ...p, total: data.total }));
-      if (type === 1) {
+      if (type === ROLE_BIND_TYPE.department) {
         setMembers(data?.employees);
-      } else if (type === 2) {
+      } else if (type === ROLE_BIND_TYPE.employee) {
         setMembers(data?.departments);
       }
     }
   }, [data]);
 
-  const rowSelection = {
-    selectedRowKeys: selectedKeys,
-    onChange: function(selectedRowKeys: string[]): void {
-      setSelectedKeys(selectedRowKeys);
-    },
-  };
-
-  function onRowClick(record: DepartmentOfRole): void {
-    const id = record.ownerID as string;
-    setSelectedKeys((arr: string[]) => {
-      if (arr.includes(id)) {
-        return arr.filter((i) => i !== id);
-      } else {
-        return [...arr, id];
-      }
-    });
+  function handleSelectChange(selectedRowKeys: string[]): void {
+    setSelectedKeys(selectedRowKeys);
   }
 
   function onCancel(record: EmployeeOrDepartmentOfRole) {
@@ -117,6 +112,17 @@ export default function DepartmentTable(
     );
   }
 
+  async function handleChangeSuperManage(user: { id: string, userName: string }): Promise<any> {
+    transferRoleSuper(user.id).then(() => {
+      toast.success('操作成功！');
+      queryClient.invalidateQueries('GET_ROLE_ASSOCIATIONS');
+    }).catch((error) => {
+      toast.error(error);
+    }).finally(() => {
+      setShowUserModal(false);
+    });
+  }
+
   if (isLoading) {
     return <Loading desc="加载中..." />;
   }
@@ -124,38 +130,76 @@ export default function DepartmentTable(
     return <ErrorTips desc="something wrong!" />;
   }
 
-  const columns: EmployeeTableColumn[] = [];
-  if (type === 1) {
+  const columns: any[] = [];
+  if (type === ROLE_BIND_TYPE.department) {
     columns.push(...[
       {
-        title: '名称',
-        dataIndex: 'ownerName',
+        Header: '名称',
+        id: 'ownerName',
+        accessor: 'ownerName',
       },
       {
-        title: '手机号',
-        dataIndex: 'phone',
+        Header: '手机号',
+        id: 'phone',
+        accessor: 'phone',
       },
       {
-        title: '邮箱',
-        dataIndex: 'email',
+        Header: '邮箱',
+        id: 'email',
+        accessor: 'email',
       },
       {
-        title: '部门',
-        dataIndex: 'departmentName',
+        Header: '部门',
+        id: 'departmentName',
+        accessor: 'departmentName',
       },
     ]);
   }
-  if (type === 2) {
+  if (type === ROLE_BIND_TYPE.employee) {
     columns.push({
-      title: '名称',
-      dataIndex: 'departmentName',
+      Header: '名称',
+      id: 'departmentName',
+      accessor: 'departmentName',
     });
   }
+
+  if (type === ROLE_BIND_TYPE.department && isSuper && members.length) {
+    columns.push({
+      Header: '操作',
+      id: 'action',
+      accessor: (record: EmployeeOrDepartmentOfRole) => {
+        const isHavePermission = window.USER.id === record.ownerID;
+        return (isHavePermission ? (
+          <MoreMenu
+            menus={[
+              {
+                key: 'edit',
+                label: (
+                  <div className="flex items-center">
+                    <Icon name="create" size={16} className="mr-8" />
+                    <span className="font-normal">转让管理员</span>
+                  </div>
+                ),
+              },
+            ]}
+            placement="bottom-end"
+            className="opacity-1"
+            onMenuClick={(key): void => {
+              if (key === 'edit') {
+                setShowUserModal(true);
+              }
+            }}
+          />
+        ) : <span>-</span>);
+      },
+    });
+  }
+
   if (!isSuper && window.ADMIN_USER_FUNC_TAGS.includes('accessControl/role/manage')) {
     columns.push({
-      title: '',
-      dataIndex: 'ownerID',
-      render: (_: string, record: EmployeeOrDepartmentOfRole) => {
+      Header: '',
+      id: 'ownerID',
+      accessor: (record: EmployeeOrDepartmentOfRole) => {
         return (
           <div onClick={(e) => e.stopPropagation()}>
             <MoreMenu
@@ -176,17 +220,17 @@ export default function DepartmentTable(
   return (
     <>
       <Table
-        rowKey="ownerID"
-        dataSource={members}
-        className="rounded-bl-none rounded-br-none"
+        showCheckbox
+        className="text-12 h-full"
+        data={members || []}
+        onSelectChange={handleSelectChange}
         columns={columns}
-        rowSelection={rowSelection}
-        emptyText={(
-          <EmptyData text={type === 1 ? '无成员数据' : '无部门数据'} className="py-10" />
+        emptyTips={(
+          <EmptyData text={type === ROLE_BIND_TYPE.department ? '无成员数据' : '无部门数据'} className="py-10" />
         )}
-        onRow={(record): { onClick: () => void } => ({
-          onClick: (): void => onRowClick(record),
-        })}
+        rowKey="id"
+        initialSelectedRowKeys={selectedKeys || []}
+        loading={isLoading}
       />
       {!isSuper && (
         <div className="h-52 bg-white">
@@ -200,6 +244,18 @@ export default function DepartmentTable(
           />
         </div>
       )}
+      {showUserModal && (
+        <CheckedUserModal
+          title="选择转让人"
+          submitText="确定转让"
+          actionStatus="transfer"
+          onSubmit={handleChangeSuperManage}
+          onCancel={() => setShowUserModal(false)}
+          current={{
+            id: '',
+            userName: '',
+          }}
+        />)}
     </>
   );
 }

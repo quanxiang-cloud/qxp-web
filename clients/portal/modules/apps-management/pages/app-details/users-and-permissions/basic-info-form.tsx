@@ -31,7 +31,11 @@ function BasicInfoForm(
         error={errors.name}
         defaultValue={type === 'edit' ? defaultValue?.name : ''}
         readOnly={defaultValue?.types === 1 || false}
-        register={register('name', { required: '请输入权限组名称', maxLength: { value: 20, message: '不能超过20个字符' } })}
+        register={register('name', {
+          required: '请输入权限组名称',
+          maxLength: { value: 20, message: '不能超过20个字符' },
+          pattern: { value: /^((?!(\ud83c[\udf00-\udfff])|(\ud83d[\udc00-\ude4f])|(\ud83d[\ude80-\udeff])).)*$/, message: '不能输入表情符号' },
+        })}
       />
       <Textarea
         className='h-58'

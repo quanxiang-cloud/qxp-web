@@ -15,6 +15,10 @@ export const FIELD_FORM_SCHEMA = {
               message: '请输入名称',
             },
             {
+              pattern: /^((?!(\ud83c[\udf00-\udfff])|(\ud83d[\udc00-\ude4f])|(\ud83d[\ude80-\udeff])).)*$/,
+              message: '不能输入emoji表情符号',
+            },
+            {
               max: 30,
               message: '名称不超过 30 字符，请修改！',
             },
@@ -43,8 +47,8 @@ export const FIELD_FORM_SCHEMA = {
               message: '字段编码不超过 30 字符，请修改！',
             },
             {
-              message: '必须以字母开头,由字母、数字、下划线组成',
-              pattern: /^[a-zA-Z][a-zA-Z0-9_]*$/,
+              pattern: /^[a-zA-Z]+([_]?[a-zA-Z0-9])*$/,
+              message: '必须以字母开头,由字母、数字、单下划线组成',
             },
           ],
           'x-component': 'Input',

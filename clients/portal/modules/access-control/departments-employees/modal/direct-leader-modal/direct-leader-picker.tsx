@@ -15,6 +15,8 @@ import EmployeeSelectTree from '@c/employee-or-department-picker/employee-select
 
 import EmployeeTable from './employee-table';
 
+import { ActionStatus } from '.';
+
 interface Props {
   onChange: (leader: Leader) => void;
   currentLeader?: Leader;
@@ -22,13 +24,15 @@ interface Props {
   labelKey?: string;
   defaultValue?: string;
   className?: string;
+  actionStatus: ActionStatus;
 }
 
-export default observer(function DirectLeaderPicker<T extends { id: string; }>({
+export default observer(function DirectLeaderPicker({
   currentLeader,
   employee,
   onChange,
   className,
+  actionStatus,
 }: Props) {
   const [store, setStore] = useState<OwnerStore>();
   const { data: department, isLoading, isError } = useQuery(
@@ -83,11 +87,12 @@ export default observer(function DirectLeaderPicker<T extends { id: string; }>({
               itemTitleClassName="text-h6-no-color-weight font-semibold"
             />
             <EmployeeTable
+              actionStatus={actionStatus}
               userName={store.usernameKeyword}
               depID={store.employeeTreeStore.currentFocusedNode.id || ''}
               ownerStore={store}
-              userLeader = {currentLeader as Leader}
-              onChange= {onChange}
+              userLeader={currentLeader as Leader}
+              onChange={onChange}
             />
           </div>
         </div>

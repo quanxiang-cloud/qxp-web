@@ -105,4 +105,5 @@ const FileUpload = forwardRef((props: Props, ref:any) => {
     </>
   );
 });
+
 export default FileUpload;

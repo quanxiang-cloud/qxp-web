@@ -1,8 +1,9 @@
 import React from 'react';
-// import {Breadcrumb} from '@QCFE/lego-ui';
 import cs from 'classnames';
 import { NavLink, useHistory } from 'react-router-dom';
+
 import Icon from '@c/icon';
+
 import InfoCard from './info-card';
 
 import styles from './styles.module.scss';
@@ -23,7 +24,7 @@ const Container = ({
   asModalPage,
   pageName,
   style,
-}: Props) => {
+}: Props): JSX.Element => {
   const history = useHistory();
   const goBack = ()=> {
     history.goBack();

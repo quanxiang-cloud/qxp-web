@@ -1,0 +1,82 @@
+.params-sec {
+  .sec-body {
+    transition: all 0.5s ease;
+
+    &.hide-body {
+      transform:scale(1,0);
+      //transform: translateY(-100%);
+      visibility: hidden;
+      opacity: 0;
+      height: 0;
+    }
+
+    .params-table {
+      > thead > tr > th {
+        border-right: 1px solid var(--gray-200);
+        border-bottom: 1px solid var(--gray-200);
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 20px;
+        color: #475569;
+        &:last-child{
+          border-right: none;
+        }
+      }
+
+      > tbody > tr:last-child > td {
+        border-bottom: none;
+      }
+      > tbody > tr > td {
+        border-right: 1px solid var(--gray-200);
+        border-bottom: 1px solid var(--gray-200);
+        padding: 0;
+        &:last-child{
+          border-right: none;
+        }
+        &.param-type, &.param-in {
+          > div {
+            border: none;
+            box-shadow: none;
+            padding-left: 8px;
+            padding-right: 8px;
+          }
+        }
+        &.param-required {
+          vertical-align: middle;
+          padding-left: 8px;
+        }
+        &.param-name {
+          &:hover {
+            > .param-actions {
+              visibility: visible;
+            }
+          }
+          > .param-actions {
+            visibility: hidden;
+          }
+          //> input:focus + .param-actions {
+          //  visibility: hidden;
+          //}
+        }
+
+        // fix chrome auto-fill background color
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active{
+          -webkit-box-shadow: 0 0 0 30px white inset !important;
+        }
+
+        > input.input {
+          border: none;
+          &.error {
+            border: 1px solid var(--red-500);
+          }
+          &:focus {
+            box-shadow: none;
+          }
+        }
+      }
+    }
+  }
+}

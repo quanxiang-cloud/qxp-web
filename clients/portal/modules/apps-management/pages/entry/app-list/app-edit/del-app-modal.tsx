@@ -13,7 +13,7 @@ type Props = {
   onCancel: () => void;
 }
 
-function DeleteAppModal({ onCancel, appInfo }: Props) {
+function DeleteAppModal({ onCancel, appInfo }: Props): JSX.Element {
   const [form] = Form.useForm();
 
   function handleSubmit(): void {

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Loading as LegoLoading } from '@QCFE/lego-ui';
 import cs from 'classnames';
 
 export interface ILoading {
@@ -7,7 +6,7 @@ export interface ILoading {
   className?: string;
 }
 
-export default function Loading({ desc = 'Loading...', className }: ILoading): JSX.Element {
+function Loading({ desc = '加载中...', className }: ILoading): JSX.Element {
   return (
     <div
       className={cs(
@@ -15,8 +14,10 @@ export default function Loading({ desc = 'Loading...', className }: ILoading): J
         className,
       )}
     >
-      <LegoLoading />
+      <img src='/dist/images/loading.svg' alt="loading" style={{ width: 32, height: 32, marginBottom: 8 }} />
       <span>{desc}</span>
     </div>
   );
 }
+
+export default Loading;

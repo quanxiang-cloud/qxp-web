@@ -17,7 +17,9 @@ function Checkbox(
   const resolvedRef: any = ref || defaultRef;
 
   React.useEffect(() => {
-    resolvedRef.current.indeterminate = indeterminate;
+    if (resolvedRef.current) {
+      resolvedRef.current.indeterminate = indeterminate;
+    }
   }, [resolvedRef, indeterminate]);
 
   const { style = {}, disabled } = inputProps;
