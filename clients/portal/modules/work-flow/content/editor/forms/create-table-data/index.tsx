@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useUpdateEffect } from 'react-use';
+import { get } from 'lodash';
 
 import Select from '@c/select';
 import Toggle from '@c/toggle';
@@ -10,6 +11,7 @@ import FlowContext from '@flow/flow-context';
 import toast from '@lib/toast';
 import Modal from '@c/modal';
 import { BusinessData, TableDataCreateData } from '@flow/content/editor/type';
+import { ValueRuleVal } from '@flow/content/editor/type';
 
 import TargetTableFields from './target-table-fields';
 import Context from './context';
@@ -46,8 +48,33 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel, onChange: _onCh
     enabled: !!appID,
   });
 
+  function validateTips(validateValue: ValueRuleVal): boolean {
+    const isNullValue = Array.isArray(validateValue) ? !validateValue.length : !validateValue;
+    if (typeof validateValue === 'function' || isNullValue) {
+      toast.error('必填项未填写完整');
+      return false;
+    }
+    return true;
+  }
+
   const onSave = (): void => {
-    // todo: validate
+    const subTableRequiredField = get(value, 'subTableRequiredField', []);
+    const normalRequiredField = get(value, 'normalRequiredField', []);
+
+    for (let index = 0; index < subTableRequiredField.length; index += 1) {
+      const subFieldValue = get(value, `ref.${subTableRequiredField[index]}.valueOf`, '');
+      if (!validateTips(subFieldValue)) {
+        return;
+      }
+    }
+
+    for (let index = 0; index < normalRequiredField.length; index += 1) {
+      const normalFieldValue = get(value, `createRule.${normalRequiredField[index]}.valueOf`, '');
+      if (!validateTips(normalFieldValue)) {
+        return;
+      }
+    }
+
     if (!value.targetTableId) {
       toast.error('请选择目标数据表');
       return;
