@@ -86,6 +86,7 @@ export function convertToParamsConfig(apiData: RawApiDocDetail | undefined): any
         paramsConfig[apiDocInput.in] = paramsConfig[apiDocInput.in].concat(
           findAvailableBodyParams(apiDocInput.data),
         );
+        return;
       }
       paramsConfig[apiDocInput.in].push({ title, name, required });
     });

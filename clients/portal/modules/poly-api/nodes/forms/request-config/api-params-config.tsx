@@ -1,6 +1,7 @@
 import React from 'react';
 
 import Icon from '@c/icon';
+import FormulaEditor from '@c/formula-editor';
 
 type Props = {
   configs?: any,
@@ -16,9 +17,9 @@ function ApiParamsConfig({ configs }: Props): JSX.Element {
           <div key={type} className="my-20">
             <div className="pb-4 text-gray-900">{type.replace(/^\S/, (s: string) => s.toUpperCase())}</div>
             <div className="config-param">
-              {params.map(({ title, name, required }: any, index: number) => {
+              {params.map(({ title, name, required, path }: any, index: number) => {
                 return (
-                  <div key={`${title}_${name}_${index}`} className="flex justify-between">
+                  <div key={path ? path : `${title}_${name}_${index}`} className="flex justify-between">
                     <div className="flex items-center justify-between w-142 p-8 flex-1">
                       <div className="flex-1 truncate">
                         <span>{title}</span>
@@ -27,9 +28,7 @@ function ApiParamsConfig({ configs }: Props): JSX.Element {
                       </div>
                       <Icon className="ml-8" name="arrow_left_alt" />
                     </div>
-                    <div className="flex-2 border-l-1 border-gray-200 p-8">
-                      {/* <FormulaEditor help="" maxLength={undefined} /> */}
-                    </div>
+                    <FormulaEditor className="node-formulaEditor" help="" />
                   </div>
                 );
               })}

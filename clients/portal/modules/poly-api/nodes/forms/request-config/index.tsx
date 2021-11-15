@@ -3,11 +3,11 @@ import React, { useState } from 'react';
 import toast from '@lib/toast';
 import PageLoading from '@c/page-loading';
 
-import ApiSelector from './request-config/api-selector';
-import ApiFormulaConfig from './request-config/api-formula';
-import { useGetRequestNodeApi } from '../../effects/api/poly';
-import ApiParamsConfig from './request-config/api-params-config';
-import { convertToParamsConfig } from '../../utils/request-node';
+import ApiSelector from './api-selector';
+import ApiFormulaConfig from './api-formula';
+import { useGetRequestNodeApi } from '../../../effects/api/poly';
+import ApiParamsConfig from './api-params-config';
+import { convertToParamsConfig } from '../../../utils/request-node';
 
 function RequestConfigForm(): JSX.Element {
   const [apiPath, setApiPath] = useState('');

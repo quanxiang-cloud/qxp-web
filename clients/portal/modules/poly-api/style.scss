@@ -192,3 +192,18 @@ $nodeTypes: input, request, if, end, default, output;
   margin-top: -56px;
 }
 
+.node-formulaEditor {
+  @apply flex-2 border-l-1 border-gray-200;
+
+  &>div {
+    border: 0;
+    border-radius: 0;
+  }
+
+  .formula-editor-container {
+    &>div:last-child {
+      display: none;
+    }
+  }
+}
+

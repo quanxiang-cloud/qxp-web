@@ -7,7 +7,7 @@ type Props = NodeRenderProps<POLY_API.PolyNodeInput>
 
 function NamespaceNode({ node }: Props): JSX.Element | null {
   function handleClick(): void {
-    console.log(node.isLeaf);
+    console.log(node);
   }
 
   return (
