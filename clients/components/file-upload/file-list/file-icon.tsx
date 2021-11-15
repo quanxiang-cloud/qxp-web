@@ -10,9 +10,9 @@ type Props = {
   size?: number;
 }
 
-export default function FileIcon({
-  file, size = 20,
-}: Props): JSX.Element {
+export default function FileIcon({ file, size = 20 }: Props): JSX.Element {
+  const iconType = isAcceptedFileType(file, DEFAULT_IMG_TYPES) ? 'img' : 'file';
+
   return (
     <span
       style={{
@@ -20,10 +20,7 @@ export default function FileIcon({
         height: size,
       }}
       className="flex justify-center items-center flex-shrink-0 text-center mx-5 my-0">
-      {
-        isAcceptedFileType(file, DEFAULT_IMG_TYPES) ?
-          (<Icon {...FILE_LIST_ICON['img']}/>) : (<Icon {...FILE_LIST_ICON['file']}/>)
-      }
+      <Icon {...FILE_LIST_ICON[iconType]}/>
     </span>
   );
 }
