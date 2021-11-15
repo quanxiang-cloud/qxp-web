@@ -10,6 +10,12 @@ import { ApiRequestNodeConfigContext } from './context';
 function ApiFormulaConfig(): JSX.Element {
   const currentFormulaEditorRef = useContext(ApiRequestNodeConfigContext);
 
+  function handleSelect(node: any): void {
+    if (node.isLeaf) {
+      currentFormulaEditorRef?.current.insertEntity({ key: node.path, name: node.data.descPath });
+    }
+  }
+
   return (
     <div className="formula-config">
       <div className="flex items-center py-12 cursor-pointer border-b-1 mx-12">
@@ -30,7 +36,7 @@ function ApiFormulaConfig(): JSX.Element {
         </div>
       </div>
       <div className="pt-6 border-gray-200 flex-1 text-12 overflow-auto">
-        <FormulaTree />
+        <FormulaTree onSelect={handleSelect} />
       </div>
     </div>
   );

@@ -12,9 +12,6 @@ type Props = {
 function ApiParamsConfig({ configs, setCurrentFormulaRef }: Props): JSX.Element {
   const polyParams = Object.entries(configs);
 
-  function formulaEditorChange(value: string): void {
-  }
-
   return (
     <div className="p-12 flex-2 bg-gray-50 overflow-auto config-params-container">
       {polyParams?.length && polyParams.map(([type, params]: any) => {
@@ -44,7 +41,6 @@ function ApiParamsConfig({ configs, setCurrentFormulaRef }: Props): JSX.Element 
                       help=""
                       ref={formulaRef}
                       className="node-formula-editor"
-                      onChange={formulaEditorChange}
                     />
                   </div>
                 );

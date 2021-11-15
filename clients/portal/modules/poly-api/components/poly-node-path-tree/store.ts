@@ -18,15 +18,24 @@ function apiRequestFormulaTreeNode(
   visible = false,
   expanded = true,
   parentId = '',
+  parentDescPath = '',
   order = 0,
 ): TreeNode<POLY_API.PolyNodeInput> {
   let name = '';
+  let desc = '';
+  if (formula.desc) {
+    desc = formula.desc;
+  }
   if (formula.name) {
     name = formula.name;
   } else if (order - 1 >= 0) {
     name = `${order - 1}`;
   }
+  if (!desc) {
+    desc = name;
+  }
   const id = parentId ? `${parentId}.${name}` : name;
+  const descPath = parentDescPath ? `${parentDescPath}.${desc}` : desc;
 
   const children = child?.map((polyNodeInput, index) => apiRequestFormulaTreeNode(
     polyNodeInput,
@@ -34,11 +43,12 @@ function apiRequestFormulaTreeNode(
     level + 1,
     true,
     false,
-    parentId ? `${parentId}.${name}` : name,
+    id,
+    descPath,
     index + 1,
   ));
 
-  return {
+  const treeNode: TreeNode<POLY_API.PolyNodeInput> = {
     data: formula,
     name,
     id,
@@ -52,6 +62,12 @@ function apiRequestFormulaTreeNode(
     level,
     children,
   };
+
+  Object.assign(treeNode.data, {
+    descPath: descPath.replace(/\s/g, ''),
+  });
+
+  return treeNode;
 }
 
 export default class ApiFormulaTreeStore extends TreeStore<POLY_API.PolyNodeInput> {
