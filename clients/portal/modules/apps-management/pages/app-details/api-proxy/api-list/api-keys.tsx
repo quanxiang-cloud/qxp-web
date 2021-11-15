@@ -78,7 +78,7 @@ function ApiKeys(): JSX.Element {
         if (err.message === 'failded to upload, the key uploaded has exists') {
           toast.error('密钥ID重复，请重新输入');
         } else {
-          toast.error('创建失败');
+          toast.error(err);
         }
       });
     }).catch(() => null);
