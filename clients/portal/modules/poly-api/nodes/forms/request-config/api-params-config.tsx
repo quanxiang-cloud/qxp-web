@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 
 import Icon from '@c/icon';
 import FormulaEditor from '@c/formula-editor';
@@ -9,6 +9,7 @@ type Props = {
 
 function ApiParamsConfig({ configs }: Props): JSX.Element {
   const polyParams = Object.entries(configs);
+  const currentFormulaRef = useRef<any>();
 
   return (
     <div className="p-12 flex-2 bg-gray-50 overflow-auto config-params-container">
@@ -17,9 +18,13 @@ function ApiParamsConfig({ configs }: Props): JSX.Element {
           <div key={type} className="my-20">
             <div className="pb-4 text-gray-900">{type.replace(/^\S/, (s: string) => s.toUpperCase())}</div>
             <div className="config-param">
-              {params.map(({ title, name, required, path }: any, index: number) => {
+              {params.map(({ title, name, required, path }: any) => {
                 return (
-                  <div key={path ? path : `${title}_${name}_${index}`} className="flex justify-between">
+                  <div
+                    key={path ? path : name}
+                    className="flex justify-between"
+                    onClick={() => console.log(path ? path : name)}
+                  >
                     <div className="flex items-center justify-between w-142 p-8 flex-1">
                       <div className="flex-1 truncate">
                         <span>{title}</span>
@@ -28,7 +33,10 @@ function ApiParamsConfig({ configs }: Props): JSX.Element {
                       </div>
                       <Icon className="ml-8" name="arrow_left_alt" />
                     </div>
-                    <FormulaEditor className="node-formulaEditor" help="" />
+                    <FormulaEditor
+                      help=""
+                      className="node-formulaEditor"
+                    />
                   </div>
                 );
               })}

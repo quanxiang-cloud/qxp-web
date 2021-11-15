@@ -29,7 +29,8 @@ type ApiDocInput = {
 
 function findAvailableBodyParams(data: any[], path?: string): any[] {
   return data.reduce<any[]>((bodyInputs, input, index) => {
-    const paramPath = path ? `${path}.${index}` : `${index}`;
+    const paramPath = path ? `${path}.data[${index}]` : `body.data[${index}]`;
+
     if (input.type !== 'object' && input.type !== 'array' && input.type !== 'timestamp') {
       bodyInputs.push({ title: input.title, name: input.name, required: input.required, path: paramPath });
     } else {
