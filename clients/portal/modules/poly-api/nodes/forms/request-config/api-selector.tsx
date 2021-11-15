@@ -3,10 +3,14 @@ import { clone } from 'ramda';
 import { Cascader } from 'antd';
 import { useParams } from 'react-router-dom';
 
-import { useQueryNameSpaceRawRootPath } from '@portal/modules/poly-api/effects/api/namespace';
-import { useGetNamespaceFullPath, useGetRequestNodeApiList } from '@portal/modules/poly-api/effects/api/poly';
+import { useGetRequestNodeApiList } from '@portal/modules/poly-api/effects/api/raw';
 import {
-  convertRawApiListToOptions, getChildrenOfCurrentSelectOption,
+  useGetNamespaceFullPath,
+  useQueryNameSpaceRawRootPath,
+} from '@portal/modules/poly-api/effects/api/namespace';
+import {
+  convertRawApiListToOptions,
+  getChildrenOfCurrentSelectOption,
 } from '@portal/modules/poly-api/utils/request-node';
 
 type Props = {

@@ -5,7 +5,7 @@ import PageLoading from '@c/page-loading';
 
 import ApiSelector from './api-selector';
 import ApiFormulaConfig from './api-formula';
-import { useGetRequestNodeApi } from '../../../effects/api/poly';
+import { useGetRequestNodeApi } from '../../../effects/api/raw';
 import ApiParamsConfig from './api-params-config';
 import { convertToParamsConfig } from '../../../utils/request-node';
 
