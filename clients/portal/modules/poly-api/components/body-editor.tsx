@@ -1,65 +1,24 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, useCallback } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
-import { isString, isBoolean, isNull } from 'lodash';
+import { isString, isBoolean, isNull, isNumber } from 'lodash';
 
-import { getFullPath, getObjectEditorNewField } from '@polyApi/utils/object-editor';
+import {
+  getFullPath, getObjectEditorNewField, fromApiDataToObjectSchema, fromObjectSchemaToApiData,
+} from '@polyApi/utils/object-editor';
 
 import InputEditor from './input-editor';
 import FieldTypeSelector from './object-editor/field-type-selector';
-import RequiredSelector from './object-editor/required-selector';
+import BooleanSelector from './object-editor/boolean-selector';
 import ArrowDownTrigger from './arrow-down-trigger';
 import ObjectEditor, { Row } from './object-editor';
 import { Store, ItemStore } from './object-editor/store';
 
-const initialValues: POLY_API.ObjectSchema[] = [{
-  type: 'object',
-  name: 'a',
-  index: 0,
-  parentPath: null,
-  required: false,
-  desc: 'a 是一个对象',
-  in: 'body',
-  children: [{
-    type: 'number',
-    name: 'b',
-    index: 0,
-    parentPath: 'a',
-    required: true,
-    desc: 'a.b 是一个数字',
-    in: 'body',
-    children: [],
-  }, {
-    type: 'array',
-    name: 'c',
-    index: 1,
-    parentPath: 'a',
-    required: true,
-    desc: 'a.c 是一个数组',
-    in: 'body',
-    children: [{
-      type: 'string',
-      name: null,
-      index: 0,
-      parentPath: 'a.c',
-      required: false,
-      desc: 'a.c.0 是一个字符串',
-      in: 'body',
-      children: [],
-    }],
-  }],
-}, {
-  type: 'string',
-  name: 'hello',
-  index: 1,
-  parentPath: null,
-  required: true,
-  desc: 'hello 是一个字符串',
-  in: 'body',
-  children: [],
-}];
-
 function BodyEditor(props: ISchemaFieldComponentProps): JSX.Element {
   props;
+  const handleChange = useCallback((value: POLY_API.ObjectSchema[]) => {
+    const distValue = fromObjectSchemaToApiData(value);
+    props.mutators.change(distValue);
+  }, [props.mutators]);
   // const componentProps = props.props?.['x-component-props'] as Props;
   function isObjectField(type: string): boolean {
     return ['object', 'array'].includes(type);
@@ -70,8 +29,8 @@ function BodyEditor(props: ISchemaFieldComponentProps): JSX.Element {
     current$: ItemStore<POLY_API.ObjectSchema>,
     store$: Store<POLY_API.ObjectSchema>,
   ) {
-    return (e: ChangeEvent<HTMLInputElement> | string | boolean) => {
-      const value = isString(e) || isBoolean(e) ? e : e.target.value;
+    return (e: ChangeEvent<HTMLInputElement> | string | boolean | number) => {
+      const value = isString(e) || isBoolean(e) || isNumber(e) ? e : e.target.value;
       if (keyType === 'type' && isObjectField(current$.get('type')) && !isObjectField(`${value}`)) {
         current$.removeChild();
       }
@@ -95,7 +54,7 @@ function BodyEditor(props: ISchemaFieldComponentProps): JSX.Element {
   ): JSX.Element {
     const path = getFullPath(parentPath, name, index);
     const level = path.split('.').length;
-    console.log({ name, parentPath, path, index });
+    // console.log({ name, parentPath, path, index });
     return (
       <div className="flex items-center" style={{ marginLeft: (level - 1) * 20 }}>
         {(type === 'object' || type === 'array') && (
@@ -127,7 +86,7 @@ function BodyEditor(props: ISchemaFieldComponentProps): JSX.Element {
     store$: Store<POLY_API.ObjectSchema>,
   ): JSX.Element {
     return (
-      <RequiredSelector value={required} onChange={handleRowChange('required', current$, store$)} />
+      <BooleanSelector value={required} onChange={handleRowChange('required', current$, store$)} />
     );
   }
 
@@ -193,8 +152,9 @@ function BodyEditor(props: ISchemaFieldComponentProps): JSX.Element {
   return (
     <ObjectEditor<POLY_API.ObjectSchema>
       columns={columns}
-      initialValues={initialValues}
+      initialValues={fromApiDataToObjectSchema((props.initialValue || []) as POLY_API.PolyNodeInput[])}
       onAddField={handleAddField}
+      onChange={handleChange}
     />
   );
 }
