@@ -43,7 +43,7 @@ function ApiParamsConfig({ configs, setCurrentFormulaRef }: Props): JSX.Element 
                     <FormulaEditor
                       help=""
                       ref={formulaRef}
-                      className="node-formulaEditor"
+                      className="node-formula-editor"
                       onChange={formulaEditorChange}
                     />
                   </div>

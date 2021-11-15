@@ -20,6 +20,10 @@ export default function ConditionNode(props: NodeProps<POLY_API.SubjectPolyNode>
     excludedFields: ['apiDoc'],
   });
 
+  function showConfig(): void {
+    setIsConfigShow(true);
+  }
+
   if (nodeData.type !== 'if') {
     return null;
   }
@@ -31,6 +35,7 @@ export default function ConditionNode(props: NodeProps<POLY_API.SubjectPolyNode>
       {...props}
     >
       <Icon
+        onClick={showConfig}
         name="condition"
         size={50}
         className="poly-condition"

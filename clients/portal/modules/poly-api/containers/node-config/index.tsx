@@ -11,12 +11,14 @@ import { NODE_INIT_CONFIG_PARAMS, NODE_TYPE_MAPPER } from '@polyApi/constants';
 import BodyEditor from '@polyApi/components/body-editor';
 import ConstantsEditor from '@polyApi/components/constants-editor';
 import PolyDocDetail from '@polyApi/components/poly-doc-detail';
+import Condition from '@polyApi/nodes/forms/condition';
 
 const schemaFormComponents = {
   input: Input,
   bodyEditor: BodyEditor,
   constantsEditor: ConstantsEditor,
   polyDocDetail: PolyDocDetail,
+  condition: Condition,
 };
 
 import DrawerTitle from './drawer-title';

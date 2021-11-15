@@ -188,7 +188,7 @@ $nodeTypes: input, request, if, end, default, output;
   }
 }
 
-.node-formulaEditor {
+.node-formula-editor {
   @apply flex-2 border-l-1 border-gray-200;
 
   &>div {
@@ -200,6 +200,10 @@ $nodeTypes: input, request, if, end, default, output;
     &>div:last-child {
       display: none;
     }
+  }
+
+  .DraftEditor-root {
+    background-color: #F8FAFC;
   }
 }
 
