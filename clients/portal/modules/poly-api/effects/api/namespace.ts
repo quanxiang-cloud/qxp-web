@@ -6,7 +6,12 @@ import {
 
 import httpClient from '@lib/http-client';
 
-import { NAMESPACE_ROW } from './names';
+import { GET_NAMESPACE_FULL_PATH, NAMESPACE_ROW } from './names';
+
+export interface Input<I> {
+  path: string;
+  body?: I;
+}
 
 type QueryRootPathInput = string;
 type QueryRootPathResponse = {
@@ -21,6 +26,26 @@ export function useQueryNameSpaceRawRootPath(
   return useQuery<QueryRootPathResponse, Error>(
     [NAMESPACE_ROW, appID],
     () => httpClient('/api/v1/polyapi/namespace/appPath', { pathType: 'root', appID }),
+    options,
+  );
+}
+
+type QueryNamespaceFullPathInputBody = {
+  active: number;
+}
+type QueryNamespaceFullPathInput = Input<QueryNamespaceFullPathInputBody>;
+type QueryNamespaceFullPathResponse = any
+
+export function useGetNamespaceFullPath(
+  input: QueryNamespaceFullPathInput, options?: UseQueryOptions<QueryNamespaceFullPathResponse, Error>,
+): UseQueryResult<QueryNamespaceFullPathResponse, Error> {
+  return useQuery<QueryNamespaceFullPathResponse, Error>(
+    [GET_NAMESPACE_FULL_PATH, input.path],
+    (): Promise<QueryNamespaceFullPathResponse> => {
+      return httpClient<QueryNamespaceFullPathResponse>(
+        `/api/v1/polyapi/namespace/tree/${input.path}`, input.body,
+      );
+    },
     options,
   );
 }
