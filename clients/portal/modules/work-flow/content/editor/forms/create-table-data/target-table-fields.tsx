@@ -57,6 +57,26 @@ function TargetTableFields({ appId, tableId }: Props): JSX.Element {
     });
   }, [schema]);
 
+  useEffect(() => {
+    const initNormalRequiredFields: Array<string> = [];
+    const initSubTableRequiredFields: Array<string> = [];
+    Object.entries(schemaToTransform.properties).forEach(([schemaKey, schemaField]) => {
+      if (schemaField['x-component'] === 'SubTable') {
+        const subProps: ISchema = get(schemaField, 'items.properties', {});
+        Object.entries(subProps).forEach(([subKey, subField]) => {
+          if (subField?.required) {
+            initSubTableRequiredFields.push(`${schemaKey}.createRules[0].${subKey}`);
+          }
+        });
+      } else if (schemaField.required) {
+        initNormalRequiredFields.push(schemaKey);
+      }
+    });
+    set(data, 'normalRequiredField', initNormalRequiredFields);
+    set(data, 'subTableRequiredField', initSubTableRequiredFields);
+    setData(pick(data, 'normalRequiredField', 'subTableRequiredField'));
+  }, [schemaToTransform]);
+
   const getTableIdByFieldKey = (key: string): string => {
     const field = tableSchemaMap[key];
     if (field && field.componentName === 'subtable') {
