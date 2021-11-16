@@ -1,61 +1,14 @@
-import React, { useMemo, useEffect } from 'react';
-import { clone, isEmpty } from 'ramda';
+import React, { useMemo, Ref, forwardRef, ForwardedRef, useImperativeHandle } from 'react';
 import { get } from 'lodash';
 
 import Tree from '@c/headless-tree';
 import store$ from '@polyApi/store';
 import useObservable from '@lib/hooks/use-observable';
 import getPathTreeSource from '@polyApi/utils/get-path-tree-source';
-import { addNodeNamePrefix2PolyNodeInput } from '@polyApi/utils/request-node';
 import type { CustomRule } from '@c/formula-editor';
 
 import Store from './store';
 import NodeRender from './poly-tree-node';
-
-const startNodeInputs: POLY_API.PolyNodeInput[] = [
-  {
-    type: 'object',
-    name: 'a',
-    desc: 'a 是一个对象',
-    data: [
-      {
-        type: 'number',
-        name: 'b',
-        desc: 'a.b 是一个数字',
-        data: [],
-        in: 'body',
-        required: true,
-      },
-      {
-        type: 'array',
-        name: 'c',
-        desc: 'a.c 是一个数组',
-        data: [
-          {
-            type: 'string',
-            name: '',
-            desc: 'a.c.0 是一个字符串',
-            data: [],
-            in: 'body',
-            required: false,
-          },
-        ],
-        in: 'body',
-        required: true,
-      },
-    ],
-    in: 'body',
-    required: false,
-  },
-  {
-    type: 'string',
-    name: 'hello',
-    desc: 'hello 是一个字符串',
-    data: [],
-    in: 'body',
-    required: true,
-  },
-];
 
 const root: POLY_API.PolyNodeInput = {
   type: 'object',
@@ -66,67 +19,38 @@ const root: POLY_API.PolyNodeInput = {
   required: false,
 };
 
-const child: POLY_API.PolyNodeInput[] = [
-  addNodeNamePrefix2PolyNodeInput(clone(startNodeInputs), {
-    type: 'object',
-    name: 'start',
-    desc: 'start node',
-    data: [],
-    in: 'body',
-    required: true,
-  }),
-  addNodeNamePrefix2PolyNodeInput(clone(startNodeInputs), {
-    type: 'object',
-    name: 'req1',
-    desc: 'request node1',
-    data: [],
-    in: 'body',
-    required: true,
-  }),
-  addNodeNamePrefix2PolyNodeInput(clone(startNodeInputs), {
-    type: 'object',
-    name: 'req2',
-    desc: 'request node2',
-    data: [],
-    in: 'body',
-    required: true,
-  }),
-];
-
-const AVAILABLE_NODE_TYPE = ['input', 'request'];
-
+export type RefType = {
+  getCustomRules(): CustomRule[];
+}
 type Props = {
   onSelect: (node: any) => void;
-  onGetCustomRules?: (customRules: CustomRule[]) => void;
   className?: string;
+  ref?: Ref<RefType>;
 }
 
-function FormulaConfigTree({ onSelect, onGetCustomRules, className }: Props ): JSX.Element {
+function FormulaConfigTree(
+  { onSelect, className }: Props, ref: ForwardedRef<RefType>,
+): JSX.Element {
   const polyNodeStore = useObservable(store$);
   const apiRequestNodeId = polyNodeStore.currentNodeConfigParams?.currentNode?.get('name') as string;
-  let sourceNodes: any = [];
 
+  let sourceNodes: POLY_API.PolyNodeInput[] = [];
   if (polyNodeStore && apiRequestNodeId) {
-    sourceNodes = getPathTreeSource(apiRequestNodeId).filter(({ type }) => {
-      return AVAILABLE_NODE_TYPE.includes(type || '');
-    })?.filter(Boolean).map((field: any) => {
-      if (field.type === 'input') {
-        return isEmpty(field.data?.detail.inputs) ? undefined : field.data?.detail.inputs;
-      }
-
-      return isEmpty(field.data?.detail.outputs) ? undefined : field.data?.detail.outputs;
-    }).filter(Boolean);
+    sourceNodes = getPathTreeSource(apiRequestNodeId);
   }
 
   const store = useMemo(() => new Store(root, sourceNodes), [root, sourceNodes]);
 
-  useEffect(() => {
-    const rules = store.nodeList.map((node) => ({
-      name: get(node, 'data.descPath', ''),
-      key: node.path,
-    })).filter(({ name }) => !!name);
-    onGetCustomRules?.(rules);
-  }, [store.nodeList, onGetCustomRules]);
+  useImperativeHandle(ref, () => ({
+    getCustomRules: () => {
+      return store.nodeList
+        .map((node) => ({
+          name: get(node, 'data.descPath', ''),
+          key: node.path,
+        }))
+        .filter(({ name }) => !!name);
+    },
+  }), [store]);
 
   return (
     <Tree
@@ -139,4 +63,4 @@ function FormulaConfigTree({ onSelect, onGetCustomRules, className }: Props ): J
   );
 }
 
-export default FormulaConfigTree;
+export default forwardRef<RefType, Props>(FormulaConfigTree);

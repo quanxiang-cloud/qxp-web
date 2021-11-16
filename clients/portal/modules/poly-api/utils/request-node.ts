@@ -97,12 +97,6 @@ export function convertToParamsConfig(apiData: RawApiDocDetail | undefined): any
 
   return [];
 }
-export function addNodeNamePrefix2PolyNodeInput(
-  inputs: POLY_API.PolyNodeInput[], prefix: POLY_API.PolyNodeInput,
-): POLY_API.PolyNodeInput {
-  prefix.data = inputs;
-  return prefix;
-}
 
 export function convertRawApiListToOptions(rawApiList: RawApiDetail[]) {
   return rawApiList.length ? rawApiList.map(({ name, fullPath }: RawApiDetail) => {
