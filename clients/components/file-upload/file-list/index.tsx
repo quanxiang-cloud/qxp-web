@@ -93,17 +93,20 @@ export default function FileList({
               </span>
             </div>
             <div className='flex justify-end items-center text-12 gap-x-5 pr-5 flex-shrink-0 text-gray-400 file-opt'>
-              <span className='text-center order-last transition-opacity ease-linear opacity-0 group-hover:opacity-100 file-delete-btn'>
-                <Icon
-                  {...FILE_LIST_ICON['delete']}
-                  clickable
-                  className="text-gray-600"
-                  onClick={() => {
-                    if (file.state === 'processing' && file.progress === 100) return;
-                    deleteFileItem?.(file);
-                  }}
-                />
-              </span>
+              {
+                deleteFileItem &&
+                (<span className='text-center order-last transition-opacity ease-linear opacity-0 group-hover:opacity-100 file-delete-btn'>
+                  <Icon
+                    {...FILE_LIST_ICON['delete']}
+                    clickable
+                    className="text-gray-600"
+                    onClick={() => {
+                      if (file.state === 'processing' && file.progress === 100) return;
+                      deleteFileItem?.(file);
+                    }}
+                  />
+                </span>)
+              }
               <span className="text-12 inline-block file-percent">
                 {fileUploadProgressRender(file)}
               </span>

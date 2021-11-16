@@ -9,6 +9,8 @@ const AssociatedRecords = React.lazy(
 import AssociatedDataValueRender from '@c/form-builder/registry/associated-data/associated-data-view';
 import { RoundMethod } from '@c/form-builder/registry/aggregation-records/convertor';
 import logger from '@lib/logger';
+import { FileList } from '@c/file-upload';
+import { QxpFileFormData } from '@c/form-builder/registry/file-upload/uploader';
 
 type ValueRendererProps = { value: FormDataValue; schema: ISchema; className?: string; };
 type Props = {
@@ -95,10 +97,10 @@ export default function FormDataValueRenderer({ value, schema, className }: Prop
 
   const content = getBasicValue(schema, value);
 
-  return <span title={content} className={className}>{content}</span>;
+  return <span title={typeof content === 'string' ? content : ''} className={className}>{content}</span>;
 }
 
-export function getBasicValue(schema: ISchema, value: FormDataValue): string {
+export function getBasicValue(schema: ISchema, value: FormDataValue): React.ReactNode {
   switch (schema['x-component']?.toLowerCase()) {
   case 'input':
   case 'textarea':
@@ -115,8 +117,43 @@ export function getBasicValue(schema: ISchema, value: FormDataValue): string {
     return datetimeValueRenderer({ schema, value });
   case 'associateddata':
   case 'imageupload':
+    if (!value) return '';
+    return (
+      <div className="flex flex-wrap">
+        <FileList
+
+          canDownload
+          imgOnly={true}
+          files={(value as QxpFileFormData[]).map((file) =>
+            ({
+              name: file.label,
+              uid: file.value,
+              type: file.type,
+              size: file.size,
+            }),
+          )}
+        />
+      </div>
+
+    );
   case 'cascadeselector':
   case 'fileupload':
+    if (!value) return '';
+    return (
+      <div className="max-w-290">
+        <FileList
+          canDownload
+          files={(value as QxpFileFormData[]).map((file) =>
+            ({
+              name: file.label,
+              uid: file.value,
+              type: file.type,
+              size: file.size,
+            }),
+          )}
+        />
+      </div>
+    );
   case 'userpicker':
   case 'organizationpicker':
     return labelValueRenderer(value);
