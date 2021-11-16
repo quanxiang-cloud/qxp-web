@@ -12,9 +12,18 @@ import {
   getFuncInfo,
   updateFuncDesc,
   getFuncVersionList,
+  hasCoder,
+  defineFunc,
+  buildFunc,
+  deleteFunc,
+  updateVerDesc,
+  offlineVer,
+  servingVer,
+  deleteVer,
+  creatCoder,
 } from './api';
 import toast from '@lib/toast';
-import TimerSelector from '@portal/modules/work-flow/content/editor/forms/intermidiate/components/basic-config/timer-selector';
+import { httpClient } from 'clients/login/login-common';
 
 const INIT_CURRENT_FUNC = {
   id: '',
@@ -65,6 +74,7 @@ class FaasStore {
   @observable checkUserLoading = true;
   @observable apiIsError = false;
   @observable groupID = '';
+  @observable buildID = '';
   @observable funcList: FuncField[] = [];
   @observable currentFunc: FuncField= INIT_CURRENT_FUNC;
   @observable VersionList: VersionField[] = [];
@@ -111,7 +121,7 @@ class FaasStore {
   }
 
   @action
-  checkUserSate = async (): Promise<void>=> {
+  checkUserState = async (): Promise<void>=> {
     this.checkUserLoading = true;
     await this.isaDeveloper();
     await this.isGroup();
@@ -174,7 +184,7 @@ class FaasStore {
   }
 
   @action
-  fetchDataList = (): void => {
+  fetchFuncList = (): void => {
     fetchFuncList(this.groupID, {
       appID: this.appDetails.id,
       size: 20,
@@ -189,6 +199,84 @@ class FaasStore {
       this.funcList = [];
     }).finally(() => {
       this.funcListLoading = false;
+    });
+  }
+
+  @action
+  checkIsCoder = () => {
+    hasCoder().then((res) => {
+      if (!res.hasCoder)creatCoder();
+    }).catch((err) => console.log(err));
+  }
+
+  @action
+  creatCoder = () => {
+    creatCoder().then((res) => {
+      console.log(res);
+    }).catch((err) => {
+      toast.error(err);
+    });
+  }
+
+  @action
+  createFunc = (data: any) => {
+    createFaasFunc(this.groupID, data).then((res) => {
+      this.currentFuncID = res.id;
+      this.fetchFuncInfo();
+      this.checkIsCoder();
+    }).catch((err) => {
+      toast.error(err);
+    });
+  }
+
+  @action
+  fetchFuncInfo = () => {
+    getFuncInfo(this.groupID, this.currentFuncID).then((res) => {
+      this.currentFunc = res.info;
+      this.funcList = [...this.funcList, this.currentFunc];
+    });
+  }
+
+  @action
+  updateFuncDesc = (id: string, describe: string): void => {
+    this.currentFuncID = id;
+    updateFuncDesc(this.groupID, id, { describe }).then((res) => {
+      this.funcList = this.funcList.map((_func) => {
+        if (_func.id === id) {
+          this.currentFunc = { ..._func, description: describe };
+          return { ..._func, description: describe };
+        }
+        return _func;
+      });
+    }).catch((err) => {
+      toast.error(err);
+    });
+  }
+
+  @action
+  defineFunc = (id: string) => {
+    defineFunc(this.groupID, id).then((res) => {
+      console.log(res);
+    }).catch((err) => {
+      console.log(err);
+    });
+  }
+
+  @action
+  buildFunc = () => {
+    buildFunc(this.groupID, this.currentFuncID).then((res) => {
+      console.log(res);
+    }).catch((err) => {
+      console.log(err);
+    });
+  }
+
+  @action
+  deleteFunc = () => {
+    deleteFunc(this.groupID, this.currentFuncID).then((res) => {
+      console.log(res);
+    }).catch((err) => {
+      console.log(err);
     });
   }
 
@@ -214,36 +302,46 @@ class FaasStore {
   }
 
   @action
-  createFunc = (data: any) => {
-    createFaasFunc(this.groupID, data).then((res) => {
-      this.currentFuncID = res.id;
-      this.fetchFuncInfo();
+  updateVerDesc = (id: string, describe: string): void => {
+    this.currentFuncID = id;
+    updateVerDesc(this.groupID, id, this.buildID, { describe }).then((res) => {
+      // this.funcList = this.funcList.map((_func) => {
+      //   if (_func.id === id) {
+      //     this.currentFunc = { ..._func, description: describe };
+      //     return { ..._func, description: describe };
+      //   }
+      //   return _func;
+      // });
+      console.log(res);
+    }).catch((err) => {
+      toast.error(err);
+    });
+  }
+
+  @action
+  offlineVer = (id: string) => {
+    offlineVer(this.groupID, id, this.buildID).then((res) => {
+      console.log(res);
     }).catch((err) => {
       console.log(err);
     });
   }
 
   @action
-  fetchFuncInfo = () => {
-    getFuncInfo(this.groupID, this.currentFuncID).then((res) => {
-      this.currentFunc = res.info;
-      this.funcList = [...this.funcList, this.currentFunc];
+  servingVer = (id: string) => {
+    servingVer(this.groupID, id, this.buildID).then((res) => {
+      console.log(res);
+    }).catch((err) => {
+      console.log(err);
     });
   }
 
   @action
-  updateFuncDesc = (id: string, describe: string): void => {
-    this.currentFuncID = id;
-    updateFuncDesc(this.groupID, id, { describe }).then((res) => {
-      this.funcList = this.funcList.map((_func) => {
-        if (_func.id === id) {
-          this.currentFunc = { ..._func, description: describe };
-          return { ..._func, description: describe };
-        }
-        return _func;
-      });
+  deleteVer = (id: string) => {
+    deleteVer(this.groupID, id, this.buildID).then((res) => {
+      console.log(res);
     }).catch((err) => {
-      toast.error(err);
+      console.log(err);
     });
   }
 }

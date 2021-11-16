@@ -119,12 +119,12 @@ function DataList(): JSX.Element {
     {
       Header: '操作',
       id: 'action',
-      accessor: (row) => {
+      accessor: ({ id, state } : FuncField) => {
         return (
           <div className="flex gap-20">
-            {row.state === 'True' ? (
+            {state === 'True' ? (
               <>
-                <span className="operate">定义</span>
+                <span className="operate" onClick={() => store.defineFunc(id)}>定义</span>
                 <span className="operate" onClick={() => setVisible(true)}>构建</span>
                 <MoreMenu onMenuClick={() => console.log()} menus={[
                   { label: 'v0.1.3.a', key: 'v0.1.3.a' },

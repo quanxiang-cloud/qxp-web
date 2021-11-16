@@ -15,10 +15,10 @@ import FuncDetailsDrawer from './func-drawer';
 import '../index.scss';
 
 function FuncList(): JSX.Element {
-  const { funcList, fetchDataList, modalType, setModalType, funcListLoading } = store;
+  const { funcList, fetchFuncList, modalType, setModalType, funcListLoading } = store;
 
   useEffect(() => {
-    fetchDataList();
+    fetchFuncList();
   }, []);
 
   if (funcListLoading) {

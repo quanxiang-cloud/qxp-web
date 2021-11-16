@@ -10,14 +10,14 @@ import { pick } from 'lodash';
 import Loading from '@c/loading';
 
 function FaaS(): JSX.Element {
-  const { developerInGroup, hasGroup, isGroup, isDeveloperInGroup, isaDeveloper, checkUserLoading, checkUserSate } = store;
+  const { developerInGroup, hasGroup, isGroup, isDeveloperInGroup, isaDeveloper, checkUserLoading, checkUserState } = store;
   const { appDetails } = AppDetailsStore;
   const User = window.USER;
   useEffect(() => {
     store.appDetails = AppDetailsStore.appDetails;
     store.User = pick(User, ['id', 'email']);
     if (appDetails.id) {
-      checkUserSate();
+      checkUserState();
     }
   }, [appDetails, User.id]);
 

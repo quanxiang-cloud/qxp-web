@@ -14,6 +14,10 @@ export function checkInGroup(data:{group: string}): Promise<{isMember: boolean}>
   return httpClient('/api/v1/midfielder/check/member', data);
 }
 
+export function hasCoder(): Promise<{hasCoder: boolean}> {
+  return httpClient('/api/v1/midfielder/check/coder');
+}
+
 export function createGroup(data:{group: string, appID: string}): Promise<{id: string}> {
   return httpClient('/api/v1/midfielder/group', data);
 }
@@ -26,19 +30,15 @@ export function addToGroup(groupID: string, data:{memberID: string}): Promise<vo
   return httpClient(`/api/v1/midfielder/group/${groupID}/addmember`, data);
 }
 
+export function creatCoder(): Promise<void> {
+  return httpClient('/api/v1/midfielder/user/coder');
+}
+
 export function fetchFuncList(
   groupID: string,
   params: FuncListParams,
 ): Promise<{count: number, projects: FuncField[]}> {
   return httpClient(`/api/v1/midfielder/group/${groupID}/list`, params);
-}
-
-export function getFuncVersionList(
-  groupID: string,
-  projectID: string,
-  params: VersionListParams,
-) : Promise<{count: number, Builds: VersionField[]}> {
-  return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/list`, params);
 }
 
 export function createFaasFunc(
@@ -60,3 +60,52 @@ export function updateFuncDesc(
   return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/updateDesc`, data);
 }
 
+export function defineFunc(groupID: string, projectID: string): Promise<{url: string}> {
+  return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/define`);
+}
+
+export function buildFunc(groupID: string, projectID: string) {
+  return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/build`);
+}
+
+export function deleteFunc(groupID: string, projectID: string) {
+  return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/delete`);
+}
+
+export function updateVerDesc(
+  groupID: string,
+  projectID: string,
+  buildID:string,
+  data:{describe: string},
+): Promise<void> {
+  return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/build/${buildID}/updateDesc`, data);
+}
+
+export function getFuncVersionList(
+  groupID: string,
+  projectID: string,
+  params: VersionListParams,
+) : Promise<{count: number, Builds: VersionField[]}> {
+  return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/list`, params);
+}
+
+export function offlineVer(
+  groupID: string,
+  projectID: string,
+  buildID:string) {
+  return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/release/${buildID}/offline`);
+}
+
+export function servingVer(
+  groupID: string,
+  projectID: string,
+  buildID:string) {
+  return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/release/${buildID}/serving`);
+}
+
+export function deleteVer(
+  groupID: string,
+  projectID: string,
+  buildID:string) {
+  return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/build/${buildID}/delete`);
+}
