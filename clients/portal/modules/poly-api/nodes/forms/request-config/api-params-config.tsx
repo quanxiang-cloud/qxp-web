@@ -55,7 +55,7 @@ function ApiParamsConfig({
           <div key={type} className="my-20">
             <div className="pb-4 text-gray-900">{type.replace(/^\S/, (s: string) => s.toUpperCase())}</div>
             <div className="config-param">
-              {params.map(({ title, name, required, path }: any, index: number) => {
+              {params.map(({ title, name, required, path, type, data }: any, index: number) => {
                 const configParamTag = path ? path : `${index}`;
                 const formulaRef = React.useRef<RefProps>();
 
@@ -73,13 +73,16 @@ function ApiParamsConfig({
                       </div>
                       <Icon className="ml-8" name="arrow_left_alt" />
                     </div>
-                    <FormulaEditor
-                      help=""
-                      ref={formulaRef}
-                      customRules={customRules}
-                      className="node-formula-editor"
-                      onChange={(value) => handleFormulaChange(value, configParamTag)}
-                    />
+                    {customRules.length ? (
+                      <FormulaEditor
+                        help=""
+                        ref={formulaRef}
+                        customRules={customRules}
+                        defaultValue={data}
+                        className="node-formula-editor"
+                        onChange={(value) => handleFormulaChange(value, configParamTag)}
+                      />
+                    ) : <div className="node-formula-editor"></div>}
                   </div>
                 );
               })}

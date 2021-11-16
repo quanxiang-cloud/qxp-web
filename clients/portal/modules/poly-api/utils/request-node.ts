@@ -82,7 +82,7 @@ export function convertToParamsConfig(apiData: RawApiDocDetail | undefined): any
 
     input.inputs.forEach((apiDocInput: ApiDocInput, index: number) => {
       const paramPath = `${index}`;
-      const { title, name, required } = apiDocInput;
+      const { title, name, required, type, data } = apiDocInput;
       paramsConfig[apiDocInput.in] = paramsConfig[apiDocInput.in] || [];
       if (apiDocInput.in === 'body' && apiDocInput.data.length) {
         paramsConfig[apiDocInput.in] = paramsConfig[apiDocInput.in].concat(
@@ -91,7 +91,7 @@ export function convertToParamsConfig(apiData: RawApiDocDetail | undefined): any
         return;
       }
 
-      paramsConfig[apiDocInput.in].push({ title, name, required, path: paramPath });
+      paramsConfig[apiDocInput.in].push({ title, name, required, path: paramPath, type, data });
     });
 
     return Object.assign(parseParamOfPath(url), paramsConfig);
