@@ -40,6 +40,10 @@ export default function NodeConfigDrawer(): JSX.Element {
     return () => drawerRef.current?.classList.remove('drawer-fullscreen');
   }, [nodeData.detail]);
 
+  useEffect(() => {
+    console.log(configValue);
+  }, [configValue]);
+
   function onSave(): void {
     currentNode?.set('detail', omit(excludedFields || [], configValue) );
     onCancel();

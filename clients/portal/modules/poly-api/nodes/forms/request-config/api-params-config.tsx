@@ -1,16 +1,46 @@
 import React from 'react';
+import { observer } from 'mobx-react';
 
 import Icon from '@c/icon';
 import FormulaEditor, { RefProps } from '@c/formula-editor';
-import { observer } from 'mobx-react';
+import { convertToParamsConfig } from '@portal/modules/poly-api/utils/request-node';
 
 type Props = {
+  configValue?: any;
+  onChange: (value: any) => void;
   setCurrentFormulaRef: (ref: any) => void;
-  configs?: any;
 }
 
-function ApiParamsConfig({ configs, setCurrentFormulaRef }: Props): JSX.Element {
-  const polyParams = Object.entries(configs);
+function ApiParamsConfig({ configValue, setCurrentFormulaRef, onChange }: Props): JSX.Element {
+  const polyParams = Object.entries(convertToParamsConfig(configValue));
+
+  function updateRequestNodeConfigValueInputs(
+    nodeInput: any, targetPath: string, value: string, path?: string,
+  ): any {
+    return nodeInput?.map((arr: any, index: number) => {
+      const fullPath = path ? `${path}.${index}` : `${index}`;
+      if (fullPath === targetPath) {
+        if ((arr.type === 'string' || arr.type === 'number') && value) {
+          arr.data = value;
+          arr.type = 'direct_expr';
+        }
+        return arr;
+      }
+
+      if (arr.type === 'object') {
+        arr.data = updateRequestNodeConfigValueInputs(arr.data, targetPath, value, fullPath);
+      }
+
+      return arr;
+    });
+  }
+
+  function handleFormulaChange(value: string, formulaTargePath: string): void {
+    const requestNodeInputs = updateRequestNodeConfigValueInputs(
+      [...configValue.doc.input.inputs], formulaTargePath, value,
+    );
+    onChange(requestNodeInputs);
+  }
 
   return (
     <div className="p-12 flex-2 bg-gray-50 overflow-auto config-params-container">
@@ -19,13 +49,13 @@ function ApiParamsConfig({ configs, setCurrentFormulaRef }: Props): JSX.Element 
           <div key={type} className="my-20">
             <div className="pb-4 text-gray-900">{type.replace(/^\S/, (s: string) => s.toUpperCase())}</div>
             <div className="config-param">
-              {params.map(({ title, name, required, path }: any) => {
-                const configParmaTag = path ? path : name;
+              {params.map(({ title, name, required, path }: any, index: number) => {
+                const configParamTag = path ? path : `${index}`;
                 const formulaRef = React.useRef<RefProps>();
 
                 return (
                   <div
-                    key={configParmaTag}
+                    key={configParamTag}
                     className="flex justify-between"
                     onClick={() => setCurrentFormulaRef(formulaRef)}
                   >
@@ -41,7 +71,7 @@ function ApiParamsConfig({ configs, setCurrentFormulaRef }: Props): JSX.Element 
                       help=""
                       ref={formulaRef}
                       className="node-formula-editor"
-                      onChange={(value) => console.log('there has value delay', value)}
+                      onChange={(value) => handleFormulaChange(value, configParamTag)}
                     />
                   </div>
                 );

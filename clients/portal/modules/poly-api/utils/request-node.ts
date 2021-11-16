@@ -29,7 +29,7 @@ type ApiDocInput = {
 
 function findAvailableBodyParams(data: any[], path?: string): any[] {
   return data.reduce<any[]>((bodyInputs, input, index) => {
-    const paramPath = path ? `${path}.data[${index}]` : `body.data[${index}]`;
+    const paramPath = path ? `${path}.${index}` : `${index}`;
 
     if (input.type !== 'object' && input.type !== 'array' && input.type !== 'timestamp') {
       bodyInputs.push({ title: input.title, name: input.name, required: input.required, path: paramPath });
@@ -80,16 +80,18 @@ export function convertToParamsConfig(apiData: RawApiDocDetail | undefined): any
     const paramsConfig: any = {};
     const { url, input } = apiData.doc;
 
-    input.inputs.forEach((apiDocInput: ApiDocInput) => {
+    input.inputs.forEach((apiDocInput: ApiDocInput, index: number) => {
+      const paramPath = `${index}`;
       const { title, name, required } = apiDocInput;
       paramsConfig[apiDocInput.in] = paramsConfig[apiDocInput.in] || [];
       if (apiDocInput.in === 'body' && apiDocInput.data.length) {
         paramsConfig[apiDocInput.in] = paramsConfig[apiDocInput.in].concat(
-          findAvailableBodyParams(apiDocInput.data),
+          findAvailableBodyParams(apiDocInput.data, paramPath),
         );
         return;
       }
-      paramsConfig[apiDocInput.in].push({ title, name, required });
+
+      paramsConfig[apiDocInput.in].push({ title, name, required, path: paramPath });
     });
 
     return Object.assign(parseParamOfPath(url), paramsConfig);
