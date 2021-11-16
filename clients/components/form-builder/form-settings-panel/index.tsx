@@ -13,7 +13,7 @@ function FormSettingPanel(): JSX.Element {
   return (
     <div className="panel opacity-95">
       {isDragging ? null : (<Tab
-        strechNavs
+        stretchNav
         separator
         style={{ width: '296px' }}
         items={[
