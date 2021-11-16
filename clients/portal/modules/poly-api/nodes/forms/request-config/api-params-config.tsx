@@ -1,17 +1,23 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
 import Icon from '@c/icon';
 import FormulaEditor, { RefProps } from '@c/formula-editor';
 import { convertToParamsConfig } from '@portal/modules/poly-api/utils/request-node';
+import { ApiRequestNodeConfigContext } from './context';
 
 type Props = {
   configValue?: any;
+  initRequestNodeInputs?: any;
   onChange: (value: any) => void;
   setCurrentFormulaRef: (ref: any) => void;
 }
 
-function ApiParamsConfig({ configValue, setCurrentFormulaRef, onChange }: Props): JSX.Element {
+function ApiParamsConfig({
+  configValue, initRequestNodeInputs, setCurrentFormulaRef, onChange }: Props,
+): JSX.Element {
+  const { customRules } = useContext(ApiRequestNodeConfigContext);
+  configValue.doc.inputs = initRequestNodeInputs;
   const polyParams = Object.entries(convertToParamsConfig(configValue));
 
   function updateRequestNodeConfigValueInputs(
@@ -70,6 +76,7 @@ function ApiParamsConfig({ configValue, setCurrentFormulaRef, onChange }: Props)
                     <FormulaEditor
                       help=""
                       ref={formulaRef}
+                      customRules={customRules}
                       className="node-formula-editor"
                       onChange={(value) => handleFormulaChange(value, configParamTag)}
                     />

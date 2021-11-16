@@ -16,10 +16,11 @@ import ApiDocDetail from '@polyApi/components/api-doc-detail';
 
 type Props = {
   apiDocDetail: any;
+  initRawApiPath: string;
   setApiPath: (apiPath: string) => void;
 }
 
-function ApiSelector({ apiDocDetail, setApiPath }: Props): JSX.Element {
+function ApiSelector({ apiDocDetail, setApiPath, initRawApiPath }: Props): JSX.Element {
   const { appID } = useParams<{ appID: string }>();
   const [selectValue, setSelectValue] = useState<any>();
   const [apiNamespacePath, setApiNamespacePath] = useState('');
@@ -84,6 +85,7 @@ function ApiSelector({ apiDocDetail, setApiPath }: Props): JSX.Element {
           changeOnSelect
           className="cascader"
           value={selectValue}
+          defaultValue={[initRawApiPath]}
           options={allApiOptions}
           loadData={loadData}
           onChange={onChange}

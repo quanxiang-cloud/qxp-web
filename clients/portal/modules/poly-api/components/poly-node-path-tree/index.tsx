@@ -44,11 +44,11 @@ function FormulaConfigTree(
   useImperativeHandle(ref, () => ({
     getCustomRules: () => {
       return store.nodeList
+        .filter(({ name, visible }) => !!name && visible)
         .map((node) => ({
           name: get(node, 'data.descPath', ''),
           key: node.path,
-        }))
-        .filter(({ name }) => !!name);
+        }));
     },
   }), [store]);
 

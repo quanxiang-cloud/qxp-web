@@ -8,6 +8,7 @@ import ApiFormulaConfig from './api-formula';
 import { useGetRequestNodeApi } from '../../../effects/api/raw';
 import ApiParamsConfig from './api-params-config';
 import { ApiRequestNodeConfigContext } from './context';
+import { CustomRule } from '@c/formula-editor';
 
 type Props = {
   initialValues: any;
@@ -16,8 +17,9 @@ type Props = {
 }
 
 function RequestConfigForm({ initialValues, value, onChange }: Props): JSX.Element {
-  const [apiPath, setApiPath] = useState('');
+  const [apiPath, setApiPath] = useState(initialValues.rawPath);
   const [currentFormulaEditorRef, setCurrentFormulaRef] = useState<HTMLDivElement>();
+  const [customRules, setCustomRules] = React.useState<CustomRule[]>([]);
   const [requestNodeInputs, setRequestNodeInputs] = useState();
 
   const { data: apiDocDetail, isLoading, isSuccess, isError, error } = useGetRequestNodeApi({
@@ -26,13 +28,13 @@ function RequestConfigForm({ initialValues, value, onChange }: Props): JSX.Eleme
   }, { enabled: !!apiPath });
 
   useEffect(() => {
-    console.log({
-      rawPath: '',
-      apiName: '',
+    onChange({
+      rawPath: apiPath,
+      apiName: apiPath.split('/').pop(),
       inputs: requestNodeInputs,
       // outputs: [...configValue.doc.outputs],
     });
-  }, [requestNodeInputs]);
+  }, [requestNodeInputs, apiPath]);
 
   if (isError) {
     toast.error(error?.message);
@@ -40,9 +42,10 @@ function RequestConfigForm({ initialValues, value, onChange }: Props): JSX.Eleme
 
   return (
     <>
-      <ApiRequestNodeConfigContext.Provider value={currentFormulaEditorRef}>
+      <ApiRequestNodeConfigContext.Provider value={{ currentFormulaEditorRef, customRules }}>
         <ApiSelector
           setApiPath={setApiPath}
+          initRawApiPath={initialValues}
           apiDocDetail={apiDocDetail}
         />
         <div className="flex flex-1 border-t-1" style={{ height: 'calc(100% - 56px)' }}>
@@ -52,9 +55,10 @@ function RequestConfigForm({ initialValues, value, onChange }: Props): JSX.Eleme
               <ApiParamsConfig
                 onChange={setRequestNodeInputs}
                 setCurrentFormulaRef={setCurrentFormulaRef}
+                initRequestNodeInputs={initialValues.inputs}
                 configValue={apiDocDetail}
               />
-              <ApiFormulaConfig />
+              <ApiFormulaConfig setCustomRules={setCustomRules} />
             </>
           )}
           {(!apiPath || (isSuccess && !apiDocDetail)) && (
