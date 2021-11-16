@@ -91,7 +91,7 @@ function FormulaEditor({
     const currentContentLength = currentContent.getPlainText('').length;
     setLength(currentContentLength);
     setEditorState(_editorState);
-    onChange?.(getFormulaValue());
+    onChange?.(getFormulaValue(_editorState));
   };
 
   const getLengthOfSelectedText = (): number => {
@@ -251,8 +251,8 @@ function FormulaEditor({
     handleChange(newEditorState);
   };
 
-  const getFormulaValue = (): string => {
-    const currentContent = editorState.getCurrentContent();
+  const getFormulaValue = (_editorState?: EditorState): string => {
+    const currentContent = (_editorState || editorState).getCurrentContent();
     const { blocks, entityMap } = convertToRaw(currentContent);
     return blocks.map((block) => {
       let text = block.text;
