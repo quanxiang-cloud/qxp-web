@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useCallback } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import FormularEditor, { RefProps, CustomRule } from '@c/formula-editor';
-import PolyNodePathTree from '@polyApi/components/poly-node-path-tree';
+import PolyNodePathTree, { RefType } from '@polyApi/components/poly-node-path-tree';
 import { getElementHeight } from '@polyApi/utils/dom';
 import { TreeNode } from '@c/headless-tree/types';
 import Operates from '@polyApi/components/operates';
@@ -10,8 +10,20 @@ import { CONDITION_OPERATES_MAP } from '@polyApi/constants';
 
 function ConditionForm(props: ISchemaFieldComponentProps): JSX.Element {
   const [customRules, setCustomRules] = React.useState<CustomRule[]>([]);
+  const polyNodePathTreeRef = useRef<RefType | null>(null);
   const formularRef = useRef<RefProps | null>(null);
   const ref = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (customRules.length) {
+      return;
+    }
+    const rules = polyNodePathTreeRef.current?.getCustomRules();
+    console.log(rules);
+
+    rules?.length && setCustomRules(rules);
+  });
+
   useEffect(() => {
     const el = document.querySelector('.node-config-form-section') as HTMLDivElement;
     if (!el || !ref.current) {
@@ -31,10 +43,6 @@ function ConditionForm(props: ISchemaFieldComponentProps): JSX.Element {
   function handleChange(value: string): void {
     props.mutators.change({ type: 'direct_expr', data: value });
   }
-
-  const onGetCustomRules = useCallback((customRules: CustomRule[]) => {
-    setCustomRules(customRules);
-  }, []);
 
   const handleOperateChange = useCallback((operate: string) => {
     formularRef.current?.insertText(operate);
@@ -63,7 +71,7 @@ function ConditionForm(props: ISchemaFieldComponentProps): JSX.Element {
         <PolyNodePathTree
           className="h-full bg-white"
           onSelect={onSelect}
-          onGetCustomRules={onGetCustomRules}
+          ref={polyNodePathTreeRef}
         />
       </div>
     </div>

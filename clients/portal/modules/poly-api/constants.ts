@@ -73,3 +73,5 @@ export const POLY_STATUS_MAP = {
   0: '未启用',
   1: '已启用',
 };
+
+export const PATH_TREE_AVAILABLE_NODE_TYPE = ['input', 'request'];

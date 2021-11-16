@@ -1,6 +1,14 @@
 import store$ from '../store';
+import { PATH_TREE_AVAILABLE_NODE_TYPE } from '../constants';
 
-export default function getPathTreeSource(currentNodeId: string): POLY_API.PlainElement[] {
+export function addNodeNamePrefix2PolyNodeInput(
+  inputs: POLY_API.PolyNodeInput[], prefix: POLY_API.PolyNodeInput,
+): POLY_API.PolyNodeInput {
+  prefix.data = inputs;
+  return prefix;
+}
+
+export default function getPathTreeSource(currentNodeId: string): POLY_API.PolyNodeInput[] {
   const { nodes = [] } = store$.getRootValue();
   const nodeIdMap = nodes.reduce((acc: Record<string, POLY_API.PlainElement>, node) => {
     acc[node.id] = node;
@@ -33,5 +41,22 @@ export default function getPathTreeSource(currentNodeId: string): POLY_API.Plain
     processQueue.push(...parents);
   }
 
-  return previousNodes;
+  return previousNodes
+    .filter((node) => PATH_TREE_AVAILABLE_NODE_TYPE.includes(node?.type || ''))
+    .map((node) => {
+      let inputsOrOutputs: POLY_API.PolyNodeInput[] = [];
+      if (node.data?.type === 'input') {
+        inputsOrOutputs = node.data.detail.inputs;
+      } else if (node.data?.type === 'request') {
+        inputsOrOutputs = node.data.detail.outputs || [];
+      }
+      return addNodeNamePrefix2PolyNodeInput(inputsOrOutputs, {
+        type: 'object',
+        name: node.id,
+        desc: node.data?.title || '开始节点',
+        data: [],
+        in: 'body',
+        required: true,
+      });
+    });
 }
