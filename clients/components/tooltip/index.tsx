@@ -44,7 +44,7 @@ export default function ToolTip(props: Props) {
         {...omit(props, ['className', 'children'])}
       />
       <div
-        className="flex items-center justify-around"
+        className="flex items-center"
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
       >

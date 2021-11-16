@@ -56,6 +56,19 @@ export const OPERATES_MAP = {
   '()': '括号',
 };
 
+export const CONDITION_OPERATES_MAP = {
+  '>': '大于',
+  '<': '小于',
+  '==': '等于',
+  '<=': '小于等于',
+  '>=': '大于等于',
+  '!=': '不等于',
+  '&&': '与',
+  '||': '或',
+  '()': '括号',
+  '\'\'': '引号',
+};
+
 export const POLY_STATUS_MAP = {
   0: '未启用',
   1: '已启用',

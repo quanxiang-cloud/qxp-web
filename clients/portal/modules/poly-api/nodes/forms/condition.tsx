@@ -1,33 +1,70 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect, useCallback } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
-import FormularEditor from '@c/formula-editor';
+import FormularEditor, { RefProps, CustomRule } from '@c/formula-editor';
 import PolyNodePathTree from '@polyApi/components/poly-node-path-tree';
+import { getElementHeight } from '@polyApi/utils/dom';
+import { TreeNode } from '@c/headless-tree/types';
+import Operates from '@polyApi/components/operates';
+import { CONDITION_OPERATES_MAP } from '@polyApi/constants';
 
 function ConditionForm(props: ISchemaFieldComponentProps): JSX.Element {
-  const formularRef = useRef(null);
+  const [customRules, setCustomRules] = React.useState<CustomRule[]>([]);
+  const formularRef = useRef<RefProps | null>(null);
+  const ref = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const el = document.querySelector('.node-config-form-section') as HTMLDivElement;
+    if (!el || !ref.current) {
+      return;
+    }
+    ref.current.style.height = `${getElementHeight(el)}px`;
+  }, []);
   props;
 
-  function onSelect(...args: any[]): void {
-    console.log(...args);
+  function onSelect(node: TreeNode<POLY_API.PolyNodeInput & { descPath: string }>): void {
+    formularRef.current?.insertEntity({
+      name: node.data?.descPath,
+      key: node.path,
+    });
   }
 
-  function handleChange(v: string) {
-    console.log(v);
+  function handleChange(value: string): void {
+    props.mutators.change({ type: 'direct_expr', data: value });
   }
+
+  const onGetCustomRules = useCallback((customRules: CustomRule[]) => {
+    setCustomRules(customRules);
+  }, []);
+
+  const handleOperateChange = useCallback((operate: string) => {
+    formularRef.current?.insertText(operate);
+  }, []);
 
   return (
-    <div className="h-full grid grid-cols-2">
+    <div className="h-full grid grid-cols-2" ref={ref}>
       <div className="h-full flex-2">
-        <FormularEditor
-          className="h-full node-formula-editor"
-          ref={formularRef}
-          onChange={handleChange}
-          help=""
-        />
+        {!!customRules?.length && (
+          <FormularEditor
+            className="h-full node-formula-editor"
+            ref={formularRef}
+            onChange={handleChange}
+            customRules={customRules}
+            defaultValue={props.initialValue?.data || props.value?.data || ''}
+            help=""
+          />
+        )}
       </div>
-      <div className="flex-1">
-        <PolyNodePathTree onSelect={onSelect} />
+      <div className="flex-1 overflow-auto">
+        <Operates
+          operates={CONDITION_OPERATES_MAP}
+          onClick={handleOperateChange}
+          className="bg-white"
+        />
+        <PolyNodePathTree
+          className="h-full bg-white"
+          onSelect={onSelect}
+          onGetCustomRules={onGetCustomRules}
+        />
       </div>
     </div>
   );

@@ -101,7 +101,7 @@ function BodyEditor(props: ISchemaFieldComponentProps): JSX.Element {
     row: Row<POLY_API.ObjectSchema> | null,
     store$: Store<POLY_API.ObjectSchema>,
   ): void {
-    if (!row) {
+    if (!row || !row.parent$) {
       return store$?.addChild(getObjectEditorNewField(null), store$.value.length);
     }
     const { type, current$, parent$, children$, parentPath, name, index } = row;
@@ -114,9 +114,6 @@ function BodyEditor(props: ISchemaFieldComponentProps): JSX.Element {
       defaultNewField.name = null;
       current$.addChild(defaultNewField, children$.length);
       return store$.update();
-    }
-    if (!parent$) {
-      return;
     }
     if ((parent$.value as POLY_API.ObjectSchema)?.type === 'array') {
       defaultNewField.name = null;

@@ -34,13 +34,16 @@ export default function ConditionNode(props: NodeProps<POLY_API.SubjectPolyNode>
       noBg
       {...props}
     >
-      <Icon
-        onClick={showConfig}
-        name="condition"
-        size={50}
+      <div
         className="poly-condition"
-        style={{ backgroundColor: 'transparent' }}
-      />
+        onClick={showConfig}
+      >
+        <Icon
+          name="condition"
+          size={50}
+          style={{ backgroundColor: 'transparent' }}
+        />
+      </div>
     </NodeWrapper>
   );
 }

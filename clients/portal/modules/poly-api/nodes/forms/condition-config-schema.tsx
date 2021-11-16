@@ -1,5 +1,10 @@
 export default {
   type: 'object',
+  'x-component-props': {
+    style: {
+      height: '100%',
+    },
+  },
   properties: {
     cond: {
       type: 'object',
@@ -12,7 +17,7 @@ export default {
         itemStyle: {
           marginBottom: 0,
         },
-        itemClassName: 'bg-gray-100',
+        itemClassName: 'bg-gray-100 h-full',
       },
       'x-index': 0,
     },

@@ -48,7 +48,7 @@ function ObjectEditor<T extends { children: T[] }>(
 
   const handleDeleteField = useCallback(({ current$, parent$ }: Row<T>, store$: Store<T>) => {
     return () => {
-      parent$?.removeChild(current$);
+      (parent$ || store$)?.removeChild(current$);
       parent$ !== store$ && store$.update();
     };
   }, []);

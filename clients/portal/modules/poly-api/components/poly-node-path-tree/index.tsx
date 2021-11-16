@@ -1,11 +1,13 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { clone, isEmpty } from 'ramda';
+import { get } from 'lodash';
 
 import Tree from '@c/headless-tree';
 import store$ from '@polyApi/store';
 import useObservable from '@lib/hooks/use-observable';
 import getPathTreeSource from '@polyApi/utils/get-path-tree-source';
 import { addNodeNamePrefix2PolyNodeInput } from '@polyApi/utils/request-node';
+import type { CustomRule } from '@c/formula-editor';
 
 import Store from './store';
 import NodeRender from './poly-tree-node';
@@ -95,9 +97,11 @@ const AVAILABLE_NODE_TYPE = ['input', 'request'];
 
 type Props = {
   onSelect: (node: any) => void;
+  onGetCustomRules?: (customRules: CustomRule[]) => void;
+  className?: string;
 }
 
-function FormulaConfigTree({ onSelect }: Props ): JSX.Element {
+function FormulaConfigTree({ onSelect, onGetCustomRules, className }: Props ): JSX.Element {
   const polyNodeStore = useObservable(store$);
   const apiRequestNodeId = polyNodeStore.currentNodeConfigParams?.currentNode?.get('name') as string;
   let sourceNodes: any = [];
@@ -116,8 +120,17 @@ function FormulaConfigTree({ onSelect }: Props ): JSX.Element {
 
   const store = useMemo(() => new Store(root, sourceNodes), [root, sourceNodes]);
 
+  useEffect(() => {
+    const rules = store.nodeList.map((node) => ({
+      name: get(node, 'data.descPath', ''),
+      key: node.path,
+    })).filter(({ name }) => !!name);
+    onGetCustomRules?.(rules);
+  }, [store.nodeList, onGetCustomRules]);
+
   return (
     <Tree
+      className={className}
       store={store}
       NodeRender={NodeRender}
       RootNodeRender={() => null}
