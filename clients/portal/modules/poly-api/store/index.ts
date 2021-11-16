@@ -30,7 +30,7 @@ const store$ = new PolyStore({
   namespace: '',
   name: 'PAI名称',
   desc: '',
-  version: '',
+  version: '1.0',
   id: '',
   encoding: '',
   currentNodeConfigParams: {
