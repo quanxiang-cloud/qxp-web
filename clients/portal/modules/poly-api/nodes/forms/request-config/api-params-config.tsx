@@ -41,6 +41,7 @@ function ApiParamsConfig({ configs, setCurrentFormulaRef }: Props): JSX.Element 
                       help=""
                       ref={formulaRef}
                       className="node-formula-editor"
+                      onChange={(value) => console.log('there has value delay', value)}
                     />
                   </div>
                 );
