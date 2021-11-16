@@ -6,7 +6,7 @@ import Icon from '@c/icon';
 
 import NodeWrapper from './wrapper';
 import useNodeConfig from '../effects/hooks/use-node-config';
-import conditionConfigSchema from './forms/condition-config-schema';
+import conditionConfigSchema from './forms/condition/schema';
 
 export default function ConditionNode(props: NodeProps<POLY_API.SubjectPolyNode>): JSX.Element | null {
   const [isConfigShow, setIsConfigShow] = React.useState(false);

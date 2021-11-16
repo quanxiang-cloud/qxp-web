@@ -4,7 +4,7 @@ export default {
     apiDoc: {
       type: 'string',
       default: '',
-      'x-component': 'polyDocDetail',
+      'x-component': 'PolyDocDetail',
       'x-props': {
         itemStyle: {
           marginBottom: 0,

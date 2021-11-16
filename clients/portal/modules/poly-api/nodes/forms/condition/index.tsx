@@ -9,6 +9,7 @@ import Operates from '@polyApi/components/operates';
 import { CONDITION_OPERATES_MAP } from '@polyApi/constants';
 
 function ConditionForm(props: ISchemaFieldComponentProps): JSX.Element {
+  props;
   const [customRules, setCustomRules] = React.useState<CustomRule[]>([]);
   const polyNodePathTreeRef = useRef<RefType | null>(null);
   const formularRef = useRef<RefProps | null>(null);
@@ -19,8 +20,6 @@ function ConditionForm(props: ISchemaFieldComponentProps): JSX.Element {
       return;
     }
     const rules = polyNodePathTreeRef.current?.getCustomRules();
-    console.log(rules);
-
     rules?.length && setCustomRules(rules);
   });
 
@@ -31,7 +30,6 @@ function ConditionForm(props: ISchemaFieldComponentProps): JSX.Element {
     }
     ref.current.style.height = `${getElementHeight(el)}px`;
   }, []);
-  props;
 
   function onSelect(node: TreeNode<POLY_API.PolyNodeInput & { descPath: string }>): void {
     formularRef.current?.insertEntity({

@@ -12,7 +12,7 @@ export default {
         type: 'direct_expr',
         data: '',
       },
-      'x-component': 'condition',
+      'x-component': 'Condition',
       'x-props': {
         itemStyle: {
           marginBottom: 0,
@@ -24,14 +24,14 @@ export default {
     yes: {
       type: 'string',
       default: '',
-      'x-component': 'input',
+      'x-component': 'Input',
       display: false,
       'x-index': 1,
     },
     no: {
       type: 'string',
       default: '',
-      'x-component': 'input',
+      'x-component': 'Input',
       display: false,
       'x-index': 2,
     },

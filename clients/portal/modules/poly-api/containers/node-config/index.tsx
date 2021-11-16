@@ -12,6 +12,7 @@ import BodyEditor from '@polyApi/components/body-editor';
 import ConstantsEditor from '@polyApi/components/constants-editor';
 import PolyDocDetail from '@polyApi/components/poly-doc-detail';
 import Condition from '@polyApi/nodes/forms/condition';
+import EndBody from '@polyApi/nodes/forms/end';
 
 const schemaFormComponents = {
   input: Input,
@@ -19,6 +20,7 @@ const schemaFormComponents = {
   constantsEditor: ConstantsEditor,
   polyDocDetail: PolyDocDetail,
   condition: Condition,
+  endBody: EndBody,
 };
 
 import DrawerTitle from './drawer-title';
