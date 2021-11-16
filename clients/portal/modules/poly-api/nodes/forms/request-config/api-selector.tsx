@@ -26,7 +26,6 @@ function ApiSelector({ apiDocDetail, setApiPath, initRawApiPath }: Props): JSX.E
   const [selectValue, setSelectValue] = useState<any>();
   const [apiNamespacePath, setApiNamespacePath] = useState('');
   const [allApiOptions, setAllApiOptions] = useState<any[]>();
-  const [initOption, setIniOption] = useState<string[]>();
 
   const { data: namespace } = useQueryNameSpaceRawRootPath(appID);
   const { data: namespacePaths } = useGetNamespaceFullPath({
@@ -70,7 +69,7 @@ function ApiSelector({ apiDocDetail, setApiPath, initRawApiPath }: Props): JSX.E
   }, [currentRawApiDetails]);
 
   useEffect(() => {
-    initRawApiPath && setIniOption(getInitOption());
+    initRawApiPath && setSelectValue(getInitOption());
   }, []);
 
   function onChange(value: any, selectedOptions: any): any {
@@ -102,7 +101,6 @@ function ApiSelector({ apiDocDetail, setApiPath, initRawApiPath }: Props): JSX.E
           changeOnSelect
           className="cascader"
           value={selectValue}
-          defaultValue={initOption}
           options={allApiOptions}
           loadData={loadData}
           onChange={onChange}
