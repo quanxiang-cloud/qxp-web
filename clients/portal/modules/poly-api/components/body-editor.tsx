@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useCallback } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
-import { isString, isBoolean, isNull, isNumber } from 'lodash';
+import { isString, isBoolean, isNull, isNumber, isObject, get, isArray } from 'lodash';
 
 import {
   getFullPath, getObjectEditorNewField, fromApiDataToObjectSchema, fromObjectSchemaToApiData,
@@ -16,15 +16,20 @@ import { Store, ItemStore } from './object-editor/store';
 type Props = ISchemaFieldComponentProps & {
   columnsDataIndexToOmit?: string[];
   extraColumns?: Column<POLY_API.ObjectSchema>[];
+  onAddField?: () => void;
 }
 
 function BodyEditor(props: Props): JSX.Element {
-  const { columnsDataIndexToOmit, extraColumns = [] } = props;
+  const { columnsDataIndexToOmit, extraColumns = [], initialValue, onAddField } = props;
+  const isValueObject = isObject(initialValue) && !isArray(initialValue);
 
   const handleChange = useCallback((value: POLY_API.ObjectSchema[]) => {
     const distValue = fromObjectSchemaToApiData(value);
-    props.mutators.change(distValue);
-  }, [props.mutators]);
+    const newValue = isValueObject ?
+      { type: distValue.length > 1 ? 'array' : 'object', data: distValue } :
+      distValue;
+    props.mutators.change(newValue);
+  }, []);
 
   const isObjectField = useCallback((type: string): boolean => {
     return ['object', 'array'].includes(type);
@@ -60,7 +65,6 @@ function BodyEditor(props: Props): JSX.Element {
   ): JSX.Element {
     const path = getFullPath(parentPath, name, index);
     const level = path.split('.').length;
-    // console.log({ name, parentPath, path, index });
     return (
       <div className="flex items-center" style={{ marginLeft: (level - 1) * 20 }}>
         {(type === 'object' || type === 'array') && (
@@ -107,6 +111,7 @@ function BodyEditor(props: Props): JSX.Element {
     row: Row<POLY_API.ObjectSchema> | null,
     store$: Store<POLY_API.ObjectSchema>,
   ): void {
+    onAddField?.();
     if (!row) {
       return store$?.addChild(getObjectEditorNewField(null), store$.value.length);
     }
@@ -156,12 +161,14 @@ function BodyEditor(props: Props): JSX.Element {
     ...extraColumns,
   ].filter(({ dataIndex }) => !columnsDataIndexToOmit?.includes(dataIndex));
 
+  const initialValueFrom = isValueObject ? get(initialValue, 'data', []) : initialValue;
+
   return (
     <>
       <p className="mt-12 mb-4 text-h6-no-color-weight text-gray-900">Body</p>
       <ObjectEditor<POLY_API.ObjectSchema>
         columns={columns}
-        initialValues={fromApiDataToObjectSchema((props.initialValue || []) as POLY_API.PolyNodeInput[])}
+        initialValues={fromApiDataToObjectSchema((initialValueFrom || []) as POLY_API.PolyNodeInput[])}
         onAddField={handleAddField}
         onChange={handleChange}
       />

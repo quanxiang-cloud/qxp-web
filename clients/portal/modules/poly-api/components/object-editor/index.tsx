@@ -1,5 +1,5 @@
 import React, { useMemo, useCallback } from 'react';
-import { isFunction, isString } from 'lodash';
+import { isFunction, isString, isEmpty } from 'lodash';
 import { equals } from 'ramda';
 import { useUpdateEffect, usePrevious } from 'react-use';
 
@@ -20,7 +20,7 @@ export type Row<T extends { children: T[] }> = T & {
 export interface Column<T extends { children: T[] }> {
   title: string | ((store$: Store<T>) => JSX.Element | null);
   dataIndex: string;
-  render: (row: Row<T>, store$: Store<T>) => JSX.Element;
+  render: (row: Row<T>, store$: Store<T>) => JSX.Element | null;
 }
 
 interface Props<T extends { children: T[] }> {
@@ -39,8 +39,8 @@ function ObjectEditor<T extends { children: T[] }>(
 
   const previousDataSource = usePrevious(dataSource);
   useUpdateEffect(() => {
-    !equals(dataSource, previousDataSource) && onChange(dataSource);
-  }, [dataSource, onChange]);
+    !isEmpty(previousDataSource) && !equals(dataSource, previousDataSource) && onChange(dataSource);
+  }, [dataSource]);
 
   const handleAddField = useCallback((row: Row<T> | null, store$: Store<T>) => {
     return () => onAddField(row, store$);

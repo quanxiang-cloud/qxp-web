@@ -1,7 +1,8 @@
-import React, { useMemo, Ref, forwardRef, ForwardedRef, useImperativeHandle } from 'react';
+import React, { useMemo, Ref, forwardRef, ForwardedRef, useImperativeHandle, useCallback } from 'react';
 import { get } from 'lodash';
 
 import Tree from '@c/headless-tree';
+import type { TreeNode } from '@c/headless-tree/types';
 import store$ from '@polyApi/store';
 import useObservable from '@lib/hooks/use-observable';
 import getPathTreeSource from '@polyApi/utils/get-path-tree-source';
@@ -23,7 +24,7 @@ export type RefType = {
   getCustomRules(): CustomRule[];
 }
 type Props = {
-  onSelect: (node: any) => void;
+  onSelect: (node: TreeNode<POLY_API.PolyNodeInput & { descPath: string }>) => void;
   className?: string;
   ref?: Ref<RefType>;
 }
@@ -52,13 +53,21 @@ function FormulaConfigTree(
     },
   }), [store]);
 
+  const handleSelect = useCallback(() => {
+    const currentNode = store.currentFocusedNode as TreeNode<POLY_API.PolyNodeInput & { descPath: string }>;
+    if (!currentNode.visible) {
+      return;
+    }
+    onSelect(currentNode);
+  }, [onSelect, store]);
+
   return (
     <Tree
       className={className}
       store={store}
       NodeRender={NodeRender}
       RootNodeRender={() => null}
-      onSelect={() => onSelect(store.currentFocusedNode)}
+      onSelect={handleSelect}
     />
   );
 }

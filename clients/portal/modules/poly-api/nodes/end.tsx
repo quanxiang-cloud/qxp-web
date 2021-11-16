@@ -15,7 +15,6 @@ export default function EndNode(props: NodeProps<POLY_API.SubjectPolyNode>): JSX
     currentNode: props.data,
     schema: endConfigSchema,
     onClose: () => setIsConfigShow(false),
-    excludedFields: ['apiDoc'],
   });
 
   function showConfig(): void {

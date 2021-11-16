@@ -65,7 +65,7 @@ function ApiParamsConfig({
                     className="flex justify-between"
                     onClick={() => setCurrentFormulaRef(formulaRef)}
                   >
-                    <div className="flex items-center justify-between w-142 p-8 flex-1">
+                    <div className="flex items-center justify-between w-142 p-8 flex-1 border-r-1">
                       <div className="flex-1 truncate">
                         <span>{title}</span>
                         <span className="mx-4 text-gray-400">{name}</span>

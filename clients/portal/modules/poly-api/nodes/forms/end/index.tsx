@@ -1,19 +1,20 @@
-import React, { useRef, useEffect, useCallback } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
-import { RefProps, CustomRule } from '@c/formula-editor';
+import { CustomRule } from '@c/formula-editor';
 import PolyNodePathTree, { RefType } from '@polyApi/components/poly-node-path-tree';
 import { getElementHeight } from '@polyApi/utils/dom';
 import { TreeNode } from '@c/headless-tree/types';
 import Operates from '@polyApi/components/operates';
 import { OPERATES_MAP } from '@polyApi/constants';
-import OutputEditor from './output-editor';
+
+import OutputEditor, { RefType as OutPutEditorRefType } from './output-editor';
 
 function EndForm(props: ISchemaFieldComponentProps): JSX.Element {
   props;
   const [customRules, setCustomRules] = React.useState<CustomRule[]>([]);
   const polyNodePathTreeRef = useRef<RefType | null>(null);
-  const formularRef = useRef<RefProps | null>(null);
+  const outputEditorRef = useRef<OutPutEditorRefType | null>(null);
   const ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -21,8 +22,8 @@ function EndForm(props: ISchemaFieldComponentProps): JSX.Element {
       return;
     }
     const rules = polyNodePathTreeRef.current?.getCustomRules();
-    rules?.length && setCustomRules(rules);
-  });
+    setCustomRules(rules || []);
+  }, [customRules]);
 
   useEffect(() => {
     const el = document.querySelector('.node-config-form-section') as HTMLDivElement;
@@ -33,24 +34,24 @@ function EndForm(props: ISchemaFieldComponentProps): JSX.Element {
   }, []);
 
   function onSelect(node: TreeNode<POLY_API.PolyNodeInput & { descPath: string }>): void {
-    formularRef.current?.insertEntity({
-      name: node.data?.descPath,
-      key: node.path,
+    outputEditorRef.current?.getCurrent()?.insertEntity({
+      name: node.data?.descPath.replace(/\s/g, ''),
+      key: node.path.replace(/\s+/g, ''),
     });
   }
 
-  function handleChange(value: string): void {
-    props.mutators.change({ type: 'direct_expr', data: value });
+  function handleOperateChange(operate: string): void {
+    outputEditorRef.current?.getCurrent()?.insertText(operate);
   }
-
-  const handleOperateChange = useCallback((operate: string) => {
-    formularRef.current?.insertText(operate);
-  }, []);
 
   return (
     <div className="h-full flex" ref={ref}>
       <div className="h-full flex-2 px-20">
-        <OutputEditor {...props} />
+        <OutputEditor
+          {...props}
+          customRules={customRules}
+          ref={outputEditorRef}
+        />
       </div>
       <div className="flex-1 overflow-auto">
         <Operates

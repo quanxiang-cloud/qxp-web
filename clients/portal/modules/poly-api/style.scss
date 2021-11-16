@@ -203,7 +203,8 @@ $nodeTypes: input, request, if, end, default, output;
 }
 
 .node-formula-editor {
-  @apply flex-2 border-l-1 border-gray-200;
+  @apply flex-2 border-gray-200;
+  min-width: 68px;
 
   &>div {
     border: 0;
@@ -218,6 +219,9 @@ $nodeTypes: input, request, if, end, default, output;
 
   .DraftEditor-root {
     background-color: transparent;
+    .public-DraftEditorPlaceholder-inner {
+      white-space: nowrap !important;
+    }
   }
 }
 

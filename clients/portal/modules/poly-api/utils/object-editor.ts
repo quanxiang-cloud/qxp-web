@@ -1,4 +1,4 @@
-import { isNull, flattenDeep } from 'lodash';
+import { isNull, flattenDeep, isArray, isString } from 'lodash';
 
 import type { ItemStore } from '../components/object-editor/store';
 import type { Row } from '../components/object-editor';
@@ -11,12 +11,12 @@ export function getFullPath(parentPath: string | null, name: string | null, inde
 function objectSchemaToNodeInput(
   schema: POLY_API.ObjectSchema, data: POLY_API.PolyNodeInput[],
 ): POLY_API.PolyNodeInput {
-  const { type, name, required, desc, in: _in } = schema;
+  const { type, name, required, desc, rule, in: _in } = schema;
   return {
-    type,
+    type: rule ? 'direct_expr' : type,
     name: name || '',
     desc,
-    data,
+    data: rule || data,
     in: _in,
     required,
   };
@@ -48,7 +48,7 @@ export function fromApiDataToObjectSchema(
 ): POLY_API.ObjectSchema[] {
   return data.map(({ type, name, desc, data: childrenData, required, in: _in }, index: number) => {
     const parentPath = _parentPath ? getFullPath(_parentPath, name, index) : name;
-    const children = fromApiDataToObjectSchema(childrenData, parentPath);
+    const children = isArray(childrenData) ? fromApiDataToObjectSchema(childrenData, parentPath) : [];
     return {
       type,
       name,
@@ -57,6 +57,7 @@ export function fromApiDataToObjectSchema(
       required,
       in: _in,
       index,
+      rule: type === 'direct_expr' && isString(childrenData) ? childrenData : undefined,
       parentPath: _parentPath,
     };
   });

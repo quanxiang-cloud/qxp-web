@@ -16,10 +16,8 @@ function BodyEditor(props: ISchemaFieldComponentProps): JSX.Element {
   props;
   const handleChange = useCallback((value: POLY_API.PolyConstSchema[]) => {
     const distValue = fromPolyConstSchemaToApiData(value);
-    console.log('到底是啥', value, distValue);
     props.mutators.change(distValue);
-  }, [props.mutators]);
-  // const componentProps = props.props?.['x-component-props'] as Props;
+  }, []);
   function isObjectField(type: string): boolean {
     return ['object', 'array'].includes(type);
   }

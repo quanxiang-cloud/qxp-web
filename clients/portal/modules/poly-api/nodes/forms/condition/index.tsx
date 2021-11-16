@@ -20,8 +20,8 @@ function ConditionForm(props: ISchemaFieldComponentProps): JSX.Element {
       return;
     }
     const rules = polyNodePathTreeRef.current?.getCustomRules();
-    rules?.length && setCustomRules(rules);
-  });
+    setCustomRules(rules || []);
+  }, [customRules]);
 
   useEffect(() => {
     const el = document.querySelector('.node-config-form-section') as HTMLDivElement;

@@ -1,3 +1,4 @@
+import { isArray } from 'lodash';
 
 import TreeStore from '@c/headless-tree/store';
 import { TreeNode } from '@c/headless-tree/types';
@@ -39,7 +40,7 @@ function apiRequestFormulaTreeNode(
 
   const children = child?.filter(Boolean).map((polyNodeInput, index) => apiRequestFormulaTreeNode(
     polyNodeInput,
-    polyNodeInput.data,
+    isArray(polyNodeInput.data) ? polyNodeInput.data : [],
     level + 1,
     true,
     false,
