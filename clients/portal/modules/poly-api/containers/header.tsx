@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import cs from 'classnames';
 import { useHistory } from 'react-router-dom';
 import { from, of } from 'rxjs';
@@ -9,10 +9,11 @@ import Button from '@c/button';
 import httpClient from '@lib/http-client';
 import useObservable from '@lib/hooks/use-observable';
 
-import useOrchestrationAPIPath from '../effects/hooks/use-orchestration-api-path';
-import InputEditor from '../components/input-editor';
 import store$ from '../store';
 import { POLY_STATUS_MAP } from '../constants';
+import InputEditor from '../components/input-editor';
+import { buildPoly, publishPoly } from '../utils/bulid';
+import useOrchestrationAPIPath from '../effects/hooks/use-orchestration-api-path';
 
 interface Props {
   className?: string;
@@ -22,6 +23,8 @@ function PolyDetailsHeader({ className }: Props): JSX.Element {
   const store = useObservable(store$);
   const history = useHistory();
   const orchestrationAPIPath = useOrchestrationAPIPath();
+  const [debugLoading, setDebugLoading] = useState(false);
+  const [publishLoading, setPublishLoading] = useState(false);
 
   useEffect(() => {
     const types = ['node', 'value', 'oper', 'cond', 'cmp', 'in'];
@@ -44,6 +47,16 @@ function PolyDetailsHeader({ className }: Props): JSX.Element {
 
   const polyStatus = store.polyInfo ? POLY_STATUS_MAP[store.polyInfo.active] : '未启用';
 
+  function handleDebug(): void {
+    setDebugLoading(true);
+    buildPoly().then(() => setDebugLoading(false));
+  }
+
+  function handlePublish(): void {
+    setPublishLoading(true);
+    publishPoly().then(() => setPublishLoading(false));
+  }
+
   return (
     <header
       className={cs('flex justify-between items-center px-20', className)}
@@ -63,8 +76,23 @@ function PolyDetailsHeader({ className }: Props): JSX.Element {
       </section>
       <section className="flex items-center">
         <div>
-          <Button type="button" className="h-28 mr-10">调试</Button>
-          <Button modifier="primary" type="button" className="h-28 mr-10">上线</Button>
+          <Button
+            type="button"
+            className="h-28 mr-10"
+            loading={debugLoading}
+            onClick={handleDebug}
+          >
+            调试
+          </Button>
+          <Button
+            type="button"
+            modifier="primary"
+            className="h-28 mr-10"
+            loading={publishLoading}
+            onClick={handlePublish}
+          >
+            上线
+          </Button>
         </div>
         <div className="w-1 bg-gray-200 mr-10" style={{ height: 30 }}></div>
         <Icon name="question_answer" />

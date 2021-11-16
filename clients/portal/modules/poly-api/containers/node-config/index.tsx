@@ -5,14 +5,17 @@ import { SchemaForm } from '@formily/react-schema-renderer';
 
 import Button from '@c/button';
 import Drawer from '@c/drawer';
-import useObservable from '@lib/hooks/use-observable';
 import store$ from '@polyApi/store';
-import { NODE_INIT_CONFIG_PARAMS, NODE_TYPE_MAPPER } from '@polyApi/constants';
-import BodyEditor from '@polyApi/components/body-editor';
-import ConstantsEditor from '@polyApi/components/constants-editor';
-import PolyDocDetail from '@polyApi/components/poly-doc-detail';
-import Condition from '@polyApi/nodes/forms/condition';
 import EndBody from '@polyApi/nodes/forms/end';
+import useObservable from '@lib/hooks/use-observable';
+import Condition from '@polyApi/nodes/forms/condition';
+import { savePolyApiResult } from '@polyApi/utils/save';
+import BodyEditor from '@polyApi/components/body-editor';
+import PolyDocDetail from '@polyApi/components/poly-doc-detail';
+import ConstantsEditor from '@polyApi/components/constants-editor';
+import { NODE_INIT_CONFIG_PARAMS, NODE_TYPE_MAPPER } from '@polyApi/constants';
+
+import DrawerTitle from './drawer-title';
 
 const schemaFormComponents = {
   input: Input,
@@ -22,8 +25,6 @@ const schemaFormComponents = {
   condition: Condition,
   endBody: EndBody,
 };
-
-import DrawerTitle from './drawer-title';
 
 export default function NodeConfigDrawer(): JSX.Element {
   const store = useObservable(store$);
@@ -42,6 +43,7 @@ export default function NodeConfigDrawer(): JSX.Element {
 
   function onSave(): void {
     currentNode?.set('detail', omit(excludedFields || [], configValue) );
+    savePolyApiResult();
     onCancel();
   }
 

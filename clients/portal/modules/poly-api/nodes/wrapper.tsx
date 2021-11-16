@@ -12,7 +12,6 @@ import LeftHandle from './handle/left';
 import BottomHandle from './handle/bottom';
 import TopHandle from './handle/top';
 import { isSomeActionShow } from '../utils';
-import { useNodeSaver } from '../effects/hooks/use-node-saver';
 import NodeRemove from './action/remove';
 
 export default function({
@@ -24,7 +23,6 @@ export default function({
   const titleEditorRef = useRef<HTMLInputElement | null>(null);
   const removeRef = useRef<HTMLInputElement | null>(null);
   const nodeData = useObservable<POLY_API.PolyNode>(data);
-  useNodeSaver(nodeData);
 
   const { handles, title } = nodeData;
   const isInput = nodeData.type === 'input';
