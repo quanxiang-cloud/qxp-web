@@ -1,6 +1,9 @@
-import React, { lazy, Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { setValidationLanguage } from '@formily/antd';
 import { observer } from 'mobx-react';
+import Prism from 'prismjs';
+import 'prismjs/plugins/custom-class/prism-custom-class.js';
+import 'prismjs/components/prism-python.js';
 
 import Icon from '@c/icon';
 import store from '../store';
@@ -9,12 +12,15 @@ import { useState } from 'react';
 
 setValidationLanguage('zh');
 
-import 'highlight.js/styles/atelier-sulphurpool-dark.css';
 import Loading from '@c/loading';
 
-const Highlight = lazy(() => import('react-highlight').then((m) => m.default));
-
 function VersionDetails(): JSX.Element {
+  useEffect(() => {
+    Prism.highlightAll();
+    Prism.plugins.customClass.map({
+      number: 'pr-number',
+    });
+  });
   const [tabNow, setTabNow] = useState((store.buildIsError));
   const tabItems = [
     {
@@ -36,20 +42,22 @@ function VersionDetails(): JSX.Element {
         <Suspense fallback={<Loading />}>
           <div className='api-content-title'>请求示例</div>
           <div className='api-content'>
-            <Highlight
-              className='api-details'
-              // language={store.docType === 'curl' ? 'bash' : store.docType}
-            >
-              {/* {store.APiContent.input} */}
-            </Highlight>
+            <pre className='api-details'>
+              {/* <code className={`language-${store.docType === 'curl' ? 'bash' : store.docType}`}> */}
+              <code className='language-js'>
+                console.log(111)
+                {/* {`${store.APiContent.output}`} */}
+              </code>
+            </pre>
           </div>
           <div className='api-content-title mt-16'>返回示例</div>
-          <Highlight
-            className='api-details'
-            // language={store.docType === 'curl' ? 'bash' : store.docType}
-          >
-            {/* {store.APiContent.output} */}
-          </Highlight>
+          <pre className='api-details'>
+          console.log(111)
+            {/* <code className={`language-${store.docType === 'curl' ? 'bash' : store.docType}`}> */}
+            <code className='language-js'>
+              {/* {`${store.APiContent.output}`} */}
+            </code>
+          </pre>
         </Suspense>
       </div>,
     },

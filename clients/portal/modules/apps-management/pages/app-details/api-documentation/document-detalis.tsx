@@ -1,7 +1,10 @@
-import React, { lazy, Suspense } from 'react';
+import React, { useEffect } from 'react';
 import { observer } from 'mobx-react';
 import { UnionColumns } from 'react-table';
 import cs from 'classnames';
+import Prism from 'prismjs';
+import 'prismjs/plugins/custom-class/prism-custom-class.js';
+import 'prismjs/components/prism-python.js';
 
 import Tab from '@c/tab';
 import Icon from '@c/icon';
@@ -15,9 +18,8 @@ import { copyContent } from '@lib/utils';
 import RadioButtonGroup from '@c/radio/radio-button-group';
 
 import store from './store';
-import 'highlight.js/styles/atelier-sulphurpool-dark.css';
 
-const Highlight = lazy(() => import('react-highlight').then((m) => m.default));
+import './prism.css';
 
 const DOC_TYPE_LIST = [
   { label: 'CURL', value: 'curl' },
@@ -76,6 +78,12 @@ export const FIELD_COLUMNS: UnionColumns<ModelField>[] = [
 ];
 
 function renderApiDetails(): JSX.Element {
+  useEffect(() => {
+    Prism.highlightAll();
+    Prism.plugins.customClass.map({
+      number: 'pr-number',
+    });
+  });
   if (store.isAPILoading) {
     return <Loading/>;
   }
@@ -87,59 +95,56 @@ function renderApiDetails(): JSX.Element {
 
   return (
     <>
-      <Suspense fallback={<Loading />}>
-        <div className='h-56 flex items-center justify-between'>
-          <RadioButtonGroup
-            radioBtnClass="bg-white"
-            onChange={(value) => {
-              handleDocTypeChange(value as DocType);
-            }}
-            listData={DOC_TYPE_LIST}
-            currentValue={store.docType}
-          />
-          <div className='flex items-center'>
+      <div className='h-56 flex items-center justify-between'>
+        <RadioButtonGroup
+          radioBtnClass="bg-white"
+          onChange={(value) => {
+            handleDocTypeChange(value as DocType);
+          }}
+          listData={DOC_TYPE_LIST}
+          currentValue={store.docType}
+        />
+        <div className='flex items-center'>
             使用字段名称:
-            <Toggle
-              className='ml-8'
-              defaultChecked={store.useFieldsID}
-              onChange={() => {
-                store.useFieldsID = !store.useFieldsID;
-                store.fetchApiDoc();
-              }}
-            />
-          </div>
+          <Toggle
+            className='ml-8'
+            defaultChecked={store.useFieldsID}
+            onChange={() => {
+              store.useFieldsID = !store.useFieldsID;
+              store.fetchApiDoc();
+            }}
+          />
         </div>
-        <div className='api-content-title'>请求示例</div>
-        <div className='api-content'>
-          <Tooltip
-            position="top"
-            label="复制"
-            relative={false}
-            wrapperClassName="copy-button icon-text-btn"
-            labelClassName="whitespace-nowrap"
-          >
-            <Icon
-              name="content_copy"
-              size={20}
-              className='text-inherit'
-              onClick={() => copyContent(store.APiContent.input)}
-            />
-          </Tooltip>
-          <Highlight
-            className='api-details'
-            language={store.docType === 'curl' ? 'bash' : store.docType}
-          >
-            {store.APiContent.input}
-          </Highlight>
-        </div>
-        <div className='api-content-title'>返回示例</div>
-        <Highlight
-          className='api-details mb-20'
-          language={store.docType === 'curl' ? 'bash' : store.docType}
+      </div>
+      <div className='api-content-title'>请求示例</div>
+      <div className='api-content'>
+        <Tooltip
+          position="top"
+          label="复制"
+          relative={false}
+          wrapperClassName="copy-button icon-text-btn"
+          labelClassName="whitespace-nowrap"
         >
-          {store.APiContent.output}
-        </Highlight>
-      </Suspense>
+          <Icon
+            name="content_copy"
+            size={20}
+            className='text-inherit'
+            onClick={() => copyContent(store.APiContent.input)}
+          />
+        </Tooltip>
+        <pre className='api-details'>
+          <code className={`language-${store.docType === 'curl' ? 'bash' : store.docType}`}>
+            {`${store.APiContent.input}`}
+          </code>
+        </pre>
+      </div>
+      <div className='api-content-title'>返回示例</div>
+      <pre className='api-details'>
+        <code className={`language-${store.docType === 'curl' ? 'bash' : store.docType}`}>
+          {`${store.APiContent.output}`}
+        </code>
+      </pre>
+
     </>
   );
 }
