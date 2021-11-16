@@ -45,7 +45,7 @@ function RequestConfigForm({ initialValues, value, onChange }: Props): JSX.Eleme
       <ApiRequestNodeConfigContext.Provider value={{ currentFormulaEditorRef, customRules }}>
         <ApiSelector
           setApiPath={setApiPath}
-          initRawApiPath={initialValues}
+          initRawApiPath={apiPath || value?.rawPath}
           apiDocDetail={apiDocDetail}
         />
         <div className="flex flex-1 border-t-1" style={{ height: 'calc(100% - 56px)' }}>

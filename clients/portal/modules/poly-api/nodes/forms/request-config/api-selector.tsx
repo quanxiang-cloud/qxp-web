@@ -13,6 +13,7 @@ import {
   getChildrenOfCurrentSelectOption,
 } from '@portal/modules/poly-api/utils/request-node';
 import ApiDocDetail from '@polyApi/components/api-doc-detail';
+import { observer } from 'mobx-react';
 
 type Props = {
   apiDocDetail: any;
@@ -25,6 +26,7 @@ function ApiSelector({ apiDocDetail, setApiPath, initRawApiPath }: Props): JSX.E
   const [selectValue, setSelectValue] = useState<any>();
   const [apiNamespacePath, setApiNamespacePath] = useState('');
   const [allApiOptions, setAllApiOptions] = useState<any[]>();
+  const [initOption, setIniOption] = useState<string[]>();
 
   const { data: namespace } = useQueryNameSpaceRawRootPath(appID);
   const { data: namespacePaths } = useGetNamespaceFullPath({
@@ -54,16 +56,31 @@ function ApiSelector({ apiDocDetail, setApiPath, initRawApiPath }: Props): JSX.E
     return option;
   }
 
+  function getInitOption(): string[] {
+    const rawApiPath = initRawApiPath;
+    const test = initRawApiPath.replace(namespace?.appPath || '', '')?.split('/');
+    test.shift();
+    test.pop();
+    namespace?.appPath && test.push(rawApiPath);
+    return test;
+  }
+
   useEffect(() => {
     setAllApiOptions(clone(allApiOptions)?.map(updateApiLeafOptions));
   }, [currentRawApiDetails]);
 
+  useEffect(() => {
+    initRawApiPath && setIniOption(getInitOption());
+  }, []);
+
   function onChange(value: any, selectedOptions: any): any {
     const leafOption = clone(selectedOptions).pop();
-    if (leafOption.isLeaf) {
+    if (leafOption?.isLeaf) {
       setApiPath(leafOption.path);
       setSelectValue(value);
+      return;
     }
+    setSelectValue(value);
   }
 
   function loadData(selectedOptions: any): void {
@@ -85,7 +102,7 @@ function ApiSelector({ apiDocDetail, setApiPath, initRawApiPath }: Props): JSX.E
           changeOnSelect
           className="cascader"
           value={selectValue}
-          defaultValue={[initRawApiPath]}
+          defaultValue={initOption}
           options={allApiOptions}
           loadData={loadData}
           onChange={onChange}
@@ -103,4 +120,4 @@ function ApiSelector({ apiDocDetail, setApiPath, initRawApiPath }: Props): JSX.E
   );
 }
 
-export default ApiSelector;
+export default observer(ApiSelector);
