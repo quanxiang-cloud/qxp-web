@@ -7,10 +7,14 @@ interface Props {
   className?: string;
   value: string;
   onChange: (value: string) => void;
+  autoMode?: boolean;
 }
 
-export default function InputEditor({ value, onChange, type = 'text', className = '' }: Props): JSX.Element {
+export default function InputEditor(
+  { value, onChange, type = 'text', className = '', autoMode = false }: Props,
+): JSX.Element {
   const ref = useRef<HTMLInputElement | null>(null);
+  const labelRef = useRef<HTMLLabelElement | null>(null);
   useKey(
     (e) => e.key === 'Enter',
     () => ref.current?.blur(),
@@ -19,14 +23,23 @@ export default function InputEditor({ value, onChange, type = 'text', className 
   );
 
   const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    onChange(e.target.value);
+    const { value } = e.target;
+    onChange(value);
+    if (labelRef.current) {
+      labelRef.current.innerHTML = value;
+    }
   }, [onChange]);
 
+  const extraClassNames = autoMode ? 'absolute w-full h-full left-0' : '';
+
   return (
-    <div className={cs('input-editor-wrap', className)}>
+    <div className={cs('input-editor-wrap', className)} style={{ minWidth: 44 }}>
+      {autoMode && (
+        <label ref={labelRef} id="label" className="inline-block" style={{ visibility: 'hidden' }}></label>
+      )}
       <input
         ref={ref}
-        className="text-caption-no-color-weight text-gray-400 input-editor"
+        className={cs('text-caption-no-color-weight text-gray-400 input-editor', extraClassNames)}
         value={value}
         onChange={handleChange}
         type={type}

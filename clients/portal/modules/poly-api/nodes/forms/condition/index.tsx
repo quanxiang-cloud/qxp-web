@@ -47,7 +47,7 @@ function ConditionForm(props: ISchemaFieldComponentProps): JSX.Element {
   }, []);
 
   return (
-    <div className="h-full grid grid-cols-2" ref={ref}>
+    <div className="h-full flex" ref={ref}>
       <div className="h-full flex-2">
         {!!customRules?.length && (
           <FormularEditor

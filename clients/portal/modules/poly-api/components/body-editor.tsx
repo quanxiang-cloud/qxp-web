@@ -10,19 +10,25 @@ import InputEditor from './input-editor';
 import FieldTypeSelector from './object-editor/field-type-selector';
 import BooleanSelector from './object-editor/boolean-selector';
 import ArrowDownTrigger from './arrow-down-trigger';
-import ObjectEditor, { Row } from './object-editor';
+import ObjectEditor, { Row, Column } from './object-editor';
 import { Store, ItemStore } from './object-editor/store';
 
-function BodyEditor(props: ISchemaFieldComponentProps): JSX.Element {
-  props;
+type Props = ISchemaFieldComponentProps & {
+  columnsDataIndexToOmit?: string[];
+  extraColumns?: Column<POLY_API.ObjectSchema>[];
+}
+
+function BodyEditor(props: Props): JSX.Element {
+  const { columnsDataIndexToOmit, extraColumns = [] } = props;
+
   const handleChange = useCallback((value: POLY_API.ObjectSchema[]) => {
     const distValue = fromObjectSchemaToApiData(value);
     props.mutators.change(distValue);
   }, [props.mutators]);
-  // const componentProps = props.props?.['x-component-props'] as Props;
-  function isObjectField(type: string): boolean {
+
+  const isObjectField = useCallback((type: string): boolean => {
     return ['object', 'array'].includes(type);
-  }
+  }, []);
 
   function handleRowChange(
     keyType: keyof POLY_API.ObjectSchema,
@@ -101,7 +107,7 @@ function BodyEditor(props: ISchemaFieldComponentProps): JSX.Element {
     row: Row<POLY_API.ObjectSchema> | null,
     store$: Store<POLY_API.ObjectSchema>,
   ): void {
-    if (!row || !row.parent$) {
+    if (!row) {
       return store$?.addChild(getObjectEditorNewField(null), store$.value.length);
     }
     const { type, current$, parent$, children$, parentPath, name, index } = row;
@@ -114,6 +120,9 @@ function BodyEditor(props: ISchemaFieldComponentProps): JSX.Element {
       defaultNewField.name = null;
       current$.addChild(defaultNewField, children$.length);
       return store$.update();
+    }
+    if (!parent$) {
+      return store$?.addChild(getObjectEditorNewField(null), store$.value.length);
     }
     if ((parent$.value as POLY_API.ObjectSchema)?.type === 'array') {
       defaultNewField.name = null;
@@ -144,7 +153,8 @@ function BodyEditor(props: ISchemaFieldComponentProps): JSX.Element {
       dataIndex: 'desc',
       render: descRender,
     },
-  ];
+    ...extraColumns,
+  ].filter(({ dataIndex }) => !columnsDataIndexToOmit?.includes(dataIndex));
 
   return (
     <>

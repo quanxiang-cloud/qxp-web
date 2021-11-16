@@ -17,7 +17,7 @@ export type Row<T extends { children: T[] }> = T & {
   current$: ItemStore<T>;
 }
 
-interface Column<T extends { children: T[] }> {
+export interface Column<T extends { children: T[] }> {
   title: string | ((store$: Store<T>) => JSX.Element | null);
   dataIndex: string;
   render: (row: Row<T>, store$: Store<T>) => JSX.Element;

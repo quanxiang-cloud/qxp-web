@@ -113,6 +113,7 @@ declare namespace POLY_API {
     parentPath: string | null;
     required: boolean;
     desc: string;
+    rule?: string;
     children: ObjectSchema[];
   }
 

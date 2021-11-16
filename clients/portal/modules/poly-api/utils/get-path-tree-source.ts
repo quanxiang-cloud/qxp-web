@@ -1,5 +1,9 @@
+import { uniqBy } from 'ramda';
+
 import store$ from '../store';
 import { PATH_TREE_AVAILABLE_NODE_TYPE } from '../constants';
+
+const uniqByName = uniqBy(({ name }: POLY_API.PolyNodeInput) => name);
 
 export function addNodeNamePrefix2PolyNodeInput(
   inputs: POLY_API.PolyNodeInput[], prefix: POLY_API.PolyNodeInput,
@@ -41,7 +45,7 @@ export default function getPathTreeSource(currentNodeId: string): POLY_API.PolyN
     processQueue.push(...parents);
   }
 
-  return previousNodes
+  return uniqByName(previousNodes
     .filter((node) => PATH_TREE_AVAILABLE_NODE_TYPE.includes(node?.type || ''))
     .map((node) => {
       let inputsOrOutputs: POLY_API.PolyNodeInput[] = [];
@@ -58,5 +62,5 @@ export default function getPathTreeSource(currentNodeId: string): POLY_API.PolyN
         in: 'body',
         required: true,
       });
-    });
+    }));
 }
