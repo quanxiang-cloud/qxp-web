@@ -13,6 +13,7 @@ interface Props {
   changeOnBlur?: boolean;
   limit?: number;
   placeholder?: string;
+  extraClassName?: string;
 }
 
 export default function InputEditor({
@@ -21,9 +22,10 @@ export default function InputEditor({
   type = 'text',
   className = '',
   autoMode = false,
-  changeOnBlur = true,
+  changeOnBlur,
   limit = 30,
   placeholder,
+  extraClassName = '',
 }: Props): JSX.Element {
   const ref = useRef<HTMLInputElement | null>(null);
   const labelRef = useRef<HTMLLabelElement | null>(null);
@@ -55,7 +57,7 @@ export default function InputEditor({
   }, [onChange, changeOnBlur]);
 
   const handleBlur = useCallback((e: FocusEvent<HTMLInputElement>) => {
-    if (changeOnBlur) {
+    if (changeOnBlur && value !== e.target.value) {
       onChange(e.target.value);
     }
   }, [onChange]);
@@ -69,7 +71,9 @@ export default function InputEditor({
       )}
       <input
         ref={ref}
-        className={cs('text-caption-no-color-weight text-gray-400 input-editor', extraClassNames)}
+        className={
+          cs('text-caption-no-color-weight text-gray-400 input-editor', extraClassNames, extraClassName)
+        }
         value={changeOnBlur ? undefined : value}
         defaultValue={changeOnBlur ? value : undefined}
         onChange={handleChange}

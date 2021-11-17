@@ -71,6 +71,7 @@ function PolyDetailsHeader({ className }: Props): JSX.Element {
         <span className="mx-8">/</span>
         <InputEditor
           autoMode
+          changeOnBlur
           className="poly-name-editor"
           value={store.name || ''}
           onChange={handleNameChange}
