@@ -16,7 +16,7 @@ function objectSchemaToNodeInput(
     type: rule ? 'direct_expr' : type,
     name: name || '',
     desc,
-    data: rule || data,
+    data: rule || (!isObjectField(type) && isArray(data) ? '' : data),
     in: _in,
     required,
   };

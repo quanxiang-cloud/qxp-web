@@ -3,13 +3,31 @@ import { lensPath, set, dissocPath, path } from 'ramda';
 
 import { PolyCanvasStore } from './canvas';
 
+function getInitState(): POLY_API.Root {
+  return {
+    namespace: '',
+    name: 'PAI名称',
+    desc: '',
+    version: '1.0',
+    id: '',
+    encoding: '',
+    currentNodeConfigParams: {
+      currentNode: undefined,
+      schema: {},
+      onClose: undefined,
+      excludedFields: [],
+    },
+    nodes: new PolyCanvasStore([]),
+  };
+}
+
 export class PolyStore extends BehaviorSubject<POLY_API.Root> {
   constructor(initialState: POLY_API.Root) {
     super(initialState);
   }
 
-  update(value: Partial<POLY_API.Root>): void {
-    this.next({ ...this.value, ...value });
+  init(value: Partial<POLY_API.Root>): void {
+    this.next({ ...getInitState(), ...value });
   }
 
   set(key: string, value: any): void {
@@ -30,20 +48,6 @@ export class PolyStore extends BehaviorSubject<POLY_API.Root> {
   }
 }
 
-const store$ = new PolyStore({
-  namespace: '',
-  name: 'PAI名称',
-  desc: '',
-  version: '1.0',
-  id: '',
-  encoding: '',
-  currentNodeConfigParams: {
-    currentNode: undefined,
-    schema: {},
-    onClose: undefined,
-    excludedFields: [],
-  },
-  nodes: new PolyCanvasStore([]),
-});
+const store$ = new PolyStore(getInitState());
 
 export default store$;

@@ -24,6 +24,7 @@ function PolyDetails(): JSX.Element {
     try {
       const arrangeResult = JSON.parse(arrange);
       const { nodes, ...attrs } = arrangeResult;
+      store$.init(attrs);
       nodes?.length && store$.value.nodes.set(nodes.map((node: POLY_API.PlainElement | void) => {
         if (!node) {
           return false;
@@ -33,7 +34,6 @@ function PolyDetails(): JSX.Element {
         }
         return node as unknown as POLY_API.Element;
       }).filter(Boolean));
-      store$.update(attrs);
       store$.set('polyInfo', data);
     } catch (e) {
       console.error(e);

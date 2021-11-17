@@ -2,12 +2,9 @@ import React, { useEffect, useCallback, useState } from 'react';
 import { useQueryClient } from 'react-query';
 import cs from 'classnames';
 import { useHistory } from 'react-router-dom';
-import { from, of } from 'rxjs';
-import { map, concatAll } from 'rxjs/operators';
 
 import Icon from '@c/icon';
 import Button from '@c/button';
-import httpClient from '@lib/http-client';
 import useObservable from '@lib/hooks/use-observable';
 
 import store$ from '../store';
@@ -30,14 +27,14 @@ function PolyDetailsHeader({ className }: Props): JSX.Element {
   const [publishLoading, setPublishLoading] = useState(false);
 
   useEffect(() => {
-    const types = ['node', 'value', 'oper', 'cond', 'cmp', 'in'];
-    const response$ = of(...types).pipe(
-      map((type) => from(httpClient(`/api/v1/polyapi/poly/enums/${type}`, { sample: true }))),
-      concatAll(),
-    );
-    response$.subscribe((values) => {
-      console.log(values);
-    });
+    // const types = ['node', 'value', 'oper', 'cond', 'cmp', 'in'];
+    // const response$ = of(...types).pipe(
+    //   map((type) => from(httpClient(`/api/v1/polyapi/poly/enums/${type}`, { sample: true }))),
+    //   concatAll(),
+    // );
+    // response$.subscribe((values) => {
+    //   console.log(values);
+    // });
   }, []);
 
   const handleBack = useCallback((): void => {
