@@ -13,6 +13,7 @@ import BottomHandle from './handle/bottom';
 import TopHandle from './handle/top';
 import { isSomeActionShow } from '../utils';
 import NodeRemove from './action/remove';
+import { savePolyApiResult } from '../utils/save';
 
 export default function({
   children, noPadding, selected, data, id, noBg,
@@ -41,7 +42,8 @@ export default function({
   );
 
   const handleTitleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    data.set('title', e.target.value.replace(' ', ''));
+    data.set('title', e.target.value.replace(/\s/g, ''));
+    savePolyApiResult();
   }, [data]);
 
   function setSectionParentIndex(zIndex: string): void {

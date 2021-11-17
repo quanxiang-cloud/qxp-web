@@ -14,6 +14,7 @@ import { POLY_STATUS_MAP } from '../constants';
 import InputEditor from '../components/input-editor';
 import { buildPoly, publishPoly } from '../utils/bulid';
 import useOrchestrationAPIPath from '../effects/hooks/use-orchestration-api-path';
+import { savePolyApiResult } from '../utils/save';
 
 interface Props {
   className?: string;
@@ -43,6 +44,7 @@ function PolyDetailsHeader({ className }: Props): JSX.Element {
 
   const handleNameChange = useCallback((value: string) => {
     store$.set('name', value);
+    savePolyApiResult();
   }, [store$]);
 
   const polyStatus = store.polyInfo ? POLY_STATUS_MAP[store.polyInfo.active] : '未启用';
