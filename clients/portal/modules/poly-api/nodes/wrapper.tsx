@@ -13,7 +13,7 @@ import BottomHandle from './handle/bottom';
 import TopHandle from './handle/top';
 import { isSomeActionShow } from '../utils';
 import NodeRemove from './action/remove';
-import { savePolyApiResult } from '../utils/save';
+import { savePolyApiResult } from '../utils/build';
 import InputEditor from '../components/input-editor';
 
 export default function({

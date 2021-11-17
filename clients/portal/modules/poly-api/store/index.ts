@@ -8,6 +8,10 @@ export class PolyStore extends BehaviorSubject<POLY_API.Root> {
     super(initialState);
   }
 
+  update(value: Partial<POLY_API.Root>): void {
+    this.next({ ...this.value, ...value });
+  }
+
   set(key: string, value: any): void {
     this.next(set(lensPath(key.split('.')), value, this.value));
   }

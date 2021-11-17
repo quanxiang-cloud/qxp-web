@@ -3,6 +3,7 @@ import { useParams } from 'react-router';
 import { ReactFlowProvider } from 'react-flow-renderer';
 
 import Loading from '@c/loading';
+import toast from '@lib/toast';
 
 import PolyDetailsHeader from './header';
 import PolyDetailsDesigner from './designer';
@@ -11,15 +12,24 @@ import { useQueryPolyInfo } from '../effects/api/poly';
 import store$ from '../store';
 
 function PolyDetails(): JSX.Element {
-  const { appID, polyFullPath } = useParams<POLY_API.PolyParams>();
+  const { polyFullPath } = useParams<POLY_API.PolyParams>();
   const { data, isLoading } = useQueryPolyInfo({ path: polyFullPath }, { enabled: !!polyFullPath });
 
   useEffect(() => {
     if (!data) {
       return;
     }
-    store$.set('polyInfo', data);
-  }, [appID, polyFullPath, data]);
+    const { arrange } = data;
+    try {
+      const arrangeResult = JSON.parse(arrange);
+      const { nodes, ...attrs } = arrangeResult;
+      nodes.length && store$.value.nodes.set(nodes);
+      store$.update(attrs);
+      store$.set('polyInfo', data);
+    } catch {
+      toast.error('获取编排信息失败');
+    }
+  }, [polyFullPath, data]);
 
   if (isLoading) {
     return (

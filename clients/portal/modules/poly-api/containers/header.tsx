@@ -1,4 +1,5 @@
 import React, { useEffect, useCallback, useState } from 'react';
+import { useQueryClient } from 'react-query';
 import cs from 'classnames';
 import { useHistory } from 'react-router-dom';
 import { from, of } from 'rxjs';
@@ -12,9 +13,9 @@ import useObservable from '@lib/hooks/use-observable';
 import store$ from '../store';
 import { POLY_STATUS_MAP } from '../constants';
 import InputEditor from '../components/input-editor';
-import { buildPoly, publishPoly } from '../utils/bulid';
+import { buildPoly, publishPoly } from '../utils/build';
 import useOrchestrationAPIPath from '../effects/hooks/use-orchestration-api-path';
-import { savePolyApiResult } from '../utils/save';
+import { savePolyApiResult } from '../utils/build';
 
 interface Props {
   className?: string;
@@ -23,6 +24,7 @@ interface Props {
 function PolyDetailsHeader({ className }: Props): JSX.Element {
   const store = useObservable(store$);
   const history = useHistory();
+  const queryClient = useQueryClient();
   const orchestrationAPIPath = useOrchestrationAPIPath();
   const [debugLoading, setDebugLoading] = useState(false);
   const [publishLoading, setPublishLoading] = useState(false);
@@ -56,7 +58,7 @@ function PolyDetailsHeader({ className }: Props): JSX.Element {
 
   function handlePublish(): void {
     setPublishLoading(true);
-    publishPoly().then(() => setPublishLoading(false));
+    publishPoly(queryClient).then(() => setPublishLoading(false));
   }
 
   return (
@@ -96,7 +98,7 @@ function PolyDetailsHeader({ className }: Props): JSX.Element {
             loading={publishLoading}
             onClick={handlePublish}
           >
-            上线
+            {store.polyInfo?.active ? '下线' : '上线'}
           </Button>
         </div>
         <div className="w-1 bg-gray-200 mr-10" style={{ height: 30 }}></div>
