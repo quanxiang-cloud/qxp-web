@@ -25,6 +25,7 @@ import {
 import toast from '@lib/toast';
 import { httpClient } from 'clients/login/login-common';
 import { toArray } from 'lodash';
+import { resolve } from 'qxp-formula';
 
 const INIT_CURRENT_FUNC = {
   id: '',
@@ -130,18 +131,22 @@ class FaasStore {
   }
 
   @action
-  createDeveloper = (email: string) => {
-    return createDeveloper({
-      email,
-    }).then(() => {
-      const intervalBox = setInterval(async () => {
-        await this.isaDeveloper();
-        if (this.isDeveloper) {
-          clearInterval(intervalBox);
-        }
-      }, 5000);
-    }).catch((err) => {
-      toast.error(err);
+  createDeveloper = (email: string): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      createDeveloper({
+        email,
+      }).then(() => {
+        const intervalBox = setInterval(async () => {
+          await this.isaDeveloper();
+          if (this.isDeveloper) {
+            clearInterval(intervalBox);
+            resolve();
+          }
+        }, 5000);
+      }).catch((err) => {
+        reject(err);
+        toast.error(err);
+      });
     });
   }
 
@@ -167,20 +172,41 @@ class FaasStore {
     });
   }
 
+  // @action
+  // setDebugger = () => {
+  //   return setTimeout(() => {
+  //     let n = 1;
+  //     const intervalBox = setInterval(async () => {
+  //       await setTimeout(() => {
+  //         n = n + 1;
+  //         console.log(n);
+  //       }, 2000);
+  //       if ( n === 6) {
+  //         clearInterval(intervalBox);
+  //       }
+  //     }, 1000);
+  //   }, 5000);
+  // }
+
   @action
   initFaas = async (email: string): Promise<void> => {
+    this.initLoading = true;
+    console.log(1);
     if (!this.isDeveloper) {
+      console.log(2);
       await this.createDeveloper(email);
     }
-
+    console.log(3);
     if (!this.hasGroup && this.isDeveloper) {
-      console.log(11);
+      console.log(4);
       await this.createGroup();
     }
-
+    console.log(5);
     if (!this.developerInGroup && this.isDeveloper && this.hasGroup) {
+      console.log(6);
       await this.addUserToGroup();
     }
+    this.initLoading = false;
   }
 
   @action

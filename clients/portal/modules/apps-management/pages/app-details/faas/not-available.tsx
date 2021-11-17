@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import Button from '@c/button';
 
 import store from './store';
+import icon from '@c/icon';
 
 function NotAvailable(): JSX.Element {
   const { hasGroup, initLoading, initFaas } = store;
