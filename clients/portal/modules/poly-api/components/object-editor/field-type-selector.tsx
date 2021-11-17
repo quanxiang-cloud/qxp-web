@@ -55,7 +55,7 @@ function FieldTypeSelector({ type, onChange, simple, complexity, rule }: Props):
 
   return (
     <SelectValue<LabelValue>
-      options={simple ? types.filter(({ value }) => value !== 'array' && value !== 'object') : types}
+      options={types}
       onChange={({ value }) => onChange?.(value)}
       value={types.find(({ value }) => value === type)}
       titleIndex='name'

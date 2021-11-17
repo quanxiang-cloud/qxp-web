@@ -23,7 +23,11 @@ function getArrange(): [string, string, 0 | 1] {
   };
   const arrange = JSON.stringify({
     ...result,
-    nodes: result.nodes?.map((node) => omit(node, '__rf')) || [],
+    nodes: result.nodes?.map((node) => {
+      const newNode = omit(node, '__rf');
+      newNode.data && Object.assign(newNode, omit(newNode.data, 'handles'));
+      return newNode;
+    }) || [],
   });
   return [apiPath, arrange, polyApiResult.polyInfo.active];
 }
@@ -50,11 +54,12 @@ export async function buildPoly(): Promise<any> {
 
 export async function publishPoly(queryClient: QueryClient): Promise<any> {
   const [path, _, active] = getArrange();
+  const newActive = active ? 0 : 1;
   try {
-    await httpClient(`/api/v1/polyapi/poly/active/${path}`, { active });
-    toast.success(active ? '上线成功' : '下线成功');
+    await httpClient(`/api/v1/polyapi/poly/active/${path}`, { active: newActive });
+    toast.success(newActive ? '上线成功' : '下线成功');
     queryClient.invalidateQueries([POLY, POLY_QUERY]);
   } catch (e) {
-    return toast.error(active ? '上线失败' : '下线失败');
+    return toast.error(newActive ? '上线失败' : '下线失败');
   }
 }

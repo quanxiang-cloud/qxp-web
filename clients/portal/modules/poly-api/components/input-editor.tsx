@@ -37,6 +37,12 @@ export default function InputEditor({
   );
 
   useEffect(() => {
+    if (labelRef.current) {
+      labelRef.current.innerHTML = value;
+    }
+  }, [value]);
+
+  useEffect(() => {
     if (!changeOnBlur || !ref.current) {
       return;
     }

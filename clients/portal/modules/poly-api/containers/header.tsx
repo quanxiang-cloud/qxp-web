@@ -88,6 +88,7 @@ function PolyDetailsHeader({ className }: Props): JSX.Element {
             className="h-28 mr-10"
             loading={debugLoading}
             onClick={handleDebug}
+            forbidden={!!store.polyInfo?.active}
           >
             调试
           </Button>

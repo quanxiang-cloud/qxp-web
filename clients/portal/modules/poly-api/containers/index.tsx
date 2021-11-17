@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router';
-import { ReactFlowProvider } from 'react-flow-renderer';
+import { ReactFlowProvider, isNode } from 'react-flow-renderer';
 
 import Loading from '@c/loading';
 import toast from '@lib/toast';
@@ -10,6 +10,7 @@ import PolyDetailsDesigner from './designer';
 import NodeConfigDrawer from './node-config';
 import { useQueryPolyInfo } from '../effects/api/poly';
 import store$ from '../store';
+import PolyNodeStore from '../store/node';
 
 function PolyDetails(): JSX.Element {
   const { polyFullPath } = useParams<POLY_API.PolyParams>();
@@ -23,10 +24,19 @@ function PolyDetails(): JSX.Element {
     try {
       const arrangeResult = JSON.parse(arrange);
       const { nodes, ...attrs } = arrangeResult;
-      nodes?.length && store$.value.nodes.set(nodes);
+      nodes?.length && store$.value.nodes.set(nodes.map((node: POLY_API.PlainElement | void) => {
+        if (!node) {
+          return false;
+        }
+        if (isNode(node) && node.data) {
+          Object.assign(node, { data: new PolyNodeStore(node.data) });
+        }
+        return node as unknown as POLY_API.Element;
+      }).filter(Boolean));
       store$.update(attrs);
       store$.set('polyInfo', data);
-    } catch {
+    } catch (e) {
+      console.error(e);
       toast.error('获取编排信息失败');
     }
   }, [polyFullPath, data]);
