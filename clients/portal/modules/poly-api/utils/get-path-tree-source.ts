@@ -46,6 +46,7 @@ export default function getPathTreeSource(currentNodeId: string): POLY_API.PolyN
   }
 
   return uniqByName(previousNodes
+    .reverse()
     .filter((node) => PATH_TREE_AVAILABLE_NODE_TYPE.includes(node?.type || ''))
     .map((node) => {
       let inputsOrOutputs: POLY_API.PolyNodeInput[] = [];

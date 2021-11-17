@@ -1,4 +1,4 @@
-import React, { useRef, ChangeEvent, useCallback } from 'react';
+import React, { useRef, useCallback } from 'react';
 import cs from 'classnames';
 import { useKey } from 'react-use';
 import { isEmpty } from 'ramda';
@@ -13,6 +13,8 @@ import BottomHandle from './handle/bottom';
 import TopHandle from './handle/top';
 import { isSomeActionShow } from '../utils';
 import NodeRemove from './action/remove';
+import { savePolyApiResult } from '../utils/save';
+import InputEditor from '../components/input-editor';
 
 export default function({
   children, noPadding, selected, data, id, noBg,
@@ -40,8 +42,9 @@ export default function({
     [titleEditorRef.current],
   );
 
-  const handleTitleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    data.set('title', e.target.value.replace(' ', ''));
+  const handleTitleChange = useCallback((value: string) => {
+    data.set('title', value.replace(/\s/g, ''));
+    savePolyApiResult();
   }, [data]);
 
   function setSectionParentIndex(zIndex: string): void {
@@ -105,14 +108,13 @@ export default function({
             {showTitle && (
               <div className="py-6 px-12 bg-gray-50 flex items-center self-stretch rounded-t-8">
                 <Icon className="mr-4 rounded-4" name="request-node" />
-                <div className="input-editor-wrap">
-                  <input
-                    ref={titleEditorRef}
-                    className="text-caption-no-weight input-editor"
-                    value={title}
-                    onChange={handleTitleChange}
-                  />
-                </div>
+                <InputEditor
+                  changeOnBlur
+                  extraClassName="text-caption-no-weight font-semibold"
+                  value={title}
+                  onChange={handleTitleChange}
+                  placeholder="请输入节点名称"
+                />
               </div>
             )}
             {children}

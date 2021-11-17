@@ -14,6 +14,7 @@ import { POLY_STATUS_MAP } from '../constants';
 import InputEditor from '../components/input-editor';
 import { buildPoly, publishPoly } from '../utils/bulid';
 import useOrchestrationAPIPath from '../effects/hooks/use-orchestration-api-path';
+import { savePolyApiResult } from '../utils/save';
 
 interface Props {
   className?: string;
@@ -43,6 +44,7 @@ function PolyDetailsHeader({ className }: Props): JSX.Element {
 
   const handleNameChange = useCallback((value: string) => {
     store$.set('name', value);
+    savePolyApiResult();
   }, [store$]);
 
   const polyStatus = store.polyInfo ? POLY_STATUS_MAP[store.polyInfo.active] : '未启用';
@@ -69,13 +71,16 @@ function PolyDetailsHeader({ className }: Props): JSX.Element {
         <span className="mx-8">/</span>
         <InputEditor
           autoMode
-          className="poly-name-editor" value={store.name || ''}
+          changeOnBlur
+          className="poly-name-editor"
+          value={store.name || ''}
           onChange={handleNameChange}
+          placeholder="请输入名称"
         />
         <span className="text-gray-400 ml-4">({polyStatus})</span>
       </section>
       <section className="flex items-center">
-        <div>
+        <div className="flex items-center">
           <Button
             type="button"
             className="h-28 mr-10"

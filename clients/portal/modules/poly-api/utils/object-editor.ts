@@ -98,10 +98,10 @@ export function storeValuesToDataSource<T extends { children: T[] }>(storeValues
 }
 
 export function getObjectEditorNewField(
-  parentPath: string | null, _in: 'body' | 'header' | 'query' | 'path' = 'body',
+  parentPath: string | null, _in: 'body' | 'header' | 'query' | 'path' = 'body', type = 'string',
 ): POLY_API.ObjectSchema {
   return {
-    type: 'string',
+    type: type as POLY_API.API_FIELD_TYPE,
     in: _in,
     name: '',
     index: 0,
@@ -130,4 +130,8 @@ export function insertToArray<T>(array: T[], index: number, value: T): T[] {
     value,
     ...array.slice(index),
   ];
+}
+
+export function isObjectField(type: string): boolean {
+  return ['object', 'array'].includes(type);
 }

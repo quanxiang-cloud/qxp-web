@@ -26,7 +26,7 @@ function ApiParamsConfig({
     return nodeInput?.map((arr: any, index: number) => {
       const fullPath = path ? `${path}.${index}` : `${index}`;
       if (fullPath === targetPath) {
-        if ((arr.type === 'string' || arr.type === 'number') && value) {
+        if ((arr.type === 'string' || arr.type === 'number' || arr.type === 'direct_expr') && value) {
           arr.data = value;
           arr.type = 'direct_expr';
         }
@@ -55,7 +55,7 @@ function ApiParamsConfig({
           <div key={type} className="my-20">
             <div className="pb-4 text-gray-900">{type.replace(/^\S/, (s: string) => s.toUpperCase())}</div>
             <div className="config-param">
-              {params.map(({ title, name, required, path, type, data }: any, index: number) => {
+              {params.map(({ title, name, required, path, data }: any, index: number) => {
                 const configParamTag = path ? path : `${index}`;
                 const formulaRef = React.useRef<RefProps>();
 

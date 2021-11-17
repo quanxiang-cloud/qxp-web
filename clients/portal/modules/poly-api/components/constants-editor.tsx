@@ -3,7 +3,7 @@ import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { isString, isBoolean, isNumber } from 'lodash';
 
 import {
-  getObjectEditorNewConstantField, fromApiDataToPolyConstSchema, fromPolyConstSchemaToApiData,
+  getObjectEditorNewConstantField, fromApiDataToPolyConstSchema, fromPolyConstSchemaToApiData, isObjectField,
 } from '@polyApi/utils/object-editor';
 
 import InputEditor from './input-editor';
@@ -18,9 +18,6 @@ function BodyEditor(props: ISchemaFieldComponentProps): JSX.Element {
     const distValue = fromPolyConstSchemaToApiData(value);
     props.mutators.change(distValue);
   }, []);
-  function isObjectField(type: string): boolean {
-    return ['object', 'array'].includes(type);
-  }
 
   function handleRowChange(
     keyType: keyof POLY_API.PolyConstSchema,
@@ -43,7 +40,12 @@ function BodyEditor(props: ISchemaFieldComponentProps): JSX.Element {
   ): JSX.Element {
     return (
       <div className="flex items-center">
-        <InputEditor className="flex-1" value={name} onChange={handleRowChange('name', current$, store$)} />
+        <InputEditor
+          className="flex-1"
+          value={name}
+          onChange={handleRowChange('name', current$, store$)}
+          placeholder="请输入字段名称"
+        />
       </div>
     );
   }
@@ -53,7 +55,11 @@ function BodyEditor(props: ISchemaFieldComponentProps): JSX.Element {
     store$: Store<POLY_API.PolyConstSchema>,
   ): JSX.Element {
     return (
-      <FieldTypeSelector type={type} simple onChange={handleRowChange('type', current$, store$)} />
+      <FieldTypeSelector
+        simple
+        type={type}
+        onChange={handleRowChange('type', current$, store$)}
+      />
     );
   }
 
@@ -73,6 +79,7 @@ function BodyEditor(props: ISchemaFieldComponentProps): JSX.Element {
         type={type === 'number' ? 'number' : 'text'}
         value={data}
         onChange={handleRowChange('data', current$, store$)}
+        placeholder="请输入字段值"
       />
     );
   }
@@ -81,7 +88,13 @@ function BodyEditor(props: ISchemaFieldComponentProps): JSX.Element {
     { desc, current$ }: Row<POLY_API.PolyConstSchema>,
     store$: Store<POLY_API.PolyConstSchema>,
   ): JSX.Element {
-    return <InputEditor value={desc} onChange={handleRowChange('desc', current$, store$)} />;
+    return (
+      <InputEditor
+        value={desc}
+        onChange={handleRowChange('desc', current$, store$)}
+        placeholder="请输入字段描述"
+      />
+    );
   }
 
   function handleAddField(

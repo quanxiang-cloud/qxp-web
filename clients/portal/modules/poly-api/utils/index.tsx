@@ -49,17 +49,16 @@ export function buildEdge(
 }
 
 export function buildInputNode(): POLY_API.NodeElement {
-  const id = nanoid();
   return {
-    id,
+    id: 'start',
     type: 'input',
     data: new PolyNodeStore({
       title: '',
-      name: id,
+      name: 'start',
       type: 'input',
       nextNodes: [],
       detail: { inputs: [], consts: [] },
-      handles: { right: `${id}__right` },
+      handles: { right: 'start__right' },
     }),
     position: { x: 0, y: 0 },
   };
@@ -111,13 +110,12 @@ export function buildConditionNode(): POLY_API.NodeElement {
 }
 
 export function buildEndNode(): POLY_API.NodeElement {
-  const id = nanoid();
   return {
-    id,
+    id: 'end',
     type: 'end',
     data: new PolyNodeStore({
       title: '',
-      name: id,
+      name: 'end',
       type: 'end',
       nextNodes: [],
       detail: {
@@ -126,7 +124,7 @@ export function buildEndNode(): POLY_API.NodeElement {
           data: [],
         },
       },
-      handles: { left: `${id}__left` },
+      handles: { left: 'end__left' },
     }),
     position: { x: 0, y: 0 },
   };

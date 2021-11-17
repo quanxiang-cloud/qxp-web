@@ -10,14 +10,19 @@ const excludes = ['currentNodeConfigParams', 'polyInfo'];
 export function savePolyApiResult(): void {
   const polyApiResult = store$.getRootValue();
   if (polyApiResult.polyInfo?.name) {
-    const namespace = polyApiResult.polyInfo?.namespace;
+    const namespace = polyApiResult.polyInfo.namespace;
     const saveApiPath = `${namespace}/${polyApiResult.polyInfo.name}`.slice(1);
     const result = {
       ...omit(polyApiResult, excludes),
       id: nanoid(),
       namespace,
     };
-    httpClient(`/api/v1/polyapi/poly/save/${saveApiPath}`, JSON.stringify(result)).then(() => {
+    httpClient(`/api/v1/polyapi/poly/save/${saveApiPath}`, {
+      arrange: JSON.stringify({
+        ...result,
+        nodes: result.nodes?.map((node) => omit(node, '__rf')) || [],
+      }),
+    }).then(() => {
       toast.success('保存成功');
     }).catch(() => toast.error('Api编排保存失败'));
   }

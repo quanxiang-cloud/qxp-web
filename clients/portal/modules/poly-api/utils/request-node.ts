@@ -32,7 +32,7 @@ function findAvailableBodyParams(data: any[], path?: string): any[] {
     const paramPath = path ? `${path}.${index}` : `${index}`;
 
     if (input.type !== 'object' && input.type !== 'array' && input.type !== 'timestamp') {
-      bodyInputs.push({ title: input.title, name: input.name, required: input.required, path: paramPath });
+      bodyInputs.push({ title: input.title, name: input.name, required: input.required, path: paramPath, type: input.type, data: input.data });
     } else {
       input.data && bodyInputs.push(...findAvailableBodyParams(input.data, paramPath));
     }
@@ -93,7 +93,6 @@ export function convertToParamsConfig(apiData: RawApiDocDetail | undefined): any
 
       paramsConfig[apiDocInput.in].push({ title, name, required, path: paramPath, type, data });
     });
-
     return Object.assign(parseParamOfPath(url), paramsConfig);
   }
 

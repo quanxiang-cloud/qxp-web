@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { isEmpty, omit } from 'ramda';
+import { isUndefined } from 'lodash';
 import { Input } from '@formily/antd-components';
 import { SchemaForm } from '@formily/react-schema-renderer';
 
@@ -64,6 +65,8 @@ export default function NodeConfigDrawer(): JSX.Element {
   }
 
   const { title, doc, desc } = NODE_TYPE_MAPPER[nodeData.type] || {};
+  const initialValues = nodeData.detail;
+  const isValueUndefined = isUndefined(initialValues) || isUndefined(configValue);
 
   return (
     <Drawer
@@ -83,17 +86,17 @@ export default function NodeConfigDrawer(): JSX.Element {
       visible={!!((schema || ConfigForm) && currentNode)}
     >
       <section className="node-config-form-section">
-        {ConfigForm && (
+        {ConfigForm && !isValueUndefined && (
           <ConfigForm
-            initialValues={nodeData.detail}
+            initialValues={initialValues}
             value={configValue}
             onChange={setConfigValue}
           />
         )}
-        {!ConfigForm && !isEmpty(schema) && (
+        {!ConfigForm && !isValueUndefined && !isEmpty(schema) && (
           <SchemaForm
             schema={schema}
-            initialValues={nodeData.detail}
+            initialValues={initialValues}
             value={configValue}
             onChange={setConfigValue}
             components={schemaFormComponents}
