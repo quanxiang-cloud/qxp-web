@@ -23,7 +23,7 @@ function PolyDetails(): JSX.Element {
     try {
       const arrangeResult = JSON.parse(arrange);
       const { nodes, ...attrs } = arrangeResult;
-      nodes.length && store$.value.nodes.set(nodes);
+      nodes?.length && store$.value.nodes.set(nodes);
       store$.update(attrs);
       store$.set('polyInfo', data);
     } catch {
