@@ -107,14 +107,14 @@ function ApiSelector({ apiDocDetail, setApiPath, initRawApiPath }: Props): JSX.E
   function getInitOptions(initValue: any, allData: any): any {
     return {
       initValue: initValue,
-      initValueAndOptions: [allData.find(({ label }: any) => label === initValue[0])]
+      initValueAndOptions: allData?.filter(({ label }: any) => label === initValue[0])
         .map(({ label, value, childrenData, path, isLeaf }: any) =>{
           return {
             label,
             value,
             path,
             isLeaf,
-            children: [childrenData.find(({ name }: any) => name === initValue[1])]
+            children: childrenData?.filter(({ name }: any) => name === initValue[1])
               .map(({ name, parent }: any) => {
                 return {
                   label: name,
