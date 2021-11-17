@@ -6,16 +6,60 @@ interface Props {
   type: POLY_API.API_FIELD_TYPE;
   onChange?: (value: POLY_API.API_FIELD_TYPE) => void;
   simple?: boolean;
+  complexity?: boolean;
+  rule? : boolean;
 }
 
-const types = ['string', 'number', 'object', 'array', 'boolean'] as POLY_API.API_FIELD_TYPE[];
+const complexityTypes: LabelValue[] = [
+  {
+    name: '对象',
+    value: 'object',
+  },
+  {
+    name: '数组',
+    value: 'array',
+  },
+];
 
-function FieldTypeSelector({ type, onChange, simple }: Props): JSX.Element {
+const simpleTypes: LabelValue[] = [
+  {
+    name: '字符串',
+    value: 'string',
+  },
+  {
+    name: '数字',
+    value: 'number',
+  },
+  {
+    name: '布尔',
+    value: 'boolean',
+  },
+];
+
+const ruleTypes: LabelValue[] = [
+  {
+    name: '表达式',
+    value: 'direct_expr',
+  },
+];
+
+type LabelValue = {
+  name: string;
+  value: POLY_API.API_FIELD_TYPE;
+}
+function FieldTypeSelector({ type, onChange, simple, complexity, rule }: Props): JSX.Element {
+  const types = [];
+  simple && types.push(...simpleTypes);
+  complexity && types.push(...complexityTypes);
+  rule && types.push(...ruleTypes);
+
   return (
-    <SelectValue<POLY_API.API_FIELD_TYPE>
-      options={simple ? types.filter((type) => type !== 'array' && type !== 'object') : types}
-      onChange={onChange}
-      value={type}
+    <SelectValue<LabelValue>
+      options={simple ? types.filter(({ value }) => value !== 'array' && value !== 'object') : types}
+      onChange={({ value }) => onChange?.(value)}
+      value={types.find(({ value }) => value === type)}
+      titleIndex='name'
+      valueIndex='value'
     />
   );
 }

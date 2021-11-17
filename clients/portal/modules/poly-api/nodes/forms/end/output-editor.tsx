@@ -78,6 +78,8 @@ function EndOutputEditor(props: Props, ref: ForwardedRef<RefType>): JSX.Element 
   return (
     <BodyEditor
       {...props}
+      typeConfig={{ rule: true }}
+      defaultFieldType="direct_expr"
       columnsDataIndexToOmit={columnsDataIndexToOmit}
       extraColumns={columns}
       onAddField={handleOnAddField}

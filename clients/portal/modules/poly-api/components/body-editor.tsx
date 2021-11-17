@@ -17,10 +17,20 @@ type Props = ISchemaFieldComponentProps & {
   columnsDataIndexToOmit?: string[];
   extraColumns?: Column<POLY_API.ObjectSchema>[];
   onAddField?: () => void;
+  typeConfig?: { simple?: boolean; rule?: boolean };
+  defaultFieldType?: POLY_API.API_FIELD_TYPE;
 }
 
 function BodyEditor(props: Props): JSX.Element {
-  const { columnsDataIndexToOmit, extraColumns = [], initialValue, value, onAddField } = props;
+  const {
+    columnsDataIndexToOmit,
+    extraColumns = [],
+    initialValue,
+    value,
+    onAddField,
+    typeConfig = { simple: true },
+    defaultFieldType,
+  } = props;
   const isValueObject = isObject(initialValue) && !isArray(initialValue);
 
   const handleChange = useCallback((value: POLY_API.ObjectSchema[]) => {
@@ -71,7 +81,12 @@ function BodyEditor(props: Props): JSX.Element {
           />
         )}
         {!isNull(name) && (
-          <InputEditor className="flex-1" value={name} onChange={handleRowChange('name', current$, store$)} />
+          <InputEditor
+            className="flex-1"
+            value={name}
+            onChange={handleRowChange('name', current$, store$)}
+            placeholder="请输入字段名称"
+          />
         )}
         {isNull(name) && <span className="text-caption-no-color-weight text-gray-400">{index}</span>}
       </div>
@@ -83,7 +98,12 @@ function BodyEditor(props: Props): JSX.Element {
     store$: Store<POLY_API.ObjectSchema>,
   ): JSX.Element {
     return (
-      <FieldTypeSelector type={type} onChange={handleRowChange('type', current$, store$)} />
+      <FieldTypeSelector
+        complexity
+        {...typeConfig}
+        type={type}
+        onChange={handleRowChange('type', current$, store$)}
+      />
     );
   }
 
@@ -100,7 +120,13 @@ function BodyEditor(props: Props): JSX.Element {
     { desc, current$ }: Row<POLY_API.ObjectSchema>,
     store$: Store<POLY_API.ObjectSchema>,
   ): JSX.Element {
-    return <InputEditor value={desc} onChange={handleRowChange('desc', current$, store$)} />;
+    return (
+      <InputEditor
+        placeholder="请输入字段描述"
+        value={desc}
+        onChange={handleRowChange('desc', current$, store$)}
+      />
+    );
   }
 
   function handleAddField(
@@ -109,10 +135,12 @@ function BodyEditor(props: Props): JSX.Element {
   ): void {
     onAddField?.();
     if (!row) {
-      return store$?.addChild(getObjectEditorNewField(null), store$.value.length);
+      return store$?.addChild(getObjectEditorNewField(null, 'body', defaultFieldType), store$.value.length);
     }
     const { type, current$, parent$, children$, parentPath, name, index } = row;
-    const defaultNewField = getObjectEditorNewField(getFullPath(parentPath, name, index));
+    const defaultNewField = getObjectEditorNewField(
+      getFullPath(parentPath, name, index), 'body', defaultFieldType,
+    );
     if (type === 'object') {
       current$.addChild(defaultNewField, children$.length);
       return store$.update();
@@ -123,7 +151,7 @@ function BodyEditor(props: Props): JSX.Element {
       return store$.update();
     }
     if (!parent$) {
-      return store$?.addChild(getObjectEditorNewField(null), store$.value.length);
+      return store$?.addChild(getObjectEditorNewField(null, 'body', defaultFieldType), store$.value.length);
     }
     if ((parent$.value as POLY_API.ObjectSchema)?.type === 'array') {
       defaultNewField.name = null;
