@@ -74,11 +74,12 @@ function PolyDetailsHeader({ className }: Props): JSX.Element {
           className="poly-name-editor"
           value={store.name || ''}
           onChange={handleNameChange}
+          placeholder="请输入名称"
         />
         <span className="text-gray-400 ml-4">({polyStatus})</span>
       </section>
       <section className="flex items-center">
-        <div>
+        <div className="flex items-center">
           <Button
             type="button"
             className="h-28 mr-10"

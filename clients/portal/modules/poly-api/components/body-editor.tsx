@@ -81,7 +81,12 @@ function BodyEditor(props: Props): JSX.Element {
           />
         )}
         {!isNull(name) && (
-          <InputEditor className="flex-1" value={name} onChange={handleRowChange('name', current$, store$)} />
+          <InputEditor
+            className="flex-1"
+            value={name}
+            onChange={handleRowChange('name', current$, store$)}
+            placeholder="请输入字段名称"
+          />
         )}
         {isNull(name) && <span className="text-caption-no-color-weight text-gray-400">{index}</span>}
       </div>
@@ -115,7 +120,13 @@ function BodyEditor(props: Props): JSX.Element {
     { desc, current$ }: Row<POLY_API.ObjectSchema>,
     store$: Store<POLY_API.ObjectSchema>,
   ): JSX.Element {
-    return <InputEditor value={desc} onChange={handleRowChange('desc', current$, store$)} />;
+    return (
+      <InputEditor
+        placeholder="请输入字段描述"
+        value={desc}
+        onChange={handleRowChange('desc', current$, store$)}
+      />
+    );
   }
 
   function handleAddField(

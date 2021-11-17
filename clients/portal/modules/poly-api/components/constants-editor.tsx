@@ -40,7 +40,12 @@ function BodyEditor(props: ISchemaFieldComponentProps): JSX.Element {
   ): JSX.Element {
     return (
       <div className="flex items-center">
-        <InputEditor className="flex-1" value={name} onChange={handleRowChange('name', current$, store$)} />
+        <InputEditor
+          className="flex-1"
+          value={name}
+          onChange={handleRowChange('name', current$, store$)}
+          placeholder="请输入字段名称"
+        />
       </div>
     );
   }
@@ -74,6 +79,7 @@ function BodyEditor(props: ISchemaFieldComponentProps): JSX.Element {
         type={type === 'number' ? 'number' : 'text'}
         value={data}
         onChange={handleRowChange('data', current$, store$)}
+        placeholder="请输入字段值"
       />
     );
   }
@@ -82,7 +88,13 @@ function BodyEditor(props: ISchemaFieldComponentProps): JSX.Element {
     { desc, current$ }: Row<POLY_API.PolyConstSchema>,
     store$: Store<POLY_API.PolyConstSchema>,
   ): JSX.Element {
-    return <InputEditor value={desc} onChange={handleRowChange('desc', current$, store$)} />;
+    return (
+      <InputEditor
+        value={desc}
+        onChange={handleRowChange('desc', current$, store$)}
+        placeholder="请输入字段描述"
+      />
+    );
   }
 
   function handleAddField(

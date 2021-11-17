@@ -12,10 +12,18 @@ interface Props {
   autoMode?: boolean;
   changeOnBlur?: boolean;
   limit?: number;
+  placeholder?: string;
 }
 
 export default function InputEditor({
-  value, onChange, type = 'text', className = '', autoMode = false, changeOnBlur = true, limit = 30,
+  value,
+  onChange,
+  type = 'text',
+  className = '',
+  autoMode = false,
+  changeOnBlur = true,
+  limit = 30,
+  placeholder,
 }: Props): JSX.Element {
   const ref = useRef<HTMLInputElement | null>(null);
   const labelRef = useRef<HTMLLabelElement | null>(null);
@@ -67,6 +75,7 @@ export default function InputEditor({
         onChange={handleChange}
         onBlur={changeOnBlur ? handleBlur : undefined}
         type={type}
+        placeholder={placeholder}
       />
     </div>
   );

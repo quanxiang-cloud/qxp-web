@@ -18,10 +18,10 @@ export function savePolyApiResult(): void {
       namespace,
     };
     httpClient(`/api/v1/polyapi/poly/save/${saveApiPath}`, {
-      arrange: {
+      arrange: JSON.stringify({
         ...result,
         nodes: result.nodes?.map((node) => omit(node, '__rf')) || [],
-      },
+      }),
     }).then(() => {
       toast.success('保存成功');
     }).catch(() => toast.error('Api编排保存失败'));
