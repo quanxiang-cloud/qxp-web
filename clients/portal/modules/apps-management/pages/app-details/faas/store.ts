@@ -23,9 +23,6 @@ import {
   creatCoder,
 } from './api';
 import toast from '@lib/toast';
-import { httpClient } from 'clients/login/login-common';
-import { toArray } from 'lodash';
-import { resolve } from 'qxp-formula';
 
 const INIT_CURRENT_FUNC = {
   id: '',
@@ -83,6 +80,7 @@ class FaasStore {
   @observable versionList: VersionField[] = [];
   @observable currentVersionFunc: VersionField= INIT_VERSION;
   @observable funcCount = 0;
+  @observable initErr = false;
 
   @action
   setModalType = (type: string): void => {
@@ -144,8 +142,9 @@ class FaasStore {
           }
         }, 5000);
       }).catch((err) => {
-        reject(err);
         toast.error(err);
+        this.initErr = true;
+        reject(err);
       });
     });
   }
@@ -159,6 +158,7 @@ class FaasStore {
       this.hasGroup = true;
       this.groupID = res.id;
     }).catch((err) => {
+      this.initErr = true;
       toast.error(err);
     });
   }
@@ -168,29 +168,15 @@ class FaasStore {
     addToGroup(this.groupID, { memberID: this.User.id }).then((res) => {
       this.developerInGroup = true;
     }).catch((err) => {
+      this.initErr = true;
       toast.error(err);
     });
   }
 
-  // @action
-  // setDebugger = () => {
-  //   return setTimeout(() => {
-  //     let n = 1;
-  //     const intervalBox = setInterval(async () => {
-  //       await setTimeout(() => {
-  //         n = n + 1;
-  //         console.log(n);
-  //       }, 2000);
-  //       if ( n === 6) {
-  //         clearInterval(intervalBox);
-  //       }
-  //     }, 1000);
-  //   }, 5000);
-  // }
-
   @action
   initFaas = async (email: string): Promise<void> => {
     this.initLoading = true;
+    this.initErr = false;
     console.log(1);
     if (!this.isDeveloper) {
       console.log(2);

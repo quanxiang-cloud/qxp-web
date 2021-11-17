@@ -106,6 +106,7 @@ function FuncDetailsDrawer(): JSX.Element {
 
   const handleCancel = (): void => {
     setBeganClose(true);
+    store.modalType = '';
     // setTimeout(() => {
     //   setVisible(true);
     //   onCancel();

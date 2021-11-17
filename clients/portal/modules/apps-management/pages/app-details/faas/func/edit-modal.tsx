@@ -22,7 +22,7 @@ function EditModal({ modalType, onClose }: Props): JSX.Element {
           alias: {
             type: 'string',
             title: '函数名称',
-            description: '最多 20 个字符，支持中文、英文、下划线、数字。函数名称不可重复',
+            // description: '最多 20 个字符，支持中文、英文、下划线、数字。函数名称不可重复',
             'x-component': 'Input',
             'x-component-props': {
               placeholder: '请输入，例如：计算函数',
@@ -49,13 +49,10 @@ function EditModal({ modalType, onClose }: Props): JSX.Element {
           name: {
             type: 'string',
             title: '函数标识',
+            required: true,
             description: '最多 20 字符，必须以字母开头，只能包含字母、数字、下划线，标识不可重复。',
-            'x-component': 'Input',
             'x-component-props': {
               placeholder: '请输入，例如：sys_001',
-            },
-            'x-mega-props': {
-              labelAlign: 'top',
             },
             'x-rules': [
               {
@@ -71,7 +68,11 @@ function EditModal({ modalType, onClose }: Props): JSX.Element {
                 message: '必须以字母开头,由字母、数字、单下划线组成',
               },
             ],
+            'x-component': 'Input',
             'x-index': 1,
+            'x-mega-props': {
+              labelAlign: 'top',
+            },
           },
           language: {
 

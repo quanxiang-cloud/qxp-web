@@ -4,10 +4,9 @@ import { observer } from 'mobx-react';
 import Button from '@c/button';
 
 import store from './store';
-import icon from '@c/icon';
 
 function NotAvailable(): JSX.Element {
-  const { hasGroup, initLoading, initFaas } = store;
+  const { hasGroup, initLoading, initFaas, initErr } = store;
 
   return (
     <div className="text-12 p-40">
@@ -25,7 +24,8 @@ function NotAvailable(): JSX.Element {
           onClick={() => initFaas(window.USER.email)}
         >
           {initLoading && <img src='/dist/images/loading.svg' alt="loading" className="w-16 h-16 mr-8" />}
-          {!hasGroup ? '开通 FaaS 函数计算' : '加入 FaaS 函数协作'}
+          {initErr ? '重试' : `${!hasGroup ? '开通 FaaS 函数计算' : '加入 FaaS 函数协作'}`}
+
         </Button>
         <Button iconName="help_outline">操作指南</Button>
       </div>
