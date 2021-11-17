@@ -3,7 +3,7 @@ import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { isString, isBoolean, isNull, isNumber, isObject, get, isArray } from 'lodash';
 
 import {
-  getFullPath, getObjectEditorNewField, fromApiDataToObjectSchema, fromObjectSchemaToApiData,
+  getFullPath, getObjectEditorNewField, fromApiDataToObjectSchema, fromObjectSchemaToApiData, isObjectField,
 } from '@polyApi/utils/object-editor';
 
 import InputEditor from './input-editor';
@@ -20,7 +20,7 @@ type Props = ISchemaFieldComponentProps & {
 }
 
 function BodyEditor(props: Props): JSX.Element {
-  const { columnsDataIndexToOmit, extraColumns = [], initialValue, onAddField } = props;
+  const { columnsDataIndexToOmit, extraColumns = [], initialValue, value, onAddField } = props;
   const isValueObject = isObject(initialValue) && !isArray(initialValue);
 
   const handleChange = useCallback((value: POLY_API.ObjectSchema[]) => {
@@ -29,10 +29,6 @@ function BodyEditor(props: Props): JSX.Element {
       { type: distValue.length > 1 ? 'array' : 'object', data: distValue } :
       distValue;
     props.mutators.change(newValue);
-  }, []);
-
-  const isObjectField = useCallback((type: string): boolean => {
-    return ['object', 'array'].includes(type);
   }, []);
 
   function handleRowChange(
@@ -161,7 +157,9 @@ function BodyEditor(props: Props): JSX.Element {
     ...extraColumns,
   ].filter(({ dataIndex }) => !columnsDataIndexToOmit?.includes(dataIndex));
 
-  const initialValueFrom = isValueObject ? get(initialValue, 'data', []) : initialValue;
+  let initialValueFrom = isValueObject ? get(initialValue, 'data', []) : initialValue;
+  const valueData = get(value, 'data', []);
+  initialValueFrom = valueData.length && !initialValueFrom.length ? valueData : initialValueFrom;
 
   return (
     <>

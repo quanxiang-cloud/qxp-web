@@ -3,7 +3,7 @@ import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { isString, isBoolean, isNumber } from 'lodash';
 
 import {
-  getObjectEditorNewConstantField, fromApiDataToPolyConstSchema, fromPolyConstSchemaToApiData,
+  getObjectEditorNewConstantField, fromApiDataToPolyConstSchema, fromPolyConstSchemaToApiData, isObjectField,
 } from '@polyApi/utils/object-editor';
 
 import InputEditor from './input-editor';
@@ -18,9 +18,6 @@ function BodyEditor(props: ISchemaFieldComponentProps): JSX.Element {
     const distValue = fromPolyConstSchemaToApiData(value);
     props.mutators.change(distValue);
   }, []);
-  function isObjectField(type: string): boolean {
-    return ['object', 'array'].includes(type);
-  }
 
   function handleRowChange(
     keyType: keyof POLY_API.PolyConstSchema,

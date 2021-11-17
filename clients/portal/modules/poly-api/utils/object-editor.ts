@@ -131,3 +131,7 @@ export function insertToArray<T>(array: T[], index: number, value: T): T[] {
     ...array.slice(index),
   ];
 }
+
+export function isObjectField(type: string): boolean {
+  return ['object', 'array'].includes(type);
+}
