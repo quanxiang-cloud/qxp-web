@@ -40,7 +40,7 @@ export default function RequestNode(props: NodeProps<POLY_API.SubjectPolyNode>):
           )}
         >
           <span className={cs(
-            'text-caption-no-color-weight mr-80 truncate',
+            'text-caption-no-color-weight truncate',
             { 'text-blue-600': !apiName },
           )}>
             {apiName || '配置请求节点'}

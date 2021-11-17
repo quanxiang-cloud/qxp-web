@@ -25,7 +25,7 @@ export default {
       },
       'x-index': 1,
     },
-    constants: {
+    consts: {
       type: 'array',
       default: [],
       'x-component': 'ConstantsEditor',
