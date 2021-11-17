@@ -16,7 +16,7 @@ import NodeRemove from './action/remove';
 import { savePolyApiResult } from '../utils/build';
 import InputEditor from '../components/input-editor';
 
-export default function({
+export default function NodeWrapper({
   children, noPadding, selected, data, id, noBg,
 }: POLY_API.NodeWrapperProps): JSX.Element | null {
   const nodeWrapperRef = useRef<HTMLElement | null>(null);
@@ -100,6 +100,7 @@ export default function({
         <div className="flex flex-1 flex-col items-center">
           <header className="error-msg"></header>
           <footer
+            style={{ maxWidth: 200 }}
             className={cs('relative flex flex-col justify-center items-center rounded-8', {
               'px-12 py-6': !noPadding,
               'bg-white': !noBg,

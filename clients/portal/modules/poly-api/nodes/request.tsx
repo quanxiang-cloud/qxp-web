@@ -32,7 +32,7 @@ export default function RequestNode(props: NodeProps<POLY_API.SubjectPolyNode>):
 
   return (
     <NodeWrapper noPadding {...props}>
-      <div className="p-8" onClick={showConfig}>
+      <div className="p-8 w-full" onClick={showConfig}>
         <div
           className={cs(
             'flex justify-between items-center flex-nowrap py-4 px-8 transition duration-300',
@@ -40,12 +40,12 @@ export default function RequestNode(props: NodeProps<POLY_API.SubjectPolyNode>):
           )}
         >
           <span className={cs(
-            'text-caption-no-color-weight mr-80',
+            'text-caption-no-color-weight mr-80 truncate',
             { 'text-blue-600': !apiName },
           )}>
             {apiName || '配置请求节点'}
           </span>
-          <Icon name="chevron_right" className={cs({ 'text-blue-600': !apiName })} />
+          <Icon name="chevron_right" style={{ minWidth: 16 }} className={cs({ 'text-blue-600': !apiName })} />
         </div>
       </div>
     </NodeWrapper>
