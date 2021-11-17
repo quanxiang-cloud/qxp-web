@@ -26,7 +26,7 @@ function ApiParamsConfig({
     return nodeInput?.map((arr: any, index: number) => {
       const fullPath = path ? `${path}.${index}` : `${index}`;
       if (fullPath === targetPath) {
-        if ((arr.type === 'string' || arr.type === 'number') && value) {
+        if ((arr.type === 'string' || arr.type === 'number' || arr.type === 'direct_expr') && value) {
           arr.data = value;
           arr.type = 'direct_expr';
         }

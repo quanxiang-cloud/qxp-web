@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { clone } from 'ramda';
 import { Cascader } from 'antd';
+import { observer } from 'mobx-react';
 import { useParams } from 'react-router-dom';
 
 import { useGetRequestNodeApiList } from '@portal/modules/poly-api/effects/api/raw';
@@ -13,7 +14,6 @@ import {
   getChildrenOfCurrentSelectOption,
 } from '@portal/modules/poly-api/utils/request-node';
 import ApiDocDetail from '@polyApi/components/api-doc-detail';
-import { observer } from 'mobx-react';
 
 type Props = {
   apiDocDetail: any;
@@ -103,6 +103,7 @@ function ApiSelector({ apiDocDetail, setApiPath, initRawApiPath }: Props): JSX.E
     setApiNamespacePath(targetOption.path);
   }
 
+  // todo refactor this
   function getInitOptions(initValue: any, allData: any): any {
     return {
       initValue: initValue,
