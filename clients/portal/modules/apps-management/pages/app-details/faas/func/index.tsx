@@ -15,10 +15,10 @@ import FuncDetailsDrawer from './func-drawer';
 import '../index.scss';
 
 function FuncList(): JSX.Element {
-  const { funcList, fetchFuncList, modalType, setModalType, funcListLoading } = store;
+  const { fetchFuncList, modalType, setModalType, funcListLoading } = store;
 
   useEffect(() => {
-    fetchFuncList();
+    fetchFuncList(1, 10);
   }, []);
 
   if (funcListLoading) {
@@ -45,7 +45,7 @@ function FuncList(): JSX.Element {
             style={{ height: 'calc(100% - 82px)' }}
           >
 
-            {funcList.length ? <DataList /> : <DataEmpty />}
+            {store.funcList.length ? <DataList /> : <DataEmpty />}
 
           </div>
         </>

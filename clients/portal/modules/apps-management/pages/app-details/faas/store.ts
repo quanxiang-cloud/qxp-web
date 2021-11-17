@@ -79,7 +79,6 @@ class FaasStore {
   @observable currentFunc: FuncField= INIT_CURRENT_FUNC;
   @observable versionList: VersionField[] = [];
   @observable currentVersionFunc: VersionField= INIT_VERSION;
-  @observable funcCount = 0;
   @observable initErr = false;
 
   @action
@@ -196,14 +195,13 @@ class FaasStore {
   }
 
   @action
-  fetchFuncList = (): void => {
+  fetchFuncList = (current: number, pageSize: number): void => {
     fetchFuncList(this.groupID, {
       appID: this.appDetails.id,
-      size: 20,
-      page: 1,
+      page: current,
+      size: pageSize,
     }).then((res) => {
-      const { count, projects } = res;
-      this.funcCount = count;
+      const { projects } = res;
       this.funcList = projects;
       this.currentFunc = projects[0] || INIT_VERSION;
     }).catch((err) => {
@@ -215,36 +213,37 @@ class FaasStore {
   }
 
   @action
-  checkIsCoder = (): void => {
+  checkHasCoder = (): void => {
     hasCoder().then((res) => {
       if (!res.hasCoder)creatCoder();
     }).catch((err) => toast.error(err));
   }
 
   @action
-  creatCoder = () => {
-    creatCoder().then((res) => {
-      console.log(res);
+  creatCoder = (): void => {
+    creatCoder().then(() => {
+      toast.success('创建成功');
     }).catch((err) => {
       toast.error(err);
     });
   }
 
   @action
-  createFunc = (data: any) => {
-    createFaasFunc(this.groupID, data).then(async (res) => {
+  createFunc = (data: creatFuncParams): void => {
+    createFaasFunc(this.groupID, data).then((res) => {
       this.currentFuncID = res.id;
-      await this.fetchFuncInfo();
-      this.funcList = [...this.funcList, this.currentFunc];
-      this.checkIsCoder();
+      this.fetchFuncInfo().then(() => {
+        this.funcList = [this.currentFunc, ...this.funcList];
+        this.checkHasCoder();
+      });
     }).catch((err) => {
       toast.error(err);
     });
   }
 
   @action
-  fetchFuncInfo = (): void => {
-    getFuncInfo(this.groupID, this.currentFuncID).then((res) => {
+  fetchFuncInfo = (): Promise<void> => {
+    return getFuncInfo(this.groupID, this.currentFuncID).then((res) => {
       this.currentFunc = res.info;
     });
   }
@@ -252,7 +251,7 @@ class FaasStore {
   @action
   updateFuncDesc = (id: string, describe: string): void => {
     this.currentFuncID = id;
-    updateFuncDesc(this.groupID, id, { describe }).then((res) => {
+    updateFuncDesc(this.groupID, id, { describe }).then(() => {
       this.funcList = this.funcList.map((_func) => {
         if (_func.id === id) {
           this.currentFunc = { ..._func, description: describe };
@@ -305,8 +304,7 @@ class FaasStore {
       size: pageSize,
       page: current,
     }).then((res) => {
-      const { count, Builds } = res;
-      this.funcCount = count;
+      const { Builds } = res;
       this.versionList = Builds;
       this.currentVersionFunc = Builds[0] || INIT_CURRENT_FUNC;
     }).catch((err) => {

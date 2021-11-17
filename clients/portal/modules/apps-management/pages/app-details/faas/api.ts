@@ -43,7 +43,7 @@ export function fetchFuncList(
 
 export function createFaasFunc(
   groupID: string,
-  data: FuncListParams,
+  data: creatFuncParams,
 ): Promise<{id: string}> {
   return httpClient(`/api/v1/midfielder/group/${groupID}/project`, data);
 }

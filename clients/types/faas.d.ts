@@ -32,6 +32,13 @@ type FuncListParams = {
   alias?: string,
 }
 
+type creatFuncParams = {
+  name: string;
+  alias: string;
+  language: string;
+  description: string;
+}
+
 type VersionListParams = {
   state: string,
   size: number,

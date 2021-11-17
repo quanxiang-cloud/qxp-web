@@ -22,7 +22,7 @@ function BuildModal({ onClose }: Props): JSX.Element {
           tag: {
             type: 'string',
             title: '版本号',
-            description: '最多10个字符，只能包含数字、字母、下划线、且不可重复',
+            // description: '最多10个字符，只能包含数字、字母、下划线、小数点、且不可重复',
             'x-component': 'Input',
             'x-component-props': {
               placeholder: '请输入，例如：v0.1',

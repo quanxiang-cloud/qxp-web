@@ -3,6 +3,7 @@ import cs from 'classnames';
 import { Input } from 'antd';
 import { UnionColumns } from 'react-table';
 import { observer } from 'mobx-react';
+import moment from 'moment';
 
 import Icon from '@c/icon';
 import Table from '@c/table';
@@ -12,11 +13,9 @@ import MoreMenu from '@c/more-menu';
 import PopConfirm from '@c/pop-confirm';
 import Pagination from '@c/pagination';
 import Modal from '@c/modal';
-// import TableMoreFilterMenu from '@c/more-menu/table-filter';
 
 import store from '../store';
 import BuildModal from './build-modal';
-// import StatusDisplay from '../component/status';
 
 import '../index.scss';
 import { toJS } from 'mobx';
@@ -24,11 +23,7 @@ import { toJS } from 'mobx';
 const { TextArea } = Input;
 
 function DataList(): JSX.Element {
-  const { funcList, setModalType, updateFuncDesc } = store;
-  const [pagination, setPagination] = useState({
-    current: 1,
-    pageSize: 10,
-  });
+  const { setModalType, updateFuncDesc } = store;
 
   const COLUMNS: UnionColumns<FuncField>[] = [
     {
@@ -85,7 +80,7 @@ function DataList(): JSX.Element {
         let descriptionValue = description;
         return (
           <div className="description">
-            <span className="turncate" title={description}>{description}</span>
+            <span className="truncate" title={description}>{description}</span>
             <PopConfirm
               content={(
                 <div
@@ -119,7 +114,7 @@ function DataList(): JSX.Element {
     {
       Header: '创建时间',
       id: 'createdAt',
-      accessor: 'createdAt',
+      accessor: ({ updatedAt } : FuncField) => moment(updatedAt, 'X').format('YYYY-MM-DD HH:mm:ss'),
     },
     {
       Header: '操作',
@@ -180,16 +175,15 @@ function DataList(): JSX.Element {
       <div className='flex-1 overflow-hidden'>
         <Table
           rowKey="id"
-          data={toJS(funcList)}
+          data={toJS(store.funcList)}
           columns={COLUMNS}
           loading={store.funcListLoading}
         />
       </div>
       <Pagination
-        {...pagination}
-        total={store.funcCount}
-        renderTotalTip={() => `共 ${store.funcCount} 条数据`}
-        onChange={(current, pageSize) => store.fetchVersionList( current, pageSize )}
+        total={store.funcList.length}
+        renderTotalTip={() => `共 ${store.funcList.length} 条数据`}
+        onChange={(current, pageSize) => store.fetchFuncList( current, pageSize )}
       />
       {store.modalType === 'build' && <BuildModal onClose={() => store.modalType = ''}/>}
       {store.modalType === 'deletefunc' && (

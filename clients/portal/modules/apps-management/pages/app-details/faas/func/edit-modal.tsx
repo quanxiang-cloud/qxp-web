@@ -50,7 +50,7 @@ function EditModal({ modalType, onClose }: Props): JSX.Element {
             type: 'string',
             title: '函数标识',
             required: true,
-            description: '最多 20 字符，必须以字母开头，只能包含字母、数字、下划线，标识不可重复。',
+            // description: '最多 20 字符，必须以字母开头，只能包含字母、数字、下划线，标识不可重复。',
             'x-component-props': {
               placeholder: '请输入，例如：sys_001',
             },
@@ -117,12 +117,8 @@ function EditModal({ modalType, onClose }: Props): JSX.Element {
     },
   };
   const form = useForm({
-    // initialValues: {
-    //   title: modalType === 'copy' ? `${modelInfo?.title}-副本` : modelInfo?.title,
-    //   tableID: modalType === 'copy' ? '' : modelInfo?.tableID,
-    //   description: modelInfo?.description,
-    // },
     onSubmit: (formData) => {
+      console.log(formData);
       store.createFunc(formData);
     },
   });
