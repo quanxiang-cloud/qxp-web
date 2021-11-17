@@ -1,19 +1,20 @@
-import React, { Suspense, useEffect } from 'react';
-import { setValidationLanguage } from '@formily/antd';
+import React, { Suspense, useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
 import Prism from 'prismjs';
 import 'prismjs/plugins/custom-class/prism-custom-class.js';
 import 'prismjs/components/prism-python.js';
+import { Input } from 'antd';
 
 import Icon from '@c/icon';
-import store from '../store';
-import Tab from '@c/tab';
-import { useState } from 'react';
 
-setValidationLanguage('zh');
+import Tab from '@c/tab';
+import PopConfirm from '@c/pop-confirm';
+
+import store from '../store';
 
 import Loading from '@c/loading';
 
+const { TextArea } = Input;
 function VersionDetails(): JSX.Element {
   useEffect(() => {
     Prism.highlightAll();
@@ -22,6 +23,7 @@ function VersionDetails(): JSX.Element {
     });
   });
   const [tabNow, setTabNow] = useState((store.buildIsError));
+  const [des, setDes] = useState(store.currentVersionFunc.describe);
   const tabItems = [
     {
       id: 'build',
@@ -63,7 +65,7 @@ function VersionDetails(): JSX.Element {
     },
   ];
   function onClick(): void {
-    store.modalType = '';
+    store.modalType = 'funDetail';
   }
   return (
     <div className='flex flex-col flex-1 h-full px-20 version-detail'>
@@ -103,31 +105,56 @@ function VersionDetails(): JSX.Element {
       <div className='grid gap-x-16 grid-flow-row-dense grid-cols-4'>
         <div className='flex text-12 p-8 items-center '>
           <div className='text-gray-600'>版本号：</div>
-          <div className='text-gray-900 flex-1  '>v01</div>
+          <div className='text-gray-900 flex-1  '>{store.currentVersionFunc.tag}</div>
         </div>
         <div className='flex text-12 p-8 items-center '>
-          <div className='text-gray-600'>版本号：</div>
-          <div className='text-gray-900 flex-1 card-value'>v01</div>
+          <div className='text-gray-600'>构建时间：</div>
+          <div className='text-gray-900 flex-1 card-value'>xxxx</div>
         </div>
         <div className='flex text-12 p-8 items-center '>
-          <div className='text-gray-600'>版本号：</div>
-          <div className='text-gray-900 flex-1 card-value'>v01</div>
+          <div className='text-gray-600'>创建人：</div>
+          <div className='text-gray-900 flex-1 card-value'>{store.currentVersionFunc.creator}</div>
         </div>
         <div className='flex text-12 p-8 items-center '>
-          <div className='text-gray-600'>版本号：</div>
-          <div className='text-gray-900 flex-1 card-value'>v01</div>
+          <div className='text-gray-600'>创建时间：</div>
+          <div className='text-gray-900 flex-1 card-value'>{store.currentVersionFunc.createAt}</div>
         </div>
         <div className='flex text-12 p-8 items-center '>
-          <div className='text-gray-600'>版本号：</div>
-          <div className='text-gray-900 flex-1 card-value'>v01</div>
+          <div className='text-gray-600'>最后更新人：</div>
+          <div className='text-gray-900 flex-1 card-value'>{store.currentVersionFunc.updatedAt}</div>
         </div>
         <div className='flex text-12 p-8 items-center '>
-          <div className='text-gray-600'>版本号：</div>
-          <div className='text-gray-900 flex-1 card-value'>v01</div>
+          <div className='text-gray-600'>最后更新时间：</div>
+          <div className='text-gray-900 flex-1 card-value'>{store.currentVersionFunc.updatedAt}</div>
         </div>
+
         <div className='flex text-12 p-8 items-center '>
-          <div className='text-gray-600'>版本号：</div>
-          <div className='text-gray-900 flex-1 card-value'>v01</div>
+          <div className='text-gray-600'>描述：</div>
+          <div className='text-gray-900 flex-1 card-value'>
+            {store.currentVersionFunc.describe}
+            <PopConfirm
+              content={(
+                <div
+                  className="flex flex-col"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="text-body2 text-gray-600 mb-8">描述</div>
+                  <TextArea
+                    name="name"
+                    defaultValue={des}
+                    maxLength={30}
+                    className="description-input"
+                    onChange={(e) => setDes(e.target.value)}
+                  />
+                </div>
+              )}
+              okText="保存"
+              onOk={() => store.updateVerDesc(des)}
+            >
+              <Icon clickable name='edit' className="ml-4 cursor-pointer"/>
+            </PopConfirm>
+          </div>
+
         </div>
       </div>
       <Tab

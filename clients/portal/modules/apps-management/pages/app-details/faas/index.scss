@@ -112,3 +112,9 @@
     padding-right: 108px;
   }
 }
+.qxp-table-wrapper {
+  height: 100%;
+  .qxp-table-tr:hover .description>svg {
+    display: block;
+  }
+}

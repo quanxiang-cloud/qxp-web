@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
 import { Input } from 'antd';
 import cs from 'classnames';
@@ -35,6 +35,10 @@ const modifiers = [
 ];
 
 function FuncDetailsDrawer(): JSX.Element {
+  useEffect(() => {
+    store.fetchFuncInfo();
+    store.fetchVersionList(1, 20);
+  }, [store.currentFuncID]);
   const [beganClose, setBeganClose] = useState<boolean>(false);
   const [visible, setVisible] = useState<boolean>(false);
   const [fullScreen, setFullScreen] = useState<boolean>(false);
@@ -45,11 +49,12 @@ function FuncDetailsDrawer(): JSX.Element {
     {
       Header: '版本号',
       id: 'tag',
-      accessor: ({ tag }: VersionField) => {
+      accessor: (version: VersionField) => {
+        const { id, tag } = version;
         return (
           <span
             className="text-blue-600 cursor-pointer"
-            onClick={() => store.setModalType('VersionDetail') }
+            onClick={() => onClickTool(version, 'VersionDetail')}
           >
             {tag}
           </span>
@@ -79,12 +84,20 @@ function FuncDetailsDrawer(): JSX.Element {
     {
       Header: '操作',
       id: 'action',
-      accessor: (row) => {
+      accessor: ({ id, visibility }: VersionField) => {
         return (
           <div className="flex gap-20">
-            <span className="operate">上线</span>
-            <span className="operate">下线</span>
-            <span className="operate">删除</span>
+            {visibility === 'online' ? (
+              <PopConfirm content='确认下线改版本？' onOk={() => store.offlineVer(id)} >
+                <span className="operate">下线</span>
+              </PopConfirm> ) : (
+              <PopConfirm content='确认上线改版本？' onOk={() => store.servingVer(id)} >
+                <span className="operate">上线</span>
+              </PopConfirm>
+            )}
+            <PopConfirm content='确认删除改版本？' onOk={() => store.deleteVer(id)} >
+              <span className="operate">删除</span>
+            </PopConfirm>
           </div>
         );
       },
@@ -105,6 +118,12 @@ function FuncDetailsDrawer(): JSX.Element {
     // });
     console.log('shanchu');
   };
+
+  function onClickTool(verion: VersionField, modalType: string) {
+    store.currentVersionFunc = verion;
+    store.buildID = verion.id;
+    store.modalType = modalType;
+  }
 
   return (
     <div
@@ -131,18 +150,18 @@ function FuncDetailsDrawer(): JSX.Element {
         </div>
         <div className='grid gap-x-16 grid-flow-row-dense grid-cols-2 mx-20 my-12'>
           <div className='flex text-12 p-8 items-center '>
-            <div className='text-gray-600'>版本号：</div>
-            <div className='text-gray-900 flex-1  '>v01</div>
+            <div className='text-gray-600'>标志：</div>
+            <div className='text-gray-900 flex-1  '>{store.currentFunc.name}</div>
           </div>
           <div className='flex text-12 p-8 items-center '>
-            <div className='text-gray-600'>版本号：</div>
-            <div className='text-gray-900 flex-1  '>v01</div>
+            <div className='text-gray-600'>语言：</div>
+            <div className='text-gray-900 flex-1  '>{store.currentFunc.language}</div>
           </div>
         </div>
         <div className='flex-1 overflow-auto mb-20 mx-20'>
           <Table
             rowKey="id"
-            data={store.VersionList}
+            data={store.versionList}
             columns={COLUMNS}
             className='h-full'
           />

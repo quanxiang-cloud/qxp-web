@@ -64,8 +64,11 @@ export function defineFunc(groupID: string, projectID: string): Promise<{url: st
   return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/define`);
 }
 
-export function buildFunc(groupID: string, projectID: string) {
-  return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/build`);
+export function buildFunc(
+  groupID: string,
+  projectID: string,
+  data: {tag: string, describe: string}): Promise<void> {
+  return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/build`, data);
 }
 
 export function deleteFunc(groupID: string, projectID: string) {
@@ -92,20 +95,20 @@ export function getFuncVersionList(
 export function offlineVer(
   groupID: string,
   projectID: string,
-  buildID:string) {
+  buildID:string): Promise<void> {
   return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/release/${buildID}/offline`);
 }
 
 export function servingVer(
   groupID: string,
   projectID: string,
-  buildID:string) {
+  buildID:string): Promise<void> {
   return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/release/${buildID}/serving`);
 }
 
 export function deleteVer(
   groupID: string,
   projectID: string,
-  buildID:string) {
+  buildID:string): Promise<void> {
   return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/build/${buildID}/delete`);
 }

@@ -24,6 +24,7 @@ import {
 } from './api';
 import toast from '@lib/toast';
 import { httpClient } from 'clients/login/login-common';
+import { toArray } from 'lodash';
 
 const INIT_CURRENT_FUNC = {
   id: '',
@@ -74,14 +75,13 @@ class FaasStore {
   @observable checkUserLoading = true;
   @observable apiIsError = false;
   @observable groupID = '';
+  @observable currentFuncID = '';
   @observable buildID = '';
   @observable funcList: FuncField[] = [];
   @observable currentFunc: FuncField= INIT_CURRENT_FUNC;
-  @observable VersionList: VersionField[] = [];
+  @observable versionList: VersionField[] = [];
   @observable currentVersionFunc: VersionField= INIT_VERSION;
-  @observable count = 0;
-
-  @observable currentFuncID = '';
+  @observable funcCount = 0;
 
   @action
   setModalType = (type: string): void => {
@@ -146,7 +146,7 @@ class FaasStore {
   }
 
   @action
-  createGroup = () => {
+  createGroup = (): Promise<void> => {
     return createGroup({
       group: this.appDetails.appSign,
       appID: this.appDetails.id,
@@ -159,7 +159,7 @@ class FaasStore {
   }
 
   @action
-  addUserToGroup = () => {
+  addUserToGroup = (): void => {
     addToGroup(this.groupID, { memberID: this.User.id }).then((res) => {
       this.developerInGroup = true;
     }).catch((err) => {
@@ -191,7 +191,7 @@ class FaasStore {
       page: 1,
     }).then((res) => {
       const { count, projects } = res;
-      this.count = count;
+      this.funcCount = count;
       this.funcList = projects;
       this.currentFunc = projects[0] || INIT_VERSION;
     }).catch((err) => {
@@ -203,10 +203,10 @@ class FaasStore {
   }
 
   @action
-  checkIsCoder = () => {
+  checkIsCoder = (): void => {
     hasCoder().then((res) => {
       if (!res.hasCoder)creatCoder();
-    }).catch((err) => console.log(err));
+    }).catch((err) => toast.error(err));
   }
 
   @action
@@ -220,9 +220,10 @@ class FaasStore {
 
   @action
   createFunc = (data: any) => {
-    createFaasFunc(this.groupID, data).then((res) => {
+    createFaasFunc(this.groupID, data).then(async (res) => {
       this.currentFuncID = res.id;
-      this.fetchFuncInfo();
+      await this.fetchFuncInfo();
+      this.funcList = [...this.funcList, this.currentFunc];
       this.checkIsCoder();
     }).catch((err) => {
       toast.error(err);
@@ -230,10 +231,9 @@ class FaasStore {
   }
 
   @action
-  fetchFuncInfo = () => {
+  fetchFuncInfo = (): void => {
     getFuncInfo(this.groupID, this.currentFuncID).then((res) => {
       this.currentFunc = res.info;
-      this.funcList = [...this.funcList, this.currentFunc];
     });
   }
 
@@ -254,45 +254,49 @@ class FaasStore {
   }
 
   @action
-  defineFunc = (id: string) => {
-    defineFunc(this.groupID, id).then((res) => {
-      console.log(res);
+  defineFunc = (id: string): void => {
+    Promise.all([
+      defineFunc(this.groupID, id),
+      fetch('/_otp').then((response) => response.json()),
+    ]).then(([{ url }, { token }]) => {
+      window.open(`http://${url}?token=${token}`, '_blank');
     }).catch((err) => {
-      console.log(err);
+      toast.error(err);
     });
   }
 
   @action
-  buildFunc = () => {
-    buildFunc(this.groupID, this.currentFuncID).then((res) => {
-      console.log(res);
+  buildFunc = (buildData: {tag: string, describe: string}): void => {
+    buildFunc(this.groupID, this.currentFuncID, buildData).then((res) => {
+      this.modalType = '';
     }).catch((err) => {
-      console.log(err);
+      toast.error(err);
     });
   }
 
   @action
-  deleteFunc = () => {
-    deleteFunc(this.groupID, this.currentFuncID).then((res) => {
-      console.log(res);
+  deleteFunc = (): void => {
+    deleteFunc(this.groupID, this.currentFuncID).then(() => {
+      this.modalType = '';
+      toast.success('函数删除成功');
+      this.funcList = this.funcList.filter((func) => this.currentFuncID !== func.id);
+      this.currentFuncID = '';
     }).catch((err) => {
-      console.log(err);
+      toast.error(err);
     });
   }
 
   @action
-  fetchVersionList = (id: string): void => {
-    getFuncVersionList(this.groupID, id, {
+  fetchVersionList = (current: number, pageSize: number): void => {
+    getFuncVersionList(this.groupID, this.currentFuncID, {
       state: '',
-      size: 20,
-      page: 1,
+      size: pageSize,
+      page: current,
     }).then((res) => {
       const { count, Builds } = res;
-      this.count = count;
-      this.VersionList = Builds;
+      this.funcCount = count;
+      this.versionList = Builds;
       this.currentVersionFunc = Builds[0] || INIT_CURRENT_FUNC;
-
-      console.log(res);
     }).catch((err) => {
       toast.error(err);
       this.funcList = [];
@@ -302,16 +306,15 @@ class FaasStore {
   }
 
   @action
-  updateVerDesc = (id: string, describe: string): void => {
-    this.currentFuncID = id;
-    updateVerDesc(this.groupID, id, this.buildID, { describe }).then((res) => {
-      // this.funcList = this.funcList.map((_func) => {
-      //   if (_func.id === id) {
-      //     this.currentFunc = { ..._func, description: describe };
-      //     return { ..._func, description: describe };
-      //   }
-      //   return _func;
-      // });
+  updateVerDesc = (describe: string): void => {
+    updateVerDesc(this.groupID, this.currentVersionFunc.id, this.buildID, { describe }).then((res) => {
+      this.versionList = this.versionList.map((_version) => {
+        if (_version.id === this.currentVersionFunc.id) {
+          this.currentVersionFunc = { ..._version, describe };
+          return { ..._version, description: describe };
+        }
+        return _version;
+      });
       console.log(res);
     }).catch((err) => {
       toast.error(err);
@@ -319,29 +322,44 @@ class FaasStore {
   }
 
   @action
-  offlineVer = (id: string) => {
-    offlineVer(this.groupID, id, this.buildID).then((res) => {
-      console.log(res);
+  offlineVer = (id: string): void => {
+    offlineVer(this.groupID, this.currentFuncID, id).then(() => {
+      toast.success('下线成功');
+      this.versionList = this.versionList.map((_version) => {
+        if (_version.id === id) {
+          this.currentVersionFunc = { ..._version, visibility: '' };
+          return { ..._version, visibility: '' };
+        }
+        return _version;
+      });
     }).catch((err) => {
-      console.log(err);
+      toast.error(err);
     });
   }
 
   @action
-  servingVer = (id: string) => {
-    servingVer(this.groupID, id, this.buildID).then((res) => {
-      console.log(res);
+  servingVer = (id: string): void => {
+    servingVer(this.groupID, this.currentFuncID, id).then(() => {
+      toast.success('上线成功');
+      this.versionList = this.versionList.map((_version) => {
+        if (_version.id === id) {
+          this.currentVersionFunc = { ..._version, visibility: 'online' };
+          return { ..._version, visibility: 'online' };
+        }
+        return _version;
+      });
     }).catch((err) => {
-      console.log(err);
+      toast.error(err);
     });
   }
 
   @action
-  deleteVer = (id: string) => {
-    deleteVer(this.groupID, id, this.buildID).then((res) => {
-      console.log(res);
+  deleteVer = (id: string): void => {
+    deleteVer(this.groupID, this.currentFuncID, id).then(() => {
+      this.versionList = this.versionList.filter((version) => id !== version.id);
+      toast.success('删除成功');
     }).catch((err) => {
-      console.log(err);
+      toast.error(err);
     });
   }
 }

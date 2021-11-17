@@ -10,6 +10,8 @@ import Button from '@c/button';
 import Search from '@c/search';
 import MoreMenu from '@c/more-menu';
 import PopConfirm from '@c/pop-confirm';
+import Pagination from '@c/pagination';
+import Modal from '@c/modal';
 // import TableMoreFilterMenu from '@c/more-menu/table-filter';
 
 import store from '../store';
@@ -22,18 +24,21 @@ import { toJS } from 'mobx';
 const { TextArea } = Input;
 
 function DataList(): JSX.Element {
-  const [visible, setVisible] = useState(false);
   const { funcList, setModalType, updateFuncDesc } = store;
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 10,
+  });
 
   const COLUMNS: UnionColumns<FuncField>[] = [
     {
       Header: '名称',
       id: 'alias',
-      accessor: ({ alias }: FuncField) => {
+      accessor: ({ id, alias }: FuncField) => {
         return (
           <span
             className="text-blue-600 cursor-pointer"
-            onClick={() => store.setModalType('VersionDetail') }
+            onClick={() =>onClickTool(id, 'funDetail')}
           >
             {alias}
           </span>
@@ -80,14 +85,14 @@ function DataList(): JSX.Element {
         let descriptionValue = description;
         return (
           <div className="description">
-            <span className="turncate">{description}</span>
+            <span className="turncate" title={description}>{description}</span>
             <PopConfirm
               content={(
                 <div
                   className="flex flex-col"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <div className="text-body2 text-gray-600 mb-8">描述</div>
+                  <div className="text-body2 text-gray-600 mb-8" >描述</div>
                   <TextArea
                     name="name"
                     defaultValue={description}
@@ -125,7 +130,7 @@ function DataList(): JSX.Element {
             {state === 'True' ? (
               <>
                 <span className="operate" onClick={() => store.defineFunc(id)}>定义</span>
-                <span className="operate" onClick={() => setVisible(true)}>构建</span>
+                <span className="operate" onClick={() => onClickTool(id, 'build')}>构建</span>
                 <MoreMenu onMenuClick={() => console.log()} menus={[
                   { label: 'v0.1.3.a', key: 'v0.1.3.a' },
                   { label: 'v0.1.2', key: 'v0.1.2' },
@@ -136,18 +141,27 @@ function DataList(): JSX.Element {
                     <Icon clickable changeable name='keyboard_arrow_down' />
                   </span>
                 </MoreMenu>
-                <MoreMenu onMenuClick={() => console.log()} menus={[{ label: '删除', key: 'delete' }]}>
+                {/* <MoreMenu onMenuClick={() => onClickTool('deletefunc')} menus={[{ label: '删除', key: 'delete' }]}>
                   <Icon clickable name="more_horiz" />
-                </MoreMenu>
+                </MoreMenu> */}
               </>
             ) : (
-              <span className="cursor-pointer text-red-600">删除</span>
+              <span
+                className="cursor-pointer text-red-600"
+                onClick={() => onClickTool(id, 'deletefunc')}
+              >
+                删除
+              </span>
             )}
           </div>
         );
       },
     },
   ];
+  function onClickTool(id: string, modalType: string): void {
+    store.currentFuncID = id;
+    store.modalType = modalType;
+  }
 
   return (
     <>
@@ -162,13 +176,50 @@ function DataList(): JSX.Element {
         </Button>
         <Search className="func-search text-12" placeholder="搜索函数名称"/>
       </div>
-      <Table
-        rowKey="id"
-        data={toJS(funcList)}
-        columns={COLUMNS}
-        loading={store.funcListLoading}
+
+      <div className='flex-1 overflow-hidden'>
+        <Table
+          rowKey="id"
+          data={toJS(funcList)}
+          columns={COLUMNS}
+          loading={store.funcListLoading}
+        />
+      </div>
+      <Pagination
+        {...pagination}
+        total={store.funcCount}
+        renderTotalTip={() => `共 ${store.funcCount} 条数据`}
+        onChange={(current, pageSize) => store.fetchVersionList( current, pageSize )}
       />
-      {visible && <BuildModal onClose={() => setVisible(false)}/>}
+      {store.modalType === 'build' && <BuildModal onClose={() => store.modalType = ''}/>}
+      {store.modalType === 'deletefunc' && (
+        <Modal
+          title="删除函数"
+          onClose={() => store.modalType = ''}
+          footerBtns={[
+            {
+              text: '取消',
+              key: 'cancel',
+              onClick: () => store.modalType = '',
+            },
+            {
+              text: '确定',
+              key: 'confirm',
+              modifier: 'primary',
+              onClick: () => store.deleteFunc(),
+            },
+          ]}
+        >
+          <p className="text-h5 p-20">
+            确定要删除函数
+            <span className="font-bold mx-8">
+              {/* {state.currentDeleteWorkFlow?.name} */}
+            </span>
+            吗？删除后将无法恢复！
+          </p>
+        </Modal>
+      )
+      }
     </>
   );
 }

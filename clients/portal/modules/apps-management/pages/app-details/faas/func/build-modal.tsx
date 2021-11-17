@@ -4,6 +4,9 @@ import { Input } from '@formily/antd-components';
 
 import Modal from '@c/modal';
 
+import store from '../store';
+import { useEffect } from 'react';
+
 type Props = {
   onClose: () => void;
 }
@@ -16,7 +19,7 @@ function BuildModal({ onClose }: Props): JSX.Element {
         type: 'object',
         'x-component': 'mega-layout',
         properties: {
-          title: {
+          tag: {
             type: 'string',
             title: '版本号',
             description: '最多10个字符，只能包含数字、字母、下划线、且不可重复',
@@ -37,7 +40,7 @@ function BuildModal({ onClose }: Props): JSX.Element {
                 message: '版本号不能输入emoji表情符号',
               },
               {
-                pattern: /^[a-zA-Z]+([_]?[a-zA-Z0-9])*$/,
+                pattern: /^[a-zA-Z]+([_.]?[a-zA-Z0-9])*$/,
                 message: '必须以字母开头,由字母、数字、单下划线组成',
               },
               {
@@ -47,7 +50,7 @@ function BuildModal({ onClose }: Props): JSX.Element {
             ],
             'x-index': 0,
           },
-          description: {
+          describe: {
             type: 'string',
             title: '描述',
             'x-component': 'TextArea',
@@ -69,7 +72,7 @@ function BuildModal({ onClose }: Props): JSX.Element {
   };
   const form = useForm({
     onSubmit: (formData) => {
-      console.log(formData);
+      store.buildFunc(formData);
       onClose();
     },
   });
