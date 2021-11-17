@@ -9,6 +9,12 @@ declare namespace POLY_API {
   export type Root = RootObject<import('@polyApi/store/canvas').PolyCanvasStore>;
   export type PlainRoot = RootObject<PlainElement[]>;
 
+  export type Meta = Omit<PlainNodeElement, 'data'>
+  export type POLY_UIS = {
+    edges: PlainEdgeElement[];
+    metas: Meta[];
+  }
+
   export type NodeProps = import('react-flow-renderer').NodeProps<POLY_API.SubjectPolyNode>;
   export type NodeWrapperProps = import('react').PropsWithChildren<{
     noPadding?: boolean;
