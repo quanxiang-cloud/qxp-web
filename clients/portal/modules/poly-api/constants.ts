@@ -41,7 +41,7 @@ export const NODE_TYPE_MAPPER: Record<POLY_API.PolyNodeType, NODE_TYPE_MAPPER_VA
     desc: '为 API 必填参数配置运算公式',
     doc: '查看文档',
   },
-  end: {
+  output: {
     title: '结束',
     desc: '定义整体编排的输出结果',
     doc: '查看文档',

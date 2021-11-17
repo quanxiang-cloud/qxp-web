@@ -6,6 +6,6 @@ import Condition from './condition';
 export default {
   input: Input,
   request: Request,
-  end: End,
+  output: End,
   if: Condition,
 };

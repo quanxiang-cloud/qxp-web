@@ -112,11 +112,11 @@ export function buildConditionNode(): POLY_API.NodeElement {
 export function buildEndNode(): POLY_API.NodeElement {
   return {
     id: 'end',
-    type: 'end',
+    type: 'output',
     data: new PolyNodeStore({
       title: '',
       name: 'end',
-      type: 'end',
+      type: 'output',
       nextNodes: [],
       detail: {
         body: {
@@ -266,7 +266,7 @@ function removeCurrentRequestNode(
   if (!currentNodeNextNode?.type || !currentNodeParentNode?.type) {
     return elements;
   }
-  const belongsToRequest = ['request', 'input', 'end'];
+  const belongsToRequest = ['request', 'input', 'output'];
   if (
     belongsToRequest.includes(currentNodeParentNode.type) &&
     [...belongsToRequest, 'if'].includes(currentNodeNextNode.type)
@@ -305,12 +305,16 @@ function getDescendantNodes(
   return flatten(allNodes);
 }
 
+function endFilter(element: POLY_API.Element): boolean {
+  return element.type !== 'output';
+}
+
 function removeCurrentConditionNode(
   nodeToRemove: POLY_API.NodeElement, elements: POLY_API.Element[],
 ): POLY_API.Element[] {
   const currentNodeParentNode = getCurrentNodeParentNode(nodeToRemove, elements);
-  const descendantNodes = getDescendantNodes(nodeToRemove, elements, (element) => element.type !== 'end');
-  const endNode = elements.find((element) => element.type === 'end') as POLY_API.NodeElement | undefined;
+  const descendantNodes = getDescendantNodes(nodeToRemove, elements, endFilter);
+  const endNode = elements.find(endFilter) as POLY_API.NodeElement | undefined;
   if (!currentNodeParentNode || !endNode) {
     return elements;
   }
@@ -351,7 +355,7 @@ function addRequestNodeOnBottom(
   requestNode: POLY_API.Element, elements: POLY_API.Element[],
 ): POLY_API.Element[] {
   const inputNode = elements.find((element) => element.type === 'input') as POLY_API.NodeElement | undefined;
-  const endNode = elements.find((element) => element.type === 'end') as POLY_API.NodeElement | undefined;
+  const endNode = elements.find(endFilter) as POLY_API.NodeElement | undefined;
   if (!inputNode || !endNode) {
     return elements;
   }
@@ -449,7 +453,7 @@ function addConditionNodeOnRequest(
 ): POLY_API.Element[] {
   const currentNodeNextNodeIds = currentNode.data?.get<string[]>('nextNodes') || [];
   const isCurrentNodeNextNodeMultipleChild = currentNodeNextNodeIds.length > 1;
-  const endNode = elements.find((element) => element.type === 'end') as POLY_API.NodeElement | undefined;
+  const endNode = elements.find(endFilter) as POLY_API.NodeElement | undefined;
   const currentNodeNextNodeId = isCurrentNodeNextNodeMultipleChild ? endNode?.id : currentNodeNextNodeIds[0];
   if (!currentNodeNextNodeId) {
     return elements;

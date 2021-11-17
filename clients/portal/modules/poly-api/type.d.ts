@@ -66,7 +66,7 @@ declare namespace POLY_API {
     data: PolyEndBodyData[];
   }
 
-  export type PolyNodeType = 'input' | 'if' | 'request' | 'end';
+  export type PolyNodeType = 'input' | 'if' | 'request' | 'output';
 
   export interface PolyStartNodeDetail {
     inputs: PolyNodeInput[];
@@ -140,7 +140,7 @@ declare namespace POLY_API {
   export type PolyStartNode = PolyNodeGeneric<'input', PolyStartNodeDetail>;
   export type PolyRequestNode = PolyNodeGeneric<'request', PolyRequestNodeDetail>;
   export type PolyIfNode = PolyNodeGeneric<'if', PolyCondNodeDetail>;
-  export type PolyEndNode = PolyNodeGeneric<'end', PolyEndNodeDetail>;
+  export type PolyEndNode = PolyNodeGeneric<'output', PolyEndNodeDetail>;
   export type PolyNodeDetail = PolyStartNodeDetail | PolyCondNodeDetail | PolyRequestNodeDetail |
     PolyEndNodeDetail;
   export type PolyNode = PolyStartNode | PolyRequestNode | PolyIfNode | PolyEndNode;

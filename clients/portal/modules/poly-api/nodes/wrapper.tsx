@@ -30,7 +30,7 @@ export default function NodeWrapper({
   const isInput = nodeData.type === 'input';
   // const isRequest = nodeData.type === 'request';
   const isCondition = nodeData.type === 'if';
-  const isEnd = nodeData.type === 'end';
+  const isEnd = nodeData.type === 'output';
   const showTitle = !isInput && !isEnd && !isCondition;
   const showBottomTrigger = !isInput && !isEnd;
   const showrightTrigger = !isEnd;
