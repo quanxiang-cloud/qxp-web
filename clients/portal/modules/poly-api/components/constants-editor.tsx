@@ -50,7 +50,11 @@ function BodyEditor(props: ISchemaFieldComponentProps): JSX.Element {
     store$: Store<POLY_API.PolyConstSchema>,
   ): JSX.Element {
     return (
-      <FieldTypeSelector type={type} simple onChange={handleRowChange('type', current$, store$)} />
+      <FieldTypeSelector
+        simple
+        type={type}
+        onChange={handleRowChange('type', current$, store$)}
+      />
     );
   }
 
