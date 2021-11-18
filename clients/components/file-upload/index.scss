@@ -34,3 +34,19 @@
 .qxp-file-img-opt{
   background: rgb(15, 23, 42, 0.65) ;
 }
+
+.file-upload-success-icon{
+  color: var(--green-600);
+}
+
+.file-list-icon{
+  @apply text-white rounded-4 rounded-tr-none box-content p-5 box-content;
+}
+
+.file-type{
+  @apply bg-blue-600; 
+}
+.img-type{
+  @apply bg-yellow-500;
+}
+

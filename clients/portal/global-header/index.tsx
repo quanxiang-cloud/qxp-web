@@ -8,6 +8,7 @@ const paths = [
   '/apps/formDesign',
   '/apps/details',
   '/apps/flow/',
+  '/poly',
 ];
 
 function shouldHideHeader(currentPath: string): boolean {

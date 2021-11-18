@@ -97,6 +97,10 @@ function GroupSetting(props: Props) {
             toast.success('数据未修改');
             return;
           }
+          if (finalData.authType === 'signature' && !finalData.authorize.trim()) {
+            toast.error('请输入鉴权方法');
+            return;
+          }
           await store.updateSvc(finalData);
           toast.success('修改成功');
         }
@@ -133,7 +137,12 @@ function GroupSetting(props: Props) {
               <input
                 type="number"
                 className={cs('input', { error: errors.port })}
-                {...register('port', { required: true })}
+                {...register('port', {
+                  required: true,
+                  min: 1,
+                  max: 65536,
+                  maxLength: 5,
+                })}
               />
             </div>
           </div>
@@ -163,7 +172,7 @@ function GroupSetting(props: Props) {
                 <p>鉴权方法</p>
                 <textarea
                   className={cs('textarea', { error: errors.authorize })}
-                  rows={3}
+                  style={{ minHeight: '300px', resize: 'vertical', height: 'auto' }}
                   placeholder='请输入'
                   {...register('authorize', { required: '请输入鉴权方法', shouldUnregister: true })}
                 />

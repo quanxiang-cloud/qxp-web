@@ -6,6 +6,8 @@ import Prism from 'prismjs';
 import 'prismjs/plugins/custom-class/prism-custom-class.js';
 import 'prismjs/components/prism-python.js';
 
+import { toJS } from 'mobx';
+
 import Tab from '@c/tab';
 import Icon from '@c/icon';
 import Table from '@c/table';
@@ -152,6 +154,16 @@ function renderApiDetails(): JSX.Element {
   );
 }
 
+function isNsNode(): boolean {
+  const curNode = toJS(store.currentDataModel);
+  return 'parent' in curNode && 'subCount' in curNode;
+}
+
+function isApiNode(): boolean {
+  const curNode = toJS(store.currentDataModel);
+  return 'fullPath' in curNode && 'url' in curNode;
+}
+
 function ApiDocumentDetails(): JSX.Element {
   const tabItems = [
     {
@@ -199,6 +211,16 @@ function ApiDocumentDetails(): JSX.Element {
     },
   ];
 
+  useEffect(()=> {
+    if (isApiNode()) {
+      store.useFieldsID = false;
+      store.docType = 'curl';
+      // @ts-ignore
+      store.setApiPath(store.currentDataModel.fullPath);
+      store.fetchApiDoc();
+    }
+  }, [store.currentDataModel]);
+
   if (!store.tableID) {
     return <EmptyTips text='暂无数据模型' className="pt-40 m-auto" />;
   }
@@ -207,28 +229,46 @@ function ApiDocumentDetails(): JSX.Element {
     return <Loading />;
   }
 
+  function renderMain(): JSX.Element {
+    if (isNsNode()) {
+      return (
+        <div className='px-20 py-20 text-14'>选择 namespace 下的 API 来查看接口文档</div>
+      );
+    }
+    if (isApiNode()) {
+      return (
+        <div className='px-20'>
+          {renderApiDetails()}
+        </div>
+      );
+    }
+
+    return (
+      <Tab
+        items={tabItems}
+        className='w-full h-full api-tab'
+        onChange={(v) => {
+          if (v !== 'fields') {
+            store.useFieldsID = false;
+            store.docType = 'curl';
+            store.fetchXName(v as ApiType);
+          }
+        }}
+      />
+    );
+  }
+
   return (
     <div
       className='relative flex-1 overflow-hidden bg-white rounded-tr-12 w-1 flex flex-col'
     >
       <TextHeader
-        title={store.currentDataModel.title || '------'}
+        title={store.currentDataModel?.title || '------'}
         itemTitleClassName="text-12 font-semibold"
         className="bg-gray-1000 p-16 header-background-image h-44 shadow-header rounded-t-12"
       />
-      <div className='relative flex-1 overflow-hidden'>
-        <Tab
-          items={tabItems}
-          className='w-full h-full api-tab'
-          onChange={(v) => {
-            if (v !== 'fields') {
-              store.useFieldsID = false;
-              store.docType = 'curl';
-              store.fetchXName(v as ApiType)
-              ;
-            }
-          }}
-        />
+      <div className='relative flex-1 overflow-auto'>
+        {renderMain()}
       </div>
     </div>
   );

@@ -227,7 +227,8 @@ class ApiProxyStore {
     this.isLoading = true;
     try {
       if (paging.search) {
-        this.svcApis = await apis.searchNativeApi(this.currentSvcPath, {
+        const curNs = [this.currentNs?.parent, this.currentNs?.name].join('/');
+        this.svcApis = await apis.searchNativeApi(curNs, {
           ...pick(paging, ['page', 'pageSize']),
           title: paging.search,
           active: -1,
@@ -251,6 +252,15 @@ class ApiProxyStore {
   @action
   disableApi=async (apiPath: string, active: number)=> {
     await apis.activeApi(apiPath, { active });
+  }
+
+  @action
+  uploadSwagger=async (file: File)=> {
+    const fd = new FormData();
+    fd.append('version', 'v1');
+    fd.append('file', file);
+    fd.append('svcPath', this.currentSvcPath);
+    await apis.uploadSwagger(fd);
   }
 
   @action

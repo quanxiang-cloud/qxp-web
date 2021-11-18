@@ -106,7 +106,7 @@ const AuditLogPage = () => {
 
   return (
     <Container>
-      <div className="h-full flex flex-col flex-grow overflow-hidden">
+      <div className="h-full flex flex-col flex-grow overflow-hidden pb-20">
         <TextHeader
           title="系统日志"
           desc="查询用户的操作历史"

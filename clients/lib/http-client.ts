@@ -7,16 +7,26 @@ import schemaToFields from '@lib/schema-convert';
 let alreadyAlertUnauthorizedError = false;
 
 async function httpClient<TData, TBody = unknown>(
-  path: string, body?: TBody, additionalHeaders?: HeadersInit,
+  path: string,
+  body?: TBody,
+  additionalHeaders?: HeadersInit,
+  options?: Record<string, any>,
 ): Promise<TData> {
+  const headers = {
+    'X-Proxy': 'API',
+    'Content-Type': 'application/json',
+    ...additionalHeaders,
+  };
+  // while send form-data, do not set content-type
+  if (options?.formData) {
+    // @ts-ignore
+    delete headers['Content-Type'];
+  }
   const response = await fetch(path, {
     method: 'POST',
-    body: JSON.stringify(body || {}),
-    headers: {
-      ...additionalHeaders,
-      'X-Proxy': 'API',
-      'Content-Type': 'application/json',
-    },
+    // @ts-ignore
+    body: options?.formData ? body : JSON.stringify(body || {}),
+    headers,
   });
 
   if (response.status === 401) {

@@ -4,7 +4,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { useForm, FormProvider } from 'react-hook-form';
 import cs from 'classnames';
 import { useMutation } from 'react-query';
-import { get, values, omit } from 'lodash';
+import { get, values } from 'lodash';
 
 import Select from '@c/select';
 import Button from '@c/button';
@@ -45,6 +45,7 @@ const methodOptions = [
 
 const regApiName = /^[a-zA-Z_]\w+$/; // api标识，swagger的 api path部分
 const regPathParam = /:([^/:]+)/g;
+const regApiTitle = /^[\u4e00-\u9fa5_a-zA-Z0-9\s]+$/; // 中英文数字，空格
 
 function getAllPathParamNames(url: string): string[] {
   return url.match(regPathParam) || [];
@@ -94,7 +95,7 @@ function AddApi(props: Props) {
         queryNativeApi(apiPath),
         queryNativeApiDoc(apiPath, { docType: 'swag' }),
       ]).then(([detail, doc])=> {
-        console.log('api doc, api detail: ', doc, detail);
+        // console.log('api doc, api detail: ', doc, detail);
         const apiPath = detail.url.slice(`${detail.schema}://${detail.host}`.length);
         const { parameters = [], responses = {}, ['x-consts']: constants = [] } = values(get(doc, `doc.paths.${apiPath}`))[0] || {};
         paramsStore.setAllParameters(parameters);
@@ -220,7 +221,17 @@ function AddApi(props: Props) {
               className={cs('input', { error: errors.title })}
               placeholder='请输入'
               maxLength={32}
-              {...register('title', { required: '请填写 API 名称' })}
+              {...register('title', {
+                required: '请填写 API 名称',
+                pattern: regApiTitle,
+                validate: (val)=> {
+                  if (!regApiTitle.test(val)) {
+                    toast.error('API 名称格式错误');
+                    return false;
+                  }
+                  return true;
+                },
+              })}
             />
             <ErrorMsg errors={errors} name='title'/>
             <p className='text-caption'>最多 20 个字符，仅支持中英文</p>
@@ -238,6 +249,8 @@ function AddApi(props: Props) {
               readOnly={isEdit}
               {...register('apiPath', {
                 required: '请填写 API 路径',
+                maxLength: 200,
+                pattern: /^[a-zA-Z_/][\w/:]+$/,
               })}
             />
             <ErrorMsg errors={errors} name='apiPath'/>

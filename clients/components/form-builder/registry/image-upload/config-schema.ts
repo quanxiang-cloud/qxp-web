@@ -26,13 +26,20 @@ const schema: ISchema = {
           title: '描述内容',
           maxLength: 50,
           'x-component': 'Input',
-          'x-component-props': {
-            placeholder: '请输入',
-          },
           'x-mega-props': {
             labelAlign: 'top',
           },
           'x-index': 1,
+        },
+        uploaderDescription: {
+          title: '图片附件内描述',
+          default: '',
+          'x-mega-props': {
+            labelAlign: 'top',
+          },
+          maxLength: 4,
+          'x-component': 'Input',
+          'x-index': 2,
         },
         displayModifier: {
           type: 'string',
@@ -56,25 +63,36 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 2,
+          'x-index': 3,
         },
         required: {
           title: '是否必填',
           default: false,
           'x-component': 'Switch',
-          'x-index': 3,
-        },
-        multiple: {
-          title: '允许上传多张图片',
-          default: true,
-          'x-component': 'Switch',
           'x-index': 4,
         },
-        autoCompress: {
-          title: '自动压缩图片',
+        multiple: {
+          title: '允许上传多个图片',
           default: false,
           'x-component': 'Switch',
           'x-index': 5,
+        },
+        maxFileSize: {
+          type: 'number',
+          title: '图片最大体积(MB)',
+          required: true,
+          maxLength: 4,
+          'x-component': 'NumberPicker',
+          'x-index': 6,
+          'x-rules': {
+            required: true,
+            message: '请输入图片最大体积',
+          },
+          'x-component-props': {
+            min: 10,
+            max: 5000,
+            precision: 0,
+          },
         },
       },
     },

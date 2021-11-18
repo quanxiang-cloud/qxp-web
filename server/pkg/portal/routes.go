@@ -52,6 +52,7 @@ func GetRouter() http.Handler {
 	r.Path("/retrievePassword").Methods("POST").HandlerFunc(handlers.HandleRetrievePasswordSubmit)
 
 	r.Path("/upload").Methods("POST").HandlerFunc(tokenRequired(handlers.FileUploadHandler))
+	r.Path("/upload/swagger").Methods("POST").HandlerFunc(tokenRequired(handlers.SwaggerUploadHandler))
 	r.PathPrefix("/blob").Methods("GET").HandlerFunc(tokenRequired(handlers.FileProxyHandler))
 
 	// todo server this request in a different package

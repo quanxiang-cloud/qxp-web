@@ -20,13 +20,13 @@ export const MAX_SMALL_FILE_SIZE = 1024 * 1024 * 20; // 20 MB
 export const FILE_LIST_ICON: Record<string, { name: string, size: number, className: string }> = {
   failed: { name: 'error', size: 20, className: 'text-red-600' },
   retry: { name: 'refresh', size: 24, className: 'text-red-600' },
-  success: { name: 'done', size: 20, className: 'text-green-500' },
+  success: { name: 'done', size: 20, className: 'file-upload-success-icon' },
   download: { name: 'download', size: 20, className: 'text-white' },
   delete: { name: 'restore_from_trash', size: 20, className: 'text-white' },
   uploading: { name: 'loading', size: 20, className: 'animate-spin text-blue-500' },
   processing: { name: 'hourglass_empty', size: 20, className: 'animate-spin text-gray-600' },
-  img: { name: 'insert_photo', size: 20, className: 'text-white bg-yellow-500 rounded-4 rounded-tr-none box-content p-5' },
-  file: { name: 'insert_drive_file', size: 20, className: 'text-white bg-blue-600 rounded-4 rounded-tr-none box-content p-5' },
+  img: { name: 'insert_photo', size: 20, className: 'file-list-icon img-type' },
+  file: { name: 'insert_drive_file', size: 20, className: 'file-list-icon file-type' },
 };
 
 // Default img types

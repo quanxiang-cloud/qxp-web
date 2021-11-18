@@ -52,7 +52,6 @@ const defaultMetaInfo: MetaInfo = {
   description: '',
 };
 
-// todo: refine
 function applySubNodes(item: any, isRoot: boolean, objectNodes?: Array<any>, arrayNodes?: Array<any>): void {
   let target = item;
 
@@ -66,11 +65,11 @@ function applySubNodes(item: any, isRoot: boolean, objectNodes?: Array<any>, arr
   }
 
   if (arrayNodes) {
+    const requiredKeys: string[] = arrayNodes.filter((v: ApiParam)=> v.required).map((v: ApiParam)=> v.name);
     const items = mapRawParams(arrayNodes).reduce((acc, cur)=> {
       acc[cur.name] = omit(cur, 'name', 'required');
       return acc;
     }, {});
-    const requiredKeys: string[] = arrayNodes.filter((v: ApiParam)=> v.required).map((v: ApiParam)=> v.name);
 
     Object.assign(target, {
       required: requiredKeys.filter(Boolean),
@@ -78,25 +77,22 @@ function applySubNodes(item: any, isRoot: boolean, objectNodes?: Array<any>, arr
     });
   }
   if (objectNodes) {
+    const requiredKeys: string[] = objectNodes.filter((v: ApiParam)=> v.required).map((v: ApiParam)=> v.name);
     const properties = mapRawParams(objectNodes).reduce((acc, cur)=> {
       acc[cur.name] = omit(cur, 'name', 'required');
       return acc;
     }, {});
-    const requiredKeys: string[] = objectNodes.filter((v: ApiParam)=> v.required).map((v: ApiParam)=> v.name);
+
     Object.assign(target, {
       required: requiredKeys.filter(Boolean),
       properties,
     });
   }
-
-  // if (['object', 'array'].includes(item.type)) {
-  //   delete item.required;
-  // }
 }
 
 function mapRawParams(params: ApiParam[], mergeOptions?: Record<string, any>): ParamItem[] {
   return params.filter(({ name })=> !!name).map((v)=> {
-    const item = Object.assign(pick(v, reservedKeys), pick(mergeOptions || {}, 'in'));
+    const item = Object.assign({}, pick(v, reservedKeys), pick(mergeOptions || {}, 'in'));
     const { _array_nodes_: arrayNodes, _object_nodes_: objectNodes } = item;
 
     applySubNodes(item, mergeOptions?.root, objectNodes, arrayNodes);
@@ -175,7 +171,10 @@ export default class Store {
           schema: {
             type: 'object',
             required: response.filter((v: ApiParam)=> v.required).map((v: ApiParam)=> v.name),
-            properties: mapRawParams(response).reduce((acc, cur)=> {
+            properties: mapRawParams(response, { root: true }).reduce((acc, cur)=> {
+              if (!['object', 'array'].includes(cur.type)) {
+                delete cur.required;
+              }
               acc[cur.name] = omit(cur, 'name');
               return acc;
             }, {}),
@@ -232,7 +231,7 @@ export default class Store {
 
   @action
   setResponse=(resp: Record<string, any>)=> {
-    const respItems = mapObjectNode(get(resp, '200.schema'));
+    const respItems = mapObjectNode(get(resp, '200.schema', {}));
     this.setParams('response', respItems._object_nodes_ || []);
   }
 

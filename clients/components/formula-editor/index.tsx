@@ -35,6 +35,7 @@ type Props = {
   customRules?: CustomRule[];
   className?: string;
   defaultValue?: string;
+  value?: string;
   help?: string;
   maxLength?: number;
 }
@@ -69,6 +70,7 @@ function FormulaEditor({
   onBlur,
   readOnly,
   defaultValue = '',
+  value,
 }: Props, ref: React.Ref<any>): JSX.Element {
   const [contentLength, setLength] = useState(0);
   const decorator = useMemo(() => new CompositeDecorator(defaultDecorators), []);
@@ -78,6 +80,19 @@ function FormulaEditor({
       convertFromRaw(toContentState(defaultValue, customRules)), decorator,
     ) : EditorState.createEmpty(decorator),
   );
+
+  useEffect(() => {
+    if (typeof value !== 'string' || value === getFormulaValue()) {
+      return;
+    }
+
+    let newEditorState = EditorState.createWithContent(
+      convertFromRaw(toContentState(value, customRules)),
+      decorator,
+    );
+    newEditorState = EditorState.forceSelection(newEditorState, editorState.getSelection());
+    setEditorState(newEditorState);
+  }, [value]);
 
   const editorDom = useRef<any>();
   useImperativeHandle(ref, () => ({
@@ -91,7 +106,7 @@ function FormulaEditor({
     const currentContentLength = currentContent.getPlainText('').length;
     setLength(currentContentLength);
     setEditorState(_editorState);
-    onChange?.(getFormulaValue());
+    onChange?.(getFormulaValue(_editorState));
   };
 
   const getLengthOfSelectedText = (): number => {
@@ -251,8 +266,8 @@ function FormulaEditor({
     handleChange(newEditorState);
   };
 
-  const getFormulaValue = (): string => {
-    const currentContent = editorState.getCurrentContent();
+  const getFormulaValue = (_editorState?: EditorState): string => {
+    const currentContent = (_editorState || editorState).getCurrentContent();
     const { blocks, entityMap } = convertToRaw(currentContent);
     return blocks.map((block) => {
       let text = block.text;

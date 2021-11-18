@@ -1,4 +1,4 @@
-import React, { useState, isValidElement } from 'react';
+import React, { useState, isValidElement, ForwardedRef, forwardRef } from 'react';
 import { useUpdateEffect } from 'react-use';
 import cs from 'classnames';
 
@@ -24,7 +24,7 @@ function Drawer({
   position = 'bottom',
   visible,
   distanceTop = 56,
-}: Props): JSX.Element | null {
+}: Props, ref: ForwardedRef<HTMLDivElement | null>): JSX.Element | null {
   const [beganClose, setBeganClose] = useState<boolean>(false);
   const [contentShow, setContentShow] = useState(visible);
 
@@ -51,6 +51,7 @@ function Drawer({
 
   return (
     <div
+      ref={ref}
       className={cs(`drawer-modal-mask drawer-position-${position}`, {
         'drawer-began-close': beganClose,
         'drawer-close': !contentShow,
@@ -75,4 +76,4 @@ function Drawer({
   );
 }
 
-export default Drawer;
+export default forwardRef<HTMLDivElement, Props>(Drawer);

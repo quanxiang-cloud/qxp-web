@@ -113,7 +113,6 @@ const LogTable = ({ className }: Props) => {
     <>
       <div
         className={cs('log-table-wrap flex w-full mt-16 px-20', className)}
-        style={{ height: 'calc(100% - 142px)' }}
       >
         <Table
           className='text-14 h-full'

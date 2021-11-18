@@ -22,11 +22,11 @@ function CreatApiKeyTable(props: Props, ref?: React.ForwardedRef<FormInstance>):
         name="keyID"
         label="密钥ID"
         rules={[{
-          max: 50,
-          message: '名称不能超过 50 字符',
-        }, {
           required: !isEditor,
           message: '请输入密钥ID',
+        }, {
+          pattern: /^\S*$/,
+          message: '请勿输入空格',
         }]}
         initialValue={msgApiKey?.keyID}
       >
@@ -37,11 +37,11 @@ function CreatApiKeyTable(props: Props, ref?: React.ForwardedRef<FormInstance>):
           name="keySecret"
           label="密钥Secret"
           rules={[{
-            max: 50,
-            message: '名称不能超过 50 字符',
-          }, {
             required: true,
             message: '请输入密钥ID',
+          }, {
+            pattern: /^\S*$/,
+            message: '请勿输入空格',
           }]}
           initialValue={msgApiKey?.keySecret}
         >

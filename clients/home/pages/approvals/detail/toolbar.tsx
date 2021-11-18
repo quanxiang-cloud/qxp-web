@@ -1,13 +1,13 @@
-import React, { useRef, useState } from 'react';
-import Icon from '@c/icon';
-import Button from '@c/button';
-import cs from 'classnames';
+import React, { useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
+import cs from 'classnames';
 import { Input } from 'antd';
 
 import MoreMenu from '@c/more-menu';
 import PopConfirm from '@c/pop-confirm';
 import toast from '@lib/toast';
+import Icon from '@c/icon';
+import Button from '@c/button';
 
 import { handleReadTask } from '../api';
 import actionMap from './action-map';
@@ -19,6 +19,7 @@ interface Props {
   permission: { custom: PermissionItem[], system: PermissionItem[], default?: PermissionItem[] };
   globalActions: Record<string, boolean>;
   onClickAction: (actionKey: TaskHandleType, task: any, reasonRequired?: boolean) => void;
+  workFlowType?: string;
 }
 
 const moreActions = [
@@ -31,52 +32,26 @@ const getIconByAction = (action: string): string => {
   return actionMap[action]?.icon || 'arrow_circle_up';
 };
 
-function Toolbar({ currTask, permission, onClickAction, globalActions }: Props): JSX.Element {
+function Toolbar({ currTask, permission, onClickAction, globalActions, workFlowType }: Props): JSX.Element {
   const { processInstanceID, taskID } = useParams<{ processInstanceID: string; taskID: string }>();
   const [comment, setComment] = useState('');
-  const commentRef = useRef<{node: HTMLTextAreaElement}>(null);
   const history = useHistory();
 
   const { custom = [], system = [] } = permission;
 
-  // fixme: mock
-  // custom = [
-  //   'FILL_IN',
-  //   'DELIVER',
-  //   'STEP_BACK',
-  //   'SEND_BACK',
-  //   'CC',
-  //   // 'ADD_SIGN',
-  //   'READ',
-  // ].map((v) => {
-  //   return ({ enabled: true, value: v, ...actionMap[v] });
-  // });
-  //
-  // system = ['AGREE', 'REFUSE'].map((v: string) => {
-  //   return ({ enabled: true, value: v, ...actionMap[v] });
-  // });
-  //
-  // Object.assign(globalActions, {
-  //   hasCancelBtn: true,
-  //   hasCcHandleBtn: true,
-  //   hasReadHandleBtn: true,
-  //   hasResubmitBtn: true,
-  //   hasUrgeBtn: true,
-  // });
-
   function handleReadOk(): Promise<never> | undefined {
-    if (commentRef?.current?.node.value.length && commentRef?.current?.node.value.length > 100) {
+    if (comment && comment.length > 100) {
       toast.error('字数不能超过100字');
       return Promise.reject(new Error('字数不能超过100字'));
     }
-    handleReadTask(processInstanceID, taskID, commentRef?.current?.node.value || '').then((data) => {
+    handleReadTask(processInstanceID, taskID, comment || '').then((data) => {
       if (data) {
         toast.success('操作成功');
         history.push('/approvals?list=todo');
       } else {
         toast.error('操作失败');
       }
-    }).catch((err)=> toast.error(err.message || '操作失败'));
+    }).catch((err) => toast.error(err.message || '操作失败'));
   }
 
   return (
@@ -86,6 +61,11 @@ function Toolbar({ currTask, permission, onClickAction, globalActions }: Props):
           if (!enabled) {
             return null;
           }
+
+          if (workFlowType === 'APPLY_PAGE' && !['hasCancelBtn', 'hasUrgeBtn'].includes(value)) {
+            return null;
+          }
+
           return (
             <span key={`${value}-${idx}`} onClick={(ev) => onClickAction(value, currTask)}>
               <Icon name={getIconByAction(value)} className="mr-8" />{text ?? name ?? defaultText}
@@ -122,6 +102,10 @@ function Toolbar({ currTask, permission, onClickAction, globalActions }: Props):
               return null;
             }
 
+            if (workFlowType === 'APPLY_PAGE' && !['hasCancelBtn', 'hasUrgeBtn'].includes(value)) {
+              return null;
+            }
+
             return (
               <Button
                 iconName={getIconByAction(value)}
@@ -141,6 +125,10 @@ function Toolbar({ currTask, permission, onClickAction, globalActions }: Props):
               return null;
             }
 
+            if (workFlowType === 'APPLY_PAGE' && !['hasCancelBtn', 'hasUrgeBtn'].includes(action)) {
+              return null;
+            }
+
             if (action === 'hasReadHandleBtn') {
               return (
                 <PopConfirm content={(
@@ -148,12 +136,10 @@ function Toolbar({ currTask, permission, onClickAction, globalActions }: Props):
                     <div className="mb-8" style={{ width: '374px' }}>请输入阅示意见</div>
                     <TextArea
                       rows={2}
-                      // @ts-ignore
-                      ref={commentRef}
-                      name="comment"
                       placeholder=''
+                      value={comment}
                       defaultValue={comment}
-                      // onChange={(ev: unknown, value: string) => setComment(value)}
+                      onChange={(e) => setComment(e.target.value)}
                     />
                     <MoreMenu
                       menus={[
@@ -163,8 +149,6 @@ function Toolbar({ currTask, permission, onClickAction, globalActions }: Props):
                       ]}
                       onMenuClick={(key) => {
                         setComment(key);
-                        // @ts-ignore
-                        commentRef?.current?.setState({ value: key });
                       }}
                     >
                       <span className="inline-flex text-blue-600 mt-20 cursor-pointer">选择常用语</span>

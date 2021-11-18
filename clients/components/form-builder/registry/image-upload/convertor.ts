@@ -3,11 +3,12 @@ import { getSchemaPermissionFromSchemaConfig, getDisplayModifierFromSchema } fro
 export interface ImageUploadConfig {
   title: string;
   type: string;
-  description?: string;
+  maxFileSize: number;
+  uploaderDescription: string;
   displayModifier: FormBuilder.DisplayModifier;
+  description?: string;
   required?: boolean;
   multiple?: boolean;
-  autoCompress?: boolean; // todo
 }
 
 export const defaultConfig: ImageUploadConfig = {
@@ -17,7 +18,8 @@ export const defaultConfig: ImageUploadConfig = {
   displayModifier: 'normal',
   required: false,
   multiple: true,
-  autoCompress: false,
+  uploaderDescription: '上传图片',
+  maxFileSize: 500,
 };
 
 export function toSchema(value: ImageUploadConfig): ISchema {
@@ -31,7 +33,9 @@ export function toSchema(value: ImageUploadConfig): ISchema {
     'x-component': 'ImageUpload',
     ['x-component-props']: {
       multiple: value.multiple,
-      autoCompress: value.autoCompress || false,
+      fileType: 'image',
+      maxFileSize: value.maxFileSize || defaultConfig.maxFileSize,
+      uploaderDescription: value.uploaderDescription.substring(0, 4),
     },
     ['x-internal']: {
       permission: getSchemaPermissionFromSchemaConfig(value),
@@ -47,6 +51,7 @@ export function toConfig(schema: ISchema): ImageUploadConfig {
     displayModifier: getDisplayModifierFromSchema(schema),
     required: !!schema.required,
     multiple: schema['x-component-props']?.multiple,
-    autoCompress: schema['x-component-props']?.autoCompress,
+    maxFileSize: schema['x-component-props']?.maxFileSize || defaultConfig.maxFileSize,
+    uploaderDescription: schema['x-component-props']?.uploaderDescription,
   };
 }
