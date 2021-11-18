@@ -44,6 +44,14 @@ export function getNodeParents(
   return false;
 }
 
+export function treeNodeSorter(nodeA: TreeNode<any>, nodeB: TreeNode<any>): 1 | -1 {
+  if (nodeA.isLeaf === nodeB.isLeaf) {
+    return nodeA.order < nodeB.order ? -1 : 1;
+  }
+
+  return nodeA.isLeaf ? 1 : -1;
+}
+
 export function addChildren(
   parentNode: TreeNode<any>, nodes: TreeNode<any>[], isOverwrite = false,
 ): TreeNode<any> {
@@ -69,13 +77,7 @@ export function addChildren(
       return addChildren(node, node.children || []);
     });
 
-  _parentNode.children = childrenNodes.sort((nodeA: TreeNode<any>, nodeB: TreeNode<any>) => {
-    if (nodeA.isLeaf === nodeB.isLeaf) {
-      return nodeA.order < nodeB.order ? -1 : 1;
-    }
-
-    return nodeA.isLeaf ? 1 : -1;
-  });
+  _parentNode.children = childrenNodes.sort(treeNodeSorter);
 
   return _parentNode;
 }

@@ -48,6 +48,10 @@
   background-color: var(--gray-700);
 }
 
+.btn--loading {
+  min-height: 28px;
+}
+
 .btn--primary:hover:not(.btn--forbidden) {
   color: white;
   background-color: var(--gray-600);
@@ -67,7 +71,7 @@
   border: 1px solid var(--gray-600);
 }
 
-.button-bg-light { 
+.button-bg-light {
   border-color: var(--gray-700);
   background-color: var(--gray-700);
 }

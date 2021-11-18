@@ -35,7 +35,7 @@ export default observer(function EmployeeTable({
       { depID, userName, page: current, limit: pageSize },
     ],
     (params) => {
-      return adminSearchUserList({ queryKey: params.queryKey }).then((res) => {
+      return adminSearchUserList(params).then((res) => {
         setIsLoading(false);
         return res;
       });

@@ -32,6 +32,11 @@ const SIDE_NAV = [
         icon: 'api_doc',
       },
       {
+        id: 'orchestration_api',
+        title: 'API编排管理',
+        icon: 'electrical_services',
+      },
+      {
         id: 'key_api',
         title: 'API密钥管理',
         icon: 'api_key',
