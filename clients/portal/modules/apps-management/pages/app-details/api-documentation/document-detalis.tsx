@@ -1,12 +1,11 @@
 import React, { useEffect } from 'react';
+import { toJS } from 'mobx';
 import { observer } from 'mobx-react';
 import { UnionColumns } from 'react-table';
 import cs from 'classnames';
 import Prism from 'prismjs';
 import 'prismjs/plugins/custom-class/prism-custom-class.js';
 import 'prismjs/components/prism-python.js';
-
-import { toJS } from 'mobx';
 
 import Tab from '@c/tab';
 import Icon from '@c/icon';
@@ -21,7 +20,7 @@ import RadioButtonGroup from '@c/radio/radio-button-group';
 
 import store from './store';
 
-import './prism.css';
+import '../prism.css';
 
 const DOC_TYPE_LIST = [
   { label: 'CURL', value: 'curl' },
@@ -79,20 +78,12 @@ export const FIELD_COLUMNS: UnionColumns<ModelField>[] = [
 ];
 
 function renderApiDetails(): JSX.Element {
-  console.log(111);
-  // useEffect(() => {
-  //   Prism.highlightAll();
-  //   Prism.plugins.customClass.map({
-  //     number: 'pr-number',
-  //   });
-  // });
-  Prism.highlightAll();
-  Prism.plugins.customClass.map({
-    number: 'pr-number',
+  useEffect(() => {
+    Prism.highlightAll();
+    Prism.plugins.customClass.map({
+      number: 'pr-number',
+    });
   });
-  if (store.isAPILoading) {
-    return <Loading/>;
-  }
 
   function handleDocTypeChange(docType: DocType): void {
     store.docType = docType;
@@ -127,6 +118,7 @@ function renderApiDetails(): JSX.Element {
         <Tooltip
           position="top"
           label="复制"
+          // relative={false}
           wrapperClassName="copy-button icon-text-btn"
           labelClassName="whitespace-nowrap"
         >
