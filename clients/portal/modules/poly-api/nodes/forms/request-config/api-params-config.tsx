@@ -17,7 +17,7 @@ function ApiParamsConfig({
   configValue, initRequestNodeInputs, setCurrentFormulaRef, onChange }: Props,
 ): JSX.Element {
   const { customRules } = useContext(ApiRequestNodeConfigContext);
-  configValue.doc.inputs = initRequestNodeInputs;
+  configValue.doc.input.inputs = initRequestNodeInputs;
   const polyParams = Object.entries(convertToParamsConfig(configValue));
 
   function updateRequestNodeConfigValueInputs(
