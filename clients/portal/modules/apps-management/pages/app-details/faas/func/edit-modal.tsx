@@ -118,7 +118,6 @@ function EditModal({ modalType, onClose }: Props): JSX.Element {
   };
   const form = useForm({
     onSubmit: (formData) => {
-      console.log(formData);
       store.createFunc(formData);
     },
   });

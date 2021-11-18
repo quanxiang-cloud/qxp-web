@@ -1,17 +1,17 @@
 
 type FuncField = {
   id: string,
+  alias: string,
   name: string,
-  state: string,
   description: string,
   creator: string,
   createdAt: number,
-  message: string,
-  updatedAt: number,
-  alias: string,
-  tag: string,
+  state?: string,
+  message?: string,
+  updatedAt?: number,
+  tag?: string,
   language: string,
-  versionNum: number,
+  versionNum?: number,
 }
 type VersionField = {
   id: string,

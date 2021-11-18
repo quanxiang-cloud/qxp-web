@@ -1,4 +1,4 @@
-import { action, observable, toJS } from 'mobx';
+import { action, observable } from 'mobx';
 
 import {
   checkHasGroup,
@@ -89,6 +89,7 @@ class FaasStore {
   @action
   isaDeveloper = (): Promise<void>=> {
     return checkIsDeveloper().then((res) => {
+      console.log('判断isaDeveloper结束');
       this.isDeveloper = res.isDeveloper;
     }).catch((err) => toast.error(err));
   }
@@ -99,6 +100,7 @@ class FaasStore {
       group: this.appDetails.appSign,
       appID: this.appDetails.id,
     }).then((res) => {
+      console.log('判断group结束');
       this.hasGroup = Boolean(res.groupID);
       this.groupID = res.groupID;
     }).catch((err) => {
@@ -111,6 +113,7 @@ class FaasStore {
     return checkInGroup({
       group: this.appDetails.appSign,
     }).then((res) =>{
+      console.log('判断In结束');
       this.developerInGroup = res.isMember;
     },
     ).catch((err) => {
@@ -121,9 +124,23 @@ class FaasStore {
   @action
   checkUserState = async (): Promise<void>=> {
     this.checkUserLoading = true;
+    // this.isaDeveloper()
+    //   .then(this.isGroup)
+    //   .then(()=> {
+    //     if (this.hasGroup && this.isDeveloper) {
+    //       return this.isDeveloperInGroup();
+    //     }
+    //   })
+    //   .then(() => this.checkUserLoading = false);
+    this.checkUserLoading = true;
+    console.log('isaDeveloper开始');
     await this.isaDeveloper();
+    console.log('isGroup开始');
     await this.isGroup();
-    if (this.hasGroup && this.isDeveloper) await this.isDeveloperInGroup();
+    if (this.hasGroup && this.isDeveloper) {
+      console.log('isDeveloperInGroup开始');
+      await this.isDeveloperInGroup();
+    }
     this.checkUserLoading = false;
   }
 
@@ -133,7 +150,9 @@ class FaasStore {
       createDeveloper({
         email,
       }).then(() => {
+        console.log('createDeveloper');
         const intervalBox = setInterval(async () => {
+          console.log('isaDeveloper');
           await this.isaDeveloper();
           if (this.isDeveloper) {
             clearInterval(intervalBox);
@@ -154,6 +173,7 @@ class FaasStore {
       group: this.appDetails.appSign,
       appID: this.appDetails.id,
     }).then((res) => {
+      console.log('createGroup');
       this.hasGroup = true;
       this.groupID = res.id;
     }).catch((err) => {
@@ -165,6 +185,7 @@ class FaasStore {
   @action
   addUserToGroup = (): void => {
     addToGroup(this.groupID, { memberID: this.User.id }).then((res) => {
+      console.log('addUserToGroup');
       this.developerInGroup = true;
     }).catch((err) => {
       this.initErr = true;
@@ -232,10 +253,9 @@ class FaasStore {
   createFunc = (data: creatFuncParams): void => {
     createFaasFunc(this.groupID, data).then((res) => {
       this.currentFuncID = res.id;
-      this.fetchFuncInfo().then(() => {
-        this.funcList = [this.currentFunc, ...this.funcList];
-        this.checkHasCoder();
-      });
+      this.currentFunc = { ...res, ...data };
+      this.funcList = [this.currentFunc, ...this.funcList];
+      this.checkHasCoder();
     }).catch((err) => {
       toast.error(err);
     });

@@ -112,3 +112,10 @@
     display: block;
   }
 }
+
+.title-line {
+  display: inline-block;
+  background: linear-gradient(90deg, #638AFF 0%, #375FF3 100%);
+  box-shadow: 2px 0px 24px rgba(55, 95, 243, 0.25);
+  border-radius: 8px;
+}

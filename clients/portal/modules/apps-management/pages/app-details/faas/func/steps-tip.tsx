@@ -19,10 +19,13 @@ function StepsTip(): JSX.Element {
           );
         })}
       </div>
-      <div className="text-12 text-blue-600 text-right flex items-center">
-        查看文档
+      <a
+        href='#'
+        rel='noreferrer noopener'
+        className='text-12 text-blue-600 text-right flex items-center'>
+          查看文档
         <Icon className="ml-4" name="arrow_forward" />
-      </div>
+      </a>
     </div>
   );
 }

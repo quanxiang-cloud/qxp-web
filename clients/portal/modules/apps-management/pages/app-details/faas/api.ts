@@ -44,7 +44,7 @@ export function fetchFuncList(
 export function createFaasFunc(
   groupID: string,
   data: creatFuncParams,
-): Promise<{id: string}> {
+): Promise<{id: string, createdAt: number, creator: string}> {
   return httpClient(`/api/v1/midfielder/group/${groupID}/project`, data);
 }
 
@@ -71,7 +71,7 @@ export function buildFunc(
   return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/build`, data);
 }
 
-export function deleteFunc(groupID: string, projectID: string) {
+export function deleteFunc(groupID: string, projectID: string): Promise<void> {
   return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/delete`);
 }
 
