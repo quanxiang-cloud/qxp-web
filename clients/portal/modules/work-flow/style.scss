@@ -3,7 +3,6 @@ rect {
 }
 
 .flow-editor-drawer {
-  left: unset !important;
   .drawer-container {
     @apply rounded-tl-none rounded-tr-none left-auto right-0 #{!important};
     width: 500px !important;
