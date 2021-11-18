@@ -42,7 +42,6 @@ export const FIELD_COLUMNS: UnionColumns<ModelField>[] = [
         <Tooltip
           position="top"
           label="复制"
-          relative={false}
           wrapperClassName="flex-grow-0 relative z-10 invisible copy-tooltip icon-text-btn"
           labelClassName="whitespace-nowrap text-12"
         >
@@ -121,7 +120,6 @@ function renderApiDetails(): JSX.Element {
         <Tooltip
           position="top"
           label="复制"
-          relative={false}
           wrapperClassName="copy-button icon-text-btn"
           labelClassName="whitespace-nowrap"
         >

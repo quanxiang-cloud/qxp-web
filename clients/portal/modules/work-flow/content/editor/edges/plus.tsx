@@ -123,15 +123,12 @@ export default function CustomEdge({
       {!hasForm && showTooltip && (
         <foreignObject x={centerX + 20} y={centerY - 18} width="220" height="36">
           <ToolTip
-            show
-            position="right"
             label="请先为开始节点选择一张工作表"
             style={{
               transform: 'none',
               backgroundColor: 'transparent',
               alignItems: 'center',
             }}
-            arrowStyle={{ position: 'static', marginTop: 0 }}
             labelClassName="whitespace-nowrap text-12 bg-gray-700 rounded-8"
           />
         </foreignObject>

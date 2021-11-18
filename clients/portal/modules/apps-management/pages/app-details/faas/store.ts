@@ -59,7 +59,7 @@ class FaasStore {
     useStatus: 0,
     appSign: '',
   }
-  @observable User: {id: string; email: string} = {
+  @observable User: { id: string; email: string } = {
     id: '',
     email: '',
   };
@@ -76,9 +76,9 @@ class FaasStore {
   @observable currentFuncID = '';
   @observable buildID = '';
   @observable funcList: FuncField[] = [];
-  @observable currentFunc: FuncField= INIT_CURRENT_FUNC;
+  @observable currentFunc: FuncField = INIT_CURRENT_FUNC;
   @observable versionList: VersionField[] = [];
-  @observable currentVersionFunc: VersionField= INIT_VERSION;
+  @observable currentVersionFunc: VersionField = INIT_VERSION;
   @observable initErr = false;
 
   @action
@@ -87,10 +87,24 @@ class FaasStore {
   }
 
   @action
-  isaDeveloper = (): Promise<void>=> {
+  isaDeveloper = (): Promise<void> => {
     return checkIsDeveloper().then((res) => {
       this.isDeveloper = res.isDeveloper;
     }).catch((err) => toast.error(err));
+  }
+
+  @action
+  mutateFuncStatus = (id: string, status: ProcessStatus): void => {
+    this.funcList = this.funcList.map((func) => {
+      if (func.id === id) {
+        return {
+          ...func,
+          state: status,
+        };
+      }
+
+      return func;
+    });
   }
 
   @action
@@ -110,7 +124,7 @@ class FaasStore {
   isDeveloperInGroup = (): Promise<void> => {
     return checkInGroup({
       group: this.appDetails.appSign,
-    }).then((res) =>{
+    }).then((res) => {
       this.developerInGroup = res.isMember;
     },
     ).catch((err) => {
@@ -119,7 +133,7 @@ class FaasStore {
   }
 
   @action
-  checkUserState = async (): Promise<void>=> {
+  checkUserState = async (): Promise<void> => {
     this.checkUserLoading = true;
     await this.isaDeveloper();
     await this.isGroup();
@@ -215,7 +229,7 @@ class FaasStore {
   @action
   checkHasCoder = (): void => {
     hasCoder().then((res) => {
-      if (!res.hasCoder)creatCoder();
+      if (!res.hasCoder) creatCoder();
     }).catch((err) => toast.error(err));
   }
 
@@ -277,7 +291,7 @@ class FaasStore {
   }
 
   @action
-  buildFunc = (buildData: {tag: string, describe: string}): void => {
+  buildFunc = (buildData: { tag: string, describe: string }): void => {
     buildFunc(this.groupID, this.currentFuncID, buildData).then((res) => {
       this.modalType = '';
     }).catch((err) => {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import cs from 'classnames';
 import { Input } from 'antd';
 import { UnionColumns } from 'react-table';
@@ -13,9 +13,13 @@ import MoreMenu from '@c/more-menu';
 import PopConfirm from '@c/pop-confirm';
 import Pagination from '@c/pagination';
 import Modal from '@c/modal';
+import TableMoreFilterMenu from '@c/more-menu/table-filter';
+import { parseJSON } from '@lib/utils';
 
 import store from '../store';
 import BuildModal from './build-modal';
+import StatusDisplay from '../component/status';
+import { getFuncInfo } from '../api';
 
 import '../index.scss';
 import { toJS } from 'mobx';
@@ -33,7 +37,7 @@ function DataList(): JSX.Element {
         return (
           <span
             className="text-blue-600 cursor-pointer"
-            onClick={() =>onClickTool(id, 'funDetail')}
+            onClick={() => onClickTool(id, 'funDetail')}
           >
             {alias}
           </span>
@@ -45,38 +49,52 @@ function DataList(): JSX.Element {
       id: 'name',
       accessor: 'name',
     },
-    // {
-    //   Header: () => {
-    //     // todo make filter state effect
-    //     return (
-    //       <TableMoreFilterMenu
-    //         menus={[
-    //           { key: 'SUCCESS', label: '成功' },
-    //           { key: 'ING', label: '进行中' },
-    //           { key: 'FAILED', label: '失败' },
-    //         ]}
-    //         onChange={() => console.log('')}
-    //       >
-    //         <div className={cs('flex items-center cursor-pointer', {
-    //           'pointer-events-none': true,
-    //         })}>
-    //           <span className="mr-4">状态</span>
-    //           <Icon name="funnel" />
-    //         </div>
-    //       </TableMoreFilterMenu>
-    //     );
-    //   },
-    //   id: 'status',
-    //   accessor: ({ state }: FuncField) => {
-    //     return (
-    //       <StatusDisplay status={state} />
-    //     );
-    //   },
-    // },
+    {
+      Header: () => {
+        return (
+          <TableMoreFilterMenu
+            menus={[
+              { key: 'SUCCESS', label: '成功' },
+              { key: 'ING', label: '进行中' },
+              { key: 'FAILED', label: '失败' },
+            ]}
+            onChange={() => console.log('')}
+          >
+            <div className={cs('flex items-center cursor-pointer', {
+              'pointer-events-none': true,
+            })}>
+              <span className="mr-4">状态</span>
+              <Icon name="funnel" />
+            </div>
+          </TableMoreFilterMenu>
+        );
+      },
+      id: 'status',
+      accessor: ({ state, id, message }: FuncField) => {
+        return (
+          <StatusDisplay
+            errorMsg={message}
+            status={state || 'Unknown'}
+            topic='project'
+            dataID={id}
+            callBack={async (data) => {
+              const { key }: FaasSoketData = parseJSON(data?.message, { key: '', topic: '' });
+              if (key !== id) {
+                return;
+              }
+
+              const res = await getFuncInfo(store.groupID, id);
+              if (res.info.state !== 'Unknown') {
+                store.mutateFuncStatus(id, res.info.state);
+              }
+            }} />
+        );
+      },
+    },
     {
       Header: '描述',
       id: 'description',
-      accessor: ( { id, description }: FuncField) => {
+      accessor: ({ id, description }: FuncField) => {
         let descriptionValue = description;
         return (
           <div className="description">
@@ -100,7 +118,7 @@ function DataList(): JSX.Element {
               okText="保存"
               onOk={() => updateFuncDesc(id, descriptionValue)}
             >
-              <Icon clickable name='edit' className="ml-4 hidden cursor-pointer"/>
+              <Icon clickable name='edit' className="ml-4 hidden cursor-pointer" />
             </PopConfirm>
           </div>
         );
@@ -114,12 +132,12 @@ function DataList(): JSX.Element {
     {
       Header: '创建时间',
       id: 'createdAt',
-      accessor: ({ updatedAt } : FuncField) => moment(updatedAt, 'X').format('YYYY-MM-DD HH:mm:ss'),
+      accessor: ({ updatedAt }: FuncField) => moment(updatedAt, 'X').format('YYYY-MM-DD HH:mm:ss'),
     },
     {
       Header: '操作',
       id: 'action',
-      accessor: ({ id, state } : FuncField) => {
+      accessor: ({ id, state }: FuncField) => {
         return (
           <div className="flex gap-20">
             {state === 'True' ? (
@@ -153,6 +171,7 @@ function DataList(): JSX.Element {
       },
     },
   ];
+
   function onClickTool(id: string, modalType: string): void {
     store.currentFuncID = id;
     store.modalType = modalType;
@@ -169,7 +188,7 @@ function DataList(): JSX.Element {
         >
           新建函数
         </Button>
-        <Search className="func-search text-12" placeholder="搜索函数名称"/>
+        <Search className="func-search text-12" placeholder="搜索函数名称" />
       </div>
 
       <div className='flex-1 overflow-hidden'>
@@ -183,9 +202,9 @@ function DataList(): JSX.Element {
       <Pagination
         total={store.funcList.length}
         renderTotalTip={() => `共 ${store.funcList.length} 条数据`}
-        onChange={(current, pageSize) => store.fetchFuncList( current, pageSize )}
+        onChange={(current, pageSize) => store.fetchFuncList(current, pageSize)}
       />
-      {store.modalType === 'build' && <BuildModal onClose={() => store.modalType = ''}/>}
+      {store.modalType === 'build' && <BuildModal onClose={() => store.modalType = ''} />}
       {store.modalType === 'deletefunc' && (
         <Modal
           title="删除函数"

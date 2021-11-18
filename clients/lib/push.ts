@@ -1,7 +1,14 @@
-import logger from './logger';
+import { wsSubscribe } from '@lib/api/common';
+import { parseJSON } from '@lib/utils';
 
-type SocketEventListener = (data: Record<string, any>) => any;
-type SocketData = { Type: string; [key: string]: any };
+export type SocketEventListener = (data: SocketData) => any;
+export type SocketData = { type: string; message: any, [key: string]: any };
+type SubscribeParams = {
+  key: string;
+  topic: string;
+  type: string;
+  cb: SocketEventListener;
+}
 
 let retryCount = 0;
 
@@ -10,13 +17,20 @@ class PushServer {
   retryLimit = 5;
   timerHeartbeat: any = null;
   heartbeatInterval = 30000;
-  listenersMap: Map<string, Set<SocketEventListener>> = new Map();
+  uuid = '';
+  listenersMap: Map<string, Record<string, SocketEventListener>> = new Map();
 
   constructor() {
     this.setUp();
 
     window.addEventListener('offline', this.offlineHandler);
     window.addEventListener('online', this.onlineHandler);
+  }
+
+  subscribe({ key, topic, type, cb }: SubscribeParams): void {
+    wsSubscribe({ key, topic, uuid: this.uuid }).then(() => {
+      this.addEventListener(type, key, cb);
+    });
   }
 
   getToken(): Promise<string> {
@@ -43,6 +57,7 @@ class PushServer {
         this.closeConnection();
         this.connection = new WebSocket(endpoint);
       }
+
       return this.connection;
     });
   }
@@ -62,11 +77,11 @@ class PushServer {
 
     this.connection.onmessage = (({ data }: MessageEvent) => {
       if (typeof data === 'string') {
-        try {
-          this.dispatchEvent(JSON.parse(data));
-        } catch (err) {
-          logger.error('invalid socket data: ', err);
+        const wsData: SocketData = parseJSON(data, { type: '', message: '' });
+        if (wsData.message?.uuid) {
+          this.uuid = wsData.message.uuid;
         }
+        this.dispatchEvent(wsData);
       }
     });
 
@@ -130,21 +145,22 @@ class PushServer {
   }
 
   dispatchEvent = (data: SocketData): void => {
-    const listeners = this.listenersMap.get(data.Type);
-    listeners?.forEach((cb) => cb(data));
+    const listenerMap = this.listenersMap.get(data.type) || {};
+    Object.entries(listenerMap).map(([key, listener]) => {
+      listener(data);
+    });
   }
 
-  addEventListener(type: string, listener: SocketEventListener): void {
-    const listeners = this.listenersMap.get(type) || new Set();
-    listeners.add(listener);
+  addEventListener(type: string, key: string, listener: SocketEventListener): void {
+    const listeners = this.listenersMap.get(type) || {};
+    listeners[key] = listener;
 
     this.listenersMap.set(type, listeners);
   }
 
-  removeEventListener(type: string, listener: SocketEventListener): void {
-    const listeners = this.listenersMap.get(type) || new Set();
-    listeners.delete(listener);
-
+  removeEventListener(type: string, key: string): void {
+    const listeners = this.listenersMap.get(type) || {};
+    delete listeners[key];
     this.listenersMap.set(type, listeners);
   }
 }

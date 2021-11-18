@@ -2,7 +2,7 @@
 type FuncField = {
   id: string,
   name: string,
-  state: string,
+  state: ProcessStatus,
   description: string,
   creator: string,
   createdAt: number,
@@ -45,4 +45,9 @@ type VersionListParams = {
   page: number,
 }
 
-type ProcessStatus = 'SUCCESS' | 'ING' | 'FAILED' | 'ONLINE';
+type ProcessStatus = 'Unknown' | 'True' | 'False';
+
+type FaasSoketData = {
+  key: string;
+  topic: string;
+}

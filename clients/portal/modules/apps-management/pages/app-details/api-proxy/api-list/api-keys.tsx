@@ -146,7 +146,6 @@ function ApiKeys(): JSX.Element {
               <ToolTip
                 label='复制'
                 position='top'
-                relative={false}
                 wrapperClassName="flex-grow-0 relative z-10 invisible copy-tooltip"
                 labelClassName="whitespace-nowrap text-12"
               >
