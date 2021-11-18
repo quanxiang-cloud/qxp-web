@@ -20,7 +20,7 @@ function RequestConfigForm({ initialValues, value, onChange }: Props): JSX.Eleme
   const [apiPath, setApiPath] = useState(initialValues.rawPath);
   const [currentFormulaEditorRef, setCurrentFormulaRef] = useState<HTMLDivElement>();
   const [customRules, setCustomRules] = React.useState<CustomRule[]>([]);
-  const [requestNodeInputs, setRequestNodeInputs] = useState();
+  const [requestNodeInputs, setRequestNodeInputs] = useState(initialValues.inputs);
 
   const { data: apiDocDetail, isLoading, isSuccess, isError, error } = useGetRequestNodeApi({
     path: apiPath.slice(1),
@@ -34,7 +34,7 @@ function RequestConfigForm({ initialValues, value, onChange }: Props): JSX.Eleme
       inputs: requestNodeInputs,
       // outputs: [...configValue.doc.outputs],
     });
-  }, [requestNodeInputs, apiPath]);
+  }, [requestNodeInputs]);
 
   if (isError) {
     toast.error(error?.message);
@@ -55,7 +55,7 @@ function RequestConfigForm({ initialValues, value, onChange }: Props): JSX.Eleme
               <ApiParamsConfig
                 onChange={setRequestNodeInputs}
                 setCurrentFormulaRef={setCurrentFormulaRef}
-                initRequestNodeInputs={initialValues.inputs}
+                initRequestNodeInputs={requestNodeInputs}
                 configValue={apiDocDetail}
               />
               <ApiFormulaConfig setCustomRules={setCustomRules} />
