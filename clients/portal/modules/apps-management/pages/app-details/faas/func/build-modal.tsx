@@ -5,7 +5,6 @@ import { Input } from '@formily/antd-components';
 import Modal from '@c/modal';
 
 import store from '../store';
-import { useEffect } from 'react';
 
 type Props = {
   onClose: () => void;

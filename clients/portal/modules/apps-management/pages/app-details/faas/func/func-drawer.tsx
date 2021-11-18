@@ -1,56 +1,31 @@
 import React, { useEffect, useState } from 'react';
+import { UnionColumns } from 'react-table';
 import { observer } from 'mobx-react';
-import { Input } from 'antd';
 import cs from 'classnames';
 import useCss from 'react-use/lib/useCss';
 
 import Icon from '@c/icon';
-import MoreMenu from '@c/more-menu';
-import PopConfirm from '@c/pop-confirm';
-
 import Table from '@c/table';
-import Popper from '@c/popper';
+import PopConfirm from '@c/pop-confirm';
+import Pagination from '@c/pagination';
+
 import store from '../store';
-import { UnionColumns } from 'react-table';
-import TableMoreFilterMenu from '@c/more-menu/table-filter';
-
-type Props = {
-  onCancel: () => void;
-  rowID: string;
-}
-const { TextArea } = Input;
-const STATUS_ENUM: Record<string, Record<string, string>> = {
-  SUCCESS: { label: '成功', color: 'green' },
-  ING: { label: '进行中', color: 'yellow' },
-  FAILED: { label: '失败', color: 'red' },
-};
-
-const modifiers = [
-  {
-    name: 'offset',
-    options: {
-      offset: [0, 4],
-    },
-  },
-];
 
 function FuncDetailsDrawer(): JSX.Element {
   useEffect(() => {
     store.fetchFuncInfo();
-    store.fetchVersionList(1, 20);
+    store.fetchVersionList(1, 10);
   }, [store.currentFuncID]);
   const [beganClose, setBeganClose] = useState<boolean>(false);
   const [visible, setVisible] = useState<boolean>(false);
   const [fullScreen, setFullScreen] = useState<boolean>(false);
-  const reference = React.useRef<Element>(null);
-  const popperRef = React.useRef<Popper>(null);
 
   const COLUMNS: UnionColumns<VersionField>[] = [
     {
       Header: '版本号',
       id: 'tag',
       accessor: (version: VersionField) => {
-        const { id, tag } = version;
+        const { tag } = version;
         return (
           <span
             className="text-blue-600 cursor-pointer"
@@ -106,21 +81,13 @@ function FuncDetailsDrawer(): JSX.Element {
 
   const handleCancel = (): void => {
     setBeganClose(true);
-    store.modalType = '';
-    // setTimeout(() => {
-    //   setVisible(true);
-    //   onCancel();
-    // }, 300);
+    setTimeout(() => {
+      setVisible(true);
+      store.modalType = '';
+    }, 300);
   };
 
-  const handelDelete = (): void => {
-    // delData([rowID]).then(() => {
-    //   handleCancel();
-    // });
-    console.log('shanchu');
-  };
-
-  function onClickTool(verion: VersionField, modalType: string) {
+  function onClickTool(verion: VersionField, modalType: string): void {
     store.currentVersionFunc = verion;
     store.buildID = verion.id;
     store.modalType = modalType;
@@ -143,28 +110,37 @@ function FuncDetailsDrawer(): JSX.Element {
               <Icon size={20} name={fullScreen ? 'unfull_screen' : 'full_screen'} />
               {fullScreen ? '非' : ''}全屏
             </span>
-            <PopConfirm content='确认删除该数据？' onOk={handelDelete} >
+            {/* <PopConfirm content='确认删除该数据？' onOk={handelDelete} >
               <span className='icon-text-btn'><Icon size={20} name='delete' />删除</span>
-            </PopConfirm>
+            </PopConfirm> */}
             <Icon onClick={handleCancel} clickable changeable name='close' size={24} />
           </div>
         </div>
-        <div className='grid gap-x-16 grid-flow-row-dense grid-cols-2 mx-20 my-12'>
-          <div className='flex text-12 p-8 items-center '>
-            <div className='text-gray-600'>标志：</div>
-            <div className='text-gray-900 flex-1  '>{store.currentFunc.name}</div>
+        <div className='flex flex-col flex-1 overflow-hidden mb-20 mx-20'>
+          <div className='grid gap-x-16 grid-flow-row-dense grid-cols-2 my-12'>
+            <div className='flex text-12 p-8 items-center '>
+              <div className='text-gray-600'>标志：</div>
+              <div className='text-gray-900 flex-1  '>{store.currentFunc.name}</div>
+            </div>
+            <div className='flex text-12 p-8 items-center '>
+              <div className='text-gray-600'>语言：</div>
+              <div className='text-gray-900 flex-1  '>{store.currentFunc.language}</div>
+            </div>
           </div>
-          <div className='flex text-12 p-8 items-center '>
-            <div className='text-gray-600'>语言：</div>
-            <div className='text-gray-900 flex-1  '>{store.currentFunc.language}</div>
+          <div className='h-32 bg-gray-100 w-full rounded-4 flex items-center mb-8'>
+            <hr className="title-line h-20 w-4 mr-12"/>
+            <div className='font-semibold text-gray-600 text-14'>版本记录</div>
           </div>
-        </div>
-        <div className='flex-1 overflow-auto mb-20 mx-20'>
           <Table
             rowKey="id"
             data={store.versionList}
             columns={COLUMNS}
             className='h-full'
+          />
+          <Pagination
+            total={store.versionList.length}
+            renderTotalTip={() => `共 ${store.versionList.length} 条数据`}
+            onChange={(current, pageSize) => store.fetchVersionList( current, pageSize )}
           />
         </div>
       </div>

@@ -7,12 +7,12 @@ import moment from 'moment';
 
 import Icon from '@c/icon';
 import Table from '@c/table';
+import Modal from '@c/modal';
 import Button from '@c/button';
 import Search from '@c/search';
 import MoreMenu from '@c/more-menu';
 import PopConfirm from '@c/pop-confirm';
 import Pagination from '@c/pagination';
-import Modal from '@c/modal';
 import TableMoreFilterMenu from '@c/more-menu/table-filter';
 import { parseJSON } from '@lib/utils';
 
@@ -22,7 +22,6 @@ import StatusDisplay from '../component/status';
 import { getFuncInfo } from '../api';
 
 import '../index.scss';
-import { toJS } from 'mobx';
 
 const { TextArea } = Input;
 
@@ -194,7 +193,7 @@ function DataList(): JSX.Element {
       <div className='flex-1 overflow-hidden'>
         <Table
           rowKey="id"
-          data={toJS(store.funcList)}
+          data={store.funcList}
           columns={COLUMNS}
           loading={store.funcListLoading}
         />
@@ -226,7 +225,7 @@ function DataList(): JSX.Element {
           <p className="text-h5 p-20">
             确定要删除函数
             <span className="font-bold mx-8">
-              {/* {state.currentDeleteWorkFlow?.name} */}
+              {store.currentFunc.alias}
             </span>
             吗？删除后将无法恢复！
           </p>
