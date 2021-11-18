@@ -59,7 +59,7 @@ function FuncDetailsDrawer(): JSX.Element {
     {
       Header: '操作',
       id: 'action',
-      accessor: ({ id, visibility }: VersionField) => {
+      accessor: ({ id, visibility, state }: VersionField) => {
         return (
           <div className="flex gap-20">
             {visibility === 'online' ? (
@@ -70,9 +70,14 @@ function FuncDetailsDrawer(): JSX.Element {
                 <span className="operate">上线</span>
               </PopConfirm>
             )}
-            <PopConfirm content='确认删除改版本？' onOk={() => store.deleteVer(id)} >
-              <span className="operate">删除</span>
-            </PopConfirm>
+            {state === 'False' ?
+              (<PopConfirm content='确认删除改版本？' onOk={() => store.deleteVer(id)} >
+                <span className="operate">删除</span>
+              </PopConfirm>) : (<PopConfirm content='确定生成API文档？' onOk={() => store.registerAPI(id)} >
+                <span className="operate">生成API文档</span>
+              </PopConfirm>)
+            }
+
           </div>
         );
       },
@@ -116,33 +121,33 @@ function FuncDetailsDrawer(): JSX.Element {
             <Icon onClick={handleCancel} clickable changeable name='close' size={24} />
           </div>
         </div>
-        <div className='flex flex-col flex-1 overflow-hidden mb-20 mx-20'>
-          <div className='grid gap-x-16 grid-flow-row-dense grid-cols-2 my-12'>
-            <div className='flex text-12 p-8 items-center '>
-              <div className='text-gray-600'>标志：</div>
-              <div className='text-gray-900 flex-1  '>{store.currentFunc.name}</div>
-            </div>
-            <div className='flex text-12 p-8 items-center '>
-              <div className='text-gray-600'>语言：</div>
-              <div className='text-gray-900 flex-1  '>{store.currentFunc.language}</div>
-            </div>
+        <div className='grid gap-x-16 grid-flow-row-dense grid-cols-2 my-12 mx-20'>
+          <div className='flex text-12 p-8 items-center '>
+            <div className='text-gray-600'>标志：</div>
+            <div className='text-gray-900 flex-1  '>{store.currentFunc.name}</div>
           </div>
-          <div className='h-32 bg-gray-100 w-full rounded-4 flex items-center mb-8'>
-            <hr className="title-line h-20 w-4 mr-12"/>
-            <div className='font-semibold text-gray-600 text-14'>版本记录</div>
+          <div className='flex text-12 p-8 items-center '>
+            <div className='text-gray-600'>语言：</div>
+            <div className='text-gray-900 flex-1  '>{store.currentFunc.language}</div>
           </div>
+        </div>
+        <div className='h-32 bg-gray-100 rounded-4 flex items-center mb-8 mx-20'>
+          <hr className="title-line h-20 w-4 mr-12"/>
+          <div className='font-semibold text-gray-600 text-14'>版本记录</div>
+        </div>
+        <div className='flex-1 overflow-hidden mx-20'>
           <Table
             rowKey="id"
             data={store.versionList}
             columns={COLUMNS}
             className='h-full'
           />
-          <Pagination
-            total={store.versionList.length}
-            renderTotalTip={() => `共 ${store.versionList.length} 条数据`}
-            onChange={(current, pageSize) => store.fetchVersionList( current, pageSize )}
-          />
         </div>
+        <Pagination
+          total={store.versionList.length}
+          renderTotalTip={() => `共 ${store.versionList.length} 条数据`}
+          onChange={(current, pageSize) => store.fetchVersionList( current, pageSize )}
+        />
       </div>
 
     </div>

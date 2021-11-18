@@ -139,7 +139,8 @@ function DataList(): JSX.Element {
       accessor: ({ id, state }: FuncField) => {
         return (
           <div className="flex gap-20">
-            {state === 'True' ? (
+            {state === 'Unknown' && <span>加载中...</span>}
+            {state === 'True' && (
               <>
                 <span className="operate" onClick={() => store.defineFunc(id)}>定义</span>
                 <span className="operate" onClick={() => onClickTool(id, 'build')}>构建</span>
@@ -157,11 +158,9 @@ function DataList(): JSX.Element {
                   <Icon clickable name="more_horiz" />
                 </MoreMenu> */}
               </>
-            ) : (
-              <span
-                className="cursor-pointer text-red-600"
-                onClick={() => onClickTool(id, 'deletefunc')}
-              >
+            )}
+            {state === 'False' && (
+              <span className="cursor-pointer text-red-600" onClick={() => onClickTool(id, 'deletefunc')}>
                 删除
               </span>
             )}

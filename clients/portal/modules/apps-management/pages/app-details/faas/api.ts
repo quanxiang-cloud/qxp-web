@@ -109,6 +109,16 @@ export function servingVer(
 export function deleteVer(
   groupID: string,
   projectID: string,
-  buildID:string): Promise<void> {
+  buildID:string,
+): Promise<void> {
   return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/build/${buildID}/delete`);
 }
+
+export function registerAPI(groupID: string, projectID: string, buildID:string): Promise<void> {
+  return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/${buildID}/registerApi`);
+}
+
+export function getApiPath(groupID: string, projectID: string, buildID:string): Promise<{path: string}> {
+  return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/${buildID}/getApiPath`);
+}
+

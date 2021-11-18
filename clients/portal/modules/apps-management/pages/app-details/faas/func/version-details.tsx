@@ -1,28 +1,77 @@
-import React, { Suspense, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
 import Prism from 'prismjs';
-import 'prismjs/plugins/custom-class/prism-custom-class.js';
-import 'prismjs/components/prism-python.js';
 import { Input } from 'antd';
-
-import Icon from '@c/icon';
+import 'prismjs/plugins/custom-class/prism-custom-class.js';
 
 import Tab from '@c/tab';
+import Icon from '@c/icon';
+import Loading from '@c/loading';
+import Tooltip from '@c/tooltip';
 import PopConfirm from '@c/pop-confirm';
 
 import store from '../store';
 
-import Loading from '@c/loading';
+import '../index.scss';
+import '../../api-documentation/prism.css';
 
 const { TextArea } = Input;
-function VersionDetails(): JSX.Element {
+
+function renderApiDetails(): JSX.Element {
+  useEffect(() => {
+    store.getApiPath();
+  }, []);
+
   useEffect(() => {
     Prism.highlightAll();
     Prism.plugins.customClass.map({
       number: 'pr-number',
     });
   });
-  const [tabNow, setTabNow] = useState((store.buildIsError));
+
+  if (store.isAPILoading) {
+    return <Loading/>;
+  }
+
+  return (
+    <>
+      {(
+        <>
+          <div className='api-content-title'>请求示例</div>
+          <div className='api-content'>
+            <Tooltip
+              position="top"
+              label="复制"
+              wrapperClassName="copy-button icon-text-btn"
+              labelClassName="whitespace-nowrap"
+            >
+              <Icon
+                name="content_copy"
+                size={20}
+                className='text-inherit'
+              />
+            </Tooltip>
+            <pre className='api-details'>
+              <code className='language-bash'>
+                {store.APiContent.input}
+                console.log(qqqqqqqq)
+              </code>
+            </pre>
+          </div>
+          <div className='api-content-title'>返回示例</div>
+          <pre className='api-details'>
+            <code className='language-bash'>
+              {store.APiContent.output}
+            </code>
+          </pre>
+
+        </>
+      )}
+    </>
+
+  );
+}
+function VersionDetails(): JSX.Element {
   const [des, setDes] = useState(store.currentVersionFunc.describe);
   const tabItems = [
     {
@@ -37,42 +86,18 @@ function VersionDetails(): JSX.Element {
       ),
     },
     {
-      id: 'create',
+      id: 'apidoc',
       name: 'API文档',
-      // content: renderApiDetails(),
-      content: <div className='h-full'>
-        <Suspense fallback={<Loading />}>
-          <div className='api-content-title'>请求示例</div>
-          <div className='api-content'>
-            <pre className='api-details'>
-              {/* <code className={`language-${store.docType === 'curl' ? 'bash' : store.docType}`}> */}
-              <code className='language-js'>
-                console.log(111)
-                {/* {`${store.APiContent.output}`} */}
-              </code>
-            </pre>
-          </div>
-          <div className='api-content-title mt-16'>返回示例</div>
-          <pre className='api-details'>
-          console.log(111)
-            {/* <code className={`language-${store.docType === 'curl' ? 'bash' : store.docType}`}> */}
-            <code className='language-js'>
-              {/* {`${store.APiContent.output}`} */}
-            </code>
-          </pre>
-        </Suspense>
-      </div>,
+      content: renderApiDetails(),
     },
   ];
-  function onClick(): void {
-    store.modalType = 'funDetail';
-  }
+
   return (
     <div className='flex flex-col flex-1 h-full px-20 version-detail'>
       <div className='flex items-center justify-between h-48'>
         <div className='flex'>
           <div
-            onClick={onClick}
+            onClick={() => store.modalType = 'funDetail'}
             className='text-gray-600 text-14 corner-8-8-8-2 cursor-pointer hover:bg-gray-100'>
             <Icon
               clickable
@@ -88,7 +113,6 @@ function VersionDetails(): JSX.Element {
             <Icon
               name='status'
               size={8}
-            // className='text-blue-1000'
             />
             <div className='text-12 text-gray-900 pl-10'>失败</div>
           </div>
@@ -160,6 +184,11 @@ function VersionDetails(): JSX.Element {
       <Tab
         items={tabItems}
         className='w-full h-full opacity-95'
+        onChange={(v) => {
+          if (v === 'apidoc') {
+            store.getApiPath();
+          }
+        }}
       />
     </div>
   );

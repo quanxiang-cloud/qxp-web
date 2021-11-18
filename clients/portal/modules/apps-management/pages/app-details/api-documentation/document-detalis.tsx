@@ -77,11 +77,16 @@ export const FIELD_COLUMNS: UnionColumns<ModelField>[] = [
 ];
 
 function renderApiDetails(): JSX.Element {
-  useEffect(() => {
-    Prism.highlightAll();
-    Prism.plugins.customClass.map({
-      number: 'pr-number',
-    });
+  console.log(111);
+  // useEffect(() => {
+  //   Prism.highlightAll();
+  //   Prism.plugins.customClass.map({
+  //     number: 'pr-number',
+  //   });
+  // });
+  Prism.highlightAll();
+  Prism.plugins.customClass.map({
+    number: 'pr-number',
   });
   if (store.isAPILoading) {
     return <Loading/>;

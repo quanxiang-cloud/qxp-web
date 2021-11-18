@@ -38,10 +38,10 @@ function BuildModal({ onClose }: Props): JSX.Element {
                 pattern: /^((?!(\ud83c[\udf00-\udfff])|(\ud83d[\udc00-\ude4f])|(\ud83d[\ude80-\udeff])).)*$/,
                 message: '版本号不能输入emoji表情符号',
               },
-              {
-                pattern: /^[a-zA-Z]+([_.]?[a-zA-Z0-9])*$/,
-                message: '必须以字母开头,由字母、数字、单下划线组成',
-              },
+              // {
+              //   pattern: /^[a-zA-Z]+([_.]?[a-zA-Z0-9])*$/,
+              //   message: '必须以字母开头,由字母、数字、单下划线组成',
+              // },
               {
                 max: 10,
                 message: '版本号不超过 10 字符，请修改！',

@@ -21,13 +21,17 @@ import {
   servingVer,
   deleteVer,
   creatCoder,
+  registerAPI,
+  getApiPath,
 } from './api';
 import toast from '@lib/toast';
+import { getApiDoc } from '../api-documentation/api';
+import { INIT_API_CONTENT } from '../api-documentation/constants';
 
 const INIT_CURRENT_FUNC = {
   id: '',
   name: '',
-  state: 'SUCCESS',
+  state: 'Unknown' as ProcessStatus,
   description: '',
   creator: '',
   createdAt: 0,
@@ -80,6 +84,10 @@ class FaasStore {
   @observable versionList: VersionField[] = [];
   @observable currentVersionFunc: VersionField = INIT_VERSION;
   @observable initErr = false;
+  @observable sss = '111';
+  @observable APiContent: APiContent = INIT_API_CONTENT;
+  @observable isAPILoadingErr = '';
+  @observable isAPILoading = false;
 
   @action
   setModalType = (type: string): void => {
@@ -89,7 +97,6 @@ class FaasStore {
   @action
   isaDeveloper = (): Promise<void> => {
     return checkIsDeveloper().then((res) => {
-      console.log('判断isaDeveloper结束');
       this.isDeveloper = res.isDeveloper;
     }).catch((err) => toast.error(err));
   }
@@ -114,7 +121,6 @@ class FaasStore {
       group: this.appDetails.appSign,
       appID: this.appDetails.id,
     }).then((res) => {
-      console.log('判断group结束');
       this.hasGroup = Boolean(res.groupID);
       this.groupID = res.groupID;
     }).catch((err) => {
@@ -127,7 +133,6 @@ class FaasStore {
     return checkInGroup({
       group: this.appDetails.appSign,
     }).then((res) =>{
-      console.log('判断In结束');
       this.developerInGroup = res.isMember;
     },
     ).catch((err) => {
@@ -138,21 +143,9 @@ class FaasStore {
   @action
   checkUserState = async (): Promise<void> => {
     this.checkUserLoading = true;
-    // this.isaDeveloper()
-    //   .then(this.isGroup)
-    //   .then(()=> {
-    //     if (this.hasGroup && this.isDeveloper) {
-    //       return this.isDeveloperInGroup();
-    //     }
-    //   })
-    //   .then(() => this.checkUserLoading = false);
-    this.checkUserLoading = true;
-    console.log('isaDeveloper开始');
     await this.isaDeveloper();
-    console.log('isGroup开始');
     await this.isGroup();
     if (this.hasGroup && this.isDeveloper) {
-      console.log('isDeveloperInGroup开始');
       await this.isDeveloperInGroup();
     }
     this.checkUserLoading = false;
@@ -164,9 +157,7 @@ class FaasStore {
       createDeveloper({
         email,
       }).then(() => {
-        console.log('createDeveloper');
         const intervalBox = setInterval(async () => {
-          console.log('isaDeveloper');
           await this.isaDeveloper();
           if (this.isDeveloper) {
             clearInterval(intervalBox);
@@ -187,7 +178,6 @@ class FaasStore {
       group: this.appDetails.appSign,
       appID: this.appDetails.id,
     }).then((res) => {
-      console.log('createGroup');
       this.hasGroup = true;
       this.groupID = res.id;
     }).catch((err) => {
@@ -199,7 +189,6 @@ class FaasStore {
   @action
   addUserToGroup = (): void => {
     addToGroup(this.groupID, { memberID: this.User.id }).then((res) => {
-      console.log('addUserToGroup');
       this.developerInGroup = true;
     }).catch((err) => {
       this.initErr = true;
@@ -211,19 +200,13 @@ class FaasStore {
   initFaas = async (email: string): Promise<void> => {
     this.initLoading = true;
     this.initErr = false;
-    console.log(1);
     if (!this.isDeveloper) {
-      console.log(2);
       await this.createDeveloper(email);
     }
-    console.log(3);
     if (!this.hasGroup && this.isDeveloper) {
-      console.log(4);
       await this.createGroup();
     }
-    console.log(5);
     if (!this.developerInGroup && this.isDeveloper && this.hasGroup) {
-      console.log(6);
       await this.addUserToGroup();
     }
     this.initLoading = false;
@@ -267,7 +250,7 @@ class FaasStore {
   createFunc = (data: creatFuncParams): void => {
     createFaasFunc(this.groupID, data).then((res) => {
       this.currentFuncID = res.id;
-      this.currentFunc = { ...res, ...data };
+      this.currentFunc = { ...res, ...data, state: 'Unknown' };
       this.funcList = [this.currentFunc, ...this.funcList];
       this.checkHasCoder();
     }).catch((err) => {
@@ -404,6 +387,45 @@ class FaasStore {
       toast.success('删除成功');
     }).catch((err) => {
       toast.error(err);
+    });
+  }
+
+  @action
+  registerAPI = (id: string) => {
+    registerAPI(this.groupID, this.currentFunc.id, id).then(() => {
+      toast.success('注册文档成功');
+    }).catch((err) => {
+      toast.error(err);
+    });
+  }
+
+  @action
+  getApiPath = (): void => {
+    this.isAPILoading = true;
+    this.isAPILoadingErr = '';
+    getApiPath(this.groupID, this.currentFuncID, this.buildID).then((res) => {
+      this.fetchApiDoc(res.path);
+    }).catch((err) => {
+      toast.error(err);
+      this.isAPILoadingErr = err;
+    });
+  }
+
+   @action
+  fetchApiDoc = (path: string): void => {
+    this.isAPILoadingErr = '';
+    getApiDoc(path, {
+      docType: 'curl',
+      titleFirst: false,
+    }).then((res: QueryDocRes) => {
+      const { doc } = res || {};
+      this.APiContent = doc;
+      this.isAPILoading = false;
+    }).catch((err) => {
+      toast.error(err);
+      this.APiContent = INIT_API_CONTENT;
+      this.isAPILoadingErr = err.message;
+      this.isAPILoading = false;
     });
   }
 }
