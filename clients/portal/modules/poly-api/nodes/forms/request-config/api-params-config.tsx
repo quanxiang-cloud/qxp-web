@@ -79,6 +79,7 @@ function ApiParamsConfig({
                         ref={formulaRef}
                         customRules={customRules}
                         defaultValue={data}
+                        value={data}
                         className="node-formula-editor"
                         onChange={(value) => handleFormulaChange(value, configParamTag)}
                       />
