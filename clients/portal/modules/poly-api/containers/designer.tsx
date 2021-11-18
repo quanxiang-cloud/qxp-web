@@ -25,13 +25,13 @@ function PolyDetailsDesigner({ className }: Props): JSX.Element | null {
     !flowInstance && setFlowInstance(instance);
   }, [flowInstance]);
 
-  useEffect(() => {
-    flowInstance?.fitView();
-  }, [flowInstance, elements]);
-
   const isLayoutFinished = useCallback(() => {
     return flowInstance && nodes.every((node) => node.position.x || node.position.y);
   }, [nodes, flowInstance]);
+
+  useEffect(() => {
+    isLayoutFinished() && flowInstance?.fitView();
+  }, [flowInstance, elements, isLayoutFinished]);
 
   const isIniting = useCallback(() => {
     return nodes.some((node) => !node.__rf.width);
