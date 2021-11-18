@@ -38,12 +38,13 @@ function MsgItem({
 
   useEffect(()=> {
     if (msgId === msgData.id) {
-      msgCenter.setCurMsgId(msgId);
+      msgCenter.setCurMsgId(msgId as string);
       readMsg.mutate({
         queryKey: ['', {
           id: msgData.id,
           read: true,
         }],
+        meta: undefined,
       });
     }
   }, []);
@@ -76,6 +77,7 @@ function MsgItem({
           id: msgData.id,
           read: true,
         }],
+        meta: undefined,
       });
     }
   }

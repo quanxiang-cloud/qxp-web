@@ -295,7 +295,7 @@ export async function prepareNodeData(
   if (!tableID || !appID) {
     return;
   }
-  const schema = await getFormFieldSchema({ queryKey: [undefined, tableID, appID] });
+  const schema = await getFormFieldSchema({ queryKey: [undefined, tableID, appID], meta: undefined });
   if (schema && ['approve', 'fillIn'].includes(newNode.type || '')) {
     set(newNode, 'data.businessData.fieldPermission', getInitFieldPermissionFromSchema(schema));
   }

@@ -47,6 +47,7 @@ const MsgItem = ({
           id,
           read: true,
         }],
+        meta: undefined,
       });
     }
   }, []);
@@ -99,6 +100,7 @@ const MsgItem = ({
           id,
           read: true,
         }],
+        meta: undefined,
       });
     }
 

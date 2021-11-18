@@ -79,6 +79,7 @@ class AppDetailsStore {
     useStatus: 0,
     appName: '',
     appIcon: '',
+    appSign: '',
   };
   @observable loading = false;
   @observable lastUpdateTime = 0
@@ -163,7 +164,7 @@ class AppDetailsStore {
   }
 
   @action
-  updateApp = (appInfo: Pick<AppInfo, 'appName' | 'appIcon' | 'useStatus'>): Promise<void> => {
+  updateApp = (appInfo: Pick<AppInfo, 'appName' | 'appIcon' | 'useStatus' | 'appSign'>): Promise<void> => {
     return updateApp({ id: this.appDetails.id, ...appInfo }).then(() => {
       this.appDetails = { ...this.appDetails, ...appInfo };
       this.apps = this.apps.map((_appInfo) => {

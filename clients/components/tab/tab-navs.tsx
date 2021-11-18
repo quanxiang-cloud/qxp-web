@@ -9,7 +9,7 @@ import './index.scss';
 type Props<T extends React.Key> = {
   navs: TabItem<T>[];
   currentKey: string | number;
-  strechNavs?: boolean;
+  stretchNav?: boolean;
   separator?: boolean;
   navTitleClassName?: string;
   navsClassName?: string;
@@ -18,7 +18,7 @@ type Props<T extends React.Key> = {
 function TabNavs<T extends React.Key>({
   navs,
   currentKey,
-  strechNavs,
+  stretchNav,
   separator,
   navTitleClassName,
   navsClassName,
@@ -38,17 +38,16 @@ ref?: React.Ref<HTMLDivElement>): JSX.Element {
                 key={item.id}
                 onClick={() => onClick?.(item)}
                 className={cs(
-                  'tab-nav-item transition text-center whitespace-nowrap p-12 cursor-pointer relative',
-                  navTitleClassName,
+                  'cursor-pointer relative tab-nav-item',
                   {
-                    active: active,
                     disabled: item.disabled,
                     'tab-nav-item-separator': separator,
-                    'strech-navs': strechNavs,
-                    'text-blue-600': active,
-                    'font-semibold': active,
-                    'text-gray-600': !active,
-                  })}
+                    'stretch-navs': stretchNav,
+                    'active text-blue-600': active,
+                    [`tab-nav__${item.state}`]: item.state,
+                  },
+                  navTitleClassName,
+                )}
               >
                 {item.name}
               </div>

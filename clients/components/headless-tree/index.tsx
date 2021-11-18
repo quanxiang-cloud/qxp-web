@@ -60,7 +60,7 @@ export default class Tree<T> extends React.Component<Props<T>> {
   handleNodeClick = (node: TreeNode<T>): void => {
     // todo check is shift key down?
     this.props.store.onSelectNode(node.id);
-    // this.props.onSelect?.(toJS(node.data));
+    this.props.onSelect?.(toJS(node.data));
   }
 
   handleSwitcherClick = (node: TreeNode<T>): void => {
