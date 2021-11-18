@@ -21,8 +21,6 @@ function RequestConfigForm({ initialValues, value, onChange }: Props): JSX.Eleme
   const [currentFormulaEditorRef, setCurrentFormulaRef] = useState<HTMLDivElement>();
   const [customRules, setCustomRules] = React.useState<CustomRule[]>([]);
   const [requestNodeInputs, setRequestNodeInputs] = useState(initialValues.inputs);
-  console.log('接受的初始值：', initialValues.inputs);
-  console.log('最近配置的值', value.inputs);
 
   const { data: apiDocDetail, isLoading, isSuccess, isError, error } = useGetRequestNodeApi({
     path: apiPath.slice(1),
