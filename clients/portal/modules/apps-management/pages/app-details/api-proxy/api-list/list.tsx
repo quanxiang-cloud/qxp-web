@@ -19,6 +19,8 @@ import { deleteNativeApi, activeApi } from '../api';
 import { useNamespace } from '../hooks';
 import store from '../store';
 
+import './index.scss';
+
 interface Props {
   className?: string;
 }
@@ -211,6 +213,7 @@ function ApiList(props: Props) {
       </div>
       <div className='api-list-wrap'>
         <Table
+          className='api-proxy-table-switch'
           emptyTips={(<EmptyTips text={
             (<div>暂无数据，选择
               <span onClick={toCreateApiPage} className='text-blue-600 cursor-pointer ml-4'>新建 API</span>
