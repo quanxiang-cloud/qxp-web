@@ -76,13 +76,6 @@ export const FIELD_COLUMNS: UnionColumns<ModelField>[] = [
 ];
 
 function renderApiDetails(): JSX.Element {
-  useEffect(() => {
-    Prism.highlightAll();
-    Prism.plugins.customClass.map({
-      number: 'pr-number',
-    });
-  });
-
   function handleDocTypeChange(docType: DocType): void {
     store.docType = docType;
     store.fetchApiDoc();
@@ -207,6 +200,13 @@ function ApiDocumentDetails(): JSX.Element {
       store.fetchApiDoc();
     }
   }, [store.currentDataModel]);
+
+  useEffect(() => {
+    Prism.highlightAll();
+    Prism.plugins.customClass.map({
+      number: 'pr-number',
+    });
+  }, [store.APiContent]);
 
   if (!store.tableID) {
     return <EmptyTips text='暂无数据模型' className="pt-40 m-auto" />;
