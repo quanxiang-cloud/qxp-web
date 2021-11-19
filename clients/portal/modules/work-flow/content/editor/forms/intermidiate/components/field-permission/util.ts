@@ -141,8 +141,9 @@ export function getInitFieldPermissionFromSchema(schema: ISchema): NewFieldPermi
     .map((schema): FieldPermissionMergeType => {
       const fieldId = schema['x-internal']?.fieldId;
       const isLayoutComponent = !!schema['x-internal']?.isLayoutComponent;
+      const permission = schema['x-internal']?.permission;
       return {
-        ...getPermission(undefined, isLayoutComponent),
+        ...getPermission(permission, isLayoutComponent),
         isSystem: INTERNAL_FIELD_NAMES.includes(fieldId || ''),
         fieldName: schema.title as string,
         id: fieldId || '',
