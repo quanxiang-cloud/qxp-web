@@ -137,25 +137,27 @@ class ApiDocStore {
       action: apiType,
     }).then((res: {name: string}) => {
       this.ApiPath = res.name;
-      this.fetchApiDoc();
+      // this.fetchApiDoc('curl', false);
     });
   }
 
   @action
-  fetchApiDoc = (): void => {
+  fetchApiDoc = (docType: DocType, titleFirst: boolean): void => {
     this.isAPILoading = true;
-    getApiDoc(this.ApiPath, {
-      docType: this.docType,
-      titleFirst: this.useFieldsID,
-    }).then((res: QueryDocRes) => {
-      const { doc } = res || {};
-      this.APiContent = doc;
-    }).catch((err: string) => {
-      toast.error(err);
-      this.APiContent = INIT_API_CONTENT;
-    }).finally(()=> {
-      this.isAPILoading = false;
-    });
+    if (this.ApiPath) {
+      getApiDoc(this.ApiPath, {
+        docType,
+        titleFirst,
+      }).then((res: QueryDocRes) => {
+        const { doc } = res || {};
+        this.APiContent = doc;
+      }).catch((err: string) => {
+        toast.error(err);
+        this.APiContent = INIT_API_CONTENT;
+      }).finally(()=> {
+        this.isAPILoading = false;
+      });
+    }
   }
 
   @action
