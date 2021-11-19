@@ -10,7 +10,7 @@ import PopConfirm from '@c/pop-confirm';
 import TableMoreFilterMenu from '@c/more-menu/table-filter';
 import Pagination from '@c/pagination';
 
-import StatusDisplay from '../component/status';
+import VersionStatus from '../component/version-status';
 import store from '../store';
 
 function FuncDetailsDrawer(): JSX.Element {
@@ -57,26 +57,15 @@ function FuncDetailsDrawer(): JSX.Element {
         </TableMoreFilterMenu>
       ),
       id: 'state',
-      accessor: ({ state, id, message }) => {
-        return (
-          <StatusDisplay
-            errorMsg={message}
-            status={state || 'Unknown'}
-            topic='builder'
-            dataID={id}
-            callBack={async (data) => {
-              // const { key }: FaasSoketData = parseJSON(data?.message, { key: '', topic: '' });
-              // if (key !== id) {
-              //   return;
-              // }
-
-              // const res = await getFuncInfo(store.groupID, id);
-              // if (res.info.state !== 'Unknown') {
-              //   store.mutateFuncStatus(id, res.info.state);
-              // }
-            }} />
-        );
-      },
+      accessor: ({ state, id, message, ServerState, visibility }) => (
+        <VersionStatus
+          visibility={visibility}
+          state={state}
+          versionID={id}
+          message={message}
+          ServerState={ServerState}
+        />
+      ),
     },
     {
       Header: '构建时间',
@@ -102,7 +91,7 @@ function FuncDetailsDrawer(): JSX.Element {
             {visibility === 'online' ? (
               <PopConfirm content='确认下线改版本？' onOk={() => store.offlineVer(id)} >
                 <span className="operate">下线</span>
-              </PopConfirm> ) : (
+              </PopConfirm>) : (
               <PopConfirm content='确认上线改版本？' onOk={() => store.servingVer(id)} >
                 <span className="operate">上线</span>
               </PopConfirm>
@@ -169,7 +158,7 @@ function FuncDetailsDrawer(): JSX.Element {
           </div>
         </div>
         <div className='h-32 bg-gray-100 rounded-4 flex items-center mb-8 mx-20'>
-          <hr className="title-line h-20 w-4 mr-12"/>
+          <hr className="title-line h-20 w-4 mr-12" />
           <div className='font-semibold text-gray-600 text-14'>版本记录</div>
         </div>
         <div className='flex-1 overflow-hidden mx-20'>
@@ -183,7 +172,7 @@ function FuncDetailsDrawer(): JSX.Element {
         <Pagination
           total={store.versionList.length}
           renderTotalTip={() => `共 ${store.versionList.length} 条数据`}
-          onChange={(current, pageSize) => store.fetchVersionList( current, pageSize )}
+          onChange={(current, pageSize) => store.fetchVersionList(current, pageSize)}
         />
       </div>
 

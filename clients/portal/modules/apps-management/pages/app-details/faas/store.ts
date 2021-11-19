@@ -1,5 +1,8 @@
 import { action, observable } from 'mobx';
 
+import { SocketData } from '@lib/push';
+import { parseJSON } from '@lib/utils';
+
 import {
   checkHasGroup,
   checkInGroup,
@@ -23,6 +26,7 @@ import {
   creatCoder,
   registerAPI,
   getApiPath,
+  getVersionInfo,
 } from './api';
 import toast from '@lib/toast';
 import { getApiDoc } from '../api-documentation/api';
@@ -31,7 +35,7 @@ import { INIT_API_CONTENT } from '../api-documentation/constants';
 const INIT_CURRENT_FUNC = {
   id: '',
   name: '',
-  state: 'Unknown' as ProcessStatus,
+  state: 'Unknown' as FaasProcessStatus,
   description: '',
   creator: '',
   createdAt: 0,
@@ -46,12 +50,13 @@ const INIT_CURRENT_FUNC = {
 const INIT_VERSION: VersionField = {
   id: '',
   state: 'Unknown',
+  ServerState: 'Unknown',
   message: '',
   creator: '',
   createAt: 0,
   updatedAt: 0,
   tag: '',
-  visibility: '',
+  visibility: 'offline',
   describe: '',
 };
 
@@ -102,7 +107,7 @@ class FaasStore {
   }
 
   @action
-  mutateFuncStatus = (id: string, status: ProcessStatus): void => {
+  mutateFuncStatus = (id: string, status: FaasProcessStatus): void => {
     this.funcList = this.funcList.map((func) => {
       if (func.id === id) {
         return {
@@ -132,7 +137,7 @@ class FaasStore {
   isDeveloperInGroup = (): Promise<void> => {
     return checkInGroup({
       group: this.appDetails.appSign,
-    }).then((res) =>{
+    }).then((res) => {
       this.developerInGroup = res.isMember;
     },
     ).catch((err) => {
@@ -350,11 +355,10 @@ class FaasStore {
   @action
   offlineVer = (id: string): void => {
     offlineVer(this.groupID, this.currentFuncID, id).then(() => {
-      toast.success('下线成功');
       this.versionList = this.versionList.map((_version) => {
         if (_version.id === id) {
-          this.currentVersionFunc = { ..._version, visibility: '' };
-          return { ..._version, visibility: '' };
+          this.currentVersionFunc = { ..._version, visibility: 'offline', ServerState: 'Unknown' };
+          return { ..._version, visibility: 'offline', ServerState: 'Unknown' };
         }
         return _version;
       });
@@ -366,11 +370,10 @@ class FaasStore {
   @action
   servingVer = (id: string): void => {
     servingVer(this.groupID, this.currentFuncID, id).then(() => {
-      toast.success('上线成功');
       this.versionList = this.versionList.map((_version) => {
         if (_version.id === id) {
-          this.currentVersionFunc = { ..._version, visibility: 'online' };
-          return { ..._version, visibility: 'online' };
+          this.currentVersionFunc = { ..._version, visibility: 'online', ServerState: 'Unknown' };
+          return { ..._version, visibility: 'online', ServerState: 'Unknown' };
         }
         return _version;
       });
@@ -410,7 +413,7 @@ class FaasStore {
     });
   }
 
-   @action
+  @action
   fetchApiDoc = (path: string): void => {
     this.isAPILoadingErr = '';
     getApiDoc(path, {
@@ -426,6 +429,31 @@ class FaasStore {
       this.isAPILoadingErr = err.message;
       this.isAPILoading = false;
     });
+  }
+
+  @action
+  versionStateChangeListener = async (buildID: string, socket: SocketData, type: 'state' | 'ServerState') => {
+    const { key, topic }: FaasSoketData = parseJSON(socket?.message, { key: '', topic: '' });
+    if (key !== buildID || topic !== 'builder') {
+      return;
+    }
+
+    const versionInfo = await getVersionInfo(this.groupID, this.currentFuncID, buildID);
+    if (versionInfo.build.state !== 'Unknown') {
+      this.versionList = this.versionList.map((version) => {
+        if (version.id === buildID) {
+          return { ...version, [type]: versionInfo.build[type] };
+        }
+
+        return version;
+      });
+
+      if (this.currentVersionFunc.id === buildID) {
+        this.currentVersionFunc = { ...this.currentVersionFunc, [type]: versionInfo.build[type] };
+      }
+
+      toast.success('操作成功！');
+    }
   }
 }
 
