@@ -49,7 +49,7 @@ export default function ConditionItem({ condition, options, onChange, schemaMap 
 
   function onFieldChange(value: string): void {
     const valuePath = getFieldValuePath(schemaMap?.[value]);
-    onChange({ key: valuePath ? [value, valuePath].join('.') : value });
+    onChange({ key: valuePath ? [value, valuePath].join('.') : value, value: '' });
   }
 
   function fieldOperatorOptionsFilter(
