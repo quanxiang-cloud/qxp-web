@@ -19,6 +19,8 @@ import CreatApiKeyTable from './creat-api-key-table';
 import store from '../store';
 import { uploadApiKey, deleteApiKey, updateApiKey, getApiKeyList, queryApiKey, activeApiKey } from '../api';
 
+import './index.scss';
+
 type MsgApiKey = {
   keyID: string,
   keySecret: string,
@@ -272,6 +274,7 @@ function ApiKeys(): JSX.Element {
         >新建密钥</Button>
       </div>
       <Table
+        className='api-proxy-table-switch'
         loading={loading}
         emptyTips={<EmptyTips text='暂无密钥' className="pt-40" />}
         columns={COLS}
@@ -299,7 +302,7 @@ function ApiKeys(): JSX.Element {
           onClose={() => setShowFormModal(false)}
           footerBtns={btnList}
         >
-          <div className='px-40 py-20 key-form'>
+          <div className='px-40 py-20 api-key-form'>
             <CreatApiKeyTable
               msgApiKey={isEditor ? msgApiKey : { keyID: '', keySecret: '', description: '' }}
               ref={formMsgRef}

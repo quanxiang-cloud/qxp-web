@@ -26,6 +26,18 @@
       visibility: visible;
     }
   }
+  .qxp-table-loading-box {
+    background-color: rgba(255, 255, 255, 1);
+  }
+}
+
+.api-key-form {
+  .ant-input {
+    border-radius: 2px 8px 8px 8px;
+  }
+}
+
+.api-proxy-table-switch {
   .ant-switch {
     width: 54px;
     height: 20px;
@@ -45,14 +57,5 @@
     .ant-switch-inner {
       margin: 0 22px 0 8px;
     }
-  }
-  .qxp-table-loading-box {
-    background-color: rgba(255, 255, 255, 1);
-  }
-}
-
-.key-form {
-  .ant-input {
-    border-radius: 2px 8px 8px 8px;
   }
 }
