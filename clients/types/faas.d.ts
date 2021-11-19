@@ -15,7 +15,7 @@ type FuncField = {
 }
 type VersionField = {
   id: string,
-  state: string,
+  state: ProcessStatus,
   message: string,
   creator: string,
   createAt: number,

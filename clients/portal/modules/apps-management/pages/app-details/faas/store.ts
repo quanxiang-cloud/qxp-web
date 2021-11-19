@@ -43,9 +43,9 @@ const INIT_CURRENT_FUNC = {
   versionNum: 0,
 };
 
-const INIT_VERSION = {
+const INIT_VERSION: VersionField = {
   id: '',
-  state: '',
+  state: 'Unknown',
   message: '',
   creator: '',
   createAt: 0,

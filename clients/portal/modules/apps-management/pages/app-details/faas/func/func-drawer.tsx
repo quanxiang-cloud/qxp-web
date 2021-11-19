@@ -7,8 +7,10 @@ import useCss from 'react-use/lib/useCss';
 import Icon from '@c/icon';
 import Table from '@c/table';
 import PopConfirm from '@c/pop-confirm';
+import TableMoreFilterMenu from '@c/more-menu/table-filter';
 import Pagination from '@c/pagination';
 
+import StatusDisplay from '../component/status';
 import store from '../store';
 
 function FuncDetailsDrawer(): JSX.Element {
@@ -37,9 +39,44 @@ function FuncDetailsDrawer(): JSX.Element {
       },
     },
     {
-      Header: '状态',
+      Header: () => (
+        <TableMoreFilterMenu
+          menus={[
+            { key: 'SUCCESS', label: '成功' },
+            { key: 'ING', label: '进行中' },
+            { key: 'FAILED', label: '失败' },
+          ]}
+          onChange={() => console.log('')}
+        >
+          <div className={cs('flex items-center cursor-pointer', {
+            'pointer-events-none': true,
+          })}>
+            <span className="mr-4">状态</span>
+            <Icon name="funnel" />
+          </div>
+        </TableMoreFilterMenu>
+      ),
       id: 'state',
-      accessor: () => '状态',
+      accessor: ({ state, id, message }) => {
+        return (
+          <StatusDisplay
+            errorMsg={message}
+            status={state || 'Unknown'}
+            topic='builder'
+            dataID={id}
+            callBack={async (data) => {
+              // const { key }: FaasSoketData = parseJSON(data?.message, { key: '', topic: '' });
+              // if (key !== id) {
+              //   return;
+              // }
+
+              // const res = await getFuncInfo(store.groupID, id);
+              // if (res.info.state !== 'Unknown') {
+              //   store.mutateFuncStatus(id, res.info.state);
+              // }
+            }} />
+        );
+      },
     },
     {
       Header: '构建时间',
