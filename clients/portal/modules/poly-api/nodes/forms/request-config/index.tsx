@@ -37,7 +37,7 @@ function RequestConfigForm({ value, onChange }: Props): JSX.Element {
 
   const previousRawPath = usePrevious(isLoading ? undefined : value.rawPath);
   useEffect(() => {
-    if ((previousRawPath && previousRawPath === value.rawPath) || isLoading) {
+    if ((previousRawPath && previousRawPath === value.rawPath) || isLoading || !value.rawPath) {
       return;
     }
     const apiInputs = apiDocDetail?.doc?.input?.inputs || [];
