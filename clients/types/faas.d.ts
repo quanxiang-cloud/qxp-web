@@ -3,7 +3,7 @@ type FuncField = {
   id: string,
   alias: string,
   name: string,
-  state: ProcessStatus,
+  state: FaasProcessStatus,
   description: string,
   creator: string,
   createdAt: number,
@@ -15,13 +15,14 @@ type FuncField = {
 }
 type VersionField = {
   id: string,
-  state: ProcessStatus,
+  state: FaasProcessStatus,
   message: string,
   creator: string,
   createAt: number,
   updatedAt: number,
   tag: string,
-  visibility: string
+  serverState: FaasProcessStatus;
+  visibility: FaasVersionServingStatus
   describe: string
 }
 
@@ -45,7 +46,9 @@ type VersionListParams = {
   page: number,
 }
 
-type ProcessStatus = 'Unknown' | 'True' | 'False';
+type FaasProcessStatus = 'Unknown' | 'True' | 'False';
+
+type FaasVersionServingStatus = 'offline' | 'online';
 
 type FaasSoketData = {
   key: string;
