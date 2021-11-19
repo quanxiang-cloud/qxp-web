@@ -15,18 +15,16 @@ function BasicInfo(): JSX.Element {
 
   function handleSubmit(): void {
     const formDom = formRef.current;
-    // console.log(formRef.current);
     formDom.submit();
   }
 
   useEffect(() => {
-    handleSubmit();
-  }, []);
+    formRef.current?.validateFields?.();
+  }, [formRef.current]);
 
   function submitCallback(): void {
     const formDom = formRef.current;
     const data = formDom.getFieldsValue();
-    console.log(data);
     appDetailsStore.updateApp(data);
   }
 
