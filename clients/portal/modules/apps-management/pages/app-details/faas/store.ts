@@ -1,4 +1,4 @@
-import { action, observable } from 'mobx';
+import { action, observable, reaction } from 'mobx';
 
 import { SocketData } from '@lib/push';
 import { parseJSON } from '@lib/utils';
@@ -93,6 +93,20 @@ class FaasStore {
   @observable APiContent: APiContent = INIT_API_CONTENT;
   @observable isAPILoadingErr = '';
   @observable isAPILoading = false;
+  @observable versionsParams: VersionListParams = {
+    state: '',
+    page: 1,
+    size: 10,
+  }
+
+  constructor() {
+    reaction(() => this.versionsParams, this.fetchVersionList);
+  }
+
+  @action
+  setVersionParams = (newParam: Partial<VersionListParams>): void => {
+    this.versionsParams = { ...this.versionsParams, ...newParam };
+  }
 
   @action
   setModalType = (type: string): void => {
@@ -320,12 +334,8 @@ class FaasStore {
   }
 
   @action
-  fetchVersionList = (current: number, pageSize: number): void => {
-    getFuncVersionList(this.groupID, this.currentFuncID, {
-      state: '',
-      size: pageSize,
-      page: current,
-    }).then((res) => {
+  fetchVersionList = (params: VersionListParams): void => {
+    getFuncVersionList(this.groupID, this.currentFuncID, params).then((res) => {
       const { builds } = res;
       this.versionList = builds;
       this.currentVersionFunc = builds[0] || INIT_CURRENT_FUNC;
@@ -355,13 +365,7 @@ class FaasStore {
   @action
   offlineVer = (id: string): void => {
     offlineVer(this.groupID, this.currentFuncID, id).then(() => {
-      this.versionList = this.versionList.map((_version) => {
-        if (_version.id === id) {
-          this.currentVersionFunc = { ..._version, visibility: 'offline', serverState: 'Unknown' };
-          return { ..._version, visibility: 'offline', serverState: 'Unknown' };
-        }
-        return _version;
-      });
+      this.setVersionParams({});
     }).catch((err) => {
       toast.error(err);
     });
@@ -370,13 +374,7 @@ class FaasStore {
   @action
   servingVer = (id: string): void => {
     servingVer(this.groupID, this.currentFuncID, id).then(() => {
-      this.versionList = this.versionList.map((_version) => {
-        if (_version.id === id) {
-          this.currentVersionFunc = { ..._version, visibility: 'online', serverState: 'Unknown' };
-          return { ..._version, visibility: 'online', serverState: 'Unknown' };
-        }
-        return _version;
-      });
+      this.setVersionParams({});
     }).catch((err) => {
       toast.error(err);
     });

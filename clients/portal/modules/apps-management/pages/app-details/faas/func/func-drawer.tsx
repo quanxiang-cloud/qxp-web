@@ -16,7 +16,7 @@ import store from '../store';
 function FuncDetailsDrawer(): JSX.Element {
   useEffect(() => {
     store.fetchFuncInfo();
-    store.fetchVersionList(1, 10);
+    store.setVersionParams({});
   }, [store.currentFuncID]);
   const [beganClose, setBeganClose] = useState<boolean>(false);
   const [visible, setVisible] = useState<boolean>(false);
@@ -172,7 +172,7 @@ function FuncDetailsDrawer(): JSX.Element {
         <Pagination
           total={store.versionList.length}
           renderTotalTip={() => `共 ${store.versionList.length} 条数据`}
-          onChange={(current, pageSize) => store.fetchVersionList(current, pageSize)}
+          onChange={(current, pageSize) => store.setVersionParams({ page: current, size: pageSize })}
         />
       </div>
 
