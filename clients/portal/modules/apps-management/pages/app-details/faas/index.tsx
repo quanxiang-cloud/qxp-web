@@ -20,7 +20,7 @@ function FaaS(): JSX.Element {
 
     store.User = pick(User, ['id', 'email']);
     if (appDetails.id) {
-      // if (!store.appDetails.appSign) history.push('base_info');
+      if (!store.appDetails.appSign) history.push('base_info');
       checkUserState();
     }
   }, [appDetails, User.id]);
