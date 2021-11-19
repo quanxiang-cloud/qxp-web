@@ -54,11 +54,23 @@ export function useGetRequestNodeApiList(
 }
 
 export type RawApiDocDetail = {
-  docType: string,
-  name: string,
-  id: string,
-  doc: any,
-  apiPath: string,
+  docType: string;
+  name: string;
+  id: string;
+  doc: {
+    url: string;
+    input: {
+      inputs: POLY_API.PolyNodeInput[];
+    };
+    output: {
+      doc: [{
+        type: 'object';
+        data: POLY_API.PolyNodeInput[];
+        in: 'body';
+      }]
+    }
+  };
+  apiPath: string;
 }
 
 type QueryRequestNodeApiInputBody = {
