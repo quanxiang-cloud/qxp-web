@@ -8,18 +8,25 @@ import PageLoading from '@c/page-loading';
 
 import CreatedEditApp from '../../entry/app-list/app-edit/created-edit-app';
 import appDetailsStore from '../store';
+import { useEffect } from 'react';
 
 function BasicInfo(): JSX.Element {
   const formRef: any = useRef();
 
   function handleSubmit(): void {
     const formDom = formRef.current;
+    // console.log(formRef.current);
     formDom.submit();
   }
+
+  useEffect(() => {
+    handleSubmit();
+  }, []);
 
   function submitCallback(): void {
     const formDom = formRef.current;
     const data = formDom.getFieldsValue();
+    console.log(data);
     appDetailsStore.updateApp(data);
   }
 

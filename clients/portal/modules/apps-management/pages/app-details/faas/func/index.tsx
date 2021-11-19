@@ -18,7 +18,7 @@ function FuncList(): JSX.Element {
   const { fetchFuncList, modalType, setModalType, funcListLoading } = store;
 
   useEffect(() => {
-    fetchFuncList(1, 10);
+    fetchFuncList('', 1, 10);
   }, []);
 
   if (funcListLoading) {
@@ -45,7 +45,7 @@ function FuncList(): JSX.Element {
             style={{ height: 'calc(100% - 82px)' }}
           >
 
-            {store.funcList.length ? <DataList /> : <DataEmpty />}
+            {!store.funcList.length && !store.searchAlias ? <DataEmpty /> : <DataList />}
 
           </div>
         </>

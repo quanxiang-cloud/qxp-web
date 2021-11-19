@@ -139,7 +139,7 @@ function DataList(): JSX.Element {
       accessor: ({ id, state }: FuncField) => {
         return (
           <div className="flex gap-20">
-            {state === 'Unknown' && <span>加载中...</span>}
+            {state === 'Unknown' && <span>进行中...</span>}
             {state === 'True' && (
               <>
                 <span className="operate" onClick={() => store.defineFunc(id)}>定义</span>
@@ -175,6 +175,13 @@ function DataList(): JSX.Element {
     store.modalType = modalType;
   }
 
+  function handleInputKeydown(e: React.KeyboardEvent): void {
+    if (e.key !== 'Enter') {
+      return;
+    }
+    store.fetchFuncList(store.searchAlias, 1, 10 );
+  }
+
   return (
     <>
       <div className="flex justify-between mb-8">
@@ -186,7 +193,17 @@ function DataList(): JSX.Element {
         >
           新建函数
         </Button>
-        <Search className="func-search text-12" placeholder="搜索函数名称" />
+        <Search
+          className="func-search text-12"
+          placeholder="搜索函数名称"
+          onChange={(v) => {
+            if (!v)store.fetchFuncList('', 1, 10);
+            setTimeout(() => {
+              store.searchAlias = v;
+            }, 500);
+          }}
+          onKeyDown={handleInputKeydown}
+        />
       </div>
 
       <div className='flex-1 overflow-hidden'>
@@ -198,9 +215,11 @@ function DataList(): JSX.Element {
         />
       </div>
       <Pagination
+        // current={pageParams.page}
+        // pageSize={pageParams.size}
         total={store.funcList.length}
         renderTotalTip={() => `共 ${store.funcList.length} 条数据`}
-        onChange={(current, pageSize) => store.fetchFuncList(current, pageSize)}
+        onChange={(current, pageSize) => store.fetchFuncList(store.searchAlias, current, pageSize)}
       />
       {store.modalType === 'build' && <BuildModal onClose={() => store.modalType = ''} />}
       {store.modalType === 'deletefunc' && (

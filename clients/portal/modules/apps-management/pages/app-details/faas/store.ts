@@ -93,6 +93,8 @@ class FaasStore {
   @observable APiContent: APiContent = INIT_API_CONTENT;
   @observable isAPILoadingErr = '';
   @observable isAPILoading = false;
+  @observable searchAlias = '';
+  @observable apiPath = ''
 
   @action
   setModalType = (type: string): void => {
@@ -218,11 +220,12 @@ class FaasStore {
   }
 
   @action
-  fetchFuncList = (current: number, pageSize: number): void => {
+  fetchFuncList = (searchAlias: string, page: number, size: number): void => {
     fetchFuncList(this.groupID, {
+      alias: searchAlias,
       appID: this.appDetails.id,
-      page: current,
-      size: pageSize,
+      page,
+      size,
     }).then((res) => {
       const { projects } = res;
       this.funcList = projects;
@@ -292,7 +295,7 @@ class FaasStore {
       defineFunc(this.groupID, id),
       fetch('/_otp').then((response) => response.json()),
     ]).then(([{ url }, { token }]) => {
-      window.open(`http://${url}?token=${token}`, '_blank');
+      window.open(`${url}?token=${token}`, '_blank');
     }).catch((err) => {
       toast.error(err);
     });
@@ -406,7 +409,7 @@ class FaasStore {
     this.isAPILoading = true;
     this.isAPILoadingErr = '';
     getApiPath(this.groupID, this.currentFuncID, this.buildID).then((res) => {
-      this.fetchApiDoc(res.path);
+      this.apiPath = res.path;
     }).catch((err) => {
       toast.error(err);
       this.isAPILoadingErr = err;
