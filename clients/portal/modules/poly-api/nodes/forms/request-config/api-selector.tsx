@@ -22,13 +22,8 @@ type Props = {
 
 function ApiSelector({ apiDocDetail, setApiPath, initRawApiPath }: Props): JSX.Element {
   const { appID } = useParams<{ appID: string }>();
-  const [selectValue, setSelectValue] = useState<any>();
   const [apiNamespacePath, setApiNamespacePath] = useState('');
   const [options, setOptions] = useState<any[]>();
-  const [init, setInit] = useState<undefined | boolean>();
-  const [initValueAndOptions, setInitValueAndOptions] = useState<{
-    initValue: string; initOptions: any;
-  }>();
 
   const { data: namespace } = useQueryNameSpaceRawRootPath(appID);
   const { data: namespacePaths } = useGetNamespaceFullPath({
@@ -47,25 +42,8 @@ function ApiSelector({ apiDocDetail, setApiPath, initRawApiPath }: Props): JSX.E
 
   // load name space path options
   useEffect(() => {
-    initRawApiPath && setInitValueAndOptions(getInitOptions(
-      getInitSelectValue(),
-      getChildrenOfCurrentSelectOption(namespacePaths?.root.children),
-    ));
     setOptions(getChildrenOfCurrentSelectOption(namespacePaths?.root.children));
   }, [namespacePaths?.root.children]);
-
-  useEffect(() => {
-    initRawApiPath && setSelectValue(getInitSelectValue());
-  }, []);
-
-  function getInitSelectValue(): string[] {
-    const rawApiPath = initRawApiPath;
-    const test = initRawApiPath.replace(namespace?.appPath || '', '')?.split('/');
-    test.shift();
-    test.pop();
-    namespace?.appPath && test.push(rawApiPath);
-    return test;
-  }
 
   function updateApiLeafOptions(option: any): any {
     if (!option) {
@@ -89,10 +67,8 @@ function ApiSelector({ apiDocDetail, setApiPath, initRawApiPath }: Props): JSX.E
     const leafOption = clone(selectedOptions).pop();
     if (leafOption?.isLeaf) {
       setApiPath(leafOption.path);
-      setSelectValue(value);
       return;
     }
-    setSelectValue(value);
   }
 
   function loadData(selectedOptions: any): void {
@@ -102,41 +78,6 @@ function ApiSelector({ apiDocDetail, setApiPath, initRawApiPath }: Props): JSX.E
     setApiNamespacePath(targetOption.path);
   }
 
-  // todo refactor this
-  function getInitOptions(initValue: any, allData: any): any {
-    return {
-      initValue: initValue,
-      initValueAndOptions: allData?.filter(({ label }: any) => label === initValue[0])
-        .map(({ label, value, childrenData, path, isLeaf }: any) =>{
-          return {
-            label,
-            value,
-            path,
-            isLeaf,
-            children: childrenData?.filter(({ name }: any) => name === initValue[1])
-              .map(({ name, parent }: any) => {
-                return {
-                  label: name,
-                  value: name,
-                  isLeaf: false,
-                  children: [
-                    {
-                      label: name,
-                      value: `${parent}/${name}`,
-                      path: `${parent}/${name}`,
-                      isLeaf: true,
-                    },
-                  ],
-                  childrenData: '',
-                  path: `${parent}/${name}`,
-                };
-              }),
-            childrenData: childrenData,
-          };
-        }),
-    };
-  }
-
   return (
     <div className="px-20 py-12 flex">
       <div className="poly-api-selector">
@@ -144,11 +85,10 @@ function ApiSelector({ apiDocDetail, setApiPath, initRawApiPath }: Props): JSX.E
         <Cascader
           changeOnSelect
           className="cascader"
-          value={selectValue}
-          options={typeof init === 'undefined' ? initValueAndOptions?.initOptions : options}
+          defaultValue={[initRawApiPath]}
+          options={options}
           loadData={loadData}
           onChange={onChange}
-          onPopupVisibleChange={(value) => setInit(value)}
         />
       </div>
       {apiDocDetail && (
