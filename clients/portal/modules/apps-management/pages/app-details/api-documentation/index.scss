@@ -63,6 +63,7 @@
         right: 30px;
         cursor: pointer;
         display: inline-flex;
+        box-sizing: content-box;
         align-items: center;
         padding: 5px 8px;
         color: var(--gray-50);

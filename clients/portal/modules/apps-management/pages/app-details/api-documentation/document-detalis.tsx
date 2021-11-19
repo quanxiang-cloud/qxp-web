@@ -43,13 +43,11 @@ export const FIELD_COLUMNS: UnionColumns<ModelField>[] = [
         <Tooltip
           position="top"
           label="复制"
-          wrapperClassName="flex-grow-0 relative z-10 invisible copy-tooltip icon-text-btn"
-          labelClassName="whitespace-nowrap text-12"
         >
           <Icon
             name="content_copy"
             size={16}
-            className='text-inherit ml-10'
+            className='text-inherit ml-10 copy-tooltip invisible icon-text-btn'
             onClick={() => copyContent(rowData.id, '标志已复制')}
           />
         </Tooltip>
@@ -118,14 +116,11 @@ function renderApiDetails(): JSX.Element {
         <Tooltip
           position="top"
           label="复制"
-          // relative={false}
-          wrapperClassName="copy-button icon-text-btn"
-          labelClassName="whitespace-nowrap"
         >
           <Icon
             name="content_copy"
             size={20}
-            className='text-inherit'
+            className='copy-button icon-text-btn'
             onClick={() => copyContent(store.APiContent.input)}
           />
         </Tooltip>

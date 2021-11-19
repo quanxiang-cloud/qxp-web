@@ -342,7 +342,6 @@ class FaasStore {
         }
         return _version;
       });
-      console.log(res);
     }).catch((err) => {
       toast.error(err);
     });
