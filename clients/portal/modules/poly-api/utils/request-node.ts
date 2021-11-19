@@ -1,44 +1,25 @@
-import { isEmpty } from 'lodash';
+import { isArray, isEmpty, isString, omit } from 'lodash';
 
-import { RawApiDetail, RawApiDocDetail } from '../effects/api/raw';
+import { RawApiDetail } from '../effects/api/raw';
+import { isObjectField } from './object-editor';
 
-function parseParamOfPath(url: string): Record<string, any> {
+export function parseParamOfPath(url: string): Record<string, ParamsConfig[]> {
   const pathArr = url.split('/:');
   pathArr.shift();
-  if (!isEmpty(pathArr)) {
-    return {
-      path: pathArr.map((path: string) => {
-        return { name: path.split('/')[0].split('?')[0], required: true };
-      }),
-    };
+  if (isEmpty(pathArr)) {
+    return { path: [] };
   }
-
-  return {};
-}
-
-type ApiDocInput = {
-  title?: string;
-  name: string;
-  mock?: string;
-  data: any;
-  required?: boolean;
-  desc?: string;
-  type: string;
-  in: 'header' | 'body' | 'query';
-}
-
-function findAvailableBodyParams(data: any[], path?: string): any[] {
-  return data.reduce<any[]>((bodyInputs, input, index) => {
-    const paramPath = path ? `${path}.${index}` : `${index}`;
-
-    if (input.type !== 'object' && input.type !== 'array' && input.type !== 'timestamp') {
-      bodyInputs.push({ title: input.title, name: input.name, required: input.required, path: paramPath, type: input.type, data: input.data });
-    } else {
-      input.data && bodyInputs.push(...findAvailableBodyParams(input.data, paramPath));
-    }
-
-    return bodyInputs;
-  }, []);
+  const config = pathArr.map((path: string, index: number) => {
+    return {
+      type: 'string',
+      name: path.split('/')[0].split('?')[0],
+      data: '',
+      in: 'path',
+      required: true,
+      path: `${index}`,
+    };
+  });
+  return { path: config };
 }
 
 export function mapNamespacePathsToLabelValue1(namespacePath: Array<any> | null): any {
@@ -75,39 +56,54 @@ export function mapNamespacePathsToLabelValue(namespacePath: Array<any> | null, 
   });
 }
 
-export function convertToParamsConfig(apiData: RawApiDocDetail | undefined): any[] {
-  if (apiData) {
-    const paramsConfig: any = {};
-    const { url, input } = apiData.doc;
-
-    input.inputs.forEach((apiDocInput: ApiDocInput, index: number) => {
-      const paramPath = `${index}`;
-      const { title, name, required, type, data } = apiDocInput;
-      paramsConfig[apiDocInput.in] = paramsConfig[apiDocInput.in] || [];
-      if (apiDocInput.in === 'body' && apiDocInput.data.length) {
-        paramsConfig[apiDocInput.in] = paramsConfig[apiDocInput.in].concat(
-          findAvailableBodyParams(apiDocInput.data, paramPath),
-        );
-        return;
-      }
-
-      paramsConfig[apiDocInput.in].push({ title, name, required, path: paramPath, type, data });
-    });
-    return Object.assign(parseParamOfPath(url), paramsConfig);
-  }
-
-  return [];
+type ParamsConfig = Omit<POLY_API.PolyNodeInput, 'data' | 'type' | 'in'> & {
+  type: string;
+  data: string;
+  path: string;
+  in: string;
+}
+export function convertToParamsConfig(
+  originalInputs: POLY_API.PolyNodeInput[],
+  parentPath = '',
+  parentIn = 'body',
+  acc: Record<string, ParamsConfig[]> = {},
+): Record<string, ParamsConfig[]> {
+  originalInputs.forEach((apiDocInput: POLY_API.PolyNodeInput, index: number) => {
+    const currentPath = parentPath ? `${parentPath}.${index}` : `${index}`;
+    const { type, data } = apiDocInput;
+    const currentIn = apiDocInput.in || parentIn;
+    acc[currentIn] = acc[currentIn] || [];
+    if (!isObjectField(type)) {
+      acc[currentIn].push({
+        ...omit(apiDocInput, 'data'), data: isString(data) ? data : '', path: currentPath,
+      });
+    } else if (isArray(apiDocInput.data)) {
+      convertToParamsConfig(apiDocInput.data, `${currentPath}.data`, currentIn, acc);
+    }
+  });
+  return acc;
 }
 
-export function convertRawApiListToOptions(rawApiList: RawApiDetail[]) {
-  return rawApiList.length ? rawApiList.map(({ name, fullPath }: RawApiDetail) => {
+export type PolyApiSelectorOption = {
+  label: string;
+  value: string;
+  path: string;
+  isLeaf: boolean;
+  disabled: boolean;
+}
+export function convertRawApiListToOptions(rawApiList: RawApiDetail[]): PolyApiSelectorOption[] {
+  if (!rawApiList.length) {
+    return [{ label: '暂无api', value: '', path: '', isLeaf: true, disabled: true }];
+  }
+  return rawApiList.map(({ name, fullPath }: RawApiDetail) => {
     return {
       label: name,
       value: fullPath,
       path: fullPath,
       isLeaf: true,
+      disabled: false,
     };
-  }) : [{ label: '暂无api', value: '', isLeaf: true, disabled: true }];
+  });
 }
 
 export function getChildrenOfCurrentSelectOption(currentChildrenData: any): any {

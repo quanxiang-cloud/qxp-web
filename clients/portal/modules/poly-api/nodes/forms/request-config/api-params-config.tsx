@@ -1,69 +1,87 @@
-import React, { useContext } from 'react';
-import { observer } from 'mobx-react';
+import React, { forwardRef, ForwardedRef, useImperativeHandle, useRef, useEffect } from 'react';
+import { lensPath, set, view } from 'ramda';
+import { isArray } from 'lodash';
 
 import Icon from '@c/icon';
-import FormulaEditor, { RefProps } from '@c/formula-editor';
-import { convertToParamsConfig } from '@portal/modules/poly-api/utils/request-node';
-import { ApiRequestNodeConfigContext } from './context';
+import FormulaEditor, { RefProps, CustomRule } from '@c/formula-editor';
+import { convertToParamsConfig, parseParamOfPath } from '@portal/modules/poly-api/utils/request-node';
 
 type Props = {
-  configValue?: any;
-  initRequestNodeInputs?: any;
-  onChange: (value: any) => void;
-  setCurrentFormulaRef: (ref: any) => void;
+  value: POLY_API.PolyNodeInput[];
+  url: string;
+  onChange: (value: POLY_API.PolyNodeInput[]) => void;
+  customRules: CustomRule[];
 }
 
-function ApiParamsConfig({
-  configValue, initRequestNodeInputs, setCurrentFormulaRef, onChange }: Props,
+export type RefType = { getCurrent: () => RefProps | null; }
+
+function ApiParamsConfig(
+  { value, onChange, customRules, url }: Props,
+  ref: ForwardedRef<RefType | undefined>,
 ): JSX.Element {
-  const { customRules } = useContext(ApiRequestNodeConfigContext);
-  configValue.doc.input.inputs = initRequestNodeInputs;
-  const polyParams = Object.entries(convertToParamsConfig(configValue));
+  const formulaRefs = useRef<Record<string, RefProps>>({});
+  const currentFormulaEditorRef = useRef<RefProps | null>(null);
+  useImperativeHandle(ref, () => ({
+    getCurrent: () => currentFormulaEditorRef.current,
+  }));
 
-  function updateRequestNodeConfigValueInputs(
-    nodeInput: any, targetPath: string, value: string, path?: string,
-  ): any {
-    return nodeInput?.map((arr: any, index: number) => {
-      const fullPath = path ? `${path}.${index}` : `${index}`;
-      if (fullPath === targetPath) {
-        if ((arr.type === 'string' || arr.type === 'number' || arr.type === 'direct_expr') && value) {
-          arr.data = value;
-          arr.type = 'direct_expr';
-        }
-        return arr;
-      }
+  useEffect(() => {
+    const path = parseParamOfPath(url).path as unknown as POLY_API.PolyNodeInput[];
+    if (!path.length || value.some((v) => v.in === 'path')) {
+      return;
+    }
+    onChange(path.concat(value));
+  }, [url]);
 
-      if (arr.type === 'object') {
-        arr.data = updateRequestNodeConfigValueInputs(arr.data, targetPath, value, fullPath);
-      }
-
-      return arr;
-    });
+  if (!isArray(value)) {
+    throw new Error('array');
   }
 
-  function handleFormulaChange(value: string, formulaTargePath: string): void {
-    const requestNodeInputs = updateRequestNodeConfigValueInputs(
-      [...configValue.doc.input.inputs], formulaTargePath, value,
-    );
-    onChange(requestNodeInputs);
+  const valueWithPath = convertToParamsConfig(value);
+  const polyParams = Object.entries(valueWithPath);
+
+  function toNumber(value: string): number | string {
+    return /^\d+$/.test(value) ? parseInt(value) : value;
+  }
+
+  function handleFormulaChange(path: string) {
+    return (val: string) => {
+      handleSetCurrentFormulaRef(path)();
+      const dataLens = lensPath(`${path}.data`.split('.').map(toNumber));
+      view(dataLens, value);
+      const newInputs = set(dataLens, val, value);
+      const typeLens = lensPath(`${path}.type`.split('.').map(toNumber));
+      view(typeLens, newInputs);
+      const distValue = set(typeLens, 'direct_expr', newInputs);
+      onChange(distValue);
+    };
+  }
+
+  function handleSetCurrentFormulaRef(path: string) {
+    return () => {
+      currentFormulaEditorRef.current = formulaRefs.current[path];
+    };
+  }
+
+  function handleSetFormulaRefs(path: string) {
+    return (node: RefProps) => {
+      formulaRefs.current[path] = node;
+    };
   }
 
   return (
     <div className="p-12 flex-2 bg-gray-50 overflow-auto config-params-container">
-      {polyParams?.length && polyParams.map(([type, params]: any) => {
+      {!!polyParams?.length && polyParams.map(([type, params]) => {
         return (
           <div key={type} className="my-20">
             <div className="pb-4 text-gray-900">{type.replace(/^\S/, (s: string) => s.toUpperCase())}</div>
             <div className="config-param">
-              {params.map(({ title, name, required, path, data }: any, index: number) => {
-                const configParamTag = path ? path : `${index}`;
-                const formulaRef = React.useRef<RefProps>();
-
+              {params.map(({ title, name, required, path, data }) => {
                 return (
                   <div
-                    key={configParamTag}
+                    key={path}
                     className="flex justify-between"
-                    onClick={() => setCurrentFormulaRef(formulaRef)}
+                    onClick={handleSetCurrentFormulaRef(path)}
                   >
                     <div className="flex items-center justify-between w-142 p-8 flex-1 border-r-1">
                       <div className="flex-1 truncate">
@@ -76,11 +94,11 @@ function ApiParamsConfig({
                     {customRules.length ? (
                       <FormulaEditor
                         help=""
-                        ref={formulaRef}
+                        ref={handleSetFormulaRefs(path)}
                         customRules={customRules}
                         defaultValue={data}
                         className="node-formula-editor"
-                        onChange={(value) => handleFormulaChange(value, configParamTag)}
+                        onChange={handleFormulaChange(path)}
                       />
                     ) : <div className="node-formula-editor"></div>}
                   </div>
@@ -94,4 +112,4 @@ function ApiParamsConfig({
   );
 }
 
-export default observer(ApiParamsConfig);
+export default forwardRef<RefType | undefined, Props>(ApiParamsConfig);

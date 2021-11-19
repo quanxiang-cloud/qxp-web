@@ -52,9 +52,9 @@ export function fromApiDataToObjectSchema(
     return {
       type,
       name,
-      desc,
+      desc: desc || '',
       children,
-      required,
+      required: !!required,
       in: _in,
       index,
       rule: type === 'direct_expr' && isString(childrenData) ? childrenData : undefined,

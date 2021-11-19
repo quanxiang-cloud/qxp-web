@@ -29,10 +29,12 @@ declare namespace POLY_API {
   export interface PolyNodeInput {
     type: 'string' | 'number' | 'boolean' | 'object' | 'array' | 'direct_expr';
     name: string;
-    desc: string;
-    data: PolyNodeInput[] | string;
+    data: PolyNodeInput[] | string | null;
     in: 'body' | 'path' | 'header' | 'query';
-    required: boolean;
+    required?: boolean;
+    mock?: string;
+    desc?: string;
+    title?: string;
   }
 
   export interface PolyConst {
