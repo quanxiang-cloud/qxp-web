@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { clone } from 'ramda';
 import { Cascader } from 'antd';
-import { observer } from 'mobx-react';
 import { useParams } from 'react-router-dom';
 
 import { useGetRequestNodeApiList } from '@portal/modules/poly-api/effects/api/raw';
@@ -164,4 +163,4 @@ function ApiSelector({ apiDocDetail, setApiPath, initRawApiPath }: Props): JSX.E
   );
 }
 
-export default observer(ApiSelector);
+export default ApiSelector;

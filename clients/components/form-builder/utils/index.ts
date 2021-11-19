@@ -264,12 +264,12 @@ export function getSchemaPermissionFromSchemaConfig(
   const isReadonly = value.displayModifier === 'readonly';
   const isHidden = value.displayModifier === 'hidden';
   if (isReadonly) {
-    return INVALID_READONLY;
+    return READONLY_WITH_WRITE;
   }
   if (isHidden) {
-    return INVALID_INVISIBLE;
+    return INVISIBLE_WITH_WRITE;
   }
-  return INVALID_NORMAL;
+  return NORMAL;
 }
 
 export function getDisplayModifierFromSchema(schema: ISchema): FormBuilder.DisplayModifier {
