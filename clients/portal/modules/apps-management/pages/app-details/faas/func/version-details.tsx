@@ -19,6 +19,7 @@ const { TextArea } = Input;
 
 function renderApiDetails(): JSX.Element {
   useEffect(() => {
+    console.log(111);
     store.getApiPath();
   }, []);
 
@@ -42,13 +43,11 @@ function renderApiDetails(): JSX.Element {
             <Tooltip
               position="top"
               label="复制"
-              wrapperClassName="copy-button icon-text-btn"
-              labelClassName="whitespace-nowrap"
             >
               <Icon
                 name="content_copy"
                 size={20}
-                className='text-inherit'
+                className='text-inherit copy-button icon-text-btn'
               />
             </Tooltip>
             <pre className='api-details'>
@@ -88,7 +87,7 @@ function VersionDetails(): JSX.Element {
     {
       id: 'apidoc',
       name: 'API文档',
-      content: renderApiDetails(),
+      content: () => renderApiDetails(),
     },
   ];
 
@@ -184,11 +183,11 @@ function VersionDetails(): JSX.Element {
       <Tab
         items={tabItems}
         className='w-full h-full opacity-95'
-        onChange={(v) => {
-          if (v === 'apidoc') {
-            store.getApiPath();
-          }
-        }}
+        // onChange={(v) => {
+        //   if (v === 'apidoc') {
+        //     store.getApiPath();
+        //   }
+        // }}
       />
     </div>
   );

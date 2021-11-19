@@ -51,7 +51,7 @@ const SCHEMA: ISchema = {
           required: true,
           // description: '最多 20 字符，必须以字母开头，只能包含字母、数字、下划线，标识不可重复。',
           'x-component-props': {
-            placeholder: '请输入，例如：sys_001',
+            placeholder: '请输入，例如：sys001',
           },
           'x-rules': [
             {
@@ -63,8 +63,8 @@ const SCHEMA: ISchema = {
               message: '函数标识不超过 20 字符，请修改！',
             },
             {
-              pattern: /^[a-zA-Z]+([_]?[a-zA-Z0-9])*$/,
-              message: '必须以字母开头,由字母、数字、单下划线组成',
+              pattern: /^[a-zA-Z]+([a-zA-Z0-9])*$/,
+              message: '必须以字母开头,由字母、数字组成',
             },
           ],
           'x-component': 'Input',
