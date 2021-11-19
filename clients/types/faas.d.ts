@@ -21,7 +21,7 @@ type VersionField = {
   createAt: number,
   updatedAt: number,
   tag: string,
-  ServerState: FaasProcessStatus;
+  serverState: FaasProcessStatus;
   visibility: FaasVersionServingStatus
   describe: string
 }

@@ -7,7 +7,7 @@ type Props = {
   state: FaasProcessStatus;
   versionID: string;
   message: string;
-  ServerState: FaasProcessStatus;
+  serverState: FaasProcessStatus;
   visibility: FaasVersionServingStatus;
 }
 
@@ -15,7 +15,7 @@ export default function VersionStatus({
   state,
   versionID,
   message,
-  ServerState,
+  serverState,
   visibility,
 }: Props): JSX.Element {
   if (state === 'True') {
@@ -24,7 +24,7 @@ export default function VersionStatus({
     return (
       <StatusDisplay
         errorMsg={message}
-        status={ServerState === 'Unknown' ? 'Unknown' : onlineStatus}
+        status={serverState === 'Unknown' ? 'Unknown' : onlineStatus}
         customText={{
           Unknown: visibility === 'online' ? '上线中' : '下线中',
           True: '在线',
@@ -32,7 +32,7 @@ export default function VersionStatus({
         }}
         topic='serving'
         dataID={versionID}
-        callBack={(data) => store.versionStateChangeListener(versionID, data, 'ServerState')} />
+        callBack={(data) => store.versionStateChangeListener(versionID, data, 'serverState')} />
     );
   }
 

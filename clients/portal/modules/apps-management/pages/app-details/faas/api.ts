@@ -88,7 +88,7 @@ export function getFuncVersionList(
   groupID: string,
   projectID: string,
   params: VersionListParams,
-): Promise<{ count: number, Builds: VersionField[] }> {
+): Promise<{ count: number, builds: VersionField[] }> {
   return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/list`, params);
 }
 

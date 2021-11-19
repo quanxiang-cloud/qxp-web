@@ -57,13 +57,13 @@ function FuncDetailsDrawer(): JSX.Element {
         </TableMoreFilterMenu>
       ),
       id: 'state',
-      accessor: ({ state, id, message, ServerState, visibility }) => (
+      accessor: ({ state, id, message, serverState, visibility }) => (
         <VersionStatus
           visibility={visibility}
           state={state}
           versionID={id}
           message={message}
-          ServerState={ServerState}
+          serverState={serverState}
         />
       ),
     },

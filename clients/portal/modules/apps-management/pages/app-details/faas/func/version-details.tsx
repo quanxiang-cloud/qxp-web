@@ -11,6 +11,7 @@ import Tooltip from '@c/tooltip';
 import PopConfirm from '@c/pop-confirm';
 
 import VersionStatus from '../component/version-status';
+// import BuildProcess from './build-process';
 import store from '../store';
 
 import '../index.scss';
@@ -80,7 +81,7 @@ function VersionDetails(): JSX.Element {
     createAt,
     updatedAt,
     describe,
-    ServerState,
+    serverState,
     message,
     visibility,
   } = store.currentVersionFunc;
@@ -92,7 +93,7 @@ function VersionDetails(): JSX.Element {
       content: (
         <>
           <div className='h-full'>
-            1111111111
+            {/* <BuildProcess /> */}
           </div>
         </>
       ),
@@ -126,7 +127,7 @@ function VersionDetails(): JSX.Element {
             versionID={id}
             message={message}
             visibility={visibility}
-            ServerState={ServerState}
+            serverState={serverState}
           />
         </div>
         <a

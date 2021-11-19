@@ -50,7 +50,7 @@ const INIT_CURRENT_FUNC = {
 const INIT_VERSION: VersionField = {
   id: '',
   state: 'Unknown',
-  ServerState: 'Unknown',
+  serverState: 'Unknown',
   message: '',
   creator: '',
   createAt: 0,
@@ -326,9 +326,9 @@ class FaasStore {
       size: pageSize,
       page: current,
     }).then((res) => {
-      const { Builds } = res;
-      this.versionList = Builds;
-      this.currentVersionFunc = Builds[0] || INIT_CURRENT_FUNC;
+      const { builds } = res;
+      this.versionList = builds;
+      this.currentVersionFunc = builds[0] || INIT_CURRENT_FUNC;
     }).catch((err) => {
       toast.error(err);
       this.funcList = [];
@@ -357,8 +357,8 @@ class FaasStore {
     offlineVer(this.groupID, this.currentFuncID, id).then(() => {
       this.versionList = this.versionList.map((_version) => {
         if (_version.id === id) {
-          this.currentVersionFunc = { ..._version, visibility: 'offline', ServerState: 'Unknown' };
-          return { ..._version, visibility: 'offline', ServerState: 'Unknown' };
+          this.currentVersionFunc = { ..._version, visibility: 'offline', serverState: 'Unknown' };
+          return { ..._version, visibility: 'offline', serverState: 'Unknown' };
         }
         return _version;
       });
@@ -372,8 +372,8 @@ class FaasStore {
     servingVer(this.groupID, this.currentFuncID, id).then(() => {
       this.versionList = this.versionList.map((_version) => {
         if (_version.id === id) {
-          this.currentVersionFunc = { ..._version, visibility: 'online', ServerState: 'Unknown' };
-          return { ..._version, visibility: 'online', ServerState: 'Unknown' };
+          this.currentVersionFunc = { ..._version, visibility: 'online', serverState: 'Unknown' };
+          return { ..._version, visibility: 'online', serverState: 'Unknown' };
         }
         return _version;
       });
@@ -432,7 +432,7 @@ class FaasStore {
   }
 
   @action
-  versionStateChangeListener = async (buildID: string, socket: SocketData, type: 'state' | 'ServerState') => {
+  versionStateChangeListener = async (buildID: string, socket: SocketData, type: 'state' | 'serverState') => {
     const { key, topic }: FaasSoketData = parseJSON(socket?.message, { key: '', topic: '' });
     if (key !== buildID || topic !== 'builder') {
       return;
