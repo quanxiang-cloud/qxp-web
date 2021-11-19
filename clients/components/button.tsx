@@ -13,6 +13,7 @@ interface Props extends React.DetailedHTMLProps<
   iconName?: string;
   iconSize?: number;
   textClassName?: string;
+  iconClassName?: string
 }
 
 function Button(
@@ -25,6 +26,7 @@ function Button(
     loading,
     iconSize = 20,
     textClassName,
+    iconClassName,
     type = 'button',
     ...rest
   }: Props,
@@ -49,7 +51,7 @@ function Button(
           name={loading ? 'refresh' : iconName || 'refresh'}
           type={modifier === 'primary' ? 'light' : 'dark'}
           size={iconSize}
-          className={cs('fill-current text-inherit mr-4', {
+          className={cs('fill-current text-inherit mr-4', iconClassName, {
             'animate-spin': loading,
             'pointer-events-none': loading || forbidden,
           })}

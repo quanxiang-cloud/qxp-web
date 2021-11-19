@@ -27,7 +27,6 @@ function ListPage() {
           <Tooltip
             position='bottom'
             label='请先配置分组'
-            relative={false}
           >
             <span>API 列表</span>
           </Tooltip>

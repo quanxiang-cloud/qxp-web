@@ -174,8 +174,6 @@ export default function EditVariableModal({ variable, closeModal, onAdded }: Pro
       <SchemaForm
         className="p-20"
         components={{ Input, Select, DatePicker, RadioGroup: Radio.Group, NumberPicker }}
-        actions={actions}
-        onSubmit={handleSubmit}
         schema={FIELD_FORM_SCHEMA}
         form={form as any}
       />

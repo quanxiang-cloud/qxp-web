@@ -62,7 +62,7 @@ const NavMsgBar = ({ type, className }: Props): JSX.Element => {
       return null;
     }
     return (
-      <UnreadMsgBox ref={msgBoxRef}/>
+      <UnreadMsgBox ref={msgBoxRef} />
     );
   };
 
@@ -73,9 +73,9 @@ const NavMsgBar = ({ type, className }: Props): JSX.Element => {
       queryClient.invalidateQueries('all-messages');
     };
     // todo newMessage? NewMessage? new_message?
-    pushServer.addEventListener('newMessage', listener);
+    pushServer.addEventListener('newMessage', 'newMessage', listener);
 
-    return () => pushServer.removeEventListener('newMessage', listener);
+    return () => pushServer.removeEventListener('newMessage', 'newMessage');
   }, []);
 
   return (
@@ -99,7 +99,7 @@ const NavMsgBar = ({ type, className }: Props): JSX.Element => {
             style={{ fill: `${type === 'portal' ? 'var(--gray-400)' : 'var(--blue-100)'}` }}
             className="m-6"
           />
-          {countUnread > 0 && <BtnBadge className={styles.count_btn} count={countUnread}/>}
+          {countUnread > 0 && <BtnBadge className={styles.count_btn} count={countUnread} />}
         </div>
         {renderUnreadMsgBox()}
       </div>
