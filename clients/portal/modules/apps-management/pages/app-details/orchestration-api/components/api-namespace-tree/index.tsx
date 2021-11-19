@@ -16,7 +16,7 @@ function APINamespaceTree(): JSX.Element | null {
   }
 
   return (
-    <div className="p-10 pt-20 h-full overflow-auto z-0" style={{ marginTop: -60 }}>
+    <div className="p-10 pt-20 h-full overflow-auto z-0">
       <Tree
         store={store}
         NodeRender={NodeRender}
