@@ -306,7 +306,7 @@ function getDescendantNodes(
 }
 
 function endFilter(element: POLY_API.Element): boolean {
-  return element.type !== 'output';
+  return element.type === 'output';
 }
 
 function removeCurrentConditionNode(
@@ -436,8 +436,8 @@ function addRequestNodeOnCondition(
   direction === 'bottom' && currentNode.data?.set('detail.no', requestNode.id);
 
   return elements.filter((element) => {
-    const shouldRemove = isEdge(element) && element.source === currentNode.id &&
-      element.target === currentNodeNextNodeId;
+    const shouldRemove = isEdge(element) && element.sourceHandle === `${currentNode.id}__${direction}` &&
+      element.targetHandle === `${currentNodeNextNodeId}__left`;
     return !shouldRemove;
   }).concat([
     ...edges,
@@ -462,8 +462,11 @@ function addConditionNodeOnRequest(
   conditionNode.data?.set('nextNodes', [currentNodeNextNodeId]);
   conditionNode.data?.set('detail.yes', currentNodeNextNodeId);
   conditionNode.data?.set('detail.no', currentNodeNextNodeId);
+  // currentNode.data?.set(
+  //   'nextNodes', [conditionNode.id, ...currentNodeNextNodeIds.filter((id) => id !== conditionNode.id)],
+  // );
   currentNode.data?.set(
-    'nextNodes', [conditionNode.id, ...currentNodeNextNodeIds.filter((id) => id !== conditionNode.id)],
+    'nextNodes', [conditionNode.id],
   );
 
   const edges = [

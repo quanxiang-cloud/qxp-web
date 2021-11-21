@@ -720,6 +720,15 @@
     "@swc/core-win32-ia32-msvc" "^1.2.105"
     "@swc/core-win32-x64-msvc" "^1.2.105"
 
+"@tisoap/react-flow-smart-edge@^0.2.1":
+  version "0.2.1"
+  resolved "http://r.npm.internal.yunify.com/@tisoap/react-flow-smart-edge/download/@tisoap/react-flow-smart-edge-0.2.1.tgz#fbcbf8d04b63ebee0f00adb0872c3d6bc1c3776a"
+  integrity sha1-+8v40Etj6+4PAK2whyw9a8HDd2o=
+  dependencies:
+    pathfinding "0.4.18"
+    react-use "17.3.1"
+    tiny-warning "1.0.3"
+
 "@types/classnames@^2.2.11":
   version "2.3.1"
   resolved "http://r.npm.internal.yunify.com/@types/classnames/download/@types/classnames-2.3.1.tgz#3c2467aa0f1a93f1f021e3b9bcf938bd5dfdc0dd"
@@ -4623,6 +4632,11 @@ he@^1.2.0:
   resolved "http://r.npm.internal.yunify.com/he/download/he-1.2.0.tgz#84ae65fa7eafb165fddb61566ae14baf05664f0f"
   integrity sha1-hK5l+n6vsWX922FWauFLrwVmTw8=
 
+heap@0.2.5:
+  version "0.2.5"
+  resolved "http://r.npm.internal.yunify.com/heap/download/heap-0.2.5.tgz#713b65590ebcc40fcbeeaf55e851694092b39af1"
+  integrity sha1-cTtlWQ68xA/L7q9V6FFpQJKzmvE=
+
 hex-color-regex@^1.1.0:
   version "1.1.0"
   resolved "http://r.npm.internal.yunify.com/hex-color-regex/download/hex-color-regex-1.1.0.tgz#4c06fccb4602fe2602b3c93df82d7e7dbf1a8a8e"
@@ -5462,6 +5476,11 @@ just-debounce@^1.0.0:
   version "1.1.0"
   resolved "http://r.npm.internal.yunify.com/just-debounce/download/just-debounce-1.1.0.tgz#2f81a3ad4121a76bc7cb45dbf704c0d76a8e5ddf"
   integrity sha1-L4GjrUEhp2vHy0Xb9wTA12qOXd8=
+
+just-diff@^5.0.1:
+  version "5.0.1"
+  resolved "http://r.npm.internal.yunify.com/just-diff/download/just-diff-5.0.1.tgz#db8fe1cfeea1156f2374bfb289826dca28e7e390"
+  integrity sha1-24/hz+6hFW8jdL+yiYJtyijn45A=
 
 kind-of@^3.0.2, kind-of@^3.0.3, kind-of@^3.2.0:
   version "3.2.2"
@@ -6774,6 +6793,13 @@ path-type@^4.0.0:
   resolved "http://r.npm.internal.yunify.com/path-type/download/path-type-4.0.0.tgz#84ed01c0a7ba380afe09d90a8c180dcd9d03043b"
   integrity sha1-hO0BwKe6OAr+CdkKjBgNzZ0DBDs=
 
+pathfinding@0.4.18:
+  version "0.4.18"
+  resolved "http://r.npm.internal.yunify.com/pathfinding/download/pathfinding-0.4.18.tgz#a9990f6fa22b7ef196e5651b049165403a045fe8"
+  integrity sha1-qZkPb6IrfvGW5WUbBJFlQDoEX+g=
+  dependencies:
+    heap "0.2.5"
+
 picocolors@^0.2.1:
   version "0.2.1"
   resolved "http://r.npm.internal.yunify.com/picocolors/download/picocolors-0.2.1.tgz#570670f793646851d1ba135996962abad587859f"
@@ -8020,7 +8046,7 @@ react-universal-interface@^0.6.2:
   resolved "http://r.npm.internal.yunify.com/react-universal-interface/download/react-universal-interface-0.6.2.tgz#5e8d438a01729a4dbbcbeeceb0b86be146fe2b3b"
   integrity sha1-Xo1DigFymk27y+7OsLhr4Ub+Kzs=
 
-react-use@^17.2.1:
+react-use@17.3.1, react-use@^17.2.1:
   version "17.3.1"
   resolved "http://r.npm.internal.yunify.com/react-use/download/react-use-17.3.1.tgz#12b248555775519aa2b900b22f1928d029bf99d1"
   integrity sha1-ErJIVVd1UZqiuQCyLxko0Cm/mdE=
@@ -9445,7 +9471,7 @@ tiny-invariant@^1.0.2, tiny-invariant@^1.0.4, tiny-invariant@^1.0.6, tiny-invari
   resolved "http://r.npm.internal.yunify.com/tiny-invariant/download/tiny-invariant-1.2.0.tgz#a1141f86b672a9148c72e978a19a73b9b94a15a9"
   integrity sha1-oRQfhrZyqRSMcul4oZpzublKFak=
 
-tiny-warning@^1.0.0, tiny-warning@^1.0.3:
+tiny-warning@1.0.3, tiny-warning@^1.0.0, tiny-warning@^1.0.3:
   version "1.0.3"
   resolved "http://r.npm.internal.yunify.com/tiny-warning/download/tiny-warning-1.0.3.tgz#94a30db453df4c643d0fd566060d60a875d84754"
   integrity sha1-lKMNtFPfTGQ9D9VmBg1gqHXYR1Q=
