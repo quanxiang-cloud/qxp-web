@@ -2,6 +2,8 @@ import { BehaviorSubject } from 'rxjs';
 import { omit, merge } from 'ramda';
 import { isEdge, isNode } from 'react-flow-renderer';
 
+import { savePolyApiResult } from '@polyApi/utils/build';
+
 export class PolyCanvasStore extends BehaviorSubject<POLY_API.Element[]> {
   constructor(initialValue: POLY_API.Element[]) {
     super(initialValue);
@@ -35,6 +37,7 @@ export class PolyCanvasStore extends BehaviorSubject<POLY_API.Element[]> {
     });
     const newElements: POLY_API.Element[] = Object.values(omit(idToRemove, elementsMap));
     this.next([...newValue, ...newElements]);
+    savePolyApiResult();
   }
 
   getElementsValue(): POLY_API.PlainElement[] {

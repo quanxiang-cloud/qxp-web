@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { isEmpty, omit } from 'ramda';
 import { isUndefined } from 'lodash';
 import { Input } from '@formily/antd-components';
@@ -41,6 +41,10 @@ export default function NodeConfigDrawer(): JSX.Element {
     setConfigValue(nodeData.detail);
     return () => drawerRef.current?.classList.remove('drawer-fullscreen');
   }, [nodeData.detail]);
+
+  const handleOnChange = useCallback((value: Partial<POLY_API.PolyNodeDetail>) => {
+    setConfigValue((val) => ({ ...val, ...value }));
+  }, [setConfigValue]);
 
   function onSave(): void {
     currentNode?.set('detail', omit(excludedFields || [], configValue) );
@@ -90,7 +94,7 @@ export default function NodeConfigDrawer(): JSX.Element {
           <ConfigForm
             initialValues={initialValues}
             value={configValue}
-            onChange={setConfigValue}
+            onChange={handleOnChange}
           />
         )}
         {!ConfigForm && !isValueUndefined && !isEmpty(schema) && (
@@ -98,7 +102,7 @@ export default function NodeConfigDrawer(): JSX.Element {
             schema={schema}
             initialValues={initialValues}
             value={configValue}
-            onChange={setConfigValue}
+            onChange={handleOnChange}
             components={schemaFormComponents}
           />
         )}

@@ -3,6 +3,7 @@ import cs from 'classnames';
 import ReactFlow, { OnLoadFunc } from 'react-flow-renderer';
 import { useRendersCount } from 'react-use';
 import { equals } from 'ramda';
+import { SmartEdge } from '@tisoap/react-flow-smart-edge';
 
 import useCloseNodeAction from '../effects/hooks/use-close-node-action';
 import { POLY_DESIGN_CONFIG } from '../constants';
@@ -33,7 +34,7 @@ function Canvas({
       style={{ backgroundColor: POLY_DESIGN_CONFIG.BACKGROUND_COLOR }}
       elements={elements}
       nodeTypes={POLY_DESIGN_CONFIG.NODE_TYPES}
-      // edgeTypes={{}}
+      edgeTypes={{ smart: SmartEdge }}
       nodesConnectable={false}
       nodesDraggable={false}
       arrowHeadColor={POLY_DESIGN_CONFIG.EDGE_COLOR}
