@@ -92,6 +92,13 @@ export function getFuncVersionList(
   return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/list`, params);
 }
 
+export function getVersion(
+  groupID: string,
+  projectID: string,
+  buildID: string): Promise<{build: VersionField}> {
+  return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/build/${buildID}/get`);
+}
+
 export function offlineVer(
   groupID: string,
   projectID: string,

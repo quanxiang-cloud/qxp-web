@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
 import { Input } from 'antd';
 import 'prismjs/plugins/custom-class/prism-custom-class.js';
@@ -24,7 +24,7 @@ function VersionDetails(): JSX.Element {
     id,
     tag,
     creator,
-    createAt,
+    createdAt,
     updatedAt,
     describe,
     serverState,
@@ -51,6 +51,10 @@ function VersionDetails(): JSX.Element {
     },
   ];
 
+  useEffect(() => {
+    store.getVersion();
+  }, [store.buildID]);
+
   return (
     <div className='flex flex-col flex-1 h-full px-20 version-detail'>
       <div className='flex items-center justify-between h-48'>
@@ -69,7 +73,7 @@ function VersionDetails(): JSX.Element {
           <div className='mx-8'>/</div>
           <div className='text-gray-900 font-semibold mr-16'>版本号：v0.1</div>
           <VersionStatus
-            state={state}
+            state={store.currentVersionFunc?.state || 'Unknown'}
             versionID={id}
             message={message}
             visibility={visibility}
@@ -93,7 +97,7 @@ function VersionDetails(): JSX.Element {
         <div className='flex text-12 p-8 items-center '>
           <div className='text-gray-600'>构建时间：</div>
           <div className='text-gray-900 flex-1 card-value'>
-            {`${(updatedAt - createAt) / 1000} s`}
+            {`${(updatedAt - createdAt) / 1000} s`}
           </div>
         </div>
         <div className='flex text-12 p-8 items-center '>
@@ -103,7 +107,7 @@ function VersionDetails(): JSX.Element {
         <div className='flex text-12 p-8 items-center '>
           <div className='text-gray-600'>创建时间：</div>
           <div className='text-gray-900 flex-1 card-value'>
-            {createAt ? dayjs(parseInt(String(createAt * 1000))).format('YYYY-MM-DD HH:mm:ss') : '—'}
+            {createdAt ? dayjs(parseInt(String(createdAt * 1000))).format('YYYY-MM-DD HH:mm:ss') : '—'}
           </div>
         </div>
         <div className='flex text-12 p-8 items-center '>

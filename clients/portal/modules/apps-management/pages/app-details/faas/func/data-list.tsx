@@ -143,7 +143,7 @@ function DataList(): JSX.Element {
             {state === 'Unknown' && <span>-</span>}
             {state === 'True' && (
               <>
-                <span className="operate" onClick={() => store.defineFunc(id)}>定义</span>
+                <span className="operate" onClick={() => temp(id)}>定义</span>
                 <span className="operate" onClick={() => onClickTool(id, 'build')}>构建</span>
               </>
             )}
@@ -161,6 +161,13 @@ function DataList(): JSX.Element {
   function onClickTool(id: string, modalType: string): void {
     store.currentFuncID = id;
     store.modalType = modalType;
+  }
+
+  function temp(id: string): void {
+    store.checkHasCoder().then((hasCode) => {
+      if (hasCode) return store.defineFunc(id);
+      store.creatCoder();
+    });
   }
 
   function handleInputKeydown(e: React.KeyboardEvent): void {

@@ -23,6 +23,9 @@ function FaaS(): JSX.Element {
       if (!store.appDetails.appSign) history.push('base_info');
       checkUserState();
     }
+    return () => {
+      store.clear();
+    };
   }, [appDetails, User.id]);
 
   if (store.checkUserLoading) {

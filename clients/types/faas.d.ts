@@ -1,4 +1,3 @@
-
 type FuncField = {
   id: string,
   alias: string,
@@ -13,17 +12,20 @@ type FuncField = {
   language: string,
   versionNum?: number,
 }
+
 type VersionField = {
-  id: string,
-  state: FaasProcessStatus,
-  message: string,
+  createdAt: number,
   creator: string,
-  createAt: number,
-  updatedAt: number,
-  tag: string,
+  describe: string,
+  id: string,
+  message: string,
+  serverMsg: string,
   serverState: FaasProcessStatus;
+  state: FaasProcessStatus,
+  tag: string,
+  updatedAt: number,
+  updater: string,
   visibility: FaasVersionServingStatus
-  describe: string
 }
 
 type FuncListParams = {

@@ -4,16 +4,14 @@
 }
 
 .steps {
-  @apply flex-5 flex items-center;
+  @apply flex-1 grid gap-x-12 grid-flow-row-dense grid-cols-4;
 
   >div:not(:last-child) {
     &::after {
       content: "";
-      width: 243px;
-      height: 1px;
+      height: 3px;
+      flex: 1 1 0%;
       margin-left: 12px;
-      margin-right: 12px;
-      border: 1.5px solid var(--gray-100);
       background-color: var(--gray-100);
     }
   }
