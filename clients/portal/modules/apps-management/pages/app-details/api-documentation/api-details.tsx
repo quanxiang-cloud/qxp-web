@@ -58,7 +58,7 @@ function ApiDetails({ apiPath }:Props ): JSX.Element {
 
   return (
     <>
-      <div className='h-56 flex items-center justify-between'>
+      <div className='h-56 flex items-center justify-between ml-1'>
         <RadioButtonGroup
           radioBtnClass="bg-white"
           onChange={(docType) => setDocType(docType as DocType)}

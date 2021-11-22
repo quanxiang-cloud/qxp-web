@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { UnionColumns } from 'react-table';
 import { observer } from 'mobx-react';
 import cs from 'classnames';
+import dayjs from 'dayjs';
 import useCss from 'react-use/lib/useCss';
 
 import Icon from '@c/icon';
@@ -80,7 +81,9 @@ function FuncDetailsDrawer(): JSX.Element {
     {
       Header: '创建时间',
       id: 'createAt',
-      accessor: 'createAt',
+      accessor: ({ createAt }: VersionField) => {
+        return createAt ? dayjs(parseInt(String(createAt * 1000))).format('YYYY-MM-DD HH:mm:ss') : '—';
+      },
     },
     {
       Header: '操作',
@@ -103,7 +106,7 @@ function FuncDetailsDrawer(): JSX.Element {
               <PopConfirm content='确定生成API文档？' onOk={() => store.registerAPI(id)} >
                 <span className="operate">生成API文档</span>
               </PopConfirm>
-            )}jihu
+            )}
 
           </div>
         );
@@ -171,8 +174,8 @@ function FuncDetailsDrawer(): JSX.Element {
           />
         </div>
         <Pagination
-          total={store.versionList.length}
-          renderTotalTip={() => `共 ${store.versionList.length} 条数据`}
+          total={store.versionCount}
+          renderTotalTip={() => `共 ${store.versionCount} 条数据`}
           onChange={(current, pageSize) => store.setVersionParams({ page: current, size: pageSize })}
         />
       </div>

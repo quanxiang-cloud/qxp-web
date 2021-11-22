@@ -122,6 +122,10 @@ export function getApiPath(groupID: string, projectID: string, buildID: string):
   return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/${buildID}/getApiPath`);
 }
 
-export function getVersionInfo(groupID: string, projectID: string, buildID: string): Promise<{ build: VersionField }> {
+export function getVersionInfo(
+  groupID: string,
+  projectID: string,
+  buildID: string,
+): Promise<{ build: VersionField }> {
   return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/build/${buildID}/get`);
 }

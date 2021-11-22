@@ -6,14 +6,15 @@ import 'prismjs/plugins/custom-class/prism-custom-class.js';
 import Tab from '@c/tab';
 import Icon from '@c/icon';
 import PopConfirm from '@c/pop-confirm';
+import dayjs from 'dayjs';
 
-import VersionStatus from '../component/version-status';
-// import BuildProcess from './build-process';
 import store from '../store';
+import VersionStatus from '../component/version-status';
+import ApiDetails from '../../api-documentation/api-details';
+// import BuildProcess from './build-process';
 
 import '../index.scss';
 import '../../api-documentation/prism.css';
-import ApiDetails from '../../api-documentation/api-details';
 
 const { TextArea } = Input;
 
@@ -91,7 +92,9 @@ function VersionDetails(): JSX.Element {
         </div>
         <div className='flex text-12 p-8 items-center '>
           <div className='text-gray-600'>构建时间：</div>
-          <div className='text-gray-900 flex-1 card-value'>xxxx</div>
+          <div className='text-gray-900 flex-1 card-value'>
+            {`${(updatedAt - createAt) / 1000} s`}
+          </div>
         </div>
         <div className='flex text-12 p-8 items-center '>
           <div className='text-gray-600'>创建人：</div>
@@ -99,15 +102,19 @@ function VersionDetails(): JSX.Element {
         </div>
         <div className='flex text-12 p-8 items-center '>
           <div className='text-gray-600'>创建时间：</div>
-          <div className='text-gray-900 flex-1 card-value'>{createAt}</div>
+          <div className='text-gray-900 flex-1 card-value'>
+            {createAt ? dayjs(parseInt(String(createAt * 1000))).format('YYYY-MM-DD HH:mm:ss') : '—'}
+          </div>
         </div>
         <div className='flex text-12 p-8 items-center '>
           <div className='text-gray-600'>最后更新人：</div>
-          <div className='text-gray-900 flex-1 card-value'>{updatedAt}</div>
+          <div className='text-gray-900 flex-1 card-value'>{creator}</div>
         </div>
         <div className='flex text-12 p-8 items-center '>
           <div className='text-gray-600'>最后更新时间：</div>
-          <div className='text-gray-900 flex-1 card-value'>{updatedAt}</div>
+          <div className='text-gray-900 flex-1 card-value'>
+            {updatedAt ? dayjs(parseInt(String(updatedAt * 1000))).format('YYYY-MM-DD HH:mm:ss') : '—'}
+          </div>
         </div>
 
         <div className='flex text-12 p-8 items-center '>
