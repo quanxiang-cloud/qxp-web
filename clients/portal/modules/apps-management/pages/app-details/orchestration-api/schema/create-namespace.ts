@@ -22,7 +22,7 @@ const createNamespaceSchema: ISchema = {
             required: true,
             message: '请输入分组名称',
           }, {
-            max: 50,
+            max: 20,
           }],
           'x-index': 0,
         },
@@ -39,6 +39,8 @@ const createNamespaceSchema: ISchema = {
           }, {
             pattern: /^[a-zA-Z_][a-zA-Z_0-9]*$/,
             message: '只能包含数字字母下划线, 且以字母或下划线开头',
+          }, {
+            max: 20,
           }],
           'x-index': 1,
         },
