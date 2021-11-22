@@ -7,11 +7,11 @@ import useCss from 'react-use/lib/useCss';
 import Icon from '@c/icon';
 import Table from '@c/table';
 import PopConfirm from '@c/pop-confirm';
-import TableMoreFilterMenu from '@c/more-menu/table-filter';
 import Pagination from '@c/pagination';
 
-import VersionStatus from '../component/version-status';
 import store from '../store';
+import TableMoreFilterMenu from '@c/more-menu/table-filter';
+import VersionStatus from '../component/version-status';
 
 function FuncDetailsDrawer(): JSX.Element {
   useEffect(() => {
@@ -57,7 +57,7 @@ function FuncDetailsDrawer(): JSX.Element {
         </TableMoreFilterMenu>
       ),
       id: 'state',
-      accessor: ({ state, id, message, serverState, visibility }) => (
+      accessor: ({ state, id, message, serverState, visibility }: VersionField) => (
         <VersionStatus
           visibility={visibility}
           state={state}
@@ -88,21 +88,22 @@ function FuncDetailsDrawer(): JSX.Element {
       accessor: ({ id, visibility, state }: VersionField) => {
         return (
           <div className="flex gap-20">
-            {visibility === 'online' ? (
+            {state === 'True' && visibility === 'online' && (
               <PopConfirm content='确认下线改版本？' onOk={() => store.offlineVer(id)} >
                 <span className="operate">下线</span>
-              </PopConfirm>) : (
+              </PopConfirm>)}
+            {state === 'True' && visibility === 'offline' && (
               <PopConfirm content='确认上线改版本？' onOk={() => store.servingVer(id)} >
                 <span className="operate">上线</span>
-              </PopConfirm>
-            )}
-            {state === 'False' ?
-              (<PopConfirm content='确认删除改版本？' onOk={() => store.deleteVer(id)} >
-                <span className="operate">删除</span>
-              </PopConfirm>) : (<PopConfirm content='确定生成API文档？' onOk={() => store.registerAPI(id)} >
+              </PopConfirm>)}
+            {state === 'False' ? (
+              <PopConfirm content='确认删除改版本？' onOk={() => store.deleteVer(id)} >
+                <span className="cursor-pointer text-red-600">删除</span>
+              </PopConfirm> ) : (
+              <PopConfirm content='确定生成API文档？' onOk={() => store.registerAPI(id)} >
                 <span className="operate">生成API文档</span>
-              </PopConfirm>)
-            }
+              </PopConfirm>
+            )}jihu
 
           </div>
         );

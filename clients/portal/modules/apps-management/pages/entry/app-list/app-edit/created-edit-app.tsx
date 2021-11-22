@@ -20,7 +20,7 @@ function CreatedEditApp({ appInfo, className, onSubmitCallback }: Props, ref?: a
   }
 
   const initData = appInfo && toJS(appInfo);
-  const { appName, appIcon = '{}' } = initData || {};
+  const { appName, appIcon = '{}', appSign } = initData || {};
 
   return (
     <Form
@@ -30,6 +30,7 @@ function CreatedEditApp({ appInfo, className, onSubmitCallback }: Props, ref?: a
       ref={ref}
       initialValues={{
         appName,
+        appSign,
         appIcon,
       }}
       onFinish={handleFinish}

@@ -1,13 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { observer } from 'mobx-react';
-import Prism from 'prismjs';
 import { Input } from 'antd';
 import 'prismjs/plugins/custom-class/prism-custom-class.js';
 
 import Tab from '@c/tab';
 import Icon from '@c/icon';
-import Loading from '@c/loading';
-import Tooltip from '@c/tooltip';
 import PopConfirm from '@c/pop-confirm';
 
 import VersionStatus from '../component/version-status';
@@ -16,62 +13,10 @@ import store from '../store';
 
 import '../index.scss';
 import '../../api-documentation/prism.css';
+import ApiDetails from '../../api-documentation/api-details';
 
 const { TextArea } = Input;
 
-function renderApiDetails(): JSX.Element {
-  useEffect(() => {
-    console.log(111);
-    store.getApiPath();
-  }, []);
-
-  useEffect(() => {
-    Prism.highlightAll();
-    Prism.plugins.customClass.map({
-      number: 'pr-number',
-    });
-  });
-
-  if (store.isAPILoading) {
-    return <Loading />;
-  }
-
-  return (
-    <>
-      {(
-        <>
-          <div className='api-content-title'>请求示例</div>
-          <div className='api-content'>
-            <Tooltip
-              position="top"
-              label="复制"
-            >
-              <Icon
-                name="content_copy"
-                size={20}
-                className='text-inherit copy-button icon-text-btn'
-              />
-            </Tooltip>
-            <pre className='api-details'>
-              <code className='language-bash'>
-                {store.APiContent.input}
-                console.log(qqqqqqqq)
-              </code>
-            </pre>
-          </div>
-          <div className='api-content-title'>返回示例</div>
-          <pre className='api-details'>
-            <code className='language-bash'>
-              {store.APiContent.output}
-            </code>
-          </pre>
-
-        </>
-      )}
-    </>
-
-  );
-}
 function VersionDetails(): JSX.Element {
   const {
     state,
@@ -101,7 +46,7 @@ function VersionDetails(): JSX.Element {
     {
       id: 'apidoc',
       name: 'API文档',
-      content: () => renderApiDetails(),
+      content: <ApiDetails apiPath={store.apiPath} />,
     },
   ];
 
@@ -197,11 +142,11 @@ function VersionDetails(): JSX.Element {
       <Tab
         items={tabItems}
         className='w-full h-full opacity-95'
-      // onChange={(v) => {
-      //   if (v === 'apidoc') {
-      //     store.getApiPath();
-      //   }
-      // }}
+        onChange={(v) => {
+          if (v === 'apidoc') {
+            store.getApiPath();
+          }
+        }}
       />
     </div>
   );

@@ -93,6 +93,8 @@ class FaasStore {
   @observable APiContent: APiContent = INIT_API_CONTENT;
   @observable isAPILoadingErr = '';
   @observable isAPILoading = false;
+  @observable searchAlias = '';
+  @observable apiPath = ''
   @observable versionsParams: VersionListParams = {
     state: '',
     page: 1,
@@ -207,7 +209,7 @@ class FaasStore {
 
   @action
   addUserToGroup = (): void => {
-    addToGroup(this.groupID, { memberID: this.User.id }).then((res) => {
+    addToGroup(this.groupID, { memberID: this.User.id }).then(() => {
       this.developerInGroup = true;
     }).catch((err) => {
       this.initErr = true;
@@ -232,11 +234,12 @@ class FaasStore {
   }
 
   @action
-  fetchFuncList = (current: number, pageSize: number): void => {
+  fetchFuncList = (searchAlias: string, page: number, size: number): void => {
     fetchFuncList(this.groupID, {
+      alias: searchAlias,
       appID: this.appDetails.id,
-      page: current,
-      size: pageSize,
+      page,
+      size,
     }).then((res) => {
       const { projects } = res;
       this.funcList = projects;
@@ -306,7 +309,7 @@ class FaasStore {
       defineFunc(this.groupID, id),
       fetch('/_otp').then((response) => response.json()),
     ]).then(([{ url }, { token }]) => {
-      window.open(`http://${url}?token=${token}`, '_blank');
+      window.open(`${url}?token=${token}`, '_blank');
     }).catch((err) => {
       toast.error(err);
     });
@@ -314,7 +317,7 @@ class FaasStore {
 
   @action
   buildFunc = (buildData: { tag: string, describe: string }): void => {
-    buildFunc(this.groupID, this.currentFuncID, buildData).then((res) => {
+    buildFunc(this.groupID, this.currentFuncID, buildData).then(() => {
       this.modalType = '';
     }).catch((err) => {
       toast.error(err);
@@ -349,7 +352,7 @@ class FaasStore {
 
   @action
   updateVerDesc = (describe: string): void => {
-    updateVerDesc(this.groupID, this.currentVersionFunc.id, this.buildID, { describe }).then((res) => {
+    updateVerDesc(this.groupID, this.currentVersionFunc.id, this.buildID, { describe }).then(() => {
       this.versionList = this.versionList.map((_version) => {
         if (_version.id === this.currentVersionFunc.id) {
           this.currentVersionFunc = { ..._version, describe };
@@ -391,7 +394,7 @@ class FaasStore {
   }
 
   @action
-  registerAPI = (id: string) => {
+  registerAPI = (id: string): void => {
     registerAPI(this.groupID, this.currentFunc.id, id).then(() => {
       toast.success('注册文档成功');
     }).catch((err) => {
@@ -404,7 +407,7 @@ class FaasStore {
     this.isAPILoading = true;
     this.isAPILoadingErr = '';
     getApiPath(this.groupID, this.currentFuncID, this.buildID).then((res) => {
-      this.fetchApiDoc(res.path);
+      this.apiPath = res.path;
     }).catch((err) => {
       toast.error(err);
       this.isAPILoadingErr = err;
@@ -430,7 +433,8 @@ class FaasStore {
   }
 
   @action
-  versionStateChangeListener = async (buildID: string, socket: SocketData, type: 'state' | 'serverState') => {
+  versionStateChangeListener = async (buildID: string, socket: SocketData, type: 'state' | 'serverState',
+  ): Promise<void> => {
     const { key, topic }: FaasSoketData = parseJSON(socket?.message, { key: '', topic: '' });
     if (key !== buildID || topic !== 'builder') {
       return;

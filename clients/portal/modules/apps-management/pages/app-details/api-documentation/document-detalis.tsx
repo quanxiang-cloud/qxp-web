@@ -3,30 +3,20 @@ import { toJS } from 'mobx';
 import { observer } from 'mobx-react';
 import { UnionColumns } from 'react-table';
 import cs from 'classnames';
-import Prism from 'prismjs';
-import 'prismjs/plugins/custom-class/prism-custom-class.js';
-import 'prismjs/components/prism-python.js';
 
 import Tab from '@c/tab';
 import Icon from '@c/icon';
 import Table from '@c/table';
-import Toggle from '@c/toggle';
 import Loading from '@c/loading';
 import Tooltip from '@c/tooltip';
 import EmptyTips from '@c/empty-tips';
 import TextHeader from '@c/text-header';
 import { copyContent } from '@lib/utils';
-import RadioButtonGroup from '@c/radio/radio-button-group';
 
 import store from './store';
 
 import '../prism.css';
-
-const DOC_TYPE_LIST = [
-  { label: 'CURL', value: 'curl' },
-  { label: 'JavaScript', value: 'javascript' },
-  { label: 'Python', value: 'python' },
-];
+import ApiDetails from './api-details';
 
 export const FIELD_COLUMNS: UnionColumns<ModelField>[] = [
   {
@@ -75,72 +65,6 @@ export const FIELD_COLUMNS: UnionColumns<ModelField>[] = [
   },
 ];
 
-function renderApiDetails(): JSX.Element {
-  useEffect(() => {
-    Prism.highlightAll();
-    Prism.plugins.customClass.map({
-      number: 'pr-number',
-    });
-  });
-
-  function handleDocTypeChange(docType: DocType): void {
-    store.docType = docType;
-    store.fetchApiDoc();
-  }
-
-  return (
-    <>
-      <div className='h-56 flex items-center justify-between'>
-        <RadioButtonGroup
-          radioBtnClass="bg-white"
-          onChange={(value) => {
-            handleDocTypeChange(value as DocType);
-          }}
-          listData={DOC_TYPE_LIST}
-          currentValue={store.docType}
-        />
-        <div className='flex items-center'>
-            使用字段名称:
-          <Toggle
-            className='ml-8'
-            defaultChecked={store.useFieldsID}
-            onChange={() => {
-              store.useFieldsID = !store.useFieldsID;
-              store.fetchApiDoc();
-            }}
-          />
-        </div>
-      </div>
-      <div className='api-content-title'>请求示例</div>
-      <div className='api-content'>
-        <Tooltip
-          position="top"
-          label="复制"
-        >
-          <Icon
-            name="content_copy"
-            size={20}
-            className='copy-button icon-text-btn'
-            onClick={() => copyContent(store.APiContent.input)}
-          />
-        </Tooltip>
-        <pre className='api-details'>
-          <code className={`language-${store.docType === 'curl' ? 'bash' : store.docType}`}>
-            {`${store.APiContent.input}`}
-          </code>
-        </pre>
-      </div>
-      <div className='api-content-title'>返回示例</div>
-      <pre className='api-details'>
-        <code className={`language-${store.docType === 'curl' ? 'bash' : store.docType}`}>
-          {`${store.APiContent.output}`}
-        </code>
-      </pre>
-
-    </>
-  );
-}
-
 function isNsNode(): boolean {
   const curNode = toJS(store.currentDataModel);
   return 'parent' in curNode && 'subCount' in curNode;
@@ -174,27 +98,27 @@ function ApiDocumentDetails(): JSX.Element {
     {
       id: 'create',
       name: '新增',
-      content: renderApiDetails(),
+      content: <ApiDetails apiPath={store.ApiPath}/>,
     },
     {
       id: 'delete',
       name: '删除',
-      content: renderApiDetails(),
+      content: <ApiDetails apiPath={store.ApiPath}/>,
     },
     {
       id: 'update',
       name: '更新',
-      content: renderApiDetails(),
+      content: <ApiDetails apiPath={store.ApiPath}/>,
     },
     {
       id: 'get',
       name: '查询单条',
-      content: renderApiDetails(),
+      content: <ApiDetails apiPath={store.ApiPath}/>,
     },
     {
       id: 'search',
       name: '查询多条',
-      content: renderApiDetails(),
+      content: <ApiDetails apiPath={store.ApiPath}/>,
     },
   ];
 
@@ -204,7 +128,7 @@ function ApiDocumentDetails(): JSX.Element {
       store.docType = 'curl';
       // @ts-ignore
       store.setApiPath(store.currentDataModel.fullPath);
-      store.fetchApiDoc();
+      store.fetchApiDoc('curl', false);
     }
   }, [store.currentDataModel]);
 
@@ -225,7 +149,7 @@ function ApiDocumentDetails(): JSX.Element {
     if (isApiNode()) {
       return (
         <div className='px-20'>
-          {renderApiDetails()}
+          <ApiDetails apiPath={store.ApiPath}/>
         </div>
       );
     }
@@ -236,8 +160,6 @@ function ApiDocumentDetails(): JSX.Element {
         className='w-full h-full api-tab'
         onChange={(v) => {
           if (v !== 'fields') {
-            store.useFieldsID = false;
-            store.docType = 'curl';
             store.fetchXName(v as ApiType);
           }
         }}

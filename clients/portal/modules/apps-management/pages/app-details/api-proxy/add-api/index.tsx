@@ -46,6 +46,7 @@ const methodOptions = [
 const regApiName = /^[a-zA-Z_]\w+$/; // api标识，swagger的 api path部分
 const regPathParam = /:([^/:]+)/g;
 const regApiTitle = /^[\u4e00-\u9fa5_a-zA-Z0-9\s]+$/; // 中英文数字，空格
+const regApiPath = /^[a-zA-Z_/][\w/:.]+$/;
 
 function getAllPathParamNames(url: string): string[] {
   return url.match(regPathParam) || [];
@@ -223,14 +224,7 @@ function AddApi(props: Props) {
               maxLength={32}
               {...register('title', {
                 required: '请填写 API 名称',
-                pattern: regApiTitle,
-                validate: (val)=> {
-                  if (!regApiTitle.test(val)) {
-                    toast.error('API 名称格式错误');
-                    return false;
-                  }
-                  return true;
-                },
+                pattern: { value: regApiTitle, message: 'API 名称格式错误' },
               })}
             />
             <ErrorMsg errors={errors} name='title'/>
@@ -250,11 +244,11 @@ function AddApi(props: Props) {
               {...register('apiPath', {
                 required: '请填写 API 路径',
                 maxLength: 200,
-                pattern: /^[a-zA-Z_/][\w/:]+$/,
+                pattern: { value: regApiPath, message: 'API 路径格式错误' },
               })}
             />
             <ErrorMsg errors={errors} name='apiPath'/>
-            <p className='text-caption'>最多 200 个字符，支持英文字母、下划线、斜线、数字、冒号。例如：/api/v1/app/xx</p>
+            <p className='text-caption'>最多 200 个字符，支持英文字母、下划线、斜线、数字、冒号、小数点。例如：/api/v1/app/xx</p>
           </div>
 
           <div className='flex items-center mb-16'>

@@ -14,7 +14,7 @@ const excludes = ['currentNodeConfigParams', 'polyInfo'];
 function getArrange(): [string, string, 0 | 1] {
   const polyApiResult = store$.getRootValue();
   if (!polyApiResult.polyInfo) {
-    throw new Error('PolyInfo not found');
+    return ['', '', 0];
   }
   const namespace = polyApiResult.polyInfo.namespace;
   const apiPath = `${namespace}/${polyApiResult.polyInfo.name}`.slice(1);
@@ -47,6 +47,9 @@ function getArrange(): [string, string, 0 | 1] {
 
 export function savePolyApiResult(): void {
   const [path, arrange] = getArrange();
+  if (!path || !arrange) {
+    return;
+  }
   try {
     httpClient(`/api/v1/polyapi/poly/save/${path}`, { arrange });
     toast.success('保存成功');

@@ -75,6 +75,10 @@ function GroupNodeRender({ node, store }: NodeRenderProps<PolyAPI.Namespace>): J
 
   function saveGroup():void {
     formInst.handleSubmit(async (data: PolyAPI.CreateNamespaceParams)=> {
+      if (modalType === 'edit' && !data.name) {
+        data.name = node.data.name;
+      }
+
       if (!data.title || !data.name) {
         toast.error('分组名称或标识不能为空');
         return;
