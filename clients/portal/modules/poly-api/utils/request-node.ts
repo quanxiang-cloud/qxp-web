@@ -106,14 +106,18 @@ export function convertRawApiListToOptions(rawApiList: RawApiDetail[]): PolyApiS
   });
 }
 
+const Title_Map: Record<string, string> = {
+  inner: '平台API',
+  customer: '第三方API',
+};
 export function getChildrenOfCurrentSelectOption(currentChildrenData: any): any {
   if (!currentChildrenData) {
     return null;
   }
 
-  return currentChildrenData.map(({ name, children, parent }: any) => {
+  return currentChildrenData.map(({ name, children, parent, title }: any) => {
     return {
-      label: name,
+      label: title ? title : (Title_Map[name] || name),
       value: name,
       childrenData: children,
       isLeaf: false,
