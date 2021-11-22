@@ -29,7 +29,7 @@ function AppDetailsContent(): JSX.Element {
       <Header />
       <div className='main-content flex'>
         <SideNavs />
-        <div className="m-16 flex-1 mb-0 overflow-auto">
+        <div className="m-16 flex-1 mb-0 overflow-hidden">
           <React.Suspense fallback={<Loading className="w-screen h-screen" desc="加载中..." />}>
             <Switch>
               <Route exact path='/apps/details/:appID/page_setting' component={PageMenuDesign} />
