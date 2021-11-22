@@ -18,12 +18,16 @@ const createNamespaceSchema: ISchema = {
           'x-component-props': {
             placeholder: '请输入',
           },
-          'x-rules': [{
-            required: true,
-            message: '请输入分组名称',
-          }, {
-            max: 20,
-          }],
+          'x-rules': [
+            {
+              required: true,
+              message: '请输入分组名称',
+            },
+            {
+              max: 20,
+            },
+            (v: string): boolean | string => /\s+/.test(v) ? '分组名称不能包含空格' : true,
+          ],
           'x-index': 0,
         },
         name: {
@@ -31,7 +35,7 @@ const createNamespaceSchema: ISchema = {
           type: 'string',
           'x-component': 'Input',
           'x-component-props': {
-            placeholder: '请输入英文+数字',
+            placeholder: '请输入英文/数字/下划线',
           },
           'x-rules': [{
             required: true,
