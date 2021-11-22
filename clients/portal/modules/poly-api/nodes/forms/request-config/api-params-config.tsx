@@ -19,14 +19,6 @@ function ApiParamsConfig(
   { value, onChange, customRules, url }: Props,
   ref: ForwardedRef<RefType | undefined>,
 ): JSX.Element {
-  const _value = value.filter((input) => {
-    if (input.in === 'body') {
-      input.data = (input?.data as POLY_API.PolyNodeInput[]).filter(({ name }) => {
-        return !['_signature'].includes(name);
-      });
-    }
-    return !['Signature', 'Access-Token'].includes(input.name);
-  });
   const formulaRefs = useRef<Record<string, RefProps>>({});
   const currentFormulaEditorRef = useRef<RefProps | null>(null);
   useImperativeHandle(ref, () => ({
