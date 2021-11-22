@@ -19,6 +19,14 @@ function ApiParamsConfig(
   { value, onChange, customRules, url }: Props,
   ref: ForwardedRef<RefType | undefined>,
 ): JSX.Element {
+  const _value = value.filter((input) => {
+    if (input.in === 'body') {
+      input.data = (input?.data as POLY_API.PolyNodeInput[]).filter(({ name }) => {
+        return !['_signature'].includes(name);
+      });
+    }
+    return !['Signature', 'Access-Token'].includes(input.name);
+  });
   const formulaRefs = useRef<Record<string, RefProps>>({});
   const currentFormulaEditorRef = useRef<RefProps | null>(null);
   useImperativeHandle(ref, () => ({
@@ -77,6 +85,10 @@ function ApiParamsConfig(
             <div className="pb-4 text-gray-900">{type.replace(/^\S/, (s: string) => s.toUpperCase())}</div>
             <div className="config-param">
               {params.map(({ title, name, required, path, data }) => {
+                if (['Signature', 'Access-Token', 'signature'].includes(name)) {
+                  return;
+                }
+
                 return (
                   <div
                     key={path}
