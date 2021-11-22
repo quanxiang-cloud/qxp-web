@@ -37,8 +37,8 @@ const createNamespaceSchema: ISchema = {
             required: true,
             message: '请输入分组标识',
           }, {
-            pattern: /^[a-zA-Z_$][a-zA-Z_$0-9]*$/,
-            message: '只能包含数字字母下划线$, 且以字母下划线或$开头',
+            pattern: /^[a-zA-Z_][a-zA-Z_0-9]*$/,
+            message: '只能包含数字字母下划线, 且以字母或下划线开头',
           }],
           'x-index': 1,
         },
