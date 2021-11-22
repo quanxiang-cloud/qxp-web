@@ -77,6 +77,10 @@ function ApiParamsConfig(
             <div className="pb-4 text-gray-900">{type.replace(/^\S/, (s: string) => s.toUpperCase())}</div>
             <div className="config-param">
               {params.map(({ title, name, required, path, data }) => {
+                if (['Signature', 'Access-Token', 'signature'].includes(name)) {
+                  return;
+                }
+
                 return (
                   <div
                     key={path}
