@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useCallback, useState } from 'react';
-import { useUpdateEffect, usePrevious } from 'react-use';
+import { useUpdateEffect } from 'react-use';
 import { diff } from 'just-diff';
 import { groupBy, lensPath, set, dissocPath, last, view } from 'ramda';
 
@@ -52,15 +52,16 @@ function RequestConfigForm({ value, onChange }: Props): JSX.Element {
     body: { docType: 'raw', titleFirst: true },
   }, { enabled: !!value.rawPath });
 
-  const previousRawPath = usePrevious(value.rawPath);
-  const pathChanged = previousRawPath !== value.rawPath;
   useUpdateEffect(() => {
-    !isLoading && pathChanged && onChange({
+    if (!mountedRef.current) {
+      return;
+    }
+    !isLoading && apiDocDetail?.doc?.input?.inputs && onChange({
       apiName: apiDocDetail?.apiPath.split('/').pop() || '',
       outputs: apiDocDetail?.doc?.output?.doc?.[0]?.data || [],
       inputs: apiDocDetail?.doc?.input?.inputs || [],
     });
-  }, [pathChanged, isLoading, onChange, apiDocDetail]);
+  }, [isLoading, onChange, apiDocDetail]);
 
   useEffect(() => {
     if (isLoading || mountedRef.current) {
