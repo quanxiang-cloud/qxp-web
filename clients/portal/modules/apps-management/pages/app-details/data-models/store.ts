@@ -22,6 +22,7 @@ class AppModelStore {
   @observable dataModels: DataModel[] = [];
   @observable curModelTableID = '';
   @observable curDataModel: DataModel | null = null;
+  @observable curModelField: ModelField | null = null;
   @observable dataModelsLoading = false;
   @observable modelDetailsLoading = false;
   @observable dataModelTotal = 0;
@@ -32,6 +33,7 @@ class AppModelStore {
     title: '',
   }
   @observable editModalType = '';
+  @observable editFieldType = '';
   @observable searchModelInput = '';
   @observable searchModelFieldInput = '';
 
@@ -84,6 +86,16 @@ class AppModelStore {
   @action
   setEditModalType = (type: string): void => {
     this.editModalType = type;
+  }
+
+  @action
+  setEditFieldType = (type: string): void => {
+    this.editFieldType = type;
+  }
+
+  @action
+  setCurModelField = (field: ModelField | null): void => {
+    this.curModelField = field;
   }
 
   @action

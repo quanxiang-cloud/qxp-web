@@ -8,7 +8,7 @@ import DeleteFieldModal from './delete-modal';
 type Props = {
   type: string;
   onClose: () => void;
-  curModelField: ModelField | undefined;
+  curModelField: ModelField | null;
 }
 
 function Modals({ type, curModelField, onClose }: Props): JSX.Element {

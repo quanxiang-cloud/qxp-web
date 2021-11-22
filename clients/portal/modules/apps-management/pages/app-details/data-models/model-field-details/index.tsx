@@ -4,16 +4,11 @@ import { observer } from 'mobx-react';
 import store from '../store';
 import ModalFields from './model-fields';
 import ModelDescHeader from './model-desc-header';
-import PageLoading from '@c/page-loading';
 
 function ModelFieldDetails(): JSX.Element {
   const { dataModels, setEditModalType, dataModelsLoading } = store;
 
-  if (dataModelsLoading) {
-    return <PageLoading />;
-  }
-
-  if (!dataModels.length) {
+  if (!dataModelsLoading && !dataModels.length) {
     return (
       <div className='app-no-data mt-96 text-12'>
         <img src='/dist/images/new_tips.svg' />
@@ -29,10 +24,12 @@ function ModelFieldDetails(): JSX.Element {
   }
 
   return (
-    <div className="px-16 pt-16 flex-1 flex flex-col overflow-auto">
-      <ModelDescHeader />
-      <ModalFields />
-    </div>
+    <>
+      <div className="px-16 pt-16 flex-1 flex flex-col overflow-auto">
+        <ModelDescHeader />
+        <ModalFields />
+      </div>
+    </>
   );
 }
 

@@ -12,7 +12,7 @@ import { FIELD_FORM_SCHEMA } from '../form-schema';
 type Props = {
   onCancel: () => void;
   onSubmit: (value: ModelField) => void;
-  field: ModelField | undefined;
+  field: ModelField | null;
 }
 
 const PATH: Record<string, string> = {

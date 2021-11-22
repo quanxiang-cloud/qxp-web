@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { observer } from 'mobx-react';
 import cs from 'classnames';
 import { UnionColumns } from 'react-table';
@@ -13,12 +13,16 @@ import PageLoading from '@c/page-loading';
 
 import store from '../store';
 import { FIELD_COLUMNS } from '../../utils';
-import EditorFieldModals from './editor-field-modals';
 
 function ModelFields(): JSX.Element {
-  const [fieldModalType, setFieldModalType] = useState('');
-  const [curModelField, setCurModelField] = useState<ModelField | undefined>(undefined);
-  const { curDataModel, fields, setSearchModelFieldInput } = store;
+  const {
+    fields,
+    curDataModel,
+    setCurModelField,
+    setEditFieldType,
+    dataModelsLoading,
+    setSearchModelFieldInput,
+  } = store;
   const COLUMNS: UnionColumns<ModelField>[] = [
     ...FIELD_COLUMNS,
     {
@@ -46,8 +50,8 @@ function ModelFields(): JSX.Element {
 
         return (
           <div className='flex gap-6' onClick={() => setCurModelField(rowData)}>
-            <span className='text-btn' onClick={() => setFieldModalType('edit')}>编辑</span>
-            <span className='text-btn' onClick={() => setFieldModalType('delete')}>删除</span>
+            <span className='text-btn' onClick={() => setEditFieldType('edit')}>编辑</span>
+            <span className='text-btn' onClick={() => setEditFieldType('delete')}>删除</span>
           </div>
         );
       },
@@ -58,13 +62,6 @@ function ModelFields(): JSX.Element {
     setSearchModelFieldInput(val);
   }
 
-  function onClose(): void {
-    if (fieldModalType === 'delete') {
-      setCurModelField(undefined);
-    }
-    setFieldModalType('');
-  }
-
   return (
     <>
       <div className="pt-16 pb-8 flex items-center justify-between">
@@ -73,8 +70,8 @@ function ModelFields(): JSX.Element {
           className="flex items-center w-100"
           forbidden={curDataModel?.source === 1}
           onClick={() => {
-            setCurModelField(undefined);
-            setFieldModalType('create');
+            setCurModelField(null);
+            setEditFieldType('create');
           }}
         >
           <Icon type="light" name="add" className="flex-shrink-0" size={16} />
@@ -93,6 +90,7 @@ function ModelFields(): JSX.Element {
               rowKey="id"
               data={fields}
               columns={curDataModel?.source === 1 ? deepClone(COLUMNS.slice(0, COLUMNS.length - 1)) : COLUMNS}
+              loading={dataModelsLoading}
               emptyTips={(
                 <EmptyTips
                   className="pt-40 m-auto"
@@ -102,8 +100,8 @@ function ModelFields(): JSX.Element {
                       <span
                         onClick={() => {
                           if (curDataModel?.source === 2) {
-                            setCurModelField(undefined);
-                            setFieldModalType('create');
+                            setCurModelField(null);
+                            setEditFieldType('create');
                           }
                         }}
                         className="text-blue-600 cursor-pointer ml-4"
@@ -119,13 +117,6 @@ function ModelFields(): JSX.Element {
         </div>
         <div className="data-model-count">{`共 ${fields.length || 0} 条数据`}</div>
       </div>
-      {!!fieldModalType && (
-        <EditorFieldModals
-          onClose={onClose}
-          type={fieldModalType}
-          curModelField={curModelField}
-        />
-      )}
     </>
   );
 }
