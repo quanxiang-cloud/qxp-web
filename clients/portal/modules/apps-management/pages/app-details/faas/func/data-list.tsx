@@ -3,14 +3,13 @@ import cs from 'classnames';
 import { Input } from 'antd';
 import { UnionColumns } from 'react-table';
 import { observer } from 'mobx-react';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 import Icon from '@c/icon';
 import Table from '@c/table';
 import Modal from '@c/modal';
 import Button from '@c/button';
 import Search from '@c/search';
-import MoreMenu from '@c/more-menu';
 import PopConfirm from '@c/pop-confirm';
 import Pagination from '@c/pagination';
 import TableMoreFilterMenu from '@c/more-menu/table-filter';
@@ -131,7 +130,9 @@ function DataList(): JSX.Element {
     {
       Header: '创建时间',
       id: 'createdAt',
-      accessor: ({ updatedAt }: FuncField) => moment(updatedAt, 'X').format('YYYY-MM-DD HH:mm:ss'),
+      accessor: ({ createdAt }: FuncField) => {
+        return createdAt ? dayjs(parseInt(String(createdAt * 1000))).format('YYYY-MM-DD HH:mm:ss') : '—';
+      },
     },
     {
       Header: '操作',
@@ -139,24 +140,11 @@ function DataList(): JSX.Element {
       accessor: ({ id, state }: FuncField) => {
         return (
           <div className="flex gap-20">
-            {state === 'Unknown' && <span>进行中...</span>}
+            {state === 'Unknown' && <span>-</span>}
             {state === 'True' && (
               <>
-                <span className="operate" onClick={() => store.defineFunc(id)}>定义</span>
+                <span className="operate" onClick={() => temp(id)}>定义</span>
                 <span className="operate" onClick={() => onClickTool(id, 'build')}>构建</span>
-                <MoreMenu onMenuClick={() => console.log()} menus={[
-                  { label: 'v0.1.3.a', key: 'v0.1.3.a' },
-                  { label: 'v0.1.2', key: 'v0.1.2' },
-                  { label: 'v0.1.1', key: 'v0.1.1' },
-                ]}>
-                  <span className="operate">
-                    API文档
-                    <Icon clickable changeable name='keyboard_arrow_down' />
-                  </span>
-                </MoreMenu>
-                {/* <MoreMenu onMenuClick={() => onClickTool('deletefunc')} menus={[{ label: '删除', key: 'delete' }]}>
-                  <Icon clickable name="more_horiz" />
-                </MoreMenu> */}
               </>
             )}
             {state === 'False' && (
@@ -173,6 +161,13 @@ function DataList(): JSX.Element {
   function onClickTool(id: string, modalType: string): void {
     store.currentFuncID = id;
     store.modalType = modalType;
+  }
+
+  function temp(id: string): void {
+    store.checkHasCoder().then((hasCode) => {
+      if (hasCode) return store.defineFunc(id);
+      store.creatCoder();
+    });
   }
 
   function handleInputKeydown(e: React.KeyboardEvent): void {
@@ -215,10 +210,8 @@ function DataList(): JSX.Element {
         />
       </div>
       <Pagination
-        // current={pageParams.page}
-        // pageSize={pageParams.size}
-        total={store.funcList.length}
-        renderTotalTip={() => `共 ${store.funcList.length} 条数据`}
+        total={store.funcCount}
+        renderTotalTip={() => `共 ${store.funcCount} 条数据`}
         onChange={(current, pageSize) => store.fetchFuncList(store.searchAlias, current, pageSize)}
       />
       {store.modalType === 'build' && <BuildModal onClose={() => store.modalType = ''} />}

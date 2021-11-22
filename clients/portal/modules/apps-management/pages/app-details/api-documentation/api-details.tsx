@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Prism from 'prismjs';
 import 'prismjs/plugins/custom-class/prism-custom-class.js';
 import 'prismjs/components/prism-python.js';
@@ -6,15 +6,14 @@ import 'prismjs/components/prism-python.js';
 import Icon from '@c/icon';
 import Toggle from '@c/toggle';
 import Tooltip from '@c/tooltip';
+import toast from '@lib/toast';
+import Loading from '@c/loading';
 import { copyContent } from '@lib/utils';
 import RadioButtonGroup from '@c/radio/radio-button-group';
 
-import '../prism.css';
-
-import { useState } from 'react';
 import { getApiDoc } from './api';
-import toast from '@lib/toast';
-import Loading from '@c/loading';
+
+import '../prism.css';
 
 const DOC_TYPE_LIST = [
   { label: 'CURL', value: 'curl' },
@@ -29,6 +28,7 @@ type Props = {
 function ApiDetails({ apiPath }:Props ): JSX.Element {
   const [docType, setDocType] = useState<DocType>('curl');
   const [isAPILoading, setIsAPILoading] = useState<boolean>(true);
+  const [aPIError, setAPIError] = useState('');
   const [useFieldsID, setUseFieldsID] = useState<boolean>(false);
   const [aPiContent, setAPiContent] = useState<APiContent | null>(null);
 
@@ -41,12 +41,17 @@ function ApiDetails({ apiPath }:Props ): JSX.Element {
       }).then((res: QueryDocRes) => {
         const { doc } = res || {};
         setAPiContent(doc);
-      }).catch((err: string) => {
-        toast.error(err);
+        setAPIError('');
+      }).catch((err: Error) => {
+        setAPIError(err.message);
+        toast.error(err.message);
       }).finally(()=> {
         setIsAPILoading(false);
       });
     }
+    return () => {
+      setAPIError('');
+    };
   }, [docType, useFieldsID, apiPath]);
 
   useEffect(() => {
@@ -56,26 +61,31 @@ function ApiDetails({ apiPath }:Props ): JSX.Element {
     });
   }, [aPiContent, isAPILoading]);
 
+  if (aPIError && !isAPILoading) {
+    return <div className='text-red-600'>{aPIError}</div>;
+  }
+
   return (
     <>
-      <div className='h-56 flex items-center justify-between'>
-        <RadioButtonGroup
-          radioBtnClass="bg-white"
-          onChange={(docType) => setDocType(docType as DocType)}
-          listData={DOC_TYPE_LIST}
-          currentValue={docType}
-        />
-        <div className='flex items-center'>
-            使用字段名称:
-          <Toggle
-            className='ml-8'
-            defaultChecked={useFieldsID}
-            onChange={() => setUseFieldsID(!useFieldsID)}
-          />
-        </div>
-      </div>
       {isAPILoading ? <Loading/> : (
         <>
+          <div className='h-56 flex items-center justify-between ml-1'>
+            <RadioButtonGroup
+              radioBtnClass="bg-white"
+              onChange={(docType) => setDocType(docType as DocType)}
+              listData={DOC_TYPE_LIST}
+              currentValue={docType}
+            />
+            <div className='flex items-center'>
+          使用字段名称:
+              <Toggle
+                className='ml-8'
+                defaultChecked={useFieldsID}
+                onChange={() => setUseFieldsID(!useFieldsID)}
+              />
+            </div>
+          </div>
+
           <div className='api-content-title'>请求示例</div>
           <div className='api-content'>
             <Tooltip

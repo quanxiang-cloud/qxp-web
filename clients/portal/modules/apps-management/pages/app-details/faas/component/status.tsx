@@ -36,6 +36,10 @@ function StatusDisplay({
         key: dataID, topic, type: 'faas', cb: callBack,
       });
     }
+
+    return () => {
+      ws.removeEventListener('faas', dataID);
+    };
   }, [status]);
 
   useUpdateEffect(() => {

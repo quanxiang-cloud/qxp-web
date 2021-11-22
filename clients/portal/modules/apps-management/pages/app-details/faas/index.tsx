@@ -23,6 +23,9 @@ function FaaS(): JSX.Element {
       if (!store.appDetails.appSign) history.push('base_info');
       checkUserState();
     }
+    return () => {
+      store.clear();
+    };
   }, [appDetails, User.id]);
 
   if (store.checkUserLoading) {
@@ -30,7 +33,7 @@ function FaaS(): JSX.Element {
   }
 
   return (
-    <div className="flex-1 bg-white rounded-t-12 h-full">
+    <div className="h-full bg-white rounded-t-12">
       {hasGroup && developerInGroup ? <FuncList /> : <NotAvailable />}
     </div>
   );

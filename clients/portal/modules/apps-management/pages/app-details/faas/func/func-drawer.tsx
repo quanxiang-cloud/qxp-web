@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { UnionColumns } from 'react-table';
 import { observer } from 'mobx-react';
 import cs from 'classnames';
+import dayjs from 'dayjs';
 import useCss from 'react-use/lib/useCss';
 
 import Icon from '@c/icon';
@@ -16,7 +17,7 @@ import VersionStatus from '../component/version-status';
 function FuncDetailsDrawer(): JSX.Element {
   useEffect(() => {
     store.fetchFuncInfo();
-    store.fetchVersionList(1, 10);
+    store.setVersionParams({});
   }, [store.currentFuncID]);
   const [beganClose, setBeganClose] = useState<boolean>(false);
   const [visible, setVisible] = useState<boolean>(false);
@@ -26,12 +27,11 @@ function FuncDetailsDrawer(): JSX.Element {
     {
       Header: '版本号',
       id: 'tag',
-      accessor: (version: VersionField) => {
-        const { tag } = version;
+      accessor: ({ id, tag }: VersionField) => {
         return (
           <span
             className="text-blue-600 cursor-pointer"
-            onClick={() => onClickTool(version, 'VersionDetail')}
+            onClick={() => onClickTool(id, 'VersionDetail')}
           >
             {tag}
           </span>
@@ -80,30 +80,33 @@ function FuncDetailsDrawer(): JSX.Element {
     {
       Header: '创建时间',
       id: 'createAt',
-      accessor: 'createAt',
+      accessor: ({ createdAt }: VersionField) => {
+        return createdAt ? dayjs(parseInt(String(createdAt * 1000))).format('YYYY-MM-DD HH:mm:ss') : '—';
+      },
     },
     {
       Header: '操作',
       id: 'action',
       accessor: ({ id, visibility, state }: VersionField) => {
+        const _visibility = visibility || 'offline';
         return (
           <div className="flex gap-20">
-            {state === 'True' && visibility === 'online' && (
+            {state === 'True' && _visibility === 'online' && (
               <PopConfirm content='确认下线改版本？' onOk={() => store.offlineVer(id)} >
                 <span className="operate">下线</span>
               </PopConfirm>)}
-            {state === 'True' && visibility === 'offline' && (
+            {state === 'True' && _visibility === 'offline' && (
               <PopConfirm content='确认上线改版本？' onOk={() => store.servingVer(id)} >
                 <span className="operate">上线</span>
               </PopConfirm>)}
             {state === 'False' ? (
               <PopConfirm content='确认删除改版本？' onOk={() => store.deleteVer(id)} >
                 <span className="cursor-pointer text-red-600">删除</span>
-              </PopConfirm> ) : (
+              </PopConfirm>) : (
               <PopConfirm content='确定生成API文档？' onOk={() => store.registerAPI(id)} >
                 <span className="operate">生成API文档</span>
               </PopConfirm>
-            )}jihu
+            )}
 
           </div>
         );
@@ -119,9 +122,8 @@ function FuncDetailsDrawer(): JSX.Element {
     }, 300);
   };
 
-  function onClickTool(verion: VersionField, modalType: string): void {
-    store.currentVersionFunc = verion;
-    store.buildID = verion.id;
+  function onClickTool(id: string, modalType: string): void {
+    store.buildID = id;
     store.modalType = modalType;
   }
 
@@ -142,20 +144,17 @@ function FuncDetailsDrawer(): JSX.Element {
               <Icon size={20} name={fullScreen ? 'unfull_screen' : 'full_screen'} />
               {fullScreen ? '非' : ''}全屏
             </span>
-            {/* <PopConfirm content='确认删除该数据？' onOk={handelDelete} >
-              <span className='icon-text-btn'><Icon size={20} name='delete' />删除</span>
-            </PopConfirm> */}
             <Icon onClick={handleCancel} clickable changeable name='close' size={24} />
           </div>
         </div>
         <div className='grid gap-x-16 grid-flow-row-dense grid-cols-2 my-12 mx-20'>
           <div className='flex text-12 p-8 items-center '>
             <div className='text-gray-600'>标志：</div>
-            <div className='text-gray-900 flex-1  '>{store.currentFunc.name}</div>
+            <div className='text-gray-900 flex-1  '>{store.currentFunc?.name}</div>
           </div>
           <div className='flex text-12 p-8 items-center '>
             <div className='text-gray-600'>语言：</div>
-            <div className='text-gray-900 flex-1  '>{store.currentFunc.language}</div>
+            <div className='text-gray-900 flex-1  '>{store.currentFunc?.language}</div>
           </div>
         </div>
         <div className='h-32 bg-gray-100 rounded-4 flex items-center mb-8 mx-20'>
@@ -171,9 +170,9 @@ function FuncDetailsDrawer(): JSX.Element {
           />
         </div>
         <Pagination
-          total={store.versionList.length}
-          renderTotalTip={() => `共 ${store.versionList.length} 条数据`}
-          onChange={(current, pageSize) => store.fetchVersionList(current, pageSize)}
+          total={store.versionCount}
+          renderTotalTip={() => `共 ${store.versionCount} 条数据`}
+          onChange={(current, pageSize) => store.setVersionParams({ page: current, size: pageSize })}
         />
       </div>
 

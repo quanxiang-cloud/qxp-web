@@ -1,4 +1,4 @@
-import { action, observable } from 'mobx';
+import { action, observable, reaction } from 'mobx';
 
 import { SocketData } from '@lib/push';
 import { parseJSON } from '@lib/utils';
@@ -27,6 +27,7 @@ import {
   registerAPI,
   getApiPath,
   getVersionInfo,
+  getVersion,
 } from './api';
 import toast from '@lib/toast';
 import { getApiDoc } from '../api-documentation/api';
@@ -53,11 +54,13 @@ const INIT_VERSION: VersionField = {
   serverState: 'Unknown',
   message: '',
   creator: '',
-  createAt: 0,
+  createdAt: 0,
   updatedAt: 0,
   tag: '',
   visibility: 'offline',
   describe: '',
+  serverMsg: '',
+  updater: '',
 };
 
 class FaasStore {
@@ -89,12 +92,27 @@ class FaasStore {
   @observable versionList: VersionField[] = [];
   @observable currentVersionFunc: VersionField = INIT_VERSION;
   @observable initErr = false;
-  @observable sss = '111';
   @observable APiContent: APiContent = INIT_API_CONTENT;
   @observable isAPILoadingErr = '';
   @observable isAPILoading = false;
   @observable searchAlias = '';
   @observable apiPath = ''
+  @observable funcCount = 0;
+  @observable versionCount = 0
+  @observable versionsParams: VersionListParams = {
+    state: '',
+    page: 1,
+    size: 10,
+  }
+
+  constructor() {
+    reaction(() => this.versionsParams, this.fetchVersionList);
+  }
+
+  @action
+  setVersionParams = (newParam: Partial<VersionListParams>): void => {
+    this.versionsParams = { ...this.versionsParams, ...newParam };
+  }
 
   @action
   setModalType = (type: string): void => {
@@ -195,7 +213,7 @@ class FaasStore {
 
   @action
   addUserToGroup = (): void => {
-    addToGroup(this.groupID, { memberID: this.User.id }).then((res) => {
+    addToGroup(this.groupID, { memberID: this.User.id }).then(() => {
       this.developerInGroup = true;
     }).catch((err) => {
       this.initErr = true;
@@ -227,9 +245,9 @@ class FaasStore {
       page,
       size,
     }).then((res) => {
-      const { projects } = res;
+      const { projects, count } = res;
+      this.funcCount = count;
       this.funcList = projects;
-      this.currentFunc = projects[0] || INIT_VERSION;
     }).catch((err) => {
       toast.error(err);
       this.funcList = [];
@@ -239,9 +257,9 @@ class FaasStore {
   }
 
   @action
-  checkHasCoder = (): void => {
-    hasCoder().then((res) => {
-      if (!res.hasCoder) creatCoder();
+  checkHasCoder = (): Promise<boolean | void> => {
+    return hasCoder().then((res) => {
+      return res.hasCoder;
     }).catch((err) => toast.error(err));
   }
 
@@ -260,7 +278,9 @@ class FaasStore {
       this.currentFuncID = res.id;
       this.currentFunc = { ...res, ...data, state: 'Unknown' };
       this.funcList = [this.currentFunc, ...this.funcList];
-      this.checkHasCoder();
+      this.checkHasCoder().then((res) => {
+        if (!res) this.creatCoder();
+      });
     }).catch((err) => {
       toast.error(err);
     });
@@ -275,7 +295,6 @@ class FaasStore {
 
   @action
   updateFuncDesc = (id: string, describe: string): void => {
-    this.currentFuncID = id;
     updateFuncDesc(this.groupID, id, { describe }).then(() => {
       this.funcList = this.funcList.map((_func) => {
         if (_func.id === id) {
@@ -303,7 +322,7 @@ class FaasStore {
 
   @action
   buildFunc = (buildData: { tag: string, describe: string }): void => {
-    buildFunc(this.groupID, this.currentFuncID, buildData).then((res) => {
+    buildFunc(this.groupID, this.currentFuncID, buildData).then(() => {
       this.modalType = '';
     }).catch((err) => {
       toast.error(err);
@@ -323,15 +342,11 @@ class FaasStore {
   }
 
   @action
-  fetchVersionList = (current: number, pageSize: number): void => {
-    getFuncVersionList(this.groupID, this.currentFuncID, {
-      state: '',
-      size: pageSize,
-      page: current,
-    }).then((res) => {
-      const { builds } = res;
+  fetchVersionList = (params: VersionListParams): void => {
+    getFuncVersionList(this.groupID, this.currentFuncID, params).then((res) => {
+      const { builds, count } = res;
+      this.versionCount = count;
       this.versionList = builds;
-      this.currentVersionFunc = builds[0] || INIT_CURRENT_FUNC;
     }).catch((err) => {
       toast.error(err);
       this.funcList = [];
@@ -342,9 +357,9 @@ class FaasStore {
 
   @action
   updateVerDesc = (describe: string): void => {
-    updateVerDesc(this.groupID, this.currentVersionFunc.id, this.buildID, { describe }).then((res) => {
+    updateVerDesc(this.groupID, this.currentVersionFunc?.id || '', this.buildID, { describe }).then(() => {
       this.versionList = this.versionList.map((_version) => {
-        if (_version.id === this.currentVersionFunc.id) {
+        if (_version.id === this.currentVersionFunc?.id) {
           this.currentVersionFunc = { ..._version, describe };
           return { ..._version, description: describe };
         }
@@ -358,13 +373,7 @@ class FaasStore {
   @action
   offlineVer = (id: string): void => {
     offlineVer(this.groupID, this.currentFuncID, id).then(() => {
-      this.versionList = this.versionList.map((_version) => {
-        if (_version.id === id) {
-          this.currentVersionFunc = { ..._version, visibility: 'offline', serverState: 'Unknown' };
-          return { ..._version, visibility: 'offline', serverState: 'Unknown' };
-        }
-        return _version;
-      });
+      this.setVersionParams({});
     }).catch((err) => {
       toast.error(err);
     });
@@ -373,13 +382,7 @@ class FaasStore {
   @action
   servingVer = (id: string): void => {
     servingVer(this.groupID, this.currentFuncID, id).then(() => {
-      this.versionList = this.versionList.map((_version) => {
-        if (_version.id === id) {
-          this.currentVersionFunc = { ..._version, visibility: 'online', serverState: 'Unknown' };
-          return { ..._version, visibility: 'online', serverState: 'Unknown' };
-        }
-        return _version;
-      });
+      this.setVersionParams({});
     }).catch((err) => {
       toast.error(err);
     });
@@ -395,9 +398,18 @@ class FaasStore {
     });
   }
 
+  getVersion =():void => {
+    getVersion(this.groupID, this.currentFuncID, this.buildID).then((res) => {
+      const { build } = res;
+      this.currentVersionFunc = build;
+    }).catch((err) => {
+      toast.error(err);
+    });
+  }
+
   @action
-  registerAPI = (id: string) => {
-    registerAPI(this.groupID, this.currentFunc.id, id).then(() => {
+  registerAPI = (id: string): void => {
+    registerAPI(this.groupID, this.currentFunc?.id || '', id).then(() => {
       toast.success('注册文档成功');
     }).catch((err) => {
       toast.error(err);
@@ -435,7 +447,8 @@ class FaasStore {
   }
 
   @action
-  versionStateChangeListener = async (buildID: string, socket: SocketData, type: 'state' | 'serverState') => {
+  versionStateChangeListener = async (buildID: string, socket: SocketData, type: 'state' | 'serverState',
+  ): Promise<void> => {
     const { key, topic }: FaasSoketData = parseJSON(socket?.message, { key: '', topic: '' });
     if (key !== buildID || topic !== 'builder') {
       return;
@@ -457,6 +470,13 @@ class FaasStore {
 
       toast.success('操作成功！');
     }
+  }
+
+  @action
+  clear = (): void => {
+    this.isAPILoading = false;
+    this.isAPILoadingErr = '';
+    this.initErr = false;
   }
 }
 
