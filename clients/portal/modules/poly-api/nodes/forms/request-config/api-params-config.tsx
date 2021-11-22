@@ -96,7 +96,8 @@ function ApiParamsConfig(
                         help=""
                         ref={handleSetFormulaRefs(path)}
                         customRules={customRules}
-                        defaultValue={data}
+                        value={data || ''}
+                        defaultValue={data || ''}
                         className="node-formula-editor"
                         onChange={handleFormulaChange(path)}
                       />
