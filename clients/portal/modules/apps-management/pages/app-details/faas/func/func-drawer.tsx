@@ -89,20 +89,21 @@ function FuncDetailsDrawer(): JSX.Element {
       Header: '操作',
       id: 'action',
       accessor: ({ id, visibility, state }: VersionField) => {
+        const _visibility = visibility || 'offline';
         return (
           <div className="flex gap-20">
-            {state === 'True' && visibility === 'online' && (
+            {state === 'True' && _visibility === 'online' && (
               <PopConfirm content='确认下线改版本？' onOk={() => store.offlineVer(id)} >
                 <span className="operate">下线</span>
               </PopConfirm>)}
-            {state === 'True' && visibility === 'offline' && (
+            {state === 'True' && _visibility === 'offline' && (
               <PopConfirm content='确认上线改版本？' onOk={() => store.servingVer(id)} >
                 <span className="operate">上线</span>
               </PopConfirm>)}
             {state === 'False' ? (
               <PopConfirm content='确认删除改版本？' onOk={() => store.deleteVer(id)} >
                 <span className="cursor-pointer text-red-600">删除</span>
-              </PopConfirm> ) : (
+              </PopConfirm>) : (
               <PopConfirm content='确定生成API文档？' onOk={() => store.registerAPI(id)} >
                 <span className="operate">生成API文档</span>
               </PopConfirm>
