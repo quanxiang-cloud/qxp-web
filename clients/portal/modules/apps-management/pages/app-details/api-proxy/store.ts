@@ -7,7 +7,7 @@ import toast from '@lib/toast';
 
 import * as apis from './api';
 
-const nsPattern = /system\/app\/[\w-]+\/customer\/?(.*)/;
+const nsPattern = /system\/app\/[\w-]+\/raw\/customer\/?(.*)/;
 const ROOT_NODE_ID = 'api-ns-root';
 
 /*
