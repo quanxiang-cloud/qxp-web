@@ -1,7 +1,9 @@
-import React, { useEffect, useRef, useCallback, useState } from 'react';
 import { useUpdateEffect } from 'react-use';
 import { diff } from 'just-diff';
 import { groupBy, lensPath, set, dissocPath, last, view } from 'ramda';
+import React, {
+  useEffect, useRef, useCallback, useState, forwardRef, ForwardedRef, useImperativeHandle,
+} from 'react';
 
 import toast from '@lib/toast';
 import PageLoading from '@c/page-loading';
@@ -41,11 +43,18 @@ function mergeInputs(
   return remove.reduce((acc, diff) => dissocPath(diff.path, acc), values);
 }
 
-function RequestConfigForm({ value, onChange }: Props): JSX.Element {
+type RequestConfigRef = {
+  validate(): never | void;
+}
+function RequestConfigForm({ value, onChange }: Props, ref: ForwardedRef<RequestConfigRef>): JSX.Element {
   const formulaEditorRef = useRef<RefType>();
   const polyNodePathTreeRef = useRef<PathTreeRefType | null>(null);
   const [customRules, setCustomRules] = useState<CustomRule[]>([]);
   const mountedRef = useRef<boolean>();
+
+  useImperativeHandle(ref, () => ({
+    validate: () => formulaEditorRef.current?.validate(),
+  }));
 
   const { data: apiDocDetail, isLoading, error } = useGetRequestNodeApi({
     path: value.rawPath.slice(1),
@@ -132,4 +141,4 @@ function RequestConfigForm({ value, onChange }: Props): JSX.Element {
   );
 }
 
-export default RequestConfigForm;
+export default forwardRef<RequestConfigRef, Props>(RequestConfigForm);

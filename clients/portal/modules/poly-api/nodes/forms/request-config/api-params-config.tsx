@@ -1,10 +1,10 @@
-import React, { forwardRef, ForwardedRef, useImperativeHandle, useRef, useEffect } from 'react';
-import { lensPath, set, view } from 'ramda';
-import { isArray } from 'lodash';
+import React, { forwardRef, ForwardedRef, useImperativeHandle, useRef, useEffect, useState } from 'react';
+import { lensPath, set, view, values } from 'ramda';
+import { isArray, first } from 'lodash';
 
 import Icon from '@c/icon';
 import FormulaEditor, { RefProps, CustomRule } from '@c/formula-editor';
-import { convertToParamsConfig, parseParamOfPath } from '@portal/modules/poly-api/utils/request-node';
+import { convertToParamsConfig, parseParamOfPath } from '@polyApi/utils/request-node';
 
 type Props = {
   value: POLY_API.PolyNodeInput[];
@@ -13,7 +13,10 @@ type Props = {
   customRules: CustomRule[];
 }
 
-export type RefType = { getCurrent: () => RefProps | null; }
+export type RefType = {
+  getCurrent: () => RefProps | null;
+  validate: () => never | void;
+}
 
 function ApiParamsConfig(
   { value, onChange, customRules, url }: Props,
@@ -21,8 +24,16 @@ function ApiParamsConfig(
 ): JSX.Element {
   const formulaRefs = useRef<Record<string, RefProps>>({});
   const currentFormulaEditorRef = useRef<RefProps | null>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
   useImperativeHandle(ref, () => ({
     getCurrent: () => currentFormulaEditorRef.current,
+    validate: () => {
+      const errorMessage = first(values(errors));
+      if (errorMessage) {
+        throw new Error(errorMessage);
+      }
+    },
   }));
 
   useEffect(() => {
@@ -44,7 +55,7 @@ function ApiParamsConfig(
     return /^\d+$/.test(value) ? parseInt(value) : value;
   }
 
-  function handleFormulaChange(path: string) {
+  function handleFormulaChange(path: string, name: string, required: boolean) {
     return (val: string) => {
       handleSetCurrentFormulaRef(path)();
       const dataLens = lensPath(`${path}.data`.split('.').map(toNumber));
@@ -54,6 +65,13 @@ function ApiParamsConfig(
       view(typeLens, newInputs);
       const distValue = set(typeLens, 'direct_expr', newInputs);
       onChange(distValue);
+      required && setErrors({ ...errors, [path]: !val ? `请输入${name}配置` : '' });
+    };
+  }
+
+  function handleFormulaBlur(path: string, name: string, required: boolean, data: string) {
+    return () => {
+      handleFormulaChange(path, name, !!required)(data);
     };
   }
 
@@ -83,7 +101,7 @@ function ApiParamsConfig(
                     className="flex justify-between"
                     onClick={handleSetCurrentFormulaRef(path)}
                   >
-                    <div className="flex items-center justify-between w-142 p-8 flex-1 border-r-1">
+                    <div className="flex items-center justify-between w-142 p-8 flex-3 border-r-1">
                       <div className="flex-1 truncate">
                         <span>{title}</span>
                         <span className="mx-4 text-gray-400">{name}</span>
@@ -92,16 +110,20 @@ function ApiParamsConfig(
                       <Icon className="ml-8" name="arrow_left_alt" />
                     </div>
                     {customRules.length ? (
-                      <FormulaEditor
-                        help=""
-                        ref={handleSetFormulaRefs(path)}
-                        customRules={customRules}
-                        defaultValue={data || ''}
-                        value={data || ''}
-                        className="node-formula-editor"
-                        onChange={handleFormulaChange(path)}
-                      />
-                    ) : <div className="node-formula-editor"></div>}
+                      <div className="flex flex-col" style={{ flex: 7 }}>
+                        <FormulaEditor
+                          help=""
+                          ref={handleSetFormulaRefs(path)}
+                          customRules={customRules}
+                          defaultValue={data || ''}
+                          value={data || ''}
+                          className="node-formula-editor"
+                          onChange={handleFormulaChange(path, name, !!required)}
+                          onBlur={handleFormulaBlur(path, name, !!required, data)}
+                        />
+                        {errors[path] && (<span className="text-red-600 px-3 pb-3">{errors[path]}</span>)}
+                      </div>
+                    ) : <div className="node-formula-editor flex-7"></div>}
                   </div>
                 );
               })}
