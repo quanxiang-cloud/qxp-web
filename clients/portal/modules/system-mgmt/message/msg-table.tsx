@@ -292,7 +292,7 @@ const MsgTable = ({ refresh }: Props): JSX.Element => {
       accessor: ({ id, title, sort }: {
         status: MsgSendStatus, id: string, title: string, sort: MsgType
       }) => {
-        const handleClick = (): void=> {
+        const handleClick = (): void => {
           history.push(`/system/message/details/${id}`);
         };
         return (
@@ -475,7 +475,7 @@ const MsgTable = ({ refresh }: Props): JSX.Element => {
           {modifyData &&
             (<SendMessage
               donotShowHeader
-              className={cs(styles.draftModal, 'p-20') }
+              className={cs(styles.draftModal, 'p-20')}
               handleClose={handleModifyModalClose}
               modifyData={modifyData}
               ref={sendMessageRef}
