@@ -30,6 +30,7 @@ type Props<T> = {
   className?: string;
   style?: React.CSSProperties;
   onSelect?: (node: NodeItem<T>) => void;
+  groupBanSelect?: boolean;
 }
 
 interface NavItemProps<T> {
@@ -107,7 +108,15 @@ function NavItem<T>({
   );
 }
 
-function TwoLevelMenu<T>({ menus, actions, onSelect, defaultSelected, className, style }: Props<T>): JSX.Element {
+function TwoLevelMenu<T>({
+  menus,
+  actions,
+  onSelect,
+  defaultSelected,
+  className,
+  style,
+  groupBanSelect = false,
+}: Props<T>): JSX.Element {
   const [activeNode, setActiveNode] = useState<NodeItem<T> | undefined>(undefined);
 
   useEffect(() => {
@@ -123,6 +132,7 @@ function TwoLevelMenu<T>({ menus, actions, onSelect, defaultSelected, className,
 
   function handleSelect(node: NodeItem<T>): void {
     !node.disableSelect && setActiveNode(node);
+    if (groupBanSelect && node.type === 'group') return;
     onSelect?.(node);
   }
 
