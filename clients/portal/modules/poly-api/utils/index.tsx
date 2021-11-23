@@ -5,6 +5,7 @@ import { fromEvent, of, Subscription } from 'rxjs';
 import { map, mergeAll } from 'rxjs/operators';
 
 import { nanoid } from '@c/form-builder/utils';
+import { not } from '@lib/utils';
 
 import { POLY_DESIGN_CONFIG } from '../constants';
 import { PolyNodeStore } from '../store/node';
@@ -313,7 +314,7 @@ function removeCurrentConditionNode(
   nodeToRemove: POLY_API.NodeElement, elements: POLY_API.Element[],
 ): POLY_API.Element[] {
   const currentNodeParentNode = getCurrentNodeParentNode(nodeToRemove, elements);
-  const descendantNodes = getDescendantNodes(nodeToRemove, elements, endFilter);
+  const descendantNodes = getDescendantNodes(nodeToRemove, elements, not(endFilter));
   const endNode = elements.find(endFilter) as POLY_API.NodeElement | undefined;
   if (!currentNodeParentNode || !endNode) {
     return elements;
