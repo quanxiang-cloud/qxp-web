@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { isEmpty, omit } from 'ramda';
 import { isUndefined } from 'lodash';
 import { Input } from '@formily/antd-components';
-import { SchemaForm } from '@formily/react-schema-renderer';
+import { SchemaForm, createFormActions } from '@formily/react-schema-renderer';
 
 import Button from '@c/button';
 import Drawer from '@c/drawer';
@@ -15,6 +15,7 @@ import BodyEditor from '@polyApi/components/body-editor';
 import PolyDocDetail from '@polyApi/components/poly-doc-detail';
 import ConstantsEditor from '@polyApi/components/constants-editor';
 import { NODE_INIT_CONFIG_PARAMS, NODE_TYPE_MAPPER } from '@polyApi/constants';
+import toast from '@lib/toast';
 
 import DrawerTitle from './drawer-title';
 
@@ -27,10 +28,13 @@ const schemaFormComponents = {
   endBody: EndBody,
 };
 
+const actions = createFormActions();
+
 export default function NodeConfigDrawer(): JSX.Element {
   const store = useObservable(store$);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const drawerRef = useRef<HTMLDivElement | null>(null);
+  const formRef = useRef<{ validate:() => void | never }>();
   const {
     currentNodeConfigParams: { schema, currentNode, onClose, configForm: ConfigForm, excludedFields },
   } = isEmpty(store) ? NODE_INIT_CONFIG_PARAMS : store;
@@ -46,10 +50,20 @@ export default function NodeConfigDrawer(): JSX.Element {
     setConfigValue((val) => ({ ...val, ...value }));
   }, [setConfigValue]);
 
-  function onSave(): void {
-    currentNode?.set('detail', omit(excludedFields || [], configValue) );
-    savePolyApiResult();
-    onCancel();
+  async function onSave(): Promise<void> {
+    try {
+      const { errors } = !ConfigForm && schema ? await actions.validate() : { errors: [] };
+      const message = errors.map((error) => error.messages.join(',')).join(',');
+      if (message) {
+        throw new Error(message);
+      }
+      formRef.current?.validate?.();
+      currentNode?.set('detail', omit(excludedFields || [], configValue) );
+      savePolyApiResult();
+      onCancel();
+    } catch (e) {
+      toast.error(e);
+    }
   }
 
   function onCancel(): void {
@@ -95,6 +109,7 @@ export default function NodeConfigDrawer(): JSX.Element {
             initialValues={initialValues}
             value={configValue}
             onChange={handleOnChange}
+            ref={formRef}
           />
         )}
         {!ConfigForm && !isValueUndefined && !isEmpty(schema) && (
@@ -102,6 +117,7 @@ export default function NodeConfigDrawer(): JSX.Element {
             schema={schema}
             initialValues={initialValues}
             value={configValue}
+            actions={actions}
             onChange={handleOnChange}
             components={schemaFormComponents}
           />
