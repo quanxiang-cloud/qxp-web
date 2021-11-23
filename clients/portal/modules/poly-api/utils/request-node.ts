@@ -62,6 +62,10 @@ type ParamsConfig = Omit<POLY_API.PolyNodeInput, 'data' | 'type' | 'in'> & {
   path: string;
   in: string;
 }
+
+function shouldConvert(name: string): boolean {
+  return !['Signature', 'Access-Token', '_signature'].includes(name);
+}
 export function convertToParamsConfig(
   originalInputs: POLY_API.PolyNodeInput[],
   parentPath = '',
@@ -70,15 +74,15 @@ export function convertToParamsConfig(
 ): Record<string, ParamsConfig[]> {
   originalInputs.forEach((apiDocInput: POLY_API.PolyNodeInput, index: number) => {
     const currentPath = parentPath ? `${parentPath}.${index}` : `${index}`;
-    const { type, data } = apiDocInput;
+    const { type, data, name } = apiDocInput;
     const currentIn = apiDocInput.in || parentIn;
     acc[currentIn] = acc[currentIn] || [];
-    if (!isObjectField(type)) {
+    if (!isObjectField(type) && shouldConvert(name)) {
       acc[currentIn].push({
         ...omit(apiDocInput, 'data'), data: isString(data) ? data : '', path: currentPath,
       });
     } else if (isArray(apiDocInput.data)) {
-      convertToParamsConfig(apiDocInput.data, `${currentPath}.data`, currentIn, acc);
+      shouldConvert(name) && convertToParamsConfig(apiDocInput.data, `${currentPath}.data`, currentIn, acc);
     }
   });
   return acc;

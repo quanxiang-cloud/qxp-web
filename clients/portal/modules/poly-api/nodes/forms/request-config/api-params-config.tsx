@@ -76,11 +76,7 @@ function ApiParamsConfig(
           <div key={type} className="my-20">
             <div className="pb-4 text-gray-900">{type.replace(/^\S/, (s: string) => s.toUpperCase())}</div>
             <div className="config-param">
-              {params.map(({ title, name, required, path, data }) => {
-                if (['Signature', 'Access-Token', 'signature'].includes(name)) {
-                  return;
-                }
-
+              {params.map(({ path, name, title, data, required }) => {
                 return (
                   <div
                     key={path}
@@ -100,8 +96,8 @@ function ApiParamsConfig(
                         help=""
                         ref={handleSetFormulaRefs(path)}
                         customRules={customRules}
-                        value={data || ''}
                         defaultValue={data || ''}
+                        value={data || ''}
                         className="node-formula-editor"
                         onChange={handleFormulaChange(path)}
                       />
