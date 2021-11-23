@@ -72,10 +72,9 @@ const NavMsgBar = ({ type, className }: Props): JSX.Element => {
       queryClient.invalidateQueries('count-unread-msg');
       queryClient.invalidateQueries('all-messages');
     };
-    // todo newMessage? NewMessage? new_message?
-    pushServer.addEventListener('newMessage', 'newMessage', listener);
+    pushServer.addEventListener('letter', 'letter', listener);
 
-    return () => pushServer.removeEventListener('newMessage', 'newMessage');
+    return () => pushServer.removeEventListener('letter', 'letter');
   }, []);
 
   return (
