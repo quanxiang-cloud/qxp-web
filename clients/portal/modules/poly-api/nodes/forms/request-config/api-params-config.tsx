@@ -102,10 +102,10 @@ function ApiParamsConfig(
                     onClick={handleSetCurrentFormulaRef(path)}
                   >
                     <div className="flex items-center justify-between w-142 p-8 flex-3 border-r-1">
-                      <div className="flex-1 truncate">
+                      <div className="flex-1 truncate relative">
                         <span>{title}</span>
                         <span className="mx-4 text-gray-400">{name}</span>
-                        {required && <span className="text-red-600">*</span>}
+                        {required && <span className="text-red-600 absolute top-0 right-0">*</span>}
                       </div>
                       <Icon className="ml-8" name="arrow_left_alt" />
                     </div>
