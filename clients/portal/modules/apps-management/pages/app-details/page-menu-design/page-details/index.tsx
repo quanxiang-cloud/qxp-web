@@ -292,19 +292,20 @@ function PageDetails({ pageID }: Props): JSX.Element {
     );
   }
 
-  if (!activeMenu?.id) {
-    return <EmptyTips className="py-32 m-auto" text='暂无页面数据,请先新建页面' />;
-  }
-
   return (
     <>
-      <div className='relative flex-1 overflow-hidden bg-white rounded-tr-8'>
-        <div className='h-44 page-details-nav header-background-image border-b-1 px-16 flex items-center bg-gray-50'>
-          <span className='text-12 mr-8 font-semibold'>{activeMenu.name}</span>
-          <span className='text-caption align-top'>{activeMenu.describe}</span>
-        </div>
-        {fetchSchemeLoading && <PageLoading />}
-        {!fetchSchemeLoading && <RenderPageDetails />}
+      <div className='app-page-content'>
+        {!activeMenu?.id && <EmptyTips className="empty" text='暂无页面数据,请先新建页面' />}
+        {activeMenu?.id && (
+          <>
+            <div className='h-44 page-details-nav header-background-image border-b-1 px-16 flex items-center bg-gray-50'>
+              <span className='text-12 mr-8 font-semibold'>{activeMenu.name}</span>
+              <span className='text-caption align-top'>{activeMenu.describe}</span>
+            </div>
+            {fetchSchemeLoading && <PageLoading />}
+            {!fetchSchemeLoading && <RenderPageDetails />}
+          </>
+        )}
       </div>
       {modalType && renderModal(modalType)}
     </>
