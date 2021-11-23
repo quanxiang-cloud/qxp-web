@@ -56,6 +56,9 @@ const createNamespaceSchema: ISchema = {
           'x-component-props': {
             placeholder: '请输入',
           },
+          'x-rules': [{
+            max: 100,
+          }],
           'x-index': 2,
         },
       },
