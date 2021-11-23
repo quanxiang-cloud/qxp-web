@@ -42,7 +42,7 @@ function mergeInputs(
 }
 
 function RequestConfigForm({ value, onChange }: Props): JSX.Element {
-  const formularEditorRef = useRef<RefType>();
+  const formulaEditorRef = useRef<RefType>();
   const polyNodePathTreeRef = useRef<PathTreeRefType | null>(null);
   const [customRules, setCustomRules] = useState<CustomRule[]>([]);
   const mountedRef = useRef<boolean>();
@@ -110,13 +110,13 @@ function RequestConfigForm({ value, onChange }: Props): JSX.Element {
           <>
             <ApiParamsConfig
               onChange={setRequestNodeInputs}
-              ref={formularEditorRef}
+              ref={formulaEditorRef}
               value={value.inputs}
               url={apiDocDetail.doc.url}
               customRules={customRules}
             />
             <ApiFormulaConfig
-              currentFormulaEditorRef={formularEditorRef}
+              currentFormulaEditorRef={formulaEditorRef}
               ref={polyNodePathTreeRef}
             />
           </>
