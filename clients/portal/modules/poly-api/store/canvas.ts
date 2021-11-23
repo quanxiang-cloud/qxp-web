@@ -21,7 +21,7 @@ export class PolyCanvasStore extends BehaviorSubject<POLY_API.Element[]> {
     this.next([...this.value, element]);
   }
 
-  set(elements: POLY_API.Element[]): void {
+  set(elements: POLY_API.Element[], isSave = true): void {
     const elementsMap = elements.reduce((acc: Record<string, POLY_API.Element>, element) => {
       acc[element.id] = element;
       return acc;
@@ -37,7 +37,7 @@ export class PolyCanvasStore extends BehaviorSubject<POLY_API.Element[]> {
     });
     const newElements: POLY_API.Element[] = Object.values(omit(idToRemove, elementsMap));
     this.next([...newValue, ...newElements]);
-    savePolyApiResult();
+    isSave && savePolyApiResult();
   }
 
   getElementsValue(): POLY_API.PlainElement[] {
