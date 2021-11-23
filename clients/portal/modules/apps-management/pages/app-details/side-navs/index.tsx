@@ -23,27 +23,27 @@ const SIDE_NAV = [
       },
       {
         id: 'api_proxy',
-        title: '第三方API代理',
+        title: '第三方 API 代理',
         icon: 'api_proxy',
       },
       {
-        id: 'file_api',
-        title: 'API文档',
-        icon: 'api_doc',
-      },
-      {
         id: 'orchestration_api',
-        title: 'API编排管理',
+        title: 'API 编排管理',
         icon: 'electrical_services',
       },
       {
+        id: 'faas',
+        title: 'FaaS 函数管理',
+        icon: 'api_doc',
+      },
+      {
         id: 'key_api',
-        title: 'API密钥管理',
+        title: 'API 密钥管理',
         icon: 'api_key',
       },
       {
-        id: 'faas',
-        title: 'Faas函数管理',
+        id: 'file_api',
+        title: 'API 文档',
         icon: 'api_doc',
       },
     ],
