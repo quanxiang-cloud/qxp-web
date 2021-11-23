@@ -28,7 +28,7 @@ export default function VersionStatus({
         customText={{
           Unknown: visibility === 'online' ? '上线中' : '下线中',
           True: '在线',
-          False: '下线',
+          False: '离线',
         }}
         topic='serving'
         dataID={versionID}
