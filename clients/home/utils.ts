@@ -220,7 +220,7 @@ function buildRef(
                   return value;
                 }
 
-                return value.id;
+                return value._id;
               })),
           };
         }
