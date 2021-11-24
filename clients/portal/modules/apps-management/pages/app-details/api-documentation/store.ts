@@ -137,8 +137,8 @@ class ApiDocStore {
       action: apiType,
     }).then((res: {name: string}) => {
       this.ApiPath = res.name;
-      // this.fetchApiDoc('curl', false);
-    });
+      this.isAPILoading = false;
+    }).catch((err) => toast.error(err));
   }
 
   @action
