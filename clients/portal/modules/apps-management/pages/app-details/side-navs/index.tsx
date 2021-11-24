@@ -11,7 +11,7 @@ export type Menu = {
   id: string;
   title: string;
   icon: string;
-  isExternalLink?: boolean;
+  externalLink?: string;
   children?: Array<Menu>;
 }
 

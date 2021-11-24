@@ -16,7 +16,7 @@ type Props = {
 export default function TreeNode({
   menu, defaultCollapse, level = 1, maxLevel = 3,
 }: Props): JSX.Element | null {
-  const { id, title, icon, children } = menu;
+  const { id, title, icon, children, externalLink } = menu;
   const history = useHistory();
   const nodeRef = useRef<HTMLDivElement>(null);
   const currentChildrenHeight = useRef<number>();
@@ -62,18 +62,8 @@ export default function TreeNode({
           },
         )}
         onClick={() => {
-          if (id === 'rdp') {
-            window.location.href = 'http://demo.cuafoo.cn/RDP-SERVER/modules/rdp/list.html';
-            return;
-          }
-
-          if (id === 'obddp') {
-            window.location.href = 'http://demo.cuafoo.cn/RDP-SERVER/modules/obddp/home.html';
-            return;
-          }
-
-          if (id === 'rdpDataConfig') {
-            window.location.href = 'http://demo.cuafoo.cn/RDP-SERVER/modules/ser/config/rdpDataConfig.html';
+          if (externalLink) {
+            window.location.href = externalLink;
             return;
           }
 
