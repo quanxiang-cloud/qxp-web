@@ -4,19 +4,19 @@ import { useHistory, useParams } from 'react-router-dom';
 
 import Icon from '@c/icon';
 
+import type { Menu } from './index';
+
 type Props = {
-  id: string | number;
-  title: string;
-  icon: string;
+  menu: Menu;
   level?: number;
-  children?: Props[];
   maxLevel?: number;
   defaultCollapse?: boolean;
 }
 
 export default function TreeNode({
-  id, title, icon, children, defaultCollapse, level = 1, maxLevel = 3,
+  menu, defaultCollapse, level = 1, maxLevel = 3,
 }: Props): JSX.Element | null {
+  const { id, title, icon, children } = menu;
   const history = useHistory();
   const nodeRef = useRef<HTMLDivElement>(null);
   const currentChildrenHeight = useRef<number>();
@@ -114,7 +114,9 @@ export default function TreeNode({
           'tree-child-node transition-all duration-300 transform origin-top',
           { 'opacity-0 scale-y-0': !expand },
         )}>
-        {children?.map((item) => <TreeNode {...item} key={item.id} level={level + 1} maxLevel={maxLevel} />)}
+        {children?.map((item) => {
+          return (<TreeNode menu={item} key={item.id} level={level + 1} maxLevel={maxLevel} />);
+        })}
       </div>
     </div>
   );

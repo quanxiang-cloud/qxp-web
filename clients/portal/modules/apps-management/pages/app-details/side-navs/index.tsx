@@ -1,11 +1,21 @@
 import React, { useState } from 'react';
+import { useQuery } from 'react-query';
 import cs from 'classnames';
 
 import TreeNode from './menu-tree-node';
+import { fetchSideNavExternalLinks } from './api';
 
 import './index.scss';
 
-const SIDE_NAV = [
+export type Menu = {
+  id: string;
+  title: string;
+  icon: string;
+  isExternalLink?: boolean;
+  children?: Array<Menu>;
+}
+
+const SIDE_NAV: Array<Menu> = [
   {
     id: 'page_setting',
     title: '视图管理',
@@ -63,25 +73,14 @@ const SIDE_NAV = [
     title: '应用设置',
     icon: 'app_setting',
   },
-  {
-    id: 'rdp',
-    title: '报表管理',
-    icon: 'trending_up',
-  },
-  {
-    id: 'obddp',
-    title: '大屏管理',
-    icon: 'airplay',
-  },
-  {
-    id: 'rdpDataConfig',
-    title: '数据源管理',
-    icon: 'all_inclusive',
-  },
 ];
 
 export default function CollapseMenu(): JSX.Element {
   const [menuCollapse, setMenuCollapse] = useState(true);
+  const { data: externalLinks } = useQuery('FETCH_SIDE_NAV_EXTERNAL_LINKS', () => {
+    return fetchSideNavExternalLinks();
+  });
+
   return (
     <div className='w-64 relative overflow-visible'>
       <div
@@ -95,8 +94,8 @@ export default function CollapseMenu(): JSX.Element {
           { 'collapse overflow-y-hidden': menuCollapse },
         )}
       >
-        {SIDE_NAV.map((menu) => {
-          return <TreeNode defaultCollapse={menuCollapse} {...menu} key={menu.id} level={1} maxLevel={2} />;
+        {SIDE_NAV.concat(externalLinks || []).map((menu) => {
+          return <TreeNode defaultCollapse={menuCollapse} menu={menu} key={menu.id} level={1} maxLevel={2} />;
         })}
       </div>
     </div>
