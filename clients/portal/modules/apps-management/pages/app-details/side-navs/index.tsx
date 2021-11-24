@@ -1,11 +1,21 @@
 import React, { useState } from 'react';
+import { useQuery } from 'react-query';
 import cs from 'classnames';
 
 import TreeNode from './menu-tree-node';
+import { fetchSideNavExternalLinks } from './api';
 
 import './index.scss';
 
-const SIDE_NAV = [
+export type Menu = {
+  id: string;
+  title: string;
+  icon: string;
+  externalLink?: string;
+  children?: Array<Menu>;
+}
+
+const SIDE_NAV: Array<Menu> = [
   {
     id: 'page_setting',
     title: '视图管理',
@@ -23,27 +33,27 @@ const SIDE_NAV = [
       },
       {
         id: 'api_proxy',
-        title: '第三方API代理',
+        title: '第三方 API 代理',
         icon: 'api_proxy',
       },
       {
-        id: 'file_api',
-        title: 'API文档',
-        icon: 'api_doc',
-      },
-      {
         id: 'orchestration_api',
-        title: 'API编排管理',
+        title: 'API 编排管理',
         icon: 'electrical_services',
       },
       {
+        id: 'faas',
+        title: 'FaaS 函数管理',
+        icon: 'api_doc',
+      },
+      {
         id: 'key_api',
-        title: 'API密钥管理',
+        title: 'API 密钥管理',
         icon: 'api_key',
       },
       {
-        id: 'faas',
-        title: 'Faas函数管理',
+        id: 'file_api',
+        title: 'API 文档',
         icon: 'api_doc',
       },
     ],
@@ -63,25 +73,14 @@ const SIDE_NAV = [
     title: '应用设置',
     icon: 'app_setting',
   },
-  {
-    id: 'rdp',
-    title: '报表管理',
-    icon: 'trending_up',
-  },
-  {
-    id: 'obddp',
-    title: '大屏管理',
-    icon: 'airplay',
-  },
-  {
-    id: 'rdpDataConfig',
-    title: '数据源管理',
-    icon: 'all_inclusive',
-  },
 ];
 
 export default function CollapseMenu(): JSX.Element {
   const [menuCollapse, setMenuCollapse] = useState(true);
+  const { data: externalLinks } = useQuery('FETCH_SIDE_NAV_EXTERNAL_LINKS', () => {
+    return fetchSideNavExternalLinks();
+  });
+
   return (
     <div className='w-64 relative overflow-visible'>
       <div
@@ -95,8 +94,8 @@ export default function CollapseMenu(): JSX.Element {
           { 'collapse overflow-y-hidden': menuCollapse },
         )}
       >
-        {SIDE_NAV.map((menu) => {
-          return <TreeNode defaultCollapse={menuCollapse} {...menu} key={menu.id} level={1} maxLevel={2} />;
+        {SIDE_NAV.concat(externalLinks || []).map((menu) => {
+          return <TreeNode defaultCollapse={menuCollapse} menu={menu} key={menu.id} level={1} maxLevel={2} />;
         })}
       </div>
     </div>

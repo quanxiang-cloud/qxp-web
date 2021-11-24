@@ -31,8 +31,8 @@ function PageDataTable(): JSX.Element {
     store.setParams({});
   }, [store.pageID]);
 
-  const handleSelectChange = (selectArr: string[]): void => {
-    setSelected(selectArr);
+  const handleSelectChange = (selectArr: string[], rows: Record<string, any>[]): void => {
+    setSelected(selectArr, rows);
   };
 
   return (

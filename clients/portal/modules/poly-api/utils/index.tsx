@@ -3,8 +3,8 @@ import { Edge, isEdge, removeElements } from 'react-flow-renderer';
 import { ifElse, flatten } from 'ramda';
 import { fromEvent, of, Subscription } from 'rxjs';
 import { map, mergeAll } from 'rxjs/operators';
+import { customAlphabet } from 'nanoid';
 
-import { nanoid } from '@c/form-builder/utils';
 import { not } from '@lib/utils';
 
 import { POLY_DESIGN_CONFIG } from '../constants';
@@ -18,6 +18,13 @@ interface BuildEdgeOption {
   sourceHandle?: string;
   targetHandle?: string;
 }
+
+const first = customAlphabet('qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM', 1);
+const _nanoid = customAlphabet('1234567890qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM', 7);
+function nanoid(): string {
+  return `${first()}${_nanoid()}`;
+}
+
 export function buildEdge(
   source: string,
   target: string,

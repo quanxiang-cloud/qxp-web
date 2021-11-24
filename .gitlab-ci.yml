@@ -41,7 +41,7 @@ build_all:
     - tags
     - release
   script:
-    - node_modules/.bin/gulp buildAssets
+    - make build
     - NODE_ENV=production ./node_modules/.bin/rollup --config rollup.config.js
     - go mod tidy
     - go mod vendor

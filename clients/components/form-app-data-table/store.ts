@@ -41,7 +41,7 @@ type InitData = {
   customColumns?: UnionColumns<any>[];
   filterConfig?: FilterConfig;
   canAcrossPageChoose?: boolean;
-  onSelect?: (ids: string[]) => void
+  onSelect?: (ids: string[], rows: Record<string, any>[]) => void;
   defaultSelect?: string[]
 }
 
@@ -49,7 +49,7 @@ export type FormData = Record<string, any>;
 class AppPageDataStore {
   destroyFetchTableData: IReactionDisposer;
   destroySetTableConfig: IReactionDisposer;
-  onSelect: ((ids: string[]) => void) | undefined = undefined;
+  onSelect: ((ids: string[], rows: Record<string, any>[]) => void) | undefined = undefined;
   @observable tableConfig: TableConfig = { pageSize: 10, order: undefined };
   @observable noFiltersTips: React.ReactNode = '尚未配置筛选条件。';
   @observable listLoading = false;
@@ -134,9 +134,9 @@ class AppPageDataStore {
   }
 
   @action
-  setSelected = (selected: string[]): void => {
+  setSelected = (selected: string[], rows: Record<string, any>[]): void => {
     this.selected = selected;
-    this.onSelect?.(selected);
+    this.onSelect?.(selected, rows);
   }
 
   @action

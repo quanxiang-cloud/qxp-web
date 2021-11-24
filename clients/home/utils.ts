@@ -75,8 +75,12 @@ export function formDataDiff(
       break;
     }
     case 'AssociatedRecords': {
-      const deleted: string[] = (oldValue || []).filter((value: string) => !(cValue || []).includes(value));
-      const newValues = (cValue || []).filter((value: string) => !(oldValue || []).includes(value));
+      const oldValueIDs = (oldValue || []).map(({ _id }: Record<string, any>) => _id);
+      const cValueIDs = (cValue || []).map(({ _id }: Record<string, any>) => _id);
+      const deleted: string[] = oldValueIDs.filter((value: string) => !cValueIDs.includes(value));
+      const newValues = cValueIDs.filter((id: string) => {
+        return !(oldValueIDs || []).includes(id);
+      });
       if (newValues.length || deleted.length) {
         resultValue[fieldKey] = [newValues, deleted];
       }
@@ -116,6 +120,7 @@ function buildRecordsParams(
       new: valueList,
     };
   }
+
   const [newValues = [], deleted = []] = valueList;
   return {
     new: newValues,
@@ -207,7 +212,16 @@ function buildRef(
             type: 'associated_records',
             appID,
             tableID,
-            ...buildRecordsParams(type, values[field.id]),
+            ...buildRecordsParams(
+              type,
+              (values[field.id] || []).map((value: Record<string, any> | string[]) => {
+                // 判断是否是Diff过的数据
+                if (Array.isArray(value)) {
+                  return value;
+                }
+
+                return value._id;
+              })),
           };
         }
       }

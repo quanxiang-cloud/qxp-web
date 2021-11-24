@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { observer } from 'mobx-react';
+import { toJS } from 'mobx';
 import { useParams } from 'react-router-dom';
 
 import TextHeader from '@c/text-header';
@@ -70,7 +71,7 @@ function DataModels(): JSX.Element {
         <EditorFieldModals
           onClose={onClose}
           type={editFieldType}
-          curModelField={curModelField}
+          curModelField={toJS(curModelField)}
         />
       )}
     </div>

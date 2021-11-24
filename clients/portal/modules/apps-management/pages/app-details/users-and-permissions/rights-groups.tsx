@@ -132,6 +132,7 @@ function RightsGroups(): JSX.Element {
               defaultSelected={store.currentPage.id}
               menus={menus}
               onSelect={handleClickMenu}
+              groupBanSelect
             />
           )}
         </div>

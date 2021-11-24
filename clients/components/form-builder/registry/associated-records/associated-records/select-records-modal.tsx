@@ -5,9 +5,9 @@ import FormDataTable from '@c/form-app-data-table';
 import { Ref } from '@c/form-app-data-table/type';
 
 type Props = {
-  defaultValues: string[];
+  defaultValues: Record<string, any>[];
   onClose: () => void;
-  onSubmit: (selected: string[]) => void;
+  onSubmit: (selected: Record<string, any>[]) => void;
   appID: string;
   tableID: string;
   multiple: boolean;
@@ -20,7 +20,8 @@ export default function SelectRecordsModal({
   onClose, appID, tableID, multiple, onSubmit, filterConfig, defaultValues,
 }: Props): JSX.Element {
   const tableRef: React.Ref<any> = useRef<Ref>();
-  const [selected, setSelected] = useState<string[]>(defaultValues || []);
+  const [selected, setSelected] = useState<Record<string, any>[]>(defaultValues || []);
+  const defaultSelectIDs = selected.map(({ _id }) => _id);
 
   const handleSubmit = (): void => {
     if (!tableRef.current) {
@@ -50,11 +51,11 @@ export default function SelectRecordsModal({
       Header: '操作',
       fixed: true,
       accessor: (rowData: any) => {
-        if (defaultValues.includes(rowData._id)) {
+        if (defaultSelectIDs.includes(rowData._id)) {
           return (<div>已选择</div>);
         }
 
-        return (<div className='text-btn' onClick={() => onSubmit([rowData._id])}>选择</div>);
+        return (<div className='text-btn' onClick={() => onSubmit([rowData])}>选择</div>);
       },
     },
   ];
@@ -74,8 +75,8 @@ export default function SelectRecordsModal({
         showCheckbox={multiple}
         customColumns={customColumns}
         ref={tableRef}
-        defaultSelect={selected}
-        onSelect={setSelected}
+        defaultSelect={defaultSelectIDs}
+        onSelect={(_, rows) => setSelected(rows || [])}
         pageID={tableID}
         appID={appID}
       />

@@ -342,4 +342,6 @@ export async function httpClientGraphQL<TData>(
   return data as TData;
 }
 
+window.__httpClient = httpClient;
+
 export default httpClient;

@@ -24,7 +24,7 @@ type Props = {
   style?: React.CSSProperties;
   filterConfig?: FilterConfig;
   canAcrossPageChoose?: boolean;
-  onSelect?: (ids: string[]) => void;
+  onSelect?: (ids: string[], rows?: Record<string, any>[]) => void;
   defaultSelect?: string[];
 }
 
