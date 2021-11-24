@@ -1,0 +1,22 @@
+@import "../../styles/reset.css";
+@import "../../styles/variables/colors.css";
+@import "../../styles/animation.css";
+@import "./typography.scss";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/**
+ * Use rem to fit mobile screens.
+ * 1px = .01rem within ios 1x designs(375px).
+ *
+ * In designs 100vw = 375px.
+ * And we wanna 1rem = 100px.
+ * So x vw = 100px.
+ * x = 100*100/375 = 26.666.
+ */
+html {
+  font-size: calc(10000vw/375);
+  background-color: #E6ECF9;
+}
