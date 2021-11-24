@@ -7,7 +7,7 @@ yarn install --registry=http://r.npm.internal.yunify.com
 # build frontend assets
 rm -rf dist
 
-node_modules/.bin/gulp buildAssets
+make build
 
 NODE_ENV=production ./node_modules/.bin/rollup --config rollup.config.js
 
