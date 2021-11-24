@@ -56,12 +56,13 @@ function CreateDataForm({ appID, pageID, rowID, onCancel }: Props): JSX.Element 
         }
 
         setLoading(true);
+
         await editFormDataRequest(
           appID,
           pageID,
           rowID,
           buildFormDataReqParams(schema, 'updated', newValue),
-        ).then((res)=>{
+        ).then((res) => {
           if (res.errorCount !== 0) {
             throw new Error('保存失败，没有权限');
           }
