@@ -48,8 +48,9 @@ function BodyEditor(props: Props): JSX.Element {
   ) {
     return (e: ChangeEvent<HTMLInputElement> | string | boolean | number) => {
       const value = isString(e) || isBoolean(e) || isNumber(e) ? e : e.target.value;
-      if (keyType === 'type' && isObjectField(current$.get('type')) && !isObjectField(`${value}`)) {
+      if (keyType === 'type' && !isObjectField(current$.get('type')) && isObjectField(`${value}`)) {
         current$.removeChild();
+        current$.set('rule', '');
       }
       current$.set(keyType, value);
       store$.update();
