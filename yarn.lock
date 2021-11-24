@@ -720,10 +720,10 @@
     "@swc/core-win32-ia32-msvc" "^1.2.105"
     "@swc/core-win32-x64-msvc" "^1.2.105"
 
-"@tisoap/react-flow-smart-edge@^0.2.1":
-  version "0.2.1"
-  resolved "http://r.npm.internal.yunify.com/@tisoap/react-flow-smart-edge/download/@tisoap/react-flow-smart-edge-0.2.1.tgz#fbcbf8d04b63ebee0f00adb0872c3d6bc1c3776a"
-  integrity sha1-+8v40Etj6+4PAK2whyw9a8HDd2o=
+"@tisoap/react-flow-smart-edge@^0.3.0":
+  version "0.3.0"
+  resolved "http://r.npm.internal.yunify.com/@tisoap/react-flow-smart-edge/download/@tisoap/react-flow-smart-edge-0.3.0.tgz#c0a6e3bc7912951dc901acdafe4065eb9c0b0f71"
+  integrity sha1-wKbjvHkSlR3JAaza/kBl65wLD3E=
   dependencies:
     pathfinding "0.4.18"
     react-use "17.3.1"
