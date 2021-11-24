@@ -21,7 +21,7 @@ export class PolyCanvasStore extends BehaviorSubject<POLY_API.Element[]> {
     this.next([...this.value, element]);
   }
 
-  set(elements: POLY_API.Element[], isSave = true): void {
+  set(elements: POLY_API.Element[], isSave = false): void {
     const elementsMap = elements.reduce((acc: Record<string, POLY_API.Element>, element) => {
       acc[element.id] = element;
       return acc;

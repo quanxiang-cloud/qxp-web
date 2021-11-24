@@ -10,7 +10,7 @@ export interface Input<I = any> {
 }
 
 type QueryPolyInfoInput = Input;
-type QueryPolyInfoResponse = undefined | POLY_API.POLY_INFO;
+type QueryPolyInfoResponse = undefined | POLY_API.POLY_INFO & { arrange: string };
 export function useQueryPolyInfo(
   input: QueryPolyInfoInput, options?: UseQueryOptions<QueryPolyInfoResponse, Error>,
 ): UseQueryResult<QueryPolyInfoResponse, Error> {

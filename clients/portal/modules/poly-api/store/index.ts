@@ -5,12 +5,6 @@ import { PolyCanvasStore } from './canvas';
 
 function getInitState(): POLY_API.Root {
   return {
-    namespace: '',
-    name: 'PAI名称',
-    desc: '',
-    version: '1.0',
-    id: '',
-    encoding: '',
     currentNodeConfigParams: {
       currentNode: undefined,
       schema: {},
@@ -26,8 +20,8 @@ export class PolyStore extends BehaviorSubject<POLY_API.Root> {
     super(initialState);
   }
 
-  init(value: Partial<POLY_API.Root>): void {
-    this.next({ ...getInitState(), ...value });
+  init({ polyInfo }: { polyInfo: POLY_API.POLY_INFO }): void {
+    this.next({ ...getInitState(), polyInfo });
   }
 
   set(key: string, value: any): void {

@@ -42,7 +42,7 @@ function PolyDetailsHeader({ className }: Props): JSX.Element {
   }, [history, orchestrationAPIPath]);
 
   const handleNameChange = useCallback((value: string) => {
-    store$.set('name', value);
+    store$.set('polyInfo.title', value);
     savePolyApiResult();
   }, [store$]);
 
@@ -72,7 +72,7 @@ function PolyDetailsHeader({ className }: Props): JSX.Element {
           autoMode
           changeOnBlur
           className="poly-name-editor"
-          value={store.name || ''}
+          value={store.polyInfo?.title || ''}
           onChange={handleNameChange}
           placeholder="请输入名称"
         />
