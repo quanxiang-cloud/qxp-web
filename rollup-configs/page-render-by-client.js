@@ -33,6 +33,7 @@ export default {
   input: {
     portal: 'clients/portal/index.tsx',
     home: 'clients/home/index.tsx',
+    mobile: 'clients/mobile/index.tsx',
   },
 
   external: [
