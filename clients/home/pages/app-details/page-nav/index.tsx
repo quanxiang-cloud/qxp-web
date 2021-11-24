@@ -93,6 +93,7 @@ function PageNav(): JSX.Element {
               defaultSelected={store.curPage.id}
               onSelect={(page) => onSelect(page.source as PageInfo)}
               className='app-page-tree overflow-x-hidden'
+              groupBanSelect
             />
           ) : (
             <AbsoluteCentered>

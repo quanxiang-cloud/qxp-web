@@ -71,6 +71,8 @@ const NavMsgBar = ({ type, className }: Props): JSX.Element => {
       // when new message come
       queryClient.invalidateQueries('count-unread-msg');
       queryClient.invalidateQueries('all-messages');
+      // refresh popper message list
+      queryClient.invalidateQueries('unread-messages');
     };
     pushServer.addEventListener('letter', 'letter', listener);
 
