@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { Column } from 'react-table';
 import { get } from 'lodash';
 import cs from 'classnames';
-import { useQuery } from 'react-query';
-import _, { every, isObject, map, pipe, filter } from 'lodash/fp';
 
 import Table from '@c/table';
 import Button from '@c/button';
@@ -14,18 +12,17 @@ import { isEmpty } from '@lib/utils';
 import { schemaToMap } from '@lib/schema-convert';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
-import { findTableRecords } from './api';
 import SelectRecordsModal from './select-records-modal';
 
 type Props = {
-  defaultValues: string[];
+  defaultValues: Record<string, any>[];
   appID: string;
   tableID: string;
   columns: string[];
+  value: Record<string, any>[];
   multiple: boolean;
-  selected: string[];
   associatedTable: ISchema;
-  onChange: (selectedKeys: string[]) => void;
+  onChange: (value: Record<string, any>[]) => void;
   filterConfig?: FilterConfig;
   readOnly?: boolean;
   className?: string;
@@ -54,7 +51,7 @@ function AssociatedRecords({
   defaultValues,
   associatedTable,
   columns,
-  selected,
+  value,
   appID,
   tableID,
   multiple,
@@ -64,20 +61,7 @@ function AssociatedRecords({
   className,
 }: Props): JSX.Element {
   const [showSelectModal, setShowSelectModal] = useState(false);
-  const { isLoading, data } = useQuery(['FIND_TABLE_RECORDS', selected], () => {
-    return findTableRecords(appID, tableID, selected);
-  });
-
   const tableColumns = computeTableColumns(associatedTable, columns);
-  if (isLoading) {
-    return (<div>loading...</div>);
-  }
-
-  if (!data) {
-    return (
-      <div>some error</div>
-    );
-  }
 
   !readOnly && tableColumns.push({
     id: 'remove',
@@ -89,7 +73,7 @@ function AssociatedRecords({
           clickable
           size={24}
           name="delete"
-          onClick={() => onChange(selected.filter((id) => id !== row._id))}
+          onClick={() => onChange(value.filter(({ _id }) => _id !== row._id))}
         />
       );
     },
@@ -101,7 +85,7 @@ function AssociatedRecords({
         className="mb-16"
         rowKey="_id"
         columns={tableColumns}
-        data={data}
+        data={value}
         emptyTips="没有关联记录"
       />
       {!readOnly && (
@@ -119,10 +103,10 @@ function AssociatedRecords({
           columns={columns}
           onSubmit={(newSelectedRecords) => {
             if (multiple) {
-              const selectedKeys = selected.concat(
-                newSelectedRecords.filter((id) => !selected.includes(id)),
+              const selecteds = value.concat(
+                newSelectedRecords.filter(({ _id }) => value.findIndex(({ _id: id }) => _id === id) < 0),
               );
-              onChange(selectedKeys);
+              onChange(selecteds);
             } else {
               onChange(newSelectedRecords);
             }
@@ -134,22 +118,8 @@ function AssociatedRecords({
   );
 }
 
-function transformValue(value: string[] | Record<string, string> | Record<string, string>[] = []): string[] {
-  const getID = _.get('_id');
-  const mapToIDArray = pipe(map(getID), filter((id) => !!id));
-  const isObjectArray = every(isObject);
-  if (isObjectArray(value)) {
-    return mapToIDArray(value as Record<string, string>[]);
-  }
-  if (isObject(value) && getID(value)) {
-    return [(value as Record<string, string>)._id];
-  }
-  return value as string[];
-}
-
 function AssociatedRecordsFields(props: Partial<ISchemaFieldComponentProps>): JSX.Element {
   const componentProps = props.props['x-component-props'];
-  const selected = transformValue(props.value);
   // todo handle error case
 
   return (
@@ -162,7 +132,7 @@ function AssociatedRecordsFields(props: Partial<ISchemaFieldComponentProps>): JS
       columns={componentProps.columns || []}
       multiple={componentProps.multiple || false}
       filterConfig={componentProps.filterConfig}
-      selected={selected}
+      value={props.value}
       associatedTable={componentProps.associatedTable}
       onChange={(selectedKeys) => props?.mutators?.change(selectedKeys)}
     />

@@ -75,8 +75,12 @@ export function formDataDiff(
       break;
     }
     case 'AssociatedRecords': {
-      const deleted: string[] = (oldValue || []).filter((value: string) => !(cValue || []).includes(value));
-      const newValues = (cValue || []).filter((value: string) => !(oldValue || []).includes(value));
+      const oldValueIDs = (oldValue || []).map(({ _id }: Record<string, any>) => _id);
+      const cValueIDs = (cValue || []).map(({ _id }: Record<string, any>) => _id);
+      const deleted: string[] = oldValueIDs.filter((value: string) => !(cValueIDs || []).includes(value));
+      const newValues = (cValue || []).filter(({ _id }: Record<string, any>) => {
+        return !(oldValueIDs || []).includes(_id);
+      });
       if (newValues.length || deleted.length) {
         resultValue[fieldKey] = [newValues, deleted];
       }
