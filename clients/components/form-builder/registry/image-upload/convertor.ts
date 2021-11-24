@@ -35,7 +35,7 @@ export function toSchema(value: ImageUploadConfig): ISchema {
       multiple: value.multiple,
       fileType: 'image',
       maxFileSize: value.maxFileSize || defaultConfig.maxFileSize,
-      uploaderDescription: value.uploaderDescription.substring(0, 4),
+      uploaderDescription: value.uploaderDescription?.substring(0, 4) || '',
     },
     ['x-internal']: {
       permission: getSchemaPermissionFromSchemaConfig(value),

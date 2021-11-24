@@ -32,7 +32,7 @@ export function toSchema(value: FileUploadConfig): ISchema {
     ['x-component-props']: {
       multiple: value.multiple,
       maxFileSize: value.maxFileSize || defaultConfig.maxFileSize,
-      uploaderDescription: value.uploaderDescription.substring(0, 30),
+      uploaderDescription: value.uploaderDescription?.substring(0, 30) || '',
     },
     ['x-internal']: {
       permission: getSchemaPermissionFromSchemaConfig(value),
