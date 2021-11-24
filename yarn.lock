@@ -1123,13 +1123,6 @@
     "@types/draft-js" "*"
     "@types/react" "*"
 
-"@types/react-highlight@^0.12.4":
-  version "0.12.5"
-  resolved "http://r.npm.internal.yunify.com/@types/react-highlight/download/@types/react-highlight-0.12.5.tgz#b2af7ca998247b0bc7859b674552df97b366c3b1"
-  integrity sha1-sq98qZgkewvHhZtnRVLfl7Nmw7E=
-  dependencies:
-    "@types/react" "*"
-
 "@types/react-redux@^7.1.20":
   version "7.1.20"
   resolved "http://r.npm.internal.yunify.com/@types/react-redux/download/@types/react-redux-7.1.20.tgz#42f0e61ababb621e12c66c96dda94c58423bd7df"

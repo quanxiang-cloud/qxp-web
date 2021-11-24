@@ -68,7 +68,6 @@ export default {
     'react-dnd',
     // 'react-dnd-html5-backend',
     'react-flow-renderer',
-    'react-highlight',
     'xlsx',
   ],
 

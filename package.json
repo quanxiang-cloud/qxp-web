@@ -93,7 +93,6 @@
     "@types/react-beautiful-dnd": "^13.0.0",
     "@types/react-dom": "^17.0.0",
     "@types/react-draft-wysiwyg": "^1.13.2",
-    "@types/react-highlight": "^0.12.4",
     "@types/react-router-dom": "^5.1.7",
     "@types/react-table": "^7.0.29",
     "@types/sortablejs": "^1.10.6",
