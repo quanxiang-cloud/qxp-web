@@ -1,8 +1,10 @@
-all: buildAssets buildServer startHomeServer startPortalServer rollup
+all: buildAssets server rollup
 
 clean:
 	@echo "clean previsous build..."
 	@rm -rf dist
+
+buildAssets: copyStatics copyTemplates buildIcons
 
 copyStatics:
 	@echo "copy clients/assets to dist/assets..."
@@ -18,18 +20,21 @@ buildIcons:
 	@echo "build icons..."
 	@node -e 'require("./scripts/svg-to-sprite").generateSprite()'
 
-buildAssets: copyStatics copyTemplates buildIcons
+server: startHomeServer startPortalServer
 
-buildServer:
-	@echo "build web server..."
-	@go build -o ./bin/portal server/cmd/portal/main.go
-	@go build -o ./bin/home server/cmd/home/main.go
-
-startHomeServer:
+startHomeServer: buildHome
 	./bin/home -c config.yaml
 
-startPortalServer:
+startPortalServer: buildPortal
 	./bin/portal -c config.yaml
+
+buildPortal:
+	@echo "build portal web server..."
+	@go build -o ./bin/portal server/cmd/portal/main.go
+
+buildHome:
+	@echo "build home web server..."
+	@go build -o ./bin/home server/cmd/home/main.go
 
 rollup:
 	./node_modules/.bin/rollup -c rollup.config.js -w
