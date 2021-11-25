@@ -98,27 +98,27 @@ function ApiDocumentDetails(): JSX.Element {
     {
       id: 'create',
       name: '新增',
-      content: <ApiDetails apiPath={store.ApiPath}/>,
+      content: store.isAPILoading ? <Loading/> : <ApiDetails apiPath={store.ApiPath}/>,
     },
     {
       id: 'delete',
       name: '删除',
-      content: <ApiDetails apiPath={store.ApiPath}/>,
+      content: store.isAPILoading ? <Loading/> : <ApiDetails apiPath={store.ApiPath}/>,
     },
     {
       id: 'update',
       name: '更新',
-      content: <ApiDetails apiPath={store.ApiPath}/>,
+      content: store.isAPILoading ? <Loading/> : <ApiDetails apiPath={store.ApiPath}/>,
     },
     {
       id: 'get',
       name: '查询单条',
-      content: <ApiDetails apiPath={store.ApiPath}/>,
+      content: store.isAPILoading ? <Loading/> : <ApiDetails apiPath={store.ApiPath}/>,
     },
     {
       id: 'search',
       name: '查询多条',
-      content: <ApiDetails apiPath={store.ApiPath}/>,
+      content: store.isAPILoading ? <Loading/> : <ApiDetails apiPath={store.ApiPath}/>,
     },
   ];
 
@@ -149,7 +149,7 @@ function ApiDocumentDetails(): JSX.Element {
     if (isApiNode()) {
       return (
         <div className='px-20'>
-          <ApiDetails apiPath={store.ApiPath}/>
+          {store.isAPILoading ? <Loading/> : <ApiDetails apiPath={store.ApiPath}/>}
         </div>
       );
     }

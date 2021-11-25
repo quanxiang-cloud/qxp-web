@@ -51,6 +51,8 @@ function ApiDetails({ apiPath }:Props ): JSX.Element {
     }
     return () => {
       setAPIError('');
+      setIsAPILoading(true);
+      setAPiContent(null);
     };
   }, [docType, useFieldsID, apiPath]);
 

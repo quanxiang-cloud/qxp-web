@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
 import { Input } from 'antd';
+import dayjs from 'dayjs';
 import 'prismjs/plugins/custom-class/prism-custom-class.js';
 
 import Tab from '@c/tab';
 import Icon from '@c/icon';
 import PopConfirm from '@c/pop-confirm';
-import dayjs from 'dayjs';
+import Loading from '@c/loading';
 
 import store from '../store';
 import VersionStatus from '../component/version-status';
@@ -47,7 +48,7 @@ function VersionDetails(): JSX.Element {
     {
       id: 'apidoc',
       name: 'API文档',
-      content: <ApiDetails apiPath={store.apiPath} />,
+      content: store.isAPILoading ? <Loading/> : <ApiDetails apiPath={store.apiPath}/>,
     },
   ];
 
