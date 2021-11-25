@@ -113,6 +113,26 @@ function mapRawParams(params: ApiParam[], mergeOptions?: Record<string, any>): P
   });
 }
 
+function mapRawBodyParams(params: ApiParam[], mergeOptions?: Record<string, any>): ParamItem {
+  const bodyParams: ApiParam[] = [{
+    constData: '',
+    constIn: '',
+    description: '',
+    id: '',
+    name: 'temporaryname',
+    required: false,
+    type: 'object',
+    _object_nodes_: params,
+  }];
+  const item = mapRawParams(bodyParams, mergeOptions)[0];
+
+  delete item.name;
+  delete item.description;
+  delete item.required;
+
+  return item;
+}
+
 function getDefaultParameters(): Record<ParamGroup, ApiParam[]> {
   return {
     path: [],
@@ -164,7 +184,7 @@ export default class Store {
         ...mapRawParams(query, { in: 'query', root: true }),
         ...mapRawParams(header, { in: 'header', root: true }),
         // in-body 参数都放在schema属性里
-        ...mapRawParams(body, { in: 'body', root: true }),
+        mapRawBodyParams(body, { in: 'body', root: true }),
       ],
       responses: {
         200: {
@@ -190,12 +210,12 @@ export default class Store {
   }
 
   @action
-  setParams=(group: ParamGroup, params: ApiParam[])=> {
+  setParams=(group: ParamGroup, params: ApiParam[]): void => {
     Object.assign(this.parameters, { [group]: params && params.length ? params : [getDefaultParam()] });
   }
 
   @action
-  setAllParameters=(params: ApiParam[])=>{
+  setAllParameters=(params: ApiParam[]): void =>{
     paramGroups.forEach((gp)=> {
       const items = params.map((v)=> {
         if (v.in !== gp) {
@@ -211,8 +231,11 @@ export default class Store {
           return mapObjectNode(v, true);
         }
       }).filter(Boolean);
-      // @ts-ignore
-      this.setParams(gp, items);
+      if (items[0]?.in === 'body') {
+        this.setParams(gp as ParamGroup, items[0]?._object_nodes_);
+      } else {
+        this.setParams(gp as ParamGroup, items as ApiParam[]);
+      }
     });
   }
 

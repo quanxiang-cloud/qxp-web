@@ -135,10 +135,8 @@ declare namespace POLY_API {
     name: string;
     title: string;
     active: 0 | 1;
-    arrange: string;
     desc: string;
     access: string[];
-    item: string;
     method: string;
     createAt: string;
     updateAt: string;
@@ -153,12 +151,6 @@ declare namespace POLY_API {
     PolyEndNodeDetail;
   export type PolyNode = PolyStartNode | PolyRequestNode | PolyIfNode | PolyEndNode;
   export interface RootObject<T> {
-    namespace: string;
-    name: string;
-    desc: string;
-    version: string;
-    id: string;
-    encoding: string;
     currentNodeConfigParams: {
       schema?: ISchema;
       configForm?: React.JSXElementConstructor<any>;

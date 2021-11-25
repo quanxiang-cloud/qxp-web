@@ -58,7 +58,7 @@ function PolyDetailsDesigner({ className }: Props): JSX.Element | null {
   }, [elements.length]);
 
   useEffect(() => {
-    !elements.length && elements$.set(initGraphElements(), false);
+    !elements.length && elements$.set(initGraphElements());
   }, [elements]);
 
   if (!elements.length) {

@@ -25,13 +25,13 @@ function NodeAction(
 
   function handleAddRequestNode(): void {
     const newElements = addRequestNode(currentNodeId, position, elements);
-    elements$.set(newElements);
+    elements$.set(newElements, true);
     onHide();
   }
 
   function handleAddConditionNode(): void {
     const newElements = addConditionNode(currentNodeId, position, elements);
-    elements$.set(newElements);
+    elements$.set(newElements, true);
     onHide();
   }
 

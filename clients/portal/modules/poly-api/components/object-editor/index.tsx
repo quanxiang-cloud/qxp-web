@@ -40,7 +40,7 @@ function ObjectEditor<T extends { children: T[] }>(
   const previousDataSource = usePrevious(dataSource);
   useUpdateEffect(() => {
     !isEmpty(previousDataSource) && !equals(dataSource, previousDataSource) && onChange(dataSource);
-  }, [dataSource, previousDataSource]);
+  }, [dataSource, previousDataSource, onChange]);
 
   const handleAddField = useCallback((row: Row<T> | null, store$: Store<T>) => {
     return () => onAddField(row, store$);

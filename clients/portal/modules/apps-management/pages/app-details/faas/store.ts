@@ -425,7 +425,7 @@ class FaasStore {
     }).catch((err) => {
       toast.error(err);
       this.isAPILoadingErr = err;
-    });
+    }).finally(() => this.isAPILoading = false);
   }
 
   @action

@@ -24,7 +24,7 @@ function NodeRemove({ id }: Props, ref: ForwardedRef<HTMLDivElement | null>): JS
       return;
     }
     const newElements: POLY_API.Element[] = removeNode(elementToRemove, elements);
-    elements$.set(newElements);
+    elements$.set(newElements, true);
   }, [elements, id]);
 
   return (
