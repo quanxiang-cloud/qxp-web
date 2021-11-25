@@ -35,7 +35,7 @@ function TreeContent({ className }: Props): JSX.Element {
       level-2: path=[0].children[1].children[2]
      */
     if (!prefix) {
-      return `[${idx}]`;
+      return `[${idx}].children[0].children[0].children[0]`;
     }
     return `${prefix}.children[${idx}]`;
   }
