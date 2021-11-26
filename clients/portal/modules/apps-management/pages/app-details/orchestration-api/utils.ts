@@ -1,6 +1,6 @@
-
 import type { NameSpace } from '@orchestrationAPI/effects/api/api-namespace';
 import type { TreeNode } from '@c/headless-tree/types';
+import { treeNodeSorter } from '@c/headless-tree/utils';
 
 import type APINamespaceTreeStore from './store/namespace';
 
@@ -12,10 +12,17 @@ export function apiNamespaceToTreeNode(
   expanded = true,
   parentId = namespace.id,
   order = 0,
+  sort = false,
 ): TreeNode<NameSpace> {
-  const children = child?.map(
-    (dir, index) => apiNamespaceToTreeNode(dir, [], level + 1, true, false, namespace.id, index + 1),
+  let children = child?.map(
+    (dir) => apiNamespaceToTreeNode(
+      dir, [], level + 1, true, false, namespace.id, stringToAsciiNumber(dir.name), sort,
+    ),
   );
+
+  if (sort) {
+    children = children.sort(treeNodeSorter);
+  }
 
   return {
     data: namespace,
@@ -39,4 +46,8 @@ export function getNamespaceNodeSiblingNodes(
   const currentNode = store?.currentFocusedNode as TreeNode<NameSpace> | undefined;
   const parentNode = store?.getNode(currentNode?.parentId || '');
   return parentNode?.children;
+}
+
+export function stringToAsciiNumber(value: string): number {
+  return value.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
 }

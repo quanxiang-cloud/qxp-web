@@ -14,7 +14,7 @@ import {
   useQueryNameSpaceRootPath,
 } from '@orchestrationAPI/effects/api/api-namespace';
 
-function ApiNamespace(): JSX.Element {
+function ApiNamespace(): JSX.Element | null {
   const orchestrationAPIStore = useOrchestrationAPIStore();
   const { appID } = useParams<{ appID: string }>();
   const { data: appRootPathData, isLoading: isNamespaceRootPathLoading } = useQueryNameSpaceRootPath(appID);
@@ -42,6 +42,10 @@ function ApiNamespace(): JSX.Element {
 
   if (isLoading) {
     return <Loading />;
+  }
+
+  if (!rootData) {
+    return null;
   }
 
   return (

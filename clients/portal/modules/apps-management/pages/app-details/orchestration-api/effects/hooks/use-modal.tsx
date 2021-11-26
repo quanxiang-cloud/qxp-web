@@ -47,8 +47,8 @@ export default function useModal<I, O, D>(
   const mutation = mutationHooks({
     onSuccess: (data, variables, context) => {
       message && toast.success(message);
-      onSuccess?.(data, variables, context);
       onClose();
+      onSuccess?.(data, variables, context);
     },
     onError: (error) => {
       toast.error(error);
