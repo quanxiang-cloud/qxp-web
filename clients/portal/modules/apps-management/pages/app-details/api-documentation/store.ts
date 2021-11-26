@@ -32,13 +32,13 @@ export function mapNsToNodeItem(ns: PolyAPI.Namespace | PolyAPI.Api): NodeItem<P
   };
   if (hasChild) {
     Object.assign(node, {
-      child: Array.isArray(ns.child) ? ns.child.map(mapNsToNodeItem) : undefined,
+      children: Array.isArray(ns.child) ? ns.child.map(mapNsToNodeItem) : undefined,
       childResolved: Array.isArray(ns.child),
     });
   } else if (Array.isArray(ns.child)) {
     Object.assign(node, {
       // @ts-ignore
-      child: ns.child.length && isApiNode(ns.child[0]) ? ns.child?.map(mapApiToNodeItem) : undefined,
+      children: ns.child.length && isApiNode(ns.child[0]) ? ns.child?.map(mapApiToNodeItem) : undefined,
       apisResolved: true,
     });
   }
