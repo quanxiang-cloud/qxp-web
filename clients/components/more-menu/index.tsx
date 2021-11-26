@@ -83,9 +83,13 @@ export default function MoreMenu<T extends React.Key>({
   return (
     <>
       {
-        children ? React.cloneElement(children, { ref: reference }) : (
+        children ? React.cloneElement(children, {
+          ref: reference,
+          onClick: (e: React.MouseEvent<Element, MouseEvent>) => e.stopPropagation(),
+        }) : (
           <Icon
             ref={reference as React.RefObject<SVGSVGElement>}
+            onClick={(e) => e.stopPropagation()}
             changeable
             clickable
             size={20}

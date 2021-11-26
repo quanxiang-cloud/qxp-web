@@ -139,7 +139,6 @@ function NamespaceNode({ node, store }: Props): JSX.Element | null {
           changeable
           clickable
           name='more_horiz'
-          onClick={(e) => e.stopPropagation()}
         />
       </MoreMenu>
       {CreateAPINamespaceModal}
