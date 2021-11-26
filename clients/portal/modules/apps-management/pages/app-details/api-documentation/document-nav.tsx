@@ -22,7 +22,7 @@ function DocumentNav(): JSX.Element {
       id: 'form_group',
       title: '页面表单API',
       type: 'group',
-      child: [],
+      children: [],
       root: true,
       disableSelect: true,
     };
@@ -31,14 +31,14 @@ function DocumentNav(): JSX.Element {
       id: 'data_model_group',
       title: '数据模型API',
       type: 'group',
-      child: [],
+      children: [],
       root: true,
       disableSelect: true,
     };
 
     store.dataModels.forEach((model) => {
       if (model.source === 1) {
-        form.child?.push({
+        form.children?.push({
           id: model.tableID,
           title: model.title,
           type: 'leaf',
@@ -46,7 +46,7 @@ function DocumentNav(): JSX.Element {
           parentID: 'form_group',
         });
       } else {
-        dataModel.child?.push({
+        dataModel.children?.push({
           id: model.tableID,
           title: model.title,
           type: 'leaf',
@@ -60,13 +60,13 @@ function DocumentNav(): JSX.Element {
       id: 'proxy_api',
       title: '第三方代理API',
       type: 'group',
-      child: [],
+      children: [],
       root: true,
       disableSelect: true,
     };
 
     store.apiNsList.forEach((item)=> {
-      proxyApis.child?.push(mapNsToNodeItem(item));
+      proxyApis.children?.push(mapNsToNodeItem(item));
     });
 
     return [form, dataModel, proxyApis];

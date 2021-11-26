@@ -20,8 +20,8 @@ export function treeFind<T>(menus: NodeItem<T>[], targetID: string): NodeItem<T>
       return menu;
     }
 
-    if (menu.child) {
-      const res = treeFind(menu.child, targetID);
+    if (menu.children) {
+      const res = treeFind(menu.children, targetID);
       if (res) return res;
     }
   }
@@ -35,8 +35,8 @@ export function findFirstLeafNode<T>(menus: NodeItem<T>[]): NodeItem<T> | undefi
       return menu;
     }
 
-    if (menu.child && menu.child.length) {
-      const firstPage = findFirstLeafNode(menu.child);
+    if (menu.children && menu.children.length) {
+      const firstPage = findFirstLeafNode(menu.children);
       if (firstPage) {
         return firstPage;
       }
