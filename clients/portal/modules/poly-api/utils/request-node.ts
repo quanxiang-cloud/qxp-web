@@ -1,7 +1,7 @@
 import { isArray, isEmpty, isString, omit } from 'lodash';
 
-import { RawApiDetail } from '../effects/api/raw';
 import { isObjectField } from './object-editor';
+import { RawApiDetail } from '../effects/api/raw';
 
 export function parseParamOfPath(url: string): Record<string, ParamsConfig[]> {
   const pathArr = url.split('/:');
@@ -63,9 +63,6 @@ type ParamsConfig = Omit<POLY_API.PolyNodeInput, 'data' | 'type' | 'in'> & {
   in: string;
 }
 
-function shouldConvert(name: string): boolean {
-  return !['Signature', 'Access-Token', '_signature'].includes(name);
-}
 export function convertToParamsConfig(
   originalInputs: POLY_API.PolyNodeInput[],
   parentPath = '',
@@ -74,15 +71,15 @@ export function convertToParamsConfig(
 ): Record<string, ParamsConfig[]> {
   originalInputs.forEach((apiDocInput: POLY_API.PolyNodeInput, index: number) => {
     const currentPath = parentPath ? `${parentPath}.${index}` : `${index}`;
-    const { type, data, name } = apiDocInput;
+    const { type, data } = apiDocInput;
     const currentIn = apiDocInput.in || parentIn;
     acc[currentIn] = acc[currentIn] || [];
-    if (!isObjectField(type) && shouldConvert(name)) {
+    if (!isObjectField(type)) {
       acc[currentIn].push({
         ...omit(apiDocInput, 'data'), data: isString(data) ? data : '', path: currentPath,
       });
     } else if (isArray(apiDocInput.data)) {
-      shouldConvert(name) && convertToParamsConfig(apiDocInput.data, `${currentPath}.data`, currentIn, acc);
+      convertToParamsConfig(apiDocInput.data, `${currentPath}.data`, currentIn, acc);
     }
   });
   return acc;
@@ -128,4 +125,31 @@ export function getChildrenOfCurrentSelectOption(currentChildrenData: any): any 
       path: `${parent}/${name}`,
     };
   });
+}
+
+const BLACK_LIST = ['Signature', 'Access-Token', '_signature'];
+export function filterPolyApiInputs(inputs: POLY_API.PolyNodeInput[]): POLY_API.PolyNodeInput[] {
+  const _value: POLY_API.PolyNodeInput[] = [];
+  inputs.forEach((input) => {
+    if (BLACK_LIST.includes(input.name)) {
+      return;
+    }
+
+    if (input.name === 'root') {
+      (input.data as POLY_API.PolyNodeInput[]).filter(({ name }) => {
+        return !BLACK_LIST.includes(name);
+      }).map((input) => {
+        if (!input.in) {
+          input.in = 'body';
+        }
+
+        _value.push(input);
+        return input;
+      });
+      return;
+    }
+
+    _value.push(input);
+  });
+  return _value;
 }
