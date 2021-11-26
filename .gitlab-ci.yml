@@ -49,12 +49,21 @@ build_all:
     - docker build -t "$IMAGE_REPO/qxp-web-portal:$IMAGE_TAG" -f ./deploy/Dockerfile-portal .
     - docker build -t "$IMAGE_REPO/qxp-web-home:$IMAGE_TAG" -f ./deploy/Dockerfile-home .
     - docker build -t "$IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG" -f ./deploy/Dockerfile-nginx .
+    - docker tag $IMAGE_PREFIX/qxp-web-home:$IMAGE_TAG $IMAGE_PREFIX/qxp-web-home:$CI_COMMIT_REF_NAME
+    - docker tag $IMAGE_PREFIX/qxp-web-portal:$IMAGE_TAG $IMAGE_PREFIX/qxp-web-portal:$CI_COMMIT_REF_NAME
+    - docker tag $IMAGE_PREFIX/qxp-web-nginx:$IMAGE_TAG $IMAGE_PREFIX/qxp-web-nginx:$CI_COMMIT_REF_NAME
     - docker push "$IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG"
     - docker push "$IMAGE_REPO/qxp-web-portal:$IMAGE_TAG"
     - docker push "$IMAGE_REPO/qxp-web-home:$IMAGE_TAG"
+    - docker push "$IMAGE_REPO/qxp-web-nginx:$CI_COMMIT_REF_NAME"
+    - docker push "$IMAGE_REPO/qxp-web-portal:$CI_COMMIT_REF_NAME"
+    - docker push "$IMAGE_REPO/qxp-web-home:$CI_COMMIT_REF_NAME"
     - docker rmi "$IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG"
     - docker rmi "$IMAGE_REPO/qxp-web-portal:$IMAGE_TAG"
     - docker rmi "$IMAGE_REPO/qxp-web-home:$IMAGE_TAG"
+    - docker rmi "$IMAGE_REPO/qxp-web-nginx:$CI_COMMIT_REF_NAME"
+    - docker rmi "$IMAGE_REPO/qxp-web-portal:$CI_COMMIT_REF_NAME"
+    - docker rmi "$IMAGE_REPO/qxp-web-home:$CI_COMMIT_REF_NAME"
 
 deploy_alpha:
   tags:
