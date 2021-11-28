@@ -5,5 +5,6 @@ export interface IconProps extends Props {
     type?: string,
     size?: string | number,
     clickable?: boolean,
-    disabled?: boolean
+    disabled?: boolean,
+    addPrefix?: boolean,
 }
