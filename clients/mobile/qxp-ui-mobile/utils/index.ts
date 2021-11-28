@@ -20,3 +20,7 @@ export function isNaN(val?: number): val is typeof NaN {
 
   return val !== val;
 }
+
+export function isWindow(val: unknown): val is Window {
+  return val === window;
+}
