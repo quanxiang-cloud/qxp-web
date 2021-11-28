@@ -1,0 +1,35 @@
+.todo-task-card {
+  background: linear-gradient(94.83deg, #6283FF 0%, #3B64FD 100%);
+  box-shadow: 0 8px 24px rgba(11, 38, 140, 0.18);
+  border-radius: .08rem;
+  position: relative;
+
+  .bg-card {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: .7rem;
+    height: .8rem;
+  }
+
+  .todo-task-card-item {
+    padding: .08rem 0;
+    margin: .08rem;
+    width: .72rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--gray-50);
+    cursor: pointer;
+    border-radius: .12rem;
+    -webkit-tap-highlight-color: rgba(241, 245, 249, .4);
+
+    .item-title {
+      margin-top: .16rem;
+    }
+
+    .body2 {
+      opacity: .7;
+    }
+  }
+}
