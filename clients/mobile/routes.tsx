@@ -9,7 +9,7 @@ const AppDetails = lazy(
   () => import('./pages/app-details'),
 );
 
-const pathPrefix = '/mobile';
+export const pathPrefix = '/mobile';
 
 export default (
   <Suspense fallback={<div/>}>
