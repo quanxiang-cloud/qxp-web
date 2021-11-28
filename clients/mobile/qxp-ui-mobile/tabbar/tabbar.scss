@@ -1,0 +1,45 @@
+.tabbar {
+  z-index: 100;
+  display: flex;
+  box-sizing: content-box;
+  width: 100%;
+  height: .56rem;
+  background-color: white;
+
+  &--fixed {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+  }
+}
+
+.tabbar-item {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--gray-400);
+  font-size: .12rem;
+  line-height: .15rem;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+
+  &__icon {
+    margin-bottom: .06rem;
+
+    .svg-icon {
+      display: block;
+    }
+
+    .badge {
+      margin-top: .06rem;
+    }
+  }
+
+  &--active {
+    color: var(--blue-600);
+  }
+
+}
+
