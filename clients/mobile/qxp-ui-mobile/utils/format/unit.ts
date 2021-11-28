@@ -22,8 +22,8 @@ export function getSizeStyle(originSize?: string | number, originStyle?: CSSProp
   return originStyle || {};
 }
 
-export function getZIndexStyle(zIndex?: string | number): CSSProperties {
-  const style: CSSProperties = {};
+export function getZIndexStyle(zIndex?: string | number, originStyle?: CSSProperties): CSSProperties {
+  const style: CSSProperties = { ...originStyle || {} };
   if (zIndex !== undefined) {
     style.zIndex = +zIndex;
   }
