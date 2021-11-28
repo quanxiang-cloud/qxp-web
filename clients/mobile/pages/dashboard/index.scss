@@ -1,0 +1,34 @@
+.footer {
+  box-shadow: 0 8px 24px 4px rgba(148, 163, 184, 0.25);
+  border-radius: .12rem .12rem 0 0;
+}
+
+.home-page-wrapper {
+  padding: .12rem;
+}
+
+.mine-page-wrapper {
+  padding: .16rem;
+}
+
+.my-apply-wrapper {
+  padding: .04rem .08rem;
+
+  .my-apply-item {
+    padding: .1rem .08rem;
+  }
+}
+
+.message-card {
+  padding-top: .08rem;
+
+  .message-card-item {
+    padding: .08rem .16rem;
+  }
+
+  .btn-all-message {
+    border-radius: 0 0 .08rem .08rem;
+    cursor: pointer;
+  }
+}
+
