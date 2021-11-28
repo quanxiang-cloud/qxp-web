@@ -1,0 +1,36 @@
+.badge {
+  display: inline-block;
+  box-sizing: border-box;
+  padding: 0 .06rem;
+  color: white;
+  font-weight: 500;
+  font-size: .12rem;
+  line-height: .2rem;
+  height: .2rem;
+  min-width: .2rem;
+  text-align: center;
+  background-color: var(--red-500);
+  border-radius: .12rem .12rem .02rem .12rem;
+
+  &--fixed {
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(50%, -50%);
+    transform-origin: 100%;
+  }
+
+  &--dot {
+    width: .08rem;
+    min-width: 0;
+    height: .08rem;
+    padding: 0;
+    background-color: var(--red-500);
+    border-radius: 100%;
+  }
+
+  &__wrapper {
+    position: relative;
+    display: inline-block;
+  }
+}
