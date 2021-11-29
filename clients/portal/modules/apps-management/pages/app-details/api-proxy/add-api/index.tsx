@@ -23,10 +23,6 @@ import { queryNativeApi, queryNativeApiDoc } from '../api';
 
 import './styles.scss';
 
-interface Props {
-  className?: string;
-}
-
 type MetaInfo={
   title: string;
   description: string;
@@ -52,7 +48,7 @@ function getAllPathParamNames(url: string): string[] {
   return url.match(regPathParam) || [];
 }
 
-function AddApi(props: Props) {
+function AddApi(): JSX.Element {
   const paramsStore = useContext(paramsContext);
   const formInst = useForm();
   const { register, handleSubmit, formState: { errors }, watch, setValue } = formInst;
@@ -75,7 +71,7 @@ function AddApi(props: Props) {
     onMutate: ()=> {
       setSubmitting(true);
     },
-    onSuccess: (data)=> {
+    onSuccess: ()=> {
       toast.success(isEdit ? '修改成功' : '创建成功');
       setTimeout(()=> {
         toListPage();
@@ -98,7 +94,9 @@ function AddApi(props: Props) {
       ]).then(([detail, doc])=> {
         // console.log('api doc, api detail: ', doc, detail);
         const apiPath = detail.url.slice(`${detail.schema}://${detail.host}`.length);
-        const { parameters = [], responses = {}, ['x-consts']: constants = [] } = values(get(doc, `doc.paths.${apiPath}`))[0] || {};
+        const {
+          parameters = [], responses = {}, ['x-consts']: constants = [],
+        } = values(get(doc, `doc.paths.${apiPath}`))[0] || {};
         paramsStore.setAllParameters(parameters);
         paramsStore.setConstants(constants);
         paramsStore.setResponse(responses);
@@ -138,7 +136,7 @@ function AddApi(props: Props) {
     setValue('proxyPath', watchApiName ? [prefix, watchApiName].join('/') : prefix);
   }, [watchApiName, store.svc]);
 
-  function setInitialValues(values: Record<string, any>) {
+  function setInitialValues(values: Record<string, any>): void {
     Object.entries(values).map(([name, val])=> {
       setValue(name, val);
     });
@@ -219,7 +217,7 @@ function AddApi(props: Props) {
           <div className='mb-16'>
             <p>API 名称</p>
             <input
-              className={cs('input', { error: errors.title })}
+              className={cs('api-from-input', { error: errors.title })}
               placeholder='请输入'
               maxLength={32}
               {...register('title', {
@@ -234,7 +232,7 @@ function AddApi(props: Props) {
           <div className='mb-16'>
             <p>API 路径</p>
             <input
-              className={cs('input', {
+              className={cs('api-from-input', {
                 error: errors.apiPath,
                 'bg-gray-100': isEdit,
               })}
@@ -253,8 +251,9 @@ function AddApi(props: Props) {
 
           <div className='flex items-center mb-16'>
             <div className='w-120 mr-12'>
-              <p>请求方法</p>
+              <p className='mb-8'>请求方法</p>
               <Select
+                className='mb-8'
                 options={methodOptions}
                 value={paramsStore.metaInfo.method}
                 onChange={(method: string)=> paramsStore.setMetaInfo({ method })}
@@ -264,7 +263,7 @@ function AddApi(props: Props) {
             <div className='mr-12 flex-1'>
               <p>代理路径</p>
               <input
-                className='input min-w-259 bg-gray-100'
+                className='api-from-input min-w-259 bg-gray-100'
                 readOnly
                 {...register('proxyPath')}
               />
@@ -275,7 +274,7 @@ function AddApi(props: Props) {
                 placeholder='请输入，分组内不可重复'
                 maxLength={32}
                 readOnly={isEdit}
-                className={cs('input', {
+                className={cs('api-from-input', {
                   error: errors.apiName,
                   'bg-gray-100': isEdit,
                 })}
@@ -287,7 +286,8 @@ function AddApi(props: Props) {
           <div className='mb-16'>
             <p>描述</p>
             <textarea
-              className='textarea' rows={3}
+              className='api-from-textarea'
+              rows={3}
               placeholder='选填 (不超过 200 字符)'
               maxLength={200}
               {...register('description', { maxLength: 200 })}
