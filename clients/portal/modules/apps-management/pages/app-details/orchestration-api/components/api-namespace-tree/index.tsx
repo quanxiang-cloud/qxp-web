@@ -16,11 +16,12 @@ function APINamespaceTree(): JSX.Element | null {
   }
 
   return (
-    <div className="p-10 pt-20 h-full overflow-auto z-0">
+    <div className="pt-8 h-full overflow-auto z-0 bg-gray-50 polynamespacetree">
       <Tree
         store={store}
         NodeRender={NodeRender}
         RootNodeRender={() => null}
+        switcherIcon={{ open: 'folder_outline_empty', close: 'folder_open' }}
       />
     </div>
   );

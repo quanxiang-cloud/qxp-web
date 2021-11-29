@@ -1,6 +1,11 @@
 import SelectableTreeStore from './multiple-select-tree';
 import TreeStore from './store';
 
+export type SwitcherIcon = {
+  open: string;
+  close: string;
+}
+
 export type TreeNode<T> = Readonly<{
   data: T;
 
