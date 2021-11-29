@@ -41,7 +41,7 @@ function ApiNamespace(): JSX.Element | null {
   }, [isLoading]);
 
   if (isLoading) {
-    return <Loading />;
+    return <Loading desc="加载中..." />;
   }
 
   if (!rootData) {

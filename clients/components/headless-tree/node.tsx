@@ -4,7 +4,7 @@ import cs from 'classnames';
 import Icon from '@c/icon';
 
 import TreeStore from './store';
-import type { TreeNode } from './types';
+import type { SwitcherIcon, TreeNode } from './types';
 
 type Props<T> = {
   node: TreeNode<T>;
@@ -23,22 +23,30 @@ type Props<T> = {
   onDrop: (node: TreeNode<T>) => void;
   setDraggingNode?: (node: TreeNode<T> | null) => void;
   className?: string;
+  switcherIcon?: SwitcherIcon;
 }
 
+type RenderSwitcherIconExtra = { onClick: () => void, switcherIcon?: SwitcherIcon };
 function renderSwitcherIcon({
   childrenStatus,
   expanded,
   onClick,
-}: Pick<TreeNode<any>, 'childrenStatus' | 'expanded'> & { onClick: () => void }): JSX.Element {
+  switcherIcon,
+}: Pick<TreeNode<any>, 'childrenStatus' | 'expanded'> & RenderSwitcherIconExtra): JSX.Element {
   if (childrenStatus === 'loading') {
     return (<Icon name="refresh" className="animate-spin" size={16} />);
   }
 
+  let name = 'caret-down';
+  if (switcherIcon) {
+    name = expanded ? switcherIcon.close : switcherIcon.open;
+  }
+
   return (
     <Icon
-      name="caret-down"
+      name={name}
       size={16}
-      className={cs('tree-node__toggle-icon p-2', {
+      className={cs('tree-node__toggle-icon p-2', switcherIcon ? null : {
         'tree-node__toggle-icon--opened': expanded,
       })}
       onClick={(e): void => {
@@ -67,6 +75,7 @@ export default function renderNode<T>({
   onDragOver,
   onDrop,
   className,
+  switcherIcon,
 }: Props<T>): JSX.Element {
   const [isAcceptDrop, setAcceptDrop] = React.useState<boolean>(false);
   const _canDropOn = React.useMemo(() => canDropOn?.(node), [node]);
@@ -125,6 +134,7 @@ export default function renderNode<T>({
           childrenStatus: node.childrenStatus,
           expanded: node.expanded,
           onClick: () => onSwitcherClick(node),
+          switcherIcon,
         }) : null
       }
       <div

@@ -5,7 +5,7 @@ import { observable, action, toJS, reaction, IReactionDisposer } from 'mobx';
 
 import TreeStore from './store';
 import RenderNode from './node';
-import { TreeNode } from './types';
+import { SwitcherIcon, TreeNode } from './types';
 import SelectableTreeStore from './multiple-select-tree';
 
 interface Props<T> {
@@ -19,6 +19,7 @@ interface Props<T> {
   onSelect?: (data: T) => void;
   className?: string;
   itemClassName?: string;
+  switcherIcon?: SwitcherIcon;
 }
 
 @observer
@@ -186,6 +187,7 @@ export default class Tree<T> extends React.Component<Props<T>> {
                 onClick={this.handleNodeClick}
                 onSwitcherClick={this.handleSwitcherClick}
                 className={itemClassName}
+                switcherIcon={this.props.switcherIcon}
               />
             );
           })

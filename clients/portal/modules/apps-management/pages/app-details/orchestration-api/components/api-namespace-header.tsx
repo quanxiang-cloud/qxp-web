@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { observer } from 'mobx-react';
 
 import Icon from '@c/icon';
-import Button from '@c/button';
 import useModal from '@orchestrationAPI/effects/hooks/use-modal';
 import { ModalType } from '@orchestrationAPI/constants';
 import {
@@ -42,13 +41,15 @@ function APINamespaceHeader(): JSX.Element {
 
   return (
     <header
-      className="border-b p-20 flex justify-between items-center bg-white"
+      className="px-16 py-12 flex justify-between items-center bg-gray-50 h-44"
       style={{ zIndex: 1 }}
     >
-      <span>API目录</span>
-      <Button onClick={handleCreateNamespaceModal}>
-        <Icon name="add" />
-      </Button>
+      <span className="text-caption-no-weight font-semibold">API 编排</span>
+      <Icon
+        clickable
+        name="icon_folder"
+        onClick={handleCreateNamespaceModal}
+      />
       {CreateAPINamespaceModal}
     </header>
   );

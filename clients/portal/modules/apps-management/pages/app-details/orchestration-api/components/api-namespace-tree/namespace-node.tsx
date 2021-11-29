@@ -133,7 +133,7 @@ function NamespaceNode({ node, store }: Props): JSX.Element | null {
       onClick={handleClick}
       className="transition-all pr-10 py-8 w-full flex items-center justify-between"
     >
-      <div className="ml-10 truncate" title={node.name}>
+      <div className="ml-10 truncate tree-node__content--title" title={node.name}>
         {node.name}
       </div>
       <MoreMenu
