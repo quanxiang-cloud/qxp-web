@@ -28,6 +28,7 @@ type AllUserPickerProps = SelectProps<any> & {
 }
 
 const PAGE_SIZE = 10;
+const { Option: SelectOption } = Select;
 
 const UserPicker = ({
   optionalRange,
@@ -39,24 +40,23 @@ const UserPicker = ({
   value,
   ...componentsProps
 }: Props): JSX.Element => {
-  const currentUser = [{
+  const currentUser = {
     label: window.USER.userName,
     value: window.USER.id,
-  }];
+    email: window.USER.email,
+  };
 
   useEffect(() => {
     const noLabelValues = getNoLabelValues(value);
-
     if (noLabelValues.length) {
-      getUserDetail<{ user: { id: string, userName: string }[] }>({
-        query: `{user(ids:${JSON.stringify(noLabelValues)}) {id, userName }}`,
+      getUserDetail<{ user: { id: string, userName: string, email: string }[] }>({
+        query: `{user(ids:${JSON.stringify(noLabelValues)}) {id, userName, email }}`,
       }).then((res) => {
         const newValue = (value as LabelValue[]).map(({ label, value }) => {
           if (value && !label) {
             const curUser = res.user.find(({ id }) => id === value);
-            return { label: curUser?.userName || '', value };
+            return { label: curUser?.userName ? `${curUser.userName}(${curUser.email})` : '', value };
           }
-
           return { label, value };
         });
         onChange?.(newValue);
@@ -70,7 +70,11 @@ const UserPicker = ({
     }
 
     if (optionalRange === 'currentUser' || defaultRange === 'currentUser') {
-      onChange?.(currentUser);
+      const { label, value, email } = currentUser;
+      onChange?.([{
+        label: `${label}(${email})`,
+        value,
+      }]);
     } else if (defaultValues) {
       onChange?.(defaultValues);
     }
@@ -79,13 +83,14 @@ const UserPicker = ({
   const handleChange = (_selected: LabelValue | LabelValue[]): void => {
     let selectedValues: LabelValue[] = _selected ? ([] as LabelValue[]).concat(_selected) : [];
     selectedValues = selectedValues.map(({ label, value }) => {
-      return { label, value };
+      const labelValue = Array.isArray(label) ? label.join('') : label;
+      return { label: labelValue, value };
     });
     onChange && onChange(selectedValues);
   };
 
   if (optionalRange === 'currentUser') {
-    componentsProps.options = currentUser;
+    componentsProps.options = [currentUser];
   }
 
   if (!editable) {
@@ -112,16 +117,27 @@ const UserPicker = ({
     );
   }
 
+  const { options } = componentsProps;
+
   return (
     <Select
       {...componentsProps}
       labelInValue
       allowClear
       value={value}
+      options={undefined}
       disabled={!editable}
       onChange={handleChange}
       className={cs('user-selector', componentsProps.className || '')}
-    />
+    >
+      {
+        options?.map((opt) => (
+          <SelectOption key={opt.value} value={opt.value}>
+            {opt.label}({opt.email})
+          </SelectOption>
+        ))
+      }
+    </Select>
   );
 };
 
@@ -146,6 +162,7 @@ const AllUserPicker = ({ appID, value, ...otherProps }: AllUserPickerProps): JSX
         const newOptions = (res.data || []).map((itm) => ({
           label: itm.userName,
           value: itm.id,
+          email: itm.email,
         }));
         let totalOptions = [...newOptions];
         if (isAppend) {
@@ -188,10 +205,18 @@ const AllUserPicker = ({ appID, value, ...otherProps }: AllUserPickerProps): JSX
   return (
     <Select
       {...componentsProps}
+      options={undefined}
       allowClear
-      options={options}
       className={cs('user-selector', componentsProps.className)}
-    />
+    >
+      {
+        options.map((opt:Option) => (
+          <SelectOption key={opt.value} value={opt.value}>
+            {opt.label}({opt.email})
+          </SelectOption>
+        ))
+      }
+    </Select>
   );
 };
 
