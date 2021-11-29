@@ -5,7 +5,7 @@ export interface AssociatedDataConfig {
   description?: string;
   displayModifier: FormBuilder.DisplayModifier;
   appID: string;
-  associationTableID: string;
+  associationTableID: string | undefined;
   fieldName: string;
   required: boolean;
   placeholder: string;
@@ -18,7 +18,7 @@ export const defaultConfig: AssociatedDataConfig = {
   placeholder: '选择关联数据',
   description: '',
   displayModifier: 'normal',
-  associationTableID: '',
+  associationTableID: undefined,
   appID: '',
   fieldName: '',
   required: false,

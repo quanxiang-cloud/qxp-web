@@ -1,20 +1,21 @@
-/* eslint-disable operator-linebreak */
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 import cs from 'classnames';
 import { get } from 'lodash';
 
+import toast from '@lib/toast';
 import { registry } from '@c/form-builder';
-import CanvasContext from '@c/form-builder/canvas-context';
-import DeleteButton from '@c/form-builder/delete-button';
 import MoveButton from '@c/form-builder/move-button';
+import { StoreContext } from '@c/form-builder/context';
 import CloneButton from '@c/form-builder/clone-button';
+import DeleteButton from '@c/form-builder/delete-button';
+import CanvasContext from '@c/form-builder/canvas-context';
+import { validateFieldConfig } from '@c/form-builder/utils';
 
-import { StoreContext } from '../../context';
 import DragDrop from '../drag-drop';
 import { LabelProps } from './field-label';
-import { ContentProps } from './field-content';
 import FieldFragment from './field-fragment';
+import { ContentProps } from './field-content';
 
 type ReactMouseEvent = React.MouseEvent<HTMLDivElement, MouseEvent>;
 
@@ -56,7 +57,10 @@ function FieldItem(field: ISchema): JSX.Element {
   const setActiveFieldId = (e: ReactMouseEvent, fieldId: string): void => {
     e.stopPropagation();
     e.preventDefault();
-    store.setActiveFieldKey(fieldId);
+
+    validateFieldConfig(store.configValidate).then(() => {
+      store.setActiveFieldKey(fieldId);
+    }).catch((err) => toast.error(err));
   };
 
   const dragDropProps: DragDropProps = {
@@ -78,9 +82,9 @@ function FieldItem(field: ISchema): JSX.Element {
         onClick={(e) => setActiveFieldId(e, fieldId)}
       >
         {/* <span style={{ color: 'red' }}>{fieldId}+{field['x-index']}</span> */}
-        {isLayoutComponent
-          ? React.createElement(Comp, { ...field })
-          : (<FieldFragment
+        {isLayoutComponent ?
+          React.createElement(Comp, { ...field }) :
+          (<FieldFragment
             isTopAlign={store.labelAlign === 'top'}
             labelProps={labelProps}
             contentProps={contentProps}

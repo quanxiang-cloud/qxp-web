@@ -5,12 +5,13 @@ import { useHistory, useParams } from 'react-router-dom';
 import { FormButtonGroup } from '@formily/antd';
 import { useCss } from 'react-use';
 
+import Icon from '@c/icon';
 import Modal from '@c/modal';
 import toast from '@lib/toast';
-import { FormRenderer } from '@c/form-builder';
-import Icon from '@c/icon';
 import Button from '@c/button';
+import { FormRenderer } from '@c/form-builder';
 import Tab, { TabProps } from '@c/no-content-tab';
+import { validateFieldConfig } from '@c/form-builder/utils';
 
 import NotSavedModal from './not-saved-modal';
 import store from './store';
@@ -34,6 +35,14 @@ function FormDesignHeader(): JSX.Element {
 
   const tabChange = (tabKey: string): void => {
     const query = store.pageName ? `?pageName=${store.pageName}` : '';
+
+    if (tabKey === 'pageSetting') {
+      validateFieldConfig(store.formStore?.configValidate).then(() => {
+        history.replace(`/apps/formDesign/${tabKey}/${pageId}/${appID}${query}`);
+      }).catch((err) => toast.error(err));
+      return;
+    }
+
     history.replace(`/apps/formDesign/${tabKey}/${pageId}/${appID}${query}`);
   };
 
@@ -93,7 +102,7 @@ function FormDesignHeader(): JSX.Element {
           预览表单
         </Button>
         <Button
-          onClick={store.saveFormSchema}
+          onClick={store.saveForm}
           iconName='save'
           modifier='primary'
           forbidden={store?.formStore?.flattenFields?.length === 0}

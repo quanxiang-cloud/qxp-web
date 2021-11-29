@@ -3,10 +3,13 @@ import { toJS } from 'mobx';
 import { skip } from 'rxjs/operators';
 import { Input, Switch, Select, Radio } from '@formily/antd-components';
 import {
+  useForm,
   SchemaForm,
   FormEffectHooks,
   createAsyncFormActions,
+  IForm,
 } from '@formily/antd';
+import { FormInstance } from 'antd';
 
 import { schemaToMap } from '@lib/schema-convert';
 import FilterConfig from '@c/form-builder/registry/associated-data/filter-config';
@@ -62,23 +65,10 @@ async function getTableFieldsToOptions(
 }
 
 function AssociatedDataConfig({ initialValue, onChange, subTableSchema }: Props): JSX.Element {
-  const { appID, pageID, schema: _schema } = useContext(StoreContext);
+  const { appID, pageID, schema: _schema, setConfigValidate } = useContext(StoreContext);
   const schema = subTableSchema || _schema;
   const actions = createAsyncFormActions();
   const { setFieldState } = actions;
-
-  useEffect(() => {
-    onChange({ ...initialValue, appID });
-    getLinkageTables(appID).then((pages) => {
-      setFieldState('associationTableID', (state) => {
-        state.props.enum = pages.filter(({ value }) => value !== pageID);
-      });
-    });
-
-    if (initialValue.associationTableID) {
-      setTableFieldOptions(initialValue.associationTableID, initialValue.associativeConfig?.rules);
-    }
-  }, [appID, initialValue.associationTableID]);
 
   const setTableFieldOptions = (
     tableID: string, associativeRules?: FormBuilder.DataAssignment[], clearValue?: boolean,
@@ -140,12 +130,33 @@ function AssociatedDataConfig({ initialValue, onChange, subTableSchema }: Props)
     });
   };
 
+  const form = useForm({
+    actions: actions,
+    effects: formModelEffect,
+    onChange: (values) => onChange({ ...initialValue, ...values, appID }),
+    initialValues: initialValue,
+  });
+
+  useEffect(() => {
+    setConfigValidate(form.validate);
+  }, [form.validate]);
+
+  useEffect(() => {
+    onChange({ ...initialValue, appID });
+    getLinkageTables(appID).then((pages) => {
+      setFieldState('associationTableID', (state) => {
+        state.props.enum = pages.filter(({ value }) => value !== pageID);
+      });
+    });
+
+    if (initialValue.associationTableID) {
+      setTableFieldOptions(initialValue.associationTableID, initialValue.associativeConfig?.rules);
+    }
+  }, [appID, initialValue.associationTableID]);
+
   return (
     <SchemaForm
-      initialValues={initialValue}
-      actions={actions}
-      effects={formModelEffect}
-      onChange={(values) => onChange({ ...initialValue, ...values, appID })}
+      form={form as IForm & FormInstance}
       components={COMPONENTS}
       schema={configSchema}
     />
