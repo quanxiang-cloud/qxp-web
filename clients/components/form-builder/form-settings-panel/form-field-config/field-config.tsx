@@ -1,19 +1,19 @@
 import React, { useContext, useEffect, useRef } from 'react';
+import { toJS } from 'mobx';
+import { observer } from 'mobx-react';
 import { Radio, Input, Select, Switch, NumberPicker, ArrayTable, Checkbox } from '@formily/antd-components';
 import {
   SchemaForm, ISchema, IFormEffect, ISchemaFormActions, ISchemaFormAsyncActions,
 } from '@formily/antd';
 
-import { StoreContext } from '../../context';
-import { observer } from 'mobx-react';
-import { toJS } from 'mobx';
+import { StoreContext } from '@c/form-builder/context';
 
-import { FieldConfigContext } from './context';
-import OptionsConfig from './options_config';
-import DefaultValueLinkageConfigBtn from './default-value-linkage-config-btn';
 import EditLabels from './edit-labels';
-import CalculationFormulaBtn from './calculation-formula-btn';
+import OptionsConfig from './options_config';
+import { FieldConfigContext } from './context';
 import InputForLabels from './input-for-labels';
+import CalculationFormulaBtn from './calculation-formula-btn';
+import DefaultValueLinkageConfigBtn from './default-value-linkage-config-btn';
 
 const COMMON_CONFIG_COMPONENTS = {
   ArrayTable,
@@ -41,7 +41,13 @@ type Props = {
 }
 
 function SchemaFieldConfig({ onChange, initialValue, schema, components, effects }: Props): JSX.Element {
+  const store = useContext(StoreContext);
   const { actions } = useContext(FieldConfigContext);
+
+  useEffect(() => {
+    store.setConfigValidate(actions.validate);
+  }, [actions.validate]);
+
   return (
     <SchemaForm
       initialValues={initialValue}

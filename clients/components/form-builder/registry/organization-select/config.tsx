@@ -5,6 +5,7 @@ import {
   IAntdFormItemProps,
   FormEffectHooks,
   createAsyncFormActions,
+  useForm,
 } from '@formily/antd';
 import { Input, Radio, MegaLayout, Switch } from '@formily/antd-components';
 
@@ -24,7 +25,7 @@ interface Props {
 }
 
 const OrganizationPickerConfigForm = ({ initialValue, onChange }: Props): JSX.Element => {
-  const { appID } = useContext(StoreContext);
+  const { appID, setConfigValidate } = useContext(StoreContext);
   const actions = createAsyncFormActions();
   const { setFieldState } = actions;
 
@@ -49,14 +50,20 @@ const OrganizationPickerConfigForm = ({ initialValue, onChange }: Props): JSX.El
     });
   }
 
+  const form = useForm({
+    actions: actions,
+    effects: formEffects,
+    defaultValue: initialValue,
+    onChange: (formData) => onChange({ ...initialValue, ...formData }),
+  });
+
+  useEffect(() => {
+    setConfigValidate(form.validate);
+  }, [form.validate]);
+
   return (
     <div>
-      <Form
-        defaultValue={initialValue}
-        actions={actions}
-        effects={formEffects}
-        onChange={(formData) => onChange({ ...initialValue, ...formData })}
-      >
+      <Form form={form as any}>
         <Field
           name="title"
           title="标题名称"
