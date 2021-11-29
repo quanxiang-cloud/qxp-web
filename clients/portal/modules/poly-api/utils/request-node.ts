@@ -128,14 +128,29 @@ export function getChildrenOfCurrentSelectOption(currentChildrenData: any): any 
 }
 
 const BLACK_LIST = ['Signature', 'Access-Token', '_signature'];
-export function filterPolyApiInputs(inputs: POLY_API.PolyNodeInput[]): POLY_API.PolyNodeInput[] {
-  const _value: POLY_API.PolyNodeInput[] = [];
+
+function omitNodeInputProperties(
+  inputs: POLY_API.PolyNodeInput[], properties: string[],
+): POLY_API.PolyNodeInput[] {
+  return inputs.map((input: POLY_API.PolyNodeInput) => {
+    const _input = omit(input, properties) as POLY_API.PolyNodeInput;
+    if (isObjectField(input.type)) {
+      _input.data = omitNodeInputProperties(_input.data as POLY_API.PolyNodeInput[], properties);
+      return _input;
+    }
+
+    return _input;
+  });
+}
+
+function reduceNoiseNodeInputData(inputs: POLY_API.PolyNodeInput[]): POLY_API.PolyNodeInput[] {
+  const _inputs: POLY_API.PolyNodeInput[] = [];
   inputs.forEach((input) => {
     if (BLACK_LIST.includes(input.name)) {
       return;
     }
 
-    if (input.name === 'root') {
+    if (input.name === 'root' || !input.name) {
       (input.data as POLY_API.PolyNodeInput[]).filter(({ name }) => {
         return !BLACK_LIST.includes(name);
       }).map((input) => {
@@ -143,13 +158,19 @@ export function filterPolyApiInputs(inputs: POLY_API.PolyNodeInput[]): POLY_API.
           input.in = 'body';
         }
 
-        _value.push(input);
+        _inputs.push(input);
         return input;
       });
       return;
     }
 
-    _value.push(input);
+    _inputs.push(input);
   });
-  return _value;
+
+  return _inputs;
+}
+
+export function filterPolyApiInputs(inputs: POLY_API.PolyNodeInput[]): POLY_API.PolyNodeInput[] {
+  const _inputs = reduceNoiseNodeInputData(inputs);
+  return omitNodeInputProperties(_inputs, ['mock', 'desc']);
 }
