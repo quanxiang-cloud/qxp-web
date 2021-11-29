@@ -222,14 +222,14 @@ export default class TreeStore<T> {
   }
 
   @action
-  addChildren(parentID: string, nodes: TreeNode<T>[]): boolean {
+  addChildren(parentID: string, nodes: TreeNode<T>[], isOverwrite = false): boolean {
     const parentNode = this.getNode(parentID);
 
     if (!parentNode) {
       return false;
     }
 
-    this.updateNode(addChildren(parentNode, nodes));
+    this.updateNode(addChildren(parentNode, nodes, isOverwrite));
     return true;
   }
 

@@ -9,19 +9,26 @@ import {
   useApiNamespaceStore,
 } from '@portal/modules/apps-management/pages/app-details/orchestration-api/context';
 
-import { useCreateNameSpace, CreateInput, CreateResponse, CreateParams } from '../effects/api/api-namespace';
+import {
+  useCreateNameSpace, CreateInput, CreateResponse, CreateParams,
+} from '../effects/api/api-namespace';
 
 function APINamespaceHeader(): JSX.Element {
   const [modalType, setModalType] = useState<ModalType>();
   const apiNamespaceStore = useApiNamespaceStore();
   const path = `create${apiNamespaceStore?.rootNode.path}`;
 
-  const Modal = useModal<CreateInput, CreateResponse, CreateParams>(
+  function refreshParent(): void {
+    apiNamespaceStore?.loadChildren(apiNamespaceStore?.rootNode, true);
+  }
+
+  const CreateAPINamespaceModal = useModal<CreateInput, CreateResponse, CreateParams>(
     modalType,
     ModalType.CREATE_NAMESPACE,
     useCreateNameSpace,
     {
       message: '创建目录成功',
+      onSuccess: refreshParent,
       onClose: () => setModalType(undefined),
       formToApiInputConvertor: (body) => {
         return { path, body };
@@ -42,7 +49,7 @@ function APINamespaceHeader(): JSX.Element {
       <Button onClick={handleCreateNamespaceModal}>
         <Icon name="add" />
       </Button>
-      {Modal}
+      {CreateAPINamespaceModal}
     </header>
   );
 }

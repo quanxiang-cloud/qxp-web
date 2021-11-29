@@ -30,9 +30,16 @@ function NamespaceNode({ node, store }: Props): JSX.Element | null {
 
   async function refreshParent(type: 'create' | 'edit' | 'delete'): Promise<void | null> {
     const pNode = store.getNode(node.parentId || '');
-    pNode && await store.loadChildren(pNode, true);
+    if (type === 'delete' && pNode?.children?.length === 1) {
+      store.addChildren(pNode.id, [], true);
+    } else if (pNode) {
+      await store.loadChildren(pNode, true);
+    }
 
     function loadChildren(n: TreeNode<NameSpace>): void {
+      if (n.childrenStatus === 'resolved' && n.expanded && !(type === 'create' && n.id === node.id)) {
+        return;
+      }
       n.expanded && store.loadChildren(n, true);
       n.children?.forEach(loadChildren);
     }
