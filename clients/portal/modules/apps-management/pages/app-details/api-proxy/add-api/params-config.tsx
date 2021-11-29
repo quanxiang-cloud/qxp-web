@@ -1,5 +1,4 @@
 import React, { useContext, Fragment } from 'react';
-import { useFormContext } from 'react-hook-form';
 import { observer } from 'mobx-react';
 
 import ParamRow from './param-row';
@@ -31,9 +30,8 @@ export interface ApiParam {
   [key: string]: any;
 }
 
-function ParamsConfig({ title, group, defaultValues }: ConfigProps) {
+function ParamsConfig({ title, group }: ConfigProps): JSX.Element {
   const store = useContext(paramsContext);
-  const { register, control, formState: { errors } } = useFormContext();
 
   function renderRow(row: ApiParam, idx: number, parentPath?: string): JSX.Element {
     const { _object_nodes_, _array_nodes_ } = row;
@@ -66,9 +64,11 @@ function ParamsConfig({ title, group, defaultValues }: ConfigProps) {
 
   return (
     <div className='mb-8'>
-      {title && <p className='text-body'>{title}</p>}
+      {title && <p className='text-body mb-4'>{title}</p>}
       <div>
-        <table className='table-auto table border-separate border border-gray-200 w-full rounded-8 params-table'>
+        <table
+          className='table-auto table border-separate border border-gray-200 w-full rounded-8 params-table'
+        >
           <colgroup>
             <col style={{ width: '40%', overflowX: 'auto' }} />
             <col width={150} />

@@ -8,6 +8,7 @@ import {
 } from 'react-beautiful-dnd';
 
 import Icon from '@c/icon';
+import toast from '@lib/toast';
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 import { StoreContext } from '@c/form-builder/context';
 import { generateRandomFormFieldID, numberTransform } from '@c/form-builder/utils';
@@ -122,9 +123,11 @@ function SubTableSchema(props: ISchemaFieldComponentProps): JSX.Element {
   }
 
   function onShowSubTableConfig(subTableKey: string): void {
-    actions.setFieldState('Fields.curConfigSubTableKey', (state) => {
-      state.value = subTableKey;
-    });
+    actions.validate().then(() => {
+      actions.setFieldState('Fields.curConfigSubTableKey', (state) => {
+        state.value = subTableKey;
+      });
+    }).catch(({ errors }) => toast.error(errors[0].messages[0]));
   }
 
   function handleOnDragEnd(result: DropResult): void {

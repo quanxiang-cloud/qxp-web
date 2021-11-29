@@ -1,6 +1,6 @@
-import { action, computed, observable, toJS } from 'mobx';
-import { cloneDeep, groupBy, set } from 'lodash';
 import { nanoid } from 'nanoid';
+import { cloneDeep, groupBy, set } from 'lodash';
+import { action, computed, observable, toJS } from 'mobx';
 
 import logger from '@lib/logger';
 import Modal from '@c/modal';
@@ -15,6 +15,7 @@ import {
   flattenSchemaToFields,
 } from './utils/fields-operator';
 import {
+  ValidateFuncType,
   filterLinkageRules,
   shouldFilterLinkages,
   filterLinkageTargetKeys,
@@ -56,6 +57,7 @@ export default class FormBuilderStore {
   @observable flattenFields: FormItem[] = [];
   @observable activeSubtableFieldId = '';
   @observable serialFieldIds: Array<string> = [];
+  @observable configValidate: ValidateFuncType | undefined;
 
   constructor({ schema, appID, pageID }: Props) {
     this.flattenFields = flattenSchemaToFields(schema);
@@ -125,6 +127,11 @@ export default class FormBuilderStore {
         defaultValueFrom: 'customized',
       },
     };
+  }
+
+  @action.bound
+  setConfigValidate(validate: ValidateFuncType): void {
+    this.configValidate = validate;
   }
 
   // field to schema; using: submit stage
@@ -219,26 +226,6 @@ export default class FormBuilderStore {
       this.flattenFields.splice(currentIndex, 1);
     }
     this.flattenFields = updateFieldIndex(this.flattenFields);
-  }
-
-  @action validate(fields: FormItem[] = this.flattenFields): boolean {
-    if (!fields.length) {
-      return true;
-    }
-    return fields.map(({ componentName, configValue, children }) => ({
-      elem: registry.elements[componentName.toLowerCase()],
-      configValue,
-      children,
-    })).every(({ elem, configValue, children = [] }) => {
-      let isFieldValid = true;
-      if (elem && typeof elem.validate === 'function') {
-        isFieldValid = elem.validate(toJS(configValue), elem?.configSchema);
-      }
-      if (!isFieldValid) {
-        return false;
-      }
-      return this.validate(children);
-    });
   }
 
   @action setDragging(isD: boolean): void {

@@ -67,8 +67,12 @@
           -webkit-box-shadow: 0 0 0 30px white inset !important;
         }
 
-        > input.input {
+        > input {
           border: none;
+          font-size: 12px;
+          height: 32px;
+          width: 100%;
+          padding: 0 8px;
           &.error {
             border: 1px solid var(--red-500);
           }

@@ -163,6 +163,8 @@ export const queryApiKey = async ( id: string ): Promise<PolyAPI.ApiKeyList> => 
   return await httpClient('/api/v1/polyapi/holdingkey/query', { id });
 };
 
-export const activeApiKey = async (params: { id: string; active: number; service?: string }): Promise<any> => {
+export const activeApiKey = async (
+  params: { id: string; active: number; service?: string},
+): Promise<any> => {
   return await httpClient('/api/v1/polyapi/holdingkey/active', params);
 };

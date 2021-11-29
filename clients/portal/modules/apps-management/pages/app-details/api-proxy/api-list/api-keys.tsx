@@ -148,15 +148,16 @@ function ApiKeys(): JSX.Element {
               <ToolTip
                 label='复制'
                 position='top'
-                wrapperClassName="flex-grow-0 relative z-10 invisible copy-tooltip"
                 labelClassName="whitespace-nowrap text-12"
               >
-                <Icon
-                  name='content_copy'
-                  size={16}
-                  onClick={() => copyToClipboard(keyID, '复制成功')}
-                  className='m-10 cursor-pointer hover:text-blue-600'
-                />
+                <div className='pt-1 ml-10 pl-3'>
+                  <Icon
+                    name='content_copy'
+                    size={16}
+                    onClick={() => copyToClipboard(keyID, '复制成功')}
+                    className='cursor-pointer hover:text-blue-600 invisible copy-tooltip'
+                  />
+                </div>
               </ToolTip>
             )}
           </div>

@@ -33,6 +33,8 @@ interface Props<T extends Record<string, any>> {
   style?: React.CSSProperties;
   canSetColumnWidth?: boolean;
   canAcrossPageChoose?: boolean;
+  initWidthMap?: WidthMap;
+  widthMapChange?: (widthMap: WidthMap) => void;
 }
 function Table<T extends Record<string, any>>({
   className,
@@ -49,10 +51,12 @@ function Table<T extends Record<string, any>>({
   style,
   canSetColumnWidth,
   canAcrossPageChoose,
+  initWidthMap,
+  widthMapChange,
 }: Props<T>): JSX.Element {
   const _columns = useExtendColumns(columns, showCheckbox);
   const widthMapRef = useRef<WidthMap>({});
-  const [widthMap, setWidthMap] = useState<WidthMap>({});
+  const [widthMap, setWidthMap] = useState<WidthMap>(initWidthMap || {});
   widthMapRef.current = widthMap;
 
   const {
@@ -75,10 +79,11 @@ function Table<T extends Record<string, any>>({
       return;
     }
 
-    setWidthMap({
+    const _widthMap = {
       ...widthMapRef.current,
       [columnID]: x,
-    });
+    };
+    setWidthMap(_widthMap);
   };
 
   useEffect(() => {
@@ -144,6 +149,7 @@ function Table<T extends Record<string, any>>({
                     {header.render('Header')}
                     {canSetColumnWidth && header.id !== '_selector' && index !== _columns.length - 1 && (
                       <AdjustHandle
+                        onMouseUp={() => widthMapChange?.(widthMapRef.current)}
                         thID={`th-${header.id}`}
                         onChange={(x) => handleWidthChange(x, header.id)}
                       />

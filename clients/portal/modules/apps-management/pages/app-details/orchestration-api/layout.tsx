@@ -3,7 +3,7 @@ import React from 'react';
 import Card from '@c/card';
 
 interface Props {
-  left: () => JSX.Element;
+  left: () => JSX.Element | null;
   right: () => JSX.Element;
 }
 

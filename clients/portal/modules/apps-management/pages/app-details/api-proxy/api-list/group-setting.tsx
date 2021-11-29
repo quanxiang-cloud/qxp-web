@@ -16,10 +16,6 @@ import ParamsSection from '../add-api/params-section';
 import { ErrorMsg } from '../comps/form';
 import store from '../store';
 
-interface Props {
-  className?: string;
-}
-
 type AuthType='none' | 'signature'
 
 const protocols = [
@@ -32,7 +28,7 @@ const authTypes = [
   { label: '签名', value: 'signature' },
 ];
 
-function GroupSetting(props: Props) {
+function GroupSetting(): JSX.Element {
   const formInst = useForm();
   const { register, handleSubmit, setValue, formState: { errors } } = formInst;
   const [protocol, setProtocol] = useState<string>('https');
@@ -58,7 +54,7 @@ function GroupSetting(props: Props) {
     }
   }, [protocol]);
 
-  const onSubmit = ()=> {
+  const onSubmit = (): void => {
     handleSubmit(async ({ hostname, port, authorize }: {hostname: string; port: string; authorize:string})=> {
       const params = {
         schema: protocol,
@@ -128,7 +124,7 @@ function GroupSetting(props: Props) {
               <p className='mb-8'>主机地址(域名)</p>
               <input
                 type="text"
-                className={cs('input', { error: errors.hostname })}
+                className={cs('api-from-input', { error: errors.hostname })}
                 {...register('hostname', { required: '请输入主机地址' })}
               />
             </div>
@@ -136,7 +132,7 @@ function GroupSetting(props: Props) {
               <p className='mb-8'>端口</p>
               <input
                 type="number"
-                className={cs('input', { error: errors.port })}
+                className={cs('api-from-input', { error: errors.port })}
                 {...register('port', {
                   required: true,
                   min: 1,
@@ -171,8 +167,8 @@ function GroupSetting(props: Props) {
               <div>
                 <p>鉴权方法</p>
                 <textarea
-                  className={cs('textarea', { error: errors.authorize })}
-                  style={{ minHeight: '300px', resize: 'vertical', height: 'auto' }}
+                  className={cs('api-from-textarea', { error: errors.authorize })}
+                  style={{ minHeight: '260px', resize: 'vertical', height: 'auto' }}
                   placeholder='请输入'
                   {...register('authorize', { required: '请输入鉴权方法', shouldUnregister: true })}
                 />

@@ -53,7 +53,7 @@ const menus = [
   },
 ];
 
-function GroupNodeRender({ node, store }: NodeRenderProps<PolyAPI.Namespace>): JSX.Element {
+function GroupNodeRender({ node }: NodeRenderProps<PolyAPI.Namespace>): JSX.Element {
   const [modalType, setModalType] = useState<ModalType>('');
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const history = useHistory();
@@ -100,7 +100,7 @@ function GroupNodeRender({ node, store }: NodeRenderProps<PolyAPI.Namespace>): J
     })();
   }
 
-  async function deleteGroup() {
+  async function deleteGroup(): Promise<void> {
     try {
       await proxyStore.deleteNs(getFullNs());
       setModalOpen(false);

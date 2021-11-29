@@ -433,7 +433,7 @@ const MsgTable = ({ refresh }: Props): JSX.Element => {
         className={'pt-10'}
         renderTotalTip={() => (
           <div className="text-12 text-gray-600">
-            共<span className="mx-4">{data?.data?.total || 0}</span>条消息
+            共<span className="mx-4">{data?.total || 0}</span>条消息
           </div>
         )}
       />)}

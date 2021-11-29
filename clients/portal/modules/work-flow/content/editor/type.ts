@@ -272,6 +272,7 @@ export interface SendEmailData {
   title: string;
   mes_attachment: Attachment[];
   formulaFields: Record<string, string>;
+  fieldType: Record<string, string>;
 }
 export interface WebMessageData {
   approvePersons: ApprovePerson;
