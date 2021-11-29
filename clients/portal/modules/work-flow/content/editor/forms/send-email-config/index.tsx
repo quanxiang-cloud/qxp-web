@@ -71,6 +71,7 @@ const LablePathMap = {
   CascadeSelector: 'label',
   AssociatedData: 'label',
 };
+const VerCompontType = ['fileupload', 'datepicker'];
 
 function getFieldLabelPath(fieldSchema?: ISchema): string {
   if (!fieldSchema) {
@@ -136,7 +137,8 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
   const formDataElement = elements?.find(({ type }) => type === 'formData') as CurrentElement;
   const workFormValue = (formDataElement?.data?.businessData as FormDataData)?.form?.value;
   const allFields = watch(
-    ['content', 'recivers', 'title', 'mes_attachment', 'type', 'approvePersons', 'formulaFields'],
+    ['content', 'recivers', 'title', 'mes_attachment', 'type', 'approvePersons', 'formulaFields',
+      'fieldType'],
   );
   const previousFields = usePrevious(allFields);
   const { tableSchema } = useContext(FlowTableContext);
@@ -151,6 +153,17 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
     return acc;
   }, {}), [tableSchema]);
 
+  // This field is required by the backend
+  const fieldType = useMemo(()=> tableSchema.filter((schema) => {
+    return !SYSTEM_FIELDS.includes(schema.fieldName);
+  }).reduce((acc: Record<string, string>, field) => {
+    if (VerCompontType.includes(field.componentName)) {
+      const { fieldName } = field;
+      acc[fieldName] = field.componentName;
+    }
+    return acc;
+  }, {}), [tableSchema]);
+
   useUpdateEffect(() => {
     const value = {
       content: allFields[0],
@@ -161,6 +174,7 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
       templateId: 'quanliang',
       approvePersons: allFields[5],
       formulaFields: allFields[6],
+      fieldType: allFields[7],
     } as SendEmailData;
     if (!isEqual(allFields, previousFields)) {
       onChange(value);
@@ -180,7 +194,7 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
   };
 
   const handleSave = (data: SendEmailData): void => {
-    onSubmit({ ...data, templateId: 'quanliang', formulaFields });
+    onSubmit({ ...data, templateId: 'quanliang', formulaFields, fieldType });
   };
   const handleChangeEditor = (editorCont: EditorState): void => {
     setEditorCont(editorCont);
