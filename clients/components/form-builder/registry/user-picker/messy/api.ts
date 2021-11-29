@@ -1,7 +1,8 @@
 import httpClient, { httpClientGraphQL } from '@lib/http-client';
 interface User {
     userName: string,
-    id: string
+    id: string,
+    email: string,
 }
 export interface Res {
     data: User[];
