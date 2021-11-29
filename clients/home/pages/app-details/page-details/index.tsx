@@ -151,7 +151,7 @@ function PageDetails(): JSX.Element | null {
 
   return (
     <div className='flex-1 overflow-auto'>
-      <Header onCancel={() => handleCancel(true)}/>
+      <Header onCancel={() => handleCancel(true)} />
       <div className='main-content relative flex-1 overflow-hidden'>
         {renderPageBody()}
         {modalType === 'dataForm' && (

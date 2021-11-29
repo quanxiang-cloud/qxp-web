@@ -2,10 +2,11 @@ import React, { useRef, useEffect } from 'react';
 
 type Props = {
   onChange: (a: number) => void;
+  onMouseUp: () => void;
   thID: string;
 }
 
-export default function AdjustHandle({ onChange, thID }: Props): JSX.Element {
+export default function AdjustHandle({ onChange, thID, onMouseUp }: Props): JSX.Element {
   const ref = useRef<HTMLDivElement>(null);
   let x = 0;
   let w = 0;
@@ -17,6 +18,7 @@ export default function AdjustHandle({ onChange, thID }: Props): JSX.Element {
   const mouseUpHandler = (): void => {
     document.removeEventListener('mousemove', mouseMoveHandler);
     document.removeEventListener('mouseup', mouseUpHandler);
+    onMouseUp();
   };
 
   const onMouseDown = (e: MouseEvent | Event): void => {
