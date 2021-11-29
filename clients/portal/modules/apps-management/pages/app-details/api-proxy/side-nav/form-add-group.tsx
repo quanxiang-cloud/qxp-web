@@ -39,7 +39,7 @@ function FormAddGroup({
       <FormItem label='分组名称'>
         <input
           type="text"
-          className={cs('input', { error: errors.title })}
+          className={cs('api-from-input', { error: errors.title })}
           maxLength={20}
           placeholder='请输入，例如：公司系统'
           {...register('title', {
@@ -55,7 +55,7 @@ function FormAddGroup({
       <FormItem label='分组标识'>
         <input
           type="text"
-          className={cs('input', { error: errors.name })}
+          className={cs('api-from-input', { error: errors.name })}
           maxLength={32}
           placeholder='请输入，例如：sys_001'
           style={isEdit ? { backgroundColor: 'var(--gray-200)' } : {}}
@@ -73,7 +73,7 @@ function FormAddGroup({
       <FormItem label='描述'>
         <textarea
           maxLength={100}
-          className='textarea'
+          className='api-from-textarea'
           {...register('desc', { shouldUnregister: true })}
           placeholder='选填 (不超过 100 字符)'
         />
