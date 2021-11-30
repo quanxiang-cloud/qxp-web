@@ -36,7 +36,7 @@ function MessageCard(props: HomePageProps): JSX.Element {
     <HomeCard title='消息' className='mt-12'>
       {!!data?.mes_list?.length && (<div className='message-card body2 text-secondary'>
         {(data.mes_list as Message[]).map((m) => (
-          <div className='message-card-item flex items-center' key={m.id}>
+          <div className='message-card-item flex items-center pointer-8' key={m.id}>
             <Badge dot
               color='var(--blue-600)'
               style={{ width: '.04rem', height: '.04rem' }}
@@ -46,7 +46,7 @@ function MessageCard(props: HomePageProps): JSX.Element {
           </div>
         ))}
         <Divider color='#E6ECF9' className='mt-8'/>
-        <div className='btn-all-message padding-8 flex items-center justify-center'>
+        <div className='btn-all-message padding-8 flex items-center justify-center pointer'>
           <p className='mr-4 body1 text-highlight'>全部消息</p>
           {countUnread > 0 && <Badge dot/>}
         </div>
