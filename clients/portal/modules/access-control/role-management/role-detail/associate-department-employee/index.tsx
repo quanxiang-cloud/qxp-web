@@ -90,45 +90,41 @@ export default function AssociateDepartmentEmployee({ roleID, isSuper }: Props):
           departments={data?.departments}
         />
       )}
-      <div className="flex items-center mb-8">
-        <RadioButtonGroup
-          className="mr-16"
-          radioBtnClass="bg-white"
-          onChange={(value) => {
-            setShowBindType(value as number);
-          }}
-          listData={[{
-            label: '员工',
-            value: 1,
-          }, {
-            label: '部门',
-            value: 2,
-          }] as any}
-          currentValue={showBindType}
-        />
-        {!isSuper && (
+      {!isSuper && (
+        <div className="flex justify-between items-center mb-8 w-full">
           <Authorized authority={['accessControl/role/manage']}>
             <Button
               modifier="primary"
+              className="text-12"
               iconName="link"
               onClick={() => setShowBindModal(true)}
             >
               关联员工与部门
             </Button>
           </Authorized>
-        )}
-      </div>
-      <div
-        className="overflow-scroll w-full pb-6 rounded-12"
-        style={{ height: 'calc(100% - 42px)' }}
-      >
-        <DepartmentOrEmployeeTable
-          isSuper={isSuper}
-          roleID={roleID}
-          onCancelAssociation={onCancelAssociation}
-          type={showBindType as RoleBindType}
-        />
-      </div>
+          <RadioButtonGroup
+            className="mr-16 text-12"
+            radioBtnClass="bg-white"
+            currentValue={showBindType}
+            listData={[
+              {
+                label: '按员工',
+                value: '1',
+              }, {
+                label: '按部门',
+                value: '2',
+              },
+            ]}
+            onChange={(value) => setShowBindType(value as number)}
+          />
+        </div>
+      )}
+      <DepartmentOrEmployeeTable
+        isSuper={isSuper}
+        roleID={roleID}
+        onCancelAssociation={onCancelAssociation}
+        type={showBindType as RoleBindType}
+      />
     </>
   );
 }

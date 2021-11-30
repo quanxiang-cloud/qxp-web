@@ -265,7 +265,7 @@ export default class Select<T extends React.Key> extends React.Component<SelectP
             <div
               ref={this.reference}
               style={style}
-              className={cs('dropdown-trigger', className, {
+              className={cs('dropdown-trigger text-12', className, {
                 'border-blue-600': triggerActive && !disabled,
                 'select-trigger--disabled': disabled,
               })}

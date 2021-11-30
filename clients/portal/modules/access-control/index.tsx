@@ -11,6 +11,8 @@ import GlobalHeader from '@portal/global-header';
 import RoleManagement from './role-management';
 import DepartmentsEmployees from './departments-employees';
 
+import './index.scss';
+
 const MENU = [
   {
     id: 'departments-employees',

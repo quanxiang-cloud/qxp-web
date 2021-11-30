@@ -3,9 +3,11 @@ import cs from 'classnames';
 
 import svgHash from './svg-hash';
 
+export type iconColor = 'red' | 'yellow' | 'green' | 'gray' | 'blue' | 'white' |'rose' | 'pink' | 'purple' | 'orange' | 'primary';
+
 export interface Props extends React.SVGProps<SVGSVGElement> {
   name: string;
-  color?: 'red' | 'yellow' | 'green' | 'gray' | 'blue' | 'white' |'rose' | 'pink' | 'purple' | 'orange' | 'primary';
+  color?: iconColor
   size?: number;
   disabled?: boolean;
   changeable?: boolean;
