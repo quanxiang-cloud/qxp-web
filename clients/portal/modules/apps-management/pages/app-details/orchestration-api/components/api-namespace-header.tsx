@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 
 import Icon from '@c/icon';
 import useModal from '@orchestrationAPI/effects/hooks/use-modal';
+import UserGuide from '@c/user-guide';
 import { ModalType } from '@orchestrationAPI/constants';
 import {
   useApiNamespaceStore,
@@ -15,6 +16,9 @@ import {
 function APINamespaceHeader(): JSX.Element {
   const [modalType, setModalType] = useState<ModalType>();
   const apiNamespaceStore = useApiNamespaceStore();
+  const [userGuideVisible, setUserGuideVisible] = useState<boolean>(
+    !apiNamespaceStore?.rootNode.children?.length,
+  );
   const path = `create${apiNamespaceStore?.rootNode.path}`;
 
   function refreshParent(): void {
@@ -46,11 +50,18 @@ function APINamespaceHeader(): JSX.Element {
       style={{ zIndex: 1 }}
     >
       <span className="text-caption-no-weight font-semibold">API 编排</span>
-      <Icon
-        clickable
-        name="icon_folder"
-        onClick={handleCreateNamespaceModal}
-      />
+      <UserGuide
+        position="left"
+        visible={userGuideVisible}
+        onClose={() => setUserGuideVisible(false)}
+        content="新增目录"
+      >
+        <Icon
+          clickable
+          name="icon_folder"
+          onClick={handleCreateNamespaceModal}
+        />
+      </UserGuide>
       {CreateAPINamespaceModal}
     </header>
   );

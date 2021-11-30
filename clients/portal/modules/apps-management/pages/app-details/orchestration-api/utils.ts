@@ -48,7 +48,9 @@ export function getNamespaceNodeSiblingNodes(
   store?: APINamespaceTreeStore | null,
 ): undefined | Array<TreeNode<NameSpace>> {
   const currentNode = store?.currentFocusedNode as TreeNode<NameSpace> | undefined;
-  const parentNode = store?.getNode(currentNode?.parentId || '');
+  const parentNode = currentNode === store?.rootNode ?
+    currentNode :
+    store?.getNode(currentNode?.parentId || '');
   return parentNode?.children;
 }
 
