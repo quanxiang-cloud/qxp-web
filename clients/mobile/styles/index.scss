@@ -2,12 +2,18 @@
 @import "../../styles/variables/colors.css";
 @import "../../styles/animation.css";
 
+@import "./animation.scss";
 @import "./typography.scss";
 @import "./atom.scss";
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --backgroundColor: #E6ECF9;
+  --activeColor: rgba(241, 245, 249, 1);
+}
 
 /**
  * Use rem to fit mobile screens.
@@ -20,7 +26,7 @@
  */
 html {
   font-size: calc(10000vw / 375);
-  background-color: #E6ECF9;
+  background-color: var(--backgroundColor);
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
