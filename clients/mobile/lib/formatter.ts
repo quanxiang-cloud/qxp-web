@@ -79,3 +79,20 @@ function formatNumber(n: number): string {
 export function formatTimeSeconds(time: number, absolute = false): string {
   return formatTime(new Date(time * 1000), absolute);
 }
+
+export function greeting(username?: string): string {
+  const hour = new Date().getHours();
+  let greeting;
+  if (hour >= 6 && hour < 8) {
+    greeting = '早上好！';
+  } else if (hour >= 8 && hour < 11) {
+    greeting = '上午好！';
+  } else if (hour >= 11 && hour < 13) {
+    greeting = '中午好！';
+  } else if (hour >= 13 && hour < 18) {
+    greeting = '下午好！';
+  } else {
+    greeting = '晚上好！';
+  }
+  return username ? `${username}，${greeting}` : greeting;
+}
