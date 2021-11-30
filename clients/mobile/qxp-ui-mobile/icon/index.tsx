@@ -18,6 +18,7 @@ export default function Icon(props: IconProps): JSX.Element {
 
   return (
     <svg
+      onClick={props.onClick}
       style={_style}
       className={cs('svg-icon', className, {
         'svg-icon--clickable': clickable,

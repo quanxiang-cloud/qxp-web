@@ -11,7 +11,6 @@ export interface BadgeProps extends Props {
     offset?: [x: string | number, y: string | number];
     showZero?: boolean;
     tag?: HtmlTagType;
-    onClick?: (e: React.MouseEvent) => void;
     onTouchStart?: (e: React.MouseEvent) => void;
 }
 

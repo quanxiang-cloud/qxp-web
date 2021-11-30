@@ -5,7 +5,7 @@ import { TabbarProps } from '@m/qxp-ui-mobile/tabbar/types';
 import useHeight from '@m/qxp-ui-mobile/utils/hooks/use-height';
 import useMergedState from '@m/qxp-ui-mobile/utils/hooks/use-merged-state';
 import { getZIndexStyle } from '@m/qxp-ui-mobile/utils/format/unit';
-import { RenderFunc } from '@m/qxp-ui-mobile';
+import { NumberString, RenderFunc } from '@m/qxp-ui-mobile';
 
 const Tabbar: React.FC<TabbarProps> = (props) => {
   const { fixed, zIndex } = props;
@@ -26,7 +26,7 @@ const Tabbar: React.FC<TabbarProps> = (props) => {
     return props.safeAreaInsetBottom ?? fixed ?? true;
   }
 
-  function setActive(active: number | string): void {
+  function setActive(active: NumberString): void {
     if (active !== props.value) {
       props.onChange?.(active);
       setCurrent(active);

@@ -1,8 +1,8 @@
-import { Props } from '@m/qxp-ui-mobile';
+import { NumberString, Props } from '@m/qxp-ui-mobile';
 import React from 'react';
 import { BadgeSettingProps } from '@m/qxp-ui-mobile/badge/types';
 
-export interface TabbarProps<T = number | string> extends Props {
+export interface TabbarProps<T = NumberString> extends Props {
     value?: T;
     defaultValue?: T;
     fixed?: boolean;
@@ -14,7 +14,7 @@ export interface TabbarProps<T = number | string> extends Props {
     onChange?: (name: T) => void;
 }
 
-export interface TabbarItemProps<T = number | string> extends Props {
+export interface TabbarItemProps<T = NumberString> extends Props {
     name?: T;
     icon?: string | ((active: boolean) => React.ReactNode);
     iconPrefix?: string;
