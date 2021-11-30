@@ -246,6 +246,14 @@ function APINamespaceDetails(): JSX.Element {
     return <Loading desc="加载中..." />;
   }
 
+  if (!currentNamespaceName) {
+    return (
+      <div className="container flex items-center justify-center h-full font-semibold">
+        暂无分组, 请创建分组
+      </div>
+    );
+  }
+
   return (
     <>
       <div
