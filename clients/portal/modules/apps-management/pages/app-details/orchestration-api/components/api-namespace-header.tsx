@@ -26,7 +26,8 @@ function APINamespaceHeader(): JSX.Element {
     ModalType.CREATE_NAMESPACE,
     useCreateNameSpace,
     {
-      message: '创建目录成功',
+      message: '新建分组成功',
+      submitText: '确认新建',
       onSuccess: refreshParent,
       onClose: () => setModalType(undefined),
       formToApiInputConvertor: (body) => {

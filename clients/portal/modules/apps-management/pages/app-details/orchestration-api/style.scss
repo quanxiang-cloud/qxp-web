@@ -32,30 +32,25 @@
 }
 
 .polynamespacedetail-table {
-  height: calc(100% - 40px);
-  overflow: hidden;
-  thead {
+  height: calc(100% - 32px);
+
+  .qxp-table-wrapper {
+    height: auto;
+    max-height: calc(100% - 40px);
+    overflow: hidden;
     th {
       @apply sticky top-0;
     }
-  }
-  tbody {
-    tr:last-child {
-      td {
-        border-bottom: none;
-      }
+    tr:last-child td {
+      border-bottom: none;
     }
-  }
-  &>div {
-    max-height: 100%;
-    height: auto;
-    overflow: auto;
-  }
-  &+div {
-    height: 40px;
-    @apply border-t;
-    &>div {
-      height: 100%;
+    &+div {
+      height: 40px;
+      @apply border-t;
+      &>div {
+        height: 100%;
+        @apply px-16;
+      }
     }
   }
 }
@@ -87,3 +82,42 @@
   }
 }
 
+.orchestration-management-modal {
+  button.btn.mr-20:last-child {
+    margin-right: 0;
+  }
+
+  .orchestration-modal-form {
+    .mega-layout-container-content {
+      .ant-form-item {
+        .ant-form-item-label {
+          label {
+            @apply mb-8 text-gray-600 h-20;
+            font-size: 12px;
+            line-height: 20px;
+          }
+        }
+        .ant-form-item-control {
+          .mega-layout-item-content {
+            input, textarea {
+              @apply rounded-tl-2 rounded-tr-8 rounded-bl-8 rounded-br-8;
+            }
+          }
+          .copy-poly-select {
+            .select-trigger__content {
+              span {
+                font-size: 12px;
+                line-height: 20px;
+              }
+            }
+            &.no-value {
+              .select-trigger__content span {
+                @apply text-gray-400;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,15 +1,12 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { equals } from 'ramda';
+import { useEffect, useCallback, useMemo, useRef } from 'react';
 import { debounceTime } from 'rxjs/operators';
-import type { Subscription } from 'rxjs';
-import {
-  FormEffectHooks,
-} from '@formily/react-schema-renderer';
-import { useKeyPress, useMap } from 'react-use';
-import { keys, values, path, omit } from 'ramda';
+import { usePrevious } from 'react-use';
+import { FormEffectHooks } from '@formily/react-schema-renderer';
 
-import { not } from '@lib/utils';
+import { getFieldActiveMap, getSchemaKeys, noFieldFocused } from '@orchestrationAPI/utils';
 
-type FieldActiveMap = Record<string, boolean>;
+export type FieldActiveMap = Record<string, boolean>;
 
 const { onFieldChange$ } = FormEffectHooks;
 
@@ -19,47 +16,47 @@ export default function useSchemaformKeypressSubmit(
   handleSubmit: () => void,
   enabled: boolean,
 ): (() => void) | undefined {
-  const [enterPressed] = useKeyPress('Enter');
-  const formEffectRef = useRef<Subscription>();
-  const [fieldActiveMap, fieldActiveMapActions] = useMap<FieldActiveMap>(
-    getFieldActiveMap(getSchemaKeys(schema)),
-  );
+  const fieldActiveMapInitialValue = useMemo(() => getFieldActiveMap(getSchemaKeys(schema)), [schema]);
+  const fieldActiveMap = useRef<FieldActiveMap>(fieldActiveMapInitialValue);
 
+  const previsousSchema = usePrevious(schema);
   useEffect(() => {
-    enabled && enterPressed && noFieldFocused(fieldActiveMap) && handleSubmit();
-  }, [enterPressed, fieldActiveMap]);
-
-  useEffect(() => {
-    fieldActiveMapActions.setAll(getFieldActiveMap(getSchemaKeys(schema)));
-  }, [schema]);
-
-  useEffect(() => formEffectRef.current?.unsubscribe(), []);
-
-  function getSchemaKeys(schema?: ISchema): string[] {
-    const properties = path(['properties', 'Fields', 'properties'], schema) || {};
-    return keys(properties);
-  }
-
-  function getFieldActiveMap(schemaKeys: string[]): FieldActiveMap {
-    return schemaKeys.reduce((map: FieldActiveMap, key) => {
-      map[key] = false;
-      return map;
-    }, {});
-  }
-
-  function noFieldFocused(fieldActiveMap: FieldActiveMap): boolean {
-    return values(omit(whiteList, fieldActiveMap)).every(not(Boolean));
-  }
+    if (!enabled) {
+      return;
+    }
+    const schemaChanged = previsousSchema && !equals(previsousSchema, schema);
+    if (!schemaChanged) {
+      return;
+    }
+    fieldActiveMap.current = getFieldActiveMap(getSchemaKeys(schema));
+  }, [enabled, schema, previsousSchema]);
 
   const effects = useCallback(() => {
-    formEffectRef.current = onFieldChange$('*')
-      .pipe(
-        debounceTime(100),
-      )
+    const sub = onFieldChange$('*')
+      .pipe(debounceTime(200))
       .subscribe((state) => {
-        fieldActiveMapActions.set(state.name || '', !!state.active);
+        if (!state.name) {
+          return;
+        }
+        fieldActiveMap.current[state.name] = !!state.active;
       });
+    return () => sub.unsubscribe();
   }, []);
 
-  return effects;
+  const onKeyPress = useCallback((e: KeyboardEvent) => {
+    if (e.key !== 'Enter') {
+      return;
+    }
+    noFieldFocused(fieldActiveMap.current, whiteList) && handleSubmit();
+  }, [handleSubmit, fieldActiveMap.current, whiteList]);
+
+  useEffect(() => {
+    if (!enabled) {
+      return;
+    }
+    document.body.addEventListener('keypress', onKeyPress);
+    return () => document.body.removeEventListener('keypress', onKeyPress);
+  }, [enabled, onKeyPress]);
+
+  return enabled ? effects : undefined;
 }
