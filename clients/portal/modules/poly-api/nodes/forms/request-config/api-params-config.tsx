@@ -90,6 +90,10 @@ function ApiParamsConfig(
   return (
     <div className="p-12 flex-2 bg-gray-50 overflow-auto config-params-container">
       {!!polyParams?.length && polyParams.map(([type, params]) => {
+        if (!params.length) {
+          return;
+        }
+
         return (
           <div key={type} className="my-20">
             <div className="pb-4 text-gray-900">{type.replace(/^\S/, (s: string) => s.toUpperCase())}</div>
