@@ -1,3 +1,4 @@
+
 export const inBrowser = typeof window !== 'undefined';
 
 export function isDef<T>(val?: T): val is NonNullable<T> {
@@ -23,4 +24,12 @@ export function isNaN(val?: number): val is typeof NaN {
 
 export function isWindow(val: unknown): val is Window {
   return val === window;
+}
+
+export function isObject(val: unknown): val is Record<any, any> {
+  return val !== null && typeof val === 'object';
+}
+
+export function isPromise<T = any>(val: unknown): val is Promise<T> {
+  return isObject(val) && isFunction(val?.then) && isFunction(val?.catch);
 }
