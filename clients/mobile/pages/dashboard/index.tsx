@@ -11,6 +11,10 @@ import { observer } from 'mobx-react';
 import msgCenter from '@portal/stores/msg-center';
 import store from '@home/pages/store';
 import { BadgeSettingProps } from '@m/qxp-ui-mobile/badge/types';
+import { useHistory } from 'react-router-dom';
+import { pathPrefix } from '@m/routes';
+import { useSearchParam } from 'react-use';
+import { isNumeric } from '@m/qxp-ui-mobile/utils';
 
 const items: HomeItem[] = [
   {
@@ -31,11 +35,25 @@ const items: HomeItem[] = [
 ];
 
 function Dashboard(): JSX.Element {
-  const [active, setActive] = useState(0);
+  const history = useHistory();
+  const active = useSearchParam('active');
+  function initActive(): number {
+    if (!isNumeric(active || '') || Number(active) > 2 || Number(active) < 0) {
+      return 0;
+    } else {
+      return Number(active);
+    }
+  }
+  const [ac, setAc] = useState(initActive());
 
   useEffect(() => {
     document.title = '工作台';
   }, []);
+
+  function onActiveChange(ac: number): void {
+    history.replace(`${pathPrefix}?active=${ac}`);
+    setAc(ac);
+  }
 
   function badgeProps(index: number): BadgeSettingProps | undefined {
     const showBadge = index === 0 && (
@@ -66,16 +84,16 @@ function Dashboard(): JSX.Element {
         {items.map(
           (itm, index) => itm.component( {
             key: itm.icon,
-            active: active === index,
+            active: ac === index,
           }),
         )}
       </div>
 
       <Tabbar
         fixed={false}
-        value={active}
-        className={cs({ footer: active !== 2 })}
-        onChange={(ac) => setActive(ac as number)}>
+        value={ac}
+        className={cs({ footer: ac !== 2 })}
+        onChange={(ac) => onActiveChange(ac as number)}>
         {items.map((itm, index) => (
           <Tabbar.Item
             key={itm.icon}

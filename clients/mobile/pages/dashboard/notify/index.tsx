@@ -23,7 +23,7 @@ const Notify: React.FC<HomePageProps> = (props) => {
               return (
                 <div
                   key={key}
-                  className={'my-apply-item body1 text-secondary flex items-center'}
+                  className={'my-apply-item body1 text-secondary flex items-center pointer-8'}
                   onClick={() => history.push(`/approvals?list=${link}`)}
                 >
                   <Icon className="mr-8" name={icon} size='.24rem' addPrefix={true} />

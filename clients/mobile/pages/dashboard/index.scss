@@ -23,12 +23,79 @@
   padding-top: .08rem;
 
   .message-card-item {
-    padding: .08rem .16rem;
+    padding: .08rem;
+    margin: 0 .08rem;
   }
 
   .btn-all-message {
     border-radius: 0 0 .08rem .08rem;
-    cursor: pointer;
   }
 }
 
+.my-apps-wrapper {
+  padding: .08rem;
+  display: grid;
+  grid-template-columns: repeat(4, 25%);
+}
+
+.mine-top-wrapper {
+  height: 32vh;
+  width: 100%;
+  background-color: var(--backgroundColor);
+  border-radius: 0 0 .12rem .12rem;
+  position: relative;
+
+  .mine-top-bg {
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: .05;
+    width: 100%;
+    height: 100%;
+    background-image: url("/dist/images/mobile/bg_mask.png");
+    background-size: cover;
+    background-position:center;
+  }
+}
+
+.mine-content-wrapper {
+  transform: translateY(calc((-100% + 0.62rem)/2));
+
+  .user-card {
+    border-radius: .12rem;
+    box-shadow: 0 6px 6px 2px rgba(148, 163, 184, 0.25);
+    padding: .4rem .16rem .16rem .16rem;
+    margin: 0 .16rem;
+    position: relative;
+
+    .ic-more {
+      position: absolute;
+      top: .04rem;
+      right: .04rem;
+      padding: .08rem;
+      border-radius: .08rem;
+      color: var(--gray-400);
+    }
+
+    .user-avatar {
+      position: absolute;
+      top: -0.24rem;
+      border-radius: .12rem .02rem .12rem .12rem;
+    }
+
+    .user-info-card {
+      background-color: var(--gray-100);
+      border-radius: .12rem;
+      padding: .08rem .12rem;
+    }
+  }
+
+  .account-security {
+    margin: .12rem .16rem;
+    padding: .12rem .16rem;
+    box-shadow: 0 4px 24px rgba(148, 163, 184, 0.25);
+    border-radius: .08rem;
+    color: var(--gray-600);
+  }
+}
