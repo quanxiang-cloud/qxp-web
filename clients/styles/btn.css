@@ -143,6 +143,10 @@
 }
 
 @layer components {
+  .min-h-32 {
+    min-height: 32px;
+  }
+
   .button-border-radius {
     @apply rounded-tl-8 rounded-tr-2 rounded-br-8 rounded-bl-8;
   }

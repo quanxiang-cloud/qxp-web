@@ -1,6 +1,10 @@
+import { keys, values, path, omit } from 'ramda';
+
 import type { NameSpace } from '@orchestrationAPI/effects/api/api-namespace';
 import type { TreeNode } from '@c/headless-tree/types';
 import { treeNodeSorter } from '@c/headless-tree/utils';
+import { not } from '@lib/utils';
+import type { FieldActiveMap } from './effects/hooks/use-schema-form-keypress-submit';
 
 import type APINamespaceTreeStore from './store/namespace';
 
@@ -50,4 +54,20 @@ export function getNamespaceNodeSiblingNodes(
 
 export function stringToAsciiNumber(value: string): number {
   return value.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+}
+
+export function getSchemaKeys(schema?: ISchema): string[] {
+  const properties = path(['properties', 'Fields', 'properties'], schema) || {};
+  return keys(properties);
+}
+
+export function getFieldActiveMap(schemaKeys: string[]): FieldActiveMap {
+  return schemaKeys.reduce((map: FieldActiveMap, key) => {
+    map[key] = false;
+    return map;
+  }, {});
+}
+
+export function noFieldFocused(fieldActiveMap: FieldActiveMap, whiteList: string[]): boolean {
+  return values(omit(whiteList, fieldActiveMap)).every(not(Boolean));
 }

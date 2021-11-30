@@ -34,6 +34,8 @@ import {
   RemovePolyParams,
 } from '@orchestrationAPI/effects/api/poly';
 
+import ModalRemoveTips from '../components/modal-remove-tips';
+
 const initialPage = { page: 1, pageSize: 10 };
 
 function APINamespaceDetails(): JSX.Element {
@@ -59,7 +61,9 @@ function APINamespaceDetails(): JSX.Element {
     useCreatePoly,
     {
       message: '新建API成功',
+      submitText: '新建并设计API',
       onClose: handleModalClose,
+      onSuccess: (data) => handleEditPoly(data.apiPath),
       formToApiInputConvertor: (body) => {
         return {
           path: `create${nameSpacePath}`,
@@ -74,8 +78,9 @@ function APINamespaceDetails(): JSX.Element {
     ModalType.REMOVE_POLY,
     useRemovePoly,
     {
-      message: 'API删除成功',
-      content: <span>确认要删除吗?</span>,
+      message: '删除API成功',
+      submitText: '确认删除',
+      content: <ModalRemoveTips title="确定要删除该API吗?" desc="删除API后，数据将无法找回。" />,
       onClose: handleModalClose,
       formToApiInputConvertor: () => {
         return {
@@ -120,7 +125,7 @@ function APINamespaceDetails(): JSX.Element {
 
   const activePolyMutation = useActivePoly({
     onSuccess: (response) => {
-      toast.success(`${response.active ? '开启' : '关闭'}成功`);
+      toast.success(`${response.active ? '启用' : '停用'}成功`);
     },
     onError: (error) => {
       toast.error(error);
@@ -263,18 +268,20 @@ function APINamespaceDetails(): JSX.Element {
             appendix="close"
           />
         </div>
-        <div className="flex-1" style={{ height: 'calc(100% - 32px)' }}>
-          <div className="polynamespacedetail-table">
-            <Table
-              rowKey="id"
-              columns={columns}
-              data={data?.list || []}
-              loading={isFetchListLoading || isSearchLoading}
-              emptyTips={'暂无数据'}
-              className="polynamespacedetail-table"
-            />
-          </div>
-          <div>
+        <div className="flex-1 polynamespacedetail-table overflow-hidden">
+          <Table
+            rowKey="id"
+            columns={columns}
+            data={data?.list || []}
+            loading={isFetchListLoading || isSearchLoading}
+            emptyTips={(
+              <div className="flex flex-col items-center justify-center">
+                <img src="/dist/images/table-empty.svg" alt="empty" className="w-96 h-72 mb-8" />
+                <span className="text-caption-no-color-weight text-gray-400">暂无数据</span>
+              </div>
+            )}
+          />
+          <div className="pt-10">
             <Pagination
               current={pagination.page}
               pageSize={pagination.pageSize}

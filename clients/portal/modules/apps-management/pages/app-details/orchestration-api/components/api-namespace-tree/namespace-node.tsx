@@ -6,6 +6,7 @@ import type { NodeRenderProps, TreeNode } from '@c/headless-tree/types';
 import MoreMenu from '@c/more-menu';
 import { API_DIRECTORY_MENUS, ModalType } from '@orchestrationAPI/constants';
 import Icon from '@c/icon';
+import useModal from '@orchestrationAPI/effects/hooks/use-modal';
 import {
   CreateInput,
   CreateResponse,
@@ -20,7 +21,8 @@ import {
   DeleteResponse,
   useDeleteNameSpace,
 } from '@orchestrationAPI/effects/api/api-namespace';
-import useModal from '@orchestrationAPI/effects/hooks/use-modal';
+
+import ModalRemoveTips from '../modal-remove-tips';
 
 type Props = NodeRenderProps<NameSpace>
 
@@ -64,7 +66,8 @@ function NamespaceNode({ node, store }: Props): JSX.Element | null {
     ModalType.CREATE_NAMESPACE,
     useCreateNameSpace,
     {
-      message: '创建目录成功',
+      message: '新建分组成功',
+      submitText: '确认新建',
       onSuccess: () => refreshParent('create'),
       onClose: handleCloseModal,
       formToApiInputConvertor: (body) => {
@@ -81,7 +84,8 @@ function NamespaceNode({ node, store }: Props): JSX.Element | null {
     ModalType.EDIT_NAMESPACE,
     useUpdateNameSpace,
     {
-      message: '编辑成功',
+      message: '修改组信息成功',
+      submitText: '确认修改',
       onSuccess: () => refreshParent('edit'),
       onClose: handleCloseModal,
       defaultValue: node.data,
@@ -99,11 +103,11 @@ function NamespaceNode({ node, store }: Props): JSX.Element | null {
     ModalType.REMOVE_NAMESPACE,
     useDeleteNameSpace,
     {
-      message: '删除成功',
+      message: '删除分组成功',
+      submitText: '确认删除',
       onSuccess: () => refreshParent('delete'),
       onClose: handleCloseModal,
-      modifier: 'danger',
-      content: <span>确定要删除目录 {node.data.title} 吗</span>,
+      content: <ModalRemoveTips title="确定要删除该分组吗?" desc="删除分组后，该分组下的所有数据将无法找回。" />,
       formToApiInputConvertor: () => {
         return {
           path: `delete${node.data.parent}/${node.data.name}`,
