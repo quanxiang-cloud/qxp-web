@@ -22,13 +22,12 @@
     color: var(--gray-50);
     cursor: pointer;
     border-radius: .12rem;
-    -webkit-tap-highlight-color: rgba(241, 245, 249, .4);
+    &:active {
+      background-color: rgba(241, 245, 249, .4);
+    }
 
     .item-title {
       margin-top: .16rem;
-    }
-
-    .body2 {
       opacity: .7;
     }
   }
