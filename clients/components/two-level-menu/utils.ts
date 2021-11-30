@@ -7,7 +7,7 @@ export function pageListToTree(list: PageInfo[], parentID?: string): NodeItem<Pa
       type: menu.menuType === 1 ? 'group' : 'leaf',
       id: menu.id,
       iconName: menu.icon || '',
-      child: menu.child ? pageListToTree(menu.child, menu.id) : undefined,
+      children: menu.child ? pageListToTree(menu.child, menu.id) : undefined,
       source: menu,
       parentID,
     };

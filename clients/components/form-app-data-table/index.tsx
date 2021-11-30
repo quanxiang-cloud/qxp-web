@@ -64,9 +64,9 @@ function FormAppDataTableWrap({
       return;
     }
 
-    store.columnConfig = tableUserConfig.columnConfig || {};
-    store.tableSize = tableUserConfig.tableSize || 'small';
-    store.widthMap = tableUserConfig.widthMap || {};
+    store.columnConfig = tableUserConfig?.columnConfig || {};
+    store.tableSize = tableUserConfig?.tableSize || 'small';
+    store.widthMap = tableUserConfig?.widthMap || {};
   }, [tableUserConfig, store]);
 
   useImperativeHandle(

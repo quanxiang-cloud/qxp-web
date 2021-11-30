@@ -93,6 +93,11 @@ function RightsGroups(): JSX.Element {
         }).then(() => {
           toast.success('保存成功!');
           store.updatePerFormList({ ...store.currentPage, authority }, store.rightsGroupID);
+          store.perData = ({
+            conditions,
+            schema: fieldRef.current?.getFieldPer(),
+            authority,
+          });
           setOpenSet(false);
         }).catch((err) => {
           toast.error(err);
@@ -119,9 +124,9 @@ function RightsGroups(): JSX.Element {
 
   if (rightsList.length) {
     return (
-      <div className='h-full flex border border-b-0'>
-        <div className='app-nav h-full menu-nav'>
-          <div className='text-12 text-gray-600 font-semibold m-16'>选择菜单</div>
+      <div className='h-full flex border border-b-0 rounded-t-8'>
+        <div className='app-nav h-full menu-nav rounded-t-8'>
+          <div className='text-12 text-gray-600 font-semibold m-16 rounded-t-8'>选择菜单</div>
           <Search
             className="mx-8 mb-8"
             placeholder="搜索菜单名称..."
@@ -139,8 +144,7 @@ function RightsGroups(): JSX.Element {
         {!store.menuList.length && (
           <div className='app-no-data mt-58'>
             <img src='/dist/images/new_tips.svg' />
-            <span>无{store.MenuKeyword}菜单。
-            </span>
+            <span>无{store.MenuKeyword}菜单。</span>
           </div>
         )}
         {!!store.menuList.length && (
@@ -153,16 +157,32 @@ function RightsGroups(): JSX.Element {
                 <div>
                   {openset ? (
                     <>
-                      <Button onClick={handleCancel} iconName="close" className='mr-16'>取消</Button>
-                      <Button onClick={handleSave} modifier='primary' iconName="check">保存配置</Button>
+                      <Button
+                        iconName="close"
+                        className='mr-16 h-32'
+                        textClassName="text-12"
+                        onClick={handleCancel}
+                      >
+                        取消
+                      </Button>
+                      <Button
+                        modifier='primary'
+                        iconName="check"
+                        className='h-32'
+                        textClassName="text-12"
+                        onClick={handleSave}
+                      >
+                        保存配置
+                      </Button>
                     </>) : (
                     <Button
                       onClick={() => setOpenSet(true)}
                       modifier='primary'
                       iconName="settings"
                       iconSize={16}
-                      textClassName="text-12 leading-20"
-                      className='mr-16 px-16 py-6'>
+                      textClassName="text-12"
+                      className='px-16 py-6 h-32'
+                    >
                       配置权限
                     </Button>)
                   }
@@ -170,26 +190,26 @@ function RightsGroups(): JSX.Element {
               )
               }
             </div>
-            <div className="p-16 flex-1 overflow-auto">
+            <div className="p-16 flex-1 overflow-auto relative">
               {store.rightsLoading && (
                 <div className='h-56 p-20'>
                   <PageLoading />
                 </div>
               )}
               {store.noSchema && (
-                <div className='h-56 p-20'>
-                  <AbsoluteCentered>
+                <AbsoluteCentered>
                     未配置页面，请点击
-                    <span
-                      className='text-btn'
-                      onClick={() =>
-                        history.push(`/apps/details/${store.appID}/page_setting?pageID=${store.currentPage.id}`)
-                      }
-                    >
+                  <span
+                    className='text-btn'
+                    onClick={() =>
+                      history.push(
+                        `/apps/details/${store.appID}/page_setting?pageID=${store.currentPage.id}`,
+                      )
+                    }
+                  >
                       前往配置
-                    </span>
-                  </AbsoluteCentered>
-                </div>
+                  </span>
+                </AbsoluteCentered>
               )}
               {!store.rightsLoading && !store.noSchema && (
                 <>

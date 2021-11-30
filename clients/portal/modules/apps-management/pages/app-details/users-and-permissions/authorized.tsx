@@ -45,36 +45,41 @@ const RIGHTS = [
   //   ],
   // },
 ];
-const CUSTOM_RIGHTS =
-  {
-    key: 'action',
-    title: '操作按钮',
-    options: [
-      { label: '查看', value: 'view' },
-    ],
-  };
 
 function RightsCard({ rightsCardData, onChange, selectNumber, abled }: CardProps): JSX.Element {
   const { options, key } = rightsCardData;
-  const [selected, setSelected] = useState<number[]>(options.map(() => 0));
-  const selectedValue = parseInt([...selected].reverse().join(''), 2);
+  const [tempOptions, setTempOptions] = useState<{label: string;value: string}[]>([]);
+  const [selected, setSelected] = useState<number[]>([]);
+  const [indeterminate, setIndeterminate] = useState(false);
+  const [checkAll, setCheckAll] = useState(true);
 
   useEffect(() => {
-    onChange(selectedValue, key);
-  }, [selectedValue]);
+    setTempOptions(store.currentPage.menuType !== 2 ? options : options.slice(0, 1));
+  }, [store.currentPage.menuType]);
 
   useEffect(() => {
+    const OptionArr = store.currentPage.menuType !== 2 ? options : options.slice(0, 1);
     if (selectNumber) {
       const selectArr = selectNumber.toString(2).split('').reverse();
       setSelected(
-        options.map((_, index: number) => {
+        OptionArr.map((_, index: number) => {
           return selectArr[index] ? Number(selectArr[index]) : 0;
         }),
       );
     } else {
-      setSelected(options.map(() => 0));
+      setSelected(OptionArr.map(() => 0));
     }
   }, [selectNumber]);
+
+  useEffect(() => {
+    setIndeterminate(selected.includes(0) && selected.includes(1));
+    if (!selected.includes(0)) {
+      setCheckAll(true);
+    } else {
+      setCheckAll(false);
+    }
+    onChange(parseInt([...selected].reverse().join(''), 2), key);
+  }, [selected]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const newSelected = [...selected];
@@ -94,11 +99,25 @@ function RightsCard({ rightsCardData, onChange, selectNumber, abled }: CardProps
     }
   };
 
-  const tempOptions = store.currentPage.menuType !== 2 ? options : options.slice(0, 1);
+  const handleCheckAllChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    if (e.target.checked) {
+      setSelected(tempOptions.map(() => 1));
+    } else {
+      setSelected(tempOptions.map(() => 0));
+    }
+  };
 
   return (
     <>
-      <div className='flex justify-between items-center mb-8'>
+      <div className='flex justify-between h-56 px-20 items-center'>
+        <CheckBox
+          disabled = {store.currentRights.types === 1 || !abled}
+          indeterminate={indeterminate}
+          checked={checkAll}
+          onChange={handleCheckAllChange}
+          label='全选'
+          className='mr-8'
+        />
         <span className='text-caption-no-color text-gray-600'>
           已选{selected.filter((value) => value === 1).length} ，共 {tempOptions.length} 项
         </span>
@@ -121,9 +140,9 @@ function RightsCard({ rightsCardData, onChange, selectNumber, abled }: CardProps
 }
 
 function Authorized({ className = '', authorized = 0, abled }: Props, ref: React.Ref<any>): JSX.Element {
-  const [actionNumber, setActionNumber] = useState<number>(0);
   const typeNum = store.currentPage.menuType === 2 ? 1 : 15;
   const initialState = store.currentRights.types === 1 ? typeNum : authorized;
+  const [actionNumber, setActionNumber] = useState<number>(initialState);
 
   useEffect(() => {
     setActionNumber(initialState);
@@ -154,7 +173,6 @@ function Authorized({ className = '', authorized = 0, abled }: Props, ref: React
           />
         );
       })}
-
     </div>
   );
 }
