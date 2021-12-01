@@ -59,7 +59,7 @@ function FormulaConfigTree(
 
   const handleSelect = useCallback(() => {
     const currentNode = store.currentFocusedNode as TreeNode<POLY_API.PolyNodeInput & { descPath: string }>;
-    if (!currentNode.visible) {
+    if (!currentNode.visible || (currentNode.level === 2 && currentNode.name === 'start')) {
       return;
     }
     onSelect(currentNode);
