@@ -35,7 +35,7 @@ function apiRequestFormulaTreeNode(
   if (!desc) {
     desc = name;
   }
-  const id = parentId ? `${parentId}.${name}` : name;
+  const id = parentId ? `${parentId}.${name}` : name || '$';
   const descPath = parentDescPath ? `${parentDescPath}.${desc}` : desc;
 
   const children = child?.filter(Boolean).map((polyNodeInput, index) => apiRequestFormulaTreeNode(
