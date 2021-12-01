@@ -45,7 +45,7 @@ function FormulaConfigTree(
   useImperativeHandle(ref, () => ({
     getCustomRules: () => {
       return store.nodeList
-        .filter(({ name, visible }) => !!name && visible)
+        .filter(({ name }) => !!name)
         .map((node) => ({
           name: get(node, 'data.descPath', ''),
           key: node.path,
