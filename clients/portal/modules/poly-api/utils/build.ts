@@ -84,14 +84,13 @@ export function parsePolySourceFromApi(data: POLY_API.POLY_INFO & { arrange: str
     const arrangeResult = JSON.parse(arrange) as Arrange;
     const { nodes = [], uis } = arrangeResult;
     const { metas = [], edges = [] } = uis || {};
-    store$.init({ polyInfo });
+    store$.init(polyInfo);
     const distNodes: POLY_API.Element[] = nodes?.map((node, index) => {
       const nodeInfo = metas[index];
       return { data: new PolyNodeStore(node), ...nodeInfo };
     }) || [];
     store$.value.nodes.set([...distNodes, ...(edges as unknown as POLY_API.EdgeElement[])]);
   } catch (e) {
-    console.error(e);
     toast.error('获取编排信息失败');
   }
 }

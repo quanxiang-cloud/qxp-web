@@ -20,7 +20,7 @@ export class PolyStore extends BehaviorSubject<POLY_API.Root> {
     super(initialState);
   }
 
-  init({ polyInfo }: { polyInfo: POLY_API.POLY_INFO }): void {
+  init(polyInfo?: POLY_API.POLY_INFO): void {
     this.next({ ...getInitState(), polyInfo });
   }
 
