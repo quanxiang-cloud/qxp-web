@@ -13,7 +13,7 @@ declare namespace PolyAPI {
     active: ApiStatus;
     createAt: string;
     updateAt: string;
-    child?: Namespace[];
+    children?: Namespace[];
   }
 
   interface Service {
