@@ -1,5 +1,7 @@
-import React, { useMemo, Ref, forwardRef, ForwardedRef, useImperativeHandle, useCallback } from 'react';
 import { get } from 'lodash';
+import React, {
+  useMemo, Ref, forwardRef, ForwardedRef, useImperativeHandle, useCallback,
+} from 'react';
 
 import Tree from '@c/headless-tree';
 import type { TreeNode } from '@c/headless-tree/types';
@@ -35,10 +37,12 @@ function FormulaConfigTree(
   const polyNodeStore = useObservable(store$);
   const apiRequestNodeId = polyNodeStore.currentNodeConfigParams?.currentNode?.get('name') as string;
 
-  let sourceNodes: POLY_API.PolyNodeInput[] = [];
-  if (polyNodeStore && apiRequestNodeId) {
-    sourceNodes = getPathTreeSource(apiRequestNodeId);
-  }
+  const sourceNodes = useMemo(() => {
+    if (polyNodeStore && apiRequestNodeId) {
+      return getPathTreeSource(apiRequestNodeId);
+    }
+    return [];
+  }, [apiRequestNodeId, polyNodeStore]);
 
   const store = useMemo(() => new Store(root, sourceNodes), [root, sourceNodes]);
 

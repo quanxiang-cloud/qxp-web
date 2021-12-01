@@ -13,7 +13,9 @@ import store$ from '../store';
 
 function PolyDetails(): JSX.Element {
   const { polyFullPath } = useParams<POLY_API.PolyParams>();
-  const { data, isLoading } = useQueryPolyInfo({ path: polyFullPath }, { enabled: !!polyFullPath });
+  const { data, isLoading } = useQueryPolyInfo({
+    path: polyFullPath,
+  }, { enabled: !!polyFullPath, cacheTime: -1 });
 
   useEffect(() => {
     store$.init();
