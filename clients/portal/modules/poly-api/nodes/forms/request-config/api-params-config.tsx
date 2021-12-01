@@ -1,4 +1,4 @@
-import React, { forwardRef, ForwardedRef, useImperativeHandle, useRef, useEffect, useState } from 'react';
+import React, { forwardRef, ForwardedRef, useImperativeHandle, useRef, useEffect } from 'react';
 import { lensPath, set, view, values } from 'ramda';
 import { isArray, first } from 'lodash';
 
@@ -24,12 +24,13 @@ function ApiParamsConfig(
 ): JSX.Element {
   const formulaRefs = useRef<Record<string, RefProps>>({});
   const currentFormulaEditorRef = useRef<RefProps | null>(null);
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const errorsRef = useRef<Record<string, string>>({});
+  const changedRef = useRef<Record<string, boolean>>({});
 
   useImperativeHandle(ref, () => ({
     getCurrent: () => currentFormulaEditorRef.current,
     validate: () => {
-      const errorMessage = first(values(errors));
+      const errorMessage = first(values(errorsRef.current).filter(Boolean));
       if (errorMessage) {
         throw new Error(errorMessage);
       }
@@ -55,8 +56,15 @@ function ApiParamsConfig(
     return /^\d+$/.test(value) ? parseInt(value) : value;
   }
 
-  function handleFormulaChange(path: string, name: string, required: boolean) {
+  function initError(path: string, name: string): void {
+    errorsRef.current[path] = `请输入${name}配置`;
+  }
+
+  function handleFormulaChange(path: string, name: string, required: boolean, oldVal?: string) {
     return (val: string) => {
+      if (val === oldVal) {
+        return;
+      }
       handleSetCurrentFormulaRef(path)();
       const dataLens = lensPath(`${path}.data`.split('.').map(toNumber));
       view(dataLens, value);
@@ -65,7 +73,10 @@ function ApiParamsConfig(
       view(typeLens, newInputs);
       const distValue = set(typeLens, 'direct_expr', newInputs);
       onChange(distValue);
-      required && setErrors({ ...errors, [path]: !val ? `请输入${name}配置` : '' });
+      changedRef.current[path] = true;
+      if (required) {
+        errorsRef.current[path] = !val ? `请输入${name}配置` : '';
+      }
     };
   }
 
@@ -99,6 +110,7 @@ function ApiParamsConfig(
             <div className="pb-4 text-gray-900">{type.replace(/^\S/, (s: string) => s.toUpperCase())}</div>
             <div className="config-param">
               {params.map(({ path, name, title, data, required }) => {
+                !data && required && initError(path, name);
                 return (
                   <div
                     key={path}
@@ -122,10 +134,12 @@ function ApiParamsConfig(
                           defaultValue={data || ''}
                           value={data || ''}
                           className="node-formula-editor"
-                          onChange={handleFormulaChange(path, name, !!required)}
+                          onChange={handleFormulaChange(path, name, !!required, data)}
                           onBlur={handleFormulaBlur(path, name, !!required, data)}
                         />
-                        {errors[path] && (<span className="text-red-600 px-3 pb-3">{errors[path]}</span>)}
+                        {errorsRef.current[path] && changedRef.current[path] && (
+                          <span className="text-red-600 px-3 pb-3">{errorsRef.current[path]}</span>
+                        )}
                       </div>
                     ) : <div className="node-formula-editor flex-7"></div>}
                   </div>
