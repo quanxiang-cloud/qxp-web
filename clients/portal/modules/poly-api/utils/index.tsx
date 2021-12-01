@@ -247,7 +247,8 @@ function removeCurrentRequestNodeFromConditionToRequest(
 
   const parentPreviousNextNodeIds = parent.data?.get<string[]>('nextNodes') || [];
   parent.data?.set(
-    'nextNodes', parentPreviousNextNodeIds.filter((id) => id !== current.id).concat([next.id]),
+    'nextNodes',
+    parentPreviousNextNodeIds.filter((id) => ![current.id, next.id].includes(id)).concat([next.id]),
   );
   const newElements = removeElements([current], elements);
 

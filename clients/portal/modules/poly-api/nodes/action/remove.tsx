@@ -32,7 +32,7 @@ function NodeRemove({ id }: Props, ref: ForwardedRef<HTMLDivElement | null>): JS
       ref={ref}
       className={cs(
         'flex justify-center items-center p-4 cursor-pointer transition duration-240 opacity-0 absolute',
-        '-right-8 -top-8 bg-white rounded-full',
+        '-right-8 -top-8 bg-white rounded-full node-remover',
       )}
       onClick={handleRemoveNode}
       style={style}
