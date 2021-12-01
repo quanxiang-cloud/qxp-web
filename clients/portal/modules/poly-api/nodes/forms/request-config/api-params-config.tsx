@@ -43,7 +43,7 @@ function ApiParamsConfig(
       return;
     }
     onChange(path.concat(value));
-  }, [url]);
+  }, [url, value]);
 
   if (!isArray(value)) {
     throw new Error('array');
