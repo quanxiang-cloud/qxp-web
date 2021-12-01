@@ -22,6 +22,7 @@ function ApiParamsConfig(
   { value, onChange, customRules, url }: Props,
   ref: ForwardedRef<RefType | undefined>,
 ): JSX.Element {
+  console.log(customRules);
   const formulaRefs = useRef<Record<string, RefProps>>({});
   const currentFormulaEditorRef = useRef<RefProps | null>(null);
   const errorsRef = useRef<Record<string, string>>({});
