@@ -83,7 +83,6 @@ func RetrieveResponse(req *http.Request) (*http.Response, []byte, string) {
 // SendRequest is an util method for request API Server
 func SendRequest(ctx context.Context, method string, fullPath string, body []byte, headers map[string]string) ([]byte, string) {
 	requestID := GetContextValue(ctx, CtxRequestID)
-
 	// todo refactor APIEndpoint+fullPath
 	req, err := http.NewRequest(method, APIEndpoint+fullPath, bytes.NewBuffer(body))
 	if err != nil {

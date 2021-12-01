@@ -6,6 +6,7 @@
   <link rel="stylesheet" href="/dist/css/lego-css.css">
   {{template "_import-map" .}}
   {{template "_systemjs" .}}
+  {{template "_style_guide" .}}
 </head>
 <body>
   <div id="root"></div>
@@ -15,6 +16,7 @@
     window.USER_ADMIN_ROLES = {{ .userAdminRoles }}
     window.CONFIG = {{ .CONFIG }}
     window.__verbose_log__ = {{ .debugMode }}
+    window.TENANT_CONFIG = {{ .userStyleGuideConfig }}
     window.SIDE = 'portal';
   </script>
   {{template "_jsEntry" .}}

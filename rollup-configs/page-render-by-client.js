@@ -50,7 +50,6 @@ export default {
     '@formily/validator',
     'antd',
     '@QCFE/lego-ui',
-
     'rxjs',
     /rxjs\/.*/,
     'moment',
@@ -70,6 +69,7 @@ export default {
     'react-flow-renderer',
     'react-highlight',
     'xlsx',
+    '@ofa/style-guide',
   ],
 
   plugins: [

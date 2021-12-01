@@ -4,10 +4,6 @@
 @import './message';
 @import './apps-management';
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 html {
   font-size: 62.5%;
   overflow: auto;

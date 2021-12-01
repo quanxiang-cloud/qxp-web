@@ -1,0 +1,18 @@
+{{define "_style_guide"}}
+  {{$primaryColor := .userStyleGuideConfig.PrimaryColor}}
+  <style>
+    :root {
+      --primary-50: var(--{{$primaryColor}}-50);
+      --primary-100: var(--{{$primaryColor}}-100);
+      --primary-200: var(--{{$primaryColor}}-200);
+      --primary-300: var(--{{$primaryColor}}-300);
+      --primary-400: var(--{{$primaryColor}}-400);
+      --primary-500: var(--{{$primaryColor}}-500);
+      --primary-600: var(--{{$primaryColor}}-600);
+      --primary-700: var(--{{$primaryColor}}-700);
+      --primary-800: var(--{{$primaryColor}}-800);
+      --primary-900: var(--{{$primaryColor}}-900);
+    }
+  </style>
+  <link rel="shortcut icon"  href="{{.userStyleGuideConfig.Favicons}}" />
+{{end}}

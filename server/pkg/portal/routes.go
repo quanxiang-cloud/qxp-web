@@ -34,7 +34,6 @@ func tokenRequired(h http.HandlerFunc) http.HandlerFunc {
 // GetRouter return mux router
 func GetRouter() http.Handler {
 	r := mux.NewRouter()
-
 	r.Headers("X-Proxy", "API").HandlerFunc(tokenRequired(handlers.ProxyAPIHandler))
 	r.Headers("X-Proxy", "API-NO-AUTH").HandlerFunc(handlers.ProxyAPIHandler)
 	r.Headers("X-Proxy", "FORM_DATA").HandlerFunc(handlers.FormDataHandler)
@@ -59,6 +58,5 @@ func GetRouter() http.Handler {
 	r.Host(contexts.Config.ClientConfig.HomeHostname).Methods("GET").HandlerFunc(loginRequired(handlers.HomeHandler))
 
 	r.PathPrefix("/").Methods("GET").HandlerFunc(loginRequired(handlers.PortalHandler))
-
 	return contexts.WithUtilContext(r)
 }
