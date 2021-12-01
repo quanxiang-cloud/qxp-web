@@ -7,6 +7,7 @@ import Icon from '@c/icon';
 import NodeWrapper from './wrapper';
 import useNodeConfig from '../effects/hooks/use-node-config';
 import conditionConfigSchema from './forms/condition/schema';
+import { POLY_DESIGN_CONFIG } from '../constants';
 
 export default function ConditionNode(props: NodeProps<POLY_API.SubjectPolyNode>): JSX.Element | null {
   const [isConfigShow, setIsConfigShow] = React.useState(false);
@@ -41,7 +42,7 @@ export default function ConditionNode(props: NodeProps<POLY_API.SubjectPolyNode>
         <Icon
           name="condition"
           size={50}
-          style={{ backgroundColor: 'transparent' }}
+          style={{ backgroundColor: POLY_DESIGN_CONFIG.BACKGROUND_COLOR }}
         />
       </div>
     </NodeWrapper>
