@@ -3,8 +3,6 @@ clients/components/table/react-table-config.d.ts
 clients/types/lego-ui.d.ts
 cypress
 dist
-gulpfile.*.js
-gulpfile.js
 node_modules
 rollup.*.js
 scripts/*
