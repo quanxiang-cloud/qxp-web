@@ -40,9 +40,7 @@ function AssociativeConfig({ props, value, mutators }: ISchemaFieldComponentProp
 
   return (
     <div>
-      <div className="my-8 w-full">
-        {rules && <AssociativeRuleList associativeRules={rules} />}
-      </div>
+      {!!rules?.length && <AssociativeRuleList associativeRules={rules} />}
       <Button className="mt-8" onClick={() => setVisible(true)}>设置关联赋值</Button>
       {visible && (
         <RulesConfig

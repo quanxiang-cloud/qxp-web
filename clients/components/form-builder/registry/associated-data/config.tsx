@@ -122,7 +122,7 @@ function AssociatedDataConfig({ initialValue, onChange, subTableSchema }: Props)
       });
 
       if (initialValue.associationTableID === value) {
-        setTableFieldOptions(value, initialValue.associativeConfig?.rules, true);
+        setTableFieldOptions(value, initialValue.associativeConfig?.rules, false);
         return;
       }
 
