@@ -21,11 +21,11 @@ export enum ModalType {
 }
 
 export const MODAL_SCHEMA_MAP: Record<ModalType, [ISchema, string]> = {
-  [ModalType.CREATE_NAMESPACE]: [createNamespaceSchema, '新增分组'],
-  [ModalType.EDIT_NAMESPACE]: [editNamespaceSchema, '编辑分组'],
+  [ModalType.CREATE_NAMESPACE]: [createNamespaceSchema, '新建分组'],
+  [ModalType.EDIT_NAMESPACE]: [editNamespaceSchema, '修改组信息'],
   [ModalType.CREATE_POLY]: [createPolySchema, '新建API'],
-  [ModalType.REMOVE_NAMESPACE]: [{}, ''],
-  [ModalType.REMOVE_POLY]: [{}, ''],
+  [ModalType.REMOVE_NAMESPACE]: [{}, '提示'],
+  [ModalType.REMOVE_POLY]: [{}, '提示'],
 };
 
 type APINamespaceMenu = Array<{

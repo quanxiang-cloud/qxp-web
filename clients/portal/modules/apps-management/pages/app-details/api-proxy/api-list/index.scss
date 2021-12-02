@@ -15,16 +15,8 @@
 }
 
 .inside-api-key {
-  .qxp-ui-tooltip.top {
-    bottom: calc(100% + 1px);
-    left: 40%;
-    transform: translateX(-50%);
-  }
-  .qxp-table-wrapper {
-    margin-top: 16px;
-    .key-id:hover .copy-tooltip{
-      visibility: visible;
-    }
+  .key-id:hover .copy-tooltip{
+    visibility: visible;
   }
   .qxp-table-loading-box {
     background-color: rgba(255, 255, 255, 1);

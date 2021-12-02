@@ -2,7 +2,38 @@
   height: 32px;
 
   &.tree-node--focused {
-    background-color: #F1F5F9;
+    background-color: #f1f5f9;
+  }
+}
+
+input.api-from-input {
+  width: 100%;
+  height: 30px;
+  padding: 5px 16px;
+  margin: 8px 0;
+
+  &.error {
+    border: 1px solid var(--red-500);
+  }
+}
+
+textarea.api-from-textarea {
+  width: 100%;
+  border: 1px solid var(--gray-200);
+  padding: 7px 16px;
+  margin-top: 8px;
+  border-radius: 2px 8px 8px 8px;
+
+  &.error {
+    border: 1px solid var(--red-500);
+  }
+
+  &:focus-visible {
+    outline: 0px;
+  }
+
+  &:focus {
+    border: 1px solid var(--blue-600);
   }
 }
 
@@ -28,7 +59,8 @@
       line-height: 24px;
       color: var(--gray-900);
       background: transparent;
-      &:hover, &.tree-node--focused {
+      &:hover,
+      &.tree-node--focused {
         background: white;
         &::after {
           content: "";
@@ -103,14 +135,14 @@
         }
 
         > .guide-item-txt {
-
+          font-weight: 600;
         }
 
         > .guide-item-divider {
           flex: 1;
           height: 2px;
           width: calc(30vw - 40px);
-          background: #E4EBF1;
+          background: #e4ebf1;
           margin-left: 16px;
         }
       }
@@ -121,5 +153,4 @@
       }
     }
   }
-
 }

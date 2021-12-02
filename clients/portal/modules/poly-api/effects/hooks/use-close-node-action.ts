@@ -5,6 +5,7 @@ export default function useCloseNodeAction(): void {
 
   const dissNodeAction = useCallback(() => {
     const triggers = Array.from(document.querySelectorAll('.node-action-trigger')) as HTMLDivElement[];
+    const removers = Array.from(document.querySelectorAll('.node-remover')) as HTMLDivElement[];
     triggers.forEach((trigger) => {
       trigger.classList.remove('active');
       const action = trigger.querySelector('.node-actions') as HTMLDivElement;
@@ -12,6 +13,12 @@ export default function useCloseNodeAction(): void {
       action.style.pointerEvents = 'none';
       const tid = setTimeout(() => {
         trigger.style.opacity = '0';
+      }, 240);
+      tids.current.push(tid);
+    });
+    removers.forEach((remover) => {
+      const tid = setTimeout(() => {
+        remover.style.opacity = '0';
       }, 240);
       tids.current.push(tid);
     });

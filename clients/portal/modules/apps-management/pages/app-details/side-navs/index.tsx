@@ -34,17 +34,17 @@ const SIDE_NAV: Array<Menu> = [
       {
         id: 'api_proxy',
         title: '第三方 API 代理',
-        icon: 'api_proxy',
+        icon: 'api_outside',
       },
       {
         id: 'orchestration_api',
         title: 'API 编排管理',
-        icon: 'electrical_services',
+        icon: 'api_arrange',
       },
       {
         id: 'faas',
         title: 'FaaS 函数管理',
-        icon: 'api_doc',
+        icon: 'faas_control',
       },
       {
         id: 'key_api',
@@ -54,7 +54,7 @@ const SIDE_NAV: Array<Menu> = [
       {
         id: 'file_api',
         title: 'API 文档',
-        icon: 'api_doc',
+        icon: 'api_inner',
       },
     ],
   },

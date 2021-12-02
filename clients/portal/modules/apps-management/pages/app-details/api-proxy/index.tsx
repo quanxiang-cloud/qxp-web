@@ -10,19 +10,12 @@ import Add from './add-api';
 import AddSwagger from './add-swagger';
 import GuidePage from './guide-page';
 import store from './store';
-import { useQueryString, useNamespace } from './hooks';
+import { useQueryString } from './hooks';
 
 import './styles.scss';
 
-interface SubPageProps {
-  namespace?: string;
-  api_path?: string;
-  action?: string;
-}
-
 function ApiProxy(): JSX.Element | null {
   const qs = useQueryString();
-  const ns = useNamespace();
   const action = qs.get('action');
   const { appID } = useParams<{appID: string}>();
 

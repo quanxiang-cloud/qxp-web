@@ -1,10 +1,14 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useContext, useEffect, useMemo } from 'react';
 import { Button } from 'antd';
 import { createFormActions, SchemaForm } from '@formily/antd';
+import { observer } from 'mobx-react';
 
+import { StoreContext } from '@c/form-builder/context';
 import { FieldConfigContext } from '@c/form-builder/form-settings-panel/form-field-config/context';
+
 import { ItemActionsContext } from './context';
 import { CONFIG_COMPONENTS, COMPONENTS, KeyOfConfigComponent } from './constants';
+import toast from '@lib/toast';
 
 interface Props {
   currentSubSchema?: ISchema;
@@ -13,25 +17,42 @@ interface Props {
   subTableSchema: ISchema;
 }
 
-export default function SubTableSchemaConfig({
+function SubTableSchemaConfig({
   currentSubSchema, onChange, currentSchemaType, subTableSchema,
 }: Props): JSX.Element | null {
   const itemActions = useMemo(() => createFormActions(), []);
   const { actions } = useContext(FieldConfigContext);
+  const { setConfigValidate, configValidate } = useContext(StoreContext);
+
+  const currentConfigComponent = currentSchemaType ? CONFIG_COMPONENTS[currentSchemaType] : undefined;
+  const currentSubSchemaDefault = currentConfigComponent?.configSchema;
+  const CurrentSubSchemaForm = currentConfigComponent?.configForm;
+  const currentSubSchemaConfig = currentSubSchema ?
+    currentConfigComponent?.toConfig(currentSubSchema) :
+    undefined;
+
+  useEffect(() => {
+    if (!currentSubSchema) {
+      setConfigValidate(actions.validate);
+      return;
+    }
+
+    if (!CurrentSubSchemaForm) {
+      setConfigValidate(itemActions.validate);
+      return;
+    }
+  }, [actions.validate, currentSubSchema, CurrentSubSchemaForm]);
+
+  function onGoBack(): void {
+    configValidate?.().then(() => {
+      actions.setFieldState('Fields.curConfigSubTableKey', (state) => {
+        state.value = '';
+      });
+    }).catch(({ errors }) => toast.error(errors[0].messages[0]));
+  }
 
   if (!currentSubSchema || !currentSchemaType) {
     return null;
-  }
-
-  const currentConfigComponent = CONFIG_COMPONENTS[currentSchemaType];
-  const currentSubSchemaDefault = currentConfigComponent?.configSchema;
-  const CurrentSubSchemaForm = currentConfigComponent?.configForm;
-  const currentSubSchemaConfig = currentConfigComponent?.toConfig(currentSubSchema);
-
-  function onGoBack(): void {
-    actions.setFieldState('Fields.curConfigSubTableKey', (state) => {
-      state.value = '';
-    });
   }
 
   return (
@@ -61,3 +82,5 @@ export default function SubTableSchemaConfig({
     </ItemActionsContext.Provider>
   );
 }
+
+export default observer(SubTableSchemaConfig);

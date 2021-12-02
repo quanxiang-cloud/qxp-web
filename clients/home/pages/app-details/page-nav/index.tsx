@@ -1,16 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import cs from 'classnames';
 
-import AppsSwitcher from '@c/apps-switcher';
 import Icon from '@c/icon';
-import AbsoluteCentered from '@c/absolute-centered';
-import PageLoading from '@c/page-loading';
-import TwoLevelMenu from '@c/two-level-menu';
 import { getQuery } from '@lib/utils';
-import { fetchUserList } from '@home/lib/api';
-import toast from '@lib/toast';
+import PageLoading from '@c/page-loading';
+import AppsSwitcher from '@c/apps-switcher';
+import TwoLevelMenu from '@c/two-level-menu';
+import AbsoluteCentered from '@c/absolute-centered';
 
 import store from '../store';
 import RoleSwitcher from '../role-switcher';
@@ -21,7 +19,6 @@ function PageNav(): JSX.Element {
   const history = useHistory();
   const { pageID } = getQuery<{ pageID: string }>();
   const { appID } = useParams<{ appID: string }>();
-  const [appList, setAppList] = useState([]);
   const homeAppNavStatus = localStorage?.getItem('HOME_APP_PAGE_NAV_STATUS_v1')?.split(':') || [];
   const currentPageNavStatus = homeAppNavStatus[0] === appID ? homeAppNavStatus[1] : 'open';
 
@@ -38,19 +35,6 @@ function PageNav(): JSX.Element {
   useEffect(() => {
     store.setPageID(pageID);
   }, [pageID]);
-
-  useEffect(() => {
-    fetchUserList().then((res: any) => {
-      if (res.data.findIndex(({ id }: AppInfo) => id === appID) === -1) {
-        toast.error('应用不存在！2秒后跳转到首页');
-        setTimeout(() => {
-          history.replace('/');
-        }, 2000);
-      }
-      setAppList(res.data);
-    });
-    store.getRoleInfo(appID);
-  }, [appID]);
 
   const onSelect = (pageNode: PageInfo): void => {
     history.replace(`/apps/${appID}?pageID=${pageNode.id}`);
@@ -79,7 +63,7 @@ function PageNav(): JSX.Element {
           <span className='mx-8 text-14'>/</span>
           <AppsSwitcher
             hiddenStatus={true}
-            apps={appList}
+            apps={store.appList}
             currentAppID={appID}
             onChange={handleChange}
           />

@@ -12,10 +12,6 @@ import { useNamespace } from './hooks';
 
 import './styles.scss';
 
-interface Props {
-  className?: string;
-}
-
 type GuideStepItem = {
   title: string;
   desc: string;
@@ -26,8 +22,8 @@ type GuideStepItem = {
 
 const guideSteps: GuideStepItem[] = [
   {
-    title: '配置分组、密钥',
-    desc: '创建分组后，需要为分组绑定对应的域名。如需鉴权请配置密钥。',
+    title: '新建分组',
+    desc: 'API分组是API的管理单元。创建API之前，您需要先创建分组。',
     link: '#',
     divider: true,
   },
@@ -44,7 +40,7 @@ const guideSteps: GuideStepItem[] = [
   },
 ];
 
-function GuideItem({ title, desc, link, divider, step = 0 }: GuideStepItem) {
+function GuideItem({ title, desc, link, divider, step = 0 }: GuideStepItem): JSX.Element {
   return (
     <div className='guide-item'>
       <div className='guide-item-caption'>
@@ -52,15 +48,15 @@ function GuideItem({ title, desc, link, divider, step = 0 }: GuideStepItem) {
         <span className='guide-item-txt text-h6-no-color-weight'>{title}</span>
         {divider && <span className='guide-item-divider'/>}
       </div>
-      <p className='guide-item-desc'>
+      <p className='guide-item-desc w-220 text-12'>
         {desc}
-        {link && <a href={link} rel='noreferrer noopener'>查看文档</a>}
+        {link && <a href={link} rel='noreferrer noopener' className='text-blue-600'>查看文档</a>}
       </p>
     </div>
   );
 }
 
-function GuidePage(props: Props) {
+function GuidePage(): JSX.Element {
   const [modalOpen, setModalOpen] = useState(false);
   const formInst = useForm();
   const { appID } = useParams<{appID: string}>();
@@ -86,7 +82,7 @@ function GuidePage(props: Props) {
   }, []);
 
   return (
-    <div className='bg-white mt-20 mx-20 guide-page h-full overflow-hidden'>
+    <div className='bg-white guide-page h-full overflow-hidden'>
       <div className='guide-page--header px-32 py-20'>
         <h2 className='text-gray-600 text-h5-no-color mb-8'>第三方 API 代理</h2>
         <p className='text-gray-400 text-caption-no-color'>
@@ -100,7 +96,9 @@ function GuidePage(props: Props) {
         <p className='text-gray-400 text-caption-no-color'>通过分组注册、调用、管理所需的第三方 API</p>
         <div className='btn-groups mt-16'>
           <Button iconName='help_outline' className='mr-20'>操作指南</Button>
-          <Button iconName='create_new_folder' modifier='primary' onClick={()=> setModalOpen(true)}>新建分组</Button>
+          <Button iconName='create_new_folder' modifier='primary' onClick={()=> setModalOpen(true)}>
+            新建分组
+          </Button>
         </div>
       </div>
       <div className='guide-page--footer px-32 py-20'>

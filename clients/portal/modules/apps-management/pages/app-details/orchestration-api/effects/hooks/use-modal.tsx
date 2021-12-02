@@ -8,6 +8,8 @@ import toast from '@lib/toast';
 import Modal from '@c/modal';
 import { ModalType, MODAL_SCHEMA_MAP } from '@orchestrationAPI/constants';
 import useSchemaformKeypressSubmit from '@orchestrationAPI/effects/hooks/use-schema-form-keypress-submit';
+import InputWithDesc from '@orchestrationAPI/components/input-with-desc';
+import CopyPolySelect from '@orchestrationAPI/components/copy-poly-select';
 
 const actions = createFormActions();
 
@@ -25,11 +27,12 @@ export default function useModal<I, O, D>(
     formToApiInputConvertor: (form?: D) => I,
     keyPressFieldWhitelist?: string[],
     onClose: () => void,
+    submitText: string,
   },
 ): JSX.Element | null {
   const {
     message, onClose, onSuccess, onError, formToApiInputConvertor, content, defaultValue,
-    modifier = 'primary', keyPressFieldWhitelist = ['title', 'name'],
+    modifier = 'primary', keyPressFieldWhitelist = ['title', 'name'], submitText,
   } = options;
   const [loading, setLoading] = useState(false);
   const [schema, title] = modalType ? MODAL_SCHEMA_MAP[modalType] : [];
@@ -41,14 +44,14 @@ export default function useModal<I, O, D>(
   }
 
   useEffect(() => {
-    !modalType && setLoading(false);
-  }, [modalType]);
+    !modalType && loading && setLoading(false);
+  }, [modalType, loading]);
 
   const mutation = mutationHooks({
     onSuccess: (data, variables, context) => {
       message && toast.success(message);
-      onSuccess?.(data, variables, context);
       onClose();
+      onSuccess?.(data, variables, context);
     },
     onError: (error) => {
       toast.error(error);
@@ -68,14 +71,23 @@ export default function useModal<I, O, D>(
 
   return (
     <Modal
+      className="orchestration-management-modal"
       title={title}
       onClose={onClose}
       footerBtns={[
-        { key: 'cancel', text: '取消', onClick: onClose },
-        { key: 'submit', text: '确定', onClick: handleSubmit, modifier, loading },
+        { key: 'cancel', text: '取消', onClick: onClose, iconName: 'close' },
+        {
+          key: 'submit',
+          text: submitText,
+          onClick: handleSubmit,
+          iconName: 'check',
+          modifier,
+          loading,
+          className: 'min-h-32',
+        },
       ]}
     >
-      <div className="p-20">
+      <div className="py-24 px-40">
         {content ? content : (
           <SchemaForm
             onSubmit={onSubmit}
@@ -83,7 +95,7 @@ export default function useModal<I, O, D>(
             schema={schema}
             effects={effects}
             actions={actions}
-            components={{ Input, TextArea: Input.TextArea, Select }}
+            components={{ Input, TextArea: Input.TextArea, Select, InputWithDesc, CopyPolySelect }}
           />
         )}
       </div>

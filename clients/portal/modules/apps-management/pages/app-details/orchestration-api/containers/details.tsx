@@ -34,6 +34,8 @@ import {
   RemovePolyParams,
 } from '@orchestrationAPI/effects/api/poly';
 
+import ModalRemoveTips from '../components/modal-remove-tips';
+
 const initialPage = { page: 1, pageSize: 10 };
 
 function APINamespaceDetails(): JSX.Element {
@@ -50,7 +52,7 @@ function APINamespaceDetails(): JSX.Element {
 
   const [copyState, copyToClipboard] = useCopyToClipboard();
   useEffect(() => {
-    copyState.error ? toast.error('复制失败') : copyState.value && toast.success(`访问路径: ${copyState.value}复制成功`);
+    copyState.error ? toast.error('复制失败') : copyState.value && toast.success(`访问路径: ${copyState.value} 复制成功`);
   }, [copyState]);
 
   const CreatePolyModal = useModal<CreatePolyInput, CreatePolyResponse, CreatePolyParams>(
@@ -59,7 +61,9 @@ function APINamespaceDetails(): JSX.Element {
     useCreatePoly,
     {
       message: '新建API成功',
+      submitText: '新建并设计API',
       onClose: handleModalClose,
+      onSuccess: (data) => handleEditPoly(data.apiPath),
       formToApiInputConvertor: (body) => {
         return {
           path: `create${nameSpacePath}`,
@@ -74,8 +78,9 @@ function APINamespaceDetails(): JSX.Element {
     ModalType.REMOVE_POLY,
     useRemovePoly,
     {
-      message: 'API删除成功',
-      content: <span>确认要删除吗?</span>,
+      message: '删除API成功',
+      submitText: '确认删除',
+      content: <ModalRemoveTips title="确定要删除该API吗?" desc="删除API后，数据将无法找回。" />,
       onClose: handleModalClose,
       formToApiInputConvertor: () => {
         return {
@@ -120,7 +125,7 @@ function APINamespaceDetails(): JSX.Element {
 
   const activePolyMutation = useActivePoly({
     onSuccess: (response) => {
-      toast.success(`${response.active ? '开启' : '关闭'}成功`);
+      toast.success(`${response.active ? '启用' : '停用'}成功`);
     },
     onError: (error) => {
       toast.error(error);
@@ -162,14 +167,22 @@ function APINamespaceDetails(): JSX.Element {
     Header: 'API名称',
     accessor: 'title',
   }, {
-    Header: '方法',
+    Header: '请求方法',
     accessor: 'method',
+    Cell: (model: CellProps<PolyListItem>) => (
+      <span className="text-green-600">{model.value}</span>
+    ),
   }, {
     Header: '访问路径',
     accessor: 'fullPath',
     Cell: (model: CellProps<PolyListItem>) => (
       <div className="flex flex-nowrap items-center">
-        <div className="w-72 truncate" title={model.value}>{model.value}</div>
+        <div
+          className="truncate"
+          style={{ maxWidth: 'calc(100% - 16px)' }}
+          title={model.value}>
+          {model.value}
+        </div>
         <Icon
           clickable
           name="content_copy"
@@ -181,13 +194,23 @@ function APINamespaceDetails(): JSX.Element {
       </div>
     ),
   }, {
+    Header: '描述',
+    accessor: 'desc',
+    Cell: (model: CellProps<PolyListItem>) => (
+      <div
+        className="truncate"
+        title={model.value}>
+        {model.value || '-'}
+      </div>
+    ),
+  }, {
     Header: '状态',
     accessor: 'active',
     Cell: (model: CellProps<PolyListItem>) => (
       <Toggle
         defaultChecked={!!model.value}
-        onText="开启"
-        offText="关闭"
+        onText="启用"
+        offText="停用"
         onChange={(checked) => handleActiveChange(checked, model.cell.row)}
       />
     ),
@@ -199,7 +222,7 @@ function APINamespaceDetails(): JSX.Element {
           onClick={() => handleEditPoly(model.cell.row.original.fullPath)}
           className="mr-16 text-blue-600 text-h6-no-color-weight cursor-pointer"
         >
-          编辑
+          设计API
         </span>
         {
           <span
@@ -220,36 +243,60 @@ function APINamespaceDetails(): JSX.Element {
   }];
 
   if (isApiNameSpaceDetailsLoading) {
-    return <Loading />;
+    return <Loading desc="加载中..." />;
+  }
+
+  if (!currentNamespaceName) {
+    return (
+      <div className="container flex items-center justify-center h-full font-semibold">
+        暂无分组, 请创建分组
+      </div>
+    );
   }
 
   return (
     <>
-      <div className="p-20">{currentNamespaceName} API列表</div>
-      <div className="flex flex-col flex-1 overflow-hidden">
-        <div className="flex justify-between items-center px-20 my-20">
+      <div
+        className="py-12 px-16 h-44 text-caption-no-color-weight text-gray-900 font-semibold bg-no-repeat
+        bg-right border-b"
+        style={{
+          backgroundImage: 'url(\'/dist/images/maskHeaderBackgroundImage.png\')',
+        }}
+      >
+        {currentNamespaceName}
+      </div>
+      <div className="flex flex-col flex-1 overflow-hidden bg-white p-16 h-32">
+        <div className="flex justify-between items-center mb-8">
           <Button onClick={handleCreatePolyApi} modifier="primary" iconName="add">新建API</Button>
           <SearchInput
+            className="polynamespacedetail-header-searchinput"
             name="apiName"
-            placeholder="输入API名称"
+            placeholder="搜索 API名称..."
             onChange={handleApiTitleChange}
             appendix="close"
           />
         </div>
-        <div className="flex-1 overflow-auto">
+        <div className="flex-1 polynamespacedetail-table overflow-hidden">
           <Table
             rowKey="id"
             columns={columns}
             data={data?.list || []}
             loading={isFetchListLoading || isSearchLoading}
-            emptyTips={'暂无数据'}
+            emptyTips={(
+              <div className="flex flex-col items-center justify-center">
+                <img src="/dist/images/table-empty.svg" alt="empty" className="w-96 h-72 mb-8" />
+                <span className="text-caption-no-color-weight text-gray-400">暂无数据</span>
+              </div>
+            )}
           />
-          <Pagination
-            current={pagination.page}
-            pageSize={pagination.pageSize}
-            total={data?.total}
-            onChange={handlePageChange}
-          />
+          <div className="pt-10">
+            <Pagination
+              current={pagination.page}
+              pageSize={pagination.pageSize}
+              total={data?.total}
+              onChange={handlePageChange}
+            />
+          </div>
         </div>
       </div>
       {CreatePolyModal}

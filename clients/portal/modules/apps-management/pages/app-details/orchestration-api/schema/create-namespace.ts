@@ -5,18 +5,20 @@ const createNamespaceSchema: ISchema = {
       type: 'object',
       'x-component': 'mega-layout',
       'x-component-props': {
-        labelAlign: 'right',
+        labelAlign: 'top',
         full: true,
-        labelCol: 4,
-        wrapperCol: 20,
+      },
+      'x-props': {
+        className: 'mb-0 orchestration-modal-form',
       },
       properties: {
         title: {
           title: '分组名称',
           type: 'string',
-          'x-component': 'Input',
+          'x-component': 'InputWithDesc',
           'x-component-props': {
-            placeholder: '请输入',
+            placeholder: '请输入，例如：公司系统',
+            desc: '不超过 20 个字符，分组名称不可重复',
           },
           'x-rules': [
             {
@@ -33,9 +35,10 @@ const createNamespaceSchema: ISchema = {
         name: {
           title: '分组标识',
           type: 'string',
-          'x-component': 'Input',
+          'x-component': 'InputWithDesc',
           'x-component-props': {
-            placeholder: '请输入英文/数字/下划线',
+            placeholder: '请输入，例如：sys_001',
+            desc: '不超过 20 字符，必须以字母开头，只能包含字母、数字、下划线，标识不可重复。',
           },
           'x-rules': [{
             required: true,
@@ -54,7 +57,7 @@ const createNamespaceSchema: ISchema = {
           default: '',
           'x-component': 'TextArea',
           'x-component-props': {
-            placeholder: '请输入',
+            placeholder: '选填 (不超过 100 字符)',
           },
           'x-rules': [{
             max: 100,

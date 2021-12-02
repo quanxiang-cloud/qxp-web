@@ -11,8 +11,16 @@ export default over(
   (schema: { title: ISchema, name: ISchema, desc: ISchema }) => {
     const { title, name, desc } = schema;
     const schemaToProcess = [title, name, desc];
-    each(schemaToProcess, (schema: ISchema) => {
+    each(schemaToProcess, (schema: ISchema, index) => {
       schema.title = (schema.title as string).replace('分组', 'API');
+      if (index === 0) {
+        Object.assign(schema, {
+          'x-component': 'Input',
+          'x-component-props': {
+            placeholder: '请输入，例如：查询数据',
+          },
+        });
+      }
       const rules = schema['x-rules'];
       if (rules && isArray(rules)) {
         schema['x-rules'] = rules.map((_rule) => {
@@ -36,6 +44,11 @@ export default over(
         'x-component': 'Select',
         'x-index': 3,
         display: false,
+      },
+      templateAPIPath: {
+        type: 'string',
+        'x-component': 'CopyPolySelect',
+        'x-index': 4,
       },
     });
   },

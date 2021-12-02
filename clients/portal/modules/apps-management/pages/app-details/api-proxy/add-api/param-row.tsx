@@ -40,11 +40,10 @@ function ParamRow({
   constData,
   _object_nodes_,
   _array_nodes_,
-}: Props & ApiParam) {
+}: Props & ApiParam): JSX.Element {
   const store = useContext(paramsContext);
-  const { register, formState: { errors }, control, watch, getValues } = useFormContext();
+  const { register, formState: { errors }, control } = useFormContext();
   const [expand, setExpand] = useState(false);
-  const watchName = watch(getFieldName('name'));
   const qs = useQueryString();
   const isEdit = qs.get('action') === 'edit';
 
@@ -125,7 +124,7 @@ function ParamRow({
             return (
               <input
                 type="text"
-                className={cs('input', {
+                className={cs({
                   error: get(errors, getFieldName('name')),
                   'opacity-50 cursor-not-allowed': readonly,
                 })}
@@ -209,7 +208,7 @@ function ParamRow({
                 return (
                   <input
                     type={type === 'number' ? 'number' : 'text'}
-                    className={cs('input', {
+                    className={cs({
                       error: get(errors, getFieldName('constData')),
                     })}
                     maxLength={128}
@@ -285,7 +284,6 @@ function ParamRow({
           render={({ field })=> (
             <input
               type="text"
-              className='input'
               placeholder='建议输入中文, 最多32字符'
               maxLength={32}
               {...field}

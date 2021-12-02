@@ -7,8 +7,9 @@ import React, {
 
 import toast from '@lib/toast';
 import PageLoading from '@c/page-loading';
-import { useGetRequestNodeApi } from '@polyApi/effects/api/raw';
 import type { CustomRule } from '@c/formula-editor';
+import { useGetRequestNodeApi } from '@polyApi/effects/api/raw';
+import { filterPolyApiInputs } from '@polyApi/utils/request-node';
 import type { RefType as PathTreeRefType } from '@polyApi/components/poly-node-path-tree';
 
 import ApiSelector from './api-selector';
@@ -68,7 +69,7 @@ function RequestConfigForm({ value, onChange }: Props, ref: ForwardedRef<Request
     !isLoading && apiDocDetail?.doc?.input?.inputs && onChange({
       apiName: apiDocDetail?.apiPath.split('/').pop() || '',
       outputs: apiDocDetail?.doc?.output?.doc?.[0]?.data || [],
-      inputs: apiDocDetail?.doc?.input?.inputs || [],
+      inputs: filterPolyApiInputs(apiDocDetail?.doc?.input?.inputs || []),
     });
   }, [isLoading, onChange, apiDocDetail]);
 
@@ -76,13 +77,13 @@ function RequestConfigForm({ value, onChange }: Props, ref: ForwardedRef<Request
     if (isLoading || mountedRef.current) {
       return;
     }
-    const apiInputs = apiDocDetail?.doc?.input?.inputs || [];
+    const apiInputs = filterPolyApiInputs(apiDocDetail?.doc?.input?.inputs || []);
     const inputs = mergeInputs(value.inputs, apiInputs);
     mountedRef.current = true;
     onChange({
       apiName: apiDocDetail?.apiPath.split('/').pop() || '',
       outputs: apiDocDetail?.doc?.output?.doc?.[0]?.data || [],
-      inputs,
+      inputs: filterPolyApiInputs(inputs),
     });
   }, [value, isLoading, onChange, apiDocDetail, mountedRef]);
 

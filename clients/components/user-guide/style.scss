@@ -1,0 +1,30 @@
+$bg-color: #1f78d1;
+$shadow: 0 0 30px rgba(200, 200, 200, .7);
+$width: 4px;
+
+.user-guide-popper {
+  box-shadow: $shadow;
+  background-color: $bg-color;
+
+  &::after {
+    content: '';
+    border-width: $width;
+    border-color: transparent;
+    @apply absolute border-solid;
+  }
+
+  @each $direction in (left, top, right, bottom) {
+    &--#{$direction}::after {
+      border-#{$direction}-color: $bg-color;
+      #{$direction}: 100%;
+      @if $direction == left or $direction == right {
+        top: 50%;
+        transform: translateY(-50%);
+      }
+      @if $direction == top or $direction == bottom {
+        left: 50%;
+        transform: translateX(-50%);
+      }
+    }
+  }
+}

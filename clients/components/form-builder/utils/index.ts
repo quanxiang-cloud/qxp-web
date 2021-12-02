@@ -1,6 +1,7 @@
 import { get, has, merge } from 'lodash';
 import { customAlphabet } from 'nanoid';
 import { Curry } from 'ts-toolbelt/out/Function/Curry';
+import { IFormExtendedValidateFieldOptions, ValidateNodeResult } from '@formily/antd';
 import fp, {
   pipe, entries, filter, fromPairs, every, equals, property, curry, map, cond, values, stubTrue,
 } from 'lodash/fp';
@@ -156,6 +157,32 @@ export const validateRegistryElement: Curry<ValidateRegistryElement<unknown>> = 
     return validator(messageMap);
   },
 );
+
+function parseError(errors: any): Error {
+  return new Error(errors[0].messages[0]);
+}
+
+export type ValidateFuncType = (
+  path?: string | undefined, opts?: IFormExtendedValidateFieldOptions | undefined
+) => Promise<ValidateNodeResult>;
+
+export async function validateFieldConfig(validator: ValidateFuncType | undefined): Promise<any> {
+  try {
+    return await validator?.();
+  } catch ({ errors }: any) {
+    throw parseError(errors);
+  }
+}
+
+export async function validatePageConfig(
+  flattenFieldsLength: number, pageTableColumnsLength: number,
+): Promise<never | boolean> {
+  if (!flattenFieldsLength || pageTableColumnsLength) {
+    return true;
+  }
+
+  throw new Error('请在页面配置-字段显示和排序至少选择一个字段显示');
+}
 
 type PermissionToOverwrite = { display?: boolean; readOnly?: boolean };
 export function schemaPermissionTransformer<T extends ISchema>(
