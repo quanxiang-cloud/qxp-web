@@ -9,9 +9,9 @@ import AssociativeRuleList from './rule-list';
 import './index.scss';
 
 function AssociativeConfig({ props, value, mutators }: ISchemaFieldComponentProps): JSX.Element {
-  const { currentFormFields, sourceTableFields, associativeRules } = props?.['x-component-props'];
   const [visible, setVisible] = useState(false);
   const [rules, setRules] = useState<FormBuilder.DataAssignment[]>();
+  const { currentFormFields, sourceTableFields, associativeRules } = props?.['x-component-props'];
 
   function onSubmit(value: Record<string, FormBuilder.DataAssignment[]>): void {
     mutators.change(value);
@@ -44,11 +44,11 @@ function AssociativeConfig({ props, value, mutators }: ISchemaFieldComponentProp
       <Button className="mt-8" onClick={() => setVisible(true)}>设置关联赋值</Button>
       {visible && (
         <RulesConfig
-          onClose={() => setVisible(false)}
           onSubmit={onSubmit}
           defaultValue={value}
           currentFormFields={currentFormFields}
           sourceTableFields={sourceTableFields}
+          onClose={() => setVisible(false)}
         />
       )}
     </div>
