@@ -37,7 +37,6 @@ export default {
   preserveEntrySignatures: false,
 
   input,
-
   output,
 
   external: [

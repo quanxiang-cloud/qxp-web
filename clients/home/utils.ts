@@ -186,13 +186,13 @@ function buildRef(
         const [subRef] = buildRef(subordination === 'foreign_table' ?
           window[`schema-${field.id}`] : field.items as ISchema, 'create');
         const _ref = subRef;
-
-        if (values?.[field.id]?.length) {
+        // tips：如果子表单内有流水号等组件默认填一行空值
+        if (values?.[field.id]?.length || !isEmpty(_ref)) {
           ref[field.id] = {
             type: subordination || 'sub_table',
             appID,
             tableID,
-            ...buildSubTableParams(type, values[field.id], _ref),
+            ...buildSubTableParams(type, values?.[field.id] || [{}], _ref),
           };
         }
       }
