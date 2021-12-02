@@ -41,11 +41,11 @@ const SIDE_NAV: Array<Menu> = [
         title: 'API 编排管理',
         icon: 'api_arrange',
       },
-      {
-        id: 'faas',
-        title: 'FaaS 函数管理',
-        icon: 'faas_control',
-      },
+      // {
+      //   id: 'faas',
+      //   title: 'FaaS 函数管理',
+      //   icon: 'faas_control',
+      // },
       {
         id: 'key_api',
         title: 'API 密钥管理',
