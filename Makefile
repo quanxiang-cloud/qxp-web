@@ -39,4 +39,19 @@ buildHome:
 rollup:
 	./node_modules/.bin/rollup -c rollup.config.js -w
 
+bundleHome:
+	./node_modules/.bin/rollup -c rollup.config.js -w --input home
+
+bundlePortal:
+	./node_modules/.bin/rollup -c rollup.config.js -w --input portal
+
+bundleMobile:
+	./node_modules/.bin/rollup -c rollup.config.js -w --input mobile
+
+home: buildAssets startHomeServer bundleHome
+
+portal: buildAssets startPortalServer bundlePortal
+
+mobile: buildAssets startHomeServer bundleMobile
+
 build: buildAssets

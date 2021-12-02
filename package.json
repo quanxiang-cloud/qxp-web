@@ -13,6 +13,9 @@
     "preview:icon": "node scripts/preview-icons.js",
     "rollup": "rollup -c rollup.config.js -w",
     "start": "run-p rollup type-check gulp",
+    "start:home": "run-p type-check 'make home -j'",
+    "start:portal": "run-p type-check 'make portal -j'",
+    "start:mobile": "run-p type-check 'make mobile -j'",
     "make": "make -j",
     "type-check": "tsc --noEmit --skipLibCheck --pretty -w"
   },
