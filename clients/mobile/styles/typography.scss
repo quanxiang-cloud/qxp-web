@@ -1,0 +1,51 @@
+.title1 {
+  font-size: .22rem;
+  line-height: .33rem;
+  font-weight: 500;
+}
+
+.title2 {
+  font-size: .19rem;
+  line-height: .29rem;
+  font-weight: 500;
+}
+
+.title3 {
+  font-size: .17rem;
+  line-height: .26rem;
+  font-weight: 500;
+}
+
+body, .body1 {
+  font-size: .17rem;
+  line-height: .26rem;
+  font-weight: 400;
+}
+
+.body2 {
+  font-size: .15rem;
+  line-height: .23rem;
+  font-weight: 400;
+}
+
+.caption {
+  font-size: .13rem;
+  line-height: .2rem;
+  font-weight: 400;
+}
+
+.text-primary {
+  color: var(--gray-900);
+}
+
+.text-secondary {
+  color: var(--gray-600);
+}
+
+.text-highlight {
+  color: var(--blue-600);
+}
+
+.text-placeholder {
+  color: var(--gray-400)
+}

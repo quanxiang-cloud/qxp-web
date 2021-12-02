@@ -19,11 +19,9 @@ import { deleteNativeApi, activeApi } from '../api';
 import { useNamespace } from '../hooks';
 import store from '../store';
 
-interface Props {
-  className?: string;
-}
+import './index.scss';
 
-function ApiList(props: Props) {
+function ApiList(): JSX.Element {
   const history = useHistory();
   const { url } = useRouteMatch();
   const [pageParams, setPageParams] = useState<PolyAPI.SearchApiParams>({ page: 1, pageSize: 10 });
@@ -173,13 +171,16 @@ function ApiList(props: Props) {
     }
 
     if (modalType === 'delete') {
-      deleteNativeApi(store.currentSvcPath.slice(0, store.currentSvcPath.lastIndexOf('/')), [curRow?.name || '']).then(()=> {
+      deleteNativeApi(store.currentSvcPath.slice(
+        0, store.currentSvcPath.lastIndexOf('/'),
+      ), [curRow?.name || '']).then(()=> {
         toast.success('删除 API 成功');
         if (store.svcApis?.list?.length === 1 && pageParams.page > 1) {
           setPageParams({ ...pageParams, page: pageParams.page - 1 });
+        } else {
+          fetchApis();
         }
         setModalOpen(false);
-        fetchApis();
       }).catch((err)=> toast.error(err));
     }
   }
@@ -211,6 +212,7 @@ function ApiList(props: Props) {
       </div>
       <div className='api-list-wrap'>
         <Table
+          className='api-proxy-table-switch'
           emptyTips={(<EmptyTips text={
             (<div>暂无数据，选择
               <span onClick={toCreateApiPage} className='text-blue-600 cursor-pointer ml-4'>新建 API</span>

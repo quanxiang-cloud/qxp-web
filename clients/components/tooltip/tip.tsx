@@ -5,29 +5,19 @@ import { Props } from './index';
 
 import './style.scss';
 
-interface ToolTipProps extends Props {
-  show: boolean;
-}
-
 export default function({
-  position,
   className,
-  show,
-  arrowStyle,
   style,
   label,
   labelClassName,
-}: ToolTipProps): JSX.Element {
+}: Omit<Props, 'position'>): JSX.Element {
   return (
     <div
       style={style}
-      className={cs('qxp-ui-tooltip bg-gray-700 cursor-default', position, className, {
-        hidden: !show,
-        flex: show,
-      })}
+      className={cs('qxp-ui-tooltip bg-gray-700 cursor-default', className)}
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="qxp-ui-tooltip-arrow" style={arrowStyle} />
+      <div className='qxp-tooltip-arrow' data-popper-arrow />
       <div className={cs('qxp-ui-tooltip-label', labelClassName)}>{label}</div>
     </div>
   );

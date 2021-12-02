@@ -1,7 +1,7 @@
 import { TableConfig, TableColumnConfig } from '@c/form-app-data-table/type';
 import httpClient from '@lib/http-client';
 
-type createPageSchemeParam = {
+type createPageSchemaParam = {
   tableID: string;
   config: {
     pageTableColumns: TableColumnConfig[];
@@ -10,7 +10,7 @@ type createPageSchemeParam = {
   },
 }
 
-export const createPageScheme = async <T>(appID: string, data: createPageSchemeParam): Promise<T> => {
+export const createPageSchema = async <T>(appID: string, data: createPageSchemaParam): Promise<T> => {
   return await httpClient<T>(`/api/v1/structor/${appID}/m/config/create`, data);
 };
 

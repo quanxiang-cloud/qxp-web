@@ -19,6 +19,8 @@ import CreatApiKeyTable from './creat-api-key-table';
 import store from '../store';
 import { uploadApiKey, deleteApiKey, updateApiKey, getApiKeyList, queryApiKey, activeApiKey } from '../api';
 
+import './index.scss';
+
 type MsgApiKey = {
   keyID: string,
   keySecret: string,
@@ -78,7 +80,7 @@ function ApiKeys(): JSX.Element {
         if (err.message === 'failded to upload, the key uploaded has exists') {
           toast.error('密钥ID重复，请重新输入');
         } else {
-          toast.error('创建失败');
+          toast.error(err);
         }
       });
     }).catch(() => null);
@@ -146,16 +148,16 @@ function ApiKeys(): JSX.Element {
               <ToolTip
                 label='复制'
                 position='top'
-                relative={false}
-                wrapperClassName="flex-grow-0 relative z-10 invisible copy-tooltip"
                 labelClassName="whitespace-nowrap text-12"
               >
-                <Icon
-                  name='content_copy'
-                  size={16}
-                  onClick={() => copyToClipboard(keyID, '复制成功')}
-                  className='m-10 cursor-pointer hover:text-blue-600'
-                />
+                <div className='pt-1 ml-10 pl-3'>
+                  <Icon
+                    name='content_copy'
+                    size={16}
+                    onClick={() => copyToClipboard(keyID, '复制成功')}
+                    className='cursor-pointer hover:text-blue-600 invisible copy-tooltip'
+                  />
+                </div>
               </ToolTip>
             )}
           </div>
@@ -273,6 +275,7 @@ function ApiKeys(): JSX.Element {
         >新建密钥</Button>
       </div>
       <Table
+        className='api-proxy-table-switch'
         loading={loading}
         emptyTips={<EmptyTips text='暂无密钥' className="pt-40" />}
         columns={COLS}
@@ -300,7 +303,7 @@ function ApiKeys(): JSX.Element {
           onClose={() => setShowFormModal(false)}
           footerBtns={btnList}
         >
-          <div className='px-40 py-20 key-form'>
+          <div className='px-40 py-20 api-key-form'>
             <CreatApiKeyTable
               msgApiKey={isEditor ? msgApiKey : { keyID: '', keySecret: '', description: '' }}
               ref={formMsgRef}

@@ -3,13 +3,13 @@ import { UnionColumns } from 'react-table';
 import { values, map } from 'ramda';
 
 import toast from '@lib/toast';
-import { getTableSchema, saveTableSchema } from '@lib/http-client';
 import { schemaToMap } from '@lib/schema-convert';
 import FormStore from '@c/form-builder/store';
 import AppPageDataStore from '@c/form-app-data-table/store';
+import { getTableSchema, saveTableSchema } from '@lib/http-client';
 import { SYSTEM_FIELDS, INVALID_INVISIBLE } from '@c/form-builder/constants';
-import { numberTransform } from '@c/form-builder/utils';
 import { TableConfig, TableColumnConfig } from '@c/form-app-data-table/type';
+import { numberTransform, validateFieldConfig, validatePageConfig } from '@c/form-builder/utils';
 import {
   setFixedParameters,
   columnStringToObject,
@@ -17,7 +17,7 @@ import {
   SHOW_FIELD,
 } from '@c/form-app-data-table/utils';
 
-import { createPageScheme } from './api';
+import { createPageSchema } from './api';
 
 class FormDesignStore {
   destroyFetchScheme: IReactionDisposer;
@@ -266,37 +266,31 @@ class FormDesignStore {
   }
 
   @action
-  saveFormSchema = async (): Promise<any> => {
-    // validate table schema on each field
-    if (!this.formStore?.validate()) {
-      return Promise.resolve(false);
-    }
-
-    if (this.formStore?.flattenFields.length && this.pageTableColumns && this.pageTableColumns.length === 0) {
-      toast.error('请在页面配置-字段显示和排序至少选择一个字段显示');
-      return Promise.resolve(false);
-    }
-
-    this.saveSchemeLoading = true;
-
+  saveForm = async (): Promise<void | boolean> => {
     try {
-      await saveTableSchema(this.appID, this.pageID, this.allSchema || {});
-      createPageScheme(this.appID, {
-        tableID: this.pageID, config: {
-          pageTableColumns: this.pageTableColumns,
-          filters: this.filters,
-          pageTableShowRule: this.pageTableShowRule,
-        },
-      });
-      toast.success(this.hasSchema ? '保存成功!' : '创建成功!');
-      (this.formStore as FormStore).hasEdit = false;
-      this.saveSchemeLoading = false;
-      this.formStore.setSerialFieldIds(this.formStore.schema);
-      return true;
-    } catch (error: any) {
-      toast.error(error.message);
-      this.saveSchemeLoading = false;
+      await validateFieldConfig(this.formStore?.configValidate);
+      await validatePageConfig(this.formStore?.flattenFields.length || 0, this.pageTableColumns?.length);
+      await this.saveFormConfig();
+    } catch (err) {
+      toast.error(err);
+      return false;
     }
+  }
+
+  @action
+  saveFormConfig = async (): Promise<any> => {
+    await saveTableSchema(this.appID, this.pageID, this.allSchema || {});
+    createPageSchema(this.appID, {
+      tableID: this.pageID, config: {
+        pageTableColumns: this.pageTableColumns,
+        filters: this.filters,
+        pageTableShowRule: this.pageTableShowRule,
+      },
+    });
+    toast.success(this.hasSchema ? '保存成功!' : '创建成功!');
+    (this.formStore as FormStore).hasEdit = false;
+    this.saveSchemeLoading = false;
+    this.formStore?.setSerialFieldIds(this.formStore.schema);
   }
 
   @action

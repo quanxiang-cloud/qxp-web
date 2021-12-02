@@ -15,7 +15,7 @@ import esbuildConfig from './esbuild-config';
 
 import { isProduction } from './env';
 
-export const output = {
+const output = {
   format: 'system',
   entryFileNames: isProduction ? '[name]-[hash].js' : '[name].js',
   chunkFileNames: isProduction ? 'chunk-[name]-[hash].js' : 'chunk-[name].js',
@@ -26,14 +26,18 @@ export const output = {
   ],
 };
 
+const input = {
+  portal: 'clients/portal/index.tsx',
+  home: 'clients/home/index.tsx',
+  mobile: 'clients/mobile/index.tsx',
+};
+
 export default {
   treeshake: isProduction,
   preserveEntrySignatures: false,
 
-  input: {
-    portal: 'clients/portal/index.tsx',
-    home: 'clients/home/index.tsx',
-  },
+  input,
+  output,
 
   external: [
     'react',
@@ -68,7 +72,6 @@ export default {
     'react-dnd',
     // 'react-dnd-html5-backend',
     'react-flow-renderer',
-    'react-highlight',
     'xlsx',
   ],
 

@@ -8,7 +8,7 @@ function AppInfo(): JSX.Element {
   return (
     <div className="flex-1 h-full opacity-95">
       <Tab
-        strechNavs={false}
+        stretchNav={false}
         separator={false}
         navsClassName="overflow-auto nav-background-image"
         navTitleClassName="text-12"

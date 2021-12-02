@@ -78,13 +78,16 @@ export function ImgList({
                             onClick={() => handleDownload?.(file)}
                           />)
                       }
-                      <span className="ml-4">
-                        <Icon
-                          {...FILE_LIST_ICON['delete']}
-                          clickable
-                          onClick={() => deleteFileItem?.(file)}
-                        />
-                      </span>
+                      {
+                        deleteFileItem && (
+                          <span className="ml-4">
+                            <Icon
+                              {...FILE_LIST_ICON['delete']}
+                              clickable
+                              onClick={() => deleteFileItem?.(file)}
+                            />
+                          </span>)
+                      }
                     </div>
                   </>
                 )

@@ -74,11 +74,9 @@ const schema: ISchema = {
         },
         associationTableID: {
           title: '关联记录表',
-          default: false,
           triggerType: 'onBlur',
           enum: [],
           'x-component': 'Select',
-          required: true,
           'x-rules': {
             required: true,
             message: '请选择关联表',
@@ -90,11 +88,9 @@ const schema: ISchema = {
         },
         fieldName: {
           title: '显示字段',
-          default: false,
           enum: [],
           'x-component': 'Select',
           triggerType: 'onBlur',
-          required: true,
           'x-rules': {
             required: true,
             message: '请选择显示字段',

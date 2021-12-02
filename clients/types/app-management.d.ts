@@ -5,6 +5,7 @@ declare global {
     appName: string;
     appIcon: string;
     useStatus: number;
+    appSign: string;
   }
 
   type fetchPageListRes = {

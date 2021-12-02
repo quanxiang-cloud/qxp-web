@@ -1,14 +1,16 @@
 import React, { Suspense } from 'react';
 import moment from 'moment';
 
+import logger from '@lib/logger';
+import AssociatedDataValueRender from '@c/form-builder/registry/associated-data/associated-data-view';
+import { RoundMethod } from '@c/form-builder/registry/aggregation-records/convertor';
+import { FileList } from '@c/file-upload';
+import { QxpFileFormData } from '@c/form-builder/registry/file-upload/uploader';
+
 const SubTable = React.lazy(() => import('@c/form-builder/registry/sub-table/preview'));
 const AssociatedRecords = React.lazy(
   () => import('@c/form-builder/registry/associated-records/associated-records'),
 );
-
-import AssociatedDataValueRender from '@c/form-builder/registry/associated-data/associated-data-view';
-import { RoundMethod } from '@c/form-builder/registry/aggregation-records/convertor';
-import logger from '@lib/logger';
 
 type ValueRendererProps = { value: FormDataValue; schema: ISchema; className?: string; };
 type Props = {
@@ -81,21 +83,56 @@ function stringListValue({ value }: ValueRendererProps): string {
 }
 
 export default function FormDataValueRenderer({ value, schema, className }: Props): JSX.Element {
-  if (schema['x-component'] === 'SubTable') {
-    return <SubTableValueRenderer schema={schema} value={value} />;
+  switch (schema['x-component']) {
+  case 'SubTable':
+    return (<SubTableValueRenderer schema={schema} value={value} />);
+  case 'AssociatedRecords':
+    return (<AssociatedRecordsValueRender schema={schema} value={value} />);
+  case 'AssociatedData':
+    return (<AssociatedDataValueRender schema={schema} value={value as LabelValue} />);
+  case 'ImageUpload': {
+    return (
+      <div className="flex flex-wrap">
+        <FileList
+          canDownload
+          imgOnly={true}
+          files={(value as QxpFileFormData[]).map((file) =>
+            ({
+              name: file.label,
+              uid: file.value,
+              type: file.type,
+              size: file.size,
+            }),
+          )}
+        />
+      </div>
+
+    );
   }
-
-  if (schema['x-component'] === 'AssociatedRecords') {
-    return <AssociatedRecordsValueRender schema={schema} value={value} />;
+  case 'FileUpload': {
+    return (
+      <div className="max-w-290">
+        <FileList
+          canDownload
+          files={(value as QxpFileFormData[]).map((file) =>
+            ({
+              name: file.label,
+              uid: file.value,
+              type: file.type,
+              size: file.size,
+            }),
+          )}
+        />
+      </div>
+    );
   }
-
-  if (schema['x-component'] === 'AssociatedData') {
-    return <AssociatedDataValueRender schema={schema} value={value as LabelValue} />;
+  default: {
+    const content = getBasicValue(schema, value);
+    return (
+      <span title={typeof content === 'string' ? content : ''} className={className}>{content}</span>
+    );
   }
-
-  const content = getBasicValue(schema, value);
-
-  return <span title={content} className={className}>{content}</span>;
+  }
 }
 
 export function getBasicValue(schema: ISchema, value: FormDataValue): string {
@@ -114,9 +151,7 @@ export function getBasicValue(schema: ISchema, value: FormDataValue): string {
   case 'datepicker':
     return datetimeValueRenderer({ schema, value });
   case 'associateddata':
-  case 'imageupload':
   case 'cascadeselector':
-  case 'fileupload':
   case 'userpicker':
   case 'organizationpicker':
     return labelValueRenderer(value);

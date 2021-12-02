@@ -15,7 +15,7 @@ function ParamsSection({
   children,
   className,
   toggleable,
-}: Props) {
+}: Props): JSX.Element {
   const [expand, setExpand] = useState(true);
 
   return (

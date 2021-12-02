@@ -1,0 +1,232 @@
+.react-flow__edge-path {
+  stroke: #CBD5E1 !important;
+}
+
+.react-flow__handle {
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.react-flow__handle-bottom {
+  bottom: 0 !important;
+}
+
+.react-flow__handle-left {
+  left: 0 !important;
+}
+
+.react-flow__handle-top {
+  top: 0 !important;
+}
+
+.react-flow__handle-right {
+  right: 0 !important;
+}
+
+$nodeTypes: input, request, if, end, default, output;
+@each $var in $nodeTypes {
+  .react-flow__node-#{$var} {
+    background: transparent !important;
+    footer {
+      transition: box-shadow .2s linear;
+    }
+    padding: 0 !important;
+    border: transparent !important;
+    border-radius: 8px !important;
+    width: auto !important;
+    &:not(.react-flow__node-if) {
+      &:hover, &.selected {
+        footer {
+          box-shadow: 0px 4px 24px rgba(148, 163, 184, 0.25) !important;
+        }
+        box-shadow: none !important;
+      }
+    }
+  }
+}
+
+@mixin actionTriggerPlus {
+  content: '';
+  position: absolute;
+  background-color: var(--blue-600);
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.node-action-trigger {
+  position: relative;
+  &::before {
+    @include actionTriggerPlus;
+    width: 4px;
+    height: 1px;
+    opacity: 0;
+  }
+  &::after {
+    @include actionTriggerPlus;
+    width: 1px;
+    height: 4px;
+    opacity: 0;
+  }
+  &.active {
+    transform: scale(2);
+    &::before {
+      opacity: 1;
+    }
+    &::after {
+      opacity: 1;
+    }
+  }
+}
+
+.input-editor-wrap {
+  position: relative;
+  &::after {
+    content: '';
+    height: 1px;
+    width: 0;
+    background: var(--blue-600);
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transition: all .3s ease-out;
+  }
+  &:focus-within {
+    &::after {
+      width: 100%;
+      left: 0;
+    }
+  }
+  .input-editor {
+    background: transparent !important;
+    border: none !important;
+    transition: all .3s linear !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+}
+
+.poly-condition {
+  position: relative;
+  &::after {
+    content: '判断';
+    color: white;
+    white-space: nowrap;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+  svg {
+    use {
+      transform: scale(2) translate(-12.6px, -8.8px);
+    }
+  }
+}
+
+.request-op {
+  border: 1px solid var(--gray-500);
+  box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.15);
+  @apply w-24 text-12 font-medium text-center rounded-4 cursor-pointer;
+}
+
+.node-config-drawer.drawer-position-right {
+  &>div {
+    @apply rounded-l-none;
+  }
+}
+
+.config-params-container {
+  &>div:first-child {
+    @apply mt-0;
+  }
+  &>div:last-child {
+    @apply mb-0;
+  }
+}
+
+.config-param {
+  @apply border-1 rounded-8 border-gray-200;
+
+  &>div {
+    @apply border-b-1;
+  }
+
+  &>div:last-child {
+    @apply border-0;
+  }
+}
+
+.node-config-drawer {
+  &.drawer-fullscreen {
+    .drawer-container {
+      width: 100%;
+    }
+  }
+  .drawer-container {
+    width: 732px;
+    transition: all .3s ease-in-out;
+    .drawer-main-content {
+      display: flex;
+      flex-flow: column nowrap;
+      justify-content: space-between;
+      max-height: calc(100% - 56px);
+      .node-config-form-section {
+        flex: 1;
+        overflow: auto;
+        max-height: calc(100% - 44px);
+        &+div {
+          flex: 0 1 44px;
+        }
+      }
+    }
+  }
+}
+
+.formula-config {
+  width: 242px;
+  @apply border-l-1 border-gray-200 flex flex-col;
+}
+
+.poly-api-selector {
+  @apply flex items-center mr-16 w-280;
+
+  .cascader {
+    @apply flex-1;
+
+    &>input {
+      border-radius: 2px 8px 8px 8px;
+    }
+  }
+}
+
+.node-formula-editor {
+  @apply flex-2 border-gray-200;
+  min-width: 68px;
+
+  &>div {
+    border: 0;
+    border-radius: 0;
+  }
+
+  .formula-editor-container {
+    &>div:last-child {
+      display: none;
+    }
+  }
+
+  .DraftEditor-root {
+    background-color: transparent;
+    .public-DraftEditorPlaceholder-inner {
+      white-space: nowrap !important;
+    }
+  }
+}
+
+.poly-name-editor {
+  input {
+    color: var(--gray-900);
+    font-weight: 600;
+  }
+}

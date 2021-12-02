@@ -13,7 +13,7 @@ export type NodeItem<T> = {
   type: 'group' | 'leaf' | string;
   id: string;
   iconName?: string;
-  child?: NodeItem<T>[];
+  children?: NodeItem<T>[];
   source?: T;
   parentID?: string;
   root?: boolean;
@@ -30,6 +30,7 @@ type Props<T> = {
   className?: string;
   style?: React.CSSProperties;
   onSelect?: (node: NodeItem<T>) => void;
+  groupBanSelect?: boolean;
 }
 
 interface NavItemProps<T> {
@@ -39,6 +40,7 @@ interface NavItemProps<T> {
   onToggle?: (node: NodeItem<T>, expand: boolean)=> void;
   actions?: (node: NodeItem<T>) => React.ReactNode;
   activeNode?: NodeItem<T>;
+  groupBanSelect: boolean
 }
 
 function NavItem<T>({
@@ -48,10 +50,11 @@ function NavItem<T>({
   onSelect,
   onToggle,
   actions,
+  groupBanSelect,
 }: NavItemProps<T>): JSX.Element {
   const [expand, setExpand] = useState(!!node.root);
   const iconName = useMemo(()=> {
-    const hasChild = !!(node.child && node.child.length) || !!node.hasChild;
+    const hasChild = !!(node.children && node.children.length) || !!node.hasChild;
     if (node.type === 'group') {
       if (hasChild) {
         return expand ? 'folder_open' : 'folder';
@@ -64,33 +67,30 @@ function NavItem<T>({
   return (
     <Fragment key={node.id}>
       <div
-        className={cs('two-level-menu-node select-none px-16 cursor-pointer hover:bg-white hover:text-gray-900 flex items-center h-36', {
-          'two-level-menu-node-active bg-white text-gray-900 relative': activeNode?.id === node.id,
+        style={{ paddingLeft: (16 * (level + 1)) + 'px' }}
+        key={node.id}
+        className={cs('two-level-menu-node px-16  hover:bg-white flex items-center h-36', {
+          'two-level-menu-node-active bg-white': (!groupBanSelect || node.type !== 'group') && activeNode?.id === node.id,
         })}
         onClick={() => {
           setExpand(!expand);
           onToggle?.(node, !expand);
           onSelect?.(node);
         }}
-        style={{ paddingLeft: (16 * (level + 1)) + 'px' }}
-        key={node.id}
       >
         {iconName && <Icon className='mr-4' size={16} name={iconName} />}
-        <span
-          style={{ lineHeight: '36px' }}
-          className='flex-1 truncate'
-        >
+        <span style={{ lineHeight: '36px' }} className='flex-1 truncate'>
           {node.title}
         </span>
         <div className='two-level-menu-actions'>{actions?.(node)}</div>
       </div>
-      {node.child && (
+      {node.children && (
         <div
           className={cs(
             'two-level-menu-sub-nodes flex flex-col overflow-hidden',
             `two-level-menu-child-box-${expand ? 'open' : 'close'}`)}
         >
-          {node.child.map((c)=> (
+          {node.children.map((c)=> (
             <NavItem
               key={c.id}
               node={c}
@@ -99,6 +99,7 @@ function NavItem<T>({
               onToggle={onToggle}
               actions={actions}
               activeNode={activeNode}
+              groupBanSelect={groupBanSelect}
             />
           ))}
         </div>
@@ -107,7 +108,15 @@ function NavItem<T>({
   );
 }
 
-function TwoLevelMenu<T>({ menus, actions, onSelect, defaultSelected, className, style }: Props<T>): JSX.Element {
+function TwoLevelMenu<T>({
+  menus,
+  actions,
+  onSelect,
+  defaultSelected,
+  className,
+  style,
+  groupBanSelect = false,
+}: Props<T>): JSX.Element {
   const [activeNode, setActiveNode] = useState<NodeItem<T> | undefined>(undefined);
 
   useEffect(() => {
@@ -123,13 +132,14 @@ function TwoLevelMenu<T>({ menus, actions, onSelect, defaultSelected, className,
 
   function handleSelect(node: NodeItem<T>): void {
     !node.disableSelect && setActiveNode(node);
+    if (groupBanSelect && node.type === 'group') return;
     onSelect?.(node);
   }
 
   return (
     <div
-      className={`text-12 overflow-auto beauty-scroll bg-gray-50 ${className}`}
       style={style}
+      className={cs('text-12', 'overflow-auto', 'beauty-scroll', 'bg-gray-50', className)}
     >
       {menus.map((menu)=> (
         <NavItem
@@ -138,6 +148,7 @@ function TwoLevelMenu<T>({ menus, actions, onSelect, defaultSelected, className,
           onSelect={handleSelect}
           actions={actions}
           activeNode={activeNode}
+          groupBanSelect={groupBanSelect}
         />
       ))}
     </div>

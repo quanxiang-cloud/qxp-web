@@ -46,11 +46,10 @@ function FieldPermissions({
   useEffect(() => {
     const config: Config = {};
     const permission = fields.reduce((permissionAcc: ISchema, fieldSchema: SchemaFieldItem) => {
-      const defaultPermission = fieldSchema?.['x-internal']?.permission as PERMISSION | undefined;
       const permission: PERMISSION | undefined = get(
         fieldPer, `properties.${fieldSchema.id}.x-internal.permission`,
       );
-      const targetPermission = permission || defaultPermission || 0;
+      const targetPermission = permission || 0;
       Object.assign(permissionAcc.properties, {
         [fieldSchema.id]: {
           'x-internal': {
@@ -62,8 +61,8 @@ function FieldPermissions({
       const writeable = readable ? isPermissionWriteable(targetPermission) : false;
       Object.assign(config, {
         [fieldSchema.id]: {
-          editable: isPermissionEditable(defaultPermission),
-          invisible: isPermissionInvisible(defaultPermission),
+          editable: isPermissionEditable(permission),
+          invisible: isPermissionInvisible(permission),
           writeable: isInitialPermissionGroup ? true : writeable,
           readable: (isInitialPermissionGroup || fieldSchema.id === '_id') ? true : readable,
           fieldTitle: fieldSchema.title,
@@ -151,8 +150,12 @@ function FieldPermissions({
   }
 
   const configValues = Object.values(config || {});
-  const isAllReadable = configValues.every((configValue) => configValue.readable);
-  const isNotAllReadable = !isAllReadable && configValues.some((configValue) => configValue.readable);
+  const isAllReadable = configValues.every(
+    (configValue) => configValue.fieldTitle !== 'id' && configValue.readable,
+  );
+  const isNotAllReadable = !isAllReadable && configValues.some(
+    (configValue) => configValue.fieldTitle !== 'id' && configValue.readable,
+  );
   const isAllWriteable = configValues.filter((configValue) => !configValue.isSystem).every(
     (configValue) => configValue.writeable,
   );

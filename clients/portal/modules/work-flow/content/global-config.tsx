@@ -48,15 +48,15 @@ export default function GlobalConfig(): JSX.Element | null {
   const hasAssociativeTable = !!(formDataElement.data.businessData.form.value && appID);
   const { data: fieldList, isLoading } = useQuery(
     ['GET_FIELD_LIST', formDataElement.data.businessData.form.value, appID],
-    async ({ queryKey }) => {
+    async ({ queryKey, meta }) => {
       if (!hasAssociativeTable) {
         return [];
       }
 
-      const schema = await getFormFieldSchema({ queryKey });
+      const schema = await getFormFieldSchema({ queryKey, meta });
       const schemaFields = schemaToFields(schema);
       return schemaFields.filter((fieldSchema) => {
-        return fieldSchema.id !== '_id' && !['subtable', 'associatedrecords'].includes(
+        return fieldSchema.id !== '_id' && !['subtable', 'associatedrecords', 'aggregationrecords'].includes(
           fieldSchema.componentName);
       }).map((fieldSchema) => ({
         label: fieldSchema.title,

@@ -8,6 +8,7 @@ import PageLoading from '@c/page-loading';
 
 import CreatedEditApp from '../../entry/app-list/app-edit/created-edit-app';
 import appDetailsStore from '../store';
+import { useEffect } from 'react';
 
 function BasicInfo(): JSX.Element {
   const formRef: any = useRef();
@@ -16,6 +17,10 @@ function BasicInfo(): JSX.Element {
     const formDom = formRef.current;
     formDom.submit();
   }
+
+  useEffect(() => {
+    formRef.current?.validateFields?.();
+  }, [formRef.current]);
 
   function submitCallback(): void {
     const formDom = formRef.current;

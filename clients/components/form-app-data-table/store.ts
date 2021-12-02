@@ -7,8 +7,9 @@ import { pipe, map } from 'lodash/fp';
 import { fetchFormDataList } from '@lib/http-client';
 import schemaToFields, { schemaToMap } from '@lib/schema-convert';
 import { toEs } from '@c/data-filter/utils';
+import { SizeType } from '@c/table';
 
-import { TableHeaderBtn, TableConfig } from './type';
+import { TableHeaderBtn, TableConfig, ColumnConfig, FormTableConfig, TableUserConfig } from './type';
 import { Config, getPageDataSchema } from './utils';
 
 type Params = {
@@ -18,13 +19,6 @@ type Params = {
   page?: number,
   size?: number,
 }
-
-type FormTableConfig = {
-  hidden: boolean;
-  fixed?: boolean
-}
-
-type ColumnConfig = Record<string, FormTableConfig>
 
 export type FormAppDataTableStoreSchema = Omit<ISchema, 'properties'> & {
   properties?: Record<string, SchemaFieldItem>
@@ -41,7 +35,8 @@ type InitData = {
   customColumns?: UnionColumns<any>[];
   filterConfig?: FilterConfig;
   canAcrossPageChoose?: boolean;
-  onSelect?: (ids: string[]) => void
+  onTableUserConfigChange?: (tableUserConfig: TableUserConfig) => void;
+  onSelect?: (ids: string[], rows: Record<string, any>[]) => void;
   defaultSelect?: string[]
 }
 
@@ -49,7 +44,8 @@ export type FormData = Record<string, any>;
 class AppPageDataStore {
   destroyFetchTableData: IReactionDisposer;
   destroySetTableConfig: IReactionDisposer;
-  onSelect: ((ids: string[]) => void) | undefined = undefined;
+  destroySetUserConfig: IReactionDisposer | undefined;
+  onSelect: ((ids: string[], rows: Record<string, any>[]) => void) | undefined = undefined;
   @observable tableConfig: TableConfig = { pageSize: 10, order: undefined };
   @observable noFiltersTips: React.ReactNode = '尚未配置筛选条件。';
   @observable listLoading = false;
@@ -68,7 +64,9 @@ class AppPageDataStore {
   @observable filterData: FormData = {};
   @observable tableColumns: UnionColumns<FormData>[] = [];
   @observable tableHeaderBtnList: TableHeaderBtn[] = [];
+  @observable widthMap = {};
   @observable columnConfig: ColumnConfig = {};
+  @observable tableSize: SizeType = 'small';
   @observable canAcrossPageChoose = false;
   @observable customColumns: UnionColumns<FormData>[] = [];
   @observable params: Params = {
@@ -92,6 +90,7 @@ class AppPageDataStore {
     canAcrossPageChoose = false,
     defaultSelect,
     onSelect,
+    onTableUserConfigChange,
   }: InitData) {
     const { tableColumns, pageTableShowRule } = getPageDataSchema(config || {}, schema);
     this.setSchema(schema);
@@ -104,6 +103,13 @@ class AppPageDataStore {
     this.tableHeaderBtnList = tableHeaderBtnList;
     this.setTableColumns(tableColumns);
     this.destroyFetchTableData = reaction(() => this.params, this.fetchFormDataList);
+    this.destroySetUserConfig = onTableUserConfigChange && reaction(() => {
+      return {
+        columnConfig: this.columnConfig,
+        tableSize: this.tableSize,
+        widthMap: this.widthMap,
+      };
+    }, onTableUserConfigChange);
     this.destroySetTableConfig = reaction(() => {
       return {
         size: this.tableConfig.pageSize || 10,
@@ -134,9 +140,9 @@ class AppPageDataStore {
   }
 
   @action
-  setSelected = (selected: string[]): void => {
+  setSelected = (selected: string[], rows: Record<string, any>[]): void => {
     this.selected = selected;
-    this.onSelect?.(selected);
+    this.onSelect?.(selected, rows);
   }
 
   @action

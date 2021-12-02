@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { toJS } from 'mobx';
 import { observer } from 'mobx-react';
 
@@ -19,7 +19,6 @@ const TABLE_SIZE_MENUS: (LabelValue & { key: SizeType })[] = [
 ];
 
 function PageDataTable(): JSX.Element {
-  const [tableSize, setTableSize] = useState<SizeType>('middle');
   const store = useContext(StoreContext);
   const { selected, setSelected } = store;
 
@@ -31,8 +30,8 @@ function PageDataTable(): JSX.Element {
     store.setParams({});
   }, [store.pageID]);
 
-  const handleSelectChange = (selectArr: string[]): void => {
-    setSelected(selectArr);
+  const handleSelectChange = (selectArr: string[], rows: Record<string, any>[]): void => {
+    setSelected(selectArr, rows);
   };
 
   return (
@@ -53,6 +52,7 @@ function PageDataTable(): JSX.Element {
                 </PopConfirm>
               );
             }
+
             return (
               <Button
                 iconName={iconName}
@@ -69,7 +69,11 @@ function PageDataTable(): JSX.Element {
         </div>
         <div className='flex gap-x-5 items-center'>
           <TableConfig />
-          <MoreMenu onMenuClick={setTableSize} menus={TABLE_SIZE_MENUS} activeMenu={tableSize}>
+          <MoreMenu
+            onMenuClick={(size) => store.tableSize = size}
+            menus={TABLE_SIZE_MENUS}
+            activeMenu={store.tableSize}
+          >
             <Icon clickable changeable size={25} name='expand' />
           </MoreMenu>
           <AdvancedQuery
@@ -82,9 +86,11 @@ function PageDataTable(): JSX.Element {
       <div className='flex flex-1 overflow-hidden'>
         <Table
           canSetColumnWidth={store.canSetColumnWidth}
+          widthMapChange={(_widthMap) => store.widthMap = _widthMap}
+          initWidthMap={store.widthMap}
           showCheckbox={store.showCheckbox}
           emptyTips='暂无数据'
-          size={tableSize}
+          size={store.tableSize}
           rowKey="_id"
           loading={store.listLoading}
           initialSelectedRowKeys={selected || []}

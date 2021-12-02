@@ -28,7 +28,9 @@ const COMPONENTS = {
 const actions = createFormActions();
 
 function SerialConfig({ initialValue, onChange }: Props): JSX.Element {
-  const { activeFieldId, activeSubtableFieldId, serialFieldIds } = useContext(StoreContext);
+  const {
+    activeFieldId, activeSubtableFieldId, serialFieldIds, setConfigValidate,
+  } = useContext(StoreContext);
 
   useEffect(() => {
     const fieldID = activeSubtableFieldId || activeFieldId;
@@ -41,6 +43,10 @@ function SerialConfig({ initialValue, onChange }: Props): JSX.Element {
       });
     }
   }, [activeFieldId, activeSubtableFieldId, serialFieldIds]);
+
+  useEffect(() => {
+    setConfigValidate(actions.validate);
+  }, [actions.validate]);
 
   return (
     <SchemaForm

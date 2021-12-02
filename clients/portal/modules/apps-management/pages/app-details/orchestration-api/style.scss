@@ -1,0 +1,123 @@
+@keyframes animation-drop-down {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-180deg);
+  }
+}
+
+@keyframes animation-drop-down-close {
+  from {
+    transform: rotate(-180deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+.animation-drop-down {
+  animation: animation-drop-down .3s linear forwards;
+}
+
+.animation-drop-down-close {
+  animation: animation-drop-down-close .3s linear forwards;
+}
+
+.polynamespacedetail-header-searchinput {
+  input.search-input {
+    @apply rounded-8;
+    transition: border .3s linear;
+  }
+}
+
+.polynamespacedetail-table {
+  height: calc(100% - 32px);
+
+  .qxp-table-wrapper {
+    height: auto;
+    max-height: calc(100% - 40px);
+    overflow: hidden;
+    th {
+      @apply sticky top-0;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    &+div {
+      height: 40px;
+      @apply border-t;
+      &>div {
+        height: 100%;
+        @apply px-16;
+      }
+    }
+  }
+}
+
+.polynamespacetree {
+  .tree {
+    div.group.tree-node {
+      @apply bg-gray-50 duration-240;
+      transition-property: background-color, transform;
+      &:hover, &.tree-node--focused {
+        @apply bg-white;
+        &::after {
+          opacity: 1;
+        }
+      }
+      &::after {
+        @apply bg-blue-600 rounded-tl-4 rounded-bl-4 w-4 absolute top-0 right-0 bottom-0 transition-all duration-240;
+        content: '';
+        opacity: 0;
+        box-shadow: -2px 0px 24px rgba(55, 95, 243, 0.25);
+      }
+      .tree-node__toggle-icon {
+        transform: none;
+      }
+      .tree-node__content--title {
+        @apply font-normal;
+      }
+    }
+  }
+}
+
+.orchestration-management-modal {
+  button.btn.mr-20:last-child {
+    margin-right: 0;
+  }
+
+  .orchestration-modal-form {
+    .mega-layout-container-content {
+      .ant-form-item {
+        .ant-form-item-label {
+          label {
+            @apply mb-8 text-gray-600 h-20;
+            font-size: 12px;
+            line-height: 20px;
+          }
+        }
+        .ant-form-item-control {
+          .mega-layout-item-content {
+            input, textarea {
+              @apply rounded-tl-2 rounded-tr-8 rounded-bl-8 rounded-br-8;
+            }
+          }
+          .copy-poly-select {
+            .select-trigger__content {
+              span {
+                font-size: 12px;
+                line-height: 20px;
+              }
+            }
+            &.no-value {
+              .select-trigger__content span {
+                @apply text-gray-400;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

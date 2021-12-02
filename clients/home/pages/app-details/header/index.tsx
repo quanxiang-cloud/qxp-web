@@ -1,15 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { observer } from 'mobx-react';
 import { useHistory, useParams } from 'react-router-dom';
 
-import toast from '@lib/toast';
 import AppsSwitcher from '@c/apps-switcher';
 import Icon from '@c/icon';
 import UserAvatarMenu from '@c/user-avatar-menu';
 import NavMsgBar from '@portal/modules/msg-center/nav-msg-bar';
 
-import { fetchUserList } from '../../../lib/api';
 import store from '../store';
+
 import './index.scss';
 
 type Props = {
@@ -18,21 +17,8 @@ type Props = {
 
 function DetailsHeader({ onCancel }: Props): JSX.Element {
   const history = useHistory();
-  const [appList, setAppList] = useState([]);
   const { appID } = useParams<{ appID: string }>();
   const { showPageNav, operationType } = store;
-
-  useEffect(() => {
-    fetchUserList().then((res: any) => {
-      if (res.data.findIndex(({ id }: AppInfo) => id === appID) === -1) {
-        toast.error('应用不存在！2秒后跳转到首页');
-        setTimeout(() => {
-          history.replace('/');
-        }, 2000);
-      }
-      setAppList(res.data);
-    });
-  }, [appID]);
 
   const handleChange = (newAppId: string): void => {
     history.replace(location.pathname.replace(appID, newAppId));
@@ -68,7 +54,7 @@ function DetailsHeader({ onCancel }: Props): JSX.Element {
                 <span className='mx-8 text-14'>/</span>
                 <AppsSwitcher
                   hiddenStatus={true}
-                  apps={appList}
+                  apps={store.appList}
                   currentAppID={appID}
                   onChange={handleChange}
                 />

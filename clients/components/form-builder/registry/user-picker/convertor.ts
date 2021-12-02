@@ -72,6 +72,7 @@ export const toSchema = (config: DefaultConfig): ISchema => {
     enum: config.optionalRange === 'all' ? [] : (config.rangeList || []).map((itm) => ({
       label: itm.ownerName,
       value: itm.id,
+      email: itm.email,
     })),
     defaultValues: config.defaultValues,
   });

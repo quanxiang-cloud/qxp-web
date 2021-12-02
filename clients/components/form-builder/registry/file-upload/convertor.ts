@@ -2,10 +2,12 @@ import { getSchemaPermissionFromSchemaConfig, getDisplayModifierFromSchema } fro
 
 export interface FileUploadConfig {
   title: string;
-  description?: string;
+  maxFileSize: number;
+  uploaderDescription: string;
   displayModifier: FormBuilder.DisplayModifier;
-  required?: boolean;
   multiple?: boolean;
+  required?: boolean;
+  description?: string;
 }
 
 export const defaultConfig: FileUploadConfig = {
@@ -14,6 +16,8 @@ export const defaultConfig: FileUploadConfig = {
   displayModifier: 'normal',
   required: false,
   multiple: true,
+  maxFileSize: 500,
+  uploaderDescription: '',
 };
 
 export function toSchema(value: FileUploadConfig): ISchema {
@@ -27,6 +31,8 @@ export function toSchema(value: FileUploadConfig): ISchema {
     'x-component': 'FileUpload',
     ['x-component-props']: {
       multiple: value.multiple,
+      maxFileSize: value.maxFileSize || defaultConfig.maxFileSize,
+      uploaderDescription: value.uploaderDescription?.substring(0, 30) || '',
     },
     ['x-internal']: {
       permission: getSchemaPermissionFromSchemaConfig(value),
@@ -41,5 +47,7 @@ export function toConfig(schema: ISchema): FileUploadConfig {
     displayModifier: getDisplayModifierFromSchema(schema),
     required: !!schema.required,
     multiple: schema['x-component-props']?.multiple,
+    maxFileSize: schema['x-component-props']?.maxFileSize || defaultConfig.maxFileSize,
+    uploaderDescription: schema['x-component-props']?.uploaderDescription,
   };
 }

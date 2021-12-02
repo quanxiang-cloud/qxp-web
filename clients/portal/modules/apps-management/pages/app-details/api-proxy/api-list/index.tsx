@@ -17,7 +17,7 @@ import './index.scss';
 
 const defaultKey = 'api-list';
 
-function ListPage() {
+function ListPage(): JSX.Element {
   const [tabKey, setTabKey] = useState(defaultKey);
   const tabs = useMemo(()=> {
     return [
@@ -27,7 +27,6 @@ function ListPage() {
           <Tooltip
             position='bottom'
             label='请先配置分组'
-            relative={false}
           >
             <span>API 列表</span>
           </Tooltip>

@@ -62,7 +62,7 @@ const NavMsgBar = ({ type, className }: Props): JSX.Element => {
       return null;
     }
     return (
-      <UnreadMsgBox ref={msgBoxRef}/>
+      <UnreadMsgBox ref={msgBoxRef} />
     );
   };
 
@@ -71,11 +71,12 @@ const NavMsgBar = ({ type, className }: Props): JSX.Element => {
       // when new message come
       queryClient.invalidateQueries('count-unread-msg');
       queryClient.invalidateQueries('all-messages');
+      // refresh popper message list
+      queryClient.invalidateQueries('unread-messages');
     };
-    // todo newMessage? NewMessage? new_message?
-    pushServer.addEventListener('newMessage', listener);
+    pushServer.addEventListener('letter', 'letter', listener);
 
-    return () => pushServer.removeEventListener('newMessage', listener);
+    return () => pushServer.removeEventListener('letter', 'letter');
   }, []);
 
   return (
@@ -99,7 +100,7 @@ const NavMsgBar = ({ type, className }: Props): JSX.Element => {
             style={{ fill: `${type === 'portal' ? 'var(--gray-400)' : 'var(--blue-100)'}` }}
             className="m-6"
           />
-          {countUnread > 0 && <BtnBadge className={styles.count_btn} count={countUnread}/>}
+          {countUnread > 0 && <BtnBadge className={styles.count_btn} count={countUnread} />}
         </div>
         {renderUnreadMsgBox()}
       </div>

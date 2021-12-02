@@ -20,7 +20,7 @@ declare module 'web-worker:*' {
 
 declare module 'draftjs-to-html';
 declare module 'html-to-draftjs';
-declare module 'react-highlight';
+declare module 'prismjs';
 
 type UserDepartment = {
   id: string;

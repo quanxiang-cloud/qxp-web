@@ -1,9 +1,9 @@
+import FileList from '@c/file-upload/file-list';
+import FormFileUploader from './uploader';
 import { validateRegistryElement } from '@c/form-builder/utils';
-import FileList from '@portal/modules/system-mgmt/send-message/filelist';
 
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig, FileUploadConfig } from './convertor';
-import Uploader from './uploader';
 
 const Field: Omit<FormBuilder.SourceElement<FileUploadConfig>, 'displayOrder'> = {
   configSchema,
@@ -12,7 +12,7 @@ const Field: Omit<FormBuilder.SourceElement<FileUploadConfig>, 'displayOrder'> =
   defaultConfig: defaultConfig,
   toSchema,
   toConfig,
-  component: Uploader,
+  component: FormFileUploader,
   category: 'advance',
   componentName: 'FileUpload',
   configDependencies: { FileList },

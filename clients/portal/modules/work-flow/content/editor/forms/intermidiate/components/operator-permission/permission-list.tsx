@@ -121,7 +121,6 @@ export default function PermissionList({ label, operationData, type, onChange }:
                     <Tooltip
                       position="top"
                       label="恢复默认"
-                      relative={false}
                       wrapperClassName="absolute right-16 top-1/2 transform -translate-y-1/2"
                       labelClassName="whitespace-nowrap"
                     >

@@ -52,7 +52,6 @@ const defaultMetaInfo: MetaInfo = {
   description: '',
 };
 
-// todo: refine
 function applySubNodes(item: any, isRoot: boolean, objectNodes?: Array<any>, arrayNodes?: Array<any>): void {
   let target = item;
 
@@ -66,11 +65,11 @@ function applySubNodes(item: any, isRoot: boolean, objectNodes?: Array<any>, arr
   }
 
   if (arrayNodes) {
+    const requiredKeys: string[] = arrayNodes.filter((v: ApiParam)=> v.required).map((v: ApiParam)=> v.name);
     const items = mapRawParams(arrayNodes).reduce((acc, cur)=> {
       acc[cur.name] = omit(cur, 'name', 'required');
       return acc;
     }, {});
-    const requiredKeys: string[] = arrayNodes.filter((v: ApiParam)=> v.required).map((v: ApiParam)=> v.name);
 
     Object.assign(target, {
       required: requiredKeys.filter(Boolean),
@@ -78,25 +77,22 @@ function applySubNodes(item: any, isRoot: boolean, objectNodes?: Array<any>, arr
     });
   }
   if (objectNodes) {
+    const requiredKeys: string[] = objectNodes.filter((v: ApiParam)=> v.required).map((v: ApiParam)=> v.name);
     const properties = mapRawParams(objectNodes).reduce((acc, cur)=> {
       acc[cur.name] = omit(cur, 'name', 'required');
       return acc;
     }, {});
-    const requiredKeys: string[] = objectNodes.filter((v: ApiParam)=> v.required).map((v: ApiParam)=> v.name);
+
     Object.assign(target, {
       required: requiredKeys.filter(Boolean),
       properties,
     });
   }
-
-  // if (['object', 'array'].includes(item.type)) {
-  //   delete item.required;
-  // }
 }
 
 function mapRawParams(params: ApiParam[], mergeOptions?: Record<string, any>): ParamItem[] {
   return params.filter(({ name })=> !!name).map((v)=> {
-    const item = Object.assign(pick(v, reservedKeys), pick(mergeOptions || {}, 'in'));
+    const item = Object.assign({}, pick(v, reservedKeys), pick(mergeOptions || {}, 'in'));
     const { _array_nodes_: arrayNodes, _object_nodes_: objectNodes } = item;
 
     applySubNodes(item, mergeOptions?.root, objectNodes, arrayNodes);
@@ -117,6 +113,26 @@ function mapRawParams(params: ApiParam[], mergeOptions?: Record<string, any>): P
   });
 }
 
+function mapRawBodyParams(params: ApiParam[], mergeOptions?: Record<string, any>): ParamItem {
+  const bodyParams: ApiParam[] = [{
+    constData: '',
+    constIn: '',
+    description: '',
+    id: '',
+    name: 'temporaryname',
+    required: false,
+    type: 'object',
+    _object_nodes_: params,
+  }];
+  const item = mapRawParams(bodyParams, mergeOptions)[0];
+
+  delete item.name;
+  delete item.description;
+  delete item.required;
+
+  return item;
+}
+
 function getDefaultParameters(): Record<ParamGroup, ApiParam[]> {
   return {
     path: [],
@@ -135,7 +151,7 @@ function mapObjectNode(node: Record<string, any>, isRoot?: boolean): Record<stri
   delete node.required;
   delete node.properties;
 
-  function applyProperties(properties: any) {
+  function applyProperties(properties: any): any[] {
     return Object.entries(properties).map(([name, conf]: [string, any])=> {
       const preload = getDefaultParam({ name, required: requiredKeys.includes(name) });
       if (['object', 'array'].includes(conf.type)) {
@@ -168,14 +184,15 @@ export default class Store {
         ...mapRawParams(query, { in: 'query', root: true }),
         ...mapRawParams(header, { in: 'header', root: true }),
         // in-body 参数都放在schema属性里
-        ...mapRawParams(body, { in: 'body', root: true }),
+        mapRawBodyParams(body, { in: 'body', root: true }),
       ],
       responses: {
         200: {
           schema: {
             type: 'object',
             required: response.filter((v: ApiParam)=> v.required).map((v: ApiParam)=> v.name),
-            properties: mapRawParams(response).reduce((acc, cur)=> {
+            properties: mapRawParams(response, { root: true }).reduce((acc, cur)=> {
+              delete cur.required;
               acc[cur.name] = omit(cur, 'name');
               return acc;
             }, {}),
@@ -186,17 +203,17 @@ export default class Store {
   }
 
   @action
-  setMetaInfo=(info: Partial<MetaInfo>)=> {
+  setMetaInfo=(info: Partial<MetaInfo>): void => {
     this.metaInfo = { ...this.metaInfo, ...info };
   }
 
   @action
-  setParams=(group: ParamGroup, params: ApiParam[])=> {
+  setParams=(group: ParamGroup, params: ApiParam[]): void => {
     Object.assign(this.parameters, { [group]: params && params.length ? params : [getDefaultParam()] });
   }
 
   @action
-  setAllParameters=(params: ApiParam[])=>{
+  setAllParameters=(params: ApiParam[]): void =>{
     paramGroups.forEach((gp)=> {
       const items = params.map((v)=> {
         if (v.in !== gp) {
@@ -212,13 +229,16 @@ export default class Store {
           return mapObjectNode(v, true);
         }
       }).filter(Boolean);
-      // @ts-ignore
-      this.setParams(gp, items);
+      if (items[0]?.in === 'body') {
+        this.setParams(gp as ParamGroup, items[0]?._object_nodes_);
+      } else {
+        this.setParams(gp as ParamGroup, items as ApiParam[]);
+      }
     });
   }
 
   @action
-  setConstants=(consts: ApiParam[])=> {
+  setConstants=(consts: ApiParam[]): void => {
     const constItems = consts.map((v)=> {
       return {
         ...getDefaultParam(),
@@ -231,7 +251,7 @@ export default class Store {
   }
 
   @action
-  setResponse=(resp: Record<string, any>)=> {
+  setResponse=(resp: Record<string, any>): void => {
     const respItems = mapObjectNode(get(resp, '200.schema', {}));
     this.setParams('response', respItems._object_nodes_ || []);
   }
@@ -242,7 +262,7 @@ export default class Store {
   }
 
   @action
-  addParam=(group: ParamGroup, idx: number)=> {
+  addParam=(group: ParamGroup, idx: number): void => {
     if (idx + 1 < this.parameters[group].length) {
       return;
     }
@@ -253,7 +273,7 @@ export default class Store {
   }
 
   @action
-  addSubParam=(group: string, parentPath: string, idx: number, isArray = false)=> {
+  addSubParam=(group: string, parentPath: string, idx: number, isArray = false): void => {
     /*
       body_params: {
         name: '',
@@ -269,7 +289,9 @@ export default class Store {
         ]
       }
      */
-    const finalPath = [[parentPath || group, idx].join('.'), isArray ? '_array_nodes_' : '_object_nodes_'].join('.');
+    const finalPath = [
+      [parentPath || group, idx].join('.'), isArray ? '_array_nodes_' : '_object_nodes_',
+    ].join('.');
     if (!get(this.parameters, finalPath)) {
       set(this.parameters, finalPath, []);
     }
@@ -283,14 +305,14 @@ export default class Store {
   }
 
   @action
-  resetSubNodesByType=(path: string)=> {
+  resetSubNodesByType=(path: string): void => {
     const parentPath = path.slice(0, path.lastIndexOf('.'));
     set(this.parameters, [parentPath, '_object_nodes_'].join('.'), null);
     set(this.parameters, [parentPath, '_array_nodes_'].join('.'), null);
   }
 
   @action
-  removeParam=(group: ParamGroup, parentPath: string, idx: number)=> {
+  removeParam=(group: ParamGroup, parentPath: string, idx: number): void => {
     const prefix = parentPath || group;
     if (group === 'path') {
       return;
@@ -304,7 +326,7 @@ export default class Store {
   }
 
   @action
-  reset=()=> {
+  reset=(): void => {
     this.parameters = getDefaultParameters();
     this.setMetaInfo({ ...defaultMetaInfo });
   }

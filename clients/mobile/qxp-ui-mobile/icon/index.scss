@@ -1,0 +1,15 @@
+.svg-icon {
+  vertical-align: center;
+  display: inline-block;
+  color: currentColor;
+  fill: currentColor;
+}
+
+.svg-icon--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.svg-icon--clickable {
+  cursor: pointer;
+}

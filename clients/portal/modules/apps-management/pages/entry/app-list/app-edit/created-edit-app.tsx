@@ -20,7 +20,7 @@ function CreatedEditApp({ appInfo, className, onSubmitCallback }: Props, ref?: a
   }
 
   const initData = appInfo && toJS(appInfo);
-  const { appName, appIcon = '{}' } = initData || {};
+  const { appName, appIcon = '{}', appSign } = initData || {};
 
   return (
     <Form
@@ -30,6 +30,7 @@ function CreatedEditApp({ appInfo, className, onSubmitCallback }: Props, ref?: a
       ref={ref}
       initialValues={{
         appName,
+        appSign,
         appIcon,
       }}
       onFinish={handleFinish}
@@ -62,6 +63,29 @@ function CreatedEditApp({ appInfo, className, onSubmitCallback }: Props, ref?: a
         ]}
       >
         <Input placeholder="请输入应用名称" />
+      </Form.Item>
+      <Form.Item
+        name='appSign'
+        label='应用标志:'
+        // extra='必须以字母开头,由字母、数字、单下划线组成'
+        extra='必须以字母开头,由字母、数字组成'
+        rules={[
+          {
+            required: true,
+            message: '请输入应用标识',
+          },
+          {
+            type: 'string',
+            max: 30,
+            message: '不能超过 30 个字符',
+          },
+          {
+            pattern: /^[a-zA-Z][a-zA-Z0-9]*$/,
+            message: '必须以字母开头,由字母、数字组成',
+          },
+        ]}
+      >
+        <Input placeholder="请输入应用标识" disabled={!!appSign}/>
       </Form.Item>
       <Form.Item
         name="appIcon"

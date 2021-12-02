@@ -75,8 +75,12 @@ export function formDataDiff(
       break;
     }
     case 'AssociatedRecords': {
-      const deleted: string[] = (oldValue || []).filter((value: string) => !(cValue || []).includes(value));
-      const newValues = (cValue || []).filter((value: string) => !(oldValue || []).includes(value));
+      const oldValueIDs = (oldValue || []).map(({ _id }: Record<string, any>) => _id);
+      const cValueIDs = (cValue || []).map(({ _id }: Record<string, any>) => _id);
+      const deleted: string[] = oldValueIDs.filter((value: string) => !cValueIDs.includes(value));
+      const newValues = cValueIDs.filter((id: string) => {
+        return !(oldValueIDs || []).includes(id);
+      });
       if (newValues.length || deleted.length) {
         resultValue[fieldKey] = [newValues, deleted];
       }
@@ -116,6 +120,7 @@ function buildRecordsParams(
       new: valueList,
     };
   }
+
   const [newValues = [], deleted = []] = valueList;
   return {
     new: newValues,
@@ -181,13 +186,13 @@ function buildRef(
         const [subRef] = buildRef(subordination === 'foreign_table' ?
           window[`schema-${field.id}`] : field.items as ISchema, 'create');
         const _ref = subRef;
-
-        if (values?.[field.id]?.length) {
+        // tips：如果子表单内有流水号等组件默认填一行空值
+        if (values?.[field.id]?.length || !isEmpty(_ref)) {
           ref[field.id] = {
             type: subordination || 'sub_table',
             appID,
             tableID,
-            ...buildSubTableParams(type, values[field.id], _ref),
+            ...buildSubTableParams(type, values?.[field.id] || [{}], _ref),
           };
         }
       }
@@ -207,7 +212,16 @@ function buildRef(
             type: 'associated_records',
             appID,
             tableID,
-            ...buildRecordsParams(type, values[field.id]),
+            ...buildRecordsParams(
+              type,
+              (values[field.id] || []).map((value: Record<string, any> | string[]) => {
+                // 判断是否是Diff过的数据
+                if (Array.isArray(value)) {
+                  return value;
+                }
+
+                return value._id;
+              })),
           };
         }
       }

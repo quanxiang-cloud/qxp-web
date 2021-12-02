@@ -84,15 +84,17 @@ ref?: Ref<any>): JSX.Element {
             label="已自动关联开始节点工作表，暂不支持更改"
             labelClassName="whitespace-nowrap"
           >
-            <Select
-              disabled
-              ref={ref}
-              options={_optionsData}
-              placeholder="请选择"
-              value={value.value}
-              onChange={onWorkFormChange}
-              className="h-28 border-none px-12 text-12 flex items-center flex-1 work-flow-form-selector"
-            />
+            <span>
+              <Select
+                disabled
+                ref={ref}
+                options={_optionsData}
+                placeholder="请选择"
+                value={value.value}
+                onChange={onWorkFormChange}
+                className="h-28 border-none px-12 text-12 flex items-center flex-1 work-flow-form-selector"
+              />
+            </span>
           </ToolTip>
         )}
       </div>

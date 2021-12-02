@@ -5,7 +5,7 @@ type Paging={
   pageSize: number;
 }
 
-type AppPathType = 'root' | 'raw' | 'poly' | 'serviceForm' | 'form' | 'custom';
+type AppPathType = 'root' | 'raw.3party' | 'poly' | 'serviceForm' | 'form' | 'custom';
 
 function normalizeSuffix(suffix: string): string {
   return suffix.startsWith('/') ? suffix.slice(1) : suffix;
@@ -42,7 +42,7 @@ export const getNamespace = async (namespacePath: string): Promise<PolyAPI.Names
   return await httpClient(`/api/v1/polyapi/namespace/query/${namespacePath}`);
 };
 
-export const getAppPath = async (appID: string, pathType: AppPathType = 'raw'): Promise<{appID: string, pathType: string, appPath: string}> => {
+export const getAppPath = async (appID: string, pathType: AppPathType = 'raw.3party'): Promise<{appID: string, pathType: string, appPath: string}> => {
   return await httpClient('/api/v1/polyapi/namespace/appPath', { appID, pathType });
 };
 
@@ -163,6 +163,8 @@ export const queryApiKey = async ( id: string ): Promise<PolyAPI.ApiKeyList> => 
   return await httpClient('/api/v1/polyapi/holdingkey/query', { id });
 };
 
-export const activeApiKey = async (params: { id: string; active: number; service?: string }): Promise<any> => {
+export const activeApiKey = async (
+  params: { id: string; active: number; service?: string},
+): Promise<any> => {
   return await httpClient('/api/v1/polyapi/holdingkey/active', params);
 };

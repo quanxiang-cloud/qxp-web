@@ -1,0 +1,76 @@
+@use "sass:math";
+
+.loading {
+  position: relative;
+  vertical-align: middle;
+
+  &__spinner {
+    position: relative;
+    display: inline-block;
+    width: .32rem;
+    // compatible for 1.x, users may set width or height in root element
+    max-width: 100%;
+    height: .32rem;
+    max-height: 100%;
+    vertical-align: middle;
+    animation: rotate .8s linear infinite;
+
+    &--spinner {
+      animation-timing-function: steps(12);
+    }
+
+    &--circular {
+      animation-duration: 1s;
+    }
+  }
+
+  &__line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    &::before {
+      display: block;
+      width: 2px;
+      height: 25%;
+      margin: 0 auto;
+      background-color: currentColor;
+      border-radius: 40%;
+      content: ' ';
+    }
+  }
+
+  &__circular {
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 4%;
+  }
+
+  &__text {
+    display: inline-block;
+    margin-left: .08rem;
+    vertical-align: middle;
+  }
+
+  &--vertical {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .loading__text {
+      margin-top: .08rem;
+    }
+  }
+
+}
+
+@for $i from 1 to 12 {
+  .loading__spinner--spinner i:nth-of-type(#{$i}) {
+    transform: rotate($i * 30deg);
+    opacity: 1 - math.div(0.75, 12) * ($i - 1);
+  }
+}
+

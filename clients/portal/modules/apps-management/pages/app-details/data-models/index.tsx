@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { observer } from 'mobx-react';
+import { toJS } from 'mobx';
 import { useParams } from 'react-router-dom';
 
 import TextHeader from '@c/text-header';
@@ -7,13 +8,23 @@ import TextHeader from '@c/text-header';
 import store from './store';
 import EditModal from './models-nav/edit-modal';
 import ModelsNav from './models-nav';
-import ModelFieldDetails from './model-field-details.tsx';
+import ModelFieldDetails from './model-field-details';
+import EditorFieldModals from './model-field-details/editor-field-modals';
 
 import './index.scss';
 
 function DataModels(): JSX.Element {
   const { appID } = useParams<AppParams>();
-  const { saveDataModel, editModalType, setEditModalType, fetchDataModels } = store;
+  const {
+    saveDataModel,
+    editModalType,
+    curModelField,
+    setEditModalType,
+    fetchDataModels,
+    editFieldType,
+    setCurModelField,
+    setEditFieldType,
+  } = store;
 
   useEffect(() => {
     fetchDataModels();
@@ -25,6 +36,13 @@ function DataModels(): JSX.Element {
 
   function handleEditModal(modalInfo: DataModelBasicInfo): void {
     saveDataModel(modalInfo, editModalType);
+  }
+
+  function onClose(): void {
+    if (editFieldType === 'delete') {
+      setCurModelField(null);
+    }
+    setEditFieldType('');
   }
 
   return (
@@ -47,6 +65,13 @@ function DataModels(): JSX.Element {
           modalType={editModalType}
           handleEditModel={handleEditModal}
           onClose={() => setEditModalType('')}
+        />
+      )}
+      {!!editFieldType && (
+        <EditorFieldModals
+          onClose={onClose}
+          type={editFieldType}
+          curModelField={toJS(curModelField)}
         />
       )}
     </div>

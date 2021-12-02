@@ -35,11 +35,11 @@ export async function getFormFieldSchema({ queryKey }: QueryFunctionContext): Pr
   return data?.schema ?? {};
 }
 
-export async function getFormFieldOptions({ queryKey }: QueryFunctionContext): Promise<{
+export async function getFormFieldOptions({ queryKey, meta }: QueryFunctionContext): Promise<{
   options: FormFieldOption[],
   schema: ISchema,
 }> {
-  const schema = await getFormFieldSchema({ queryKey });
+  const schema = await getFormFieldSchema({ queryKey, meta });
   return {
     options: schemaToOptions(schema, queryKey[3] as SchemaToOptionsOptions),
     schema,

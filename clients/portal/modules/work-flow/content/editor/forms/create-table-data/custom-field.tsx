@@ -59,6 +59,9 @@ export default function CustomField(props: Props): JSX.Element {
     const { createRule = {}, ref = {} } = data;
     if (!isSubTableKey) {
       set(createRule, `${fieldName}.${keyName}`, val);
+      if (keyName === 'valueFrom') {
+        set(createRule, `${fieldName}.valueOf`, '');
+      }
       setData({ createRule });
     } else {
       const [parentKey, subKey] = fieldName.split('@');
@@ -67,6 +70,9 @@ export default function CustomField(props: Props): JSX.Element {
         set(ref, parentKey, { tableId, createRules: [{ [subKey]: { [keyName]: val } }] });
       } else {
         set(ref, `${parentKey}.createRules[0].${subKey}.${keyName}`, val);
+        if (keyName === 'valueFrom') {
+          set(ref, `${parentKey}.createRules[0].${subKey}.valueOf`, '');
+        }
       }
       setData({ ref });
     }
@@ -117,11 +123,12 @@ export default function CustomField(props: Props): JSX.Element {
   };
 
   return (
-    <div className="flex items-center mb-20">
+    <div className="flex mb-20">
+      {props.props['x-component-props'].required && (<span className="text-red-600 mr-6">*</span>)}
       <span className="w-64">{props.props['x-component-props'].title}</span>
       <span className="mx-10">=</span>
       <Select options={ruleOptions} value={getVal('valueFrom')} onChange={onChangeRule} />
-      <div className={cs('inline-flex items-center ml-10 custom-field__value', {
+      <div className={cs('inline-flex ml-10 custom-field__value', {
         'xl-width': getVal('valueFrom') === 'fixedValue' &&
           ['associatedrecords', 'associateddata'].includes(compType),
       })}>

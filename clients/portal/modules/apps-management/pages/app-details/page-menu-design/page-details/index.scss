@@ -170,3 +170,15 @@
 .app-content--op_btn {
   font-size: 12px;
 }
+
+.app-page-content {
+  @apply flex-1 bg-white rounded-tr-8 relative overflow-hidden;
+
+  .empty {
+    @apply absolute;
+
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}

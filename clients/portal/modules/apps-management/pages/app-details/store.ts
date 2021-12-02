@@ -79,6 +79,7 @@ class AppDetailsStore {
     useStatus: 0,
     appName: '',
     appIcon: '',
+    appSign: '',
   };
   @observable loading = false;
   @observable lastUpdateTime = 0
@@ -163,7 +164,7 @@ class AppDetailsStore {
   }
 
   @action
-  updateApp = (appInfo: Pick<AppInfo, 'appName' | 'appIcon' | 'useStatus'>): Promise<void> => {
+  updateApp = (appInfo: Pick<AppInfo, 'appName' | 'appIcon' | 'useStatus' | 'appSign'>): Promise<void> => {
     return updateApp({ id: this.appDetails.id, ...appInfo }).then(() => {
       this.appDetails = { ...this.appDetails, ...appInfo };
       this.apps = this.apps.map((_appInfo) => {
@@ -476,6 +477,9 @@ class AppDetailsStore {
         this.activeMenu = getFirstMenu(res.menu);
       }
       this.pagesTreeData = buildAppPagesTreeData(res.menu);
+    }).catch(() => {
+      toast.error('获取菜单列表失败');
+    }).finally(() => {
       this.pageListLoading = false;
     });
   }

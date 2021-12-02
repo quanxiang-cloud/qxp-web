@@ -34,7 +34,8 @@ class UserAppDetailsStore {
   @observable pageList: NodeItem<PageInfo>[] = [];
   @observable customPageInfo: CustomPageInfo | null = null;
   @observable currentRoleInfo = { name: '', id: '' };
-  @observable roleOptions: LabelValue[] = []
+  @observable roleOptions: LabelValue[] = [];
+  @observable appList: any = [];
 
   constructor() {
     this.destroySetCurPage = reaction(() => {
@@ -49,16 +50,21 @@ class UserAppDetailsStore {
   }
 
   @action
-  fetchPageList = (appID: string): void => {
+  fetchPageList = (appID: string): Promise<any> => {
     this.appID = appID;
     this.pageListLoading = true;
-    fetchPageList(appID).then((res: any) => {
+    return fetchPageList(appID).then((res: any) => {
       const treeMenu = res.menu.filter(({ isHide }: PageInfo) => {
         return !isHide;
       });
       this.pageList = pageListToTree(treeMenu);
       this.pageListLoading = false;
     });
+  }
+
+  @action
+  setAppList = (list: any): void => {
+    this.appList = list;
   }
 
   @action
@@ -145,6 +151,7 @@ class UserAppDetailsStore {
       toast.error(reason);
     });
   }
+
   @action
   handleRoleChange = (roleID: string, roleName: string): void => {
     if (!roleID || !this.appID) return;
