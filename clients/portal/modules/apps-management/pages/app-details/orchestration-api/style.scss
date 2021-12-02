@@ -58,7 +58,7 @@
 .polynamespacetree {
   .tree {
     div.group.tree-node {
-      @apply bg-gray-50 duration-240;
+      @apply bg-gray-50 duration-240 h-36;
       transition-property: background-color, transform;
       &:hover, &.tree-node--focused {
         @apply bg-white;

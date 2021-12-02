@@ -45,11 +45,11 @@ export default over(
         'x-index': 3,
         display: false,
       },
-      // templateAPIPath: {
-      //   type: 'string',
-      //   'x-component': 'CopyPolySelect',
-      //   'x-index': 4,
-      // },
+      templateAPIPath: {
+        type: 'string',
+        'x-component': 'CopyPolySelect',
+        'x-index': 4,
+      },
     });
   },
   editNamespaceSchema,
