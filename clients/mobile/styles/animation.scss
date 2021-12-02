@@ -1,0 +1,161 @@
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes slide-up-enter {
+  from {
+    transform: translate3d(0, 100%, 0);
+  }
+}
+
+@keyframes slide-up-leave {
+  to {
+    transform: translate3d(0, 100%, 0);
+  }
+}
+
+@keyframes slide-down-enter {
+  from {
+    transform: translate3d(0, -100%, 0);
+  }
+}
+
+@keyframes slide-down-leave {
+  to {
+    transform: translate3d(0, -100%, 0);
+  }
+}
+
+@keyframes slide-left-enter {
+  from {
+    transform: translate3d(-100%, 0, 0);
+  }
+}
+
+@keyframes slide-left-leave {
+  to {
+    transform: translate3d(-100%, 0, 0);
+  }
+}
+
+@keyframes slide-right-enter {
+  from {
+    transform: translate3d(100%, 0, 0);
+  }
+}
+
+@keyframes slide-right-leave {
+  to {
+    transform: translate3d(100%, 0, 0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes zoom-in {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes zoom-out {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  to {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+}
+
+.fade {
+  &-enter-active {
+    animation: .3s fade-in both ease-out;
+  }
+
+  &-exit-active {
+    animation: .3s fade-out both ease-in;
+  }
+}
+
+.slide-up {
+  &-enter-active {
+    animation: .3s rv-slide-up-enter both ease-out;
+  }
+
+  &-exit-active {
+    animation: .3s rv-slide-up-leave both ease-in;
+  }
+}
+
+.slide-down {
+  &-enter-active {
+    animation: rv-slide-down-enter .3s both ease-out;
+  }
+
+  &-exit-active {
+    animation: rv-slide-down-leave .3s both ease-in;
+  }
+}
+
+.slide-left {
+  &-enter-active {
+    animation: rv-slide-left-enter .3s both ease-out;
+  }
+
+  &-exit-active {
+    animation: rv-slide-left-leave .3s both ease-in;
+  }
+}
+
+.slide-right {
+  &-enter-active {
+    animation: rv-slide-right-enter .3s both ease-out;
+  }
+
+  &-exit-active {
+    animation: rv-slide-right-leave .3s both ease-in;
+  }
+}
+
+.zoom {
+  &-enter-active {
+    animation: .3s rv-zoom-in both ease-out;
+  }
+
+  &-exit-active {
+    animation: .3s rv-zoom-out both ease-in;
+  }
+}

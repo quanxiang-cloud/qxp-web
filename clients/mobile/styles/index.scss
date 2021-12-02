@@ -1,11 +1,19 @@
 @import "../../styles/reset.css";
 @import "../../styles/variables/colors.css";
 @import "../../styles/animation.css";
+
+@import "./animation.scss";
 @import "./typography.scss";
+@import "./atom.scss";
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --backgroundColor: #E6ECF9;
+  --activeColor: rgba(241, 245, 249, 1);
+}
 
 /**
  * Use rem to fit mobile screens.
@@ -17,6 +25,17 @@
  * x = 100*100/375 = 26.666.
  */
 html {
-  font-size: calc(10000vw/375);
-  background-color: #E6ECF9;
+  font-size: calc(10000vw / 375);
+  background-color: var(--backgroundColor);
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+.safe-area-bottom {
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.safe-area-top {
+  padding-top: constant(safe-area-inset-top);
+  padding-top: env(safe-area-inset-top);
 }
