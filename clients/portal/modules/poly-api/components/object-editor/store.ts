@@ -1,20 +1,26 @@
 import { BehaviorSubject } from 'rxjs';
 import { lensPath, set, dissocPath, path } from 'ramda';
 
-import { nanoid } from '@c/form-builder/utils';
 import { insertToArray } from '@polyApi/utils/object-editor';
 
-export class ItemStore<T extends { children: T[] }> extends BehaviorSubject<T> {
+export class ItemStore<T extends { children: T[], id: string }> extends BehaviorSubject<T> {
   parent$?: Store<T> | ItemStore<T>;
   children$: ItemStore<T>[]
   isChildrenHidden = false;
   isHidden = false;
-  id = nanoid();
+
+  get id(): string {
+    return this.value.id;
+  }
+
+  get Value(): T {
+    return { ...this.value, children: this.children$.map((c) => c.Value) };
+  }
 
   constructor(initialValue: T, parent?: ItemStore<T> | Store<T>) {
     super(initialValue);
     this.parent$ = parent;
-    this.children$ = this.value.children.map((child) => new ItemStore(child, this));
+    this.children$ = initialValue.children.map((child) => new ItemStore(child, this));
   }
 
   set(key: string, value: any): void {
@@ -49,13 +55,7 @@ export class ItemStore<T extends { children: T[] }> extends BehaviorSubject<T> {
   }
 
   removeChild(child?: ItemStore<T>): void {
-    if (!child) {
-      this.children$ = [];
-      this.value.children = [];
-    } else {
-      this.children$ = this.children$.filter((c) => c !== child);
-      this.value.children = this.value.children.filter((c) => c !== child.value);
-    }
+    this.children$ = !child ? [] : this.children$.filter((c) => c !== child);
     this.reOrder();
   }
 
@@ -66,9 +66,6 @@ export class ItemStore<T extends { children: T[] }> extends BehaviorSubject<T> {
   reOrder(): void {
     this.children$.forEach((c, index) => {
       c.set('index', index);
-    });
-    this.value.children.forEach((c, index) => {
-      Object.assign(c, { index });
     });
     this.update();
   }
@@ -82,14 +79,17 @@ export class ItemStore<T extends { children: T[] }> extends BehaviorSubject<T> {
       newChild.hide();
     }
     this.children$ = insertToArray(this.children$, position, newChild);
-    this.value.children = insertToArray(this.value.children, position, child);
     this.reOrder();
   }
 }
 
-export class Store<T extends { children: T[] }> extends BehaviorSubject<ItemStore<T>[]> {
+export class Store<T extends { children: T[]; id: string }> extends BehaviorSubject<ItemStore<T>[]> {
   constructor(initialValue: ItemStore<T>[]) {
     super(initialValue);
+  }
+
+  get Value(): ItemStore<T>[] {
+    return this.value;
   }
 
   set(key: string, value: any): void {
@@ -124,12 +124,31 @@ export class Store<T extends { children: T[] }> extends BehaviorSubject<ItemStor
     if (typeof position !== 'number') {
       throw new Error('Position must be a number');
     }
-    const newValue = insertToArray<ItemStore<T>>(this.value, position, new ItemStore(child));
+    const itemStore = new ItemStore(child);
+    itemStore.parent$ = this;
+    const newValue = insertToArray<ItemStore<T>>(this.value, position, itemStore);
     this.next(this.reOrder(newValue));
+  }
+
+  setChildren(childes: T[]): void {
+    const oldChildMap: Record<string, ItemStore<T>> = this.value.reduce(
+      (acc, c) => ({ ...acc, [c.id]: c }), {},
+    );
+    const itemStores = childes.map((child) => {
+      const oldStore = oldChildMap[child.id];
+      if (oldStore) {
+        oldStore.next(child);
+        return oldStore;
+      }
+      const itemStore = new ItemStore<T>(child);
+      itemStore.parent$ = this;
+      return itemStore;
+    });
+    this.next(itemStores);
   }
 }
 
-export function createStore<T extends { children: T[] }>(initialValue: T[]): Store<T> {
+export function createStore<T extends { children: T[]; id: string }>(initialValue: T[]): Store<T> {
   const itemStores = initialValue.map((value) => new ItemStore<T>(value));
   const store = new Store(itemStores);
   itemStores.forEach((itemStore) => itemStore.parent$ = store);

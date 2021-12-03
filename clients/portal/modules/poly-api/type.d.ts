@@ -35,6 +35,7 @@ declare namespace POLY_API {
     mock?: string;
     desc?: string;
     title?: string;
+    id?: string;
   }
 
   export interface PolyConst {
@@ -43,11 +44,13 @@ declare namespace POLY_API {
     desc: string;
     data: string | boolean;
     in: 'hide';
+    id?: string;
   }
 
   export type PolyConstSchema = PolyConst & {
     children: [];
     index: number;
+    id: string;
   }
 
   export type PolyConditionType = 'direct_expr';
@@ -123,6 +126,7 @@ declare namespace POLY_API {
     desc: string;
     rule?: string;
     children: ObjectSchema[];
+    id: string;
   }
 
   export type API_FIELD_TYPE = 'string' | 'number' | 'object' | 'array' | 'boolean' | 'direct_expr';
