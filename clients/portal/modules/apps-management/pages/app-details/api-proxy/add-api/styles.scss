@@ -1,6 +1,9 @@
 .params-sec {
   .sec-body {
     transition: all 0.5s ease;
+    .from-expand {
+      display: none;
+    }
 
     &.hide-body {
       transform:scale(1,0);
@@ -45,18 +48,8 @@
           vertical-align: middle;
           padding-left: 8px;
         }
-        &.param-name {
-          &:hover {
-            > .param-actions {
-              visibility: visible;
-            }
-          }
-          > .param-actions {
-            visibility: hidden;
-          }
-          //> input:focus + .param-actions {
-          //  visibility: hidden;
-          //}
+        &.param-operation {
+          width: 65px;
         }
 
         // fix chrome auto-fill background color

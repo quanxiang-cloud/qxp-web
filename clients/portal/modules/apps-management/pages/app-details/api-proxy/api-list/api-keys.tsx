@@ -35,12 +35,12 @@ type PageParams = {
 
 function ApiKeys(): JSX.Element {
   const service = store.svc?.fullPath;
+  const keyList = store.apiKeyList;
+  const apiKeyTotal = store.apiKeyTotal;
   const initApiKeyListParams = { page: 1, limit: 10, service: service };
   const formMsgRef = useRef<FormInstance>(null);
   const [pageParams, setPageParams] = useState<PageParams>(initApiKeyListParams);
-  const [apiKeyTotal, setApiKeyTotal] = useState<number>(0);
   const [loading, setLoading] = useState(true);
-  const [keyList, setKeyList] = useState<Array<PolyAPI.ApiKeyList>>([]);
   const [isEditor, setIsEditor] = useState<boolean>(false);
   const [showCloseStateModal, setShowCloseStateModal] = useState<boolean>(false);
   const [showFormModal, setShowFormModal] = useState<boolean>(false);
@@ -50,8 +50,8 @@ function ApiKeys(): JSX.Element {
 
   function updateApiKeyList(pageParams: PageParams): void {
     getApiKeyList(pageParams).then((res) => {
-      setKeyList(res.keys);
-      setApiKeyTotal(res.total);
+      store.apiKeyList = res.keys;
+      store.apiKeyTotal = res.total;
       setLoading(false);
     }).catch(() => {
       toast.error('更新密钥列表失败');

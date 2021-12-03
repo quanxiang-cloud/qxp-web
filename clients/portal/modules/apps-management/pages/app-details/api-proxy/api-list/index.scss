@@ -14,12 +14,15 @@
   }
 }
 
+.api-proxy-tab-content {
+  .qxp-table-loading-box {
+    background-color: rgba(255, 255, 255, 1);
+  }
+}
+
 .inside-api-key {
   .key-id:hover .copy-tooltip{
     visibility: visible;
-  }
-  .qxp-table-loading-box {
-    background-color: rgba(255, 255, 255, 1);
   }
 }
 
@@ -42,7 +45,7 @@
     }
   }
   .ant-switch-checked {
-    background-color: #375FF3;
+    background-color: var(--blue-600);
     .ant-switch-handle {
       left: calc(100% - 16px - 2px);
     }

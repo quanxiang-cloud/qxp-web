@@ -63,7 +63,7 @@ function FormAddGroup({
           {...register('name', {
             required: '请填写分组标识',
             shouldUnregister: true,
-            pattern: { value: /^[a-zA-Z][\w-]+$/, message: '分组标识格式错误' },
+            pattern: { value: /^[a-zA-Z][\w-]*$/, message: '分组标识格式错误' },
             maxLength: 32,
           })}
         />
