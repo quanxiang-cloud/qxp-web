@@ -3,7 +3,7 @@ package contexts
 import (
 	"time"
 
-	"github.com/go-redis/redis"
+	"github.com/go-redis/redis/v8"
 )
 
 // RedisConfig stores a configuration of Redis.
@@ -12,6 +12,7 @@ type RedisConfig struct {
 	Timeout  int      `yaml:"timeout" default:"15"`
 	DB       int      `yaml:"db"  default:"1"`
 	Password string   `yaml:"password" default:""`
+	Username string   `yaml:"username" default:""`
 }
 
 // NewRedisClient creates new Redis connection.
@@ -28,5 +29,6 @@ func NewRedisClient(c *RedisConfig) redis.UniversalClient {
 		WriteTimeout: time.Duration(c.Timeout) * time.Second,
 		MaxRetries:   10,
 		Password:     c.Password,
+		Username:     c.Username,
 	})
 }

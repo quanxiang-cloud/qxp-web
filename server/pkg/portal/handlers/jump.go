@@ -12,18 +12,18 @@ import (
 func cacheRedirectState(homePath string, sk string) string {
 	nextID, _ := contexts.IDWorker.NextID()
 	state := strconv.FormatInt(nextID, 36)
-	contexts.Cache.Set(fmt.Sprintf("redirect_path:%s", state), homePath, time.Second*5)
-	contexts.Cache.Set(fmt.Sprintf("redirect_sk:%s", state), sk, time.Second*5)
+	contexts.Cache.Set(contexts.Ctx, fmt.Sprintf("redirect_path:%s", state), homePath, time.Second*5)
+	contexts.Cache.Set(contexts.Ctx, fmt.Sprintf("redirect_sk:%s", state), sk, time.Second*5)
 
 	return state
 }
 
 func getRedirectPath(state string) string {
-	return contexts.Cache.Get(fmt.Sprintf("redirect_path:%s", state)).Val()
+	return contexts.Cache.Get(contexts.Ctx, fmt.Sprintf("redirect_path:%s", state)).Val()
 }
 
 func getRedirectSK(state string) string {
-	return contexts.Cache.Get(fmt.Sprintf("redirect_sk:%s", state)).Val()
+	return contexts.Cache.Get(contexts.Ctx, fmt.Sprintf("redirect_sk:%s", state)).Val()
 }
 
 // JumpToHome redirect user to home page

@@ -65,7 +65,7 @@ func HandleResetPasswordSubmit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	contexts.Cache.Del("token")
+	contexts.Cache.Del(contexts.Ctx, "token")
 	session.Values["refresh_token"] = nil
 	session.Save(r, w)
 
