@@ -87,7 +87,7 @@ const MenuOp = (props: Props): JSX.Element => {
         changeable
         clickable
         className='mr-10 cursor-grab menu-item--drag'
-        size={17}
+        size={16}
         name='drag_indicator'
       />
       <MoreMenu
@@ -102,7 +102,7 @@ const MenuOp = (props: Props): JSX.Element => {
         <Icon
           changeable
           clickable
-          size={17}
+          size={16}
           name='more_horiz'
         />
       </MoreMenu>

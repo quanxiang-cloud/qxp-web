@@ -143,7 +143,7 @@ function PageDetails({ pageID }: Props): JSX.Element {
           <div className='px-16 py-8 rounded-8 border-1 flex items-center'>
             <div className="page-details-icon">
               <Icon
-                size={25}
+                size={24}
                 type="dark"
                 name={activeMenu.menuType === MenuType.schemaForm ? 'schema-form' : 'custom-page'}
               />
@@ -199,14 +199,14 @@ function PageDetails({ pageID }: Props): JSX.Element {
                   headerClassName="p-16"
                   title={(
                     <div className="flex items-center text-h6">
-                      <Icon name="link" size={21} />
+                      <Icon name="link" size={20} />
                       <span className="mx-8">{title}</span>
                       <span className="text-gray-400">{`(${list.length})`}</span>
                     </div>
                   )}
                   action={(<Icon
                     name="arrow_forward"
-                    size={21}
+                    size={20}
                     className="anchor-focus"
                     onClick={() => goLink(cardID)}
                   />)}
@@ -231,7 +231,7 @@ function PageDetails({ pageID }: Props): JSX.Element {
                             }}
                           >
                             {status && (<Icon
-                              size={9}
+                              size={8}
                               className="ml-40"
                               name={status === 'ENABLE' ? 'status-success' : 'status-default'}
                             />)}
