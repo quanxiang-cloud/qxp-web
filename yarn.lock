@@ -518,6 +518,22 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@ofa/api-spec-adapter@https://ofapkg.pek3b.qingstor.com/tarball/ofa-api-spec-adapter-0.0.1.tgz":
+  version "0.0.1"
+  resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-api-spec-adapter-0.0.1.tgz#a934410abfa41679c028847f20fd13d644d6d326"
+
+"@ofa/render-engine@https://ofapkg.pek3b.qingstor.com/tarball/ofa-render-engine-v0.4.1.tgz":
+  version "0.4.1"
+  resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-render-engine-v0.4.1.tgz#288409288a762ca6e6d89e7c27cbdd24d71ccd74"
+  dependencies:
+    react "^17.0.2"
+    react-dom "^17.0.2"
+    rxjs "^7.4.0"
+
+"@ofa/utils@https://ofapkg.pek3b.qingstor.com/tarball/ofa-utils-v0.0.1.tgz":
+  version "0.0.1"
+  resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-utils-v0.0.1.tgz#50afb46bd98dacb11b2c39939c4c2a29e48ffd15"
+
 "@popperjs/core@^2.9.1":
   version "2.10.2"
   resolved "http://r.npm.internal.yunify.com/@popperjs/core/download/@popperjs/core-2.10.2.tgz#0798c03351f0dea1a5a4cabddf26a55a7cbee590"
@@ -6268,7 +6284,7 @@ react-dom@16.13.1:
     prop-types "^15.6.2"
     scheduler "^0.19.1"
 
-react-dom@^17.0.1:
+react-dom@^17.0.1, react-dom@^17.0.2:
   version "17.0.2"
   resolved "http://r.npm.internal.yunify.com/react-dom/download/react-dom-17.0.2.tgz#ecffb6845e3ad8dbfcdc498f0d0a939736502c23"
   integrity sha1-7P+2hF462Nv83EmPDQqTlzZQLCM=
@@ -6478,7 +6494,7 @@ react@16.13.1:
     object-assign "^4.1.1"
     prop-types "^15.6.2"
 
-react@^17.0.1:
+react@^17.0.1, react@^17.0.2:
   version "17.0.2"
   resolved "http://r.npm.internal.yunify.com/react/download/react-17.0.2.tgz#d0b5cc516d29eb3eee383f75b62864cfb6800037"
   integrity sha1-0LXMUW0p6z7uOD91tihkz7aAADc=

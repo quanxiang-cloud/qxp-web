@@ -11,7 +11,7 @@ copyStatics:
 	@mkdir -p dist
 	@cp -r ./clients/assets/* dist
 
-copyTemplates:
+copyTemplates: clients/templates/*
 	@echo "copy clients/templates/* to dist/templates..."
 	@mkdir -p dist
 	@cp -r ./clients/templates dist
