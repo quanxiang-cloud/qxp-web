@@ -85,7 +85,10 @@ export default {
       skipPlugins: ['rollup-plugin-output-manifest'],
     }),
     replace({
-      'process.env.NODE_ENV': JSON.stringify(isProduction ? 'production' : 'development'),
+      preventAssignment: true,
+      values: {
+        'process.env.NODE_ENV': JSON.stringify(isProduction ? 'production' : 'development'),
+      },
     }),
     resolve({
       preferBuiltins: false,
