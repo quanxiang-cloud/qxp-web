@@ -1,11 +1,13 @@
 import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import { useQuery } from 'react-query';
+import { pick } from 'lodash';
 
 import Button from '@c/button';
 import Select from '@c/select';
 import { getFormFieldSchema } from '@flow/content/editor/forms/api';
 import { ValueRuleVal } from '@flow/content/editor/type';
 import { schemaToMap } from '@lib/schema-convert';
+import { buildQueryRef } from '@lib/http-client';
 
 import ConditionItem from './condition-item';
 
@@ -46,6 +48,8 @@ function FilterRules({ appId, tableId, defaultValue }: Props, ref: React.Ref<Ref
       getValues: () => ({
         tag,
         conditions,
+        formQueryRef: targetSchema ?
+          pick(buildQueryRef(targetSchema), conditions.map(({ value }) => value as string)) : {},
       }),
     };
   });
