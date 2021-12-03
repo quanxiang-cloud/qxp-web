@@ -28,11 +28,11 @@
   }
 
   .tree-node-title:hover:not(.active, .collapse) {
-    background: var(--blue-100);
-    color: var(--blue-600);
+    background: var(--primary-100);
+    color: var(--primary-600);
     
     .menu-icon svg {
-      fill: var(--blue-400);
+      fill: var(--primary-400);
     }
   }
 
