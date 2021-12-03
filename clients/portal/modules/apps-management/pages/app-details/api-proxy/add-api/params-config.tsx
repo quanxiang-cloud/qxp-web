@@ -88,6 +88,7 @@ function ParamsConfig({ title, group }: ConfigProps): JSX.Element {
               )}
               {group !== 'constant' && <th>是否必填</th>}
               <th>描述</th>
+              <th>操作</th>
             </tr>
           </thead>
           <tbody>
