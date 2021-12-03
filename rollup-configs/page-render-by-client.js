@@ -73,6 +73,8 @@ export default {
     // 'react-dnd-html5-backend',
     'react-flow-renderer',
     'xlsx',
+
+    /@ofa\/.*/,
   ],
 
   plugins: [

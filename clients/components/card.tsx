@@ -1,24 +1,23 @@
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import useCss from 'react-use/lib/useCss';
 import cs from 'classnames';
 
 import TextHeader from './text-header';
 
-export interface Props {
+export type Props = PropsWithChildren<{
   title?: string | JSX.Element;
   desc?: string;
   action?: string | JSX.Element;
   content?: JSX.Element;
   className?: string;
   headerClassName?: string;
-  children?: JSX.Element;
   headerActionClassName?: string;
   contentClassName?: string;
   style?: Record<string, string>;
   descClassName?: string;
   titleClassName?: string;
   itemTitleClassName?: string;
-}
+}>;
 
 export default function Card({
   title,
