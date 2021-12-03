@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { toJS } from 'mobx';
-import { skip } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 import { Input, Switch, Select, Radio } from '@formily/antd-components';
 import {
   useForm,
@@ -115,14 +115,14 @@ function AssociatedDataConfig({ initialValue, onChange, subTableSchema }: Props)
     });
 
     onFieldValueChange$('associationTableID').pipe(
-      skip(1),
+      filter(({ value }) => !!value),
     ).subscribe(({ value }) => {
       setFieldState('associativeConfig', (state) => {
         state.visible = true;
       });
 
       if (initialValue.associationTableID === value) {
-        setTableFieldOptions(value, initialValue.associativeConfig?.rules, true);
+        setTableFieldOptions(value, initialValue.associativeConfig?.rules, false);
         return;
       }
 
