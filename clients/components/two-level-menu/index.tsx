@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment, useMemo } from 'react';
 import cs from 'classnames';
 
-import Icon from '@c/icon';
+import Icon, { iconColor } from '@c/icon';
 
 import { treeFind, findFirstLeafNode } from './utils';
 import './index.scss';
@@ -13,6 +13,7 @@ export type NodeItem<T> = {
   type: 'group' | 'leaf' | string;
   id: string;
   iconName?: string;
+  iconColor?: iconColor;
   children?: NodeItem<T>[];
   source?: T;
   parentID?: string;
@@ -53,7 +54,7 @@ function NavItem<T>({
   groupBanSelect,
 }: NavItemProps<T>): JSX.Element {
   const [expand, setExpand] = useState(!!node.root);
-  const iconName = useMemo(()=> {
+  const [iconName, iconColor] = useMemo(()=> {
     const hasChild = !!(node.children && node.children.length) || !!node.hasChild;
     if (node.type === 'group') {
       if (hasChild) {
@@ -61,7 +62,7 @@ function NavItem<T>({
       }
       return 'folder_empty';
     }
-    return node.iconName || '';
+    return [node.iconName || '', node.iconColor || ''];
   }, [node, expand]);
 
   return (
@@ -78,7 +79,7 @@ function NavItem<T>({
           onSelect?.(node);
         }}
       >
-        {iconName && <Icon className='mr-4' size={16} name={iconName} />}
+        {iconName && <Icon className='mr-4' color={iconColor as iconColor} size={16} name={iconName} />}
         <span style={{ lineHeight: '36px' }} className='flex-1 truncate'>
           {node.title}
         </span>
