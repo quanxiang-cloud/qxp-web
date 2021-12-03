@@ -100,7 +100,7 @@ function PolyDetailsHeader({ className }: Props): JSX.Element {
           </Button>
         </div>
         <div className="w-1 bg-gray-200 mr-10" style={{ height: 30 }}></div>
-        <Icon name="question_answer" />
+        <Icon name="help_doc" size={20} style={{ color: 'white', fill: 'var(--gray-400)' }}/>
       </section>
     </header>
   );
