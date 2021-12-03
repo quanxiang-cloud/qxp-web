@@ -97,7 +97,7 @@ function PageList(): JSX.Element {
           <div className="flex items-center">
             <div onClick={() => setModalType('createPage')}>
               <Tooltip label='新建菜单' position='bottom' wrapperClassName="whitespace-nowrap">
-                <Icon className='app-page-add-group mr-8' size={17} name='post_add' />
+                <Icon className='app-page-add-group mr-8' size={16} name='post_add' />
               </Tooltip>
             </div>
             <Tooltip label='新建分组' position='bottom' wrapperClassName="whitespace-nowrap">

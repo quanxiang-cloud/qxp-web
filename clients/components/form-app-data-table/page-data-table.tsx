@@ -74,7 +74,7 @@ function PageDataTable(): JSX.Element {
             menus={TABLE_SIZE_MENUS}
             activeMenu={store.tableSize}
           >
-            <Icon clickable changeable size={25} name='expand' />
+            <Icon clickable changeable size={24} name='expand' />
           </MoreMenu>
           <AdvancedQuery
             tag={store.params.tag}

@@ -41,7 +41,7 @@ function FileUpload({ onStart, onProgress, onSuccess }: Props): JSX.Element {
           <div
             className="upload-box py-20 flex flex-col items-center select-none"
           >
-            <Icon name="backup" size={25} />
+            <Icon name="backup" size={24} />
             <span className="mt-10">点击该区域上传文件。支持 zip 格式，单个文件不超过 30M。</span>
           </div>
         </div>
