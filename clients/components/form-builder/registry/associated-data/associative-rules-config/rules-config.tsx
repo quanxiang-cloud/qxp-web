@@ -1,11 +1,13 @@
 import React, { useEffect } from 'react';
 import {
+  FormPath,
   SchemaForm,
+  IFieldState,
   FormEffectHooks,
   FormButtonGroup,
   createFormActions,
-  FormPath,
 } from '@formily/antd';
+import { tap, skip } from 'rxjs/operators';
 import { Input, Switch, Select, Radio } from '@formily/antd-components';
 
 import Modal from '@c/modal';
@@ -52,12 +54,23 @@ function Rules({
     });
   }
 
+  function initDataTargetEnum({ value, name }: IFieldState): void {
+    const sourceType = sourceTableFields.find(({ fieldName }) => fieldName === value)?.type;
+    const targetPath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.dataTarget`);
+    setFieldState(targetPath, (state) => {
+      state.props.enum = formatFieldInputAndOption(sourceType || '');
+    });
+  }
+
   function formEffect(): void {
-    onFieldValueChange$('rules.*.dataSource').subscribe(({ value, name }) => {
-      const sourceType = sourceTableFields.find(({ fieldName }) => fieldName === value)?.type;
+    onFieldValueChange$('rules.*.dataSource').pipe(
+      tap(initDataTargetEnum),
+      skip(defaultValue?.rules?.length),
+    ).subscribe(({ name }) => {
       const targetPath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.dataTarget`);
+
       setFieldState(targetPath, (state) => {
-        state.props.enum = formatFieldInputAndOption(sourceType || '');
+        state.value = undefined;
       });
     });
   }
