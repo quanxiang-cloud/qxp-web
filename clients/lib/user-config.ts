@@ -25,9 +25,9 @@ export function useGetUserConfig<T>(key: string, version: string, fallBack: T): 
   return [userConfig, loading];
 }
 
-export function setUserConfig(config: any, key: string, version: string): void {
+export function setUserConfig(config: any, key: string, version: string): Promise<unknown> {
   configMap[key] = config;
-  setBatchUserData([{
+  return setBatchUserData([{
     key,
     version: version,
     value: JSON.stringify(config),

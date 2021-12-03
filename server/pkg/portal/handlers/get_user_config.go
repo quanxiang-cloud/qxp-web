@@ -34,6 +34,8 @@ func getUserConfig(r *http.Request) UserConfig {
 	result := gjson.Get(string(respBody), "data.result.user_style_config").Str
 	config := UserConfig{
 		PrimaryColor: "blue",
+		TitleIcon:    "/dist/images/quanxiangyun.svg",
+		Favicons:     "/dist/images/favicons/favicon-32x32.png",
 	}
 
 	if err := json.Unmarshal([]byte(result), &config); err != nil {
