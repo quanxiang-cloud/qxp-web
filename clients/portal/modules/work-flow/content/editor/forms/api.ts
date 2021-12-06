@@ -27,9 +27,7 @@ export type FormFieldOption = {
   editable: boolean;
 };
 
-export async function getFormFieldSchema({ queryKey }: QueryFunctionContext): Promise<{
-  properties?: { [key: string]: ISchema; } | undefined;
-}> {
+export async function getFormFieldSchema({ queryKey }: QueryFunctionContext): Promise<ISchema> {
   const data = await httpClient<SchemaResponse | null>(
     `/api/v1/form/${queryKey[2]}/m/table/getByID`, { tableID: queryKey[1] });
   return data?.schema ?? {};

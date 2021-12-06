@@ -77,7 +77,9 @@ export default function UpdateTableData({
       toast.error('更新规则的目标表字段不能为空');
       return;
     }
-    Object.assign(value, { filterRule, updateRule });
+
+    const { formQueryRef, ..._filterRule } = filterRule;
+    Object.assign(value, { filterRule: _filterRule, updateRule, formQueryRef });
     onSubmit(value);
   };
 
@@ -153,7 +155,7 @@ export default function UpdateTableData({
         {switchTableModal && (
           <Modal
             title='切换目标数据表'
-            onClose={()=> setSwitchTableModal(false)}
+            onClose={() => setSwitchTableModal(false)}
             footerBtns={[
               {
                 key: 'cancel',
