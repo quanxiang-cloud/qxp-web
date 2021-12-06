@@ -518,13 +518,13 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@ofa/api-spec-adapter@https://ofapkg.pek3b.qingstor.com/tarball/ofa-api-spec-adapter-0.0.1.tgz":
-  version "0.0.1"
-  resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-api-spec-adapter-0.0.1.tgz#a934410abfa41679c028847f20fd13d644d6d326"
+"@ofa/api-spec-adapter@https://ofapkg.pek3b.qingstor.com/tarball/ofa-api-spec-adapter-v0.1.0.tgz":
+  version "0.1.0"
+  resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-api-spec-adapter-v0.1.0.tgz#f7d993a27dd4dc6683b9edf269bc3395cf2795e9"
 
-"@ofa/render-engine@https://ofapkg.pek3b.qingstor.com/tarball/ofa-render-engine-v0.4.1.tgz":
-  version "0.4.1"
-  resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-render-engine-v0.4.1.tgz#288409288a762ca6e6d89e7c27cbdd24d71ccd74"
+"@ofa/render-engine@https://ofapkg.pek3b.qingstor.com/tarball/ofa-render-engine-v0.5.1.tgz":
+  version "0.5.1"
+  resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-render-engine-v0.5.1.tgz#84e77cacabf2c1233d05d4fa73cedb5c4ec98359"
   dependencies:
     react "^17.0.2"
     react-dom "^17.0.2"
