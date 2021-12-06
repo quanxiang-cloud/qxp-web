@@ -1,6 +1,5 @@
 import React, { JSXElementConstructor, useEffect, useState } from 'react';
 import { Rule } from 'rc-field-form/lib/interface';
-import { Table } from 'antd';
 import { isObject } from 'lodash';
 import { useQuery } from 'react-query';
 import { ValidatePatternRules } from '@formily/antd';
@@ -109,12 +108,12 @@ function SubTable({
         ...componentPropsInternal,
         'x-component-props': componentProps,
         'x-internal': componentPropsInternal,
-        readOnly: !!sc.readOnly,
+        readOnly: !!(props.readOnly ?? sc.readOnly),
       },
       schema: { ...sc, 'x-internal': { ...sc?.['x-internal'], parentFieldId: name } },
       dataSource,
       required: !!sc?.required,
-      readOnly: !!sc.readOnly,
+      readOnly: !!(props.readOnly ?? sc.readOnly),
       rules: schemaRulesTransform(sc),
       render: (value: any) => {
         if (isEmpty(value)) {
@@ -132,17 +131,6 @@ function SubTable({
 
   if (!componentColumns.length) {
     return null;
-  }
-
-  if (props.readOnly) {
-    return (
-      <Table
-        pagination={false}
-        rowKey="_id"
-        columns={componentColumns}
-        dataSource={value}
-      />
-    );
   }
 
   return (
