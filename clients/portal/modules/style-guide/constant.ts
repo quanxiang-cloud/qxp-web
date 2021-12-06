@@ -25,6 +25,12 @@ export const COLORS = [
 
 export const COLOR_DEPTH = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900];
 
+export const DEFAULT_CONFIG = {
+  primaryColor: 'blue',
+  titleIcon: '/dist/images/quanxiangyun.svg',
+  favicons: '/dist/images/favicons/favicon-32x32.png',
+};
+
 export const SCHEMA: ISchema = {
   type: 'object',
   properties: {

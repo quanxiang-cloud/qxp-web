@@ -1,8 +1,9 @@
 import React from 'react';
-import { Select, Upload, SelectProps } from 'antd';
+import { Select, Upload, SelectProps, Button } from 'antd';
 import { Input } from '@formily/antd-components';
 import {
   SchemaForm,
+  useForm,
   FormButtonGroup,
   Submit,
 } from '@formily/antd';
@@ -10,7 +11,7 @@ import {
 import toast from '@lib/toast';
 import { setUserConfig, useGetUserConfig } from '@lib/user-config';
 
-import { COLORS, COLOR_DEPTH, SCHEMA } from './constant';
+import { COLORS, COLOR_DEPTH, SCHEMA, DEFAULT_CONFIG } from './constant';
 
 type UserStyleConfig = {
   primaryColor: string,
@@ -53,7 +54,6 @@ function ImgUpload({ value, onChange }: any): JSX.Element {
           onChange(file.response.data.url);
         }
       }}
-
     >
       {value ? <img src={value} alt="avatar" style={{ width: '100%' }} /> : 'Upload'}
     </Upload>
@@ -61,10 +61,10 @@ function ImgUpload({ value, onChange }: any): JSX.Element {
 }
 
 export default function UserStyleConfig(): JSX.Element {
-  const [userStyleConfig, loading] = useGetUserConfig(KEY, '0.1.0', {
-    primaryColor: 'blue',
-    titleIcon: '/dist/images/quanxiangyun.svg',
-    favicons: '/dist/images/favicons/favicon-32x32.png',
+  const [userStyleConfig, loading] = useGetUserConfig(KEY, '0.1.0', DEFAULT_CONFIG);
+  const form = useForm({
+    initialValues: userStyleConfig,
+    onSubmit: handleSave,
   });
 
   function handleSave(formData: UserStyleConfig): void {
@@ -85,21 +85,28 @@ export default function UserStyleConfig(): JSX.Element {
     });
   }
 
+  function handleReset(): void {
+    handleSave(DEFAULT_CONFIG);
+    form.setFormState((state) => {
+      state.values = DEFAULT_CONFIG;
+    });
+  }
+
   if (loading) {
-    return <div>loading</div>;
+    return <div>loading...</div>;
   }
 
   return (
     <div className='py-32'>
       <div className='mx-auto p-28 bg-white w-552 rounded-12'>
         <SchemaForm
-          defaultValue={userStyleConfig}
+          form={form as any}
           components={{ Input, ColorSelect, ImgUpload }}
           schema={SCHEMA}
-          onSubmit={handleSave}
         >
           <FormButtonGroup>
-            <Submit>提交</Submit>
+            <Submit>保存</Submit>
+            <Button onClick={handleReset}>重置</Button>
           </FormButtonGroup>
         </SchemaForm>
       </div>
