@@ -207,7 +207,6 @@ function ApiList(): JSX.Element {
           placeholder="输入 API 名称"
           value={search}
           onChange={setSearch}
-          onKeyDown={()=> {}}
         />
       </div>
       <div className='api-list-wrap'>

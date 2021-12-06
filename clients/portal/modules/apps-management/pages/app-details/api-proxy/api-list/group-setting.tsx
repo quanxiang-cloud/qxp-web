@@ -35,7 +35,7 @@ function GroupSetting(): JSX.Element {
   const [auth, setAuth] = useState<AuthType>('none');
 
   useEffect(()=> {
-    const defaultValues = { hostname: 'www.quanxiang.cloud', port: 433 };
+    const defaultValues = { hostname: 'www.quanxiang.cloud', port: 443 };
     if (store.svc) {
       const { schema, host, authType, authContent } = store.svc;
       const [hostname, port] = host.split(':');
@@ -101,6 +101,7 @@ function GroupSetting(): JSX.Element {
           toast.success('修改成功');
         }
         await store.fetchSvc();
+        await store.setApiKey();
       } catch (err) {
         toast.error(err);
       }

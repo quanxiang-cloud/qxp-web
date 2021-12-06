@@ -1,0 +1,11 @@
+.home-card {
+  background-color: white;
+  border-radius: .08rem;
+  box-shadow: 0 2px 24px rgba(148, 163, 184, 0.18);
+
+  &--title {
+    padding: .08rem .16rem;
+    background-color: #F8FAFC;
+    border-radius: .08rem .08rem 0 0;
+  }
+}

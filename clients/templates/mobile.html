@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    {{template "_common_head_meta"}}
+    {{template "_import-map" .}}
+    {{template "_systemjs" .}}
+</head>
+<body>
+    <div id="root"></div>
+    <script>
+    window.USER = {{ .user }}
+    window.ADMIN_USER_FUNC_TAGS = {{ .adminUserFuncTags }}
+    window.USER_ADMIN_ROLES = {{ .userAdminRoles }}
+    window.CONFIG = {{ .CONFIG }}
+    window.__verbose_log__ = {{ .debugMode }}
+    </script>
+    {{template "_jsEntry" .}}
+</body>
+</html>

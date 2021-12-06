@@ -19,8 +19,8 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 
 	tokenKey := getTokenKey(r)
 	refreshTokenKey := getRefreshTokenKey(r)
-	contexts.Cache.Del(tokenKey)
-	contexts.Cache.Del(refreshTokenKey)
+	contexts.Cache.Del(contexts.Ctx, tokenKey)
+	contexts.Cache.Del(contexts.Ctx, refreshTokenKey)
 
 	requestID := contexts.GetRequestID(r)
 	_, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/jwt/logout", nil, map[string]string{

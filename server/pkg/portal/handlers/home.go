@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"path"
 	"qxp-web/server/pkg/contexts"
 )
 
@@ -10,6 +11,11 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	user := r.Context().Value(ctxUser).(*User)
 	if user.Status == 0 {
 		http.Redirect(w, r, "/resetPassword", http.StatusFound)
+		return
+	}
+
+	if isMobile(r) {
+		http.Redirect(w, r, path.Join("/mobile", r.URL.Path), http.StatusFound)
 		return
 	}
 

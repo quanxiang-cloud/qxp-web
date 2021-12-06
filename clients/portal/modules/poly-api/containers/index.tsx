@@ -9,17 +9,24 @@ import PolyDetailsDesigner from './designer';
 import NodeConfigDrawer from './node-config';
 import { useQueryPolyInfo } from '../effects/api/poly';
 import { parsePolySourceFromApi } from '../utils/build';
+import store$ from '../store';
 
 function PolyDetails(): JSX.Element {
   const { polyFullPath } = useParams<POLY_API.PolyParams>();
-  const { data, isLoading } = useQueryPolyInfo({ path: polyFullPath }, { enabled: !!polyFullPath });
+  const { data, isLoading } = useQueryPolyInfo({
+    path: polyFullPath,
+  }, { enabled: !!polyFullPath, cacheTime: -1 });
+
+  useEffect(() => {
+    store$.init();
+  }, []);
 
   useEffect(() => {
     if (!data) {
       return;
     }
     parsePolySourceFromApi(data);
-  }, [polyFullPath, data]);
+  }, [data]);
 
   if (isLoading) {
     return (

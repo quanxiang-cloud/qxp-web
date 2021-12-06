@@ -13,7 +13,7 @@ export function toContentState(defaultValue: string, customRules: CustomRule[]):
   if (customRules.length) {
     const regex = new RegExp(customRules.filter(({ key }) => !!key).map(({ key }) => {
       return escapeRegExp(key);
-    }).join('|'));
+    }).sort((a, b) => b.length - a.length).join('|'));
     let matchArr;
     while ((matchArr = regex.exec(defaultValueTmp)) !== null) {
       const [key] = matchArr;

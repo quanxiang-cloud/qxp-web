@@ -121,7 +121,6 @@ $nodeTypes: input, request, if, end, default, output;
   svg {
     use {
       transform: scale(2) translate(-12.6px, -8.8px);
-      clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
     }
   }
 }

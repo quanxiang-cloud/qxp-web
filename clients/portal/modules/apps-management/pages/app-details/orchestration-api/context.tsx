@@ -48,7 +48,7 @@ export function ApiNamespaceStoreProvider(
     }
     apiNamespaceStore?.onSelectNode(nodeID || '');
     nodeID !== nameSpaceID && setNameSpaceID(nodeID);
-  }, [apiNamespaceStore, nameSpaceID]);
+  }, [nameSpaceID, apiNamespaceStore?.rootNode.children]);
 
   return (
     <ApiNamespaceStoreContext.Provider value={apiNamespaceStore}>

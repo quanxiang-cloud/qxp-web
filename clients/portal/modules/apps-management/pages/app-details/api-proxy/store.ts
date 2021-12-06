@@ -105,6 +105,8 @@ class ApiProxyStore {
   @observable isLoading = false; // fetching sub page's data
   @observable svc: PolyAPI.Service | null=null;
   @observable svcApis: {list?: PolyAPI.Api[], total?: number} | null=null;
+  @observable apiKeyList: Array<PolyAPI.ApiKeyList> = [];
+  @observable apiKeyTotal = 0;
 
   @computed get currentSvcPath(): string {
     if (this.currentNs) {
@@ -138,6 +140,13 @@ class ApiProxyStore {
   @action
   setTreeStore = (store: ApiGroupStore): void => {
     this.treeStore = store;
+  }
+
+  @action
+  setApiKey = async (): Promise<void> => {
+    const { keys, total } = await apis.getApiKeyList({ page: 1, limit: 10, service: this.svc?.fullPath });
+    this.apiKeyList = keys;
+    this.apiKeyTotal = total;
   }
 
   @action
@@ -215,10 +224,11 @@ class ApiProxyStore {
   }
 
   @action
-  fetchSvc=async (): Promise<void> => {
+  fetchSvc = async (): Promise<void> => {
     this.isLoading = true;
     try {
       this.svc = await apis.getService(this.currentSvcPath);
+      await this.setApiKey();
     } catch (err) {
       this.svc = null;
     } finally {

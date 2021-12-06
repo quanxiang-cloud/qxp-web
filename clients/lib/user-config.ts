@@ -5,8 +5,8 @@ import { parseJSON } from '@lib/utils';
 const configMap: Record<string, unknown> = {};
 
 export function useGetUserConfig<T>(key: string, version: string, fallBack: T): [T, boolean] {
-  const [userConfig, setUserConfig] = useState<T>(configMap[key] as T);
   const hasValue = key in configMap;
+  const [userConfig, setUserConfig] = useState<T>(configMap[key] as T);
   const [loading, setLoading] = useState(!hasValue);
 
   useEffect(() => {

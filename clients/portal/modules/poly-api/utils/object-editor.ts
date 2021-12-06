@@ -1,4 +1,5 @@
 import { isNull, flattenDeep, isArray, isString } from 'lodash';
+import { nanoid } from 'nanoid';
 
 import type { ItemStore } from '../components/object-editor/store';
 import type { Row } from '../components/object-editor';
@@ -11,7 +12,7 @@ export function getFullPath(parentPath: string | null, name: string | null, inde
 function objectSchemaToNodeInput(
   schema: POLY_API.ObjectSchema, data: POLY_API.PolyNodeInput[],
 ): POLY_API.PolyNodeInput {
-  const { type, name, required, desc, rule, in: _in } = schema;
+  const { type, name, required, desc, rule, in: _in, id } = schema;
   return {
     type: rule ? 'direct_expr' : type,
     name: name || '',
@@ -19,34 +20,26 @@ function objectSchemaToNodeInput(
     data: rule || (!isObjectField(type) && isArray(data) ? '' : data),
     in: _in,
     required,
+    id,
   };
 }
 
 export function fromObjectSchemaToApiData(
-  objectSchema: POLY_API.ObjectSchema[], searchSet: POLY_API.ObjectSchema[] = objectSchema,
+  _objectSchema: POLY_API.ObjectSchema[], isFirstLevel = true,
 ): POLY_API.PolyNodeInput[] {
-  const schemaTraversTable = new Map<POLY_API.ObjectSchema, boolean>();
-  return objectSchema.reduce((acc: POLY_API.PolyNodeInput[], schema) => {
-    if (schemaTraversTable.get(schema)) {
-      return acc;
-    }
-    const { name, parentPath, index } = schema;
-    const currentPath = getFullPath(parentPath, name, index);
-    const data = searchSet.filter((schema) => {
-      if (schema.parentPath === currentPath) {
-        schemaTraversTable.set(schema, true);
-        return true;
-      }
-    });
-    acc.push(objectSchemaToNodeInput(schema, fromObjectSchemaToApiData(data, searchSet)));
-    return acc;
-  }, []);
+  let objectSchema = _objectSchema;
+  objectSchema = isFirstLevel ?
+    objectSchema.filter((schema) => schema.parentPath === null) :
+    objectSchema;
+  return objectSchema.map(
+    (schema) => objectSchemaToNodeInput(schema, fromObjectSchemaToApiData(schema.children, false)),
+  );
 }
 
 export function fromApiDataToObjectSchema(
   data: POLY_API.PolyNodeInput[], _parentPath: string | null = null,
 ): POLY_API.ObjectSchema[] {
-  return data.map(({ type, name, desc, data: childrenData, required, in: _in }, index: number) => {
+  return data.map(({ type, name, desc, data: childrenData, required, in: _in, id = nanoid() }, index: number) => {
     const parentPath = _parentPath ? getFullPath(_parentPath, name, index) : name;
     const children = isArray(childrenData) ? fromApiDataToObjectSchema(childrenData, parentPath) : [];
     return {
@@ -59,12 +52,13 @@ export function fromApiDataToObjectSchema(
       index,
       rule: type === 'direct_expr' && isString(childrenData) ? childrenData : undefined,
       parentPath: _parentPath,
+      id,
     };
   });
 }
 
 export function fromApiDataToPolyConstSchema(data: POLY_API.PolyConst[]): POLY_API.PolyConstSchema[] {
-  return data.map(({ type, name, desc, data, in: _in }, index) => ({
+  return data.map(({ type, name, desc, data, in: _in, id = nanoid() }, index) => ({
     type,
     name,
     desc,
@@ -72,26 +66,33 @@ export function fromApiDataToPolyConstSchema(data: POLY_API.PolyConst[]): POLY_A
     in: _in,
     index,
     children: [],
+    id,
   }));
 }
 
 export function fromPolyConstSchemaToApiData(data: POLY_API.PolyConstSchema[]): POLY_API.PolyConst[] {
-  return data.map(({ type, name, desc, data, in: _in }) => ({
+  return data.map(({ type, name, desc, data, in: _in, id }) => ({
     type,
     name,
     desc,
     data,
     in: _in,
+    id,
   }));
 }
 
-export function storeValuesToDataSource<T extends { children: T[] }>(storeValues$: ItemStore<T>[]): Row<T>[] {
+export function storeValuesToDataSource<T extends { children: T[]; id: string }>(
+  storeValues$: ItemStore<T>[], idSets = new Set<string>(),
+): Row<T>[] {
   return flattenDeep(storeValues$.map((current$) => {
-    const { value, children$, parent$ } = current$;
-    const { children } = value;
-    const item = { ...value, children$, parent$, current$ };
-    if (children.length) {
-      return [item, storeValuesToDataSource(children$)];
+    const { Value, children$, parent$ } = current$;
+    const item = { ...Value, children$, parent$, current$ };
+    if (idSets.has(item.id)) {
+      return [];
+    }
+    idSets.add(item.id);
+    if (children$.length) {
+      return [item, storeValuesToDataSource(children$, idSets)];
     }
     return item;
   }));
@@ -109,6 +110,7 @@ export function getObjectEditorNewField(
     required: false,
     desc: '',
     children: [],
+    id: nanoid(),
   };
 }
 
@@ -121,6 +123,7 @@ export function getObjectEditorNewConstantField(): POLY_API.PolyConstSchema {
     data: '',
     index: 0,
     children: [],
+    id: nanoid(),
   };
 }
 

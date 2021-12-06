@@ -1,12 +1,17 @@
 .two-level-menu {
   &-node {
+    user-select: none;
+    cursor: pointer;
     &:hover {
+      color: var(--gray-900);
       &-actions {
         display: block;
       }
     }
 
     &-active {
+      position: relative;
+      color: var(--gray-900);
       &::after {
         content: "";
         width: 4px;

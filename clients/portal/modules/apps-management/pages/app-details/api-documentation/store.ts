@@ -18,7 +18,19 @@ function isApiNode(node: any): boolean {
   return isObject(node) && ('fullPath' in node) && ('method' in node);
 }
 
-export function mapNsToNodeItem(ns: PolyAPI.Namespace | PolyAPI.Api): NodeItem<PolyAPI.Namespace | PolyAPI.Api> {
+function getNodeItem(ns: PolyAPI.Namespace): NodeItem<PolyAPI.Namespace | PolyAPI.Api>[] | undefined {
+  return ns.children?.map((namespaceItem) => {
+    if ('subCount' in namespaceItem) {
+      return mapNsToNodeItem(namespaceItem);
+    } else {
+      return mapApiToNodeItem(namespaceItem as PolyAPI.Api);
+    }
+  });
+}
+
+export function mapNsToNodeItem(
+  ns: PolyAPI.Namespace | PolyAPI.Api,
+): NodeItem<PolyAPI.Namespace | PolyAPI.Api> {
   const hasChild = ns.subCount > 0;
   const node = {
     id: ns.id,
@@ -32,13 +44,14 @@ export function mapNsToNodeItem(ns: PolyAPI.Namespace | PolyAPI.Api): NodeItem<P
   };
   if (hasChild) {
     Object.assign(node, {
-      children: Array.isArray(ns.child) ? ns.child.map(mapNsToNodeItem) : undefined,
-      childResolved: Array.isArray(ns.child),
+      children: Array.isArray(ns.children) ? getNodeItem(ns) : undefined,
+      childResolved: Array.isArray(ns.children),
     });
-  } else if (Array.isArray(ns.child)) {
+  } else if (Array.isArray(ns.children)) {
     Object.assign(node, {
-      // @ts-ignore
-      children: ns.child.length && isApiNode(ns.child[0]) ? ns.child?.map(mapApiToNodeItem) : undefined,
+      children: ns.children.length && isApiNode(ns.children[0]) ? ns.children?.map((namespaceItem) => {
+        return mapApiToNodeItem(namespaceItem as PolyAPI.Api);
+      }) : undefined,
       apisResolved: true,
     });
   }
@@ -161,7 +174,7 @@ class ApiDocStore {
   }
 
   @action
-  fetchApiNamespaces=async ()=> {
+  fetchApiNamespaces=async (): Promise<void> => {
     try {
       const { appPath } = await getAppPath(this.appID);
       const { list } = await getNamespaceList(appPath, { page: 1, pageSize: -1 });
@@ -172,17 +185,21 @@ class ApiDocStore {
   }
 
   @action
-  setNsList=(list: PolyAPI.Namespace[])=> {
+  setNsList=(list: PolyAPI.Namespace[]): void => {
     this.apiNsList = list;
   }
 
   @action
   fetchSubNamespaces=async (parent: NodeItem<PolyAPI.Namespace>): Promise<void> => {
     const ns = [parent.parentID, parent.source?.name].join('/');
+    const name = parent.source?.name || '';
+    const svc = [parent.parentID, name, name].join('/');
     try {
-      const { list = [] } = await getNamespaceList(ns, { page: 1, pageSize: -1 });
+      const { list: namespaceList = [] } = await getNamespaceList(ns, { page: 1, pageSize: -1 });
+      const { list: serviceApiList = [] } = await getServiceApiList(svc, { page: 1, pageSize: -1 });
+      const list = [...namespaceList, ...serviceApiList];
       const target = treeFind(this.apiNsList as any, parent.id);
-      Object.assign(target, { child: list });
+      Object.assign(target, { children: list });
       this.apiNsList = [...this.apiNsList];
     } catch (err) {
       toast.error(err);
@@ -196,7 +213,7 @@ class ApiDocStore {
     try {
       const { list } = await getServiceApiList(svc, { page: 1, pageSize: -1 });
       const target = treeFind(this.apiNsList as any, parent.id);
-      Object.assign(target, { child: list });
+      Object.assign(target, { children: list });
       this.apiNsList = [...this.apiNsList];
     } catch (err) {
       toast.error(err);
@@ -204,12 +221,12 @@ class ApiDocStore {
   }
 
   @action
-  setApiPath=(path: string)=> {
+  setApiPath=(path: string): void => {
     this.ApiPath = path;
   }
 
   @action
-  reset=()=> {
+  reset=(): void=> {
     this.tableID = '';
     this.apiNsList = [];
   }

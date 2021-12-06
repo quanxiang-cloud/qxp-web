@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment, useMemo } from 'react';
 import cs from 'classnames';
 
-import Icon from '@c/icon';
+import Icon, { iconColor } from '@c/icon';
 
 import { treeFind, findFirstLeafNode } from './utils';
 import './index.scss';
@@ -13,6 +13,7 @@ export type NodeItem<T> = {
   type: 'group' | 'leaf' | string;
   id: string;
   iconName?: string;
+  iconColor?: iconColor;
   children?: NodeItem<T>[];
   source?: T;
   parentID?: string;
@@ -40,6 +41,7 @@ interface NavItemProps<T> {
   onToggle?: (node: NodeItem<T>, expand: boolean)=> void;
   actions?: (node: NodeItem<T>) => React.ReactNode;
   activeNode?: NodeItem<T>;
+  groupBanSelect: boolean
 }
 
 function NavItem<T>({
@@ -49,9 +51,10 @@ function NavItem<T>({
   onSelect,
   onToggle,
   actions,
+  groupBanSelect,
 }: NavItemProps<T>): JSX.Element {
   const [expand, setExpand] = useState(!!node.root);
-  const iconName = useMemo(()=> {
+  const [iconName, iconColor] = useMemo(()=> {
     const hasChild = !!(node.children && node.children.length) || !!node.hasChild;
     if (node.type === 'group') {
       if (hasChild) {
@@ -59,7 +62,7 @@ function NavItem<T>({
       }
       return 'folder_empty';
     }
-    return node.iconName || '';
+    return [node.iconName || '', node.iconColor || ''];
   }, [node, expand]);
 
   return (
@@ -67,8 +70,8 @@ function NavItem<T>({
       <div
         style={{ paddingLeft: (16 * (level + 1)) + 'px' }}
         key={node.id}
-        className={cs('two-level-menu-node select-none px-16 cursor-pointer hover:bg-white hover:text-gray-900 flex items-center h-36', {
-          'two-level-menu-node-active bg-white text-gray-900 relative': activeNode?.id === node.id,
+        className={cs('two-level-menu-node px-16  hover:bg-white flex items-center h-36', {
+          'two-level-menu-node-active bg-white': (!groupBanSelect || node.type !== 'group') && activeNode?.id === node.id,
         })}
         onClick={() => {
           setExpand(!expand);
@@ -76,7 +79,7 @@ function NavItem<T>({
           onSelect?.(node);
         }}
       >
-        {iconName && <Icon className='mr-4' size={16} name={iconName} />}
+        {iconName && <Icon className='mr-4' color={iconColor as iconColor} size={16} name={iconName} />}
         <span style={{ lineHeight: '36px' }} className='flex-1 truncate'>
           {node.title}
         </span>
@@ -97,6 +100,7 @@ function NavItem<T>({
               onToggle={onToggle}
               actions={actions}
               activeNode={activeNode}
+              groupBanSelect={groupBanSelect}
             />
           ))}
         </div>
@@ -112,7 +116,7 @@ function TwoLevelMenu<T>({
   defaultSelected,
   className,
   style,
-  groupBanSelect,
+  groupBanSelect = false,
 }: Props<T>): JSX.Element {
   const [activeNode, setActiveNode] = useState<NodeItem<T> | undefined>(undefined);
 
@@ -145,6 +149,7 @@ function TwoLevelMenu<T>({
           onSelect={handleSelect}
           actions={actions}
           activeNode={activeNode}
+          groupBanSelect={groupBanSelect}
         />
       ))}
     </div>

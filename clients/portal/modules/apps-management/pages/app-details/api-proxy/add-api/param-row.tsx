@@ -1,12 +1,13 @@
 import React, { useContext, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import cs from 'classnames';
-import { get } from 'lodash';
+import { get, set } from 'lodash';
 import { useUpdateEffect } from 'react-use';
 
 import Select from '@c/select';
 import Checkbox from '@c/checkbox';
 import Icon from '@c/icon';
+import ToolTip from '@c/tooltip';
 
 import { ApiParam, ParamGroup } from './params-config';
 import paramsContext from './context';
@@ -92,13 +93,29 @@ function ParamRow({
     return (parentPath || '').split('.').filter((v)=> Number.isInteger(parseInt(v))).length;
   }
 
+  // When the parent collapses, the child needs to collapse with it
+  function isRowExpand(parentPath: string): boolean {
+    const parentPathList = parentPath.split('.');
+    const isExpand: Array<boolean> = [true];
+    for (let index = 2; index < parentPathList.length; index += 2) {
+      if (!get(store.parameters, [...parentPath?.split('.').slice(0, index), 'expand'].join('.'), true)) {
+        isExpand[0] = false;
+        break;
+      }
+    }
+    return isExpand[0];
+  }
+
   function renderExpandBtn(): JSX.Element | null {
     if ((type === 'object' && !!_object_nodes_?.length) || (type === 'array' && !!_array_nodes_?.length)) {
       return (
         <Icon
           name={expand ? 'expand_more' : 'expand_less'}
           className='-mr-3 ml-8 cursor-pointer'
-          onClick={()=> setExpand((expand)=> !expand)}
+          onClick={()=> {
+            setExpand((expand)=> !expand);
+            set(store.parameters, [parentPath || group, idx, 'expand'].join('.'), expand);
+          }}
           clickable
         />
       );
@@ -107,8 +124,13 @@ function ParamRow({
   }
 
   return (
-    <tr key={id}>
-      <td className={cs('param-name flex items-center relative')} style={{
+    <tr
+      key={id}
+      className={cs({
+        'from-expand': parentPath ? !isRowExpand(parentPath) : false,
+      })}
+    >
+      <td className={cs('param-name flex items-center')} style={{
         paddingLeft: (getLevel() * 20) + 'px',
       }}>
         <input
@@ -139,7 +161,9 @@ function ParamRow({
                     handleChangeField(getFieldName('name'), ev.target.value);
                   }
                 }}
-                onKeyDown={()=> store.addParam(group, idx)}
+                onKeyDown={() => {
+                  parentPath ? '' : store.addParam(group, idx);
+                }}
                 readOnly={readonly}
               />
             );
@@ -156,28 +180,6 @@ function ParamRow({
           }}
           shouldUnregister
         />
-        <div className='param-actions absolute right-5 flex items-center'>
-          {group !== 'path' && (
-            <>
-              {['array', 'object'].includes(type) && (
-                <Icon
-                  name='playlist_add'
-                  onClick={()=> store.addSubParam(group, parentPath || '', idx, type === 'array')}
-                  className='cursor-pointer mr-8'
-                  color='gray'
-                  clickable
-                />
-              )}
-              <Icon
-                name='delete'
-                onClick={()=> store.removeParam(group, parentPath || '', idx)}
-                className='cursor-pointer'
-                color='gray'
-                clickable
-              />
-            </>
-          )}
-        </div>
       </td>
       <td className='param-type'>
         <Controller
@@ -289,12 +291,49 @@ function ParamRow({
               {...field}
               value={description}
               onChange={(ev)=> handleChangeField(getFieldName('description'), ev.target.value)}
+              onKeyDown={() => {
+                parentPath ? '' : store.addParam(group, idx);
+              }}
             />
           )}
           name={getFieldName('description')}
           control={control}
           shouldUnregister
         />
+      </td>
+      <td className='param-operation'>
+        <div className='param-actions flex items-center'>
+          {group !== 'path' && (idx !== store.parameters[group].length - 1 || parentPath) && (
+            <div className='ml-12 mt-5'>
+              {['array', 'object'].includes(type) && (
+                <ToolTip
+                  label='添加子集'
+                  position='top'
+                  labelClassName="whitespace-nowrap text-12"
+                >
+                  <Icon
+                    name='playlist_add'
+                    size={16}
+                    onClick={()=> {
+                      store.addSubParam(group, parentPath || '', idx, type === 'array');
+                      setExpand(false);
+                      set(store.parameters, [parentPath || group, idx, 'expand'].join('.'), true);
+                    }}
+                    className='cursor-pointer mr-8 hover:text-blue-600'
+                    clickable
+                  />
+                </ToolTip>
+              )}
+              <Icon
+                name='delete'
+                size={16}
+                onClick={()=> store.removeParam(group, parentPath || '', idx)}
+                className='cursor-pointer hover:text-red-600'
+                clickable
+              />
+            </div>
+          )}
+        </div>
       </td>
     </tr>
   );

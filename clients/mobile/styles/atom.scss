@@ -1,0 +1,120 @@
+.padding-8 {
+  padding: .08rem;
+}
+
+.padding-12 {
+  padding: .12rem;
+}
+
+.padding-16 {
+  padding: .16rem;
+}
+
+.margin-8 {
+  margin: .08rem;
+}
+
+.margin-12 {
+  margin: .12rem;
+}
+
+.margin-16 {
+  margin: .16rem;
+}
+
+.mt-16 {
+  margin-top: .16rem;
+}
+
+.mb-16 {
+  margin-bottom: .16rem;
+}
+
+.mt-12 {
+  margin-top: .12rem;
+}
+
+.mb-12 {
+  margin-bottom: .12rem;
+}
+
+.mt-8 {
+  margin-top: .08rem;
+}
+
+.mb-8 {
+  margin-bottom: .08rem;
+}
+
+.ml-8 {
+  margin-left: .08rem;
+}
+
+.mr-8 {
+  margin-right: .08rem;
+}
+.mt-6 {
+  margin-top: .06rem;
+}
+
+.mb-6 {
+  margin-bottom: .06rem;
+}
+
+.ml-6 {
+  margin-left: .06rem;
+}
+
+.mr-6 {
+  margin-right: .06rem;
+}
+
+.mt-4 {
+  margin-top: .04rem;
+}
+
+.mb-4 {
+  margin-bottom: .04rem;
+}
+
+.ml-4 {
+  margin-left: .04rem;
+}
+
+.mr-4 {
+  margin-right: .04rem;
+}
+
+.radius-8 {
+  border-radius: .08rem;
+}
+
+@mixin pointer {
+  cursor: pointer;
+  &:active {
+    background-color: var(--activeColor) !important;
+  }
+}
+
+.pointer {
+  @include pointer
+}
+
+.pointer-8 {
+  border-radius: .08rem;
+  @include pointer
+}
+
+.pointer-shadow {
+  cursor: pointer;
+  &:active {
+    box-shadow: 0 .08rem .24rem rgba(148, 163, 184, 0.45) !important;
+  }
+}
+
+.pointer-opacity {
+  cursor: pointer;
+  &:active {
+    opacity: .5;
+  }
+}

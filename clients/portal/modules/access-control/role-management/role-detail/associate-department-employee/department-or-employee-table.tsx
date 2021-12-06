@@ -6,8 +6,7 @@ import Pagination from '@c/pagination';
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
 import Table from '@c/table';
-import Icon from '@c/icon';
-import MoreMenu from '@c/more-menu';
+import Avatar from '@c/avatar';
 import toast from '@lib/toast';
 import CheckedUserModal from '@portal/modules/access-control/departments-employees/modal/direct-leader-modal';
 
@@ -130,13 +129,46 @@ export default function DepartmentTable(
     return <ErrorTips desc="something wrong!" />;
   }
 
-  const columns: any[] = [];
+  const columns: any[] = [
+    {
+      Header: '操作',
+      id: 'action',
+      fixed: true,
+      width: 40,
+      accessor: (record: EmployeeOrDepartmentOfRole) => {
+        const isHavePermission = window.USER.id === record.ownerID;
+        if (isSuper) {
+          return (
+            <>
+              {type === ROLE_BIND_TYPE.department && members.length && isHavePermission ? (
+                <span className='cursor-pointer text-red-600' onClick={() => setShowUserModal(true)}>转让</span>
+              ) : <div>-</div>}
+            </>
+          );
+        }
+        return (
+          <>
+            {window.ADMIN_USER_FUNC_TAGS.includes('accessControl/role/manage') ? (
+              <span className='cursor-pointer text-red-600' onClick={onCancel(record)}>移除</span>
+            ) : <div>-</div>}
+          </>
+        );
+      },
+    },
+  ];
   if (type === ROLE_BIND_TYPE.department) {
-    columns.push(...[
+    columns.unshift(...[
       {
         Header: '名称',
         id: 'ownerName',
-        accessor: 'ownerName',
+        fixed: true,
+        width: 120,
+        accessor: (record: EmployeeOrDepartmentOfRole) => (
+          <div className='flex items-center'>
+            <Avatar username={record.ownerName} size={24}/>
+            <span className='ml-4'>{record.ownerName}</span>
+          </div>
+        ),
       },
       {
         Header: '手机号',
@@ -156,93 +188,38 @@ export default function DepartmentTable(
     ]);
   }
   if (type === ROLE_BIND_TYPE.employee) {
-    columns.push({
+    columns.unshift({
       Header: '名称',
       id: 'departmentName',
       accessor: 'departmentName',
     });
   }
 
-  if (type === ROLE_BIND_TYPE.department && isSuper && members.length) {
-    columns.push({
-      Header: '操作',
-      id: 'action',
-      accessor: (record: EmployeeOrDepartmentOfRole) => {
-        const isHavePermission = window.USER.id === record.ownerID;
-        return (isHavePermission ? (
-          <MoreMenu
-            menus={[
-              {
-                key: 'edit',
-                label: (
-                  <div className="flex items-center">
-                    <Icon name="create" size={16} className="mr-8" />
-                    <span className="font-normal">转让管理员</span>
-                  </div>
-                ),
-              },
-            ]}
-            placement="bottom-end"
-            className="opacity-1"
-            onMenuClick={(key): void => {
-              if (key === 'edit') {
-                setShowUserModal(true);
-              }
-            }}
-          />
-        ) : <span>-</span>);
-      },
-    });
-  }
-
-  if (!isSuper && window.ADMIN_USER_FUNC_TAGS.includes('accessControl/role/manage')) {
-    columns.push({
-      Header: '',
-      id: 'ownerID',
-      accessor: (record: EmployeeOrDepartmentOfRole) => {
-        return (
-          <div onClick={(e) => e.stopPropagation()}>
-            <MoreMenu
-              iconName="more_horiz"
-              className="rotate-90"
-              onMenuClick={onCancel(record)}
-              menus={[{
-                label: <span><Icon name="link_off" className="ml-6" />取消关联</span>,
-                key: 'cancelAssociate',
-              }]}
-            />
-          </div>
-        );
-      },
-    });
-  }
-
   return (
     <>
-      <Table
-        showCheckbox
-        className="text-12 h-full"
-        data={members || []}
-        onSelectChange={handleSelectChange}
-        columns={columns}
-        emptyTips={(
-          <EmptyData text={type === ROLE_BIND_TYPE.department ? '无成员数据' : '无部门数据'} className="py-10" />
-        )}
-        rowKey="id"
-        initialSelectedRowKeys={selectedKeys || []}
-        loading={isLoading}
-      />
+      <div className="flex overflow-hidden" style={{ maxHeight: 'calc(100% - 85px)' }}>
+        <Table
+          showCheckbox={!isSuper}
+          className='rounded-bl-none rounded-br-none text-12 h-full'
+          data={members || []}
+          onSelectChange={handleSelectChange}
+          columns={columns}
+          emptyTips={(
+            <EmptyData text={type === ROLE_BIND_TYPE.department ? '无成员数据' : '无部门数据'} className="py-10" />
+          )}
+          rowKey="id"
+          initialSelectedRowKeys={selectedKeys || []}
+          loading={isLoading}
+        />
+      </div>
       {!isSuper && (
-        <div className="h-52 bg-white">
-          <Pagination
-            {...pagination}
-            renderTotalTip={renderTotalTip}
-            className="rounded-bl-12 rounded-br-12 border-t border-gray-200"
-            onChange={(pageNumber: number, pageSize: number): void => {
-              setPagination({ current: pageNumber, pageSize, total: pagination.total });
-            }}
-          />
-        </div>
+        <Pagination
+          {...pagination}
+          renderTotalTip={renderTotalTip}
+          onChange={(pageNumber: number, pageSize: number): void => {
+            setPagination({ current: pageNumber, pageSize, total: pagination.total });
+          }}
+        />
       )}
       {showUserModal && (
         <CheckedUserModal
@@ -255,7 +232,8 @@ export default function DepartmentTable(
             id: '',
             userName: '',
           }}
-        />)}
+        />
+      )}
     </>
   );
 }

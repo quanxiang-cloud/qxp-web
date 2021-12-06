@@ -70,7 +70,7 @@ function TableConfig(): JSX.Element {
         {configurableColumns.map((col) => columnsItemRenderer(col))}
       </div>
     )}>
-      <Icon clickable changeable size={25} name='settings' />
+      <Icon clickable changeable size={24} name='settings' />
     </Popover>
   );
 }

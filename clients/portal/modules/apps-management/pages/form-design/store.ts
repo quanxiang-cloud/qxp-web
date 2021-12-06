@@ -128,9 +128,18 @@ class FormDesignStore {
       return { pageID: this.pageID, appID: this.appID };
     }, this.fetchFormScheme);
 
+    let fieldListIdCache: string[] = this.fieldList.map(({ id }) => id);
     this.destroySetAllFilter = reaction(() => this.fieldList, () => {
       if (!this.formStore) {
         return;
+      }
+
+      const newFieldListIds = this.fieldList
+        .map(({ id }) => id)
+        .filter((id) => !SYSTEM_FIELDS.includes(id) && !fieldListIdCache.includes(id));
+
+      if (newFieldListIds.length) {
+        this.pageTableColumns = [...this.pageTableColumns, ...columnStringToObject(newFieldListIds)];
       }
 
       this.pageTableColumns = this.pageTableColumns.filter(({ id }) => {
@@ -140,6 +149,8 @@ class FormDesignStore {
       this.filters = this.filters.filter((id) => {
         return this.judgeInSchema(id);
       });
+
+      fieldListIdCache = this.fieldList.map(({ id }) => id);
     });
 
     this.destroySetSchema = reaction(() => this.allSchema, this.appPageStore.setSchema);
@@ -251,9 +262,7 @@ class FormDesignStore {
       const { schema = {}, config = {} } = res || {};
       this.hasSchema = !!res;
       this.formStore = new FormStore({ schema, appID, pageID });
-      this.pageTableColumns = columnStringToObject(config.pageTableColumns || SYSTEM_FIELDS.filter((key) => {
-        return key !== '_id';
-      }));
+      this.pageTableColumns = columnStringToObject(config.pageTableColumns || []);
       this.filters = config.filters || [];
       if (config.pageTableShowRule) {
         this.pageTableShowRule = config.pageTableShowRule;

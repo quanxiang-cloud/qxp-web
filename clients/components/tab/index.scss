@@ -20,7 +20,6 @@
       text-align: center;
       white-space: nowrap;
       padding: 12px;
-      color: var(--gray-600);
       &:hover {
         color: var(--blue-600);
       }
@@ -98,10 +97,10 @@
       }
     }
   }
+}
 
-  .tab-content {
-    flex-grow: 1;
-    padding: 16px 20px;
-    overflow: auto;
-  }
+.tab-content {
+  flex-grow: 1;
+  padding: 16px 0px;
+  overflow: auto;
 }

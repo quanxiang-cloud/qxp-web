@@ -7,6 +7,8 @@ import type { NameSpace } from '@orchestrationAPI/effects/api/api-namespace';
 import { getNameSpaceList } from '@orchestrationAPI/effects/api/api-namespace';
 
 export default class APINamespaceTreeStore extends TreeStore<NameSpace> {
+  treeNodeHeight = 36;
+
   constructor(root: NameSpace, child: NameSpace[]) {
     super({
       rootNode: apiNamespaceToTreeNode(root, child, 1, false, true, root.id, 0, true),
