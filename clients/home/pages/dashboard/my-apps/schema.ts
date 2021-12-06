@@ -27,7 +27,7 @@ const schema: Schema = {
         fallback: [],
         convertor: {
           type: 'state_convert_expression',
-          expression: 'state.data.data',
+          expression: 'state.data',
         },
       },
     },
@@ -42,16 +42,13 @@ const schema: Schema = {
           fallback: [],
           convertor: {
             type: 'state_convert_expression',
-            expression: 'state.data.data',
+            expression: 'state.data',
           },
         },
         toProps: {
-          type: NodePropType.FunctionalProperty,
-          func: {
-            type: 'raw',
-            args: 'v',
-            body: 'return { appInfo: v }',
-          },
+          type: 'to_props_function_spec',
+          args: 'v',
+          body: 'return { appInfo: v }',
         },
         node: {
           id: 'app-info',

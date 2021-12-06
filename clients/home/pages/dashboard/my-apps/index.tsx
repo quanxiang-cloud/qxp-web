@@ -1,7 +1,7 @@
 import React from 'react';
 import { Repository, SchemaRender } from '@ofa/render-engine';
-import { SwaggerRPCSpecAdapter } from '@ofa/api-spec-adapter';
 
+import SwaggerRPCSpecAdapter from '@lib/adapter-swagger-rpc';
 import schema from './schema';
 import apiSpec from './api';
 import MyAppsComponent from './demo-components/my-apps';
