@@ -2,7 +2,8 @@ import React, { useState, useRef, ChangeEvent } from 'react';
 
 import Card from '@c/card';
 import Checkbox from '@c/checkbox';
-import { countBy, searchByKey, deepClone } from '@lib/utils';
+import { searchByKey, deepClone } from '@lib/utils';
+
 import { IRoleFunc, IRoleFuncItem } from '../api';
 
 export interface IAlterRoleFunc {
@@ -14,8 +15,6 @@ export interface IAlterRoleFunc {
 
 export default function AlterRoleFunc({ funcs: functions }: IAlterRoleFunc): JSX.Element {
   const [funcs, setFuncs] = useState<IRoleFunc>(deepClone(functions));
-  const total = countBy<IRoleFunc, boolean>('has', 'child', (v) => v, funcs);
-  const allTotal = countBy<IRoleFunc, boolean>('has', 'child', () => true, funcs);
   // const [addSets, setAddSets] = useState<string[]>([]);
   // const [deleteSets, setDeleteSets] = useState<string[]>([]);
   const originTags = useRef<string[]>([]);
@@ -44,6 +43,20 @@ export default function AlterRoleFunc({ funcs: functions }: IAlterRoleFunc): JSX
   // setAddSets(adds);
   // setDeleteSets(deletes);
   // }, [funcs]);
+
+  function getCount(funcs:IRoleFunc): [number, number] {
+    let ckeckcount = 0;
+    let total = 0;
+    Object.values(funcs).forEach((func) => {
+      Object.values(func.child).forEach((funcChild) => {
+        total += 1;
+        if (funcChild.has) ckeckcount += 1;
+      });
+    });
+    return [ckeckcount, total];
+  }
+
+  const [checkcount, total] = getCount(funcs);
 
   const updateFuncs = (funcTag: string) => (e: ChangeEvent<HTMLInputElement>) => {
     setFuncs((s: IRoleFunc) => {
@@ -156,8 +169,7 @@ export default function AlterRoleFunc({ funcs: functions }: IAlterRoleFunc): JSX
   return (
     <div className="overflow-scroll h-full">
       <header className="mx-4 flex flex-row items-center justify-between py-3">
-        {/* <Checkbox disabled checked={!!total} label={`已开启 ${total} 项`} /> */}
-        <div className='text-12 text-gray-400'>已选 {total} 项，共 {allTotal} 项</div>
+        <div className='text-12 text-gray-400'>已选 {checkcount} 项，共 {total} 项</div>
         {/* {!isSuper && (
           <div className="flex flex-row items-center justify-between">
             {!!lastSaveTime && (
