@@ -1,6 +1,7 @@
 import React from 'react';
 import cs from 'classnames';
 
+// @ts-ignore
 import svgHash from './svg-hash';
 
 export type iconColor = 'red' | 'yellow' | 'green' | 'gray' | 'blue' | 'white' |'rose' | 'pink' | 'purple' | 'orange' | 'primary';
