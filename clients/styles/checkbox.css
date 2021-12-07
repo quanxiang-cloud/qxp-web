@@ -1,0 +1,26 @@
+input[type=checkbox] {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  text-align: center;
+  vertical-align: middle;
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+  background: #FFFFFF;
+  border: 1px solid var(--gray-400);
+  &:disabled {
+    border: 1px solid var(--gray-300);
+    background-color: var(--gray-100);
+  }
+  &:checked::after {
+    content: url('/dist/images/done.png');
+  }
+  &:checked {
+    border: none;
+    background-color: var(--blue-600);
+    &:disabled {
+      background-color: var(--gray-300);
+    }
+  }
+}

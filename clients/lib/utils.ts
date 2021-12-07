@@ -50,30 +50,6 @@ export const either = <S>(pred1: (...args: S[]) => boolean, pred2: (...args: S[]
 ) => pred1(...args) || pred2(...args);
 export const isVoid = either<null | undefined>(isUndefined, isNull);
 
-/**
- * @param {string} attr 需要被计数的属性
- * @param {string} exclude 计数时排除属性条件
- * @param {function} fn 计数的条件函数
- * @param {array | object} data 需要被计数的数据
- * @return {number} counter
- */
-export const countBy = <T, S>(
-  attr: string,
-  exclude: string,
-  fn: (arg: S) => boolean, data: T & Record<string, any>): number => {
-  let counter = 0;
-  Object.entries(data || {}).forEach(([key, value]) => {
-    if (key === attr && fn(value as S)) {
-      if ((exclude && isVoid(data[exclude])) || !exclude) {
-        counter += 1;
-      }
-    } else if (typeof value === 'object' || Array.isArray(data)) {
-      counter += countBy(attr, exclude, fn, value);
-    }
-  });
-  return counter;
-};
-
 export const searchByKey = <T, S, K>(key: string, value: T, obj: S): K | void => {
   for (const k in obj) {
     if (k === key && ((obj[k] as unknown) as T) === value) {

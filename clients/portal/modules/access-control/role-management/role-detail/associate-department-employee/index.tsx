@@ -115,7 +115,7 @@ export default function AssociateDepartmentEmployee({ roleID, isSuper }: Props):
                 value: '2',
               },
             ]}
-            onChange={(value) => setShowBindType(value as number)}
+            onChange={(value) => setShowBindType(Number(value))}
           />
         </div>
       )}
