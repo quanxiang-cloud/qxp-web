@@ -24,7 +24,7 @@ export default function RequestNode(props: NodeProps<POLY_API.SubjectPolyNode>):
   if (nodeData.type !== 'request') {
     return null;
   }
-  const { apiName } = nodeData.detail;
+  const apiName = nodeData.detail.rawPath?.split('/')?.pop()?.split('.').shift();
 
   function showConfig(): void {
     setIsConfigShow(true);
