@@ -372,6 +372,16 @@ input {
   }
 }
 
+.status-dot {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 100%;
+  border-radius: 50%; 
+  background-color: var(--status-color); /* 实心圆 ，如果没有这个就是一个小圆圈 */
+  z-index: 2;
+}
+
 .pt-20 {
   padding-top: 20px;
 }

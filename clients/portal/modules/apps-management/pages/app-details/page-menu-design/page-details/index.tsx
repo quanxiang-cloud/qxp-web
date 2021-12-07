@@ -215,6 +215,8 @@ function PageDetails({ pageID }: Props): JSX.Element {
                   content={(
                     <div className="mb-24 h-80 overflow-auto">
                       {list.length ? list.map(({ name, id, status }) => {
+                        const statusColor = status === 'ENABLE' ? 'green' : 'yellow';
+
                         return (
                           <div
                             key={name}
@@ -230,11 +232,18 @@ function PageDetails({ pageID }: Props): JSX.Element {
                               history.push(`/apps/details/${appID}/app_permission?id=${id}`);
                             }}
                           >
-                            {status && (<Icon
-                              size={8}
-                              className="ml-40"
-                              name={status === 'ENABLE' ? 'status-success' : 'status-default'}
-                            />)}
+                            {status && (
+                              <div
+                                style={{
+                                  '--status-color': `var(--${statusColor}-600)`,
+                                  '--status-shadow-color': `var(--${statusColor}-400)`,
+                                  boxShadow: `0 0 12px var(--${statusColor}-400)`,
+                                } as React.CSSProperties}
+                                className="relative w-8 h-8 rounded-full ml-40"
+                              >
+                                <div className="status-dot"></div>
+                              </div>
+                            )}
                             <div className="truncate flex-1">
                               <span className={status && 'ml-10'}>{name}</span>
                               <span className="ml-4 text-gray-400">
