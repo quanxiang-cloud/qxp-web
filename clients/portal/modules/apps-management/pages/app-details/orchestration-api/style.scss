@@ -25,9 +25,16 @@
 }
 
 .polynamespacedetail-header-searchinput {
+  @apply mx-8;
   input.search-input {
     @apply rounded-8;
+    background-color: #f9fafc;
     transition: border .3s linear;
+    &::placeholder {
+      @apply text-gray-400;
+      font-size: 12px;
+      line-height: 20px;
+    }
   }
 }
 

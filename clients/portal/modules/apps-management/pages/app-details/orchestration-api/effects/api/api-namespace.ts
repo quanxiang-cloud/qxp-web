@@ -10,7 +10,7 @@ import {
 
 import httpClient from '@lib/http-client';
 
-import { NAMESPACES, ROOTPATH } from './names';
+import { NAMESPACES, ROOTPATH, NAMESPACES_SEARCH } from './names';
 
 export interface NameSpace {
   id: string;
@@ -111,9 +111,25 @@ export function useQueryNameSpaceList(
     options,
   );
 }
-
 export function getNameSpaceList(path: string): Promise<CreateResponse> {
   return httpClient(`/api/v1/polyapi/namespace/list/${path}`, { pageSize: -1, active: -1 });
+}
+
+type SearchListInput = Input<{ title: string }>;
+type SearchListResponse = CreateResponse;
+export function useSearchNameSpaceList(
+  input: SearchListInput, options?: UseQueryOptions<SearchListResponse, Error>,
+): UseQueryResult<SearchListResponse, Error> {
+  return useQuery<SearchListResponse, Error>(
+    [NAMESPACES, NAMESPACES_SEARCH, input.path, input.body?.title],
+    () => searchNamespaceList(input.path, input.body?.title),
+    options,
+  );
+}
+export function searchNamespaceList(path: string, title?: string): Promise<CreateResponse> {
+  return httpClient(`/api/v1/polyapi/namespace/search/${path}`, {
+    active: -1, page: 1, pageSize: -1, withSub: true, title,
+  });
 }
 
 type QueryRootPathInput = string;

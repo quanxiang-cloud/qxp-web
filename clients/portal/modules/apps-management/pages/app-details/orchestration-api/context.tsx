@@ -22,19 +22,15 @@ export const useOrchestrationAPIStore = (): OrchestrationAPIStore | null => useC
   OrchestrationAPIStoreContext,
 );
 
-type APINamespaceStoreProviderProps = PropsWithChildren<{ root?: NameSpace; child: NameSpace[] }>;
-const ApiNamespaceStoreContext = createContext<APINamespaceTreeStore | null | undefined>(null);
-export function ApiNamespaceStoreProvider(
-  { children, root, child }: APINamespaceStoreProviderProps,
-): JSX.Element {
-  const apiNamespaceStore = useMemo(() => root && new APINamespaceTreeStore(root, child), []);
+function useStore(
+  { root, child }: APINamespaceStoreProviderProps, update?: boolean,
+): APINamespaceTreeStore | undefined {
+  const apiNamespaceStore = useMemo(
+    () => root && new APINamespaceTreeStore(root, child),
+    update ? [root, child] : [],
+  );
 
-  const orchestrationAPIStore = useOrchestrationAPIStore();
   const [nameSpaceID = '', setNameSpaceID] = useLocalStorage('portal.namespace.current.id', '');
-
-  useEffect(() => {
-    orchestrationAPIStore?.setNameSpaceStore(apiNamespaceStore);
-  }, [apiNamespaceStore, orchestrationAPIStore]);
 
   useEffect(() => {
     const children = getNamespaceNodeSiblingNodes(apiNamespaceStore);
@@ -50,6 +46,16 @@ export function ApiNamespaceStoreProvider(
     nodeID !== nameSpaceID && setNameSpaceID(nodeID);
   }, [nameSpaceID, apiNamespaceStore?.rootNode.children]);
 
+  return apiNamespaceStore;
+}
+
+type APINamespaceStoreProviderProps = PropsWithChildren<{ root?: NameSpace; child: NameSpace[] }>;
+const ApiNamespaceStoreContext = createContext<APINamespaceTreeStore | null | undefined>(null);
+export function ApiNamespaceStoreProvider(
+  { children, root, child }: APINamespaceStoreProviderProps,
+): JSX.Element {
+  const apiNamespaceStore = useStore({ root, child });
+
   return (
     <ApiNamespaceStoreContext.Provider value={apiNamespaceStore}>
       {children}
@@ -58,4 +64,20 @@ export function ApiNamespaceStoreProvider(
 }
 export const useApiNamespaceStore = (): APINamespaceTreeStore | null | undefined => useContext(
   ApiNamespaceStoreContext,
+);
+
+const ApiNamespaceSearchStoreContext = createContext<APINamespaceTreeStore | null | undefined>(null);
+export function ApiNamespaceSearchStoreProvider(
+  { children, root, child }: APINamespaceStoreProviderProps,
+): JSX.Element {
+  const apiNamespaceSearchStore = useStore({ root, child }, true);
+
+  return (
+    <ApiNamespaceSearchStoreContext.Provider value={apiNamespaceSearchStore}>
+      {children}
+    </ApiNamespaceSearchStoreContext.Provider>
+  );
+}
+export const useApiNamespaceSearchStore = (): APINamespaceTreeStore | null | undefined => useContext(
+  ApiNamespaceSearchStoreContext,
 );

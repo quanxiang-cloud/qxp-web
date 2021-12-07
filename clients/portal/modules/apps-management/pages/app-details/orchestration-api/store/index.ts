@@ -14,6 +14,9 @@ export class OrchestrationAPIStore {
   isApiNameSpaceDetailsLoading = false;
 
   @observable
+  namespaceSearchKey?: string;
+
+  @observable
   public namespaceStore?: APINamespaceTreeStore;
 
   constructor(appID: string) {
