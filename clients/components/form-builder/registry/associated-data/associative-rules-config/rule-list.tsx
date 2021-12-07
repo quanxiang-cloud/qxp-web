@@ -15,7 +15,7 @@ function LinkText({ text }: { text: string | undefined }): JSX.Element {
 
 function AssociativeRuleList({ associativeRules }: Props): JSX.Element {
   return (
-    <>
+    <div className="my-8 w-full">
       <div className="flex">
         <span className="text-center flex-1">关联表单字段</span>
         <span className="text-center mx-8 match-icon">{'=>'}</span>
@@ -37,7 +37,7 @@ function AssociativeRuleList({ associativeRules }: Props): JSX.Element {
           );
         })}
       </div>
-    </>
+    </div>
   );
 }
 
