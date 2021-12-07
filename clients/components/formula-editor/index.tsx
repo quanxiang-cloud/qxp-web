@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useImperativeHandle, useMemo } from 'react';
+import { useUpdateEffect } from 'react-use';
 import {
   Editor,
   EditorState,
@@ -74,14 +75,14 @@ function FormulaEditor({
 }: Props, ref: React.Ref<any>): JSX.Element {
   const [contentLength, setLength] = useState(0);
   const decorator = useMemo(() => new CompositeDecorator(defaultDecorators), []);
-
+  const _value = value || defaultValue;
   const [editorState, setEditorState] = useState(
-    defaultValue ? EditorState.createWithContent(
-      convertFromRaw(toContentState(defaultValue, customRules)), decorator,
+    _value ? EditorState.createWithContent(
+      convertFromRaw(toContentState(_value, customRules)), decorator,
     ) : EditorState.createEmpty(decorator),
   );
 
-  useEffect(() => {
+  useUpdateEffect(() => {
     if (typeof value !== 'string' || value === getFormulaValue()) {
       return;
     }

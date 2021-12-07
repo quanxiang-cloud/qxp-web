@@ -96,7 +96,7 @@ function ApiSelector({ apiDocDetail, setApiPath, initRawApiPath }: Props): JSX.E
           className="flex-1"
           method={apiDocDetail.doc.method}
           url={apiDocDetail.doc.url}
-          identifier={apiDocDetail.apiPath.split('/').pop()}
+          identifier={apiDocDetail.apiPath.split('/').pop().split('.').shift()}
         />
       )}
     </div>

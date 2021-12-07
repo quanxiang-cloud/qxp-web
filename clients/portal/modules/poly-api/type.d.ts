@@ -92,7 +92,6 @@ declare namespace POLY_API {
 
   export interface PolyRequestNodeDetail {
     rawPath: string;
-    apiName: string;
     inputs: PolyNodeInput[];
     outputs?: PolyNodeInput[];
   }
