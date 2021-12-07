@@ -70,7 +70,7 @@ function FuncDetailsDrawer(): JSX.Element {
     {
       Header: '构建时间',
       id: 'build',
-      accessor: () => '构建时间',
+      accessor: ({ updatedAt, createdAt }: VersionField) => `${(updatedAt - createdAt) / 1000} s`,
     },
     {
       Header: '创建人',
@@ -99,15 +99,16 @@ function FuncDetailsDrawer(): JSX.Element {
               <PopConfirm content='确认上线改版本？' onOk={() => store.servingVer(id)} >
                 <span className="operate">上线</span>
               </PopConfirm>)}
-            {state === 'False' ? (
+            { _visibility !== 'online' && (
               <PopConfirm content='确认删除改版本？' onOk={() => store.deleteVer(id)} >
                 <span className="cursor-pointer text-red-600">删除</span>
-              </PopConfirm>) : (
+              </PopConfirm>
+            )}
+            {state === 'True' && (
               <PopConfirm content='确定生成API文档？' onOk={() => store.registerAPI(id)} >
                 <span className="operate">生成API文档</span>
               </PopConfirm>
             )}
-
           </div>
         );
       },
@@ -138,7 +139,7 @@ function FuncDetailsDrawer(): JSX.Element {
         width: fullScreen ? '100%' : '66%',
       }))}>
         <div className='page-data-drawer-header'>
-          <span className='text-h5'>kkk</span>
+          <span className='text-h5'>{store.currentFunc?.alias}</span>
           <div className='flex items-center gap-x-12'>
             <span onClick={() => setFullScreen(!fullScreen)} className='icon-text-btn'>
               <Icon size={20} name={fullScreen ? 'unfull_screen' : 'full_screen'} />

@@ -191,6 +191,7 @@ class FaasStore {
         }, 5000);
       }).catch((err) => {
         toast.error(err);
+        this.initLoading = false;
         this.initErr = true;
         reject(err);
       });
@@ -203,9 +204,11 @@ class FaasStore {
       group: this.appDetails.appSign,
       appID: this.appDetails.id,
     }).then((res) => {
+      this.initLoading = false;
       this.hasGroup = true;
       this.groupID = res.id;
     }).catch((err) => {
+      this.initLoading = false;
       this.initErr = true;
       toast.error(err);
     });
@@ -216,6 +219,7 @@ class FaasStore {
     addToGroup(this.groupID, { memberID: this.User.id }).then(() => {
       this.developerInGroup = true;
     }).catch((err) => {
+      this.initLoading = false;
       this.initErr = true;
       toast.error(err);
     });
