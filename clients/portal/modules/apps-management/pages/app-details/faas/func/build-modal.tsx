@@ -39,7 +39,7 @@ function BuildModal({ onClose }: Props): JSX.Element {
                 message: '版本号不能输入emoji表情符号',
               },
               {
-                pattern: /^[a-z0-9])*$/,
+                pattern: /^[a-z0-9]*$/,
                 message: '必须以小写字母或数字组成',
               },
               {
