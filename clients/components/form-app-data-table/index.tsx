@@ -13,7 +13,7 @@ import { schemaToMap } from '@lib/schema-convert';
 import FormAppDataContent from './form-app-data-content';
 import Store from './store';
 import { TableHeaderBtn, Ref, TableUserConfig } from './type';
-import { setUserConfig, useGetUserConfig } from '@lib/user-config';
+import { setUserConfig, useGetUserConfig } from '@lib/configuration-center';
 
 type Props = {
   pageID: string;
