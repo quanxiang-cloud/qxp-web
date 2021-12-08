@@ -14,7 +14,7 @@ function useCustomOtherValue(
 ): [string, React.Dispatch<SetStateAction<string>>] {
   const [customValue, setCustomValue] = useState('');
   useEffect(() => {
-    const initCustomValue = initialValues.find((value) => !options.includes(value));
+    const initCustomValue = initialValues?.find((value) => !options.includes(value));
     if (initCustomValue) {
       setCustomValue(initCustomValue);
     }
