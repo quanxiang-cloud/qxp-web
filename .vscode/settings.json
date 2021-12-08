@@ -10,5 +10,4 @@
   "svg.preview.background": "white",
   "go.lintTool": "golint",
   "typescript.tsdk": "node_modules/typescript/lib",
-  "files.autoSave": "onFocusChange",
 }

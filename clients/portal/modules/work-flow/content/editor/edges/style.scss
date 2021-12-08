@@ -1,0 +1,9 @@
+.workflow-node--tooltip {
+  .qxp-tooltip-arrow {
+    &::before {
+      @apply bg-gray-700;
+      left: -2px;
+      top: calc(50% + 2px);
+    }
+  }
+}

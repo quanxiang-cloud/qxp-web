@@ -11,6 +11,8 @@ import { getCenter, getFixedSourcePosition } from '../utils';
 import EdgeText from './_components/edge-text';
 import useEdgeSwitch from './hooks/use-edge-switch';
 
+import './style.scss';
+
 export default function CustomEdge({
   id,
   sourceX,
@@ -121,16 +123,24 @@ export default function CustomEdge({
         )}
       </g>
       {!hasForm && showTooltip && (
-        <foreignObject x={centerX + 20} y={centerY - 18} width="220" height="36">
+        <foreignObject
+          className="overflow-visible workflow-node--tooltip"
+          x={centerX + 20}
+          y={centerY - 10}
+          width="220"
+          height="20"
+        >
           <ToolTip
-            label="请先为开始节点选择一张工作表"
+            label="请为开始节点选择一张工作表"
             style={{
               transform: 'none',
               backgroundColor: 'transparent',
               alignItems: 'center',
             }}
-            labelClassName="whitespace-nowrap text-12 bg-gray-700 rounded-8"
-          />
+            labelClassName="whitespace-nowrap text-12 bg-gray-700 rounded-8 text-white pl-5"
+          >
+            <span></span>
+          </ToolTip>
         </foreignObject>
       )}
     </>
