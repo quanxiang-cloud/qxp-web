@@ -18,6 +18,7 @@ export enum ModalType {
   REMOVE_NAMESPACE = 'removeNamespace',
   CREATE_POLY = 'createPoly',
   REMOVE_POLY = 'removePoly',
+  REMOVE_POLY_ALL = 'removePolyAll',
 }
 
 export const MODAL_SCHEMA_MAP: Record<ModalType, [ISchema, string]> = {
@@ -26,6 +27,7 @@ export const MODAL_SCHEMA_MAP: Record<ModalType, [ISchema, string]> = {
   [ModalType.CREATE_POLY]: [createPolySchema, '新建API'],
   [ModalType.REMOVE_NAMESPACE]: [{}, '提示'],
   [ModalType.REMOVE_POLY]: [{}, '提示'],
+  [ModalType.REMOVE_POLY_ALL]: [{}, '提示'],
 };
 
 type APINamespaceMenu = Array<{
