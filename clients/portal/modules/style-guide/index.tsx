@@ -9,7 +9,7 @@ import {
 } from '@formily/antd';
 
 import toast from '@lib/toast';
-import { setUserConfig, useGetUserConfig } from '@lib/user-config';
+import { setUserConfig, useGetUserConfig } from '@lib/configuration-center';
 
 import { COLORS, COLOR_DEPTH, SCHEMA, DEFAULT_CONFIG } from './constant';
 

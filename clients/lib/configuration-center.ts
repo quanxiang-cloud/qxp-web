@@ -35,9 +35,9 @@ export function useGetUserConfig<T>(
   return [userConfig, loading];
 }
 
-export function setUserConfig(config: any, key: string, version: string): void {
+export function setUserConfig(config: any, key: string, version: string): Promise<void> {
   userConfigMapTmp[key] = config;
-  setBatchUserData([{
+  return setBatchUserData([{
     key,
     version: version,
     value: JSON.stringify(config),

@@ -51,6 +51,12 @@
 
 {{define "_systemjs"}}
 <script src="https://ofapkg.pek3b.qingstor.com/system@6.10.3/system.6.10.3{{if not .debugMode}}.min{{end}}.js"></script>
+<script>
+  System.import('http://localhost:8081/dist/style-guide@0.0.1/style.css').then(function (module) {
+    const styleSheet = module.default;
+    document.adoptedStyleSheets = [...document.adoptedStyleSheets, styleSheet];
+  });
+</script>
 {{end}}
 
 {{define "_jsEntry"}}

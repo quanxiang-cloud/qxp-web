@@ -10,8 +10,6 @@ import zhCN from 'antd/lib/locale/zh_CN';
 // ensure web socket connection
 // todo how about on app-manager page?
 import '@lib/push';
-// @ts-ignore
-import '@ofa/style-guide';
 
 import App from './application';
 import stores from './stores';

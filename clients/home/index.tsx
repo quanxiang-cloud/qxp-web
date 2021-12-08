@@ -1,7 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-// @ts-ignore
-import '@ofa/style-guide';
 
 import App from './application';
 
