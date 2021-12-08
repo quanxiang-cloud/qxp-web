@@ -164,7 +164,6 @@ export default function Urge({ onSave, defaultValue }: Props): JSX.Element {
               position="top"
               label="超时后将不再进行催办"
               labelClassName="whitespace-nowrap"
-              inline
             >
               <Icon name="info" />
             </ToolTip>
