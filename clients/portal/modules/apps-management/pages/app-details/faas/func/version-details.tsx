@@ -98,7 +98,7 @@ function VersionDetails(): JSX.Element {
         <div className='flex text-12 p-8 items-center '>
           <div className='text-gray-600'>构建时间：</div>
           <div className='text-gray-900 flex-1 card-value'>
-            {`${(updatedAt - createdAt) / 1000} s`}
+            {`${updatedAt - createdAt}s`}
           </div>
         </div>
         <div className='flex text-12 p-8 items-center '>

@@ -140,18 +140,17 @@ function DataList(): JSX.Element {
       accessor: ({ id, state }: FuncField) => {
         return (
           <div className="flex gap-20">
-            {state === 'Unknown' && <span>-</span>}
             {state === 'True' && (
               <>
                 <span className="operate" onClick={() => temp(id)}>定义</span>
                 <span className="operate" onClick={() => onClickTool(id, 'build')}>构建</span>
               </>
             )}
-            {state === 'False' && (
+            {state !== 'Unknown' ? (
               <span className="cursor-pointer text-red-600" onClick={() => onClickTool(id, 'deletefunc')}>
                 删除
               </span>
-            )}
+            ) : <span>-</span> }
           </div>
         );
       },
