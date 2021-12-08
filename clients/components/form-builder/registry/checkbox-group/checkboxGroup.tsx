@@ -5,6 +5,7 @@ import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 
 import useEnumOptions from '@lib/hooks/use-enum-options';
 import FormDataValueRenderer from '@c/form-data-value-renderer';
+import { uniq } from 'lodash';
 
 const CUSTOM_OTHER_VALUE = 'CUSTOM_OTHER_VALUE';
 
@@ -42,10 +43,10 @@ function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
 
   function handleCheckBoxChange(value: Array<CheckboxValueType>): void {
     if (value.includes(CUSTOM_OTHER_VALUE)) {
-      fieldProps.mutators.change([
+      fieldProps.mutators.change(uniq([
         ...value.filter((label) => options.includes((label as string))),
         otherValue,
-      ]);
+      ]));
       return;
     }
     fieldProps.mutators.change(value as string[]);
@@ -54,10 +55,10 @@ function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   function handleOtherValueChange(e: React.ChangeEvent<HTMLInputElement>): void {
     setOtherValue(e.target.value);
     if (realValue.includes(CUSTOM_OTHER_VALUE)) {
-      fieldProps.mutators.change([
+      fieldProps.mutators.change(uniq([
         ...fieldProps.value.filter((value: string) => options.includes(value)),
         e.target.value,
-      ]);
+      ]));
     }
   }
 
