@@ -12,6 +12,5 @@ tmp
 
 .vscode/launch.json
 
-# used for local dev
-clients/templates/layout.html
-clients/templates/portal-without-systemjs.html
+# This file will be automatically created by build task
+clients/components/icon/svg-hash.ts

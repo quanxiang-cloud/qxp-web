@@ -1,4 +1,3 @@
-import { useUpdateEffect } from 'react-use';
 import { diff } from 'just-diff';
 import { groupBy, lensPath, set, dissocPath, last, view } from 'ramda';
 import React, {
@@ -17,6 +16,7 @@ import ApiFormulaConfig from './api-formula';
 import ApiParamsConfig, { RefType } from './api-params-config';
 
 type Props = {
+  initialValues: POLY_API.PolyRequestNodeDetail;
   value: POLY_API.PolyRequestNodeDetail;
   onChange: (value: Partial<POLY_API.PolyRequestNodeDetail>) => void;
 }
@@ -47,11 +47,13 @@ function mergeInputs(
 type RequestConfigRef = {
   validate(): never | void;
 }
-function RequestConfigForm({ value, onChange }: Props, ref: ForwardedRef<RequestConfigRef>): JSX.Element {
+function RequestConfigForm(
+  { initialValues, value, onChange }: Props,
+  ref: ForwardedRef<RequestConfigRef>,
+): JSX.Element {
   const formulaEditorRef = useRef<RefType>();
   const polyNodePathTreeRef = useRef<PathTreeRefType | null>(null);
   const [customRules, setCustomRules] = useState<CustomRule[]>([]);
-  const mountedRef = useRef<boolean>();
 
   useImperativeHandle(ref, () => ({
     validate: () => formulaEditorRef.current?.validate(),
@@ -62,31 +64,6 @@ function RequestConfigForm({ value, onChange }: Props, ref: ForwardedRef<Request
     body: { docType: 'raw', titleFirst: true },
   }, { enabled: !!value.rawPath });
 
-  useUpdateEffect(() => {
-    if (!mountedRef.current) {
-      return;
-    }
-    !isLoading && apiDocDetail?.doc?.input?.inputs && onChange({
-      apiName: apiDocDetail?.apiPath.split('/').pop() || '',
-      outputs: apiDocDetail?.doc?.output?.doc?.[0]?.data || [],
-      inputs: filterPolyApiInputs(apiDocDetail?.doc?.input?.inputs || []),
-    });
-  }, [isLoading, onChange, apiDocDetail]);
-
-  useEffect(() => {
-    if (isLoading || mountedRef.current) {
-      return;
-    }
-    const apiInputs = filterPolyApiInputs(apiDocDetail?.doc?.input?.inputs || []);
-    const inputs = mergeInputs(value.inputs, apiInputs);
-    mountedRef.current = true;
-    onChange({
-      apiName: apiDocDetail?.apiPath.split('/').pop() || '',
-      outputs: apiDocDetail?.doc?.output?.doc?.[0]?.data || [],
-      inputs: filterPolyApiInputs(inputs),
-    });
-  }, [value, isLoading, onChange, apiDocDetail, mountedRef]);
-
   useEffect(() => {
     if (customRules.length || !polyNodePathTreeRef.current) {
       return;
@@ -94,6 +71,27 @@ function RequestConfigForm({ value, onChange }: Props, ref: ForwardedRef<Request
     const rules = polyNodePathTreeRef.current.getCustomRules();
     setCustomRules(rules || []);
   }, [customRules, polyNodePathTreeRef.current]);
+
+  useEffect(() => {
+    if (isLoading || !apiDocDetail) {
+      return;
+    }
+
+    if (initialValues.rawPath === value.rawPath) {
+      const apiInputs = filterPolyApiInputs(apiDocDetail.doc?.input?.inputs || []);
+      const inputs = mergeInputs(initialValues.inputs, apiInputs);
+      onChange({
+        outputs: apiDocDetail?.doc?.output?.doc?.[0]?.data || [],
+        inputs: filterPolyApiInputs(inputs),
+      });
+      return;
+    }
+
+    apiDocDetail.doc?.input?.inputs && onChange({
+      outputs: apiDocDetail.doc?.output?.doc?.[0]?.data || [],
+      inputs: filterPolyApiInputs(apiDocDetail.doc?.input?.inputs || []),
+    });
+  }, [isLoading, apiDocDetail]);
 
   useEffect(() => {
     error && toast.error(error?.message);

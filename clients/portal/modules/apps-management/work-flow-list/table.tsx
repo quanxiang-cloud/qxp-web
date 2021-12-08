@@ -113,12 +113,20 @@ function WorkFlowTable({ type, searchInput }: Props): JSX.Element {
         );
       },
       Cell: (model: Model) => {
+        const statusColor = model.cell.value === 'ENABLE' ? 'green' : 'yellow';
+
         return (
           <div className="flex items-center">
-            <Icon
-              name={model.cell.value === 'ENABLE' ? 'status-success' : 'status-default'}
-              size={8}
-            />
+            <div
+              style={{
+                '--status-color': `var(--${statusColor}-600)`,
+                '--status-shadow-color': `var(--${statusColor}-400)`,
+                boxShadow: `0 0 12px var(--${statusColor}-400)`,
+              } as React.CSSProperties}
+              className="relative w-8 h-8 rounded-full"
+            >
+              <div className="status-dot"></div>
+            </div>
             <span className="ml-10">{statusMap[model.cell.value as 'ENABLE' | 'DISABLE']}</span>
           </div>
         );
@@ -231,6 +239,7 @@ function WorkFlowTable({ type, searchInput }: Props): JSX.Element {
           emptyTips={<EmptyTipsRender />}
           columns={columns}
           loading={isLoading}
+          canSetColumnWidth
         />
       )}
       {isError && (

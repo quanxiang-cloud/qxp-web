@@ -35,9 +35,7 @@ function BodyEditor(props: Props): JSX.Element {
 
   const handleChange = useCallback((_value: POLY_API.ObjectSchema[]) => {
     const distValue = fromObjectSchemaToApiData(_value);
-    const newValue = isValueObject ?
-      { type: distValue.length > 1 ? 'array' : 'object', data: distValue } :
-      distValue;
+    const newValue = isValueObject ? { type: 'object', data: distValue } : distValue;
     !equals(value, newValue) && props.mutators.change(newValue);
   }, [value]);
 

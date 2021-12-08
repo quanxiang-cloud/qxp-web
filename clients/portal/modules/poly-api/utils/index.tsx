@@ -84,7 +84,6 @@ export function buildRequestNode(): POLY_API.NodeElement {
       nextNodes: [],
       detail: {
         rawPath: '',
-        apiName: '',
         inputs: [],
       },
       handles: { top: `${id}__top`, left: `${id}__left`, right: `${id}__right`, bottom: `${id}__bottom` },

@@ -25,21 +25,45 @@
 }
 
 .polynamespacedetail-header-searchinput {
+  @apply mx-8;
   input.search-input {
     @apply rounded-8;
+    background-color: #f9fafc;
     transition: border .3s linear;
+    &::placeholder {
+      @apply text-gray-400;
+      font-size: 12px;
+      line-height: 20px;
+    }
   }
 }
 
 .polynamespacedetail-table {
   height: calc(100% - 32px);
+  @mixin _firsColumn {
+    @apply w-16 pl-20 pr-0;
+  }
 
   .qxp-table-wrapper {
     height: auto;
     max-height: calc(100% - 40px);
     overflow: hidden;
     th {
-      @apply sticky top-0;
+      @apply sticky top-0 px-12;
+      &:first-child {
+        @include _firsColumn;
+      }
+      &:nth-child(2) {
+        padding-left: 4px;
+      }
+    }
+    td {
+      &:first-child {
+        @include _firsColumn;
+      }
+      &:nth-child(2) {
+        padding-left: 4px;
+      }
     }
     tr:last-child td {
       border-bottom: none;
