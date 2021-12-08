@@ -48,7 +48,11 @@ function BodyEditor(props: Props): JSX.Element {
   ) {
     return (e: ChangeEvent<HTMLInputElement> | string | boolean | number) => {
       const value = isString(e) || isBoolean(e) || isNumber(e) ? e : e.target.value;
-      errorsRef.current[rowId] = !value ? '参数名称必填' : '';
+
+      if (keyType === 'name') {
+        errorsRef.current[rowId] = !value ? '参数名称必填' : '';
+      }
+
       if (keyType === 'type' && !isObjectField(current$.get('type')) && isObjectField(`${value}`)) {
         current$.removeChild();
         current$.set('rule', '');

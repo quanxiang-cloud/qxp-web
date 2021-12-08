@@ -1,3 +1,4 @@
+import { validateNamed } from '../../utils/object-editor';
 
 export default {
   type: 'object',
@@ -26,14 +27,7 @@ export default {
       },
       'x-rules': [
         (values: POLY_API.PolyNodeInput[]): string => {
-          return values.some(({ name, type, data }) => {
-            if (type === 'object') {
-              console.log(data);
-              return true;
-            }
-
-            return !name;
-          }) ? '参数名称必填' : '';
+          return validateNamed(values) ? '参数名称必填' : '';
         },
       ],
       'x-index': 1,
@@ -46,8 +40,13 @@ export default {
         itemStyle: {
           marginBottom: 0,
         },
-        itemClassName: 'px-20',
+        itemClassName: 'px-20 input-editor-error-tips-hidden',
       },
+      'x-rules': [
+        (values: POLY_API.PolyNodeInput[]): string => {
+          return validateNamed(values) ? '参数名称必填' : '';
+        },
+      ],
       'x-index': 2,
     },
   },

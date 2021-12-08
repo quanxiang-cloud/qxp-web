@@ -138,3 +138,18 @@ export function insertToArray<T>(array: T[], index: number, value: T): T[] {
 export function isObjectField(type: string): boolean {
   return ['object', 'array'].includes(type);
 }
+
+type EditInputs = POLY_API.PolyNodeInput[] | POLY_API.PolyEndBodyData[] |null
+export function validateNamed(values: EditInputs): boolean {
+  if (!values) {
+    return false;
+  }
+
+  return values.some(({ name, type, data }) => {
+    if (type === 'object' && name) {
+      return validateNamed(data as EditInputs);
+    }
+
+    return !name;
+  });
+}
