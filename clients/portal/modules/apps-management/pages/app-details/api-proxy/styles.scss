@@ -154,3 +154,38 @@ textarea.api-from-textarea {
     }
   }
 }
+
+.swagger-upload {
+  &:hover {
+    border: 1px dashed var(--blue-600);
+    .upload-refresh {
+      visibility: visible;
+    }
+  }
+
+  .upload-progress {
+    position: absolute;
+    top: -11px;
+    width: calc(100% - 8px);
+    .ant-progress-inner {
+      background-color: transparent;
+    }
+  }
+
+  .upload-refresh {
+    background: rgba(15,23,42,0.5);
+    border-radius: 8px;
+    .refresh-button {
+      z-index: 1;
+      transition: none;
+    }
+  } 
+}
+
+.swagger-upload-fail {
+  color: var(--rose-600);
+  border-color: var(--rose-700);
+  .upload-icon {
+    color: var(--rose-600);
+  }
+}

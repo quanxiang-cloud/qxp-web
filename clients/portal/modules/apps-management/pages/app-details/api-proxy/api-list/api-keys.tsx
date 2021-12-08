@@ -142,7 +142,7 @@ function ApiKeys(): JSX.Element {
       width: 'auto',
       accessor: ({ keyID }: PolyAPI.ApiKeyParams) => {
         return (
-          <div className='flex relative items-center key-id'>
+          <div className='flex items-center key-id'>
             {keyID}
             {(
               <ToolTip
@@ -264,7 +264,7 @@ function ApiKeys(): JSX.Element {
   ];
 
   return (
-    <div className='w-full inside-api-key'>
+    <div className='w-full'>
       <div className='flex items-center mb-8'>
         <Button
           onClick={() => {
@@ -274,14 +274,16 @@ function ApiKeys(): JSX.Element {
           modifier='primary'
         >新建密钥</Button>
       </div>
-      <Table
-        className='api-proxy-table-switch'
-        loading={loading}
-        emptyTips={<EmptyTips text='暂无密钥' className="pt-40" />}
-        columns={COLS}
-        data={keyList}
-        rowKey='id'
-      />
+      <div style={{ height: 'calc(100vh - 273px)' }}>
+        <Table
+          className='api-proxy-table'
+          loading={loading}
+          emptyTips={<EmptyTips text='暂无密钥' className="pt-40" />}
+          columns={COLS}
+          data={keyList}
+          rowKey='id'
+        />
+      </div>
       {apiKeyTotal > 0 && (
         <Pagination
           current={pageParams.page}
