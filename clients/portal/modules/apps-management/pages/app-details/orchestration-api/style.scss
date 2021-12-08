@@ -145,3 +145,15 @@
     }
   }
 }
+
+.orchestration-management-modal {
+  .ant-form-item-explain.ant-form-item-explain-error {
+    @apply hidden;
+  };
+}
+
+div.namespace-menu--remove {
+  &:hover {
+    @apply bg-red-50;
+  }
+}

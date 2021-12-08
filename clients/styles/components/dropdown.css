@@ -1,7 +1,6 @@
 @layer components {
   .dropdown-options {
     min-width: 90px;
-    max-width: 500px;
     max-height: 300px;
     /* todo this should be defined as a variable */
     box-shadow: 0px 8px 24px 4px rgba(148, 163, 184, 0.25);
