@@ -40,13 +40,30 @@
 
 .polynamespacedetail-table {
   height: calc(100% - 32px);
+  @mixin _firsColumn {
+    @apply w-16 pl-20 pr-0;
+  }
 
   .qxp-table-wrapper {
     height: auto;
     max-height: calc(100% - 40px);
     overflow: hidden;
     th {
-      @apply sticky top-0;
+      @apply sticky top-0 px-12;
+      &:first-child {
+        @include _firsColumn;
+      }
+      &:nth-child(2) {
+        padding-left: 4px;
+      }
+    }
+    td {
+      &:first-child {
+        @include _firsColumn;
+      }
+      &:nth-child(2) {
+        padding-left: 4px;
+      }
     }
     tr:last-child td {
       border-bottom: none;

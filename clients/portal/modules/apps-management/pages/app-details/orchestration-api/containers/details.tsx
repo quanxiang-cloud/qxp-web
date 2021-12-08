@@ -45,6 +45,7 @@ function APINamespaceDetails(): JSX.Element {
   } = useOrchestrationAPIStore() || {};
   const [modalType, setModalType] = useState<ModalType>();
   const [names, setNames] = useState<string[]>([]);
+  const [currentName, setCurrentName] = useState<string | null>(null);
   const [searchTitle, setSearchTitle] = useState('');
   const nameSpacePath = currentNamespacePath || '';
   const [pagination, setPagination] = useState(initialPage);
@@ -75,20 +76,25 @@ function APINamespaceDetails(): JSX.Element {
 
   const RemovePolyModal = useModal<RemovePolyInput, RemovePolyResponse, RemovePolyParams>(
     modalType,
-    ModalType.REMOVE_POLY,
+    [ModalType.REMOVE_POLY, ModalType.REMOVE_POLY_ALL],
     useRemovePoly,
     {
       message: '删除API成功',
       submitText: '确认删除',
-      content: <ModalRemoveTips title="确定要删除该API吗?" desc="删除API后，数据将无法找回。" />,
+      content: (
+        <ModalRemoveTips
+          title={`确定要删除${modalType === ModalType.REMOVE_POLY_ALL ? '选中的' : '该'}API吗?`}
+          desc="删除API后，数据将无法找回。"
+        />
+      ),
       onClose: handleModalClose,
       formToApiInputConvertor: () => {
         return {
           path: `delete${nameSpacePath}`,
-          body: { names: names },
+          body: { names: currentName ? [currentName] : names },
         };
       },
-      onSuccess: () => setNames([]),
+      onSuccess: () => currentName ? setCurrentName(null) : setNames([]),
     },
   );
 
@@ -155,8 +161,12 @@ function APINamespaceDetails(): JSX.Element {
   }
 
   function handleRemovePoly(data: Row<PolyListItem>): void {
+    setCurrentName(data.original.name);
     setModalType(ModalType.REMOVE_POLY);
-    setNames([data.original.name]);
+  }
+
+  function handleRemoveAll(): void {
+    !!names.length && setModalType(ModalType.REMOVE_POLY_ALL);
   }
 
   function handleEditPoly(polyFullPath: string): void {
@@ -224,20 +234,21 @@ function APINamespaceDetails(): JSX.Element {
         >
           设计API
         </span>
-        {
-          <span
-            className={cs(
-              'text-red text-red-600 text-h6-no-color-weight',
-              {
-                'opacity-0': model.cell.row.original.active,
-                'cursor-pointer': !model.cell.row.original.active,
-              },
-            )}
-            onClick={() => !model.cell.row.original.active && handleRemovePoly(model.cell.row)}
-          >
+        <span
+          className={cs(
+            'text-red text-red-600 text-h6-no-color-weight',
+            {
+              'opacity-0': model.cell.row.original.active,
+              'cursor-pointer': !model.cell.row.original.active,
+            },
+          )}
+          onClick={(e) => {
+            e.stopPropagation();
+            !model.cell.row.original.active && handleRemovePoly(model.cell.row);
+          }}
+        >
           删除
-          </span>
-        }
+        </span>
       </div>
     ),
   }];
@@ -254,6 +265,11 @@ function APINamespaceDetails(): JSX.Element {
     );
   }
 
+  const name2idMap = data?.list.reduce((acc: Record<string, string>, cur: PolyListItem) => {
+    acc[cur.name] = cur.id;
+    return acc;
+  }, {}) || {};
+
   return (
     <>
       <div
@@ -267,7 +283,19 @@ function APINamespaceDetails(): JSX.Element {
       </div>
       <div className="flex flex-col flex-1 overflow-hidden bg-white p-16 h-32">
         <div className="flex justify-between items-center mb-8">
-          <Button onClick={handleCreatePolyApi} modifier="primary" iconName="add">新建API</Button>
+          <div>
+            <Button onClick={handleCreatePolyApi} modifier="primary" iconName="add">新建API</Button>
+            <Button
+              onClick={handleRemoveAll}
+              className={cs(
+                'ml-24 bg-white transition-opacity', names.length ? 'opacity-100' : 'opacity-0',
+                { 'cursor-default pointer-events-none': !names.length },
+              )}
+              style={{ color: 'var(--rose-500)', border: '1px solid var(--rose-500)' }}
+              iconName="remove_backup">
+              删除
+            </Button>
+          </div>
           <SearchInput
             className="polynamespacedetail-header-searchinput"
             name="apiName"
@@ -278,10 +306,13 @@ function APINamespaceDetails(): JSX.Element {
         </div>
         <div className="flex-1 polynamespacedetail-table overflow-hidden">
           <Table
+            showCheckbox
             rowKey="id"
             columns={columns}
             data={data?.list || []}
             loading={isFetchListLoading || isSearchLoading}
+            initialSelectedRowKeys={names.map((name) => name2idMap[name]).filter(Boolean)}
+            onSelectChange={(_, rows) => setNames(rows.map(({ name }) => name))}
             emptyTips={(
               <div className="flex flex-col items-center justify-center">
                 <img src="/dist/images/table-empty.svg" alt="empty" className="w-96 h-72 mb-8" />
