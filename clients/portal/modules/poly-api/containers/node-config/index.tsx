@@ -61,7 +61,11 @@ export default function NodeConfigDrawer(): JSX.Element {
       currentNode?.set('detail', omit(excludedFields || [], configValue) );
       savePolyApiResult();
       onCancel();
-    } catch (e) {
+    } catch (e: any) {
+      if ('errors' in e) {
+        toast.error(e.errors[0].messages[0]);
+        return;
+      }
       toast.error(e);
     }
   }

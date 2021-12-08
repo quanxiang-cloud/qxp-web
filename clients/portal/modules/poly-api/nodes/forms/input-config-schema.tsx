@@ -1,3 +1,4 @@
+
 export default {
   type: 'object',
   properties: {
@@ -23,6 +24,18 @@ export default {
         },
         itemClassName: 'px-20',
       },
+      'x-rules': [
+        (values: POLY_API.PolyNodeInput[]): string => {
+          return values.some(({ name, type, data }) => {
+            if (type === 'object') {
+              console.log(data);
+              return true;
+            }
+
+            return !name;
+          }) ? '参数名称必填' : '';
+        },
+      ],
       'x-index': 1,
     },
     consts: {

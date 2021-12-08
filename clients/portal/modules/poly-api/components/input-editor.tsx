@@ -50,7 +50,8 @@ export default function InputEditor({
   }, [value, changeOnBlur]);
 
   const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    let { value } = e.target;
+    let value = e.target.value.replace(/\s*/g, '');
+
     if (limit && value.length > limit) {
       value = value.slice(0, limit);
       e.target.value = value;
