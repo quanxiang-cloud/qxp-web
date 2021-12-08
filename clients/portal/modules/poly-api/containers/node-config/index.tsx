@@ -19,6 +19,8 @@ import toast from '@lib/toast';
 
 import DrawerTitle from './drawer-title';
 
+import './index.scss';
+
 const schemaFormComponents = {
   input: Input,
   bodyEditor: BodyEditor,

@@ -22,7 +22,7 @@ export default {
         itemStyle: {
           marginBottom: 0,
         },
-        itemClassName: 'px-20',
+        itemClassName: 'px-20 input-editor-error-tips-hidden',
       },
       'x-rules': [
         (values: POLY_API.PolyNodeInput[]): string => {
