@@ -47,7 +47,8 @@ export default over(
       },
       templateAPIPath: {
         type: 'string',
-        'x-component': 'CopyPolySelect',
+        'x-component': 'Input',
+        display: false,
         'x-index': 4,
       },
     });

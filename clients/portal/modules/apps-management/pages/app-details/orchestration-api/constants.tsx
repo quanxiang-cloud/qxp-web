@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 
 import type { Placement } from '@popperjs/core';
 import Icon from '@c/icon';
@@ -33,10 +33,13 @@ export const MODAL_SCHEMA_MAP: Record<ModalType, [ISchema, string]> = {
 type APINamespaceMenu = Array<{
   key: ModalType;
   label: JSX.Element;
+  className?: string;
+  style?: CSSProperties;
 }>
 
 export const API_DIRECTORY_MENUS: APINamespaceMenu = [
   {
+    className: 'transition-all duration-240',
     key: ModalType.CREATE_NAMESPACE,
     label: (
       <div className="flex items-center">
@@ -46,6 +49,7 @@ export const API_DIRECTORY_MENUS: APINamespaceMenu = [
     ),
   },
   {
+    className: 'transition-all duration-240',
     key: ModalType.EDIT_NAMESPACE,
     label: (
       <div className="flex items-center">
@@ -55,6 +59,7 @@ export const API_DIRECTORY_MENUS: APINamespaceMenu = [
     ),
   },
   {
+    className: 'transition-all duration-240 namespace-menu--remove',
     key: ModalType.REMOVE_NAMESPACE,
     label: (
       <div className="flex items-center">
