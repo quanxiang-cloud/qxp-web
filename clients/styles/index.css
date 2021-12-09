@@ -1,7 +1,16 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
 @import "./reset.css";
 @import "./layout.css";
 @import "./animation.css";
 @import "./scrollbar.css";
+@import "./variables/global.css";
+@import './components/dropdown.css';
+@import "./typography.css";
+@import "./border.css";
+@import "./btn.css";
 
 /* todo delete this */
 .right-content-container {
