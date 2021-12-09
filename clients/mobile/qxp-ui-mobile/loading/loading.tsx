@@ -39,7 +39,8 @@ const Loading: React.FC<LoadingProps> = (props) => {
   };
 
   return (
-    <div className={cs(className, 'loading', { 'loading--vertical': vertical })}>
+    <div className={cs(className, 'loading', { 'loading--vertical': vertical })}
+      style={props.style}>
       <span className={cs(`loading__spinner--${type} loading__${type}`)}
         style={spinnerStyle}>
         {icons()[type]}
@@ -47,11 +48,6 @@ const Loading: React.FC<LoadingProps> = (props) => {
       {renderText()}
     </div>
   );
-};
-
-Loading.defaultProps = {
-  type: 'circular',
-  size: '.32rem',
 };
 
 export default Loading;

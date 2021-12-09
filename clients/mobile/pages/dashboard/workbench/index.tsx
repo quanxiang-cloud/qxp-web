@@ -6,6 +6,7 @@ import HomeCard from '@m/pages/dashboard/home-card';
 import { useHistory } from 'react-router-dom';
 import Empty from '@m/qxp-ui-mobile/empty';
 import AppItem from '@m/components/app-item';
+import { pathPrefix } from '@m/routes';
 
 const Workbench: React.FC<HomePageProps> = (props) => {
   const history = useHistory();
@@ -26,7 +27,7 @@ const Workbench: React.FC<HomePageProps> = (props) => {
                 <AppItem
                   key={appInfo.id}
                   appInfo={appInfo}
-                  onClick={() => history.push('/apps/' + appInfo.id)}
+                  onClick={() => history.push(`${pathPrefix}/apps/${appInfo.id}`)}
                 />
               ))}
             </div>

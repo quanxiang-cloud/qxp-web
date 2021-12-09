@@ -33,3 +33,22 @@ export function isObject(val: unknown): val is Record<any, any> {
 export function isPromise<T = any>(val: unknown): val is Promise<T> {
   return isObject(val) && isFunction(val?.then) && isFunction(val?.catch);
 }
+
+export function isAndroid(): boolean {
+  return inBrowser ? /android/.test(navigator.userAgent.toLowerCase()) : false;
+}
+
+export function isIOS(): boolean {
+  return inBrowser ? /ios|iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase()) : false;
+}
+
+export function bound(position: number, min: number | undefined, max: number | undefined): number {
+  let ret = position;
+  if (min !== undefined) {
+    ret = Math.max(position, min);
+  }
+  if (max !== undefined) {
+    ret = Math.min(ret, max);
+  }
+  return ret;
+}

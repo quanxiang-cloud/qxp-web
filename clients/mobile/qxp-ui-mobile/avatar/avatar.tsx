@@ -28,7 +28,7 @@ function getAvatarInfo(text: string, colors = imgBgColors): AvatarInfo {
 }
 
 const Avatar: React.FC<AvatarProps> = (props) => {
-  const { name = '', size = '0.24rem', className = '', style } = props;
+  const { name = '', size = '0.24rem', className, style } = props;
   const avatarInfo = getAvatarInfo(name);
   const _style = getSizeStyle(size, {
     ...(style || {}),
@@ -37,7 +37,7 @@ const Avatar: React.FC<AvatarProps> = (props) => {
   });
 
   return (
-    <div className={cs('avatar', { [className]: className })}
+    <div className={cs('avatar', className)}
       style={_style}>
       {avatarInfo.name}
     </div>
