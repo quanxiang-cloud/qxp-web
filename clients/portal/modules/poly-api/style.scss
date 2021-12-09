@@ -202,7 +202,7 @@ $nodeTypes: input, request, if, end, default, output;
 }
 
 .node-formula-editor {
-  @apply flex-2 border-gray-200;
+  @apply flex-2 border-gray-200 w-full;
   min-width: 68px;
 
   &>div {
