@@ -221,7 +221,6 @@ export default function GlobalConfig(): JSX.Element | null {
                 <div className="text-body2-no-color text-gray-600 mb-4 flex items-center">
                   <span className="mr-8">{option.title}</span>
                   <ToolTip
-                    inline
                     label={option.desc}
                     position="top"
                     labelClassName="whitespace-nowrap"

@@ -42,6 +42,10 @@ const SCHEMA: ISchema = {
               max: 20,
               message: '名称不超过 20 字符，请修改！',
             },
+            {
+              pattern: /^[^\s]*$/,
+              message: '请勿包含空格',
+            },
           ],
           'x-index': 0,
         },
@@ -63,8 +67,8 @@ const SCHEMA: ISchema = {
               message: '函数标识不超过 20 字符，请修改！',
             },
             {
-              pattern: /^[a-zA-Z]+([a-zA-Z0-9])*$/,
-              message: '必须以字母开头,由字母、数字组成',
+              pattern: /^[a-z]+([0-9])*$/,
+              message: '必须以小写字母开头,由小写字母、数字组成',
             },
           ],
           'x-component': 'Input',

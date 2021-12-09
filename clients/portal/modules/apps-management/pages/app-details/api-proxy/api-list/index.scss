@@ -15,14 +15,9 @@
 }
 
 .api-proxy-tab-content {
+  padding: 16px;
   .qxp-table-loading-box {
     background-color: rgba(255, 255, 255, 1);
-  }
-}
-
-.inside-api-key {
-  .key-id:hover .copy-tooltip{
-    visibility: visible;
   }
 }
 
@@ -32,7 +27,10 @@
   }
 }
 
-.api-proxy-table-switch {
+.api-proxy-table {
+  .key-id:hover .copy-tooltip{
+    visibility: visible;
+  }
   .ant-switch {
     width: 54px;
     height: 20px;

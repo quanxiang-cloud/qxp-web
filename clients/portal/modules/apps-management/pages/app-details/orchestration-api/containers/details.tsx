@@ -17,7 +17,7 @@ import {
   useOrchestrationAPIStore,
 } from '@portal/modules/apps-management/pages/app-details/orchestration-api/context';
 import { useQueryNameSpaceRootPath } from '@orchestrationAPI/effects/api/api-namespace';
-import useModal from '@orchestrationAPI/effects/hooks/use-modal';
+import useModal, { actions } from '@orchestrationAPI/effects/hooks/use-modal';
 import { ModalType } from '@orchestrationAPI/constants';
 import {
   useCreatePoly,
@@ -173,6 +173,11 @@ function APINamespaceDetails(): JSX.Element {
     history.push(`/poly/${appID}${polyFullPath}`);
   }
 
+  function handleCopyPoly(polyFullPath: string): void {
+    handleCreatePolyApi();
+    actions.setFieldValue('templateAPIPath', polyFullPath);
+  }
+
   const columns: UnionColumns<PolyListItem>[] = [{
     Header: 'API名称',
     accessor: 'title',
@@ -180,7 +185,11 @@ function APINamespaceDetails(): JSX.Element {
     Header: '请求方法',
     accessor: 'method',
     Cell: (model: CellProps<PolyListItem>) => (
-      <span className="text-green-600">{model.value}</span>
+      <span
+        className={model.value.toLowerCase() === 'delete' ? 'text-red-600' : 'text-green-600'}
+      >
+        {model.value}
+      </span>
     ),
   }, {
     Header: '访问路径',
@@ -233,6 +242,12 @@ function APINamespaceDetails(): JSX.Element {
           className="mr-16 text-blue-600 text-h6-no-color-weight cursor-pointer"
         >
           设计API
+        </span>
+        <span
+          onClick={() => handleCopyPoly(model.cell.row.original.fullPath)}
+          className="mr-16 text-blue-600 text-h6-no-color-weight cursor-pointer"
+        >
+          复制
         </span>
         <span
           className={cs(

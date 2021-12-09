@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { useQuery } from 'react-query';
 import cs from 'classnames';
 
+import PageLoading from '@c/page-loading';
+import { useGetGlobalConfig } from '@lib/configuration-center';
+
 import TreeNode from './menu-tree-node';
-import { fetchSideNavExternalLinks } from './api';
 
 import './index.scss';
 
@@ -15,71 +16,11 @@ export type Menu = {
   children?: Array<Menu>;
 }
 
-const SIDE_NAV: Array<Menu> = [
-  {
-    id: 'page_setting',
-    title: '视图管理',
-    icon: 'view',
-  },
-  {
-    id: 'modal_api',
-    title: '数据管理',
-    icon: 'gateway',
-    children: [
-      {
-        id: 'data_models',
-        title: '数据模型管理',
-        icon: 'database',
-      },
-      {
-        id: 'api_proxy',
-        title: '第三方 API 代理',
-        icon: 'api_outside',
-      },
-      {
-        id: 'orchestration_api',
-        title: 'API 编排管理',
-        icon: 'api_arrange',
-      },
-      {
-        id: 'faas',
-        title: 'FaaS 函数管理',
-        icon: 'faas_control',
-      },
-      {
-        id: 'key_api',
-        title: 'API 密钥管理',
-        icon: 'api_key',
-      },
-      {
-        id: 'file_api',
-        title: 'API 文档',
-        icon: 'api_inner',
-      },
-    ],
-  },
-  {
-    id: 'setting_flow',
-    title: '工作流',
-    icon: 'data_model',
-  },
-  {
-    id: 'app_control',
-    title: '访问控制',
-    icon: 'role',
-  },
-  {
-    id: 'base_info',
-    title: '应用设置',
-    icon: 'app_setting',
-  },
-];
+const NAV_KEY = 'PORTAL_APPLICATION_SIDE_NAV';
 
 export default function CollapseMenu(): JSX.Element {
   const [menuCollapse, setMenuCollapse] = useState(true);
-  const { data: externalLinks } = useQuery('FETCH_SIDE_NAV_EXTERNAL_LINKS', () => {
-    return fetchSideNavExternalLinks();
-  });
+  const [sideNav, loading] = useGetGlobalConfig<Array<Menu>>(NAV_KEY, '0.1.0', []);
 
   return (
     <div className='w-64 relative overflow-visible'>
@@ -94,9 +35,22 @@ export default function CollapseMenu(): JSX.Element {
           { 'collapse overflow-y-hidden': menuCollapse },
         )}
       >
-        {SIDE_NAV.concat(externalLinks || []).map((menu) => {
-          return <TreeNode defaultCollapse={menuCollapse} menu={menu} key={menu.id} level={1} maxLevel={2} />;
-        })}
+        {loading ? <PageLoading /> : (
+          sideNav.map((menu) => {
+            return (
+              <TreeNode
+                defaultCollapse={menuCollapse}
+                menu={menu}
+                key={menu.id}
+                level={1}
+                maxLevel={2}
+              />
+            );
+          })
+        )}
+        {!loading && sideNav.length === 0 && (
+          <div className='text-gray-400 text-center text-14'>暂无有权限的菜单，请联系管理员。</div>
+        )}
       </div>
     </div>
   );

@@ -110,7 +110,6 @@ export default function CustomFieldTable({
       <div className="flex items-center flex-nowrap">
         <span className="mr-4 whitespace-nowrap">{label}</span>
         <ToolTip
-          inline
           labelClassName="whitespace-nowrap text-12 py-8 px-16"
           position="left"
           label={tip}

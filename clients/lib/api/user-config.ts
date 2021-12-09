@@ -13,6 +13,14 @@ export function getBatchUserData(keys: GetParams[]): Promise<{ result: Record<st
   return httpClient('/api/v1/persona/userBatchGetValue', { keys });
 }
 
-export function setBatchUserData(params: SetParams[]) {
+export function setBatchUserData(params: SetParams[]): Promise<void> {
   return httpClient('/api/v1/persona/userBatchSetValue', { params });
+}
+
+export function getBatchGlobalConfig(keys: GetParams[]): Promise<{ result: Record<string, string> }> {
+  return httpClient('/api/v1/persona/batchGetValue', { keys });
+}
+
+export function setBatchGlobalConfig(params: SetParams[]): Promise<void> {
+  return httpClient('/api/v1/persona/batchSetValue', { params });
 }

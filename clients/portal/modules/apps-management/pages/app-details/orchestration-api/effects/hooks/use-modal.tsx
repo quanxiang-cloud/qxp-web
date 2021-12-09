@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { UseMutationOptions, UseMutationResult } from 'react-query';
 import { toJS } from 'mobx';
 import { isArray } from 'lodash';
-import { createFormActions, SchemaForm } from '@formily/react-schema-renderer';
+import { SchemaForm, createAsyncFormActions } from '@formily/react-schema-renderer';
 import { Input, Select } from '@formily/antd-components';
 
 import toast from '@lib/toast';
@@ -12,7 +12,7 @@ import useSchemaformKeypressSubmit from '@orchestrationAPI/effects/hooks/use-sch
 import InputWithDesc from '@orchestrationAPI/components/input-with-desc';
 import CopyPolySelect from '@orchestrationAPI/components/copy-poly-select';
 
-const actions = createFormActions();
+export const actions = createAsyncFormActions();
 
 export default function useModal<I, O, D>(
   modalType: ModalType | undefined,
