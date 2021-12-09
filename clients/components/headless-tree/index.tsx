@@ -44,11 +44,11 @@ export default class Tree<T> extends React.Component<Props<T>> {
     });
   }
 
-  componentDidMount() {
+  componentDidMount(): void {
     this.props.onSelect?.(toJS(this.props.store.currentFocusedNode.data));
   }
 
-  componentWillUnmount() {
+  componentWillUnmount(): void {
     this.selectDisposer();
   }
 

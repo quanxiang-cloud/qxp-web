@@ -11,7 +11,6 @@ import { OPERATES_MAP } from '@polyApi/constants';
 import OutputEditor, { RefType as OutPutEditorRefType } from './output-editor';
 
 function EndForm(props: ISchemaFieldComponentProps): JSX.Element {
-  props;
   const [customRules, setCustomRules] = React.useState<CustomRule[]>([]);
   const polyNodePathTreeRef = useRef<RefType | null>(null);
   const outputEditorRef = useRef<OutPutEditorRefType | null>(null);
@@ -46,7 +45,7 @@ function EndForm(props: ISchemaFieldComponentProps): JSX.Element {
 
   return (
     <div className="h-full flex" ref={ref}>
-      <div className="h-full flex-2 px-20">
+      <div className="h-full flex-2 px-20 overflow-hidden">
         <OutputEditor
           {...props}
           customRules={customRules}
