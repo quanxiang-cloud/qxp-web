@@ -227,6 +227,9 @@ class FaasStore {
 
   @action
   initFaas = async (email: string): Promise<void> => {
+    if (this.initErr) {
+      await this.checkUserState();
+    }
     this.initLoading = true;
     this.initErr = false;
     if (!this.isDeveloper) {
