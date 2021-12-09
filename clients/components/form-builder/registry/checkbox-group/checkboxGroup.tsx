@@ -1,65 +1,102 @@
 import React, { SetStateAction, useEffect, useMemo, useState } from 'react';
+import cs from 'classnames';
+import { uniq } from 'lodash';
 import { Checkbox, Input, Space } from 'antd';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 
 import useEnumOptions from '@lib/hooks/use-enum-options';
 import FormDataValueRenderer from '@c/form-data-value-renderer';
-import { uniq } from 'lodash';
+import Icon from '@c/icon';
+import toast from '@lib/toast';
 
 const CUSTOM_OTHER_VALUE = 'CUSTOM_OTHER_VALUE';
 
-function useCustomOtherValue(
+function useCustomOtherValues(
   options: string[],
   initialValues: string[],
-): [string, React.Dispatch<SetStateAction<string>>] {
-  const [customValue, setCustomValue] = useState('');
+): [string[], React.Dispatch<SetStateAction<string[]>>] {
+  const [customValues, setCustomValues] = useState<string[]>([]);
   useEffect(() => {
-    const initCustomValue = initialValues?.find((value) => !options.includes(value));
-    if (initCustomValue) {
-      setCustomValue(initCustomValue);
+    if (customValues.length) {
+      return;
+    }
+    const initCustomValues = initialValues?.filter((value) => options.length && !options.includes(value));
+    if (initCustomValues.length) {
+      setCustomValues(initCustomValues);
     }
   }, [options]);
 
-  return [customValue, setCustomValue];
+  return [customValues, setCustomValues];
 }
 
 function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   const options = useEnumOptions(fieldProps);
-  const [otherValue, setOtherValue] = useCustomOtherValue(options, fieldProps.value);
+  const [otherValues, setOtherValues] = useCustomOtherValues(options, fieldProps.value);
+  const [checkedValues, setCheckedValues] = useState<string[]>([]);
   const { optionsLayout } = fieldProps.props['x-component-props'];
   const isAllowCustom = !!fieldProps.props['x-component-props'].allowCustom;
 
-  const realValue = useMemo(() => {
+  useEffect(() => {
     if (!isAllowCustom) {
-      return fieldProps.value;
-    }
-
-    const realValueTmp = fieldProps.value.filter((value:string) => options.includes(value));
-    return realValueTmp.length !== fieldProps.value.length ?
-      [...realValueTmp, CUSTOM_OTHER_VALUE] :
-      realValueTmp;
-  }, [fieldProps.value, options]);
-
-  function handleCheckBoxChange(value: Array<CheckboxValueType>): void {
-    if (value.includes(CUSTOM_OTHER_VALUE)) {
-      fieldProps.mutators.change(uniq([
-        ...value.filter((label) => options.includes((label as string))),
-        otherValue,
-      ]));
+      setCheckedValues(fieldProps.value);
       return;
     }
-    fieldProps.mutators.change(value as string[]);
+
+    setCheckedValues(
+      fieldProps.value.reduce((acc: string[], option:string) => {
+        if (options.includes(option)) {
+          return [...acc, option];
+        }
+        const index = otherValues.indexOf(option);
+        if (index !== -1) {
+          return [...acc, customCheckValues[index]];
+        }
+        return acc;
+      }, []));
+  }, [options]);
+
+  useEffect(() => {
+    const realValue = uniq(checkedValues.reduce((acc: string[], option: string) => {
+      if (options.includes(option)) {
+        return [...acc, option];
+      }
+      const index = customCheckValues.indexOf(option);
+      const otherValue = otherValues[index];
+      if (index !== -1) {//  && !acc.includes(otherValue)
+        return [...acc, otherValue];
+      }
+      return acc;
+    }, []));
+    fieldProps?.mutators?.change(realValue);
+  }, [checkedValues, otherValues]);
+
+  const customCheckValues = useMemo(() => {
+    if (!isAllowCustom) {
+      return [];
+    }
+
+    return otherValues.map((value, index) => `${CUSTOM_OTHER_VALUE}_${index}`);
+  }, [otherValues]);
+
+  const addDisabled = useMemo(() => otherValues.length > 2, [otherValues]);
+
+  function handleCheckBoxChange(value: Array<CheckboxValueType>): void {
+    setCheckedValues((value as string[]));
   }
 
-  function handleOtherValueChange(e: React.ChangeEvent<HTMLInputElement>): void {
-    setOtherValue(e.target.value);
-    if (realValue.includes(CUSTOM_OTHER_VALUE)) {
-      fieldProps.mutators.change(uniq([
-        ...fieldProps.value.filter((value: string) => options.includes(value)),
-        e.target.value,
-      ]));
+  function handleOtherValuesChange(e: React.ChangeEvent<HTMLInputElement>, index:number): void {
+    otherValues[index] = e.target.value;
+    setOtherValues([...otherValues]);
+  }
+
+  function handleOtherValuesAdd():void {
+    if (otherValues.length > 2) {
+      toast.error('自定义项不可超过三项');
+      return;
     }
+
+    setOtherValues([...otherValues, '']);
   }
 
   if (!options.length) {
@@ -72,22 +109,41 @@ function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
 
   return (
     <div className="flex items-center">
-      <Checkbox.Group onChange={handleCheckBoxChange} value={realValue}>
+      <Checkbox.Group onChange={handleCheckBoxChange} value={checkedValues}>
         <Space direction={optionsLayout}>
           {options.map((option): JSX.Element => (
             <Checkbox key={option} value={option}>{option}</Checkbox>
           ))}
+          {
+            isAllowCustom && (
+              otherValues.map((option, index): JSX.Element => (
+                <Checkbox value={customCheckValues[index]} key={customCheckValues[index]}>
+                  <Input
+                    className='w-80'
+                    value={option}
+                    onChange={(e) => handleOtherValuesChange(e, index)}
+                    placeholder="请输入"
+                    maxLength={15}
+                  />
+                </Checkbox>
+              ))
+            )
+          }
         </Space>
-        {isAllowCustom && (
-          <Checkbox value={CUSTOM_OTHER_VALUE}>
-            <Input
-              value={otherValue}
-              onChange={handleOtherValueChange}
-              placeholder="请输入"
-              maxLength={15}
-            />
-          </Checkbox>
-        )}
+        {
+          isAllowCustom && (
+            <Icon
+              className={cs({
+                'cursor-not-allowed': addDisabled,
+              })}
+              name="add"
+              size={16}
+              clickable
+              disabled={addDisabled}
+              onClick={handleOtherValuesAdd}
+            ></Icon>
+          )
+        }
       </Checkbox.Group>
     </div>
   );
