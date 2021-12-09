@@ -10,6 +10,14 @@ const AppDetails = lazy(
   () => import('./pages/app-details'),
 );
 
+const Account = lazy(
+  () => import('./pages/account/routes'),
+);
+
+const Approvals = lazy(
+  () => import('./pages/approvals/routes'),
+);
+
 export const pathPrefix = '/mobile';
 
 export default (
@@ -17,6 +25,8 @@ export default (
     <Switch>
       <Route exact path={`${pathPrefix}`} component={Dashboard} />
       <Route exact path={`${pathPrefix}/apps/:appID`} component={AppDetails} />
+      <Route path={`${pathPrefix}/approvals`} component={Approvals} />
+      <Route path={`${pathPrefix}/account`} component={Account} />
     </Switch>
   </Suspense>
 );

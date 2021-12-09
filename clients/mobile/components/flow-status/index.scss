@@ -1,0 +1,81 @@
+.flow-status {
+  position: relative;
+}
+
+.flow-status::before {
+  width: .08rem;
+  height: .08rem;
+  border-radius: .04rem;
+  margin-right: .04rem;
+  display: inline-block;
+  content: "";
+  background-color: var(--gray-400);
+}
+
+.flow-status::after {
+  width: .08rem;
+  height: .08rem;
+  border-radius: .04rem;
+  content: "";
+  opacity: .75;
+  filter: blur(.08rem);
+  position: absolute;
+  left: 0;
+  top: 50%;
+  bottom: 50%;
+  margin: auto;
+  background-color: var(--gray-400);
+}
+
+.flow-status-IN_REVIEW::before,
+.flow-status-IN_REVIEW::after,
+.flow-status-REVIEW::before,
+.flow-status-REVIEW::after {
+  color: var(--blue-600);
+  background-color: var(--blue-600);
+}
+
+.flow-status-AGREE::before,
+.flow-status-AGREE::after,
+.flow-status-COMPLETE::before,
+.flow-status-COMPLETE::after {
+  background-color: var(--green-600);
+}
+
+.flow-status-REFUSE::before, .flow-status-REFUSE::after {
+  background-color: var(--red-600);
+}
+
+.flow-status-CANCEL::before,
+.flow-status-CANCEL::after,
+.flow-status-ABEND::before,
+.flow-status-ABEND::after {
+  background-color: var(--gray-400);
+}
+
+.flow-status-SEND_BACK::before,
+.flow-status-SEND_BACK::after,
+
+.flow-status-UNTREATED::before,
+.flow-status-UNTREATED::after,
+
+.flow-status-UNREAD::before,
+.flow-status-UNREAD::after,
+
+.flow-status-REVIEW-REVIEW::before,
+.flow-status-REVIEW-REVIEW::after,
+.flow-status-IN_REVIEW-REVIEW::before,
+.flow-status-IN_REVIEW-REVIEW::after,
+
+.flow-status-REVIEW-WRITE::before,
+.flow-status-REVIEW-WRITE::after,
+.flow-status-IN_REVIEW-WRITE::before,
+.flow-status-IN_REVIEW-WRITE::after,
+
+.flow-status-REVIEW-READ::before,
+.flow-status-REVIEW-READ::after,
+.flow-status-IN_REVIEW-READ::before,
+.flow-status-IN_REVIEW-READ::after
+{
+  background-color: var(--yellow-600);
+}
