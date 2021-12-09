@@ -91,7 +91,7 @@ function BodyEditor(props: Props): JSX.Element {
           <>
             <InputEditor
               className="flex-1"
-              value={name}
+              value={name.replace(/\s+/g, '')}
               onChange={handleRowChange('name', current$, store$)}
               placeholder="请输入字段名称"
             />
@@ -106,7 +106,7 @@ function BodyEditor(props: Props): JSX.Element {
   }
 
   function typeRender(
-    { id, type, current$ }: Row<POLY_API.ObjectSchema>,
+    { type, current$ }: Row<POLY_API.ObjectSchema>,
     store$: Store<POLY_API.ObjectSchema>,
   ): JSX.Element {
     return (
@@ -120,7 +120,7 @@ function BodyEditor(props: Props): JSX.Element {
   }
 
   function requiredRender(
-    { id, required, current$ }: Row<POLY_API.ObjectSchema>,
+    { required, current$ }: Row<POLY_API.ObjectSchema>,
     store$: Store<POLY_API.ObjectSchema>,
   ): JSX.Element {
     return (
@@ -129,7 +129,7 @@ function BodyEditor(props: Props): JSX.Element {
   }
 
   function descRender(
-    { id, desc, current$ }: Row<POLY_API.ObjectSchema>,
+    { desc, current$ }: Row<POLY_API.ObjectSchema>,
     store$: Store<POLY_API.ObjectSchema>,
   ): JSX.Element {
     return (
@@ -213,6 +213,7 @@ function BodyEditor(props: Props): JSX.Element {
         value={fromApiDataToObjectSchema((valueFrom || []) as POLY_API.PolyNodeInput[])}
         onAddField={handleAddField}
         onChange={handleChange}
+        addFilter={(row: Row<POLY_API.ObjectSchema>) => !!row.name}
       />
     </>
   );

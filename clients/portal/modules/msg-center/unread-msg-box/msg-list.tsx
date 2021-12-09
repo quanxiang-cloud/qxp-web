@@ -32,8 +32,10 @@ const MsgList = ({ className, getMsgDetail }: Props): JSX.Element => {
       );
     }
 
-    const handleClick = (id: any) =>{
-      // @ts-ignore
+    const handleClick = (id: any) => {
+      if (!getMsgDetail) {
+        return;
+      }
       getMsgDetail({ id });
     };
 

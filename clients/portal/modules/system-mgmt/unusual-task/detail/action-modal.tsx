@@ -30,7 +30,7 @@ const actionValues: Record<Actions, string> = {
 
 function ActionModal({ closeModal, action }: Props): JSX.Element {
   const [showReceiverPicker, setShowPicker] = useState(false);
-  const [chosenEmployees, setChosenEmployees] = useState([]);
+  const [chosenEmployees, setChosenEmployees] = useState<any[]>([]);
   const [showTips, setShowTips] = useState(false);
   const [textValue, setTextValue] = useState('');
   const [stepBackId, setStepBackId] = useState('');
@@ -209,7 +209,6 @@ function ActionModal({ closeModal, action }: Props): JSX.Element {
           onSubmit={(departments, employees) => {
             const receivers = employees.map((v) => toJS(v));
             setShowPicker(false);
-            // @ts-ignore
             setChosenEmployees(receivers);
             return Promise.resolve(true);
           }}

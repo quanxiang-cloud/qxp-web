@@ -17,6 +17,7 @@ const statusMap = {
   [MsgSendStatus.draft]: '草稿',
   [MsgSendStatus.sending]: '发送中',
   [MsgSendStatus.success]: '已成功',
+  [MsgSendStatus.all]: MsgSendStatus,
 };
 
 const MsgStatus = ({ className, status, fail, success }: Props): JSX.Element => {
@@ -33,7 +34,6 @@ const MsgStatus = ({ className, status, fail, success }: Props): JSX.Element => 
       [styles.success]: status === MsgSendStatus.success,
     })}>
     </span>
-    {/* @ts-ignore */}
     <span>{statusMap[status] || status}</span>
     {sendInfo}
   </div>);

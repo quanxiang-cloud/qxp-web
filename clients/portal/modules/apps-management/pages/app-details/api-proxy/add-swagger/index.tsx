@@ -5,6 +5,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import { useMutation } from 'react-query';
 import { Progress } from 'antd';
+import { isString } from 'lodash';
 
 import Table from '@c/table';
 import Button from '@c/button';
@@ -16,6 +17,7 @@ import Header from '../comps/header';
 import ParamsSection from '../add-api/params-section';
 import store from '../store';
 import { useNamespace } from '../hooks';
+import { parseJSON } from '@lib/utils';
 
 type ApiItem = {
   name: string;
@@ -97,12 +99,8 @@ function AddSwagger(): JSX.Element {
       setPercent((ev.loaded / ev.total) * 100);
     };
     reader.onload = function(ev) {
-      let swaggerJson;
-      try {
-        swaggerJson = JSON.parse(ev.target?.result as string || '');
-      } catch (err) {
-        swaggerJson = {};
-      }
+      const result = ev.target?.result;
+      const swaggerJson = isString(result) ? parseJSON(result, { paths: {} }) : { paths: {} } as { paths: Record<string, unknown> };
       const apis = Object.entries(swaggerJson.paths || {}).map(([path, conf]) => {
         return {
           name: Object.values(conf as Record<string, any>)[0].summary || '',

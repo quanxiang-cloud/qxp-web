@@ -18,7 +18,7 @@ interface Props {
   className?: string;
   hideType?: boolean;
   readonly?: boolean;
-  onClick?: (...args: any[])=> void;
+  onClick?: (...args: any[]) => void;
 }
 
 const MsgItem = ({
@@ -33,12 +33,12 @@ const MsgItem = ({
   readonly,
 }: Qxp.MsgItem & Props): JSX.Element => {
   const [read, setRead] = useState(read_status);
-  const refItem = useRef(null);
+  const refItem = useRef<HTMLDivElement>(null);
   const queryPage = useRouting();
   const queryClient = useQueryClient();
   const { curMsgId } = msgCenter;
 
-  useEffect(()=> {
+  useEffect(() => {
     const msgId = getQuery('id') || msgCenter.curMsgId || '';
     if (msgId === id) {
       msgCenter.setCurMsgId(msgId);
@@ -52,11 +52,10 @@ const MsgItem = ({
     }
   }, []);
 
-  const checkRow = ()=> {
+  const checkRow = (): void => {
     const activeCls = 'msg-item-active';
-    if (refItem.current) {
-      // @ts-ignore
-      const trElem = refItem.current.parentNode.parentNode;
+    if (refItem.current && refItem.current.parentNode) {
+      const trElem = refItem.current.parentNode.parentNode as HTMLElement;
       if (curMsgId === id) {
         if (!trElem.classList.contains(activeCls)) {
           trElem.classList.add(activeCls);
@@ -68,7 +67,7 @@ const MsgItem = ({
   };
 
   const readMsg = useMutation(getMsgById, {
-    onMutate: ()=> {
+    onMutate: () => {
       msgCenter.setLoadingDetail(true);
     },
     onSuccess: (data: any) => {
@@ -87,7 +86,7 @@ const MsgItem = ({
     },
   });
 
-  const handleClick = () => {
+  const handleClick = (): void => {
     if (readonly) {
       return;
     }
@@ -121,7 +120,7 @@ const MsgItem = ({
           <span className={cs(styles.statusIcon, {
             [styles.statusUnread]: read === MsgReadStatus.unread,
             [styles.statusRead]: read === MsgReadStatus.read,
-          })}/>
+          })} />
           <span className={styles.txt} title={title}>{title}</span>
         </span>
         {!hideType && (
