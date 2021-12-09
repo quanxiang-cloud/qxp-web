@@ -65,7 +65,7 @@ function ObjectEditor<T extends { children: T[]; id: string }>(
           clickable
           name="add-object-field"
           size={20}
-          onClick={() => showAdd && handleAddField(row, store$)}
+          onClick={showAdd ? handleAddField(row, store$) : undefined}
           className={cs('transition duration-240', {
             'opacity-100': showAdd,
             'opacity-0 cursor-default pointer-events-none absolute': !showAdd,
@@ -74,7 +74,7 @@ function ObjectEditor<T extends { children: T[]; id: string }>(
         <Icon clickable name="delete" size={20} onClick={handleDeleteField(row, store$)} />
       </div>
     );
-  }, [addFilter]);
+  }, [addFilter, handleAddField, handleDeleteField]);
 
   const distColumns = useMemo(() => {
     return columns.concat({

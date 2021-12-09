@@ -125,7 +125,7 @@ function BodyEditor({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
       render: typeRender,
     },
     {
-      title: '数值',
+      title: '参数值',
       dataIndex: 'data',
       render: valueRender,
     },
