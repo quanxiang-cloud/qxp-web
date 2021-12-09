@@ -20,16 +20,20 @@ export default function AlterRoleFunc({ funcs: functions }: IAlterRoleFunc): JSX
   const originTags = useRef<string[]>([]);
 
   const getFuncIds = (func: IRoleFunc | IRoleFuncItem): string[] => {
-    const tags = [];
-    for (const key in func) {
+    const tags: string[] = [];
+
+    Object.keys(func).forEach((_key) => {
+      const key = _key as keyof (IRoleFunc | IRoleFuncItem);
       if (key === 'id' && func.has) {
         tags.push(func.id as string);
-        // @ts-ignore
-      } else if (key !== 'id' && typeof func[key] === 'object') {
-        // @ts-ignore
-        tags.push(...getFuncIds(func[key]));
+      } else if (key !== 'id') {
+        const funcValue = func[key];
+        if (typeof funcValue === 'object') {
+          tags.push(...getFuncIds(funcValue));
+        }
       }
-    }
+    });
+
     return tags;
   };
   if (!originTags.current.length) {
@@ -44,7 +48,7 @@ export default function AlterRoleFunc({ funcs: functions }: IAlterRoleFunc): JSX
   // setDeleteSets(deletes);
   // }, [funcs]);
 
-  function getCount(funcs:IRoleFunc): [number, number] {
+  function getCount(funcs: IRoleFunc): [number, number] {
     let ckeckcount = 0;
     let total = 0;
     Object.values(funcs).forEach((func) => {

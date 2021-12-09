@@ -64,8 +64,7 @@ function DocumentNav(): JSX.Element {
       root: true,
       disableSelect: true,
     };
-
-    store.apiNsList.forEach((item)=> {
+    store.apiNsList.forEach((item) => {
       proxyApis.children?.push(mapNsToNodeItem(item));
     });
 
@@ -93,9 +92,7 @@ function DocumentNav(): JSX.Element {
                 store.tableID = node.source?.tableID || '';
               }
             }
-
-            // @ts-ignore
-            if (isObject(node.source) && node.source.parent && ('subCount' in node.source)) {
+            if (isObject(node.source) && ('parent' in node.source) && ('subCount' in node.source)) {
               if (node.hasChild && !node.childResolved) {
                 store.fetchSubNamespaces(node);
               }

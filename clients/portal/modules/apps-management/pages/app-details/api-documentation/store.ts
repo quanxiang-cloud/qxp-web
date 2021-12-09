@@ -12,7 +12,7 @@ import { getTableXName, getApiDoc } from './api';
 import { INIT_API_CONTENT, INIT_CURRENT_MODEL } from './constants';
 import { getAppPath, getNamespaceList, getServiceApiList } from '../api-proxy/api';
 
-type NavItemData=DataModel | PolyAPI.Namespace;
+type NavItemData = DataModel | PolyAPI.Namespace;
 
 function isApiNode(node: any): boolean {
   return isObject(node) && ('fullPath' in node) && ('method' in node);
@@ -80,7 +80,7 @@ class ApiDocStore {
   @observable tableID = '';
   @observable dataModels: DataModel[] = [];
   @observable tempDataModels: DataModel[] = [];
-  @observable currentDataModel: NavItemData = INIT_CURRENT_MODEL;
+  @observable currentDataModel: NavItemData & { fullPath?: string } = INIT_CURRENT_MODEL;
   @observable APiContent: APiContent = INIT_API_CONTENT;
   @observable dataModelSchema: DataModelSchema = INIT_MODEL_SCHEMA;
   @observable isAPILoading = true;
@@ -148,7 +148,7 @@ class ApiDocStore {
     getTableXName(this.appID, {
       tableID: this.tableID,
       action: apiType,
-    }).then((res: {name: string}) => {
+    }).then((res: { name: string }) => {
       this.ApiPath = res.name;
       this.isAPILoading = false;
     }).catch((err) => toast.error(err));
@@ -167,14 +167,14 @@ class ApiDocStore {
       }).catch((err: string) => {
         toast.error(err);
         this.APiContent = INIT_API_CONTENT;
-      }).finally(()=> {
+      }).finally(() => {
         this.isAPILoading = false;
       });
     }
   }
 
   @action
-  fetchApiNamespaces=async (): Promise<void> => {
+  fetchApiNamespaces = async (): Promise<void> => {
     try {
       const { appPath } = await getAppPath(this.appID);
       const { list } = await getNamespaceList(appPath, { page: 1, pageSize: -1 });
@@ -185,12 +185,12 @@ class ApiDocStore {
   }
 
   @action
-  setNsList=(list: PolyAPI.Namespace[]): void => {
+  setNsList = (list: PolyAPI.Namespace[]): void => {
     this.apiNsList = list;
   }
 
   @action
-  fetchSubNamespaces=async (parent: NodeItem<PolyAPI.Namespace>): Promise<void> => {
+  fetchSubNamespaces = async (parent: NodeItem<PolyAPI.Namespace>): Promise<void> => {
     const ns = [parent.parentID, parent.source?.name].join('/');
     const name = parent.source?.name || '';
     const svc = [parent.parentID, name, name].join('/');
@@ -207,7 +207,7 @@ class ApiDocStore {
   }
 
   @action
-  fetchNsApis=async (parent: NodeItem<PolyAPI.Namespace>): Promise<void> => {
+  fetchNsApis = async (parent: NodeItem<PolyAPI.Namespace>): Promise<void> => {
     const name = parent.source?.name || '';
     const svc = [parent.parentID, name, name].join('/');
     try {
@@ -221,12 +221,12 @@ class ApiDocStore {
   }
 
   @action
-  setApiPath=(path: string): void => {
+  setApiPath = (path: string): void => {
     this.ApiPath = path;
   }
 
   @action
-  reset=(): void=> {
+  reset = (): void => {
     this.tableID = '';
     this.apiNsList = [];
   }

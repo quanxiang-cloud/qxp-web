@@ -64,11 +64,10 @@ function FileUpload({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
           });
         }}
         onProgress={(step, file) => {
-          // @ts-ignore
           const percent = typeof step?.percent === 'number' ? Math.round(step.percent) : 0;
-          // @ts-ignore
           setFile({
             ...file,
+            url: '',
             filename: file.name,
             percentage: percent,
             showProgress: true,
