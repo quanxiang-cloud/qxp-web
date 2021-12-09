@@ -13,37 +13,37 @@ const createNamespaceSchema: ISchema = {
       },
       properties: {
         title: {
-          title: '分组名称',
+          title: '子分组名称',
           type: 'string',
           'x-component': 'InputWithDesc',
           'x-component-props': {
-            placeholder: '请输入，例如：公司系统',
-            desc: '不超过 20 个字符，分组名称不可重复',
+            placeholder: '请输入，例如: 公司系统',
+            desc: '不超过 20 个字符，同一分组下，子分组名称不可重复',
           },
           'x-rules': [
             {
               required: true,
-              message: '请输入分组名称',
+              message: '请输入子分组名称',
             },
             {
               max: 20,
               message: '长度或条目数不能大于20',
             },
-            (v: string): boolean | string => /\s+/.test(v) ? '分组名称不能包含空格' : true,
+            (v: string): boolean | string => /\s+/.test(v) ? '子分组名称不能包含空格' : true,
           ],
           'x-index': 0,
         },
         name: {
-          title: '分组标识',
+          title: '子分组标识',
           type: 'string',
           'x-component': 'InputWithDesc',
           'x-component-props': {
-            placeholder: '请输入，例如：sys_001',
+            placeholder: '请输入，例如: sys_001',
             desc: '不超过 20 字符，必须以字母开头，只能包含字母、数字、下划线，标识不可重复。',
           },
           'x-rules': [{
             required: true,
-            message: '请输入分组标识',
+            message: '请输入子分组标识',
           }, {
             pattern: /^[a-zA-Z_][a-zA-Z_0-9]*$/,
             message: '只能包含数字字母下划线, 且以字母或下划线开头',

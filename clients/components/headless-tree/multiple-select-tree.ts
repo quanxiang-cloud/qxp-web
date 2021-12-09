@@ -44,7 +44,7 @@ export default class SelectableTreeStore<T> extends BaseStore<T> {
     this.generateNodeMap();
   }
 
-  generateNodeMap() {
+  generateNodeMap(): void {
     // todo support initial check status
     this._nodeMap = this.nodeList.reduce<NodeMap<T>>((nodeMap, node) => {
       nodeMap[node.id] = {
@@ -74,7 +74,7 @@ export default class SelectableTreeStore<T> extends BaseStore<T> {
   }
 
   @action
-  toggleCheck(id: string, checkStatus?: 'checked' | 'unchecked') {
+  toggleCheck(id: string, checkStatus?: 'checked' | 'unchecked'): NodeMap<T> | undefined {
     if (!this._nodeMap[id]) {
       return;
     }
@@ -86,7 +86,7 @@ export default class SelectableTreeStore<T> extends BaseStore<T> {
     return this.nodeMap;
   }
 
-  _toggleCheck(id: string, checkStatus: 'checked' | 'unchecked') {
+  _toggleCheck(id: string, checkStatus: 'checked' | 'unchecked'): void {
     if (!this._nodeMap[id]) {
       return;
     }
@@ -108,7 +108,7 @@ export default class SelectableTreeStore<T> extends BaseStore<T> {
     !this.singleMode && this.propagateCheckStatus(parentID, checkStatus);
   }
 
-  propagateCheckStatus(id: string, childCheckStatus: CheckStatus) {
+  propagateCheckStatus(id: string, childCheckStatus: CheckStatus): void {
     if (!this._nodeMap[id]) {
       return;
     }

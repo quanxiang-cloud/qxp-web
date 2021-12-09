@@ -1,15 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { observer } from 'mobx-react';
 import cs from 'classnames';
 
 import Tree from '@c/headless-tree';
+import type { NodeRenderProps } from '@c/headless-tree/types';
 import Loading from '@c/loading';
 import { useApiNamespaceSearchStore } from '@orchestrationAPI/context';
-import { useSearchNameSpaceList } from '@orchestrationAPI/effects/api/api-namespace';
+import { NameSpace, useSearchNameSpaceList } from '@orchestrationAPI/effects/api/api-namespace';
+import { OrchestrationAPIStore } from '@orchestrationAPI/store';
 import { apiNamespaceToTreeNode, stringToAsciiNumber } from '@orchestrationAPI/utils';
+import withProps from '@orchestrationAPI/effects/hoc/with-props';
 
 import NodeRender from '../api-namespace-tree/namespace-node';
-import { OrchestrationAPIStore } from '@orchestrationAPI/store';
 
 interface Props {
   shouldShow: boolean;
@@ -26,6 +28,12 @@ function APINamespaceSearchTree(
   useEffect(() => {
     shouldShow && store && orchestrationAPIStore?.setNameSpaceStore(store);
   }, [store, orchestrationAPIStore, shouldShow]);
+
+  const localNodeRender = useMemo(() => {
+    return withProps<{ keyword: string }, NodeRenderProps<NameSpace>>(
+      { keyword: searchKey || '' }, NodeRender,
+    );
+  }, [searchKey]);
 
   const { data, isLoading: loading } = useSearchNameSpaceList(
     { path: rootPath || '', body: { title: searchKey || '' } },
@@ -59,7 +67,7 @@ function APINamespaceSearchTree(
     >
       <Tree
         store={store}
-        NodeRender={NodeRender}
+        NodeRender={localNodeRender}
         RootNodeRender={() => null}
         switcherIcon={{ open: 'folder_outline_empty', close: 'folder_open' }}
       />

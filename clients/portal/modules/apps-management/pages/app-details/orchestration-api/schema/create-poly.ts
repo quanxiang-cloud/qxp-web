@@ -45,12 +45,6 @@ export default over(
         'x-index': 3,
         display: false,
       },
-      templateAPIPath: {
-        type: 'string',
-        'x-component': 'Input',
-        display: false,
-        'x-index': 4,
-      },
     });
   },
   editNamespaceSchema,
