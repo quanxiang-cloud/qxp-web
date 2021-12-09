@@ -144,13 +144,17 @@ function DataList(): JSX.Element {
               <>
                 <span className="operate" onClick={() => temp(id)}>定义</span>
                 <span className="operate" onClick={() => onClickTool(id, 'build')}>构建</span>
+                <span className="cursor-pointer text-red-600" onClick={() => onClickTool(id, 'deletefunc')}>
+                  删除
+                </span>
               </>
             )}
-            {state !== 'Unknown' ? (
+            {state === 'False' && (
               <span className="cursor-pointer text-red-600" onClick={() => onClickTool(id, 'deletefunc')}>
-                删除
+                  删除
               </span>
-            ) : <span>-</span> }
+            )}
+            {(state === 'Unknown' || !state) && <span>-</span> }
           </div>
         );
       },
