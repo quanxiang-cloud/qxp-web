@@ -22,18 +22,17 @@ type Props = {
 }
 
 const NavMsgBar = ({ type, className }: Props): JSX.Element => {
-  const toggleRef = useRef(null);
-  const msgBoxRef = useRef(null);
+  const toggleRef = useRef<HTMLDivElement>(null);
+  const msgBoxRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
   const { openUnreadMsgBox, msgBoxOpen, openMsgCenter, countUnread } = msgCenter;
   const { data: countUnreadMsg } = useQuery('count-unread-msg', getUnreadMsgCount);
-
-  const handleClickOuter = (ev: MouseEvent) => {
-    const { target } = ev;
-    if (!toggleRef.current || !msgBoxRef.current) {
+  // (this: HTMLElement, ev: MouseEvent) => any
+  const handleClickOuter = (ev: Event): void => {
+    const target = ev.target as Node | null;
+    if (!target || !toggleRef.current || !msgBoxRef.current) {
       return;
     }
-    // @ts-ignore
     if (!(toggleRef.current.contains(target) || msgBoxRef.current.contains(target))) {
       openUnreadMsgBox(false);
     }

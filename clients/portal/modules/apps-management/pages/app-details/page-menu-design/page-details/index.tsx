@@ -95,11 +95,10 @@ function PageDetails({ pageID }: Props): JSX.Element {
   }
 
   function onProgress(step: any, file: QxpFile): void {
-    // @ts-ignore
     const percent = typeof step?.percent === 'number' ? Math.round(step.percent) : 0;
-    // @ts-ignore
     setFile({
       ...file,
+      url: '',
       filename: file.name,
       percentage: percent,
       showProgress: true,

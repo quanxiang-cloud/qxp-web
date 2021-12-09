@@ -24,8 +24,7 @@ async function httpClient<TData, TBody = unknown>(
   }
   const response = await fetch(path, {
     method: 'POST',
-    // @ts-ignore
-    body: options?.formData ? body : JSON.stringify(body || {}),
+    body: options?.formData ? body as unknown as FormData : JSON.stringify(body || {}),
     headers,
   });
 

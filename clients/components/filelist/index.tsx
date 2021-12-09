@@ -57,9 +57,13 @@ const Filelist = ({
       .catch((err: Error) => toast.error(err.message));
   };
 
-  const exportZip = (blobs: Array<{ url: string, blob: any }>) => {
+  const exportZip = (blobs: Array<void | { url: string, blob: Promise<Blob> }>) => {
     const zip = jsZip();
-    blobs.forEach(({ url, blob }) => {
+    blobs.forEach((_blob) => {
+      if (!_blob) {
+        return;
+      }
+      const { url, blob } = _blob;
       const urlInst = new URL(url);
       const urlPath = urlInst.pathname.split('/');
       zip.file(decodeURIComponent(urlPath[urlPath.length - 1]), blob);
@@ -73,7 +77,6 @@ const Filelist = ({
   };
 
   const dlAndZip = (urls: string[]) => {
-    // @ts-ignore
     return Promise.all(urls.map((url) => dlViaBlob(url))).then(exportZip);
   };
 
@@ -121,9 +124,9 @@ const Filelist = ({
           <legend>
             附件
             {canMultiDownload &&
-            (<span className='cursor-pointer ml-8 text-12 text-blue-600' onClick={handleZipDl}>
-              打包下载
-            </span>)}
+              (<span className='cursor-pointer ml-8 text-12 text-blue-600' onClick={handleZipDl}>
+                打包下载
+              </span>)}
           </legend>
           {renderList()}
         </fieldset>
