@@ -140,14 +140,14 @@ export function isObjectField(type: string): boolean {
 }
 
 type EditInputs = POLY_API.PolyNodeInput[] | POLY_API.PolyEndBodyData[] |null
-export function validateNamed(values: EditInputs): boolean {
+export function isNameInvalidate(values: EditInputs): boolean {
   if (!values) {
     return false;
   }
 
   return values.some(({ name, type, data }) => {
     if (type === 'object' && name) {
-      return validateNamed(data as EditInputs);
+      return isNameInvalidate(data as EditInputs);
     }
 
     return !name;

@@ -21,14 +21,13 @@ function BodyEditor({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
   const errorsRef = useRef<Record<string, string>>({});
 
   function handleRowChange(
-    rowId: string,
     keyType: keyof POLY_API.PolyConstSchema,
     current$: ItemStore<POLY_API.PolyConstSchema>,
     store$: Store<POLY_API.PolyConstSchema>,
   ) {
     return (e: ChangeEvent<HTMLInputElement> | string | number | boolean) => {
       const value = isString(e) || isBoolean(e) || isNumber(e) ? e : e.target.value;
-      errorsRef.current[rowId] = !value ? '参数名称必填' : '';
+      errorsRef.current[current$.id] = !value ? '参数名称必填' : '';
       if (keyType === 'type' && isObjectField(current$.get('type')) && !isObjectField(`${value}`)) {
         current$.removeChild();
       }
@@ -46,7 +45,7 @@ function BodyEditor({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
         <InputEditor
           className="flex-1"
           value={name}
-          onChange={handleRowChange(id, 'name', current$, store$)}
+          onChange={handleRowChange('name', current$, store$)}
           placeholder="请输入字段名称"
         />
         {!!errorsRef.current[id] && (
@@ -64,7 +63,7 @@ function BodyEditor({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
       <FieldTypeSelector
         simple
         type={type}
-        onChange={handleRowChange(id, 'type', current$, store$)}
+        onChange={handleRowChange('type', current$, store$)}
       />
     );
   }
@@ -75,7 +74,7 @@ function BodyEditor({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
   ): JSX.Element {
     if (type === 'boolean' || isBoolean(data)) {
       return (
-        <BooleanSelector value={!!data} onChange={handleRowChange(id, 'data', current$, store$)} />
+        <BooleanSelector value={!!data} onChange={handleRowChange('data', current$, store$)} />
       );
     }
 
@@ -84,7 +83,7 @@ function BodyEditor({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
         className="ml-2"
         type={type === 'number' ? 'number' : 'text'}
         value={data}
-        onChange={handleRowChange(id, 'data', current$, store$)}
+        onChange={handleRowChange('data', current$, store$)}
         placeholder="请输入字段值"
       />
     );
@@ -97,7 +96,7 @@ function BodyEditor({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
     return (
       <InputEditor
         value={desc}
-        onChange={handleRowChange(id, 'desc', current$, store$)}
+        onChange={handleRowChange('desc', current$, store$)}
         placeholder="请输入字段描述"
       />
     );

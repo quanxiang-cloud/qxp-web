@@ -1,4 +1,4 @@
-import { validateNamed } from '@portal/modules/poly-api/utils/object-editor';
+import { isNameInvalidate } from '@polyApi/utils/object-editor';
 
 export default {
   type: 'object',
@@ -23,7 +23,7 @@ export default {
       },
       'x-rules': [
         (values: POLY_API.PolyEndBody): string => {
-          return validateNamed(values.data) ? '参数名称必填' : '';
+          return isNameInvalidate(values.data) ? '参数名称必填' : '';
         },
       ],
       'x-index': 0,

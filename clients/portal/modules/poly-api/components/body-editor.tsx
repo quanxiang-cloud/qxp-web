@@ -41,7 +41,7 @@ function BodyEditor(props: Props): JSX.Element {
   }, [value]);
 
   function handleRowChange(
-    rowId: string,
+    // rowId: string,
     keyType: keyof POLY_API.ObjectSchema,
     current$: ItemStore<POLY_API.ObjectSchema>,
     store$: Store<POLY_API.ObjectSchema>,
@@ -50,7 +50,7 @@ function BodyEditor(props: Props): JSX.Element {
       const value = isString(e) || isBoolean(e) || isNumber(e) ? e : e.target.value;
 
       if (keyType === 'name') {
-        errorsRef.current[rowId] = !value ? '参数名称必填' : '';
+        errorsRef.current[current$.id] = !value ? '参数名称必填' : '';
       }
 
       if (keyType === 'type' && !isObjectField(current$.get('type')) && isObjectField(`${value}`)) {
@@ -92,7 +92,7 @@ function BodyEditor(props: Props): JSX.Element {
             <InputEditor
               className="flex-1"
               value={name}
-              onChange={handleRowChange(id, 'name', current$, store$)}
+              onChange={handleRowChange('name', current$, store$)}
               placeholder="请输入字段名称"
             />
             {!!errorsRef.current[id] && (
@@ -114,7 +114,7 @@ function BodyEditor(props: Props): JSX.Element {
         complexity
         {...typeConfig}
         type={type}
-        onChange={handleRowChange(id, 'type', current$, store$)}
+        onChange={handleRowChange('type', current$, store$)}
       />
     );
   }
@@ -124,7 +124,7 @@ function BodyEditor(props: Props): JSX.Element {
     store$: Store<POLY_API.ObjectSchema>,
   ): JSX.Element {
     return (
-      <BooleanSelector value={required} onChange={handleRowChange(id, 'required', current$, store$)} />
+      <BooleanSelector value={required} onChange={handleRowChange('required', current$, store$)} />
     );
   }
 
@@ -136,7 +136,7 @@ function BodyEditor(props: Props): JSX.Element {
       <InputEditor
         placeholder="请输入字段描述"
         value={desc}
-        onChange={handleRowChange(id, 'desc', current$, store$)}
+        onChange={handleRowChange('desc', current$, store$)}
       />
     );
   }
