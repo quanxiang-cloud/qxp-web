@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useCallback } from 'react';
+import React, { ChangeEvent, useCallback, useRef } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { isString, isBoolean, isNumber } from 'lodash';
 import { equals } from 'ramda';
@@ -18,6 +18,7 @@ function BodyEditor({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
     const distValue = fromPolyConstSchemaToApiData(_value);
     !equals(value, distValue) && mutators.change(distValue);
   }, [value]);
+  const errorsRef = useRef<Record<string, string>>({});
 
   function handleRowChange(
     keyType: keyof POLY_API.PolyConstSchema,
@@ -26,6 +27,7 @@ function BodyEditor({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
   ) {
     return (e: ChangeEvent<HTMLInputElement> | string | number | boolean) => {
       const value = isString(e) || isBoolean(e) || isNumber(e) ? e : e.target.value;
+      errorsRef.current[current$.id] = !value ? '参数名称必填' : '';
       if (keyType === 'type' && isObjectField(current$.get('type')) && !isObjectField(`${value}`)) {
         current$.removeChild();
       }
@@ -35,7 +37,7 @@ function BodyEditor({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
   }
 
   function nameRender(
-    { name, current$ }: Row<POLY_API.PolyConstSchema>,
+    { id, name, current$ }: Row<POLY_API.PolyConstSchema>,
     store$: Store<POLY_API.PolyConstSchema>,
   ): JSX.Element {
     return (
@@ -46,12 +48,15 @@ function BodyEditor({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
           onChange={handleRowChange('name', current$, store$)}
           placeholder="请输入字段名称"
         />
+        {!!errorsRef.current[id] && (
+          <span className="text-red-600 px-3 pb-3 text-12">参数名称必填</span>
+        )}
       </div>
     );
   }
 
   function typeRender(
-    { type, current$ }: Row<POLY_API.PolyConstSchema>,
+    { id, type, current$ }: Row<POLY_API.PolyConstSchema>,
     store$: Store<POLY_API.PolyConstSchema>,
   ): JSX.Element {
     return (
@@ -64,7 +69,7 @@ function BodyEditor({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
   }
 
   function valueRender(
-    { data, type, current$ }: Row<POLY_API.PolyConstSchema>,
+    { id, data, type, current$ }: Row<POLY_API.PolyConstSchema>,
     store$: Store<POLY_API.PolyConstSchema>,
   ): JSX.Element {
     if (type === 'boolean' || isBoolean(data)) {
@@ -85,7 +90,7 @@ function BodyEditor({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
   }
 
   function descRender(
-    { desc, current$ }: Row<POLY_API.PolyConstSchema>,
+    { id, desc, current$ }: Row<POLY_API.PolyConstSchema>,
     store$: Store<POLY_API.PolyConstSchema>,
   ): JSX.Element {
     return (

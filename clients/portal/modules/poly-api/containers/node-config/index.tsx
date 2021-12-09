@@ -19,6 +19,8 @@ import toast from '@lib/toast';
 
 import DrawerTitle from './drawer-title';
 
+import './index.scss';
+
 const schemaFormComponents = {
   input: Input,
   bodyEditor: BodyEditor,
@@ -61,7 +63,11 @@ export default function NodeConfigDrawer(): JSX.Element {
       currentNode?.set('detail', omit(excludedFields || [], configValue) );
       savePolyApiResult();
       onCancel();
-    } catch (e) {
+    } catch (e: any) {
+      if ('errors' in e) {
+        toast.error(e.errors[0].messages[0]);
+        return;
+      }
       toast.error(e);
     }
   }

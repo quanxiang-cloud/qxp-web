@@ -49,7 +49,7 @@ export class ItemStore<T extends { children: T[], id: string }> extends Behavior
     this.isChildrenHidden = true;
   }
 
-  showChidren(): void {
+  showChildren(): void {
     this.children$.forEach((child) => child.show());
     this.isChildrenHidden = false;
   }
