@@ -80,7 +80,7 @@ function BodyEditor(props: Props): JSX.Element {
 
     return (
       <div className="flex items-center" style={{ marginLeft: (level - 1) * 20 }}>
-        {(type === 'object' || type === 'array') && (
+        {(type === 'object' || type === 'array') && !!current$.children$.length && (
           <ArrowDownTrigger
             className="mr-5"
             isContentVisible={!current$.isChildrenHidden}
