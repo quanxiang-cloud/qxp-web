@@ -6,7 +6,9 @@ import { FieldConfigContext, fieldConfigContext } from './context';
 export default function(): JSX.Element {
   return (
     <FieldConfigContext.Provider value={fieldConfigContext}>
-      <FormFieldConfig />
+      <div className="px-20">
+        <FormFieldConfig />
+      </div>
     </FieldConfigContext.Provider>
   );
 }
