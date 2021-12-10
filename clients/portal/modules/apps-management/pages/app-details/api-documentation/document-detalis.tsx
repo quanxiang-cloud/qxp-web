@@ -131,7 +131,7 @@ function ApiDocumentDetails(): JSX.Element {
     }
   }, [store.currentDataModel]);
 
-  if (!store.tableID) {
+  if (!store.tableID && !store.apiNsList.length) {
     return <EmptyTips text='暂无数据模型' className="pt-40 m-auto" />;
   }
 
@@ -140,7 +140,7 @@ function ApiDocumentDetails(): JSX.Element {
   }
 
   function renderMain(): JSX.Element {
-    if (isNsNode()) {
+    if (isNsNode() || (!isApiNode() && !store.tableID)) {
       return (
         <div className='px-20 py-20 text-14'>选择 namespace 下的 API 来查看接口文档</div>
       );
