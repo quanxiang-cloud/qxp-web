@@ -1,6 +1,5 @@
 import React, { SetStateAction, useEffect, useMemo, useState } from 'react';
 import cs from 'classnames';
-import { uniq } from 'lodash';
 import { Checkbox, Input, Space } from 'antd';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
@@ -43,31 +42,41 @@ function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
       return;
     }
 
+    function deep(acc:string[], option:string, index:number):string[] {
+      if (index !== -1) {
+        const customCheckValue = customCheckValues[index];
+        if (!acc.includes(customCheckValue)) {
+          return [...acc, customCheckValue];
+        } else {
+          const _index = otherValues.indexOf(option, index + 1);
+          return deep(acc, option, _index);
+        }
+      }
+      return acc;
+    }
+
     setCheckedValues(
       fieldProps.value.reduce((acc: string[], option:string) => {
-        if (options.includes(option)) {
+        if (options.includes(option) && !acc.includes(option)) {
           return [...acc, option];
         }
         const index = otherValues.indexOf(option);
-        if (index !== -1) {
-          return [...acc, customCheckValues[index]];
-        }
-        return acc;
+        return deep(acc, option, index);
       }, []));
   }, [options]);
 
   useEffect(() => {
-    const realValue = uniq(checkedValues.reduce((acc: string[], option: string) => {
+    const realValue = checkedValues.reduce((acc: string[], option: string) => {
       if (options.includes(option)) {
         return [...acc, option];
       }
       const index = customCheckValues.indexOf(option);
-      const otherValue = otherValues[index];
       if (index !== -1) {//  && !acc.includes(otherValue)
+        const otherValue = otherValues[index];
         return [...acc, otherValue];
       }
       return acc;
-    }, []));
+    }, []);
     fieldProps?.mutators?.change(realValue);
   }, [checkedValues, otherValues]);
 
