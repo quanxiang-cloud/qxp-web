@@ -55,7 +55,7 @@ function FormConfig(): JSX.Element {
   return (
     <>
       {/* <ColumnNumberOption /> */}
-      <div className="pt-6">
+      <div className="pt-6 px-20">
         <div className="pb-24">
           <div className="item-title">字段标题位置</div>
           <div className="layout-content">
