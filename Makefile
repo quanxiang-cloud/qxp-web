@@ -1,7 +1,7 @@
 all: buildAssets server rollup
 
 clean:
-	@echo "clean previsous build..."
+	@echo "clean previous build..."
 	@rm -rf dist
 
 buildAssets: copyStatics copyTemplates buildIcons
