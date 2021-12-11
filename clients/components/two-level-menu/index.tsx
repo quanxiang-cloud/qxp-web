@@ -54,7 +54,7 @@ function NavItem<T>({
   groupBanSelect,
 }: NavItemProps<T>): JSX.Element {
   const [expand, setExpand] = useState(!!node.root);
-  const [iconName, iconColor] = useMemo(()=> {
+  const iconName = useMemo(()=> {
     const hasChild = !!(node.children && node.children.length) || !!node.hasChild;
     if (node.type === 'group') {
       if (hasChild) {
@@ -62,7 +62,7 @@ function NavItem<T>({
       }
       return 'folder_empty';
     }
-    return [node.iconName || '', node.iconColor || ''];
+    return node.iconName || '';
   }, [node, expand]);
 
   return (
@@ -79,7 +79,7 @@ function NavItem<T>({
           onSelect?.(node);
         }}
       >
-        {iconName && <Icon className='mr-4' color={iconColor as iconColor} size={16} name={iconName} />}
+        {iconName && <Icon className='mr-4' size={16} name={iconName} />}
         <span style={{ lineHeight: '36px' }} className='flex-1 truncate'>
           {node.title}
         </span>
