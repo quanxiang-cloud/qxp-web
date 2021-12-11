@@ -14,3 +14,5 @@ tmp
 
 # This file will be automatically created by build task
 clients/components/icon/svg-hash.ts
+
+/pkg/
