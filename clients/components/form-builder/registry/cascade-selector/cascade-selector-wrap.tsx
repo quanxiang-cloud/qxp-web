@@ -7,7 +7,7 @@ import FormDataValueRenderer from '@c/form-data-value-renderer';
 import CascadeSelector from './cascade-selector';
 
 function CascadeSelectorWarp(props: ISchemaFieldComponentProps): JSX.Element {
-  const { predefinedDataset, defaultValueFrom, showFullPath } = props.props['x-internal'];
+  const { defaultValueFrom } = props.props['x-internal'];
 
   useEffect(() => {
     // clear cascade when change value source
@@ -24,9 +24,7 @@ function CascadeSelectorWarp(props: ISchemaFieldComponentProps): JSX.Element {
   return (
     <CascadeSelector
       {...props.props['x-component-props']}
-      predefinedDataset={predefinedDataset}
       defaultValueFrom={defaultValueFrom}
-      showFullPath={showFullPath}
       onChange={props?.mutators?.change ? props?.mutators?.change : noop}
       value={props.value}
     />

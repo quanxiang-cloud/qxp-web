@@ -56,12 +56,12 @@ export function toSchema(value: typeof defaultConfig): ISchema {
       allowCustom: value.allowCustom,
       optionsLayout: value.optionsLayout,
       datasetId: value.datasetId,
+      defaultValue: value.defaultValue,
     },
     ['x-internal']: {
       sortable: value.sortable,
       permission: getSchemaPermissionFromSchemaConfig(value),
       defaultValueFrom: value.defaultValueFrom,
-      defaultValue: value.defaultValue,
     },
   };
 }
