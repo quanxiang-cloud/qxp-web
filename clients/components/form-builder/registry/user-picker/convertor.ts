@@ -52,6 +52,12 @@ export const toSchema = (config: DefaultConfig): ISchema => {
       appID: config.appID,
       showSearch: true,
       loading: config.loading,
+      multiple: config.multiple,
+      optionalRange: config.optionalRange,
+      defaultRange: config.defaultRange,
+      rangeList: config.rangeList,
+      defaultValues: config.defaultValues,
+      defaultValue: config.defaultValue,
       onSearch(value: string) {
         config.onSearch && config.onSearch(value);
       },
@@ -61,12 +67,6 @@ export const toSchema = (config: DefaultConfig): ISchema => {
       },
     },
     ['x-internal']: {
-      multiple: config.multiple,
-      optionalRange: config.optionalRange,
-      defaultRange: config.defaultRange,
-      rangeList: config.rangeList,
-      defaultValues: config.defaultValues,
-      defaultValue: config.defaultValue,
       permission: getSchemaPermissionFromSchemaConfig(config),
     },
     enum: config.optionalRange === 'all' ? [] : (config.rangeList || []).map((itm) => ({
@@ -86,12 +86,12 @@ export const toConfig = (schema: ISchema): DefaultConfig => {
     displayModifier: getDisplayModifierFromSchema(schema),
     placeholder: schema['x-component-props']?.placeholder || '',
     required: !!schema.required,
-    defaultValue: schema['x-internal']?.defaultValue || [],
-    defaultValues: schema['x-internal']?.defaultValues || [],
-    rangeList: schema['x-internal']?.rangeList || [],
-    multiple: schema['x-internal']?.multiple,
-    optionalRange: schema['x-internal']?.optionalRange,
-    defaultRange: schema['x-internal']?.defaultRange,
+    defaultValue: schema['x-component-props']?.defaultValue || [],
+    defaultValues: schema['x-component-props']?.defaultValues || [],
+    rangeList: schema['x-component-props']?.rangeList || [],
+    multiple: schema['x-component-props']?.multiple,
+    optionalRange: schema['x-component-props']?.optionalRange,
+    defaultRange: schema['x-component-props']?.defaultRange,
     appID: schema['x-component-props']?.appID,
   };
 };

@@ -6,6 +6,9 @@ type ValidationFormula = {
   message: string;
 }
 
+type labelAlign = 'right' | 'top'
+type column = 1| 2
+
 type XInternal = {
   fieldId?: string;
   parentFieldId?: string;
@@ -13,13 +16,16 @@ type XInternal = {
   sortable?: boolean;
   permission?: import('./constants').PERMISSION;
   validations?: Array<ValidationFormula>;
+  labelAlign?: labelAlign;
+  columns?: column;
+  tabIndex?: string;
+  visibleHiddenLinkages?: FormBuilder.VisibleHiddenLinkage[];
   defaultValueFrom?: FormBuilder.DefaultValueFrom;
   defaultValueLinkage?: FormBuilder.DefaultValueLinkage;
   calculationFormula?: string;
   isLayoutComponent?: boolean;
   isSystem?: boolean;
   fieldPath?: string;
-  [key: string]: any;
 }
 
 type ISchema = import('@formily/react-schema-renderer').ISchema & {
@@ -173,7 +179,7 @@ type SchemaFieldItem = ISchema & {
   id: string;
   fieldName: string;
   componentName: string;
-  tabIndex?: number;
+  tabIndex?: string;
 }
 
 type FormItem = {
