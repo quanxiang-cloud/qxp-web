@@ -9,6 +9,10 @@
     align-self: stretch;
   }
 
+  .z-1 {
+    z-index: 1;
+  }
+
   .line {
     @apply w-full bg-black-900;
     height: 1px;
