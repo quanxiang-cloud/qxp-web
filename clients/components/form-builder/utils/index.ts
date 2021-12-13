@@ -242,8 +242,7 @@ export function schemaPermissionTransformer<T extends ISchema>(
       return [isInvisible, field];
     },
     ([isLayoutComponentInvisible, field]) => {
-      const permissionToOverwrite = { display: false, readOnly: true };
-      isLayoutComponentInvisible && merge(field, permissionToOverwrite);
+      merge(field, { display: !isLayoutComponentInvisible, readOnly: true });
     },
   );
   isLayoutSchema(schema) && layoutPermissionTransform(schema);
