@@ -186,7 +186,7 @@ export async function validatePageConfig(
 
 type PermissionToOverwrite = { display?: boolean; readOnly?: boolean };
 export function schemaPermissionTransformer<T extends ISchema>(
-  schema: T, readOnly?: boolean, workFlowType?: string,
+  schema: T, readOnly?: boolean,
 ): T {
   function isLayoutSchema(field: ISchema): boolean {
     return !!get(field, 'x-internal.isLayoutComponent');
@@ -203,17 +203,15 @@ export function schemaPermissionTransformer<T extends ISchema>(
       [isPermissionNormal, permissionTransformer({ display: true, readOnly: false }, field)],
     ]);
     const conditions = cond([
-      [(type) => type === 'APPLY_PAGE', permissionTransformer({ display: true, readOnly: true }, field)],
+      [(isReadOnly) => !!isReadOnly, permissionTransformer({ display: true, readOnly: true }, field)],
       [stubTrue, () => transformer(permission)],
     ]);
-    conditions(workFlowType);
+    conditions(readOnly && !isPermissionReadOnly(permission) && !isPermissionInvisible(permission));
   };
 
   const fieldTransform = pipe(
     (field: ISchema) => [fp.get('x-internal.permission', field), field],
-    ([permission, field]: [PERMISSION, ISchema]) => {
-      return permissionToSchemaProperties(field, readOnly ? READONLY_NO_WRITE : permission);
-    },
+    ([permission, field]: [PERMISSION, ISchema]) => permissionToSchemaProperties(field, permission),
   );
 
   const schemaPermissionTransform = pipe(
