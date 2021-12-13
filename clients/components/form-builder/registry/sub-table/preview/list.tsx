@@ -28,7 +28,7 @@ interface Props {
   name?: string;
   schema?: ISchema;
   value: any[];
-  props: { className?: string; };
+  props: { className?: string; readOnly?: boolean; };
   componentColumns: Column[];
   layout: Layout;
   rowLimit: string;
@@ -59,11 +59,12 @@ export default function SubTableList({
                     form={form}
                     layout={layout}
                     mutators={mutators}
+                    removeAble={!prps.readOnly}
                   />
                 );
               })}
             </div>
-            {rowLimit === 'multiple' && (
+            {(rowLimit === 'multiple' && !prps.readOnly) && (
               <div className="border-t-1 border-gray-300 flex items-center">
                 <Icon
                   name="add"
