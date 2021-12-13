@@ -114,7 +114,7 @@ function ApprovalDetail(): JSX.Element {
           value={formData}
           schema={task.formSchema || {}}
           onFormValueChange={setFormValues}
-          readOnly={taskEnd || type === 'APPLY_PAGE'}
+          readOnly={taskEnd || type === 'APPLY_PAGE' || type === 'HANDLED_PAGE' }
           usePermission
         />
       </div>
