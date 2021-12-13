@@ -156,7 +156,7 @@ function ParamRow({
                 value={name}
                 onChange={(ev)=> {
                   const { value } = ev.target;
-                  if (!value || /^[a-zA-Z_][\w-]*$/.test(value)) {
+                  if (!value || /^[a-zA-Z_$][\w-$]*$/.test(value)) {
                     field.onChange(ev.target.value);
                     handleChangeField(getFieldName('name'), ev.target.value);
                   }
@@ -175,7 +175,7 @@ function ParamRow({
               if (!val) {
                 return true;
               }
-              return /^[a-zA-Z_][\w-]*$/.test(val);
+              return /^[a-zA-Z_$][\w-$]*$/.test(val);
             },
           }}
           shouldUnregister
