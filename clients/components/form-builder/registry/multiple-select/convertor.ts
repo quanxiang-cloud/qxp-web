@@ -10,6 +10,7 @@ export interface MultipleSelectConfig {
   displayModifier: FormBuilder.DisplayModifier;
   sortable: boolean;
   required: boolean;
+  allowCustom: boolean;
   defaultValueFrom: FormBuilder.DefaultValueFrom;
   datasetId: string;
   availableOptions: Array<Record<string, string | boolean>>,
@@ -22,6 +23,7 @@ export const defaultConfig: MultipleSelectConfig = {
   displayModifier: 'normal',
   sortable: false,
   required: false,
+  allowCustom: false,
   defaultValueFrom: 'customized',
   datasetId: '',
   availableOptions: [
@@ -49,6 +51,7 @@ export function toSchema(value: MultipleSelectConfig): ISchema {
     // todo support optionsLayout
     ['x-component-props']: {
       datasetId: value.datasetId,
+      allowCustom: value.allowCustom,
     },
     ['x-internal']: {
       sortable: value.sortable,
@@ -65,6 +68,7 @@ export function toConfig(schema: ISchema): MultipleSelectConfig {
     displayModifier: getDisplayModifierFromSchema(schema),
     sortable: !!schema['x-internal']?.sortable,
     required: !!schema.required,
+    allowCustom: schema['x-component-props']?.allowCustom,
     defaultValueFrom: schema['x-internal']?.defaultValueFrom || 'customized',
     datasetId: schema['x-component-props']?.datasetId,
     availableOptions: schema.enum?.map((label) => {
