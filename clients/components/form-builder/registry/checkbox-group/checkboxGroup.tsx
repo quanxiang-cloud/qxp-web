@@ -63,7 +63,7 @@ function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
         const index = customValues.indexOf(option);
         return deep(acc, option, index);
       }, []));
-  }, [options, customValues]);
+  }, [options, fieldProps.value, customValues.length]);
 
   const customCheckValues = useMemo(() => {
     if (!isAllowCustom) {
@@ -94,7 +94,6 @@ function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
 
   function handleCustomValuesChange(e: React.ChangeEvent<HTMLInputElement>, index:number): void {
     customValues[index] = e.target.value;
-    fieldProps?.mutators?.change(getRealValue(checkedValues));
     setCustomValues([...customValues]);
   }
 
@@ -105,6 +104,26 @@ function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
     }
 
     setCustomValues([...customValues, '']);
+  }
+
+  function handleBlur(index:number):void {
+    const value = customValues[index];
+    if (value === '') {
+      fieldProps?.mutators?.change(
+        getRealValue(checkedValues.filter((v: string) => v !== `${CUSTOM_OTHER_VALUE}_${index}`)),
+      );
+      return;
+    }
+    if (options.includes(value) || customValues.filter((v, i) => i !== index).includes(value)) {
+      toast.error('不可输入重复项');
+      customValues[index] = '';
+      setCustomValues([...customValues]);
+      fieldProps?.mutators?.change(
+        getRealValue(checkedValues.filter((v: string) => v !== `${CUSTOM_OTHER_VALUE}_${index}`)),
+      );
+    } else {
+      fieldProps?.mutators?.change(getRealValue(checkedValues));
+    }
   }
 
   if (!options.length) {
@@ -125,11 +144,16 @@ function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
           {
             isAllowCustom && (
               customValues.map((option, index): JSX.Element => (
-                <Checkbox value={customCheckValues[index]} key={customCheckValues[index]}>
+                <Checkbox
+                  value={customCheckValues[index]}
+                  key={customCheckValues[index]}
+                  disabled={customValues[index] === ''}
+                >
                   <Input
                     className='w-80'
                     value={option}
                     onChange={(e) => handleCustomValuesChange(e, index)}
+                    onBlur={() => handleBlur(index)}
                     placeholder="请输入"
                     maxLength={15}
                   />
