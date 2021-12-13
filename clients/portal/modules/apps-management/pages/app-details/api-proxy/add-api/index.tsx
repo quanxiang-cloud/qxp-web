@@ -39,7 +39,7 @@ const methodOptions = [
   { label: 'PATCH', value: 'patch' },
 ];
 
-const regApiName = /^[a-zA-Z_]\w+$/; // api标识，swagger的 api path部分
+const regApiName = /^[a-zA-Z_]\w*$/; // api标识，swagger的 api path部分
 const regPathParam = /:([^/:]+)/g;
 const regApiTitle = /^[\u4e00-\u9fa5_a-zA-Z0-9\s]+$/; // 中英文数字，空格
 const regApiPath = /^[a-zA-Z_/][\w/:.]+$/;
@@ -92,7 +92,6 @@ function AddApi(): JSX.Element {
         queryNativeApi(apiPath),
         queryNativeApiDoc(apiPath, { docType: 'swag' }),
       ]).then(([detail, doc])=> {
-        // console.log('api doc, api detail: ', doc, detail);
         const apiPath = detail.url.slice(`${detail.schema}://${detail.host}`.length);
         const {
           parameters = [], responses = {}, ['x-consts']: constants = [],
@@ -106,7 +105,7 @@ function AddApi(): JSX.Element {
         setInitialValues({
           title: detail.title,
           apiPath,
-          apiName: detail.name,
+          apiName: detail.name.split('.')[0],
           description: detail.desc,
         });
       });
@@ -185,7 +184,6 @@ function AddApi(): JSX.Element {
   function onSubmit(): void {
     handleSubmit(async (formData: any)=> {
       const swagger = buildSwagger(paramsStore.swaggerParameters, formData);
-      // console.log('add api swagger: ', paramsStore.swaggerParameters, swagger);
 
       const params = {
         version: 'v1',
