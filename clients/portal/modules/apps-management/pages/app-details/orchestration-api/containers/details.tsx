@@ -62,8 +62,8 @@ function APINamespaceDetails(): JSX.Element {
     ModalType.CREATE_POLY,
     useCreatePoly,
     {
-      message: '新建API成功',
-      submitText: '复制并设计API',
+      message: copyPath.current ? '复制API成功' : '新建API成功',
+      submitText: copyPath.current ? '复制并设计API' : '新建并设计API',
       onClose: handleModalClose,
       title: copyPath.current ? '复制API' : undefined,
       onSuccess: (data) => {
