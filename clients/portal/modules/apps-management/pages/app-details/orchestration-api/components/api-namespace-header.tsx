@@ -54,7 +54,7 @@ function APINamespaceHeader(): JSX.Element {
         position="left"
         visible={userGuideVisible}
         onClose={() => setUserGuideVisible(false)}
-        content="新增目录"
+        content="新增分组"
       >
         <Icon
           clickable
