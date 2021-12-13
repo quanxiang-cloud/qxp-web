@@ -1,7 +1,6 @@
 import React, { memo } from 'react';
 import cs from 'classnames';
 import ReactFlow, { OnLoadFunc } from 'react-flow-renderer';
-import { useRendersCount } from 'react-use';
 import { equals } from 'ramda';
 import { SmartEdge } from '@tisoap/react-flow-smart-edge';
 
@@ -22,11 +21,8 @@ function Canvas({
   onLoad,
 }: Props): JSX.Element {
   const handleCanvasClick = useCanvasClick();
-  const renderCount = useRendersCount();
 
   useCloseNodeAction();
-
-  console.log('render 次数', renderCount, elements);
 
   return (
     <ReactFlow
