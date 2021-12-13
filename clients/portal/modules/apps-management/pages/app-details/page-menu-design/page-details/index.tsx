@@ -113,7 +113,7 @@ function PageDetails({ pageID }: Props): JSX.Element {
     history.push(`/apps/details/${appID}/app_control`);
   }
 
-  function RenderPageDetails(): JSX.Element {
+  function renderPageDetails(): JSX.Element {
     if ((activeMenu.menuType === MenuType.schemaForm && !appPagesStore.hasSchema)) {
       return (
         <PageBuildNav
@@ -290,7 +290,7 @@ function PageDetails({ pageID }: Props): JSX.Element {
               <span className='text-caption align-top'>{activeMenu.describe}</span>
             </div>
             {fetchSchemeLoading && <PageLoading />}
-            {!fetchSchemeLoading && <RenderPageDetails />}
+            {!fetchSchemeLoading && renderPageDetails()}
           </>
         )}
       </div>

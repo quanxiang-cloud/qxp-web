@@ -111,6 +111,6 @@ export default {
     outputManifest(),
     esbuild(esbuildConfig),
     // tsChecker(),
-    isProduction ? null : serve('pkg'),
+    isProduction ? null : serve('pp'),
   ].filter(Boolean),
 };
