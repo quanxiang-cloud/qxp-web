@@ -1,9 +1,28 @@
 .object-editor-table {
+  @apply bg-gray-200 border rounded-8 overflow-hidden;
+
+  th {
+    &:first-child {
+      @apply rounded-tl-8;
+    }
+    &:last-child {
+      @apply rounded-tr-8;
+    }
+  }
+
+  tr:last-child td {
+    &:first-child {
+      @apply rounded-bl-8;
+    }
+    &:last-child {
+      @apply rounded-br-8;
+    }
+  }
+
   th, td {
     background: white;
     &:last-child {
-      position: sticky;
-      right: 0;
+      @apply z-10 sticky right-0;
       box-shadow: -2px 0px 24px rgba(165, 167, 175, 0.25);
     }
   }

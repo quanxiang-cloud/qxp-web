@@ -1,3 +1,5 @@
+import { isNameInvalidate } from '@polyApi/utils/object-editor';
+
 export default {
   type: 'object',
   properties: {
@@ -21,8 +23,13 @@ export default {
         itemStyle: {
           marginBottom: 0,
         },
-        itemClassName: 'px-20',
+        itemClassName: 'px-20 input-editor-error-tips-hidden',
       },
+      'x-rules': [
+        (values: POLY_API.PolyNodeInput[]): string => {
+          return isNameInvalidate(values) ? '参数名称必填' : '';
+        },
+      ],
       'x-index': 1,
     },
     consts: {
@@ -33,8 +40,13 @@ export default {
         itemStyle: {
           marginBottom: 0,
         },
-        itemClassName: 'px-20',
+        itemClassName: 'px-20 input-editor-error-tips-hidden',
       },
+      'x-rules': [
+        (values: POLY_API.PolyNodeInput[]): string => {
+          return isNameInvalidate(values) ? '参数名称必填' : '';
+        },
+      ],
       'x-index': 2,
     },
   },

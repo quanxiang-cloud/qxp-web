@@ -66,8 +66,8 @@ function FieldSwitch({ field, className = '', ...otherProps }: Props<any>, ref: 
       <CascadeSelector
         {...otherProps}
         {...field['x-component-props'] as CascadeSelectorProps}
-        predefinedDataset={field['x-internal']?.predefinedDataset || ''}
-        showFullPath={field['x-internal']?.showFullPath}
+        predefinedDataset={field['x-component-props']?.predefinedDataset || ''}
+        showFullPath={field['x-component-props']?.showFullPath}
         className={`'w-full ${className}`}
         defaultValueFrom={field['x-internal']?.defaultValueFrom as DefaultValueFrom}
       />
@@ -78,9 +78,9 @@ function FieldSwitch({ field, className = '', ...otherProps }: Props<any>, ref: 
         {...field['x-component-props'] as { appID: string, placeholder?: string }}
         {...otherProps}
         multiple
-        optionalRange={field['x-internal']?.optionalRange}
-        defaultRange={field['x-internal']?.defaultRange}
-        rangeList={field['x-internal']?.rangeList}
+        optionalRange={field['x-component-props']?.optionalRange}
+        defaultRange={field['x-component-props']?.defaultRange}
+        rangeList={field['x-component-props']?.rangeList}
       />
     );
   case 'UserPicker':
@@ -90,8 +90,8 @@ function FieldSwitch({ field, className = '', ...otherProps }: Props<any>, ref: 
         {...otherProps}
         className='flex-1'
         options={field.enum as Option[]}
-        mode={field['x-internal']?.multiple}
-        optionalRange={field['x-internal']?.optionalRange}
+        mode={field['x-component-props']?.multiple}
+        optionalRange={field['x-component-props']?.optionalRange}
       />
     );
   default:

@@ -6,10 +6,10 @@ import { useQuery, useQueryClient } from 'react-query';
 
 import { getUnreadMsgCount } from '@portal/modules/msg-center/api';
 import Icon from '@c/icon';
+import Popper from '@c/popper';
 
 import { get } from 'lodash';
 import UnreadMsgBox from '../unread-msg-box';
-import ModalMsgCenter from '../modal-msg-center';
 import BtnBadge from '@c/btn-badge';
 import pushServer from '@lib/push';
 import { getQuery } from '@portal/utils';
@@ -21,19 +21,27 @@ type Props = {
   className?: string;
 }
 
+const modifiers = [
+  {
+    name: 'offset',
+    options: {
+      offset: [30, -30],
+    },
+  },
+];
+
 const NavMsgBar = ({ type, className }: Props): JSX.Element => {
-  const toggleRef = useRef(null);
-  const msgBoxRef = useRef(null);
+  const toggleRef = useRef<HTMLDivElement>(null);
+  const msgBoxRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
   const { openUnreadMsgBox, msgBoxOpen, openMsgCenter, countUnread } = msgCenter;
   const { data: countUnreadMsg } = useQuery('count-unread-msg', getUnreadMsgCount);
-
-  const handleClickOuter = (ev: MouseEvent) => {
-    const { target } = ev;
-    if (!toggleRef.current || !msgBoxRef.current) {
+  // (this: HTMLElement, ev: MouseEvent) => any
+  const handleClickOuter = (ev: Event): void => {
+    const target = ev.target as Node | null;
+    if (!target || !toggleRef.current || !msgBoxRef.current) {
       return;
     }
-    // @ts-ignore
     if (!(toggleRef.current.contains(target) || msgBoxRef.current.contains(target))) {
       openUnreadMsgBox(false);
     }
@@ -102,9 +110,15 @@ const NavMsgBar = ({ type, className }: Props): JSX.Element => {
           />
           {countUnread > 0 && <BtnBadge className={styles.count_btn} count={countUnread} />}
         </div>
-        {renderUnreadMsgBox()}
       </div>
-      <ModalMsgCenter />
+      <Popper
+        reference={toggleRef}
+        trigger='hover'
+        onVisibilityChange={(visible) => openUnreadMsgBox(visible)}
+        modifiers={modifiers}
+      >
+        {renderUnreadMsgBox()}
+      </Popper>
     </>
   );
 };

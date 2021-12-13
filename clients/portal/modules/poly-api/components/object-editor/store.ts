@@ -21,6 +21,7 @@ export class ItemStore<T extends { children: T[], id: string }> extends Behavior
     super(initialValue);
     this.parent$ = parent;
     this.children$ = initialValue.children.map((child) => new ItemStore(child, this));
+    this.children$.length && this.hideChildren();
   }
 
   set(key: string, value: any): void {
@@ -49,7 +50,7 @@ export class ItemStore<T extends { children: T[], id: string }> extends Behavior
     this.isChildrenHidden = true;
   }
 
-  showChidren(): void {
+  showChildren(): void {
     this.children$.forEach((child) => child.show());
     this.isChildrenHidden = false;
   }

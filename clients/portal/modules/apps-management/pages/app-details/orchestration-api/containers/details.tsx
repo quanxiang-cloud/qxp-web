@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { UnionColumns, CellProps, Row } from 'react-table';
 import { observer } from 'mobx-react';
 import { useCopyToClipboard, usePrevious } from 'react-use';
@@ -17,7 +17,7 @@ import {
   useOrchestrationAPIStore,
 } from '@portal/modules/apps-management/pages/app-details/orchestration-api/context';
 import { useQueryNameSpaceRootPath } from '@orchestrationAPI/effects/api/api-namespace';
-import useModal, { actions } from '@orchestrationAPI/effects/hooks/use-modal';
+import useModal from '@orchestrationAPI/effects/hooks/use-modal';
 import { ModalType } from '@orchestrationAPI/constants';
 import {
   useCreatePoly,
@@ -47,6 +47,7 @@ function APINamespaceDetails(): JSX.Element {
   const [names, setNames] = useState<string[]>([]);
   const [currentName, setCurrentName] = useState<string | null>(null);
   const [searchTitle, setSearchTitle] = useState('');
+  const copyPath = useRef<string>('');
   const nameSpacePath = currentNamespacePath || '';
   const [pagination, setPagination] = useState(initialPage);
   const { appPath } = useQueryNameSpaceRootPath(appID || '', { enabled: !!appID }).data || {};
@@ -62,10 +63,16 @@ function APINamespaceDetails(): JSX.Element {
     useCreatePoly,
     {
       message: '新建API成功',
-      submitText: '新建并设计API',
+      submitText: '复制并设计API',
       onClose: handleModalClose,
-      onSuccess: (data) => handleEditPoly(data.apiPath),
+      title: copyPath.current ? '复制API' : undefined,
+      onSuccess: (data) => {
+        copyPath.current = '';
+        handleEditPoly(data.apiPath);
+      },
+      onError: () => copyPath.current = '',
       formToApiInputConvertor: (body) => {
+        copyPath.current && Object.assign(body, { templateAPIPath: copyPath.current });
         return {
           path: `create${nameSpacePath}`,
           body,
@@ -131,7 +138,7 @@ function APINamespaceDetails(): JSX.Element {
 
   const activePolyMutation = useActivePoly({
     onSuccess: (response) => {
-      toast.success(`${response.active ? '启用' : '停用'}成功`);
+      toast.success(`${response.active ? '上线' : '下线'}成功`);
     },
     onError: (error) => {
       toast.error(error);
@@ -140,7 +147,13 @@ function APINamespaceDetails(): JSX.Element {
 
   const data = isSearchEnabled ? searchData : queryData;
 
+  const name2idMap = useMemo(() => data?.list.reduce((acc: Record<string, string>, cur: PolyListItem) => {
+    acc[cur.name] = cur.id;
+    return acc;
+  }, {}) || {}, [data]);
+
   function handleModalClose(): void {
+    copyPath.current = '';
     setModalType(undefined);
   }
 
@@ -174,8 +187,8 @@ function APINamespaceDetails(): JSX.Element {
   }
 
   function handleCopyPoly(polyFullPath: string): void {
+    copyPath.current = polyFullPath;
     handleCreatePolyApi();
-    actions.setFieldValue('templateAPIPath', polyFullPath);
   }
 
   const columns: UnionColumns<PolyListItem>[] = [{
@@ -228,13 +241,14 @@ function APINamespaceDetails(): JSX.Element {
     Cell: (model: CellProps<PolyListItem>) => (
       <Toggle
         defaultChecked={!!model.value}
-        onText="启用"
-        offText="停用"
+        onText="上线"
+        offText="下线"
         onChange={(checked) => handleActiveChange(checked, model.cell.row)}
       />
     ),
   }, {
     Header: '操作',
+    fixed: true,
     Cell: (model: CellProps<PolyListItem>) => (
       <div>
         <span
@@ -279,11 +293,6 @@ function APINamespaceDetails(): JSX.Element {
       </div>
     );
   }
-
-  const name2idMap = data?.list.reduce((acc: Record<string, string>, cur: PolyListItem) => {
-    acc[cur.name] = cur.id;
-    return acc;
-  }, {}) || {};
 
   return (
     <>
@@ -336,12 +345,14 @@ function APINamespaceDetails(): JSX.Element {
             )}
           />
           <div className="pt-10">
-            <Pagination
-              current={pagination.page}
-              pageSize={pagination.pageSize}
-              total={data?.total}
-              onChange={handlePageChange}
-            />
+            {(data?.list.length || pagination.page !== 1) && (
+              <Pagination
+                current={pagination.page}
+                pageSize={pagination.pageSize}
+                total={data?.total}
+                onChange={handlePageChange}
+              />
+            )}
           </div>
         </div>
       </div>

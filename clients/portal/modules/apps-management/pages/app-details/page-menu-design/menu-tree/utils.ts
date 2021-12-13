@@ -9,8 +9,7 @@ export function css(
 
   Object.entries(cssProps).forEach(([prop, val]: [string, string]) => {
     if (prop in style) {
-      // @ts-ignore
-      style[prop] = val + (typeof val === 'string' ? '' : 'px');
+      style[<any>prop] = val + (typeof val === 'string' ? '' : 'px');
     }
   });
 }

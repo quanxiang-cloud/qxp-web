@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { UnionColumns } from 'react-table';
 import dayjs from 'dayjs';
 import { useHistory } from 'react-router-dom';
 import { observer } from 'mobx-react';
@@ -190,10 +191,10 @@ const MsgTable = ({ refresh }: Props): JSX.Element => {
       is_send: true, // false: 保存为草稿
       recivers: previewData.receivers,
       mes_attachment: previewData.mes_attachment || [],
+      id: '',
       //     url: string
       // filename:
     };
-    // @ts-ignore
     if (previewData.id) params.id = previewData.id;
     createMsg(params)
       .then((data) => {
@@ -233,7 +234,7 @@ const MsgTable = ({ refresh }: Props): JSX.Element => {
     refresh();
   };
 
-  const cols = [
+  const cols: UnionColumns<any>[] = [
     {
       Header: (
         <Select
@@ -243,7 +244,9 @@ const MsgTable = ({ refresh }: Props): JSX.Element => {
           onChange={setStatus}
         >
           <div
-            className={`flex content-center items-center ${EnumStatusLabel[status] !== '全部状态' ? styles.text_blue : ''} pointer`}
+            className={
+              `flex content-center items-center 
+              ${EnumStatusLabel[status] !== '全部状态' ? styles.text_blue : ''} pointer`}
           >
             <div>{EnumStatusLabel[status]}</div>
             <SvgIcon
@@ -272,12 +275,15 @@ const MsgTable = ({ refresh }: Props): JSX.Element => {
           onChange={setMessageType}
         >
           <div
-            className={`flex content-center items-center ${EnumMessageLabel[messageType] !== '全部消息类型' ? styles.text_blue : ''} pointer`}
+            className={
+              `flex content-center items-center 
+              ${EnumMessageLabel[messageType] !== '全部消息类型' ? styles.text_blue : ''} pointer`}
           >
             <div>{EnumMessageLabel[messageType]}</div>
             <SvgIcon
               name="filter_alt"
-              className={cs(EnumMessageLabel[messageType] !== '全部消息类型' ? styles.text_blue : '', styles.status_icon)} />
+              className={
+                cs(EnumMessageLabel[messageType] !== '全部消息类型' ? styles.text_blue : '', styles.status_icon)} />
           </div>
         </Select>
       ),
@@ -286,7 +292,7 @@ const MsgTable = ({ refresh }: Props): JSX.Element => {
       accessor: ({ id, title, sort }: {
         status: MsgSendStatus, id: string, title: string, sort: MsgType
       }) => {
-        const handleClick = (): void=> {
+        const handleClick = (): void => {
           history.push(`/system/message/details/${id}`);
         };
         return (
@@ -419,7 +425,6 @@ const MsgTable = ({ refresh }: Props): JSX.Element => {
         <Table
           className={cs('massage_table text-14', styles.massage_table)}
           data={msgList}
-          // @ts-ignore
           columns={cols}
           rowKey="id"
           emptyTips={<EmptyTips text='暂无消息数据' className="pt-40" />}
@@ -470,7 +475,7 @@ const MsgTable = ({ refresh }: Props): JSX.Element => {
           {modifyData &&
             (<SendMessage
               donotShowHeader
-              className={cs(styles.draftModal, 'p-20') }
+              className={cs(styles.draftModal, 'p-20')}
               handleClose={handleModifyModalClose}
               modifyData={modifyData}
               ref={sendMessageRef}
