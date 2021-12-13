@@ -131,7 +131,7 @@ export const searchNativeApi = async (servicePath: string, params: PolyAPI.Searc
 };
 
 export const queryNativeApiDoc = async (apiPath: string, params: PolyAPI.ApiDocParams): Promise<PolyAPI.QueryApiDocResult> => {
-  return await httpClient(`/api/v1/polyapi/raw/doc/${normalizeSuffix(apiPath)}`, params);
+  return await httpClient(`/api/v1/polyapi/doc/${normalizeSuffix(apiPath)}`, params);
 };
 
 // 激活api
