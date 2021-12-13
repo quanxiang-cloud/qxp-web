@@ -12,10 +12,10 @@ export default function ApiDocDetail(
   { method = '', url = '', identifier = '', className }: Props,
 ): JSX.Element {
   return (
-    <div className={cs('flex items-center justify-between overflow-auto', className)}>
+    <div className={cs('flex items-center justify-between overflow-auto whitespace-nowrap', className)}>
       请求方法：<span className="text-green-600 mr-8">{method}</span>
-      接口路径：<span className="flex-2 truncate mr-8" title={url}>{url}</span>
-      API 标识：<span className="flex-1 truncate">{identifier}</span>
+      接口路径：<span className="flex-2 mr-8" title={url}>{url}</span>
+      API 标识：<span className="flex-1">{identifier}</span>
     </div>
   );
 }
