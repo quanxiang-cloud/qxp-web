@@ -16,7 +16,8 @@
     "start:mobile": "run-p type-check 'make mobile -j'",
     "make": "make -j",
     "type-check": "tsc --noEmit --skipLibCheck --pretty -w",
-    "dev-pkg-server": "node pkg-server.js"
+    "dev:pkg-server": "node pkg-server.js",
+    "dev:client": "make bundlePortal"
   },
   "commitlint": {
     "extends": [
