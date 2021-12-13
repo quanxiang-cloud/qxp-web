@@ -6,10 +6,10 @@ import { useQuery, useQueryClient } from 'react-query';
 
 import { getUnreadMsgCount } from '@portal/modules/msg-center/api';
 import Icon from '@c/icon';
+import Popper from '@c/popper';
 
 import { get } from 'lodash';
 import UnreadMsgBox from '../unread-msg-box';
-import ModalMsgCenter from '../modal-msg-center';
 import BtnBadge from '@c/btn-badge';
 import pushServer from '@lib/push';
 import { getQuery } from '@portal/utils';
@@ -20,6 +20,15 @@ type Props = {
   type?: string
   className?: string;
 }
+
+const modifiers = [
+  {
+    name: 'offset',
+    options: {
+      offset: [30, -30],
+    },
+  },
+];
 
 const NavMsgBar = ({ type, className }: Props): JSX.Element => {
   const toggleRef = useRef<HTMLDivElement>(null);
@@ -101,9 +110,15 @@ const NavMsgBar = ({ type, className }: Props): JSX.Element => {
           />
           {countUnread > 0 && <BtnBadge className={styles.count_btn} count={countUnread} />}
         </div>
-        {renderUnreadMsgBox()}
       </div>
-      <ModalMsgCenter />
+      <Popper
+        reference={toggleRef}
+        trigger='hover'
+        onVisibilityChange={(visible) => openUnreadMsgBox(visible)}
+        modifiers={modifiers}
+      >
+        {renderUnreadMsgBox()}
+      </Popper>
     </>
   );
 };
