@@ -15,7 +15,7 @@ export default function ApiDocDetail(
     <div className={cs('flex items-center justify-between overflow-auto', className)}>
       请求方法：<span className="text-green-600 mr-8">{method}</span>
       接口路径：<span className="flex-2 truncate mr-8" title={url}>{url}</span>
-      API标识：<span className="flex-1 truncate">{identifier}</span>
+      API 标识：<span className="flex-1 truncate">{identifier}</span>
     </div>
   );
 }

@@ -62,10 +62,10 @@ function APINamespaceDetails(): JSX.Element {
     ModalType.CREATE_POLY,
     useCreatePoly,
     {
-      message: copyPath.current ? '复制API成功' : '新建API成功',
-      submitText: copyPath.current ? '复制并设计API' : '新建并设计API',
+      message: copyPath.current ? '复制 API 成功' : '新建 API 成功',
+      submitText: copyPath.current ? '复制并设计 API' : '新建并设计 API',
       onClose: handleModalClose,
-      title: copyPath.current ? '复制API' : undefined,
+      title: copyPath.current ? '复制 API' : undefined,
       onSuccess: (data) => {
         copyPath.current = '';
         handleEditPoly(data.apiPath);
@@ -86,12 +86,12 @@ function APINamespaceDetails(): JSX.Element {
     [ModalType.REMOVE_POLY, ModalType.REMOVE_POLY_ALL],
     useRemovePoly,
     {
-      message: '删除API成功',
+      message: '删除 API 成功',
       submitText: '确认删除',
       content: (
         <ModalRemoveTips
-          title={`确定要删除${modalType === ModalType.REMOVE_POLY_ALL ? '选中的' : '该'}API吗?`}
-          desc="删除API后，数据将无法找回。"
+          title={`确定要删除${modalType === ModalType.REMOVE_POLY_ALL ? '选中的' : '该'} API 吗?`}
+          desc="删除 API 后，数据将无法找回。"
         />
       ),
       onClose: handleModalClose,
@@ -192,7 +192,7 @@ function APINamespaceDetails(): JSX.Element {
   }
 
   const columns: UnionColumns<PolyListItem>[] = [{
-    Header: 'API名称',
+    Header: 'API 名称',
     accessor: 'title',
   }, {
     Header: '请求方法',
@@ -255,7 +255,7 @@ function APINamespaceDetails(): JSX.Element {
           onClick={() => handleEditPoly(model.cell.row.original.fullPath)}
           className="mr-16 text-blue-600 text-h6-no-color-weight cursor-pointer"
         >
-          设计API
+          设计 API
         </span>
         <span
           onClick={() => handleCopyPoly(model.cell.row.original.fullPath)}
@@ -308,7 +308,7 @@ function APINamespaceDetails(): JSX.Element {
       <div className="flex flex-col flex-1 overflow-hidden bg-white p-16 h-32">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <Button onClick={handleCreatePolyApi} modifier="primary" iconName="add">新建API</Button>
+            <Button onClick={handleCreatePolyApi} modifier="primary" iconName="add">新建 API</Button>
             <Button
               onClick={handleRemoveAll}
               className={cs(
@@ -316,14 +316,15 @@ function APINamespaceDetails(): JSX.Element {
                 { 'cursor-default pointer-events-none': !names.length },
               )}
               style={{ color: 'var(--rose-500)', border: '1px solid var(--rose-500)' }}
-              iconName="remove_backup">
+              iconName="remove_backup"
+            >
               删除
             </Button>
           </div>
           <SearchInput
             className="polynamespacedetail-header-searchinput"
             name="apiName"
-            placeholder="搜索 API名称..."
+            placeholder="搜索 API 名称..."
             onChange={handleApiTitleChange}
             appendix="close"
           />
