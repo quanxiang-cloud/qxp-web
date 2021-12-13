@@ -79,7 +79,14 @@ function MultipleSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
     if (!isAllowCustom || !otherCustomValue) {
       setAllOptions(options);
     } else {
-      setAllOptions(uniq([...allOptions, otherCustomValue]));
+      const newOptions = uniq([...allOptions, otherCustomValue]);
+      //  todo count should be configurable
+      if (newOptions.length - options.length > 3) {
+        toast.error('自定义项不可超过三项');
+        return;
+      }
+      setAllOptions(newOptions);
+      fieldProps.mutators.change(uniq([...fieldProps.value, otherCustomValue]));
     }
   }, [isAllowCustom, options, otherCustomValue]);
 
@@ -112,7 +119,6 @@ function MultipleSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
             isAllowCustom={isAllowCustom}
             onOtherCustomValueChange={(customValue) => {
               setOtherCustomValue(customValue);
-              fieldProps.mutators.change(uniq([...fieldProps.value, customValue]));
             }}
           />
         )}
