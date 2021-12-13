@@ -5,6 +5,7 @@ import { useForm, FormProvider } from 'react-hook-form';
 import cs from 'classnames';
 import { useMutation } from 'react-query';
 import { get, values } from 'lodash';
+import { toJS } from 'mobx';
 
 import Select from '@c/select';
 import Button from '@c/button';
@@ -182,6 +183,18 @@ function AddApi(): JSX.Element {
   }
 
   function onSubmit(): void {
+    const { body } = toJS(paramsStore.parameters);
+    const validate = body.map((bodyItem) => {
+      if (bodyItem.name === '$body$' && body.length > 2) {
+        return '$body$';
+      }
+    }).filter(Boolean);
+
+    if (validate[0] === '$body$') {
+      toast.error('Body中有 $body$ 字段时，不能再定义其它字段');
+      return;
+    }
+
     handleSubmit(async (formData: any)=> {
       const swagger = buildSwagger(paramsStore.swaggerParameters, formData);
 
