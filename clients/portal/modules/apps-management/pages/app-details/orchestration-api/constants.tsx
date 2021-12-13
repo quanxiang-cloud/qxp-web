@@ -27,7 +27,7 @@ export const MODAL_SCHEMA_MAP: Record<ModalType, [ISchema, string]> = {
   [ModalType.CREATE_NAMESPACE]: [createNamespaceSchema, '新建分组'],
   [ModalType.CREATE_CHILD_NAMESPACE]: [createChildNamespaceSchema, '新建子分组'],
   [ModalType.EDIT_NAMESPACE]: [editNamespaceSchema, '修改组信息'],
-  [ModalType.CREATE_POLY]: [createPolySchema, '新建API'],
+  [ModalType.CREATE_POLY]: [createPolySchema, '新建 API'],
   [ModalType.REMOVE_NAMESPACE]: [{}, '提示'],
   [ModalType.REMOVE_POLY]: [{}, '提示'],
   [ModalType.REMOVE_POLY_ALL]: [{}, '提示'],
