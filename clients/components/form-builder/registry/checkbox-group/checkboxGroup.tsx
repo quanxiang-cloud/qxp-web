@@ -31,7 +31,7 @@ function useCustomOtherValues(
 
 function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   const options = useEnumOptions(fieldProps);
-  const [otherValues, setOtherValues] = useCustomOtherValues(options, fieldProps.value);
+  const [customValues, setCustomValues] = useCustomOtherValues(options, fieldProps.value);
   const [checkedValues, setCheckedValues] = useState<string[]>([]);
   const { optionsLayout } = fieldProps.props['x-component-props'];
   const isAllowCustom = !!fieldProps.props['x-component-props'].allowCustom;
@@ -48,7 +48,7 @@ function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
         if (!acc.includes(customCheckValue)) {
           return [...acc, customCheckValue];
         } else {
-          const _index = otherValues.indexOf(option, index + 1);
+          const _index = customValues.indexOf(option, index + 1);
           return deep(acc, option, _index);
         }
       }
@@ -60,52 +60,51 @@ function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
         if (options.includes(option) && !acc.includes(option)) {
           return [...acc, option];
         }
-        const index = otherValues.indexOf(option);
+        const index = customValues.indexOf(option);
         return deep(acc, option, index);
       }, []));
-  }, [options]);
-
-  useEffect(() => {
-    const realValue = checkedValues.reduce((acc: string[], option: string) => {
-      if (options.includes(option)) {
-        return [...acc, option];
-      }
-      const index = customCheckValues.indexOf(option);
-      if (index !== -1) {//  && !acc.includes(otherValue)
-        const otherValue = otherValues[index];
-        return [...acc, otherValue];
-      }
-      return acc;
-    }, []);
-    fieldProps?.mutators?.change(realValue);
-  }, [checkedValues, otherValues]);
+  }, [options, customValues]);
 
   const customCheckValues = useMemo(() => {
     if (!isAllowCustom) {
       return [];
     }
 
-    return otherValues.map((value, index) => `${CUSTOM_OTHER_VALUE}_${index}`);
-  }, [otherValues]);
+    return customValues.map((value, index) => `${CUSTOM_OTHER_VALUE}_${index}`);
+  }, [customValues]);
 
-  const addDisabled = useMemo(() => otherValues.length > 2, [otherValues]);
+  function getRealValue(values:string[]):string[] {
+    return values.reduce((acc: string[], option: string) => {
+      if (options.includes(option)) {
+        return [...acc, option];
+      }
+      const index = customCheckValues.indexOf(option);
+      if (index !== -1) {
+        const otherValue = customValues[index];
+        return [...acc, otherValue];
+      }
+      return acc;
+    }, []);
+  }
 
   function handleCheckBoxChange(value: Array<CheckboxValueType>): void {
+    fieldProps?.mutators?.change(getRealValue((value as string[])));
     setCheckedValues((value as string[]));
   }
 
-  function handleOtherValuesChange(e: React.ChangeEvent<HTMLInputElement>, index:number): void {
-    otherValues[index] = e.target.value;
-    setOtherValues([...otherValues]);
+  function handleCustomValuesChange(e: React.ChangeEvent<HTMLInputElement>, index:number): void {
+    customValues[index] = e.target.value;
+    fieldProps?.mutators?.change(getRealValue(checkedValues));
+    setCustomValues([...customValues]);
   }
 
-  function handleOtherValuesAdd():void {
-    if (otherValues.length > 2) {
+  function handleCustomValuesAdd():void {
+    if (customValues.length > 2) {
       toast.error('自定义项不可超过三项');
       return;
     }
 
-    setOtherValues([...otherValues, '']);
+    setCustomValues([...customValues, '']);
   }
 
   if (!options.length) {
@@ -125,12 +124,12 @@ function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
           ))}
           {
             isAllowCustom && (
-              otherValues.map((option, index): JSX.Element => (
+              customValues.map((option, index): JSX.Element => (
                 <Checkbox value={customCheckValues[index]} key={customCheckValues[index]}>
                   <Input
                     className='w-80'
                     value={option}
-                    onChange={(e) => handleOtherValuesChange(e, index)}
+                    onChange={(e) => handleCustomValuesChange(e, index)}
                     placeholder="请输入"
                     maxLength={15}
                   />
@@ -143,13 +142,13 @@ function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
           isAllowCustom && (
             <Icon
               className={cs({
-                'cursor-not-allowed': addDisabled,
+                'cursor-not-allowed': customValues.length > 2,
               })}
               name="add"
               size={16}
               clickable
-              disabled={addDisabled}
-              onClick={handleOtherValuesAdd}
+              disabled={customValues.length > 2}
+              onClick={handleCustomValuesAdd}
             ></Icon>
           )
         }
