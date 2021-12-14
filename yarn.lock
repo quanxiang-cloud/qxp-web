@@ -497,6 +497,21 @@
   resolved "http://r.npm.internal.yunify.com/@humanwhocodes/object-schema/download/@humanwhocodes/object-schema-1.2.1.tgz#b520529ec21d8e5945a1851dfd1c32e94e39ff45"
   integrity sha1-tSBSnsIdjllFoYUd/Rwy6U45/0U=
 
+"@monaco-editor/loader@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.npmmirror.com/@monaco-editor/loader/download/@monaco-editor/loader-1.2.0.tgz?cache=0&sync_timestamp=1633270533861&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2F%40monaco-editor%2Floader%2Fdownload%2F%40monaco-editor%2Floader-1.2.0.tgz#373fad69973384624e3d9b60eefd786461a76acd"
+  integrity sha1-Nz+taZczhGJOPZtg7v14ZGGnas0=
+  dependencies:
+    state-local "^1.0.6"
+
+"@monaco-editor/react@^4.3.1":
+  version "4.3.1"
+  resolved "https://registry.npmmirror.com/@monaco-editor/react/download/@monaco-editor/react-4.3.1.tgz?cache=0&sync_timestamp=1633272007198&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2F%40monaco-editor%2Freact%2Fdownload%2F%40monaco-editor%2Freact-4.3.1.tgz#d65bcbf174c39b6d4e7fec43d0cddda82b70a12a"
+  integrity sha1-1lvL8XTDm21Of+xD0M3dqCtwoSo=
+  dependencies:
+    "@monaco-editor/loader" "^1.2.0"
+    prop-types "^15.7.2"
+
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
   resolved "http://r.npm.internal.yunify.com/@nodelib/fs.scandir/download/@nodelib/fs.scandir-2.1.5.tgz#7619c2eb21b25483f6d167548b4cfd5a7488c3d5"
@@ -522,6 +537,19 @@
   version "0.3.0"
   resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-api-spec-adapter-v0.3.0.tgz#e46a6a7e13a548118112c658557917ab1d05015e"
 
+"@ofa/page-engine@https://ofapkg.pek3b.qingstor.com/tarball/ofa-page-engine-v0.1.0.tgz":
+  version "0.1.0"
+  resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-page-engine-v0.1.0.tgz#127a3121ad30def4fca65d43429ccb9a085404ed"
+  dependencies:
+    "@monaco-editor/react" "^4.3.1"
+    classnames "^2.3.1"
+    mobx "^6.3.8"
+    mobx-react "^7.2.1"
+    nanoid "^3.1.30"
+    react-dnd "^14.0.4"
+    react-dnd-html5-backend "^14.0.2"
+    react-hook-form "^7.20.4"
+
 "@ofa/render-engine@https://ofapkg.pek3b.qingstor.com/tarball/ofa-render-engine-v0.6.0.tgz":
   version "0.6.0"
   resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-render-engine-v0.6.0.tgz#7bd6a80cccb263a435cab21f4dfea194b5143d38"
@@ -530,9 +558,24 @@
     react-dom "^17.0.2"
     rxjs "^7.4.0"
 
+"@ofa/ui@https://ofapkg.pek3b.qingstor.com/tarball/ofa-ui-v0.1.0.tgz":
+  version "0.1.0"
+  resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-ui-v0.1.0.tgz#42cab72f03ddb700dd1a89392112e327efe1cf72"
+  dependencies:
+    "@popperjs/core" "^2.11.0"
+    classnames "^2.3.1"
+    nanoid "^3.1.30"
+    react-popper "^2.2.5"
+    styled-components "^5.3.3"
+
 "@ofa/utils@https://ofapkg.pek3b.qingstor.com/tarball/ofa-utils-v0.0.1.tgz":
   version "0.0.1"
   resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-utils-v0.0.1.tgz#50afb46bd98dacb11b2c39939c4c2a29e48ffd15"
+
+"@popperjs/core@^2.11.0":
+  version "2.11.0"
+  resolved "https://registry.npmmirror.com/@popperjs/core/download/@popperjs/core-2.11.0.tgz#6734f8ebc106a0860dff7f92bf90df193f0935d7"
+  integrity sha512-zrsUxjLOKAzdewIDRWy9nsV1GQsKBCWaGwsZQlCgr6/q+vjyZhFgqedLfFBuI9anTPEUT4APq9Mu0SZBTzIcGQ==
 
 "@popperjs/core@^2.9.1":
   version "2.10.2"
@@ -1818,7 +1861,7 @@ classcat@^5.0.3:
   resolved "http://r.npm.internal.yunify.com/classcat/download/classcat-5.0.3.tgz#38eaa0ec6eb1b10faf101bbcef2afb319c23c17b"
   integrity sha1-OOqg7G6xsQ+vEBu87yr7MZwjwXs=
 
-classnames@*, classnames@2.x, classnames@^2.2.1, classnames@^2.2.3, classnames@^2.2.5, classnames@^2.2.6:
+classnames@*, classnames@2.x, classnames@^2.2.1, classnames@^2.2.3, classnames@^2.2.5, classnames@^2.2.6, classnames@^2.3.1:
   version "2.3.1"
   resolved "http://r.npm.internal.yunify.com/classnames/download/classnames-2.3.1.tgz#dfcfa3891e306ec1dad105d0e88f4417b8535e8e"
   integrity sha1-38+jiR4wbsHa0QXQ6I9EF7hTXo4=
@@ -4946,6 +4989,11 @@ mobx-react-lite@^1.4.2:
   resolved "http://r.npm.internal.yunify.com/mobx-react-lite/download/mobx-react-lite-1.5.2.tgz#c4395b0568b9cb16f07669d8869cc4efa1b8656d"
   integrity sha1-xDlbBWi5yxbwdmnYhpzE76G4ZW0=
 
+mobx-react-lite@^3.2.0:
+  version "3.2.2"
+  resolved "https://registry.npmmirror.com/mobx-react-lite/download/mobx-react-lite-3.2.2.tgz#cee5f09e6b0e4d2705d87276baf1de74d997fa33"
+  integrity sha1-zuXwnmsOTScF2HJ2uvHedNmX+jM=
+
 mobx-react@6.1.4:
   version "6.1.4"
   resolved "http://r.npm.internal.yunify.com/mobx-react/download/mobx-react-6.1.4.tgz#818e7991c321c05bd9b8156d94be17dad165501e"
@@ -4953,10 +5001,22 @@ mobx-react@6.1.4:
   dependencies:
     mobx-react-lite "^1.4.2"
 
+mobx-react@^7.2.1:
+  version "7.2.1"
+  resolved "https://registry.npmmirror.com/mobx-react/download/mobx-react-7.2.1.tgz?cache=0&sync_timestamp=1635235918539&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2Fmobx-react%2Fdownload%2Fmobx-react-7.2.1.tgz#e9d4c04dc63d05e1139ce773f5fee7a5b4cb7c78"
+  integrity sha1-6dTATcY9BeETnOdz9f7npbTLfHg=
+  dependencies:
+    mobx-react-lite "^3.2.0"
+
 mobx@5:
   version "5.15.7"
   resolved "http://r.npm.internal.yunify.com/mobx/download/mobx-5.15.7.tgz#b9a5f2b6251f5d96980d13c78e9b5d8d4ce22665"
   integrity sha1-uaXytiUfXZaYDRPHjptdjUziJmU=
+
+mobx@^6.3.8:
+  version "6.3.8"
+  resolved "https://registry.npmmirror.com/mobx/download/mobx-6.3.8.tgz#a4654b1b69c683237f2444cf0af39a621d4611af"
+  integrity sha512-RfG2y766P1o9u9xrQht/HBXEoUPIr4B3Gjri3reLW/TuHm3I/3TfBBS0OaeMbw19RIF0AymqjDNlJgakN4ZK7g==
 
 modern-normalize@^1.1.0:
   version "1.1.0"
@@ -6523,16 +6583,16 @@ react-beautiful-dnd@^13.1.0:
     redux "^4.0.4"
     use-memo-one "^1.1.1"
 
-react-dnd-html5-backend@^14.0.1:
+react-dnd-html5-backend@^14.0.1, react-dnd-html5-backend@^14.0.2:
   version "14.0.2"
-  resolved "http://r.npm.internal.yunify.com/react-dnd-html5-backend/download/react-dnd-html5-backend-14.0.2.tgz#25019388f6abdeeda3a6fea835dff155abb2085c"
+  resolved "https://registry.npmmirror.com/react-dnd-html5-backend/download/react-dnd-html5-backend-14.0.2.tgz#25019388f6abdeeda3a6fea835dff155abb2085c"
   integrity sha1-JQGTiPar3u2jpv6oNd/xVauyCFw=
   dependencies:
     dnd-core "14.0.1"
 
-react-dnd@^14.0.3:
+react-dnd@^14.0.3, react-dnd@^14.0.4:
   version "14.0.4"
-  resolved "http://r.npm.internal.yunify.com/react-dnd/download/react-dnd-14.0.4.tgz#ffb4ea0e2a3a5532f9c6294d565742008a52b8b0"
+  resolved "https://registry.npmmirror.com/react-dnd/download/react-dnd-14.0.4.tgz#ffb4ea0e2a3a5532f9c6294d565742008a52b8b0"
   integrity sha1-/7TqDio6VTL5xilNVldCAIpSuLA=
   dependencies:
     "@react-dnd/invariant" "^2.0.0"
@@ -6616,6 +6676,11 @@ react-flow-renderer@^9.6.11:
     react-redux "^7.2.6"
     redux "^4.1.2"
 
+react-hook-form@^7.20.4:
+  version "7.22.0"
+  resolved "https://registry.npmmirror.com/react-hook-form/download/react-hook-form-7.22.0.tgz#391f0827d487d133333789b60ad7a00e70ad1bdf"
+  integrity sha512-0gPE29N0wdd/5ZMD+TaAq5LF4NTguLnPaTqdSiWyu1QiSkB6jmWY1q0550JYu2BSgfOHecA7pxky9q+zWAwMqg==
+
 react-hook-form@^7.4.2:
   version "7.18.1"
   resolved "http://r.npm.internal.yunify.com/react-hook-form/download/react-hook-form-7.18.1.tgz#dcd412a22fc1843bdb54d0acb21035a4a75f7435"
@@ -6638,9 +6703,9 @@ react-is@^17.0.2:
   resolved "http://r.npm.internal.yunify.com/react-is/download/react-is-17.0.2.tgz#e691d4a8e9c789365655539ab372762b0efb54f0"
   integrity sha1-5pHUqOnHiTZWVVOas3J2Kw77VPA=
 
-react-popper@^2.2.4:
+react-popper@^2.2.4, react-popper@^2.2.5:
   version "2.2.5"
-  resolved "http://r.npm.internal.yunify.com/react-popper/download/react-popper-2.2.5.tgz#1214ef3cec86330a171671a4fbcbeeb65ee58e96"
+  resolved "https://registry.npm.taobao.org/react-popper/download/react-popper-2.2.5.tgz#1214ef3cec86330a171671a4fbcbeeb65ee58e96"
   integrity sha1-EhTvPOyGMwoXFnGk+8vutl7ljpY=
   dependencies:
     react-fast-compare "^3.0.1"
@@ -7570,6 +7635,11 @@ stacktrace-js@^2.0.2:
     stack-generator "^2.0.5"
     stacktrace-gps "^3.0.4"
 
+state-local@^1.0.6:
+  version "1.0.7"
+  resolved "https://registry.nlark.com/state-local/download/state-local-1.0.7.tgz#da50211d07f05748d53009bee46307a37db386d5"
+  integrity sha1-2lAhHQfwV0jVMAm+5GMHo32zhtU=
+
 static-extend@^0.1.1:
   version "0.1.2"
   resolved "http://r.npm.internal.yunify.com/static-extend/download/static-extend-0.1.2.tgz#60809c39cbff55337226fd5e0b520f341f1fb5c6"
@@ -7713,9 +7783,9 @@ style-loader@^2.0.0:
     loader-utils "^2.0.0"
     schema-utils "^3.0.0"
 
-styled-components@^5.2.3:
+styled-components@^5.2.3, styled-components@^5.3.3:
   version "5.3.3"
-  resolved "http://r.npm.internal.yunify.com/styled-components/download/styled-components-5.3.3.tgz#312a3d9a549f4708f0fb0edc829eb34bde032743"
+  resolved "https://registry.npmmirror.com/styled-components/download/styled-components-5.3.3.tgz#312a3d9a549f4708f0fb0edc829eb34bde032743"
   integrity sha1-MSo9mlSfRwjw+w7cgp6zS94DJ0M=
   dependencies:
     "@babel/helper-module-imports" "^7.0.0"
