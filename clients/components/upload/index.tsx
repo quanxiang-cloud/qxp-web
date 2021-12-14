@@ -11,7 +11,11 @@ interface Props {
   addSend?: JSX.Element,
 }
 
-const FileUpload = forwardRef((props: Props, ref:any) => {
+export interface RefProps {
+  emptyFiles: () => void;
+}
+
+const FileUpload = forwardRef((props: Props, ref: any) => {
   const [files, setFiles] = useState<Array<FileInfo>>(([]).map((itm: FileInfo) => ({
     filename: itm.filename,
     url: itm.url,
@@ -21,12 +25,12 @@ const FileUpload = forwardRef((props: Props, ref:any) => {
     emptyFiles: () => setFiles(files.slice(0, 0)),
   }));
   useEffect(
-    ()=>{
+    () => {
       if (props.showFiles) props.showFiles(files);
     }, [files],
   );
   const addFile = (file: FileInfo) => setFiles((currentFiles) => ([...currentFiles, file]));
-  const updateFile = (name: string, data: Partial<FileInfo>)=> {
+  const updateFile = (name: string, data: Partial<FileInfo>) => {
     setFiles((currentFiles) => {
       const curFile = currentFiles.find((f) => f.filename === name);
       Object.assign(curFile, data);
@@ -34,8 +38,7 @@ const FileUpload = forwardRef((props: Props, ref:any) => {
     });
   };
 
-  // @ts-ignore
-  const handleFileSuccessUpload = (res) => {
+  const handleFileSuccessUpload = (res: any) => {
     if (res.code === 200) {
       updateFile(res.data.filename, {
         filename: res.data.filename,
@@ -50,13 +53,13 @@ const FileUpload = forwardRef((props: Props, ref:any) => {
     }
   };
   const deleteFiles = (name: string) => {
-    setFiles((curFiles) => curFiles.filter((file) => file.filename !== name ));
+    setFiles((curFiles) => curFiles.filter((file) => file.filename !== name));
   };
 
   return (
     <>
       <div className="flex flex-col">
-        <Filelist files={files} canDownload={true} deleteFiles={deleteFiles} hideProgress={true}/>
+        <Filelist files={files} canDownload={true} deleteFiles={deleteFiles} hideProgress={true} />
       </div>
       <div className="flex items-center justify-between">
         <div>
@@ -64,7 +67,7 @@ const FileUpload = forwardRef((props: Props, ref:any) => {
             headers={{ 'X-Proxy': 'API' }}
             multiple
             action="/api/v1/fileserver/uploadFile"
-            beforeUpload={(file)=> {
+            beforeUpload={(file) => {
               if (file.size > 1024 * 1024 * 5) {
                 Message.error('文件大小不能超过5M');
                 return false;
@@ -75,7 +78,7 @@ const FileUpload = forwardRef((props: Props, ref:any) => {
               }
               return true;
             }}
-            onStart={(file)=> {
+            onStart={(file) => {
               addFile({
                 filename: file.name,
                 url: '',
@@ -84,8 +87,7 @@ const FileUpload = forwardRef((props: Props, ref:any) => {
                 status: 'active',
               });
             }}
-            onProgress={(step, file)=> {
-              // @ts-ignore
+            onProgress={(step, file) => {
               const percent = typeof step.percent === 'number' ? Math.round(step.percent) : 0;
               updateFile(file.name, {
                 percentage: percent,
@@ -93,7 +95,7 @@ const FileUpload = forwardRef((props: Props, ref:any) => {
               });
             }}
             onSuccess={handleFileSuccessUpload}
-            onError={(err)=> Message.error(err.message)}
+            onError={(err) => Message.error(err.message)}
           >
             <div className={`${styles.upload} flex align-center`}>
               <Icon name="attachment" />

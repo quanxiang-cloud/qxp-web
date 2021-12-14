@@ -53,7 +53,6 @@ function PolyDetailsDesigner({ className }: Props): JSX.Element | null {
     if (!edges.length) {
       return;
     }
-    console.log('再次布局', nodes, edges);
     layoutPolyCanvas(nodes, edges);
   }, [elements.length]);
 

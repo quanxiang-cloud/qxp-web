@@ -126,7 +126,7 @@ function ApiParamsConfig(
                       <Icon className="ml-8" name="arrow_left_alt" />
                     </div>
                     {customRules.length ? (
-                      <div className="flex flex-col" style={{ flex: 7 }}>
+                      <div className="flex flex-col overflow-auto" style={{ flex: 7 }}>
                         <FormulaEditor
                           help=""
                           ref={handleSetFormulaRefs(path)}

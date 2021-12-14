@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { UnionColumns, CellProps, Row } from 'react-table';
 import { observer } from 'mobx-react';
 import { useCopyToClipboard, usePrevious } from 'react-use';
@@ -47,6 +47,7 @@ function APINamespaceDetails(): JSX.Element {
   const [names, setNames] = useState<string[]>([]);
   const [currentName, setCurrentName] = useState<string | null>(null);
   const [searchTitle, setSearchTitle] = useState('');
+  const copyPath = useRef<string>('');
   const nameSpacePath = currentNamespacePath || '';
   const [pagination, setPagination] = useState(initialPage);
   const { appPath } = useQueryNameSpaceRootPath(appID || '', { enabled: !!appID }).data || {};
@@ -61,11 +62,17 @@ function APINamespaceDetails(): JSX.Element {
     ModalType.CREATE_POLY,
     useCreatePoly,
     {
-      message: '新建API成功',
-      submitText: '新建并设计API',
+      message: copyPath.current ? '复制 API 成功' : '新建 API 成功',
+      submitText: copyPath.current ? '复制并设计 API' : '新建并设计 API',
       onClose: handleModalClose,
-      onSuccess: (data) => handleEditPoly(data.apiPath),
+      title: copyPath.current ? '复制 API' : undefined,
+      onSuccess: (data) => {
+        copyPath.current = '';
+        handleEditPoly(data.apiPath);
+      },
+      onError: () => copyPath.current = '',
       formToApiInputConvertor: (body) => {
+        copyPath.current && Object.assign(body, { templateAPIPath: copyPath.current });
         return {
           path: `create${nameSpacePath}`,
           body,
@@ -79,12 +86,12 @@ function APINamespaceDetails(): JSX.Element {
     [ModalType.REMOVE_POLY, ModalType.REMOVE_POLY_ALL],
     useRemovePoly,
     {
-      message: '删除API成功',
+      message: '删除 API 成功',
       submitText: '确认删除',
       content: (
         <ModalRemoveTips
-          title={`确定要删除${modalType === ModalType.REMOVE_POLY_ALL ? '选中的' : '该'}API吗?`}
-          desc="删除API后，数据将无法找回。"
+          title={`确定要删除${modalType === ModalType.REMOVE_POLY_ALL ? '选中的' : '该'} API 吗?`}
+          desc="删除 API 后，数据将无法找回。"
         />
       ),
       onClose: handleModalClose,
@@ -131,7 +138,7 @@ function APINamespaceDetails(): JSX.Element {
 
   const activePolyMutation = useActivePoly({
     onSuccess: (response) => {
-      toast.success(`${response.active ? '启用' : '停用'}成功`);
+      toast.success(`${response.active ? '上线' : '下线'}成功`);
     },
     onError: (error) => {
       toast.error(error);
@@ -140,7 +147,13 @@ function APINamespaceDetails(): JSX.Element {
 
   const data = isSearchEnabled ? searchData : queryData;
 
+  const name2idMap = useMemo(() => data?.list.reduce((acc: Record<string, string>, cur: PolyListItem) => {
+    acc[cur.name] = cur.id;
+    return acc;
+  }, {}) || {}, [data]);
+
   function handleModalClose(): void {
+    copyPath.current = '';
     setModalType(undefined);
   }
 
@@ -173,14 +186,23 @@ function APINamespaceDetails(): JSX.Element {
     history.push(`/poly/${appID}${polyFullPath}`);
   }
 
+  function handleCopyPoly(polyFullPath: string): void {
+    copyPath.current = polyFullPath;
+    handleCreatePolyApi();
+  }
+
   const columns: UnionColumns<PolyListItem>[] = [{
-    Header: 'API名称',
+    Header: 'API 名称',
     accessor: 'title',
   }, {
     Header: '请求方法',
     accessor: 'method',
     Cell: (model: CellProps<PolyListItem>) => (
-      <span className="text-green-600">{model.value}</span>
+      <span
+        className={model.value.toLowerCase() === 'delete' ? 'text-red-600' : 'text-green-600'}
+      >
+        {model.value}
+      </span>
     ),
   }, {
     Header: '访问路径',
@@ -219,20 +241,27 @@ function APINamespaceDetails(): JSX.Element {
     Cell: (model: CellProps<PolyListItem>) => (
       <Toggle
         defaultChecked={!!model.value}
-        onText="启用"
-        offText="停用"
+        onText="上线"
+        offText="下线"
         onChange={(checked) => handleActiveChange(checked, model.cell.row)}
       />
     ),
   }, {
     Header: '操作',
+    fixed: true,
     Cell: (model: CellProps<PolyListItem>) => (
       <div>
         <span
           onClick={() => handleEditPoly(model.cell.row.original.fullPath)}
           className="mr-16 text-blue-600 text-h6-no-color-weight cursor-pointer"
         >
-          设计API
+          设计 API
+        </span>
+        <span
+          onClick={() => handleCopyPoly(model.cell.row.original.fullPath)}
+          className="mr-16 text-blue-600 text-h6-no-color-weight cursor-pointer"
+        >
+          复制
         </span>
         <span
           className={cs(
@@ -265,11 +294,6 @@ function APINamespaceDetails(): JSX.Element {
     );
   }
 
-  const name2idMap = data?.list.reduce((acc: Record<string, string>, cur: PolyListItem) => {
-    acc[cur.name] = cur.id;
-    return acc;
-  }, {}) || {};
-
   return (
     <>
       <div
@@ -284,7 +308,7 @@ function APINamespaceDetails(): JSX.Element {
       <div className="flex flex-col flex-1 overflow-hidden bg-white p-16 h-32">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <Button onClick={handleCreatePolyApi} modifier="primary" iconName="add">新建API</Button>
+            <Button onClick={handleCreatePolyApi} modifier="primary" iconName="add">新建 API</Button>
             <Button
               onClick={handleRemoveAll}
               className={cs(
@@ -292,14 +316,15 @@ function APINamespaceDetails(): JSX.Element {
                 { 'cursor-default pointer-events-none': !names.length },
               )}
               style={{ color: 'var(--rose-500)', border: '1px solid var(--rose-500)' }}
-              iconName="remove_backup">
+              iconName="remove_backup"
+            >
               删除
             </Button>
           </div>
           <SearchInput
             className="polynamespacedetail-header-searchinput"
             name="apiName"
-            placeholder="搜索 API名称..."
+            placeholder="搜索 API 名称..."
             onChange={handleApiTitleChange}
             appendix="close"
           />
@@ -321,12 +346,14 @@ function APINamespaceDetails(): JSX.Element {
             )}
           />
           <div className="pt-10">
-            <Pagination
-              current={pagination.page}
-              pageSize={pagination.pageSize}
-              total={data?.total}
-              onChange={handlePageChange}
-            />
+            {(data?.list.length || pagination.page !== 1) && (
+              <Pagination
+                current={pagination.page}
+                pageSize={pagination.pageSize}
+                total={data?.total}
+                onChange={handlePageChange}
+              />
+            )}
           </div>
         </div>
       </div>

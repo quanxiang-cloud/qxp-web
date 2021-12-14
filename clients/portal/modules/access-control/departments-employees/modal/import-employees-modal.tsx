@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useMutation } from 'react-query';
 import { UnionColumns } from 'react-table';
-import cs from 'classnames';
-import { Upload } from '@QCFE/lego-ui';
 
+import { FilePicker, FileList } from '@c/file-upload';
+import { isMacosX } from '@lib/utils';
 import Icon from '@c/icon';
 import toast from '@lib/toast';
 import Modal from '@c/modal';
@@ -54,6 +54,9 @@ interface Props {
   currDepId: string;
   closeModal(): void;
 }
+
+const BYTE_SIZE = isMacosX ? 1000 : 1024;
+const MAX_SIZE = (BYTE_SIZE ** 2) * 5;
 
 function ImportEmployeesModal({ currDepId, closeModal }: Props): JSX.Element {
   const [fileList, setFileList] = useState<File[]>([]);
@@ -144,12 +147,21 @@ function ImportEmployeesModal({ currDepId, closeModal }: Props): JSX.Element {
     return false;
   }
 
+  function onFileSelect(files: File[]): boolean | void {
+    const file = files[0];
+    if (file.size > MAX_SIZE) {
+      toast.error('文件过大，超过 5M 不能上传！');
+      return;
+    }
+    setFileList([file]);
+  }
+
   function downTemp(): void {
     tempMutation.mutate();
   }
 
-  function deleteUploadFile(Index: number): void {
-    const newFileList = fileList.filter((item, index) => index !== Index);
+  function deleteUploadFile(delFile: QXPUploadFileBaseProps): void {
+    const newFileList = fileList.filter((file) => file.name !== delFile.name);
     setFileList(newFileList);
   }
 
@@ -262,50 +274,23 @@ function ImportEmployeesModal({ currDepId, closeModal }: Props): JSX.Element {
           {uploadStatus.status === FileUploadStatus.init && (
             <div className="text-gray-600">
               <div className="w-full group">
-                <Upload
-                  style={{ width: '100%' }}
-                  beforeUpload={beforeUpload}
+                <FilePicker
+                  className="p-20"
                   accept=".xlsx, .xls"
-                >
-                  <div
-                    className={cs(
-                      'w-full h-86 border rounded-8 border-dashed border-gray-700',
-                      'flex flex-col items-center justify-center group-hover:border-blue-600',
-                    )}
-                  >
-                    <Icon
-                      size={16}
-                      name="cloud_upload"
-                      className="group-hover:text-blue-600"
-                    />
-                    <p className="group-hover:text-blue-600">点击或拖拽单个文件到至该区域。支持xls、xlsx格式</p>
-                  </div>
-                </Upload>
+                  multiple={false}
+                  onSelectFiles={onFileSelect}
+                  description="点击或拖拽单个文件到至该区域。支持xls、xlsx格式"
+                />
                 <div className="mt-8 flex flex-col">
-                  {fileList.map((file, index) => {
-                    return (
-                      <div
-                        key={index}
-                        className="px-8 py-4 cursor-pointer flex
-                        items-center justify-between bg-blue-100"
-                      >
-                        <div className="flex items-center">
-                          <div
-                            className="w-16 h-16 bg-blue-600 corner-12-2-12-12
-                          flex items-center justify-center mr-8"
-                          >
-                            <Icon size={12} name="book" type="light" />
-                          </div>
-                          <span>{file.name}</span>
-                        </div>
-                        <Icon
-                          size={16}
-                          name="restore_from_trash"
-                          onClick={() => deleteUploadFile(index)}
-                        />
-                      </div>
-                    );
-                  })}
+                  <FileList
+                    deleteFileItem={deleteUploadFile}
+                    files={fileList.map((file) => ({
+                      uid: file.name,
+                      type: file.type,
+                      name: file.name,
+                      size: file.size,
+                    }))}
+                  />
                 </div>
               </div>
               <ul className="text-gray-600 mt-24">

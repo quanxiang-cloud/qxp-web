@@ -8,17 +8,14 @@ export function getDefaultValue(sc: ISchema): any {
   const componentProps = sc['x-component-props'] || {};
   const componentType = sc.type;
   const isArrayType = componentType === 'array';
-  const internalProps = (sc as ISchema)?.['x-internal'] || {};
 
   let defaultValue = sc.default || componentProps?.defaultValue;
   if (!defaultValue) {
     if (
-      internalProps.defaultValues?.length || (isObject(internalProps.defaultValues) &&
-        !isEmpty(internalProps.defaultValues))
+      componentProps.defaultValues?.length || (isObject(componentProps.defaultValues) &&
+        !isEmpty(componentProps.defaultValues))
     ) {
-      defaultValue = internalProps.defaultValues;
-    } else if (internalProps?.defaultValue) {
-      defaultValue = internalProps.defaultValue;
+      defaultValue = componentProps.defaultValues;
     }
   }
 

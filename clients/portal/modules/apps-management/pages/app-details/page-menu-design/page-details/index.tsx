@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import cs from 'classnames';
 import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
-import { Progress, QxpFile } from '@QCFE/lego-ui';
 
 import Icon from '@c/icon';
 import Card from '@c/card';
@@ -12,14 +11,14 @@ import toast from '@lib/toast';
 import EmptyTips from '@c/empty-tips';
 import PageLoading from '@c/page-loading';
 
-import FileUpload from './file-upload';
+import CustomPageUpload from './custom-page-upload';
 import appPagesStore from '../../store';
 import PageBuildNav from './page-build-nav';
-import { FileInfo, MenuType, Resp } from '../../type';
+import { MenuType, Resp } from '../../type';
 import { createCustomPage, updateCustomPage } from '../../api';
+import { formatFileSize } from '../../utils';
 
 import './index.scss';
-import { formatFileSize } from '../../utils';
 
 type Props = {
   pageID: string
@@ -28,7 +27,7 @@ type Props = {
 function PageDetails({ pageID }: Props): JSX.Element {
   const history = useHistory();
   const [modalType, setModalType] = useState('');
-  const [file, setFile] = useState<FileInfo | null>(null);
+  const [files, setFiles] = useState<QXPUploadFileTask[]>([]);
   const {
     activeMenu,
     curPageCardList,
@@ -45,21 +44,20 @@ function PageDetails({ pageID }: Props): JSX.Element {
   }
 
   function handleCreateCustomPage(): void {
-    if (!file?.url) {
-      toast.error('请上传文件');
+    if (!files[0]?.uploadUrl) {
+      toast.error('请上传正确的文件');
       return;
     }
 
-    const fileSizeStr = formatFileSize(Number(file.size));
+    const fileSizeStr = formatFileSize(Number(files[0].size));
 
     if (modalType === 'create') {
       createCustomPage(appID, {
-        menuId: pageID, fileSize: fileSizeStr, fileUrl: file?.url || '',
+        menuId: pageID, fileSize: fileSizeStr, fileUrl: files[0]?.uploadUrl || '',
       }).then((res) => {
         setActiveMenu({ ...res, menuType: 2 });
         toast.success('新建成功');
         setModalType('');
-        setFile(null);
       }).catch((err) => {
         toast.error(err.message);
       });
@@ -67,53 +65,43 @@ function PageDetails({ pageID }: Props): JSX.Element {
     }
 
     updateCustomPage(appID, {
-      id: pageID, fileSize: fileSizeStr, fileUrl: file?.url || '',
+      id: pageID, fileSize: fileSizeStr, fileUrl: files[0]?.uploadUrl || '',
     },
     ).then((res) => {
       setActiveMenu({ ...res, menuType: 2 });
       toast.success('修改成功');
       setModalType('');
-      setFile(null);
     }).catch((err) => {
       toast.error(err.message);
     });
   }
 
-  function onSuccess({ code, data, msg }: Resp, file: { name: string, size: number }): void {
+  function onSuccess({ code, data, msg }: Resp): void {
     if (code === 0 && data?.url) {
-      setFile({
-        filename: file.name,
-        size: file.size,
-        url: data.url,
-        percentage: 100,
-        showProgress: false,
-      });
+      setFiles((prevFiles) => [{
+        ...prevFiles[0],
+        uploadUrl: data.url,
+        state: 'success',
+      }]);
     } else {
-      setFile(null);
       toast.error(msg || '上传失败');
     }
   }
 
-  function onProgress(step: any, file: QxpFile): void {
-    // @ts-ignore
-    const percent = typeof step?.percent === 'number' ? Math.round(step.percent) : 0;
-    // @ts-ignore
-    setFile({
-      ...file,
-      filename: file.name,
-      percentage: percent,
-      showProgress: true,
-    });
+  function onProgress(file: QXPUploadFileTask, progress: number ): void {
+    setFiles((prevFiles) => [{
+      ...prevFiles[0],
+      progress: progress,
+    }]);
   }
 
-  function onStart(file: QxpFile): void {
-    setFile({
-      filename: file.name,
+  function onStart(file: File): void {
+    setFiles([{
+      uid: file.name,
+      name: file.name,
+      type: file.type,
       size: file.size,
-      url: '',
-      percentage: 0,
-      showProgress: true,
-    });
+    }]);
   }
 
   function goLink(cardID: string): void {
@@ -284,17 +272,7 @@ function PageDetails({ pageID }: Props): JSX.Element {
         ]}
       >
         <div className="p-40">
-          <FileUpload onSuccess={onSuccess} onProgress={onProgress} onStart={onStart} />
-          {file?.showProgress && (
-            <Progress
-              className='mx-20'
-              percent={file?.percentage}
-              key={file?.url}
-            />
-          )}
-          {file && (
-            <p className="my-10">{file?.filename || file?.url}</p>
-          )}
+          <CustomPageUpload files={files} onSuccess={onSuccess} onProgress={onProgress} onStart={onStart} appID={appID} />
           <p className="mt-8 select-none">1. 支持上传静态的页面代码，包含 html、javascript、css、图片等。</p>
         </div>
       </Modal>

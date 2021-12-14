@@ -19,8 +19,8 @@ function ParamsSection({
   const [expand, setExpand] = useState(true);
 
   return (
-    <div className={cs('params-sec mb-16', className)}>
-      <div className='sec-title h-32 w-full bg-gray-100 flex items-center mb-8'>
+    <div className={cs('params-sec', className)}>
+      <div className='sec-title h-32 w-full bg-gray-100 flex items-center mb-8 rounded-4'>
         <div
           className='flex w-full h-20'
           style={{ lineHeight: '20px' }}

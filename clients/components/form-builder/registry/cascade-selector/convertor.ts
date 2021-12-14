@@ -40,16 +40,16 @@ export function toSchema(value: CascadeConfig): ISchema {
     ['x-component-props']: {
       expandTrigger: 'hover',
       placeholder: value.placeholder,
+      predefinedDataset: value.predefinedDataset,
+      showFullPath: value.showFullPath,
+      dropdownStyle: value.dropdownStyle,
+      required: value.required,
       options: defaultValueFrom === 'customized' ? customizedDataset : [],
     },
     ['x-internal']: {
-      predefinedDataset: value.predefinedDataset,
       defaultValueFrom: value.defaultValueFrom,
-      showFullPath: value.showFullPath,
       sortable: false,
       permission: getSchemaPermissionFromSchemaConfig(value),
-      dropdownStyle: value.dropdownStyle,
-      required: value.required,
     },
   };
 }
@@ -62,9 +62,9 @@ export function toConfig(schema: ISchema): CascadeConfig {
     placeholder: schema['x-component-props']?.placeholder || '',
     defaultValueFrom: schema['x-internal']?.defaultValueFrom || 'customized',
     customizedDataset: schema['x-component-props']?.options || [],
-    predefinedDataset: schema['x-internal']?.predefinedDataset || '',
-    showFullPath: schema['x-internal']?.showFullPath || true,
-    dropdownStyle: schema['x-internal']?.dropdownStyle || 'cascade',
+    predefinedDataset: schema['x-component-props']?.predefinedDataset || '',
+    showFullPath: schema['x-component-props']?.showFullPath || true,
+    dropdownStyle: schema['x-component-props']?.dropdownStyle || 'cascade',
     required: !!schema.required,
   };
 }

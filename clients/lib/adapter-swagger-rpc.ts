@@ -1,5 +1,10 @@
 import { AjaxConfig, FetchParams, Res, SwaggerSpecAdapter } from '@ofa/api-spec-adapter';
 
+type Response = {
+  body?: any;
+  error?: Error;
+}
+
 export default class SwaggerRPCSpecAdapter extends SwaggerSpecAdapter {
   build(apiID: string, fetchParams?: FetchParams): AjaxConfig | undefined {
     const ajaxConfig = SwaggerSpecAdapter.prototype.build.call(this, apiID, fetchParams);
@@ -11,19 +16,19 @@ export default class SwaggerRPCSpecAdapter extends SwaggerSpecAdapter {
     return ajaxConfig;
   }
 
-  responseAdapter = ({ result, error }: Res): Res => {
-    if (error || !result) {
-      return { result, error };
+  responseAdapter = ({ body, error }: Response): Res => {
+    if (error || !body) {
+      return { result: body, error };
     }
 
-    if (result.code !== 0) {
-      const e = new Error(result.msg);
-      if (result.data) {
-        Object.assign(e, { data: result.data });
+    if (body.code !== 0) {
+      const e = new Error(body.msg);
+      if (body.data) {
+        Object.assign(e, { data: body.data });
       }
       return { result: undefined, error: e };
     }
 
-    return { result: result.data, error: undefined };
+    return { result: body.data, error: undefined };
   }
 }

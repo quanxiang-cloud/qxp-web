@@ -70,7 +70,7 @@ function FuncDetailsDrawer(): JSX.Element {
     {
       Header: '构建时间',
       id: 'build',
-      accessor: ({ updatedAt, createdAt }: VersionField) => `${(updatedAt - createdAt) / 1000} s`,
+      accessor: ({ updatedAt, createdAt }: VersionField) => `${updatedAt - createdAt}s`,
     },
     {
       Header: '创建人',

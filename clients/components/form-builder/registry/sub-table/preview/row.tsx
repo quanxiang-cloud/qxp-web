@@ -19,10 +19,11 @@ interface Props {
   mutators: IMutators;
   layout: Layout;
   name?: string;
+  removeAble?: boolean;
 }
 
 export default function SubTableRow({
-  index, item, componentColumns, name, form, mutators, layout,
+  index, item, componentColumns, name, form, mutators, layout, removeAble = true,
 }: Props): JSX.Element {
   function onRemoveRow(mutators: IMutators, index: number): void {
     mutators.remove(index);
@@ -135,12 +136,15 @@ export default function SubTableRow({
         <div
           className="px-22 border-gray-300 border-t-1 self-stretch flex items-center"
         >
-          <Icon
-            name="delete"
-            size={29}
-            clickable
-            onClick={() => onRemoveRow(mutators, index)}
-          />
+          {removeAble ? (
+            <Icon
+              name="delete"
+              className="w-72"
+              size={29}
+              clickable
+              onClick={() => onRemoveRow(mutators, index)}
+            />
+          ) : <span className="w-28">-</span>}
         </div>
       </div>
     </div>

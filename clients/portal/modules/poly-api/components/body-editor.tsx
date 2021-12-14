@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useCallback } from 'react';
+import React, { ChangeEvent, useCallback, useRef } from 'react';
 import { equals } from 'ramda';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { isString, isBoolean, isNull, isNumber, isObject, get, isArray } from 'lodash';
@@ -32,6 +32,7 @@ function BodyEditor(props: Props): JSX.Element {
     defaultFieldType,
   } = props;
   const isValueObject = isObject(value) && !isArray(value);
+  const errorsRef = useRef<Record<string, string>>({});
 
   const handleChange = useCallback((_value: POLY_API.ObjectSchema[]) => {
     const distValue = fromObjectSchemaToApiData(_value);
@@ -40,12 +41,18 @@ function BodyEditor(props: Props): JSX.Element {
   }, [value]);
 
   function handleRowChange(
+    // rowId: string,
     keyType: keyof POLY_API.ObjectSchema,
     current$: ItemStore<POLY_API.ObjectSchema>,
     store$: Store<POLY_API.ObjectSchema>,
   ) {
     return (e: ChangeEvent<HTMLInputElement> | string | boolean | number) => {
       const value = isString(e) || isBoolean(e) || isNumber(e) ? e : e.target.value;
+
+      if (keyType === 'name') {
+        errorsRef.current[current$.id] = !value ? '参数名称必填' : '';
+      }
+
       if (keyType === 'type' && !isObjectField(current$.get('type')) && isObjectField(`${value}`)) {
         current$.removeChild();
         current$.set('rule', '');
@@ -59,20 +66,21 @@ function BodyEditor(props: Props): JSX.Element {
     current$: ItemStore<POLY_API.ObjectSchema>, store$: Store<POLY_API.ObjectSchema>,
   ) {
     return () => {
-      current$.isChildrenHidden ? current$.showChidren() : current$.hideChildren();
+      current$.isChildrenHidden ? current$.showChildren() : current$.hideChildren();
       store$.update();
     };
   }
 
   function nameRender(
-    { name, parentPath, current$, index, type }: Row<POLY_API.ObjectSchema>,
+    { name, parentPath, current$, index, type, id }: Row<POLY_API.ObjectSchema>,
     store$: Store<POLY_API.ObjectSchema>,
   ): JSX.Element {
     const path = getFullPath(parentPath, name, index);
     const level = path.split('.').length;
+
     return (
       <div className="flex items-center" style={{ marginLeft: (level - 1) * 20 }}>
-        {(type === 'object' || type === 'array') && (
+        {(type === 'object' || type === 'array') && !!current$.children$.length && (
           <ArrowDownTrigger
             className="mr-5"
             isContentVisible={!current$.isChildrenHidden}
@@ -80,12 +88,17 @@ function BodyEditor(props: Props): JSX.Element {
           />
         )}
         {!isNull(name) && (
-          <InputEditor
-            className="flex-1"
-            value={name}
-            onChange={handleRowChange('name', current$, store$)}
-            placeholder="请输入字段名称"
-          />
+          <>
+            <InputEditor
+              className="flex-1"
+              value={name.replace(/\s+/g, '')}
+              onChange={handleRowChange('name', current$, store$)}
+              placeholder="请输入字段名称"
+            />
+            {!!errorsRef.current[id] && (
+              <span className="text-red-600 px-3 pb-3 text-12">参数名称必填</span>
+            )}
+          </>
         )}
         {isNull(name) && <span className="text-caption-no-color-weight text-gray-400">{index}</span>}
       </div>
@@ -200,6 +213,7 @@ function BodyEditor(props: Props): JSX.Element {
         value={fromApiDataToObjectSchema((valueFrom || []) as POLY_API.PolyNodeInput[])}
         onAddField={handleAddField}
         onChange={handleChange}
+        addFilter={(row: Row<POLY_API.ObjectSchema>) => !!row.name}
       />
     </>
   );

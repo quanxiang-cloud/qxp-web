@@ -6,7 +6,7 @@ import toast from '@lib/toast';
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
 import { FileInfo } from '@c/filelist';
-import FileUpload from '@c/upload';
+import FileUpload, { RefProps } from '@c/upload';
 
 import MessageItem from './message-item';
 import * as apis from '../../api';
@@ -45,9 +45,9 @@ export default function Discuss({ showInput }: Props): JSX.Element {
   const { processInstanceID, taskID } = useParams<{ processInstanceID: string; taskID: string }>();
   const queryClient = useQueryClient();
   const userinfo = window.USER;
-  const fileRef = useRef(null);
+  const fileRef = useRef<RefProps>(null);
 
-  const showFiles = (f:Array<FileInfo>) => {
+  const showFiles = (f: Array<FileInfo>) => {
     setFile(f);
   };
 
@@ -78,7 +78,7 @@ export default function Discuss({ showInput }: Props): JSX.Element {
       taskId: taskID,
       content: inputValue,
       commentUserId: userinfo.id,
-      attachments: file.map((itm)=>{
+      attachments: file.map((itm) => {
         return {
           attachmentName: itm.filename,
           attachmentUrl: itm.url,
@@ -95,7 +95,6 @@ export default function Discuss({ showInput }: Props): JSX.Element {
       }
     });
     if (fileRef.current) {
-      // @ts-ignore
       fileRef.current.emptyFiles();
     }
   }
