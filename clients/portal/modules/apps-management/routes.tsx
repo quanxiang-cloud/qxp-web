@@ -39,7 +39,7 @@ export default function Routes(): JSX.Element {
         />
         <Route path="/apps/flow/new/:type/:appID" component={FlowDetail} />
         <Route path="/apps/flow/:appID/:flowID" component={FlowDetail} />
-        <Route path="/apps/page-design/:appID/:pageId" component={PageDesign} />
+        <Route path="/apps/page-design/:pageId/:appID" component={PageDesign} />
         <Route path="/apps" component={AppsIndex} />
       </Switch>
     </>

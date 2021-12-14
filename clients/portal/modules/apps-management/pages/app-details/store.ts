@@ -425,6 +425,10 @@ class AppDetailsStore {
       });
     }
 
+    if (pageInfo.menuType === MenuType.schemaPage) {
+      // todo
+    }
+
     this.curPage = pageInfo;
   }
 
