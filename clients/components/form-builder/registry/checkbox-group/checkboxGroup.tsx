@@ -42,26 +42,17 @@ function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
       return;
     }
 
-    function deep(acc:string[], option:string, index:number):string[] {
-      if (index !== -1) {
-        const customCheckValue = customCheckValues[index];
-        if (!acc.includes(customCheckValue)) {
-          return [...acc, customCheckValue];
-        } else {
-          const _index = customValues.indexOf(option, index + 1);
-          return deep(acc, option, _index);
-        }
-      }
-      return acc;
-    }
-
     setCheckedValues(
       fieldProps.value.reduce((acc: string[], option:string) => {
-        if (options.includes(option) && !acc.includes(option)) {
+        if (options.includes(option)) {
           return [...acc, option];
         }
         const index = customValues.indexOf(option);
-        return deep(acc, option, index);
+        if (index !== -1) {
+          const customCheckValue = customCheckValues[index];
+          return [...acc, customCheckValue];
+        }
+        return acc;
       }, []));
   }, [options, fieldProps.value, customValues.length]);
 
@@ -71,7 +62,7 @@ function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
     }
 
     return customValues.map((value, index) => `${CUSTOM_OTHER_VALUE}_${index}`);
-  }, [customValues]);
+  }, [customValues.length]);
 
   function getRealValue(values:string[]):string[] {
     return values.reduce((acc: string[], option: string) => {
@@ -115,7 +106,7 @@ function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
       return;
     }
     if (options.includes(value) || customValues.filter((v, i) => i !== index).includes(value)) {
-      toast.error('不可输入重复项');
+      toast.error('不可输入已存在的选项');
       customValues[index] = '';
       setCustomValues([...customValues]);
       fieldProps?.mutators?.change(
