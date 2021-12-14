@@ -27,7 +27,15 @@ function BodyEditor({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
   ) {
     return (e: ChangeEvent<HTMLInputElement> | string | number | boolean) => {
       const value = isString(e) || isBoolean(e) || isNumber(e) ? e : e.target.value;
-      errorsRef.current[current$.id] = !value ? '参数名称必填' : '';
+      if (keyType === 'name') {
+        let message = '';
+        if (!value) {
+          message = '参数名称必填';
+        } else if (`${value}`.length > 30) {
+          message = '参数名称不能超过30个字符';
+        }
+        errorsRef.current[current$.id] = message;
+      }
       if (keyType === 'type' && isObjectField(current$.get('type')) && !isObjectField(`${value}`)) {
         current$.removeChild();
       }
@@ -37,26 +45,26 @@ function BodyEditor({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
   }
 
   function nameRender(
-    { id, name, current$ }: Row<POLY_API.PolyConstSchema>,
+    { name, current$ }: Row<POLY_API.PolyConstSchema>,
     store$: Store<POLY_API.PolyConstSchema>,
   ): JSX.Element {
     return (
       <div className="flex items-center">
         <InputEditor
           className="flex-1"
-          value={name}
+          value={name.replace(/\s+/g, '')}
           onChange={handleRowChange('name', current$, store$)}
-          placeholder="请输入字段名称"
+          placeholder="请输入参数名称"
         />
-        {!!errorsRef.current[id] && (
-          <span className="text-red-600 px-3 pb-3 text-12">参数名称必填</span>
+        {!!errorsRef.current[current$.id] && (
+          <span className="text-red-600 px-3 text-12">{errorsRef.current[current$.id]}</span>
         )}
       </div>
     );
   }
 
   function typeRender(
-    { id, type, current$ }: Row<POLY_API.PolyConstSchema>,
+    { type, current$ }: Row<POLY_API.PolyConstSchema>,
     store$: Store<POLY_API.PolyConstSchema>,
   ): JSX.Element {
     return (
@@ -69,7 +77,7 @@ function BodyEditor({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
   }
 
   function valueRender(
-    { id, data, type, current$ }: Row<POLY_API.PolyConstSchema>,
+    { data, type, current$ }: Row<POLY_API.PolyConstSchema>,
     store$: Store<POLY_API.PolyConstSchema>,
   ): JSX.Element {
     if (type === 'boolean' || isBoolean(data)) {
@@ -90,14 +98,16 @@ function BodyEditor({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
   }
 
   function descRender(
-    { id, desc, current$ }: Row<POLY_API.PolyConstSchema>,
+    { desc, current$ }: Row<POLY_API.PolyConstSchema>,
     store$: Store<POLY_API.PolyConstSchema>,
   ): JSX.Element {
     return (
       <InputEditor
+        includeChinese
+        limit={100}
         value={desc}
         onChange={handleRowChange('desc', current$, store$)}
-        placeholder="请输入字段描述"
+        placeholder="请输入参数描述"
       />
     );
   }
