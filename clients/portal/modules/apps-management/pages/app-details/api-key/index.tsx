@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 import { UnionColumns } from 'react-table';
 import { Switch } from 'antd';
 import { FormInstance } from 'antd/es/form';
+import { saveAs } from 'file-saver';
 
 import Button from '@c/button';
 import Table from '@c/table';
