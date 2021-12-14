@@ -1,3 +1,4 @@
+import type { MutableRefObject } from 'react';
 import { isNull, flattenDeep, isArray, isString } from 'lodash';
 import { nanoid } from 'nanoid';
 
@@ -161,4 +162,18 @@ export function validateName(values: EditInputs, message = ''): string {
   }
 
   return message;
+}
+
+export function updateErrors(
+  value: string | number | boolean, id: string, errorsRef: MutableRefObject<Record<string, string>>,
+): void {
+  let message = '';
+  if (!value) {
+    message = '参数名称必填';
+  } else if (`${value}`.length > 30) {
+    message = '参数名称不能超过30个字符';
+  } else if (`${value}`.includes(' ')) {
+    message = '参数名称不能包含空格';
+  }
+  errorsRef.current[id] = message;
 }
