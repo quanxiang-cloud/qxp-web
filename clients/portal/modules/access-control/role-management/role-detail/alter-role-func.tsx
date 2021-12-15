@@ -22,7 +22,7 @@ export default function AlterRoleFunc({ funcs: functions }: IAlterRoleFunc): JSX
   const getFuncIds = (func: IRoleFunc | IRoleFuncItem): string[] => {
     const tags: string[] = [];
 
-    Object.keys(func).forEach((_key) => {
+    Object.keys(func ?? {}).forEach((_key) => {
       const key = _key as keyof (IRoleFunc | IRoleFuncItem);
       if (key === 'id' && func.has) {
         tags.push(func.id as string);
