@@ -8,5 +8,5 @@ export const getTableXName = (
 };
 
 export const getApiDoc = (apiPath: string, data: ApiDocParam): Promise<QueryDocRes> => {
-  return httpClient(`/api/v1/polyapi/raw/doc${apiPath}`, data);
+  return httpClient(`/api/v1/polyapi/doc${apiPath}`, data);
 };

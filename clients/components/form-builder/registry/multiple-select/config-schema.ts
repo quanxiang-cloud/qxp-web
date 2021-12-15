@@ -74,6 +74,12 @@ const schema: ISchema = {
           'x-component': 'Switch',
           'x-index': 6,
         },
+        allowCustom: {
+          title: '允许自定义',
+          default: false,
+          'x-component': 'Switch',
+          'x-index': 7,
+        },
         defaultValueFrom: {
           title: '选项来源',
           enum: [
@@ -90,7 +96,7 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 7,
+          'x-index': 8,
           'x-linkages': [
             {
               type: 'value:state',

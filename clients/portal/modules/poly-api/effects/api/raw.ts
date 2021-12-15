@@ -89,7 +89,7 @@ export function useGetRequestNodeApi(
     [GET_REQUEST_NODE_API_LIST, input.path],
     (): Promise<QueryRequestNodeApiResponse> => {
       return httpClient<QueryRequestNodeApiResponse>(
-        `/api/v1/polyapi/raw/doc/${input.path}`, input.body,
+        `/api/v1/polyapi/doc/${input.path}`, input.body,
       );
     },
     options,

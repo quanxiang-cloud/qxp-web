@@ -12,7 +12,7 @@ export default over(
     const { title, name, desc } = schema;
     const schemaToProcess = [title, name, desc];
     each(schemaToProcess, (schema: ISchema, index) => {
-      schema.title = (schema.title as string).replace('分组', 'API');
+      schema.title = (schema.title as string).replace('分组', 'API ');
       if (index === 0) {
         Object.assign(schema, {
           'x-component': 'Input',
