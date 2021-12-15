@@ -160,8 +160,8 @@ $nodeTypes: input, request, if, end, default, output;
 
 .node-config-drawer {
   &.drawer-fullscreen {
-    .drawer-container {
-      width: 100%;
+    >div {
+      width: 100% !important;
     }
   }
   .drawer-container {
