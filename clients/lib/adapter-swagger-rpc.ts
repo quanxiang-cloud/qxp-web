@@ -7,7 +7,7 @@ type Response = {
 
 export default class SwaggerRPCSpecAdapter extends SwaggerSpecAdapter {
   build(apiID: string, fetchParams?: FetchParams): AjaxConfig | undefined {
-    const ajaxConfig = SwaggerSpecAdapter.prototype.build.call(this, apiID, fetchParams);
+    const ajaxConfig = SwaggerSpecAdapter.prototype.build.call(this, `post:${apiID}`, fetchParams);
 
     if (ajaxConfig) {
       ajaxConfig.headers = { ...ajaxConfig.headers, 'x-proxy': 'API' };

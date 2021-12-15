@@ -26,6 +26,7 @@ func tokenRequired(h http.HandlerFunc) http.HandlerFunc {
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
+		r, _ = handlers.PrepareRequest(r)
 
 		h(w, r)
 	}
@@ -54,6 +55,8 @@ func GetRouter() http.Handler {
 	r.Path("/upload").Methods("POST").HandlerFunc(tokenRequired(handlers.FileUploadHandler))
 	r.Path("/upload/swagger").Methods("POST").HandlerFunc(tokenRequired(handlers.SwaggerUploadHandler))
 	r.PathPrefix("/blob").Methods("GET").HandlerFunc(tokenRequired(handlers.FileProxyHandler))
+
+	r.Path("/api/page_schema_with_swagger").Methods("GET").Handler(tokenRequired(handlers.HandleGetSchema))
 
 	// todo server this request in a different package
 	r.Host(contexts.Config.ClientConfig.HomeHostname).PathPrefix("/mobile").Methods("GET").HandlerFunc(loginRequired(handlers.MobileHandler))

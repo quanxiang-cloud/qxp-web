@@ -96,6 +96,7 @@ func SendRequest(ctx context.Context, method string, fullPath string, body []byt
 	}
 
 	req.Header.Add("User-Agent", GetContextValue(ctx, CtxUA))
+	req.Header.Set("X-Request-ID", requestID)
 
 	Logger.Debugf("sending request, method: %s, url: %s, headers: %s, [request_id=%s]", req.Method, req.URL, req.Header, requestID)
 
