@@ -96,7 +96,7 @@ function AddApi(): JSX.Element {
         const apiPath = detail.url.slice(`${detail.schema}://${detail.host}`.length);
         const {
           parameters = [], responses = {}, ['x-consts']: constants = [],
-        } = values(get(doc, `doc.paths.${apiPath}`))[0] || {};
+        } = values(get(doc, 'doc.paths')[`${apiPath}`])[0] || {};
         paramsStore.setAllParameters(parameters);
         paramsStore.setConstants(constants);
         paramsStore.setResponse(responses);

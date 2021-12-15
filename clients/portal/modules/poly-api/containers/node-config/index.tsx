@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { isEmpty, omit } from 'ramda';
 import { isUndefined } from 'lodash';
 import { Input } from '@formily/antd-components';
-import { SchemaForm, createFormActions } from '@formily/react-schema-renderer';
+import { SchemaForm, createFormActions, IFieldState } from '@formily/react-schema-renderer';
 
 import Button from '@c/button';
 import Drawer from '@c/drawer';
@@ -64,6 +64,11 @@ export default function NodeConfigDrawer(): JSX.Element {
       savePolyApiResult();
       onCancel();
     } catch (e: any) {
+      actions.setFieldState('*', (state: IFieldState) => {
+        state.props['x-component-props'] = {
+          validating: true,
+        };
+      });
       if ('errors' in e) {
         toast.error(e.errors[0].messages[0]);
         return;

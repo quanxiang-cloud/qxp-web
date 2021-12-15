@@ -111,6 +111,8 @@ export default function NodeWrapper({
                 <Icon className="mr-4 rounded-4" name="request-node" />
                 <InputEditor
                   changeOnBlur
+                  includeChinese
+                  limit={30}
                   extraClassName="text-caption-no-weight font-semibold"
                   value={title}
                   onChange={handleTitleChange}
