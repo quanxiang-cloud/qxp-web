@@ -29,27 +29,31 @@ export default function withDragResize(
   }: Option,
 ): FC<any> {
   const cls = cs('absolute transition-all duration-240 bg-transparent hover:bg-blue-600 z-1', {
-    'w-6 -left-3 top-0 bottom-0 resize-x': position === 'left',
-    'h-6 left-0 -top-3 right-0 resize-y': position === 'top',
-    'w-6 -right-3 top-0 bottom-0 resize-x': position === 'right',
-    'h-6 left-0 -bottom-3 right-0 resize-y': position === 'bottom',
+    'w-7 -left-3 top-0 bottom-0 resize-x': position === 'left',
+    'h-7 left-0 -top-3 right-0 resize-y': position === 'top',
+    'w-7 -right-3 top-0 bottom-0 resize-x': position === 'right',
+    'h-7 left-0 -bottom-3 right-0 resize-y': position === 'bottom',
   });
   let x = 0;
   let y = 0;
   let isMouseDown = false;
+  let originalTransition = '';
+  let width = 0;
+  let height = 0;
 
   return forwardRef((props: any, ref: ForwardedRef<any>): JSX.Element => {
     const [resizableEl, setResizableEl] = useState<HTMLDivElement | null>(null);
 
-    let width = getElementWidth(resizableEl);
-    let height = getElementHeight(resizableEl);
-
     const onMouseDown = useCallback((e: MouseEvent<HTMLDivElement>): void => {
-      x = e.clientX;
-      y = e.clientY;
       if (!resizableEl) {
         return;
       }
+      width = getElementWidth(resizableEl);
+      height = getElementHeight(resizableEl);
+      x = e.clientX;
+      y = e.clientY;
+      originalTransition = resizableEl.style.transition;
+      resizableEl.style.transition = 'none';
       Object.assign(resizableEl.style, { [position]: '' });
       isMouseDown = true;
     }, [resizableEl, position]);
@@ -86,7 +90,15 @@ export default function withDragResize(
 
     const onMouseUp = useCallback((): void => {
       isMouseDown = false;
-    }, []);
+      x = 0;
+      y = 0;
+      width = 0;
+      height = 0;
+      if (resizableEl) {
+        resizableEl.style.transition = originalTransition;
+      }
+      originalTransition = '';
+    }, [resizableEl]);
 
     useEffect(() => {
       const _onMouseMove = (e: Event): void => onMouseMove(e as unknown as MouseEvent<HTMLDivElement>);
