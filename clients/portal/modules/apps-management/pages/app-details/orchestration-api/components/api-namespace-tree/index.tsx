@@ -32,7 +32,6 @@ function APINamespaceTree({ shouldShow, orchestrationAPIStore }: Props): JSX.Ele
         store={store}
         NodeRender={NodeRender}
         RootNodeRender={() => null}
-        switcherIcon={{ open: 'folder_outline_empty', close: 'folder_open' }}
       />
     </div>
   );

@@ -34,7 +34,7 @@ function renderSwitcherIcon({
   switcherIcon,
 }: Pick<TreeNode<any>, 'childrenStatus' | 'expanded'> & RenderSwitcherIconExtra): JSX.Element {
   if (childrenStatus === 'loading') {
-    return (<Icon name="refresh" className="animate-spin" size={16} />);
+    return (<Icon name="refresh" className="animate-spin mr-4" size={16} />);
   }
 
   let name = 'caret-down';
