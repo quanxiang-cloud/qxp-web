@@ -1,5 +1,7 @@
 {{define "_style_guide"}}
   {{$primaryColor := .userStyleGuideConfig.PrimaryColor}}
+  <link rel="shortcut icon" href="{{.userStyleGuideConfig.Favicons}}" />
+  <link rel="stylesheet" href="https://ofapkg.pek3b.qingstor.com/@ofa/style-guide@0.0.1/index.min.css" />
   <style>
     :root {
       --primary-50: var(--{{$primaryColor}}-50);
@@ -14,5 +16,4 @@
       --primary-900: var(--{{$primaryColor}}-900);
     }
   </style>
-  <link rel="shortcut icon"  href="{{.userStyleGuideConfig.Favicons}}" />
 {{end}}
