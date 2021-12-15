@@ -22,11 +22,12 @@ type PerRes = {
 class UserAppDetailsStore {
   destroySetCurPage: IReactionDisposer;
   @observable appID = '';
+  @observable appName = ''
   @observable pageID = '';
+  @observable pageName = '';
   @observable pageListLoading = true;
   @observable curPage: PageInfo = { id: '' };
   @observable fetchSchemeLoading = true;
-  @observable pageName = '';
   @observable authority = 0;
   @observable showPageNav = true;
   @observable operationType = '';

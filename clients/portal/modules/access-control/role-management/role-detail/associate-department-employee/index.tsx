@@ -105,7 +105,7 @@ export default function AssociateDepartmentEmployee({ roleID, isSuper }: Props):
           <RadioButtonGroup
             className="mr-16 text-12"
             radioBtnClass="bg-white"
-            currentValue={showBindType}
+            currentValue={showBindType + ''}
             listData={[
               {
                 label: '按员工',

@@ -6,6 +6,7 @@ import AppsSwitcher from '@c/apps-switcher';
 import Icon from '@c/icon';
 import UserAvatarMenu from '@c/user-avatar-menu';
 import NavMsgBar from '@portal/modules/msg-center/nav-msg-bar';
+import NavTaskBar from '@c/task-lists';
 
 import store from '../store';
 
@@ -68,7 +69,8 @@ function DetailsHeader({ onCancel }: Props): JSX.Element {
         </div>
       </div>
       <div className='flex items-center'>
-        <NavMsgBar type='portal' className="mx-16"/>
+        <NavTaskBar type='portal' className="mx-16"/>
+        <NavMsgBar type='portal' className="mr-16"/>
         <div className="header-nav-btn group">
           <UserAvatarMenu />
         </div>

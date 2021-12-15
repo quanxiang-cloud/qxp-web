@@ -28,6 +28,8 @@ type InitData = {
   schema: ISchema;
   config?: Config;
   pageID?: string;
+  pageName?: string;
+  appName?: string;
   appID?: string;
   showCheckbox?: boolean;
   allowRequestData?: boolean;
@@ -52,7 +54,9 @@ class AppPageDataStore {
   @observable canSetColumnWidth = true;
   @observable showCheckbox = true;
   @observable pageID = '';
+  @observable pageName = '';
   @observable appID = '';
+  @observable appName = '';
   @observable allowRequestData = false;
   @observable filterConfig: FilterConfig | null = null;
   @observable filters: Filters = [];
@@ -80,6 +84,8 @@ class AppPageDataStore {
   constructor({
     schema,
     pageID,
+    pageName,
+    appName,
     appID,
     config,
     allowRequestData,
@@ -118,7 +124,9 @@ class AppPageDataStore {
     }, this.setParams);
     this.setTableConfig(pageTableShowRule);
     this.appID = appID || '';
+    this.appName = appName || '';
     this.pageID = pageID || '';
+    this.pageName = pageName || '';
     this.allowRequestData = !!allowRequestData;
 
     if (config?.filters) {
