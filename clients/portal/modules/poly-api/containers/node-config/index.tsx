@@ -18,6 +18,7 @@ import { NODE_INIT_CONFIG_PARAMS, NODE_TYPE_MAPPER } from '@polyApi/constants';
 import toast from '@lib/toast';
 
 import DrawerTitle from './drawer-title';
+import PolyDrawerContent from './drawer-content';
 
 import './index.scss';
 
@@ -113,6 +114,7 @@ export default function NodeConfigDrawer(): JSX.Element {
       )}
       onCancel={onCancel}
       visible={!!((schema || ConfigForm) && currentNode)}
+      content={PolyDrawerContent}
     >
       <section className="node-config-form-section">
         {ConfigForm && !isValueUndefined && (

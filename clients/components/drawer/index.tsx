@@ -1,8 +1,8 @@
-import React, { useState, isValidElement, ForwardedRef, forwardRef } from 'react';
+import React, { useState, ForwardedRef, forwardRef } from 'react';
 import { useUpdateEffect } from 'react-use';
-import cs from 'classnames';
 
-import Icon from '@c/icon';
+import Content from './content';
+import Mask from './mask';
 
 import './index.scss';
 
@@ -14,6 +14,7 @@ type Props = {
   className?: string;
   visible: boolean;
   position?: 'top' | 'right' | 'bottom' | 'left';
+  content?: typeof Content;
 }
 
 function Drawer({
@@ -24,9 +25,11 @@ function Drawer({
   position = 'bottom',
   visible,
   distanceTop = 56,
+  content,
 }: Props, ref: ForwardedRef<HTMLDivElement | null>): JSX.Element | null {
   const [beganClose, setBeganClose] = useState<boolean>(false);
   const [contentShow, setContentShow] = useState(visible);
+  const LocalContent = content ?? Content;
 
   let timeID = -1;
 
@@ -50,29 +53,17 @@ function Drawer({
   }
 
   return (
-    <div
+    <Mask
       ref={ref}
-      className={cs(`drawer-modal-mask drawer-position-${position}`, {
-        'drawer-began-close': beganClose,
-        'drawer-close': !contentShow,
-      }, className)}
+      beganClose={beganClose}
+      contentShow={contentShow}
+      className={className}
+      position={position}
     >
-      <div
-        style={{ '--distanceTop': distanceTop + 'px' } as React.CSSProperties}
-        className='drawer-container'
-      >
-        <div className='drawer-header header-background-image'>
-          {typeof title === 'string' && (
-            <span className='text-h5'>{title}</span>
-          )}
-          {isValidElement(title) && title}
-          <Icon onClick={onCancel} clickable changeable name='close' size={24} />
-        </div>
-        <div className='drawer-main-content'>
-          {children}
-        </div>
-      </div>
-    </div>
+      <LocalContent onCancel={onCancel} title={title} distanceTop={distanceTop}>
+        {children}
+      </LocalContent>
+    </Mask>
   );
 }
 
