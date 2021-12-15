@@ -518,9 +518,9 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@ofa/api-spec-adapter@https://ofapkg.pek3b.qingstor.com/tarball/ofa-api-spec-adapter-v0.3.0.tgz":
-  version "0.3.0"
-  resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-api-spec-adapter-v0.3.0.tgz#e46a6a7e13a548118112c658557917ab1d05015e"
+"@ofa/api-spec-adapter@https://ofapkg.pek3b.qingstor.com/tarball/ofa-api-spec-adapter-v0.3.1.tgz":
+  version "0.3.1"
+  resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-api-spec-adapter-v0.3.1.tgz#b9bb96abe2bb144cdf399cb30e33cbbb2864d361"
 
 "@ofa/render-engine@https://ofapkg.pek3b.qingstor.com/tarball/ofa-render-engine-v0.6.0.tgz":
   version "0.6.0"
