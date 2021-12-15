@@ -10,6 +10,7 @@ func sendRequest(ctx context.Context, method string, fullPath string, body inter
 	token := contexts.GetContextValue(ctx, ctxToken)
 	headers := map[string]string{
 		"Access-Token": token,
+		"Content-Type": "application/json",
 	}
 
 	bodyBytes, err := json.Marshal(body)
