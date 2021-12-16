@@ -43,7 +43,7 @@ const methodOptions = [
 const regApiName = /^[a-zA-Z_]\w*$/; // api标识，swagger的 api path部分
 const regPathParam = /:([^/:]+)/g;
 const regApiTitle = /^[\u4e00-\u9fa5_a-zA-Z0-9\s]+$/; // 中英文数字，空格
-const regApiPath = /^[a-zA-Z_/][\w/:.]+$/;
+const regApiPath = /^[a-zA-Z_/][\w/:.?]+$/;
 
 function getAllPathParamNames(url: string): string[] {
   return url.match(regPathParam) || [];
