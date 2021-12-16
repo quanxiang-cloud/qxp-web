@@ -33,7 +33,7 @@ const schema: Schema = {
             type: NodePropType.ConstantProperty,
             value: {
               display: 'grid',
-              width: '70vw',
+              gap: '24px',
               gridTemplateColumns: '1fr 1fr 1fr',
               marginBottom: '24px',
             },
@@ -87,9 +87,7 @@ const schema: Schema = {
                     func: {
                       type: 'raw',
                       args: 'e',
-                      body: `
-                    this.states.key = e.target.value;
-                  `,
+                      body: 'this.states.key = e.target.value',
                     },
                   },
                 },
@@ -143,9 +141,7 @@ const schema: Schema = {
                     func: {
                       type: 'raw',
                       args: 'e',
-                      body: `
-                    this.states.version = e.target.value;
-                  `,
+                      body: 'this.states.version = e.target.value',
                     },
                   },
                 },
@@ -162,6 +158,10 @@ const schema: Schema = {
                 type: NodeType.HTMLNode,
                 name: 'button',
                 props: {
+                  className: {
+                    type: NodePropType.ConstantProperty,
+                    value: 'btn btn--primary',
+                  },
                   children: {
                     type: NodePropType.ConstantProperty,
                     value: '查询',
@@ -239,9 +239,7 @@ const schema: Schema = {
             func: {
               type: 'raw',
               args: 'e',
-              body: `
-              this.states.schema = e.target.value;
-              `,
+              body: 'this.states.schema = e.target.value',
             },
           },
         },
@@ -256,6 +254,10 @@ const schema: Schema = {
             type: NodeType.HTMLNode,
             name: 'button',
             props: {
+              className: {
+                type: NodePropType.ConstantProperty,
+                value: 'btn btn--primary',
+              },
               children: {
                 type: NodePropType.ConstantProperty,
                 value: '更新',
