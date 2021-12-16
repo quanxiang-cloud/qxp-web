@@ -1,5 +1,5 @@
 import React, { forwardRef, ForwardedRef, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, UnpackNestedValue } from 'react-hook-form';
 import { usePrevious } from 'react-use';
 import { equals } from 'ramda';
 
@@ -8,7 +8,7 @@ import type { SchemaFormSchema, OnSubmit } from './type';
 
 interface Props<T extends Record<string, any>> {
   schema: SchemaFormSchema;
-  onSubmit: OnSubmit<T>;
+  onSubmit: OnSubmit<UnpackNestedValue<T>>;
   onChange?: (values: T) => void;
   defaultValue?: T;
   value?: T;
