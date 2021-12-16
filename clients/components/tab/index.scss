@@ -21,7 +21,7 @@
       white-space: nowrap;
       padding: 12px;
       &:hover {
-        color: var(--blue-600);
+        color: var(--primary-600);
       }
 
       &.disabled {
@@ -38,7 +38,7 @@
         height: 4px;
         width: 100%;
         display: block;
-        background: #375ff3;
+        background: var(--primary-600);
         border-radius: 4px 4px 0px 0px;
         position: absolute;
         left: 0;
@@ -74,6 +74,7 @@
 
     .active {
       font-weight: 600;
+      color: var(--primary-600);
       &::after {
         opacity: 1;
       }

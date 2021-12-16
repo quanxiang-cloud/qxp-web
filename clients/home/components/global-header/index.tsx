@@ -12,9 +12,12 @@ export default function GlobalHeader(): JSX.Element {
 
   return (
     <>
-      <div className="flex justify-between items-center py-2 px-24 bg-blue-600 home-global-header">
+      <div
+        style={{ backgroundColor: 'var(--primary-600)' }}
+        className="flex justify-between items-center py-2 px-24 bg-blue-600 home-global-header"
+      >
         <HeaderNav />
-        <img className="flex-1 h-48" src="/dist/images/home_logo.svg" alt="quanxiangyun"/>
+        <img className="flex-1 h-48" src="/dist/images/home_logo.svg" alt="quanxiangyun" />
         <HeaderMenu />
       </div>
     </>
