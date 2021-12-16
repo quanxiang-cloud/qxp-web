@@ -3,6 +3,7 @@ import { useQuery } from 'react-query';
 import { Repository, SchemaRender, Schema } from '@ofa/render-engine';
 import logger from '@lib/logger';
 
+import ErrorBoundary from '@c/page-schema-render/error-boundary';
 import SwaggerRPCSpecAdapter from '@lib/adapter-swagger-rpc';
 // import schema from './schema';
 import apiSpec from './api';
@@ -47,6 +48,8 @@ export default function MyApps(): JSX.Element | null {
   }
 
   return (
-    <SchemaRender schema={schema} apiSpecAdapter={apiSpecAdapter} repository={repository} />
+    <ErrorBoundary>
+      <SchemaRender schema={schema} apiSpecAdapter={apiSpecAdapter} repository={repository} />
+    </ErrorBoundary>
   );
 }

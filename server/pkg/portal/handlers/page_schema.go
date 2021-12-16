@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"qxp-web/server/pkg/contexts"
+	"strings"
 
 	"github.com/tidwall/gjson"
 )
@@ -40,21 +41,24 @@ func getAPISpec(ctx context.Context, schemaStr string) string {
 		return `{}`
 	}
 
-	var apiIDs []string
+	var apiPaths []string
 	for _, config := range apiStatesSpec {
 		apiID, ok := config["apiID"].(string)
 		if !ok {
 			continue
 		}
 
-		apiIDs = append(apiIDs, apiID)
+		parts := strings.Split(apiID, ":")
+		apiPath := parts[len(parts)-1]
+
+		apiPaths = append(apiPaths, apiPath)
 	}
 
-	if len(apiIDs) == 0 {
+	if len(apiPaths) == 0 {
 		return `{}`
 	}
 
-	body := map[string]interface{}{"apiPath": apiIDs}
+	body := map[string]interface{}{"apiPath": apiPaths}
 	respBody, errMsg := sendRequest(ctx, "POST", "/api/v1/polyapi/swagger", body)
 	if errMsg != "" {
 		contexts.Logger.Error("failed to get swagger by api paths, eror: %s", errMsg)

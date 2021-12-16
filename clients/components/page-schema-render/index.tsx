@@ -2,6 +2,7 @@ import React from 'react';
 import { Repository, SchemaRender } from '@ofa/render-engine';
 
 import { useSchemaWithAdapter } from './api';
+import ErrorBoundary from './error-boundary';
 
 type Props = {
   schemaKey: string;
@@ -17,6 +18,8 @@ export default function PageSchemaRender({ schemaKey, version, repository }: Pro
   }
 
   return (
-    <SchemaRender schema={schema} apiSpecAdapter={adapter} repository={repository} />
+    <ErrorBoundary>
+      <SchemaRender schema={schema} apiSpecAdapter={adapter} repository={repository} />
+    </ErrorBoundary>
   );
 }
