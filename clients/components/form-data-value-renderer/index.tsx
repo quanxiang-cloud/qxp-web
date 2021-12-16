@@ -7,7 +7,9 @@ import { RoundMethod } from '@c/form-builder/registry/aggregation-records/conver
 import { FileList } from '@c/file-upload';
 import { QxpFileFormData } from '@c/form-builder/registry/file-upload/uploader';
 
-const SubTable = React.lazy(() => import('@c/form-builder/registry/sub-table/preview'));
+const ReadOnlySubTable = React.lazy(
+  () => import('@c/form-builder/registry/sub-table/preview/read-only-sub-table'),
+);
 const AssociatedRecords = React.lazy(
   () => import('@c/form-builder/registry/associated-records/associated-records'),
 );
@@ -28,8 +30,8 @@ function datetimeValueRenderer({ value, schema }: ValueRendererProps): string {
 function SubTableValueRenderer({ value, schema, className }: ValueRendererProps): JSX.Element {
   return (
     <Suspense fallback={<div>loading...</div>} >
-      <SubTable
-        props={{ readOnly: true, className }}
+      <ReadOnlySubTable
+        className={className}
         value={value as Record<string, unknown>[]}
         schema={schema as any}
       />

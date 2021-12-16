@@ -34,7 +34,7 @@ const guideSteps: GuideStepItem[] = [
     divider: true,
   },
   {
-    title: '新建API、批量导入',
+    title: '新建 API、批量导入',
     desc: '支持手动新建，或通过导入Swagger2.0 文件批量创建 API。',
     link: '#',
   },

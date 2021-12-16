@@ -37,7 +37,7 @@ function APINamespaceSearchTree(
 
   const { data, isLoading: loading } = useSearchNameSpaceList(
     { path: rootPath || '', body: { title: searchKey || '' } },
-    { enabled: !!rootPath },
+    { enabled: !!rootPath && shouldShow },
   );
 
   useEffect(() => {

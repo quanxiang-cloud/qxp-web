@@ -96,8 +96,9 @@
         opacity: 0;
         box-shadow: -2px 0px 24px rgba(55, 95, 243, 0.25);
       }
-      .tree-node__toggle-icon {
-        transform: none;
+      svg.tree-node__toggle-icon {
+        width: 20px !important;
+        height: 20px !important;
       }
       .tree-node__content--title {
         @apply font-normal;

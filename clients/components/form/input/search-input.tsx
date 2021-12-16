@@ -47,7 +47,7 @@ export default function SearchInput({
         {typeof prefix === 'string' && <div>{prefix}</div>}
         {typeof prefix !== 'string' && prefix && <>{prefix}</>}
         <div className="flex flex-row items-center w-full relative">
-          <Icon name="search" className="absolute left-16 z-10" />
+          <Icon name="search" className="absolute left-16 z-1" />
           <input
             className={cs('search-input w-full py-4', {
               'pr-28': appendix,
@@ -60,7 +60,7 @@ export default function SearchInput({
           />
           {isVisible && typeof appendix === 'string' && (
             <Icon
-              className="absolute right-12 z-10"
+              className="absolute right-12 z-1"
               name={appendix}
               clickable
               onClick={() => {

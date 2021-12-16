@@ -2,13 +2,15 @@ import React from 'react';
 import { EmptyProps } from './types';
 import Icon from '@m/qxp-ui-mobile/icon';
 import cs from 'classnames';
+import EmptyImage from './empty-image';
 
 const Empty: React.FC<EmptyProps> = (props) => {
-  const { icon, title, content, children } = props;
+  const { icon, title, content, children, image } = props;
   return (
     <div style={props.style}
       className={cs('h-full flex flex-col justify-center items-center padding-16', props.className)}>
       {!!icon && (<Icon {...icon} />)}
+      {!!image && <EmptyImage src={image}/>}
       {children}
       {!!title && (
         <p className={

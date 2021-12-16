@@ -42,13 +42,13 @@ export const toSchema = (config: DefaultConfig): ISchema => {
     ['x-component-props']: {
       placeholder: config.placeholder,
       appID: config.appID || '',
-    },
-    ['x-internal']: {
       multiple: config.multiple,
       optionalRange: config.optionalRange,
       rangeList: config.rangeList,
       defaultRange: config.defaultRange,
       defaultValues: config.defaultValues,
+    },
+    ['x-internal']: {
       permission: getSchemaPermissionFromSchemaConfig(config),
     },
   });
@@ -62,11 +62,11 @@ export const toConfig = (schema: ISchema): DefaultConfig => {
     displayModifier: getDisplayModifierFromSchema(schema),
     placeholder: schema['x-component-props']?.placeholder || '',
     required: !!schema.required,
-    defaultValues: schema['x-internal']?.defaultValues || [],
-    rangeList: schema['x-internal']?.rangeList || [],
-    multiple: schema['x-internal']?.multiple,
-    optionalRange: schema['x-internal']?.optionalRange,
-    defaultRange: schema['x-internal']?.defaultRange,
+    defaultValues: schema['x-component-props']?.defaultValues || [],
+    rangeList: schema['x-component-props']?.rangeList || [],
+    multiple: schema['x-component-props']?.multiple,
+    optionalRange: schema['x-component-props']?.optionalRange,
+    defaultRange: schema['x-component-props']?.defaultRange,
     appID: schema['x-component-props']?.appID,
   };
 };

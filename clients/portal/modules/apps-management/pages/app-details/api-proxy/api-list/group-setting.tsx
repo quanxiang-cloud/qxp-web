@@ -176,7 +176,12 @@ function GroupSetting(): JSX.Element {
                 <ErrorMsg errors={errors} name='authorize' />
               </div>
               <p>
-                <a href="#" rel="noopener" className='inline-flex items-center underline text-gray-600'>
+                <a
+                  href={`//${window.CONFIG.docs_hostname}/api/proxy/authentication/`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className='inline-flex items-center underline text-gray-600'
+                >
                   <Icon name='menu_book' className='mr-5' />
                   如何编写鉴权方法
                 </a>

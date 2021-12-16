@@ -9,6 +9,14 @@
     align-self: stretch;
   }
 
+  .z-1 {
+    z-index: 1;
+  }
+
+  .w-732 {
+    width: 732px;
+  }
+
   .line {
     @apply w-full bg-black-900;
     height: 1px;

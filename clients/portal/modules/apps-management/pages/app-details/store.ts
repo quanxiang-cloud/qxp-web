@@ -31,7 +31,7 @@ import {
   isHiddenMenu,
   formDuplicate,
 } from './api';
-import { getFirstMenu } from './page-menu-design/menu-tree/utils';
+import { getFirstMenu, flatMnues } from './page-menu-design/menu-tree/utils';
 import { Menu } from './page-menu-design/menu-tree/type';
 
 type DeletePageOrGroupParams = {
@@ -477,6 +477,10 @@ class AppDetailsStore {
     this.pageListLoading = true;
     fetchPageList(appID).then((res: any) => {
       this.pageInitList = res.menu;
+      if (this.pageID) {
+        const flatMenus = flatMnues(res.menu);
+        this.activeMenu = flatMenus?.[this.pageID] || this.activeMenu;
+      }
       if (!hasActiveMenu(res.menu, this.activeMenu)) {
         this.activeMenu = getFirstMenu(res.menu);
       }

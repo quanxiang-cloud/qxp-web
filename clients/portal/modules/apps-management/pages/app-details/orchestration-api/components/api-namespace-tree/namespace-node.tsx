@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { observer } from 'mobx-react';
 import { useLocalStorage } from 'react-use';
-import cs from 'classnames';
 
 import type { NodeRenderProps, TreeNode } from '@c/headless-tree/types';
 import MoreMenu from '@c/more-menu';
@@ -141,10 +140,16 @@ function NamespaceNode({ node, store, keyword }: Props): JSX.Element | null {
       onClick={handleClick}
       className="transition-all pr-10 py-8 w-full flex items-center justify-between"
     >
-      <div className={cs('truncate tree-node__content--title', { 'ml-10': !node.isLeaf })} title={node.name}>
-        {keyword ? (
-          <MatchHighlight text={node.name} match={keyword} style={{ color: '#375FF2' }} />
-        ) : node.name}
+      <div className="flex items-center">
+        {node.expanded ?
+          (<Icon name="folder_open" size={20} />) :
+          (<Icon name="folder_outline_empty" size={20} />)
+        }
+        <div className='truncate tree-node__content--title ml-5' title={node.name}>
+          {keyword ? (
+            <MatchHighlight text={node.name} match={keyword} style={{ color: '#375FF2' }} />
+          ) : node.name}
+        </div>
       </div>
       <MoreMenu
         menus={API_DIRECTORY_MENUS}

@@ -6,6 +6,8 @@ import { greeting } from '@m/lib/formatter';
 import Icon from '@m/qxp-ui-mobile/icon';
 import Popup from '@m/qxp-ui-mobile/popup';
 import Button from '@m/qxp-ui-mobile/button';
+import { useHistory } from 'react-router-dom';
+import { accountSecurityPath } from '@m/pages/account/routes';
 
 function getDepName(dep?: UserDepartment): string {
   let child = dep;
@@ -20,6 +22,7 @@ const Mine: React.FC<HomePageProps> = (props) => {
   const { userName, email, dep } = window.USER;
   const [showPopup, setShowPopup] = useState(false);
   const [logout, setLogout] = useState(false);
+  const history = useHistory();
 
   function onLogout(): void {
     setLogout(true);
@@ -28,7 +31,7 @@ const Mine: React.FC<HomePageProps> = (props) => {
   }
 
   return (
-    <div className={cs('h-full bg-white', { hidden: !props.active })} key={props.key}>
+    <div className={cs('h-full', { hidden: !props.active })} key={props.key}>
       <div className='mine-top-wrapper'>
         <div className='mine-top-bg'/>
       </div>
@@ -57,7 +60,8 @@ const Mine: React.FC<HomePageProps> = (props) => {
           </div>
         </div>
 
-        <div className="account-security flex items-center bg-white pointer-shadow">
+        <div className="account-security flex items-center bg-white pointer-shadow"
+          onClick={() => history.push(accountSecurityPath)}>
           <Icon name="shield_account" size=".24rem" addPrefix />
           <p className="flex-1 body1 text-secondary ml-8 mr-8 truncate">账号安全</p>
           <Icon name="chevron_right" size=".16rem"/>
@@ -65,22 +69,25 @@ const Mine: React.FC<HomePageProps> = (props) => {
 
       </div>
 
-      <Popup visible={showPopup} round safeAreaInsetBottom
+      <Popup visible={showPopup}
+        round
+        safeAreaInsetBottom
+        lockScroll
         position="bottom"
         onClose={() => setShowPopup(false)}>
         <div className="padding-12">
           <h3 className="title3 text-primary text-center"
             style={{ paddingTop: '.1rem', paddingBottom: '.22rem' }}>
-            确定退出登录吗？
+              确定退出登录吗？
           </h3>
           <Button block theme='tertiary' loading={logout}
             onClick={onLogout}
             className='mb-8' loadingText='退出中'>
-            退出登录
+              退出登录
           </Button>
           <Button block theme='textSecondary' className='mb-8'
             onClick={() => setShowPopup(false)}>
-            取消
+              取消
           </Button>
         </div>
       </Popup>

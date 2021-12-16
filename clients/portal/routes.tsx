@@ -13,6 +13,7 @@ const MetaData = React.lazy(() => import('./modules/metadata'));
 const AccessControl = React.lazy(() => import('./modules/access-control'));
 const SystemMgmt = React.lazy(() => import('./modules/system-mgmt'));
 const PolyAPI = React.lazy(() => import('./modules/poly-api'));
+const ConfigCenter = React.lazy(() => import('./modules/config-center'));
 
 const { USER } = window;
 if (USER && !isEmpty(USER)) {
@@ -29,6 +30,7 @@ export default function Routes(): JSX.Element {
         <Route path="/system" component={SystemMgmt} />
         <Route path="/apps" component={AppsRoutes} />
         <Route path="/poly/:appID/:polyFullPath+" component={PolyAPI}/>
+        <Route path="/config-center" component={ConfigCenter} />
         <Route component={NotFoundError} />
       </Switch>
     </React.Suspense>

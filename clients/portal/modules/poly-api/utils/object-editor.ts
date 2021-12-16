@@ -1,3 +1,4 @@
+import type { MutableRefObject } from 'react';
 import { isNull, flattenDeep, isArray, isString } from 'lodash';
 import { nanoid } from 'nanoid';
 
@@ -140,16 +141,39 @@ export function isObjectField(type: string): boolean {
 }
 
 type EditInputs = POLY_API.PolyNodeInput[] | POLY_API.PolyEndBodyData[] |null
-export function isNameInvalidate(values: EditInputs): boolean {
-  if (!values) {
-    return false;
+export function validateName(values: EditInputs, message = ''): string {
+  if (!values || message) {
+    return message;
   }
 
-  return values.some(({ name, type, data }) => {
-    if (type === 'object' && name) {
-      return isNameInvalidate(data as EditInputs);
+  for (let index = 0; index < values.length; index += 1) {
+    const { name, type, data } = values[index];
+    if ((type === 'object' || type === 'array') && name) {
+      const _message = validateName(data as EditInputs, message);
+      if (_message) {
+        return _message;
+      }
     }
+    if (!name) {
+      return '参数名称必填';
+    } else if (name.length > 30) {
+      return '参数名称不能超过30个字符';
+    }
+  }
 
-    return !name;
-  });
+  return message;
+}
+
+export function updateErrors(
+  value: string | number | boolean, id: string, errorsRef: MutableRefObject<Record<string, string>>,
+): void {
+  let message = '';
+  if (!value) {
+    message = '参数名称必填';
+  } else if (`${value}`.length > 30) {
+    message = '参数名称不能超过30个字符';
+  } else if (`${value}`.includes(' ')) {
+    message = '参数名称不能包含空格';
+  }
+  errorsRef.current[id] = message;
 }

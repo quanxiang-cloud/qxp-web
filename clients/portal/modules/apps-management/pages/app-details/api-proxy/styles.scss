@@ -58,7 +58,7 @@ textarea.api-from-textarea {
       font-weight: normal;
       line-height: 24px;
       color: var(--gray-900);
-      background: transparent;
+      background: var(--gray-50);
       &:hover,
       &.tree-node--focused {
         background: white;
@@ -179,7 +179,7 @@ textarea.api-from-textarea {
       z-index: 1;
       transition: none;
     }
-  } 
+  }
 }
 
 .swagger-upload-fail {

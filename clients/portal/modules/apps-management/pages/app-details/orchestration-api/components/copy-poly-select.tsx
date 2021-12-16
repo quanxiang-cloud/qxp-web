@@ -24,7 +24,7 @@ function CopyPolySelect(props: ISchemaFieldComponentProps): JSX.Element {
   return (
     <div className={cs('w-full copy-poly-select', { 'no-value': !props.value })}>
       <hr className="mb-24 h-1 relative -left-40" style={{ width: 'calc(100% + 80px)' }} />
-      <div className="mb-8 text-caption">通过已有API复制新建:</div>
+      <div className="mb-8 text-caption">通过已有 API 复制新建:</div>
       <Select<string>
         options={options}
         placeholder="选填"

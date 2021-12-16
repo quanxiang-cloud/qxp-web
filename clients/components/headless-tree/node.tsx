@@ -34,7 +34,7 @@ function renderSwitcherIcon({
   switcherIcon,
 }: Pick<TreeNode<any>, 'childrenStatus' | 'expanded'> & RenderSwitcherIconExtra): JSX.Element {
   if (childrenStatus === 'loading') {
-    return (<Icon name="refresh" className="animate-spin" size={16} />);
+    return (<Icon name="refresh" className="animate-spin mr-4" size={16} />);
   }
 
   let name = 'caret-down';
@@ -90,18 +90,11 @@ export default function renderNode<T>({
   // When focused not is invisible,
   // apply focused style on the first visible parent.
   const bubbledFocusedStyle = node.id === actualFocusedNodeID && upwardFocusedStyleToParent;
-  let transformStyle = '';
-  if (node.isLeaf && !node.visible) {
-    // hide leaf node when parent collapsed
-    transformStyle = `translateX(-9999px) translateY(${node.positionY}px)`;
-  } else {
-    transformStyle = `translateY(${node.positionY}px)`;
-  }
 
   return (
     <div
       key={node.id}
-      style={{ transform: transformStyle, zIndex: 100 - node.level }}
+      style={{ transform: `translateY(${node.positionY}px)`, zIndex: 100 - node.level }}
       onClick={(): void => onClick(node)}
       onDragLeave={(): void => setAcceptDrop(false)}
       onDragOver={(e): void => {

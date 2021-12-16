@@ -173,10 +173,12 @@ function ContentWithoutRef({
         type,
         create_at: _currDate,
         update_at: _currDate,
-        mes_attachment: (args.files || []).map((itm: FileInfo) => {
+        mes_attachment: (args.files || []).map((itm: QXPUploadFileBaseProps) => {
           return {
-            file_name: itm.filename,
-            file_url: itm.url,
+            file_name: itm.name,
+            file_url: itm.uid,
+            file_type: itm.type,
+            file_size: itm.size,
           };
         }).filter(Boolean),
       };
@@ -199,10 +201,12 @@ function ContentWithoutRef({
       sort: type,
       is_send: isSend, // false: 保存为草稿
       recivers: handleReceivers(recivers),
-      mes_attachment: (args.files || []).map((itm: FileInfo) => {
+      mes_attachment: (args.files || []).map((itm: QXPUploadFileBaseProps) => {
         return {
-          file_name: itm.filename,
-          file_url: itm.url,
+          file_name: itm.name,
+          file_url: itm.uid,
+          file_type: itm.type,
+          file_size: itm.size,
         };
       }).filter(Boolean),
     };

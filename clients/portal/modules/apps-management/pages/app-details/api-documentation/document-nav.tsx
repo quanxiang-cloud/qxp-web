@@ -86,7 +86,7 @@ function DocumentNav(props: Props): JSX.Element {
         placeholder="输入目录名称..."
         onChange={store.changeKeyword}
       />
-      {!loading && store.dataModels.length !== 0 && (
+      {!loading && (
         <TwoLevelMenu<any>
           menus={menus}
           style={{
