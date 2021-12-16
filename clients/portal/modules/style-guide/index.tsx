@@ -9,7 +9,7 @@ import {
 } from '@formily/antd';
 
 import toast from '@lib/toast';
-import { setUserConfig, useGetUserConfig } from '@lib/configuration-center';
+import { setGlobalConfig, useGetGlobalConfig } from '@lib/configuration-center';
 
 import { COLORS, COLOR_DEPTH, SCHEMA, DEFAULT_CONFIG } from './constant';
 
@@ -61,14 +61,14 @@ function ImgUpload({ value, onChange }: any): JSX.Element {
 }
 
 export default function UserStyleConfig(): JSX.Element {
-  const [userStyleConfig, loading] = useGetUserConfig(KEY, '0.1.0', DEFAULT_CONFIG);
+  const [userStyleConfig, loading] = useGetGlobalConfig(KEY, '0.1.0', DEFAULT_CONFIG);
   const form = useForm({
     initialValues: userStyleConfig,
     onSubmit: handleSave,
   });
 
   function handleSave(formData: UserStyleConfig): void {
-    setUserConfig(formData, KEY, '0.1.0').then(() => {
+    setGlobalConfig(formData, KEY, '0.1.0').then(() => {
       window.TENANT_CONFIG = formData;
       const favicon = document.querySelector<HTMLLinkElement>('link[rel="shortcut icon"]');
       if (favicon) {

@@ -69,9 +69,9 @@ export function useGetGlobalConfig<T>(
   return [userConfig, loading];
 }
 
-export function setGlobalConfig(config: any, key: string, version: string): void {
+export function setGlobalConfig(config: any, key: string, version: string): Promise<void> {
   globalConfigMapTmp[key] = config;
-  setBatchGlobalConfig([{
+  return setBatchGlobalConfig([{
     key,
     version: version,
     value: JSON.stringify(config),

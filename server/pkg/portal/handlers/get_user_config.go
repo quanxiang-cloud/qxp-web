@@ -25,7 +25,7 @@ type UserConfig struct {
 
 func getUserConfig(r *http.Request) UserConfig {
 	params := []UserConfigParams{{Key: "user_style_config", Version: "0.1.0"}}
-	respBody, errMsg := sendRequest(r.Context(), "POST", "/api/v1/persona/userBatchGetValue", BatchGetValueReq{Keys: params})
+	respBody, errMsg := sendRequest(r.Context(), "POST", "/api/v1/persona/batchGetValue", BatchGetValueReq{Keys: params})
 	if errMsg != "" {
 		contexts.Logger.Errorf("failed to get user config: %s", errMsg)
 		return UserConfig{}
