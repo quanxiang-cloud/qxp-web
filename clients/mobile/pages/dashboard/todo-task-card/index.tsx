@@ -5,7 +5,7 @@ import './index.scss';
 import Divider from '@m/qxp-ui-mobile/divider';
 import { HomePageProps } from '@m/pages/dashboard/types';
 import { spacer } from '@m/lib/ui-utils';
-import { approvalsPath } from '@m/pages/approvals/routes';
+import { approvalsPath } from '@m/constant';
 
 function calcCount(count?: number): string {
   if (count) {

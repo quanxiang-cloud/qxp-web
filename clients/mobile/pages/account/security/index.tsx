@@ -2,8 +2,8 @@ import React from 'react';
 import Icon from '@m/qxp-ui-mobile/icon';
 import NavPage from '@m/components/nav-page';
 import { useHistory } from 'react-router-dom';
-import { changePwdPath } from '@m/pages/account/routes';
 import Divider from '@m/qxp-ui-mobile/divider';
+import { changePwdPath } from '@m/constant';
 
 export default function AccountSecurity(): JSX.Element {
   const history = useHistory();
