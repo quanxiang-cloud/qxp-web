@@ -9,7 +9,7 @@ import ApiSelector from '@polyApi/nodes/forms/request-config/api-selector';
 import ApiSpec from '../app-details/api-proxy/add-api';
 
 import { Designer, getStore } from '@ofa/page-engine';
-import { savePage } from './api';
+import { getPage, savePage } from './api';
 
 import './index.scss';
 
@@ -18,11 +18,21 @@ interface Props {
 }
 
 function PageDesign(props: Props) {
-  const { designer, dataSource } = getStore();
+  const { designer, dataSource, page } = getStore();
   const { appID, pageId } = useParams<{appID: string; pageId: string}>();
   const { pageName } = getQuery<{ pageName: string }>();
   const history = useHistory();
   const [apiPath, setApiPath] = useState('');
+
+  useEffect(()=> {
+    getPage(appID, pageId).then((schema)=> {
+      if (schema) {
+        const parsedSchema = JSON.parse(schema);
+        console.log('query page schema: ', parsedSchema);
+        page.setSchema(parsedSchema);
+      }
+    });
+  }, []);
 
   useEffect(()=> {
     // set page title
@@ -67,24 +77,19 @@ function PageDesign(props: Props) {
     );
   }
 
-  function handleSave(page_schema: any): void {
-    savePage([appID, pageId].join('__'), page_schema).then((res)=> {
-      toast.success('页面已保存');
+  function handleSave(page_schema: any, options?: Record<string, any>): void {
+    console.log('save page: ', page_schema, options);
+    savePage(appID, pageId, page_schema, options).then((res)=> {
+      if (!options?.silent) {
+        toast.success('页面已保存');
+      }
     }).catch((err: Error)=> {
       toast.error(err.message);
     });
   }
 
-  function handlePreview(page_schema: any): void {
-    // todo: link to preview route
-    console.log('preview page: ', page_schema);
-  }
-
   return (
-    <Designer
-      onSave={handleSave}
-      onPreview={handlePreview}
-    />
+    <Designer onSave={handleSave} />
   );
 }
 

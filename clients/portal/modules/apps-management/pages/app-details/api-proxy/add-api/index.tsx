@@ -103,11 +103,11 @@ function AddApi(props: Props): JSX.Element {
         queryNativeApiDoc(apiPath, { docType: 'swag' }),
       ]).then(([detail, doc])=> {
         if (props.tinyMode) {
-          const apiSpec = {
-            method: detail.method,
-            ...doc,
-          };
-          pageEngineStore.dataSource.setApiSpec(apiSpec);
+          // const apiSpec = {
+          //   method: detail.method,
+          //   ...doc,
+          // };
+          pageEngineStore.dataSource.setCurApiId([detail.method.toLowerCase(), doc.apiPath].join(':'));
         }
 
         const {
