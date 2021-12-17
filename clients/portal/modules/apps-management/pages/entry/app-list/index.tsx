@@ -24,7 +24,7 @@ function MyApp(): JSX.Element {
   }, []);
 
   return (
-    <>
+    <div className="h-full flex flex-col">
       <TextHeader
         title="我的应用"
         desc="一个应用是由若干表单、流程表单、报表、自定义页面组成的业务管理系统。"
@@ -44,7 +44,7 @@ function MyApp(): JSX.Element {
         appList={appList}
       />
       {modalType === 'CreatedApp' && (<CreatedAppModal onCancel={() => setModalType('')} />)}
-    </>
+    </div>
   );
 }
 

@@ -20,11 +20,7 @@
 }
 
 .app-list-container {
-  display: grid;
-  height: 100%;
-  grid-gap: 16px;
-  padding: 0 16px;
-  overflow-y: auto;
+  @apply mb-4 flex-1 grid gap-16 px-16 overflow-y-auto;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   grid-template-rows: repeat(auto-fill, 76px); 
 }
