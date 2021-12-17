@@ -1,6 +1,5 @@
 .task-filter-wrapper {
   padding: .08rem .16rem;
-  background-color: white;
   display: flex;
 }
 
@@ -11,13 +10,21 @@
   flex: 1;
 }
 
-.cc-read-all {
+.read-all {
   padding: .1rem;
-  margin-left: .02rem;
+  margin-left: .04rem;
   margin-right: -0.12rem;
   border-radius: .08rem;
 }
 
 .disabled {
   color: var(--blue-300);
+}
+
+.dropdown-top {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
 }

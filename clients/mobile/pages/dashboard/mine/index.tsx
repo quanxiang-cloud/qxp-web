@@ -4,10 +4,9 @@ import cs from 'classnames';
 import Avatar from '@m/qxp-ui-mobile/avatar';
 import { greeting } from '@m/lib/formatter';
 import Icon from '@m/qxp-ui-mobile/icon';
-import Popup from '@m/qxp-ui-mobile/popup';
-import Button from '@m/qxp-ui-mobile/button';
 import { useHistory } from 'react-router-dom';
-import { accountSecurityPath } from '@m/pages/account/routes';
+import AlertDialog from '@m/components/alert-dialog';
+import { accountPath } from '@m/constant';
 
 function getDepName(dep?: UserDepartment): string {
   let child = dep;
@@ -21,13 +20,14 @@ function getDepName(dep?: UserDepartment): string {
 const Mine: React.FC<HomePageProps> = (props) => {
   const { userName, email, dep } = window.USER;
   const [showPopup, setShowPopup] = useState(false);
-  const [logout, setLogout] = useState(false);
   const history = useHistory();
 
-  function onLogout(): void {
-    setLogout(true);
-    localStorage.removeItem('HOME_APP_PAGE_NAV_STATUS_v1');
-    window.location.href = '/logout';
+  function onLogout(): Promise<boolean> {
+    return new Promise<boolean>((resolve) => {
+      localStorage?.removeItem('HOME_APP_PAGE_NAV_STATUS_v1');
+      window.location.href = '/logout';
+      setTimeout(() => resolve(false), 10000);
+    });
   }
 
   return (
@@ -61,7 +61,7 @@ const Mine: React.FC<HomePageProps> = (props) => {
         </div>
 
         <div className="account-security flex items-center bg-white pointer-shadow"
-          onClick={() => history.push(accountSecurityPath)}>
+          onClick={() => history.push(accountPath)}>
           <Icon name="shield_account" size=".24rem" addPrefix />
           <p className="flex-1 body1 text-secondary ml-8 mr-8 truncate">账号安全</p>
           <Icon name="chevron_right" size=".16rem"/>
@@ -69,28 +69,14 @@ const Mine: React.FC<HomePageProps> = (props) => {
 
       </div>
 
-      <Popup visible={showPopup}
-        round
-        safeAreaInsetBottom
-        lockScroll
-        position="bottom"
-        onClose={() => setShowPopup(false)}>
-        <div className="padding-12">
-          <h3 className="title3 text-primary text-center"
-            style={{ paddingTop: '.1rem', paddingBottom: '.22rem' }}>
-              确定退出登录吗？
-          </h3>
-          <Button block theme='tertiary' loading={logout}
-            onClick={onLogout}
-            className='mb-8' loadingText='退出中'>
-              退出登录
-          </Button>
-          <Button block theme='textSecondary' className='mb-8'
-            onClick={() => setShowPopup(false)}>
-              取消
-          </Button>
-        </div>
-      </Popup>
+      <AlertDialog
+        positiveButton={{ text: '退出登录', loadingText: '退出中' }}
+        onPositiveClick={onLogout}
+        title='确定退出登录吗？'
+        titleStyle={{ paddingTop: '.1rem', paddingBottom: '.22rem' }}
+        show={showPopup}
+        negativeButton={true}
+        onClose={() => setShowPopup(false)} />
     </div>
   );
 };

@@ -8,7 +8,7 @@ import { useHistory } from 'react-router-dom';
 import Icon from '@m/qxp-ui-mobile/icon';
 import Badge from '@m/qxp-ui-mobile/badge';
 import MessageCard from '@m/pages/msg-center/message-card';
-import { approvalsPath } from '@m/pages/approvals/routes';
+import { approvalsPath } from '@m/constant';
 
 const Notify: React.FC<HomePageProps> = (props) => {
   const history = useHistory();

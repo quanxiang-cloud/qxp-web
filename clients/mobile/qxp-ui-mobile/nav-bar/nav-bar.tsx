@@ -15,6 +15,8 @@ const NavBar: React.FC<NavBarProps> = (props) => {
     fixed,
     placeholder,
     safeAreaInsetTop = true,
+    title,
+    zIndex,
   } = props;
 
   const navBarRef = useRef(null);
@@ -48,8 +50,6 @@ const NavBar: React.FC<NavBarProps> = (props) => {
   };
 
   const renderNavBar = (): ReactElement => {
-    const { title, fixed, zIndex } = props;
-
     const style = getZIndexStyle(zIndex, props.style);
 
     const hasLeft = leftArrow || !!leftText;
@@ -69,7 +69,7 @@ const NavBar: React.FC<NavBarProps> = (props) => {
               {renderLeft()}
             </div>
           )}
-          <div className='nav-bar__title title3'>{title}</div>
+          <div className='nav-bar__title title3 truncate'>{title}</div>
           {hasRight && (
             <div className='nav-bar__right' onClick={onClickRight}>
               {renderRight()}
