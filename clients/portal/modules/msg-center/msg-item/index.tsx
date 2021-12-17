@@ -24,15 +24,15 @@ interface Props {
 const MsgItem = ({
   id,
   title,
-  updated_at,
-  sort,
-  read_status = 1,
+  createdAt,
+  types,
+  readStatus = 1,
   className,
   hideType,
   onClick,
   readonly,
 }: Qxp.MsgItem & Props): JSX.Element => {
-  const [read, setRead] = useState(read_status);
+  const [read, setRead] = useState(readStatus);
   const refItem = useRef<HTMLDivElement>(null);
   const queryPage = useRouting();
   const queryClient = useQueryClient();
@@ -74,7 +74,7 @@ const MsgItem = ({
       msgCenter.setLoadingDetail(false);
       msgCenter.setDetail(data);
       // change msg read_status
-      if (read_status === MsgReadStatus.unread) {
+      if (readStatus === MsgReadStatus.unread) {
         setRead(MsgReadStatus.read);
         // todo
         queryClient.invalidateQueries('count-unread-msg');
@@ -125,16 +125,16 @@ const MsgItem = ({
         </span>
         {!hideType && (
           <span className={cs(styles.type, {
-            [styles.system]: sort === MsgType.system,
-            [styles.alert]: sort === MsgType.notify,
+            [styles.system]: types === MsgType.system,
+            [styles.alert]: types === MsgType.notify,
           })}>
-            {sort === MsgType.system ? '系统消息' : '通知公告'}
+            {types === MsgType.system ? '系统消息' : '通知公告'}
           </span>
         )}
       </div>
       <div className={styles.msg_itm_time}>
         <span className={styles.time}>
-          {dayjs(parseInt(String(updated_at * 1000))).format('YYYY-MM-DD HH:mm')}
+          {dayjs(parseInt(String(createdAt * 1000))).format('YYYY-MM-DD HH:mm')}
         </span>
       </div>
     </div>

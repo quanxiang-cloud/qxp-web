@@ -103,7 +103,7 @@ export default function FormDataValueRenderer({ value, schema, className }: Prop
               name: file.label,
               uid: file.value,
               type: file.type,
-              size: file.size,
+              size: file.size || 0,
             }),
           )}
         />
@@ -121,7 +121,7 @@ export default function FormDataValueRenderer({ value, schema, className }: Prop
               name: file.label,
               uid: file.value,
               type: file.type,
-              size: file.size,
+              size: file.size || 0,
             }),
           )}
         />

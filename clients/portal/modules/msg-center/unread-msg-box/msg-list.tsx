@@ -55,7 +55,7 @@ const MsgList = ({ className, getMsgDetail }: Props): JSX.Element => {
   };
 
   const { isLoading, isError, data } = useQuery(['unread-messages', {
-    read_status: MsgReadStatus.unread,
+    readStatus: MsgReadStatus.unread,
     page: 1,
     limit: 5,
   }], getMessageList, {
@@ -69,7 +69,7 @@ const MsgList = ({ className, getMsgDetail }: Props): JSX.Element => {
     return <ErrorTips desc='获取数据失败' />;
   }
 
-  const msgList = data?.mes_list || [];
+  const msgList = data?.list || [];
   return (
     <div className={cs(styles.msgList, className)}>
       {renderMain(msgList)}

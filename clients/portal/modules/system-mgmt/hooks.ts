@@ -20,7 +20,8 @@ export const useMsgInitData = () => {
     data,
     refetch,
   } = useQuery(['msg-mgmt-msg-list', keyword, pageParams], () => {
-    return getMsgList({ ...pageParams, key_word: keyword });
+    // return getMsgList({ ...pageParams, key_word: keyword });
+    return getMsgList({ ...pageParams, key: keyword });
   });
 
   useEffect(() => {

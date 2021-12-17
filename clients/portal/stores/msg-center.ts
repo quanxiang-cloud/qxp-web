@@ -39,12 +39,12 @@ class MsgCenter {
 
   @computed
   get countUnreadSystemMsg(): any {
-    return get(find(this.countUnreadByType, { sort: MsgType.system }), 'total', 0);
+    return get(find(this.countUnreadByType, { types: MsgType.system }), 'total', 0);
   }
 
   @computed
   get countUnreadNotifyMsg(): any {
-    return get(find(this.countUnreadByType, { sort: MsgType.notify }), 'total', 0);
+    return get(find(this.countUnreadByType, { types: MsgType.notify }), 'total', 0);
   }
 
   @computed

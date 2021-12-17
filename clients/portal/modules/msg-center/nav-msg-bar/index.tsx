@@ -10,6 +10,7 @@ import Popper from '@c/popper';
 
 import { get } from 'lodash';
 import UnreadMsgBox from '../unread-msg-box';
+import MsgCenter from '../modal-msg-center';
 import BtnBadge from '@c/btn-badge';
 import pushServer from '@lib/push';
 import { getQuery } from '@portal/utils';
@@ -48,7 +49,7 @@ const NavMsgBar = ({ type, className }: Props): JSX.Element => {
   };
 
   useEffect(() => {
-    msgCenter.setUnreadTypeCounts(get(countUnreadMsg, 'type_num', []));
+    msgCenter.setUnreadTypeCounts(get(countUnreadMsg, 'typeNum', []));
   }, [countUnreadMsg]);
 
   useEffect(() => {
@@ -119,6 +120,7 @@ const NavMsgBar = ({ type, className }: Props): JSX.Element => {
       >
         {renderUnreadMsgBox()}
       </Popper>
+      <MsgCenter />
     </>
   );
 };

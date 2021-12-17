@@ -24,9 +24,9 @@ function EditorField({ value, onChange }: Props): JSX.Element {
   const saveRef = useRef<EditorState | null>(null);
   const [dom, setDom] = useState<Element | null>(null);
   const [files, setFiles] = useState<QXPUploadFileBaseProps[]>((value?.files || []).map((itm: any) => ({
-    uid: itm.file_url,
+    uid: itm.uid,
     type: itm.file_type,
-    name: itm.file_name,
+    name: itm.name,
     size: itm.file_size,
   })));
 
