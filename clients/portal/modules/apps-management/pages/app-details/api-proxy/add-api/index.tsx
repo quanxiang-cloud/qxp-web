@@ -105,11 +105,11 @@ function AddApi(props: Props): JSX.Element {
         // console.log('api detail, doc: ', detail, doc);
 
         if (props.tinyMode) {
-          const apiSpec = {
-            method: detail.method,
-            ...doc,
-          };
-          pageEngineStore.dataSource.setApiSpec(apiSpec);
+          // const apiSpec = {
+          //   method: detail.method,
+          //   ...doc,
+          // };
+          pageEngineStore.dataSource.setCurApiId([detail.method.toLowerCase(), doc.apiPath].join(':'));
         }
 
         const apiPath = detail.url.slice(`${detail.schema}://${detail.host}`.length);

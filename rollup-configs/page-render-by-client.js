@@ -8,7 +8,6 @@ import resolve from '@rollup/plugin-node-resolve';
 import styles from 'rollup-plugin-styles';
 import webWorkerLoader from 'rollup-plugin-web-worker-loader';
 // import tsChecker from 'rollup-plugin-fork-ts-checker';
-import serve from 'rollup-plugin-serve';
 
 import typescriptPaths from './plugins/rollup-plugin-typescript-paths';
 import notifier from './plugins/rollup-plugin-notifier';
@@ -111,6 +110,5 @@ export default {
     outputManifest(),
     esbuild(esbuildConfig),
     // tsChecker(),
-    isProduction ? null : serve('pp'),
-  ].filter(Boolean),
+  ],
 };
