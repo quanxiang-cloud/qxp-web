@@ -17,8 +17,8 @@ interface Props {
   className?: string;
 }
 
-function PageDesign(props: Props) {
-  const { designer, dataSource, page } = getStore();
+function PageDesign(props: Props): JSX.Element {
+  const { designer, page } = getStore();
   const { appID, pageId } = useParams<{appID: string; pageId: string}>();
   const { pageName } = getQuery<{ pageName: string }>();
   const history = useHistory();
@@ -27,9 +27,7 @@ function PageDesign(props: Props) {
   useEffect(()=> {
     getPage(appID, pageId).then((schema)=> {
       if (schema) {
-        const parsedSchema = JSON.parse(schema);
-        console.log('query page schema: ', parsedSchema);
-        page.setSchema(parsedSchema);
+        page.setSchema(JSON.parse(schema));
       }
     });
   }, []);
@@ -78,7 +76,6 @@ function PageDesign(props: Props) {
   }
 
   function handleSave(page_schema: any, options?: Record<string, any>): void {
-    console.log('save page: ', page_schema, options);
     savePage(appID, pageId, page_schema, options).then((res)=> {
       if (!options?.silent) {
         toast.success('页面已保存');
