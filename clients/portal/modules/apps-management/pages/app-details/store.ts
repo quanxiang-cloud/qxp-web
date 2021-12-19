@@ -33,6 +33,7 @@ import {
 } from './api';
 import { getFirstMenu, flatMnues } from './page-menu-design/menu-tree/utils';
 import { Menu } from './page-menu-design/menu-tree/type';
+import { getPage as getSchemaPage } from '../page-design/api';
 
 type DeletePageOrGroupParams = {
   treeItem: TreeItem;
@@ -103,6 +104,7 @@ class AppDetailsStore {
   @observable activeMenu: Menu = DEFAULT_MENU;
   @observable lastHover: Menu = DEFAULT_MENU;
   @observable draggingNode: any = null;
+  @observable designPageSchema=''
 
   constructor() {
     this.destroySetCurPage = reaction(() => {
@@ -374,6 +376,7 @@ class AppDetailsStore {
     const pageInfo = this.activeMenu;
     this.fetchSchemeLoading = true;
     this.curPageCardList = DEFAULT_CARD_LIST;
+    this.designPageSchema = '';
 
     if (pageInfo.menuType === MenuType.schemaForm) {
       getTableSchema(this.appID, pageInfo.id).then((pageSchema) => {
@@ -399,13 +402,23 @@ class AppDetailsStore {
           return;
         }
         this.curPageCardList = DEFAULT_CARD_LIST;
-      }).catch(() => {
-        toast.error('获取表单信息失败');
-      }).finally(() => {
-        runInAction(() => {
-          this.fetchSchemeLoading = false;
+      }).then((res: any)=> {
+        if (!res && !this.hasSchema) {
+          // try fetch page schema
+          return getSchemaPage(this.appID, this.pageID).then((schema)=> {
+            if (schema) {
+              this.designPageSchema = schema;
+            }
+          });
+        }
+      })
+        .catch(() => {
+          toast.error('获取页面信息失败');
+        }).finally(() => {
+          runInAction(() => {
+            this.fetchSchemeLoading = false;
+          });
         });
-      });
     }
 
     if (pageInfo.menuType === MenuType.customPage) {
