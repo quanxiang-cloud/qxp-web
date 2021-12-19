@@ -12,9 +12,6 @@ copyStatics:
 	@cp -r ./clients/assets/* dist
 	@echo "copy ofa/ui assets..."
 	@cp -r ./node_modules/@ofa/ui/dist/images/* dist/images
-	@echo "copy monaco editor assets..."
-	@mkdir -p dist/monaco-editor
-	@cp -r ./node_modules/monaco-editor/min/vs dist/monaco-editor
 
 copyTemplates: clients/templates/*
 	@echo "copy clients/templates/* to dist/templates..."

@@ -1,3 +1,6 @@
+import { getStore } from '@ofa/page-engine';
+import { Repository } from '@ofa/render-engine';
+
 import {
   setBatchGlobalConfig,
   getBatchGlobalConfig,
@@ -40,4 +43,11 @@ export function getPage(app_id: string, page_id: string, options?: Option) {
 
 export function getVersionKey(): string {
   return PG_VERSION;
+}
+
+export function getRenderRepository(): Repository {
+  const pageCtx = getStore();
+  return {
+    'ofa-ui@latest': pageCtx.registry.toComponentMap(),
+  };
 }
