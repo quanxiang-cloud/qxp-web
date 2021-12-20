@@ -402,23 +402,13 @@ class AppDetailsStore {
           return;
         }
         this.curPageCardList = DEFAULT_CARD_LIST;
-      }).then((res: any)=> {
-        if (!res && !this.hasSchema) {
-          // try fetch page schema
-          return getSchemaPage(this.appID, this.pageID).then((schema)=> {
-            if (schema) {
-              this.designPageSchema = schema;
-            }
-          });
-        }
-      })
-        .catch(() => {
-          toast.error('获取页面信息失败');
-        }).finally(() => {
-          runInAction(() => {
-            this.fetchSchemeLoading = false;
-          });
+      }).catch(() => {
+        toast.error('获取表单信息失败');
+      }).finally(() => {
+        runInAction(() => {
+          this.fetchSchemeLoading = false;
         });
+      });
     }
 
     if (pageInfo.menuType === MenuType.customPage) {
@@ -440,6 +430,15 @@ class AppDetailsStore {
 
     if (pageInfo.menuType === MenuType.schemaPage) {
       // todo
+      getSchemaPage(this.appID, this.pageID).then((schema)=> {
+        if (schema) {
+          this.designPageSchema = schema;
+        }
+      }).catch((err) => {
+        toast.error(err.message);
+      }).finally(() => {
+        this.fetchSchemeLoading = false;
+      });
     }
 
     this.curPage = pageInfo;
