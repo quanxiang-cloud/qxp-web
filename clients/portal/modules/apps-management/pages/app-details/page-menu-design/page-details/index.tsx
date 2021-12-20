@@ -122,68 +122,68 @@ function PageDetails({ pageID }: Props): JSX.Element {
   }
 
   function renderPageDetails(): JSX.Element {
-    if ((activeMenu.menuType === MenuType.schemaForm)) {
-      if (appPagesStore.designPageSchema) {
-        return (
-          <div className='relative flex-1 overflow-hidden p-16'>
-            <div className='px-16 py-8 rounded-8 border-1 flex items-center'>
-              <div className="page-details-icon">
-                <Icon
-                  size={24}
-                  type="dark"
-                  name='view'
-                />
-              </div>
-              <div className='flex-1 grid grid-cols-6 mr-48'>
-                {[{ title: '页面类型', value: '自定义页面' }].map(({ title, value }) => {
-                  return (
-                    <div key={title}>
-                      <p className={!value ? 'text-gray-400' : ''}>{value ? value : '-'}</p>
-                      <p className='page-details-text'>{title}</p>
-                    </div>
-                  );
-                })}
-              </div>
-              <Button
-                iconName="edit"
-                modifier="primary"
-                textClassName='app-content--op_btn'
-                onClick={goPageDesign}
-              >
-                设计页面
-              </Button>
+    if (activeMenu.menuType === MenuType.schemaForm && !appPagesStore.hasSchema) {
+      return (
+        <PageBuildNav
+          appID={appID}
+          pageId={activeMenu.id}
+          pageName={activeMenu.name}
+          setOpenModal={setModalType}
+        />
+      );
+    }
+
+    if ((activeMenu.menuType === MenuType.schemaPage && appPagesStore.designPageSchema)) {
+      return (
+        <div className='relative flex-1 overflow-hidden p-16'>
+          <div className='px-16 py-8 rounded-8 border-1 flex items-center'>
+            <div className="page-details-icon">
+              <Icon
+                size={24}
+                type="dark"
+                name='view'
+              />
             </div>
-            <Tab items={[
-              {
-                id: 'page-preview',
-                name: '视图预览',
-                content: (
-                  <PageSchemaRender
-                    schemaKey={getSchemaKey(appID, pageID)}
-                    version={getVersionKey()}
-                    repository={getRenderRepository()}
-                    schemaConvertor={toRenderSchema}
-                  />
-                ),
-              },
-              {
-                id: 'relate-info',
-                name: '关联信息',
-                content: (<div>暂无数据</div>),
-              },
-            ]}/>
+            <div className='flex-1 grid grid-cols-6 mr-48'>
+              {[{ title: '页面类型', value: '自定义页面' }].map(({ title, value }) => {
+                return (
+                  <div key={title}>
+                    <p className={!value ? 'text-gray-400' : ''}>{value ? value : '-'}</p>
+                    <p className='page-details-text'>{title}</p>
+                  </div>
+                );
+              })}
+            </div>
+            <Button
+              iconName="edit"
+              modifier="primary"
+              textClassName='app-content--op_btn'
+              onClick={goPageDesign}
+            >
+                设计页面
+            </Button>
           </div>
-        );
-      } else if (!appPagesStore.hasSchema) {
-        return (
-          <PageBuildNav
-            appID={appID}
-            pageId={activeMenu.id}
-            pageName={activeMenu.name}
-            setOpenModal={setModalType}
-          />
-        );
-      }
+          <Tab items={[
+            {
+              id: 'page-preview',
+              name: '视图预览',
+              content: (
+                <PageSchemaRender
+                  schemaKey={getSchemaKey(appID, pageID)}
+                  version={getVersionKey()}
+                  repository={getRenderRepository()}
+                  schemaConvertor={toRenderSchema}
+                />
+              ),
+            },
+            {
+              id: 'relate-info',
+              name: '关联信息',
+              content: (<div>暂无数据</div>),
+            },
+          ]}/>
+        </div>
+      );
     }
 
     return (

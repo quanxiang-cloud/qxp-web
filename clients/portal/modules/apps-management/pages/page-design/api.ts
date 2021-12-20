@@ -4,9 +4,11 @@ import { Repository } from '@ofa/render-engine';
 import {
   setBatchGlobalConfig,
   getBatchGlobalConfig,
+  setPageEngineMenuType,
 } from '@lib/api/user-config';
-
 import toast from '@lib/toast';
+
+import store from '../app-details/store';
 
 export const PG_SAVED_PREFIX = 'pge-';
 export const PG_DRAFT_PREFIX = 'pge-draft-';
@@ -50,4 +52,10 @@ export function getRenderRepository(): Repository {
   return {
     'ofa-ui@latest': pageCtx.registry.toComponentMap(),
   };
+}
+
+export function updatePageEngineMenuType(appID: string, id: string) {
+  setPageEngineMenuType(appID, id).then((res) => {
+    store.setActiveMenu({ ...store.curPage, menuType: 3 });
+  }).catch((err) => toast.error(err));
 }

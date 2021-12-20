@@ -9,7 +9,7 @@ import ApiSelector from '@polyApi/nodes/forms/request-config/api-selector';
 import ApiSpec from '../app-details/api-proxy/add-api';
 
 import { Designer, getStore } from '@ofa/page-engine';
-import { getPage, savePage } from './api';
+import { getPage, savePage, updatePageEngineMenuType } from './api';
 
 import './index.scss';
 
@@ -78,6 +78,7 @@ function PageDesign(props: Props): JSX.Element {
   function handleSave(page_schema: any, options?: Record<string, any>): void {
     savePage(appID, pageId, page_schema, options).then((res)=> {
       if (!options?.silent) {
+        updatePageEngineMenuType(appID, pageId);
         toast.success('页面已保存');
       }
     }).catch((err: Error)=> {
