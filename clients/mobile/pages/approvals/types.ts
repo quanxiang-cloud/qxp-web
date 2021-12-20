@@ -1,13 +1,17 @@
 import { EmptyProps } from '@m/qxp-ui-mobile/empty';
+import { TabsPageProps } from '@m/components/tabs-page';
+import { NumberString } from '@m/qxp-ui-mobile';
 
 export type FlowType = 'APPLY_PAGE' | 'WAIT_HANDLE_PAGE' | 'HANDLED_PAGE' | 'CC_PAGE' | 'ALL_PAGE';
 
 export interface ApprovalsTabProps {
-  request: (params: Record<string, any>) => Promise<TasksResponse>;
   filterKey?: string;
   empty: EmptyProps;
   type: FlowType;
   tagType?: 'OVERTIME' | 'URGE';
+  filter?: ApprovalFilter;
+  onFilterClick?: () => void;
+  filterShow?: boolean;
 }
 
 export interface Pair {
@@ -58,12 +62,15 @@ interface Node {
   taskName?: string;
 }
 
+type FlowTaskStatus = 'COMPLETED' | 'ACTIVE';
+
 export type TaskOrigin = {
   id: string;
   name: string;
   isDeleted: number;
   flowInstanceEntity?: FlowInstanceEntity;
   nodes?: Node[];
+  handled?: FlowTaskStatus;
 } & FlowInstanceEntity;
 
 export type Task = {
@@ -78,6 +85,22 @@ export type Task = {
   startTime?: string;
   urgeNum?: number;
   dueDate?: string;
-  handled?: string;
+  handled?: FlowTaskStatus;
   description?: string;
 } & FlowInstanceEntity;
+
+export interface ApprovalSearch {
+  listType?: string | null;
+  tagType?: string | null;
+}
+
+export interface ApprovalTab extends TabsPageProps {
+  isApply: boolean;
+  type: FlowType;
+}
+
+// Filters
+export interface ApprovalFilter {
+  label: string;
+  value: NumberString;
+}

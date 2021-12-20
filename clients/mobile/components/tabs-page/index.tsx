@@ -14,7 +14,7 @@ export interface TabTitle {
 export interface TabsPageProps extends Props {
   tabs: TabTitle[];
   active: number;
-  title?: string;
+  title?: React.ReactNode;
   onChange?: (active: number) => void;
   navBottom?: React.ReactNode;
   renderTab?: (tab: TabTitle, index: number) => React.ReactNode;

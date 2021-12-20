@@ -1,24 +1,13 @@
-import React, { lazy } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import React from 'react';
+import SubRoutePage from '@m/components/sub-route-page';
+import { approvalDetailPath } from '@m/constant';
+import Detail from './detail';
+import Approvals from './tasks';
 
-import { pathPrefix } from '@m/routes';
-
-export const approvalsPath = `${pathPrefix}/approvals`;
-export const approvalDetailPath = `${pathPrefix}/approvals/:processInstanceID/:taskID/:type`;
-
-const Approvals = lazy(
-  () => import('./index'),
-);
-
-const ApprovalDetail = lazy(
-  () => import('./detail'),
-);
-
-export default function AccountRoutes(): JSX.Element {
+export default function Routes(): JSX.Element {
   return (
-    <Switch>
-      <Route exact path={approvalsPath} component={Approvals} />
-      <Route exact path={approvalDetailPath} component={ApprovalDetail} />
-    </Switch>
+    <SubRoutePage subRoutes={{ path: approvalDetailPath, component: Detail }}>
+      <Approvals />
+    </SubRoutePage>
   );
 }

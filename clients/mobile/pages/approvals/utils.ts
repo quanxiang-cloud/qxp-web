@@ -1,22 +1,6 @@
-import { TabsPageProps, TabTitle } from '@m/components/tabs-page';
-import { ApprovalsTabProps } from '@m/pages/approvals/tab/types';
-import {
-  getCCToMeList,
-  getMyApplyList,
-  getMyReviewedList,
-  getWaitReviewList,
-} from '@home/pages/approvals/api';
+import { TabTitle } from '@m/components/tabs-page';
+import { ApprovalFilter, ApprovalsTabProps } from './types';
 import { EmptyProps } from '@m/qxp-ui-mobile/empty';
-import { NumberString } from '@m/qxp-ui-mobile';
-
-export interface ApprovalSearch {
-  listType?: string | null;
-  tagType?: string | null;
-}
-
-export interface ApprovalTab extends TabsPageProps {
-  isApply: boolean;
-}
 
 export const allList: TabTitle[] = [
   { key: 'my_applies', label: '我发起的' },
@@ -42,7 +26,6 @@ const TodoTasksEmpty: EmptyProps = {
 };
 
 const todoTab: ApprovalsTabProps = {
-  request: getWaitReviewList,
   empty: TodoTasksEmpty,
   type: 'WAIT_HANDLE_PAGE',
   filterKey: 'handleType',
@@ -50,18 +33,15 @@ const todoTab: ApprovalsTabProps = {
 
 export const allTabs: Record<string, ApprovalsTabProps> = {
   my_applies: {
-    request: getMyApplyList,
     empty: ApplyFlowsEmpty,
     type: 'APPLY_PAGE',
     filterKey: 'status',
   },
   done: {
-    request: getMyReviewedList,
     empty: ApplyFlowsEmpty,
     type: 'HANDLED_PAGE',
   },
   cc_to_me: {
-    request: getCCToMeList,
     empty: ApplyFlowsEmpty,
     type: 'CC_PAGE',
     filterKey: 'status',
@@ -71,30 +51,31 @@ export const allTabs: Record<string, ApprovalsTabProps> = {
   URGE: { ...todoTab, tagType: 'URGE' },
 };
 
-// Filters
-export interface ApprovalFilter {
-  text: string;
-  value: NumberString;
-}
+export const emptyFilter: ApprovalFilter = { label: '', value: '' };
 
 export const HandleTypes: ApprovalFilter[] = [
-  { text: '全部', value: '' },
-  { text: '待审批', value: 'REVIEW' },
-  { text: '待填写', value: 'WRITE' },
-  { text: '待阅示', value: 'READ' },
-  { text: '待补充', value: 'SEND_BACK' },
+  { label: '全部', value: '' },
+  { label: '待审批', value: 'REVIEW' },
+  { label: '待填写', value: 'WRITE' },
+  { label: '待阅示', value: 'READ' },
+  { label: '待补充', value: 'SEND_BACK' },
 ];
 
 export const ApplyStatus: ApprovalFilter[] = [
-  { text: '全部', value: '' },
-  { text: '待补充', value: 'SEND_BACK' },
-  { text: '进行中', value: 'REVIEW' },
-  { text: '已拒绝', value: 'REFUSE' },
-  { text: '已通过', value: 'AGREE' },
-  { text: '已撤销', value: 'CANCEL' },
+  { label: '全部', value: '' },
+  { label: '待补充', value: 'SEND_BACK' },
+  { label: '进行中', value: 'REVIEW' },
+  { label: '已拒绝', value: 'REFUSE' },
+  { label: '已通过', value: 'AGREE' },
+  { label: '已撤销', value: 'CANCEL' },
 ];
 
 export const CCStatus: ApprovalFilter[] = [
-  { text: '全部', value: '' },
-  { text: '未读', value: 0 },
+  { label: '全部', value: '' },
+  { label: '未读', value: 0 },
+];
+
+export const TitleOptions: ApprovalFilter[] = [
+  { label: '待办任务', value: 'todo' },
+  { label: '我的申请', value: 'apply' },
 ];

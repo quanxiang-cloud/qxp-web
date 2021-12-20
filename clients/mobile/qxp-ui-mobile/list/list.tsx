@@ -99,7 +99,7 @@ const List = forwardRef<ListInstance, ListProps>((props: ListProps, ref) => {
           {typeof loadingText === 'function' && isValidElement(loadingText) ? (
             loadingText()
           ) : (
-            <Loading className='list__loading-icon text-placeholder' size='.16rem'>
+            <Loading className='list__loading-icon text-placeholder' size='.18rem'>
               {loadingText}
             </Loading>
           )}

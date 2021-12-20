@@ -23,14 +23,21 @@ const icons = (): Record<LoadingType, JSX.Element> => ({
 });
 
 const Loading: React.FC<LoadingProps> = (props) => {
-  const { className, type = 'circular', vertical, size = '.32rem', children, style } = props;
+  const {
+    className,
+    type = 'circular',
+    vertical,
+    children,
+    size = children ? '.18rem' : '.32rem',
+    style,
+  } = props;
 
   const spinnerStyle = getSizeStyle(size, style);
 
   const renderText = (): JSX.Element | null => {
     if (children) {
       return (
-        <span className='loading__text'>
+        <span className='loading__text text-placeholder'>
           {children}
         </span>
       );

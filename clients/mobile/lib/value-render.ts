@@ -2,7 +2,7 @@ import { INTERNAL_FIELD_NAMES } from '@home/pages/app-details/constants';
 import dayjs from 'dayjs';
 import { toEs } from '@c/data-filter/utils';
 import { FormDataRequestUpdateParamsRef } from '@lib/http-client';
-import { Pair } from '@m/pages/approvals/tab/types';
+import { Pair } from '@m/pages/approvals/types';
 
 export const getFlowSummary = (form: any, schema: any, keyFields?: string[]): Pair[] | undefined => {
   let properties = schema?.properties;

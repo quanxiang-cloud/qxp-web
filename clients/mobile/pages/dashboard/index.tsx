@@ -12,7 +12,7 @@ import msgCenter from '@portal/stores/msg-center';
 import store from '@home/pages/store';
 import { BadgeSettingProps } from '@m/qxp-ui-mobile/badge/types';
 import { useHistory } from 'react-router-dom';
-import { pathPrefix } from '@m/routes';
+import { pathPrefix } from '@m/constant';
 import { useSearchParam } from 'react-use';
 import { isNumeric } from '@m/qxp-ui-mobile/utils';
 

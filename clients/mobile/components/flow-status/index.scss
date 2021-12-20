@@ -42,14 +42,15 @@
   background-color: var(--green-600);
 }
 
-.flow-status-REFUSE::before, .flow-status-REFUSE::after {
+.flow-status-REFUSE::before,
+.flow-status-REFUSE::after,
+.flow-status-ABEND::before,
+.flow-status-ABEND::after {
   background-color: var(--red-600);
 }
 
 .flow-status-CANCEL::before,
-.flow-status-CANCEL::after,
-.flow-status-ABEND::before,
-.flow-status-ABEND::after {
+.flow-status-CANCEL::after {
   background-color: var(--gray-400);
 }
 

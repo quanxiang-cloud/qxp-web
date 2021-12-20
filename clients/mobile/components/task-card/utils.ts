@@ -1,4 +1,4 @@
-import { Task } from '@m/pages/approvals/tab/types';
+import { Task } from '@m/pages/approvals/types';
 import { formatOverTime } from '@m/lib/formatter';
 
 export interface TaskTag {

@@ -5,12 +5,12 @@ import cs from 'classnames';
 import './index.scss';
 import Avatar from '@m/qxp-ui-mobile/avatar';
 import FlowStatus from '@m/components/flow-status';
-import { FlowType, Task } from '@m/pages/approvals/tab/types';
+import { FlowType, Task } from '@m/pages/approvals/types';
 import { computeTaskTag, TaskTag } from './utils';
 
 export interface TaskCardProps extends Props {
   task: Task;
-  type: FlowType;
+  type?: FlowType;
 }
 
 export default function TaskCard(props: TaskCardProps): JSX.Element | null {
@@ -30,6 +30,7 @@ export default function TaskCard(props: TaskCardProps): JSX.Element | null {
       props.className,
       { 'opacity-60': type === 'CC_PAGE' && task.handled === 'COMPLETED' },
     )}
+    onClick={props.onClick}
     style={props.style}>
 
       <div className='flex justify-center'>
@@ -42,33 +43,33 @@ export default function TaskCard(props: TaskCardProps): JSX.Element | null {
           status={task.status}/>)}
       </div>
 
-      {!!task.nodeName && (<div className="task-node-row body1 text-placeholder mt-8">
+      {!!task.nodeName && (<div className='task-node-row body1 text-placeholder mt-8'>
         当前节点：
-        <span className="text-secondary">{task.nodeName}</span>
+        <span className='text-secondary'>{task.nodeName}</span>
       </div>)}
 
-      {!!task.flowSummary && (<div className="task-flow-summary body1 text-placeholder mt-8">
+      {!!task.flowSummary && (<div className='task-flow-summary body1 text-placeholder mt-8'>
         流程摘要：
-        <span className="text-secondary">{task.flowSummary}</span>
+        <span className='text-secondary'>{task.flowSummary}</span>
       </div>)}
 
       {!!task.flowSummaryPair?.length && task.flowSummaryPair.map((item) => {
         return (
           <div
-            className="task-flow-summary-pair body1 text-second content-center mt-6"
+            className='task-flow-summary-pair body1 text-second flex justify-center content-center mt-6'
             key={item.key}>
             {item.key}：
-            {!!item.value && <div className="text-primary truncate flex-1">{item.value}</div>}
-            {!item.value && <div className="text-placeholder flex-1">未填写</div>}
+            {!!item.value && <div className='text-primary truncate flex-1'>{item.value}</div>}
+            {!item.value && <div className='text-placeholder flex-1'>未填写</div>}
           </div>
         );
       })}
 
-      {!!(taskTag.overTime || taskTag.urgeTime) && (<div className="task-tag-wrapper caption">
-        {!!taskTag.overTime && (<div className="task-tag-item task-tag__overtime mt-8">
+      {!!(taskTag.overTime || taskTag.urgeTime) && (<div className='task-tag-wrapper caption'>
+        {!!taskTag.overTime && (<div className='task-tag-item task-tag__overtime mt-8'>
           {taskTag.overTime}
         </div>)}
-        {!!taskTag.urgeTime && (<div className="task-tag-item task-tag__urgeTime mt-8">
+        {!!taskTag.urgeTime && (<div className='task-tag-item task-tag__urgeTime mt-8'>
           {taskTag.urgeTime}
         </div>)}
       </div>)}
