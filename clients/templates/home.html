@@ -16,6 +16,10 @@
     window.CONFIG = {{ .CONFIG }}
     window.__verbose_log__ = {{ .debugMode }}
     window.SIDE = 'home';
+
+    if (!window.process) {
+      window.process = { env: { NODE_ENV: {{if .debugMode}}'development'{{else}}'production'{{end}} } }
+    }
   </script>
   {{template "_jsEntry" .}}
 </body>
