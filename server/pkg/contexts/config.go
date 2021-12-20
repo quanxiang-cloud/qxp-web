@@ -46,6 +46,7 @@ type ClientConfig struct {
 // Configuration is the type of project config file
 type Configuration struct {
 	DevMode           bool `yaml:"dev_mode" split_words:"true"`
+    PkgHost           string `yaml:"pkg_host" default:"https://ofapkg.pek3b.qingstor.com" split_words:"true"`
 	SessionCookieName string
 
 	Client      *HTTPClientConfig  `yaml:"http_client"`

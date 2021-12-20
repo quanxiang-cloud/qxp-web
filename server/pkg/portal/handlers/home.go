@@ -28,5 +28,6 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 		"userAdminRoles":    userAdminRoles,
 		"debugMode":         contexts.Config.DevMode,
 		"CONFIG":            contexts.Config.ClientConfig,
+		"PkgHost":           contexts.Config.PkgHost,
 	})
 }

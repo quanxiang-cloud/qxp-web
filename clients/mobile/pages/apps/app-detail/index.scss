@@ -1,0 +1,9 @@
+.menu-container {
+  display: grid;
+  grid-template-columns: repeat(4, 25%);
+}
+
+.records-item {
+  padding: .12rem .08rem;
+  margin: 0 -.08rem;
+}

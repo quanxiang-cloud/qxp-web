@@ -1,27 +1,34 @@
 import React from 'react';
-import { parseJSON } from '@lib/utils';
-import AppIcon from '@c/app-icon';
+import AppIcon from './app-icon';
 import './index.scss';
+import { NumberString, Props } from '@m/qxp-ui-mobile';
 
-type Props = {
-  appInfo: AppInfo;
-  className?: string;
-  onClick?: () => void;
+export type NewAppInfo = AppInfo & { appIcon: AppIconInfo };
+
+export interface AppItemProps extends Props {
+  icon: string;
+  bgColor?: string;
+  iconColor?: string;
+  size?: string;
+  iconSize?: NumberString;
+  appName: string;
 }
 
-export default function AppItem({ appInfo, className, onClick }: Props): JSX.Element {
-  const appIcon = parseJSON<AppIconInfo>(appInfo.appIcon, { bgColor: 'amber', iconName: '' });
-
+export default function AppItem({
+  icon, bgColor, iconColor = 'white', iconSize, size, appName, className, onClick,
+}: AppItemProps): JSX.Element {
   return (
     <div onClick={onClick}
       className={`${className} flex-col flex overflow-hidden items-center padding-8 pointer-8`}
     >
       <AppIcon
-        themeColor={appIcon.bgColor}
-        iconName={appIcon.iconName}
-        size={44}
+        icon={icon}
+        bgColor={bgColor}
+        color={iconColor}
+        iconSize={iconSize}
+        size={size}
       />
-      <p className='app-name body2 text-secondary text-center mt-4'>{appInfo.appName}</p>
+      <p className='app-name body2 text-secondary text-center mt-4'>{appName}</p>
     </div>
   );
 }

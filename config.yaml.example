@@ -1,5 +1,7 @@
 dev_mode: false
 
+pkg_host: https://ofapkg.pek3b.qingstor.com
+
 api_endpoint:
   protocol: http
   hostname: keeper.test

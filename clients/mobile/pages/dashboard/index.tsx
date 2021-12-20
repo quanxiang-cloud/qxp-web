@@ -12,7 +12,7 @@ import msgCenter from '@portal/stores/msg-center';
 import store from '@home/pages/store';
 import { BadgeSettingProps } from '@m/qxp-ui-mobile/badge/types';
 import { useHistory } from 'react-router-dom';
-import { pathPrefix } from '@m/routes';
+import { pathPrefix } from '@m/constant';
 import { useSearchParam } from 'react-use';
 import { isNumeric } from '@m/qxp-ui-mobile/utils';
 
@@ -79,8 +79,8 @@ function Dashboard(): JSX.Element {
   }
 
   return (
-    <div className='flex flex-col' style={{ height: '100vh' }}>
-      <div className='flex-1 overflow-scroll'>
+    <div className={cs('flex flex-col', ac !== 2 ? 'bg-white' : 'bg-app')} style={{ height: '100vh' }}>
+      <div className={cs('flex-1 overflow-scroll', ac !== 2 ? 'bg-app' : 'bg-white')}>
         {items.map(
           (itm, index) => itm.component( {
             key: itm.icon,
@@ -90,7 +90,7 @@ function Dashboard(): JSX.Element {
       </div>
 
       <Tabbar
-        fixed={false}
+        placeholder
         value={ac}
         className={cs({ footer: ac !== 2 })}
         onChange={(ac) => onActiveChange(ac as number)}>

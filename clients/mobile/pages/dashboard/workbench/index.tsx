@@ -5,7 +5,14 @@ import store from '@home/pages/store';
 import HomeCard from '@m/pages/dashboard/home-card';
 import { useHistory } from 'react-router-dom';
 import Empty from '@m/qxp-ui-mobile/empty';
-import AppItem from '@m/components/app-item';
+import AppItem, { NewAppInfo } from '@m/components/app-item';
+import { pathPrefix } from '@m/constant';
+import { parseJSON } from '@lib/utils';
+import appsStore from '@m/pages/apps/app-detail/store';
+
+export function parseAppIcon(appIcon: string): AppIconInfo {
+  return parseJSON<AppIconInfo>(appIcon, { bgColor: 'amber', iconName: '' });
+}
 
 const Workbench: React.FC<HomePageProps> = (props) => {
   const history = useHistory();
@@ -16,19 +23,32 @@ const Workbench: React.FC<HomePageProps> = (props) => {
     }
   }, [props.active]);
 
+  function onClick(appInfo: NewAppInfo): void {
+    appsStore.init({ name: appInfo.appName, color: appInfo.appIcon.bgColor, id: appInfo.id });
+    history.push(`${pathPrefix}/apps/${appInfo.id}`);
+  }
+
   return (
     <Header active={props.active} key={props.key}>
       {!!store.appList.length && (
         <div className='home-page-wrapper'>
           <HomeCard title='我的应用' className='overflow-scroll'>
             <div className='my-apps-wrapper'>
-              {store.appList.map((appInfo: AppInfo) => (
-                <AppItem
-                  key={appInfo.id}
-                  appInfo={appInfo}
-                  onClick={() => history.push('/apps/' + appInfo.id)}
-                />
-              ))}
+              {
+                store.appList.map((appInfo: AppInfo) => {
+                  const appIcon = parseAppIcon(appInfo.appIcon);
+                  const newInfo = { ...appInfo, appIcon } as NewAppInfo;
+                  return (
+                    <AppItem
+                      key={appInfo.id}
+                      icon={appIcon.iconName}
+                      bgColor={appIcon.bgColor}
+                      appName={appInfo.appName}
+                      onClick={() => onClick(newInfo)}
+                    />
+                  );
+                })
+              }
             </div>
           </HomeCard>
         </div>
