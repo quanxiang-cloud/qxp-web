@@ -4,7 +4,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { useForm, FormProvider } from 'react-hook-form';
 import cs from 'classnames';
 import { useMutation } from 'react-query';
-import { get, values } from 'lodash';
+import { get, values, keys } from 'lodash';
 import { toJS } from 'mobx';
 
 import Select from '@c/select';
@@ -93,10 +93,10 @@ function AddApi(): JSX.Element {
         queryNativeApi(apiPath),
         queryNativeApiDoc(apiPath, { docType: 'swag' }),
       ]).then(([detail, doc])=> {
-        const apiPath = detail.url.slice(`${detail.schema}://${detail.host}`.length);
+        const apiPath = keys(get(doc, 'doc.paths'))[0];
         const {
           parameters = [], responses = {}, ['x-consts']: constants = [],
-        } = values(get(doc, 'doc.paths')[`${apiPath}`])[0] || {};
+        } = values(values(get(doc, 'doc.paths'))[0])[0] || {};
         paramsStore.setAllParameters(parameters);
         paramsStore.setConstants(constants);
         paramsStore.setResponse(responses);
@@ -125,7 +125,14 @@ function AddApi(): JSX.Element {
       const pathParams = getAllPathParamNames(watchApiPath).map((name)=> {
         return getDefaultParam({ name: name.slice(1), required: true, readonlyKeys: ['name', 'required'] });
       });
+      const constantValue = paramsStore.parameters.constant;
 
+      constantValue.forEach((constantItem, index) => {
+        if (constantItem.type === 'action') {
+          paramsStore.setFieldValue(`constant.${index}.constData`, watchApiPath.split('?')[1]);
+        }
+      });
+      paramsStore.apiPath = watchApiPath;
       paramsStore.setParams('path', pathParams);
     }
   }, [watchApiPath]);
