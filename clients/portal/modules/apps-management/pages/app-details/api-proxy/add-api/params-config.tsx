@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import ParamRow from './param-row';
 import paramsContext from './context';
 
-export type ParamType='string' | 'number' | 'boolean' | 'array' | 'object'
+export type ParamType='string' | 'number' | 'boolean' | 'array' | 'object' | 'timestamp' | 'action'
 export type ParamGroup='path' | 'query' | 'header' | 'body' | 'constant' | 'response'
 
 interface ConfigProps {

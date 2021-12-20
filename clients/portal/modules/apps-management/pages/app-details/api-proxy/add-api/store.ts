@@ -173,6 +173,7 @@ function mapObjectNode(node: Record<string, any>, isRoot?: boolean): Record<stri
 export default class Store {
   @observable parameters: Record<ParamGroup, ApiParam[]> = getDefaultParameters()
   @observable metaInfo: MetaInfo={ ...defaultMetaInfo }
+  @observable apiPath = '';
 
   @computed get swaggerParameters(): Record<'constants' | 'parameters' | 'responses', any> {
     const { path, query, header, body, constant, response } = toJS(this.parameters);
