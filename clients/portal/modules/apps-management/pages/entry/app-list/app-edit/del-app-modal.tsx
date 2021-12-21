@@ -66,7 +66,8 @@ function DeleteAppModal({ onCancel, appInfo }: Props): JSX.Element {
                     return Promise.resolve();
                   }
                 },
-              }]}
+              },
+            ]}
           >
             <Input placeholder='请输入应用名称，以确认要删除' />
           </Form.Item>
