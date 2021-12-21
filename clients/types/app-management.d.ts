@@ -6,6 +6,15 @@ declare global {
     appIcon: string;
     useStatus: number;
     appSign: string;
+    appZipInfo?: any;
+  }
+
+  type AppZipInfo = {
+    addr: string;
+    opt: string;
+    size: number;
+    title: string;
+    value?: { appID: string }
   }
 
   type fetchPageListRes = {

@@ -24,7 +24,7 @@ function MyApp(): JSX.Element {
   }, []);
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="my-apps">
       <TextHeader
         title="我的应用"
         desc="一个应用是由若干表单、流程表单、报表、自定义页面组成的业务管理系统。"
@@ -33,17 +33,19 @@ function MyApp(): JSX.Element {
         itemTitleClassName="text-h5"
       />
       <Header
+        params={params}
         countMaps={countMaps}
         setModalType={setModalType}
         changeParams={changeParams}
-        params={params}
       />
       <AppList
-        openCreatedModal={() => setModalType('CreatedApp')}
-        isLoading={isListLoading}
         appList={appList}
+        isLoading={isListLoading}
+        openCreatedModal={() => setModalType('createdApp')}
       />
-      {modalType === 'CreatedApp' && (<CreatedAppModal onCancel={() => setModalType('')} />)}
+      {['createdApp', 'importApp'].includes(modalType) && (
+        <CreatedAppModal modalType={modalType} onCancel={() => setModalType('')} />
+      )}
     </div>
   );
 }

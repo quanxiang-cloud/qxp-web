@@ -10,7 +10,7 @@ type FilePickerProps = {
   multiple?: boolean;
   disabled?: boolean;
   className?: string;
-  description?: string;
+  description?: React.ReactNode;
   children?: React.ReactNode;
   style?: React.CSSProperties;
   onSelectFiles?:(files: File[]) => void;
@@ -91,7 +91,7 @@ function FilePicker({
       {children || (
         <div className={cs('w-full h-full absolute inset-0 flex flex-col justify-center items-center')}>
           <Icon className="upload-icon text-gray-600 flex-shrink-0" name={iconName} size={24} />
-          <span className="text-12 text-center select-none">{description || '点击或拖拽上传文件'}</span>
+          <div className="text-12 text-center select-none">{description || '点击或拖拽上传文件'}</div>
         </div>
       )}
     </div>
