@@ -15,6 +15,7 @@ type FileListProps = {
   className?: string;
   canDownload?: boolean;
   style?: React.CSSProperties;
+  showFileName?: boolean;
   deleteFileItem?: (file: QXPUploadFileTask) => void;
   onRetryFileUpload?: (file: QXPUploadFileTask) => void;
 }
@@ -25,6 +26,7 @@ export default function FileList({
   imgOnly,
   className,
   canDownload = true,
+  showFileName = true,
   deleteFileItem,
   onRetryFileUpload,
 }: FileListProps): JSX.Element | null {
@@ -59,6 +61,7 @@ export default function FileList({
     return (
       <ImgList
         files={files}
+        style={style}
         className={className}
         deleteFileItem={deleteFileItem}
         handleDownload={handleSingleFileDownload}
@@ -88,9 +91,11 @@ export default function FileList({
               onClick={(): void => handleSingleFileDownload(file)}
             >
               <FileIcon file={file} size={30} />
-              <span className='block overflow-hidden overflow-ellipsis whitespace-nowrap text-12'>
-                {name}
-              </span>
+              {showFileName && (
+                <span className="block overflow-hidden overflow-ellipsis whitespace-nowrap text-12">
+                  {name}
+                </span>
+              )}
             </div>
             <div className='flex justify-end items-center text-12 gap-x-5 pr-5 flex-shrink-0 text-gray-400 file-opt'>
               {

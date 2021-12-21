@@ -3,9 +3,11 @@ import moment from 'moment';
 
 import logger from '@lib/logger';
 import AssociatedDataValueRender from '@c/form-builder/registry/associated-data/associated-data-view';
+import Icon from '@c/icon';
 import { RoundMethod } from '@c/form-builder/registry/aggregation-records/convertor';
 import { FileList } from '@c/file-upload';
 import { QxpFileFormData } from '@c/form-builder/registry/file-upload/uploader';
+import { isEmpty } from 'lodash';
 
 const ReadOnlySubTable = React.lazy(
   () => import('@c/form-builder/registry/sub-table/preview/read-only-sub-table'),
@@ -135,6 +137,71 @@ export default function FormDataValueRenderer({ value, schema, className }: Prop
     );
   }
   }
+}
+
+export function FormDataSubTableValueRenderer({ value, schema, className }: Props): JSX.Element {
+  if (schema['x-component'] === 'FileUpload') {
+    const fileIconStyle: React.CSSProperties = {
+      display: 'block',
+      padding: '0',
+      width: 'auto',
+    };
+    return (
+      <div className="flex items-center">
+        <Icon
+          name="attachment"
+          size={22}
+          className="mr-2 transform -rotate-90"
+        ></Icon>
+        {!isEmpty(value) ? (
+          <FileList
+            canDownload
+            style={fileIconStyle}
+            showFileName={false}
+            files={(value as QxpFileFormData[]).map((file) => ({
+              name: file.label,
+              uid: file.value,
+              type: file.type,
+              size: file.size,
+            }))}
+          />
+        ) : (
+          <span className="text-gray-500">无附件</span>
+        )}
+      </div>
+    );
+  }
+
+  if (schema['x-component'] === 'ImageUpload') {
+    return (
+      <div className="flex items-center">
+        <Icon name="image" size={22} className="mr-2"></Icon>
+        {!isEmpty(value) ? (
+          <FileList
+            canDownload
+            imgOnly={true}
+            files={(value as QxpFileFormData[]).map((file) => ({
+              name: file.label,
+              uid: file.value,
+              type: file.type,
+              size: file.size,
+            }))}
+          />
+        ) : (
+          <span className="text-gray-500">无图片</span>
+        )}
+      </div>
+    );
+  }
+  return isEmpty(value) ? (
+    <span className="text-gray-300">——</span>
+  ) : (
+    <FormDataValueRenderer
+      value={value}
+      schema={schema}
+      className={className}
+    />
+  );
 }
 
 export function getBasicValue(schema: ISchema, value: FormDataValue): string {
