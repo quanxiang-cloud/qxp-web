@@ -242,7 +242,7 @@ class UserAndPerStore {
           allPages.push(menu);
         });
         this.perFormList = allPages.filter((formPage) =>
-          formPage.menuType === 0 || formPage.menuType === 2).map((page) => {
+          formPage.menuType !== 1).map((page) => {
           if (page.menuType === 0) {
             const curFormPer = formArr.find(({ id }) => id === page.id);
             return { ...page, authority: curFormPer ? curFormPer.authority : 0 };

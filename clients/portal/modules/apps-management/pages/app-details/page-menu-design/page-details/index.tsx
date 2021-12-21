@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import cs from 'classnames';
 import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
+import PageSchemaRender from '@c/page-schema-render';
+import { toRenderSchema } from '@ofa/page-engine';
 
 import Icon from '@c/icon';
 import Card from '@c/card';
@@ -10,6 +12,7 @@ import Button from '@c/button';
 import toast from '@lib/toast';
 import EmptyTips from '@c/empty-tips';
 import PageLoading from '@c/page-loading';
+import Tab from '@c/tab';
 
 import CustomPageUpload from './custom-page-upload';
 import appPagesStore from '../../store';
@@ -17,6 +20,7 @@ import PageBuildNav from './page-build-nav';
 import { MenuType, Resp } from '../../type';
 import { createCustomPage, updateCustomPage } from '../../api';
 import { formatFileSize } from '../../utils';
+import { getSchemaKey, getVersionKey, getRenderRepository } from '../../../page-design/api';
 
 import './index.scss';
 
@@ -41,6 +45,10 @@ function PageDetails({ pageID }: Props): JSX.Element {
     if (appPagesStore.hasSchema) {
       history.push(`/apps/formDesign/formBuild/${activeMenu.id}/${appID}?pageName=${activeMenu.name}`);
     }
+  }
+
+  function goPageDesign(): void {
+    history.push(`/apps/page-design/${activeMenu.id}/${appID}?pageName=${activeMenu.name}`);
   }
 
   function handleCreateCustomPage(): void {
@@ -113,8 +121,8 @@ function PageDetails({ pageID }: Props): JSX.Element {
     history.push(`/apps/details/${appID}/app_control`);
   }
 
-  function RenderPageDetails(): JSX.Element {
-    if ((activeMenu.menuType === MenuType.schemaForm && !appPagesStore.hasSchema)) {
+  function renderPageDetails(): JSX.Element {
+    if (activeMenu.menuType === MenuType.schemaForm && !appPagesStore.hasSchema) {
       return (
         <PageBuildNav
           appID={appID}
@@ -122,6 +130,59 @@ function PageDetails({ pageID }: Props): JSX.Element {
           pageName={activeMenu.name}
           setOpenModal={setModalType}
         />
+      );
+    }
+
+    if ((activeMenu.menuType === MenuType.schemaPage && appPagesStore.designPageSchema)) {
+      return (
+        <div className='relative flex-1 overflow-hidden p-16'>
+          <div className='px-16 py-8 rounded-8 border-1 flex items-center'>
+            <div className="page-details-icon">
+              <Icon
+                size={24}
+                type="dark"
+                name='view'
+              />
+            </div>
+            <div className='flex-1 grid grid-cols-6 mr-48'>
+              {[{ title: '页面类型', value: '自定义页面' }].map(({ title, value }) => {
+                return (
+                  <div key={title}>
+                    <p className={!value ? 'text-gray-400' : ''}>{value ? value : '-'}</p>
+                    <p className='page-details-text'>{title}</p>
+                  </div>
+                );
+              })}
+            </div>
+            <Button
+              iconName="edit"
+              modifier="primary"
+              textClassName='app-content--op_btn'
+              onClick={goPageDesign}
+            >
+                设计页面
+            </Button>
+          </div>
+          <Tab items={[
+            {
+              id: 'page-preview',
+              name: '视图预览',
+              content: (
+                <PageSchemaRender
+                  schemaKey={getSchemaKey(appID, pageID)}
+                  version={getVersionKey()}
+                  repository={getRenderRepository()}
+                  schemaConvertor={toRenderSchema}
+                />
+              ),
+            },
+            {
+              id: 'relate-info',
+              name: '关联信息',
+              content: (<div>暂无数据</div>),
+            },
+          ]}/>
+        </div>
       );
     }
 
@@ -290,7 +351,7 @@ function PageDetails({ pageID }: Props): JSX.Element {
               <span className='text-caption align-top'>{activeMenu.describe}</span>
             </div>
             {fetchSchemeLoading && <PageLoading />}
-            {!fetchSchemeLoading && <RenderPageDetails />}
+            {!fetchSchemeLoading && renderPageDetails()}
           </>
         )}
       </div>
