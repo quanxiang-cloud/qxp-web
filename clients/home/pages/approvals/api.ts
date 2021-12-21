@@ -2,38 +2,32 @@
 import httpClient from '@lib/http-client';
 
 // 分页查询我的待处理任务
-export const getWaitReviewList = async (params: Record<string, any>)
-  : Promise<{ dataList: any, total: number }> => {
+export const getWaitReviewList = async (params: Record<string, any>): Promise<{ dataList: any, total: number }> => {
   return await httpClient('/api/v1/flow/instance/waitReviewList', params);
 };
 
 // 分页查询我已处理的任务
-export const getMyReviewedList = async (params: Record<string, any>)
-  : Promise<{ dataList: any, total: number }> => {
+export const getMyReviewedList = async (params: Record<string, any>): Promise<{ dataList: any, total: number }> => {
   return await httpClient('/api/v1/flow/instance/reviewedList', params);
 };
 
 // 分页查询我申请的流程
-export const getMyApplyList = async (params: Record<string, any>)
-  : Promise<{ dataList: any, total: number }> => {
+export const getMyApplyList = async (params: Record<string, any>): Promise<{ dataList: any, total: number }> => {
   return await httpClient('/api/v1/flow/instance/myApplyList', params);
 };
 
 // 分页查询抄送给我的流程
-export const getCCToMeList = async (params: Record<string, any>)
-  : Promise<{ dataList: any, total: number }> => {
+export const getCCToMeList = async (params: Record<string, any>): Promise<{ dataList: any, total: number }> => {
   return await httpClient('/api/v1/flow/instance/ccToMeList', params);
 };
 
 // 分页查询全部流程
-export const getAllTaskList = async (params: Record<string, any>)
-  : Promise<{ dataList: any, total: number }> => {
+export const getAllTaskList = async (params: Record<string, any>): Promise<{ dataList: any, total: number }> => {
   return await httpClient('/api/v1/flow/instance/allList', params);
 };
 
 // 获取流程实例数量
-export const getFlowInstanceCount = async (params: Record<string, any>)
-  : Promise<{ overTimeCount?: number, urgeCount?: number, waitHandleCount?: number, ccToMeCount?: number }> => {
+export const getFlowInstanceCount = async (params: Record<string, any>): Promise<{ overTimeCount?: number, urgeCount?: number, waitHandleCount?: number, ccToMeCount?: number }> => {
   return await httpClient('/api/v1/flow/instance/getFlowInstanceCount', params);
 };
 
@@ -88,8 +82,7 @@ export const stepBack = async (processInstanceId: string, taskId: string, params
 };
 
 // 任务审核（通过任务）
-export const reviewTask = async (processInstanceId: string, taskId: string, params: { handleType: string; remark: any, [key: string]: any })
-  : Promise<{ data: any }> => {
+export const reviewTask = async (processInstanceId: string, taskId: string, params: { handleType: string; remark: any, [key: string]: any }): Promise<{ data: any }> => {
   return await httpClient(`/api/v1/flow/instance/reviewTask/${processInstanceId}/${taskId}`, params);
 };
 
@@ -125,8 +118,7 @@ export const claimTask = async (params: Record<string, any>) => {
 };
 
 // 打回重填
-export const sendBack = async (processInstanceID: string, taskID: string, params: { handleType: string; remark: any })
-  : Promise<{ data: any }> => {
+export const sendBack = async (processInstanceID: string, taskID: string, params: { handleType: string; remark: any }): Promise<{ data: any }> => {
   return await httpClient(`/api/v1/flow/instance/sendBack/${processInstanceID}/${taskID}`, params);
 };
 

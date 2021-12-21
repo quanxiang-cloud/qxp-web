@@ -149,7 +149,7 @@ function AddApi(): JSX.Element {
     });
   }
 
-  function toListPage():void {
+  function toListPage(): void {
     history.push(`/apps/details/${appID}/api_proxy?ns=${ns}`);
   }
 

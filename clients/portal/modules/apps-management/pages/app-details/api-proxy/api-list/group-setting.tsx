@@ -55,7 +55,7 @@ function GroupSetting(): JSX.Element {
   }, [protocol]);
 
   const onSubmit = (): void => {
-    handleSubmit(async ({ hostname, port, authorize }: {hostname: string; port: string; authorize:string})=> {
+    handleSubmit(async ({ hostname, port, authorize }: {hostname: string; port: string; authorize: string})=> {
       const params = {
         schema: protocol,
         authType: auth,

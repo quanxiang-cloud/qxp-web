@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { UnionColumns } from 'react-table';
+import { UnionColumn } from 'react-table';
 import dayjs from 'dayjs';
 import { useHistory } from 'react-router-dom';
 import { observer } from 'mobx-react';
@@ -232,7 +232,7 @@ const MsgTable = ({ refresh }: Props): JSX.Element => {
     refresh();
   };
 
-  const cols: UnionColumns<any>[] = [
+  const cols: UnionColumn<any>[] = [
     {
       Header: (
         <Select

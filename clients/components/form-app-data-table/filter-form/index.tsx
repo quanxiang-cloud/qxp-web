@@ -11,7 +11,7 @@ import { StoreContext } from '../context';
 import './index.scss';
 
 type Props = {
-  search: ()=> void;
+  search: () => void;
   showMoreFilter: boolean;
 }
 

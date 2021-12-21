@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
-import { UnionColumns } from 'react-table';
+import { UnionColumn } from 'react-table';
 
 import EmptyData from '@c/empty-tips';
 import Pagination from '@c/pagination';
@@ -129,7 +129,7 @@ export default function DepartmentTable(
   if (isError) {
     return <ErrorTips desc="something wrong!" />;
   }
-  const columns: UnionColumns<EmployeeOrDepartmentOfRole>[] = [
+  const columns: UnionColumn<EmployeeOrDepartmentOfRole>[] = [
     {
       Header: '操作',
       id: 'action',

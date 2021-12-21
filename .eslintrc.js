@@ -26,6 +26,7 @@ module.exports = {
     sourceType: 'module',
   },
   rules: {
+    '@typescript-eslint/type-annotation-spacing': 'warn',
     '@typescript-eslint/ban-ts-comment': 'warn',
     '@typescript-eslint/camelcase': 'off',
     '@typescript-eslint/explicit-function-return-type': ['warn', {
@@ -46,6 +47,7 @@ module.exports = {
     "@typescript-eslint/no-invalid-this": ["error"],
     '@typescript-eslint/no-unused-vars': ['warn', { varsIgnorePattern: '_' }],
     '@typescript-eslint/no-empty-function': ['warn'],
+    'func-call-spacing': 'off',
     camelcase: 'off',
     'arrow-parens': ['error', 'always'],
     indent: ['error', 2],

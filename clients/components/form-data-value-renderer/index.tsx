@@ -162,7 +162,7 @@ export function FormDataSubTableValueRenderer({ value, schema, className }: Prop
               name: file.label,
               uid: file.value,
               type: file.type,
-              size: file.size,
+              size: file.size || 0,
             }))}
           />
         ) : (
@@ -184,7 +184,7 @@ export function FormDataSubTableValueRenderer({ value, schema, className }: Prop
               name: file.label,
               uid: file.value,
               type: file.type,
-              size: file.size,
+              size: file.size || 0,
             }))}
           />
         ) : (

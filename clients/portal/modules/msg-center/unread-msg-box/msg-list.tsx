@@ -13,7 +13,7 @@ import styles from './index.module.scss';
 
 interface Props {
   className?: string;
-  getMsgDetail?: (obj?: any)=> void;
+  getMsgDetail?: (obj?: any) => void;
 }
 
 const NoMsg = () => (

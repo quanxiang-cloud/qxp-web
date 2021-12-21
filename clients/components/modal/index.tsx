@@ -50,7 +50,7 @@ export default function Modal({
     };
   }, []);
 
-  const renderFooter = () : React.ReactNode => {
+  const renderFooter = (): React.ReactNode => {
     if (!footerBtns.length) {
       return null;
     } else {

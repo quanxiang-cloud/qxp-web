@@ -150,7 +150,7 @@ function ContentWithoutRef({
     toast.error(msg || '');
   }
 
-  function handleReceivers(receivers: CheckedInfo[]): {id:string, type: '1 | 2', name: string}[] {
+  function handleReceivers(receivers: CheckedInfo[]): {id: string, type: '1 | 2', name: string}[] {
     let newRecovers: any[] = [];
     newRecovers = receivers.map(({ id, name, ownerName, departmentName, type }) => {
       return {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { UnionColumns, CellProps, Row } from 'react-table';
+import { UnionColumn, CellProps, Row } from 'react-table';
 import { observer } from 'mobx-react';
 import { useCopyToClipboard, usePrevious } from 'react-use';
 import cs from 'classnames';
@@ -191,7 +191,7 @@ function APINamespaceDetails(): JSX.Element {
     handleCreatePolyApi();
   }
 
-  const columns: UnionColumns<PolyListItem>[] = [{
+  const columns: UnionColumn<PolyListItem>[] = [{
     Header: 'API 名称',
     accessor: 'title',
   }, {

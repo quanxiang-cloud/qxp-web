@@ -68,7 +68,7 @@ export const useLogInitData = () => {
   return [refetch];
 };
 
-const AuditLogPage = ():JSX.Element => {
+const AuditLogPage = (): JSX.Element => {
   const {
     userName: inputValue,
     logPageInfo,
@@ -85,7 +85,7 @@ const AuditLogPage = ():JSX.Element => {
     setLogPageInfo({ ...logPageInfo, current: 1 });
   });
 
-  const getUnixTimestamp = (string: string | number | Date) : number => {
+  const getUnixTimestamp = (string: string | number | Date): number => {
     return Math.round(new Date(string).getTime() / 1000);
   };
 

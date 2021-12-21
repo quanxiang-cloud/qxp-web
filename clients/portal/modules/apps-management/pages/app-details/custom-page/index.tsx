@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import cs from 'classnames';
-import { UnionColumns } from 'react-table';
+import { UnionColumn } from 'react-table';
 import { useParams } from 'react-router-dom';
 import { Input, Radio } from '@formily/antd-components';
 import { SchemaForm, FormButtonGroup } from '@formily/antd';
@@ -140,7 +140,7 @@ function CustomPage(): JSX.Element {
     );
   };
 
-  const columns: UnionColumns<CustomPageInfo>[] = [
+  const columns: UnionColumn<CustomPageInfo>[] = [
     {
       id: 'name',
       Header: '页面名称',

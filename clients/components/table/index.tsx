@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import cs from 'classnames';
 import {
   useTable,
-  UnionColumns,
+  UnionColumn,
   TableOptions,
   useRowSelect,
 } from 'react-table';
@@ -20,7 +20,7 @@ export type SizeType = 'middle' | 'small';
 
 interface Props<T extends Record<string, any>> {
   className?: string;
-  columns: UnionColumns<T>[];
+  columns: UnionColumn<T>[];
   data: Array<T>;
   size?: SizeType;
   emptyTips?: React.ReactNode;
