@@ -15,8 +15,7 @@
     "start:portal": "run-p type-check 'make portal -j'",
     "start:mobile": "run-p type-check 'make mobile -j'",
     "make": "make -j",
-    "type-check": "tsc --noEmit --skipLibCheck --pretty -w",
-    "dev:pkg-server": "node pkg-server.js"
+    "type-check": "tsc --noEmit --skipLibCheck --pretty -w"
   },
   "commitlint": {
     "extends": [
@@ -110,7 +109,6 @@
     "@typescript-eslint/parser": "^4.26.1",
     "autoprefixer": "^9.7.1",
     "comment-json": "^4.1.1",
-    "cors": "^2.8.5",
     "css-loader": "^5.2.0",
     "esbuild": "^0.13.12",
     "eslint": "^7.32.0",
@@ -118,7 +116,6 @@
     "eslint-plugin-react": "^7.24.0",
     "eslint-plugin-unused-imports": "^1.1.1",
     "esm": "^3.2.25",
-    "express": "^4.17.1",
     "husky": "^7.0.2",
     "lint-staged": "^11.1.2",
     "node-notifier": "^10.0.0",
