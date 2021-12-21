@@ -46,7 +46,7 @@ export const API_DIRECTORY_MENUS: APINamespaceMenu = [
     key: ModalType.CREATE_CHILD_NAMESPACE,
     label: (
       <div className="flex items-center">
-        <Icon name="control_point" size={16} className="mr-8" />
+        <Icon name="add" size={16} className="mr-8" />
         <span className="font-normal">新建子分组</span>
       </div>
     ),
@@ -66,7 +66,7 @@ export const API_DIRECTORY_MENUS: APINamespaceMenu = [
     key: ModalType.REMOVE_NAMESPACE,
     label: (
       <div className="flex items-center">
-        <Icon name="settings" size={16} className="mr-8 text-red-600" />
+        <Icon name="delete" size={16} className="mr-8 text-red-600" />
         <span className="font-normal text-red-600">删除</span>
       </div>
     ),

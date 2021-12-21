@@ -149,12 +149,16 @@ $nodeTypes: input, request, if, end, default, output;
 .config-param {
   @apply border-1 rounded-8 border-gray-200;
 
+  &>div:first-child {
+    @apply rounded-t-8;
+  }
+
   &>div {
     @apply border-b-1;
   }
 
   &>div:last-child {
-    @apply border-0;
+    @apply border-0 rounded-b-8;
   }
 }
 
@@ -167,6 +171,7 @@ $nodeTypes: input, request, if, end, default, output;
   .drawer-container {
     width: 100%;
     transition: all .3s ease-in-out;
+    border-radius: 0;
     .drawer-main-content {
       display: flex;
       flex-flow: column nowrap;
