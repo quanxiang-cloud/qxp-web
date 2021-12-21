@@ -20,7 +20,7 @@ function Operates({ operates, onClick, className }: Props): JSX.Element {
           return (
             <Tooltip className="z-10 text-12" key={operate} position="bottom" label={label}>
               <span
-                className="request-op"
+                className="request-op hover:border-gray-900"
                 onClick={() => onClick(operate)}
               >
                 {operate}

@@ -7,8 +7,8 @@ const PolyDrawerContent = withDragResize(
     position: 'left',
     className: 'absolute right-0 top-0 bottom-0 w-732 overflow-hidden transition-all duration-300',
     style: {
-      borderBottomLeftRadius: 12,
-      borderTopLeftRadius: 12,
+      borderBottomLeftRadius: 0,
+      borderTopLeftRadius: 0,
     },
     minWidth: 732,
   },
