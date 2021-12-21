@@ -1,8 +1,8 @@
-import { NumberString, Props } from '@m/qxp-ui-mobile';
+import { Props } from '@m/qxp-ui-mobile';
 
 export interface AvatarProps extends Props {
     name?: string;
-    size?: NumberString;
+    size?: string | number;
 }
 
 export interface AvatarInfo {

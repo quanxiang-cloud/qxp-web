@@ -22,18 +22,6 @@
   margin: .16rem;
 }
 
-.padding-10-16 {
-  padding: .1rem .16rem;
-}
-
-.padding-16-12 {
-  padding: .16rem .12rem;
-}
-
-.padding-10-12 {
-  padding: .1rem .12rem;
-}
-
 .mt-16 {
   margin-top: .16rem;
 }
@@ -42,28 +30,12 @@
   margin-bottom: .16rem;
 }
 
-.ml-16 {
-  margin-left: .16rem;
-}
-
-.mr-16 {
-  margin-right: .16rem;
-}
-
 .mt-12 {
   margin-top: .12rem;
 }
 
 .mb-12 {
   margin-bottom: .12rem;
-}
-
-.ml-12 {
-  margin-left: .12rem;
-}
-
-.mr-12 {
-  margin-right: .12rem;
 }
 
 .mt-8 {
@@ -120,7 +92,7 @@
 @mixin pointer {
   cursor: pointer;
   &:active {
-    background-color: var(--active-color) !important;
+    background-color: var(--activeColor) !important;
   }
 }
 

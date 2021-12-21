@@ -71,7 +71,6 @@ export function useGetGlobalConfig<T>(
 
 export function setGlobalConfig(config: any, key: string, version: string): void {
   globalConfigMapTmp[key] = config;
-  console.log(JSON.stringify(config));
   setBatchGlobalConfig([{
     key,
     version: version,

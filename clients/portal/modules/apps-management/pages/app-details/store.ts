@@ -33,7 +33,6 @@ import {
 } from './api';
 import { getFirstMenu, flatMnues } from './page-menu-design/menu-tree/utils';
 import { Menu } from './page-menu-design/menu-tree/type';
-import { getPage as getSchemaPage } from '../page-design/api';
 
 type DeletePageOrGroupParams = {
   treeItem: TreeItem;
@@ -104,7 +103,6 @@ class AppDetailsStore {
   @observable activeMenu: Menu = DEFAULT_MENU;
   @observable lastHover: Menu = DEFAULT_MENU;
   @observable draggingNode: any = null;
-  @observable designPageSchema=''
 
   constructor() {
     this.destroySetCurPage = reaction(() => {
@@ -376,7 +374,6 @@ class AppDetailsStore {
     const pageInfo = this.activeMenu;
     this.fetchSchemeLoading = true;
     this.curPageCardList = DEFAULT_CARD_LIST;
-    this.designPageSchema = '';
 
     if (pageInfo.menuType === MenuType.schemaForm) {
       getTableSchema(this.appID, pageInfo.id).then((pageSchema) => {
@@ -423,19 +420,6 @@ class AppDetailsStore {
         this.curPageCardList = res;
       }).catch(() => {
         toast.error('获取自定义页面信息失败');
-      }).finally(() => {
-        this.fetchSchemeLoading = false;
-      });
-    }
-
-    if (pageInfo.menuType === MenuType.schemaPage) {
-      // todo
-      getSchemaPage(this.appID, this.pageID).then((schema)=> {
-        if (schema) {
-          this.designPageSchema = schema;
-        }
-      }).catch((err) => {
-        toast.error(err.message);
       }).finally(() => {
         this.fetchSchemeLoading = false;
       });

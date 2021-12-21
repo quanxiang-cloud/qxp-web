@@ -41,7 +41,7 @@
 .mine-top-wrapper {
   height: 32vh;
   width: 100%;
-  background-color: var(--background-color);
+  background-color: var(--backgroundColor);
   border-radius: 0 0 .12rem .12rem;
   position: relative;
 
@@ -98,8 +98,4 @@
     border-radius: .08rem;
     color: var(--gray-600);
   }
-}
-
-.tabbar--placeholder {
-  background-color: var(--background-color);
 }

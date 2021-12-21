@@ -11,7 +11,6 @@ import Select from '@c/select';
 import Button from '@c/button';
 import toast from '@lib/toast';
 import Loading from '@c/loading';
-import { getStore } from '@ofa/page-engine';
 
 import Header from '../comps/header';
 import { ErrorMsg } from '../comps/form';
@@ -32,13 +31,6 @@ type MetaInfo={
   apiPath: string; // 用户的原始api路径
 }
 
-interface Props {
-  className?: string;
-  editMode?: boolean;
-  tinyMode?: boolean;
-  apiPath?: string;
-}
-
 const methodOptions = [
   { label: 'GET', value: 'get' },
   { label: 'POST', value: 'post' },
@@ -57,7 +49,7 @@ function getAllPathParamNames(url: string): string[] {
   return url.match(regPathParam) || [];
 }
 
-function AddApi(props: Props): JSX.Element {
+function AddApi(): JSX.Element {
   const paramsStore = useContext(paramsContext);
   const formInst = useForm();
   const { register, handleSubmit, formState: { errors }, watch, setValue } = formInst;
@@ -68,10 +60,9 @@ function AddApi(props: Props): JSX.Element {
   const watchApiPath = watch('apiPath');
   const watchApiName = watch('apiName');
   const qs = useQueryString();
-  const isEdit = qs.get('action') === 'edit' || props.editMode;
-  const apiPath = props.apiPath || qs.get('api_path');
+  const isEdit = qs.get('action') === 'edit';
+  const apiPath = qs.get('api_path');
   const [apiDetail, setApiDetail] = useState<PolyAPI.NativeApi | null>(null);
-  const pageEngineStore = getStore();
 
   useEffect(()=> {
     return paramsStore.reset;
@@ -102,16 +93,7 @@ function AddApi(props: Props): JSX.Element {
         queryNativeApi(apiPath),
         queryNativeApiDoc(apiPath, { docType: 'swag' }),
       ]).then(([detail, doc])=> {
-        // console.log('api detail, doc: ', detail, doc);
-
-        if (props.tinyMode) {
-          // const apiSpec = {
-          //   method: detail.method,
-          //   ...doc,
-          // };
-          pageEngineStore.dataSource.setCurApiId([detail.method.toLowerCase(), doc.apiPath].join(':'));
-        }
-
+        const apiPath = keys(get(doc, 'doc.paths'))[0];
         const {
           parameters = [], responses = {}, ['x-consts']: constants = [],
         } = values(values(get(doc, 'doc.paths'))[0])[0] || {};
@@ -123,7 +105,7 @@ function AddApi(props: Props): JSX.Element {
         paramsStore.setMetaInfo({ method: detail.method.toLowerCase() });
         setInitialValues({
           title: detail.title,
-          apiPath: keys(get(doc, 'doc.paths'))[0],
+          apiPath,
           apiName: detail.name.split('.')[0],
           description: detail.desc,
         });
@@ -172,7 +154,7 @@ function AddApi(props: Props): JSX.Element {
   }
 
   function getProxyPath(): string {
-    const svcPath = store.svc?.fullPath || apiPath || '';
+    const svcPath = store.svc?.fullPath || '';
     const lastIdx = svcPath.lastIndexOf('/');
     if (lastIdx < 0) {
       return svcPath;
@@ -247,13 +229,13 @@ function AddApi(props: Props): JSX.Element {
 
   return (
     <>
-      {!props.tinyMode && <Header name={isEdit ? '修改 API' : '新建 API'} />}
+      <Header name={isEdit ? '修改 API' : '新建 API'} />
       <FormProvider {...formInst}>
         <form onSubmit={onSubmit} className='flex flex-col px-20 py-16 w-full overflow-auto'>
-          <div className={cs('mb-16', { hidden: props.tinyMode })}>
+          <div className='mb-16'>
             <p>API 名称</p>
             <input
-              className={cs('api-from-input input', { error: errors.title })}
+              className={cs('api-from-input', { error: errors.title })}
               placeholder='请输入'
               maxLength={32}
               {...register('title', {
@@ -265,10 +247,10 @@ function AddApi(props: Props): JSX.Element {
             <p className='text-caption'>最多 20 个字符，仅支持中英文</p>
           </div>
 
-          <div className={cs('mb-16', { hidden: props.tinyMode })}>
+          <div className='mb-16'>
             <p>API 路径</p>
             <input
-              className={cs('api-from-input input', {
+              className={cs('api-from-input', {
                 error: errors.apiPath,
                 'bg-gray-100': isEdit,
               })}
@@ -299,7 +281,7 @@ function AddApi(props: Props): JSX.Element {
             <div className='mr-12 flex-1'>
               <p>代理路径</p>
               <input
-                className='api-from-input input min-w-259 bg-gray-100'
+                className='api-from-input min-w-259 bg-gray-100'
                 readOnly
                 {...register('proxyPath')}
               />
@@ -310,7 +292,7 @@ function AddApi(props: Props): JSX.Element {
                 placeholder='请输入，分组内不可重复'
                 maxLength={32}
                 readOnly={isEdit}
-                className={cs('api-from-input input', {
+                className={cs('api-from-input', {
                   error: errors.apiName,
                   'bg-gray-100': isEdit,
                 })}
@@ -319,10 +301,10 @@ function AddApi(props: Props): JSX.Element {
             </div>
           </div>
 
-          <div className={cs('mb-16', { hidden: props.tinyMode })}>
+          <div className='mb-16'>
             <p>描述</p>
             <textarea
-              className='api-from-textarea textarea'
+              className='api-from-textarea'
               rows={3}
               placeholder='选填 (不超过 200 字符)'
               maxLength={200}
@@ -344,7 +326,7 @@ function AddApi(props: Props): JSX.Element {
         </form>
       </FormProvider>
 
-      <div className={cs('flex items-center justify-end w-full h-64 bg-gray-100 px-20', { hidden: props.tinyMode })}>
+      <div className='flex items-center justify-end w-full h-64 bg-gray-100 px-20'>
         <Button onClick={history.goBack} iconName='close' className='mr-20'>取消</Button>
         <Button
           modifier='primary'

@@ -1,5 +1,6 @@
 import React, { MouseEvent, useState } from 'react';
 import { Link } from 'react-router-dom';
+import cs from 'classnames';
 
 type Props = {
   pageId: string | undefined;
@@ -19,12 +20,6 @@ function PageBuildNav({ pageId = '', pageName, appID = '', setOpenModal }: Props
     },
     {
       title: '新建自定义页面',
-      desc: '自定义页通常用做信息展示、门户管理或业务深度定制。',
-      type: 'page',
-      url: '/apps/page-design',
-    },
-    {
-      title: '上传静态页面',
       desc: '可以上传静态的页面代码，包含 html、javascript、css、图片等。',
       type: 'customize',
       url: '/apps/formDesign/formBuild',
@@ -46,9 +41,16 @@ function PageBuildNav({ pageId = '', pageName, appID = '', setOpenModal }: Props
           key={type}
           onClick={onClick}
           to={`${url}/${pageId}/${appID}?pageName=${pageName}`}
-          className={`app-page-build-nav-${type}`}
+          className={cs(`app-page-build-nav-${type}`, {
+            [`app-page-build-nav-${type}-before`]: show !== 'customize',
+          })}
+          onMouseMove={() => setShow(type)}
+          onMouseLeave={() => setShow('')}
         >
-          <div className='app-page-build-nav-bg' />
+          <div className={cs('app-page-build-nav-bg', {
+            [`app-page-build-nav-bg-${type}-after`]: show === 'customize',
+            [`app-page-build-nav-bg-${type}-before`]: show !== 'customize',
+          })} />
           <div className='px-16 pt-16 pb-20 white'>
             <div className='text-gray-900 text-12 font-semibold'>{title}</div>
             <div className='text-gray-600 text-12'>{desc}</div>

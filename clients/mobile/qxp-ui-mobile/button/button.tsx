@@ -14,7 +14,7 @@ const Button: React.FC<ButtonProps> = (props) => {
     loadingText,
     block,
     icon,
-    iconSize = '.18rem',
+    iconSize = '.2rem',
     iconPosition = 'left',
     iconClassName,
   } = props;

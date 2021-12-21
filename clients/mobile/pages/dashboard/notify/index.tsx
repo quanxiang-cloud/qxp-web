@@ -8,7 +8,6 @@ import { useHistory } from 'react-router-dom';
 import Icon from '@m/qxp-ui-mobile/icon';
 import Badge from '@m/qxp-ui-mobile/badge';
 import MessageCard from '@m/pages/msg-center/message-card';
-import { approvalsPath } from '@m/constant';
 
 const Notify: React.FC<HomePageProps> = (props) => {
   const history = useHistory();
@@ -25,7 +24,7 @@ const Notify: React.FC<HomePageProps> = (props) => {
                 <div
                   key={key}
                   className={'my-apply-item body1 text-secondary flex items-center pointer-8'}
-                  onClick={() => history.push(`${approvalsPath}?list=${link}`)}
+                  onClick={() => history.push(`/approvals?list=${link}`)}
                 >
                   <Icon className="mr-8" name={icon} size='.24rem' addPrefix={true} />
                   <div className='flex-1 truncate mr-4'>{name}</div>

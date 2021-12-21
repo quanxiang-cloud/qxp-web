@@ -105,8 +105,6 @@ declare namespace PolyAPI {
     name: string;
     id: string;
     doc: Record<string, any>;
-    title: string;
-    apiPath: string;
   }
 
   type CreateServiceParams={

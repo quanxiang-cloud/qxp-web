@@ -9,8 +9,6 @@ const AppDetails = React.lazy(() => import('./pages/app-details'));
 const FormDesign = React.lazy(() => import('./pages/form-design'));
 const FlowDetail = React.lazy(() => import('../work-flow'));
 const PreviewCustomPage = React.lazy(() => import('./pages/preview-custom-page'));
-const PageDesign = React.lazy(()=> import('./pages/page-design'));
-const PagePreview = React.lazy(()=> import('./pages/page-design/page-preview'));
 
 export default function Routes(): JSX.Element {
   React.useEffect(() => {
@@ -40,8 +38,6 @@ export default function Routes(): JSX.Element {
         />
         <Route path="/apps/flow/new/:type/:appID" component={FlowDetail} />
         <Route path="/apps/flow/:appID/:flowID" component={FlowDetail} />
-        <Route path="/apps/page-design/:pageId/:appID" component={PageDesign} />
-        <Route path="/apps/page-preview/:pageId/:appID" component={PagePreview} />
         <Route path="/apps" component={AppsIndex} />
       </Switch>
     </>

@@ -5,7 +5,6 @@ import './index.scss';
 import Divider from '@m/qxp-ui-mobile/divider';
 import { HomePageProps } from '@m/pages/dashboard/types';
 import { spacer } from '@m/lib/ui-utils';
-import { approvalsPath } from '@m/constant';
 
 function calcCount(count?: number): string {
   if (count) {
@@ -28,11 +27,11 @@ const TodoTaskCard: React.FC<HomePageProps> = (props) => {
       (<div className='todo-task-card-item' key={key}
         onClick={() => {
           if (name === '已超时') {
-            history.push(`${approvalsPath}?tagType=OVERTIME`);
+            history.push('/approvals?tagType=OVERTIME');
           } else if (name === '催办') {
-            history.push(`${approvalsPath}?tagType=URGE`);
+            history.push('/approvals?tagType=URGE');
           } else {
-            history.push(approvalsPath);
+            history.push('/approvals');
           }
         }}
       >

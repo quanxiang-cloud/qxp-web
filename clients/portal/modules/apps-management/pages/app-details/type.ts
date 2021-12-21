@@ -89,7 +89,6 @@ export enum MenuType {
   schemaForm = 0,
   group = 1,
   customPage = 2,
-  schemaPage = 3,
 }
 
 export enum BindState {
