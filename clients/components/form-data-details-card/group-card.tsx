@@ -24,7 +24,12 @@ export function InfoCard({ list }: {list: FormInfoCardDataProp}): JSX.Element {
       )}
     >
       <div className='text-gray-600'>{label}：</div>
-      <div className='text-gray-900 flex-1 card-value'>{value}</div>
+      <div className={cs(
+        'text-gray-900 flex-1 card-value',
+        {
+          'overflow-x-auto': FULL_COMP.includes(fieldSchema['x-component'] as string),
+        },
+      )}>{value}</div>
     </div>
   );
 }
