@@ -98,8 +98,8 @@ const UserPickerConfigForm = ({ initialValue, onChange }: Props): JSX.Element =>
           visible={initialValue.defaultRange === 'customize' && initialValue.optionalRange !== 'currentUser'}
           optionalRange={initialValue.optionalRange}
           mode={initialValue.multiple}
-          options={(initialValue.rangeList || []).map(({ ownerID, ownerName }) => {
-            return { label: ownerName, value: ownerID };
+          options={(initialValue.rangeList || []).map(({ ownerID, ownerName, email }) => {
+            return { label: ownerName, value: ownerID, email };
           })}
           component={UserPicker}
         />
