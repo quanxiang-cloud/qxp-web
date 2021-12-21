@@ -70,17 +70,22 @@ function Inputs({ value, onChange, values }: Props): JSX.Element | null {
 
   return (
     <div className="grid items-stretch webhook-request-inputs">
-      {values.type === 'request' && (
+      {values.type === 'request' && customRules && (
         <ApiParamsConfig
           onChange={onChange}
           ref={formulaEditorRef}
           value={value}
           url={values.url}
-          customRules={customRules || []}
+          customRules={customRules}
         />
       )}
-      {values.type === 'send' && (
-        <Send value={value} onChange={onChange} />
+      {values.type === 'send' && customRules && (
+        <Send
+          value={value}
+          onChange={onChange}
+          ref={formulaEditorRef}
+          customRules={customRules}
+        />
       )}
       <ApiFormulaConfig
         currentFormulaEditorRef={formulaEditorRef}
