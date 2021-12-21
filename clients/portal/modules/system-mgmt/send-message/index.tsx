@@ -52,7 +52,7 @@ const SendMessage = (): JSX.Element => {
   );
 };
 
-interface modifyConfig {
+interface ModifyConfig {
   id?: string
   types?: MsgType
   title?: string
@@ -64,7 +64,7 @@ interface modifyConfig {
 interface ContentProps {
   donotShowHeader?: boolean
   footer?: () => JSX.Element | null
-  modifyData?: modifyConfig
+  modifyData?: ModifyConfig
   handleClose?: () => void
   editMode?: boolean
   className?: string
