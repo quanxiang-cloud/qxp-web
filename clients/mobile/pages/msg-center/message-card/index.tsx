@@ -1,14 +1,16 @@
 import React, { useEffect } from 'react';
+import { useQuery } from 'react-query';
+import { get } from 'lodash';
+
 import HomeCard from '@m/pages/dashboard/home-card';
 import Badge from '@m/qxp-ui-mobile/badge';
 import Divider from '@m/qxp-ui-mobile/divider';
-import { useQuery } from 'react-query';
 import { getMessageList, getUnreadMsgCount } from '@portal/modules/msg-center/api';
 import msgCenter from '@portal/stores/msg-center';
-import { get } from 'lodash';
-import { Message } from '../types';
 import { formatRelativeTime } from '@m/lib/formatter';
 import { HomePageProps } from '@m/pages/dashboard/types';
+
+import { Message } from '../types';
 
 function MessageCard(props: HomePageProps): JSX.Element {
   const { countUnread } = msgCenter;
@@ -17,7 +19,7 @@ function MessageCard(props: HomePageProps): JSX.Element {
     getUnreadMsgCount,
     { enabled: false },
   );
-  msgCenter.setUnreadTypeCounts(get(countUnreadMsg, 'type_num', []));
+  msgCenter.setUnreadTypeCounts(get(countUnreadMsg, 'typeNum', []));
   const { data, refetch: refetchMessages } = useQuery(
     ['all-messages',
       { page: 1, limit: 3 }],

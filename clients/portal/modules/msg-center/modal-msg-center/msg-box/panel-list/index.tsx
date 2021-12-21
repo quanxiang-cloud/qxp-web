@@ -26,9 +26,9 @@ import { useRouting } from '../../../hooks';
 export type MsgInfo = {
   id: string;
   title: string;
-  read_status: MsgReadStatus.unread | MsgReadStatus.read | MsgReadStatus. all,
+  readStatus: MsgReadStatus.unread | MsgReadStatus.read | MsgReadStatus. all,
   sort: MsgType.all | MsgType.notify | MsgType.system,
-  updated_at: number;
+  createdAt: number;
 }
 
 function PanelList(): JSX.Element {
@@ -38,8 +38,8 @@ function PanelList(): JSX.Element {
   const toolbarRef = useRef<any>();
   const getQueryParams = (): any => {
     const params = {
-      read_status: filterCheckUnread ? MsgReadStatus.unread : undefined,
-      sort: selectType === MsgType.all ? undefined : selectType,
+      readStatus: filterCheckUnread ? MsgReadStatus.unread : undefined,
+      types: selectType === MsgType.all ? undefined : selectType,
     };
     return { ...params, ...paging };
   };
@@ -61,8 +61,8 @@ function PanelList(): JSX.Element {
     getUnreadMsgCount,
   );
   const msgList = useMemo(() => {
-    msgCenter.setUnreadTypeCounts(get(countUnreadMsg, 'type_num', []));
-    return data?.mes_list || [];
+    msgCenter.setUnreadTypeCounts(get(countUnreadMsg, 'typeNum', []));
+    return data?.list || [];
   }, [data]);
 
   const msgTotal = useMemo(() => {
@@ -72,7 +72,7 @@ function PanelList(): JSX.Element {
   const canIUseReadBtn = useMemo(() => {
     return msgList
       .filter((itm: any) => selectedRows.some((id) => id === itm.id))
-      .filter((itm: any) => itm.read_status === MsgReadStatus.unread)
+      .filter((itm: any) => itm.readStatus === MsgReadStatus.unread)
       .length > 0;
   }, [selectedRows, msgList]);
 

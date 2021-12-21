@@ -9,7 +9,7 @@ export type QxpFileFormData = {
   label: string;
   value: string;
   type: string;
-  size: number;
+  size?: number;
 }
 export default function FormFileUploader(props: FileUploaderProps & ISchemaFieldComponentProps)
   : JSX.Element {

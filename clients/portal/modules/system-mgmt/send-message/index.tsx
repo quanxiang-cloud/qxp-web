@@ -52,19 +52,19 @@ const SendMessage = (): JSX.Element => {
   );
 };
 
-interface data {
+interface ModifyConfig {
   id?: string
-  sort?: MsgType
+  types?: MsgType
   title?: string
   content?: any
-  recivers?: any[], // fixme: typo
-  mes_attachment?: Array<FileInfo> | null
+  receivers?: any[], // fixme: typo
+  files?: Array<FileInfo> | null
 }
 
 interface ContentProps {
   donotShowHeader?: boolean
   footer?: () => JSX.Element | null
-  modifyData?: data
+  modifyData?: ModifyConfig
   handleClose?: () => void
   editMode?: boolean
   className?: string
@@ -150,9 +150,9 @@ function ContentWithoutRef({
     toast.error(msg || '');
   }
 
-  function handleReceivers(recivers: CheckedInfo[]): {id:string, type: '1 | 2', name: string}[] {
+  function handleReceivers(receivers: CheckedInfo[]): {id:string, type: '1 | 2', name: string}[] {
     let newRecovers: any[] = [];
-    newRecovers = recivers.map(({ id, name, ownerName, departmentName, type }) => {
+    newRecovers = receivers.map(({ id, name, ownerName, departmentName, type }) => {
       return {
         id,
         type,
@@ -163,22 +163,19 @@ function ContentWithoutRef({
   }
 
   function handleFinish(values: any): void {
-    const { title, args, type, recivers } = values;
+    const { title, args, type, receivers } = values;
     if (confirmStatus === 'browse') {
       const _currDate = Math.floor(new Date().getTime() / 1000);
       const formData: any = {
         title,
         content: args.content || '',
-        receivers: handleReceivers(recivers),
+        receivers: handleReceivers(receivers),
         type,
-        create_at: _currDate,
-        update_at: _currDate,
-        mes_attachment: (args.files || []).map((itm: QXPUploadFileBaseProps) => {
+        updateAt: _currDate,
+        files: (args.files || []).map((itm: QXPUploadFileBaseProps) => {
           return {
-            file_name: itm.name,
-            file_url: itm.uid,
-            file_type: itm.type,
-            file_size: itm.size,
+            fileName: itm.name,
+            url: itm.uid,
           };
         }).filter(Boolean),
       };
@@ -190,28 +187,25 @@ function ContentWithoutRef({
 
     const isSend = confirmStatus === 'draft' ? false : true;
     const params: any = {
-      template_id: 'quanliang',
-      title,
-      args: [{
-        key: 'code',
-        value: args.content || '',
-      }],
-      channel: 'letter', // letter: 站内信，email: 邮件
-      type: 2, // 1. verifycode 2、not verifycode
-      sort: type,
-      is_send: isSend, // false: 保存为草稿
-      recivers: handleReceivers(recivers),
-      mes_attachment: (args.files || []).map((itm: QXPUploadFileBaseProps) => {
-        return {
-          file_name: itm.name,
-          file_url: itm.uid,
-          file_type: itm.type,
-          file_size: itm.size,
-        };
-      }).filter(Boolean),
+      web: {
+        title: title,
+        isSend: isSend, // false: 保存为草稿
+        receivers: handleReceivers(receivers),
+        id: '',
+        types: type,
+        contents: {
+          content: args.content || '',
+        },
+        files: (args.files || []).map((itm: QXPUploadFileBaseProps) => {
+          return {
+            fileName: itm.name,
+            url: itm.uid,
+          };
+        }).filter(Boolean),
+      },
     };
 
-    if (modifyData) params.id = modifyData.id;
+    if (modifyData) params.web.id = modifyData.id;
 
     createMsgMutation.mutate(params);
   }
@@ -242,13 +236,13 @@ function ContentWithoutRef({
               onFinish={handleFinish}
               onFinishFailed={handleFinishFailed}
               initialValues={{
-                type: modifyData?.sort || MsgType.notify,
+                type: modifyData?.types || MsgType.notify,
                 title: modifyData?.title,
                 args: {
                   content: modifyData?.content,
-                  files: modifyData?.mes_attachment,
+                  files: modifyData?.files,
                 },
-                recivers: modifyData?.recivers,
+                receivers: modifyData?.receivers,
               }}
             >
               <Form.Item
@@ -291,7 +285,7 @@ function ContentWithoutRef({
                 <EditorField />
               </Form.Item>
               <Form.Item
-                name="recivers"
+                name="receivers"
                 label="发送至"
                 rules={[
                   { required: true, message: '请选择人员' },

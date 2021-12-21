@@ -55,7 +55,7 @@ class MsgMgmt {
       limit: pageSize,
       page: current,
       status: status === MsgSendStatus.all ? undefined : status,
-      sort: sort === MsgType.all ? undefined : sort,
+      types: sort === MsgType.all ? undefined : sort,
     };
   }
 
