@@ -30,7 +30,7 @@ export const fetchCustomPageList = async (appID: string, params?: CustomPagePara
   return await httpClient(`/api/v1/structor/${appID}/m/page/condition`, params);
 };
 
-export const getUsingList = async (appID: string):Promise<fetchCustomListRes> => {
+export const getUsingList = async (appID: string): Promise<fetchCustomListRes> => {
   return await httpClient(`/api/v1/structor/${appID}/m/page/getUsingList`);
 };
 

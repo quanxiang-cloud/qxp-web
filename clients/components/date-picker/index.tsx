@@ -16,7 +16,7 @@ type Props = {
   picker?: 'day' | 'week' | 'month';
   inputValue?: string;
   className?: string;
-  style? :React.CSSProperties;
+  style?: React.CSSProperties;
   onChange: (d: string) => void;
 }
 

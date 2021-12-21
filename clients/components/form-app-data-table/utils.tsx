@@ -1,5 +1,5 @@
 import React from 'react';
-import { UnionColumns } from 'react-table';
+import { UnionColumn } from 'react-table';
 import {
   pipe, entries, map, isArray, filter, isUndefined,
 } from 'lodash/fp';
@@ -36,7 +36,7 @@ export const SHOW_FIELD = [
 
 function addFixedParameters(
   fixedList: number[],
-  tableColumns: UnionColumns<Record<string, any>>[],
+  tableColumns: UnionColumn<Record<string, any>>[],
 ): void {
   fixedList.forEach((index) => {
     if (tableColumns[index]) {
@@ -47,8 +47,8 @@ function addFixedParameters(
 
 export function setFixedParameters(
   fixedRule: string | undefined,
-  tableColumns: UnionColumns<Record<string, any>>[],
-): UnionColumns<any>[] {
+  tableColumns: UnionColumn<Record<string, any>>[],
+): UnionColumn<any>[] {
   switch (fixedRule) {
   case 'one':
     addFixedParameters([0], tableColumns);
@@ -76,13 +76,13 @@ export function getPageDataSchema(
   config: Config,
   schema: ISchema,
 ): {
-  tableColumns: UnionColumns<any>[];
+  tableColumns: UnionColumn<any>[];
   pageTableShowRule: TableConfig;
 } {
   const { pageTableShowRule = {}, pageTableColumns = [] } = config || {};
   const fieldsMap = schemaToMap(schema);
   const _pageTableColumns = columnStringToObject(pageTableColumns);
-  const tableColumns: UnionColumns<any>[] = _pageTableColumns.filter(({ id }) => {
+  const tableColumns: UnionColumn<any>[] = _pageTableColumns.filter(({ id }) => {
     return id in fieldsMap;
   }).map(({ id, width }) => {
     return {

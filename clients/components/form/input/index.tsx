@@ -15,7 +15,7 @@ import { FormContext } from '..';
 
 interface BaseProps {
   validateMessage?: string;
-  valideteOnBlur?:boolean;
+  valideteOnBlur?: boolean;
   rules?: (string | ((value: any) => string))[];
   controlClassName?: string;
   errorClassName?: string;

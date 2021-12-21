@@ -24,7 +24,7 @@ export function ImgList({
   handleDownload,
   deleteFileItem,
   uploadProgressRender,
-}:Props): JSX.Element {
+}: Props): JSX.Element {
   return (
     <>
       {files.map((file) => {

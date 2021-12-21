@@ -13,7 +13,7 @@ type FilePickerProps = {
   description?: React.ReactNode;
   children?: React.ReactNode;
   style?: React.CSSProperties;
-  onSelectFiles?:(files: File[]) => void;
+  onSelectFiles?: (files: File[]) => void;
 }
 
 function FilePicker({
@@ -52,11 +52,11 @@ function FilePicker({
     {} :
     {
       onDrop: onFileDrop,
-      onDragOver: (e:DragEvent) => {
+      onDragOver: (e: DragEvent) => {
         e.preventDefault();
         setIsDragging(true);
       },
-      onDragLeave: (e:DragEvent) => {
+      onDragLeave: (e: DragEvent) => {
         e.preventDefault();
         setIsDragging(false);
       },

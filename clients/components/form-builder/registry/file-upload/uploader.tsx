@@ -11,8 +11,7 @@ export type QxpFileFormData = {
   type: string;
   size?: number;
 }
-export default function FormFileUploader(props: FileUploaderProps & ISchemaFieldComponentProps)
-  : JSX.Element {
+export default function FormFileUploader(props: FileUploaderProps & ISchemaFieldComponentProps): JSX.Element {
   const configProps = props?.props['x-component-props'];
   const subTableTempRef = useRef<QxpFileFormData[]>([]);
   const { value, mutators } = props;
@@ -22,7 +21,7 @@ export default function FormFileUploader(props: FileUploaderProps & ISchemaField
   }, []);
 
   const handleFileSuccess = (currentFile: QXPUploadFileBaseProps): void => {
-    const currentFileFromData:QxpFileFormData = {
+    const currentFileFromData: QxpFileFormData = {
       label: currentFile.name,
       value: currentFile.uid,
       type: currentFile.type,

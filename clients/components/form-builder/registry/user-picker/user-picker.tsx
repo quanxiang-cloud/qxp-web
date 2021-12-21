@@ -210,7 +210,7 @@ const AllUserPicker = ({ appID, value, ...otherProps }: AllUserPickerProps): JSX
       className={cs('user-selector', componentsProps.className)}
     >
       {
-        options.map((opt:Option) => (
+        options.map((opt: Option) => (
           <SelectOption key={opt.value} value={opt.value}>
             {opt.label}({opt.email})
           </SelectOption>

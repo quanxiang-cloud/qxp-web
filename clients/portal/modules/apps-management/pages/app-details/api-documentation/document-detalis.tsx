@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { toJS } from 'mobx';
 import { observer } from 'mobx-react';
-import { UnionColumns } from 'react-table';
+import { UnionColumn } from 'react-table';
 import cs from 'classnames';
 
 import Tab from '@c/tab';
@@ -18,7 +18,7 @@ import store from './store';
 import '../prism.css';
 import ApiDetails from './api-details';
 
-export const FIELD_COLUMNS: UnionColumns<ModelField>[] = [
+export const FIELD_COLUMNS: UnionColumn<ModelField>[] = [
   {
     Header: '字段名称',
     id: 'title',

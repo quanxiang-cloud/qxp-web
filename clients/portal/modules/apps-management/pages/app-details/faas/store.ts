@@ -405,7 +405,7 @@ class FaasStore {
     });
   }
 
-  getVersion =():void => {
+  getVersion =(): void => {
     getVersion(this.groupID, this.currentFuncID, this.buildID).then((res) => {
       const { build } = res;
       this.currentVersionFunc = build;

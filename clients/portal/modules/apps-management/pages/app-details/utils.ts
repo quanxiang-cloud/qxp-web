@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { UnionColumns } from 'react-table';
+import { UnionColumn } from 'react-table';
 import { flattenDeep, isEmpty } from 'lodash';
 
 import toast from '@lib/toast';
@@ -83,7 +83,7 @@ export const SYSTEM_FIELDS: Record<string, ModelFieldSchema> = {
   },
 };
 
-export const FIELD_COLUMNS: UnionColumns<ModelField>[] = [
+export const FIELD_COLUMNS: UnionColumn<ModelField>[] = [
   {
     Header: '字段编码',
     id: 'id',

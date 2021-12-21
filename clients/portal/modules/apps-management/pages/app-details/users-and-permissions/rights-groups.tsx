@@ -24,9 +24,9 @@ function RightsGroups(): JSX.Element {
   const { rightsList, perFormLoading } = store;
   const [activeTab, setActiveTab] = useState('authorized');
   const [openset, setOpenSet] = useState(false);
-  const fieldRef = useRef<{ getFieldPer:() => any, reset: () => void }>(null);
-  const authorizedRef = useRef<{ getAuthorizedPer:() => number, reset: () => void }>(null);
-  const dataPerRef = useRef<{ getDataValues:() => Promise<ConditionMap>, reset: () => void }>(null);
+  const fieldRef = useRef<{ getFieldPer: () => any, reset: () => void }>(null);
+  const authorizedRef = useRef<{ getAuthorizedPer: () => number, reset: () => void }>(null);
+  const dataPerRef = useRef<{ getDataValues: () => Promise<ConditionMap>, reset: () => void }>(null);
 
   useEffect(() => {
     store.fetchPerGroupForm(store.currentRights.id);

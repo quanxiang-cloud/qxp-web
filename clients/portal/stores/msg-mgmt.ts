@@ -22,30 +22,30 @@ class MsgMgmt {
   searchWord = '';
 
   @observable
-  pageInfo:Page = {
+  pageInfo: Page = {
     pageSize: 10,
     current: 1,
     total: 0,
   }
 
   @observable
-  data:any = []
+  data: any = []
 
   @observable
   keyword = ''
 
   @observable
-  requestInfo:RequestInfo = {
+  requestInfo: RequestInfo = {
     isLoading: false,
     isError: false,
     isFetching: false,
   }
 
   @observable
-  messageStatus:MsgSendStatus = MsgSendStatus.all
+  messageStatus: MsgSendStatus = MsgSendStatus.all
 
   @observable
-  messageType:MsgType = MsgType.all
+  messageType: MsgType = MsgType.all
 
   @computed get pageParams() {
     const { pageSize, current } = this.pageInfo;
@@ -60,32 +60,32 @@ class MsgMgmt {
   }
 
   @action
-  setPageInfo = (pageInfo:Page) => {
+  setPageInfo = (pageInfo: Page) => {
     this.pageInfo = pageInfo;
   }
 
   @action
-  setKeyword = (keyword:string) => {
+  setKeyword = (keyword: string) => {
     this.keyword = keyword;
   }
 
   @action
-  setData = (data:any) => {
+  setData = (data: any) => {
     this.data = data;
   }
 
   @action
-  setRequestInfo = (requestInfo:RequestInfo) => {
+  setRequestInfo = (requestInfo: RequestInfo) => {
     this.requestInfo = requestInfo;
   }
 
   @action
-  setMessageType = (messageType:MsgType) => {
+  setMessageType = (messageType: MsgType) => {
     this.messageType = messageType;
   }
 
   @action
-  setMessageStatus = (messageStatus:MsgSendStatus) => {
+  setMessageStatus = (messageStatus: MsgSendStatus) => {
     this.messageStatus = messageStatus;
   }
 

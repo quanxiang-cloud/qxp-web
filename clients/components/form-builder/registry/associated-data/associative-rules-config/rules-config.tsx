@@ -29,7 +29,7 @@ const { onFieldValueChange$ } = FormEffectHooks;
 
 function Rules({
   onClose, onSubmit, defaultValue, currentFormFields, sourceTableFields,
-} : Props): JSX.Element {
+}: Props): JSX.Element {
   const actions = createFormActions();
   const { setFieldState } = actions;
 

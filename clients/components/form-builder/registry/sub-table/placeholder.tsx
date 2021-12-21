@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { UnionColumns } from 'react-table';
+import { UnionColumn } from 'react-table';
 
 import Table from '@c/table';
 import Empty from '@c/form-builder/components/empty';
@@ -14,11 +14,11 @@ const DEFAULT_COL = [{
 }];
 
 function Placeholder({ props }: Props): JSX.Element {
-  const cols: UnionColumns<any>[] = useMemo(() => {
+  const cols: UnionColumn<any>[] = useMemo(() => {
     const schema: ISchema = props?.items;
     return Object.entries(schema?.properties || {}).sort((a, b) => {
       return (a[1]?.['x-index'] || 0) - (b[1]?.['x-index'] || 0);
-    }).reduce<UnionColumns<any>[]>((acc, [key, val]) => {
+    }).reduce<UnionColumn<any>[]>((acc, [key, val]) => {
       if (!EXCLUDE_FIELDS.includes(key)) {
         return [...acc, {
           id: key,

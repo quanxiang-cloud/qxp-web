@@ -37,7 +37,7 @@ export default function NodeConfigDrawer(): JSX.Element {
   const store = useObservable(store$);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const drawerRef = useRef<HTMLDivElement | null>(null);
-  const formRef = useRef<{ validate:() => void | never }>();
+  const formRef = useRef<{ validate: () => void | never }>();
   const {
     currentNodeConfigParams: { schema, currentNode, onClose, configForm: ConfigForm, excludedFields },
   } = isEmpty(store) ? NODE_INIT_CONFIG_PARAMS : store;
