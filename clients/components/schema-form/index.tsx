@@ -98,7 +98,7 @@ function SchemaForm<T extends Record<string, any>>({
   const hideIds = hideFields.map(({ id }) => id);
 
   // console.log('errors', errors);
-  console.log(watchValues);
+  // console.log(watchValues);
 
   return (
     <form className={className}>

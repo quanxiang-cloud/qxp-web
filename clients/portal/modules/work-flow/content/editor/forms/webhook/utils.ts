@@ -5,7 +5,7 @@ import store, { getNodeElementById } from '@flow/content/editor/store';
 import { Data } from '@flow/content/editor/type';
 
 function getElementParents(element: Node<Data>): string[] {
-  return flattenDeep(element.data?.nodeData.parentID?.map((id) => {
+  return flattenDeep(element?.data?.nodeData.parentID?.map((id) => {
     const cur = getNodeElementById(id);
     return cur ? [...getElementParents(cur), id] : id;
   }) ?? []);
