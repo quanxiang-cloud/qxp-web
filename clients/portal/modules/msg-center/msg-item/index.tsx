@@ -8,8 +8,8 @@ import dayjs from 'dayjs';
 import toast from '@lib/toast';
 import { useQueryClient, useMutation } from 'react-query';
 import { getMsgById } from '@portal/modules/msg-center/api';
-
 import { getQuery } from '@portal/utils';
+
 import { useRouting } from '../hooks';
 
 import styles from './index.module.scss';

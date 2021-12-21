@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
-import msgMgmt from '@portal/stores/msg-mgmt';
 import { useQuery } from 'react-query';
+
+import msgMgmt from '@portal/stores/msg-mgmt';
 import { getMsgList } from '@portal/modules/system-mgmt/api';
 
 export const useMsgInitData = () => {
