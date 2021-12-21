@@ -11,6 +11,7 @@ import MoreMenu from '@c/more-menu';
 import Avatar from '@c/avatar';
 import ResetPasswordModal from '@portal/global-header/reset-password-modal';
 import NavMsgBar from '@portal/modules/msg-center/nav-msg-bar';
+import NavTaskBar from '@c/task-lists';
 
 import appDetailsStore from '../store';
 import './index.scss';
@@ -80,7 +81,8 @@ function DetailsHeader(): JSX.Element {
           访问应用端
         </a>
         <hr className='app-global-header-hr' />
-        <NavMsgBar type='portal' className='mx-16'/>
+        <NavTaskBar type='manager' className='mx-16'/>
+        <NavMsgBar type='portal' className='mr-16'/>
         <a
           href={`//${window.CONFIG.docs_hostname}`}
           target="_blank"

@@ -18,6 +18,8 @@ import { setUserConfig, useGetUserConfig } from '@lib/configuration-center';
 type Props = {
   pageID: string;
   appID: string;
+  appName?: string;
+  pageName?: string;
   tableHeaderBtnList?: TableHeaderBtn[];
   customColumns?: UnionColumns<any>[];
   allowRequestData?: boolean;
@@ -35,7 +37,9 @@ const VERSION = '0.1.0';
 
 function FormAppDataTableWrap({
   pageID,
+  pageName,
   appID,
+  appName,
   tableHeaderBtnList,
   customColumns,
   showCheckbox,
@@ -103,8 +107,10 @@ function FormAppDataTableWrap({
         showCheckbox,
         allowRequestData,
         appID,
+        appName,
         onSelect,
         pageID,
+        pageName,
         defaultSelect,
         canAcrossPageChoose,
         onTableUserConfigChange: (config) => {

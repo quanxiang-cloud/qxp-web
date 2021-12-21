@@ -137,7 +137,9 @@ function PageDetails(): JSX.Element | null {
           tableHeaderBtnList={tableHeaderBtnList}
           customColumns={customColumns}
           appID={store.appID}
+          appName={store.appName}
           pageID={store.pageID}
+          pageName={store.pageName}
           allowRequestData={true}
           className={cs('p-20 h-full', { 'form-table-hidden': modalType === 'dataForm' })}
         />
