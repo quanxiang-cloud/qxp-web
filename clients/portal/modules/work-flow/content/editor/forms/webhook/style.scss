@@ -1,0 +1,41 @@
+.webhook-api-select {
+  padding: 0;
+
+  .poly-api-selector {
+    width: 100%;
+
+    label {
+      @apply block;
+
+      &+span {
+        @apply w-full;
+
+        input {
+          border-radius: 2px 8px 8px 8px;
+        }
+      }
+    }
+  }
+}
+
+.webhook-request-inputs {
+  grid-template-columns: repeat(1, 492fr 240fr);
+  @apply relative mt-8;
+  &>div:first-child {
+    padding: 0 8px 0 0;
+    background: #fff;
+    &>div:not(.webhook-send-block) {
+      &>div:first-child {
+        margin: 8px 0 0 0;
+      }
+    }
+  }
+  &::before {
+    content: '';
+    width: calc(100% + 48px);
+    background: rgb(226, 232, 240);
+    left: -24px;
+    height: 0.5px;
+    @apply absolute top-0;
+  }
+}

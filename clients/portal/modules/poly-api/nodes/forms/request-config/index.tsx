@@ -21,7 +21,7 @@ type Props = {
   onChange: (value: Partial<POLY_API.PolyRequestNodeDetail>) => void;
 }
 
-function mergeInputs(
+export function mergeInputs(
   vInputs: POLY_API.PolyNodeInput[], apiInputs: POLY_API.PolyNodeInput[],
 ): POLY_API.PolyNodeInput[] {
   const { add = [], replace = [], remove = [] } = groupBy(

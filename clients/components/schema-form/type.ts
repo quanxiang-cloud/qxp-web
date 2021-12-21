@@ -9,16 +9,21 @@ declare module 'react' {
 }
 
 export interface Field {
-  title: string;
   name: string;
+  title?: string;
   watch?: boolean;
   native?: {
     type: string;
-    options: RegisterOptions;
+    options?: RegisterOptions;
   },
-  component?: (...args: any[]) => JSX.Element;
+  component?: (...args: any[]) => JSX.Element | null;
   validate?: (watchValues: Record<string, any>, errorMethods: ErrorMethods) => void,
   hide?: (watchValues: Record<string, any>) => boolean,
+  id?: string;
+  wrapperClassName?: string;
+  labelClassName?: string;
+  className?: string;
+  defaultValue?: any;
 }
 
 export interface SchemaFormSchema {

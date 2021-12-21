@@ -120,6 +120,9 @@ export function getNodeInitialData(type: NodeType): BusinessData {
       type: 'request',
       config: {
         api: { value: '' },
+        url: '',
+        inputs: [],
+        outputs: [],
       },
     },
   };

@@ -6,6 +6,8 @@ import Icon from '@c/icon';
 import FormulaEditor, { RefProps, CustomRule } from '@c/formula-editor';
 import { convertToParamsConfig, parseParamOfPath } from '@polyApi/utils/request-node';
 
+import './params.scss';
+
 type Props = {
   value: POLY_API.PolyNodeInput[];
   url: string;
@@ -117,7 +119,7 @@ function ApiParamsConfig(
                     className="flex justify-between"
                     onClick={handleSetCurrentFormulaRef(path)}
                   >
-                    <div className="flex items-center justify-between w-142 p-8 flex-3 border-r-1">
+                    <div className="flex items-center justify-between w-142 p-8 border-r-1">
                       <div className="flex-1 truncate relative">
                         <span>{title}</span>
                         <span className="mx-4 text-gray-400">{name}</span>
@@ -126,7 +128,7 @@ function ApiParamsConfig(
                       <Icon className="ml-8" name="arrow_left_alt" />
                     </div>
                     {customRules.length ? (
-                      <div className="flex flex-col overflow-auto" style={{ flex: 7 }}>
+                      <div className="flex flex-col overflow-auto">
                         <FormulaEditor
                           help=""
                           ref={handleSetFormulaRefs(path)}
@@ -140,7 +142,13 @@ function ApiParamsConfig(
                           <span className="text-red-600 px-3 pb-3">{errorsRef.current[path]}</span>
                         )}
                       </div>
-                    ) : <div className="node-formula-editor flex-7"></div>}
+                    ) : (
+                      <input
+                        style={{ border: 'none', outline: 'none', padding: '0 8px' }}
+                        value={data || ''}
+                        onChange={(e) => handleFormulaChange(path, name, !!required, data)(e.target.value)}
+                      />
+                    )}
                   </div>
                 );
               })}

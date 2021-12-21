@@ -125,36 +125,9 @@ $nodeTypes: input, request, if, end, default, output;
   }
 }
 
-.request-op {
-  border: 1px solid var(--gray-500);
-  box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.15);
-  @apply w-24 text-12 font-medium text-center rounded-4 cursor-pointer;
-}
-
 .node-config-drawer.drawer-position-right {
   &>div {
     @apply rounded-l-none;
-  }
-}
-
-.config-params-container {
-  &>div:first-child {
-    @apply mt-0;
-  }
-  &>div:last-child {
-    @apply mb-0;
-  }
-}
-
-.config-param {
-  @apply border-1 rounded-8 border-gray-200;
-
-  &>div {
-    @apply border-b-1;
-  }
-
-  &>div:last-child {
-    @apply border-0;
   }
 }
 
@@ -184,11 +157,6 @@ $nodeTypes: input, request, if, end, default, output;
   }
 }
 
-.formula-config {
-  width: 242px;
-  @apply border-l-1 border-gray-200 flex flex-col;
-}
-
 .poly-api-selector {
   @apply flex items-center mr-16 w-280;
 
@@ -197,29 +165,6 @@ $nodeTypes: input, request, if, end, default, output;
 
     &>input {
       border-radius: 2px 8px 8px 8px;
-    }
-  }
-}
-
-.node-formula-editor {
-  @apply flex-2 border-gray-200 w-full;
-  min-width: 68px;
-
-  &>div {
-    border: 0;
-    border-radius: 0;
-  }
-
-  .formula-editor-container {
-    &>div:last-child {
-      display: none;
-    }
-  }
-
-  .DraftEditor-root {
-    background-color: transparent;
-    .public-DraftEditorPlaceholder-inner {
-      white-space: nowrap !important;
     }
   }
 }

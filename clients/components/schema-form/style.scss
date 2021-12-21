@@ -1,0 +1,20 @@
+.schema-form-field {
+
+  label {
+    @apply text-gray-600 text-12 flex;
+    margin: 8px 0 !important;
+
+    &+* {
+      margin-bottom: 8px;
+      max-width: unset;
+
+      &:not(span, label) {
+        @apply py-5 px-16 bg-white rounded-tl-2 rounded-tr-8 rounded-br-8 rounded-bl-8 transition duration-240 w-full ;
+
+        &[disabled] {
+          @apply cursor-not-allowed bg-gray-100 text-gray-900;
+        }
+      }
+    }
+  }
+}

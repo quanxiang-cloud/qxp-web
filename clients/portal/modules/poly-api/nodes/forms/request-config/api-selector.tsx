@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { clone } from 'ramda';
 import { Cascader } from 'antd';
 import { useParams } from 'react-router-dom';
+import cs from 'classnames';
 
 import { useGetRequestNodeApiList } from '@polyApi/effects/api/raw';
 import { useGetNamespaceFullPath, useQueryNameSpaceRawRootPath } from '@polyApi/effects/api/namespace';
@@ -12,9 +13,13 @@ type Props = {
   apiDocDetail: any;
   initRawApiPath: string;
   setApiPath: (apiPath: string) => void;
+  label?: string;
+  className?: string;
 }
 
-function ApiSelector({ apiDocDetail, setApiPath, initRawApiPath }: Props): JSX.Element {
+function ApiSelector(
+  { apiDocDetail, setApiPath, initRawApiPath, label = '全部API：', className }: Props,
+): JSX.Element {
   const { appID } = useParams<{ appID: string }>();
   const [apiNamespacePath, setApiNamespacePath] = useState('');
   const [options, setOptions] = useState<any[]>();
@@ -73,9 +78,9 @@ function ApiSelector({ apiDocDetail, setApiPath, initRawApiPath }: Props): JSX.E
   }
 
   return (
-    <div className="px-20 py-12 flex">
+    <div className={cs('px-20 py-12 flex', className)}>
       <div className="poly-api-selector">
-        全部API：
+        <label>{label}</label>
         <Cascader
           changeOnSelect
           className="cascader"
