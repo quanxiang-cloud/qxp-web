@@ -117,7 +117,7 @@ declare namespace POLY_API {
 
   export interface ObjectSchema {
     type: API_FIELD_TYPE;
-    in: 'body' | 'header' | 'query' | 'path',
+    in: 'body' | 'header' | 'query' | 'path' | '',
     name: string | null;
     index: number;
     parentPath: string | null;
