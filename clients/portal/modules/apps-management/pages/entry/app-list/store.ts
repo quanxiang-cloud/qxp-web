@@ -3,7 +3,7 @@ import { observable, action, reaction, IReactionDisposer, computed } from 'mobx'
 import toast from '@lib/toast';
 
 import { updateAppStatus, createPage } from '../../app-details/api';
-import { fetchAppList, delApp, createdApp, CreatedAppRes } from './api';
+import { fetchAppList, delApp, createdApp, importApp, CreatedAppRes, createImportAppTask } from './api';
 
 export type Params = {
   useStatus?: number;
@@ -105,6 +105,23 @@ class AppListStore {
         appID: res.id, id: '',
       });
       return newApp.id;
+    });
+  }
+
+  @action
+  importApp = (appInfo: AppInfo): Promise<any> => {
+    return importApp(appInfo).then((res: CreatedAppRes) => {
+      const newApp = { ...appInfo, ...res };
+      this.appList = [newApp, ...this.appList];
+      this.allAppList = [newApp, ...this.allAppList];
+
+      return createImportAppTask({
+        ...appInfo.appZipInfo,
+        title: appInfo.appName,
+        value: { appID: res.id },
+      }).then((res) => {
+        return res.taskID;
+      });
     });
   }
 

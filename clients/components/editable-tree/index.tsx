@@ -16,7 +16,7 @@ interface Props {
   hideSaveBtn?: boolean;
 }
 
-export type RefType = { getValues: ()=> (OptionSetTreeItem[] | undefined) };
+export type RefType = { getValues: () => (OptionSetTreeItem[] | undefined) };
 
 function TreeContent({
   initialValue = [],

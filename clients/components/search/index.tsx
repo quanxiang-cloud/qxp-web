@@ -13,7 +13,7 @@ const InputCss: CSSProperties = {
 interface Props {
   value?: string;
   placeholder?: string;
-  onChange?: (val:string) => void;
+  onChange?: (val: string) => void;
   onBlur?(val?: string): void;
   onKeyDown?(e?: React.KeyboardEvent): void;
   className?: string;

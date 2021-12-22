@@ -25,6 +25,13 @@ const paramTypes = [
   { label: 'boolean', value: 'boolean' },
   { label: 'object', value: 'object' },
   { label: 'array', value: 'array' },
+  { label: 'timestamp', value: 'timestamp' },
+  { label: 'action', value: 'action' },
+];
+
+const timeTypes = [
+  { label: 'default', value: 'YYYY-MM-DDThh:mm:ssZ' },
+  { label: 'ISO8601', value: 'YYYY-MM-DDThh:mm:ss+0000' },
 ];
 
 function ParamRow({
@@ -72,7 +79,6 @@ function ParamRow({
   }
 
   function handleChangeField(fieldName: string, val: any): void {
-    // console.log('change field: ', fieldName, val);
     store.setFieldValue(fieldName, val);
   }
 
@@ -80,11 +86,23 @@ function ParamRow({
     if (group === 'path') {
       return paramTypes.filter(({ value })=> ['string', 'number'].includes(value));
     }
+    if (group === 'body') {
+      return paramTypes.filter(
+        ({ value })=> !['timestamp', 'action'].includes(value),
+      );
+    }
     if (group === 'constant') {
-      return paramTypes.filter(({ value })=> ['string', 'number', 'boolean'].includes(value));
+      return paramTypes.filter(
+        ({ value })=> ['string', 'number', 'boolean', 'timestamp', 'action'].includes(value),
+      );
     }
     if (['query', 'header'].includes(group)) {
       return paramTypes.filter(({ value })=> ['string', 'number', 'boolean'].includes(value));
+    }
+    if (group === 'response') {
+      return paramTypes.filter(
+        ({ value })=> !['timestamp', 'action'].includes(value),
+      );
     }
     return paramTypes;
   }
@@ -189,6 +207,11 @@ function ParamRow({
               {...field}
               value={type}
               onChange={(val)=> {
+                if (val === 'action') {
+                  handleChangeField(getFieldName('constData'), store.apiPath.split('?')[1]);
+                } else {
+                  handleChangeField(getFieldName('constData'), '');
+                }
                 handleChangeField(getFieldName('type'), val);
                 // if type changed, should reset sub nodes
                 if (type !== val) {
@@ -207,22 +230,37 @@ function ParamRow({
           <td className='param-data'>
             <Controller
               render={({ field })=> {
-                return (
-                  <input
-                    type={type === 'number' ? 'number' : 'text'}
-                    className={cs({
-                      error: get(errors, getFieldName('constData')),
-                    })}
-                    maxLength={128}
-                    placeholder='请输入'
-                    {...field}
-                    value={constData}
-                    onChange={(ev)=> {
-                      field.onChange(ev.target.value);
-                      handleChangeField(getFieldName('constData'), ev.target.value);
-                    }}
-                  />
-                );
+                if (type === 'timestamp') {
+                  return (
+                    <Select
+                      options={timeTypes}
+                      {...field}
+                      value={constData}
+                      onChange={(val)=> {
+                        field.onChange(val);
+                        handleChangeField(getFieldName('constData'), val);
+                      }}
+                    />
+                  );
+                } else {
+                  return (
+                    <input
+                      type={type === 'number' ? 'number' : 'text'}
+                      className={cs({
+                        error: get(errors, getFieldName('constData')),
+                      })}
+                      maxLength={128}
+                      placeholder='请输入'
+                      disabled={type === 'action' ? true : false}
+                      {...field}
+                      value={constData}
+                      onChange={(ev)=> {
+                        field.onChange(ev.target.value);
+                        handleChangeField(getFieldName('constData'), ev.target.value);
+                      }}
+                    />
+                  );
+                }
               }}
               name={getFieldName('constData')}
               control={control}

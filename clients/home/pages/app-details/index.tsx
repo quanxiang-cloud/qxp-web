@@ -24,6 +24,7 @@ function AppDetails(): JSX.Element {
         return;
       }
       store.setAppList(res.data);
+      store.appName = store.appList.find(({ id }: AppInfo) => id === appID).appName;
 
       return store.fetchPageList(appID);
     }).catch(() => {

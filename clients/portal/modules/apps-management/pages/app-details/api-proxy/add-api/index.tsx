@@ -4,13 +4,14 @@ import { useHistory, useParams } from 'react-router-dom';
 import { useForm, FormProvider } from 'react-hook-form';
 import cs from 'classnames';
 import { useMutation } from 'react-query';
-import { get, values } from 'lodash';
+import { get, values, keys } from 'lodash';
 import { toJS } from 'mobx';
 
 import Select from '@c/select';
 import Button from '@c/button';
 import toast from '@lib/toast';
 import Loading from '@c/loading';
+import { getStore } from '@ofa/page-engine';
 
 import Header from '../comps/header';
 import { ErrorMsg } from '../comps/form';
@@ -31,6 +32,13 @@ type MetaInfo={
   apiPath: string; // 用户的原始api路径
 }
 
+interface Props {
+  className?: string;
+  editMode?: boolean;
+  tinyMode?: boolean;
+  apiPath?: string;
+}
+
 const methodOptions = [
   { label: 'GET', value: 'get' },
   { label: 'POST', value: 'post' },
@@ -49,7 +57,7 @@ function getAllPathParamNames(url: string): string[] {
   return url.match(regPathParam) || [];
 }
 
-function AddApi(): JSX.Element {
+function AddApi(props: Props): JSX.Element {
   const paramsStore = useContext(paramsContext);
   const formInst = useForm();
   const { register, handleSubmit, formState: { errors }, watch, setValue } = formInst;
@@ -60,9 +68,10 @@ function AddApi(): JSX.Element {
   const watchApiPath = watch('apiPath');
   const watchApiName = watch('apiName');
   const qs = useQueryString();
-  const isEdit = qs.get('action') === 'edit';
-  const apiPath = qs.get('api_path');
+  const isEdit = qs.get('action') === 'edit' || props.editMode;
+  const apiPath = props.apiPath || qs.get('api_path');
   const [apiDetail, setApiDetail] = useState<PolyAPI.NativeApi | null>(null);
+  const pageEngineStore = getStore();
 
   useEffect(()=> {
     return paramsStore.reset;
@@ -93,10 +102,17 @@ function AddApi(): JSX.Element {
         queryNativeApi(apiPath),
         queryNativeApiDoc(apiPath, { docType: 'swag' }),
       ]).then(([detail, doc])=> {
-        const apiPath = detail.url.slice(`${detail.schema}://${detail.host}`.length);
+        if (props.tinyMode) {
+          // const apiSpec = {
+          //   method: detail.method,
+          //   ...doc,
+          // };
+          pageEngineStore.dataSource.setCurApiId([detail.method.toLowerCase(), doc.apiPath].join(':'));
+        }
+
         const {
           parameters = [], responses = {}, ['x-consts']: constants = [],
-        } = values(get(doc, 'doc.paths')[`${apiPath}`])[0] || {};
+        } = values(values(get(doc, 'doc.paths'))[0])[0] || {};
         paramsStore.setAllParameters(parameters);
         paramsStore.setConstants(constants);
         paramsStore.setResponse(responses);
@@ -105,7 +121,7 @@ function AddApi(): JSX.Element {
         paramsStore.setMetaInfo({ method: detail.method.toLowerCase() });
         setInitialValues({
           title: detail.title,
-          apiPath,
+          apiPath: keys(get(doc, 'doc.paths'))[0],
           apiName: detail.name.split('.')[0],
           description: detail.desc,
         });
@@ -125,7 +141,14 @@ function AddApi(): JSX.Element {
       const pathParams = getAllPathParamNames(watchApiPath).map((name)=> {
         return getDefaultParam({ name: name.slice(1), required: true, readonlyKeys: ['name', 'required'] });
       });
+      const constantValue = paramsStore.parameters.constant;
 
+      constantValue.forEach((constantItem, index) => {
+        if (constantItem.type === 'action') {
+          paramsStore.setFieldValue(`constant.${index}.constData`, watchApiPath.split('?')[1]);
+        }
+      });
+      paramsStore.apiPath = watchApiPath;
       paramsStore.setParams('path', pathParams);
     }
   }, [watchApiPath]);
@@ -142,12 +165,12 @@ function AddApi(): JSX.Element {
     });
   }
 
-  function toListPage():void {
+  function toListPage(): void {
     history.push(`/apps/details/${appID}/api_proxy?ns=${ns}`);
   }
 
   function getProxyPath(): string {
-    const svcPath = store.svc?.fullPath || '';
+    const svcPath = store.svc?.fullPath || apiPath || '';
     const lastIdx = svcPath.lastIndexOf('/');
     if (lastIdx < 0) {
       return svcPath;
@@ -222,13 +245,13 @@ function AddApi(): JSX.Element {
 
   return (
     <>
-      <Header name={isEdit ? '修改 API' : '新建 API'} />
+      {!props.tinyMode && <Header name={isEdit ? '修改 API' : '新建 API'} />}
       <FormProvider {...formInst}>
         <form onSubmit={onSubmit} className='flex flex-col px-20 py-16 w-full overflow-auto'>
-          <div className='mb-16'>
+          <div className={cs('mb-16', { hidden: props.tinyMode })}>
             <p>API 名称</p>
             <input
-              className={cs('api-from-input', { error: errors.title })}
+              className={cs('api-from-input input', { error: errors.title })}
               placeholder='请输入'
               maxLength={32}
               {...register('title', {
@@ -240,10 +263,10 @@ function AddApi(): JSX.Element {
             <p className='text-caption'>最多 20 个字符，仅支持中英文</p>
           </div>
 
-          <div className='mb-16'>
+          <div className={cs('mb-16', { hidden: props.tinyMode })}>
             <p>API 路径</p>
             <input
-              className={cs('api-from-input', {
+              className={cs('api-from-input input', {
                 error: errors.apiPath,
                 'bg-gray-100': isEdit,
               })}
@@ -274,7 +297,7 @@ function AddApi(): JSX.Element {
             <div className='mr-12 flex-1'>
               <p>代理路径</p>
               <input
-                className='api-from-input min-w-259 bg-gray-100'
+                className='api-from-input input min-w-259 bg-gray-100'
                 readOnly
                 {...register('proxyPath')}
               />
@@ -285,7 +308,7 @@ function AddApi(): JSX.Element {
                 placeholder='请输入，分组内不可重复'
                 maxLength={32}
                 readOnly={isEdit}
-                className={cs('api-from-input', {
+                className={cs('api-from-input input', {
                   error: errors.apiName,
                   'bg-gray-100': isEdit,
                 })}
@@ -294,10 +317,10 @@ function AddApi(): JSX.Element {
             </div>
           </div>
 
-          <div className='mb-16'>
+          <div className={cs('mb-16', { hidden: props.tinyMode })}>
             <p>描述</p>
             <textarea
-              className='api-from-textarea'
+              className='api-from-textarea textarea'
               rows={3}
               placeholder='选填 (不超过 200 字符)'
               maxLength={200}
@@ -319,7 +342,7 @@ function AddApi(): JSX.Element {
         </form>
       </FormProvider>
 
-      <div className='flex items-center justify-end w-full h-64 bg-gray-100 px-20'>
+      <div className={cs('flex items-center justify-end w-full h-64 bg-gray-100 px-20', { hidden: props.tinyMode })}>
         <Button onClick={history.goBack} iconName='close' className='mr-20'>取消</Button>
         <Button
           modifier='primary'

@@ -36,7 +36,7 @@
         &:last-child{
           border-right: none;
         }
-        &.param-type, &.param-in {
+        &.param-type, &.param-data, &.param-in {
           > div {
             border: none;
             box-shadow: none;

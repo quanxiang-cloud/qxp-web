@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import cs from 'classnames';
 import { Select, SelectProps } from 'antd';
-import { debounce } from 'lodash';
+import { debounce, omit } from 'lodash';
 
 import { getNoLabelValues } from '@c/form-builder/utils';
 import { labelValueRenderer } from '@c/form-data-value-renderer';
@@ -49,13 +49,13 @@ const UserPicker = ({
   useEffect(() => {
     const noLabelValues = getNoLabelValues(value);
     if (noLabelValues.length) {
-      getUserDetail<{ user: { id: string, userName: string, email: string }[] }>({
-        query: `{user(ids:${JSON.stringify(noLabelValues)}) {id, userName, email }}`,
+      getUserDetail<{ user: { id: string, userName: string }[] }>({
+        query: `{user(ids:${JSON.stringify(noLabelValues)}) {id, userName }}`,
       }).then((res) => {
         const newValue = (value as LabelValue[]).map(({ label, value }) => {
           if (value && !label) {
             const curUser = res.user.find(({ id }) => id === value);
-            return { label: curUser?.userName ? `${curUser.userName}(${curUser.email})` : '', value };
+            return { label: curUser?.userName ? curUser.userName : '', value };
           }
           return { label, value };
         });
@@ -70,11 +70,7 @@ const UserPicker = ({
     }
 
     if (optionalRange === 'currentUser' || defaultRange === 'currentUser') {
-      const { label, value, email } = currentUser;
-      onChange?.([{
-        label: `${label}(${email})`,
-        value,
-      }]);
+      onChange?.([omit(currentUser, 'email')]);
     } else if (defaultValues) {
       onChange?.(defaultValues);
     }
@@ -82,9 +78,13 @@ const UserPicker = ({
 
   const handleChange = (_selected: LabelValue | LabelValue[]): void => {
     let selectedValues: LabelValue[] = _selected ? ([] as LabelValue[]).concat(_selected) : [];
-    selectedValues = selectedValues.map(({ label, value }) => {
-      const labelValue = Array.isArray(label) ? label.join('') : label;
-      return { label: labelValue, value };
+    selectedValues = selectedValues.map(({ label, value: selectedValue }) => {
+      const oldValue = value?.find((val: LabelValue) => val.value === selectedValue);
+      if (oldValue) {
+        return oldValue;
+      }
+      const labelValue = Array.isArray(label) ? label[0] : label;
+      return { label: labelValue, value: selectedValue };
     });
     onChange && onChange(selectedValues);
   };
@@ -210,7 +210,7 @@ const AllUserPicker = ({ appID, value, ...otherProps }: AllUserPickerProps): JSX
       className={cs('user-selector', componentsProps.className)}
     >
       {
-        options.map((opt:Option) => (
+        options.map((opt: Option) => (
           <SelectOption key={opt.value} value={opt.value}>
             {opt.label}({opt.email})
           </SelectOption>

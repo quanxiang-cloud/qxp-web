@@ -1,7 +1,7 @@
 all: buildAssets server rollup
 
 clean:
-	@echo "clean previsous build..."
+	@echo "clean previous build..."
 	@rm -rf dist
 
 buildAssets: copyStatics copyTemplates buildIcons
@@ -10,6 +10,8 @@ copyStatics:
 	@echo "copy clients/assets to dist/assets..."
 	@mkdir -p dist
 	@cp -r ./clients/assets/* dist
+	@echo "copy ofa/ui assets..."
+	@cp -r ./node_modules/@ofa/ui/dist/images/* dist/images
 
 copyTemplates: clients/templates/*
 	@echo "copy clients/templates/* to dist/templates..."

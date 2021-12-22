@@ -22,11 +22,12 @@ type PerRes = {
 class UserAppDetailsStore {
   destroySetCurPage: IReactionDisposer;
   @observable appID = '';
+  @observable appName = ''
   @observable pageID = '';
+  @observable pageName = '';
   @observable pageListLoading = true;
   @observable curPage: PageInfo = { id: '' };
   @observable fetchSchemeLoading = true;
-  @observable pageName = '';
   @observable authority = 0;
   @observable showPageNav = true;
   @observable operationType = '';
@@ -146,7 +147,7 @@ class UserAppDetailsStore {
     getPerOption<PerRes>(appID).then((res: any) => {
       const { optionPer = [], selectPer = { id: '' } } = res;
       this.currentRoleInfo = { name: selectPer.name, id: selectPer.id };
-      this.roleOptions = (optionPer.map((option:PerItem) => ({ value: option.id, label: option.name })));
+      this.roleOptions = (optionPer.map((option: PerItem) => ({ value: option.id, label: option.name })));
     }).catch((reason) => {
       toast.error(reason);
     });

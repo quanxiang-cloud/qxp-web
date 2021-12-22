@@ -13,13 +13,14 @@ type Props = {
   apiDocDetail: any;
   initRawApiPath: string;
   setApiPath: (apiPath: string) => void;
-  label?: string;
+  simpleMode?: boolean;
   className?: string;
+  label?: string;
 }
 
-function ApiSelector(
-  { apiDocDetail, setApiPath, initRawApiPath, label = '全部API：', className }: Props,
-): JSX.Element {
+function ApiSelector({
+  apiDocDetail, setApiPath, initRawApiPath, simpleMode, className, label = '全部API:',
+}: Props): JSX.Element {
   const { appID } = useParams<{ appID: string }>();
   const [apiNamespacePath, setApiNamespacePath] = useState('');
   const [options, setOptions] = useState<any[]>();
@@ -77,6 +78,19 @@ function ApiSelector(
     setApiNamespacePath(targetOption.path);
   }
 
+  if (simpleMode) {
+    return (
+      <Cascader
+        changeOnSelect
+        className={cs('cascader', className)}
+        defaultValue={[initRawApiPath]}
+        // displayRender={(label)=> label[label.length - 1]}
+        options={options}
+        loadData={loadData}
+        onChange={onChange}
+      />
+    );
+  }
   return (
     <div className={cs('px-20 py-12 flex', className)}>
       <div className="poly-api-selector">

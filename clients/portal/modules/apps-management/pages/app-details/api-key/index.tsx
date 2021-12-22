@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import dayjs from 'dayjs';
-import { UnionColumns } from 'react-table';
+import { UnionColumn } from 'react-table';
 import { Switch } from 'antd';
 import { FormInstance } from 'antd/es/form';
 import { saveAs } from 'file-saver';
@@ -112,7 +112,7 @@ function ApiKey(): JSX.Element {
     });
   }
 
-  const columns: UnionColumns<ApiKeyList>[] = [
+  const columns: UnionColumn<ApiKeyList>[] = [
     {
       Header: '密钥ID',
       id: 'keyID',

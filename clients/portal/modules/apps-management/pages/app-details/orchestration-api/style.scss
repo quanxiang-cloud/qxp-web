@@ -26,6 +26,11 @@
 
 .polynamespacedetail-header-searchinput {
   @apply mx-8;
+
+  svg.svg-icon {
+    @apply left-24;
+  }
+
   input.search-input {
     @apply rounded-8;
     background-color: #f9fafc;
@@ -84,6 +89,12 @@
     div.group.tree-node {
       @apply bg-gray-50 duration-240 h-36;
       transition-property: background-color, transform;
+
+      svg.svg-icon.tree-node__toggle-icon {
+        width: 16px !important;
+        height: 16px !important;
+      }
+
       &:hover, &.tree-node--focused {
         @apply bg-white;
         &::after {

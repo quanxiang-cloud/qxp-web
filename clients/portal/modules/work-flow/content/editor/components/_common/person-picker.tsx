@@ -33,7 +33,7 @@ interface Props {
   onChange?: (data: ApprovePerson) => void;
 }
 
-export default function PersonPicker({ value, typeText, onChange } : Props): JSX.Element {
+export default function PersonPicker({ value, typeText, onChange }: Props): JSX.Element {
   const { validating } = useObservable<StoreValue>(store);
   const [showAddPersonModal, setShowAddPersonModal] = useState(false);
   const { tableSchema } = useContext(FlowTableContext);

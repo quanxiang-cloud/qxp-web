@@ -33,18 +33,18 @@ class MsgCenter {
   curMsgId = '';
 
   @computed
-  get countUnread(): any {
+  get countUnread(): number {
     return this.countUnreadSystemMsg + this.countUnreadNotifyMsg;
   }
 
   @computed
-  get countUnreadSystemMsg(): any {
-    return get(find(this.countUnreadByType, { sort: MsgType.system }), 'total', 0);
+  get countUnreadSystemMsg(): number {
+    return get(find(this.countUnreadByType, { types: MsgType.system }), 'total', 0);
   }
 
   @computed
-  get countUnreadNotifyMsg(): any {
-    return get(find(this.countUnreadByType, { sort: MsgType.notify }), 'total', 0);
+  get countUnreadNotifyMsg(): number {
+    return get(find(this.countUnreadByType, { types: MsgType.notify }), 'total', 0);
   }
 
   @computed

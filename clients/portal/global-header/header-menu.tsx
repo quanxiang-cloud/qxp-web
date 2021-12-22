@@ -1,6 +1,7 @@
 import React from 'react';
 
 import NavMsgBar from '@portal/modules/msg-center/nav-msg-bar';
+import NavTaskBar from '@c/task-lists';
 import Icon from '@c/icon';
 import UserAvatarMenu from '@c/user-avatar-menu';
 
@@ -16,7 +17,8 @@ export default function HeaderMenu(): JSX.Element {
         访问用户端
       </a>
       <hr className='w-1 h-20 bg-gray-200'/>
-      <NavMsgBar type='portal' className="mx-16"/>
+      <NavTaskBar type='manager' className="mx-16"/>
+      <NavMsgBar type='portal' className="mr-16"/>
       <a
         href={`//${window.CONFIG.docs_hostname}`}
         target="_blank"

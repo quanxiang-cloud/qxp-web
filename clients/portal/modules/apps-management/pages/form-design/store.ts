@@ -1,5 +1,5 @@
 import { action, observable, reaction, IReactionDisposer, computed } from 'mobx';
-import { UnionColumns } from 'react-table';
+import { UnionColumn } from 'react-table';
 import { values, map } from 'ramda';
 
 import toast from '@lib/toast';
@@ -156,12 +156,12 @@ class FormDesignStore {
     this.destroySetSchema = reaction(() => this.allSchema, this.appPageStore.setSchema);
     this.destroySetFilters = reaction(() => this.filters, this.appPageStore.setFilters);
 
-    this.destroySetTableColumn = reaction((): UnionColumns<any>[] => {
+    this.destroySetTableColumn = reaction((): UnionColumn<any>[] => {
       if (!this.pageTableColumns) {
         return [];
       }
 
-      const column: UnionColumns<any>[] = this.pageTableColumns.map(({ id, width }) => {
+      const column: UnionColumn<any>[] = this.pageTableColumns.map(({ id, width }) => {
         return {
           id,
           Header: { ...this.fieldsMap, ...this.internalFields }[id]?.title || '',

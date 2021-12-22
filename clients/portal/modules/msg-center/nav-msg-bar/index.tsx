@@ -1,18 +1,19 @@
 import React, { useEffect, useRef } from 'react';
 import cs from 'classnames';
 import { observer } from 'mobx-react';
-import msgCenter from '@portal/stores/msg-center';
+import { get } from 'lodash';
 import { useQuery, useQueryClient } from 'react-query';
 
 import { getUnreadMsgCount } from '@portal/modules/msg-center/api';
 import Icon from '@c/icon';
 import Popper from '@c/popper';
-
-import { get } from 'lodash';
-import UnreadMsgBox from '../unread-msg-box';
 import BtnBadge from '@c/btn-badge';
 import pushServer from '@lib/push';
 import { getQuery } from '@portal/utils';
+import msgCenter from '@portal/stores/msg-center';
+
+import UnreadMsgBox from '../unread-msg-box';
+import MsgCenter from '../modal-msg-center';
 
 import styles from './index.module.scss';
 
@@ -48,7 +49,7 @@ const NavMsgBar = ({ type, className }: Props): JSX.Element => {
   };
 
   useEffect(() => {
-    msgCenter.setUnreadTypeCounts(get(countUnreadMsg, 'type_num', []));
+    msgCenter.setUnreadTypeCounts(get(countUnreadMsg, 'typeNum', []));
   }, [countUnreadMsg]);
 
   useEffect(() => {
@@ -119,6 +120,7 @@ const NavMsgBar = ({ type, className }: Props): JSX.Element => {
       >
         {renderUnreadMsgBox()}
       </Popper>
+      <MsgCenter />
     </>
   );
 };

@@ -37,8 +37,8 @@ type Props<T> = {
 interface NavItemProps<T> {
   node: NodeItem<T>;
   level?: number;
-  onSelect?: (node: NodeItem<T>)=> void;
-  onToggle?: (node: NodeItem<T>, expand: boolean)=> void;
+  onSelect?: (node: NodeItem<T>) => void;
+  onToggle?: (node: NodeItem<T>, expand: boolean) => void;
   actions?: (node: NodeItem<T>) => React.ReactNode;
   activeNode?: NodeItem<T>;
   groupBanSelect: boolean

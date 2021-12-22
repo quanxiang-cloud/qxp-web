@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useImperativeHandle, useRef } from 'react';
 import { toJS } from 'mobx';
-import { UnionColumns } from 'react-table';
+import { UnionColumn } from 'react-table';
 
 import PageLoading from '@c/page-loading';
 import AbsoluteCentered from '@c/absolute-centered';
@@ -18,8 +18,10 @@ import { setUserConfig, useGetUserConfig } from '@lib/configuration-center';
 type Props = {
   pageID: string;
   appID: string;
+  appName?: string;
+  pageName?: string;
   tableHeaderBtnList?: TableHeaderBtn[];
-  customColumns?: UnionColumns<any>[];
+  customColumns?: UnionColumn<any>[];
   allowRequestData?: boolean;
   showCheckbox?: boolean;
   className?: string;
@@ -35,7 +37,9 @@ const VERSION = '0.1.0';
 
 function FormAppDataTableWrap({
   pageID,
+  pageName,
   appID,
+  appName,
   tableHeaderBtnList,
   customColumns,
   showCheckbox,
@@ -103,8 +107,10 @@ function FormAppDataTableWrap({
         showCheckbox,
         allowRequestData,
         appID,
+        appName,
         onSelect,
         pageID,
+        pageName,
         defaultSelect,
         canAcrossPageChoose,
         onTableUserConfigChange: (config) => {

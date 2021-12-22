@@ -18,7 +18,7 @@ export type FileUploaderProps = {
   className?: string;
   maxFileSize?: number;
   style?: React.CSSProperties;
-  uploaderDescription?: string;
+  uploaderDescription?: React.ReactNode;
   fileData?: QXPUploadFileBaseProps[];
   onFileDelete?: (file: QXPUploadFileBaseProps) => void;
   onFileSuccess?: (file: QXPUploadFileBaseProps) => void;

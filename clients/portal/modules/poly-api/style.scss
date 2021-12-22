@@ -140,6 +140,7 @@ $nodeTypes: input, request, if, end, default, output;
   .drawer-container {
     width: 100%;
     transition: all .3s ease-in-out;
+    border-radius: 0;
     .drawer-main-content {
       display: flex;
       flex-flow: column nowrap;
