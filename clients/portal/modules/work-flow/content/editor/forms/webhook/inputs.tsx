@@ -49,7 +49,7 @@ function Inputs({ value, onChange, values }: Props): JSX.Element | null {
 
   const sourceGetter = useMemo(() => {
     return webhookPathTreeSourceGetter(tableSchema, data);
-  }, [data, tableSchema]);
+  }, [data]);
 
   useEffect(() => {
     const getInit = (type: 'header' | 'body' | 'query'): Input => ({

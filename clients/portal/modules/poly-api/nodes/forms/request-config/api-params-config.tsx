@@ -127,28 +127,20 @@ function ApiParamsConfig(
                       </div>
                       <Icon className="ml-8" name="arrow_left_alt" />
                     </div>
-                    {customRules.length ? (
-                      <div className="flex flex-col overflow-auto">
-                        <FormulaEditor
-                          help=""
-                          ref={handleSetFormulaRefs(path)}
-                          customRules={customRules}
-                          value={data || ''}
-                          className="node-formula-editor"
-                          onChange={handleFormulaChange(path, name, !!required, data)}
-                          onBlur={handleFormulaBlur(path, name, !!required, data)}
-                        />
-                        {errorsRef.current[path] && changedRef.current[path] && (
-                          <span className="text-red-600 px-3 pb-3">{errorsRef.current[path]}</span>
-                        )}
-                      </div>
-                    ) : (
-                      <input
-                        style={{ border: 'none', outline: 'none', padding: '0 8px' }}
+                    <div className="flex flex-col overflow-auto">
+                      <FormulaEditor
+                        help=""
+                        ref={handleSetFormulaRefs(path)}
+                        customRules={customRules}
                         value={data || ''}
-                        onChange={(e) => handleFormulaChange(path, name, !!required, data)(e.target.value)}
+                        className="node-formula-editor"
+                        onChange={handleFormulaChange(path, name, !!required, data)}
+                        onBlur={handleFormulaBlur(path, name, !!required, data)}
                       />
-                    )}
+                      {errorsRef.current[path] && changedRef.current[path] && (
+                        <span className="text-red-600 px-3 pb-3">{errorsRef.current[path]}</span>
+                      )}
+                    </div>
                   </div>
                 );
               })}

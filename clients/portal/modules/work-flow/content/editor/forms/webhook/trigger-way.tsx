@@ -11,10 +11,11 @@ interface Props {
 
 export default function TriggerWay({ value, onChange, setFormValue }: Props): JSX.Element {
   return (
-    <div>
-      <p className="mt-16 mb-8">触发方式</p>
+    <div className="mb-8">
+      <p className="mt-16 mb-8 text-caption-no-color-weight text-gray-600">触发方式</p>
       <div className="flex items-center justify-between">
         <Checkbox
+          rounded
           label="获取数据"
           checked={value === 'request'}
           value="request"
@@ -24,6 +25,7 @@ export default function TriggerWay({ value, onChange, setFormValue }: Props): JS
           }}
         />
         <Checkbox
+          rounded
           label="推送数据"
           checked={value === 'send'}
           value="send"

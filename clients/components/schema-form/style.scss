@@ -1,6 +1,6 @@
 .schema-form-field {
 
-  label {
+  &>label {
     @apply text-gray-600 text-12 flex;
     margin: 8px 0 !important;
 

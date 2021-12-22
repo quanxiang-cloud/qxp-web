@@ -88,6 +88,7 @@ function ApiSelector(
           options={options}
           loadData={loadData}
           onChange={onChange}
+          placeholder="请选择API"
         />
       </div>
       {apiDocDetail && (

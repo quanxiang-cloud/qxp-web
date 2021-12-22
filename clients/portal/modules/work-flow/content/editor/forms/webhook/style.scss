@@ -5,7 +5,7 @@
     width: 100%;
 
     label {
-      @apply block;
+      @apply block my-8;
 
       &+span {
         @apply w-full;
@@ -21,15 +21,20 @@
 .webhook-request-inputs {
   grid-template-columns: repeat(1, 492fr 240fr);
   @apply relative mt-8;
+
   &>div:first-child {
     padding: 0 8px 0 0;
     background: #fff;
+    &.config-params-container {
+      padding-bottom: 12px;
+    }
     &>div:not(.webhook-send-block) {
       &>div:first-child {
         margin: 8px 0 0 0;
       }
     }
   }
+
   &::before {
     content: '';
     width: calc(100% + 48px);
