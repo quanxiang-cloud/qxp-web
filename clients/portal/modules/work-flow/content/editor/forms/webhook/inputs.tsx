@@ -40,10 +40,10 @@ function Inputs({ value, onChange, values }: Props): JSX.Element | null {
   });
 
   useEffect(() => {
-    if (customRules?.length) {
+    if (customRules?.length || !polyNodePathTreeRef.current) {
       return;
     }
-    const rules = polyNodePathTreeRef.current?.getCustomRules();
+    const rules = polyNodePathTreeRef.current.getCustomRules();
     setCustomRules(rules ?? []);
   }, [customRules, polyNodePathTreeRef.current]);
 
