@@ -13,7 +13,7 @@ type LogoutResponse struct {
 }
 
 // LogoutHandler render logout page
-func LogoutHandler(w http.ResponseWriter, r *http.Request) {
+func doLogout(w http.ResponseWriter, r *http.Request) {
 	token := getToken(r)
 	refreshToken := getRefreshToken(r)
 
@@ -29,9 +29,19 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 		"Access-Token":  token,
 	})
 
-	http.Redirect(w, r, "/", http.StatusFound)
-
 	if errMsg != "" {
 		contexts.Logger.Errorf("send logout request failed: %s, request_id: %s", errMsg, requestID)
 	}
+}
+
+// ToLoginHandler Manually Logout and to the login page
+func ToLoginHandler(w http.ResponseWriter, r *http.Request) {
+	doLogout(w, r);
+	RedirectToLoginPage(w, r, r.Header.Get("Referer"))
+}
+
+// LogoutHandler render logout page
+func LogoutHandler(w http.ResponseWriter, r *http.Request) {
+	doLogout(w, r);
+	http.Redirect(w, r, "/", http.StatusFound)
 }

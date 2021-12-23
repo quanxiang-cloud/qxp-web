@@ -220,9 +220,13 @@ func HasToken(r *http.Request) bool {
 }
 
 // RedirectToLoginPage redirect to login page
-func RedirectToLoginPage(w http.ResponseWriter, r *http.Request) {
+func RedirectToLoginPage(w http.ResponseWriter, r *http.Request, path string) {
 	session := contexts.GetCurrentRequestSession(r)
-	session.Values["redirect_url"] = r.URL.Path
+	if path != "" {
+		session.Values["redirect_url"] = path
+	} else {
+		session.Values["redirect_url"] = r.URL.Path
+	}
 	if err := session.Save(r, w); err != nil {
 		renderErrorPage(w, r, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
 		return
