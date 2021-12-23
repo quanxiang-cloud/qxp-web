@@ -43,7 +43,7 @@ export function webhookPathTreeSourceGetter(
       if (item.data?.type === 'webhook' && currentElementParents.includes(item.id)) {
         return {
           type: 'object',
-          data: item.data.businessData.outputs,
+          data: item.data.businessData.config.outputs ?? [],
           in: '',
           desc: item.data.nodeData.name,
           name: item.id,

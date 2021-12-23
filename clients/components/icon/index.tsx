@@ -1,6 +1,7 @@
 import React, { ForwardedRef } from 'react';
 import cs from 'classnames';
 
+// @ts-ignore
 import svgHash from './svg-hash';
 
 export type iconColor =
