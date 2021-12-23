@@ -8,9 +8,9 @@ import { MsgType } from '@portal/modules/system-mgmt/constants';
 import { getMsgById } from '@portal/modules/system-mgmt/api';
 import Loading from '@c/loading';
 import NotFoundError from '@c/404-error';
+import FileList from '@c/file-upload/file-list';
 
 import Container from '../container';
-import FileList from '../send-message/filelist';
 
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
@@ -31,7 +31,7 @@ const MessageDetails = () => {
 };
 
 function ContentWithoutRef() {
-  const param : { id: string} = useParams();
+  const param: { id: string } = useParams();
 
   const { data: msgDetail, isLoading } = useQuery(
     'GET_MSG_BY_ID',
@@ -39,20 +39,27 @@ function ContentWithoutRef() {
     { refetchOnWindowFocus: false },
   );
 
+  const fileList = msgDetail?.files?.map((item: any) => ({
+    uid: item.url || '',
+    name: item.fileName || '',
+    type: '',
+    size: 0,
+  })) || [];
+
   if (isLoading && !msgDetail) {
     return <Loading desc="数据加载中..." />;
   }
 
   if (!isLoading && !msgDetail) {
-    return <NotFoundError url='/'/>;
+    return <NotFoundError url='/' />;
   }
 
-  const { recivers = [] }: any = msgDetail;
+  const { receivers = [] }: any = msgDetail;
 
   let txt = '';
-  if (msgDetail?.sort === MsgType.notify) {
+  if (msgDetail?.types === MsgType.notify) {
     txt = '通知公告';
-  } else if (msgDetail?.sort === MsgType.system) {
+  } else if (msgDetail?.types === MsgType.system) {
     txt = '系统消息';
   } else {
     txt = '未知消息类型';
@@ -77,34 +84,30 @@ function ContentWithoutRef() {
             </div>
             <div className='mb-50' dangerouslySetInnerHTML={{ __html: msgDetail?.content as any }} />
             <FileList
-              candownload={true}
-              files={(msgDetail?.mes_attachment || [])}
-              hideProgress
-              isPreview={true}
-              canMultiDownload={true}
-              messageTitle={msgDetail?.title}
+              files={fileList}
+              canDownload={true}
             />
           </div>
           <div className='message-detail-footer'>
             <ul>
               <li>发送时间:<span>{dayjs().format('YYYY-MM-DD HH:mm:ss')}</span></li>
-              <li>操作人:<span>{msgDetail?.handle_name}</span></li>
+              <li>操作人:<span>{msgDetail?.creatorName}</span></li>
               <li>消息类型: <span>{txt}</span></li>
               <li>
                 发送结果:
                 <span>
-                  共 {msgDetail?.send_num}人，发送失败 {msgDetail?.fail} 人，发送成功 {msgDetail?.send_num} 人
+                  共 {msgDetail?.sendNum}人，发送失败 {msgDetail?.fail} 人，发送成功 {msgDetail?.sendNum} 人
                 </span>
               </li>
               <li>
                 发送范围:
                 <span>
-                  {recivers?.type}
-                  {recivers && recivers.map((reciver: { id: string; type: 1 | 2; name: string }) => (<Person
-                    className={`${reciver.type === 2 ? 'isDep' : 'isPerson'} `}
-                    key={reciver.id}
+                  {receivers?.type}
+                  {receivers && receivers.map((receiver: { id: string; type: 1 | 2; name: string }) => (<Person
+                    className={`${receiver.type === 2 ? 'isDep' : 'isPerson'} `}
+                    key={receiver.id}
                   >
-                    <span>{reciver.name}</span>
+                    <span>{receiver.name}</span>
                   </Person>))
                   }
                 </span>

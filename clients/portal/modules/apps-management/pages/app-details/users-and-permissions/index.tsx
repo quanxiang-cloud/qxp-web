@@ -9,7 +9,6 @@ import toast from '@lib/toast';
 import Search from '@c/search';
 import Popper from '@c/popper';
 import MoreMenu from '@c/more-menu';
-import { getQuery } from '@lib/utils';
 import TwoLevelMenu from '@c/two-level-menu';
 
 import EditRightModal from './edit-right-modal';
@@ -34,7 +33,6 @@ function UsersAndPermissions(): JSX.Element {
   const [tabCurrentKey, setTabCurrentKey] = useState('associate');
   const [showDeleteRightModal, setShowDeleteRightModal] = useState(false);
   const { appID } = useParams<AppParams>();
-  const { id } = getQuery<{ id: string }>();
   const reference = React.useRef<Element>(null);
   const popperRef = React.useRef<Popper>(null);
 

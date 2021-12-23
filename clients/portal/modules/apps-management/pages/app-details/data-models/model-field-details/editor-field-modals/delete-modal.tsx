@@ -7,7 +7,7 @@ type Props ={
   delConfirm: () => void;
 }
 
-function DeleteFieldModal({ onClose, delConfirm }: Props):JSX.Element {
+function DeleteFieldModal({ onClose, delConfirm }: Props): JSX.Element {
   return (
     <Modal
       title="提示"

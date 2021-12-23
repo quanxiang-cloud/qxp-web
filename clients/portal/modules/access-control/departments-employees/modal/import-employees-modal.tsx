@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation } from 'react-query';
-import { UnionColumns } from 'react-table';
+import { UnionColumn } from 'react-table';
 
 import { FilePicker, FileList } from '@c/file-upload';
 import { isMacosX } from '@lib/utils';
@@ -14,7 +14,7 @@ import { FileUploadStatus } from '../type';
 import { exportEmployeesFail } from '../utils';
 import { getUserTemplate, importTempFile, resetUserPWD } from '../api';
 
-const columns: UnionColumns<any>[] = [
+const columns: UnionColumn<any>[] = [
   {
     Header: '姓名',
     id: 'userName',

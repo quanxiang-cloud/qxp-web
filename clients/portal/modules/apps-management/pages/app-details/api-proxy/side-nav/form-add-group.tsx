@@ -7,7 +7,7 @@ import { FormItem, ErrorMsg } from '../comps/form';
 interface Props {
   form: UseFormReturn,
   className?: string;
-  onSubmit?: (formData: any)=> void;
+  onSubmit?: (formData: any) => void;
   isEdit?: boolean;
   defaultValues?: Record<string, any>;
 }

@@ -43,7 +43,7 @@ function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
     }
 
     setCheckedValues(
-      fieldProps.value.reduce((acc: string[], option:string) => {
+      fieldProps.value.reduce((acc: string[], option: string) => {
         if (options.includes(option)) {
           return [...acc, option];
         }
@@ -64,7 +64,7 @@ function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
     return customValues.map((value, index) => `${CUSTOM_OTHER_VALUE}_${index}`);
   }, [customValues.length]);
 
-  function getRealValue(values:string[]):string[] {
+  function getRealValue(values: string[]): string[] {
     return values.reduce((acc: string[], option: string) => {
       if (options.includes(option)) {
         return [...acc, option];
@@ -83,12 +83,12 @@ function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
     setCheckedValues((value as string[]));
   }
 
-  function handleCustomValuesChange(e: React.ChangeEvent<HTMLInputElement>, index:number): void {
+  function handleCustomValuesChange(e: React.ChangeEvent<HTMLInputElement>, index: number): void {
     customValues[index] = e.target.value;
     setCustomValues([...customValues]);
   }
 
-  function handleCustomValuesAdd():void {
+  function handleCustomValuesAdd(): void {
     if (customValues.length > 2) {
       toast.error('自定义项不可超过三项');
       return;
@@ -97,7 +97,7 @@ function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
     setCustomValues([...customValues, '']);
   }
 
-  function handleBlur(index:number):void {
+  function handleBlur(index: number): void {
     const value = customValues[index];
     if (value === '') {
       fieldProps?.mutators?.change(

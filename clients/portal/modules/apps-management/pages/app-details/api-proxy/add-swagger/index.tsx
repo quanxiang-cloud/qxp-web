@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import cs from 'classnames';
-import { UnionColumns } from 'react-table';
+import { UnionColumn } from 'react-table';
 import { useHistory, useParams } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import { useMutation } from 'react-query';
@@ -52,7 +52,7 @@ function AddSwagger(): JSX.Element {
     },
   });
 
-  const COLS: UnionColumns<any>[] = [
+  const COLS: UnionColumn<any>[] = [
     {
       Header: 'API 名称',
       id: 'name',

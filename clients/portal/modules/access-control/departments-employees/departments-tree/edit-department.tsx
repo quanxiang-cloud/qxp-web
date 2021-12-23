@@ -69,10 +69,6 @@ function EditDepartment({ department, closeModal }: Props): JSX.Element {
     });
   }
 
-  if (isLoading || !depData) {
-    return <Loading desc="加载中..." />;
-  }
-
   return (
     <Modal
       title={title}
@@ -94,52 +90,56 @@ function EditDepartment({ department, closeModal }: Props): JSX.Element {
         },
       ]}
     >
-      <Form
-        className="p-20"
-        layout="vertical"
-        form={form}
-        onFinish={handleFinish}
-        initialValues={{
-          departmentName: department.departmentName,
-          pid: department.pid,
-        }}
-      >
-        <Form.Item
-          name="departmentName"
-          label="部门名称"
-          extra={HELP_TEXT_NORMAL}
-          rules={[
-            { required: true, message: '请输入部门名称' },
-            { type: 'string', max: 30, message: HELP_TEXT_NORMAL },
-            { validator: (_, value) => {
-              const departmentName = value && value.trim();
-              const reg = /^[\u4e00-\u9fa5A-Za-z0-9-_]+$/g;
-              if (departmentName && !reg.test(departmentName)) {
-                return Promise.reject(new Error(HELP_TEXT_REG_ERROR));
-              }
-              return Promise.resolve();
-            } },
-          ]}
+      {isLoading ? (
+        <Loading desc="加载中..." />
+      ) : (
+        <Form
+          className="p-20"
+          layout="vertical"
+          form={form}
+          onFinish={handleFinish}
+          initialValues={{
+            departmentName: department.departmentName,
+            pid: department.pid,
+          }}
         >
-          <Input maxLength={30} placeholder="请输入部门名称" />
-        </Form.Item>
-        {
-          depData && (
-            <Form.Item
-              name="pid"
-              label="部门"
-              rules={[
-                { required: true, message: '请选择部门' },
-              ]}
-            >
-              <DepartmentPicker
-                treeData={departmentToTreeNode(depData as Department)}
-                labelKey="departmentName"
-              />
-            </Form.Item>
-          )
-        }
-      </Form>
+          <Form.Item
+            name="departmentName"
+            label="部门名称"
+            extra={HELP_TEXT_NORMAL}
+            rules={[
+              { required: true, message: '请输入部门名称' },
+              { type: 'string', max: 30, message: HELP_TEXT_NORMAL },
+              { validator: (_, value) => {
+                const departmentName = value && value.trim();
+                const reg = /^[\u4e00-\u9fa5A-Za-z0-9-_]+$/g;
+                if (departmentName && !reg.test(departmentName)) {
+                  return Promise.reject(new Error(HELP_TEXT_REG_ERROR));
+                }
+                return Promise.resolve();
+              } },
+            ]}
+          >
+            <Input maxLength={30} placeholder="请输入部门名称" />
+          </Form.Item>
+          {
+            depData && (
+              <Form.Item
+                name="pid"
+                label="部门"
+                rules={[
+                  { required: true, message: '请选择部门' },
+                ]}
+              >
+                <DepartmentPicker
+                  treeData={departmentToTreeNode(depData as Department)}
+                  labelKey="departmentName"
+                />
+              </Form.Item>
+            )
+          }
+        </Form>
+      )}
     </Modal>
   );
 }

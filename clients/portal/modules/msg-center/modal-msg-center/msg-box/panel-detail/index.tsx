@@ -7,7 +7,7 @@ import NoMsg from '../no-msg';
 import msgCenter from '@portal/stores/msg-center';
 
 const PanelDetail = () => {
-  let messageDetail:any = {};
+  let messageDetail: any = {};
   const { loadingDetail } = msgCenter;
 
   if (loadingDetail) return <Loading />;

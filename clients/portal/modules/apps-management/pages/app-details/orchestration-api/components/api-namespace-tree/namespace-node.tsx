@@ -138,12 +138,12 @@ function NamespaceNode({ node, store, keyword }: Props): JSX.Element | null {
   return (
     <div
       onClick={handleClick}
-      className="transition-all pr-10 py-8 w-full flex items-center justify-between"
+      className="transition-all pr-10 py-8 w-full flex items-center justify-between ml-2"
     >
       <div className="flex items-center">
         {node.expanded ?
-          (<Icon name="folder_open" size={20} />) :
-          (<Icon name="folder_outline_empty" size={20} />)
+          (<Icon name="folder_open" size={16} />) :
+          (<Icon name="folder_outline_empty" size={16} />)
         }
         <div className='truncate tree-node__content--title ml-5' title={node.name}>
           {keyword ? (

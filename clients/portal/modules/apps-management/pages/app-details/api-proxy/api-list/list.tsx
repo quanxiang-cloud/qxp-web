@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
-import { UnionColumns } from 'react-table';
+import { UnionColumn } from 'react-table';
 import { observer } from 'mobx-react';
 import { Switch } from 'antd';
 import { useDebounce, useUpdateEffect } from 'react-use';
@@ -34,7 +34,7 @@ function ApiList(): JSX.Element {
   const [curRow, setCurRow] = useState<PolyAPI.Api | null>(null);
   const [debouncedSearch, setDebouncedSearch] = useState('');
 
-  const COLS: UnionColumns<PolyAPI.Api>[] = [
+  const COLS: UnionColumn<PolyAPI.Api>[] = [
     {
       Header: 'API 名称',
       id: 'title',

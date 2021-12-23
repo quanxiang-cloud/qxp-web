@@ -1,7 +1,7 @@
 import React from 'react';
 import cs from 'classnames';
 import { Input } from 'antd';
-import { UnionColumns } from 'react-table';
+import { UnionColumn } from 'react-table';
 import { observer } from 'mobx-react';
 import dayjs from 'dayjs';
 
@@ -27,7 +27,7 @@ const { TextArea } = Input;
 function DataList(): JSX.Element {
   const { setModalType, updateFuncDesc } = store;
 
-  const COLUMNS: UnionColumns<FuncField>[] = [
+  const COLUMNS: UnionColumn<FuncField>[] = [
     {
       Header: '名称',
       id: 'alias',

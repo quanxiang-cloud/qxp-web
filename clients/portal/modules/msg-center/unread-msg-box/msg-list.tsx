@@ -1,18 +1,19 @@
 import React from 'react';
 import cs from 'classnames';
 import { useQuery } from 'react-query';
+
 import { getMessageList } from '@portal/modules/msg-center/api';
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
-import MsgItem from '../msg-item';
 import { MsgReadStatus } from '@portal/modules/system-mgmt/constants';
 // import {default as mockMsgList} from '@portal/mock/mock-msg-list';
+import MsgItem from '../msg-item';
 
 import styles from './index.module.scss';
 
 interface Props {
   className?: string;
-  getMsgDetail?: (obj?: any)=> void;
+  getMsgDetail?: (obj?: any) => void;
 }
 
 const NoMsg = () => (
@@ -55,7 +56,7 @@ const MsgList = ({ className, getMsgDetail }: Props): JSX.Element => {
   };
 
   const { isLoading, isError, data } = useQuery(['unread-messages', {
-    read_status: MsgReadStatus.unread,
+    readStatus: MsgReadStatus.unread,
     page: 1,
     limit: 5,
   }], getMessageList, {
@@ -69,7 +70,7 @@ const MsgList = ({ className, getMsgDetail }: Props): JSX.Element => {
     return <ErrorTips desc='获取数据失败' />;
   }
 
-  const msgList = data?.mes_list || [];
+  const msgList = data?.list || [];
   return (
     <div className={cs(styles.msgList, className)}>
       {renderMain(msgList)}

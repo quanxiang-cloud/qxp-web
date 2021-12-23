@@ -1,13 +1,20 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { observer } from 'mobx-react';
 import { isObject } from 'lodash';
+import cs from 'classnames';
 
 import Search from '@c/search';
 import TwoLevelMenu, { NodeItem } from '@c/two-level-menu';
 
 import store, { mapNsToNodeItem } from './store';
 
-function DocumentNav(): JSX.Element {
+interface Props {
+  className?: string;
+  hideTitle?: boolean;
+  onSelectNode?: (node: NodeItem<any>) => void;
+}
+
+function DocumentNav(props: Props): JSX.Element {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -72,8 +79,8 @@ function DocumentNav(): JSX.Element {
   }, [store.dataModels, store.apiNsList]);
 
   return (
-    <div className='api-doc-details-nav rounded-tl-12 flex flex-col'>
-      <div className='h-44 text-gray-400 text-14 font-semibold flex items-center pl-16'>API文档</div>
+    <div className={cs('api-doc-details-nav rounded-tl-12 flex flex-col', props.className)}>
+      {!props.hideTitle && <div className='h-44 text-gray-400 text-14 font-semibold flex items-center pl-16'>API文档</div>}
       <Search
         className="mx-8 mb-8 text-12"
         placeholder="输入目录名称..."
@@ -100,6 +107,10 @@ function DocumentNav(): JSX.Element {
               if (!node.hasChild && !node.apisResolved && node.type === 'group') {
                 store.fetchNsApis(node);
               }
+            }
+
+            if (node.type === 'leaf') {
+              props.onSelectNode && props.onSelectNode(node);
             }
           }}
         />

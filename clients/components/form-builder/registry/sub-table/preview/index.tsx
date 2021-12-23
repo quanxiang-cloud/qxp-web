@@ -108,12 +108,12 @@ function SubTable({
         ...componentPropsInternal,
         'x-component-props': componentProps,
         'x-internal': componentPropsInternal,
-        readOnly: !!(props.readOnly ?? sc.readOnly),
+        readOnly: props.readOnly || !!sc.readOnly,
       },
       schema: { ...sc, 'x-internal': { ...sc?.['x-internal'], parentFieldId: name } },
       dataSource,
       required: !!sc?.required,
-      readOnly: !!(props.readOnly ?? sc.readOnly),
+      readOnly: props.readOnly || !!sc.readOnly,
       rules: schemaRulesTransform(sc),
       render: (value: any) => {
         if (isEmpty(value)) {

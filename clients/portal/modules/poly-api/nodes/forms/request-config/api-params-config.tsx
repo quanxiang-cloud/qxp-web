@@ -114,7 +114,7 @@ function ApiParamsConfig(
                 return (
                   <div
                     key={path}
-                    className="flex justify-between"
+                    className="flex justify-between bg-white text-12"
                     onClick={handleSetCurrentFormulaRef(path)}
                   >
                     <div className="flex items-center justify-between w-142 p-8 flex-3 border-r-1">

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import dayjs from 'dayjs';
-import { UnionColumns } from 'react-table';
+import { UnionColumn } from 'react-table';
 import { observer } from 'mobx-react';
 import { FormInstance } from 'antd/es/form';
 import { Switch } from 'antd';
@@ -135,7 +135,7 @@ function ApiKeys(): JSX.Element {
     setPageParams({ ...pageParams, page: current, limit: pageSize });
   }
 
-  const COLS: UnionColumns<any>[] = [
+  const COLS: UnionColumn<any>[] = [
     {
       Header: '密钥ID',
       id: 'id',

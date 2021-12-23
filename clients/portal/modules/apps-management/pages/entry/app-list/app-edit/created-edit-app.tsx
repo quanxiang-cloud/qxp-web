@@ -2,17 +2,21 @@ import React from 'react';
 import { toJS } from 'mobx';
 import { Form, Input } from 'antd';
 
+import AppZipUpload from './app-zip-upload';
 import AppIconPicker from './app-icon-picker';
+
+import './style.scss';
 
 const DISABLE_SPECIAL_SYMBOL_REG = /[#$@^&=`'":;,.~¥-。、（）「」·“”；：？，《》【】+/\\()<>{}[\] ]/gi;
 
 type Props = {
   className?: string;
   appInfo?: AppInfo;
+  modalType: string;
   onSubmitCallback?: () => void;
 }
 
-function CreatedEditApp({ appInfo, className, onSubmitCallback }: Props, ref?: any): JSX.Element {
+function CreatedEditApp({ appInfo, modalType, className, onSubmitCallback }: Props, ref?: any): JSX.Element {
   const [form] = Form.useForm();
 
   function handleFinish(): void {
@@ -99,6 +103,14 @@ function CreatedEditApp({ appInfo, className, onSubmitCallback }: Props, ref?: a
       >
         <AppIconPicker />
       </Form.Item>
+      {modalType === 'importApp' && (
+        <Form.Item
+          name="appZipInfo"
+          label="上传应用"
+        >
+          <AppZipUpload />
+        </Form.Item>
+      )}
     </Form>
   );
 }

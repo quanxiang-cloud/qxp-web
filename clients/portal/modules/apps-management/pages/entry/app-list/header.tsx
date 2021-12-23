@@ -40,7 +40,7 @@ function Header({ changeParams, params, setModalType, countMaps }: Props) {
     }
   };
 
-  const clear = (val:string) => {
+  const clear = (val: string) => {
     if (val === '') {
       changeParams({ appName: '' });
     }
@@ -48,9 +48,14 @@ function Header({ changeParams, params, setModalType, countMaps }: Props) {
 
   return (
     <div className='app-filter-column'>
-      <Button onClick={() => setModalType('CreatedApp')} modifier='primary' iconName="add">
-        新建应用
-      </Button>
+      <div>
+        <Button onClick={() => setModalType('createdApp')} modifier='primary' iconName="add">
+          新建应用
+        </Button>
+        <Button onClick={() => setModalType('importApp')} className="ml-8" iconName="download">
+          导入应用
+        </Button>
+      </div>
       <div className="flex">
         <RadioButtonGroup
           radioBtnClass="min-w-120"

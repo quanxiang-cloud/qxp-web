@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import { useTitle } from 'react-use';
 
 import TextHeader from '@c/text-header';
+import { useTaskComplete } from '@c/task-lists/utils';
 
 import CreatedAppModal from './app-edit/created-app-modal';
 import Header from './header';
@@ -16,15 +17,22 @@ function MyApp(): JSX.Element {
 
   useTitle('应用管理 - 我的应用');
 
+  useTaskComplete('refresh-app-list', (socketData) => {
+    if (socketData.content.command === 'appImport') {
+      store.changeParams({});
+    }
+  });
+
   useEffect(() => {
     store.changeParams({});
+
     return () => {
       store.isListLoading = true;
     };
   }, []);
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="my-apps">
       <TextHeader
         title="我的应用"
         desc="一个应用是由若干表单、流程表单、报表、自定义页面组成的业务管理系统。"
@@ -33,17 +41,19 @@ function MyApp(): JSX.Element {
         itemTitleClassName="text-h5"
       />
       <Header
+        params={params}
         countMaps={countMaps}
         setModalType={setModalType}
         changeParams={changeParams}
-        params={params}
       />
       <AppList
-        openCreatedModal={() => setModalType('CreatedApp')}
-        isLoading={isListLoading}
         appList={appList}
+        isLoading={isListLoading}
+        openCreatedModal={() => setModalType('createdApp')}
       />
-      {modalType === 'CreatedApp' && (<CreatedAppModal onCancel={() => setModalType('')} />)}
+      {['createdApp', 'importApp'].includes(modalType) && (
+        <CreatedAppModal modalType={modalType} onCancel={() => setModalType('')} />
+      )}
     </div>
   );
 }

@@ -4,9 +4,11 @@
   height: 44px;
 
   &-page {
-    width: 28px;
+    min-width: 28px;
     height: 28px;
     font-size: 12px;
+    padding-left: 10px;
+    padding-right: 10px;
     display: flex;
     align-items: center;
     justify-content: center;

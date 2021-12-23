@@ -11,6 +11,7 @@
 @import "./typography.css";
 @import "./border.css";
 @import "./btn.css";
+@import "./checkbox.css";
 
 /* todo delete this */
 .right-content-container {

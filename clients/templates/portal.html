@@ -18,6 +18,11 @@
     window.__verbose_log__ = {{ .debugMode }}
     window.TENANT_CONFIG = {{ .userStyleGuideConfig }}
     window.SIDE = 'portal';
+
+    // fixme: react throw process not defined
+    if (!window.process) {
+      window.process = { env: { NODE_ENV: {{if .debugMode}}'development'{{else}}'production'{{end}} } }
+    }
   </script>
   {{template "_jsEntry" .}}
 </body>
