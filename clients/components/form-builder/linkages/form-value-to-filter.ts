@@ -14,13 +14,22 @@ type LinkedFilterConfig = {
   targetFields: string[];
 }
 
+function getFieldRealPath(path: string, rowIdxStr: string): string {
+  if (!rowIdxStr) {
+    return path;
+  }
+
+  return path?.replace('*', rowIdxStr.toString());
+}
+
 function getNewCondition(
   initConditions: Condition[],
   getFieldValue: (path: string) => any,
-  rowNum: number,
+  rowIdxStr: string,
 ): Condition[] {
   return initConditions.reduce((acc, conditionItem) => {
-    const value = getFieldValue(conditionItem.path?.replace('*', rowNum.toString()) || '');
+    const value = getFieldValue(getFieldRealPath(conditionItem.path || '', rowIdxStr));
+
     if (
       conditionItem.valueFrom === 'form' && value
     ) {
@@ -77,14 +86,16 @@ export default function formValueToFilter(
 
   function setFilterConfig(name: string, field: string): void {
     const xComp = getXComp(field, schema);
+
     if (xComp) {
-      const [match] = /(?<=\.).*?(?=\.)/.exec(name) || [];
-      setFieldState(field.replace('*', match), (state) => {
+      const rowIdxStr = name.match(/\.(\S*?)\./)?.[1] || '';
+
+      setFieldState(getFieldRealPath(field, rowIdxStr), (state) => {
         set(state, 'props.x-component-props', {
           ...xComp,
           filterConfig: {
             ...xComp.filterConfig,
-            condition: getNewCondition(xComp.filterConfig.condition, getFieldValue, Number(match)),
+            condition: getNewCondition(xComp.filterConfig.condition, getFieldValue, rowIdxStr),
           },
         });
       });
