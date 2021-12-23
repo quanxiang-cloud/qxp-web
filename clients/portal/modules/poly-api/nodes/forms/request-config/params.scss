@@ -8,7 +8,7 @@
   }
 
   .config-param {
-    @apply border-1 rounded-8 border-gray-200;
+    @apply border-1 rounded-8 border-gray-200 overflow-hidden;
 
     &>div {
       @apply border-b-1;

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { ForwardedRef } from 'react';
 import cs from 'classnames';
-// @ts-ignore
+
 import svgHash from './svg-hash';
 
 export type iconColor =
@@ -27,7 +27,7 @@ function Icon(
     style,
     ...props
   }: Props,
-  ref?: React.Ref<SVGSVGElement>,
+  ref?: ForwardedRef<SVGSVGElement>,
 ): JSX.Element {
   const _style: React.CSSProperties = {
     ...style,
@@ -53,4 +53,4 @@ function Icon(
   );
 }
 
-export default React.forwardRef(Icon);
+export default React.forwardRef<SVGSVGElement, Props>(Icon);

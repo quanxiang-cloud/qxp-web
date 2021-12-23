@@ -448,9 +448,9 @@ export type FieldOperatorOptions = {
 }[]
 
 export type WebhookData = {
-  type: 'request', config: RequestConfig, outputs: Input[]
+  type: 'request', config: RequestConfig
 } | {
-  type: 'send', config: SendConfig, outputs: Input[]
+  type: 'send', config: SendConfig
 };
 export interface Input {
   // 只有当 type 为 string | number | boolean 时, data 才为 string | null
@@ -485,4 +485,5 @@ export interface SendConfig {
   method: 'POST' | 'GET' | 'PUT' | 'DELETE'; // 手动选择
   contentType: 'application/json',
   inputs: Input[]; // 用户自定义的输入, 自定义 url 应该没有 outputs?
+  outputs: undefined;
 }

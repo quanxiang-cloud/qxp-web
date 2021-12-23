@@ -44,3 +44,29 @@
     @apply absolute top-0;
   }
 }
+
+.outputs-header {
+  &:not(:nth-child(3)) {
+    @apply border-r-1 border-b-1;
+  }
+
+  &:nth-child(3) {
+    @apply border-b-1;
+  }
+}
+
+.outputs-body {
+  &:not(:nth-child(3n)) {
+    @apply border-r-1 border-b-1;
+  }
+
+  &:nth-child(3n) {
+    @apply border-b-1;
+  }
+
+  &:nth-last-child(1),
+  &:nth-last-child(2),
+  &:nth-last-child(3) {
+    border-bottom: none;
+  }
+}

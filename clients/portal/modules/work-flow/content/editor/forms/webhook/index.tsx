@@ -5,12 +5,14 @@ import SaveButtonGroup from '@flow/content/editor/components/_common/action-save
 
 import SchemaForm from '@c/schema-form';
 import type { SchemaFormSchema } from '@c/schema-form/type';
+import { Input, WebhookData, RequestConfig, SendConfig } from '@flow/content/editor/type';
+import withDragResize from '@lib/hoc/with-drag-resize';
 
-import { WebhookData, RequestConfig, SendConfig } from '../../type';
 import TriggerWay from './trigger-way';
 import API from './api';
 import Inputs from './inputs';
 import ContentType from './content-type';
+import Outputs from './outputs';
 
 import './style.scss';
 
@@ -24,10 +26,22 @@ type Props = {
   defaultValue: WebhookData;
 }
 
+const ResizableOutputs = withDragResize(Outputs, {
+  position: 'top',
+  minHeight: 38,
+  className: 'absolute left-0 right-0 bottom-64 px-20 transition-all duration-240 bg-white border-t-1 z-10',
+  style: {
+    borderBottomLeftRadius: 0,
+    borderTopLeftRadius: 0,
+    maxHeight: '93%',
+  },
+});
+
 export default function WebhookConfig(
   { onCancel, onSubmit, onChange, defaultValue }: Props,
 ): JSX.Element | null {
   const formRef = useRef<HTMLFormElement>(null);
+  const outputsRef = useRef<Input[]>(defaultValue.config.outputs ?? []);
 
   function onSave(): void {
     formRef.current?.submit();
@@ -89,6 +103,7 @@ export default function WebhookConfig(
   }, []);
 
   const handleChange = useCallback(({ type, ...config }) => {
+    outputsRef.current = config.outputs;
     onChange({
       type: type,
       config: type === 'request' ? config : { ...omit(['sendUrl'], config), url: config.sendUrl },
@@ -110,6 +125,7 @@ export default function WebhookConfig(
         schema={schema}
         className="h-full flex flex-col"
       />
+      <ResizableOutputs value={outputsRef.current} />
       <SaveButtonGroup onSave={onSave} onCancel={onCancel} />
     </>
   );
