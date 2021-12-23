@@ -18,7 +18,7 @@ export const createdApp = async (data: AppInfo): Promise<CreatedAppRes> => {
 };
 
 export const importApp = async (data: AppInfo): Promise<CreatedAppRes> => {
-  return await httpClient('api/v1/app-center/importApp', data);
+  return await httpClient('/api/v1/app-center/importApp', data);
 };
 
 export const createImportAppTask = async (data: AppZipInfo): Promise<CreateTaskRes> => {

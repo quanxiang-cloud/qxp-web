@@ -66,7 +66,7 @@ declare namespace Qxp {
     contents: Content
     files?: File,
     recivers?: Array<MsgReceiver>,
-    types?:number
+    types?: number
   }
 
   interface File {
@@ -86,7 +86,7 @@ declare namespace Qxp {
     fail?: number;
     success?: number;
     types?: number;
-    sendNum?:number;
+    sendNum?: number;
     creatorName?: string,
     files?: Array<File>,
   }
@@ -123,14 +123,29 @@ declare namespace Qxp {
     createdAt: number;
     finishAt: number;
     result: {
-      path: {fileName: string, url: string}[],
+      path: { fileName: string, url: string }[],
       title: string
     };
-    value: {appID: string, tableID: string}
+    value: { appID: string, tableID: string }
     ratio: number;
   }
 
-  interface FileInfo{
+  interface TaskItem {
+    id: string;
+    title: string;
+    status: number;
+    command: string;
+    createdAt: number;
+    finishAt: number;
+    result: {
+      path: { fileName: string, url: string }[],
+      title: string
+    };
+    value: { appID: string, tableID: string }
+    ratio: number;
+  }
+
+  interface FileInfo {
     filename: string
     url: string
   }

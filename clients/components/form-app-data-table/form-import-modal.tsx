@@ -20,21 +20,25 @@ function ImportFormModal({ onClose }: Props): JSX.Element {
   const [fileDetail, setfFleDetail] = useState<QXPUploadFileTask | undefined>(undefined);
 
   async function handSubmit(): Promise<void> {
-    importForm({
-      opt: 'minio',
-      addr: fileDetail?.uid || '',
-      size: fileDetail?.size || 0,
-      value: {
-        appID: store.appID,
-        tableID: store.pageID,
-      },
-      title: `【${store.appName}-${store.pageName}】表单数据导入 `,
-    }).then((taskID) => {
-      subscribeStatusChange(taskID);
-      onClose();
-      toast.success('正在导入，请在右上方 “同步列表” 中查看导出结果');
+    try {
+      const taskID = await importForm({
+        opt: 'minio',
+        addr: fileDetail?.uid || '',
+        size: fileDetail?.size || 0,
+        value: {
+          appID: store.appID,
+          tableID: store.pageID,
+        },
+        title: `【${store.appName}-${store.pageName}】表单数据导入 `,
+      });
+
+      const isFinish = await subscribeStatusChange(taskID, '导入');
+      isFinish && store.setParams({});
       setfFleDetail(undefined);
-    }).catch((err) => toast.error(err));
+      onClose();
+    } catch (err) {
+      toast.error(err);
+    }
   }
 
   function getTemplate(): void {
@@ -44,6 +48,15 @@ function ImportFormModal({ onClose }: Props): JSX.Element {
     }).then((taskID) => {
       getTaskDetail(taskID).then((res) => multipledownloadFile(res.result.path));
     });
+  }
+
+  function UploadDescription(): JSX.Element {
+    return (
+      <>
+        <div className="my-4">点击或拖拽文件到此区域</div>
+        <div className="text-gray-400">支持 10MB 以内的 csv 文件</div>
+      </>
+    );
   }
 
   return (
@@ -74,14 +87,14 @@ function ImportFormModal({ onClose }: Props): JSX.Element {
           </span>
         </div>
         <FileUploader
-          className='px-40'
-          uploaderDescription='点击或拖拽文件到此区域'
+          className='px-40 app-upload'
+          uploaderDescription={<UploadDescription/>}
           accept={[
             '.csv',
             // 'application/vnd.ms-excel',
             // 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
           ]}
-          onFileSuccess={(fileDetail: QXPUploadFileTask) =>setfFleDetail(fileDetail)}
+          onFileSuccess={(fileDetail: QXPUploadFileTask) => setfFleDetail(fileDetail)}
         />
         <p className="mt-12 select-none px-40 text-12">
           1.请先下载

@@ -3,6 +3,7 @@ import cs from 'classnames';
 import { observer } from 'mobx-react';
 
 import FormAppDataTable from '@c/form-app-data-table';
+import { useTaskComplete } from '@c/task-lists/utils';
 import { Ref, TableHeaderBtn } from '@c/form-app-data-table/type';
 import PopConfirm from '@c/pop-confirm';
 import PageLoading from '@c/page-loading';
@@ -27,6 +28,12 @@ function PageDetails(): JSX.Element | null {
   useEffect(() => {
     handleCancel();
   }, [curPage]);
+
+  useTaskComplete('refresh-form-data-list', (socketData) => {
+    if (socketData.content.command === 'formImport') {
+      formTableRef.current?.refresh();
+    }
+  });
 
   const goEdit = (rowID: string): void => {
     setCurRowID(rowID);
@@ -130,7 +137,7 @@ function PageDetails(): JSX.Element | null {
       );
     } else if (menuType === MenuType.schemaPage) {
       return (
-        <SchemaPage appId={store.appID} pageId={store.pageID} convertor={toRenderSchema}/>
+        <SchemaPage appId={store.appID} pageId={store.pageID} convertor={toRenderSchema} />
       );
     } else {
       if (fetchSchemeLoading) {

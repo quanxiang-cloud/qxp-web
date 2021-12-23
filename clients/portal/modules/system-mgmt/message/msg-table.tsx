@@ -165,7 +165,7 @@ const MsgTable = ({ refresh }: Props): JSX.Element => {
     getMsgById(modifyModal.id)
       .then((response: any) => {
         const { receivers, files } = response;
-        const fileList = files.map((item:any) => (
+        const fileList = files.map((item: any) => (
           {
             uid: item.url,
             name: item.fileName,
