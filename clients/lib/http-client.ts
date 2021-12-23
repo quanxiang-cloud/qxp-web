@@ -28,6 +28,12 @@ async function httpClient<TData, TBody = unknown>(
     headers,
   });
 
+  const { code, msg, data } = await response.json();
+  if (response.redirected) {
+    window.location.replace(response.url);
+    return data as TData;
+  }
+
   if (response.status === 401) {
     if (!alreadyAlertUnauthorizedError) {
       alreadyAlertUnauthorizedError = true;
@@ -42,7 +48,6 @@ async function httpClient<TData, TBody = unknown>(
     return Promise.reject(new Error('请求失败!'));
   }
 
-  const { code, msg, data } = await response.json();
   if (code !== 0) {
     const e = new Error(msg);
     if (data) {
