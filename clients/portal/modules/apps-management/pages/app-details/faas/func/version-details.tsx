@@ -132,7 +132,7 @@ function VersionDetails(): JSX.Element {
                   className="flex flex-col"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <div className="text-body2 text-gray-600 mb-8">描述</div>
+                  <div className="text-gray-600 mb-8">描述</div>
                   <TextArea
                     name="name"
                     defaultValue={des}
