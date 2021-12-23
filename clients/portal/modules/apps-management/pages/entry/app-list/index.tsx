@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import { useTitle } from 'react-use';
 
 import TextHeader from '@c/text-header';
+import { useTaskComplete } from '@c/task-lists/utils';
 
 import CreatedAppModal from './app-edit/created-app-modal';
 import Header from './header';
@@ -16,8 +17,15 @@ function MyApp(): JSX.Element {
 
   useTitle('应用管理 - 我的应用');
 
+  useTaskComplete('refresh-app-list', (socketData) => {
+    if (socketData.content.command === 'appImport') {
+      store.changeParams({});
+    }
+  });
+
   useEffect(() => {
     store.changeParams({});
+
     return () => {
       store.isListLoading = true;
     };

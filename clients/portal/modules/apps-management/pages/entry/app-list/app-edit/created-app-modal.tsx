@@ -25,8 +25,7 @@ function CreatedAppModal({ modalType, onCancel }: Props): JSX.Element {
     const formDom = formRef.current;
     const data = formDom.getFieldsValue();
     if (modalType === 'importApp') {
-      store.importApp({ ...data, useStatus: -2 }).then(() => {
-        toast.success('APP 正在导入，请在右上方“同步列表”中查看导入结果');
+      store.importApp(data).then(() => {
         onCancel();
       }).catch((e) => {
         toast.error(e.message);

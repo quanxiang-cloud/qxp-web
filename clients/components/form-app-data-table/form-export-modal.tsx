@@ -5,7 +5,6 @@ import cs from 'classnames';
 import Modal from '@c/modal';
 import Icon from '@c/icon';
 import Checkbox from '@c/checkbox';
-import toast from '@lib/toast';
 import { toEs } from '@c/data-filter/utils';
 import { exportForm } from '@c/task-lists/api';
 import { subscribeStatusChange } from '@c/task-lists/utils';
@@ -79,7 +78,7 @@ function ExportFormModal({ onClose }: Props): JSX.Element {
     }
   }
 
-  function handSubmit(): void {
+  async function handSubmit(): Promise<void> {
     const { condition = [], tag = 'must' } = store.params;
     const { condition: frontCondition = [], tag: frontTag } = store.filterConfig || {};
     const query = toEs({ tag: frontTag || tag, condition: [...condition, ...frontCondition] });
@@ -91,7 +90,7 @@ function ExportFormModal({ onClose }: Props): JSX.Element {
         filterName.push(value.title);
       }
     });
-    exportForm({
+    const taskID = await exportForm({
       value: {
         appID: store.appID,
         tableID: store.pageID,
@@ -100,11 +99,9 @@ function ExportFormModal({ onClose }: Props): JSX.Element {
         filterName,
       },
       title: `【${store.appName}-${store.pageName}】表单数据导出 `,
-    }).then((res) => {
-      onClose();
-      subscribeStatusChange(res);
-      toast.success('正在导出，请在右上方 “同步列表” 中查看导出结果');
     });
+    subscribeStatusChange(taskID, '导出');
+    onClose();
   }
 
   return (

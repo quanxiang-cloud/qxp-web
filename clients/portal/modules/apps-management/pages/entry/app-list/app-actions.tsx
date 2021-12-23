@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import Icon from '@c/icon';
 import toast from '@lib/toast';
 import MoreMenu, { MenuItem } from '@c/more-menu';
+import { subscribeStatusChange } from '@c/task-lists/utils';
 
 import { exportAppAndCreateTask } from './api';
 
@@ -73,8 +74,11 @@ function AppActions({ openModal, appInfo }: Props): JSX.Element {
       break;
     case 'saveAsTemplate':
       // openModal('saveAsTemplate', appInfo);
-      exportAppAndCreateTask({ value: { appID: appInfo?.id || '' }, title: appInfo.appName }).then(() => {
-        toast.success('APP 正在导出，请在右上方”同步列表“中查看导出结果');
+      exportAppAndCreateTask({
+        value: { appID: appInfo?.id || '' },
+        title: `【${appInfo.appName}】 应用导出`,
+      }).then((res) => {
+        subscribeStatusChange(res.taskID, '导出');
       }).catch((err) => {
         toast.error(err.message);
       });

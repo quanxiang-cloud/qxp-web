@@ -60,7 +60,8 @@ function TaskItem({ task, deleteTaskItem }: Props): JSX.Element {
 
   function getState(): JSX.Element {
     if (status === 1) {
-      return ratio > 0 ? <Progress style={{ width: '140px' }} percent={ratio} /> : (
+      const _ratio = Number((ratio || 0).toFixed(2));
+      return ratio > 0 ? <Progress style={{ width: '140px' }} percent={_ratio} /> : (
         <>
           <img src='/dist/images/loading.svg' alt="loading" className="w-16 h-16 mr-8" />
           <div>进行中...</div>
@@ -90,7 +91,7 @@ function TaskItem({ task, deleteTaskItem }: Props): JSX.Element {
       <Icon name={getIcon()} className="mr-8" size={40} />
       <div className="flex-1 flex flex-col justify-start text-12">
         <div className="flex items-center justify-between">
-          <div className="text-gray-900 truncate w-220">{title || '-'}</div>
+          <div className="text-gray-900 truncate w-220" title={title || '-'} >{title || '-'}</div>
           <div className="text-gray-500 flex">
             {result && result.path && result.path.length && (
               <Icon
@@ -117,7 +118,7 @@ function TaskItem({ task, deleteTaskItem }: Props): JSX.Element {
           })}>
             {getState()}
           </div>
-          <div className="text-gray-400 mr-16">
+          <div className="text-gray-400">
             {dayjs(parseInt(String(createdAt * 1000))).format('YYYY-MM-DD')}
           </div>
         </div>

@@ -81,3 +81,9 @@
   grid-column-gap: 12px;
   border-bottom: 1px solid var(--gray-200);
 }
+
+.form-upload {
+  &>div {
+    @apply h-100;
+  }
+}
