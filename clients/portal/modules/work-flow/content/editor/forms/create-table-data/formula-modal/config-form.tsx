@@ -41,12 +41,11 @@ function ConfigForm({ value, onChange }: Props): JSX.Element {
       return;
     }
     const parentElement = ref.current.parentElement;
-    ref.current.style.height = `${getElementHeight(parentElement)}px`;
+    const height = getElementHeight(parentElement);
+    if (height) {
+      ref.current.style.height = `${height}px`;
+    }
   });
-
-  useEffect(() => {
-
-  }, []);
 
   function onSelect(node: TreeNode<POLY_API.PolyNodeInput & { descPath: string }>): void {
     formularRef.current?.insertEntity({

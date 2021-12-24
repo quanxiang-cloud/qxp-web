@@ -1,5 +1,4 @@
-import React, { useContext, useEffect } from 'react';
-import dayjs from 'dayjs';
+import React, { useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { FormPath } from '@formily/shared';
 import { Input, Select as AntdSelect, Switch, DatePicker, NumberPicker } from '@formily/antd-components';
@@ -7,15 +6,18 @@ import {
   SchemaForm,
   FormEffectHooks,
   createFormActions,
+  IFormEffectSelector,
+  LifeCycleTypes,
 } from '@formily/antd';
 
 import SaveButtonGroup from '@flow/content/editor/components/_common/action-save-button-group';
 import FlowContext from '@flow/flow-context';
+import type { ProcessVariableAssignmentData } from '@flow/content/editor/type';
 
-import { ProcessVariableAssignmentData } from '../../type';
 import { getFlowVariables } from '../api';
 import RulesList from './rules-list';
 import { useTableFieldOptions, ConfigSchema, availableVariableCtx } from './utils';
+import FormulaModalOpener from './formula-modal-opener';
 
 type Props = {
   defaultValue: ProcessVariableAssignmentData;
@@ -28,9 +30,18 @@ const { onFieldValueChange$ } = FormEffectHooks;
 
 const ACTIONS = createFormActions();
 const { setFieldState, getFormState, getFieldValue } = ACTIONS;
-const COMPONENTS = { AntdSelect, Input, RulesList, Switch, DatePicker, NumberPicker };
+const COMPONENTS = {
+  AntdSelect,
+  Input,
+  RulesList,
+  Switch,
+  DatePicker,
+  NumberPicker,
+  FormulaModalOpener,
+};
 
 export default function AssignmentConfig({ defaultValue, onSubmit, onCancel }: Props): JSX.Element {
+  const [isFormMounted, setIsFormMounted] = useState<boolean>(false);
   const tableFields = useTableFieldOptions();
   const { flowID } = useContext(FlowContext);
   const { data: variables, isLoading } = useQuery<ProcessVariable[]>(['FETCH_PROCESS_VARIABLES'], () => {
@@ -48,7 +59,14 @@ export default function AssignmentConfig({ defaultValue, onSubmit, onCancel }: P
     });
   }, [variables]);
 
-  function formEffect(): void {
+  useEffect(() => {
+    isFormMounted && defaultValue.assignmentRules.forEach(({ valueOf }, index) => {
+      setFieldState(`assignmentRules.${index}.valueOf`, (state) => state.value = valueOf);
+    });
+  }, [defaultValue, isFormMounted]);
+
+  function formEffect($: IFormEffectSelector): void {
+    $(LifeCycleTypes.ON_FORM_MOUNT).subscribe(() => setIsFormMounted(true));
     onFieldValueChange$('assignmentRules.*.valueFrom').subscribe((state) => {
       const valueOfPath = FormPath.transform(state.name, /\d/, ($1) => `assignmentRules.${$1}.valueOf`);
       const variableNamePath = FormPath.transform(state.name, /\d/, ($1) => `assignmentRules.${$1}.variableName`);
@@ -61,6 +79,15 @@ export default function AssignmentConfig({ defaultValue, onSubmit, onCancel }: P
             return field.type === variableType;
           });
           valueOfFieldState.props['x-component'] = 'AntdSelect';
+        });
+        return;
+      }
+
+      if (state.value === 'formula') {
+        setFieldState(valueOfPath, (valueOfFieldState) => {
+          valueOfFieldState.value = '';
+          valueOfFieldState.props.enum = undefined;
+          valueOfFieldState.props['x-component'] = 'FormulaModalOpener';
         });
         return;
       }
@@ -82,10 +109,6 @@ export default function AssignmentConfig({ defaultValue, onSubmit, onCancel }: P
         }
 
         if (variableType === 'datetime') {
-          if (!dayjs(valueOfFieldState.value).isValid()) {
-            valueOfFieldState.value = '';
-          }
-
           valueOfFieldState.props['x-component'] = 'DatePicker';
           valueOfFieldState.props['x-component-props'] = {
             format: 'YYYY-MM-DD HH:mm:ss',
@@ -93,9 +116,6 @@ export default function AssignmentConfig({ defaultValue, onSubmit, onCancel }: P
         }
 
         if (variableType === 'number') {
-          if (typeof valueOfFieldState.value !== 'number') {
-            valueOfFieldState.value = '';
-          }
           valueOfFieldState.props['x-component'] = 'NumberPicker';
         }
       });

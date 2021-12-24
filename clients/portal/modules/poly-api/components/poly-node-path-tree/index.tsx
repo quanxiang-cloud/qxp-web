@@ -66,7 +66,12 @@ function FormulaConfigTree(
 
   const handleSelect = useCallback(() => {
     const currentNode = store.currentFocusedNode as TreeNode<POLY_API.PolyNodeInput & { descPath: string }>;
-    if (!currentNode.visible || (currentNode.level === 2 && currentNode.name === 'start')) {
+    if (!currentNode.visible ||
+      (currentNode.level === 2 && currentNode.name === 'start') ||
+      (currentNode.level === 2 && currentNode.path.startsWith('$.formData')) ||
+      (currentNode.level === 2 && currentNode.path.startsWith('$.webhook-')) ||
+      (currentNode.level === 2 && currentNode.path.startsWith('$.variable'))
+    ) {
       return;
     }
     onSelect(currentNode);
