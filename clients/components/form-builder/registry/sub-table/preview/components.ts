@@ -13,6 +13,7 @@ import Select from '@c/form-builder/registry/select/custom-select';
 import MultipleSelect from '@c/form-builder/registry/multiple-select/multiple-select';
 import Serial from '@c/form-builder/registry/serial-number/serial';
 import NumberPicker from '@c/form-builder/registry/number-picker/number-picker';
+import AggregationRecords from '@c/form-builder/registry/aggregation-records/summary-field';
 
 export const components = {
   input: Input,
@@ -30,4 +31,5 @@ export const components = {
   cascadeselector: CascadeSelector,
   associateddata: AssociatedData,
   serial: Serial,
+  aggregationrecords: AggregationRecords,
 };
