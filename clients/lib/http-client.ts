@@ -29,10 +29,6 @@ async function httpClient<TData, TBody = unknown>(
   });
 
   const { code, msg, data } = await response.json();
-  if (response.redirected) {
-    window.location.replace(response.url);
-    return data as TData;
-  }
 
   if (response.status === 401) {
     if (!alreadyAlertUnauthorizedError) {

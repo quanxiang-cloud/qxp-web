@@ -34,12 +34,6 @@ func doLogout(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// ToLoginHandler Manually Logout and to the login page
-func ToLoginHandler(w http.ResponseWriter, r *http.Request) {
-	doLogout(w, r);
-	RedirectToLoginPage(w, r, r.Header.Get("Referer"))
-}
-
 // LogoutHandler render logout page
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 	doLogout(w, r);
