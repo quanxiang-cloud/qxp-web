@@ -1,8 +1,10 @@
-import { BadgeProps } from './types';
 import React, { CSSProperties, ReactElement, ReactNode } from 'react';
-import { isDef, isNumeric } from '@m/qxp-ui-mobile/utils';
-import { addUnit } from '@m/qxp-ui-mobile/utils/format/unit';
 import cs from 'classnames';
+
+import { isDef, isNumeric } from '../utils';
+import { addUnit } from '../utils/format/unit';
+
+import { BadgeProps } from './types';
 
 const Badge: React.FC<BadgeProps> = (props) => {
   const { content, max, dot, showZero, tag } = props;
@@ -52,11 +54,12 @@ const Badge: React.FC<BadgeProps> = (props) => {
       }
       return (
         <div
-          className={cs('badge',
+          className={cs(
+            'badge',
             {
               [props.className ?? '']: props.className && !props.children,
+              'badge--dot': props.dot, 'badge--fixed': !!props.children,
             },
-            { 'badge--dot': props.dot, 'badge--fixed': !!props.children },
           )}
           style={style}
         >

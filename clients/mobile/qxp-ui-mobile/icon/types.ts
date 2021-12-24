@@ -1,4 +1,4 @@
-import { NumberString, Props } from '@m/qxp-ui-mobile';
+import { NumberString, Props } from '..';
 
 export interface IconProps extends Props {
     name: string;

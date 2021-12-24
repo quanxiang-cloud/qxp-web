@@ -1,14 +1,14 @@
-import { Props } from '@m/qxp-ui-mobile';
-import { IconProps } from '@m/qxp-ui-mobile/icon/types';
+import { NumberString, Props } from '..';
+import { IconProps } from '../icon/types';
 
 export interface EmptyProps extends Props {
   icon?: IconProps;
-  image?: JSX.Element;
+  image?: string;
   title?: string;
   content?: string;
 }
 
 export interface EmptyImageProps extends Props {
   src: string;
-  size?: string | number;
+  size?: NumberString;
 }

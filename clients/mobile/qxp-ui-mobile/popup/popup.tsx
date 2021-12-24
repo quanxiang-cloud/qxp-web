@@ -6,17 +6,19 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { PopupProps } from './types';
-import { isDef } from '@m/qxp-ui-mobile/utils';
-import useSsrCompat from '@m/qxp-ui-mobile/utils/hooks/use-ssr-compat';
-import { callInterceptor, GetContainer, renderToContainer } from '@m/qxp-ui-mobile/utils/dom';
-import PopupContext from './context';
-import { CSSTransition } from 'react-transition-group';
-import Overlay from '@m/qxp-ui-mobile/overlay';
-import Icon from '@m/qxp-ui-mobile/icon';
 import cs from 'classnames';
-import useEventListener from '@m/qxp-ui-mobile/utils/hooks/use-event-listener';
-import { getZIndexStyle } from '@m/qxp-ui-mobile/utils/format/unit';
+import { CSSTransition } from 'react-transition-group';
+
+import Overlay from '../overlay';
+import Icon from '../icon';
+import { isDef } from '../utils';
+import useSsrCompat from '../utils/hooks/use-ssr-compat';
+import { callInterceptor, GetContainer, renderToContainer } from '../utils/dom';
+import useEventListener from '../utils/hooks/use-event-listener';
+import { getZIndexStyle } from '../utils/format/unit';
+
+import { PopupProps } from './types';
+import PopupContext from './context';
 
 let globalZIndex = 2000;
 

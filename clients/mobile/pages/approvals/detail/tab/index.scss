@@ -1,0 +1,95 @@
+.action-buttons-container {
+  height: .64rem;
+  padding: .12rem;
+}
+
+.action-button-custom-wrapper {
+  flex: 135;
+  margin-right: .08rem;
+  display: flex;
+}
+
+.action-button__custom {
+  flex-direction: column;
+  width: calc((45 / 375) * 100vw);
+  border-radius: .06rem;
+  cursor: pointer;
+  &:active {
+    background-color: rgb(241, 245, 249);
+  }
+}
+
+.action-button__custom-text {
+  text-align: center;
+}
+
+.action-button__system {
+  padding: 0 .08rem;
+}
+
+.action-button__system1 {
+  flex: 1;
+  border-radius: .12rem .02rem .12rem .12rem;
+}
+
+.action-button__system1_1 {
+  width: calc((140 / 375) * 100vw);
+  border-radius: .12rem .02rem .12rem .12rem;
+}
+
+.action-button__system1_2 {
+  width: calc((203 / 375) * 100vw);
+  border-radius: .12rem .02rem .12rem .12rem;
+}
+
+.action-button__system2 {
+  width: calc((208 / 375) * 100vw);
+  border-radius: .12rem .02rem .12rem .12rem;
+}
+
+.action-button__system2_1 {
+  width: calc(104/375 * 100vw);
+  border-radius: .12rem 0 0 .12rem;
+}
+
+.action-button__system2_2 {
+  width: calc((104 / 375) * 100vw);
+  border-radius: 0 .02rem .12rem 0;
+}
+
+.action-button__light {
+  border: 1px var(--gray-600) solid;
+  background-color: white;
+  color: var(--gray-600);
+  text-align: center;
+  cursor: pointer;
+  &:active {
+    background-color: rgb(241, 245, 249);
+  }
+}
+
+.action-button__dark {
+  background-color: var(--gray-700);
+  color: white;
+  text-align: center;
+  cursor: pointer;
+  &:active {
+    background-color: var(--gray-800);
+  }
+}
+
+.more-pop-window {
+  padding: .12rem;
+  margin: 0 .12rem;
+  background-color: white;
+  border-radius: .12rem;
+  box-shadow: 0 16px 24px rgba(148, 163, 184, 0.25);
+  transition: .3s ease-in-out;
+}
+
+.more-pop-item {
+  padding: .09rem .08rem;
+  display: flex;
+  border-radius: .08rem;
+  align-items: center;
+}

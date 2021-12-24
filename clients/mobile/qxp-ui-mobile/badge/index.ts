@@ -4,4 +4,4 @@ import './badge.scss';
 export default Badge;
 export { Badge };
 
-export type { BadgeProps } from './types';
+export type { BadgeProps, BadgeSettingProps, HtmlTagType } from './types';
