@@ -65,14 +65,9 @@ function applySubNodes(item: any, isRoot: boolean, objectNodes?: Array<any>, arr
   }
 
   if (arrayNodes) {
-    const requiredKeys: string[] = arrayNodes.filter((v: ApiParam)=> v.required).map((v: ApiParam)=> v.name);
-    const items = mapRawParams(arrayNodes).reduce((acc, cur)=> {
-      acc[cur.name] = omit(cur, 'name', 'required');
-      return acc;
-    }, {});
+    const items = omit(mapRawParams(arrayNodes, {}, true)[0], 'name', 'required');
 
     Object.assign(target, {
-      required: requiredKeys.filter(Boolean),
       items,
     });
   }
@@ -90,8 +85,10 @@ function applySubNodes(item: any, isRoot: boolean, objectNodes?: Array<any>, arr
   }
 }
 
-function mapRawParams(params: ApiParam[], mergeOptions?: Record<string, any>): ParamItem[] {
-  return params.filter(({ name })=> !!name).map((v)=> {
+function mapRawParams(
+  params: ApiParam[], mergeOptions?: Record<string, any>, isArrayNodes?: boolean,
+): ParamItem[] {
+  return params.filter(({ name })=> !!name || isArrayNodes).map((v)=> {
     const item = Object.assign({}, pick(v, reservedKeys), pick(mergeOptions || {}, 'in'));
     const { _array_nodes_: arrayNodes, _object_nodes_: objectNodes } = item;
 
@@ -151,7 +148,7 @@ function mapObjectNode(node: Record<string, any>, isRoot?: boolean): Record<stri
   delete node.required;
   delete node.properties;
 
-  function applyProperties(properties: any): any[] {
+  function applyObjectProperties(properties: any): any[] {
     return Object.entries(properties).map(([name, conf]: [string, any])=> {
       const preload = getDefaultParam({ name, required: requiredKeys.includes(name) });
       if (['object', 'array'].includes(conf.type)) {
@@ -161,11 +158,19 @@ function mapObjectNode(node: Record<string, any>, isRoot?: boolean): Record<stri
     });
   }
 
+  function applyArrayProperties(arrayItems: any): any {
+    const preload = getDefaultParam();
+    if (['object', 'array'].includes(arrayItems.type)) {
+      return [{ ...preload, ...mapObjectNode(arrayItems) }];
+    }
+    return [{ ...preload, ...arrayItems }];
+  }
+
   if (node.type === 'object') {
-    node._object_nodes_ = applyProperties(properties);
+    node._object_nodes_ = applyObjectProperties(properties);
   }
   if (node.type === 'array') {
-    node._array_nodes_ = applyProperties(items);
+    node._array_nodes_ = applyArrayProperties(items);
   }
   return node;
 }
