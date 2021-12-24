@@ -13,6 +13,7 @@ import store from '@flow/content/editor/store';
 import Loading from '@c/loading';
 import useObservable from '@lib/hooks/use-observable';
 import type { StoreValue } from '@flow/content/editor/type';
+
 import Send from './send';
 
 import { webhookPathTreeSourceGetter } from './utils';

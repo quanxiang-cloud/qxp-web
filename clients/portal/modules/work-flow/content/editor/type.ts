@@ -215,7 +215,7 @@ export interface ProcessVariableAssignmentData {
   }>;
 }
 export interface ValueRule {
-  valueFrom: 'fixedValue' | 'currentFormValue' | 'processVariable';
+  valueFrom: 'fixedValue' | 'currentFormValue' | 'processVariable' | 'formula';
   valueOf: ValueRuleVal;
 }
 export type ValueRuleVal = string | number | Array<string | number>;

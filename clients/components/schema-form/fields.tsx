@@ -1,6 +1,7 @@
 import React from 'react';
 import { UseFormRegister, FieldValues, Control, Controller, UseFormSetValue } from 'react-hook-form';
 import { omit } from 'ramda';
+import cs from 'classnames';
 
 import type { Field } from './type';
 
@@ -22,7 +23,7 @@ export default function Fields({ register, fields, control, errors, values, setV
         }) => {
           const error = errors[name]?.message;
           return (
-            <div key={name} className={wrapperClassName ?? 'schema-form-field'}>
+            <div key={name} className={cs('schema-form-field', wrapperClassName)}>
               {native && (
                 <>
                   <label htmlFor={name} className={labelClassName}>{title}</label>

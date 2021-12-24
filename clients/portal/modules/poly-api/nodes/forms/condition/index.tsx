@@ -9,7 +9,6 @@ import Operates from '@polyApi/components/operates';
 import { CONDITION_OPERATES_MAP } from '@polyApi/constants';
 
 function ConditionForm(props: ISchemaFieldComponentProps): JSX.Element {
-  props;
   const [customRules, setCustomRules] = React.useState<CustomRule[]>([]);
   const polyNodePathTreeRef = useRef<RefType | null>(null);
   const formularRef = useRef<RefProps | null>(null);
@@ -60,14 +59,14 @@ function ConditionForm(props: ISchemaFieldComponentProps): JSX.Element {
           />
         )}
       </div>
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-hidden formula-config">
         <Operates
           operates={CONDITION_OPERATES_MAP}
           onClick={handleOperateChange}
           className="bg-white"
         />
         <PolyNodePathTree
-          className="h-full bg-white"
+          className="h-full bg-white overflow-auto"
           onSelect={onSelect}
           ref={polyNodePathTreeRef}
         />

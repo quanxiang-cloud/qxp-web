@@ -20,7 +20,7 @@
 
 .webhook-request-inputs {
   grid-template-columns: repeat(1, 492fr 240fr);
-  @apply relative mt-8;
+  @apply relative mt-8 h-full;
 
   &>div:first-child {
     padding: 0 8px 0 0;

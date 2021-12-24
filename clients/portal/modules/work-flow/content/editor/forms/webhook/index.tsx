@@ -95,6 +95,7 @@ export default function WebhookConfig(
       watch: true,
       component: Inputs,
       defaultValue: [],
+      wrapperClassName: 'flex-1',
     }],
   }), []);
 
@@ -125,7 +126,9 @@ export default function WebhookConfig(
         schema={schema}
         className="h-full flex flex-col"
       />
-      <ResizableOutputs value={outputsRef.current} />
+      {!!outputsRef.current?.length && (
+        <ResizableOutputs value={outputsRef.current} />
+      )}
       <SaveButtonGroup onSave={onSave} onCancel={onCancel} />
     </>
   );
