@@ -1,4 +1,4 @@
-import React, { useContext, useState, Ref, CSSProperties } from 'react';
+import React, { useContext, useState, Ref, CSSProperties, useEffect } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { usePopper } from 'react-popper';
 import { useClickAway } from 'react-use';
@@ -6,6 +6,7 @@ import fp from 'lodash/fp';
 import {
   DragDropContext, Droppable, Draggable, DropResult, DraggingStyle, NotDraggingStyle,
 } from 'react-beautiful-dnd';
+import { useFormEffects, FormEffectHooks } from '@formily/antd';
 
 import Icon from '@c/icon';
 import toast from '@lib/toast';
@@ -15,6 +16,8 @@ import { generateRandomFormFieldID, numberTransform } from '@c/form-builder/util
 import { FieldConfigContext } from '@c/form-builder/form-settings-panel/form-field-config/context';
 
 import { SUB_TABLE_TYPES_SCHEMA_MAP, SUB_TABLE_TYPES } from '../constants';
+
+const { onFieldValueChange$ } = FormEffectHooks;
 
 interface Option {
   label: string;
@@ -38,13 +41,31 @@ function SubTableSchema(props: ISchemaFieldComponentProps): JSX.Element {
   const store = useContext(StoreContext);
   const { actions } = useContext(FieldConfigContext);
   const [currentFieldLabel, setCurrentFieldLabel] = useState('添加');
+  const [currentFieldValue, setCurrentFieldValue] = useState<string>('');
   const [referenceElRef, setReferenceElRef] = useState<HTMLDivElement>();
   const [popperElRef, setPopperElRef] = useState(null);
   const [fieldSelectorShow, setFieldSelectorShow] = useState(false);
+  const [rowLimit, setRowLimit] = useState<'multiple' | 'single'>('multiple');
   const popperRef = usePopper(referenceElRef, popperElRef, {
     modifiers: [{ name: 'offset', options: { offset: [0, 4] } }],
     placement: 'bottom-start',
   });
+
+  useEffect(() => {
+    actions.getFieldState('rowLimit', (state) => {
+      setRowLimit(state.value);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (currentFieldValue === 'aggregationrecords') {
+      setCurrentFieldLabel('添加');
+      setCurrentFieldValue('');
+    }
+    onUpdateFields(schemaList.filter(
+      (field) => !(rowLimit === 'multiple' && field.schema['x-component'] === 'AggregationRecords'),
+    ));
+  }, [rowLimit]);
 
   useClickAway({ current: popperElRef }, () => {
     setFieldSelectorShow(false);
@@ -114,6 +135,7 @@ function SubTableSchema(props: ISchemaFieldComponentProps): JSX.Element {
     };
     newField.value = '';
     setCurrentFieldLabel(label);
+    setCurrentFieldValue(val);
     setFieldSelectorShow(false);
     onUpdateFields([...schemaList, newField]);
   }
@@ -159,6 +181,12 @@ function SubTableSchema(props: ISchemaFieldComponentProps): JSX.Element {
     onUpdateFields(updater(items, startPosition));
   }
 
+  useFormEffects(() => {
+    onFieldValueChange$('rowLimit').subscribe((state) => {
+      setRowLimit(state.value);
+    });
+  });
+
   return (
     <div>
       <header className="flex justify-between items-center bg-gray-50 mb-16">
@@ -184,7 +212,14 @@ function SubTableSchema(props: ISchemaFieldComponentProps): JSX.Element {
             className="max-h-200 overflow-auto"
             ref={setPopperElRef as Ref<HTMLUListElement>}
           >
-            {currentOptions.filter(({ value }) => !INTERNAL_FIELD_NAMES.includes(value)).map(
+            {currentOptions.filter(
+              ({ value }) => {
+                if ((rowLimit === 'multiple' && value === 'aggregationrecords')) {
+                  return false;
+                }
+                return !INTERNAL_FIELD_NAMES.includes(value);
+              },
+            ).map(
               ({ label, value }) => {
                 return (
                   <li

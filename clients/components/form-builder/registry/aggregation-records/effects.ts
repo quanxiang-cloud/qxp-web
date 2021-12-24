@@ -1,6 +1,6 @@
 import { createFormActions, FormEffectHooks } from '@formily/antd';
 
-export default function effects() {
+export default function effects(): void {
   const { setFieldState } = createFormActions();
   const { onFieldValueChange$ } = FormEffectHooks;
 
