@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+
 import { getRect } from './use-rect';
 
 export const useHeight = (element: { current?: Element | null }): number => {

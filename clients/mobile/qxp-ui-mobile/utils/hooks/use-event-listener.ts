@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
-import { inBrowser } from '@m/qxp-ui-mobile/utils';
+
+import { inBrowser } from '..';
 import { BasicTarget, getTargetElement, TargetElement } from '../dom';
 
 let supportsPassive = false;

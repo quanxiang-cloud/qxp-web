@@ -1,7 +1,9 @@
 import React from 'react';
-import './index.scss';
-import { Props } from '@m/qxp-ui-mobile';
 import cs from 'classnames';
+
+import { Props } from '@m/qxp-ui-mobile';
+
+import './index.scss';
 
 export interface HomeCardProps extends Props {
   title: string

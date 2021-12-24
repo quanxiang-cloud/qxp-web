@@ -1,6 +1,7 @@
-import { NumberString, Props } from '@m/qxp-ui-mobile';
 import React from 'react';
-import { BadgeSettingProps } from '@m/qxp-ui-mobile/badge/types';
+
+import { NumberString, Props } from '..';
+import { BadgeSettingProps } from '../badge';
 
 export interface TabbarProps<T = NumberString> extends Props {
     value?: T;

@@ -1,10 +1,14 @@
 import React, { useEffect } from 'react';
-import store from '@home/pages/store';
 import { useHistory } from 'react-router-dom';
-import './index.scss';
+import { observer } from 'mobx-react';
+
+import store from '@home/pages/store';
 import Divider from '@m/qxp-ui-mobile/divider';
-import { HomePageProps } from '@m/pages/dashboard/types';
 import { spacer } from '@m/lib/ui-utils';
+import { approvalsPath } from '@m/constant';
+import { HomePageProps } from '../types';
+
+import './index.scss';
 
 function calcCount(count?: number): string {
   if (count) {
@@ -27,11 +31,11 @@ const TodoTaskCard: React.FC<HomePageProps> = (props) => {
       (<div className='todo-task-card-item' key={key}
         onClick={() => {
           if (name === '已超时') {
-            history.push('/approvals?tagType=OVERTIME');
+            history.push(`${approvalsPath}?tagType=OVERTIME`);
           } else if (name === '催办') {
-            history.push('/approvals?tagType=URGE');
+            history.push(`${approvalsPath}?tagType=URGE`);
           } else {
-            history.push('/approvals');
+            history.push(approvalsPath);
           }
         }}
       >
@@ -49,8 +53,8 @@ const TodoTaskCard: React.FC<HomePageProps> = (props) => {
         key={`divider-${i}`}
         direction='vertical'
         color='var(--blue-400)'
-        size='.12rem'
-        style={{ marginTop: '.72rem' }}/>),
+        className='mt-72'
+        size='.12rem'/>),
     );
   }
 
@@ -64,4 +68,4 @@ const TodoTaskCard: React.FC<HomePageProps> = (props) => {
   );
 };
 
-export default TodoTaskCard;
+export default observer(TodoTaskCard);

@@ -1,4 +1,4 @@
-import { isWindow } from '@m/qxp-ui-mobile/utils';
+import { isWindow } from '..';
 
 interface Rect {
     top: number;
@@ -9,7 +9,7 @@ interface Rect {
     height: number;
 }
 
-const useRect = (elementRef: Element | Window): Rect => {
+const useRect = (elementRef?: Element | Window | null): Rect => {
   const element = elementRef;
 
   if (isWindow(element)) {

@@ -1,11 +1,13 @@
 import React, { ReactElement, Ref, useRef } from 'react';
 import cs from 'classnames';
+
+import useHeight from '../utils/hooks/use-height';
+import useMergedState from '../utils/hooks/use-merged-state';
+import { getZIndexStyle } from '../utils/format/unit';
+import { NumberString, RenderFunc } from '..';
+
 import TabbarContext from './context';
-import { TabbarProps } from '@m/qxp-ui-mobile/tabbar/types';
-import useHeight from '@m/qxp-ui-mobile/utils/hooks/use-height';
-import useMergedState from '@m/qxp-ui-mobile/utils/hooks/use-merged-state';
-import { getZIndexStyle } from '@m/qxp-ui-mobile/utils/format/unit';
-import { NumberString, RenderFunc } from '@m/qxp-ui-mobile';
+import { TabbarProps } from './types';
 
 const Tabbar: React.FC<TabbarProps> = (props) => {
   const { fixed, zIndex } = props;

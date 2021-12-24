@@ -1,5 +1,5 @@
-import { NumberString, Props, RenderFunc } from '@m/qxp-ui-mobile';
-import { LoadingType } from '@m/qxp-ui-mobile/loading';
+import { NumberString, Props, RenderFunc } from '..';
+import { LoadingType } from '../loading';
 
 export type ButtonTheme =
   'primary' | 'secondary' | 'tertiary' |

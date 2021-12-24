@@ -1,5 +1,6 @@
-import { Props } from '@m/qxp-ui-mobile';
 import React from 'react';
+
+import { Props } from '..';
 
 export type HtmlTagType = keyof HTMLElementTagNameMap;
 

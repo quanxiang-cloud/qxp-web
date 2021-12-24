@@ -1,6 +1,8 @@
-import { EmptyImageProps } from './types';
 import React from 'react';
-import { getSizeStyle } from '@m/qxp-ui-mobile/utils/format/unit';
+
+import { getSizeStyle } from '../utils/format/unit';
+
+import { EmptyImageProps } from './types';
 
 const EmptyImage: React.FC<EmptyImageProps> = (props) => {
   const { src, size = '120px', className, style } = props;

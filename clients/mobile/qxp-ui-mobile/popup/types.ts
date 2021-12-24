@@ -1,5 +1,6 @@
 import React, { CSSProperties } from 'react';
-import { NumberString, Props, TeleportType } from '@m/qxp-ui-mobile';
+
+import { NumberString, Props, TeleportType } from '..';
 
 export type PopupPosition = 'top' | 'left' | 'bottom' | 'right' | 'center' | '';
 

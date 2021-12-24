@@ -1,20 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { Tabbar } from '@m/qxp-ui-mobile/tabbar';
-import Icon from '@m/qxp-ui-mobile/icon';
-import './index.scss';
-import Notify from './notify';
-import Workbench from './workbench';
-import Mine from './mine';
-import { HomeItem } from '@m/pages/dashboard/types';
+import { useSearchParam } from 'react-use';
+import { useHistory } from 'react-router-dom';
 import cs from 'classnames';
 import { observer } from 'mobx-react';
+
+import { Tabbar } from '@m/qxp-ui-mobile/tabbar';
+import Icon from '@m/qxp-ui-mobile/icon';
 import msgCenter from '@portal/stores/msg-center';
 import store from '@home/pages/store';
 import { BadgeSettingProps } from '@m/qxp-ui-mobile/badge/types';
-import { useHistory } from 'react-router-dom';
-import { pathPrefix } from '@m/routes';
-import { useSearchParam } from 'react-use';
+import { pathPrefix } from '@m/constant';
 import { isNumeric } from '@m/qxp-ui-mobile/utils';
+
+import { HomeItem } from './types';
+import Notify from './notify';
+import Workbench from './workbench';
+import Mine from './mine';
+import './index.scss';
 
 const items: HomeItem[] = [
   {
@@ -79,8 +81,8 @@ function Dashboard(): JSX.Element {
   }
 
   return (
-    <div className='flex flex-col' style={{ height: '100vh' }}>
-      <div className='flex-1 overflow-scroll'>
+    <div className={cs('flex flex-col', ac !== 2 ? 'bg-white' : 'bg-app')} style={{ height: '100vh' }}>
+      <div className={cs('flex-1 overflow-scroll', ac !== 2 ? 'bg-app' : 'bg-white')}>
         {items.map(
           (itm, index) => itm.component( {
             key: itm.icon,
@@ -90,7 +92,7 @@ function Dashboard(): JSX.Element {
       </div>
 
       <Tabbar
-        fixed={false}
+        placeholder
         value={ac}
         className={cs({ footer: ac !== 2 })}
         onChange={(ac) => onActiveChange(ac as number)}>

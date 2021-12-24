@@ -41,7 +41,7 @@
 .mine-top-wrapper {
   height: 32vh;
   width: 100%;
-  background-color: var(--backgroundColor);
+  background-color: var(--background-color);
   border-radius: 0 0 .12rem .12rem;
   position: relative;
 
@@ -55,7 +55,7 @@
     height: 100%;
     background-image: url("/dist/images/mobile/bg_mask.png");
     background-size: cover;
-    background-position:center;
+    background-position: center;
   }
 }
 
@@ -98,4 +98,8 @@
     border-radius: .08rem;
     color: var(--gray-600);
   }
+}
+
+.tabbar--placeholder {
+  background-color: var(--background-color);
 }
