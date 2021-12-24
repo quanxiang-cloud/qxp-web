@@ -3,9 +3,9 @@
  */
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
-import { Card } from 'antd';
 import { values } from 'lodash';
 
+import Card from '@c/card/index';
 import FieldRender from '@c/form-builder/components/field-render';
 import DragDrop from '@c/form-builder/components/drag-drop';
 import { StoreContext } from '@c/form-builder/context';
