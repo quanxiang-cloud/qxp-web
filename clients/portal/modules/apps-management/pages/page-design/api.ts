@@ -9,7 +9,10 @@ import {
 import toast from '@lib/toast';
 
 import store from '../app-details/store';
-import * as consts from './constant';
+
+export const PG_SAVED_PREFIX = 'pge-';
+export const PG_DRAFT_PREFIX = 'pge-draft-';
+export const PG_VERSION = '0.1.0';
 
 type Option={
   draft?: boolean;
@@ -17,32 +20,23 @@ type Option={
 }
 
 export function getSchemaKey(app_id: string, page_id: string, isDraft?: boolean) {
-  return [isDraft ? consts.PG_DRAFT_PREFIX : consts.PG_SAVED_PREFIX, [app_id, page_id].join('__')].join('@');
+  return [isDraft ? PG_DRAFT_PREFIX : PG_SAVED_PREFIX, [app_id, page_id].join('__')].join('@');
 }
 
 export function savePage(app_id: string, page_id: string, page_schema: any, options?: Option): Promise<any> {
-  return setBatchGlobalConfig([
-    {
-      key: getSchemaKey(app_id, page_id, options?.draft),
-      version: consts.PG_VERSION,
-      value: typeof page_schema === 'object' ? JSON.stringify(page_schema) : page_schema,
-    },
-    {
-      key: consts.enableCreateCustomPage,
-      version: consts.PG_VERSION,
-      value: JSON.stringify(true),
-    },
-  ]);
+  return setBatchGlobalConfig([{
+    key: getSchemaKey(app_id, page_id, options?.draft),
+    version: PG_VERSION,
+    value: typeof page_schema === 'object' ? JSON.stringify(page_schema) : page_schema,
+  }]);
 }
 
 export function getPage(app_id: string, page_id: string, options?: Option) {
   const queryId = getSchemaKey(app_id, page_id, options?.draft);
-  const keys = [queryId, consts.enableCreateCustomPage].map((v)=> ({
-    key: v,
-    version: consts.PG_VERSION,
-  }));
-
-  return getBatchGlobalConfig(keys)
+  return getBatchGlobalConfig([{
+    key: queryId,
+    version: PG_VERSION,
+  }])
     .then(({ result })=> {
       return result[queryId];
     })
@@ -50,7 +44,7 @@ export function getPage(app_id: string, page_id: string, options?: Option) {
 }
 
 export function getVersionKey(): string {
-  return consts.PG_VERSION;
+  return PG_VERSION;
 }
 
 export function getRenderRepository(): Repository {
