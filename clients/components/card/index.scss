@@ -1,0 +1,45 @@
+.qxb-card {
+  border-radius: 2px;
+  color: var(--black-50);
+  position: relative;
+  font-size: 14px;
+  background-color: #fff;
+
+  &-head{
+    min-height: 48px;
+    padding: 0 24px;
+    color: var(--black-50);
+    font-size: 16px;
+    border-bottom: 1px solid var(--gray-200);
+    border-radius: 2px 2px 0 0;
+
+    &-wrapper{
+      display: flex;
+      align-items: center;
+    }
+
+    &-title{
+      display: inline-block;
+      flex: 1;
+      padding: 16px 0;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+
+  &-bordered{
+    border: 1px solid var(--gray-200);
+  }
+
+  &-action{
+    border-top: 1px solid var(--gray-200);
+
+    >li {
+      float: left;
+      margin: 12px 0;
+      color: var(--black-50);
+      text-align: center;
+    }
+  }
+}
