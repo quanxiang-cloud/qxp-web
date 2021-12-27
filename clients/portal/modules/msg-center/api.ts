@@ -16,7 +16,7 @@ export async function getMessageList(
 
 // 获取未读消息个数
 export async function getUnreadMsgCount() {
-  return await httpClient('/api/v1/message/center/getNumber'); // fixme: typo?
+  return await httpClient('/api/v1/message/center/getNumber');
 }
 
 // 根据id查询消息详情

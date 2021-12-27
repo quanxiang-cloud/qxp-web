@@ -36,7 +36,7 @@ export default function AlertDialog({
   style, titleClassName, position = 'bottom',
   children, applyDefaultStyle = true, titleStyle = {},
   show, onClose,
-} : AlertDialogProps): JSX.Element {
+}: AlertDialogProps): JSX.Element {
   const [loading, setLoading] = useState(false);
 
   function onClick(): void {
