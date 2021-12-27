@@ -6,3 +6,9 @@ export const DefaultPageDescriptions = [
   { id: 'updatedBy', title: '修改人', value: '' },
   { id: 'updatedAt', title: '修改时间', value: '' },
 ];
+
+// setting keys used in config center
+export const globalSettings = {
+  version: '0.1.0',
+  enableCreateCustomPage: 'enable-create-custom-page',
+};
