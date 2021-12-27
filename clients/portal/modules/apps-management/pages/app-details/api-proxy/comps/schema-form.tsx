@@ -21,7 +21,7 @@ const validComponents = {
   RadioGroup: Radio.Group,
 };
 
-export type RefType<T> = {getValues: ()=> Promise<T>};
+export type RefType<T> = {getValues: () => Promise<T>};
 
 const actions = createFormActions();
 

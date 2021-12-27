@@ -7,8 +7,7 @@ import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import type { FileUploaderProps } from '@c/file-upload/uploader/file-uploader';
 import type { QxpFileFormData } from '../file-upload/uploader';
 
-export default function FormImgUploader(props: FileUploaderProps & ISchemaFieldComponentProps)
-  : JSX.Element {
+export default function FormImgUploader(props: FileUploaderProps & ISchemaFieldComponentProps): JSX.Element {
   const configProps = props?.props['x-component-props'];
   const subTableTempRef = useRef<QxpFileFormData[]>([]);
   const { value, mutators } = props;
@@ -17,7 +16,7 @@ export default function FormImgUploader(props: FileUploaderProps & ISchemaFieldC
   }, []);
 
   const handleFileSuccess = (currentFile: QXPUploadFileBaseProps): void => {
-    const currentFileFromData:QxpFileFormData = {
+    const currentFileFromData: QxpFileFormData = {
       label: currentFile.name,
       value: currentFile.uid,
       type: currentFile.type,

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { UnionColumns } from 'react-table';
+import { UnionColumn } from 'react-table';
 
 import Table from '@c/table';
 import schemaToFields from '@lib/schema-convert';
@@ -33,7 +33,7 @@ function Placeholder({ props }: any): JSX.Element {
           return !EXCLUDE_FIELDS.includes(v) && flattenTableMap[v];
         });
 
-        const _cols = availableCols.reduce((acc: UnionColumns<any>[], id: string) => {
+        const _cols = availableCols.reduce((acc: UnionColumn<any>[], id: string) => {
           acc.push({ id, Header: flattenTableMap[id], accessor: () => <span>--</span> });
           return acc;
         }, []);

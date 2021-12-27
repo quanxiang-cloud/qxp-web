@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import cs from 'classnames';
 
 import Loading from '@c/loading';
@@ -6,8 +6,6 @@ import ws from '@lib/push';
 import { getTaskList, deleteTask } from '@c/task-lists/api';
 
 import TaskItem from './task-item';
-import { NavTaskBarContext } from '../context';
-import store from '../../../portal/modules/apps-management/pages/entry/app-list/store';
 
 interface Props {
   className?: string;
@@ -23,12 +21,9 @@ const NoTask = (): JSX.Element => (
 function TaskList({ className }: Props): JSX.Element {
   const [loading, setLoading] = useState(false);
   const [taskList, setTaskList] = useState<Qxp.TaskItem[]>([]);
-  const { type = '' } = useContext(NavTaskBarContext);
 
   useEffect(() => {
     getTasks();
-    // fetch app list ----- todo remove this
-    store.changeParams({});
   }, []);
 
   useEffect(() => {
@@ -50,6 +45,10 @@ function TaskList({ className }: Props): JSX.Element {
       }
       getTasks();
     });
+
+    return () => {
+      ws.removeEventListener('entrepot-task', 'entrepot-task');
+    };
   }, [taskList]);
 
   const renderMain = (taskList: Qxp.TaskItem[]): JSX.Element => {
@@ -58,11 +57,13 @@ function TaskList({ className }: Props): JSX.Element {
         <NoTask />
       );
     }
+
     return (
       <>
-        {taskList.map((task: Qxp.TaskItem) => (
-          <TaskItem task={task} key={task.id} deleteTaskItem={deleteTaskItem}/>
-        ))
+        {
+          taskList.map((task: Qxp.TaskItem) => (
+            <TaskItem task={task} key={task.id} deleteTaskItem={deleteTaskItem} />
+          ))
         }
       </>
     );
@@ -70,8 +71,7 @@ function TaskList({ className }: Props): JSX.Element {
 
   function getTasks(): void {
     setLoading(true);
-    getTaskList({ types: type === 'manager' ? 'manager' : 'home', limit: 100, page: 1 })
-      .then(setTaskList).finally(() => setLoading(false));
+    getTaskList({ limit: 100, page: 1 }).then(setTaskList).finally(() => setLoading(false));
   }
 
   function deleteTaskItem(id: string): void {

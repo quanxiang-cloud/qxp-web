@@ -7,7 +7,7 @@ interface Props {
   onChange?: (value: POLY_API.API_FIELD_TYPE) => void;
   simple?: boolean;
   complexity?: boolean;
-  rule? : boolean;
+  rule?: boolean;
 }
 
 const complexityTypes: LabelValue[] = [

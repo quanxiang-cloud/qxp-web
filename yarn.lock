@@ -179,6 +179,13 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
+"@babel/runtime@^7.16.3":
+  version "7.16.5"
+  resolved "http://r.npm.internal.yunify.com/@babel/runtime/download/@babel/runtime-7.16.5.tgz#7f3e34bf8bdbbadf03fbb7b1ea0d929569c9487a"
+  integrity sha1-fz40v4vbut8D+7ex6g2SlWnJSHo=
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
 "@babel/runtime@^7.8.7":
   version "7.16.3"
   resolved "https://registry.npmjs.org/@babel/runtime/-/runtime-7.16.3.tgz#b86f0db02a04187a3c17caa77de69840165d42d5"
@@ -217,6 +224,234 @@
   dependencies:
     "@babel/helper-validator-identifier" "^7.15.7"
     to-fast-properties "^2.0.0"
+
+"@codemirror/autocomplete@^0.19.0":
+  version "0.19.9"
+  resolved "http://r.npm.internal.yunify.com/@codemirror/autocomplete/download/@codemirror/autocomplete-0.19.9.tgz#28b6600ad617bdc8dfeb0102a1df8cc61883d87c"
+  integrity sha1-KLZgCtYXvcjf6wECod+MxhiD2Hw=
+  dependencies:
+    "@codemirror/language" "^0.19.0"
+    "@codemirror/state" "^0.19.4"
+    "@codemirror/text" "^0.19.2"
+    "@codemirror/tooltip" "^0.19.0"
+    "@codemirror/view" "^0.19.0"
+    "@lezer/common" "^0.15.0"
+
+"@codemirror/basic-setup@^0.19.0":
+  version "0.19.1"
+  resolved "http://r.npm.internal.yunify.com/@codemirror/basic-setup/download/@codemirror/basic-setup-0.19.1.tgz#17b27d02f15c628eb62a85d01e3e1b1958933eb4"
+  integrity sha1-F7J9AvFcYo62KoXQHj4bGViTPrQ=
+  dependencies:
+    "@codemirror/autocomplete" "^0.19.0"
+    "@codemirror/closebrackets" "^0.19.0"
+    "@codemirror/commands" "^0.19.0"
+    "@codemirror/comment" "^0.19.0"
+    "@codemirror/fold" "^0.19.0"
+    "@codemirror/gutter" "^0.19.0"
+    "@codemirror/highlight" "^0.19.0"
+    "@codemirror/history" "^0.19.0"
+    "@codemirror/language" "^0.19.0"
+    "@codemirror/lint" "^0.19.0"
+    "@codemirror/matchbrackets" "^0.19.0"
+    "@codemirror/rectangular-selection" "^0.19.0"
+    "@codemirror/search" "^0.19.0"
+    "@codemirror/state" "^0.19.0"
+    "@codemirror/view" "^0.19.31"
+
+"@codemirror/closebrackets@^0.19.0":
+  version "0.19.0"
+  resolved "http://r.npm.internal.yunify.com/@codemirror/closebrackets/download/@codemirror/closebrackets-0.19.0.tgz#69fdcee85779d638a00a42becd9f53a33a26d77f"
+  integrity sha1-af3O6Fd51jigCkK+zZ9Tozom138=
+  dependencies:
+    "@codemirror/language" "^0.19.0"
+    "@codemirror/rangeset" "^0.19.0"
+    "@codemirror/state" "^0.19.0"
+    "@codemirror/text" "^0.19.0"
+    "@codemirror/view" "^0.19.0"
+
+"@codemirror/commands@^0.19.0":
+  version "0.19.6"
+  resolved "http://r.npm.internal.yunify.com/@codemirror/commands/download/@codemirror/commands-0.19.6.tgz#1568cf2c45a05864c1a4229575c5ac367ebbad9f"
+  integrity sha1-FWjPLEWgWGTBpCKVdcWsNn67rZ8=
+  dependencies:
+    "@codemirror/language" "^0.19.0"
+    "@codemirror/matchbrackets" "^0.19.0"
+    "@codemirror/state" "^0.19.2"
+    "@codemirror/text" "^0.19.0"
+    "@codemirror/view" "^0.19.22"
+    "@lezer/common" "^0.15.0"
+
+"@codemirror/comment@^0.19.0":
+  version "0.19.0"
+  resolved "http://r.npm.internal.yunify.com/@codemirror/comment/download/@codemirror/comment-0.19.0.tgz#4f23497924e9346898c2e0123011acc535a0bea6"
+  integrity sha1-TyNJeSTpNGiYwuASMBGsxTWgvqY=
+  dependencies:
+    "@codemirror/state" "^0.19.0"
+    "@codemirror/text" "^0.19.0"
+    "@codemirror/view" "^0.19.0"
+
+"@codemirror/fold@^0.19.0":
+  version "0.19.2"
+  resolved "http://r.npm.internal.yunify.com/@codemirror/fold/download/@codemirror/fold-0.19.2.tgz#9d4e0c0f9f3bb2fcded7d82bea14ce39310e8e2a"
+  integrity sha1-nU4MD587svze19gr6hTOOTEOjio=
+  dependencies:
+    "@codemirror/gutter" "^0.19.0"
+    "@codemirror/language" "^0.19.0"
+    "@codemirror/rangeset" "^0.19.0"
+    "@codemirror/state" "^0.19.0"
+    "@codemirror/view" "^0.19.22"
+
+"@codemirror/gutter@^0.19.0", "@codemirror/gutter@^0.19.4":
+  version "0.19.9"
+  resolved "http://r.npm.internal.yunify.com/@codemirror/gutter/download/@codemirror/gutter-0.19.9.tgz#bbb69f4d49570d9c1b3f3df5d134980c516cd42b"
+  integrity sha1-u7afTUlXDZwbPz310TSYDFFs1Cs=
+  dependencies:
+    "@codemirror/rangeset" "^0.19.0"
+    "@codemirror/state" "^0.19.0"
+    "@codemirror/view" "^0.19.23"
+
+"@codemirror/highlight@^0.19.0", "@codemirror/highlight@^0.19.6":
+  version "0.19.6"
+  resolved "http://r.npm.internal.yunify.com/@codemirror/highlight/download/@codemirror/highlight-0.19.6.tgz#7f2e066f83f5649e8e0748a3abe0aaeaf64b8ac2"
+  integrity sha1-fy4Gb4P1ZJ6OB0ijq+Cq6vZLisI=
+  dependencies:
+    "@codemirror/language" "^0.19.0"
+    "@codemirror/rangeset" "^0.19.0"
+    "@codemirror/state" "^0.19.0"
+    "@codemirror/view" "^0.19.0"
+    "@lezer/common" "^0.15.0"
+    style-mod "^4.0.0"
+
+"@codemirror/history@^0.19.0":
+  version "0.19.0"
+  resolved "http://r.npm.internal.yunify.com/@codemirror/history/download/@codemirror/history-0.19.0.tgz#cc8095c927c9566f7b69fa404074edde4c54d39c"
+  integrity sha1-zICVySfJVm97afpAQHTt3kxU05w=
+  dependencies:
+    "@codemirror/state" "^0.19.0"
+    "@codemirror/view" "^0.19.0"
+
+"@codemirror/lang-javascript@^0.19.3":
+  version "0.19.3"
+  resolved "http://r.npm.internal.yunify.com/@codemirror/lang-javascript/download/@codemirror/lang-javascript-0.19.3.tgz#281b3447d8b65d98311ebf25893ef5c30a11418b"
+  integrity sha1-KBs0R9i2XZgxHr8liT71wwoRQYs=
+  dependencies:
+    "@codemirror/autocomplete" "^0.19.0"
+    "@codemirror/highlight" "^0.19.6"
+    "@codemirror/language" "^0.19.0"
+    "@codemirror/lint" "^0.19.0"
+    "@codemirror/state" "^0.19.0"
+    "@codemirror/view" "^0.19.0"
+    "@lezer/javascript" "^0.15.1"
+
+"@codemirror/language@^0.19.0":
+  version "0.19.7"
+  resolved "http://r.npm.internal.yunify.com/@codemirror/language/download/@codemirror/language-0.19.7.tgz#9eef8e827692d93a701b18db9d46a42be34ecca6"
+  integrity sha1-nu+OgnaS2TpwGxjbnUakK+NOzKY=
+  dependencies:
+    "@codemirror/state" "^0.19.0"
+    "@codemirror/text" "^0.19.0"
+    "@codemirror/view" "^0.19.0"
+    "@lezer/common" "^0.15.5"
+    "@lezer/lr" "^0.15.0"
+
+"@codemirror/lint@^0.19.0":
+  version "0.19.3"
+  resolved "http://r.npm.internal.yunify.com/@codemirror/lint/download/@codemirror/lint-0.19.3.tgz#84101d0967fea8df114a8f0f79965c22ccd3b3cc"
+  integrity sha1-hBAdCWf+qN8RSo8PeZZcIszTs8w=
+  dependencies:
+    "@codemirror/gutter" "^0.19.4"
+    "@codemirror/panel" "^0.19.0"
+    "@codemirror/rangeset" "^0.19.1"
+    "@codemirror/state" "^0.19.4"
+    "@codemirror/tooltip" "^0.19.5"
+    "@codemirror/view" "^0.19.0"
+    crelt "^1.0.5"
+
+"@codemirror/matchbrackets@^0.19.0":
+  version "0.19.3"
+  resolved "http://r.npm.internal.yunify.com/@codemirror/matchbrackets/download/@codemirror/matchbrackets-0.19.3.tgz#1f430ada6fa21af2205280ff344ef57bb95dd3cb"
+  integrity sha1-H0MK2m+iGvIgUoD/NE71e7ld08s=
+  dependencies:
+    "@codemirror/language" "^0.19.0"
+    "@codemirror/state" "^0.19.0"
+    "@codemirror/view" "^0.19.0"
+    "@lezer/common" "^0.15.0"
+
+"@codemirror/panel@^0.19.0":
+  version "0.19.1"
+  resolved "http://r.npm.internal.yunify.com/@codemirror/panel/download/@codemirror/panel-0.19.1.tgz#bf77d27b962cf16357139e50864d0eb69d634441"
+  integrity sha1-v3fSe5Ys8WNXE55Qhk0Otp1jREE=
+  dependencies:
+    "@codemirror/state" "^0.19.0"
+    "@codemirror/view" "^0.19.0"
+
+"@codemirror/rangeset@^0.19.0", "@codemirror/rangeset@^0.19.1", "@codemirror/rangeset@^0.19.4":
+  version "0.19.4"
+  resolved "http://r.npm.internal.yunify.com/@codemirror/rangeset/download/@codemirror/rangeset-0.19.4.tgz#a49b7b6237a57139ca5e3539975f7427f82821a7"
+  integrity sha1-pJt7YjelcTnKXjU5l190J/goIac=
+  dependencies:
+    "@codemirror/state" "^0.19.0"
+
+"@codemirror/rectangular-selection@^0.19.0":
+  version "0.19.1"
+  resolved "http://r.npm.internal.yunify.com/@codemirror/rectangular-selection/download/@codemirror/rectangular-selection-0.19.1.tgz#5a88ece4fb68ce5682539497db8a64fc015aae63"
+  integrity sha1-Wojs5PtozlaCU5SX24pk/AFarmM=
+  dependencies:
+    "@codemirror/state" "^0.19.0"
+    "@codemirror/text" "^0.19.4"
+    "@codemirror/view" "^0.19.0"
+
+"@codemirror/search@^0.19.0":
+  version "0.19.5"
+  resolved "http://r.npm.internal.yunify.com/@codemirror/search/download/@codemirror/search-0.19.5.tgz#cae88292a6b4a6d6e6a8b6218fe62355cf7f6055"
+  integrity sha1-yuiCkqa0ptbmqLYhj+YjVc9/YFU=
+  dependencies:
+    "@codemirror/panel" "^0.19.0"
+    "@codemirror/rangeset" "^0.19.0"
+    "@codemirror/state" "^0.19.3"
+    "@codemirror/text" "^0.19.0"
+    "@codemirror/view" "^0.19.0"
+    crelt "^1.0.5"
+
+"@codemirror/state@^0.19.0", "@codemirror/state@^0.19.2", "@codemirror/state@^0.19.3", "@codemirror/state@^0.19.4", "@codemirror/state@^0.19.5":
+  version "0.19.6"
+  resolved "http://r.npm.internal.yunify.com/@codemirror/state/download/@codemirror/state-0.19.6.tgz#d631f041d39ce41b7891b099fca26cb1fdb9763e"
+  integrity sha1-1jHwQdOc5Bt4kbCZ/KJssf25dj4=
+  dependencies:
+    "@codemirror/text" "^0.19.0"
+
+"@codemirror/text@^0.19.0", "@codemirror/text@^0.19.2", "@codemirror/text@^0.19.4":
+  version "0.19.5"
+  resolved "http://r.npm.internal.yunify.com/@codemirror/text/download/@codemirror/text-0.19.5.tgz#75033af2476214e79eae22b81ada618815441c18"
+  integrity sha1-dQM68kdiFOeeriK4GtphiBVEHBg=
+
+"@codemirror/theme-one-dark@^0.19.1":
+  version "0.19.1"
+  resolved "http://r.npm.internal.yunify.com/@codemirror/theme-one-dark/download/@codemirror/theme-one-dark-0.19.1.tgz#648b9cbe37186a2b7bd2a83fb483dc7aa18ce218"
+  integrity sha1-ZIucvjcYait70qg/tIPceqGM4hg=
+  dependencies:
+    "@codemirror/highlight" "^0.19.0"
+    "@codemirror/state" "^0.19.0"
+    "@codemirror/view" "^0.19.0"
+
+"@codemirror/tooltip@^0.19.0", "@codemirror/tooltip@^0.19.5":
+  version "0.19.10"
+  resolved "http://r.npm.internal.yunify.com/@codemirror/tooltip/download/@codemirror/tooltip-0.19.10.tgz#c9ce5f8844ef28ab24d4a5adab0fc7ed85c44b4a"
+  integrity sha1-yc5fiETvKKsk1KWtqw/H7YXES0o=
+  dependencies:
+    "@codemirror/state" "^0.19.0"
+    "@codemirror/view" "^0.19.0"
+
+"@codemirror/view@^0.19.0", "@codemirror/view@^0.19.15", "@codemirror/view@^0.19.22", "@codemirror/view@^0.19.23", "@codemirror/view@^0.19.31":
+  version "0.19.35"
+  resolved "http://r.npm.internal.yunify.com/@codemirror/view/download/@codemirror/view-0.19.35.tgz#1fd755c112e067a8309c5d9647d11cec5170d3dc"
+  integrity sha1-H9dVwRLgZ6gwnF2WR9Ec7FFw09w=
+  dependencies:
+    "@codemirror/rangeset" "^0.19.4"
+    "@codemirror/state" "^0.19.3"
+    "@codemirror/text" "^0.19.0"
+    style-mod "^4.0.0"
+    w3c-keyname "^2.2.4"
 
 "@commitlint/cli@^13.1.0":
   version "13.2.1"
@@ -497,6 +732,30 @@
   resolved "http://r.npm.internal.yunify.com/@humanwhocodes/object-schema/download/@humanwhocodes/object-schema-1.2.1.tgz#b520529ec21d8e5945a1851dfd1c32e94e39ff45"
   integrity sha1-tSBSnsIdjllFoYUd/Rwy6U45/0U=
 
+"@icons/material@^0.2.4":
+  version "0.2.4"
+  resolved "http://r.npm.internal.yunify.com/@icons/material/download/@icons/material-0.2.4.tgz#e90c9f71768b3736e76d7dd6783fc6c2afa88bc8"
+  integrity sha1-6QyfcXaLNzbnbX3WeD/Gwq+oi8g=
+
+"@lezer/common@^0.15.0", "@lezer/common@^0.15.5":
+  version "0.15.11"
+  resolved "http://r.npm.internal.yunify.com/@lezer/common/download/@lezer/common-0.15.11.tgz#965b5067036305f12e8a3efc344076850be1d3a8"
+  integrity sha1-lltQZwNjBfEuij78NEB2hQvh06g=
+
+"@lezer/javascript@^0.15.1":
+  version "0.15.2"
+  resolved "http://r.npm.internal.yunify.com/@lezer/javascript/download/@lezer/javascript-0.15.2.tgz#50b70a02561b047947e050e0619b1aea7131dc5f"
+  integrity sha1-ULcKAlYbBHlH4FDgYZsa6nEx3F8=
+  dependencies:
+    "@lezer/lr" "^0.15.0"
+
+"@lezer/lr@^0.15.0":
+  version "0.15.5"
+  resolved "http://r.npm.internal.yunify.com/@lezer/lr/download/@lezer/lr-0.15.5.tgz#4bce44169c441d9dda7be398f5202ea65c5f1138"
+  integrity sha1-S85EFpxEHZ3ae+OY9SAuplxfETg=
+  dependencies:
+    "@lezer/common" "^0.15.0"
+
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
   resolved "http://r.npm.internal.yunify.com/@nodelib/fs.scandir/download/@nodelib/fs.scandir-2.1.5.tgz#7619c2eb21b25483f6d167548b4cfd5a7488c3d5"
@@ -522,6 +781,20 @@
   version "0.3.1"
   resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-api-spec-adapter-v0.3.1.tgz#b9bb96abe2bb144cdf399cb30e33cbbb2864d361"
 
+"@ofa/page-engine@https://ofapkg.pek3b.qingstor.com/tarball/ofa-page-engine-v0.2.2.tgz":
+  version "0.2.2"
+  resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-page-engine-v0.2.2.tgz#936bd010a18a5bf26c7edb81f7cea4bc808b3b6b"
+  dependencies:
+    "@codemirror/lang-javascript" "^0.19.3"
+    "@uiw/react-codemirror" "^4.3.0"
+    classnames "^2.3.1"
+    mobx "^6.3.8"
+    mobx-react "^7.2.1"
+    nanoid "^3.1.30"
+    react-dnd "^14.0.4"
+    react-dnd-html5-backend "^14.0.2"
+    react-hook-form "^7.20.4"
+
 "@ofa/render-engine@https://ofapkg.pek3b.qingstor.com/tarball/ofa-render-engine-v0.6.0.tgz":
   version "0.6.0"
   resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-render-engine-v0.6.0.tgz#7bd6a80cccb263a435cab21f4dfea194b5143d38"
@@ -530,9 +803,25 @@
     react-dom "^17.0.2"
     rxjs "^7.4.0"
 
+"@ofa/ui@https://ofapkg.pek3b.qingstor.com/tarball/ofa-ui-v0.2.1.tgz":
+  version "0.2.1"
+  resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-ui-v0.2.1.tgz#0bcd72df182538024298b5e021b97a0eaddeee27"
+  dependencies:
+    "@popperjs/core" "^2.11.0"
+    classnames "^2.3.1"
+    nanoid "^3.1.30"
+    react-color "^2.19.3"
+    react-popper "^2.2.5"
+    styled-components "^5.3.3"
+
 "@ofa/utils@https://ofapkg.pek3b.qingstor.com/tarball/ofa-utils-v0.0.1.tgz":
   version "0.0.1"
   resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-utils-v0.0.1.tgz#50afb46bd98dacb11b2c39939c4c2a29e48ffd15"
+
+"@popperjs/core@^2.11.0":
+  version "2.11.0"
+  resolved "http://r.npm.internal.yunify.com/@popperjs/core/download/@popperjs/core-2.11.0.tgz#6734f8ebc106a0860dff7f92bf90df193f0935d7"
+  integrity sha1-ZzT468EGoIYN/3+Sv5DfGT8JNdc=
 
 "@popperjs/core@^2.9.1":
   version "2.10.2"
@@ -1239,6 +1528,17 @@
     "@typescript-eslint/types" "4.33.0"
     eslint-visitor-keys "^2.0.0"
 
+"@uiw/react-codemirror@^4.3.0":
+  version "4.3.1"
+  resolved "http://r.npm.internal.yunify.com/@uiw/react-codemirror/download/@uiw/react-codemirror-4.3.1.tgz#4a634372f3ee4673c3d0eab5150d1cac3fd19e07"
+  integrity sha1-SmNDcvPuRnPD0Oq1FQ0crD/Rngc=
+  dependencies:
+    "@babel/runtime" "^7.16.3"
+    "@codemirror/basic-setup" "^0.19.0"
+    "@codemirror/state" "^0.19.5"
+    "@codemirror/theme-one-dark" "^0.19.1"
+    "@codemirror/view" "^0.19.15"
+
 "@use-gesture/core@10.2.4":
   version "10.2.4"
   resolved "https://registry.npmjs.org/@use-gesture/core/-/core-10.2.4.tgz#139370223174b0589bd4b4f8ac7c0beb6ba64ba2"
@@ -1886,7 +2186,7 @@ classcat@^5.0.3:
   resolved "http://r.npm.internal.yunify.com/classcat/download/classcat-5.0.3.tgz#38eaa0ec6eb1b10faf101bbcef2afb319c23c17b"
   integrity sha1-OOqg7G6xsQ+vEBu87yr7MZwjwXs=
 
-classnames@*, classnames@2.x, classnames@^2.2.1, classnames@^2.2.3, classnames@^2.2.5, classnames@^2.2.6:
+classnames@*, classnames@2.x, classnames@^2.2.1, classnames@^2.2.3, classnames@^2.2.5, classnames@^2.2.6, classnames@^2.3.1:
   version "2.3.1"
   resolved "http://r.npm.internal.yunify.com/classnames/download/classnames-2.3.1.tgz#dfcfa3891e306ec1dad105d0e88f4417b8535e8e"
   integrity sha1-38+jiR4wbsHa0QXQ6I9EF7hTXo4=
@@ -2208,6 +2508,11 @@ create-require@^1.1.0:
   version "1.1.1"
   resolved "http://r.npm.internal.yunify.com/create-require/download/create-require-1.1.1.tgz#c1d7e8f1e5f6cfc9ff65f9cd352d37348756c333"
   integrity sha1-wdfo8eX2z8n/ZfnNNS03NIdWwzM=
+
+crelt@^1.0.5:
+  version "1.0.5"
+  resolved "http://r.npm.internal.yunify.com/crelt/download/crelt-1.0.5.tgz#57c0d52af8c859e354bace1883eb2e1eb182bb94"
+  integrity sha1-V8DVKvjIWeNUus4Yg+suHrGCu5Q=
 
 cross-fetch@^3.0.4:
   version "3.1.4"
@@ -4526,6 +4831,11 @@ locate-path@^6.0.0:
   dependencies:
     p-locate "^5.0.0"
 
+lodash-es@^4.17.15:
+  version "4.17.21"
+  resolved "http://r.npm.internal.yunify.com/lodash-es/download/lodash-es-4.17.21.tgz#43e626c46e6591b7750beb2b50117390c609e3ee"
+  integrity sha1-Q+YmxG5lkbd1C+srUBFzkMYJ4+4=
+
 lodash.camelcase@^4.3.0:
   version "4.3.0"
   resolved "http://r.npm.internal.yunify.com/lodash.camelcase/download/lodash.camelcase-4.3.0.tgz#b28aa6288a2b9fc651035c7711f65ab6190331a6"
@@ -4566,7 +4876,7 @@ lodash.uniq@^4.5.0:
   resolved "http://r.npm.internal.yunify.com/lodash.uniq/download/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
   integrity sha1-0CJTc662Uq3BvILklFM5qEJ1R3M=
 
-lodash@^4.17.11, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.17.21, lodash@^4.17.4:
+lodash@^4.0.1, lodash@^4.17.11, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.17.21, lodash@^4.17.4:
   version "4.17.21"
   resolved "http://r.npm.internal.yunify.com/lodash/download/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha1-Z5WRxWTDv/quhFTPCz3zcMPWkRw=
@@ -4657,6 +4967,11 @@ match-sorter@^6.0.2:
   dependencies:
     "@babel/runtime" "^7.12.5"
     remove-accents "0.4.2"
+
+material-colors@^1.2.1:
+  version "1.2.6"
+  resolved "http://r.npm.internal.yunify.com/material-colors/download/material-colors-1.2.6.tgz#6d1958871126992ceecc72f4bcc4d8f010865f46"
+  integrity sha1-bRlYhxEmmSzuzHL0vMTY8BCGX0Y=
 
 mdn-data@2.0.14:
   version "2.0.14"
@@ -4836,6 +5151,11 @@ mobx-react-lite@^1.4.2:
   resolved "http://r.npm.internal.yunify.com/mobx-react-lite/download/mobx-react-lite-1.5.2.tgz#c4395b0568b9cb16f07669d8869cc4efa1b8656d"
   integrity sha1-xDlbBWi5yxbwdmnYhpzE76G4ZW0=
 
+mobx-react-lite@^3.2.0:
+  version "3.2.2"
+  resolved "http://r.npm.internal.yunify.com/mobx-react-lite/download/mobx-react-lite-3.2.2.tgz#cee5f09e6b0e4d2705d87276baf1de74d997fa33"
+  integrity sha1-zuXwnmsOTScF2HJ2uvHedNmX+jM=
+
 mobx-react@6.1.4:
   version "6.1.4"
   resolved "http://r.npm.internal.yunify.com/mobx-react/download/mobx-react-6.1.4.tgz#818e7991c321c05bd9b8156d94be17dad165501e"
@@ -4843,10 +5163,22 @@ mobx-react@6.1.4:
   dependencies:
     mobx-react-lite "^1.4.2"
 
+mobx-react@^7.2.1:
+  version "7.2.1"
+  resolved "http://r.npm.internal.yunify.com/mobx-react/download/mobx-react-7.2.1.tgz#e9d4c04dc63d05e1139ce773f5fee7a5b4cb7c78"
+  integrity sha1-6dTATcY9BeETnOdz9f7npbTLfHg=
+  dependencies:
+    mobx-react-lite "^3.2.0"
+
 mobx@5:
   version "5.15.7"
   resolved "http://r.npm.internal.yunify.com/mobx/download/mobx-5.15.7.tgz#b9a5f2b6251f5d96980d13c78e9b5d8d4ce22665"
   integrity sha1-uaXytiUfXZaYDRPHjptdjUziJmU=
+
+mobx@^6.3.8:
+  version "6.3.9"
+  resolved "http://r.npm.internal.yunify.com/mobx/download/mobx-6.3.9.tgz#cce102d9aaa5a8793a7d5d2cf33ddb7a98c14e27"
+  integrity sha1-zOEC2aqlqHk6fV0s8z3bepjBTic=
 
 modern-normalize@^1.1.0:
   version "1.1.0"
@@ -5871,7 +6203,7 @@ promise@^7.1.1:
   dependencies:
     asap "~2.0.3"
 
-prop-types@^15.5.8, prop-types@^15.6.0, prop-types@^15.6.2, prop-types@^15.7.2:
+prop-types@^15.5.10, prop-types@^15.5.8, prop-types@^15.6.0, prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.7.2"
   resolved "http://r.npm.internal.yunify.com/prop-types/download/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha1-UsQedbjIfnK52TYOAga5ncv/psU=
@@ -6353,14 +6685,27 @@ react-beautiful-dnd@^13.1.0:
     redux "^4.0.4"
     use-memo-one "^1.1.1"
 
-react-dnd-html5-backend@^14.0.1:
+react-color@^2.19.3:
+  version "2.19.3"
+  resolved "http://r.npm.internal.yunify.com/react-color/download/react-color-2.19.3.tgz#ec6c6b4568312a3c6a18420ab0472e146aa5683d"
+  integrity sha1-7GxrRWgxKjxqGEIKsEcuFGqlaD0=
+  dependencies:
+    "@icons/material" "^0.2.4"
+    lodash "^4.17.15"
+    lodash-es "^4.17.15"
+    material-colors "^1.2.1"
+    prop-types "^15.5.10"
+    reactcss "^1.2.0"
+    tinycolor2 "^1.4.1"
+
+react-dnd-html5-backend@^14.0.1, react-dnd-html5-backend@^14.0.2:
   version "14.0.2"
   resolved "http://r.npm.internal.yunify.com/react-dnd-html5-backend/download/react-dnd-html5-backend-14.0.2.tgz#25019388f6abdeeda3a6fea835dff155abb2085c"
   integrity sha1-JQGTiPar3u2jpv6oNd/xVauyCFw=
   dependencies:
     dnd-core "14.0.1"
 
-react-dnd@^14.0.3:
+react-dnd@^14.0.3, react-dnd@^14.0.4:
   version "14.0.4"
   resolved "http://r.npm.internal.yunify.com/react-dnd/download/react-dnd-14.0.4.tgz#ffb4ea0e2a3a5532f9c6294d565742008a52b8b0"
   integrity sha1-/7TqDio6VTL5xilNVldCAIpSuLA=
@@ -6446,6 +6791,11 @@ react-flow-renderer@^9.6.11:
     react-redux "^7.2.6"
     redux "^4.1.2"
 
+react-hook-form@^7.20.4:
+  version "7.22.2"
+  resolved "http://r.npm.internal.yunify.com/react-hook-form/download/react-hook-form-7.22.2.tgz#aa66fd75cad858049739770341079d9787683c6b"
+  integrity sha1-qmb9dcrYWASXOXcDQQedl4doPGs=
+
 react-hook-form@^7.4.2:
   version "7.18.1"
   resolved "http://r.npm.internal.yunify.com/react-hook-form/download/react-hook-form-7.18.1.tgz#dcd412a22fc1843bdb54d0acb21035a4a75f7435"
@@ -6468,7 +6818,7 @@ react-is@^17.0.2:
   resolved "http://r.npm.internal.yunify.com/react-is/download/react-is-17.0.2.tgz#e691d4a8e9c789365655539ab372762b0efb54f0"
   integrity sha1-5pHUqOnHiTZWVVOas3J2Kw77VPA=
 
-react-popper@^2.2.4:
+react-popper@^2.2.4, react-popper@^2.2.5:
   version "2.2.5"
   resolved "http://r.npm.internal.yunify.com/react-popper/download/react-popper-2.2.5.tgz#1214ef3cec86330a171671a4fbcbeeb65ee58e96"
   integrity sha1-EhTvPOyGMwoXFnGk+8vutl7ljpY=
@@ -6610,6 +6960,13 @@ react@^17.0.1, react@^17.0.2:
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
+
+reactcss@^1.2.0:
+  version "1.2.3"
+  resolved "http://r.npm.internal.yunify.com/reactcss/download/reactcss-1.2.3.tgz#c00013875e557b1cf0dfd9a368a1c3dab3b548dd"
+  integrity sha1-wAATh15Vexzw39mjaKHD2rO1SN0=
+  dependencies:
+    lodash "^4.0.1"
 
 read-cache@^1.0.0:
   version "1.0.0"
@@ -7508,7 +7865,12 @@ style-loader@^2.0.0:
     loader-utils "^2.0.0"
     schema-utils "^3.0.0"
 
-styled-components@^5.2.3:
+style-mod@^4.0.0:
+  version "4.0.0"
+  resolved "http://r.npm.internal.yunify.com/style-mod/download/style-mod-4.0.0.tgz#97e7c2d68b592975f2ca7a63d0dd6fcacfe35a01"
+  integrity sha1-l+fC1otZKXXyynpj0N1vys/jWgE=
+
+styled-components@^5.2.3, styled-components@^5.3.3:
   version "5.3.3"
   resolved "http://r.npm.internal.yunify.com/styled-components/download/styled-components-5.3.3.tgz#312a3d9a549f4708f0fb0edc829eb34bde032743"
   integrity sha1-MSo9mlSfRwjw+w7cgp6zS94DJ0M=
@@ -7713,6 +8075,11 @@ tiny-warning@1.0.3, tiny-warning@^1.0.0, tiny-warning@^1.0.3:
   version "1.0.3"
   resolved "http://r.npm.internal.yunify.com/tiny-warning/download/tiny-warning-1.0.3.tgz#94a30db453df4c643d0fd566060d60a875d84754"
   integrity sha1-lKMNtFPfTGQ9D9VmBg1gqHXYR1Q=
+
+tinycolor2@^1.4.1:
+  version "1.4.2"
+  resolved "http://r.npm.internal.yunify.com/tinycolor2/download/tinycolor2-1.4.2.tgz#3f6a4d1071ad07676d7fa472e1fac40a719d8803"
+  integrity sha1-P2pNEHGtB2dtf6Ry4frECnGdiAM=
 
 tmp@^0.2.1:
   version "0.2.1"
@@ -8044,6 +8411,11 @@ vendors@^1.0.0:
   version "1.0.4"
   resolved "http://r.npm.internal.yunify.com/vendors/download/vendors-1.0.4.tgz#e2b800a53e7a29b93506c3cf41100d16c4c4ad8e"
   integrity sha1-4rgApT56Kbk1BsPPQRANFsTErY4=
+
+w3c-keyname@^2.2.4:
+  version "2.2.4"
+  resolved "http://r.npm.internal.yunify.com/w3c-keyname/download/w3c-keyname-2.2.4.tgz#4ade6916f6290224cdbd1db8ac49eab03d0eef6b"
+  integrity sha1-St5pFvYpAiTNvR24rEnqsD0O72s=
 
 warning@^4.0.1, warning@^4.0.2:
   version "4.0.3"

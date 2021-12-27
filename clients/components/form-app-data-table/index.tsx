@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useImperativeHandle, useRef } from 'react';
 import { toJS } from 'mobx';
-import { UnionColumns } from 'react-table';
+import { UnionColumn } from 'react-table';
 
 import PageLoading from '@c/page-loading';
 import AbsoluteCentered from '@c/absolute-centered';
@@ -21,7 +21,7 @@ type Props = {
   appName?: string;
   pageName?: string;
   tableHeaderBtnList?: TableHeaderBtn[];
-  customColumns?: UnionColumns<any>[];
+  customColumns?: UnionColumn<any>[];
   allowRequestData?: boolean;
   showCheckbox?: boolean;
   className?: string;

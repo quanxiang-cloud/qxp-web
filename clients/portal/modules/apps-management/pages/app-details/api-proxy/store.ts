@@ -259,7 +259,7 @@ class ApiProxyStore {
   }
 
   @action
-  registerApi=async (params: PolyAPI.CreateApiParams):Promise<void> => {
+  registerApi=async (params: PolyAPI.CreateApiParams): Promise<void> => {
     await apis.registerApi(this.svc?.fullPath || '', params);
   }
 

@@ -12,7 +12,7 @@ func loginRequired(h http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		r, ok := handlers.PrepareRequest(r)
 		if !ok {
-			handlers.RedirectToLoginPage(w, r)
+			handlers.RedirectToLoginPage(w, r, "")
 			return
 		}
 

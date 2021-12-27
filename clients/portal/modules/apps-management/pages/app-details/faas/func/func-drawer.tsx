@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { UnionColumns } from 'react-table';
+import { UnionColumn } from 'react-table';
 import { observer } from 'mobx-react';
 import cs from 'classnames';
 import dayjs from 'dayjs';
@@ -23,7 +23,7 @@ function FuncDetailsDrawer(): JSX.Element {
   const [visible, setVisible] = useState<boolean>(false);
   const [fullScreen, setFullScreen] = useState<boolean>(false);
 
-  const COLUMNS: UnionColumns<VersionField>[] = [
+  const COLUMNS: UnionColumn<VersionField>[] = [
     {
       Header: '版本号',
       id: 'tag',

@@ -2,6 +2,7 @@ import React from 'react';
 import cs from 'classnames';
 import { isArray } from 'lodash';
 import { FormItem, IForm, IMutators } from '@formily/antd';
+import { MegaLayout } from '@formily/antd-components';
 import { set, lensPath } from 'ramda';
 
 import Icon from '@c/icon';
@@ -72,7 +73,7 @@ export default function SubTableRow({
               </div>
             ))}
           </div>
-          <div className="px-22 text-center">
+          <div className="px-22 text-center w-72">
             操作
           </div>
         </div>
@@ -110,25 +111,27 @@ export default function SubTableRow({
                   }, 'flex items-center justify-center subtable-column-default-item',
                 )}
               >
-                <FormItem
-                  {...prs}
-                  props={{ ...prs, props: prs }}
-                  schema={sc}
-                  className="mx-8 my-8 w-full"
-                  name={path}
-                  path={path}
-                  readOnly={readOnly}
-                  form={form}
-                  mutators={{ change: onChange(path, form) }}
-                  rules={rules}
-                  dataSource={dataSource}
-                  required={required}
-                  value={value}
-                  component={
-                    readOnly && !blackList.includes(componentName) ?
-                      ({ value }) => render?.(value) || null : component
-                  }
-                />
+                <MegaLayout wrapperCol={24}>
+                  <FormItem
+                    {...prs}
+                    props={{ ...prs, props: prs }}
+                    schema={sc}
+                    className="mx-8 my-8 w-full"
+                    name={path}
+                    path={path}
+                    readOnly={readOnly}
+                    form={form}
+                    mutators={{ change: onChange(path, form) }}
+                    rules={rules}
+                    dataSource={dataSource}
+                    required={required}
+                    value={value}
+                    component={
+                      readOnly && !blackList.includes(componentName) ?
+                        ({ value }) => render?.(value) || null : component
+                    }
+                  />
+                </MegaLayout>
               </div>
             );
           })}
@@ -140,7 +143,7 @@ export default function SubTableRow({
             <Icon
               name="delete"
               className="w-72"
-              size={29}
+              size={28}
               clickable
               onClick={() => onRemoveRow(mutators, index)}
             />

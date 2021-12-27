@@ -58,7 +58,7 @@ export const searchNamespace = async (ns: string, params: Record<string, any>): 
 /*
   service crud apis
  */
-export const createService = async (ns:string, params: PolyAPI.CreateServiceParams): Promise<PolyAPI.CreateServiceResult> => {
+export const createService = async (ns: string, params: PolyAPI.CreateServiceParams): Promise<PolyAPI.CreateServiceResult> => {
   return await httpClient(`/api/v1/polyapi/service/create/${normalizeSuffix(ns)}`, params);
 };
 

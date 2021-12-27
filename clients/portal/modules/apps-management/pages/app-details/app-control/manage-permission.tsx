@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { UnionColumns } from 'react-table';
+import { UnionColumn } from 'react-table';
 import { useParams } from 'react-router-dom';
 
 import toast from '@lib/toast';
@@ -82,7 +82,7 @@ function ManagePermission(): JSX.Element {
     fetchAdmins();
   }, [params, appID]);
 
-  const columns: UnionColumns<Employee>[] = React.useMemo(() => [
+  const columns: UnionColumn<Employee>[] = React.useMemo(() => [
     {
       id: 'userName',
       Header: '员工',

@@ -2,8 +2,9 @@ import React from 'react';
 import dayjs from 'dayjs';
 import styles from './index.module.scss';
 import cs from 'classnames';
+
+import FileList from '@c/file-upload/file-list';
 import Loading from '@c/loading';
-import FileList from './filelist';
 import { MsgType } from '@portal/modules/system-mgmt/constants';
 
 interface Props {
@@ -18,9 +19,6 @@ interface Props {
 const PreviewMsg = ({
   prevData,
   hideReceivers,
-  isPreview,
-  canDownload,
-  canMultiDownload,
   className,
 }: Props): JSX.Element => {
   if (!prevData) {
@@ -29,8 +27,14 @@ const PreviewMsg = ({
     );
   }
 
-  const { title, content, receivers, sort, type, handle_name, update_at } = prevData;
-  const msgType = typeof sort !== 'undefined' ? sort : type; // todo
+  const { title, content, receivers, types, type, creatorName, updateAt, files } = prevData;
+  const msgType = typeof types !== 'undefined' ? types : type; // todo
+  const fileList = files?.map((item) => ({
+    uid: item.url || '',
+    name: item.fileName || '',
+    type: '',
+    size: 0,
+  })) || [];
 
   let txt = '';
   if (msgType === MsgType.notify) {
@@ -41,7 +45,7 @@ const PreviewMsg = ({
     txt = '未知消息类型';
   }
   const infoText = [
-    dayjs(update_at * 1000).format('YYYY-MM-DD HH:mm:ss'), txt, handle_name || window.USER.userName,
+    dayjs(updateAt * 1000).format('YYYY-MM-DD HH:mm:ss'), txt, creatorName || window.USER.userName,
   ].join(' · ');
 
   return (
@@ -51,12 +55,8 @@ const PreviewMsg = ({
         <div className={styles.info}>{infoText}</div>
         <div dangerouslySetInnerHTML={{ __html: content }} />
         <FileList
-          candownload={canDownload}
-          files={(prevData.mes_attachment || [])}
-          hideProgress
-          isPreview={isPreview}
-          canMultiDownload={canMultiDownload}
-          messageTitle={title}
+          files={fileList}
+          canDownload = {true}
         />
       </div>
 

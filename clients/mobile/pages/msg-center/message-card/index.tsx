@@ -1,33 +1,35 @@
 import React, { useEffect } from 'react';
 import { useQuery } from 'react-query';
-import { observer } from 'mobx-react';
-import { useHistory } from 'react-router-dom';
+import { get } from 'lodash';
 
 import HomeCard from '@m/pages/dashboard/home-card';
 import Badge from '@m/qxp-ui-mobile/badge';
 import Divider from '@m/qxp-ui-mobile/divider';
-import { getMessageList } from '@portal/modules/msg-center/api';
+import { getMessageList, getUnreadMsgCount } from '@portal/modules/msg-center/api';
 import msgCenter from '@portal/stores/msg-center';
 import { formatRelativeTime } from '@m/lib/formatter';
 import { HomePageProps } from '@m/pages/dashboard/types';
-import { pathPrefix } from '@m/constant';
-import { messagesPath } from '@m/constant';
-import { store } from '../messages/store';
+
 import { Message } from '../types';
 
 function MessageCard(props: HomePageProps): JSX.Element {
-  const history = useHistory();
   const { countUnread } = msgCenter;
-
+  const { data: countUnreadMsg, refetch: refetchUnread } = useQuery(
+    'count-unread-msg',
+    getUnreadMsgCount,
+    { enabled: false },
+  );
+  msgCenter.setUnreadTypeCounts(get(countUnreadMsg, 'typeNum', []));
   const { data, refetch: refetchMessages } = useQuery(
-    ['all-messages', { page: 1, limit: 3 }],
+    ['all-messages',
+      { page: 1, limit: 3 }],
     getMessageList,
     { enabled: false },
   );
 
   useEffect(() => {
     if (props.active) {
-      store.all.loadUnreadCount();
+      refetchUnread();
       refetchMessages();
     }
   }, [props.active]);
@@ -36,10 +38,7 @@ function MessageCard(props: HomePageProps): JSX.Element {
     <HomeCard title='消息' className='mt-12'>
       {!!data?.mes_list?.length && (<div className='message-card body2 text-secondary'>
         {(data.mes_list as Message[]).map((m) => (
-          <div className='message-card-item flex items-center pointer-8'
-            key={m.id}
-            onClick={() => history.push(`${pathPrefix}/messages/${m.id}`)}
-          >
+          <div className='message-card-item flex items-center pointer-8' key={m.id}>
             <Badge dot
               color='var(--blue-600)'
               style={{ width: '.04rem', height: '.04rem' }}
@@ -49,8 +48,7 @@ function MessageCard(props: HomePageProps): JSX.Element {
           </div>
         ))}
         <Divider color='#E6ECF9' className='mt-8'/>
-        <div className='btn-all-message padding-8 flex items-center justify-center pointer'
-          onClick={() => history.push(messagesPath)}>
+        <div className='btn-all-message padding-8 flex items-center justify-center pointer'>
           <p className='mr-4 body1 text-highlight'>全部消息</p>
           {countUnread > 0 && <Badge dot/>}
         </div>
@@ -60,4 +58,4 @@ function MessageCard(props: HomePageProps): JSX.Element {
   );
 }
 
-export default observer(MessageCard);
+export default MessageCard;

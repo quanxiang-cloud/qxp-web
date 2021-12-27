@@ -8,7 +8,7 @@ type FormInfoCardDataProp = {
 type GroupInfo = {
   key: string;
   title: string,
-  groups:FormInfoCardDataProp[]
+  groups: FormInfoCardDataProp[]
 }
 
 type FormDetailData = {

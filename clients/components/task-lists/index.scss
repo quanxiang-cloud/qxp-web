@@ -49,3 +49,13 @@
     flex-direction: column;
   }
 }
+
+.task_count_btn {
+  top: -0.4rem;
+  left: 1.5rem;
+  border-radius:  8px 8px 8px 2px !important;
+  background: #EF4444;
+  color: #fff;
+  border: none;
+  line-height: 20px;
+}

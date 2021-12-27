@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { UnionColumns } from 'react-table';
+import { UnionColumn } from 'react-table';
 import cs from 'classnames';
 
 import Table from '@c/table';
@@ -40,16 +40,16 @@ function ReadOnlySubTable({ value, schema: definedSchema, className }: Props): J
 
   const componentColumns = useMemo(() => {
     if (!schema) {
-      return [] as UnionColumns<any>[];
+      return [] as UnionColumn<any>[];
     }
 
-    return schemaToFields(schema).reduce<UnionColumns<any>[]>((acc, field) => {
+    return schemaToFields(schema).reduce<UnionColumn<any>[]>((acc, field) => {
       const isHidden = !field.display;
       if ((isFromForeign && !columns?.includes(field.id)) || field.id === '_id' || isHidden) {
         return acc;
       }
 
-      const _columns:UnionColumns<any> = {
+      const _columns: UnionColumn<any> = {
         Header: (field.title) as string,
         id: field.id,
         accessor: (value: Record<string, any>) =>
@@ -65,7 +65,7 @@ function ReadOnlySubTable({ value, schema: definedSchema, className }: Props): J
       return [
         ...acc,
         _columns,
-      ] as UnionColumns<any>[];
+      ] as UnionColumn<any>[];
     }, []);
   }, [schema]);
 

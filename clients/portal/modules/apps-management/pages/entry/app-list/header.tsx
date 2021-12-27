@@ -40,7 +40,7 @@ function Header({ changeParams, params, setModalType, countMaps }: Props) {
     }
   };
 
-  const clear = (val:string) => {
+  const clear = (val: string) => {
     if (val === '') {
       changeParams({ appName: '' });
     }

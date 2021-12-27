@@ -60,7 +60,7 @@ function GroupNodeRender({ node }: NodeRenderProps<PolyAPI.Namespace>): JSX.Elem
   const { appID } = useParams<{appID: string}>();
   const formInst = useForm();
 
-  function handleClickMenu(key: string):void {
+  function handleClickMenu(key: string): void {
     setModalType(key);
     setModalOpen(true);
   }
@@ -73,7 +73,7 @@ function GroupNodeRender({ node }: NodeRenderProps<PolyAPI.Namespace>): JSX.Elem
     return getLevelByNs(getFullNs()) > MAX_LIMIT_NS_LEVEL;
   }
 
-  function saveGroup():void {
+  function saveGroup(): void {
     formInst.handleSubmit(async (data: PolyAPI.CreateNamespaceParams)=> {
       if (modalType === 'edit' && !data.name) {
         data.name = node.data.name;
@@ -109,7 +109,7 @@ function GroupNodeRender({ node }: NodeRenderProps<PolyAPI.Namespace>): JSX.Elem
     }
   }
 
-  function toGroup(id: string):void {
+  function toGroup(id: string): void {
     const prefix = `/apps/details/${appID}/api_proxy`;
     history.push(`${prefix}?ns=${id}`);
   }

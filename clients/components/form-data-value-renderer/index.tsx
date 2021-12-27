@@ -87,14 +87,14 @@ function stringListValue({ value }: ValueRendererProps): string {
 }
 
 export default function FormDataValueRenderer({ value, schema, className }: Props): JSX.Element {
-  switch (schema['x-component']) {
-  case 'SubTable':
+  switch (schema['x-component']?.toLowerCase()) {
+  case 'subtable':
     return (<SubTableValueRenderer schema={schema} value={value} />);
-  case 'AssociatedRecords':
+  case 'associatedrecords':
     return (<AssociatedRecordsValueRender schema={schema} value={value} />);
-  case 'AssociatedData':
+  case 'associateddata':
     return (<AssociatedDataValueRender schema={schema} value={value as LabelValue} />);
-  case 'ImageUpload': {
+  case 'imageupload': {
     return (
       <div className="flex flex-wrap">
         <FileList
@@ -105,7 +105,7 @@ export default function FormDataValueRenderer({ value, schema, className }: Prop
               name: file.label,
               uid: file.value,
               type: file.type,
-              size: file.size,
+              size: file.size || 0,
             }),
           )}
         />
@@ -113,7 +113,7 @@ export default function FormDataValueRenderer({ value, schema, className }: Prop
 
     );
   }
-  case 'FileUpload': {
+  case 'fileupload': {
     return (
       <div className="max-w-290">
         <FileList
@@ -123,7 +123,7 @@ export default function FormDataValueRenderer({ value, schema, className }: Prop
               name: file.label,
               uid: file.value,
               type: file.type,
-              size: file.size,
+              size: file.size || 0,
             }),
           )}
         />
@@ -140,7 +140,8 @@ export default function FormDataValueRenderer({ value, schema, className }: Prop
 }
 
 export function FormDataSubTableValueRenderer({ value, schema, className }: Props): JSX.Element {
-  if (schema['x-component'] === 'FileUpload') {
+  const componentName = schema['x-component']?.toLowerCase();
+  if (componentName === 'fileupload') {
     const fileIconStyle: React.CSSProperties = {
       display: 'block',
       padding: '0',
@@ -162,7 +163,7 @@ export function FormDataSubTableValueRenderer({ value, schema, className }: Prop
               name: file.label,
               uid: file.value,
               type: file.type,
-              size: file.size,
+              size: file.size || 0,
             }))}
           />
         ) : (
@@ -172,7 +173,7 @@ export function FormDataSubTableValueRenderer({ value, schema, className }: Prop
     );
   }
 
-  if (schema['x-component'] === 'ImageUpload') {
+  if (componentName === 'imageupload') {
     return (
       <div className="flex items-center">
         <Icon name="image" size={22} className="mr-2"></Icon>
@@ -184,7 +185,7 @@ export function FormDataSubTableValueRenderer({ value, schema, className }: Prop
               name: file.label,
               uid: file.value,
               type: file.type,
-              size: file.size,
+              size: file.size || 0,
             }))}
           />
         ) : (

@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { FixedColumn, IdType, UnionColumns } from 'react-table';
+import { FixedColumn, IdType, UnionColumn } from 'react-table';
 
 import checkboxColumn from './checkbox-column';
 
@@ -20,9 +20,9 @@ export const getDefaultSelectMap = (keys: string[] | undefined): Record<IdType<a
 };
 
 export function useExtendColumns<T = any>(
-  originalColumns: UnionColumns<T>[],
+  originalColumns: UnionColumn<T>[],
   showCheckbox?: boolean,
-): UnionColumns<T>[] {
+): UnionColumn<T>[] {
   return useMemo(() => {
     const _originalColumns = originalColumns.map((col) => {
       if (col.width) {
