@@ -30,24 +30,24 @@ export default function MessageFileList({
     <div className={className} style={style}>
       {files.map((file, index) => {
         // Todo: Add sign upload url check
-        if (preview && (isImageExt(file.file_name) || isImageExt(file.file_url))) {
+        if (preview && (isImageExt(file.fileName) || isImageExt(file.url))) {
           return (
-            <Link href={file.file_url}
+            <Link href={file.fileName}
               target='_blank'
               style={index > 0 ? spacerStyle : undefined}
               className='body1 text-highlight'
               key={index}>
-              <img alt={file.file_name} src={file.file_url}/>
+              <img alt={file.fileName} src={file.url}/>
             </Link>
           );
         }
         return (
-          <Link href={file.file_url}
+          <Link href={file.fileName}
             target='_blank'
             style={index > 0 ? spacerStyle : undefined}
             className='body1 text-highlight'
             key={index}>
-            {file.file_name}
+            {file.fileName}
           </Link>
         );
       })}

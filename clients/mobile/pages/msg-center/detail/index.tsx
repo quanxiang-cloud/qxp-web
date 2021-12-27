@@ -52,7 +52,7 @@ export default function MessageDetail(): JSX.Element {
         </>
       )}
 
-      <MessageFileList files={data?.mes_attachment} className='mt-16' preview/>
+      <MessageFileList files={data?.files} className='mt-16' preview/>
 
     </NavPage>
   );

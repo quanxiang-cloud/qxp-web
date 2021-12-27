@@ -18,7 +18,7 @@ export const allMessages: MessageMessageTabTitle[] = [
 ];
 
 export interface MessagesResponse {
-  mes_list: Message[]
+  list: Message[]
 }
 
 export type MessageRequest = (
