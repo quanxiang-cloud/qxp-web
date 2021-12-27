@@ -144,17 +144,28 @@ const schema: ISchema = {
           'x-linkages': [
             {
               type: 'value:visible',
+              target: 'defaultValue',
+              condition: '{{ $value === "customized" }}',
+            },
+            {
+              type: 'value:visible',
               target: 'defaultValueLinkage',
               condition: '{{ $value === "linkage" }}',
             },
           ],
+        },
+        defaultValue: {
+          type: 'string',
+          title: '默认值',
+          'x-component': 'DatePicker',
+          'x-index': 9,
         },
         defaultValueLinkage: {
           'x-component': 'DefaultValueLinkageConfigBtn',
           'x-component-props': {
             value: '设置数据联动',
           },
-          'x-index': 9,
+          'x-index': 10,
         },
       },
     },

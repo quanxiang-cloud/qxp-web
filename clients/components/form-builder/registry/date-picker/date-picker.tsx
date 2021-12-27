@@ -39,6 +39,7 @@ function DatePicker(props: ISchemaFieldComponentProps): JSX.Element {
       picker={getPicker(componentProps.format as string || 'YYYY-MM-DD HH:mm:ss')}
       onChange={handleChange}
       value={props.value && moment(props.value)}
+      defaultValue={componentProps.defaultValue && moment(componentProps.defaultValue)}
     />
   );
 }
