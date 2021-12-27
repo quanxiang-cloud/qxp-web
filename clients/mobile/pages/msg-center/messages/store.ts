@@ -15,10 +15,10 @@ const request = getMessageList as MessageRequest;
 let lastLoad = 0;
 
 class MessagesStore {
-  private readonly sort: number;
+  private readonly types: number;
 
-  constructor(sort: number) {
-    this.sort = sort;
+  constructor(types: number) {
+    this.types = types;
   }
 
   @observable list: Message[] = [];
@@ -30,16 +30,19 @@ class MessagesStore {
   @action
   loadMessages = async (pageKey: number, loadUnread = true): Promise<void> => {
     const params: Record<string, any> = { page: pageKey, limit };
-    if (this.sort > -1) {
-      params.sort = this.sort;
+    if (this.types > -1) {
+      params.types = this.types;
     }
     if (pageKey < 2 && loadUnread) this.loadUnreadCount();
     try {
       const res = await request({ queryKey: ['', params], pageParam: undefined, meta: undefined });
-      let data = res?.mes_list;
+      let data = res?.list;
       if (data && data.length > 0) {
         data = data.map((message) => {
-          return { ...message, updated: formatRelativeTime(new Date(message.updated_at * 1000)) };
+          return {
+            ...message,
+            updated: formatRelativeTime(new Date((message.updatedAt ?? message.createdAt ?? 0) * 1000)),
+          };
         });
       } else {
         data = [];
@@ -65,14 +68,14 @@ class MessagesStore {
     if (new Date().valueOf() - lastLoad < 500) return;
     lastLoad = new Date().valueOf();
     getUnreadMsgCount().then((data) => {
-      msgCenter.setUnreadTypeCounts(get(data, 'type_num', []));
+      msgCenter.setUnreadTypeCounts(get(data, 'typeNum', []));
     });
   };
 
   @action
   read = (message: Message, index: number): void => {
     if (message.readStatus === 1) {
-      const _message = { ...message, read_status: 2 };
+      const _message = { ...message, readStatus: 2 };
       this.list = this.list.splice(index, 1, _message);
     }
   }
