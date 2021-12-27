@@ -4,6 +4,8 @@ import { CustomPageInfo, SchemaPageInfo } from '@portal/modules/apps-management/
 import { ESParameter, toEs } from '@c/data-filter/utils';
 import schemaToFields from '@lib/schema-convert';
 
+import { TIME_ZONE } from './utils';
+
 let alreadyAlertUnauthorizedError = false;
 
 async function httpClient<TData, TBody = unknown>(
@@ -14,6 +16,7 @@ async function httpClient<TData, TBody = unknown>(
 ): Promise<TData> {
   const headers = {
     'X-Proxy': 'API',
+    'X-Timezone': TIME_ZONE,
     'Content-Type': 'application/json',
     ...additionalHeaders,
   };
@@ -313,6 +316,7 @@ export async function httpClientGraphQL<TData>(
   const headers = {
     'X-Proxy': 'API',
     'Content-Type': 'application/json',
+    'X-Timezone': TIME_ZONE,
     ...additionalHeaders,
   };
 

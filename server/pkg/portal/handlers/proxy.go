@@ -8,7 +8,7 @@ import (
 )
 
 func getTargetURL(r *http.Request) string {
-	var endpoint = contexts.Config.APIEndpoint;
+	var endpoint = contexts.Config.APIEndpoint
 	var host = endpoint.Hostname
 	if endpoint.Port != 0 {
 		host = fmt.Sprintf("%s:%d", host, endpoint.Port)
@@ -38,6 +38,7 @@ func ProxyAPIHandler(w http.ResponseWriter, r *http.Request) {
 	req.Header.Set("Access-Token", getToken(r))
 	req.Header.Set("Content-Type", r.Header.Get("Content-Type"))
 	req.Header.Set("User-Agent", r.Header.Get("User-Agent"))
+	req.Header.Set("X-Timezone", r.Header.Get("X-Timezone"))
 	req.Header.Set("X-Request-ID", contexts.GetRequestID(r))
 
 	contexts.Logger.Debugf(

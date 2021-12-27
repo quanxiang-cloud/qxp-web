@@ -7,6 +7,25 @@ import dayjs from 'dayjs';
 
 import toast from '@lib/toast';
 
+// https://attacomsian.com/blog/javascript-current-timezone
+function getTimeZone(): string {
+  const date = new Date();
+  const offset = date.getTimezoneOffset();
+  if (offset === 0) {
+    return 'UTC+0';
+  }
+
+  const delta = Math.abs(offset) / 60;
+
+  if (offset > 0) {
+    return `UTC-${delta}`;
+  }
+
+  return `UTC+${delta}`;
+}
+
+export const TIME_ZONE = getTimeZone();
+
 export function uuid(): string {
   return nanoid();
 }
