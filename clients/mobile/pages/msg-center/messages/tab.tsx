@@ -55,7 +55,7 @@ const MessageTab = (props: MessageTabProps): JSX.Element => {
                 onClick={() => onMessageClick(message, index)}
                 key={message.id}>
                 <div className={cs('flex-1 truncate', {
-                  'text-placeholder': message.read_status === 2,
+                  'text-placeholder': message.readStatus === 2,
                 })}>
                   {message.title}
                 </div>

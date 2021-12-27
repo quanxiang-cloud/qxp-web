@@ -71,7 +71,7 @@ class MessagesStore {
 
   @action
   read = (message: Message, index: number): void => {
-    if (message.read_status === 1) {
+    if (message.readStatus === 1) {
       const _message = { ...message, read_status: 2 };
       this.list = this.list.splice(index, 1, _message);
     }

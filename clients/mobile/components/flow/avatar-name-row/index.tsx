@@ -17,7 +17,7 @@ interface FlowAvatarProps {
   className?: string;
 }
 
-export function FlowAvatar({ name, style, size, className }: FlowAvatarProps) : JSX.Element {
+export function FlowAvatar({ name, style, size, className }: FlowAvatarProps): JSX.Element {
   const color = useMemo(() => {
     switch (name) {
     case 'edit':
