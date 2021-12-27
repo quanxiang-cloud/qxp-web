@@ -17,8 +17,9 @@ type Props = {
 }
 
 function PageBuildNav({ pageId = '', pageName, appID = '', setOpenModal }: Props): JSX.Element {
-  const { data, isLoading } = useQuery('query-enable-create-custom-page', ()=> {
-    return getBatchGlobalConfig([{ key: globalSettings.enableCreateCustomPage, version: globalSettings.version }]);
+  const { data: enableCreateCustomPage, isLoading } = useQuery(['query-enable-create-custom-page'], () => {
+    return getBatchGlobalConfig([{ key: globalSettings.enableCreateCustomPage, version: globalSettings.version }])
+      .then(({ result })=> JSON.parse(get(result, globalSettings.enableCreateCustomPage, 'false')));
   });
   const BUILD_NAV = [
     {
@@ -52,8 +53,6 @@ function PageBuildNav({ pageId = '', pageName, appID = '', setOpenModal }: Props
   if (isLoading) {
     return <Loading />;
   }
-
-  const enableCreateCustomPage = JSON.parse(get(data, `result.${globalSettings.enableCreateCustomPage}`, false));
 
   return (
     <div className='app-page-build-nav'>
