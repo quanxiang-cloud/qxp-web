@@ -95,15 +95,15 @@ function DataList(): JSX.Element {
       accessor: ({ id, description }: FuncField) => {
         let descriptionValue = description;
         return (
-          <div className="description">
-            <span className="truncate" title={description}>{description}</span>
+          <div className="flex items-center description">
+            <span className="truncate flex-1 max-w-min" title={description}>{description}</span>
             <PopConfirm
               content={(
                 <div
                   className="flex flex-col"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <div className="text-body2 text-gray-600 mb-8" >描述</div>
+                  <div className="text-gray-600 mb-8" >描述</div>
                   <TextArea
                     name="name"
                     defaultValue={description}
@@ -116,7 +116,7 @@ function DataList(): JSX.Element {
               okText="保存"
               onOk={() => updateFuncDesc(id, descriptionValue)}
             >
-              <Icon clickable name='edit' className="ml-4 hidden cursor-pointer" />
+              <Icon clickable name='edit' className="ml-4 cursor-pointer" />
             </PopConfirm>
           </div>
         );

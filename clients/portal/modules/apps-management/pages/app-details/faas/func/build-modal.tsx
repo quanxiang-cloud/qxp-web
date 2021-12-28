@@ -24,7 +24,7 @@ function BuildModal({ onClose }: Props): JSX.Element {
             // description: '最多10个字符，只能包含数字、字母、下划线、小数点、且不可重复',
             'x-component': 'Input',
             'x-component-props': {
-              placeholder: '请输入，例如：v0.1',
+              placeholder: '请输入，例如：v1',
             },
             'x-mega-props': {
               labelAlign: 'top',
@@ -40,7 +40,7 @@ function BuildModal({ onClose }: Props): JSX.Element {
               },
               {
                 pattern: /^[a-z0-9]*$/,
-                message: '必须以小写字母或数字组成',
+                message: '必须以小写字母、数字组成',
               },
               {
                 max: 10,
