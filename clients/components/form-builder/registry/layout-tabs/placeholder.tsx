@@ -30,12 +30,25 @@ function Placeholder(props: ISchema): JSX.Element | null {
   const { tabs } = xComponentProps;
 
   useEffect(() => {
-    const curAct = store.tabsActiveList?.[pid] || tabs[0];
+    let curAct = store.tabsActiveList?.[pid] || tabs[0].value;
+    if (!tabs.find((tab: LabelValue) => tab.value === curAct)) {
+      curAct = tabs[0].value;
+    }
     setActiveKey(curAct);
-  }, [store.schema, store.flattenFields, store.tabsActiveList]);
+  }, [store.schema, store.flattenFields, store.tabsActiveList, tabs.length]);
 
   useEffect(() => {
-    store.setTabsActiveList(pid, tabs[0]);
+    values(properties).forEach((p: ISchema) => {
+      const cid = p['x-internal']?.fieldId;
+      const tabIndex = p['x-internal']?.tabIndex;
+      if (!tabs.map((tab: LabelValue) => tab.value).includes(tabIndex) && cid && tabIndex) {
+        store.deleteField(cid);
+      }
+    });
+  }, [tabs.length]);
+
+  useEffect(() => {
+    store.setTabsActiveList(pid, tabs[0].value);
   }, []);
 
   React.useEffect(() => {
@@ -63,8 +76,8 @@ function Placeholder(props: ISchema): JSX.Element | null {
 
   return (
     <Tabs activeKey={activeKey} tabPosition={position} onChange={handleActiveKey}>
-      {tabs.length && tabs.map((label: string) => (
-        <TabPane tab={label} key={label}>
+      {tabs.length && tabs.map(({ label, value }: LabelValue) => (
+        <TabPane tab={label} key={value}>
           <div className='min-h-32 border-b6 layout-grid'>
             {!innerFields.length ?
               <EmptyLayout pid={pid} tabIndex={activeKey} /> :
