@@ -1,5 +1,13 @@
-import React, { MouseEvent, useState } from 'react';
+import React, { MouseEvent } from 'react';
 import { Link } from 'react-router-dom';
+import { useQuery } from 'react-query';
+import { get } from 'lodash';
+
+import {
+  getBatchGlobalConfig,
+} from '@lib/api/user-config';
+import Loading from '@c/page-loading';
+import { globalSettings } from '@portal/modules/apps-management/pages/app-details/constants';
 
 type Props = {
   pageId: string | undefined;
@@ -9,7 +17,10 @@ type Props = {
 }
 
 function PageBuildNav({ pageId = '', pageName, appID = '', setOpenModal }: Props): JSX.Element {
-  const [show, setShow] = useState('');
+  const { data: enableCreateCustomPage, isLoading } = useQuery(['query-enable-create-custom-page'], () => {
+    return getBatchGlobalConfig([{ key: globalSettings.enableCreateCustomPage, version: globalSettings.version }])
+      .then(({ result })=> JSON.parse(get(result, globalSettings.enableCreateCustomPage, 'false')));
+  });
   const BUILD_NAV = [
     {
       title: '新建表单',
@@ -39,9 +50,18 @@ function PageBuildNav({ pageId = '', pageName, appID = '', setOpenModal }: Props
     setOpenModal('create');
   }
 
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
     <div className='app-page-build-nav'>
-      {BUILD_NAV.map(({ title, desc, type, url, onClick }) => (
+      {BUILD_NAV.filter(({ type })=> {
+        if (!enableCreateCustomPage && type === 'page') {
+          return false;
+        }
+        return true;
+      }).map(({ title, desc, type, url, onClick }) => (
         <Link
           key={type}
           onClick={onClick}
