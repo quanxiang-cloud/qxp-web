@@ -9,7 +9,7 @@ import AppIcon from '@c/app-icon';
 
 import './index.scss';
 
-export default function Dashboard() {
+export default function Dashboard(): JSX.Element {
   useEffect(() => {
     document.title = '工作台';
   }, []);

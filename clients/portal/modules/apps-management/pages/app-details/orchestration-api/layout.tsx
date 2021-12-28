@@ -19,14 +19,14 @@ export default function Layout({ left: Left, right: Right }: Props): JSX.Element
       <Card
         className="h-full overflow-hidden bg-gray-50"
         style={{ borderRadius: '0px' }}
-        contentClassName="flex-col h-full border-r overflow-hidden"
+        contentClassName="flex flex-col h-full border-r overflow-hidden"
       >
         <Left />
       </Card>
       <Card
         className="h-full overflow-hidden bg-gray-50"
         style={{ borderRadius: '0px' }}
-        contentClassName="flex-col h-full overflow-hidden"
+        contentClassName="flex flex-col h-full overflow-hidden"
       >
         <Right />
       </Card>
