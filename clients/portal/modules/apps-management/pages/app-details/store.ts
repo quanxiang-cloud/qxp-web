@@ -519,6 +519,7 @@ class AppDetailsStore {
 
   @action setActiveMenu = (menuItem: Menu): void => {
     this.activeMenu = menuItem;
+    this.setCurPage(this.pageID);
   }
 
   @action updatePageInitList = (newPageList: PageInfo[]): void => {
