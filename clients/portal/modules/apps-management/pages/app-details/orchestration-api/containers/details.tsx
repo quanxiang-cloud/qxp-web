@@ -322,7 +322,7 @@ function APINamespaceDetails(): JSX.Element {
             </Button>
           </div>
           <SearchInput
-            className="polynamespacedetail-header-searchinput"
+            className="polynamespacedetail-header-searchinput api-search-input"
             name="apiName"
             placeholder="搜索 API 名称..."
             onChange={handleApiTitleChange}
