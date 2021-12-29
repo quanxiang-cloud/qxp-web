@@ -3,7 +3,6 @@ import cs from 'classnames';
 import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 import PageSchemaRender from '@c/page-schema-render';
-import { toRenderSchema } from '@ofa/page-engine';
 
 import Icon from '@c/icon';
 import Card from '@c/card';
@@ -172,7 +171,6 @@ function PageDetails({ pageID }: Props): JSX.Element {
                   schemaKey={getSchemaKey(appID, pageID)}
                   version={getVersionKey()}
                   repository={getRenderRepository()}
-                  schemaConvertor={toRenderSchema}
                 />
               ),
             },
