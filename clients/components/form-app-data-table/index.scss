@@ -68,13 +68,13 @@
   transform: rotate(45deg);
 }
 
-.pb-field-item-title {
+.form-export-table-title {
   background: #F8FAFC;
   box-shadow: 0px 1px 0px var(--gray-200);
 }
 
-.pb-field-item,
-.pb-field-item-title {
+.form-export-table-item,
+.form-export-table-title {
   display: grid;
   align-items: center;
   grid-template-columns:  36px minmax(0, 1fr);

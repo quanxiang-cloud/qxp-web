@@ -213,8 +213,8 @@ function DataList(): JSX.Element {
         />
       </div>
       <Pagination
-        total={store.funcCount}
-        renderTotalTip={() => `共 ${store.funcCount} 条数据`}
+        total={store.funcList.length}
+        renderTotalTip={() => `共 ${store.funcList.length} 条数据`}
         onChange={(current, pageSize) => store.fetchFuncList(store.searchAlias, current, pageSize)}
       />
       {store.modalType === 'build' && <BuildModal onClose={() => store.modalType = ''} />}
