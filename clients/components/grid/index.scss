@@ -1,0 +1,115 @@
+
+$qxb-prefix: qxb-web;
+$grid-columns: 24;
+
+@mixin create-grid-columns($index, $class) {
+  $percent: $index / $grid-columns;
+
+  @if $index == 0 {
+    .#{$qxb-prefix}-col#{$class}-#{$index} {
+      display: none;
+    }
+    .#{$qxb-prefix}-col-push-#{$index} {
+      left: auto;
+    }
+    .#{$qxb-prefix}-col-pull-#{$index} {
+      right: auto;
+    }
+    .#{$qxb-prefix}-col#{$class}-push-#{$index} {
+      left: auto;
+    }
+    .#{$qxb-prefix}-col#{$class}-pull-#{$index} {
+      right: auto;
+    }
+    .#{$qxb-prefix}-col#{$class}-offset-#{$index} {
+      margin-left: 0;
+    }
+    .#{$qxb-prefix}-col#{$class}-order-#{$index} {
+      order: 0;
+    }
+  } @else {
+    .#{$qxb-prefix}-col#{$class}-#{$index} {
+      display: block;
+      flex: 0 0 percentage($percent);
+      max-width: percentage($percent);
+    }
+    .#{$qxb-prefix}-col#{$class}-push-#{$index} {
+      left: percentage($percent);
+    }
+    .#{$qxb-prefix}-col#{$class}-pull-#{$index} {
+      right: percentage($percent);
+    }
+    .#{$qxb-prefix}-col#{$class}-offset-#{$index} {
+      margin-left: percentage($percent);
+    }
+    .#{$qxb-prefix}-col#{$class}-order-#{$index} {
+      order: $index;
+    }
+  }
+}
+
+@mixin loop-grid-columns($index, $class) {
+  @while $index >= 0 {
+    @include create-grid-columns($index, $class);
+    $index: $index - 1;
+  }
+}
+
+@mixin make-grid($class) {
+  @include loop-grid-columns($grid-columns, $class);
+}
+
+.#{$qxb-prefix}-row {
+  display: flex;
+  flex-flow: row wrap;
+
+  &::before,
+  &::after {
+    display: flex;
+  }
+
+  &-no-wrap {
+    flex-wrap: nowrap;
+  }
+
+}
+
+.#{$qxb-prefix}-row-start {
+  justify-content: flex-start;
+}
+
+.#{$qxb-prefix}-row-center {
+  justify-content: center;
+}
+
+.#{$qxb-prefix}-row-end {
+  justify-content: flex-end;
+}
+
+.#{$qxb-prefix}-row-space-between {
+  justify-content: space-between;
+}
+
+.#{$qxb-prefix}-row-space-around {
+  justify-content: space-around;
+}
+
+.#{$qxb-prefix}-row-top {
+  align-items: flex-start;
+}
+
+.#{$qxb-prefix}-row-middle {
+  align-items: center;
+}
+
+.#{$qxb-prefix}-row-bottom {
+  align-items: flex-end;
+}
+
+.#{$qxb-prefix}-col {
+  position: relative;
+  max-width: 100%;
+  min-height: 1px;
+}
+
+@include make-grid('');

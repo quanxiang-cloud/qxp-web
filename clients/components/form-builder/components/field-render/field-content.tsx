@@ -1,6 +1,6 @@
 import React, { JSXElementConstructor } from 'react';
-import { Row, Col } from 'antd';
 
+import { Row, Col } from '@c/grid';
 import { LAYOUT_COL_SPAN } from './constant';
 
 export type ContentProps = {
