@@ -63,7 +63,7 @@ function APINamespaceSearchTree(
 
   return (
     <div
-      className={cs('pt-8 h-full overflow-auto z-0 bg-gray-50 polynamespacetree', { hidden: !shouldShow })}
+      className={cs('pt-8 h-full overflow-auto z-0 polynamespacetree', { hidden: !shouldShow })}
     >
       <Tree
         store={store}
