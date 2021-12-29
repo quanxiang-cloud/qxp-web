@@ -7,19 +7,19 @@ import React, {
   DetailedHTMLProps,
   InputHTMLAttributes,
   forwardRef,
-  useEffect,
   FormHTMLAttributes,
   TextareaHTMLAttributes,
   ForwardedRef,
   isValidElement,
+  useImperativeHandle,
 } from 'react';
 
 import validations, { Validation } from './validations';
 
-export type Props = PropsWithChildren<DetailedHTMLProps<
+export type Props = Omit<PropsWithChildren<DetailedHTMLProps<
   FormHTMLAttributes<HTMLFormElement>, HTMLFormElement>> & {
     layout?: 'vertical' | 'horizontal';
-  }
+  }, 'ref'>
 export type Value = string | number | readonly string[] | undefined;
 
 type Field = DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> &
@@ -53,21 +53,17 @@ export interface FormRef {
 
 function Form(
   { children, layout = 'vertical', ...restProps }: Props,
-  ref?: ForwardedRef<FormRef>,
+  ref?: ForwardedRef<FormRef | null>,
 ): JSX.Element {
   const [formState, setFormState] = useState<{ fields: Fields, errors: Errors }>({
     fields: {},
     errors: {},
   });
 
-  useEffect(() => {
-    if (typeof ref === 'object' && ref) {
-      ref.current = {
-        validateFields,
-        isAllValid,
-      };
-    }
-  }, [validateFields, isAllValid]);
+  useImperativeHandle(ref, () => ({
+    validateFields,
+    isAllValid,
+  }), [validateFields, isAllValid]);
 
   function setField(
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
@@ -188,4 +184,4 @@ function Form(
   );
 }
 
-export default forwardRef(Form);
+export default forwardRef<FormRef | null, Props>(Form);

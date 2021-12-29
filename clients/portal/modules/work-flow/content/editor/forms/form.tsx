@@ -17,6 +17,7 @@ import UpdateTableData from './update-table-data';
 import FlowContext from '../../../flow-context';
 import ProcessBranch from './process-branch';
 import ProcessBranchTarget from './process-branch-target';
+import WebHookConfig from './webhook';
 
 interface Props {
   workForm: NodeWorkForm;
@@ -64,6 +65,7 @@ const components: Record<string, JSXElementConstructor<any>> = {
   autocc: CopyTo,
   letter: WebMessage,
   tableDataUpdate: UpdateTableData,
+  webhook: WebHookConfig,
 };
 
 export default function Form({

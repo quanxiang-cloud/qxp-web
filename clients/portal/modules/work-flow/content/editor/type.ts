@@ -215,7 +215,7 @@ export interface ProcessVariableAssignmentData {
   }>;
 }
 export interface ValueRule {
-  valueFrom: 'fixedValue' | 'currentFormValue' | 'processVariable';
+  valueFrom: 'fixedValue' | 'currentFormValue' | 'processVariable' | 'formula';
   valueOf: ValueRuleVal;
 }
 export type ValueRuleVal = string | number | Array<string | number>;
@@ -325,7 +325,7 @@ export interface NewFieldPermission {
 
 export type BusinessData = FormDataData | FillInData | ProcessBranchData |
   ProcessVariableAssignmentData | TableDataCreateData | TableDataUpdateData | SendEmailData |
-  WebMessageData | CCData | ProcessBranchTargetData;
+  WebMessageData | CCData | ProcessBranchTargetData | WebhookData;
 export type NodeData = {
   width: number;
   height: number;
@@ -344,6 +344,10 @@ export interface BaseNodeData {
 export interface FillInNodeData extends BaseNodeData {
   type: 'fillIn';
   businessData: FillInData;
+}
+export interface WebhookNodeData extends BaseNodeData {
+  type: 'webhook';
+  businessData: WebhookData;
 }
 export interface ApproveNodeData extends BaseNodeData {
   type: 'approve';
@@ -387,10 +391,10 @@ export interface ProcessBranchTargetNodeData extends BaseNodeData {
 }
 export type Data = CCNodeData | WebMessageNodeData | SendEmailNodeData | TableDataUpdateNodeData |
   TableDataCreateNodeData | ProcessVariableAssignmentNodeData | ProcessBranchNodeData |
-  FormDataNodeData | ApproveNodeData | FillInNodeData | ProcessBranchTargetNodeData;
+  FormDataNodeData | ApproveNodeData | FillInNodeData | ProcessBranchTargetNodeData | WebhookNodeData;
 export type NodeType = 'formData' | 'fillIn' | 'approve' | 'end' | 'processBranch' |
   'processVariableAssignment' | 'tableDataCreate' | 'tableDataUpdate' | 'email' |
-  'letter' | 'autocc' | 'processBranchSource' | 'processBranchTarget';
+  'letter' | 'autocc' | 'processBranchSource' | 'processBranchTarget' | 'webhook';
 export interface CurrentElement {
   id: string;
   type: NodeType;
@@ -442,3 +446,44 @@ export type FieldOperatorOptions = {
   label: string;
   value: Operator;
 }[]
+
+export type WebhookData = {
+  type: 'request', config: RequestConfig
+} | {
+  type: 'send', config: SendConfig
+};
+export interface Input {
+  // 只有当 type 为 string | number | boolean 时, data 才为 string | null
+  // 只有当 type 为 direct_expr 时, data 才为公式(公式包含前置节点的变量或API节点的输出)
+  // 其他情况 data 是递归 Input[] 结构
+  type: 'string' | 'number' | 'boolean' | 'object' | 'array' | 'direct_expr';
+  name: string;
+  data: Input[] | string | null;
+  in: 'body' | 'path' | 'header' | 'query' | ''; // 参数位置
+  required?: boolean;
+  mock?: string;
+  desc?: string;
+  title?: string;
+  id?: string; // 仅前端使用, 后端忽略
+}
+
+export interface RequestConfig {
+  api: {
+    value: string; // api 的 path
+    options: any[];
+  };
+  // url, method, inputs, outputs 均根据 api 的 path 调用 api doc 获取
+  // 前端最终可能不会存 url, method, outputs, 仅存 inputs 配置的值
+  inputs: Input[]; // API 定义的输入以及字段的公式映射配置
+  url: string; // 可选
+  method?: 'POST' | 'GET' | 'PUT' | 'DELETE'; // 可选
+  outputs?: Input[]; // API 定义的输出(可选)
+}
+
+export interface SendConfig {
+  url: string; // 手动定义
+  method: 'POST' | 'GET' | 'PUT' | 'DELETE'; // 手动选择
+  contentType: 'application/json',
+  inputs: Input[]; // 用户自定义的输入, 自定义 url 应该没有 outputs?
+  outputs: undefined;
+}

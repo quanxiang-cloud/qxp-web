@@ -6,6 +6,8 @@ import Icon from '@c/icon';
 import FormulaEditor, { RefProps, CustomRule } from '@c/formula-editor';
 import { convertToParamsConfig, parseParamOfPath } from '@polyApi/utils/request-node';
 
+import './params.scss';
+
 type Props = {
   value: POLY_API.PolyNodeInput[];
   url: string;
@@ -117,7 +119,7 @@ function ApiParamsConfig(
                     className="flex justify-between bg-white text-12"
                     onClick={handleSetCurrentFormulaRef(path)}
                   >
-                    <div className="flex items-center justify-between w-142 p-8 flex-3 border-r-1">
+                    <div className="flex items-center justify-between w-142 p-8 border-r-1">
                       <div className="flex-1 truncate relative">
                         <span>{title}</span>
                         <span className="mx-4 text-gray-400">{name}</span>
@@ -125,22 +127,20 @@ function ApiParamsConfig(
                       </div>
                       <Icon className="ml-8" name="arrow_left_alt" />
                     </div>
-                    {customRules.length ? (
-                      <div className="flex flex-col overflow-auto" style={{ flex: 7 }}>
-                        <FormulaEditor
-                          help=""
-                          ref={handleSetFormulaRefs(path)}
-                          customRules={customRules}
-                          value={data || ''}
-                          className="node-formula-editor"
-                          onChange={handleFormulaChange(path, name, !!required, data)}
-                          onBlur={handleFormulaBlur(path, name, !!required, data)}
-                        />
-                        {errorsRef.current[path] && changedRef.current[path] && (
-                          <span className="text-red-600 px-3 pb-3">{errorsRef.current[path]}</span>
-                        )}
-                      </div>
-                    ) : <div className="node-formula-editor flex-7"></div>}
+                    <div className="flex flex-col overflow-auto">
+                      <FormulaEditor
+                        help=""
+                        ref={handleSetFormulaRefs(path)}
+                        customRules={customRules}
+                        value={data || ''}
+                        className="node-formula-editor"
+                        onChange={handleFormulaChange(path, name, !!required, data)}
+                        onBlur={handleFormulaBlur(path, name, !!required, data)}
+                      />
+                      {errorsRef.current[path] && changedRef.current[path] && (
+                        <span className="text-red-600 px-3 pb-3">{errorsRef.current[path]}</span>
+                      )}
+                    </div>
                   </div>
                 );
               })}

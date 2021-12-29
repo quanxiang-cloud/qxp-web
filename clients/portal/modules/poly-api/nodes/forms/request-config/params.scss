@@ -1,0 +1,36 @@
+.config-params-container {
+  &>div:first-child {
+    @apply mt-0;
+  }
+
+  &>div:last-child {
+    @apply mb-0;
+  }
+
+  .config-param {
+    @apply border-1 rounded-8 border-gray-200 overflow-hidden;
+
+    &>div {
+      @apply border-b-1;
+
+      &:last-child {
+        @apply border-0 overflow-hidden;
+      }
+
+      &>div {
+        &:first-child {
+          flex: 142;
+          overflow: hidden;
+        }
+
+        &:last-child {
+          flex: 322;
+          overflow: hidden;
+        }
+      }
+    }
+
+  }
+
+}
+

@@ -30,7 +30,7 @@ function Drawer({ onCancel, title, children, className, distanceTop = 56 }: Prop
           {isValidElement(title) && <>{ title }</>}
           <Icon onClick={onCancel} clickable changeable name='close' size={24} />
         </div>
-        <div className='drawer-main-content'>
+        <div className='drawer-main-content overflow-y-auto'>
           {children}
         </div>
       </div>

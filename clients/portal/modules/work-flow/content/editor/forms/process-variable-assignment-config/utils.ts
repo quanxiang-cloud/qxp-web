@@ -1,8 +1,8 @@
-import React, { useContext } from 'react';
+import { useContext, createContext } from 'react';
 
 import FlowSourceTableContext from '../flow-source-table';
 
-export const availableVariableCtx = React.createContext<ProcessVariable[]>([]);
+export const availableVariableCtx = createContext<ProcessVariable[]>([]);
 
 export const ConfigSchema = {
   type: 'object',
@@ -25,6 +25,7 @@ export const ConfigSchema = {
             enum: [
               { label: '表单值', value: 'currentFormValue' },
               { label: '固定值', value: 'fixedValue' },
+              { label: '公式', value: 'formula' },
             ],
           },
           valueOf: {

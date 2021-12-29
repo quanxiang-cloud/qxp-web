@@ -27,10 +27,10 @@ declare namespace POLY_API {
   }
 
   export interface PolyNodeInput {
-    type: 'string' | 'number' | 'boolean' | 'object' | 'array' | 'direct_expr';
+    type: API_FIELD_TYPE;
     name: string;
     data: PolyNodeInput[] | string | null;
-    in: 'body' | 'path' | 'header' | 'query';
+    in: 'body' | 'path' | 'header' | 'query' | '';
     required?: boolean;
     mock?: string;
     desc?: string;
@@ -116,8 +116,8 @@ declare namespace POLY_API {
   }
 
   export interface ObjectSchema {
-    type: 'number' | 'string' | 'boolean' | 'object' | 'array' | 'direct_expr';
-    in: 'body' | 'header' | 'query' | 'path',
+    type: API_FIELD_TYPE;
+    in: 'body' | 'header' | 'query' | 'path' | '',
     name: string | null;
     index: number;
     parentPath: string | null;

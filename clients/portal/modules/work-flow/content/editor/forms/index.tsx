@@ -34,6 +34,7 @@ const drawerTitleMap = {
   letter: '站内信',
   processBranchSource: '分流',
   processBranchTarget: '合流',
+  webhook: 'webhook',
 };
 
 export default function NodeFormWrapper(): JSX.Element | null {
