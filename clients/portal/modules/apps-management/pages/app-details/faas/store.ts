@@ -97,8 +97,6 @@ class FaasStore {
   @observable isAPILoading = false;
   @observable searchAlias = '';
   @observable apiPath = ''
-  @observable funcCount = 0;
-  @observable versionCount = 0
   @observable versionsParams: VersionListParams = {
     state: '',
     page: 1,
@@ -252,8 +250,7 @@ class FaasStore {
       page,
       size,
     }).then((res) => {
-      const { projects, count } = res;
-      this.funcCount = count;
+      const { projects } = res;
       this.funcList = projects;
     }).catch((err) => {
       toast.error(err);
@@ -351,8 +348,7 @@ class FaasStore {
   @action
   fetchVersionList = (params: VersionListParams): void => {
     getFuncVersionList(this.groupID, this.currentFuncID, params).then((res) => {
-      const { builds, count } = res;
-      this.versionCount = count;
+      const { builds } = res;
       this.versionList = builds;
     }).catch((err) => {
       toast.error(err);
