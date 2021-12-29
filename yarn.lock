@@ -781,12 +781,12 @@
   version "0.3.1"
   resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-api-spec-adapter-v0.3.1.tgz#b9bb96abe2bb144cdf399cb30e33cbbb2864d361"
 
-"@ofa/page-engine@https://ofapkg.pek3b.qingstor.com/tarball/ofa-page-engine-v0.2.3.tgz":
-  version "0.2.3"
-  resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-page-engine-v0.2.3.tgz#7794f1c6cea36666dc2c593f05353f697698b669"
+"@ofa/page-engine@https://ofapkg.pek3b.qingstor.com/tarball/ofa-page-engine-v0.2.4.tgz":
+  version "0.2.4"
+  resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-page-engine-v0.2.4.tgz#e727cc55cf83365a2f6b95317a9cb655e8e71a6f"
   dependencies:
     "@codemirror/lang-javascript" "^0.19.3"
-    "@uiw/react-codemirror" "^4.3.0"
+    "@uiw/react-codemirror" "~4.2.0"
     classnames "^2.3.1"
     mobx "^6.3.8"
     mobx-react "^7.2.1"
@@ -1528,7 +1528,7 @@
     "@typescript-eslint/types" "4.33.0"
     eslint-visitor-keys "^2.0.0"
 
-"@uiw/react-codemirror@^4.3.0":
+"@uiw/react-codemirror@~4.2.0":
   version "4.2.4"
   resolved "https://registry.npmmirror.com/@uiw/react-codemirror/download/@uiw/react-codemirror-4.2.4.tgz#024eeda479e336906f401c15b68d0e41117f1b7d"
   integrity sha512-wtO+m2Bc8wzax8QwSA/sWu+6gJuWlDJ0Gv/UQx6cNkNiTlzp6D/Mu5nLmywEk56RJOic6hGaHHzWKIZsG7aURQ==
