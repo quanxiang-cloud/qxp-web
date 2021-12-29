@@ -54,11 +54,11 @@ function RightsCard({ rightsCardData, onChange, selectNumber, abled }: CardProps
   const [checkAll, setCheckAll] = useState(true);
 
   useEffect(() => {
-    setTempOptions((store.currentPage.menuType !== (2 | 3)) ? options : options.slice(0, 1));
+    setTempOptions((![2, 3].includes(store.currentPage.menuType || 0)) ? options : options.slice(0, 1));
   }, [store.currentPage.menuType]);
 
   useEffect(() => {
-    const OptionArr = (store.currentPage.menuType !== (2 | 3)) ? options : options.slice(0, 1);
+    const OptionArr = (![2, 3].includes(store.currentPage.menuType || 0)) ? options : options.slice(0, 1);
     if (selectNumber) {
       const selectArr = selectNumber.toString(2).split('').reverse();
       setSelected(
@@ -140,13 +140,13 @@ function RightsCard({ rightsCardData, onChange, selectNumber, abled }: CardProps
 }
 
 function Authorized({ className = '', authorized = 0, abled }: Props, ref: React.Ref<any>): JSX.Element {
-  const typeNum = (store.currentPage.menuType === (2 | 3)) ? 1 : 15;
+  const typeNum = ([2, 3].includes(store.currentPage.menuType || 0)) ? 1 : 15;
   const initialState = store.currentRights.types === 1 ? typeNum : authorized;
   const [actionNumber, setActionNumber] = useState<number>(initialState);
 
   useEffect(() => {
     setActionNumber(initialState);
-  }, [initialState]);
+  }, [initialState, store.currentPage.id]);
 
   useImperativeHandle(ref, () => ({
     getAuthorizedPer: () => actionNumber,
