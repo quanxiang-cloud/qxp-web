@@ -1,5 +1,6 @@
 import React from 'react';
-import { Col } from 'antd';
+
+import { Col } from '@c/grid';
 
 export type LabelProps = {
   isLayoutComponent: boolean;
