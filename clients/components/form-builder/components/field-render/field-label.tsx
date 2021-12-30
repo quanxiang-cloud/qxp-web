@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Col } from '@c/grid';
+import { Col } from '@c/form-builder/components/grid';
 
 export type LabelProps = {
   isLayoutComponent: boolean;

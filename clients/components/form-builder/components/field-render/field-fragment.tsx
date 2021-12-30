@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Row } from '@c/grid';
+import { Row } from '@c/form-builder/components/grid';
 import FieldContent, { ContentProps } from './field-content';
 import FieldLabel, { LabelProps } from './field-label';
 

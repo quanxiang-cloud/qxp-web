@@ -82,6 +82,4 @@ const Row = React.forwardRef<HTMLDivElement, RowProps>((props: RowProps, ref) =>
   );
 });
 
-Row.displayName = 'Row';
-
 export default Row;

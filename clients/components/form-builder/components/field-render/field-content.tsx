@@ -1,6 +1,6 @@
 import React, { JSXElementConstructor } from 'react';
 
-import { Row, Col } from '@c/grid';
+import { Row, Col } from '@c/form-builder/components/grid';
 import { LAYOUT_COL_SPAN } from './constant';
 
 export type ContentProps = {
