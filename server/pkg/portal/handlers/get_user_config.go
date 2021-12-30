@@ -21,6 +21,7 @@ type UserConfig struct {
 	PrimaryColor string `json:"primaryColor"`
 	TitleIcon    string `json:"titleIcon"`
 	Favicons     string `json:"favicons"`
+	Css          string `json:"css"`
 }
 
 func getUserConfig(r *http.Request) UserConfig {
@@ -36,6 +37,7 @@ func getUserConfig(r *http.Request) UserConfig {
 		PrimaryColor: "blue",
 		TitleIcon:    "/dist/images/quanxiangyun.svg",
 		Favicons:     "/dist/images/favicons/favicon-32x32.png",
+		Css:          "",
 	}
 
 	if err := json.Unmarshal([]byte(result), &config); err != nil {

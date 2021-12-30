@@ -926,6 +926,11 @@
   dependencies:
     classnames "*"
 
+"@types/css-tree@^1.0.7":
+  version "1.0.7"
+  resolved "http://r.npm.internal.yunify.com/@types/css-tree/download/@types/css-tree-1.0.7.tgz#4483b824a7923d9a7819408a33144014b0c5124c"
+  integrity sha1-RIO4JKeSPZp4GUCKMxRAFLDFEkw=
+
 "@types/cssnano@^4.0.0":
   version "4.0.1"
   resolved "http://r.npm.internal.yunify.com/@types/cssnano/download/@types/cssnano-4.0.1.tgz#67fa912753d80973a016e7684a47fedf338aacff"
@@ -2547,6 +2552,14 @@ css-tree@^1.1.2:
   dependencies:
     mdn-data "2.0.14"
     source-map "^0.6.1"
+
+css-tree@^2.0.4:
+  version "2.0.4"
+  resolved "http://r.npm.internal.yunify.com/css-tree/download/css-tree-2.0.4.tgz#be44314f17e9ac85fe894a5888941782e1123c29"
+  integrity sha1-vkQxTxfprIX+iUpYiJQXguESPCk=
+  dependencies:
+    mdn-data "2.0.23"
+    source-map-js "^1.0.1"
 
 css-unit-converter@^1.1.1:
   version "1.1.2"
@@ -4880,6 +4893,11 @@ mdn-data@2.0.14:
   version "2.0.14"
   resolved "http://r.npm.internal.yunify.com/mdn-data/download/mdn-data-2.0.14.tgz#7113fc4281917d63ce29b43446f701e68c25ba50"
   integrity sha1-cRP8QoGRfWPOKbQ0RvcB5owlulA=
+
+mdn-data@2.0.23:
+  version "2.0.23"
+  resolved "http://r.npm.internal.yunify.com/mdn-data/download/mdn-data-2.0.23.tgz#dfb6c41e50a0edb808cf340973ab29321b70808e"
+  integrity sha1-37bEHlCg7bgIzzQJc6spMhtwgI4=
 
 mdn-data@2.0.4:
   version "2.0.4"
@@ -7464,6 +7482,11 @@ source-map-js@^0.6.2:
   version "0.6.2"
   resolved "http://r.npm.internal.yunify.com/source-map-js/download/source-map-js-0.6.2.tgz#0bb5de631b41cfbda6cfba8bd05a80efdfd2385e"
   integrity sha1-C7XeYxtBz72mz7qL0FqA79/SOF4=
+
+source-map-js@^1.0.1:
+  version "1.0.1"
+  resolved "http://r.npm.internal.yunify.com/source-map-js/download/source-map-js-1.0.1.tgz#a1741c131e3c77d048252adfa24e23b908670caf"
+  integrity sha1-oXQcEx48d9BIJSrfok4juQhnDK8=
 
 source-map-loader@^0.2.4:
   version "0.2.4"

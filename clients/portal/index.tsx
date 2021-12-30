@@ -46,7 +46,7 @@ ReactDOM.render(
       <ConfigProvider locale={zhCN}>
         <LocaleProvider locales={locales}>
           <Router>
-            <App/>
+            <App />
           </Router>
         </LocaleProvider>
       </ConfigProvider>

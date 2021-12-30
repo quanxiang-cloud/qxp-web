@@ -1,0 +1,29 @@
+.qxp-btn {
+  flex-shrink: 0;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 16px;
+  padding-right: 16px;
+  line-height: 30px;
+  font-weight: 400;
+  font-size: 12px;
+  border-radius: 8px 2px 8px 8px;
+  border: 1px solid var(--gray-700);
+  background-color: white;
+  cursor: pointer;
+  user-select: none;
+}
+
+.qxp-btn:hover:active {
+  color: white;
+  background-color: var(--gray-900);
+}
+
+.drawer-modal-mask {
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.drawer-container {
+  box-shadow: -1px 0 5px #b3b3b3;
+}

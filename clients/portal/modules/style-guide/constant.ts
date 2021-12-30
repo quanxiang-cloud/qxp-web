@@ -29,6 +29,7 @@ export const DEFAULT_CONFIG = {
   primaryColor: 'blue',
   titleIcon: '/dist/images/quanxiangyun.svg',
   favicons: '/dist/images/favicons/favicon-32x32.png',
+  css: '',
 };
 
 export const SCHEMA: ISchema = {
@@ -70,4 +71,11 @@ export const SCHEMA: ISchema = {
       },
     },
   },
+};
+
+export const COMPONENT_MAP: Record<string, string> = {
+  size: 'SizingField',
+  border: 'BorderField',
+  color: 'ColorField',
+  'border-radius': 'BorderRadiusField',
 };
