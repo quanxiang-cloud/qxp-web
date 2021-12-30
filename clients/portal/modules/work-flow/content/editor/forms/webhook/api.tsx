@@ -17,7 +17,7 @@ interface Props {
   values: Record<string, any>;
 }
 
-export default function API({ value, onChange, setFormValue, values }: Props) : JSX.Element {
+export default function API({ value, onChange, setFormValue, values }: Props): JSX.Element {
   const { data: apiDocDetail, isLoading, error } = useGetRequestNodeApi({
     path: value.value.slice(1),
     body: { docType: 'raw', titleFirst: true },
