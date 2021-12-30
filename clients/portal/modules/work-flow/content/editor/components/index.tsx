@@ -1,4 +1,5 @@
 import React from 'react';
+import { groupBy } from 'ramda';
 
 import useObservable from '@lib/hooks/use-observable';
 
@@ -6,56 +7,16 @@ import store, { toggleNodeForm } from '../store';
 import type { StoreValue } from '../type';
 import Drawer from '../forms/drawer';
 import DragNode from './drag-node';
-
-const nodeLists = [{
-  text: '填写',
-  type: 'fillIn',
-  iconName: 'edit',
-  iconClassName: 'bg-teal-500',
-}, {
-  text: '审批',
-  type: 'approve',
-  iconName: 'approves',
-  iconClassName: 'bg-indigo-500',
-}, {
-  text: '分支',
-  type: 'processBranch',
-  iconName: 'share',
-  iconClassName: 'bg-teal-500',
-}, {
-  text: '变更流程参数',
-  type: 'processVariableAssignment',
-  iconName: 'assignment',
-  iconClassName: 'bg-indigo-500',
-}, {
-  text: '数据新增',
-  type: 'tableDataCreate',
-  iconName: 'create_new_folder',
-  iconClassName: 'bg-teal-500',
-}, {
-  text: '数据更新',
-  type: 'tableDataUpdate',
-  iconName: 'update',
-  iconClassName: 'bg-indigo-500',
-}, {
-  text: '发送邮件',
-  type: 'email',
-  iconName: 'email',
-  iconClassName: 'bg-teal-500',
-}, {
-  text: '站内信',
-  type: 'letter',
-  iconName: 'message',
-  iconClassName: 'bg-indigo-500',
-}, {
-  text: '抄送',
-  type: 'autocc',
-  iconName: 'info',
-  iconClassName: 'bg-teal-500',
-}];
+import { nodeLists, groupType2WeightMap, groupType2NameMap } from '../utils/constants';
 
 export default function ComponentsSelector(): JSX.Element {
   const { nodeIdForDrawerForm } = useObservable<StoreValue>(store);
+
+  const groupedNodeMap = groupBy((node) => node.groupType, nodeLists);
+
+  const groupedNodeList = Object.entries(groupedNodeMap).sort(
+    ([groupType], [bGroupType]) => groupType2WeightMap[groupType] - groupType2WeightMap[bGroupType],
+  );
 
   return (
     <>
@@ -71,19 +32,23 @@ export default function ComponentsSelector(): JSX.Element {
           onCancel={() => toggleNodeForm('')}
           className="flow-editor-drawer"
         >
-          <div>
-            <div className="text-caption-no-color text-gray-400 my-12">人工处理</div>
-            <div className="grid grid-cols-2 gap-16">
-              {nodeLists.map((node) => (
-                <DragNode
-                  {...node}
-                  key={node.text}
-                  width={200}
-                  height={72}
-                />
-              ))}
+          {groupedNodeList.map(([groupType, nodeList]) => (
+            <div key={groupType}>
+              <div className="text-caption-no-color text-gray-400 mt-24 mb-12">
+                {groupType2NameMap[groupType]}
+              </div>
+              <div className="grid grid-cols-2 gap-16">
+                {nodeList.map((node) => (
+                  <DragNode
+                    {...node}
+                    key={node.text}
+                    width={200}
+                    height={72}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
+          ))}
         </Drawer>
       )}
     </>

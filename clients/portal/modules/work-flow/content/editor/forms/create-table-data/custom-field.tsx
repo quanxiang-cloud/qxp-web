@@ -1,9 +1,12 @@
-import React, { useContext } from 'react';
+import React, { useContext, ReactNode, useState } from 'react';
 import { useQuery } from 'react-query';
 import { get, set } from 'lodash';
 import cs from 'classnames';
 
 import Select, { SelectOption } from '@c/select';
+import Button from '@c/button';
+
+import FormulaModal from './formula-modal';
 import FlowSourceTableContext from '../flow-source-table';
 import FlowContext from '../../../../flow-context';
 import Context from './context';
@@ -20,15 +23,17 @@ interface Props {
   children?: React.ReactNode;
 }
 
-type Rule = 'currentFormValue' | 'fixedValue' | 'processVariable';
+type Rule = 'currentFormValue' | 'fixedValue' | 'processVariable' | 'formula';
 
 const ruleOptions: Array<{ label: string, value: Rule }> = [
   { label: '字段值', value: 'currentFormValue' },
   { label: '自定义', value: 'fixedValue' },
   { label: '流程变量', value: 'processVariable' },
+  { label: '公式', value: 'formula' },
 ];
 
 export default function CustomField(props: Props): JSX.Element {
+  const [isFormulaShow, setIsFormulaShow] = useState<boolean>(false);
   const { tableSchema } = useContext(FlowSourceTableContext);
   const { data, setData } = useContext(Context);
   const { flowID } = useContext(FlowContext);
@@ -55,7 +60,7 @@ export default function CustomField(props: Props): JSX.Element {
     }
   };
 
-  const onChangeValueByKey = (val: any, keyName: string) => {
+  const onChangeValueByKey = (val: any, keyName: string): void => {
     const { createRule = {}, ref = {} } = data;
     if (!isSubTableKey) {
       set(createRule, `${fieldName}.${keyName}`, val);
@@ -78,15 +83,15 @@ export default function CustomField(props: Props): JSX.Element {
     }
   };
 
-  const onChangeFieldValue = (val: any) => {
+  const onChangeFieldValue = (val: any): void => {
     onChangeValueByKey(val, 'valueOf');
   };
 
-  const onChangeRule = (rule: Rule) => {
+  const onChangeRule = (rule: Rule): void => {
     onChangeValueByKey(rule, 'valueFrom');
   };
 
-  const renderValueBox = () => {
+  const renderValueBox = (): JSX.Element | ReactNode | null | undefined => {
     const rule = getVal('valueFrom');
     if (rule === 'currentFormValue') {
       return (
@@ -120,7 +125,32 @@ export default function CustomField(props: Props): JSX.Element {
         />
       );
     }
+
+    if (rule === 'formula') {
+      const value = getVal() as string;
+      return (
+        <div className="flex items-center justify-between">
+          <Button onClick={handleConfigFormula}>配置公式</Button>
+          {value && (
+            <span className="ml-3">{value}</span>
+          )}
+        </div>
+      );
+    }
   };
+
+  function handleConfigFormula(): void {
+    setIsFormulaShow(true);
+  }
+
+  function handleFormulaClose(): void {
+    setIsFormulaShow(false);
+  }
+
+  function handleSubmit(value: string): void {
+    onChangeFieldValue(value);
+    handleFormulaClose();
+  }
 
   return (
     <div className="flex mb-20">
@@ -134,6 +164,13 @@ export default function CustomField(props: Props): JSX.Element {
       })}>
         {renderValueBox()}
       </div>
+      {isFormulaShow && (
+        <FormulaModal
+          onClose={handleFormulaClose}
+          value={getVal() as string}
+          onSubmit={handleSubmit}
+        />
+      )}
     </div>
   );
 }

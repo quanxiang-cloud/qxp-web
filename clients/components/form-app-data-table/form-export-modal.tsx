@@ -132,7 +132,7 @@ function ExportFormModal({ onClose }: Props): JSX.Element {
         </span>
       </div>
       <div className='my-16 mx-40 text-gray-900 border-1 border-gray-300 rounded-8 text-12'>
-        <div className='pb-field-item-title h-36 rounded-t-8'>
+        <div className='form-export-table-title h-36 rounded-t-8'>
           <div className='h-36 w-36  border-r-1 border-gray-300 flex items-center justify-center'>
             <Checkbox
               onChange={handleCheckAllChange}
@@ -146,7 +146,7 @@ function ExportFormModal({ onClose }: Props): JSX.Element {
           const { title, fieldName } = field;
           const disabled = !COMPONENTS_SUPPORT_EXPORT.includes(field['x-component'] as string);
           return (
-            <div key={fieldName} className='pb-field-item h-36 text-gray-900'>
+            <div key={fieldName} className='form-export-table-item h-36 text-gray-900'>
               <div className='h-36 w-36  border-r-1 border-gray-300 flex items-center justify-center'>
                 <Checkbox
                   checked={(!disabled && selected[fieldName]?.checked) || false}

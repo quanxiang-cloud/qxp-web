@@ -171,8 +171,8 @@ function FuncDetailsDrawer(): JSX.Element {
           />
         </div>
         <Pagination
-          total={store.versionCount}
-          renderTotalTip={() => `共 ${store.versionCount} 条数据`}
+          total={store.versionList.length}
+          renderTotalTip={() => `共 ${store.versionList.length} 条数据`}
           onChange={(current, pageSize) => store.setVersionParams({ page: current, size: pageSize })}
         />
       </div>

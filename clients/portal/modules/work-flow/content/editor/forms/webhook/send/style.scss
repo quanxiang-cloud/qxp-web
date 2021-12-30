@@ -1,0 +1,17 @@
+.webhook-send-block {
+  grid-template-columns: repeat(1, 142fr 322fr);
+
+  &--key, &--value {
+    @apply p-8 border-r-1;
+    &:not(:nth-last-child(1), :nth-last-child(2)) {
+      @apply border-b-1;
+    }
+    input {
+      box-shadow: none;
+    }
+  }
+
+  &--value {
+    border-right: none;
+  }
+}

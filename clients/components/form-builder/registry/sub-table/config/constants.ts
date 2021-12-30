@@ -61,7 +61,6 @@ import Subordination from './fields/subordination';
 import LinkedTable from './fields/linked-table';
 import CustomizedDatasetBtn from '../../cascade-selector/customized-dataset-btn';
 import DataSetSelector from '../../cascade-selector/dataset-selector';
-import CheckboxGroup from '../../checkbox-group/checkboxGroup';
 import AggregationRecords from '@c/form-builder/registry/aggregation-records/summary-field';
 import AssociateObject from '@c/form-builder/registry/aggregation-records/associate-object';
 import StatisticalRangeConfig from '@c/form-builder/registry/aggregation-records/statistical-range-config';
@@ -93,7 +92,7 @@ export const COMPONENTS: Record<string, FC<ISchemaFieldComponentProps> | FC<NotF
   customizeddatasetbtn: CustomizedDatasetBtn,
   datasetselector: DataSetSelector,
   datasetconfig: DatasetConfig,
-  checkboxgroup: CheckboxGroup,
+  checkboxgroup: Checkbox.Group,
   calculationformulabtn: CalculationFormulaBtn,
   aggregationrecords: AggregationRecords,
   associateobject: AssociateObject,

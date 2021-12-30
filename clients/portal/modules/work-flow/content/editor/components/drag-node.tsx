@@ -28,11 +28,19 @@ export default function DragNodeComponent({
   return (
     <div
       className="bg-gray-100 rounded-8 cursor-move flex items-center overflow-hidden
-       border-dashed hover:border-blue-600 border transition"
+       border-transparent hover:border-blue-600 border border-dashed transition-all"
       draggable
       onDragStart={(e) => onDragStart(e, type, width, height)}
     >
-      <Icon name={iconName} size={40} className={cs('mr-4 text-white', iconClassName)} />
+      <div className={
+        cs(
+          'p-8 rounded-tr-2 rounded-br-8 w-32 h-32 flex',
+          'items-center justify-center',
+          iconClassName,
+        )}
+      >
+        <Icon name={iconName} size={16} className={cs('text-white', iconClassName)} />
+      </div>
       <span className="ml-16 text-body2">{text}</span>
     </div>
   );

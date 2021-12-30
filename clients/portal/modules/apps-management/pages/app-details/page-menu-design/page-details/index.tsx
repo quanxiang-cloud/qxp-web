@@ -168,9 +168,10 @@ function PageDetails({ pageID }: Props): JSX.Element {
               name: '视图预览',
               content: (
                 <PageSchemaRender
-                  schemaKey={getSchemaKey(appID, pageID)}
+                  schemaKey={getSchemaKey(appID, pageID, false)}
                   version={getVersionKey()}
                   repository={getRenderRepository()}
+                  maxHeight="calc(100vh - 250px)"
                 />
               ),
             },

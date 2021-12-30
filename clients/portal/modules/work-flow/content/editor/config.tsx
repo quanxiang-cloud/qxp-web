@@ -20,6 +20,7 @@ import TableDataUpdateNode from './nodes/table-data-update';
 import SendEmailNode from './nodes/send-email';
 import WebMessage from './nodes/web-message';
 import CCNode from './nodes/cc';
+import Webhook from './nodes/webhook';
 
 export const nodeTypes = {
   formData: FormDataNode,
@@ -35,6 +36,7 @@ export const nodeTypes = {
   autocc: CCNode,
   processBranchSource: ProcessBranchSourceNode,
   processBranchTarget: ProcessBranchTargetNode,
+  webhook: Webhook,
 };
 
 export const edgeTypes = {

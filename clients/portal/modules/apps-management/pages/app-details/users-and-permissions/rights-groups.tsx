@@ -46,7 +46,7 @@ function RightsGroups(): JSX.Element {
     key: 'authorized',
   }];
 
-  if (store.currentPage.menuType !== (2 | 3)) {
+  if (![2, 3].includes(store.currentPage.menuType || 0)) {
     tabItem.push(...[
       {
         label: '字段权限',
@@ -62,7 +62,7 @@ function RightsGroups(): JSX.Element {
   const handleSave = (): void => {
     const authority = authorizedRef.current?.getAuthorizedPer() || 0;
 
-    if (store.currentPage.menuType === (2 | 3)) {
+    if ([2, 3].includes(store.currentPage.menuType || 0)) {
       store.updatePerCustom(authority);
       setOpenSet(false);
       return;
@@ -228,7 +228,7 @@ function RightsGroups(): JSX.Element {
                     ref={authorizedRef}
                     className={cs({ ['rights-hidden']: activeTab !== 'authorized' })}
                   />
-                  {store.currentPage.menuType !== (2 | 3) && (
+                  {![2, 3].includes(store.currentPage.menuType || 0) && (
                     <>
                       <FieldPermissions
                         abled={openset}

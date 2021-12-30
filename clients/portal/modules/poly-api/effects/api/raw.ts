@@ -59,6 +59,7 @@ export type RawApiDocDetail = {
   id: string;
   doc: {
     url: string;
+    method: string;
     input: {
       inputs: POLY_API.PolyNodeInput[];
     };

@@ -52,14 +52,14 @@ function EndForm(props: ISchemaFieldComponentProps): JSX.Element {
           ref={outputEditorRef}
         />
       </div>
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-hidden formula-config">
         <Operates
           operates={OPERATES_MAP}
           onClick={handleOperateChange}
           className="bg-white"
         />
         <PolyNodePathTree
-          className="h-full bg-white"
+          className="h-full bg-white overflow-auto"
           onSelect={onSelect}
           ref={polyNodePathTreeRef}
         />
