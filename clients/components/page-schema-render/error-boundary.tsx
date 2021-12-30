@@ -21,7 +21,9 @@ export default class ErrorBoundary extends React.Component<PropsWithChildren<any
   render(): ReactNode {
     if (this.state.hasError) {
       // You can render any custom fallback UI
-      return null;
+      return (
+        <div className="text-grey-400">预览失败，请编辑 schema 后重试</div>
+      );
     }
 
     return this.props.children;

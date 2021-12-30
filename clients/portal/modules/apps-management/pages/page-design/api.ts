@@ -19,20 +19,25 @@ type Option={
   [key: string]: any
 }
 
-export function getSchemaKey(app_id: string, page_id: string, isDraft?: boolean) {
-  return [isDraft ? PG_DRAFT_PREFIX : PG_SAVED_PREFIX, [app_id, page_id].join('__')].join('@');
+export function getSchemaKey(appID: string, pageID: string, isDraft: boolean): string {
+  const key = `custom_page_schema:app_id:${appID}:page_id:${pageID}`;
+  if (isDraft) {
+    return `${key}:draft`;
+  }
+
+  return key;
 }
 
 export function savePage(app_id: string, page_id: string, page_schema: any, options?: Option): Promise<any> {
   return setBatchGlobalConfig([{
-    key: getSchemaKey(app_id, page_id, options?.draft),
+    key: getSchemaKey(app_id, page_id, !!options?.draft),
     version: PG_VERSION,
     value: typeof page_schema === 'object' ? JSON.stringify(page_schema) : page_schema,
   }]);
 }
 
 export function getPage(app_id: string, page_id: string, options?: Option) {
-  const queryId = getSchemaKey(app_id, page_id, options?.draft);
+  const queryId = getSchemaKey(app_id, page_id, !!options?.draft);
   return getBatchGlobalConfig([{
     key: queryId,
     version: PG_VERSION,
