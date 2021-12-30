@@ -33,7 +33,7 @@ class AppDetailStore {
 
   @action setup = (page: Menu): void => {
     this.page = page;
-  }
+  };
 
   @action init = (appId: string, pageId: string): void => {
     if (this.page?.appID === appId && this.page?.id === pageId) {
@@ -41,7 +41,7 @@ class AppDetailStore {
     } else {
       this.initPage(appId, pageId);
     }
-  }
+  };
 
   @action initPage = (appId: string, pageId: string): void => {
     this.state = { loading: true, error: '' };
@@ -57,7 +57,7 @@ class AppDetailStore {
     }).catch(() => {
       this.state = { loading: false, error: '获取页面列表失败' };
     });
-  }
+  };
 
   @action initPageDetail = (): void => {
     if (!this.page) return;
@@ -71,7 +71,7 @@ class AppDetailStore {
     default:
       this.state = { loading: false, error: '页面不存在' };
     }
-  }
+  };
 
   @action initCustomPage = (): void => {
     if (!this.page) return;
@@ -85,12 +85,12 @@ class AppDetailStore {
     }).catch((e) => {
       this.state = { loading: false, error: e.message };
     });
-  }
+  };
 
   @action initSchemaForm = (): void => {
     if (this.authority === undefined) this.initAuthority();
     this.initTables();
-  }
+  };
 
   @action initAuthority = (): void => {
     if (!this.page) return;
@@ -102,7 +102,7 @@ class AppDetailStore {
     }).catch(() => {
       this.state = { loading: false, error: '加载失败' };
     });
-  }
+  };
 
   @action initTables = async (): Promise<void> => {
     if (!this.page) return;
@@ -122,7 +122,7 @@ class AppDetailStore {
     } catch {
       this.state = { loading: false, error: '加载失败' };
     }
-  }
+  };
 
   @action loadTables = async (pageKey: number): Promise<void> => {
     if (!this.page) return;
@@ -152,7 +152,7 @@ class AppDetailStore {
     this.currentPage = pageKey;
     this.finished = tables.length < this.limit;
     if (!this.inited) this.inited = true;
-  }
+  };
 
   @action delete = async (id: string): Promise<boolean> => {
     if (!this.page) {
@@ -184,7 +184,7 @@ class AppDetailStore {
       toast.error(e);
     }
     return false;
-  }
+  };
 
   @action clear = (): void => {
     this.state = { loading: false, error: '' };
@@ -198,7 +198,7 @@ class AppDetailStore {
     this.finished = false;
     this.inited = false;
     this.list = [];
-  }
+  };
 }
 
 export default new AppDetailStore();

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { forwardRef, ForwardedRef, useMemo } from 'react';
 import classNames from 'classnames';
 import RowContext from './RowContext';
 
@@ -25,7 +25,7 @@ export interface RowProps extends React.HTMLAttributes<HTMLDivElement> {
   wrap?: boolean;
 }
 
-const Row = React.forwardRef<HTMLDivElement, RowProps>((props: RowProps, ref) => {
+const Row = (props: RowProps, ref: ForwardedRef<HTMLDivElement>): JSX.Element => {
   const {
     justify,
     align,
@@ -68,7 +68,7 @@ const Row = React.forwardRef<HTMLDivElement, RowProps>((props: RowProps, ref) =>
     rowStyle.marginBottom = verticalGutter;
   }
 
-  const rowContext = React.useMemo(() => ({ gutter: gutters, wrap }), [
+  const rowContext = useMemo(() => ({ gutter: gutters, wrap }), [
     gutters,
     wrap,
   ]);
@@ -80,6 +80,6 @@ const Row = React.forwardRef<HTMLDivElement, RowProps>((props: RowProps, ref) =>
       </div>
     </RowContext.Provider>
   );
-});
+};
 
-export default Row;
+export default forwardRef<HTMLDivElement, RowProps>(Row);

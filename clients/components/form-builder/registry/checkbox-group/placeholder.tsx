@@ -27,7 +27,7 @@ function CheckBoxGroup({
 
 function Placeholder(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   const labels = useEnumOptions(fieldProps);
-  const { optionsLayout } = fieldProps?.props?.['x-component-props'];
+  const { optionsLayout } = fieldProps?.props?.['x-component-props'] ?? {};
 
   if (!labels.length) {
     return <span>暂无可选项</span>;

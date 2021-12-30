@@ -49,12 +49,12 @@ export default class Year extends React.Component<Props> {
     const { start, end } = getPresetDate(option);
 
     this.props.onChange(start, end, option);
-  }
+  };
 
   @action
   handleToggleCalendar = (type: 'startDate' | 'endDate'): void => {
     this.openCalendar = this.openCalendar === type ? '' : type;
-  }
+  };
 
   @action
   handleCalendarClick = (date: moment.Moment): void => {
@@ -63,15 +63,15 @@ export default class Year extends React.Component<Props> {
     } else {
       this.endDate = date.endOf('day');
     }
-    // this.openCalendar = '';
-  }
+  // this.openCalendar = '';
+  };
 
   handleConfirmCustom = (): void => {
     if (this.startDate && this.endDate) {
       const range = `${this.startDate.format('YYYY-MM-DD')}/${this.endDate.format('YYYY-MM-DD')}`;
       this.props.onChange(this.startDate, this.endDate, range);
     }
-  }
+  };
 
   renderPresetOptions = (): JSX.Element => {
     return (
@@ -89,7 +89,7 @@ export default class Year extends React.Component<Props> {
         }
       </div>
     );
-  }
+  };
 
   renderUserDefined = (): JSX.Element => {
     const { dateFormat } = this.props;
@@ -121,7 +121,7 @@ export default class Year extends React.Component<Props> {
         </div>
       </>
     );
-  }
+  };
 
   renderCalendar = (): JSX.Element | null => {
     if (this.openCalendar) {
@@ -153,7 +153,7 @@ export default class Year extends React.Component<Props> {
     }
 
     return null;
-  }
+  };
 
   render(): JSX.Element {
     return (

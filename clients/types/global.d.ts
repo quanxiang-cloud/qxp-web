@@ -18,10 +18,6 @@ declare module 'web-worker:*' {
   export default WorkerFactory;
 }
 
-declare module 'draftjs-to-html';
-declare module 'html-to-draftjs';
-declare module 'prismjs';
-
 type UserDepartment = {
   id: string;
   departmentName: string;

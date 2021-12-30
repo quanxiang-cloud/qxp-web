@@ -35,13 +35,13 @@ class TopicStore {
     }
 
     if (!this.inited) this.inited = true;
-  }
+  };
 
   @action clear = (): void => {
     this.comments = [];
     this.loading = false;
     this.inited = false;
-  }
+  };
 }
 
 export default new TopicStore();

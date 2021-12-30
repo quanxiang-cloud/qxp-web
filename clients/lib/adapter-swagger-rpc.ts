@@ -30,5 +30,5 @@ export default class SwaggerRPCSpecAdapter extends SwaggerSpecAdapter {
     }
 
     return { result: body.data, error: undefined };
-  }
+  };
 }

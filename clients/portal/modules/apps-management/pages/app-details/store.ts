@@ -83,7 +83,7 @@ class AppDetailsStore {
     appSign: '',
   };
   @observable loading = false;
-  @observable lastUpdateTime = 0
+  @observable lastUpdateTime = 0;
   @observable pageInitList: PageInfo[] = [];
   @observable apps: AppInfo[] = [];
   @observable appID = '';
@@ -104,7 +104,7 @@ class AppDetailsStore {
   @observable activeMenu: Menu = DEFAULT_MENU;
   @observable lastHover: Menu = DEFAULT_MENU;
   @observable draggingNode: any = null;
-  @observable designPageSchema=''
+  @observable designPageSchema = '';
 
   constructor() {
     this.destroySetCurPage = reaction(() => {
@@ -118,19 +118,19 @@ class AppDetailsStore {
   @action
   setPageID = (pageID: string): void => {
     this.pageID = pageID;
-  }
+  };
 
   @action
   setModalType = (modalType: string): void => {
     this.modalType = modalType;
-  }
+  };
 
   @action
   fetchAppList = (): void => {
     fetchAppList({}).then((res: any) => {
       this.apps = res.data;
     });
-  }
+  };
 
   @action
   updateAppStatus = (): Promise<void> => {
@@ -146,7 +146,7 @@ class AppDetailsStore {
       });
       toast.success(useStatus < 0 ? '发布成功！' : '下架成功');
     });
-  }
+  };
 
   @action
   fetchAppDetails = (appID: string): Promise<void> => {
@@ -163,7 +163,7 @@ class AppDetailsStore {
         this.loading = false;
       });
     });
-  }
+  };
 
   @action
   updateApp = (appInfo: Pick<AppInfo, 'appName' | 'appIcon' | 'useStatus' | 'appSign'>): Promise<void> => {
@@ -181,12 +181,12 @@ class AppDetailsStore {
     }).catch((err) => {
       toast.error(err);
     });
-  }
+  };
 
   @action
   updatePagesTree = (treeData: TreeData): void => {
     this.pagesTreeData = treeData;
-  }
+  };
 
   @action del = async (delItem: Menu, type: string): Promise<void> => {
     const dto = {
@@ -217,7 +217,7 @@ class AppDetailsStore {
       .catch((err) => {
         toast.error(err || '删除是啊比');
       });
-  }
+  };
 
   @action
   deletePageOrGroup = async ({
@@ -262,7 +262,7 @@ class AppDetailsStore {
       this.curPage = nextTreeItem?.data;
       return;
     }
-  }
+  };
 
   @action
   editGroup = (groupInfo: PageInfo): Promise<void> => {
@@ -290,7 +290,7 @@ class AppDetailsStore {
       this.pageInitList.push(newGroup);
       toast.success('创建成功');
     });
-  }
+  };
   // 'editPage', 'createPage', 'copyPage'
   @action
   editPage = (pageInfo: PageInfo): Promise<void> => {
@@ -329,7 +329,7 @@ class AppDetailsStore {
     return createPage({ appID: this.appID, ...PageInfoPick }).then((res: { id: string }) => {
       this.addNewPageToList(PageInfoPick, res.id);
     });
-  }
+  };
 
   @action
   addNewPageToList = (PageInfoPick: Partial<PageInfo>, id: string): string => {
@@ -365,7 +365,7 @@ class AppDetailsStore {
 
     toast.success('创建成功');
     return id;
-  }
+  };
 
   @action
   setCurPage = (pageID: string): void => {
@@ -429,7 +429,7 @@ class AppDetailsStore {
     }
 
     if (pageInfo.menuType === MenuType.schemaPage) {
-      // todo
+    // todo
       getSchemaPage(this.appID, this.pageID).then((schema)=> {
         if (schema) {
           this.designPageSchema = schema;
@@ -442,7 +442,7 @@ class AppDetailsStore {
     }
 
     this.curPage = pageInfo;
-  }
+  };
 
   @action
   setCurPageMenuType = (menuType: number, data: CustomPageInfo): void => {
@@ -461,7 +461,7 @@ class AppDetailsStore {
     getPageCardList(this.appID, this.pageID, this.curPageCardList, curPageInfo.menuType).then((res) => {
       this.curPageCardList = res;
     });
-  }
+  };
 
   @action
   updatePageHideStatus = (appID: string, pageInfo: PageInfo) => {
@@ -481,7 +481,7 @@ class AppDetailsStore {
       this.updatePageInitList(hideMenu(this.pageInitList));
       toast.success(`${pageInfo.name}页面${!pageInfo.isHide ? '隐藏' : '显示'}成功`);
     }).catch(() => toast.error('页面设置显示或者隐藏失败'));
-  }
+  };
 
   @action
   fetchPageList = (appID: string): void => {
@@ -502,7 +502,7 @@ class AppDetailsStore {
     }).finally(() => {
       this.pageListLoading = false;
     });
-  }
+  };
 
   @action
   clear = (): void => {
@@ -515,24 +515,24 @@ class AppDetailsStore {
       rootId: 'ROOT',
       items: {},
     };
-  }
+  };
 
   @action setActiveMenu = (menuItem: Menu): void => {
     this.activeMenu = menuItem;
     this.setCurPage(this.pageID);
-  }
+  };
 
   @action updatePageInitList = (newPageList: PageInfo[]): void => {
     this.pageInitList = newPageList;
-  }
+  };
 
   @action setLastHover = (menuItem: Menu): void => {
     this.lastHover = menuItem;
-  }
+  };
 
   @action setDraggingNode = (node: any): void => {
     this.draggingNode = node;
-  }
+  };
 }
 
 export default new AppDetailsStore();

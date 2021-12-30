@@ -1,8 +1,8 @@
 import React from 'react';
 
 interface Props {
-    validating: boolean,
-    tips: string,
+  validating: boolean,
+  tips: string,
 }
 
 export default function ValidatingTips({ validating, tips }: Props): JSX.Element {

@@ -31,7 +31,7 @@ class AllApprovalStore extends Store {
     } catch (err) {
       toast.error(err);
     }
-  }
+  };
 }
 
 export default new AllApprovalStore();

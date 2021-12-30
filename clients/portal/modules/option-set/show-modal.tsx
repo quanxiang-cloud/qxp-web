@@ -25,7 +25,7 @@ function ShowModal({ modalType, isNoData = false }: Props): JSX.Element {
   }
 
   function handleAddCallback(): void {
-    const { option_set_name, option_set_tag } = formAddRef?.current?.getValues();
+    const { option_set_name, option_set_tag } = formAddRef?.current?.getValues() ?? {};
     createOptionSet({
       name: option_set_name,
       tag: option_set_tag,
@@ -55,7 +55,7 @@ function ShowModal({ modalType, isNoData = false }: Props): JSX.Element {
   }
 
   function handleEditCallback(): void {
-    const { option_set_name, option_set_tag } = formAddRef?.current?.getValues();
+    const { option_set_name, option_set_tag } = formAddRef?.current?.getValues() ?? {};
     if (store.activeOptionSet?.name === option_set_name && store.activeOptionSet?.tag === option_set_tag) {
       toast.error('数据未更改');
       return;
@@ -102,7 +102,7 @@ function ShowModal({ modalType, isNoData = false }: Props): JSX.Element {
   function handleCopyCallback(): void {
     const {
       option_set_name, option_set_tag, option_set_expand,
-    } = formAddRef?.current?.getValues();
+    } = formAddRef?.current?.getValues() ?? {};
     const apiType = option_set_expand.length === 1 ? 1 : 2;
     const queryType = option_set_expand.length === 1 ? 'list' : 'tree';
     createOptionSet({

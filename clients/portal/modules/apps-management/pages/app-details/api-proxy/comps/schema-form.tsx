@@ -34,9 +34,9 @@ function Form<T>(props: Props<T>, ref: React.Ref<RefType<T>>): JSX.Element {
       return actions.validate('*').then(()=> {
         return actions.getFormState().values;
       }).catch(({ errors }: {errors: Array<{
-          path: string
-          messages: string[]
-        }>})=> {
+        path: string
+        messages: string[]
+      }>})=> {
         if (errors.length) {
           toast.error(errors[0].messages);
         }

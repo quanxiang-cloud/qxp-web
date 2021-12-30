@@ -93,7 +93,7 @@ export default class Popper2 extends React.Component<Props, State> {
       placement: this.props.placement || 'bottom',
       modifiers: (this.props.modifiers || []).concat(arrowModifier),
     });
-  }
+  };
 
   bindEventsOnReference(): void {
     if (!this.props.reference.current || this.trigger === 'forever') {
@@ -136,15 +136,15 @@ export default class Popper2 extends React.Component<Props, State> {
 
   onTargetFocused = (): void => {
     this.setPopVisible(true);
-  }
+  };
 
   onTargetBlur = (): void => {
     this.delaySetPopVisible(false, 0.15);
-  }
+  };
 
   onTargetClick = (): void => {
     this.setPopVisible(!this.state.popVisible);
-  }
+  };
 
   appendContainer(): void {
     document.body.appendChild(this.popperContainer);
@@ -152,20 +152,20 @@ export default class Popper2 extends React.Component<Props, State> {
 
   onPopupMouseEnter = (): void => {
     this.clearDelayTimer();
-  }
+  };
 
   onPopupMouseLeave = (): void => {
     this.delaySetPopVisible(false, 0.1);
-  }
+  };
 
   onMouseLeave = (): void => {
     this.delaySetPopVisible(false, 0.1);
-  }
+  };
 
   onMouseEnter = (): void => {
     // popper should be showed immediately
     this.delaySetPopVisible(true, 0);
-  }
+  };
 
   // close popper when click outside of target or popper content
   onDocumentClick = (e: MouseEvent): boolean => {
@@ -179,19 +179,19 @@ export default class Popper2 extends React.Component<Props, State> {
     this.close();
 
     return true;
-  }
+  };
 
   handleClosePopper = (): void => {
     this.close();
-  }
+  };
 
   close = (): void => {
     this.setPopVisible(false);
-  }
+  };
 
   setPopVisible = (popVisible: boolean): void => {
     this.setState({ popVisible });
-  }
+  };
 
   get visible(): boolean {
     return this.state.popVisible;

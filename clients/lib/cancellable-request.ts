@@ -18,9 +18,9 @@ export class CancellableRequest<T> {
     });
     const data = await resp.json();
     return data;
-  }
+  };
 
   cancel = () => {
     this.abortController.abort();
-  }
+  };
 }

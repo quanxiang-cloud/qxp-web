@@ -3,7 +3,7 @@ $qxb-prefix: qxb-web;
 $grid-columns: 24;
 
 @mixin create-grid-columns($index, $class) {
-  $percent: $index / $grid-columns;
+  $percent: calc($index / $grid-columns);
 
   @if $index == 0 {
     .#{$qxb-prefix}-col#{$class}-#{$index} {

@@ -6,6 +6,7 @@ import React, {
   useImperativeHandle,
   useState,
   useContext, ReactNode, MutableRefObject,
+  ForwardedRef,
 } from 'react';
 import cs from 'classnames';
 import { useSetState, useUpdateEffect, useWindowSize } from 'react-use';
@@ -30,7 +31,7 @@ import TabsContext from './context';
 import TabsTitle from './tabs-title';
 import TabsContent from './tabs-content';
 
-const Tabs = forwardRef<TabsInstance, TabsProps>((props: TabsProps, ref) => {
+function Tabs(props: TabsProps, ref: ForwardedRef<TabsInstance>): JSX.Element {
   const popupContext = useContext(PopupContext);
 
   const {
@@ -357,6 +358,6 @@ const Tabs = forwardRef<TabsInstance, TabsProps>((props: TabsProps, ref) => {
       </div>
     </TabsContext.Provider>
   );
-});
+}
 
-export default Tabs;
+export default forwardRef<TabsInstance, TabsProps>(Tabs);

@@ -29,13 +29,13 @@ class TodoApprovalStore extends Store {
   changeTagType = (tag: string): void => {
     this.tagType = tag;
     this.pageNumber = 1;
-  }
+  };
 
   @action
   changeHandleType = (handleType: string): void => {
     this.handleType = handleType;
     this.pageNumber = 1;
-  }
+  };
 
   @action
   fetchAll = async () => {
@@ -48,7 +48,7 @@ class TodoApprovalStore extends Store {
     } catch (err) {
       toast.error(err);
     }
-  }
+  };
 
   @action
   reset = () => {
@@ -60,7 +60,7 @@ class TodoApprovalStore extends Store {
     this.orderType = 'DESC';
     this.tagType = '';
     this.handleType = '';
-  }
+  };
 }
 
 export default new TodoApprovalStore();

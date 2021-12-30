@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { forwardRef, ForwardedRef } from 'react';
 import classNames from 'classnames';
 
 import RowContext from './RowContext';
@@ -38,7 +38,7 @@ function parseFlex(flex: FlexType): string {
   return flex;
 }
 
-const Col = React.forwardRef<HTMLDivElement, ColProps>((props: ColProps, ref) => {
+const Col = (props: ColProps, ref: ForwardedRef<HTMLDivElement>): JSX.Element => {
   const { gutter, wrap } = React.useContext(RowContext);
 
   const {
@@ -94,6 +94,6 @@ const Col = React.forwardRef<HTMLDivElement, ColProps>((props: ColProps, ref) =>
       {children}
     </div>
   );
-});
+};
 
-export default Col;
+export default forwardRef<HTMLDivElement, ColProps>(Col);
