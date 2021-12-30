@@ -1,94 +1,74 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
-import { observer } from 'mobx-react';
+import React, { useState } from 'react';
+import { useQuery } from 'react-query';
+import { useParams } from 'react-router-dom';
+import { Schema } from '@ofa/render-engine';
 
-import Icon from '@c/icon';
-import { getQuery } from '@lib/utils';
-import toast from '@lib/toast';
-import ApiSelector from '@polyApi/nodes/forms/request-config/api-selector';
-import ApiSpec from '../app-details/api-proxy/add-api';
+import { parseJSON } from '@lib/utils';
+import { useGetGlobalConfig } from '@lib/configuration-center';
 
-import { Designer, getStore } from '@ofa/page-engine';
-import { getPage, savePage, updatePageEngineMenuType } from './api';
-
+import PageEngine from './page-engine';
+import SelectCustomPageEditor from './select-custom-page-editor';
+import SchemaEditor from './schema-editor';
+import { getPage } from './api';
+import {
+  getKeyOfCustomPageEditor,
+  CUSTOM_PAGE_EDITOR_SCHEMA,
+  CUSTOM_PAGE_EDITOR_PAGE_ENGINE,
+  initialSchema,
+} from './utils';
 import './index.scss';
 
-interface Props {
-  className?: string;
-}
+export function useCustomPageSchema(appID: string, pageId: string): { loading: boolean; schema?: Schema } {
+  const { isLoading, data } = useQuery<Schema | undefined>(
+    ['check_has_custom_page_schema', appID, pageId],
+    () => {
+      return getPage(appID, pageId).then((schema) => {
+        if (!schema) {
+          return;
+        }
 
-function PageDesign(props: Props): JSX.Element {
-  const { designer, page } = getStore();
-  const { appID, pageId } = useParams<{appID: string; pageId: string}>();
-  const { pageName } = getQuery<{ pageName: string }>();
-  const history = useHistory();
-  const [apiPath, setApiPath] = useState('');
-
-  useEffect(()=> {
-    getPage(appID, pageId).then((schema)=> {
-      if (schema) {
-        page.setSchema(JSON.parse(schema));
-      }
-    });
-  }, []);
-
-  useEffect(()=> {
-    // set page title
-    designer.setVdom('title', (
-      <div className='inline-flex items-center text-gray-900 text-12'>
-        <Icon name='keyboard_backspace' className='mr-8' onClick={history.goBack} clickable />
-        <span className='mr-4'>正在设计页面:</span>
-        <span>{pageName}</span>
-      </div>
-    ));
-
-    // todo: api path not update
-    designer.setVdom('platformApis', (
-      <div className='flex flex-col mb-24 relative -top-8'>
-        <p className='text-12 text-gray-600'>选择API</p>
-        <ApiSelector
-          className='api-selector-wrap'
-          apiDocDetail={null}
-          initRawApiPath={apiPath}
-          setApiPath={setApiPath}
-          simpleMode
-        />
-      </div>
-    ));
-  }, []);
-
-  useEffect(()=> {
-    designer.setVdom('apiStateDetail', renderApiStateDetail());
-  }, [apiPath]);
-
-  function renderApiStateDetail(): JSX.Element {
-    if (!apiPath) {
-      return (
-        <div className='flex flex-col justify-center items-center h-full'>
-          <img src="/dist/images/table-empty.svg" className="w-96 h-72 mb-8" />
-          <span className="text-caption-no-color-weight text-gray-400">请先选择一个要加入数据源的API数据</span>
-        </div>
-      );
-    }
-    return (
-      <ApiSpec apiPath={apiPath} editMode tinyMode />
-    );
-  }
-
-  function handleSave(page_schema: any, options?: Record<string, any>): void {
-    savePage(appID, pageId, page_schema, options).then((res)=> {
-      if (!options?.silent) {
-        updatePageEngineMenuType(appID, pageId);
-        toast.success('页面已保存');
-      }
-    }).catch((err: Error)=> {
-      toast.error(err.message);
-    });
-  }
-
-  return (
-    <Designer onSave={handleSave} />
+        return parseJSON(schema, undefined);
+      });
+    },
   );
+
+  return { loading: isLoading, schema: data };
 }
 
-export default observer(PageDesign);
+function useWhichCustomPageEditor(appID: string, pageId: string): { editor: string; loading: boolean; } {
+  const [editor, loading] = useGetGlobalConfig(getKeyOfCustomPageEditor(appID, pageId), '1.0.0', '');
+  return { editor, loading };
+}
+
+function PageDesign(): JSX.Element | null {
+  const { appID, pageId } = useParams<{appID: string; pageId: string}>();
+  const { schema, loading: hasSchemaLoading } = useCustomPageSchema(appID, pageId);
+  const { editor, loading: editorLoading } = useWhichCustomPageEditor(appID, pageId);
+  const [selectedEditor, setSelectedEditor] = useState('');
+
+  // todo refactor this
+  if (selectedEditor === CUSTOM_PAGE_EDITOR_SCHEMA) {
+    return (<SchemaEditor appID={appID} pageId={pageId} initialSchema={schema || initialSchema} />);
+  }
+
+  // todo refactor this
+  if (selectedEditor === CUSTOM_PAGE_EDITOR_PAGE_ENGINE) {
+    return (<PageEngine />);
+  }
+
+  if (hasSchemaLoading || editorLoading) {
+    return null;
+  }
+
+  if (!schema) {
+    return (<SelectCustomPageEditor appID={appID} pageId={pageId} onSelect={setSelectedEditor} />);
+  }
+
+  if (editor === CUSTOM_PAGE_EDITOR_SCHEMA) {
+    return (<SchemaEditor appID={appID} pageId={pageId} initialSchema={schema} />);
+  }
+
+  return (<PageEngine />);
+}
+
+export default PageDesign;

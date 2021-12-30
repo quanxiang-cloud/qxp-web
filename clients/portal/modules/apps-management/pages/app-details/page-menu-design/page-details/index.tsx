@@ -3,7 +3,6 @@ import cs from 'classnames';
 import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 import PageSchemaRender from '@c/page-schema-render';
-import { toRenderSchema } from '@ofa/page-engine';
 
 import Icon from '@c/icon';
 import Card from '@c/card';
@@ -169,10 +168,10 @@ function PageDetails({ pageID }: Props): JSX.Element {
               name: '视图预览',
               content: (
                 <PageSchemaRender
-                  schemaKey={getSchemaKey(appID, pageID)}
+                  schemaKey={getSchemaKey(appID, pageID, false)}
                   version={getVersionKey()}
                   repository={getRenderRepository()}
-                  schemaConvertor={toRenderSchema}
+                  maxHeight="calc(100vh - 250px)"
                 />
               ),
             },
