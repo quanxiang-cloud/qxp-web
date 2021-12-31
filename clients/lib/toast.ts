@@ -100,7 +100,7 @@ class Toast {
         element.style.top = `${top - 60}px`;
       }
     });
-  }
+  };
 
   private getTemplate(type: string, message: string, closeable: boolean) {
     return `

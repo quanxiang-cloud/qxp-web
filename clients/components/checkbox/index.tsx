@@ -8,6 +8,7 @@ type Props = React.DetailedHTMLProps<
   label?: string | React.ReactElement;
   indeterminate?: boolean;
   rounded?: boolean;
+  className?: string;
 }
 
 import './style.scss';

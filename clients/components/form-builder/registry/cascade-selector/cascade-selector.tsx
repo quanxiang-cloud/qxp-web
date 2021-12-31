@@ -1,20 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { Cascader, CascaderProps } from 'antd';
-import { CascaderOptionType, CascaderValueType } from 'antd/lib/cascader';
+import { DefaultOptionType } from 'antd/lib/cascader';
 import { omit, last } from 'lodash';
 
 import { getOptionSetById } from '@portal/modules/option-set/api';
 
 export type DefaultValueFrom = 'customized' | 'predefined-dataset';
 
-interface FetchOptions extends CascaderProps {
+type CascaderOptionType = DefaultOptionType;
+type SingleValueType = (string | number)[];
+type CascaderValueType = SingleValueType | SingleValueType[];
+
+interface FetchOptions extends CascaderProps<any> {
   predefinedDataset?: string;
   defaultValueFrom: DefaultValueFrom;
   options: CascaderOptionType[];
 }
 
-export type CascadeSelectorProps = CascaderProps & {
+export type CascadeSelectorProps = CascaderProps<any> & {
   predefinedDataset?: string;
   defaultValueFrom: DefaultValueFrom;
   showFullPath?: boolean;

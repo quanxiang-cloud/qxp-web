@@ -16,7 +16,7 @@ type Props = {
 export default class Month extends React.Component<Props> {
   handleDayClick = (day: moment.Moment): void => {
     this.props.onDayClick(day);
-  }
+  };
 
   renderHeader(): JSX.Element {
     return (

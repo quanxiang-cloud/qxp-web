@@ -97,7 +97,7 @@ class PushServer {
     this.connection.onerror = () => {
       this.closeConnection();
     };
-  }
+  };
 
   detachEvents() {
     this.connection.onopen = null;
@@ -113,11 +113,11 @@ class PushServer {
       this.attachEvents();
       this.heartbeat();
     });
-  }
+  };
 
   offlineHandler = () => {
     this.closeConnection();
-  }
+  };
 
   heartbeat() {
     const echo = () => {
@@ -143,14 +143,14 @@ class PushServer {
 
   setUp = (cb?: any) => {
     this.initConnection().then(cb || this.attachEvents);
-  }
+  };
 
   dispatchEvent = (data: SocketData): void => {
     const listenerMap = this.listenersMap.get(data.types || '') || {};
     Object.entries(listenerMap).map(([key, listener]) => {
       listener(data);
     });
-  }
+  };
 
   addEventListener(type: string, key: string, listener: SocketEventListener): void {
     const listeners = this.listenersMap.get(type) || {};

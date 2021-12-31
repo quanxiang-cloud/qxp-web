@@ -113,7 +113,7 @@ function ContentWithoutRef({
     return asRaw ? raw : draftToHtml(raw);
   };
 
-  function isEditorEmpty(value: EditorState): boolean {
+  function isEditorEmpty(value: string): boolean {
     const _value = EditorState.createWithContent(
       ContentState.createFromBlockArray(
         htmlToDraft(value).contentBlocks),

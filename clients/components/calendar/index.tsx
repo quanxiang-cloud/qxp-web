@@ -44,13 +44,13 @@ export default class Calendar extends React.Component<Props> {
   @action
   handleChangeDisplay = (date: moment.Moment): void => {
     this.displayDate = date.clone();
-  }
+  };
 
   @action
   handleChangeSelected = (date: moment.Moment): void => {
     this.displayDate = date.clone();
     this.props.onChange(date.clone());
-  }
+  };
 
   render(): JSX.Element {
     const { selectedDate } = this.props;

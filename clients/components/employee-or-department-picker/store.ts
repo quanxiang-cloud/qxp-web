@@ -8,10 +8,10 @@ import EmployeeTreeStore from './employee-select-tree/store';
 
 class OwnerStore {
   @observable
-  employeeTreeStore: TreeStore<Department>
+  employeeTreeStore: TreeStore<Department>;
 
   @observable
-  departmentTreeStore: DepartmentTreeStore
+  departmentTreeStore: DepartmentTreeStore;
 
   @observable
   employeeStore: EmployeeStore;
@@ -44,12 +44,12 @@ class OwnerStore {
   @action
   setTabKey = (key: string) => {
     this.tabKey = key;
-  }
+  };
 
   @action
   setUsernameKeyword = (keyword: string) => {
     this.usernameKeyword = keyword;
-  }
+  };
 
   @action
   setLeader = (id: string, userName: string) => {
@@ -57,22 +57,22 @@ class OwnerStore {
       id,
       userName,
     };
-  }
+  };
 
   @action
   setDepartmentKeyword = (keyword: string) => {
     this.departmentKeyword = keyword;
-  }
+  };
 
   @action
   onClear = () => {
     this.owners = [];
-  }
+  };
 
   @action
   onRemove = (o: EmployeeOrDepartmentOfRole) => {
     this.owners = this.owners.filter((owner) => owner.ownerID !== o.ownerID);
-  }
+  };
 
   @action
   addOwner = (o: EmployeeOrDepartmentOfRole) => {
@@ -80,12 +80,12 @@ class OwnerStore {
       return;
     }
     this.owners = [...this.owners, o];
-  }
+  };
 
   @action
   removeOwner = (ownerId: string) => {
     this.owners = this.owners.filter((owner) => owner.ownerID !== ownerId);
-  }
+  };
 
   @action
   addOwners = (os: EmployeeOrDepartmentOfRole[]) => {
@@ -93,12 +93,12 @@ class OwnerStore {
       ...this.owners,
       ...os.filter((o) => !this.owners.find((owner) => owner.ownerID === o.ownerID)),
     ];
-  }
+  };
 
   @action
   removeOwners = (ownerIds: string[]) => {
     this.owners = this.owners.filter((owner) => !ownerIds.includes(owner.ownerID));
-  }
+  };
 }
 
 export default OwnerStore;

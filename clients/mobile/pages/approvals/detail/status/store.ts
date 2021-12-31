@@ -38,7 +38,7 @@ class ApprovalsStatusStore {
       toast.error(e);
     }
     return false;
-  }
+  };
 
   @action initHistory = (processInstanceId: string, statusId?: string | null): void => {
     if (!isDef(statusId)) return;
@@ -56,11 +56,11 @@ class ApprovalsStatusStore {
         }
       });
     }
-  }
+  };
 
   @action setHistory = (history?: ProcessHistory): void => {
     this.history = history;
-  }
+  };
 
   @action clear = (): void => {
     this.loading = false;
@@ -68,7 +68,7 @@ class ApprovalsStatusStore {
     this.histories = [];
     this.statusDataList = [];
     this.history = undefined;
-  }
+  };
 }
 
 export default new ApprovalsStatusStore();

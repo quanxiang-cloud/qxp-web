@@ -5,7 +5,7 @@ import { insertToArray } from '@polyApi/utils/object-editor';
 
 export class ItemStore<T extends { children: T[], id: string }> extends BehaviorSubject<T> {
   parent$?: Store<T> | ItemStore<T>;
-  children$: ItemStore<T>[]
+  children$: ItemStore<T>[];
   isChildrenHidden = false;
   isHidden = false;
 

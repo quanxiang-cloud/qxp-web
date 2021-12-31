@@ -74,7 +74,7 @@ export default class ControlPopper extends React.Component<Props> {
       placement: this.props.placement || 'bottom',
       modifiers: (this.props.modifiers || []).concat(arrowModifier),
     });
-  }
+  };
 
   appendContainer(): void {
     document.body.appendChild(this.popperContainer);

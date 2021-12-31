@@ -18,7 +18,7 @@ class ApprovalsDetailStore {
 
   @action init = (title: string): void => {
     this.title = title;
-  }
+  };
 
   @action initForm = async (
     index: number, processInstanceId: string, type: string, taskId?: string,
@@ -77,7 +77,7 @@ class ApprovalsDetailStore {
       toast.error(e);
     }
     return false;
-  }
+  };
 
   @action clear = (): void => {
     this.taskIdInited = false;
@@ -86,7 +86,7 @@ class ApprovalsDetailStore {
     this.taskDetails = [];
     this.canViewStatusAndMsg = false;
     this.canMsg = false;
-  }
+  };
 }
 
 export default new ApprovalsDetailStore();

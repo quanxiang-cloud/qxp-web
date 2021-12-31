@@ -28,7 +28,7 @@ class UserAppsStore {
     } else {
       this.app = app as AppDetail;
     }
-  }
+  };
 
   @action initApp = (appId: string): void => {
     if (this.app?.id !== appId) {
@@ -49,7 +49,7 @@ class UserAppsStore {
     } else {
       this.initPageList();
     }
-  }
+  };
 
   @action initPageList = (): void => {
     if (!this.app) return;
@@ -63,7 +63,7 @@ class UserAppsStore {
     }).catch(() => {
       this.state = { loading: false, error: '获取页面列表失败' };
     });
-  }
+  };
 
   @action initRecords = (menu: Menu[]): void => {
     if (!this.app) return;
@@ -91,7 +91,7 @@ class UserAppsStore {
       });
       this.records = records;
     }).catch((e) => toast.error(e));
-  }
+  };
 
   @action clear = (): void => {
     this.app = undefined;
@@ -99,7 +99,7 @@ class UserAppsStore {
     this.authority = 0;
     this.menu = [];
     this.records = [];
-  }
+  };
 }
 
 export default new UserAppsStore();

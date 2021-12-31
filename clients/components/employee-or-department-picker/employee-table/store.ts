@@ -5,14 +5,14 @@ import { IUser } from '@portal/modules/access-control/role-management/api';
 
 class EmployeeStore {
   @observable
-  selectedKeys: string[]
+  selectedKeys: string[];
 
   @observable
   pagination: {
     current: number;
     total: number;
     pageSize: number;
-  }
+  };
 
   constructor() {
     this.selectedKeys = [];
@@ -26,34 +26,34 @@ class EmployeeStore {
   @action
   setSelectedKeys = (keys: string[]) => {
     this.selectedKeys = keys;
-  }
+  };
 
   @action
   setPageSize = (size: number) => {
     this.pagination = { ...this.pagination, pageSize: size };
-  }
+  };
 
   @action
   setCurrentPage = (page: number) => {
     this.pagination = { ...this.pagination, current: page };
-  }
+  };
 
   @action
   setPagination = (page: number, pageSize: number) => {
     this.pagination = { ...this.pagination, current: page, pageSize };
-  }
+  };
 
   @action
   toggleSelectedKeys = (id: string) => {
     this.selectedKeys = this.selectedKeys.includes(id) ?
       this.selectedKeys.filter((item) => item !== id) :
       [...this.selectedKeys, id];
-  }
+  };
 
   @action
   setTotal = (total: number) => {
     this.pagination = { ...this.pagination, total };
-  }
+  };
 
   @action
   initialSelectedKeys = (users: IUser[], owners: EmployeeOrDepartmentOfRole[]) => {
@@ -62,7 +62,7 @@ class EmployeeStore {
         users?.find((user) => user.id === owner.ownerID),
       ).map(({ ownerID }) => ownerID),
     );
-  }
+  };
 }
 
 export default EmployeeStore;

@@ -36,22 +36,22 @@ class TaskDetailStore {
   @action
   setModalInfo = (info: Partial<ModalInfo> = {}): void => {
     Object.assign(this.modalInfo, info);
-  }
+  };
 
   @action
   setAction = (action: TaskHandleType | string): void => {
     this.action = action;
-  }
+  };
 
   @action
   openModal = (open?: boolean): void => {
     this.modalOpen = Boolean(open);
-  }
+  };
 
   @action
   setTaskItem = (task: any): void => {
     this.taskItem = task;
-  }
+  };
 
   @action
   handleClickAction = (action: TaskHandleType | string, task: any, reasonRequired?: boolean): void => {
@@ -67,12 +67,12 @@ class TaskDetailStore {
       require: reasonRequired || false,
       title: actionMap[action]?.text,
     });
-  }
+  };
 
   @action
   setShowTips = (show?: boolean): void => {
     this.showTips = Boolean(show);
-  }
+  };
 
   reset = (): void => {
     this.taskItem = initTaskItem;
@@ -80,7 +80,7 @@ class TaskDetailStore {
     this.modalOpen = false;
     this.modalInfo = { title: '', payload: {} };
     this.showTips = false;
-  }
+  };
 }
 
 export default new TaskDetailStore();

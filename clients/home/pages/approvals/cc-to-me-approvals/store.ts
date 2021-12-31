@@ -29,7 +29,7 @@ class TodoApprovalStore extends Store {
   @action
   changeStatus = (status: number): void => {
     this.status = status;
-  }
+  };
 
   @action
   fetchAll = async (): Promise<void> => {
@@ -42,7 +42,7 @@ class TodoApprovalStore extends Store {
     } catch (err) {
       toast.error(err);
     }
-  }
+  };
 
   @action
   reset = (): void => {
@@ -53,7 +53,7 @@ class TodoApprovalStore extends Store {
     this.keyword = '';
     this.orderType = 'DESC';
     this.status = -1;
-  }
+  };
 }
 
 export default new TodoApprovalStore();

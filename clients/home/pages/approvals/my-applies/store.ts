@@ -36,7 +36,7 @@ class MyAppliedApprovalStore extends Store {
   changeStatus = (status: string): void => {
     this.status = status;
     this.pageNumber = 1;
-  }
+  };
 
   @action
   fetchAll = async () => {
@@ -50,14 +50,14 @@ class MyAppliedApprovalStore extends Store {
     } catch (err) {
       toast.error(err);
     }
-  }
+  };
 
   @action
   changeDate = ({ start, end, readableCode }: { start: string, end: string, readableCode: string }) => {
     this.beginDate = start;
     this.endDate = end;
     this.readableDate = readableCode;
-  }
+  };
 
   @action
   reset = () => {
@@ -71,7 +71,7 @@ class MyAppliedApprovalStore extends Store {
     this.beginDate = beginDay;
     this.endDate = endDay;
     this.readableDate = 'customized:recent_seven_days';
-  }
+  };
 }
 
 export default new MyAppliedApprovalStore();

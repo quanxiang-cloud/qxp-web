@@ -59,7 +59,7 @@ class ApprovalsStore {
           if (task.flowInstanceEntity) {
             taskResult = { ...task, ...task.flowInstanceEntity, nodeName: task.name, taskId: task.id };
           } else {
-            // Task aggregated
+          // Task aggregated
             taskResult = {
               ...task,
               nodeName: task.nodes ? task.nodes[0]?.taskName : undefined,
@@ -97,7 +97,7 @@ class ApprovalsStore {
       throw e;
     }
     if (!this.inited) this.inited = true;
-  }
+  };
 
   @action
   clear = (): void => {
@@ -106,7 +106,7 @@ class ApprovalsStore {
     this.finished = false;
     this.inited = false;
     this.readAllEnabled = false;
-  }
+  };
 }
 
 const myApplies = new ApprovalsStore('APPLY_PAGE', getMyApplyList);

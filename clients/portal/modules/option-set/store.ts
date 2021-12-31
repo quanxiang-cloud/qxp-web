@@ -45,7 +45,7 @@ class OptionSetStore {
   setTreeList = (dataList: OptionSetTreeItem[] | OptionSetListItem[]): void => {
     this.tree = dataList;
     this.list = dataList;
-  }
+  };
 
   @action
   fetchAllNames = async (params?: OptionSets): Promise<void> => {
@@ -65,7 +65,7 @@ class OptionSetStore {
   getDefaultPrefix = (): string => {
     const idx = this.LEVEL.findIndex((prefix) => get(this.tree, prefix) !== undefined);
     return idx === -1 ? '' : this.LEVEL[idx];
-  }
+  };
 
   @action
   fetchOptionSet = async (id: string): Promise<void> => {
@@ -81,7 +81,7 @@ class OptionSetStore {
     }
     this.loadingOptionSet = false;
     this.path = this.getDefaultPrefix();
-  }
+  };
 
   @action
   setNames = (names: OptionSet[]): void => {
@@ -102,12 +102,12 @@ class OptionSetStore {
     } else {
       this.activeId = id;
     }
-  }
+  };
 
   @action
   setActiveOptionSet = (optionSet: OptionSet | null): void => {
     this.activeOptionSet = optionSet;
-  }
+  };
 
   handleSaveTree = (tree: OptionSetTreeItem[]): void => {
     const validate = (): boolean => {
@@ -206,7 +206,7 @@ class OptionSetStore {
 
     this.tree = bakTree;
     this.handleSaveTree(bakTree);
-  }
+  };
 
   @action
   removeItem = (path: string): void => {
@@ -337,7 +337,7 @@ class OptionSetStore {
     this.modalOpen = false;
     this.path = '';
     this.showNoData = false;
-  }
+  };
 }
 
 export default new OptionSetStore();

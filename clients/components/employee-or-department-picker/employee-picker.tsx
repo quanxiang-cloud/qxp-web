@@ -17,9 +17,9 @@ import EmployeeSelectTree from './employee-select-tree';
 import OwnerStore from './store';
 
 interface Props {
-    onChange: (departmentsOrEmployees: EmployeeOrDepartmentOfRole[]) => void;
-    employees?: EmployeeOrDepartmentOfRole[];
-    className?: string;
+  onChange: (departmentsOrEmployees: EmployeeOrDepartmentOfRole[]) => void;
+  employees?: EmployeeOrDepartmentOfRole[];
+  className?: string;
 }
 
 function EmployeePicker({

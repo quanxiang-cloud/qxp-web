@@ -11,7 +11,7 @@ class TaskListStore {
       this.inProgressCount = count || 0;
       return this.inProgressCount;
     });
-  }
+  };
 }
 
 export default new TaskListStore();

@@ -61,7 +61,7 @@ class MessagesStore {
       throw e;
     }
     if (!this.inited) this.inited = true;
-  }
+  };
 
   @action
   loadUnreadCount = (): void => {
@@ -78,7 +78,7 @@ class MessagesStore {
       const _message = { ...message, readStatus: 2 };
       this.list = this.list.splice(index, 1, _message);
     }
-  }
+  };
 
   @action
   readAll = async (): Promise<boolean> => {
@@ -91,7 +91,7 @@ class MessagesStore {
       toast.error(e);
       return false;
     });
-  }
+  };
 
   @action
   clear = (): void => {
@@ -100,7 +100,7 @@ class MessagesStore {
     this.finished = false;
     this.inited = false;
     this.unread = 0;
-  }
+  };
 }
 
 const allStore = new MessagesStore(-1);

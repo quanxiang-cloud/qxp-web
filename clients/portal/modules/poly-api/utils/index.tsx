@@ -29,7 +29,7 @@ export function buildEdge(
   source: string,
   target: string,
   {
-    direction, label, sourceHandle, targetHandle,
+    direction, label = '', sourceHandle, targetHandle,
   }: BuildEdgeOption = { direction: 'right' },
 ): POLY_API.EdgeElement {
   const sourceHandleI = sourceHandle || (direction === 'right' ? `${source}__right` : `${source}__bottom`);

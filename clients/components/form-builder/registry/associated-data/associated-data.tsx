@@ -84,7 +84,7 @@ export default function AssociatedDataWrap(p: ISchemaFieldComponentProps): JSX.E
   }
 
   function executeAssignMent(dataRow: Record<string, any>): void {
-    const { setFieldState } = p?.form;
+    const { setFieldState } = p?.form ?? {};
     const associativeConfig = p['x-component-props']?.associativeConfig ||
     p.props['x-component-props'].associativeConfig;
 

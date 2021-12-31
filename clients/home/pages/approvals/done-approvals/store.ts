@@ -31,7 +31,7 @@ class DoneApprovalStore extends Store {
     } catch (err) {
       toast.error(err);
     }
-  }
+  };
 }
 
 export default new DoneApprovalStore();

@@ -1,4 +1,4 @@
-import React, { forwardRef, useContext, useMemo, useState } from 'react';
+import React, { forwardRef, useContext, useMemo, useState, ForwardedRef } from 'react';
 import { useUpdateEffect } from 'react-use';
 
 import { NumberString } from '..';
@@ -6,7 +6,7 @@ import { NumberString } from '..';
 import { TabPaneProps, TabsProps } from './types';
 import TabsContext from './context';
 
-const TabPane = forwardRef<HTMLDivElement, TabPaneProps>((props: TabPaneProps, ref) => {
+const TabPane = (props: TabPaneProps, ref: ForwardedRef<HTMLDivElement>): JSX.Element => {
   const parent = useContext(TabsContext);
 
   const [inited, setInited] = useState(false);
@@ -54,6 +54,6 @@ const TabPane = forwardRef<HTMLDivElement, TabPaneProps>((props: TabPaneProps, r
       {Content}
     </div>
   );
-});
+};
 
-export default TabPane;
+export default forwardRef<HTMLDivElement, TabPaneProps>(TabPane);

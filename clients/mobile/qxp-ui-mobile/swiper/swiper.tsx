@@ -6,6 +6,7 @@ import React, {
   useMemo,
   useRef,
   useState,
+  ForwardedRef,
 } from 'react';
 import { useDrag } from '@use-gesture/react';
 import cs from 'classnames';
@@ -40,7 +41,7 @@ const PageIndicator = memo<PageIndicatorProps>(({ vertical, ...props }: PageIndi
   );
 });
 
-const Swiper = forwardRef<SwiperInstance, SwiperProps>((props: SwiperProps, ref) => {
+const Swiper = (props: SwiperProps, ref: ForwardedRef<SwiperInstance>) => {
   const {
     vertical,
     duration,
@@ -314,6 +315,6 @@ const Swiper = forwardRef<SwiperInstance, SwiperProps>((props: SwiperProps, ref)
       {renderIndicator()}
     </div>
   );
-});
+};
 
-export default Swiper;
+export default forwardRef<SwiperInstance, SwiperProps>(Swiper);

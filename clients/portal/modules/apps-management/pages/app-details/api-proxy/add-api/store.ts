@@ -176,8 +176,8 @@ function mapObjectNode(node: Record<string, any>, isRoot?: boolean): Record<stri
 }
 
 export default class Store {
-  @observable parameters: Record<ParamGroup, ApiParam[]> = getDefaultParameters()
-  @observable metaInfo: MetaInfo={ ...defaultMetaInfo }
+  @observable parameters: Record<ParamGroup, ApiParam[]> = getDefaultParameters();
+  @observable metaInfo: MetaInfo = { ...defaultMetaInfo };
   @observable apiPath = '';
 
   @computed get swaggerParameters(): Record<'constants' | 'parameters' | 'responses', any> {
@@ -209,17 +209,17 @@ export default class Store {
   }
 
   @action
-  setMetaInfo=(info: Partial<MetaInfo>): void => {
+  setMetaInfo = (info: Partial<MetaInfo>): void => {
     this.metaInfo = { ...this.metaInfo, ...info };
-  }
+  };
 
   @action
-  setParams=(group: ParamGroup, params: ApiParam[]): void => {
+  setParams = (group: ParamGroup, params: ApiParam[]): void => {
     Object.assign(this.parameters, { [group]: [...params, getDefaultParam()] });
-  }
+  };
 
   @action
-  setAllParameters=(params: ApiParam[]): void =>{
+  setAllParameters = (params: ApiParam[]): void =>{
     paramGroups.forEach((gp)=> {
       const items = params.map((v)=> {
         if (v.in !== gp) {
@@ -241,10 +241,10 @@ export default class Store {
         this.setParams(gp as ParamGroup, items as ApiParam[]);
       }
     });
-  }
+  };
 
   @action
-  setConstants=(consts: ApiParam[]): void => {
+  setConstants = (consts: ApiParam[]): void => {
     const constItems = consts.map((v)=> {
       return {
         ...getDefaultParam(),
@@ -254,21 +254,21 @@ export default class Store {
       };
     });
     this.setParams('constant', constItems);
-  }
+  };
 
   @action
-  setResponse=(resp: Record<string, any>): void => {
+  setResponse = (resp: Record<string, any>): void => {
     const respItems = mapObjectNode(get(resp, '200.schema', {}));
     this.setParams('response', respItems._object_nodes_ || []);
-  }
+  };
 
   @action
-  setFieldValue=(fieldPath: string, val: any): void=> {
+  setFieldValue = (fieldPath: string, val: any): void=> {
     set(this.parameters, fieldPath, val);
-  }
+  };
 
   @action
-  addParam=(group: ParamGroup, idx: number): void => {
+  addParam = (group: ParamGroup, idx: number): void => {
     if (idx + 1 < this.parameters[group].length) {
       return;
     }
@@ -276,25 +276,25 @@ export default class Store {
     if (group !== 'path') {
       this.parameters[group] = [...this.parameters[group], getDefaultParam()];
     }
-  }
+  };
 
   @action
-  addSubParam=(group: string, parentPath: string, idx: number, isArray = false): void => {
-    /*
-      body_params: {
-        name: '',
-        type: 'object',
-        _object_nodes_: [
-          {
-            name: '',
-            type: 'object',
-            _object_nodes_: [
-              {...}
-            ]
-          }
-        ]
-      }
-     */
+  addSubParam = (group: string, parentPath: string, idx: number, isArray = false): void => {
+  /*
+    body_params: {
+      name: '',
+      type: 'object',
+      _object_nodes_: [
+        {
+          name: '',
+          type: 'object',
+          _object_nodes_: [
+            {...}
+          ]
+        }
+      ]
+    }
+    */
     const finalPath = [
       [parentPath || group, idx].join('.'), isArray ? '_array_nodes_' : '_object_nodes_',
     ].join('.');
@@ -308,17 +308,17 @@ export default class Store {
     }
     target.push(getDefaultParam());
     set(this.parameters, finalPath, target);
-  }
+  };
 
   @action
-  resetSubNodesByType=(path: string): void => {
+  resetSubNodesByType = (path: string): void => {
     const parentPath = path.slice(0, path.lastIndexOf('.'));
     set(this.parameters, [parentPath, '_object_nodes_'].join('.'), null);
     set(this.parameters, [parentPath, '_array_nodes_'].join('.'), null);
-  }
+  };
 
   @action
-  removeParam=(group: ParamGroup, parentPath: string, idx: number): void => {
+  removeParam = (group: ParamGroup, parentPath: string, idx: number): void => {
     const prefix = parentPath || group;
     if (group === 'path') {
       return;
@@ -329,11 +329,11 @@ export default class Store {
     if (!this.parameters[group].length) {
       this.parameters[group] = [getDefaultParam()];
     }
-  }
+  };
 
   @action
-  reset=(): void => {
+  reset = (): void => {
     this.parameters = getDefaultParameters();
     this.setMetaInfo({ ...defaultMetaInfo });
-  }
+  };
 }

@@ -121,7 +121,11 @@ function ParamRow({
     const parentPathList = parentPath.split('.');
     const isExpand: Array<boolean> = [true];
     for (let index = 2; index < parentPathList.length; index += 2) {
-      if (!get(store.parameters, [...parentPath?.split('.').slice(0, index), 'expand'].join('.'), true)) {
+      if (!get(
+        store.parameters,
+        [...(parentPath?.split('.').slice(0, index) ?? []), 'expand'].join('.'),
+        true,
+      )) {
         isExpand[0] = false;
         break;
       }

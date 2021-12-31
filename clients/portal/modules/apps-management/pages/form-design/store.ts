@@ -184,7 +184,7 @@ class FormDesignStore {
   @action
   judgeInSchema = (key: string): boolean => {
     return SYSTEM_FIELDS.includes(key) || key in this.fieldsMap;
-  }
+  };
 
   @action
   toggleShowAllFields(isShowAll: boolean): void {
@@ -222,34 +222,34 @@ class FormDesignStore {
       this.pageTableColumns = [...this.pageTableColumns, column];
       break;
     }
-  }
+  };
 
   @action
   setFilters = (filters: Filters): void => {
     this.filters = filters;
-  }
+  };
 
   @action
   setPageID = (pageID: string): void => {
     this.pageID = pageID;
-  }
+  };
 
   @action
   setAppID = (appID: string): void => {
     this.appID = appID;
-  }
+  };
 
   @action
   pageTableColumnsSort = (values: string[]): void => {
     this.pageTableColumns = values.map((id) => {
       return this.pageTableColumns.find((column) => id === column.id) as TableColumnConfig;
     });
-  }
+  };
 
   @action
   setPageTableShowRule = (newRule: TableConfig): void => {
     this.pageTableShowRule = { ...this.pageTableShowRule, ...newRule };
-  }
+  };
 
   @action
   fetchFormScheme = ({ pageID, appID }: { pageID: string, appID: string }): void => {
@@ -272,7 +272,7 @@ class FormDesignStore {
     }).catch(() => {
       this.pageLoading = false;
     });
-  }
+  };
 
   @action
   saveForm = async (): Promise<void | boolean> => {
@@ -284,7 +284,7 @@ class FormDesignStore {
       toast.error(err);
       return false;
     }
-  }
+  };
 
   @action
   saveFormConfig = async (): Promise<any> => {
@@ -300,7 +300,7 @@ class FormDesignStore {
     (this.formStore as FormStore).hasEdit = false;
     this.saveSchemeLoading = false;
     this.formStore?.setSerialFieldIds(this.formStore.schema);
-  }
+  };
 
   @action
   clear = (): void => {
@@ -310,7 +310,7 @@ class FormDesignStore {
     this.pageTableShowRule = { order: '-created_at', pageSize: 10 };
     this.filters = [];
     this.appPageStore.clear();
-  }
+  };
 }
 
 export default new FormDesignStore();

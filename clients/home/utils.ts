@@ -59,7 +59,7 @@ export function formDataDiff(
           const _newValue = formDataDiff(
             _value,
             _oldValue,
-              (schemaMap[fieldKey].items || window[`schema-${fieldKey}`]) as ISchema,
+            (schemaMap[fieldKey].items || window[`schema-${fieldKey}`]) as ISchema,
           );
 
           return isEmpty(_newValue) ? acc : [...acc, { ..._newValue, _id: _value._id }];

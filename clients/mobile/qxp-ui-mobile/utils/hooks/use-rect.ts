@@ -1,12 +1,12 @@
 import { isWindow } from '..';
 
 interface Rect {
-    top: number;
-    left: number;
-    right: number;
-    bottom: number;
-    width: number;
-    height: number;
+  top: number;
+  left: number;
+  right: number;
+  bottom: number;
+  width: number;
+  height: number;
 }
 
 const useRect = (elementRef?: Element | Window | null): Rect => {

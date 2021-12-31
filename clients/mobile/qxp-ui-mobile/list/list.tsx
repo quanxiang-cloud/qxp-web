@@ -5,6 +5,7 @@ import React, {
   isValidElement,
   MutableRefObject,
   ReactNode,
+  ForwardedRef,
 } from 'react';
 import { useSetState, useUpdateEffect } from 'react-use';
 import cs from 'classnames';
@@ -17,7 +18,7 @@ import useEventListener from '../utils/hooks/use-event-listener';
 
 import { ListInstance, ListProps } from './types';
 
-const List = forwardRef<ListInstance, ListProps>((props: ListProps, ref) => {
+const List = (props: ListProps, ref: ForwardedRef<ListInstance>): JSX.Element => {
   const {
     offset = 300,
     direction = 'down',
@@ -156,6 +157,6 @@ const List = forwardRef<ListInstance, ListProps>((props: ListProps, ref) => {
       {direction === 'up' ? props.children : Placeholder}
     </div>
   );
-});
+};
 
-export default List;
+export default forwardRef<ListInstance, ListProps>(List);

@@ -22,7 +22,7 @@ type PerRes = {
 class UserAppDetailsStore {
   destroySetCurPage: IReactionDisposer;
   @observable appID = '';
-  @observable appName = ''
+  @observable appName = '';
   @observable pageID = '';
   @observable pageName = '';
   @observable pageListLoading = true;
@@ -61,17 +61,17 @@ class UserAppDetailsStore {
       this.pageList = pageListToTree(treeMenu);
       this.pageListLoading = false;
     });
-  }
+  };
 
   @action
   setAppList = (list: any): void => {
     this.appList = list;
-  }
+  };
 
   @action
   setPageID = (pageID: string): void => {
     this.pageID = pageID;
-  }
+  };
 
   @action
   setCurPage = (pageInfo: PageInfo | undefined): void => {
@@ -95,7 +95,7 @@ class UserAppDetailsStore {
         this.fetchSchemeLoading = false;
       });
     }
-  }
+  };
 
   @action
   delFormData = (ids: string[]): Promise<void> => {
@@ -112,7 +112,7 @@ class UserAppDetailsStore {
 
       toast.success('删除成功!');
     });
-  }
+  };
 
   @action
   clear = (): void => {
@@ -120,27 +120,27 @@ class UserAppDetailsStore {
     this.pageList = [];
     this.curPage = { id: '' };
     this.customPageInfo = null;
-  }
+  };
 
   @action
   openPageNav = (): void => {
     this.showPageNav = true;
-  }
+  };
 
   @action
   closePageNav = (): void => {
     this.showPageNav = false;
-  }
+  };
 
   @action
   openMouseControl = (): void => {
     this.isMouseControl = true;
-  }
+  };
 
   @action
   closeMouseControl = (): void => {
     this.isMouseControl = false;
-  }
+  };
 
   @action
   getRoleInfo = (appID: string): void => {
@@ -151,7 +151,7 @@ class UserAppDetailsStore {
     }).catch((reason) => {
       toast.error(reason);
     });
-  }
+  };
 
   @action
   handleRoleChange = (roleID: string, roleName: string): void => {
@@ -161,6 +161,6 @@ class UserAppDetailsStore {
       this.clear();
       this.fetchPageList(this.appID);
     });
-  }
+  };
 }
 export default new UserAppDetailsStore();
