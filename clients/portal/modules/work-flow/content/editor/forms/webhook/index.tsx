@@ -13,6 +13,7 @@ import API from './api';
 import Inputs from './inputs';
 import ContentType from './content-type';
 import Outputs from './outputs';
+import SendMethod from './send-method';
 
 import './style.scss';
 
@@ -91,6 +92,19 @@ export default function WebhookConfig(
       hide: (values: any) => values.type !== 'send',
       defaultValue: 'application/json',
     }, {
+      name: 'method',
+      watch: true,
+      native: { type: 'hidden' },
+      hide: (values: any) => values.type !== 'request',
+      defaultValue: '',
+    }, {
+      title: '请求方法',
+      name: 'sendMethod',
+      watch: true,
+      component: SendMethod,
+      hide: (values: any) => values.type !== 'send',
+      defaultValue: 'POST',
+    }, {
       name: 'inputs',
       watch: true,
       component: Inputs,
@@ -107,13 +121,16 @@ export default function WebhookConfig(
     outputsRef.current = config.outputs;
     onChange({
       type: type,
-      config: type === 'request' ? config : { ...omit(['sendUrl'], config), url: config.sendUrl },
+      config: type === 'request' ? config : {
+        ...omit(['sendUrl', 'sendMethod'], config), url: config.sendUrl, method: config.sendMethod,
+      },
     } as WebhookData);
   }, []);
 
   const config = defaultValue.type === 'request' ? defaultValue.config : {
     ...omit(['url'], defaultValue.config),
     sendUrl: defaultValue.config.url,
+    sendMethod: defaultValue.config.method,
   };
 
   return (
