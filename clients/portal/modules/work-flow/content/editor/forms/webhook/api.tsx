@@ -25,14 +25,11 @@ export default function API({ value, onChange, setFormValue, values }: Props): J
 
   useEffect(() => {
     apiDocDetail?.doc.url && setFormValue('url', apiDocDetail.doc.url);
-  }, [apiDocDetail?.doc.url]);
-
-  useEffect(() => {
-    if (!apiDocDetail?.doc.input.inputs) {
-      return;
-    }
-    setFormValue('inputs', mergeInputs(values.inputs, apiDocDetail.doc.input.inputs));
-  }, [apiDocDetail?.doc.input.inputs]);
+    apiDocDetail?.doc.input.inputs && setFormValue(
+      'inputs', mergeInputs(values.inputs, apiDocDetail.doc.input.inputs),
+    );
+    apiDocDetail?.doc.method && setFormValue('method', apiDocDetail.doc.method);
+  }, [apiDocDetail?.doc]);
 
   useEffect(() => {
     const output = apiDocDetail?.doc.output.doc?.[0]?.data;

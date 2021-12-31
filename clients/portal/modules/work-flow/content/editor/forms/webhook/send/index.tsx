@@ -59,8 +59,6 @@ function Send(
     onChange(value?.filter(({ id: _id }) => _id !== id) ?? []);
   }
 
-  // console.log(header, body, query);
-
   return (
     <div className="pr-8">
       <Block

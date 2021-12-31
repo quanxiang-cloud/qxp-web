@@ -59,6 +59,7 @@ function SendBlock(
     if (!row.id) {
       return;
     }
+    handleSetCurrentFormulaRef(row.id);
     onChange(row.id, key, val, type, index);
     if (key !== 'name') {
       return;
