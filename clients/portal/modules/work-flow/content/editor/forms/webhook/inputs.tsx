@@ -1,6 +1,8 @@
-import React, { useRef, useState, useEffect, useContext, useMemo, useCallback } from 'react';
+import React, { useRef, useState, useEffect, useContext, useCallback } from 'react';
 import { useQuery } from 'react-query';
+import { usePrevious } from 'react-use';
 import { nanoid } from 'nanoid';
+import { equals } from 'ramda';
 
 import type { CustomRule } from '@c/formula-editor';
 import { Input } from '@flow/content/editor/type';
@@ -24,6 +26,8 @@ interface Props {
   values: Record<string, any>;
 }
 
+type SourceGetter = () => POLY_API.PolyNodeInput[];
+
 function Inputs({ value, onChange, values }: Props): JSX.Element | null {
   const formulaEditorRef = useRef<RefType>();
   const [customRules, setCustomRules] = useState<CustomRule[]>();
@@ -40,6 +44,15 @@ function Inputs({ value, onChange, values }: Props): JSX.Element | null {
     enabled: !!flowId,
   });
 
+  const [sourceGetter, setSourceGetter] = useState<SourceGetter>(
+    () => webhookPathTreeSourceGetter(tableSchema, data),
+  );
+  const previousTableSchema = usePrevious(tableSchema);
+  useEffect(() => {
+    const isChanged = previousTableSchema && !equals(tableSchema, previousTableSchema);
+    isChanged && setSourceGetter(webhookPathTreeSourceGetter(tableSchema, data));
+  }, [tableSchema, data, previousTableSchema]);
+
   useEffect(() => {
     if (customRules?.length || !polyNodePathTreeRef.current) {
       return;
@@ -47,10 +60,6 @@ function Inputs({ value, onChange, values }: Props): JSX.Element | null {
     const rules = polyNodePathTreeRef.current.getCustomRules();
     setCustomRules(rules ?? []);
   }, [customRules, polyNodePathTreeRef.current]);
-
-  const sourceGetter = useMemo(() => {
-    return webhookPathTreeSourceGetter(tableSchema, data);
-  }, [data]);
 
   useEffect(() => {
     const getInit = (type: 'header' | 'body' | 'query'): Input => ({
