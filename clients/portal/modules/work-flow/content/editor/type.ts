@@ -476,13 +476,13 @@ export interface RequestConfig {
   // 前端最终可能不会存 url, method, outputs, 仅存 inputs 配置的值
   inputs: Input[]; // API 定义的输入以及字段的公式映射配置
   url: string; // 可选
-  method: 'POST' | 'GET' | 'PUT' | 'DELETE'; // 可选
+  method: HTTPMethod; // 可选
   outputs?: Input[]; // API 定义的输出(可选)
 }
 
 export interface SendConfig {
-  url: string; // 手动定义
-  method: 'POST' | 'GET' | 'PUT' | 'DELETE'; // 手动选择
+  sendUrl: string; // 手动定义
+  sendMethod: HTTPMethod; // 手动选择
   contentType: 'application/json',
   inputs: Input[]; // 用户自定义的输入, 自定义 url 应该没有 outputs?
   outputs: undefined;
