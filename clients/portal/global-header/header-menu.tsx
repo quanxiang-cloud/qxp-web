@@ -2,8 +2,9 @@ import React from 'react';
 
 import NavMsgBar from '@portal/modules/msg-center/nav-msg-bar';
 import NavTaskBar from '@c/task-lists';
-import Icon from '@c/icon';
 import UserAvatarMenu from '@c/user-avatar-menu';
+
+import ToDocsLink from './to-docs';
 
 export default function HeaderMenu(): JSX.Element {
   return (
@@ -19,14 +20,7 @@ export default function HeaderMenu(): JSX.Element {
       <hr className='w-1 h-20 bg-gray-200'/>
       <NavTaskBar type='manager' className="mx-16"/>
       <NavMsgBar type='portal' className="mr-16"/>
-      <a
-        href={`//${window.CONFIG.docs_hostname}`}
-        target="_blank"
-        rel="noreferrer"
-        className="cursor-pointer corner-4-0-4-4 text-white hover:bg-gray-100 hover:text-gray-600"
-      >
-        <Icon name="help_doc" size={20} style={{ fill: 'var(--gray-400)' }} className='text-current m-6'/>
-      </a>
+      <ToDocsLink />
       <div className="header-nav-btn group ml-16">
         <UserAvatarMenu />
       </div>

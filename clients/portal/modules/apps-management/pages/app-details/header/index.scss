@@ -23,7 +23,7 @@
 }
 
 .app-header-icon {
-  @apply w-32 h-32 cursor-pointer;
+  @apply h-32 cursor-pointer;
   &:hover {
     color: var(--gray-600);
     background-color: var(--gray-100);
