@@ -134,7 +134,7 @@ const MsgItem = ({
       </div>
       <div className={styles.msg_itm_time}>
         <span className={styles.time}>
-          {dayjs(parseInt(String(createdAt * 1000))).format('YYYY-MM-DD HH:mm')}
+          {dayjs(parseInt(String(createdAt))).format('YYYY-MM-DD HH:mm')}
         </span>
       </div>
     </div>
