@@ -50,7 +50,7 @@ function Inputs({ value, onChange, values }: Props): JSX.Element | null {
   const previousTableSchema = usePrevious(tableSchema);
   useEffect(() => {
     const isChanged = previousTableSchema && !equals(tableSchema, previousTableSchema);
-    isChanged && setSourceGetter(webhookPathTreeSourceGetter(tableSchema, data));
+    isChanged && setSourceGetter(() => webhookPathTreeSourceGetter(tableSchema, data));
   }, [tableSchema, data, previousTableSchema]);
 
   useEffect(() => {
