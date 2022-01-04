@@ -5,7 +5,9 @@ import { WebhookData } from '../type';
 
 export default function WebhookNodeComponent(props: Props): JSX.Element {
   const { data } = props;
-  const { config: { url }, type } = data.businessData as WebhookData;
+  const businessData = data.businessData as WebhookData;
+
+  const url = businessData.type === 'request' ? businessData.config.url : businessData.config.sendUrl;
 
   return (
     <NodeComponentWrapper
@@ -17,7 +19,7 @@ export default function WebhookNodeComponent(props: Props): JSX.Element {
       <div className="text-caption-no-color bg-gray-100 py-4 px-8 rounded-4 truncate whitespace-nowrap">
         <span className="text-gray-400">设置节点: </span>
         <span className="text-gray-600" title={url}>
-          {(type === 'request' ? '获取 ' : '推送 ') + url}
+          {(businessData.type === 'request' ? '获取 ' : '推送 ') + url}
         </span>
       </div>
     </NodeComponentWrapper>

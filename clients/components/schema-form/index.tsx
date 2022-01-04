@@ -3,7 +3,6 @@ import { useForm, UnpackNestedValue } from 'react-hook-form';
 import { pick, equals, groupBy } from 'ramda';
 import { usePrevious } from 'react-use';
 import { nanoid } from 'nanoid';
-import { isEmpty } from 'lodash';
 
 import Fields from './fields';
 import type { SchemaFormSchema, OnSubmit, Field } from './type';
@@ -28,7 +27,6 @@ function SchemaForm<T extends Record<string, any>>({
 }: Props<T>, ref: ForwardedRef<RefProps>): JSX.Element {
   const {
     register,
-    trigger,
     control,
     formState: { errors },
     watch,
@@ -37,6 +35,7 @@ function SchemaForm<T extends Record<string, any>>({
     reset,
     setValue,
     getValues,
+    handleSubmit,
   } = useForm({ defaultValues: defaultValue as any });
   const fields: Field[] = useMemo(() => {
     return schema.fields.map((field) => {
@@ -79,7 +78,10 @@ function SchemaForm<T extends Record<string, any>>({
 
   useImperativeHandle(ref, () => ({
     submit: () => {
-      isEmpty(errors) && onSubmit(pick(keepFieldNames, getValues()) as UnpackNestedValue<any>);
+      const handleOnSubmit = handleSubmit(() => {
+        onSubmit(pick(keepFieldNames, getValues()) as UnpackNestedValue<any>);
+      });
+      handleOnSubmit();
     },
   }));
 
@@ -96,9 +98,6 @@ function SchemaForm<T extends Record<string, any>>({
   validates.forEach((validate) => validate?.(realWatchValues, { errors, setError, clearErrors }));
 
   const hideIds = hideFields.map(({ id }) => id);
-
-  // console.log('errors', errors);
-  // console.log(watchValues);
 
   return (
     <form className={className}>

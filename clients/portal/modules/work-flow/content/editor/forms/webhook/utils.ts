@@ -69,3 +69,7 @@ export function webhookPathTreeSourceGetter(
     });
   };
 }
+
+export function isUrl(value: string): boolean {
+  return /^(http|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-.,@?^=%&:/~+#]*[\w\-@?^=%&/~+#])?$/.test(value);
+}

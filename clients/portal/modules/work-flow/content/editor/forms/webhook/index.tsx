@@ -1,5 +1,4 @@
 import React, { useRef, useMemo, useCallback } from 'react';
-import { omit } from 'ramda';
 
 import SaveButtonGroup from '@flow/content/editor/components/_common/action-save-button-group';
 
@@ -14,11 +13,11 @@ import Inputs from './inputs';
 import ContentType from './content-type';
 import Outputs from './outputs';
 import SendMethod from './send-method';
+import { isUrl } from './utils';
 
 import './style.scss';
 
-type LocalValue = (RequestConfig | Omit<SendConfig, 'url'> & { sendUrl: string }) &
-{ type: 'request' | 'send' };
+type LocalValue = (RequestConfig | SendConfig) & { type: 'request' | 'send' };
 
 type Props = {
   onSubmit: (v: WebhookData) => void;
@@ -74,7 +73,12 @@ export default function WebhookConfig(
       native: {
         type: 'textarea',
         options: {
-          required: true,
+          validate: (value: string) => {
+            if (!value) {
+              return '请输入Webhook URL';
+            }
+            return isUrl(value) ? true : '请输入合法的 URL';
+          },
         },
       },
       hide: (values: any) => values.type !== 'send',
@@ -113,25 +117,14 @@ export default function WebhookConfig(
     }],
   }), []);
 
-  const handleSubmit = useCallback(({ type, ...config }) => {
-    onSubmit({ type: type, config } as WebhookData);
+  const handleSubmit = useCallback((value) => {
+    onSubmit(value as WebhookData);
   }, []);
 
   const handleChange = useCallback(({ type, ...config }) => {
     outputsRef.current = config.outputs;
-    onChange({
-      type: type,
-      config: type === 'request' ? config : {
-        ...omit(['sendUrl', 'sendMethod'], config), url: config.sendUrl, method: config.sendMethod,
-      },
-    } as WebhookData);
+    onChange({ type, config } as WebhookData);
   }, []);
-
-  const config = defaultValue.type === 'request' ? defaultValue.config : {
-    ...omit(['url'], defaultValue.config),
-    sendUrl: defaultValue.config.url,
-    sendMethod: defaultValue.config.method,
-  };
 
   return (
     <>
@@ -139,7 +132,7 @@ export default function WebhookConfig(
         ref={formRef}
         onSubmit={handleSubmit}
         onChange={handleChange}
-        defaultValue={{ type: defaultValue.type, ...config }}
+        defaultValue={{ type: defaultValue.type, ...defaultValue.config }}
         schema={schema}
         className="h-full flex flex-col"
       />
