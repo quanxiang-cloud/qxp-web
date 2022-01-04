@@ -163,6 +163,7 @@ function DataList(): JSX.Element {
 
   function onClickTool(info: FuncField, type: string): void {
     store.currentFunc = info;
+    store.currentFuncID = info.id;
     store.modalType = type;
   }
 
