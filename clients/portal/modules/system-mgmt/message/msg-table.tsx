@@ -320,7 +320,7 @@ const MsgTable = ({ refresh }: Props): JSX.Element => {
       accessor: ({ createdAt }: Qxp.QueryMsgResult) => {
         return (
           <span>
-            {dayjs(parseInt(String(createdAt * 1000)))
+            {dayjs(parseInt(String(createdAt)))
               .format('YYYY-MM-DD HH:mm:ss')}
           </span>
         );

@@ -157,7 +157,7 @@ declare namespace Qxp {
     type: MsgType; // fixme: remove
     sort?: number | MsgType; // real msg type
     files?: Array<File>;
-    updateAt: number;
+    createdAt: number;
     creatorName?: string;
     types?: number
   }
