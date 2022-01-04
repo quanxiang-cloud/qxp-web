@@ -58,9 +58,10 @@ function DetailsHeader(): JSX.Element {
       <div className='flex items-center'>
         <div
           onClick={() => history.push('/apps')}
-          className='app-header-icon text-gray-400 corner-8-8-8-2 flex items-center justify-center'
+          className='app-header-icon text-gray-400 corner-8-2-8-8 flex items-center justify-center px-5'
         >
           <Icon size={20} className='mr-4' name='home_qxp'/>
+          <span>工作台</span>
         </div>
         <span className='ml-8 mr-16'>/</span>
         <AppsSwitcher apps={apps} currentAppID={appID} onChange={handleChange} />
