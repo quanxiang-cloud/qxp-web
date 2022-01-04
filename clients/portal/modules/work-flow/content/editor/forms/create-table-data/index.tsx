@@ -136,9 +136,10 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel, onChange: _onCh
               onChange={(silent) => {
                 onChange({ silent });
               }}
-              defaultChecked={value.silent}
+              defaultChecked={value.silent && !isSelfForm}
               disabled={isSelfForm}
             />
+            <small className="ml-5 text-caption">新增本表数据时不支持再次触发工作流</small>
           </div>
         )}
         <TargetTableFields
