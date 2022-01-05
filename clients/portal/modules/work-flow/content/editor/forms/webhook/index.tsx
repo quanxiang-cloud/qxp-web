@@ -13,7 +13,7 @@ import Inputs from './inputs';
 import ContentType from './content-type';
 import Outputs from './outputs';
 import SendMethod from './send-method';
-import { isUrl } from './utils';
+import { isUrl, inputValidator } from './utils';
 
 import './style.scss';
 
@@ -114,17 +114,20 @@ export default function WebhookConfig(
       component: Inputs,
       defaultValue: [],
       wrapperClassName: 'flex-1',
+      rules: {
+        validate: inputValidator,
+      },
     }],
   }), []);
 
-  const handleSubmit = useCallback((value) => {
-    onSubmit(value as WebhookData);
-  }, []);
+  const handleSubmit = useCallback(({ type, ...config }: LocalValue) => {
+    onSubmit({ type, config } as WebhookData);
+  }, [onSubmit]);
 
   const handleChange = useCallback(({ type, ...config }) => {
     outputsRef.current = config.outputs;
     onChange({ type, config } as WebhookData);
-  }, []);
+  }, [onChange]);
 
   return (
     <>
