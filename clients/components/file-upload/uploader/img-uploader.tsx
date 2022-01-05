@@ -4,7 +4,7 @@ import { toJS } from 'mobx';
 import cs from 'classnames';
 
 import toast from '@lib/toast';
-import { isMacosX } from '@lib/utils';
+import { isAcceptedFileType, isMacosX } from '@lib/utils';
 
 import FileList from '../file-list';
 import FilePicker from './file-picker';
@@ -50,18 +50,28 @@ function ImgUploader({
     removeUploadFile(deleteFile);
   }
 
-  function beforeUpload(preUploadFile: File, files: QXPUploadFileBaseProps[]): boolean {
+  function beforeUpload(preUploadFile: File, files: File[], storeFiles: QXPUploadFileBaseProps[]): boolean {
     const byteSize = isMacosX ? 1000 : 1024;
     const maxSize = (byteSize ** 2) * (maxFileSize || 0);
 
-    if (files.find((file) => file.name === preUploadFile.name)) {
+    if (accept && !isAcceptedFileType(preUploadFile, accept)) {
+      toast.error(`图片 '${preUploadFile.name}' 的格式不正确`);
+      return false;
+    }
+
+    if (storeFiles.find((file) => file.name === preUploadFile.name)) {
       toast.error(`已存在名为'${preUploadFile.name}' 的图片。`);
+      return false;
+    }
+
+    if (!multiple && (files.length !== 1 || storeFiles.length === 1)) {
+      toast.error('仅允许上传一张图片');
       return false;
     }
 
     if (multiple) {
       const preUploadTotalSize = files.reduce((total, currFile) => (total + currFile.size), 0);
-      const uploadedTotalSize = files.reduce((total: number, currFile: { size: number; }) =>
+      const uploadedTotalSize = storeFiles.reduce((total: number, currFile: { size: number; }) =>
         (total + currFile.size), preUploadTotalSize);
       if (maxSize && uploadedTotalSize > maxSize) {
         toast.error(`图片总大小不能超过${maxFileSize}MB`);
@@ -99,7 +109,7 @@ function ImgUploader({
               disabled={disabled || (!multiple && storeFiles.length >= 1)}
               description={uploaderDescription || '上传图片'}
               onSelectFiles={(files) => {
-                files.every((file)=> beforeUpload(file, storeFiles)) && prepareFilesUpload(files);
+                files.every((file)=> beforeUpload(file, files, storeFiles)) && prepareFilesUpload(files);
               }}
             />
           )
