@@ -16,6 +16,7 @@ export interface Field {
     type: string;
     options?: RegisterOptions;
   },
+  rules?: RegisterOptions;
   component?: (...args: any[]) => JSX.Element | null;
   validate?: (watchValues: Record<string, any>, errorMethods: ErrorMethods) => void,
   hide?: (watchValues: Record<string, any>) => boolean,
