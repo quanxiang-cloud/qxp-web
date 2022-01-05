@@ -66,7 +66,7 @@ export function ImgList({
                     <div
                       className={cs(
                         'w-52 h-52 absolute top-1 left-1 transition-opacity duration-300',
-                        'opacity-0 hover:opacity-100 text-12 text-gray-400',
+                        'opacity-0 hover:opacity-100 text-white text-12',
                         'flex justify-center items-center z-10 bg-gray-900 qxp-file-img-opt',
                       )}
                     >

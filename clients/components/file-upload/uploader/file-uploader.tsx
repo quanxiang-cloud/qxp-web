@@ -4,7 +4,7 @@ import { toJS } from 'mobx';
 import cs from 'classnames';
 
 import toast from '@lib/toast';
-import { isMacosX } from '@lib/utils';
+import { isAcceptedFileType, isMacosX } from '@lib/utils';
 
 import FileList from '../file-list';
 import FilePicker from './file-picker';
@@ -32,7 +32,7 @@ function FileUploader({
   disabled,
   iconName,
   className,
-  accept = [],
+  accept,
   maxFileSize,
   fileData = [],
   uploaderDescription,
@@ -68,6 +68,11 @@ function FileUploader({
   function beforeUpload(preUploadFile: File, files: QXPUploadFileBaseProps[]): boolean {
     const byteSize = isMacosX ? 1000 : 1024;
     const maxSize = (byteSize ** 2) * (maxFileSize || 0);
+
+    if (accept && !isAcceptedFileType(preUploadFile, accept)) {
+      toast.error(`文件 '${preUploadFile.name}' 的格式不正确`);
+      return false;
+    }
 
     if (files.find((file) => file.name === preUploadFile.name)) {
       toast.error(`已存在名为'${preUploadFile.name}' 的文件。`);
@@ -105,9 +110,9 @@ function FileUploader({
         className="w-full h-56 p-10"
         multiple={multiple}
         iconName={iconName}
-        accept={accept.toString()}
+        accept={accept?.toString()}
         disabled={disabled || (!multiple && storeFiles.length >= 1)}
-        description={(!multiple && storeFiles.length >= 1) ? '当前只能上传一个文件或图片' : uploaderDescription}
+        description={(!multiple && storeFiles.length >= 1) ? '只能上传一个文件' : uploaderDescription}
         onSelectFiles={(files) => {
           files.every((file)=> beforeUpload(file, storeFiles)) && prepareFilesUpload(files);
         }}

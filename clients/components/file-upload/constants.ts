@@ -17,12 +17,12 @@ export const PARALLEL_UPLOAD_SIZE = 3;
 export const MAX_SMALL_FILE_SIZE = 1024 * 1024 * 20; // 20 MB
 
 // File list icon config
-export const FILE_LIST_ICON: Record<string, { name: string, size: number, className: string }> = {
+export const FILE_LIST_ICON: Record<string, { name: string, size: number, className?: string }> = {
   failed: { name: 'error', size: 20, className: 'text-red-600' },
   retry: { name: 'refresh', size: 24, className: 'text-red-600' },
   success: { name: 'done', size: 20, className: 'file-upload-success-icon' },
-  download: { name: 'download', size: 20, className: 'text-white' },
-  delete: { name: 'restore_from_trash', size: 20, className: 'text-white' },
+  download: { name: 'download', size: 20 },
+  delete: { name: 'restore_from_trash', size: 20 },
   uploading: { name: 'loading', size: 20, className: 'animate-spin text-blue-500' },
   processing: { name: 'hourglass_empty', size: 20, className: 'animate-spin text-gray-600' },
   img: { name: 'insert_photo', size: 20, className: 'file-list-icon img-type' },
