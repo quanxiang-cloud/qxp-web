@@ -38,6 +38,8 @@ function PageDetails({ pageID }: Props): JSX.Element {
     fetchSchemeLoading,
     pageDescriptions,
     setActiveMenu,
+    setCurPageMenuType,
+    patchNode,
   } = appPagesStore;
 
   function goFormBuild(): void {
@@ -62,7 +64,9 @@ function PageDetails({ pageID }: Props): JSX.Element {
       createCustomPage(appID, {
         menuId: pageID, fileSize: fileSizeStr, fileUrl: files[0]?.uploadUrl || '',
       }).then((res) => {
-        setActiveMenu({ ...res, menuType: 2 });
+        patchNode(pageID, { menuType: 2 });
+        setActiveMenu({ ...activeMenu, menuType: 2 });
+        setCurPageMenuType(2, res);
         toast.success('新建成功');
         setModalType('');
       }).catch((err) => {
@@ -75,7 +79,9 @@ function PageDetails({ pageID }: Props): JSX.Element {
       id: pageID, fileSize: fileSizeStr, fileUrl: files[0]?.uploadUrl || '',
     },
     ).then((res) => {
-      setActiveMenu({ ...res, menuType: 2 });
+      patchNode(pageID, { menuType: 2 });
+      setActiveMenu({ ...activeMenu, menuType: 2 });
+      setCurPageMenuType(2, res);
       toast.success('修改成功');
       setModalType('');
     }).catch((err) => {
