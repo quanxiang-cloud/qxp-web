@@ -42,7 +42,7 @@ func SetupContext(configFile string, sessionCookieName string, appName string) (
 
 	if Config.Redis == nil {
 		var defaultRedisConfig = &RedisConfig{
-			Hosts:   []string{"redis"},
+			Addrs:   []string{"redis"},
 			DB:      1,
 			Timeout: 15,
 		}
