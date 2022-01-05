@@ -2,17 +2,20 @@ import React, { useRef } from 'react';
 import cs from 'classnames';
 import dayjs from 'dayjs';
 import { observer } from 'mobx-react';
+import { useParams } from 'react-router-dom';
 import { Progress } from 'antd';
-import { useHistory } from 'react-router-dom';
 
 import Icon from '@c/icon';
+import { getQuery } from '@lib/utils';
 import httpClient from '@lib/http-client';
 import { FILE_DOWNLOAD_INFO_API } from '@c/file-upload/constants';
 import toast from '@lib/toast';
 
+import store from '../store';
+
 interface Props {
   task: Qxp.TaskItem;
-  deleteTaskItem: (id: string) => void
+  deleteTaskItem: (id: string) => void;
 }
 
 const IMPORT_TYPE = ['formImport'];
@@ -42,9 +45,11 @@ export function downLoad(url: string): void {
 }
 
 function TaskItem({ task, deleteTaskItem }: Props): JSX.Element {
-  const { title, status, result, createdAt, value, command, ratio, id } = task;
+  const { title, status, result, value, createdAt, command, ratio, id } = task;
   const refItem = useRef(null);
-  const history = useHistory();
+
+  const { pageID } = getQuery<{ pageID: string }>();
+  const { appID } = useParams<{ appID: string }>();
 
   function getIcon(): string {
     if (IMPORT_TYPE.includes(command)) return 'export-icon';
@@ -54,7 +59,10 @@ function TaskItem({ task, deleteTaskItem }: Props): JSX.Element {
 
   function onClickItem(command: string): void {
     if (['formImport', 'formTemplate', 'formExport'].includes(command)) {
-      history.push(`/apps/${value.appID}?pageID=${value.tableID}`);
+      store.currentTask = task;
+      if (value.appID !== appID || value.tableID !== pageID) {
+        store.showJumpModal = true;
+      }
     }
   }
 
@@ -93,12 +101,15 @@ function TaskItem({ task, deleteTaskItem }: Props): JSX.Element {
         <div className="flex items-center justify-between">
           <div className="text-gray-900 truncate w-220" title={title || '-'} >{title || '-'}</div>
           <div className="text-gray-500 flex">
-            {result && result.path && result.path.length && (
+            {result && result.path && result.path.length > 0 && (
               <Icon
                 name='download'
                 className='mr-8 hover:text-red-600'
                 size={16}
-                onClick={() => multipledownloadFile(result.path)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  multipledownloadFile(result.path);
+                }}
               />
             )}
             {status !== 1 && (
@@ -106,7 +117,10 @@ function TaskItem({ task, deleteTaskItem }: Props): JSX.Element {
                 name='delete'
                 className='hover:text-red-600'
                 size={16}
-                onClick={() => deleteTaskItem(id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  deleteTaskItem(id);
+                }}
               />
             )}
           </div>
