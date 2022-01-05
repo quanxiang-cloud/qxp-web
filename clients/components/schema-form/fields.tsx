@@ -19,7 +19,7 @@ export default function Fields({ register, fields, control, errors, values, setV
     <>
       {
         fields.map(({
-          name, className, title, native, component: Component, wrapperClassName, labelClassName,
+          name, className, title, native, component: Component, wrapperClassName, labelClassName, rules,
         }) => {
           const error = errors[name]?.message;
           return (
@@ -35,6 +35,7 @@ export default function Fields({ register, fields, control, errors, values, setV
                 <Controller
                   control={control}
                   name={name}
+                  rules={rules}
                   render={({ field, fieldState }) => (
                     <Component
                       values={values}
