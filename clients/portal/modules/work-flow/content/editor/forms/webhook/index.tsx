@@ -13,7 +13,7 @@ import Inputs from './inputs';
 import ContentType from './content-type';
 import Outputs from './outputs';
 import SendMethod from './send-method';
-import { isUrl, inputValidator } from './utils';
+import { isUrl, inputValidator, requestApiValidator } from './utils';
 
 import './style.scss';
 
@@ -60,6 +60,9 @@ export default function WebhookConfig(
       component: API,
       hide: (values: any) => values.type !== 'request',
       defaultValue: { value: '' },
+      rules: {
+        validate: requestApiValidator,
+      },
     }, {
       name: 'url',
       watch: true,

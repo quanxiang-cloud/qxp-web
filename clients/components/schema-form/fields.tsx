@@ -1,6 +1,7 @@
 import React from 'react';
 import { UseFormRegister, FieldValues, Control, Controller, UseFormSetValue } from 'react-hook-form';
 import { omit } from 'ramda';
+import { isString } from 'lodash';
 import cs from 'classnames';
 
 import type { Field } from './type';
@@ -36,13 +37,19 @@ export default function Fields({ register, fields, control, errors, values, setV
                   control={control}
                   name={name}
                   rules={rules}
-                  render={({ field, fieldState }) => (
-                    <Component
-                      values={values}
-                      setFormValue={setValue}
-                      {...omit(['ref'], field) } {...fieldState}
-                    />
-                  )}
+                  render={({ field, fieldState }) => {
+                    Object.assign(fieldState, {
+                      error: isString(fieldState.error) ? fieldState.error : fieldState.error?.message,
+                    });
+                    return (
+                      <Component
+                        {...omit(['ref'], field)}
+                        {...fieldState}
+                        values={values}
+                        setFormValue={setValue}
+                      />
+                    );
+                  }}
                 />
               )}
             </div>
