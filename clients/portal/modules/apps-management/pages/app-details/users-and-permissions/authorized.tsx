@@ -32,8 +32,8 @@ const RIGHTS = [
       { label: '新建', value: 'add' },
       { label: '修改', value: 'edit' },
       { label: '删除', value: 'del' },
-      // { label: '导入', value: 'import' },
-      // { label: '导出', value: 'export' },
+      { label: '导入', value: 'import' },
+      { label: '导出', value: 'export' },
     ],
   },
   // {
@@ -87,12 +87,18 @@ function RightsCard({ rightsCardData, onChange, selectNumber, abled }: CardProps
       if (Number(e.target.value) !== 0) {
         newSelected[0] = 1;
       }
+      if (e.target.value === '4') {
+        newSelected[1] = 1;
+      }
       newSelected[Number(e.target.value)] = 1;
       setSelected(newSelected);
     } else {
       if (Number(e.target.value) === 0) {
         setSelected(newSelected.map(() => 0));
       } else {
+        if (Number(e.target.value) === 1) {
+          newSelected[4] = 0;
+        }
         newSelected[Number(e.target.value)] = 0;
         setSelected(newSelected);
       }
@@ -140,7 +146,7 @@ function RightsCard({ rightsCardData, onChange, selectNumber, abled }: CardProps
 }
 
 function Authorized({ className = '', authorized = 0, abled }: Props, ref: React.Ref<any>): JSX.Element {
-  const typeNum = ([2, 3].includes(store.currentPage.menuType || 0)) ? 1 : 15;
+  const typeNum = ([2, 3].includes(store.currentPage.menuType || 0)) ? 1 : 63;
   const initialState = store.currentRights.types === 1 ? typeNum : authorized;
   const [actionNumber, setActionNumber] = useState<number>(initialState);
 
