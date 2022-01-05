@@ -257,3 +257,14 @@ function getReduceMap(menus: Menu[]): MenuMap {
 export function hasActiveMenu(list: Menu[], { id }: Menu): boolean {
   return !!id && !isEmpty(getReduceMap(list)?.[id]);
 }
+
+export function updateNode(nodeList: Menu[], node: Menu): Menu[] {
+  return nodeList.map((currentNode) => {
+    if (currentNode.id === node.id) {
+      return node;
+    } else if (currentNode.child?.length) {
+      currentNode.child = updateNode(currentNode.child, node);
+    }
+    return currentNode;
+  });
+}

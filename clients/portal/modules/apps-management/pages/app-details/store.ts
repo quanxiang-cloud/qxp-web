@@ -17,6 +17,7 @@ import {
   mapToSchemaPageDescription,
   mapToCustomPageDescription,
   hasActiveMenu,
+  updateNode,
 } from './utils';
 import {
   fetchAppDetails,
@@ -519,8 +520,7 @@ class AppDetailsStore {
 
   @action setActiveMenu = (menuItem: Menu): void => {
     this.activeMenu = menuItem;
-    this.setCurPage(this.pageID);
-  };
+  }
 
   @action updatePageInitList = (newPageList: PageInfo[]): void => {
     this.pageInitList = newPageList;
@@ -532,7 +532,20 @@ class AppDetailsStore {
 
   @action setDraggingNode = (node: any): void => {
     this.draggingNode = node;
-  };
+  }
+
+  @action patchNode = (id: string, data: Partial<Menu>): void => {
+    const nodeToPatch = flatMnues(this.pageInitList)[id];
+
+    if (!nodeToPatch) {
+      return;
+    }
+
+    this.updatePageInitList(updateNode(this.pageInitList, {
+      ...nodeToPatch,
+      ...data,
+    }));
+  }
 }
 
 export default new AppDetailsStore();

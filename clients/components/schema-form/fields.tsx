@@ -7,7 +7,7 @@ import type { Field } from './type';
 
 interface Props {
   register: UseFormRegister<FieldValues>;
-  control: Control<FieldValues, object>;
+  control: Control<FieldValues, Record<string, any>>;
   fields: Field[];
   errors: Record<string, any>;
   values: Record<string, any>;
