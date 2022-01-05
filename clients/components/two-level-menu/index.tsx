@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment, useMemo } from 'react';
 import cs from 'classnames';
 
-import Icon from '@c/icon';
+import Icon, { iconColor } from '@c/icon';
 
 import { treeFind, findFirstLeafNode } from './utils';
 import './index.scss';
@@ -13,6 +13,7 @@ export type NodeItem<T> = {
   type: 'group' | 'leaf' | string;
   id: string;
   iconName?: string;
+  iconColor?: iconColor;
   children?: NodeItem<T>[];
   source?: T;
   parentID?: string;
@@ -36,8 +37,8 @@ type Props<T> = {
 interface NavItemProps<T> {
   node: NodeItem<T>;
   level?: number;
-  onSelect?: (node: NodeItem<T>)=> void;
-  onToggle?: (node: NodeItem<T>, expand: boolean)=> void;
+  onSelect?: (node: NodeItem<T>) => void;
+  onToggle?: (node: NodeItem<T>, expand: boolean) => void;
   actions?: (node: NodeItem<T>) => React.ReactNode;
   activeNode?: NodeItem<T>;
   groupBanSelect: boolean

@@ -127,8 +127,6 @@ export function getChildrenOfCurrentSelectOption(currentChildrenData: any): any 
   });
 }
 
-const BLACK_LIST = ['Signature', 'Access-Token', '_signature'];
-
 function omitNodeInputProperties(
   inputs: POLY_API.PolyNodeInput[], properties: string[],
 ): POLY_API.PolyNodeInput[] {
@@ -146,13 +144,13 @@ function omitNodeInputProperties(
 function reduceNoiseNodeInputData(inputs: POLY_API.PolyNodeInput[]): POLY_API.PolyNodeInput[] {
   const _inputs: POLY_API.PolyNodeInput[] = [];
   inputs.forEach((input) => {
-    if (BLACK_LIST.includes(input.name)) {
+    if ('$appendix$' in input) {
       return;
     }
 
     if (input.name === 'root' || !input.name) {
-      (input.data as POLY_API.PolyNodeInput[]).filter(({ name }) => {
-        return !BLACK_LIST.includes(name);
+      (input.data as POLY_API.PolyNodeInput[]).filter((input) => {
+        return '$appendix$' in input ? false : true;
       }).map((input) => {
         if (!input.in) {
           input.in = 'body';

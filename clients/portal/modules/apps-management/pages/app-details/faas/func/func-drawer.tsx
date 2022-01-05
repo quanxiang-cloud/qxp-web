@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { UnionColumns } from 'react-table';
+import { UnionColumn } from 'react-table';
 import { observer } from 'mobx-react';
 import cs from 'classnames';
 import dayjs from 'dayjs';
@@ -23,7 +23,7 @@ function FuncDetailsDrawer(): JSX.Element {
   const [visible, setVisible] = useState<boolean>(false);
   const [fullScreen, setFullScreen] = useState<boolean>(false);
 
-  const COLUMNS: UnionColumns<VersionField>[] = [
+  const COLUMNS: UnionColumn<VersionField>[] = [
     {
       Header: '版本号',
       id: 'tag',
@@ -70,7 +70,7 @@ function FuncDetailsDrawer(): JSX.Element {
     {
       Header: '构建时间',
       id: 'build',
-      accessor: () => '构建时间',
+      accessor: ({ updatedAt, createdAt }: VersionField) => `${updatedAt - createdAt}s`,
     },
     {
       Header: '创建人',
@@ -99,15 +99,16 @@ function FuncDetailsDrawer(): JSX.Element {
               <PopConfirm content='确认上线改版本？' onOk={() => store.servingVer(id)} >
                 <span className="operate">上线</span>
               </PopConfirm>)}
-            {state === 'False' ? (
+            { _visibility !== 'online' && (
               <PopConfirm content='确认删除改版本？' onOk={() => store.deleteVer(id)} >
                 <span className="cursor-pointer text-red-600">删除</span>
-              </PopConfirm>) : (
+              </PopConfirm>
+            )}
+            {state === 'True' && (
               <PopConfirm content='确定生成API文档？' onOk={() => store.registerAPI(id)} >
                 <span className="operate">生成API文档</span>
               </PopConfirm>
             )}
-
           </div>
         );
       },
@@ -138,7 +139,7 @@ function FuncDetailsDrawer(): JSX.Element {
         width: fullScreen ? '100%' : '66%',
       }))}>
         <div className='page-data-drawer-header'>
-          <span className='text-h5'>kkk</span>
+          <span className='text-h5'>{store.currentFunc?.alias}</span>
           <div className='flex items-center gap-x-12'>
             <span onClick={() => setFullScreen(!fullScreen)} className='icon-text-btn'>
               <Icon size={20} name={fullScreen ? 'unfull_screen' : 'full_screen'} />
@@ -170,8 +171,8 @@ function FuncDetailsDrawer(): JSX.Element {
           />
         </div>
         <Pagination
-          total={store.versionCount}
-          renderTotalTip={() => `共 ${store.versionCount} 条数据`}
+          total={store.versionList.length}
+          renderTotalTip={() => `共 ${store.versionList.length} 条数据`}
           onChange={(current, pageSize) => store.setVersionParams({ page: current, size: pageSize })}
         />
       </div>

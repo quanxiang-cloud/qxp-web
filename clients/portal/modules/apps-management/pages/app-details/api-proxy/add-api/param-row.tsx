@@ -1,12 +1,13 @@
 import React, { useContext, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import cs from 'classnames';
-import { get } from 'lodash';
+import { get, set } from 'lodash';
 import { useUpdateEffect } from 'react-use';
 
 import Select from '@c/select';
 import Checkbox from '@c/checkbox';
 import Icon from '@c/icon';
+import ToolTip from '@c/tooltip';
 
 import { ApiParam, ParamGroup } from './params-config';
 import paramsContext from './context';
@@ -24,6 +25,13 @@ const paramTypes = [
   { label: 'boolean', value: 'boolean' },
   { label: 'object', value: 'object' },
   { label: 'array', value: 'array' },
+  { label: 'timestamp', value: 'timestamp' },
+  { label: 'action', value: 'action' },
+];
+
+const timeTypes = [
+  { label: 'default', value: 'YYYY-MM-DDThh:mm:ssZ' },
+  { label: 'ISO8601', value: 'YYYY-MM-DDThh:mm:ss+0000' },
 ];
 
 function ParamRow({
@@ -71,7 +79,6 @@ function ParamRow({
   }
 
   function handleChangeField(fieldName: string, val: any): void {
-    // console.log('change field: ', fieldName, val);
     store.setFieldValue(fieldName, val);
   }
 
@@ -79,11 +86,23 @@ function ParamRow({
     if (group === 'path') {
       return paramTypes.filter(({ value })=> ['string', 'number'].includes(value));
     }
+    if (group === 'body') {
+      return paramTypes.filter(
+        ({ value })=> !['timestamp', 'action'].includes(value),
+      );
+    }
     if (group === 'constant') {
-      return paramTypes.filter(({ value })=> ['string', 'number', 'boolean'].includes(value));
+      return paramTypes.filter(
+        ({ value })=> ['string', 'number', 'boolean', 'timestamp', 'action'].includes(value),
+      );
     }
     if (['query', 'header'].includes(group)) {
       return paramTypes.filter(({ value })=> ['string', 'number', 'boolean'].includes(value));
+    }
+    if (group === 'response') {
+      return paramTypes.filter(
+        ({ value })=> !['timestamp', 'action'].includes(value),
+      );
     }
     return paramTypes;
   }
@@ -92,13 +111,38 @@ function ParamRow({
     return (parentPath || '').split('.').filter((v)=> Number.isInteger(parseInt(v))).length;
   }
 
+  function isArrayChild(): boolean {
+    const pathArray = (parentPath || '').split('.');
+    return pathArray[pathArray.length - 1] === '_array_nodes_' ? true : false;
+  }
+
+  // When the parent collapses, the child needs to collapse with it
+  function isRowExpand(parentPath: string): boolean {
+    const parentPathList = parentPath.split('.');
+    const isExpand: Array<boolean> = [true];
+    for (let index = 2; index < parentPathList.length; index += 2) {
+      if (!get(
+        store.parameters,
+        [...(parentPath?.split('.').slice(0, index) ?? []), 'expand'].join('.'),
+        true,
+      )) {
+        isExpand[0] = false;
+        break;
+      }
+    }
+    return isExpand[0];
+  }
+
   function renderExpandBtn(): JSX.Element | null {
     if ((type === 'object' && !!_object_nodes_?.length) || (type === 'array' && !!_array_nodes_?.length)) {
       return (
         <Icon
           name={expand ? 'expand_more' : 'expand_less'}
           className='-mr-3 ml-8 cursor-pointer'
-          onClick={()=> setExpand((expand)=> !expand)}
+          onClick={()=> {
+            setExpand((expand)=> !expand);
+            set(store.parameters, [parentPath || group, idx, 'expand'].join('.'), expand);
+          }}
           clickable
         />
       );
@@ -107,9 +151,15 @@ function ParamRow({
   }
 
   return (
-    <tr key={id}>
-      <td className={cs('param-name flex items-center relative')} style={{
+    <tr
+      key={id}
+      className={cs({
+        'from-expand': parentPath ? !isRowExpand(parentPath) : false,
+      })}
+    >
+      <td className={cs('param-name flex items-center')} style={{
         paddingLeft: (getLevel() * 20) + 'px',
+        backgroundColor: isArrayChild() ? '#EFEFEF4D' : '',
       }}>
         <input
           type="hidden"
@@ -126,20 +176,23 @@ function ParamRow({
                 type="text"
                 className={cs({
                   error: get(errors, getFieldName('name')),
-                  'opacity-50 cursor-not-allowed': readonly,
+                  'opacity-50 cursor-not-allowed': readonly || isArrayChild(),
                 })}
                 maxLength={32}
                 placeholder='新建参数'
+                disabled={isArrayChild()}
                 {...field}
                 value={name}
                 onChange={(ev)=> {
                   const { value } = ev.target;
-                  if (!value || /^[a-zA-Z_][\w-]*$/.test(value)) {
+                  if (!value || /^[a-zA-Z_$][\w-$]*$/.test(value)) {
                     field.onChange(ev.target.value);
                     handleChangeField(getFieldName('name'), ev.target.value);
                   }
                 }}
-                onKeyDown={()=> store.addParam(group, idx)}
+                onKeyDown={() => {
+                  parentPath ? '' : store.addParam(group, idx);
+                }}
                 readOnly={readonly}
               />
             );
@@ -151,33 +204,11 @@ function ParamRow({
               if (!val) {
                 return true;
               }
-              return /^[a-zA-Z_][\w-]*$/.test(val);
+              return /^[a-zA-Z_$][\w-$]*$/.test(val);
             },
           }}
           shouldUnregister
         />
-        <div className='param-actions absolute right-5 flex items-center'>
-          {group !== 'path' && (
-            <>
-              {['array', 'object'].includes(type) && (
-                <Icon
-                  name='playlist_add'
-                  onClick={()=> store.addSubParam(group, parentPath || '', idx, type === 'array')}
-                  className='cursor-pointer mr-8'
-                  color='gray'
-                  clickable
-                />
-              )}
-              <Icon
-                name='delete'
-                onClick={()=> store.removeParam(group, parentPath || '', idx)}
-                className='cursor-pointer'
-                color='gray'
-                clickable
-              />
-            </>
-          )}
-        </div>
       </td>
       <td className='param-type'>
         <Controller
@@ -187,6 +218,11 @@ function ParamRow({
               {...field}
               value={type}
               onChange={(val)=> {
+                if (val === 'action') {
+                  handleChangeField(getFieldName('constData'), store.apiPath.split('?')[1]);
+                } else {
+                  handleChangeField(getFieldName('constData'), '');
+                }
                 handleChangeField(getFieldName('type'), val);
                 // if type changed, should reset sub nodes
                 if (type !== val) {
@@ -205,22 +241,37 @@ function ParamRow({
           <td className='param-data'>
             <Controller
               render={({ field })=> {
-                return (
-                  <input
-                    type={type === 'number' ? 'number' : 'text'}
-                    className={cs({
-                      error: get(errors, getFieldName('constData')),
-                    })}
-                    maxLength={128}
-                    placeholder='请输入'
-                    {...field}
-                    value={constData}
-                    onChange={(ev)=> {
-                      field.onChange(ev.target.value);
-                      handleChangeField(getFieldName('constData'), ev.target.value);
-                    }}
-                  />
-                );
+                if (type === 'timestamp') {
+                  return (
+                    <Select
+                      options={timeTypes}
+                      {...field}
+                      value={constData}
+                      onChange={(val)=> {
+                        field.onChange(val);
+                        handleChangeField(getFieldName('constData'), val);
+                      }}
+                    />
+                  );
+                } else {
+                  return (
+                    <input
+                      type={type === 'number' ? 'number' : 'text'}
+                      className={cs({
+                        error: get(errors, getFieldName('constData')),
+                      })}
+                      maxLength={128}
+                      placeholder='请输入'
+                      disabled={type === 'action' ? true : false}
+                      {...field}
+                      value={constData}
+                      onChange={(ev)=> {
+                        field.onChange(ev.target.value);
+                        handleChangeField(getFieldName('constData'), ev.target.value);
+                      }}
+                    />
+                  );
+                }
               }}
               name={getFieldName('constData')}
               control={control}
@@ -264,11 +315,11 @@ function ParamRow({
               return (
                 <Checkbox
                   className={cs({
-                    'cursor-not-allowed': readonly,
+                    'cursor-not-allowed': readonly || isArrayChild(),
                   })}
                   {...field}
                   checked={required}
-                  disabled={readonly}
+                  disabled={readonly || isArrayChild()}
                   onChange={(ev)=> handleChangeField(getFieldName('required'), ev.target.checked)}
                 />
               );
@@ -289,12 +340,49 @@ function ParamRow({
               {...field}
               value={description}
               onChange={(ev)=> handleChangeField(getFieldName('description'), ev.target.value)}
+              onKeyDown={() => {
+                parentPath ? '' : store.addParam(group, idx);
+              }}
             />
           )}
           name={getFieldName('description')}
           control={control}
           shouldUnregister
         />
+      </td>
+      <td className='param-operation'>
+        <div className='param-actions flex items-center'>
+          {group !== 'path' && (idx !== store.parameters[group].length - 1 || parentPath) && (
+            <div className='ml-12 mt-5'>
+              {['array', 'object'].includes(type) && (
+                <ToolTip
+                  label='添加子集'
+                  position='top'
+                  labelClassName="whitespace-nowrap text-12"
+                >
+                  <Icon
+                    name='playlist_add'
+                    size={16}
+                    onClick={()=> {
+                      store.addSubParam(group, parentPath || '', idx, type === 'array');
+                      setExpand(false);
+                      set(store.parameters, [parentPath || group, idx, 'expand'].join('.'), true);
+                    }}
+                    className='cursor-pointer mr-8 hover:text-blue-600'
+                    clickable
+                  />
+                </ToolTip>
+              )}
+              <Icon
+                name='delete'
+                size={16}
+                onClick={()=> store.removeParam(group, parentPath || '', idx)}
+                className='cursor-pointer hover:text-red-600'
+                clickable
+              />
+            </div>
+          )}
+        </div>
       </td>
     </tr>
   );

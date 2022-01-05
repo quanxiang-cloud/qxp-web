@@ -24,7 +24,7 @@ export default function RequestNode(props: NodeProps<POLY_API.SubjectPolyNode>):
   if (nodeData.type !== 'request') {
     return null;
   }
-  const { apiName } = nodeData.detail;
+  const apiName = nodeData.detail.rawPath?.split('/')?.pop()?.split('.').shift();
 
   function showConfig(): void {
     setIsConfigShow(true);
@@ -36,7 +36,7 @@ export default function RequestNode(props: NodeProps<POLY_API.SubjectPolyNode>):
         <div
           className={cs(
             'flex justify-between items-center flex-nowrap py-4 px-8 transition duration-300',
-            'hover:bg-blue-100 border-1 border-solid border-gray-200 rounded-4',
+            'hover:bg-blue-100 border-1 hover:border-blue-100 border-solid border-gray-200 rounded-4',
           )}
         >
           <span className={cs(

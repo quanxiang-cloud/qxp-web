@@ -49,10 +49,11 @@ function BasicInfo(): JSX.Element {
         )}
         descClassName="text-caption"
       >
-        <div className='mx-20 mt-20 bg-white rounded-12'>
+        <div className='flex flex-grow mx-20 mt-20 bg-white rounded-12'>
           <CreatedEditApp
-            appInfo={appDetailsStore.appDetails}
             ref={formRef}
+            modalType="createdApp"
+            appInfo={appDetailsStore.appDetails}
             onSubmitCallback={submitCallback}
           />
         </div>

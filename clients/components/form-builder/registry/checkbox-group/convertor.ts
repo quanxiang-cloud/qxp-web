@@ -11,6 +11,7 @@ export interface CheckboxGroupConfig {
   optionsLayout: 'horizontal' | 'vertical';
   sortable: boolean;
   required: boolean;
+  allowCustom: boolean;
   defaultValueFrom: FormBuilder.DefaultValueFrom;
   datasetId: string;
   availableOptions: Array<Record<string, string | boolean>>,
@@ -24,6 +25,7 @@ export const defaultConfig: CheckboxGroupConfig = {
   optionsLayout: 'horizontal',
   sortable: false,
   required: false,
+  allowCustom: false,
   defaultValueFrom: 'customized',
   datasetId: '',
   availableOptions: [
@@ -51,6 +53,7 @@ export function toSchema(value: CheckboxGroupConfig): ISchema {
     // todo support optionsLayout
     ['x-component-props']: {
       mode: 'multiple',
+      allowCustom: value.allowCustom,
       optionsLayout: value.optionsLayout,
       datasetId: value.datasetId,
     },
@@ -70,6 +73,7 @@ export function toConfig(schema: ISchema): CheckboxGroupConfig {
     optionsLayout: schema['x-component-props']?.optionsLayout,
     sortable: !!schema['x-internal']?.sortable,
     required: !!schema.required,
+    allowCustom: schema['x-component-props']?.allowCustom,
     defaultValueFrom: schema['x-internal']?.defaultValueFrom || 'customized',
     datasetId: schema['x-component-props']?.datasetId,
     availableOptions: schema.enum?.map((label) => {

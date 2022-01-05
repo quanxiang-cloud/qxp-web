@@ -18,6 +18,7 @@ const DatePickerField: Omit<FormBuilder.SourceElement<DatePickerConfig>, 'displa
   componentName: 'DatePicker',
   compareOperators: ['==', '!=', '>', '>=', '<=', '<'],
   validate: validateRegistryElement(configSchema),
+  configDependencies: { DatePicker },
 };
 
 export default DatePickerField;

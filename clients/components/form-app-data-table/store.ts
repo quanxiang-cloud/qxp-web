@@ -1,5 +1,5 @@
 import React from 'react';
-import { UnionColumns } from 'react-table';
+import { UnionColumn } from 'react-table';
 import { action, observable, reaction, computed, IReactionDisposer } from 'mobx';
 import { toPairs, fromPairs, set } from 'lodash';
 import { pipe, map } from 'lodash/fp';
@@ -28,11 +28,13 @@ type InitData = {
   schema: ISchema;
   config?: Config;
   pageID?: string;
+  pageName?: string;
+  appName?: string;
   appID?: string;
   showCheckbox?: boolean;
   allowRequestData?: boolean;
   tableHeaderBtnList?: TableHeaderBtn[];
-  customColumns?: UnionColumns<any>[];
+  customColumns?: UnionColumn<any>[];
   filterConfig?: FilterConfig;
   canAcrossPageChoose?: boolean;
   onTableUserConfigChange?: (tableUserConfig: TableUserConfig) => void;
@@ -52,7 +54,9 @@ class AppPageDataStore {
   @observable canSetColumnWidth = true;
   @observable showCheckbox = true;
   @observable pageID = '';
+  @observable pageName = '';
   @observable appID = '';
+  @observable appName = '';
   @observable allowRequestData = false;
   @observable filterConfig: FilterConfig | null = null;
   @observable filters: Filters = [];
@@ -62,13 +66,13 @@ class AppPageDataStore {
   @observable fields: SchemaFieldItem[] = [];
   @observable schema: ISchema = {};
   @observable filterData: FormData = {};
-  @observable tableColumns: UnionColumns<FormData>[] = [];
+  @observable tableColumns: UnionColumn<FormData>[] = [];
   @observable tableHeaderBtnList: TableHeaderBtn[] = [];
   @observable widthMap = {};
   @observable columnConfig: ColumnConfig = {};
   @observable tableSize: SizeType = 'small';
   @observable canAcrossPageChoose = false;
-  @observable customColumns: UnionColumns<FormData>[] = [];
+  @observable customColumns: UnionColumn<FormData>[] = [];
   @observable params: Params = {
     condition: [],
     sort: [],
@@ -80,6 +84,8 @@ class AppPageDataStore {
   constructor({
     schema,
     pageID,
+    pageName,
+    appName,
     appID,
     config,
     allowRequestData,
@@ -118,7 +124,9 @@ class AppPageDataStore {
     }, this.setParams);
     this.setTableConfig(pageTableShowRule);
     this.appID = appID || '';
+    this.appName = appName || '';
     this.pageID = pageID || '';
+    this.pageName = pageName || '';
     this.allowRequestData = !!allowRequestData;
 
     if (config?.filters) {
@@ -126,8 +134,8 @@ class AppPageDataStore {
     }
   }
 
-  @computed get tableShowColumns(): UnionColumns<FormData>[] {
-    const _columns = this.tableColumns.reduce<UnionColumns<FormData>[]>((acc, col) => {
+  @computed get tableShowColumns(): UnionColumn<FormData>[] {
+    const _columns = this.tableColumns.reduce<UnionColumn<FormData>[]>((acc, col) => {
       const curConfig = this.columnConfig[col.id || ''] || {};
       if (!curConfig.hidden) {
         return [...acc, { ...col, fixed: 'fixed' in curConfig ? curConfig.fixed : col.fixed }];
@@ -143,12 +151,12 @@ class AppPageDataStore {
   setSelected = (selected: string[], rows: Record<string, any>[]): void => {
     this.selected = selected;
     this.onSelect?.(selected, rows);
-  }
+  };
 
   @action
   setParams = (params: Params): void => {
     this.params = { ...this.params, ...params };
-  }
+  };
 
   @action
   setSchema = (schema?: ISchema): void => {
@@ -158,24 +166,24 @@ class AppPageDataStore {
 
     this.schema = schema;
     this.fields = schemaToFields(schema);
-  }
+  };
 
   @action
   setTableConfig = (tableConfig: TableConfig): void => {
     this.tableConfig = tableConfig;
-  }
+  };
 
   @action
   setFilters = (filters: Filters): void => {
     this.filters = filters.filter((key) => {
       return key in (schemaToMap(this.schema) || {});
     });
-  }
+  };
 
   @action
   resetColumnConfig = (): void => {
     this.columnConfig = {};
-  }
+  };
 
   @action
   selectAllColumn = (type: boolean): void => {
@@ -196,18 +204,18 @@ class AppPageDataStore {
 
       this.columnConfig = newColumnConfig;
     }
-  }
+  };
 
   @action
   setColumnConfig = (newConfig: Partial<FormTableConfig>, id: string): void => {
     this.columnConfig = { ...set(this.columnConfig, id, { ...this.columnConfig[id], ...newConfig }) };
-  }
+  };
 
   @action
-  setTableColumns = (tableColumns: UnionColumns<any>[]): void => {
+  setTableColumns = (tableColumns: UnionColumn<any>[]): void => {
     this.columnConfig = {};
     this.tableColumns = tableColumns;
-  }
+  };
 
   @action
   fetchFormDataList = (params: Params): void => {
@@ -229,7 +237,7 @@ class AppPageDataStore {
     }).catch(() => {
       this.listLoading = false;
     });
-  }
+  };
 
   @action
   clear = (): void => {
@@ -244,7 +252,7 @@ class AppPageDataStore {
       page: 1,
       size: 10,
     };
-  }
+  };
 }
 
 export default AppPageDataStore;

@@ -21,7 +21,6 @@ const { TextArea } = Input;
 
 function VersionDetails(): JSX.Element {
   const {
-    state,
     id,
     tag,
     creator,
@@ -31,6 +30,7 @@ function VersionDetails(): JSX.Element {
     serverState,
     message,
     visibility,
+    updater,
   } = store.currentVersionFunc;
   const [des, setDes] = useState(describe);
   const tabItems = [
@@ -72,7 +72,7 @@ function VersionDetails(): JSX.Element {
             <span className="">返回</span>
           </div>
           <div className='mx-8'>/</div>
-          <div className='text-gray-900 font-semibold mr-16'>版本号：v0.1</div>
+          <div className='text-gray-900 font-semibold mr-16'>版本号：{tag}</div>
           <VersionStatus
             state={store.currentVersionFunc?.state || 'Unknown'}
             versionID={id}
@@ -98,7 +98,7 @@ function VersionDetails(): JSX.Element {
         <div className='flex text-12 p-8 items-center '>
           <div className='text-gray-600'>构建时间：</div>
           <div className='text-gray-900 flex-1 card-value'>
-            {`${(updatedAt - createdAt) / 1000} s`}
+            {`${updatedAt - createdAt}s`}
           </div>
         </div>
         <div className='flex text-12 p-8 items-center '>
@@ -113,7 +113,7 @@ function VersionDetails(): JSX.Element {
         </div>
         <div className='flex text-12 p-8 items-center '>
           <div className='text-gray-600'>最后更新人：</div>
-          <div className='text-gray-900 flex-1 card-value'>{creator}</div>
+          <div className='text-gray-900 flex-1 card-value'>{updater}</div>
         </div>
         <div className='flex text-12 p-8 items-center '>
           <div className='text-gray-600'>最后更新时间：</div>
@@ -132,7 +132,7 @@ function VersionDetails(): JSX.Element {
                   className="flex flex-col"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <div className="text-body2 text-gray-600 mb-8">描述</div>
+                  <div className="text-gray-600 mb-8">描述</div>
                   <TextArea
                     name="name"
                     defaultValue={des}

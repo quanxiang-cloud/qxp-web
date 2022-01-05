@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import cs from 'classnames';
 
 type Props = React.DetailedHTMLProps<
@@ -7,10 +7,14 @@ type Props = React.DetailedHTMLProps<
 > & {
   label?: string | React.ReactElement;
   indeterminate?: boolean;
+  rounded?: boolean;
+  className?: string;
 }
 
+import './style.scss';
+
 function Checkbox(
-  { className, label, indeterminate, ...inputProps }: Props,
+  { className, label, indeterminate, rounded, ...inputProps }: Props,
   ref?: React.Ref<HTMLInputElement>,
 ): JSX.Element {
   const defaultRef = React.useRef();
@@ -24,8 +28,8 @@ function Checkbox(
 
   const { style = {}, disabled } = inputProps;
 
-  return (
-    <label className={cs('checkbox flex items-center', className)}>
+  const vdom = useMemo(() => (
+    <label className={cs('checkbox flex items-center', className, rounded ? 'checkbox-rounded' : '')}>
       <input
         {...inputProps}
         style={{ ...style, cursor: disabled ? 'not-allowed' : 'pointer' }}
@@ -35,12 +39,28 @@ function Checkbox(
           'checkbox__input--indeterminate': indeterminate,
         })}
       />
-      {label && (
-        <span className="checkbox__label text-caption ml-8">
-          {label}
+      {(label || rounded) && (
+        <span className={rounded ? '' : 'checkbox__label text-caption ml-8'}>
+          {rounded ? null : label}
         </span>
       )}
     </label>
+  ), [className, rounded, inputProps, style, disabled, resolvedRef, indeterminate, label]);
+
+  return (
+    <>
+      {rounded ? (
+        <div className="flex items-center">
+          {vdom}
+          <span
+            className="checkbox__label text-caption ml-8 cursor-pointer"
+            onClick={() => resolvedRef?.current?.click()}
+          >
+            {label}
+          </span>
+        </div>
+      ) : vdom}
+    </>
   );
 }
 

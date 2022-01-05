@@ -27,14 +27,15 @@ declare namespace POLY_API {
   }
 
   export interface PolyNodeInput {
-    type: 'string' | 'number' | 'boolean' | 'object' | 'array' | 'direct_expr';
+    type: API_FIELD_TYPE;
     name: string;
     data: PolyNodeInput[] | string | null;
-    in: 'body' | 'path' | 'header' | 'query';
+    in: 'body' | 'path' | 'header' | 'query' | '';
     required?: boolean;
     mock?: string;
     desc?: string;
     title?: string;
+    id?: string;
   }
 
   export interface PolyConst {
@@ -43,11 +44,13 @@ declare namespace POLY_API {
     desc: string;
     data: string | boolean;
     in: 'hide';
+    id?: string;
   }
 
   export type PolyConstSchema = PolyConst & {
     children: [];
     index: number;
+    id: string;
   }
 
   export type PolyConditionType = 'direct_expr';
@@ -89,7 +92,6 @@ declare namespace POLY_API {
 
   export interface PolyRequestNodeDetail {
     rawPath: string;
-    apiName: string;
     inputs: PolyNodeInput[];
     outputs?: PolyNodeInput[];
   }
@@ -114,8 +116,8 @@ declare namespace POLY_API {
   }
 
   export interface ObjectSchema {
-    type: 'number' | 'string' | 'boolean' | 'object' | 'array' | 'direct_expr';
-    in: 'body' | 'header' | 'query' | 'path',
+    type: API_FIELD_TYPE;
+    in: 'body' | 'header' | 'query' | 'path' | '',
     name: string | null;
     index: number;
     parentPath: string | null;
@@ -123,6 +125,7 @@ declare namespace POLY_API {
     desc: string;
     rule?: string;
     children: ObjectSchema[];
+    id: string;
   }
 
   export type API_FIELD_TYPE = 'string' | 'number' | 'object' | 'array' | 'boolean' | 'direct_expr';

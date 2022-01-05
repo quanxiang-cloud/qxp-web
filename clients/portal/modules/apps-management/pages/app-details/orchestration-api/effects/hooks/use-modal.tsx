@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { UseMutationOptions, UseMutationResult } from 'react-query';
 import { toJS } from 'mobx';
-import { createFormActions, SchemaForm } from '@formily/react-schema-renderer';
+import { isArray } from 'lodash';
+import { SchemaForm, createAsyncFormActions } from '@formily/react-schema-renderer';
 import { Input, Select } from '@formily/antd-components';
 
 import toast from '@lib/toast';
@@ -11,11 +12,11 @@ import useSchemaformKeypressSubmit from '@orchestrationAPI/effects/hooks/use-sch
 import InputWithDesc from '@orchestrationAPI/components/input-with-desc';
 import CopyPolySelect from '@orchestrationAPI/components/copy-poly-select';
 
-const actions = createFormActions();
+export const actions = createAsyncFormActions();
 
 export default function useModal<I, O, D>(
   modalType: ModalType | undefined,
-  matchedModalType: ModalType,
+  matchedModalType: ModalType | ModalType[],
   mutationHooks: (options?: UseMutationOptions<O, Error, I>) => UseMutationResult<O, Error, I>,
   options: {
     onSuccess?: (data: O, variables: I, context: unknown) => void,
@@ -24,6 +25,7 @@ export default function useModal<I, O, D>(
     modifier?: 'primary' | 'danger',
     content?: JSX.Element,
     defaultValue?: Partial<D>,
+    title?: string,
     formToApiInputConvertor: (form?: D) => I,
     keyPressFieldWhitelist?: string[],
     onClose: () => void,
@@ -32,11 +34,13 @@ export default function useModal<I, O, D>(
 ): JSX.Element | null {
   const {
     message, onClose, onSuccess, onError, formToApiInputConvertor, content, defaultValue,
-    modifier = 'primary', keyPressFieldWhitelist = ['title', 'name'], submitText,
+    modifier = 'primary', keyPressFieldWhitelist = ['title', 'name'], submitText, title: _title,
   } = options;
   const [loading, setLoading] = useState(false);
   const [schema, title] = modalType ? MODAL_SCHEMA_MAP[modalType] : [];
-  const visible = matchedModalType === modalType;
+  const visible = matchedModalType === modalType || (
+    isArray(matchedModalType) && matchedModalType.includes(modalType as ModalType)
+  );
   const effects = useSchemaformKeypressSubmit(schema, keyPressFieldWhitelist, handleSubmit, visible);
 
   function handleSubmit(): void {
@@ -72,7 +76,7 @@ export default function useModal<I, O, D>(
   return (
     <Modal
       className="orchestration-management-modal"
-      title={title}
+      title={_title ?? title}
       onClose={onClose}
       footerBtns={[
         { key: 'cancel', text: '取消', onClick: onClose, iconName: 'close' },

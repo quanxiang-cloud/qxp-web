@@ -18,7 +18,7 @@
     }
   }
   .ant-switch-checked {
-    background-color: #375ff3;
+    background-color: var(--blue-600);
     .ant-switch-handle {
       left: calc(100% - 16px - 2px);
     }

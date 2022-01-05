@@ -2,7 +2,8 @@ import React, { useState, useRef, ChangeEvent } from 'react';
 
 import Card from '@c/card';
 import Checkbox from '@c/checkbox';
-import { countBy, searchByKey, deepClone } from '@lib/utils';
+import { searchByKey, deepClone } from '@lib/utils';
+
 import { IRoleFunc, IRoleFuncItem } from '../api';
 
 export interface IAlterRoleFunc {
@@ -14,22 +15,25 @@ export interface IAlterRoleFunc {
 
 export default function AlterRoleFunc({ funcs: functions }: IAlterRoleFunc): JSX.Element {
   const [funcs, setFuncs] = useState<IRoleFunc>(deepClone(functions));
-  const total = countBy<IRoleFunc, boolean>('has', 'child', (v) => v, funcs);
   // const [addSets, setAddSets] = useState<string[]>([]);
   // const [deleteSets, setDeleteSets] = useState<string[]>([]);
   const originTags = useRef<string[]>([]);
 
   const getFuncIds = (func: IRoleFunc | IRoleFuncItem): string[] => {
-    const tags = [];
-    for (const key in func) {
+    const tags: string[] = [];
+
+    Object.keys(func ?? {}).forEach((_key) => {
+      const key = _key as keyof (IRoleFunc | IRoleFuncItem);
       if (key === 'id' && func.has) {
         tags.push(func.id as string);
-        // @ts-ignore
-      } else if (key !== 'id' && typeof func[key] === 'object') {
-        // @ts-ignore
-        tags.push(...getFuncIds(func[key]));
+      } else if (key !== 'id') {
+        const funcValue = func[key];
+        if (typeof funcValue === 'object') {
+          tags.push(...getFuncIds(funcValue));
+        }
       }
-    }
+    });
+
     return tags;
   };
   if (!originTags.current.length) {
@@ -43,6 +47,20 @@ export default function AlterRoleFunc({ funcs: functions }: IAlterRoleFunc): JSX
   // setAddSets(adds);
   // setDeleteSets(deletes);
   // }, [funcs]);
+
+  function getCount(funcs: IRoleFunc): [number, number] {
+    let ckeckcount = 0;
+    let total = 0;
+    Object.values(funcs).forEach((func) => {
+      Object.values(func.child).forEach((funcChild) => {
+        total += 1;
+        if (funcChild.has) ckeckcount += 1;
+      });
+    });
+    return [ckeckcount, total];
+  }
+
+  const [checkcount, total] = getCount(funcs);
 
   const updateFuncs = (funcTag: string) => (e: ChangeEvent<HTMLInputElement>) => {
     setFuncs((s: IRoleFunc) => {
@@ -72,7 +90,7 @@ export default function AlterRoleFunc({ funcs: functions }: IAlterRoleFunc): JSX
   //   return Object.values(func.child).every((i) => i.has);
   // };
 
-  const renderFuncCard = (funcs: IRoleFunc) => {
+  const renderFuncCard = (funcs: IRoleFunc): JSX.Element => {
     return (
       <>
         {Object.values(funcs).map((func) => {
@@ -81,7 +99,7 @@ export default function AlterRoleFunc({ funcs: functions }: IAlterRoleFunc): JSX
               <Checkbox
                 disabled
                 checked={func.has}
-                className="mr-72 flex flex-row items-center text-caption mb-16"
+                className="mr-16 text-caption border-1 border-gray-200 py-8 pl-16 func-child rounded-8"
                 key={func.id}
                 value={func.funcTag}
                 onChange={updateFuncs(func.funcTag)}
@@ -92,9 +110,8 @@ export default function AlterRoleFunc({ funcs: functions }: IAlterRoleFunc): JSX
 
           return (
             <Card
-              style={{ backgroundColor: '#fff' }}
               key={func.id}
-              headerClassName="py-16 px-20 border-b border-gray-200"
+              headerClassName="px-16 bg-gray-100 rounded-8"
               title={
                 (<Checkbox
                   disabled
@@ -105,7 +122,7 @@ export default function AlterRoleFunc({ funcs: functions }: IAlterRoleFunc): JSX
                 />
                 )
               }
-              itemTitleClassName="text-h5"
+              itemTitleClassName="role-header"
               // action={
               //   <span onClick={selectAll(func)}>
               //     {func.child && !isSuper
@@ -118,7 +135,7 @@ export default function AlterRoleFunc({ funcs: functions }: IAlterRoleFunc): JSX
               headerActionClassName="no-underline text-gray-400
               text-12 leading-4 cursor-pointer"
               content={<>{renderFuncCard(func.child)}</>}
-              contentClassName="py-16 pb-0 px-20 flex justify-start whitespace-nowrap flex-wrap"
+              contentClassName="pt-12 pb-20 px-16 flex justify-start whitespace-nowrap flex-wrap"
             />
           );
         })}
@@ -156,7 +173,7 @@ export default function AlterRoleFunc({ funcs: functions }: IAlterRoleFunc): JSX
   return (
     <div className="overflow-scroll h-full">
       <header className="mx-4 flex flex-row items-center justify-between py-3">
-        <Checkbox disabled checked={!!total} label={`已开启 ${total} 项`} />
+        <div className='text-12 text-gray-400'>已选 {checkcount} 项，共 {total} 项</div>
         {/* {!isSuper && (
           <div className="flex flex-row items-center justify-between">
             {!!lastSaveTime && (

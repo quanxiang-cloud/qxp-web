@@ -8,7 +8,7 @@ type Props = {
   value: LabelValue;
 }
 
-export default function AssociatedDataValueRender({ schema, value }: Props):JSX.Element {
+export default function AssociatedDataValueRender({ schema, value }: Props): JSX.Element {
   const [visible, setVisible] = useState(false);
 
   return (

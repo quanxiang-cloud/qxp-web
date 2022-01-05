@@ -16,16 +16,16 @@ export default class Quarter extends React.Component<Props> {
   isSelectedMonth = (month: moment.Moment): boolean => {
     const { selectedDate } = this.props;
     return selectedDate ? month.isSame(selectedDate, 'month') : false;
-  }
+  };
 
   isOutsideRange = (month: moment.Moment): boolean => {
     const { minDate, maxDate } = this.props;
     return isDateOutRange(month, minDate, maxDate, 'month');
-  }
+  };
 
   handleMonthClick = (month: moment.Moment): void => {
     this.props.onMonthClick(month);
-  }
+  };
 
   render(): JSX.Element {
     const startOfMonth = this.props.quarter.clone().startOf('month');

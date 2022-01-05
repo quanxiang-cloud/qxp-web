@@ -28,7 +28,7 @@ class UserAppStore {
     }).catch(() => {
       this.listLoading = false;
     });
-  }
+  };
 
   @action
   fetchTodoList = async () => {
@@ -46,7 +46,7 @@ class UserAppStore {
     } catch (err) {
       toast.error(err);
     }
-  }
+  };
 }
 
 export default new UserAppStore();

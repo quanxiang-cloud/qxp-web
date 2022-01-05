@@ -42,10 +42,14 @@ function DetailsDrawer({ onCancel, rowID, goEdit, delData }: Props): JSX.Element
         'page-data-drawer-began-close': beganClose,
         'page-data-drawer-close': visible,
       })}
+      onClick={handleCancel}
     >
-      <div className={cs('page-data-drawer-container', useCss({
-        width: fullScreen ? '100%' : '66%',
-      }))}>
+      <div
+        className={cs('page-data-drawer-container', useCss({
+          width: fullScreen ? '100%' : '66%',
+        }))}
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className='page-data-drawer-header'>
           <span className='text-h5'>{store.pageName}</span>
           <div className='flex items-center gap-x-12'>

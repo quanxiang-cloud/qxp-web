@@ -24,9 +24,9 @@ function RightsGroups(): JSX.Element {
   const { rightsList, perFormLoading } = store;
   const [activeTab, setActiveTab] = useState('authorized');
   const [openset, setOpenSet] = useState(false);
-  const fieldRef = useRef<{ getFieldPer:() => any, reset: () => void }>(null);
-  const authorizedRef = useRef<{ getAuthorizedPer:() => number, reset: () => void }>(null);
-  const dataPerRef = useRef<{ getDataValues:() => Promise<ConditionMap>, reset: () => void }>(null);
+  const fieldRef = useRef<{ getFieldPer: () => any, reset: () => void }>(null);
+  const authorizedRef = useRef<{ getAuthorizedPer: () => number, reset: () => void }>(null);
+  const dataPerRef = useRef<{ getDataValues: () => Promise<ConditionMap>, reset: () => void }>(null);
 
   useEffect(() => {
     store.fetchPerGroupForm(store.currentRights.id);
@@ -46,7 +46,7 @@ function RightsGroups(): JSX.Element {
     key: 'authorized',
   }];
 
-  if (store.currentPage.menuType !== 2) {
+  if (![2, 3].includes(store.currentPage.menuType || 0)) {
     tabItem.push(...[
       {
         label: '字段权限',
@@ -62,7 +62,7 @@ function RightsGroups(): JSX.Element {
   const handleSave = (): void => {
     const authority = authorizedRef.current?.getAuthorizedPer() || 0;
 
-    if (store.currentPage.menuType === 2) {
+    if ([2, 3].includes(store.currentPage.menuType || 0)) {
       store.updatePerCustom(authority);
       setOpenSet(false);
       return;
@@ -228,7 +228,7 @@ function RightsGroups(): JSX.Element {
                     ref={authorizedRef}
                     className={cs({ ['rights-hidden']: activeTab !== 'authorized' })}
                   />
-                  {store.currentPage.menuType !== 2 && (
+                  {![2, 3].includes(store.currentPage.menuType || 0) && (
                     <>
                       <FieldPermissions
                         abled={openset}

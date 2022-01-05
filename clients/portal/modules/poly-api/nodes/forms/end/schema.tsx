@@ -1,3 +1,5 @@
+import { validateName } from '@polyApi/utils/object-editor';
+
 export default {
   type: 'object',
   'x-component-props': {
@@ -19,6 +21,11 @@ export default {
         },
         itemClassName: 'bg-gray-100 h-full',
       },
+      'x-rules': [
+        (values: POLY_API.PolyEndBody): string => {
+          return validateName(values.data);
+        },
+      ],
       'x-index': 0,
     },
   },

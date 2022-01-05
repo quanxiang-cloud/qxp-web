@@ -1,7 +1,7 @@
 import React, { useMemo, useCallback } from 'react';
-import { isFunction, isString, isEmpty } from 'lodash';
-import { equals } from 'ramda';
-import { useUpdateEffect, usePrevious } from 'react-use';
+import { isFunction, isString } from 'lodash';
+import { useUpdateEffect } from 'react-use';
+import cs from 'classnames';
 
 import useObservable from '@lib/hooks/use-observable';
 import { storeValuesToDataSource } from '@polyApi/utils/object-editor';
@@ -11,36 +11,40 @@ import { Store, createStore, ItemStore } from './store';
 
 import './style.scss';
 
-export type Row<T extends { children: T[] }> = T & {
+export type Row<T extends { children: T[]; id: string }> = T & {
   parent$?: ItemStore<T> | Store<T> | null;
   children$: ItemStore<T>[];
   current$: ItemStore<T>;
 }
 
-export interface Column<T extends { children: T[] }> {
+export interface Column<T extends { children: T[]; id: string }> {
   title: string | ((store$: Store<T>) => JSX.Element | null);
   dataIndex: string;
   render: (row: Row<T>, store$: Store<T>) => JSX.Element | null;
 }
 
-interface Props<T extends { children: T[] }> {
+interface Props<T extends { children: T[]; id: string }> {
   columns: Column<T>[];
-  initialValues: T[];
+  value: T[];
   onChange: (value: T[]) => void;
   onAddField: (row: Row<T> | null, store: Store<T>) => void;
+  addFilter?: (row: Row<T>) => boolean;
 }
 
-function ObjectEditor<T extends { children: T[] }>(
-  { columns, initialValues, onAddField, onChange }: Props<T>,
+function ObjectEditor<T extends { children: T[]; id: string }>(
+  { columns, value, onAddField, onChange, addFilter }: Props<T>,
 ): JSX.Element | null {
-  const store$: Store<T> = useMemo(() => createStore(initialValues || []), []);
+  const store$: Store<T> = useMemo(() => createStore(value || []), []);
   const storeValues$ = useObservable(store$, []);
   const dataSource = useMemo(() => storeValuesToDataSource(storeValues$), [storeValues$]);
 
-  const previousDataSource = usePrevious(dataSource);
   useUpdateEffect(() => {
-    !isEmpty(previousDataSource) && !equals(dataSource, previousDataSource) && onChange(dataSource);
-  }, [dataSource, previousDataSource, onChange]);
+    store$.setChildren(value);
+  }, [value]);
+
+  useUpdateEffect(() => {
+    onChange(dataSource);
+  }, [dataSource]);
 
   const handleAddField = useCallback((row: Row<T> | null, store$: Store<T>) => {
     return () => onAddField(row, store$);
@@ -54,13 +58,23 @@ function ObjectEditor<T extends { children: T[] }>(
   }, []);
 
   const rowActionRender = useCallback((row: Row<T>, store$: Store<T>): JSX.Element => {
+    const showAdd = addFilter?.(row);
     return (
       <div className="flex items-center gap-12">
-        <Icon clickable name="add-object-field" size={20} onClick={handleAddField(row, store$)} />
+        <Icon
+          clickable
+          name="add-object-field"
+          size={20}
+          onClick={showAdd ? handleAddField(row, store$) : undefined}
+          className={cs('transition duration-240', {
+            'opacity-100': showAdd,
+            'opacity-0 cursor-default pointer-events-none absolute': !showAdd,
+          })}
+        />
         <Icon clickable name="delete" size={20} onClick={handleDeleteField(row, store$)} />
       </div>
     );
-  }, []);
+  }, [addFilter, handleAddField, handleDeleteField]);
 
   const distColumns = useMemo(() => {
     return columns.concat({
@@ -74,7 +88,7 @@ function ObjectEditor<T extends { children: T[] }>(
 
   return (
     <section className="mx-auto font-mono">
-      <div className="w-full mb-8 shadow-lg rounded-8">
+      <div className="w-full overflow-hidden mb-8 rounded-8">
         <div className="w-full overflow-x-auto">
           <table className="w-full object-editor-table">
             <thead>

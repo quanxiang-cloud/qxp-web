@@ -1,5 +1,5 @@
 import { action, observable, reaction, IReactionDisposer, computed } from 'mobx';
-import { UnionColumns } from 'react-table';
+import { UnionColumn } from 'react-table';
 import { values, map } from 'ramda';
 
 import toast from '@lib/toast';
@@ -128,9 +128,18 @@ class FormDesignStore {
       return { pageID: this.pageID, appID: this.appID };
     }, this.fetchFormScheme);
 
+    let fieldListIdCache: string[] = this.fieldList.map(({ id }) => id);
     this.destroySetAllFilter = reaction(() => this.fieldList, () => {
       if (!this.formStore) {
         return;
+      }
+
+      const newFieldListIds = this.fieldList
+        .map(({ id }) => id)
+        .filter((id) => !SYSTEM_FIELDS.includes(id) && !fieldListIdCache.includes(id));
+
+      if (newFieldListIds.length) {
+        this.pageTableColumns = [...this.pageTableColumns, ...columnStringToObject(newFieldListIds)];
       }
 
       this.pageTableColumns = this.pageTableColumns.filter(({ id }) => {
@@ -140,17 +149,19 @@ class FormDesignStore {
       this.filters = this.filters.filter((id) => {
         return this.judgeInSchema(id);
       });
+
+      fieldListIdCache = this.fieldList.map(({ id }) => id);
     });
 
     this.destroySetSchema = reaction(() => this.allSchema, this.appPageStore.setSchema);
     this.destroySetFilters = reaction(() => this.filters, this.appPageStore.setFilters);
 
-    this.destroySetTableColumn = reaction((): UnionColumns<any>[] => {
+    this.destroySetTableColumn = reaction((): UnionColumn<any>[] => {
       if (!this.pageTableColumns) {
         return [];
       }
 
-      const column: UnionColumns<any>[] = this.pageTableColumns.map(({ id, width }) => {
+      const column: UnionColumn<any>[] = this.pageTableColumns.map(({ id, width }) => {
         return {
           id,
           Header: { ...this.fieldsMap, ...this.internalFields }[id]?.title || '',
@@ -173,7 +184,7 @@ class FormDesignStore {
   @action
   judgeInSchema = (key: string): boolean => {
     return SYSTEM_FIELDS.includes(key) || key in this.fieldsMap;
-  }
+  };
 
   @action
   toggleShowAllFields(isShowAll: boolean): void {
@@ -211,34 +222,34 @@ class FormDesignStore {
       this.pageTableColumns = [...this.pageTableColumns, column];
       break;
     }
-  }
+  };
 
   @action
   setFilters = (filters: Filters): void => {
     this.filters = filters;
-  }
+  };
 
   @action
   setPageID = (pageID: string): void => {
     this.pageID = pageID;
-  }
+  };
 
   @action
   setAppID = (appID: string): void => {
     this.appID = appID;
-  }
+  };
 
   @action
   pageTableColumnsSort = (values: string[]): void => {
     this.pageTableColumns = values.map((id) => {
       return this.pageTableColumns.find((column) => id === column.id) as TableColumnConfig;
     });
-  }
+  };
 
   @action
   setPageTableShowRule = (newRule: TableConfig): void => {
     this.pageTableShowRule = { ...this.pageTableShowRule, ...newRule };
-  }
+  };
 
   @action
   fetchFormScheme = ({ pageID, appID }: { pageID: string, appID: string }): void => {
@@ -251,9 +262,7 @@ class FormDesignStore {
       const { schema = {}, config = {} } = res || {};
       this.hasSchema = !!res;
       this.formStore = new FormStore({ schema, appID, pageID });
-      this.pageTableColumns = columnStringToObject(config.pageTableColumns || SYSTEM_FIELDS.filter((key) => {
-        return key !== '_id';
-      }));
+      this.pageTableColumns = columnStringToObject(config.pageTableColumns || []);
       this.filters = config.filters || [];
       if (config.pageTableShowRule) {
         this.pageTableShowRule = config.pageTableShowRule;
@@ -263,7 +272,7 @@ class FormDesignStore {
     }).catch(() => {
       this.pageLoading = false;
     });
-  }
+  };
 
   @action
   saveForm = async (): Promise<void | boolean> => {
@@ -275,7 +284,7 @@ class FormDesignStore {
       toast.error(err);
       return false;
     }
-  }
+  };
 
   @action
   saveFormConfig = async (): Promise<any> => {
@@ -291,7 +300,7 @@ class FormDesignStore {
     (this.formStore as FormStore).hasEdit = false;
     this.saveSchemeLoading = false;
     this.formStore?.setSerialFieldIds(this.formStore.schema);
-  }
+  };
 
   @action
   clear = (): void => {
@@ -301,7 +310,7 @@ class FormDesignStore {
     this.pageTableShowRule = { order: '-created_at', pageSize: 10 };
     this.filters = [];
     this.appPageStore.clear();
-  }
+  };
 }
 
 export default new FormDesignStore();

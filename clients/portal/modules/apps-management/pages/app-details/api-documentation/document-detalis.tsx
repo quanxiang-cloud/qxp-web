@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { toJS } from 'mobx';
 import { observer } from 'mobx-react';
-import { UnionColumns } from 'react-table';
+import { UnionColumn } from 'react-table';
 import cs from 'classnames';
 
 import Tab from '@c/tab';
@@ -18,7 +18,7 @@ import store from './store';
 import '../prism.css';
 import ApiDetails from './api-details';
 
-export const FIELD_COLUMNS: UnionColumns<ModelField>[] = [
+export const FIELD_COLUMNS: UnionColumn<ModelField>[] = [
   {
     Header: '字段名称',
     id: 'title',
@@ -98,41 +98,40 @@ function ApiDocumentDetails(): JSX.Element {
     {
       id: 'create',
       name: '新增',
-      content: store.isAPILoading ? <Loading/> : <ApiDetails apiPath={store.ApiPath}/>,
+      content: store.isAPILoading ? <Loading /> : <ApiDetails apiPath={store.ApiPath} />,
     },
     {
       id: 'delete',
       name: '删除',
-      content: store.isAPILoading ? <Loading/> : <ApiDetails apiPath={store.ApiPath}/>,
+      content: store.isAPILoading ? <Loading /> : <ApiDetails apiPath={store.ApiPath} />,
     },
     {
       id: 'update',
       name: '更新',
-      content: store.isAPILoading ? <Loading/> : <ApiDetails apiPath={store.ApiPath}/>,
+      content: store.isAPILoading ? <Loading /> : <ApiDetails apiPath={store.ApiPath} />,
     },
     {
       id: 'get',
       name: '查询单条',
-      content: store.isAPILoading ? <Loading/> : <ApiDetails apiPath={store.ApiPath}/>,
+      content: store.isAPILoading ? <Loading /> : <ApiDetails apiPath={store.ApiPath} />,
     },
     {
       id: 'search',
       name: '查询多条',
-      content: store.isAPILoading ? <Loading/> : <ApiDetails apiPath={store.ApiPath}/>,
+      content: store.isAPILoading ? <Loading /> : <ApiDetails apiPath={store.ApiPath} />,
     },
   ];
 
-  useEffect(()=> {
+  useEffect(() => {
     if (isApiNode()) {
       store.useFieldsID = false;
       store.docType = 'curl';
-      // @ts-ignore
-      store.setApiPath(store.currentDataModel.fullPath);
+      store.currentDataModel.fullPath && store.setApiPath(store.currentDataModel.fullPath);
       store.fetchApiDoc('curl', false);
     }
   }, [store.currentDataModel]);
 
-  if (!store.tableID) {
+  if (!store.tableID && !store.apiNsList.length) {
     return <EmptyTips text='暂无数据模型' className="pt-40 m-auto" />;
   }
 
@@ -141,7 +140,7 @@ function ApiDocumentDetails(): JSX.Element {
   }
 
   function renderMain(): JSX.Element {
-    if (isNsNode()) {
+    if (isNsNode() || (!isApiNode() && !store.tableID)) {
       return (
         <div className='px-20 py-20 text-14'>选择 namespace 下的 API 来查看接口文档</div>
       );
@@ -149,7 +148,7 @@ function ApiDocumentDetails(): JSX.Element {
     if (isApiNode()) {
       return (
         <div className='px-20'>
-          {store.isAPILoading ? <Loading/> : <ApiDetails apiPath={store.ApiPath}/>}
+          {store.isAPILoading ? <Loading /> : <ApiDetails apiPath={store.ApiPath} />}
         </div>
       );
     }

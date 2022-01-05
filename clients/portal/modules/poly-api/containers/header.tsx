@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useQueryClient } from 'react-query';
 import cs from 'classnames';
 import { useHistory } from 'react-router-dom';
@@ -25,17 +25,6 @@ function PolyDetailsHeader({ className }: Props): JSX.Element {
   const orchestrationAPIPath = useOrchestrationAPIPath();
   const [debugLoading, setDebugLoading] = useState(false);
   const [publishLoading, setPublishLoading] = useState(false);
-
-  useEffect(() => {
-    // const types = ['node', 'value', 'oper', 'cond', 'cmp', 'in'];
-    // const response$ = of(...types).pipe(
-    //   map((type) => from(httpClient(`/api/v1/polyapi/poly/enums/${type}`, { sample: true }))),
-    //   concatAll(),
-    // );
-    // response$.subscribe((values) => {
-    //   console.log(values);
-    // });
-  }, []);
 
   const handleBack = useCallback((): void => {
     history.replace(orchestrationAPIPath);
@@ -71,6 +60,8 @@ function PolyDetailsHeader({ className }: Props): JSX.Element {
         <InputEditor
           autoMode
           changeOnBlur
+          includeChinese
+          limit={30}
           className="poly-name-editor"
           value={store.polyInfo?.title || ''}
           onChange={handleNameChange}
@@ -100,7 +91,7 @@ function PolyDetailsHeader({ className }: Props): JSX.Element {
           </Button>
         </div>
         <div className="w-1 bg-gray-200 mr-10" style={{ height: 30 }}></div>
-        <Icon name="question_answer" />
+        <Icon name="help_doc" size={20} style={{ color: 'white', fill: 'var(--gray-400)' }}/>
       </section>
     </header>
   );

@@ -10,7 +10,7 @@ import { fetchDataModels } from '../api';
 import { INIT_MODEL_SCHEMA } from '../utils';
 
 class AppModelStore {
-  fetchDataModelDisposer: IReactionDisposer
+  fetchDataModelDisposer: IReactionDisposer;
   constructor() {
     this.fetchDataModelDisposer = reaction(() => {
       return { params: this.params, appID: this.appID };
@@ -31,7 +31,7 @@ class AppModelStore {
     page: 1,
     size: 10000,
     title: '',
-  }
+  };
   @observable editModalType = '';
   @observable editFieldType = '';
   @observable searchModelInput = '';
@@ -86,43 +86,43 @@ class AppModelStore {
   @action
   setEditModalType = (type: string): void => {
     this.editModalType = type;
-  }
+  };
 
   @action
   setEditFieldType = (type: string): void => {
     this.editFieldType = type;
-  }
+  };
 
   @action
   setCurModelField = (field: ModelField | null): void => {
     this.curModelField = field;
-  }
+  };
 
   @action
   setSearchModelFieldInput = (input: string): void => {
     this.searchModelFieldInput = input;
-  }
+  };
 
   @action
   setSearchModelInput = (input: string): void => {
     this.searchModelInput = input;
-  }
+  };
 
   @action
   setParams = (newParams: Partial<DataModelParams>): void => {
     this.params = { ...this.params, ...newParams };
-  }
+  };
 
   @action
   setCurDataModal = (modal: DataModel): void => {
     this.curDataModel = modal;
     this.curModelTableID = modal.tableID;
-  }
+  };
 
   @action
   updateDataModels = (models: DataModel[]): void => {
     this.dataModels = [...models];
-  }
+  };
 
   @action
   fetchDataModels = (): void => {
@@ -140,7 +140,7 @@ class AppModelStore {
       this.dataModelsLoading = false;
       toast.error(err);
     });
-  }
+  };
 
   @action
   saveDataModel = (basicInfo: DataModelBasicInfo, modalType: string): Promise<boolean | void> => {
@@ -190,7 +190,7 @@ class AppModelStore {
       toast.error(err);
       return false;
     });
-  }
+  };
 
   @action
   delDataModel = (modelID: string): void => {
@@ -209,7 +209,7 @@ class AppModelStore {
     }).catch((err) => {
       toast.error(err);
     });
-  }
+  };
 
   @action
   fetchSchema = (modelID?: string): void => {
@@ -225,12 +225,12 @@ class AppModelStore {
       this.modelDetailsLoading = false;
       toast.error(err);
     });
-  }
+  };
 
   @action
   initDataModelSchema = (): void => {
     this.dataModelSchema = INIT_MODEL_SCHEMA;
-  }
+  };
 
   @action
   addModelField = (field: ModelField): void => {
@@ -240,12 +240,12 @@ class AppModelStore {
       `schema.properties.${field.id}`,
       { ...field, 'x-index': this.fields.length },
     );
-  }
+  };
 
   @action
   delModelField = (fieldID: string): void => {
     unset(this.dataModelSchema, `schema.properties.${fieldID}`);
-  }
+  };
 }
 
 export default new AppModelStore();

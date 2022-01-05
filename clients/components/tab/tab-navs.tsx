@@ -29,7 +29,7 @@ ref?: React.Ref<HTMLDivElement>): JSX.Element {
     <div className='z-10'> {/* This layer of div is used to solve the overflow-x auto */}
       <div
         ref={ref}
-        className={cs('tab-navs', navsClassName)}>
+        className={cs('tab-navs text-12', navsClassName)}>
         {
           navs.map((item) => {
             const active = item.id === currentKey;

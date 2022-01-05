@@ -15,16 +15,14 @@ import auditLog from './store';
 
 import './index.scss';
 
-const useDebounceState = (defaultState: any, timer: number, cb?: (params: any) => void) => {
+const useDebounceState = (defaultState: any, timer: number, cb?: (params: any) => void): any[] => {
   const [state, setState] = useState(defaultState);
 
   const ref = useRef<number>();
 
   const f = useCallback((newState) => {
     clearTimeout(ref.current);
-
-    // @ts-ignore
-    ref.current = setTimeout(() => {
+    ref.current = window.setTimeout(() => {
       setState(newState);
       cb && cb(newState);
     }, timer);
@@ -70,7 +68,7 @@ export const useLogInitData = () => {
   return [refetch];
 };
 
-const AuditLogPage = () => {
+const AuditLogPage = (): JSX.Element => {
   const {
     userName: inputValue,
     logPageInfo,
@@ -87,7 +85,7 @@ const AuditLogPage = () => {
     setLogPageInfo({ ...logPageInfo, current: 1 });
   });
 
-  const getUnixTimestamp = (string: string | number | Date) : number => {
+  const getUnixTimestamp = (string: string | number | Date): number => {
     return Math.round(new Date(string).getTime() / 1000);
   };
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
-import { UnionColumns } from 'react-table';
+import { UnionColumn } from 'react-table';
 import { observer } from 'mobx-react';
 import { Switch } from 'antd';
 import { useDebounce, useUpdateEffect } from 'react-use';
@@ -14,6 +14,8 @@ import Modal from '@c/modal';
 import Icon from '@c/icon';
 import toast from '@lib/toast';
 import Pagination from '@c/pagination';
+import { copyToClipboard } from '@lib/utils';
+import ToolTip from '@c/tooltip';
 
 import { deleteNativeApi, activeApi } from '../api';
 import { useNamespace } from '../hooks';
@@ -32,7 +34,7 @@ function ApiList(): JSX.Element {
   const [curRow, setCurRow] = useState<PolyAPI.Api | null>(null);
   const [debouncedSearch, setDebouncedSearch] = useState('');
 
-  const COLS: UnionColumns<PolyAPI.Api>[] = [
+  const COLS: UnionColumn<PolyAPI.Api>[] = [
     {
       Header: 'API 名称',
       id: 'title',
@@ -61,7 +63,22 @@ function ApiList(): JSX.Element {
       id: 'fullPath',
       accessor: ({ fullPath }: PolyAPI.Api)=> {
         return (
-          <span className='flex overflow-x-auto' title={fullPath}>{fullPath}</span>
+          <div className='flex items-center key-id'>
+            <span className='flex overflow-x-auto' title={fullPath}>{fullPath}</span>
+            <ToolTip
+              label='复制'
+              position='top'
+              labelClassName="whitespace-nowrap text-12"
+            >
+              <div className='pt-1 ml-10 pl-3'>
+                <Icon
+                  name='content_copy'
+                  size={16}
+                  onClick={() => copyToClipboard(fullPath, '复制成功')}
+                  className='cursor-pointer hover:text-blue-600 invisible copy-tooltip' />
+              </div>
+            </ToolTip>
+          </div>
         );
       },
     },
@@ -207,22 +224,23 @@ function ApiList(): JSX.Element {
           placeholder="输入 API 名称"
           value={search}
           onChange={setSearch}
-          onKeyDown={()=> {}}
         />
       </div>
       <div className='api-list-wrap'>
-        <Table
-          className='api-proxy-table-switch'
-          emptyTips={(<EmptyTips text={
-            (<div>暂无数据，选择
-              <span onClick={toCreateApiPage} className='text-blue-600 cursor-pointer ml-4'>新建 API</span>
-            </div>)
-          } />)}
-          loading={store.isLoading}
-          rowKey='id'
-          columns={COLS}
-          data={orderBy(store.svcApis?.list || [], ['updateAt'], ['desc'])}
-        />
+        <div style={{ height: 'calc(100vh - 290px)' }}>
+          <Table
+            className='api-proxy-table'
+            emptyTips={(<EmptyTips text={
+              (<div>暂无数据，选择
+                <span onClick={toCreateApiPage} className='text-blue-600 cursor-pointer ml-4'>新建 API</span>
+              </div>)
+            } />)}
+            loading={store.isLoading}
+            rowKey='id'
+            columns={COLS}
+            data={orderBy(store.svcApis?.list || [], ['updateAt'], ['desc'])}
+          />
+        </div>
         {!!store.svcApis?.total && (
           <Pagination
             current={pageParams.page}

@@ -1,8 +1,10 @@
 import React, { ReactNode } from 'react';
-import Avatar from '@m/qxp-ui-mobile/avatar';
-import './header.scss';
 import cs from 'classnames';
-import { HomePageProps } from '@m/pages/dashboard/types';
+
+import Avatar from '@m/qxp-ui-mobile/avatar';
+import { HomePageProps } from '../types';
+
+import './header.scss';
 
 const Header: React.FC<HomePageProps> = (props) => {
   const depName = window.USER?.dep?.departmentName ?? '';

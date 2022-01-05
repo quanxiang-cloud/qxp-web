@@ -1,0 +1,53 @@
+.list-menu-node-active {
+  &::after {
+    content: "";
+    width: 4px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-radius: 4px 0 0 4px;
+    background-color: var(--blue-600);
+  }
+}
+
+.role-tab .tab-content {
+  overflow: hidden;
+  padding: 16px 16px 0px;
+}
+
+.role-header  .text-caption {
+  font-weight: 600;
+}
+
+.func-child {
+  width: 150px;
+}
+
+input[type=checkbox] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  text-align: center;
+  vertical-align: middle;
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+  background: #FFFFFF;
+  border: 1px solid var(--gray-400);
+  &:disabled {
+    border: 1px solid var(--gray-300);
+    background-color: var(--gray-100);
+  }
+  &:checked::after {
+    content: url('/dist/images/done.png');
+  }
+  &:checked {
+    border: none;
+    background-color: var(--blue-600);
+    &:disabled {
+      background-color: var(--gray-300);
+    }
+  }
+}

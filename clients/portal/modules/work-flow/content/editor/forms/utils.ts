@@ -22,7 +22,7 @@ type TableListItem = {
 
 type Options = {
   noSystem?: boolean;
-  matchTypeFn?: (...args: any[])=> boolean;
+  matchTypeFn?: (...args: any[]) => boolean;
   excludeComps?: string[],
   [key: string]: any,
 }

@@ -1,6 +1,7 @@
-import React, { ChangeEvent, useCallback } from 'react';
+import React, { ChangeEvent, useCallback, useRef } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { isString, isBoolean, isNumber } from 'lodash';
+import { equals } from 'ramda';
 
 import {
   getObjectEditorNewConstantField, fromApiDataToPolyConstSchema, fromPolyConstSchemaToApiData, isObjectField,
@@ -11,13 +12,16 @@ import FieldTypeSelector from './object-editor/field-type-selector';
 import ObjectEditor, { Row } from './object-editor';
 import { Store, ItemStore } from './object-editor/store';
 import BooleanSelector from './object-editor/boolean-selector';
+import { updateErrors } from '../utils/object-editor';
 
-function BodyEditor(props: ISchemaFieldComponentProps): JSX.Element {
-  props;
-  const handleChange = useCallback((value: POLY_API.PolyConstSchema[]) => {
-    const distValue = fromPolyConstSchemaToApiData(value);
-    props.mutators.change(distValue);
-  }, []);
+function BodyEditor({ mutators, value, props }: ISchemaFieldComponentProps): JSX.Element {
+  const isValidating = !!props['x-component-props']?.validating;
+
+  const handleChange = useCallback((_value: POLY_API.PolyConstSchema[]) => {
+    const distValue = fromPolyConstSchemaToApiData(_value);
+    !equals(value, distValue) && mutators.change(distValue);
+  }, [value]);
+  const errorsRef = useRef<Record<string, string>>({});
 
   function handleRowChange(
     keyType: keyof POLY_API.PolyConstSchema,
@@ -26,6 +30,7 @@ function BodyEditor(props: ISchemaFieldComponentProps): JSX.Element {
   ) {
     return (e: ChangeEvent<HTMLInputElement> | string | number | boolean) => {
       const value = isString(e) || isBoolean(e) || isNumber(e) ? e : e.target.value;
+      keyType === 'name' && updateErrors(value, current$.id, errorsRef);
       if (keyType === 'type' && isObjectField(current$.get('type')) && !isObjectField(`${value}`)) {
         current$.removeChild();
       }
@@ -38,14 +43,18 @@ function BodyEditor(props: ISchemaFieldComponentProps): JSX.Element {
     { name, current$ }: Row<POLY_API.PolyConstSchema>,
     store$: Store<POLY_API.PolyConstSchema>,
   ): JSX.Element {
+    isValidating && updateErrors(name, current$.id, errorsRef);
     return (
       <div className="flex items-center">
         <InputEditor
           className="flex-1"
           value={name}
           onChange={handleRowChange('name', current$, store$)}
-          placeholder="请输入字段名称"
+          placeholder="请输入参数名称"
         />
+        {!!errorsRef.current[current$.id] && (
+          <span className="text-red-600 px-3 text-12">{errorsRef.current[current$.id]}</span>
+        )}
       </div>
     );
   }
@@ -90,9 +99,11 @@ function BodyEditor(props: ISchemaFieldComponentProps): JSX.Element {
   ): JSX.Element {
     return (
       <InputEditor
+        includeChinese
+        limit={100}
         value={desc}
         onChange={handleRowChange('desc', current$, store$)}
-        placeholder="请输入字段描述"
+        placeholder="请输入参数描述"
       />
     );
   }
@@ -102,7 +113,7 @@ function BodyEditor(props: ISchemaFieldComponentProps): JSX.Element {
     store$: Store<POLY_API.PolyConstSchema>,
   ): void {
     if (!row || !row?.parent$) {
-      return store$?.addChild(getObjectEditorNewConstantField(), store$.value.length);
+      return store$?.addChild(getObjectEditorNewConstantField(), store$.Value.length);
     }
     const { parent$, index, type } = row;
     const defaultNewField = getObjectEditorNewConstantField();
@@ -125,7 +136,7 @@ function BodyEditor(props: ISchemaFieldComponentProps): JSX.Element {
       render: typeRender,
     },
     {
-      title: '数值',
+      title: '参数值',
       dataIndex: 'data',
       render: valueRender,
     },
@@ -141,7 +152,7 @@ function BodyEditor(props: ISchemaFieldComponentProps): JSX.Element {
       <p className="mt-8 mb-4 text-h6-no-color-weight text-gray-900">常量参数</p>
       <ObjectEditor<POLY_API.PolyConstSchema>
         columns={columns}
-        initialValues={fromApiDataToPolyConstSchema((props.initialValue || []) as POLY_API.PolyConstSchema[])}
+        value={fromApiDataToPolyConstSchema((value || []) as POLY_API.PolyConstSchema[])}
         onAddField={handleAddField}
         onChange={handleChange}
       />

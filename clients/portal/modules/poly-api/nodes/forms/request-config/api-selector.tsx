@@ -2,25 +2,25 @@ import React, { useEffect, useState } from 'react';
 import { clone } from 'ramda';
 import { Cascader } from 'antd';
 import { useParams } from 'react-router-dom';
+import cs from 'classnames';
 
-import { useGetRequestNodeApiList } from '@portal/modules/poly-api/effects/api/raw';
-import {
-  useGetNamespaceFullPath,
-  useQueryNameSpaceRawRootPath,
-} from '@portal/modules/poly-api/effects/api/namespace';
-import {
-  convertRawApiListToOptions,
-  getChildrenOfCurrentSelectOption,
-} from '@portal/modules/poly-api/utils/request-node';
+import { useGetRequestNodeApiList } from '@polyApi/effects/api/raw';
+import { useGetNamespaceFullPath, useQueryNameSpaceRawRootPath } from '@polyApi/effects/api/namespace';
+import { convertRawApiListToOptions, getChildrenOfCurrentSelectOption } from '@polyApi/utils/request-node';
 import ApiDocDetail from '@polyApi/components/api-doc-detail';
 
 type Props = {
   apiDocDetail: any;
   initRawApiPath: string;
   setApiPath: (apiPath: string) => void;
+  simpleMode?: boolean;
+  className?: string;
+  label?: string;
 }
 
-function ApiSelector({ apiDocDetail, setApiPath, initRawApiPath }: Props): JSX.Element {
+function ApiSelector({
+  apiDocDetail, setApiPath, initRawApiPath, simpleMode, className, label = '全部API:',
+}: Props): JSX.Element {
   const { appID } = useParams<{ appID: string }>();
   const [apiNamespacePath, setApiNamespacePath] = useState('');
   const [options, setOptions] = useState<any[]>();
@@ -78,10 +78,23 @@ function ApiSelector({ apiDocDetail, setApiPath, initRawApiPath }: Props): JSX.E
     setApiNamespacePath(targetOption.path);
   }
 
+  if (simpleMode) {
+    return (
+      <Cascader
+        changeOnSelect
+        className={cs('cascader', className)}
+        defaultValue={[initRawApiPath]}
+        // displayRender={(label)=> label[label.length - 1]}
+        options={options}
+        loadData={loadData}
+        onChange={onChange}
+      />
+    );
+  }
   return (
-    <div className="px-20 py-12 flex">
+    <div className={cs('px-20 py-12 flex', className)}>
       <div className="poly-api-selector">
-        全部API：
+        <label>{label}</label>
         <Cascader
           changeOnSelect
           className="cascader"
@@ -89,6 +102,7 @@ function ApiSelector({ apiDocDetail, setApiPath, initRawApiPath }: Props): JSX.E
           options={options}
           loadData={loadData}
           onChange={onChange}
+          placeholder="请选择API"
         />
       </div>
       {apiDocDetail && (
@@ -96,7 +110,7 @@ function ApiSelector({ apiDocDetail, setApiPath, initRawApiPath }: Props): JSX.E
           className="flex-1"
           method={apiDocDetail.doc.method}
           url={apiDocDetail.doc.url}
-          identifier={apiDocDetail.apiPath.split('/').pop()}
+          identifier={apiDocDetail.apiPath.split('/').pop().split('.').shift()}
         />
       )}
     </div>

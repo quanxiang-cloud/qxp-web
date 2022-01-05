@@ -56,12 +56,12 @@ export default class RangePicker extends React.Component<Props> {
     this.range = readableCode?.split(':')[1] || '';
     this.rangeType = readableCode?.split(':')[0] as RangeType || 'customized';
     this._rangeType = readableCode?.split(':')[0] as RangeType;
-  }
+  };
 
   @action
   handleChangeRangeType = (rangeType: RangeType): void => {
     this.rangeType = rangeType;
-  }
+  };
 
   @action
   handleCalendarClick = (date: moment.Moment): void => {
@@ -82,7 +82,7 @@ export default class RangePicker extends React.Component<Props> {
     }
 
     this.handleChangeRange(start, end, range);
-  }
+  };
 
   @action
   handleChangeRange = (startDate: moment.Moment, endDate: moment.Moment, range: string): void => {
@@ -96,7 +96,7 @@ export default class RangePicker extends React.Component<Props> {
     });
 
     this.popperRef.current && this.popperRef.current.close();
-  }
+  };
 
   @action
   handleClear = (): void => {
@@ -106,7 +106,7 @@ export default class RangePicker extends React.Component<Props> {
       end: '',
       readableCode: '',
     });
-  }
+  };
 
   renderCalendar(): JSX.Element {
     return (

@@ -1,6 +1,8 @@
 import React, { CSSProperties } from 'react';
+
+import { addUnit } from '../utils/format/unit';
+
 import { DividerProps } from './types';
-import { addUnit } from '@m/qxp-ui-mobile/utils/format/unit';
 
 const Divider: React.FC<DividerProps> = (props) => {
   const { color = 'white', size = '100%', direction = 'horizontal', thickness = '1px' } = props;

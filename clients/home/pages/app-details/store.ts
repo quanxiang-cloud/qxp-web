@@ -22,11 +22,12 @@ type PerRes = {
 class UserAppDetailsStore {
   destroySetCurPage: IReactionDisposer;
   @observable appID = '';
+  @observable appName = '';
   @observable pageID = '';
+  @observable pageName = '';
   @observable pageListLoading = true;
   @observable curPage: PageInfo = { id: '' };
   @observable fetchSchemeLoading = true;
-  @observable pageName = '';
   @observable authority = 0;
   @observable showPageNav = true;
   @observable operationType = '';
@@ -60,17 +61,17 @@ class UserAppDetailsStore {
       this.pageList = pageListToTree(treeMenu);
       this.pageListLoading = false;
     });
-  }
+  };
 
   @action
   setAppList = (list: any): void => {
     this.appList = list;
-  }
+  };
 
   @action
   setPageID = (pageID: string): void => {
     this.pageID = pageID;
-  }
+  };
 
   @action
   setCurPage = (pageInfo: PageInfo | undefined): void => {
@@ -94,7 +95,7 @@ class UserAppDetailsStore {
         this.fetchSchemeLoading = false;
       });
     }
-  }
+  };
 
   @action
   delFormData = (ids: string[]): Promise<void> => {
@@ -111,7 +112,7 @@ class UserAppDetailsStore {
 
       toast.success('删除成功!');
     });
-  }
+  };
 
   @action
   clear = (): void => {
@@ -119,38 +120,38 @@ class UserAppDetailsStore {
     this.pageList = [];
     this.curPage = { id: '' };
     this.customPageInfo = null;
-  }
+  };
 
   @action
   openPageNav = (): void => {
     this.showPageNav = true;
-  }
+  };
 
   @action
   closePageNav = (): void => {
     this.showPageNav = false;
-  }
+  };
 
   @action
   openMouseControl = (): void => {
     this.isMouseControl = true;
-  }
+  };
 
   @action
   closeMouseControl = (): void => {
     this.isMouseControl = false;
-  }
+  };
 
   @action
   getRoleInfo = (appID: string): void => {
     getPerOption<PerRes>(appID).then((res: any) => {
       const { optionPer = [], selectPer = { id: '' } } = res;
       this.currentRoleInfo = { name: selectPer.name, id: selectPer.id };
-      this.roleOptions = (optionPer.map((option:PerItem) => ({ value: option.id, label: option.name })));
+      this.roleOptions = (optionPer.map((option: PerItem) => ({ value: option.id, label: option.name })));
     }).catch((reason) => {
       toast.error(reason);
     });
-  }
+  };
 
   @action
   handleRoleChange = (roleID: string, roleName: string): void => {
@@ -160,6 +161,6 @@ class UserAppDetailsStore {
       this.clear();
       this.fetchPageList(this.appID);
     });
-  }
+  };
 }
 export default new UserAppDetailsStore();

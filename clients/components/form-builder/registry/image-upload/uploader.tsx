@@ -1,38 +1,59 @@
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 
-import { ImgUploader } from '@c/file-upload';
+import { ImgUploader, FileList } from '@c/file-upload';
 import { DEFAULT_IMG_TYPES } from '@c/file-upload/constants';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import type { FileUploaderProps } from '@c/file-upload/uploader/file-uploader';
 import type { QxpFileFormData } from '../file-upload/uploader';
 
-export default function FormImgUploader(props: FileUploaderProps & ISchemaFieldComponentProps)
-  : JSX.Element {
+export default function FormImgUploader(props: FileUploaderProps & ISchemaFieldComponentProps): JSX.Element {
+  const { value, form, path } = props;
+  const { readOnly } = props.props;
   const configProps = props?.props['x-component-props'];
-  const subTableTempRef = useRef<QxpFileFormData[]>([]);
-  const { value, mutators } = props;
-  useEffect(() => {
-    subTableTempRef.current = value;
-  }, []);
 
-  const handleFileSuccess = (currentFile: QXPUploadFileBaseProps): void => {
-    const currentFileFromData:QxpFileFormData = {
+  function handleFileSuccess(currentFile: QXPUploadFileBaseProps): void {
+    const currentFileFormData: QxpFileFormData = {
       label: currentFile.name,
       value: currentFile.uid,
       type: currentFile.type,
       size: currentFile.size,
     };
-    subTableTempRef.current.push(currentFileFromData);
-    mutators.change(subTableTempRef.current);
-  };
+    pushFieldValue(currentFileFormData);
+  }
 
-  const handleFileDelete = (currentFile: QXPUploadFileBaseProps): void => {
-    subTableTempRef.current = subTableTempRef.current.filter(((file: QxpFileFormData) => {
+  function handleFileDelete(currentFile: QXPUploadFileBaseProps): void {
+    const newFiles = value.filter(((file: QxpFileFormData) => {
       return file.label !== currentFile.name;
     }));
-    mutators.change(subTableTempRef.current);
-  };
+    setFieldValue(newFiles);
+  }
+
+  function pushFieldValue(value: QxpFileFormData): void {
+    form.setFieldValue(path, [...form.getFieldValue(path), value]);
+  }
+
+  function setFieldValue(value: QxpFileFormData[]): void {
+    form.setFieldValue(path, value);
+  }
+  if (readOnly) {
+    return (
+      <div className="max-w-290">
+        <FileList
+          imgOnly
+          files={value?.map((file: QxpFileFormData) =>
+            ({
+              name: file.label,
+              uid: file.value,
+              type: file.type,
+              size: file.size,
+            }),
+          ) || []}
+        />
+      </div>
+
+    );
+  }
 
   return (
     <ImgUploader
@@ -46,7 +67,7 @@ export default function FormImgUploader(props: FileUploaderProps & ISchemaFieldC
         }),
       )}
       iconName="image"
-      disabled={!configProps.multiple && subTableTempRef.current?.length >= 1}
+      disabled={!configProps.multiple && value?.length >= 1}
       accept={DEFAULT_IMG_TYPES}
       onFileSuccess={handleFileSuccess}
       onFileDelete={handleFileDelete}

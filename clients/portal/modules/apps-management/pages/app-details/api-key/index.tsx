@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import dayjs from 'dayjs';
-import { UnionColumns } from 'react-table';
+import { UnionColumn } from 'react-table';
 import { Switch } from 'antd';
 import { FormInstance } from 'antd/es/form';
+import { saveAs } from 'file-saver';
 
 import Button from '@c/button';
 import Table from '@c/table';
@@ -53,7 +54,7 @@ function ApiKey(): JSX.Element {
 
   function createAndDownload(formMsgRef: React.RefObject<FormInstance>): void {
     if (!formMsgRef.current?.getFieldError('description').length) {
-      const { title, description }: MsgApiKey = formMsgRef?.current?.getFieldsValue();
+      const { title, description }: MsgApiKey = formMsgRef?.current?.getFieldsValue() ?? {};
       createApiKey(title, description).then((res) => {
         const content = `名称:${title}\n密钥ID:${res.keyID}\n密钥secret:${res.keySecret}\n描述:${description}`;
         const blob = new Blob([content]);
@@ -69,7 +70,7 @@ function ApiKey(): JSX.Element {
 
   function handleEdit(formMsgRef: React.RefObject<FormInstance>): void {
     if (!formMsgRef.current?.getFieldError('description').length) {
-      const { title, description }: MsgApiKey = formMsgRef?.current?.getFieldsValue();
+      const { title, description }: MsgApiKey = formMsgRef?.current?.getFieldsValue() ?? {};
       updateApiKey(activeId, title, description).then(() => {
         toast.success('修改成功');
         updateApiKeyList();
@@ -111,7 +112,7 @@ function ApiKey(): JSX.Element {
     });
   }
 
-  const columns: UnionColumns<ApiKeyList>[] = [
+  const columns: UnionColumn<ApiKeyList>[] = [
     {
       Header: '密钥ID',
       id: 'keyID',

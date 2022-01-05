@@ -58,7 +58,7 @@ export const searchNamespace = async (ns: string, params: Record<string, any>): 
 /*
   service crud apis
  */
-export const createService = async (ns:string, params: PolyAPI.CreateServiceParams): Promise<PolyAPI.CreateServiceResult> => {
+export const createService = async (ns: string, params: PolyAPI.CreateServiceParams): Promise<PolyAPI.CreateServiceResult> => {
   return await httpClient(`/api/v1/polyapi/service/create/${normalizeSuffix(ns)}`, params);
 };
 
@@ -131,7 +131,7 @@ export const searchNativeApi = async (servicePath: string, params: PolyAPI.Searc
 };
 
 export const queryNativeApiDoc = async (apiPath: string, params: PolyAPI.ApiDocParams): Promise<PolyAPI.QueryApiDocResult> => {
-  return await httpClient(`/api/v1/polyapi/raw/doc/${normalizeSuffix(apiPath)}`, params);
+  return await httpClient(`/api/v1/polyapi/doc/${normalizeSuffix(apiPath)}`, params);
 };
 
 // 激活api

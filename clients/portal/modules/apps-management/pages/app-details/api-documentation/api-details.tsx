@@ -25,7 +25,7 @@ type Props = {
   apiPath: string,
 }
 
-function ApiDetails({ apiPath }:Props ): JSX.Element {
+function ApiDetails({ apiPath }: Props ): JSX.Element {
   const [docType, setDocType] = useState<DocType>('curl');
   const [isAPILoading, setIsAPILoading] = useState<boolean>(true);
   const [aPIError, setAPIError] = useState('');

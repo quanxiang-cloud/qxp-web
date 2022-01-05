@@ -2,6 +2,7 @@ import { action, observable } from 'mobx';
 
 import toast from '@lib/toast';
 import { getTableSchema } from '@lib/http-client';
+import { deepClone } from '@lib/utils';
 import schemaToFields from '@lib/schema-convert';
 
 import {
@@ -21,7 +22,6 @@ import {
 } from './api';
 import { fetchPageList } from '../api';
 import { INIT_CURRENT_RIGHTS } from './constants';
-import { deepClone } from '@lib/utils';
 
 type PerData = {
   conditions: any,
@@ -32,7 +32,7 @@ type PerData = {
 class UserAndPerStore {
   @observable rightsLoading = true;
   @observable perFormLoading = true;
-  @observable noSchema = false
+  @observable noSchema = false;
   @observable perFormList: PerPageInfo[] = [];
   @observable menuList: PageInfo[] = [];
   @observable tempMenuList: PageInfo[] = [];
@@ -43,20 +43,20 @@ class UserAndPerStore {
   @observable MenuKeyword = '';
   @observable currentRights: Rights = { id: '' };
   @observable Fields: SchemaFieldItem[] = [];
-  @observable UserDetailList: [] =[]
+  @observable UserDetailList: [] = [];
   @observable perData: PerData = {
     conditions: {},
     schema: null,
     authority: 0,
   };
 
-  @observable currentPage: PerPageInfo = { id: '', authority: 0 }
-  @observable currentPageGroup: PageInfo | undefined = undefined
+  @observable currentPage: PerPageInfo = { id: '', authority: 0 };
+  @observable currentPageGroup: PageInfo | undefined = undefined;
 
   @action
   setRightsGroupID = (groupID: string): void => {
     this.rightsGroupID = groupID;
-  }
+  };
 
   @action
   deleteRight = (id: string): void => {
@@ -73,7 +73,7 @@ class UserAndPerStore {
       this.rightsGroupID = '';
       this.tempRightList = deepClone(this.rightsList);
     });
-  }
+  };
 
   @action
   changeKeyword = (keyword: string): void => {
@@ -84,7 +84,7 @@ class UserAndPerStore {
     }
     this.currentRights = this.rightsList[0] || INIT_CURRENT_RIGHTS;
     this.rightsGroupID = this.rightsList[0]?.id;
-  }
+  };
 
   @action
   fetchRights = (): void => {
@@ -101,7 +101,7 @@ class UserAndPerStore {
     }).catch((err) => {
       toast.error(err);
     });
-  }
+  };
 
   @action
   updatePerGroupUser = (rights: Rights): Promise<boolean> => {
@@ -117,14 +117,14 @@ class UserAndPerStore {
       toast.success('修改成功！');
       return true;
     });
-  }
+  };
 
   @action
   updateUserAndPerStore = (): void => {
     this.rightsList = [...this.rightsList, this.currentRights];
     this.rightsGroupID = this.currentRights.id;
     this.tempRightList = [...this.rightsList];
-  }
+  };
 
   @action
   addRightsGroup = (rights: RightsCreate): Promise<void> => {
@@ -132,7 +132,7 @@ class UserAndPerStore {
       this.currentRights = { ...rights, ...res };
       this.updateUserAndPerStore();
     });
-  }
+  };
 
   @action
   copyRightsGroup = (rights: Rights): Promise<void> => {
@@ -145,7 +145,7 @@ class UserAndPerStore {
       this.updateUserAndPerStore();
       toast.success('复制成功！');
     });
-  }
+  };
 
   @action
   updatePerGroup = (rights: Rights): Promise<void | boolean> => {
@@ -162,7 +162,7 @@ class UserAndPerStore {
       toast.success('修改成功！');
       return true;
     });
-  }
+  };
 
   @action
   updatePerCustom = (status: number): Promise<boolean> => {
@@ -178,7 +178,7 @@ class UserAndPerStore {
       toast.success(err);
       return false;
     });
-  }
+  };
 
   @action
   rightsGroupSort = (rightsIdList: string[]): void => {
@@ -200,7 +200,7 @@ class UserAndPerStore {
     });
     this.rightsList = newRightsList;
     this.tempRightList = deepClone(this.rightsList );
-  }
+  };
 
   @action
   changeMenuKeyword = (keyword: string): void => {
@@ -213,7 +213,7 @@ class UserAndPerStore {
     } else {
       this.menuList = deepClone(this.tempMenuList);
     }
-  }
+  };
 
   @action
   fetchPerGroupForm = (perGroupID: string): void => {
@@ -242,7 +242,7 @@ class UserAndPerStore {
           allPages.push(menu);
         });
         this.perFormList = allPages.filter((formPage) =>
-          formPage.menuType === 0 || formPage.menuType === 2).map((page) => {
+          formPage.menuType !== 1).map((page) => {
           if (page.menuType === 0) {
             const curFormPer = formArr.find(({ id }) => id === page.id);
             return { ...page, authority: curFormPer ? curFormPer.authority : 0 };
@@ -256,7 +256,7 @@ class UserAndPerStore {
     }).catch(() => {
       this.perFormLoading = false;
     });
-  }
+  };
 
   @action
   getPageSchema = (): void=> {
@@ -294,7 +294,7 @@ class UserAndPerStore {
       authority: this.currentRights.types === 1 ? 1 : this.currentPage.authority,
     };
     this.rightsLoading = false;
-  }
+  };
 
   @action
   updatePerFormList = (newPerForm: PerPageInfo, perGroupID: string): void => {
@@ -319,7 +319,7 @@ class UserAndPerStore {
       return rights;
     });
     this.tempRightList = deepClone(this.rightsList);
-  }
+  };
 
   @action
   deleteFormPer = (formID: string, perGroupID: string): Promise<void> => {
@@ -327,20 +327,20 @@ class UserAndPerStore {
       this.updatePerFormList({ id: formID, authority: 0 }, perGroupID);
       toast.success('清除权限成功');
     });
-  }
+  };
 
   @action
   fetchUserDetailList = (usersIDList: string[]): void => {
     getUserDetail<{user: []}>({
-      query: `
-      {user(ids:${JSON.stringify(usersIDList)}) {id , email ,userName ,phone ,dep{id,departmentName}}}
-      `,
+      query: `{user(ids:${
+        JSON.stringify(usersIDList)
+      }) {id , email ,userName ,phone ,dep{id,departmentName}}}`,
     }).then((res) => {
       this.UserDetailList = res?.user;
     }).catch((err) => {
       toast.error(err);
     });
-  }
+  };
 }
 
 export default new UserAndPerStore();

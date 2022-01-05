@@ -7,9 +7,9 @@ import Avatar from '@c/avatar';
 import ItemWithTitleDesc from '@c/item-with-title-desc';
 import Card from '@c/card';
 import Icon from '@c/icon';
-import AppInfoView from '@c/app-info-view';
 import GlobalHeader from '@home/components/global-header';
 
+import MyApps from './my-apps';
 import store from '../store';
 
 import './index.scss';
@@ -106,30 +106,7 @@ function Dashboard(): JSX.Element {
             </>)}
           />
         </div>
-        <div>
-          <Card
-            className="applist-card p-20 mt-16"
-            headerClassName="ml-8 pt-0"
-            title={(
-              <>
-                <span className="font-semibold">我的应用</span>
-                <span className="ml-4 text-gray-400">({store.appList.length})</span>
-              </>
-            )}
-            itemTitleClassName="text-h6"
-            contentClassName="app-list grid gap-16"
-            content={(<>
-              {store.appList.map((appInfo: AppInfo) => (
-                <AppInfoView
-                  key={appInfo.id}
-                  appInfo={appInfo}
-                  onClick={() => history.push('/apps/' + appInfo.id)}
-                  className='rounded-12 bg-white user-app-item'
-                />
-              ))}
-            </>)}
-          />
-        </div>
+        <MyApps />
       </main>
     </>
   );

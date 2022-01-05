@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { ForwardedRef } from 'react';
 import cs from 'classnames';
 
+// @ts-ignore
 import svgHash from './svg-hash';
+
+export type iconColor =
+  'red' | 'yellow' | 'green' | 'gray' | 'blue' | 'white' |'rose' | 'pink' | 'purple' | 'orange' | 'primary';
 
 export interface Props extends React.SVGProps<SVGSVGElement> {
   name: string;
-  color?: 'red' | 'yellow' | 'green' | 'gray' | 'blue' | 'white' |'rose' | 'pink' | 'purple' | 'orange' | 'primary';
+  color?: iconColor
   size?: number;
   disabled?: boolean;
   changeable?: boolean;
@@ -24,7 +28,7 @@ function Icon(
     style,
     ...props
   }: Props,
-  ref?: React.Ref<SVGSVGElement>,
+  ref?: ForwardedRef<SVGSVGElement>,
 ): JSX.Element {
   const _style: React.CSSProperties = {
     ...style,
@@ -50,4 +54,4 @@ function Icon(
   );
 }
 
-export default React.forwardRef(Icon);
+export default React.forwardRef<SVGSVGElement, Props>(Icon);

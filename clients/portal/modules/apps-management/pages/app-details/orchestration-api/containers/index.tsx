@@ -1,18 +1,22 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { first, last } from 'lodash';
+import { observer } from 'mobx-react';
 
 import APINamespaceHeader from '@orchestrationAPI/components/api-namespace-header';
 import APINamespaceTree from '@orchestrationAPI/components/api-namespace-tree';
+import APINamespaceSearchTree from '@orchestrationAPI/components/api-namespace-search-tree';
 import Loading from '@c/loading';
 import { nanoid } from '@c/form-builder/utils';
 import {
-  ApiNamespaceStoreProvider, useOrchestrationAPIStore,
+  ApiNamespaceStoreProvider, useOrchestrationAPIStore, ApiNamespaceSearchStoreProvider,
 } from '@portal/modules/apps-management/pages/app-details/orchestration-api/context';
 import {
   useQueryNameSpaceList,
   useQueryNameSpaceRootPath,
 } from '@orchestrationAPI/effects/api/api-namespace';
+
+import APINamespaceSearch from '@orchestrationAPI/components/api-namespace-search';
 
 function ApiNamespace(): JSX.Element | null {
   const orchestrationAPIStore = useOrchestrationAPIStore();
@@ -30,7 +34,7 @@ function ApiNamespace(): JSX.Element | null {
   const rootPath = appRootPathData?.appPath?.slice(1) || '';
   const { data: initialData, isLoading: isNamespaceRootListLoading } = useQueryNameSpaceList(
     rootPath,
-    { enabled: !!(rootData && rootPath) },
+    { enabled: !!rootPath },
   );
   rootData.subCount = initialData?.list.length || 0;
 
@@ -44,16 +48,26 @@ function ApiNamespace(): JSX.Element | null {
     return <Loading desc="加载中..." />;
   }
 
-  if (!rootData) {
-    return null;
-  }
-
   return (
     <ApiNamespaceStoreProvider root={rootData} child={initialData?.list || []}>
       <APINamespaceHeader />
-      <APINamespaceTree />
+      <APINamespaceSearch
+        onChange={(val) => orchestrationAPIStore?.updateProperty({ namespaceSearchKey: val })}
+      />
+      <APINamespaceTree
+        shouldShow={!orchestrationAPIStore?.namespaceSearchKey}
+        orchestrationAPIStore={orchestrationAPIStore}
+      />
+      <ApiNamespaceSearchStoreProvider root={rootData} child={[]}>
+        <APINamespaceSearchTree
+          shouldShow={!!orchestrationAPIStore?.namespaceSearchKey}
+          orchestrationAPIStore={orchestrationAPIStore}
+          searchKey={orchestrationAPIStore?.namespaceSearchKey}
+          rootPath={rootPath}
+        />
+      </ApiNamespaceSearchStoreProvider>
     </ApiNamespaceStoreProvider>
   );
 }
 
-export default ApiNamespace;
+export default observer(ApiNamespace);

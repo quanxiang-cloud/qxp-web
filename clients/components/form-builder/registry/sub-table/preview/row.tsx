@@ -2,6 +2,7 @@ import React from 'react';
 import cs from 'classnames';
 import { isArray } from 'lodash';
 import { FormItem, IForm, IMutators } from '@formily/antd';
+import { MegaLayout } from '@formily/antd-components';
 import { set, lensPath } from 'ramda';
 
 import Icon from '@c/icon';
@@ -19,10 +20,11 @@ interface Props {
   mutators: IMutators;
   layout: Layout;
   name?: string;
+  removeAble?: boolean;
 }
 
 export default function SubTableRow({
-  index, item, componentColumns, name, form, mutators, layout,
+  index, item, componentColumns, name, form, mutators, layout, removeAble = true,
 }: Props): JSX.Element {
   function onRemoveRow(mutators: IMutators, index: number): void {
     mutators.remove(index);
@@ -71,7 +73,7 @@ export default function SubTableRow({
               </div>
             ))}
           </div>
-          <div className="px-22 text-center">
+          <div className="px-22 text-center w-72">
             操作
           </div>
         </div>
@@ -109,25 +111,27 @@ export default function SubTableRow({
                   }, 'flex items-center justify-center subtable-column-default-item',
                 )}
               >
-                <FormItem
-                  {...prs}
-                  props={{ ...prs, props: prs }}
-                  schema={sc}
-                  className="mx-8 my-8 w-full"
-                  name={path}
-                  path={path}
-                  readOnly={readOnly}
-                  form={form}
-                  mutators={{ change: onChange(path, form) }}
-                  rules={rules}
-                  dataSource={dataSource}
-                  required={required}
-                  value={value}
-                  component={
-                    readOnly && !blackList.includes(componentName) ?
-                      ({ value }) => render?.(value) || null : component
-                  }
-                />
+                <MegaLayout wrapperCol={24}>
+                  <FormItem
+                    {...prs}
+                    props={{ ...prs, props: prs }}
+                    schema={sc}
+                    className="mx-8 my-8 w-full"
+                    name={path}
+                    path={path}
+                    readOnly={readOnly}
+                    form={form}
+                    mutators={{ change: onChange(path, form) }}
+                    rules={rules}
+                    dataSource={dataSource}
+                    required={required}
+                    value={value}
+                    component={
+                      readOnly && !blackList.includes(componentName) ?
+                        ({ value }) => render?.(value) || null : component
+                    }
+                  />
+                </MegaLayout>
               </div>
             );
           })}
@@ -135,12 +139,15 @@ export default function SubTableRow({
         <div
           className="px-22 border-gray-300 border-t-1 self-stretch flex items-center"
         >
-          <Icon
-            name="delete"
-            size={29}
-            clickable
-            onClick={() => onRemoveRow(mutators, index)}
-          />
+          {removeAble ? (
+            <Icon
+              name="delete"
+              className="w-72"
+              size={28}
+              clickable
+              onClick={() => onRemoveRow(mutators, index)}
+            />
+          ) : <span className="w-28">-</span>}
         </div>
       </div>
     </div>

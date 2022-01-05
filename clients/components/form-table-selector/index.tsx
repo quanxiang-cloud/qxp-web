@@ -1,4 +1,4 @@
-import React, { forwardRef, Ref, useEffect, useRef } from 'react';
+import React, { forwardRef, Ref, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import cs from 'classnames';
@@ -10,6 +10,8 @@ import Select from '@c/select';
 import toast from '@lib/toast';
 
 import { getFormDataMenuList } from './api';
+
+import './style.scss';
 
 interface Props {
   value: { name?: string; value: string };
@@ -29,7 +31,6 @@ function FormTableSelector({
 }: Props,
 ref?: Ref<any>): JSX.Element {
   const { appID, pageId } = useParams<{ appID: string, pageId: string }>();
-  const popupRef = useRef<HTMLDivElement>(null);
 
   const {
     isError,
@@ -38,7 +39,7 @@ ref?: Ref<any>): JSX.Element {
   } = useQuery(['GET_WORK_FORM_LIST', appID], () => getFormDataMenuList(appID), { enabled: !!appID });
 
   useEffect(() => {
-    isError && toast.error(error as string);
+    isError && toast.error(error);
   }, [isError]);
 
   function onWorkFormChange(value: string): void {
@@ -53,10 +54,13 @@ ref?: Ref<any>): JSX.Element {
 
   return (
     <>
-      <div ref={popupRef} className={cs('px-16 py-10 border flex items-center corner-2-8-8-8 h-40 mt-24', {
-        'bg-gray-100 mb-18': !validating || value.value,
-        'bg-red-50 border-red-600': validating && !value.value,
-      })}>
+      <div className={cs(
+        'px-16 py-10 border flex items-center corner-2-8-8-8 h-40 mt-24 form-table-selector',
+        {
+          'bg-gray-100 mb-18': !validating || value.value,
+          'bg-red-50 border-red-600': validating && !value.value,
+        })
+      }>
         <div className="inline-flex items-center mr-8">
           <Icon name="article" size={20} className="mr-8" />
           <span className="text-body2">工作表:</span>

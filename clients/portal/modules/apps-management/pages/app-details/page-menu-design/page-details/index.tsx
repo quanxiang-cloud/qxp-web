@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import cs from 'classnames';
 import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
-import { Progress, QxpFile } from '@QCFE/lego-ui';
+import PageSchemaRender from '@c/page-schema-render';
 
 import Icon from '@c/icon';
 import Card from '@c/card';
@@ -11,15 +11,17 @@ import Button from '@c/button';
 import toast from '@lib/toast';
 import EmptyTips from '@c/empty-tips';
 import PageLoading from '@c/page-loading';
+import Tab from '@c/tab';
 
-import FileUpload from './file-upload';
+import CustomPageUpload from './custom-page-upload';
 import appPagesStore from '../../store';
 import PageBuildNav from './page-build-nav';
-import { FileInfo, MenuType, Resp } from '../../type';
+import { MenuType, Resp } from '../../type';
 import { createCustomPage, updateCustomPage } from '../../api';
+import { formatFileSize } from '../../utils';
+import { getSchemaKey, getVersionKey, getRenderRepository } from '../../../page-design/api';
 
 import './index.scss';
-import { formatFileSize } from '../../utils';
 
 type Props = {
   pageID: string
@@ -28,7 +30,7 @@ type Props = {
 function PageDetails({ pageID }: Props): JSX.Element {
   const history = useHistory();
   const [modalType, setModalType] = useState('');
-  const [file, setFile] = useState<FileInfo | null>(null);
+  const [files, setFiles] = useState<QXPUploadFileTask[]>([]);
   const {
     activeMenu,
     curPageCardList,
@@ -36,6 +38,8 @@ function PageDetails({ pageID }: Props): JSX.Element {
     fetchSchemeLoading,
     pageDescriptions,
     setActiveMenu,
+    setCurPageMenuType,
+    patchNode,
   } = appPagesStore;
 
   function goFormBuild(): void {
@@ -44,22 +48,27 @@ function PageDetails({ pageID }: Props): JSX.Element {
     }
   }
 
+  function goPageDesign(): void {
+    history.push(`/apps/page-design/${activeMenu.id}/${appID}?pageName=${activeMenu.name}`);
+  }
+
   function handleCreateCustomPage(): void {
-    if (!file?.url) {
-      toast.error('请上传文件');
+    if (!files[0]?.uploadUrl) {
+      toast.error('请上传正确的文件');
       return;
     }
 
-    const fileSizeStr = formatFileSize(Number(file.size));
+    const fileSizeStr = formatFileSize(Number(files[0].size));
 
     if (modalType === 'create') {
       createCustomPage(appID, {
-        menuId: pageID, fileSize: fileSizeStr, fileUrl: file?.url || '',
+        menuId: pageID, fileSize: fileSizeStr, fileUrl: files[0]?.uploadUrl || '',
       }).then((res) => {
-        setActiveMenu({ ...res, menuType: 2 });
+        patchNode(pageID, { menuType: 2 });
+        setActiveMenu({ ...activeMenu, menuType: 2 });
+        setCurPageMenuType(2, res);
         toast.success('新建成功');
         setModalType('');
-        setFile(null);
       }).catch((err) => {
         toast.error(err.message);
       });
@@ -67,53 +76,45 @@ function PageDetails({ pageID }: Props): JSX.Element {
     }
 
     updateCustomPage(appID, {
-      id: pageID, fileSize: fileSizeStr, fileUrl: file?.url || '',
+      id: pageID, fileSize: fileSizeStr, fileUrl: files[0]?.uploadUrl || '',
     },
     ).then((res) => {
-      setActiveMenu({ ...res, menuType: 2 });
+      patchNode(pageID, { menuType: 2 });
+      setActiveMenu({ ...activeMenu, menuType: 2 });
+      setCurPageMenuType(2, res);
       toast.success('修改成功');
       setModalType('');
-      setFile(null);
     }).catch((err) => {
       toast.error(err.message);
     });
   }
 
-  function onSuccess({ code, data, msg }: Resp, file: { name: string, size: number }): void {
+  function onSuccess({ code, data, msg }: Resp): void {
     if (code === 0 && data?.url) {
-      setFile({
-        filename: file.name,
-        size: file.size,
-        url: data.url,
-        percentage: 100,
-        showProgress: false,
-      });
+      setFiles((prevFiles) => [{
+        ...prevFiles[0],
+        uploadUrl: data.url,
+        state: 'success',
+      }]);
     } else {
-      setFile(null);
       toast.error(msg || '上传失败');
     }
   }
 
-  function onProgress(step: any, file: QxpFile): void {
-    // @ts-ignore
-    const percent = typeof step?.percent === 'number' ? Math.round(step.percent) : 0;
-    // @ts-ignore
-    setFile({
-      ...file,
-      filename: file.name,
-      percentage: percent,
-      showProgress: true,
-    });
+  function onProgress(file: QXPUploadFileTask, progress: number ): void {
+    setFiles((prevFiles) => [{
+      ...prevFiles[0],
+      progress: progress,
+    }]);
   }
 
-  function onStart(file: QxpFile): void {
-    setFile({
-      filename: file.name,
+  function onStart(file: File): void {
+    setFiles([{
+      uid: file.name,
+      name: file.name,
+      type: file.type,
       size: file.size,
-      url: '',
-      percentage: 0,
-      showProgress: true,
-    });
+    }]);
   }
 
   function goLink(cardID: string): void {
@@ -125,8 +126,8 @@ function PageDetails({ pageID }: Props): JSX.Element {
     history.push(`/apps/details/${appID}/app_control`);
   }
 
-  function RenderPageDetails(): JSX.Element {
-    if ((activeMenu.menuType === MenuType.schemaForm && !appPagesStore.hasSchema)) {
+  function renderPageDetails(): JSX.Element {
+    if (activeMenu.menuType === MenuType.schemaForm && !appPagesStore.hasSchema) {
       return (
         <PageBuildNav
           appID={appID}
@@ -137,13 +138,66 @@ function PageDetails({ pageID }: Props): JSX.Element {
       );
     }
 
+    if ((activeMenu.menuType === MenuType.schemaPage && appPagesStore.designPageSchema)) {
+      return (
+        <div className='relative flex-1 overflow-hidden p-16'>
+          <div className='px-16 py-8 rounded-8 border-1 flex items-center'>
+            <div className="page-details-icon">
+              <Icon
+                size={24}
+                type="dark"
+                name='view'
+              />
+            </div>
+            <div className='flex-1 grid grid-cols-6 mr-48'>
+              {[{ title: '页面类型', value: '自定义页面' }].map(({ title, value }) => {
+                return (
+                  <div key={title}>
+                    <p className={!value ? 'text-gray-400' : ''}>{value ? value : '-'}</p>
+                    <p className='page-details-text'>{title}</p>
+                  </div>
+                );
+              })}
+            </div>
+            <Button
+              iconName="edit"
+              modifier="primary"
+              textClassName='app-content--op_btn'
+              onClick={goPageDesign}
+            >
+                设计页面
+            </Button>
+          </div>
+          <Tab items={[
+            {
+              id: 'page-preview',
+              name: '视图预览',
+              content: (
+                <PageSchemaRender
+                  schemaKey={getSchemaKey(appID, pageID, false)}
+                  version={getVersionKey()}
+                  repository={getRenderRepository()}
+                  maxHeight="calc(100vh - 250px)"
+                />
+              ),
+            },
+            {
+              id: 'relate-info',
+              name: '关联信息',
+              content: (<div>暂无数据</div>),
+            },
+          ]}/>
+        </div>
+      );
+    }
+
     return (
       <>
         <div className='relative flex-1 overflow-hidden p-16'>
           <div className='px-16 py-8 rounded-8 border-1 flex items-center'>
             <div className="page-details-icon">
               <Icon
-                size={25}
+                size={24}
                 type="dark"
                 name={activeMenu.menuType === MenuType.schemaForm ? 'schema-form' : 'custom-page'}
               />
@@ -199,14 +253,14 @@ function PageDetails({ pageID }: Props): JSX.Element {
                   headerClassName="p-16"
                   title={(
                     <div className="flex items-center text-h6">
-                      <Icon name="link" size={21} />
+                      <Icon name="link" size={20} />
                       <span className="mx-8">{title}</span>
                       <span className="text-gray-400">{`(${list.length})`}</span>
                     </div>
                   )}
                   action={(<Icon
                     name="arrow_forward"
-                    size={21}
+                    size={20}
                     className="anchor-focus"
                     onClick={() => goLink(cardID)}
                   />)}
@@ -215,6 +269,8 @@ function PageDetails({ pageID }: Props): JSX.Element {
                   content={(
                     <div className="mb-24 h-80 overflow-auto">
                       {list.length ? list.map(({ name, id, status }) => {
+                        const statusColor = status === 'ENABLE' ? 'green' : 'yellow';
+
                         return (
                           <div
                             key={name}
@@ -230,11 +286,18 @@ function PageDetails({ pageID }: Props): JSX.Element {
                               history.push(`/apps/details/${appID}/app_permission?id=${id}`);
                             }}
                           >
-                            {status && (<Icon
-                              size={9}
-                              className="ml-40"
-                              name={status === 'ENABLE' ? 'status-success' : 'status-default'}
-                            />)}
+                            {status && (
+                              <div
+                                style={{
+                                  '--status-color': `var(--${statusColor}-600)`,
+                                  '--status-shadow-color': `var(--${statusColor}-400)`,
+                                  boxShadow: `0 0 12px var(--${statusColor}-400)`,
+                                } as React.CSSProperties}
+                                className="relative w-8 h-8 rounded-full ml-40"
+                              >
+                                <div className="status-dot"></div>
+                              </div>
+                            )}
                             <div className="truncate flex-1">
                               <span className={status && 'ml-10'}>{name}</span>
                               <span className="ml-4 text-gray-400">
@@ -275,17 +338,7 @@ function PageDetails({ pageID }: Props): JSX.Element {
         ]}
       >
         <div className="p-40">
-          <FileUpload onSuccess={onSuccess} onProgress={onProgress} onStart={onStart} />
-          {file?.showProgress && (
-            <Progress
-              className='mx-20'
-              percent={file?.percentage}
-              key={file?.url}
-            />
-          )}
-          {file && (
-            <p className="my-10">{file?.filename || file?.url}</p>
-          )}
+          <CustomPageUpload files={files} onSuccess={onSuccess} onProgress={onProgress} onStart={onStart} appID={appID} />
           <p className="mt-8 select-none">1. 支持上传静态的页面代码，包含 html、javascript、css、图片等。</p>
         </div>
       </Modal>
@@ -303,7 +356,7 @@ function PageDetails({ pageID }: Props): JSX.Element {
               <span className='text-caption align-top'>{activeMenu.describe}</span>
             </div>
             {fetchSchemeLoading && <PageLoading />}
-            {!fetchSchemeLoading && <RenderPageDetails />}
+            {!fetchSchemeLoading && renderPageDetails()}
           </>
         )}
       </div>

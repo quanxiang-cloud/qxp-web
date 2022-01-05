@@ -1,7 +1,7 @@
 import React, { useCallback, useContext } from 'react';
 import { noop, get } from 'lodash';
 import { without } from 'ramda';
-import { UnionColumns } from 'react-table';
+import { UnionColumn } from 'react-table';
 
 import Icon from '@c/icon';
 import Table from '@c/table';
@@ -110,7 +110,6 @@ export default function CustomFieldTable({
       <div className="flex items-center flex-nowrap">
         <span className="mr-4 whitespace-nowrap">{label}</span>
         <ToolTip
-          inline
           labelClassName="whitespace-nowrap text-12 py-8 px-16"
           position="left"
           label={tip}
@@ -322,7 +321,7 @@ export default function CustomFieldTable({
           accessor: 'submitValue',
           Cell: (model: any) => model.cell.row.original.write &&
             getValueCell(model, 'submitValue', editable),
-        }].filter(Boolean) as UnionColumns<CustomFieldPermission>[]
+        }].filter(Boolean) as UnionColumn<CustomFieldPermission>[]
       }
       data={fields.filter((field) => !field.hidden)}
     />

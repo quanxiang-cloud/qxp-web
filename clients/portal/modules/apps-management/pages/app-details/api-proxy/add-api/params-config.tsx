@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import ParamRow from './param-row';
 import paramsContext from './context';
 
-export type ParamType='string' | 'number' | 'boolean' | 'array' | 'object'
+export type ParamType='string' | 'number' | 'boolean' | 'array' | 'object' | 'timestamp' | 'action'
 export type ParamGroup='path' | 'query' | 'header' | 'body' | 'constant' | 'response'
 
 interface ConfigProps {
@@ -88,6 +88,7 @@ function ParamsConfig({ title, group }: ConfigProps): JSX.Element {
               )}
               {group !== 'constant' && <th>是否必填</th>}
               <th>描述</th>
+              <th>操作</th>
             </tr>
           </thead>
           <tbody>

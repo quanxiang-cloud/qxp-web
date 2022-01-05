@@ -1,0 +1,38 @@
+input[type=checkbox],
+input[type=checkbox]:indeterminate {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  text-align: center;
+  vertical-align: middle;
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+  background: #FFFFFF;
+  border: 1px solid var(--gray-400);
+}
+
+input[type=checkbox]:disabled,
+input[type=checkbox]:indeterminate:disabled {
+  border: 1px solid var(--gray-300);
+  background-color: var(--gray-100);
+}
+
+input[type=checkbox]:checked::after {
+  content: url('/dist/images/done.png');
+}
+
+input[type=checkbox]:indeterminate::after {
+  content: url('/dist/images/indeterminate.svg');
+}
+
+input[type=checkbox]:checked,
+input[type=checkbox]:indeterminate {
+  border: none;
+  background-color: var(--blue-600);
+}
+
+input[type=checkbox]:checked:disabled,
+input[type=checkbox]:indeterminate:disabled {
+  background-color: var(--gray-300);
+}

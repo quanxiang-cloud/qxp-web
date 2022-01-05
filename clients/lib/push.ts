@@ -2,7 +2,8 @@ import { wsSubscribe } from '@lib/api/common';
 import { parseJSON } from '@lib/utils';
 
 export type SocketEventListener = (data: SocketData) => any;
-export type SocketData = { type: string; message: any, [key: string]: any };
+export type SocketData = { type?: string; content?: any, uuid?: string, [key: string]: any };
+
 type SubscribeParams = {
   key: string;
   topic: string;
@@ -77,9 +78,9 @@ class PushServer {
 
     this.connection.onmessage = (({ data }: MessageEvent) => {
       if (typeof data === 'string') {
-        const wsData: SocketData = parseJSON(data, { type: '', message: '' });
-        if (wsData.message?.uuid) {
-          this.uuid = wsData.message.uuid;
+        const wsData: SocketData = parseJSON(data, {});
+        if (wsData.uuid) {
+          this.uuid = wsData.uuid;
         }
         this.dispatchEvent(wsData);
       }
@@ -96,7 +97,7 @@ class PushServer {
     this.connection.onerror = () => {
       this.closeConnection();
     };
-  }
+  };
 
   detachEvents() {
     this.connection.onopen = null;
@@ -112,16 +113,16 @@ class PushServer {
       this.attachEvents();
       this.heartbeat();
     });
-  }
+  };
 
   offlineHandler = () => {
     this.closeConnection();
-  }
+  };
 
   heartbeat() {
     const echo = () => {
       if (this.connection.readyState === WebSocket.OPEN) {
-        this.connection.send('echo');
+        this.connection.send(JSON.stringify({ type: 'heartbeat' }));
       }
     };
 
@@ -142,14 +143,14 @@ class PushServer {
 
   setUp = (cb?: any) => {
     this.initConnection().then(cb || this.attachEvents);
-  }
+  };
 
   dispatchEvent = (data: SocketData): void => {
-    const listenerMap = this.listenersMap.get(data.type) || {};
+    const listenerMap = this.listenersMap.get(data.type || '') || {};
     Object.entries(listenerMap).map(([key, listener]) => {
       listener(data);
     });
-  }
+  };
 
   addEventListener(type: string, key: string, listener: SocketEventListener): void {
     const listeners = this.listenersMap.get(type) || {};

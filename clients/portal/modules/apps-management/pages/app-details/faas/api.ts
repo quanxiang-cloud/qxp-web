@@ -38,7 +38,7 @@ export function fetchFuncList(
   groupID: string,
   params: FuncListParams,
 ): Promise<{ count: number, projects: FuncField[] }> {
-  return httpClient(`/api/v1/midfielder/group/${groupID}/list`, params);
+  return httpClient(`/api/v1/midfielder/group/${groupID}/project/list`, params);
 }
 
 export function createFaasFunc(
@@ -89,7 +89,7 @@ export function getFuncVersionList(
   projectID: string,
   params: VersionListParams,
 ): Promise<{ count: number, builds: VersionField[] }> {
-  return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/list`, params);
+  return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/build/list`, params);
 }
 
 export function getVersion(
@@ -122,11 +122,11 @@ export function deleteVer(
 }
 
 export function registerAPI(groupID: string, projectID: string, buildID: string): Promise<void> {
-  return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/${buildID}/registerApi`);
+  return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/release/${buildID}/registerApi`);
 }
 
 export function getApiPath(groupID: string, projectID: string, buildID: string): Promise<{ path: string }> {
-  return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/${buildID}/getApiPath`);
+  return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/release/${buildID}/getApiPath`);
 }
 
 export function getVersionInfo(

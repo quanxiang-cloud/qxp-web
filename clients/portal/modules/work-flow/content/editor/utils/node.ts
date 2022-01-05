@@ -116,6 +116,15 @@ export function getNodeInitialData(type: NodeType): BusinessData {
       title: '',
     },
     end: {},
+    webhook: {
+      type: 'request',
+      config: {
+        api: { value: '' },
+        url: '',
+        inputs: [],
+        outputs: [],
+      },
+    },
   };
   function operatorFilter({ only }: Operation): boolean {
     return only === type;

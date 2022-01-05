@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
-import { Card } from 'antd';
 
+import Card from '@c/card/index';
 import Icon from '@c/icon';
 
 function LayoutCard(p: ISchemaFieldComponentProps): JSX.Element {

@@ -1,0 +1,61 @@
+.task-wrap {
+  position: relative;
+  .nav-item {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px 2px 8px 8px;
+  }
+}
+
+.task-box {
+  position: absolute;
+  width: 464px;
+  transform: translateX(-35px);
+  background: white;
+  top: 40px;
+  right: 0px;
+  z-index: 100;
+  cursor: default;
+  box-shadow: 0 8px 24px 4px rgb(148 163 184 / 0.25);
+  border-radius: 12px;
+
+  &.hide {
+    display: none;
+  }
+
+  .task-header {
+    display: flex;
+    align-items: center;
+    height: 44px;
+    padding-left: 20px;
+    padding-right: 20px;
+    background-color: #F8FAFC;
+    box-shadow: inset 0px -1px 0px #E2E8F0;
+    border-radius: 12px 12px 0px 0px;
+  }
+}
+
+.task-list {
+  width: 100%;
+  max-height: 298px;
+  justify-content: center;
+  overflow-y: auto;
+
+  .no-task {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 298px;
+    flex-direction: column;
+  }
+}
+
+.task_count_btn {
+  top: -0.4rem;
+  left: 1.5rem;
+  border-radius:  8px 8px 8px 2px !important;
+  background: #EF4444;
+  color: #fff;
+  border: none;
+  line-height: 20px;
+}

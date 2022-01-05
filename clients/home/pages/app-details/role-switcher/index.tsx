@@ -38,7 +38,7 @@ function RoleSwitcher(): JSX.Element {
           </div>
           <Icon
             clickable
-            size={21}
+            size={20}
             name="keyboard_arrow_down"
             className={cs('transition-transform duration-100 transform flex-shrink-0',
               {

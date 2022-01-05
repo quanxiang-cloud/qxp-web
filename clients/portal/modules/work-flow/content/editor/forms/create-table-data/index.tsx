@@ -12,6 +12,7 @@ import toast from '@lib/toast';
 import Modal from '@c/modal';
 import { BusinessData, TableDataCreateData } from '@flow/content/editor/type';
 import { ValueRuleVal } from '@flow/content/editor/type';
+import FlowTableContext from '@flow/content/editor/forms/flow-source-table';
 
 import TargetTableFields from './target-table-fields';
 import Context from './context';
@@ -32,6 +33,7 @@ const initialValue = {
 
 function FormCreateTableData({ defaultValue, onSubmit, onCancel, onChange: _onChange }: Props): JSX.Element {
   const { appID } = useContext(FlowContext);
+  const { tableID } = useContext(FlowTableContext);
   const [value, setValue] = useState<TableDataCreateData>(defaultValue || {});
   const [nextTable, setNextTable] = useState<string>('');
   const [switchTableModal, setSwitchTableModal] = useState(false);
@@ -113,6 +115,8 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel, onChange: _onCh
     );
   }
 
+  const isSelfForm = value.targetTableId === tableID;
+
   return (
     <Context.Provider value={{ data: value, setData: onChange }}>
       <div className="flex flex-col overflow-auto flex-1 py-24">
@@ -132,8 +136,10 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel, onChange: _onCh
               onChange={(silent) => {
                 onChange({ silent });
               }}
-              defaultChecked={value.silent}
+              defaultChecked={value.silent && !isSelfForm}
+              disabled={isSelfForm}
             />
+            <small className="ml-5 text-caption">新增本表数据时不支持再次触发工作流</small>
           </div>
         )}
         <TargetTableFields

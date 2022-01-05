@@ -26,7 +26,7 @@ const MenuLabel = ({ activeMenu, menu, isClose }: Props): JSX.Element => {
   }
   return (
     <span className={cls}>
-      <Icon className='mr-4 text-current' size={17} name={getGroupIcon(menu, !!isClose)} />
+      <Icon className='mr-4 text-current' size={16} name={getGroupIcon(menu, !!isClose)} />
       <span title={menu.name} className='truncate menu-item--title text-12'>{menu?.name}</span>
       {menu?.isHide && <Icon className='mr-4 ml-4' size={16} name='visibility_off' />}
     </span>

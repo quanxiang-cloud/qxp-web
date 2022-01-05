@@ -91,7 +91,7 @@ func getRefreshTokenKey(r *http.Request) string {
 }
 
 func getRefreshToken(r *http.Request) string {
-	return contexts.Cache.Get(getRefreshTokenKey(r)).Val()
+	return contexts.Cache.Get(contexts.Ctx, getRefreshTokenKey(r)).Val()
 }
 
 // renewToken refresh token
@@ -133,12 +133,12 @@ func saveToken(r *http.Request, token string, refreshToken string, expireTime ti
 	refreshTokenKey := getRefreshTokenKey(r)
 	duration := time.Until(expireTime) - time.Hour
 
-	err := contexts.Cache.Set(tokenKey, token, duration).Err()
+	err := contexts.Cache.Set(contexts.Ctx, tokenKey, token, duration).Err()
 	if err != nil {
 		log.Fatalf("failed to save user token to cache: %s", err.Error())
 	}
 
-	err = contexts.Cache.Set(refreshTokenKey, refreshToken, time.Hour*72).Err()
+	err = contexts.Cache.Set(contexts.Ctx, refreshTokenKey, refreshToken, time.Hour*72).Err()
 	if err != nil {
 		log.Fatalf("failed to save user refresh_token to cache: %s", err.Error())
 	}
@@ -147,7 +147,7 @@ func saveToken(r *http.Request, token string, refreshToken string, expireTime ti
 // getToken return token with auto-renew
 func getToken(r *http.Request) string {
 	tokenKey := getTokenKey(r)
-	token := contexts.Cache.Get(tokenKey).Val()
+	token := contexts.Cache.Get(contexts.Ctx, tokenKey).Val()
 	if token != "" {
 		return token
 	}
@@ -161,7 +161,7 @@ func getToken(r *http.Request) string {
 		return ""
 	}
 
-	return contexts.Cache.Get(tokenKey).Val()
+	return contexts.Cache.Get(contexts.Ctx, tokenKey).Val()
 }
 
 func getCurrentUser(ctx context.Context, token string) *User {
@@ -220,9 +220,13 @@ func HasToken(r *http.Request) bool {
 }
 
 // RedirectToLoginPage redirect to login page
-func RedirectToLoginPage(w http.ResponseWriter, r *http.Request) {
+func RedirectToLoginPage(w http.ResponseWriter, r *http.Request, path string) {
 	session := contexts.GetCurrentRequestSession(r)
-	session.Values["redirect_url"] = r.URL.Path
+	if path != "" {
+		session.Values["redirect_url"] = path
+	} else {
+		session.Values["redirect_url"] = r.URL.Path
+	}
 	if err := session.Save(r, w); err != nil {
 		renderErrorPage(w, r, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
 		return

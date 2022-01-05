@@ -1,15 +1,15 @@
 import React, { useContext, useEffect } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { get } from 'lodash';
+import { Select } from 'antd';
 
-import Select from '@c/select';
 import { StoreContext } from '@c/form-builder/context';
 import schemaToFields, { schemaToMap } from '@lib/schema-convert';
 import { getTableSchema } from '@lib/http-client';
 
 const acceptFieldTypes = [
-  'SubTable',
-  'AssociatedRecords',
+  'subtable',
+  'associatedrecords',
 ];
 
 export type AssociateTableOptions = {
@@ -77,9 +77,9 @@ const getTargetTableOptions = (fieldName: string, schema: ISchema): Promise<Asso
 };
 
 function AssociateObject(props: ISchemaFieldComponentProps): JSX.Element {
-  const { schema, appID } = useContext(StoreContext);
+  const { schema, appID, activeFieldId } = useContext(StoreContext);
   const selectTables = schemaToFields(schema).reduce((acc: LabelValue[], field) => {
-    if (acceptFieldTypes.map((v) => v.toLowerCase()).includes(field.componentName.toLowerCase())) {
+    if (acceptFieldTypes.includes(field.componentName) && field.id !== activeFieldId) {
       acc.push({ label: field.title as string, value: field.id });
     }
     return acc;

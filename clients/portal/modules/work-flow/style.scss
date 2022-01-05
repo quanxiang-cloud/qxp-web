@@ -7,8 +7,9 @@ rect {
   .drawer-container {
     position: fixed;
     @apply rounded-tl-none rounded-tr-none left-auto right-0 #{!important};
-    width: 500px !important;
-    padding-bottom: 64px;
+    min-width: 732px;
+    max-width: 100%;
+    padding-bottom: 102px;
     box-shadow: -8px 0px 24px 4px rgba(148, 163, 184, 0.25);
     animation: enter-from-right .3s ease-out;
     .drawer-main-content {

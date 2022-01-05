@@ -14,6 +14,7 @@ module.exports = {
   env: {
     browser: true,
     es2021: true,
+    node: true,
   },
   globals: {
     window: true,
@@ -26,6 +27,7 @@ module.exports = {
     sourceType: 'module',
   },
   rules: {
+    '@typescript-eslint/type-annotation-spacing': 'warn',
     '@typescript-eslint/ban-ts-comment': 'warn',
     '@typescript-eslint/camelcase': 'off',
     '@typescript-eslint/explicit-function-return-type': ['warn', {
@@ -46,11 +48,18 @@ module.exports = {
     "@typescript-eslint/no-invalid-this": ["error"],
     '@typescript-eslint/no-unused-vars': ['warn', { varsIgnorePattern: '_' }],
     '@typescript-eslint/no-empty-function': ['warn'],
+    'func-call-spacing': 'off',
     camelcase: 'off',
     'arrow-parens': ['error', 'always'],
-    indent: ['error', 2],
+    indent: ['error', 2, {
+      "ignoredNodes": [
+        "FunctionExpression > .params[decorators.length > 0]",
+        "FunctionExpression > .params > :matches(Decorator, :not(:first-child))",
+        "ClassBody.body > PropertyDefinition[decorators.length > 0] > .key"
+      ]
+    }],
     // https://github.com/typescript-eslint/typescript-eslint/issues/1824
-    // '@typescript-eslint/indent': ['error', 2],
+    // "@typescript-eslint/indent": ["error", 2],
     'max-len': [
       1,
       {

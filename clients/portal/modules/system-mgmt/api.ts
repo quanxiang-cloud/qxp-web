@@ -3,10 +3,12 @@ import { MsgReadStatus, MsgType } from '@portal/modules/system-mgmt/constants';
 
 type QueryFilter={
   status?: MsgReadStatus | number;
-  sort?: MsgType;
+  // sort?: MsgType;
+  types?: MsgType;
   page: number;
   limit: number;
-  key_word?: string
+  // key_word?: string
+  key?: string
 }
 
 type LogQueryFilter = {
@@ -18,7 +20,7 @@ type LogQueryFilter = {
 }
 
 // 发送消息和在草稿基础上，更新消息
-export const createMsg = async (msgData: Qxp.NewMsgData)=> {
+export const createMsg = async (msgData: Qxp.CreateMsgData)=> {
   return await httpClient('/api/v1/message/manager/create', msgData);
 };
 

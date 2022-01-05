@@ -21,7 +21,7 @@ declare enum MsgSendStatus {
 declare namespace Qxp {
   interface MsgTypeCount {
     total: number;
-    sort: MsgType;
+    types: MsgType;
   }
 
   type Receiver = {
@@ -35,13 +35,11 @@ declare namespace Qxp {
     id?: string;
     content?: string;
     title?: string;
-    handle_name?: string;
-    read_status?: MsgReadStatus;
+    readStatus?: MsgReadStatus;
     sort?: MsgType;
-    created_at?: number;
-    update_at?: number;
     mes_attachment?: string[];
     receivers?: Receiver[];
+    createdAt?: number;
   }
 
   type MsgReceiver = {
@@ -57,37 +55,54 @@ declare namespace Qxp {
     value: string;
   }
 
+  type Content = {
+    content: string
+  }
+
+  type MsgArgs = {
+    id: string,
+    isSend: boolean,
+    title: string,
+    contents: Content
+    files?: File,
+    recivers?: Array<MsgReceiver>,
+    types?: number
+  }
+
   interface File {
-    file_name: string
-    file_url: string
+    file_name?: string
+    file_url?: string
+    fileName?: string,
+    url?: string;
   }
 
   interface NewMsgData {
     id?: string; // 更新时需要id
-    template_id?: string; // 模板id ，默认写 "quanliang"
     title?: string;
     args?: Array<MsgArg>;
     channel?: string; // fixme 发送渠道 ，站内信： letter  邮件：?
-    type?: number;
-    sort?: MsgType;
-    is_send?: boolean; // 是否需要发送
-    recivers?: Array<MsgReceiver>,
-    mes_attachment?: Array<File>
+    receivers?: Array<MsgReceiver>,
     content?: string;
-    handle_name?: string;
-    send_num?: number;
     fail?: number;
     success?: number;
+    types?: number;
+    sendNum?: number;
+    creatorName?: string,
+    files?: Array<File>,
+  }
+
+  interface CreateMsgData {
+    web: MsgArgs
   }
 
   interface QueryMsgResult {
     id: string;
     status: MsgSendStatus;
-    sort: MsgType;
+    types: MsgType;
     title: string;
-    handle_name: string;
-    updated_at: number;
-    send_num: number;
+    createdName: string;
+    createdAt: number;
+    sendNum: number;
     success: number;
     fail?: number;
   }
@@ -95,12 +110,42 @@ declare namespace Qxp {
   interface MsgItem {
     id: string;
     title: string;
-    updated_at: number;
-    sort: MsgType;
-    read_status?: MsgReadStatus
+    createdAt: number;
+    types: MsgType;
+    readStatus?: MsgReadStatus
   }
 
-  interface FileInfo{
+  interface TaskItem {
+    id: string;
+    title: string;
+    status: number;
+    command: string;
+    createdAt: number;
+    finishAt: number;
+    result: {
+      path: { fileName: string, url: string }[],
+      title: string
+    };
+    value: { appID: string, tableID: string }
+    ratio: number;
+  }
+
+  interface TaskItem {
+    id: string;
+    title: string;
+    status: number;
+    command: string;
+    createdAt: number;
+    finishAt: number;
+    result: {
+      path: { fileName: string, url: string }[],
+      title: string
+    };
+    value: { appID: string, tableID: string }
+    ratio: number;
+  }
+
+  interface FileInfo {
     filename: string
     url: string
   }
@@ -111,10 +156,10 @@ declare namespace Qxp {
     receivers: Array<MsgReceiver>;
     type: MsgType; // fixme: remove
     sort?: number | MsgType; // real msg type
-    mes_attachment?: Array<File>;
-    handle_name?: string;
-    create_at: number;
-    update_at: number;
+    files?: Array<File>;
+    createdAt: number;
+    creatorName?: string;
+    types?: number
   }
 }
 

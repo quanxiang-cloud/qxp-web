@@ -13,14 +13,14 @@ type LogoutResponse struct {
 }
 
 // LogoutHandler render logout page
-func LogoutHandler(w http.ResponseWriter, r *http.Request) {
+func doLogout(w http.ResponseWriter, r *http.Request) {
 	token := getToken(r)
 	refreshToken := getRefreshToken(r)
 
 	tokenKey := getTokenKey(r)
 	refreshTokenKey := getRefreshTokenKey(r)
-	contexts.Cache.Del(tokenKey)
-	contexts.Cache.Del(refreshTokenKey)
+	contexts.Cache.Del(contexts.Ctx, tokenKey)
+	contexts.Cache.Del(contexts.Ctx, refreshTokenKey)
 
 	requestID := contexts.GetRequestID(r)
 	_, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/jwt/logout", nil, map[string]string{
@@ -29,9 +29,13 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 		"Access-Token":  token,
 	})
 
-	http.Redirect(w, r, "/", http.StatusFound)
-
 	if errMsg != "" {
 		contexts.Logger.Errorf("send logout request failed: %s, request_id: %s", errMsg, requestID)
 	}
+}
+
+// LogoutHandler render logout page
+func LogoutHandler(w http.ResponseWriter, r *http.Request) {
+	doLogout(w, r);
+	http.Redirect(w, r, "/", http.StatusFound)
 }

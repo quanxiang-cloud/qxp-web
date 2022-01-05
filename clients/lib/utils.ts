@@ -7,6 +7,25 @@ import dayjs from 'dayjs';
 
 import toast from '@lib/toast';
 
+// https://attacomsian.com/blog/javascript-current-timezone
+function getTimeZone(): string {
+  const date = new Date();
+  const offset = date.getTimezoneOffset();
+  if (offset === 0) {
+    return 'UTC+0';
+  }
+
+  const delta = Math.abs(offset) / 60;
+
+  if (offset > 0) {
+    return `UTC-${delta}`;
+  }
+
+  return `UTC+${delta}`;
+}
+
+export const TIME_ZONE = getTimeZone();
+
 export function uuid(): string {
   return nanoid();
 }
@@ -49,30 +68,6 @@ export const either = <S>(pred1: (...args: S[]) => boolean, pred2: (...args: S[]
   ...args: S[]
 ) => pred1(...args) || pred2(...args);
 export const isVoid = either<null | undefined>(isUndefined, isNull);
-
-/**
- * @param {string} attr 需要被计数的属性
- * @param {string} exclude 计数时排除属性条件
- * @param {function} fn 计数的条件函数
- * @param {array | object} data 需要被计数的数据
- * @return {number} counter
- */
-export const countBy = <T, S>(
-  attr: string,
-  exclude: string,
-  fn: (arg: S) => boolean, data: T & Record<string, any>): number => {
-  let counter = 0;
-  Object.entries(data || {}).forEach(([key, value]) => {
-    if (key === attr && fn(value as S)) {
-      if ((exclude && isVoid(data[exclude])) || !exclude) {
-        counter += 1;
-      }
-    } else if (typeof value === 'object' || Array.isArray(data)) {
-      counter += countBy(attr, exclude, fn, value);
-    }
-  });
-  return counter;
-};
 
 export const searchByKey = <T, S, K>(key: string, value: T, obj: S): K | void => {
   for (const k in obj) {
@@ -352,8 +347,10 @@ export const isMacosX = /macintosh|mac os x/i.test(navigator.userAgent);
 
 export function isAcceptedFileType(file: File | QXPUploadFileBaseProps, accept: string | string[]): boolean {
   if (!accept) return false;
-  const fileType = file.type || file.name.split('.').pop();
-  return accept.toString().indexOf(fileType || '') !== -1;
+  const fileType = file.type || '/' + file.name.split('.').pop();
+  const acceptMatchStr = accept.toString().replace(/\./g, '').replace(/,/g, '|');
+  const fileTypeReg = RegExp(`\\w*/(${acceptMatchStr})$`);
+  return fileTypeReg.test(fileType);
 }
 
 export function createQueue(

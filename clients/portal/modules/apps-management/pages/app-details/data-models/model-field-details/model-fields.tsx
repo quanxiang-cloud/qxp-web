@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import cs from 'classnames';
-import { UnionColumns } from 'react-table';
+import { UnionColumn } from 'react-table';
 
 import Icon from '@c/icon';
 import Table from '@c/table';
@@ -23,7 +23,7 @@ function ModelFields(): JSX.Element {
     dataModelsLoading,
     setSearchModelFieldInput,
   } = store;
-  const COLUMNS: UnionColumns<ModelField>[] = [
+  const COLUMNS: UnionColumn<ModelField>[] = [
     ...FIELD_COLUMNS,
     {
       Header: '是否作为外键',

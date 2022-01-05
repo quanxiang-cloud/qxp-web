@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import dayjs from 'dayjs';
-import { UnionColumns } from 'react-table';
+import { UnionColumn } from 'react-table';
 import { observer } from 'mobx-react';
 import { FormInstance } from 'antd/es/form';
 import { Switch } from 'antd';
@@ -35,12 +35,12 @@ type PageParams = {
 
 function ApiKeys(): JSX.Element {
   const service = store.svc?.fullPath;
+  const keyList = store.apiKeyList;
+  const apiKeyTotal = store.apiKeyTotal;
   const initApiKeyListParams = { page: 1, limit: 10, service: service };
   const formMsgRef = useRef<FormInstance>(null);
   const [pageParams, setPageParams] = useState<PageParams>(initApiKeyListParams);
-  const [apiKeyTotal, setApiKeyTotal] = useState<number>(0);
   const [loading, setLoading] = useState(true);
-  const [keyList, setKeyList] = useState<Array<PolyAPI.ApiKeyList>>([]);
   const [isEditor, setIsEditor] = useState<boolean>(false);
   const [showCloseStateModal, setShowCloseStateModal] = useState<boolean>(false);
   const [showFormModal, setShowFormModal] = useState<boolean>(false);
@@ -50,8 +50,8 @@ function ApiKeys(): JSX.Element {
 
   function updateApiKeyList(pageParams: PageParams): void {
     getApiKeyList(pageParams).then((res) => {
-      setKeyList(res.keys);
-      setApiKeyTotal(res.total);
+      store.apiKeyList = res.keys;
+      store.apiKeyTotal = res.total;
       setLoading(false);
     }).catch(() => {
       toast.error('更新密钥列表失败');
@@ -135,14 +135,14 @@ function ApiKeys(): JSX.Element {
     setPageParams({ ...pageParams, page: current, limit: pageSize });
   }
 
-  const COLS: UnionColumns<any>[] = [
+  const COLS: UnionColumn<any>[] = [
     {
       Header: '密钥ID',
       id: 'id',
       width: 'auto',
       accessor: ({ keyID }: PolyAPI.ApiKeyParams) => {
         return (
-          <div className='flex relative items-center key-id'>
+          <div className='flex items-center key-id'>
             {keyID}
             {(
               <ToolTip
@@ -264,7 +264,7 @@ function ApiKeys(): JSX.Element {
   ];
 
   return (
-    <div className='w-full inside-api-key'>
+    <div className='w-full'>
       <div className='flex items-center mb-8'>
         <Button
           onClick={() => {
@@ -274,14 +274,16 @@ function ApiKeys(): JSX.Element {
           modifier='primary'
         >新建密钥</Button>
       </div>
-      <Table
-        className='api-proxy-table-switch'
-        loading={loading}
-        emptyTips={<EmptyTips text='暂无密钥' className="pt-40" />}
-        columns={COLS}
-        data={keyList}
-        rowKey='id'
-      />
+      <div style={{ height: 'calc(100vh - 273px)' }}>
+        <Table
+          className='api-proxy-table'
+          loading={loading}
+          emptyTips={<EmptyTips text='暂无密钥' className="pt-40" />}
+          columns={COLS}
+          data={keyList}
+          rowKey='id'
+        />
+      </div>
       {apiKeyTotal > 0 && (
         <Pagination
           current={pageParams.page}

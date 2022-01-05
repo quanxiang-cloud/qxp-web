@@ -1,6 +1,5 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { observer } from 'mobx-react';
-import { useUpdateEffect } from 'react-use';
 
 import Tab, { TabItem } from '@c/tab';
 import Tooltip from '@c/tooltip';
@@ -17,22 +16,39 @@ import './index.scss';
 
 const defaultKey = 'api-list';
 
+function renderApiListTips(): JSX.Element | string {
+  if (!store.svc?.fullPath) {
+    return (
+      <Tooltip
+        position='bottom'
+        label='请先配置分组'
+      >
+        <span>API 列表</span>
+      </Tooltip>
+    );
+  }
+  if (store.svc.authType === 'signature' && !store.apiKeyTotal) {
+    return (
+      <Tooltip
+        position='bottom'
+        label='您至少需要创建一个 API 密钥'
+      >
+        <span>API 列表</span>
+      </Tooltip>
+    );
+  }
+  return 'API 列表';
+}
+
 function ListPage(): JSX.Element {
   const [tabKey, setTabKey] = useState(defaultKey);
   const tabs = useMemo(()=> {
     return [
       {
         id: 'api-list',
-        name: store.svc?.fullPath ? 'API 列表' : (
-          <Tooltip
-            position='bottom'
-            label='请先配置分组'
-          >
-            <span>API 列表</span>
-          </Tooltip>
-        ),
+        name: renderApiListTips(),
         content: store.svc?.fullPath && <ApiList />,
-        disabled: !store.svc,
+        disabled: !store.svc || (store.svc.authType === 'signature' && !store.apiKeyTotal),
       },
       {
         id: 'group-setting',
@@ -45,12 +61,14 @@ function ListPage(): JSX.Element {
         content: <ApiKeys/>,
       },
     ].filter(Boolean);
-  }, [store.currentNs?.id, store.svc?.fullPath, store.svc?.authType]);
+  }, [store.currentNs?.id, store.svc?.fullPath, store.svc?.authType, store.apiKeyTotal]);
 
-  useUpdateEffect(()=> {
-    store.fetchSvc().then(()=> {
+  useEffect(()=> {
+    store.fetchSvc().then(() => {
       if (!store.svc) {
         setTabKey('group-setting');
+      } else if (store.svc.authType === 'signature' && !store.apiKeyTotal) {
+        setTabKey('api-keys');
       } else {
         setTabKey(defaultKey);
       }
@@ -65,6 +83,7 @@ function ListPage(): JSX.Element {
           currentKey={tabKey}
           onChange={setTabKey}
           navsClassName='api-list-tabs'
+          contentClassName='api-proxy-tab-content'
           items={tabs as TabItem<string>[]}
         />
       )}

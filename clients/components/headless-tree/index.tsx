@@ -34,7 +34,7 @@ export default class Tree<T> extends React.Component<Props<T>> {
     RootNodeRender: (node: TreeNode<any>): JSX.Element | string => {
       return node.name;
     },
-  }
+  };
 
   constructor(props: Props<T>) {
     super(props);
@@ -44,11 +44,11 @@ export default class Tree<T> extends React.Component<Props<T>> {
     });
   }
 
-  componentDidMount() {
+  componentDidMount(): void {
     this.props.onSelect?.(toJS(this.props.store.currentFocusedNode.data));
   }
 
-  componentWillUnmount() {
+  componentWillUnmount(): void {
     this.selectDisposer();
   }
 
@@ -62,7 +62,7 @@ export default class Tree<T> extends React.Component<Props<T>> {
     // todo check is shift key down?
     this.props.store.onSelectNode(node.id);
     this.props.onSelect?.(toJS(node.data));
-  }
+  };
 
   handleSwitcherClick = (node: TreeNode<T>): void => {
     if (node.expanded) {
@@ -70,11 +70,11 @@ export default class Tree<T> extends React.Component<Props<T>> {
     } else {
       this.props.store.expandNode(node);
     }
-  }
+  };
 
   handleSetDraggingNode = (node: TreeNode<T> | null): void => {
     this.props.store.setDraggingNode(node);
-  }
+  };
 
   defaultOnDragOver = (node: TreeNode<T>, draggingNode: TreeNode<T>): boolean => {
     const parentNodes = this.props.store.getNodeParents(node.id);
@@ -84,7 +84,7 @@ export default class Tree<T> extends React.Component<Props<T>> {
     }
 
     return false;
-  }
+  };
 
   handleDrop = (dropTo: TreeNode<T>): void => {
     const draggingNode = this.props.store.draggingNode;
@@ -107,7 +107,7 @@ export default class Tree<T> extends React.Component<Props<T>> {
         parentId: dropTo.id,
       }]);
     });
-  }
+  };
 
   render(): JSX.Element {
     const {

@@ -30,7 +30,6 @@ type Props = {
   additionalComponents?: Record<string, React.JSXElementConstructor<any>>;
   usePermission?: boolean;
   readOnly?: boolean;
-  workFlowType?: string;
 }
 
 function FormRenderer({
@@ -44,16 +43,13 @@ function FormRenderer({
   additionalComponents = {},
   usePermission,
   readOnly,
-  workFlowType,
 }: Props): JSX.Element {
   const [errorMessage, setErrorMessage] = useState('');
   const actions = createFormActions();
-  const schema = usePermission ?
-    schemaPermissionTransformer(inputSchema, readOnly, workFlowType) :
-    inputSchema;
+  const schema = usePermission ? schemaPermissionTransformer(inputSchema, readOnly) : inputSchema;
   const fieldsToOmit = treeUtil.reduce((fields: string[], schema: ISchema, fieldId?: string | number) => {
     if ([INVISIBLE_NO_WRITE, READONLY_NO_WRITE, INVALID_READONLY_LEGACY].includes(
-        schema?.['x-internal']?.permission as PERMISSION,
+      schema?.['x-internal']?.permission as PERMISSION,
     )) {
       fields.push(`${fieldId}`);
     }

@@ -14,10 +14,8 @@
   }
 }
 
-.inside-api-key {
-  .key-id:hover .copy-tooltip{
-    visibility: visible;
-  }
+.api-proxy-tab-content {
+  padding: 16px;
   .qxp-table-loading-box {
     background-color: rgba(255, 255, 255, 1);
   }
@@ -29,7 +27,10 @@
   }
 }
 
-.api-proxy-table-switch {
+.api-proxy-table {
+  .key-id:hover .copy-tooltip{
+    visibility: visible;
+  }
   .ant-switch {
     width: 54px;
     height: 20px;
@@ -42,7 +43,7 @@
     }
   }
   .ant-switch-checked {
-    background-color: #375FF3;
+    background-color: var(--blue-600);
     .ant-switch-handle {
       left: calc(100% - 16px - 2px);
     }

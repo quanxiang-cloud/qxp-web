@@ -36,6 +36,7 @@ export default function NodeHeader({
       <Icon name={iconName} className={cs('mr-4', iconClassName)} />
       {!readonly && (
         <input
+          style={{ borderRadius: 0 }}
           onClick={(e) => e.stopPropagation()}
           onMouseDown={onMouseDown}
           onMouseUp={onMouseUp}
@@ -47,7 +48,7 @@ export default function NodeHeader({
           }}
           className={cs(
             'text-caption-no-color-weight font-medium',
-            'outline-none work-flow-node-header-input',
+            'outline-none work-flow-node-header-input transition duration-240',
             titleClassName,
           )}
           defaultValue={title}

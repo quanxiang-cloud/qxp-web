@@ -29,10 +29,9 @@ const output = {
 const input = {
   portal: 'clients/portal/index.tsx',
   home: 'clients/home/index.tsx',
-  mobile: 'clients/mobile/index.tsx',
 };
 
-export default {
+const config = {
   treeshake: isProduction,
   preserveEntrySignatures: false,
 
@@ -73,6 +72,8 @@ export default {
     // 'react-dnd-html5-backend',
     'react-flow-renderer',
     'xlsx',
+
+    /@ofa\/.*/,
   ],
 
   plugins: [
@@ -85,7 +86,10 @@ export default {
       skipPlugins: ['rollup-plugin-output-manifest'],
     }),
     replace({
-      'process.env.NODE_ENV': JSON.stringify(isProduction ? 'production' : 'development'),
+      preventAssignment: true,
+      values: {
+        'process.env.NODE_ENV': JSON.stringify(isProduction ? 'production' : 'development'),
+      },
     }),
     resolve({
       preferBuiltins: false,
@@ -107,3 +111,35 @@ export default {
     // tsChecker(),
   ],
 };
+
+const mobileInput = {
+  mobile: 'clients/mobile/index.tsx',
+};
+
+const mobileConfig = Object.assign(
+  {},
+  config,
+  {
+    input: mobileInput,
+    output: Object.assign({}, output, {
+      chunkFileNames: isProduction ? 'mobile-chunk-[name]-[hash].js' : 'mobile-chunk-[name].js',
+    }),
+    plugins: [
+      ...config.plugins.filter((plugin) => {
+        return plugin.name !== 'styles' && plugin.name !== 'rollup-plugin-output-manifest';
+      }),
+      styles({
+        autoModules: /index\.module\.scss/,
+        config: {
+          path: 'rollup-configs/mobile/postcss.config.js',
+        },
+      }),
+      outputManifest({ isMerge: true }),
+    ],
+  },
+);
+
+export default [
+  config,
+  mobileConfig,
+];

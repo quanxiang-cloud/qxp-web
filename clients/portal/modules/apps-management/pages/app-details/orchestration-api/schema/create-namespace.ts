@@ -27,6 +27,7 @@ const createNamespaceSchema: ISchema = {
             },
             {
               max: 20,
+              message: '长度或条目数不能大于20',
             },
             (v: string): boolean | string => /\s+/.test(v) ? '分组名称不能包含空格' : true,
           ],
@@ -48,11 +49,12 @@ const createNamespaceSchema: ISchema = {
             message: '只能包含数字字母下划线, 且以字母或下划线开头',
           }, {
             max: 20,
+            message: '长度或条目数不能大于20',
           }],
           'x-index': 1,
         },
         desc: {
-          title: '分组描述',
+          title: '描述',
           type: 'string',
           default: '',
           'x-component': 'TextArea',
@@ -61,6 +63,7 @@ const createNamespaceSchema: ISchema = {
           },
           'x-rules': [{
             max: 100,
+            message: '长度或条目数不能大于100',
           }],
           'x-index': 2,
         },

@@ -35,7 +35,7 @@ function GroupSetting(): JSX.Element {
   const [auth, setAuth] = useState<AuthType>('none');
 
   useEffect(()=> {
-    const defaultValues = { hostname: 'www.quanxiang.cloud', port: 433 };
+    const defaultValues = { hostname: 'www.quanxiang.cloud', port: 443 };
     if (store.svc) {
       const { schema, host, authType, authContent } = store.svc;
       const [hostname, port] = host.split(':');
@@ -55,7 +55,7 @@ function GroupSetting(): JSX.Element {
   }, [protocol]);
 
   const onSubmit = (): void => {
-    handleSubmit(async ({ hostname, port, authorize }: {hostname: string; port: string; authorize:string})=> {
+    handleSubmit(async ({ hostname, port, authorize }: {hostname: string; port: string; authorize: string})=> {
       const params = {
         schema: protocol,
         authType: auth,
@@ -101,6 +101,7 @@ function GroupSetting(): JSX.Element {
           toast.success('修改成功');
         }
         await store.fetchSvc();
+        await store.setApiKey();
       } catch (err) {
         toast.error(err);
       }
@@ -175,7 +176,12 @@ function GroupSetting(): JSX.Element {
                 <ErrorMsg errors={errors} name='authorize' />
               </div>
               <p>
-                <a href="#" rel="noopener" className='inline-flex items-center underline text-gray-600'>
+                <a
+                  href={`//${window.CONFIG.docs_hostname}/api/proxy/authentication/`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className='inline-flex items-center underline text-gray-600'
+                >
                   <Icon name='menu_book' className='mr-5' />
                   如何编写鉴权方法
                 </a>

@@ -8,8 +8,8 @@ import dayjs from 'dayjs';
 import toast from '@lib/toast';
 import { useQueryClient, useMutation } from 'react-query';
 import { getMsgById } from '@portal/modules/msg-center/api';
-
 import { getQuery } from '@portal/utils';
+
 import { useRouting } from '../hooks';
 
 import styles from './index.module.scss';
@@ -18,27 +18,27 @@ interface Props {
   className?: string;
   hideType?: boolean;
   readonly?: boolean;
-  onClick?: (...args: any[])=> void;
+  onClick?: (...args: any[]) => void;
 }
 
 const MsgItem = ({
   id,
   title,
-  updated_at,
-  sort,
-  read_status = 1,
+  createdAt,
+  types,
+  readStatus = 1,
   className,
   hideType,
   onClick,
   readonly,
 }: Qxp.MsgItem & Props): JSX.Element => {
-  const [read, setRead] = useState(read_status);
-  const refItem = useRef(null);
+  const [read, setRead] = useState(readStatus);
+  const refItem = useRef<HTMLDivElement>(null);
   const queryPage = useRouting();
   const queryClient = useQueryClient();
   const { curMsgId } = msgCenter;
 
-  useEffect(()=> {
+  useEffect(() => {
     const msgId = getQuery('id') || msgCenter.curMsgId || '';
     if (msgId === id) {
       msgCenter.setCurMsgId(msgId);
@@ -52,11 +52,10 @@ const MsgItem = ({
     }
   }, []);
 
-  const checkRow = ()=> {
+  const checkRow = (): void => {
     const activeCls = 'msg-item-active';
-    if (refItem.current) {
-      // @ts-ignore
-      const trElem = refItem.current.parentNode.parentNode;
+    if (refItem.current && refItem.current.parentNode) {
+      const trElem = refItem.current.parentNode.parentNode as HTMLElement;
       if (curMsgId === id) {
         if (!trElem.classList.contains(activeCls)) {
           trElem.classList.add(activeCls);
@@ -68,14 +67,14 @@ const MsgItem = ({
   };
 
   const readMsg = useMutation(getMsgById, {
-    onMutate: ()=> {
+    onMutate: () => {
       msgCenter.setLoadingDetail(true);
     },
     onSuccess: (data: any) => {
       msgCenter.setLoadingDetail(false);
       msgCenter.setDetail(data);
       // change msg read_status
-      if (read_status === MsgReadStatus.unread) {
+      if (readStatus === MsgReadStatus.unread) {
         setRead(MsgReadStatus.read);
         // todo
         queryClient.invalidateQueries('count-unread-msg');
@@ -87,7 +86,7 @@ const MsgItem = ({
     },
   });
 
-  const handleClick = () => {
+  const handleClick = (): void => {
     if (readonly) {
       return;
     }
@@ -121,21 +120,21 @@ const MsgItem = ({
           <span className={cs(styles.statusIcon, {
             [styles.statusUnread]: read === MsgReadStatus.unread,
             [styles.statusRead]: read === MsgReadStatus.read,
-          })}/>
+          })} />
           <span className={styles.txt} title={title}>{title}</span>
         </span>
         {!hideType && (
           <span className={cs(styles.type, {
-            [styles.system]: sort === MsgType.system,
-            [styles.alert]: sort === MsgType.notify,
+            [styles.system]: types === MsgType.system,
+            [styles.alert]: types === MsgType.notify,
           })}>
-            {sort === MsgType.system ? '系统消息' : '通知公告'}
+            {types === MsgType.system ? '系统消息' : '通知公告'}
           </span>
         )}
       </div>
       <div className={styles.msg_itm_time}>
         <span className={styles.time}>
-          {dayjs(parseInt(String(updated_at * 1000))).format('YYYY-MM-DD HH:mm')}
+          {dayjs(parseInt(String(createdAt))).format('YYYY-MM-DD HH:mm')}
         </span>
       </div>
     </div>

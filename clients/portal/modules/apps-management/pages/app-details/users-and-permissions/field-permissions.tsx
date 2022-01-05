@@ -150,8 +150,8 @@ function FieldPermissions({
   }
 
   const configValues = Object.values(config || {});
-  const isAllReadable = configValues.every(
-    (configValue) => configValue.fieldTitle !== 'id' && configValue.readable,
+  const isAllReadable = configValues.filter((configValue) => configValue.fieldTitle !== 'id').every(
+    (configValue) => configValue.readable,
   );
   const isNotAllReadable = !isAllReadable && configValues.some(
     (configValue) => configValue.fieldTitle !== 'id' && configValue.readable,
@@ -171,7 +171,7 @@ function FieldPermissions({
               onChange={handleAllChange('read')}
               checked={isAllReadable}
               indeterminate={isNotAllReadable}
-              disabled = {store.currentRights.types === 1 || !abled}
+              disabled = {isPermissionDisabled}
               label='全部可查看'
             />
           </span>

@@ -6,7 +6,7 @@ import { StoreContext } from '@c/form-builder/context';
 
 type Props = {
   associateObject?: { appID: string, tableID: string, sourceFieldId: string };
-  onChange: (v: any) => void;
+  onChange: (v: FilterConfig) => void;
   value: FilterConfig;
 }
 

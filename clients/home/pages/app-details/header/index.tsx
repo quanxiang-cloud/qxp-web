@@ -6,6 +6,7 @@ import AppsSwitcher from '@c/apps-switcher';
 import Icon from '@c/icon';
 import UserAvatarMenu from '@c/user-avatar-menu';
 import NavMsgBar from '@portal/modules/msg-center/nav-msg-bar';
+import NavTaskBar from '@c/task-lists';
 
 import store from '../store';
 
@@ -33,7 +34,7 @@ function DetailsHeader({ onCancel }: Props): JSX.Element {
               <Icon
                 clickable
                 changeable
-                size={21}
+                size={20}
                 className='text-gray-400'
                 name='keyboard_backspace'
               />
@@ -49,7 +50,7 @@ function DetailsHeader({ onCancel }: Props): JSX.Element {
                   onClick={() => history.push('/')}
                   className='app-header-icon text-gray-400 corner-8-8-8-2'
                 >
-                  <Icon size={21} className='m-6' name='home_qxp'/>
+                  <Icon size={20} className='m-6' name='home_qxp'/>
                 </div>
                 <span className='mx-8 text-14'>/</span>
                 <AppsSwitcher
@@ -68,7 +69,8 @@ function DetailsHeader({ onCancel }: Props): JSX.Element {
         </div>
       </div>
       <div className='flex items-center'>
-        <NavMsgBar type='portal' className="mx-16"/>
+        <NavTaskBar type='portal' className="mx-16"/>
+        <NavMsgBar type='portal' className="mr-16"/>
         <div className="header-nav-btn group">
           <UserAvatarMenu />
         </div>

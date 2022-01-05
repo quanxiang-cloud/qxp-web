@@ -14,7 +14,7 @@ type Props = {
 export default class Year extends React.Component<Props> {
   handleMonthClick = (day: moment.Moment): void => {
     this.props.onMonthClick(day);
-  }
+  };
 
   renderQuarters = (): JSX.Element => {
     const yearStart = this.props.displayDate
@@ -39,7 +39,7 @@ export default class Year extends React.Component<Props> {
         }
       </div>
     );
-  }
+  };
 
   render(): JSX.Element {
     return (

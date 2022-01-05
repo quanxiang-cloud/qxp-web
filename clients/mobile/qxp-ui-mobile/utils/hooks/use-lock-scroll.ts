@@ -1,4 +1,4 @@
-import { VoidCallback } from '@m/qxp-ui-mobile';
+import { VoidCallback } from '../..';
 
 let count = 0;
 

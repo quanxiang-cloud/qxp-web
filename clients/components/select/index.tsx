@@ -170,12 +170,12 @@ export default class Select<T extends React.Key> extends React.Component<SelectP
 
     this.setState({ selectedValue: _selectedValue });
     this.props.onChange?.(_selectedValue);
-  }
+  };
 
   optionsVisibilityChange = (visible: boolean): void => {
     this.setState({ triggerActive: visible });
     this.props.onOptionsVisibilityChange?.(visible);
-  }
+  };
 
   renderOptions(): JSX.Element {
     const { options, optionsDesc, optionClassName } = this.props;
@@ -265,7 +265,7 @@ export default class Select<T extends React.Key> extends React.Component<SelectP
             <div
               ref={this.reference}
               style={style}
-              className={cs('dropdown-trigger', className, {
+              className={cs('dropdown-trigger text-12', className, {
                 'border-blue-600': triggerActive && !disabled,
                 'select-trigger--disabled': disabled,
               })}

@@ -1,7 +1,6 @@
 import React from 'react';
 import { useQuery } from 'react-query';
 
-import ItemWithTitleDesc from '@c/item-with-title-desc';
 import Tab from '@c/tab';
 import Loading from '@c/loading';
 
@@ -26,49 +25,34 @@ export default function RoleDetail({ role }: Props): JSX.Element {
   }
 
   return (
-    <>
-      <ItemWithTitleDesc
-        itemRender={
-          (<div className="text-h6-bold text-black-900 flex justify-between items-center">
-            {role?.name}
-          </div>)
-        }
-        desc={
-          role.tag === 'super' ?
-            '平台默认的角色，默认具有企业所有功能权限和全部数据可见范围。' :
-            '具有企业部分功能权限和部分数据可见范围。'
-        }
-        descClassName="transition ease-linear text-black-200 text-caption-no-color"
-      />
-      <Tab
-        style={{ height: 'calc(100% - 24px)' }}
-        className="py-16"
-        contentClassName="rounded-12 rounded-tl-none"
-        items={[
-          {
-            id: 'func',
-            name: '功能权限',
-            content: (
-              <AlterRoleFunc
-                lastSaveTime={data.lastSaveTime}
-                funcs={data.func}
-                tag={role.tag}
-                id={role.id}
-              />
-            ),
-          },
-          {
-            id: 'association',
-            name: '关联员工与部门',
-            content: (
-              <AssociateDepartmentEmployee
-                roleID={role.id}
-                isSuper={role.tag === 'super'}
-              />
-            ),
-          },
-        ]}
-      />
-    </>
+    <Tab
+      navsClassName='px-12'
+      className="pt-8 flex-1 role-tab"
+      contentClassName="rounded-12 rounded-tl-none w-full"
+      items={[
+        {
+          id: 'association',
+          name: '关联员工与部门',
+          content: (
+            <AssociateDepartmentEmployee
+              roleID={role.id}
+              isSuper={role.tag === 'super'}
+            />
+          ),
+        },
+        {
+          id: 'func',
+          name: '功能权限',
+          content: (
+            <AlterRoleFunc
+              lastSaveTime={data.lastSaveTime}
+              funcs={data.func}
+              tag={role.tag}
+              id={role.id}
+            />
+          ),
+        },
+      ]}
+    />
   );
 }

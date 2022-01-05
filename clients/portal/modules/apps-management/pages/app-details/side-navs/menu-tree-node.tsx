@@ -75,7 +75,7 @@ export default function TreeNode({
           <Icon
             name={icon}
             className={cs('flex-shrink-0 duration-0')}
-            size={children || level === 1 ? 25 : 21}
+            size={children || level === 1 ? 24 : 20}
           />
           <span className={cs(
             'text-12 pl-8 transition-opacity duration-300',

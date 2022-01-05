@@ -4,9 +4,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/go-redis/redis"
+	"github.com/go-redis/redis/v8"
 	"github.com/gorilla/sessions"
-	"github.com/rbcervilla/redisstore"
+	"github.com/rbcervilla/redisstore/v8"
 )
 
 type contextKey int
@@ -42,7 +42,7 @@ func GetCurrentRequestSession(r *http.Request) *sessions.Session {
 }
 
 func initSession(redisClient redis.UniversalClient) (*redisstore.RedisStore, error) {
-	sessionStore, err := redisstore.NewRedisStore(redisClient)
+	sessionStore, err := redisstore.NewRedisStore(Ctx, redisClient)
 	if err != nil {
 		log.Fatal("failed to create redis store: ", err)
 	}

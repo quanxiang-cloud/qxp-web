@@ -1,16 +1,20 @@
 package contexts
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
 
 	_log "qxp-web/server/pkg/contexts/log"
 
-	"github.com/go-redis/redis"
-	"github.com/rbcervilla/redisstore"
+	"github.com/go-redis/redis/v8"
+	"github.com/rbcervilla/redisstore/v8"
 	"github.com/sirupsen/logrus"
 )
+
+// Ctx as context of context
+var Ctx = context.Background()
 
 // Global shared variables, mostly connections and configs
 var (

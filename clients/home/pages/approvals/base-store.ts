@@ -22,17 +22,17 @@ export default class BaseStore {
   paginate = (pageNumber: number, pageSize: number): void => {
     this.pageNumber = pageNumber;
     this.pageSize = pageSize;
-  }
+  };
 
   @action
   changeKeyword = (word: string) => {
     this.keyword = word;
-  }
+  };
 
   @action
   changeOrderType = (order: string) => {
     this.orderType = order;
-  }
+  };
 
   @action
   reset = () => {
@@ -42,5 +42,5 @@ export default class BaseStore {
     this.loading = false;
     this.keyword = '';
     this.orderType = 'DESC';
-  }
+  };
 }

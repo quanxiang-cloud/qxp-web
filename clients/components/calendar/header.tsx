@@ -54,12 +54,12 @@ export default class Header extends React.Component<Props> {
     this.isOpen = true;
     scrollToOption(this.yearMenuRef);
     scrollToOption(this.monthMenuRef);
-  }
+  };
 
   @action
   handleMouseLeave = (): void => {
     this.isOpen = false;
-  }
+  };
 
   @action
   handleYearClick = (year: number): void => {
@@ -67,7 +67,7 @@ export default class Header extends React.Component<Props> {
       .clone()
       .year(year);
     this.props.onChangeDate(newTime);
-  }
+  };
 
   @action
   handleMonthClick = (month: number): void => {
@@ -75,7 +75,7 @@ export default class Header extends React.Component<Props> {
       .clone()
       .month(month);
     this.props.onChangeDate(newTime);
-  }
+  };
 
   @action
   handleShift = (delta: -1 | 1): void => {
@@ -85,12 +85,12 @@ export default class Header extends React.Component<Props> {
       .add(delta, unit);
     this.props.onChangeDate(newTime);
     this.isOpen = false;
-  }
+  };
 
   isOutsideRange = (date: moment.Moment, unit: 'month' | 'year'): boolean => {
     const { minDate, maxDate } = this.props;
     return isDateOutRange(date, minDate, maxDate, unit);
-  }
+  };
 
   renderYearMenu(): JSX.Element {
     return (

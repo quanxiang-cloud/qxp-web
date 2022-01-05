@@ -43,13 +43,19 @@ export default function Detail(): JSX.Element {
   const { flowID, type, appID } = useParams<{ flowID: string; type: string; appID: string }>();
   const saver = useSaver(appID, flowID);
 
-  const { data, isLoading, isError } = useQuery(['GET_WORK_FLOW_INFO', flowID], getWorkFlowInfo, {
+  const { data, isLoading, isError, refetch } = useQuery(['GET_WORK_FLOW_INFO', flowID], getWorkFlowInfo, {
     enabled: !!flowID,
   });
 
   useEffect(() => {
     needSaveFlow && saveWorkFlow();
   }, [needSaveFlow]);
+
+  useEffect(() => {
+    if (currentOperateType === 'settings') {
+      refetch();
+    }
+  }, [currentOperateType]);
 
   const previousElementsLength = usePrevious(elements?.length);
   useEffect(() => {
@@ -100,7 +106,7 @@ export default function Detail(): JSX.Element {
         id: data.id,
         processKey: data.processKey,
         keyFields: data.keyFields,
-        canCancelType: data.canCancelType,
+        canCancelType: data.canCancelType === 0 ? 1 : data.canCancelType,
         canCancelNodes: data.canCancelNodes,
         instanceName: data.instanceName,
       }));

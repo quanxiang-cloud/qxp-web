@@ -28,7 +28,7 @@ function RenderLayoutOption({ labelAlign, onChange }: RenderLayoutOptionProps): 
           <span className="item-body"></span>
         </div>
         <div className="text-center">左右</div>
-        <Icon name='done' type="light" className="check-icon" />
+        <Icon name='done' type="light" className="check-icon" style={{ color: 'white' }} />
       </div>
       <div
         className={cs('content-item', { 'item-checked': labelAlign === 'top' })}
@@ -39,7 +39,7 @@ function RenderLayoutOption({ labelAlign, onChange }: RenderLayoutOptionProps): 
           <span className="item-body mt-8" style={{ width: '96px' }}></span>
         </div>
         <div className="text-center">上下</div>
-        <Icon name='done' type="light" className="check-icon" />
+        <Icon name='done' type="light" className="check-icon" style={{ color: 'white' }} />
       </div>
     </>
   );
@@ -55,7 +55,7 @@ function FormConfig(): JSX.Element {
   return (
     <>
       {/* <ColumnNumberOption /> */}
-      <div className="pt-6">
+      <div className="pt-6 px-20">
         <div className="pb-24">
           <div className="item-title">字段标题位置</div>
           <div className="layout-content">

@@ -3,16 +3,19 @@ import cs from 'classnames';
 import { observer } from 'mobx-react';
 
 import FormAppDataTable from '@c/form-app-data-table';
+import { useTaskComplete } from '@c/task-lists/utils';
 import { Ref, TableHeaderBtn } from '@c/form-app-data-table/type';
 import PopConfirm from '@c/pop-confirm';
 import PageLoading from '@c/page-loading';
 import { MenuType } from '@portal/modules/apps-management/pages/app-details/type';
+import SchemaPage from '@portal/modules/apps-management/pages/page-design/schema-page';
 
 import { getOperateButtonPer } from '../utils';
 import CreateDataForm from './create-data-form';
 import DetailsDrawer from './details-drawer';
 import store from '../store';
 import Header from '../header';
+
 import './index.scss';
 
 function PageDetails(): JSX.Element | null {
@@ -24,6 +27,12 @@ function PageDetails(): JSX.Element | null {
   useEffect(() => {
     handleCancel();
   }, [curPage]);
+
+  useTaskComplete('refresh-form-data-list', (socketData) => {
+    if (socketData.content.command === 'formImport') {
+      formTableRef.current?.refresh();
+    }
+  });
 
   const goEdit = (rowID: string): void => {
     setCurRowID(rowID);
@@ -125,6 +134,10 @@ function PageDetails(): JSX.Element | null {
           style={{ border: 'none' }}
         />
       );
+    } else if (menuType === MenuType.schemaPage) {
+      return (
+        <SchemaPage appId={store.appID} pageId={store.pageID} />
+      );
     } else {
       if (fetchSchemeLoading) {
         return <PageLoading />;
@@ -137,7 +150,9 @@ function PageDetails(): JSX.Element | null {
           tableHeaderBtnList={tableHeaderBtnList}
           customColumns={customColumns}
           appID={store.appID}
+          appName={store.appName}
           pageID={store.pageID}
+          pageName={store.pageName}
           allowRequestData={true}
           className={cs('p-20 h-full', { 'form-table-hidden': modalType === 'dataForm' })}
         />

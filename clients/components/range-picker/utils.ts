@@ -32,7 +32,7 @@ export const getInputValue = (readableCode: string | undefined): string => {
     return '';
   }
 
-  const [rangeType = 'customized', range = ''] = readableCode?.split(':');
+  const [rangeType = 'customized', range = ''] = readableCode?.split(':') ?? [];
 
   if (!range) {
     return '';

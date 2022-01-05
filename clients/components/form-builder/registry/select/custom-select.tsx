@@ -1,5 +1,5 @@
 import React, { useState, ChangeEvent, useMemo, useRef } from 'react';
-import { Select, Input, Divider } from 'antd';
+import { Select, Input } from 'antd';
 import { RefSelectProps } from 'antd/lib/select';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { uniq } from 'lodash';
@@ -43,8 +43,7 @@ function DropdownRender({ menu, isAllowCustom, onOtherCustomValueChange }: Dropd
   return (
     <div>
       {menu}
-      <Divider className="my-4" />
-      <div className="px-8 flex items-center flex-nowrap">
+      <div className="px-8  mt-4 pt-4 flex items-center flex-nowrap border-t-1 border-gray-200">
         <Input
           style={{ height: 32 }}
           size="small"

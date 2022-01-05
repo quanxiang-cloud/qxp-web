@@ -22,77 +22,30 @@
   margin: .16rem;
 }
 
-.mt-16 {
-  margin-top: .16rem;
+.padding-10-16 {
+  padding: .1rem .16rem;
 }
 
-.mb-16 {
-  margin-bottom: .16rem;
+.padding-16-12 {
+  padding: .16rem .12rem;
 }
 
-.mt-12 {
-  margin-top: .12rem;
-}
-
-.mb-12 {
-  margin-bottom: .12rem;
-}
-
-.mt-8 {
-  margin-top: .08rem;
-}
-
-.mb-8 {
-  margin-bottom: .08rem;
-}
-
-.ml-8 {
-  margin-left: .08rem;
-}
-
-.mr-8 {
-  margin-right: .08rem;
-}
-.mt-6 {
-  margin-top: .06rem;
-}
-
-.mb-6 {
-  margin-bottom: .06rem;
-}
-
-.ml-6 {
-  margin-left: .06rem;
-}
-
-.mr-6 {
-  margin-right: .06rem;
-}
-
-.mt-4 {
-  margin-top: .04rem;
-}
-
-.mb-4 {
-  margin-bottom: .04rem;
-}
-
-.ml-4 {
-  margin-left: .04rem;
-}
-
-.mr-4 {
-  margin-right: .04rem;
+.padding-10-12 {
+  padding: .1rem .12rem;
 }
 
 .radius-8 {
   border-radius: .08rem;
 }
 
+.radius-2-8-8-8 {
+  border-radius: .02rem .08rem .08rem .08rem;
+}
+
 @mixin pointer {
   cursor: pointer;
   &:active {
-    background-color: var(--activeColor) !important;
+    background-color: var(--active-color) !important;
   }
 }
 

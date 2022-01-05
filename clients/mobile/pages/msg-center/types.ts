@@ -1,7 +1,18 @@
 export interface Message {
   id: string;
   title: string;
-  updated_at: number;
-  read_status: number;
-  sort: number;
+  createdAt?: number;
+  updatedAt?: number;
+  readStatus: number;
+  types: number;
+  updated?: string;
+}
+
+export interface TypeNumber {
+  types: number,
+  total: number
+}
+
+export interface MessageUnReadResponse {
+  typeNum: TypeNumber[]
 }

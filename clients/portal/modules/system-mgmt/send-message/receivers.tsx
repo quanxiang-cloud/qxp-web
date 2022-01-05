@@ -8,7 +8,7 @@ interface Props {
   className?: string;
   receivers: Array<Qxp.MsgReceiver>;
   readonly?: boolean;
-  onRemove?: (id: string)=> void;
+  onRemove?: (id: string) => void;
 }
 
 const Receivers = ({

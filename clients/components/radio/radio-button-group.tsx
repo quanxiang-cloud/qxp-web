@@ -13,12 +13,11 @@ type Props = {
   currentValue?: string | number | boolean;
   radioBtnClass?: string;
   className?: string;
-  radioLabelRender?:(data: LabelValue) => string
+  radioLabelRender?: (data: LabelValue) => string
 }
 
 export default function RadioButtonGroup(
-  { listData, currentValue, disabled, onChange, className: groupWrapClass, radioBtnClass, radioLabelRender }
-  : Props): JSX.Element {
+  { listData, currentValue, disabled, onChange, className: groupWrapClass, radioBtnClass, radioLabelRender }: Props): JSX.Element {
   return (
     <div className={cs('radio-btn-group-wrap flex items-center', groupWrapClass)}>
       <RadioGroup

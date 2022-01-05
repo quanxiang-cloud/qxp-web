@@ -8,10 +8,11 @@ import CreatedEditApp from './created-edit-app';
 import store from '../store';
 
 type Props = {
+  modalType: string;
   onCancel: () => void;
 }
 
-function CreatedAppModal({ onCancel }: Props): JSX.Element {
+function CreatedAppModal({ modalType, onCancel }: Props): JSX.Element {
   const history = useHistory();
   const formRef: any = useRef(null);
 
@@ -23,6 +24,15 @@ function CreatedAppModal({ onCancel }: Props): JSX.Element {
   function submitCallback(): void {
     const formDom = formRef.current;
     const data = formDom.getFieldsValue();
+    if (modalType === 'importApp') {
+      store.importApp(data).then(() => {
+        onCancel();
+      }).catch((e) => {
+        toast.error(e.message);
+      });
+      return;
+    }
+
     store.createdApp({ ...data, useStatus: -1 }).then((res: string) => {
       toast.success('创建应用成功！');
       onCancel();
@@ -34,7 +44,7 @@ function CreatedAppModal({ onCancel }: Props): JSX.Element {
 
   return (
     <Modal
-      title='新建应用'
+      title={modalType === 'importApp' ? '导入应用' : '新建应用'}
       onClose={onCancel}
       className="static-modal"
       footerBtns={[
@@ -45,7 +55,7 @@ function CreatedAppModal({ onCancel }: Props): JSX.Element {
           onClick: onCancel,
         },
         {
-          text: '确定',
+          text: `${modalType === 'importApp' ? '确定导入' : '确定'}`,
           key: 'confirm',
           iconName: 'check',
           modifier: 'primary',
@@ -53,7 +63,12 @@ function CreatedAppModal({ onCancel }: Props): JSX.Element {
         },
       ]}
     >
-      <CreatedEditApp className="p-20" ref={formRef} onSubmitCallback={submitCallback} />
+      <CreatedEditApp
+        ref={formRef}
+        className="p-20"
+        modalType={modalType}
+        onSubmitCallback={submitCallback}
+      />
     </Modal>
   );
 }

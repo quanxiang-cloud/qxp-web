@@ -9,6 +9,37 @@
     align-self: stretch;
   }
 
+  .node-formula-editor {
+    @apply flex-2 border-gray-200 w-full;
+    min-width: 68px;
+
+    &>div {
+      border: 0;
+      border-radius: 0;
+    }
+
+    .formula-editor-container {
+      &>div:last-child {
+        display: none;
+      }
+    }
+
+    .DraftEditor-root {
+      background-color: transparent;
+      .public-DraftEditorPlaceholder-inner {
+        white-space: nowrap !important;
+      }
+    }
+  }
+
+  .z-1 {
+    z-index: 1;
+  }
+
+  .w-732 {
+    width: 732px;
+  }
+
   .line {
     @apply w-full bg-black-900;
     height: 1px;

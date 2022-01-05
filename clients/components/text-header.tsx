@@ -33,7 +33,7 @@ export default function TextHeader({
   itemTitleClassName,
 }: Props): JSX.Element {
   return (
-    <header className={cs('flex justify-between items-center py-10 opacity-95', className)}>
+    <header className={cs('flex justify-between items-center py-8 opacity-95', className)}>
       <ItemWithTitleDesc
         desc={desc}
         itemRender={

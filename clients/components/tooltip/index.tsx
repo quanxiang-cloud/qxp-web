@@ -9,9 +9,7 @@ export type Props = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivEle
   label: JSX.Element | string;
   children?: JSX.Element;
   labelClassName?: string;
-  inline?: boolean;
   wrapperClassName?: string;
-  always?: boolean;
 }
 
 const modifiers = [
@@ -23,10 +21,8 @@ const modifiers = [
   },
 ];
 
-export default function ToolTip(props: Props) {
-  const {
-    children, inline, always, position, ...otp
-  } = props;
+export default function ToolTip(props: Props): JSX.Element {
+  const { children, position, ...otp } = props;
   const popperRef = useRef<Popper>(null);
   const reference = useRef<any>(null);
 

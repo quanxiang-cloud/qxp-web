@@ -63,7 +63,7 @@ export default function DepartmentsEmployees(): JSX.Element {
         title='企业通讯录'
         desc="管理账号，如添加、编辑、删除账号等，同时还能关联每个账号的角色；用户可用账号名称或邮件登录全象云平台。"
         // action="📌 如何管理通讯录？"
-        className="bg-gray-1000 px-20 py-16 header-background-image"
+        className="bg-gray-1000 px-20 header-background-image"
         itemTitleClassName="text-h5"
       />
       <div className=" flex flex-col flex-grow" style={{

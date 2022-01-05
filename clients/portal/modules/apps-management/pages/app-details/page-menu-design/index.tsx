@@ -97,7 +97,7 @@ function PageList(): JSX.Element {
           <div className="flex items-center">
             <div onClick={() => setModalType('createPage')}>
               <Tooltip label='新建菜单' position='bottom' wrapperClassName="whitespace-nowrap">
-                <Icon className='app-page-add-group mr-8' size={17} name='post_add' />
+                <Icon className='app-page-add-group mr-8' size={16} name='post_add' />
               </Tooltip>
             </div>
             <Tooltip label='新建分组' position='bottom' wrapperClassName="whitespace-nowrap">
@@ -115,42 +115,34 @@ function PageList(): JSX.Element {
         </div>
       </div>
       <PageDetails pageID={pageID} />
-      {
-        ['delPage', 'delGroup'].includes(modalType) && (
-          <DelModal
-            type={modalType === 'delGroup' ? 'group' : 'page'}
-            onOk={delPageOrGroup}
-            onCancel={closeModal}
-          />
-        )
-      }
-      {
-        modalType === 'editGroup' && (
-          <EditGroupModal
-            groupInfo={activeMenu as any}
-            onCancel={closeModal}
-            onSubmit={handleEditGroup}
-          />
-        )
-      }
-      {
-        ['editPage', 'createPage', 'copyPage'].includes(modalType) && (
-          <EditPageModal
-            appID={appID}
-            pageInfo={modalType === 'createPage' ? undefined : activeMenu as any}
-            onCancel={closeModal}
-            onSubmit={handleEditPage}
-          />
-        )
-      }
-      {
-        modalType === 'hide' && (
-          <HidePageConfirmModal
-            onCancel={closeModal}
-            onOk={handleVisibleHiddenPage}
-          />
-        )
-      }
+      {['delPage', 'delGroup'].includes(modalType) && (
+        <DelModal
+          type={modalType === 'delGroup' ? 'group' : 'page'}
+          onOk={delPageOrGroup}
+          onCancel={closeModal}
+        />
+      )}
+      {modalType === 'editGroup' && (
+        <EditGroupModal
+          groupInfo={activeMenu as any}
+          onCancel={closeModal}
+          onSubmit={handleEditGroup}
+        />
+      )}
+      {['editPage', 'createPage', 'copyPage'].includes(modalType) && (
+        <EditPageModal
+          appID={appID}
+          pageInfo={modalType === 'createPage' ? undefined : activeMenu as any}
+          onCancel={closeModal}
+          onSubmit={handleEditPage}
+        />
+      )}
+      {modalType === 'hide' && (
+        <HidePageConfirmModal
+          onCancel={closeModal}
+          onOk={handleVisibleHiddenPage}
+        />
+      )}
     </div >
   );
 }

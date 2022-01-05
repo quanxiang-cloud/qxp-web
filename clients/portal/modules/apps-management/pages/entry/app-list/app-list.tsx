@@ -6,6 +6,7 @@ import PageLoading from '@c/page-loading';
 import DeleteAppModal from './app-edit/del-app-modal';
 import AppSetStatusModal from './app-edit/app-set-status-modal';
 import AppItem from './app-item';
+import SaveAppModal from './app-edit/app-save-modal';
 
 type Props = {
   isLoading: boolean;
@@ -44,7 +45,7 @@ function AppList({ isLoading, appList, openCreatedModal }: Props) {
   }
 
   return (
-    <div className='app-list-container mb-4'>
+    <div className='app-list-container'>
       {appList.map((appInfo: AppInfo) => (
         <AppItem onClick={goDetails} key={appInfo.id} appInfo={appInfo} openModal={openModal} />
       ))}
@@ -58,6 +59,7 @@ function AppList({ isLoading, appList, openCreatedModal }: Props) {
           onCancel={() => setModalType('')}
         />
       )}
+      {modalType === 'saveAsTemplate' && <SaveAppModal appInfo={curApp} onCancel={() => setModalType('')} />}
     </div>
   );
 }

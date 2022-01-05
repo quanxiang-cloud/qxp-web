@@ -10,7 +10,7 @@ function ModelDescHeader(): JSX.Element {
 
   return (
     <div className="model-info-header py-4 px-16 flex items-center">
-      <Icon name="models" type="light" size={33} />
+      <Icon name="models" type="light" size={32} />
       <div className="flex-1 desc">
         <span className="font-semibold">{curDataModel?.title}</span>
         <span className="truncate text-12">

@@ -19,6 +19,8 @@ export interface Props {
   children: React.ReactNode;
   simple: boolean;
   iconName: string;
+  headerClassName?: string;
+  titleClassName?: string;
 }
 
 export default function NodeComponentWrapper(props: Props): JSX.Element {
@@ -75,9 +77,9 @@ export default function NodeComponentWrapper(props: Props): JSX.Element {
               title={nodeData.name}
               id={id}
               iconName={iconName}
-              className="bg-indigo-500"
+              className={props.headerClassName ?? 'bg-indigo-500'}
               iconClassName="text-white"
-              titleClassName="text-white bg-indigo-500"
+              titleClassName={cs('text-white', props.titleClassName ?? 'bg-indigo-500')}
               readonly={readonly}
             />
             {!readonly && (

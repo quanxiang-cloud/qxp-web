@@ -1,7 +1,6 @@
-import React, { useCallback, useRef, ChangeEvent, FocusEvent, useEffect } from 'react';
+import React, { useCallback, useRef, ChangeEvent, FocusEvent, useEffect, CSSProperties } from 'react';
 import { useKey } from 'react-use';
 import cs from 'classnames';
-
 import toast from '@lib/toast';
 
 interface Props {
@@ -11,9 +10,15 @@ interface Props {
   onChange: (value: string) => void;
   autoMode?: boolean;
   changeOnBlur?: boolean;
-  limit?: number;
   placeholder?: string;
   extraClassName?: string;
+  style?: CSSProperties;
+  limit?: number;
+  includeChinese?: boolean;
+}
+
+function hasChinese(str: string): boolean {
+  return /[\u4E00-\u9FA5]/g.test(str);
 }
 
 export default function InputEditor({
@@ -23,9 +28,11 @@ export default function InputEditor({
   className = '',
   autoMode = false,
   changeOnBlur,
-  limit = 30,
   placeholder,
   extraClassName = '',
+  style,
+  limit,
+  includeChinese = false,
 }: Props): JSX.Element {
   const ref = useRef<HTMLInputElement | null>(null);
   const labelRef = useRef<HTMLLabelElement | null>(null);
@@ -36,42 +43,53 @@ export default function InputEditor({
     [ref.current],
   );
 
-  useEffect(() => {
+  const syncValueToLabel = useCallback((val: string = value): void => {
     if (labelRef.current) {
-      labelRef.current.innerHTML = value;
+      labelRef.current.innerHTML = val;
     }
-  }, [value]);
+  }, [value, labelRef.current]);
+
+  useEffect(syncValueToLabel, [value]);
 
   useEffect(() => {
-    if (!changeOnBlur || !ref.current) {
-      return;
+    if (changeOnBlur && ref.current) {
+      ref.current.value = value;
     }
-    ref.current.value = value;
   }, [value, changeOnBlur]);
 
+  const onChangeProxy = useCallback((__value: string): void => {
+    let _value = __value;
+    if (limit && _value.length > limit) {
+      toast.error(`名称不能超过${limit}个字符`);
+      _value = _value.slice(0, limit);
+    }
+    if (!includeChinese && hasChinese(_value)) {
+      toast.error('名称不能包含中文');
+      _value = value;
+    }
+    if (changeOnBlur && ref.current) {
+      ref.current.value = _value;
+      syncValueToLabel(_value);
+    }
+    onChange(_value);
+  }, [onChange, value, includeChinese, limit, ref.current, syncValueToLabel]);
+
   const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    let { value } = e.target;
-    if (limit && value.length > limit) {
-      value = value.slice(0, limit);
-      e.target.value = value;
-      toast.error(`最大长度允许${limit}个字符`);
-    }
-    if (labelRef.current) {
-      labelRef.current.innerHTML = value;
-    }
-    !changeOnBlur && onChange(value);
-  }, [onChange, changeOnBlur]);
+    changeOnBlur && syncValueToLabel(e.target.value);
+    !changeOnBlur && onChangeProxy(e.target.value);
+  }, [onChangeProxy, changeOnBlur, syncValueToLabel]);
 
   const handleBlur = useCallback((e: FocusEvent<HTMLInputElement>) => {
-    if (changeOnBlur && value !== e.target.value) {
-      onChange(e.target.value);
-    }
-  }, [onChange]);
+    changeOnBlur && value !== e.target.value && onChangeProxy(e.target.value);
+  }, [onChangeProxy, value, changeOnBlur]);
 
-  const extraClassNames = autoMode ? 'absolute w-full h-full left-0' : '';
+  const extraClassNames = autoMode ? 'absolute w-full h-full left-0 top-0' : 'w-full';
 
   return (
-    <div className={cs('input-editor-wrap', className)} style={{ minWidth: 44 }}>
+    <div
+      className={cs('input-editor-wrap', className)}
+      style={{ minWidth: placeholder ? placeholder.length * 12 : 20, maxWidth: 196, ...style }}
+    >
       {autoMode && (
         <label ref={labelRef} id="label" className="inline-block" style={{ visibility: 'hidden' }}></label>
       )}
@@ -80,7 +98,7 @@ export default function InputEditor({
         className={
           cs('text-caption-no-color-weight text-gray-400 input-editor', extraClassNames, extraClassName)
         }
-        value={changeOnBlur ? undefined : value}
+        {...(!changeOnBlur ? { value } : {})}
         defaultValue={changeOnBlur ? value : undefined}
         onChange={handleChange}
         onBlur={changeOnBlur ? handleBlur : undefined}

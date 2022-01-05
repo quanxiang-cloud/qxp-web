@@ -1,9 +1,12 @@
 import React from 'react';
 import cs from 'classnames';
-import { getSizeStyle } from '@m/qxp-ui-mobile/utils/format/unit';
+
+// @ts-ignore
+import svgHash from '@c/icon/svg-hash';
+import { getSizeStyle } from '../utils/format/unit';
+
 import { IconProps } from './types';
 import './index.scss';
-import svgHash from '@c/icon/svg-hash';
 
 const iconPrefix = 'm-';
 

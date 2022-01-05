@@ -25,33 +25,27 @@ function CreatApiKeyTable(props: Props, ref?: React.ForwardedRef<FormInstance>):
           required: !isEditor,
           message: '请输入密钥ID',
         }, {
-          pattern: /^\S*$/,
-          message: '请勿输入空格',
+          max: 512,
+          message: '输入不能超过 512 字符',
         }]}
         initialValue={msgApiKey?.keyID}
       >
-        <Input placeholder="请输入" disabled={isEditor}/>
+        <TextArea placeholder="请输入" disabled={isEditor} rows={1} autoSize={{ minRows: 1, maxRows: 3 }}/>
       </Form.Item>
       {!isEditor && (
         <Form.Item
           name="keySecret"
           label="密钥Secret"
-          rules={[{
-            required: true,
-            message: '请输入密钥ID',
-          }, {
-            pattern: /^\S*$/,
-            message: '请勿输入空格',
-          }]}
+          rules={[{ required: true, message: '请输入密钥Secret' }]}
           initialValue={msgApiKey?.keySecret}
         >
-          <Input placeholder="请输入"/>
+          <TextArea placeholder="请输入" rows={1} autoSize={{ minRows: 1, maxRows: 3 }}/>
         </Form.Item>
       )}
       <Form.Item
         name="description"
         label="描述"
-        rules={[{ max: 100, message: '输入超过 100 字符' }]}
+        rules={[{ max: 100, message: '输入不能超过 100 字符' }]}
         initialValue={msgApiKey?.description}
       >
         <TextArea placeholder="选填(不超过 100 字符)"/>

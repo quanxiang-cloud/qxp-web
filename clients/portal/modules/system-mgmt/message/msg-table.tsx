@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { UnionColumn } from 'react-table';
 import dayjs from 'dayjs';
 import { useHistory } from 'react-router-dom';
 import { observer } from 'mobx-react';
@@ -148,8 +149,8 @@ const MsgTable = ({ refresh }: Props): JSX.Element => {
 
     getMsgById(previewInfo.id)
       .then((response) => {
-        const { recivers } = response;
-        setPreviewData(Object.assign({}, response, { receivers: recivers }));
+        const { receivers } = response;
+        setPreviewData(Object.assign({}, response, { receivers: receivers }));
       }).catch(() => {
         toast.error('异常查询');
       });
@@ -163,8 +164,14 @@ const MsgTable = ({ refresh }: Props): JSX.Element => {
 
     getMsgById(modifyModal.id)
       .then((response: any) => {
-        const { recivers } = response;
-        setModifyData(Object.assign({}, response, { receivers: recivers }));
+        const { receivers, files } = response;
+        const fileList = files.map((item: any) => (
+          {
+            uid: item.url,
+            name: item.fileName,
+          }
+        ));
+        setModifyData(Object.assign({}, response, { receivers: receivers, files: fileList }));
       }).catch(() => {
         toast.error('异常查询');
       });
@@ -178,23 +185,15 @@ const MsgTable = ({ refresh }: Props): JSX.Element => {
 
   const confirmSend = (): void => {
     const params = {
-      template_id: 'quanliang',
-      title: previewData.title || '',
-      args: [{
-        key: 'code',
-        value: previewData.content || '',
-      }],
-      channel: previewData.channel || previewData.chanel, // letter: 站内信，email: 邮件
-      type: previewData.type, // 1. verifycode 2、not verifycode
-      sort: previewData.type,
-      is_send: true, // false: 保存为草稿
-      recivers: previewData.receivers,
-      mes_attachment: previewData.mes_attachment || [],
-      //     url: string
-      // filename:
+      web: {
+        title: previewData.title || '',
+        contents: previewData.content || '',
+        isSend: true, // false: 保存为草稿
+        receivers: previewData.receivers,
+        id: '',
+      },
     };
-    // @ts-ignore
-    if (previewData.id) params.id = previewData.id;
+    if (previewData.id) params.web.id = previewData.id;
     createMsg(params)
       .then((data) => {
         if (data) {
@@ -233,7 +232,7 @@ const MsgTable = ({ refresh }: Props): JSX.Element => {
     refresh();
   };
 
-  const cols = [
+  const cols: UnionColumn<any>[] = [
     {
       Header: (
         <Select
@@ -243,7 +242,9 @@ const MsgTable = ({ refresh }: Props): JSX.Element => {
           onChange={setStatus}
         >
           <div
-            className={`flex content-center items-center ${EnumStatusLabel[status] !== '全部状态' ? styles.text_blue : ''} pointer`}
+            className={
+              `flex content-center items-center 
+              ${EnumStatusLabel[status] !== '全部状态' ? styles.text_blue : ''} pointer`}
           >
             <div>{EnumStatusLabel[status]}</div>
             <SvgIcon
@@ -272,12 +273,15 @@ const MsgTable = ({ refresh }: Props): JSX.Element => {
           onChange={setMessageType}
         >
           <div
-            className={`flex content-center items-center ${EnumMessageLabel[messageType] !== '全部消息类型' ? styles.text_blue : ''} pointer`}
+            className={
+              `flex content-center items-center 
+              ${EnumMessageLabel[messageType] !== '全部消息类型' ? styles.text_blue : ''} pointer`}
           >
             <div>{EnumMessageLabel[messageType]}</div>
             <SvgIcon
               name="filter_alt"
-              className={cs(EnumMessageLabel[messageType] !== '全部消息类型' ? styles.text_blue : '', styles.status_icon)} />
+              className={
+                cs(EnumMessageLabel[messageType] !== '全部消息类型' ? styles.text_blue : '', styles.status_icon)} />
           </div>
         </Select>
       ),
@@ -286,7 +290,7 @@ const MsgTable = ({ refresh }: Props): JSX.Element => {
       accessor: ({ id, title, sort }: {
         status: MsgSendStatus, id: string, title: string, sort: MsgType
       }) => {
-        const handleClick = (): void=> {
+        const handleClick = (): void => {
           history.push(`/system/message/details/${id}`);
         };
         return (
@@ -306,17 +310,17 @@ const MsgTable = ({ refresh }: Props): JSX.Element => {
     },
     {
       Header: '操作人',
-      id: '操作人',
-      accessor: ({ handle_name }: Qxp.QueryMsgResult) => handle_name || <span>无</span>,
+      id: 'createdName',
+      accessor: ({ createdName }: Qxp.QueryMsgResult) => createdName || <span>无</span>,
     },
     {
       Header: '更新时间',
-      id: 'updated_at',
+      id: 'createdAt',
       width: 180,
-      accessor: ({ updated_at }: Qxp.QueryMsgResult) => {
+      accessor: ({ createdAt }: Qxp.QueryMsgResult) => {
         return (
           <span>
-            {dayjs(parseInt(String(updated_at * 1000)))
+            {dayjs(parseInt(String(createdAt)))
               .format('YYYY-MM-DD HH:mm:ss')}
           </span>
         );
@@ -419,7 +423,6 @@ const MsgTable = ({ refresh }: Props): JSX.Element => {
         <Table
           className={cs('massage_table text-14', styles.massage_table)}
           data={msgList}
-          // @ts-ignore
           columns={cols}
           rowKey="id"
           emptyTips={<EmptyTips text='暂无消息数据' className="pt-40" />}
@@ -470,7 +473,7 @@ const MsgTable = ({ refresh }: Props): JSX.Element => {
           {modifyData &&
             (<SendMessage
               donotShowHeader
-              className={cs(styles.draftModal, 'p-20') }
+              className={cs(styles.draftModal, 'p-20')}
               handleClose={handleModifyModalClose}
               modifyData={modifyData}
               ref={sendMessageRef}

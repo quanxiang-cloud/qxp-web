@@ -1,3 +1,5 @@
+import { TIME_ZONE } from './utils';
+
 export class CancellableRequest<T> {
   private abortController: AbortController = new AbortController();
 
@@ -10,14 +12,15 @@ export class CancellableRequest<T> {
       ...fetchOptions,
       headers: {
         'X-Proxy': 'API',
+        'X-Timezone': TIME_ZONE,
         ...(fetchOptions.headers || {}),
       },
     });
     const data = await resp.json();
     return data;
-  }
+  };
 
   cancel = () => {
     this.abortController.abort();
-  }
+  };
 }

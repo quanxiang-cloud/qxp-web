@@ -25,21 +25,56 @@
 }
 
 .polynamespacedetail-header-searchinput {
+  @apply mx-8;
+
+  svg.svg-icon {
+    @apply left-24;
+  }
+
   input.search-input {
     @apply rounded-8;
+    background-color: #f9fafc;
     transition: border .3s linear;
+    &::placeholder {
+      @apply text-gray-400;
+      font-size: 12px;
+      line-height: 20px;
+    }
+  }
+}
+
+.api-search-input {
+  input.search-input {
+    @apply bg-white;
   }
 }
 
 .polynamespacedetail-table {
   height: calc(100% - 32px);
+  @mixin _firsColumn {
+    @apply w-16 pl-20 pr-0;
+  }
 
   .qxp-table-wrapper {
     height: auto;
     max-height: calc(100% - 40px);
     overflow: hidden;
     th {
-      @apply sticky top-0;
+      @apply sticky top-0 px-12;
+      &:first-child {
+        @include _firsColumn;
+      }
+      &:nth-child(2) {
+        padding-left: 4px;
+      }
+    }
+    td {
+      &:first-child {
+        @include _firsColumn;
+      }
+      &:nth-child(2) {
+        padding-left: 4px;
+      }
     }
     tr:last-child td {
       border-bottom: none;
@@ -58,8 +93,14 @@
 .polynamespacetree {
   .tree {
     div.group.tree-node {
-      @apply bg-gray-50 duration-240;
+      @apply bg-gray-50 duration-240 h-36;
       transition-property: background-color, transform;
+
+      svg.svg-icon.tree-node__toggle-icon {
+        width: 16px !important;
+        height: 16px !important;
+      }
+
       &:hover, &.tree-node--focused {
         @apply bg-white;
         &::after {
@@ -72,8 +113,9 @@
         opacity: 0;
         box-shadow: -2px 0px 24px rgba(55, 95, 243, 0.25);
       }
-      .tree-node__toggle-icon {
-        transform: none;
+      svg.tree-node__toggle-icon {
+        width: 20px !important;
+        height: 20px !important;
       }
       .tree-node__content--title {
         @apply font-normal;
@@ -119,5 +161,17 @@
         }
       }
     }
+  }
+}
+
+.orchestration-management-modal {
+  .ant-form-item-explain.ant-form-item-explain-error {
+    @apply hidden;
+  };
+}
+
+div.namespace-menu--remove {
+  &:hover {
+    @apply bg-red-50;
   }
 }

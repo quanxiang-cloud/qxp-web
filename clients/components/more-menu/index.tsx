@@ -1,4 +1,4 @@
-import React, { forwardRef, Ref } from 'react';
+import React, { forwardRef, Ref, CSSProperties } from 'react';
 import cs from 'classnames';
 import { Placement } from '@popperjs/core';
 import { useClickAway } from 'react-use';
@@ -19,6 +19,8 @@ export type MenuItem<T extends React.Key = string> = {
   key: T;
   label: React.ReactNode;
   disabled?: boolean | undefined;
+  style?: CSSProperties;
+  className?: string;
 }
 
 type MenusProps<T extends React.Key> = {
@@ -33,11 +35,12 @@ const Menus = forwardRef<HTMLDivElement, MenusProps<any>>(
     return (
       <div className="dropdown-options" ref={ref}>
         {
-          items.map(({ key, label, disabled }) => {
+          items.map(({ key, label, disabled, className, style }) => {
             return (
               <div
                 key={key}
-                className={cs('dropdown-options__option', {
+                style={style}
+                className={cs('dropdown-options__option', className, {
                   'select-option--disabled': disabled,
                   'text-blue-600 bg-blue-50': activeMenu === key,
                 })}

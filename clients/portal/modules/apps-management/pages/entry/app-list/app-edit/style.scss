@@ -1,0 +1,5 @@
+.app-upload {
+  &>div:first-child {
+    @apply h-100;
+  }
+}

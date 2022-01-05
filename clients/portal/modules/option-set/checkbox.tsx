@@ -25,7 +25,6 @@ function Checkbox({ value, onChange }: Props): JSX.Element {
         <span>扩展为多层选项集</span>
       </label>
       <Tooltip
-        inline
         label="扩展后，可以自由添加子级选项数据"
         position="top"
         className="whitespace-nowrap"

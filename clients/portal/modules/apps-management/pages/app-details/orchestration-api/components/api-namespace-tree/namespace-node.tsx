@@ -23,10 +23,13 @@ import {
 } from '@orchestrationAPI/effects/api/api-namespace';
 
 import ModalRemoveTips from '../modal-remove-tips';
+import { MatchHighlight } from '@c/match-highlight';
 
-type Props = NodeRenderProps<NameSpace>
+type Props = NodeRenderProps<NameSpace> & {
+  keyword?: string;
+}
 
-function NamespaceNode({ node, store }: Props): JSX.Element | null {
+function NamespaceNode({ node, store, keyword }: Props): JSX.Element | null {
   const [modalType, setModalType] = useState<ModalType>();
   const [, setNameSpaceID] = useLocalStorage('portal.namespace.current.id', '');
 
@@ -61,12 +64,12 @@ function NamespaceNode({ node, store }: Props): JSX.Element | null {
     pNode?.children?.filter(deleteFilter).forEach(loadChildren);
   }
 
-  const CreateAPINamespaceModal = useModal<CreateInput, CreateResponse, CreateParams>(
+  const CreateAPIChildNamespaceModal = useModal<CreateInput, CreateResponse, CreateParams>(
     modalType,
-    ModalType.CREATE_NAMESPACE,
+    ModalType.CREATE_CHILD_NAMESPACE,
     useCreateNameSpace,
     {
-      message: '新建分组成功',
+      message: '新建子分组成功',
       submitText: '确认新建',
       onSuccess: () => refreshParent('create'),
       onClose: handleCloseModal,
@@ -135,10 +138,18 @@ function NamespaceNode({ node, store }: Props): JSX.Element | null {
   return (
     <div
       onClick={handleClick}
-      className="transition-all pr-10 py-8 w-full flex items-center justify-between"
+      className="transition-all pr-10 py-8 w-full flex items-center justify-between ml-2"
     >
-      <div className="ml-10 truncate tree-node__content--title" title={node.name}>
-        {node.name}
+      <div className="flex items-center">
+        {node.expanded ?
+          (<Icon name="folder_open" size={16} />) :
+          (<Icon name="folder_outline_empty" size={16} />)
+        }
+        <div className='truncate tree-node__content--title ml-5' title={node.name}>
+          {keyword ? (
+            <MatchHighlight text={node.name} match={keyword} style={{ color: '#375FF2' }} />
+          ) : node.name}
+        </div>
       </div>
       <MoreMenu
         menus={API_DIRECTORY_MENUS}
@@ -152,9 +163,9 @@ function NamespaceNode({ node, store }: Props): JSX.Element | null {
           name='more_horiz'
         />
       </MoreMenu>
-      {CreateAPINamespaceModal}
       {EditAPINamespaceModal}
       {RemoveAPINamespaceModal}
+      {CreateAPIChildNamespaceModal}
     </div>
   );
 }

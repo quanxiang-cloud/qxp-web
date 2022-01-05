@@ -31,7 +31,7 @@ function MsgItem({
   handleDeleteMessage,
   handleCheckedReaded,
 }: Props): JSX.Element {
-  const [read, setRead] = useState(msgData.read_status);
+  const [read, setRead] = useState(msgData.readStatus);
   const queryClient = useQueryClient();
   const queryPage = useRouting();
   const msgId = getQuery('id') || msgCenter.curMsgId || '';
@@ -56,7 +56,7 @@ function MsgItem({
     onSuccess: (data: any) => {
       msgCenter.setLoadingDetail(false);
       msgCenter.setDetail(data);
-      if (msgData.read_status === MsgReadStatus.unread) {
+      if (msgData.readStatus === MsgReadStatus.unread) {
         setRead(MsgReadStatus.read);
         queryClient.invalidateQueries('count-unread-msg');
       }
@@ -133,7 +133,7 @@ function MsgItem({
           {msgData.title}
         </div>
         <div className="text-12 text-gray-400">
-          {dayjs(parseInt(String(msgData.updated_at * 1000))).format('YYYY-MM-DD HH:mm')}
+          {dayjs(parseInt(String(msgData.createdAt))).format('YYYY-MM-DD HH:mm')}
         </div>
       </div>
       <MoreMenu

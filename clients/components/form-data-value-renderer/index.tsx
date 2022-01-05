@@ -3,11 +3,15 @@ import moment from 'moment';
 
 import logger from '@lib/logger';
 import AssociatedDataValueRender from '@c/form-builder/registry/associated-data/associated-data-view';
+import Icon from '@c/icon';
 import { RoundMethod } from '@c/form-builder/registry/aggregation-records/convertor';
 import { FileList } from '@c/file-upload';
 import { QxpFileFormData } from '@c/form-builder/registry/file-upload/uploader';
+import { isEmpty } from 'lodash';
 
-const SubTable = React.lazy(() => import('@c/form-builder/registry/sub-table/preview'));
+const ReadOnlySubTable = React.lazy(
+  () => import('@c/form-builder/registry/sub-table/preview/read-only-sub-table'),
+);
 const AssociatedRecords = React.lazy(
   () => import('@c/form-builder/registry/associated-records/associated-records'),
 );
@@ -28,8 +32,8 @@ function datetimeValueRenderer({ value, schema }: ValueRendererProps): string {
 function SubTableValueRenderer({ value, schema, className }: ValueRendererProps): JSX.Element {
   return (
     <Suspense fallback={<div>loading...</div>} >
-      <SubTable
-        props={{ readOnly: true, className }}
+      <ReadOnlySubTable
+        className={className}
         value={value as Record<string, unknown>[]}
         schema={schema as any}
       />
@@ -83,14 +87,14 @@ function stringListValue({ value }: ValueRendererProps): string {
 }
 
 export default function FormDataValueRenderer({ value, schema, className }: Props): JSX.Element {
-  switch (schema['x-component']) {
-  case 'SubTable':
+  switch (schema['x-component']?.toLowerCase()) {
+  case 'subtable':
     return (<SubTableValueRenderer schema={schema} value={value} />);
-  case 'AssociatedRecords':
+  case 'associatedrecords':
     return (<AssociatedRecordsValueRender schema={schema} value={value} />);
-  case 'AssociatedData':
+  case 'associateddata':
     return (<AssociatedDataValueRender schema={schema} value={value as LabelValue} />);
-  case 'ImageUpload': {
+  case 'imageupload': {
     return (
       <div className="flex flex-wrap">
         <FileList
@@ -101,7 +105,7 @@ export default function FormDataValueRenderer({ value, schema, className }: Prop
               name: file.label,
               uid: file.value,
               type: file.type,
-              size: file.size,
+              size: file.size || 0,
             }),
           )}
         />
@@ -109,7 +113,7 @@ export default function FormDataValueRenderer({ value, schema, className }: Prop
 
     );
   }
-  case 'FileUpload': {
+  case 'fileupload': {
     return (
       <div className="max-w-290">
         <FileList
@@ -119,7 +123,7 @@ export default function FormDataValueRenderer({ value, schema, className }: Prop
               name: file.label,
               uid: file.value,
               type: file.type,
-              size: file.size,
+              size: file.size || 0,
             }),
           )}
         />
@@ -133,6 +137,72 @@ export default function FormDataValueRenderer({ value, schema, className }: Prop
     );
   }
   }
+}
+
+export function FormDataSubTableValueRenderer({ value, schema, className }: Props): JSX.Element {
+  const componentName = schema['x-component']?.toLowerCase();
+  if (componentName === 'fileupload') {
+    const fileIconStyle: React.CSSProperties = {
+      display: 'block',
+      padding: '0',
+      width: 'auto',
+    };
+    return (
+      <div className="flex items-center">
+        <Icon
+          name="attachment"
+          size={22}
+          className="mr-2 transform -rotate-90"
+        ></Icon>
+        {!isEmpty(value) ? (
+          <FileList
+            canDownload
+            style={fileIconStyle}
+            showFileName={false}
+            files={(value as QxpFileFormData[]).map((file) => ({
+              name: file.label,
+              uid: file.value,
+              type: file.type,
+              size: file.size || 0,
+            }))}
+          />
+        ) : (
+          <span className="text-gray-500">无附件</span>
+        )}
+      </div>
+    );
+  }
+
+  if (componentName === 'imageupload') {
+    return (
+      <div className="flex items-center">
+        <Icon name="image" size={22} className="mr-2"></Icon>
+        {!isEmpty(value) ? (
+          <FileList
+            canDownload
+            imgOnly={true}
+            files={(value as QxpFileFormData[]).map((file) => ({
+              name: file.label,
+              uid: file.value,
+              type: file.type,
+              size: file.size || 0,
+            }))}
+          />
+        ) : (
+          <span className="text-gray-500">无图片</span>
+        )}
+      </div>
+    );
+  }
+  return isEmpty(value) ? (
+    <span className="text-gray-300">——</span>
+  ) : (
+    <FormDataValueRenderer
+      value={value}
+      schema={schema}
+      className={className}
+    />
+  );
 }
 
 export function getBasicValue(schema: ISchema, value: FormDataValue): string {

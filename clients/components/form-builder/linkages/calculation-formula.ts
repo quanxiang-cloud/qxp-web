@@ -3,7 +3,7 @@ import { of, Observable } from 'rxjs';
 import { switchMap, debounceTime, filter, reduce, map as mapOp } from 'rxjs/operators';
 import { FormEffectHooks, ISchemaFormActions, IFieldState } from '@formily/antd';
 import { flattenDeep, isArray, isEmpty, isUndefined } from 'lodash';
-import { findVariables, LogicalFormula, parse, resolve } from 'qxp-formula';
+import { findVariables, parse, resolve } from 'qxp-formula';
 import { pipe, map, ifElse, pick, last, fromPairs } from 'ramda';
 
 import logger from '@lib/logger';
@@ -49,7 +49,7 @@ function executeFormula({ rawFormula, formActions, targetField }: ExecuteFormula
   const { setFieldState, getFieldValue } = formActions;
   const ast = parse(rawFormula);
 
-  const getDependentFields = pipe<LogicalFormula, Set<string>, string[], string[]>(
+  const getDependentFields = pipe(
     () => ast,
     findVariables,
     (variables) => [...variables],
@@ -85,11 +85,12 @@ function executeFormula({ rawFormula, formActions, targetField }: ExecuteFormula
         ));
       };
       const condition = ifElse(
-        (val) => isUndefined(val) || isNull(val) || (isArray(val) && val.every(isEmpty)),
+        () => isUndefined(fieldValue) || isNull(fieldValue) ||
+          (isArray(fieldValue) && fieldValue.every(isEmpty)),
         () => missingValueField = true,
         () => valuesAcc.values[fieldPath] = fieldValueFilter(fieldValue),
       );
-      condition(fieldValue);
+      condition();
       return { ...valuesAcc, missingValueField };
     };
   }
@@ -146,8 +147,10 @@ function executeFormula({ rawFormula, formActions, targetField }: ExecuteFormula
     function processNormalOrSubTableChange(): void {
       assignValue(subTableValueConvertor(values), getFieldPath(targetField, currentPath));
     }
-    const condition = ifElse(Boolean, processMainTableChange, processNormalOrSubTableChange);
-    condition(subTableFieldKey);
+    const condition = ifElse(
+      () => !!subTableFieldKey, processMainTableChange, processNormalOrSubTableChange,
+    );
+    condition();
   });
 }
 

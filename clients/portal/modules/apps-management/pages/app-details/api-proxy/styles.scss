@@ -58,7 +58,7 @@ textarea.api-from-textarea {
       font-weight: normal;
       line-height: 24px;
       color: var(--gray-900);
-      background: transparent;
+      background: var(--gray-50);
       &:hover,
       &.tree-node--focused {
         background: white;
@@ -152,5 +152,40 @@ textarea.api-from-textarea {
         margin-top: 15px;
       }
     }
+  }
+}
+
+.swagger-upload {
+  &:hover {
+    border: 1px dashed var(--blue-600);
+    .upload-refresh {
+      visibility: visible;
+    }
+  }
+
+  .upload-progress {
+    position: absolute;
+    top: -11px;
+    width: calc(100% - 8px);
+    .ant-progress-inner {
+      background-color: transparent;
+    }
+  }
+
+  .upload-refresh {
+    background: rgba(15,23,42,0.5);
+    border-radius: 8px;
+    .refresh-button {
+      z-index: 1;
+      transition: none;
+    }
+  }
+}
+
+.swagger-upload-fail {
+  color: var(--rose-600);
+  border-color: var(--rose-700);
+  .upload-icon {
+    color: var(--rose-600);
   }
 }
