@@ -46,7 +46,7 @@ func GetRouter() http.Handler {
 	r.Path("/_jump_to_home").Methods("GET").HandlerFunc(tokenRequired(handlers.JumpToHome))
 	r.Path("/_land_from_portal").Methods("GET").HandlerFunc(handlers.LandFromPortal)
 	r.Path("/__liveness").Methods("GET").HandlerFunc(probe.LivenessProbe)
-	r.Path("/__readiness").Methods("GET").HandlerFunc(probe.ReadinessProbe)
+	r.Path("/__readiness").HandlerFunc(probe.ReadinessProbe)
 
 	r.Path("/login/{type}").Methods("GET").HandlerFunc(handlers.HandleLogin)
 	r.Path("/login/{type}").Methods("POST").HandlerFunc(handlers.HandleLoginSubmit)
