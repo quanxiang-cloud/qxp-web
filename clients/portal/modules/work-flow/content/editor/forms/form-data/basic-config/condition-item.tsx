@@ -103,6 +103,7 @@ export default function ConditionItem({ condition, options, onChange, schemaMap 
         className="h-32 border border-gray-300 corner-2-8-8-8
               px-12 text-12 flex items-center flex-1 mb-8"
         options={options}
+        style={{ maxWidth: 'unset' }}
       />
       <div
         className={cs(
@@ -123,6 +124,7 @@ export default function ConditionItem({ condition, options, onChange, schemaMap 
               'mr-12': !hiddenInput || showDateRange,
             })}
           options={filteredOperatorOptions}
+          style={{ minWidth: 85 }}
         />
         {!hiddenInput && (
           <>
