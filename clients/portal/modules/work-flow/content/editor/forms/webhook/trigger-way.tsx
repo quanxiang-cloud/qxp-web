@@ -10,6 +10,14 @@ interface Props {
 }
 
 export default function TriggerWay({ value, onChange, setFormValue }: Props): JSX.Element {
+  function handleChange(newValue: 'request' | 'send'): () => void {
+    const valueChanged = value !== newValue;
+    return () => {
+      onChange(newValue);
+      valueChanged && setFormValue('inputs', []);
+    };
+  }
+
   return (
     <div className="mb-8">
       <p className="mt-16 mb-8 text-caption-no-color-weight text-gray-600">触发方式</p>
@@ -19,20 +27,14 @@ export default function TriggerWay({ value, onChange, setFormValue }: Props): JS
           label="获取数据"
           checked={value === 'request'}
           value="request"
-          onChange={() => {
-            onChange('request');
-            setFormValue('inputs', []);
-          }}
+          onChange={handleChange('request')}
         />
         <Checkbox
           rounded
           label="推送数据"
           checked={value === 'send'}
           value="send"
-          onChange={() => {
-            onChange('send');
-            setFormValue('inputs', []);
-          }}
+          onChange={handleChange('send')}
         />
       </div>
     </div>
