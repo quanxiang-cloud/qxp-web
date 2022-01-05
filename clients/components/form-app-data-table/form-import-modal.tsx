@@ -82,6 +82,7 @@ function ImportFormModal({ onClose }: Props): JSX.Element {
           key: 'confirm',
           iconName: 'check',
           modifier: 'primary',
+          forbidden: !fileDetail,
           onClick: () => handSubmit(),
         },
       ]}
