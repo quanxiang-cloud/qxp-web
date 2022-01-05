@@ -65,7 +65,7 @@ function FileUploader({
     removeUploadFile(deleteFile);
   }
 
-  function beforeUpload(preUploadFile: File, files: QXPUploadFileBaseProps[]): boolean {
+  function beforeUpload(preUploadFile: File, files: File[], storeFiles: QXPUploadFileBaseProps[]): boolean {
     const byteSize = isMacosX ? 1000 : 1024;
     const maxSize = (byteSize ** 2) * (maxFileSize || 0);
 
@@ -74,19 +74,18 @@ function FileUploader({
       return false;
     }
 
-    if (files.find((file) => file.name === preUploadFile.name)) {
+    if (storeFiles.find((file) => file.name === preUploadFile.name)) {
       toast.error(`已存在名为'${preUploadFile.name}' 的文件。`);
       return false;
     }
-
-    if (!multiple && files.length === 1) {
+    if (!multiple && (files.length !== 1 || storeFiles.length === 1)) {
       toast.error('仅允许上传一个附件');
       return false;
     }
 
     if (multiple) {
       const preUploadTotalSize = files.reduce((total, currFile) => (total + currFile.size), 0);
-      const uploadedTotalSize = files.reduce((total: number, currFile: { size: number; }) =>
+      const uploadedTotalSize = storeFiles.reduce((total: number, currFile: { size: number; }) =>
         (total + currFile.size), preUploadTotalSize);
       if (maxSize && uploadedTotalSize > maxSize) {
         toast.error(`文件总大小不能超过${maxFileSize}MB`);
@@ -114,7 +113,7 @@ function FileUploader({
         disabled={disabled || (!multiple && storeFiles.length >= 1)}
         description={(!multiple && storeFiles.length >= 1) ? '只能上传一个文件' : uploaderDescription}
         onSelectFiles={(files) => {
-          files.every((file)=> beforeUpload(file, storeFiles)) && prepareFilesUpload(files);
+          files.every((file)=> beforeUpload(file, files, storeFiles)) && prepareFilesUpload(files);
         }}
       />
       <FileList

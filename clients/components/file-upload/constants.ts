@@ -31,11 +31,11 @@ export const FILE_LIST_ICON: Record<string, { name: string, size: number, classN
 
 // Default img types
 export const DEFAULT_IMG_TYPES: string[] = [
-  'image/gif',
-  'image/tiff',
-  'image/png',
-  'image/bmp',
-  'image/jpeg',
+  '.gif',
+  '.tiff',
+  '.png',
+  '.bmp',
+  '.jpeg',
 ];
 
 export const THUMBNAIL_SIZE = 52;
