@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
 import { UseFormSetValue } from 'react-hook-form';
 
+import Loading from '@c/loading';
 import APISelector from '@polyApi/nodes/forms/request-config/api-selector';
 import { useGetRequestNodeApi } from '@polyApi/effects/api/raw';
 import { mergeInputs } from '@polyApi/nodes/forms/request-config';
-import Loading from '@c/loading';
+import { filterPolyApiInputs } from '@polyApi/utils/request-node';
 
 interface Value {
   value: string;
@@ -26,7 +27,7 @@ export default function API({ value, onChange, setFormValue, values }: Props): J
   useEffect(() => {
     apiDocDetail?.doc.url && setFormValue('url', apiDocDetail.doc.url);
     apiDocDetail?.doc.input.inputs && setFormValue(
-      'inputs', mergeInputs(values.inputs, apiDocDetail.doc.input.inputs),
+      'inputs', mergeInputs(values.inputs, filterPolyApiInputs(apiDocDetail.doc.input.inputs)),
     );
     apiDocDetail?.doc.method && setFormValue('method', apiDocDetail.doc.method);
   }, [apiDocDetail?.doc]);

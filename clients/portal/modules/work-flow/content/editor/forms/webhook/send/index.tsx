@@ -1,4 +1,4 @@
-import React, { forwardRef, ForwardedRef, useImperativeHandle, useRef } from 'react';
+import React, { forwardRef, ForwardedRef, useImperativeHandle, useRef, useEffect } from 'react';
 import { nanoid } from 'nanoid';
 import { groupBy } from 'ramda';
 
@@ -23,6 +23,18 @@ function Send(
   const { header = [], body = [], query = [] } = groupBy(
     ({ in: _in }) => _in as 'header' | 'body' | 'query', value?.filter(({ in: _in }) => !!_in) || [],
   );
+
+  useEffect(() => {
+    const el = document.querySelector('.flow-editor-drawer .drawer-container') as HTMLDivElement | undefined;
+    if (!el) {
+      return;
+    }
+    const oldPaddingBottom = el.style.paddingBottom;
+    el.style.paddingBottom = '64px';
+    return () => {
+      el.style.paddingBottom = oldPaddingBottom;
+    };
+  }, []);
 
   useImperativeHandle(ref, () => ({
     getCurrent: () => curRef.current?.getCurrent() ?? null,
