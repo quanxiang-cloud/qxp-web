@@ -43,10 +43,8 @@ function SendBlock(
     },
   }));
 
-  function handleSetCurrentFormulaRef(id: string) {
-    return () => {
-      currentFormulaEditorRef.current = formulaRefs.current[id];
-    };
+  function handleSetCurrentFormulaRef(id: string): void {
+    currentFormulaEditorRef.current = formulaRefs.current[id];
   }
 
   function handleSetFormulaRefs(id: string) {
@@ -102,7 +100,7 @@ function SendBlock(
               </div>
               <div
                 className="webhook-send-block--value flex justify-between items-center"
-                onClick={handleSetCurrentFormulaRef(row.id)}
+                onClick={() => handleSetCurrentFormulaRef(row.id || '')}
               >
                 <FormulaEditor
                   help=""

@@ -2,7 +2,7 @@ import { wsSubscribe } from '@lib/api/common';
 import { parseJSON } from '@lib/utils';
 
 export type SocketEventListener = (data: SocketData) => any;
-export type SocketData = { types?: string; content?: any, uuid?: string, [key: string]: any };
+export type SocketData = { type?: string; content?: any, uuid?: string, [key: string]: any };
 
 type SubscribeParams = {
   key: string;
@@ -146,7 +146,7 @@ class PushServer {
   };
 
   dispatchEvent = (data: SocketData): void => {
-    const listenerMap = this.listenersMap.get(data.types || '') || {};
+    const listenerMap = this.listenersMap.get(data.type || '') || {};
     Object.entries(listenerMap).map(([key, listener]) => {
       listener(data);
     });
