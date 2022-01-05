@@ -44,7 +44,6 @@ function PageDesign(): JSX.Element {
         <p className='text-12 text-gray-600'>选择API</p>
         <ApiSelector
           className='api-selector-wrap'
-          apiDocDetail={null}
           initRawApiPath={apiPath}
           setApiPath={setApiPath}
           simpleMode

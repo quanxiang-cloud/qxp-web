@@ -89,3 +89,7 @@ export function inputValidator(value: Input[]): boolean {
   loopValue(value);
   return isValid;
 }
+
+export function requestApiValidator({ value }: { value: string}): true | string {
+  return value ? true : '请选择触发的API';
+}

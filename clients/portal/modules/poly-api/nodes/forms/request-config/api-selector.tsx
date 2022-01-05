@@ -4,22 +4,23 @@ import { Cascader } from 'antd';
 import { useParams } from 'react-router-dom';
 import cs from 'classnames';
 
-import { useGetRequestNodeApiList } from '@polyApi/effects/api/raw';
+import { RawApiDocDetail, useGetRequestNodeApiList } from '@polyApi/effects/api/raw';
 import { useGetNamespaceFullPath, useQueryNameSpaceRawRootPath } from '@polyApi/effects/api/namespace';
 import { convertRawApiListToOptions, getChildrenOfCurrentSelectOption } from '@polyApi/utils/request-node';
 import ApiDocDetail from '@polyApi/components/api-doc-detail';
 
 type Props = {
-  apiDocDetail: any;
+  apiDocDetail?: RawApiDocDetail;
   initRawApiPath: string;
   setApiPath: (apiPath: string) => void;
   simpleMode?: boolean;
   className?: string;
   label?: string;
+  error?: string;
 }
 
 function ApiSelector({
-  apiDocDetail, setApiPath, initRawApiPath, simpleMode, className, label = '全部API:',
+  apiDocDetail, setApiPath, initRawApiPath, simpleMode, className, label = '全部API:', error,
 }: Props): JSX.Element {
   const { appID } = useParams<{ appID: string }>();
   const [apiNamespacePath, setApiNamespacePath] = useState('');
@@ -91,9 +92,10 @@ function ApiSelector({
       />
     );
   }
+
   return (
     <div className={cs('px-20 py-12 flex', className)}>
-      <div className="poly-api-selector">
+      <div className="poly-api-selector mb-8">
         <label>{label}</label>
         <Cascader
           changeOnSelect
@@ -104,13 +106,14 @@ function ApiSelector({
           onChange={onChange}
           placeholder="请选择API"
         />
+        {error && <span className="text-red-500 pt-8">{error}</span>}
       </div>
       {apiDocDetail && (
         <ApiDocDetail
           className="flex-1"
           method={apiDocDetail.doc.method}
           url={apiDocDetail.doc.url}
-          identifier={apiDocDetail.apiPath.split('/').pop().split('.').shift()}
+          identifier={apiDocDetail?.apiPath?.split('/')?.pop()?.split('.')?.shift()}
         />
       )}
     </div>

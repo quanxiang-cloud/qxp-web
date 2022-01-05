@@ -16,9 +16,12 @@ interface Props {
   onChange: (value: Value) => void;
   setFormValue: UseFormSetValue<any>;
   values: Record<string, any>;
+  error?: string;
 }
 
-export default function API({ value, onChange, setFormValue, values }: Props): JSX.Element {
+export default function API(
+  { value, onChange, setFormValue, values, error: errorMessage, ...props }: Props,
+): JSX.Element {
   const { data: apiDocDetail, isLoading, error } = useGetRequestNodeApi({
     path: value.value.slice(1),
     body: { docType: 'raw', titleFirst: true },
@@ -50,9 +53,9 @@ export default function API({ value, onChange, setFormValue, values }: Props): J
       <APISelector
         initRawApiPath={value.value}
         setApiPath={(path) => onChange({ value: path })}
-        apiDocDetail={apiDocDetail}
         className="webhook-api-select"
         label="API:"
+        error={errorMessage}
       />
       <label className="block">
         请求方法:
