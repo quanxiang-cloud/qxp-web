@@ -1,4 +1,4 @@
-import React, { forwardRef, ForwardedRef, useImperativeHandle, useRef, useEffect } from 'react';
+import React, { forwardRef, ForwardedRef, useImperativeHandle, useRef } from 'react';
 import { nanoid } from 'nanoid';
 import { groupBy } from 'ramda';
 
@@ -6,6 +6,7 @@ import { Input } from '@flow/content/editor/type';
 import type { CustomRule } from '@c/formula-editor';
 
 import Block, { RefType } from './block';
+import useDrawerContainerPadding from '../hooks/use-drawer-container-padding';
 
 interface Props {
   value?: Input[];
@@ -24,17 +25,7 @@ function Send(
     ({ in: _in }) => _in as 'header' | 'body' | 'query', value?.filter(({ in: _in }) => !!_in) || [],
   );
 
-  useEffect(() => {
-    const el = document.querySelector('.flow-editor-drawer .drawer-container') as HTMLDivElement | undefined;
-    if (!el) {
-      return;
-    }
-    const oldPaddingBottom = el.style.paddingBottom;
-    el.style.paddingBottom = '64px';
-    return () => {
-      el.style.paddingBottom = oldPaddingBottom;
-    };
-  }, []);
+  useDrawerContainerPadding(64);
 
   useImperativeHandle(ref, () => ({
     getCurrent: () => curRef.current?.getCurrent() ?? null,

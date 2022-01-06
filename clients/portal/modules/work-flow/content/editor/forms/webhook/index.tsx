@@ -16,6 +16,7 @@ import SendMethod from './send-method';
 import { isUrl, inputValidator, requestApiValidator } from './utils';
 
 import './style.scss';
+import useDrawerContainerPadding from './hooks/use-drawer-container-padding';
 
 type LocalValue = (RequestConfig | SendConfig) & { type: 'request' | 'send' };
 
@@ -131,6 +132,9 @@ export default function WebhookConfig(
     outputsRef.current = config.outputs;
     onChange({ type, config } as WebhookData);
   }, [onChange]);
+
+  const shouldRePadding = useCallback(() => !!outputsRef.current?.length, [outputsRef.current?.length]);
+  useDrawerContainerPadding(102, shouldRePadding);
 
   return (
     <>
