@@ -127,7 +127,7 @@ export default function CustomField(props: Props): JSX.Element {
     }
 
     if (rule === 'formula') {
-      const value = getVal() as string;
+      const value = typeof getVal() === 'string' ? getVal() : '';
       return (
         <div className="flex items-center justify-between">
           <Button onClick={handleConfigFormula}>配置公式</Button>
@@ -167,7 +167,7 @@ export default function CustomField(props: Props): JSX.Element {
       {isFormulaShow && (
         <FormulaModal
           onClose={handleFormulaClose}
-          value={getVal() as string}
+          value={typeof getVal() === 'string' ? getVal() : ''}
           onSubmit={handleSubmit}
         />
       )}
