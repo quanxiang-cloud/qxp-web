@@ -3,6 +3,14 @@ import { isArray, isEmpty, isString, omit } from 'lodash';
 import { isObjectField } from './object-editor';
 import { RawApiDetail } from '../effects/api/raw';
 
+type ParamsConfig = Omit<POLY_API.PolyNodeInput, 'data' | 'type' | 'in'> & {
+  type: string;
+  data: string;
+  path: string;
+  in: string;
+  arrayParent?: { name: string, title: string };
+}
+
 export function parseParamOfPath(url: string): Record<string, ParamsConfig[]> {
   const pathArr = url.split('/:');
   pathArr.shift();
@@ -20,48 +28,6 @@ export function parseParamOfPath(url: string): Record<string, ParamsConfig[]> {
     };
   });
   return { path: config };
-}
-
-export function mapNamespacePathsToLabelValue1(namespacePath: Array<any> | null): any {
-  if (!namespacePath) {
-    return;
-  }
-
-  return namespacePath.map(({ name, parent, children }: any) => {
-    return {
-      label: name,
-      value: `${parent}/${name}`,
-      path: `${parent}/${name}`,
-      isLeaf: false,
-      childrenData: mapNamespacePathsToLabelValue1(children),
-    };
-  });
-}
-
-export function mapNamespacePathsToLabelValue(namespacePath: Array<any> | null, path?: string): any {
-  if (!namespacePath) {
-    return;
-  }
-
-  return namespacePath.map(({ name, parent, children }: any, index: number) => {
-    const optionPath = path ? `${path}.${index}` : `${index}`;
-
-    return {
-      label: name,
-      value: `${parent}/${name}`,
-      children: children ? mapNamespacePathsToLabelValue(children, optionPath) :
-        [{ label: '暂无API', value: '', isLeaf: true, disabled: true }],
-      path: optionPath,
-    };
-  });
-}
-
-type ParamsConfig = Omit<POLY_API.PolyNodeInput, 'data' | 'type' | 'in'> & {
-  type: string;
-  data: string;
-  path: string;
-  in: string;
-  arrayParent?: { name: string, title: string };
 }
 
 export function convertToParamsConfig(
@@ -104,11 +70,21 @@ export type PolyApiSelectorOption = {
   disabled: boolean;
 }
 
+export type ApiCascaderOption = {
+  label: string;
+  value: string;
+  children: ApiCascaderOption[] | undefined;
+  isLeaf: boolean;
+  path: string;
+  childrenData?: any;
+  disabled?: boolean;
+}
+
 export function mergeApiListToChildNameSpace(
-  childNameSpace: any, rawApiList: RawApiDetail[],
-): PolyApiSelectorOption[] {
+  childNameSpace: ApiCascaderOption[] | undefined, rawApiList: RawApiDetail[],
+): ApiCascaderOption[] {
   if (!rawApiList.length && !childNameSpace) {
-    return [{ label: '暂无api', value: '', path: '', isLeaf: true, disabled: true }];
+    return [{ label: '暂无api', value: '', path: '', children: undefined, isLeaf: true, disabled: true }];
   }
 
   return (childNameSpace || []).concat(rawApiList.map(({ title, name, fullPath }: RawApiDetail) => {
@@ -116,6 +92,7 @@ export function mergeApiListToChildNameSpace(
       label: title || name.split('.').shift() || '',
       value: fullPath,
       path: fullPath,
+      children: undefined,
       isLeaf: true,
       disabled: false,
     };
@@ -126,15 +103,16 @@ const Title_Map: Record<string, string> = {
   inner: '平台API',
   customer: '第三方API',
 };
-export function getChildrenOfCurrentSelectOption(currentChildrenData: any): any {
+export function getChildrenOfCurrentSelectOption(currentChildrenData: any): ApiCascaderOption[] | undefined {
   if (!currentChildrenData) {
-    return null;
+    return;
   }
 
   return currentChildrenData.map(({ name, children, parent, title }: any) => {
     return {
       label: title ? title : (Title_Map[name] || name),
       value: name,
+      children: undefined,
       childrenData: children,
       isLeaf: false,
       path: `${parent}/${name}`,
@@ -189,12 +167,8 @@ export function filterPolyApiInputs(inputs: POLY_API.PolyNodeInput[]): POLY_API.
 }
 
 export function appendApiListToTargetOption(
-  option: any, targetOptionPath: string, apiList: RawApiDetail[],
-): any {
-  if (!option) {
-    return;
-  }
-
+  option: ApiCascaderOption, targetOptionPath: string, apiList: RawApiDetail[],
+): ApiCascaderOption {
   if (option.path === targetOptionPath) {
     return {
       ...option,
@@ -204,7 +178,7 @@ export function appendApiListToTargetOption(
   }
 
   if (option.children) {
-    option.children = option.children.map((option: any) => {
+    option.children = option.children.map((option: ApiCascaderOption) => {
       return appendApiListToTargetOption(option, targetOptionPath, apiList);
     });
   }
@@ -213,8 +187,8 @@ export function appendApiListToTargetOption(
 }
 
 export function mergeApiListToOptions(
-  options: any[], targetOptionPath: string, apiList: RawApiDetail[],
-): any[] {
+  options: ApiCascaderOption[], targetOptionPath: string, apiList: RawApiDetail[],
+): ApiCascaderOption[] {
   return options.map((option) => {
     return appendApiListToTargetOption(option, targetOptionPath, apiList);
   });
