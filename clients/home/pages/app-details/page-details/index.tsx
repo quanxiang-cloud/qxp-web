@@ -35,7 +35,7 @@ function PageDetails(): JSX.Element | null {
     },
     4: {
       key: 'batchRemove',
-      action: () => delFormData,
+      action: delFormData,
       text: '批量删除',
       iconName: 'restore_from_trash',
       type: 'popConfirm',
@@ -44,17 +44,13 @@ function PageDetails(): JSX.Element | null {
     },
     5: {
       key: 'import',
-      action: () => {
-        store.operationType = '导入';
-      },
+      action: () => {},
       text: '导入',
       iconName: 'file_download',
     },
     6: {
       key: 'export',
-      action: () => {
-        store.operationType = '导出';
-      },
+      action: () => {},
       text: '导出',
       iconName: 'file_upload',
     },
@@ -70,20 +66,20 @@ function PageDetails(): JSX.Element | null {
     }
   });
 
-  const goEdit = (rowID: string): void => {
+  function goEdit(rowID: string): void {
     setCurRowID(rowID);
     setModalType('dataForm');
-  };
+  }
 
-  const goView = (rowID: string): void => {
+  function goView(rowID: string): void {
     setCurRowID(rowID);
     setModalType('details');
-  };
+  }
 
-  const delFormData = async (ids: string[]): Promise<any> => {
+  async function delFormData(ids: string[]): Promise<any> {
     await store.delFormData(ids);
     formTableRef.current?.refresh();
-  };
+  }
 
   const tableHeaderBtnList: TableHeaderBtn[] =
   Object.entries(BUTTON_GROUP).reduce((acc: TableHeaderBtn[], [key, buttonValue]) => {
