@@ -99,7 +99,7 @@ export default function AlterRoleFunc({ funcs: functions }: IAlterRoleFunc): JSX
               <Checkbox
                 disabled
                 checked={func.has}
-                className="mr-16 text-caption border-1 border-gray-200 py-8 pl-16 func-child rounded-8"
+                className="text-caption border-1 border-gray-200 py-8 pl-16 func-child rounded-8"
                 key={func.id}
                 value={func.funcTag}
                 onChange={updateFuncs(func.funcTag)}
@@ -135,7 +135,7 @@ export default function AlterRoleFunc({ funcs: functions }: IAlterRoleFunc): JSX
               headerActionClassName="no-underline text-gray-400
               text-12 leading-4 cursor-pointer"
               content={<>{renderFuncCard(func.child)}</>}
-              contentClassName="pt-12 pb-20 px-16 flex justify-start whitespace-nowrap flex-wrap"
+              contentClassName="pt-12 pb-20 px-16 flex justify-start whitespace-nowrap flex-wrap gap-16"
             />
           );
         })}
