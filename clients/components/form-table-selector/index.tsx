@@ -87,8 +87,9 @@ ref?: Ref<any>): JSX.Element {
             position="top"
             label="已自动关联开始节点工作表，暂不支持更改"
             labelClassName="whitespace-nowrap"
+            theme="dark"
           >
-            <span>
+            <div className="flex-1">
               <Select
                 disabled
                 ref={ref}
@@ -98,7 +99,7 @@ ref?: Ref<any>): JSX.Element {
                 onChange={onWorkFormChange}
                 className="h-28 border-none px-12 text-12 flex items-center flex-1 work-flow-form-selector"
               />
-            </span>
+            </div>
           </ToolTip>
         )}
       </div>

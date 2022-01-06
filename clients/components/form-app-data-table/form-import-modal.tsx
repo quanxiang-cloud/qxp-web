@@ -82,6 +82,7 @@ function ImportFormModal({ onClose }: Props): JSX.Element {
           key: 'confirm',
           iconName: 'check',
           modifier: 'primary',
+          forbidden: !fileDetail,
           onClick: () => handSubmit(),
         },
       ]}
@@ -102,6 +103,7 @@ function ImportFormModal({ onClose }: Props): JSX.Element {
             // 'application/vnd.ms-excel',
             // 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
           ]}
+          onFileDelete={setfFleDetail}
           onFileSuccess={(fileDetail: QXPUploadFileTask) => setfFleDetail(fileDetail)}
         />
         <p className="mt-12 select-none px-40 text-12">

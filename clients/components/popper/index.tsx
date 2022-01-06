@@ -4,7 +4,7 @@ import { createPopper, Instance, Placement, Modifier } from '@popperjs/core';
 
 export type TriggerMethod = 'click' | 'hover' | 'focus' | 'forever';
 
-type Theme = 'light' | 'dark';
+export type Theme = 'light' | 'dark';
 
 type Props = {
   reference: React.RefObject<Element>;

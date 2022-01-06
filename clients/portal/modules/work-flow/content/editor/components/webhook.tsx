@@ -8,6 +8,7 @@ export default function WebhookNodeComponent(props: Props): JSX.Element {
   const businessData = data.businessData as WebhookData;
 
   const url = businessData.type === 'request' ? businessData.config.url : businessData.config.sendUrl;
+  const desc = businessData.type === 'request' ? '获取 ' : '推送 ';
 
   return (
     <NodeComponentWrapper
@@ -19,7 +20,7 @@ export default function WebhookNodeComponent(props: Props): JSX.Element {
       <div className="text-caption-no-color bg-gray-100 py-4 px-8 rounded-4 truncate whitespace-nowrap">
         <span className="text-gray-400">设置节点: </span>
         <span className="text-gray-600" title={url}>
-          {(businessData.type === 'request' ? '获取 ' : '推送 ') + url}
+          {`${url ? `${desc}${url}` : '未配置'}`}
         </span>
       </div>
     </NodeComponentWrapper>

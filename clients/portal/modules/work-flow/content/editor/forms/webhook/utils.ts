@@ -1,8 +1,8 @@
-import { isString, flattenDeep } from 'lodash';
+import { isString, flattenDeep, isArray } from 'lodash';
 import { Node, isNode } from 'react-flow-renderer';
 
 import store, { getNodeElementById } from '@flow/content/editor/store';
-import { Data } from '@flow/content/editor/type';
+import { Data, Input } from '@flow/content/editor/type';
 
 function getElementParents(element: Node<Data>): string[] {
   return flattenDeep(element?.data?.nodeData.parentID?.map((id) => {
@@ -72,4 +72,24 @@ export function webhookPathTreeSourceGetter(
 
 export function isUrl(value: string): boolean {
   return /^(http|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-.,@?^=%&:/~+#]*[\w\-@?^=%&/~+#])?$/.test(value);
+}
+
+export function inputValidator(value: Input[]): boolean {
+  let isValid = true;
+  function loopValue(v: Input[]): void {
+    v.forEach((v) => {
+      if (isArray(v)) {
+        loopValue(v);
+      }
+      if (v.required && !v.data) {
+        isValid = false;
+      }
+    });
+  }
+  loopValue(value);
+  return isValid;
+}
+
+export function requestApiValidator({ value }: { value: string}): true | string {
+  return value ? true : '请选择触发的API';
 }
