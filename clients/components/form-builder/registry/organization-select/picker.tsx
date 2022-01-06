@@ -7,9 +7,9 @@ import Button from '@c/button';
 import './index.scss';
 
 interface Props {
-    // defaultValue: EmployeeOrDepartmentOfRole[];
-    value: EmployeeOrDepartmentOfRole[];
-    onChange: (list: EmployeeOrDepartmentOfRole[]) => void;
+  // defaultValue: EmployeeOrDepartmentOfRole[];
+  value: EmployeeOrDepartmentOfRole[];
+  onChange: (list: EmployeeOrDepartmentOfRole[]) => void;
 }
 
 const Picker = ({ value: defaultValue = [], onChange }: Props) => {

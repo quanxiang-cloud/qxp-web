@@ -27,7 +27,7 @@ const PreviewMsg = ({
     );
   }
 
-  const { title, content, receivers, types, type, creatorName, updateAt, files } = prevData;
+  const { title, content, receivers, types, type, creatorName, createdAt, files } = prevData;
   const msgType = typeof types !== 'undefined' ? types : type; // todo
   const fileList = files?.map((item) => ({
     uid: item.url || '',
@@ -45,7 +45,7 @@ const PreviewMsg = ({
     txt = '未知消息类型';
   }
   const infoText = [
-    dayjs(updateAt * 1000).format('YYYY-MM-DD HH:mm:ss'), txt, creatorName || window.USER.userName,
+    dayjs(createdAt).format('YYYY-MM-DD HH:mm:ss'), txt, creatorName || window.USER.userName,
   ].join(' · ');
 
   return (

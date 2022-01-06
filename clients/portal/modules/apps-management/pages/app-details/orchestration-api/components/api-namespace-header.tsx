@@ -46,7 +46,7 @@ function APINamespaceHeader(): JSX.Element {
 
   return (
     <header
-      className="px-16 py-12 flex justify-between items-center bg-gray-50 h-44"
+      className="px-16 py-12 flex justify-between items-center h-44"
       style={{ zIndex: 1 }}
     >
       <span className="text-caption-no-weight font-semibold">API 编排</span>

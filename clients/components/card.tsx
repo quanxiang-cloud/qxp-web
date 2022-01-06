@@ -53,7 +53,7 @@ export default function Card({
         />
       )}
       {(content || children) && (
-        <main className={cs('flex flex-grow', contentClassName)}>
+        <main className={contentClassName}>
           {content || children}
         </main>
       )}

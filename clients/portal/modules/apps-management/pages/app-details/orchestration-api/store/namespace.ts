@@ -38,5 +38,5 @@ export default class APINamespaceTreeStore extends TreeStore<NameSpace> {
       });
       return child;
     });
-  }
+  };
 }

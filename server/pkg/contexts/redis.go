@@ -8,7 +8,7 @@ import (
 
 // RedisConfig stores a configuration of Redis.
 type RedisConfig struct {
-	Hosts    []string `yaml:"hosts" validate:"required"`
+	Addrs    []string `yaml:"addrs" validate:"required"`
 	Timeout  int      `yaml:"timeout" default:"15"`
 	DB       int      `yaml:"db"  default:"1"`
 	Password string   `yaml:"password" default:""`
@@ -22,7 +22,7 @@ func NewRedisClient(c *RedisConfig) redis.UniversalClient {
 	}
 
 	return redis.NewUniversalClient(&redis.UniversalOptions{
-		Addrs:        c.Hosts,
+		Addrs:        c.Addrs,
 		DB:           c.DB,
 		DialTimeout:  time.Duration(c.Timeout) * time.Second,
 		ReadTimeout:  time.Duration(c.Timeout) * time.Second,

@@ -18,7 +18,7 @@ export default function ResetPasswordModal({ visible, onCancel }: Props): JSX.El
     old: '',
     new: '',
   });
-  const formRef = useRef<FormRef>(null);
+  const formRef = useRef<FormRef | null>(null);
   const [loading, setLoading] = useState(false);
   const mutation = useMutation(userResetPassword, {
     onSuccess: () => {

@@ -33,18 +33,18 @@ const STATUS_LIST: Status[] = [
   { value: -1, key: 'unPublished', label: '未发布' },
 ];
 
-function Header({ changeParams, params, setModalType, countMaps }: Props) {
-  const search = (e: React.KeyboardEvent) => {
+function Header({ changeParams, params, setModalType, countMaps }: Props): JSX.Element {
+  const search = (e: React.KeyboardEvent): void => {
     if (e.key === 'Enter') {
       changeParams({ appName: (e.target as any).value });
     }
   };
 
-  const clear = (val: string) => {
+  function clear(val: string): void {
     if (val === '') {
       changeParams({ appName: '' });
     }
-  };
+  }
 
   return (
     <div className='app-filter-column'>

@@ -29,9 +29,8 @@
   width: 254px;
 }
 
-.description {
-  max-width: 200px;
-  @apply flex items-center;
+.description>svg {
+  display: none;
 }
 
 .description-input {

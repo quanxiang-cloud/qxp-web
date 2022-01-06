@@ -86,6 +86,82 @@ export const CUSTOM_OPERATOR_PERMISSION = [
   },
 ];
 
+export const groupType2WeightMap: Record<string, number> = {
+  manual: 0,
+  condition: 1,
+  message: 2,
+  developer: 3,
+};
+
+export const groupType2NameMap: Record<string, string> = {
+  manual: '人工处理',
+  condition: '条件',
+  message: '消息通知',
+  developer: '开发者',
+};
+
+export const nodeLists = [{
+  text: '填写',
+  type: 'fillIn',
+  iconName: 'edit',
+  iconClassName: 'bg-teal-500',
+  groupType: 'manual',
+}, {
+  text: '审批',
+  type: 'approve',
+  iconName: 'approves',
+  iconClassName: 'bg-indigo-500',
+  groupType: 'manual',
+}, {
+  text: '分流',
+  type: 'processBranch',
+  iconName: 'share',
+  iconClassName: 'bg-teal-500',
+  groupType: 'condition',
+}, {
+  text: '变更流程参数',
+  type: 'processVariableAssignment',
+  iconName: 'assignment',
+  iconClassName: 'bg-indigo-500',
+  groupType: 'manual',
+}, {
+  text: '数据新增',
+  type: 'tableDataCreate',
+  iconName: 'create_new_folder',
+  iconClassName: 'bg-teal-500',
+  groupType: 'manual',
+}, {
+  text: '数据更新',
+  type: 'tableDataUpdate',
+  iconName: 'update',
+  iconClassName: 'bg-indigo-500',
+  groupType: 'manual',
+}, {
+  text: '发送邮件',
+  type: 'email',
+  iconName: 'email',
+  iconClassName: 'bg-teal-500',
+  groupType: 'message',
+}, {
+  text: '站内信',
+  type: 'letter',
+  iconName: 'message',
+  iconClassName: 'bg-indigo-500',
+  groupType: 'message',
+}, {
+  text: '抄送',
+  type: 'autocc',
+  iconName: 'info',
+  iconClassName: 'bg-teal-500',
+  groupType: 'message',
+}, {
+  text: 'Webhook',
+  type: 'webhook',
+  iconName: 'code',
+  iconClassName: 'bg-cyan-500',
+  groupType: 'developer',
+}];
+
 export const COMPONENT_OPERATORS_MAP = {
   input: ['eq', 'neq', 'include', 'not-include', 'null', 'not-null'],
   textarea: ['include', 'not-include', 'null', 'not-null'],

@@ -89,7 +89,14 @@ export default function TriggerCondition({
   }
 
   function onDelete(curCondition: TriggerConditionExpressionItem): void {
-    onChange(updateTriggerConditionField(value, curCondition, null));
+    const newValue = updateTriggerConditionField(value, curCondition, null);
+    if (newValue.op === 'or') {
+      newValue.expr = newValue.expr.filter((item) => {
+        const isEmptyAnd = item.op === 'and' && !item.expr.length;
+        return !isEmptyAnd;
+      });
+    }
+    onChange(newValue);
   }
 
   function onTriggerConditionItemChange(
@@ -188,9 +195,7 @@ export default function TriggerCondition({
 
       return (
         <div key={index}>
-          <div className={cs('border', {
-            'border-red-600': !isValid,
-          })}>
+          <div className={cs({ 'border-red-600': !isValid })}>
             <section className="corner-2-8-8-8 bg-gray-100 px-16 py-12">
               {triggerCondition.op === 'and' && andConditionRender(triggerCondition)}
               {triggerCondition.op === 'and' &&
@@ -240,7 +245,9 @@ export default function TriggerCondition({
         'opacity-0': !openMore,
         'opacity-1': openMore,
       })}>
-        {conditionRender(value)}
+        <div className="border rounded-8 overflow-hidden">
+          {conditionRender(value)}
+        </div>
         <div
           className={cs(
             'flex items-center border border-dashed border-gray-300 corner-8-2-8-8',

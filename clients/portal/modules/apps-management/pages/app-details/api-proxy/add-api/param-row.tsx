@@ -111,12 +111,21 @@ function ParamRow({
     return (parentPath || '').split('.').filter((v)=> Number.isInteger(parseInt(v))).length;
   }
 
+  function isArrayChild(): boolean {
+    const pathArray = (parentPath || '').split('.');
+    return pathArray[pathArray.length - 1] === '_array_nodes_' ? true : false;
+  }
+
   // When the parent collapses, the child needs to collapse with it
   function isRowExpand(parentPath: string): boolean {
     const parentPathList = parentPath.split('.');
     const isExpand: Array<boolean> = [true];
     for (let index = 2; index < parentPathList.length; index += 2) {
-      if (!get(store.parameters, [...parentPath?.split('.').slice(0, index), 'expand'].join('.'), true)) {
+      if (!get(
+        store.parameters,
+        [...(parentPath?.split('.').slice(0, index) ?? []), 'expand'].join('.'),
+        true,
+      )) {
         isExpand[0] = false;
         break;
       }
@@ -150,6 +159,7 @@ function ParamRow({
     >
       <td className={cs('param-name flex items-center')} style={{
         paddingLeft: (getLevel() * 20) + 'px',
+        backgroundColor: isArrayChild() ? '#EFEFEF4D' : '',
       }}>
         <input
           type="hidden"
@@ -166,10 +176,11 @@ function ParamRow({
                 type="text"
                 className={cs({
                   error: get(errors, getFieldName('name')),
-                  'opacity-50 cursor-not-allowed': readonly,
+                  'opacity-50 cursor-not-allowed': readonly || isArrayChild(),
                 })}
                 maxLength={32}
                 placeholder='新建参数'
+                disabled={isArrayChild()}
                 {...field}
                 value={name}
                 onChange={(ev)=> {
@@ -304,11 +315,11 @@ function ParamRow({
               return (
                 <Checkbox
                   className={cs({
-                    'cursor-not-allowed': readonly,
+                    'cursor-not-allowed': readonly || isArrayChild(),
                   })}
                   {...field}
                   checked={required}
-                  disabled={readonly}
+                  disabled={readonly || isArrayChild()}
                   onChange={(ev)=> handleChangeField(getFieldName('required'), ev.target.checked)}
                 />
               );

@@ -70,7 +70,7 @@ function mapApiToNodeItem(api: PolyAPI.Api): NodeItem<PolyAPI.Api> {
 }
 
 class ApiDocStore {
-  fetchDataModelDisposer: IReactionDisposer
+  fetchDataModelDisposer: IReactionDisposer;
 
   constructor() {
     this.fetchDataModelDisposer = reaction(() => this.tableID, this.fetchSchema);
@@ -87,10 +87,10 @@ class ApiDocStore {
   @observable isAPITabLoading = true;
   @observable useFieldsID = false;
   @observable ApiPath = '';
-  @observable defaultActiveKey = 'pageForm'
+  @observable defaultActiveKey = 'pageForm';
   @observable docType: DocType = 'curl';
-  @observable params: DataModelsParameter = {}
-  @observable apiNsList: PolyAPI.Namespace[] = []
+  @observable params: DataModelsParameter = {};
+  @observable apiNsList: PolyAPI.Namespace[] = [];
 
   @computed get fields(): ModelField[] {
     return Object.entries(this.dataModelSchema.schema.properties || {}).map(([key, fieldSchema]) => {
@@ -117,7 +117,7 @@ class ApiDocStore {
     }).catch((err) => {
       toast.error(err);
     });
-  }
+  };
 
   @action
   changeKeyword = (keyword: string): void => {
@@ -127,7 +127,7 @@ class ApiDocStore {
     this.currentDataModel = this.dataModels[0] || INIT_CURRENT_MODEL;
     this.tableID = this.dataModels[0]?.tableID;
     this.defaultActiveKey = this.currentDataModel.source === 1 ? 'pageForm' : 'dataModel';
-  }
+  };
 
   @action
   fetchSchema = (tableID: string): void => {
@@ -140,7 +140,7 @@ class ApiDocStore {
       this.isAPITabLoading = false;
       toast.error(err);
     });
-  }
+  };
 
   @action
   fetchXName = (apiType: ApiType): void => {
@@ -152,7 +152,7 @@ class ApiDocStore {
       this.ApiPath = res.name;
       this.isAPILoading = false;
     }).catch((err) => toast.error(err));
-  }
+  };
 
   @action
   fetchApiDoc = (docType: DocType, titleFirst: boolean): void => {
@@ -171,7 +171,7 @@ class ApiDocStore {
         this.isAPILoading = false;
       });
     }
-  }
+  };
 
   @action
   fetchApiNamespaces = async (): Promise<void> => {
@@ -182,12 +182,12 @@ class ApiDocStore {
     } catch (err) {
       toast.error(err);
     }
-  }
+  };
 
   @action
   setNsList = (list: PolyAPI.Namespace[]): void => {
     this.apiNsList = list;
-  }
+  };
 
   @action
   fetchSubNamespaces = async (parent: NodeItem<PolyAPI.Namespace>): Promise<void> => {
@@ -204,7 +204,7 @@ class ApiDocStore {
     } catch (err) {
       toast.error(err);
     }
-  }
+  };
 
   @action
   fetchNsApis = async (parent: NodeItem<PolyAPI.Namespace>): Promise<void> => {
@@ -218,18 +218,18 @@ class ApiDocStore {
     } catch (err) {
       toast.error(err);
     }
-  }
+  };
 
   @action
   setApiPath = (path: string): void => {
     this.ApiPath = path;
-  }
+  };
 
   @action
   reset = (): void => {
     this.tableID = '';
     this.apiNsList = [];
-  }
+  };
 }
 
 export default new ApiDocStore();

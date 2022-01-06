@@ -18,7 +18,7 @@ type CountMapsParams = {
 }
 
 class AppListStore {
-  searchChange: IReactionDisposer
+  searchChange: IReactionDisposer;
   constructor() {
     this.searchChange = reaction(() => this.params, this.fetchAppList);
   }
@@ -53,7 +53,7 @@ class AppListStore {
       this.allAppList = this.allAppList.filter(({ id }) => id !== _id);
       toast.success('删除成功！');
     });
-  }
+  };
 
   @action
   updateAppStatus = (id: string, useStatus: number): Promise<void | AppInfo> => {
@@ -72,7 +72,7 @@ class AppListStore {
       });
       toast.success(useStatus > 0 ? '发布成功！' : '下架成功');
     });
-  }
+  };
 
   @action
   fetchAppList = (params: Params): Promise<void> => {
@@ -86,12 +86,12 @@ class AppListStore {
     }).catch(() => {
       this.isListLoading = false;
     });
-  }
+  };
 
   @action
   changeParams = (newParams: Params): void => {
     this.params = { ...this.params, ...newParams };
-  }
+  };
 
   @action
   createdApp = (appInfo: AppInfo): Promise<string> => {
@@ -107,7 +107,7 @@ class AppListStore {
       });
       return newApp.id;
     });
-  }
+  };
 
   @action
   importApp = async (appInfo: AppInfo): Promise<any> => {
@@ -124,7 +124,7 @@ class AppListStore {
     }
     this.appList = [newApp, ...this.appList];
     this.allAppList = [newApp, ...this.allAppList];
-  }
+  };
 
   @action
   updateApp = (appInfo: AppInfo): void => {
@@ -134,7 +134,7 @@ class AppListStore {
       }
       return appItem;
     });
-  }
+  };
 }
 
 export default new AppListStore();

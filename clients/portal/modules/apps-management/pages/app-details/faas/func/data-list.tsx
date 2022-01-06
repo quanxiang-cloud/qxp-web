@@ -31,13 +31,13 @@ function DataList(): JSX.Element {
     {
       Header: '名称',
       id: 'alias',
-      accessor: ({ id, alias }: FuncField) => {
+      accessor: (info: FuncField) => {
         return (
           <span
             className="text-blue-600 cursor-pointer"
-            onClick={() => onClickTool(id, 'funDetail')}
+            onClick={() => onClickTool(info, 'funDetail')}
           >
-            {alias}
+            {info.alias}
           </span>
         );
       },
@@ -95,15 +95,15 @@ function DataList(): JSX.Element {
       accessor: ({ id, description }: FuncField) => {
         let descriptionValue = description;
         return (
-          <div className="description">
-            <span className="truncate" title={description}>{description}</span>
+          <div className="flex items-center description">
+            <span className="truncate flex-1 max-w-min" title={description}>{description}</span>
             <PopConfirm
               content={(
                 <div
                   className="flex flex-col"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <div className="text-body2 text-gray-600 mb-8" >描述</div>
+                  <div className="text-gray-600 mb-8" >描述</div>
                   <TextArea
                     name="name"
                     defaultValue={description}
@@ -116,7 +116,7 @@ function DataList(): JSX.Element {
               okText="保存"
               onOk={() => updateFuncDesc(id, descriptionValue)}
             >
-              <Icon clickable name='edit' className="ml-4 hidden cursor-pointer" />
+              <Icon clickable name='edit' className="ml-4 cursor-pointer" />
             </PopConfirm>
           </div>
         );
@@ -137,36 +137,36 @@ function DataList(): JSX.Element {
     {
       Header: '操作',
       id: 'action',
-      accessor: ({ id, state }: FuncField) => {
+      accessor: (info: FuncField) => {
         return (
           <div className="flex gap-20">
-            {state === 'True' && (
+            {info.state === 'True' && (
               <>
-                <span className="operate" onClick={() => temp(id)}>定义</span>
-                <span className="operate" onClick={() => onClickTool(id, 'build')}>构建</span>
-                <span className="cursor-pointer text-red-600" onClick={() => onClickTool(id, 'deletefunc')}>
+                <span className="operate" onClick={() => defineFunc(info.id)}>定义</span>
+                <span className="operate" onClick={() => onClickTool(info, 'build')}>构建</span>
+                <span className="cursor-pointer text-red-600" onClick={() => onClickTool(info, 'deletefunc')}>
                   删除
                 </span>
               </>
             )}
-            {state === 'False' && (
-              <span className="cursor-pointer text-red-600" onClick={() => onClickTool(id, 'deletefunc')}>
+            {info.state === 'False' && (
+              <span className="cursor-pointer text-red-600" onClick={() => onClickTool(info, 'deletefunc')}>
                   删除
               </span>
             )}
-            {(state === 'Unknown' || !state) && <span>-</span> }
+            {(info.state === 'Unknown' || !info.state) && <span>-</span> }
           </div>
         );
       },
     },
   ];
 
-  function onClickTool(id: string, modalType: string): void {
-    store.currentFuncID = id;
-    store.modalType = modalType;
+  function onClickTool(info: FuncField, type: string): void {
+    store.currentFunc = info;
+    store.modalType = type;
   }
 
-  function temp(id: string): void {
+  function defineFunc(id: string): void {
     store.checkHasCoder().then((hasCode) => {
       if (hasCode) return store.defineFunc(id);
       store.creatCoder();
@@ -213,8 +213,8 @@ function DataList(): JSX.Element {
         />
       </div>
       <Pagination
-        total={store.funcCount}
-        renderTotalTip={() => `共 ${store.funcCount} 条数据`}
+        total={store.funcList.length}
+        renderTotalTip={() => `共 ${store.funcList.length} 条数据`}
         onChange={(current, pageSize) => store.fetchFuncList(store.searchAlias, current, pageSize)}
       />
       {store.modalType === 'build' && <BuildModal onClose={() => store.modalType = ''} />}

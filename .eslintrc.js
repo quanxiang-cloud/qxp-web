@@ -14,6 +14,7 @@ module.exports = {
   env: {
     browser: true,
     es2021: true,
+    node: true,
   },
   globals: {
     window: true,
@@ -50,9 +51,15 @@ module.exports = {
     'func-call-spacing': 'off',
     camelcase: 'off',
     'arrow-parens': ['error', 'always'],
-    indent: ['error', 2],
+    indent: ['error', 2, {
+      "ignoredNodes": [
+        "FunctionExpression > .params[decorators.length > 0]",
+        "FunctionExpression > .params > :matches(Decorator, :not(:first-child))",
+        "ClassBody.body > PropertyDefinition[decorators.length > 0] > .key"
+      ]
+    }],
     // https://github.com/typescript-eslint/typescript-eslint/issues/1824
-    // '@typescript-eslint/indent': ['error', 2],
+    // "@typescript-eslint/indent": ["error", 2],
     'max-len': [
       1,
       {

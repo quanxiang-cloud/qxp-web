@@ -133,7 +133,7 @@ function MsgItem({
           {msgData.title}
         </div>
         <div className="text-12 text-gray-400">
-          {dayjs(parseInt(String(msgData.createdAt * 1000))).format('YYYY-MM-DD HH:mm')}
+          {dayjs(parseInt(String(msgData.createdAt))).format('YYYY-MM-DD HH:mm')}
         </div>
       </div>
       <MoreMenu

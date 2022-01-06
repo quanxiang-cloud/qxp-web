@@ -1,6 +1,8 @@
-import { createPortal } from 'react-dom';
 import { ReactElement, MutableRefObject } from 'react';
-import { isPromise } from '@m/qxp-ui-mobile/utils/index';
+import { createPortal } from 'react-dom';
+
+import { isPromise } from '.';
+
 export type GetContainer = HTMLElement | (() => HTMLElement) | null;
 
 export function resolveContainer(
@@ -78,4 +80,20 @@ export function getTargetElement(
   }
 
   return targetElement;
+}
+
+export function isHidden(elementRef?: HTMLElement): boolean {
+  const el = elementRef;
+  if (!el) {
+    return false;
+  }
+
+  const style = window.getComputedStyle(el);
+  const hidden = style.display === 'none';
+
+  // offsetParent returns null in the following situations:
+  // 1. The element or its parent element has the display property set to none.
+  // 2. The element has the position property set to fixed
+  const parentHidden = el.offsetParent === null && style.position !== 'fixed';
+  return hidden || parentHidden;
 }

@@ -1,4 +1,4 @@
-import { JSXElementConstructor } from 'react';
+import { FC } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/antd';
 import {
   Input,
@@ -61,11 +61,17 @@ import Subordination from './fields/subordination';
 import LinkedTable from './fields/linked-table';
 import CustomizedDatasetBtn from '../../cascade-selector/customized-dataset-btn';
 import DataSetSelector from '../../cascade-selector/dataset-selector';
-import CheckboxGroup from '../../checkbox-group/checkboxGroup';
 import AggregationRecords from '@c/form-builder/registry/aggregation-records/summary-field';
+import AssociateObject from '@c/form-builder/registry/aggregation-records/associate-object';
+import StatisticalRangeConfig from '@c/form-builder/registry/aggregation-records/statistical-range-config';
 import Serial from '@c/form-builder/registry/serial-number/serial';
 
-export const COMPONENTS: Record<string, JSXElementConstructor<ISchemaFieldComponentProps>> = {
+export interface NotFieldComponentProps<T> {
+  value: T;
+  onChange: (v: T) => void;
+}
+
+export const COMPONENTS: Record<string, FC<ISchemaFieldComponentProps> | FC<NotFieldComponentProps<any>>> = {
   textarea: Input.TextArea,
   subordination: Subordination,
   input: Input,
@@ -86,9 +92,11 @@ export const COMPONENTS: Record<string, JSXElementConstructor<ISchemaFieldCompon
   customizeddatasetbtn: CustomizedDatasetBtn,
   datasetselector: DataSetSelector,
   datasetconfig: DatasetConfig,
-  checkboxgroup: CheckboxGroup,
+  checkboxgroup: Checkbox.Group,
   calculationformulabtn: CalculationFormulaBtn,
   aggregationrecords: AggregationRecords,
+  associateobject: AssociateObject,
+  statisticalrangeconfig: StatisticalRangeConfig,
   serial: Serial,
   prefix: Prefix,
 };
@@ -121,7 +129,7 @@ export const SUPPORTED_COMPONENTS_NAMES = [
   'select', 'multipleselect',
   'userpicker', 'organizationpicker',
   'fileupload', 'imageupload',
-  'cascadeselector', 'associateddata', 'serial', 'aggregationrecords',
+  'cascadeselector', 'associateddata', 'serial',
 ];
 
 export const LINKED_TABLE = { appID: '', tableID: '', tableName: '' };

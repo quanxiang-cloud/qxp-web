@@ -1,10 +1,12 @@
-import { OverlayProps } from '@m/qxp-ui-mobile/overlay/types';
 import React, { useEffect, useRef } from 'react';
-import { isDef } from '@m/qxp-ui-mobile/utils';
-import useLockScroll from '@m/qxp-ui-mobile/utils/hooks/use-lock-scroll';
-import { getZIndexStyle } from '@m/qxp-ui-mobile/utils/format/unit';
-import { CSSTransition } from 'react-transition-group';
 import cs from 'classnames';
+import { CSSTransition } from 'react-transition-group';
+
+import { isDef } from '../utils';
+import useLockScroll from '../utils/hooks/use-lock-scroll';
+import { getZIndexStyle } from '../utils/format/unit';
+
+import { OverlayProps } from './types';
 
 const Overlay: React.FC<OverlayProps> = (props) => {
   const nodeRef = useRef(null);

@@ -48,6 +48,10 @@ function FilePicker({
     (fileInputRef?.current as HTMLInputElement).value = '';
   }
 
+  function handlePickerClick(): void {
+    fileInputRef.current?.click();
+  }
+
   const events = disabled ?
     {} :
     {
@@ -64,18 +68,20 @@ function FilePicker({
 
   return (
     <div
+      {...events}
       style={style}
       role="button"
+      onClick={handlePickerClick}
       className={cs(
-        'qxp-file-picker relative border-1 border-dashed border-gray-300 rounded-8 mb-10',
-        'flex justify-center items-center flex-col bg-transparent text-gray-600',
+        'qxp-file-picker relative border-1 border-dashed border-gray-300 rounded-8',
+        'flex justify-center items-center flex-col bg-transparent text-gray-600 cursor-pointer',
         className, {
           'opacity-50': disabled,
           'qxp-file-picker-dragover': isDragging,
+          'cursor-not-allowed': disabled,
         })}
     >
       <input
-        {...events}
         type="file"
         name={name}
         ref={fileInputRef}
@@ -83,13 +89,10 @@ function FilePicker({
         disabled={disabled}
         accept={accept?.toString()}
         onChange={onFileInputChange}
-        className={cs('w-full h-full z-10 opacity-0 cursor-pointer',
-          {
-            'cursor-not-allowed': disabled,
-          })}
+        style={{ display: 'none' }}
       />
       {children || (
-        <div className={cs('w-full h-full absolute inset-0 flex flex-col justify-center items-center')}>
+        <div className={cs('flex flex-col justify-center items-center')}>
           <Icon className="upload-icon text-gray-600 flex-shrink-0" name={iconName} size={24} />
           <div className="text-12 text-center select-none">{description || '点击或拖拽上传文件'}</div>
         </div>

@@ -46,7 +46,14 @@ function ImportFormModal({ onClose }: Props): JSX.Element {
       value: { appID: store.appID, tableID: store.pageID },
       title: `【${store.appName}-${store.pageName}】表单模板导出`,
     }).then((taskID) => {
-      getTaskDetail(taskID).then((res) => multipledownloadFile(res.result.path));
+      getTaskDetail(taskID).then((res) => {
+        if (res.status !== 2) {
+          toast.error(res.result.title);
+          onClose();
+          return;
+        }
+        multipledownloadFile(res.result.path);
+      });
     });
   }
 
@@ -54,7 +61,7 @@ function ImportFormModal({ onClose }: Props): JSX.Element {
     return (
       <>
         <div className="my-4">点击或拖拽文件到此区域</div>
-        <div className="text-gray-400">支持 10MB 以内的 csv 文件</div>
+        <div className="text-gray-400">支持 20MB 以内的 csv 文件</div>
       </>
     );
   }
@@ -75,6 +82,7 @@ function ImportFormModal({ onClose }: Props): JSX.Element {
           key: 'confirm',
           iconName: 'check',
           modifier: 'primary',
+          forbidden: !fileDetail,
           onClick: () => handSubmit(),
         },
       ]}
@@ -87,8 +95,9 @@ function ImportFormModal({ onClose }: Props): JSX.Element {
           </span>
         </div>
         <FileUploader
-          className='px-40 app-upload'
+          className='px-40 form-upload'
           uploaderDescription={<UploadDescription/>}
+          maxFileSize={20}
           accept={[
             '.csv',
             // 'application/vnd.ms-excel',

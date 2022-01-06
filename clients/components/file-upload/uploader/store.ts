@@ -34,12 +34,12 @@ class FileStore {
   }
 
   @observable files: QXPUploadFileTask[];
-  @observable fileRequests: Record<string, (() => void) | null> = {}
+  @observable fileRequests: Record<string, (() => void) | null> = {};
 
   @action
   addUploadFile = (fileItem: QXPUploadFileTask): void => {
     this.files.push(fileItem);
-  }
+  };
 
   @action
   removeUploadFile = (deleteFile: QXPUploadFileTask): void => {
@@ -54,24 +54,24 @@ class FileStore {
       id: deleteFile.uid,
     });
     this.files = this.files.filter((file) => file.name !== deleteFile.name);
-  }
+  };
 
   @action
   getUploadFile = (fileName: string): QXPUploadFileTask | undefined => {
     return this.files.find((file) => file.name === fileName);
-  }
+  };
 
   @action
   updateUploadFile = (fileName: string, data: Partial<QXPUploadFileTask>): QXPUploadFileTask => {
     const fileIndex = this.files.findIndex((file) => file.name === fileName);
     this.files[fileIndex] = { ...this.files[fileIndex], ...data };
     return this.files[fileIndex];
-  }
+  };
 
   @action
   clearUploadFiles = (): void => {
     this.files = [];
-  }
+  };
 
   @action
   prepareFilesUpload = (files: File[]): void => {
@@ -95,7 +95,7 @@ class FileStore {
     }).catch((err) => {
       this.onFileUploadError(err, fileWithMd5);
     });
-  }
+  };
 
   calcFileMD5 = (
     file: QXPUploadFileTask,
@@ -188,7 +188,7 @@ class FileStore {
     if (!abortFile) return;
     abortFile?.md5Worker?.terminate();
     this.fileRequests[abortFile.uid]?.();
-  }
+  };
 
   @action
   abortAllFiles = (): void => {
@@ -198,14 +198,14 @@ class FileStore {
         this.fileRequests[file.uid]?.();
       }
     });
-  }
+  };
 
   onFileUploadError = (err: Error, file: QXPUploadFileTask): void => {
     file.state = 'failed';
     toast.error(err.message);
     this.updateUploadFile(file.name, file);
     this.onError?.(err, file);
-  }
+  };
 
   onFileUploadSuccess = (file: QXPUploadFileTask): void => {
     const { uid, name } = file;
@@ -215,13 +215,13 @@ class FileStore {
     this.fileRequests[uid] = null;
     this.updateUploadFile(name, file);
     this.onSuccess?.(file);
-  }
+  };
 
   onFileUploading = (file: QXPUploadFileTask, progress: number): void => {
     file.state = 'uploading';
     file.progress = progress;
     this.updateUploadFile(file.name, file);
-  }
+  };
 }
 
 export default FileStore;

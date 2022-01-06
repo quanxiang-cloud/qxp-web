@@ -1,0 +1,11 @@
+.flow-status-warning-wrapper {
+  padding: .08rem .16rem;
+  background-color: white;
+  border-radius: .02rem .08rem .08rem .08rem;
+  color: var(--amber-600);
+}
+
+.warning-text {
+  margin-left: .08rem;
+  flex: 1;
+}

@@ -3,6 +3,9 @@
 .loading {
   position: relative;
   vertical-align: middle;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   &__spinner {
     position: relative;
@@ -20,6 +23,9 @@
     }
 
     &--circular {
+      display: flex;
+      justify-content: center;
+      align-items: center;
       animation-duration: 1s;
     }
   }
@@ -42,11 +48,10 @@
     }
   }
 
-  &__circular {
-    display: block;
+  &__circular--img {
+    display: inline-block;
     width: 100%;
     height: 100%;
-    padding: 4%;
   }
 
   &__text {
@@ -56,9 +61,7 @@
   }
 
   &--vertical {
-    display: flex;
     flex-direction: column;
-    align-items: center;
 
     .loading__text {
       margin-top: .08rem;

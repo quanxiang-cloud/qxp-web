@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { KeyboardEvent, useCallback } from 'react';
 import { toJS } from 'mobx';
 import { Form, Input } from 'antd';
 
@@ -25,6 +25,10 @@ function CreatedEditApp({ appInfo, modalType, className, onSubmitCallback }: Pro
 
   const initData = appInfo && toJS(appInfo);
   const { appName, appIcon = '{}', appSign } = initData || {};
+
+  const handleEnterSubmit = useCallback((e: KeyboardEvent<HTMLInputElement>) => {
+    e.key === 'Enter' && handleFinish();
+  }, []);
 
   return (
     <Form
@@ -89,7 +93,7 @@ function CreatedEditApp({ appInfo, modalType, className, onSubmitCallback }: Pro
           },
         ]}
       >
-        <Input placeholder="请输入应用标识" disabled={!!appSign}/>
+        <Input placeholder="请输入应用标识" disabled={!!appSign} onKeyUp={handleEnterSubmit} />
       </Form.Item>
       <Form.Item
         name="appIcon"

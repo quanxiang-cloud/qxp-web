@@ -151,12 +151,12 @@ class AppPageDataStore {
   setSelected = (selected: string[], rows: Record<string, any>[]): void => {
     this.selected = selected;
     this.onSelect?.(selected, rows);
-  }
+  };
 
   @action
   setParams = (params: Params): void => {
     this.params = { ...this.params, ...params };
-  }
+  };
 
   @action
   setSchema = (schema?: ISchema): void => {
@@ -166,24 +166,24 @@ class AppPageDataStore {
 
     this.schema = schema;
     this.fields = schemaToFields(schema);
-  }
+  };
 
   @action
   setTableConfig = (tableConfig: TableConfig): void => {
     this.tableConfig = tableConfig;
-  }
+  };
 
   @action
   setFilters = (filters: Filters): void => {
     this.filters = filters.filter((key) => {
       return key in (schemaToMap(this.schema) || {});
     });
-  }
+  };
 
   @action
   resetColumnConfig = (): void => {
     this.columnConfig = {};
-  }
+  };
 
   @action
   selectAllColumn = (type: boolean): void => {
@@ -204,18 +204,18 @@ class AppPageDataStore {
 
       this.columnConfig = newColumnConfig;
     }
-  }
+  };
 
   @action
   setColumnConfig = (newConfig: Partial<FormTableConfig>, id: string): void => {
     this.columnConfig = { ...set(this.columnConfig, id, { ...this.columnConfig[id], ...newConfig }) };
-  }
+  };
 
   @action
   setTableColumns = (tableColumns: UnionColumn<any>[]): void => {
     this.columnConfig = {};
     this.tableColumns = tableColumns;
-  }
+  };
 
   @action
   fetchFormDataList = (params: Params): void => {
@@ -237,7 +237,7 @@ class AppPageDataStore {
     }).catch(() => {
       this.listLoading = false;
     });
-  }
+  };
 
   @action
   clear = (): void => {
@@ -252,7 +252,7 @@ class AppPageDataStore {
       page: 1,
       size: 10,
     };
-  }
+  };
 }
 
 export default AppPageDataStore;

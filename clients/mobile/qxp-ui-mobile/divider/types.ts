@@ -1,4 +1,4 @@
-import { Props } from '@m/qxp-ui-mobile';
+import { Props } from '..';
 
 export interface DividerProps extends Props {
   color?: string;

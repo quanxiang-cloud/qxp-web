@@ -70,7 +70,7 @@ class FaasStore {
     appIcon: '',
     useStatus: 0,
     appSign: '',
-  }
+  };
   @observable User: { id: string; email: string } = {
     id: '',
     email: '',
@@ -96,14 +96,12 @@ class FaasStore {
   @observable isAPILoadingErr = '';
   @observable isAPILoading = false;
   @observable searchAlias = '';
-  @observable apiPath = ''
-  @observable funcCount = 0;
-  @observable versionCount = 0
+  @observable apiPath = '';
   @observable versionsParams: VersionListParams = {
     state: '',
     page: 1,
     size: 10,
-  }
+  };
 
   constructor() {
     reaction(() => this.versionsParams, this.fetchVersionList);
@@ -112,19 +110,19 @@ class FaasStore {
   @action
   setVersionParams = (newParam: Partial<VersionListParams>): void => {
     this.versionsParams = { ...this.versionsParams, ...newParam };
-  }
+  };
 
   @action
   setModalType = (type: string): void => {
     this.modalType = type;
-  }
+  };
 
   @action
   isaDeveloper = (): Promise<void> => {
     return checkIsDeveloper().then((res) => {
       this.isDeveloper = res.isDeveloper;
     }).catch((err) => toast.error(err));
-  }
+  };
 
   @action
   mutateFuncStatus = (id: string, status: FaasProcessStatus): void => {
@@ -138,7 +136,7 @@ class FaasStore {
 
       return func;
     });
-  }
+  };
 
   @action
   isGroup = (): Promise<void> => {
@@ -151,7 +149,7 @@ class FaasStore {
     }).catch((err) => {
       toast.error(err);
     });
-  }
+  };
 
   @action
   isDeveloperInGroup = (): Promise<void> => {
@@ -163,7 +161,7 @@ class FaasStore {
     ).catch((err) => {
       toast.error(err);
     });
-  }
+  };
 
   @action
   checkUserState = async (): Promise<void> => {
@@ -174,7 +172,7 @@ class FaasStore {
       await this.isDeveloperInGroup();
     }
     this.checkUserLoading = false;
-  }
+  };
 
   @action
   createDeveloper = (email: string): Promise<void> => {
@@ -196,7 +194,7 @@ class FaasStore {
         reject(err);
       });
     });
-  }
+  };
 
   @action
   createGroup = (): Promise<void> => {
@@ -212,7 +210,7 @@ class FaasStore {
       this.initErr = true;
       toast.error(err);
     });
-  }
+  };
 
   @action
   addUserToGroup = (): void => {
@@ -223,7 +221,7 @@ class FaasStore {
       this.initErr = true;
       toast.error(err);
     });
-  }
+  };
 
   @action
   initFaas = async (email: string): Promise<void> => {
@@ -242,7 +240,7 @@ class FaasStore {
       await this.addUserToGroup();
     }
     this.initLoading = false;
-  }
+  };
 
   @action
   fetchFuncList = (searchAlias: string, page: number, size: number): void => {
@@ -252,8 +250,7 @@ class FaasStore {
       page,
       size,
     }).then((res) => {
-      const { projects, count } = res;
-      this.funcCount = count;
+      const { projects } = res;
       this.funcList = projects;
     }).catch((err) => {
       toast.error(err);
@@ -261,14 +258,14 @@ class FaasStore {
     }).finally(() => {
       this.funcListLoading = false;
     });
-  }
+  };
 
   @action
   checkHasCoder = (): Promise<boolean | void> => {
     return hasCoder().then((res) => {
       return res.hasCoder;
     }).catch((err) => toast.error(err));
-  }
+  };
 
   @action
   creatCoder = (): void => {
@@ -277,7 +274,7 @@ class FaasStore {
     }).catch((err) => {
       toast.error(err);
     });
-  }
+  };
 
   @action
   createFunc = (data: creatFuncParams): void => {
@@ -291,14 +288,14 @@ class FaasStore {
     }).catch((err) => {
       toast.error(err);
     });
-  }
+  };
 
   @action
   fetchFuncInfo = (): Promise<void> => {
     return getFuncInfo(this.groupID, this.currentFuncID).then((res) => {
       this.currentFunc = res.info;
     });
-  }
+  };
 
   @action
   updateFuncDesc = (id: string, describe: string): void => {
@@ -313,7 +310,7 @@ class FaasStore {
     }).catch((err) => {
       toast.error(err);
     });
-  }
+  };
 
   @action
   defineFunc = (id: string): void => {
@@ -325,7 +322,7 @@ class FaasStore {
     }).catch((err) => {
       toast.error(err);
     });
-  }
+  };
 
   @action
   buildFunc = (buildData: { tag: string, describe: string }): void => {
@@ -334,7 +331,7 @@ class FaasStore {
     }).catch((err) => {
       toast.error(err);
     });
-  }
+  };
 
   @action
   deleteFunc = (): void => {
@@ -346,13 +343,12 @@ class FaasStore {
     }).catch((err) => {
       toast.error(err);
     });
-  }
+  };
 
   @action
   fetchVersionList = (params: VersionListParams): void => {
     getFuncVersionList(this.groupID, this.currentFuncID, params).then((res) => {
-      const { builds, count } = res;
-      this.versionCount = count;
+      const { builds } = res;
       this.versionList = builds;
     }).catch((err) => {
       toast.error(err);
@@ -360,7 +356,7 @@ class FaasStore {
     }).finally(() => {
       this.funcListLoading = false;
     });
-  }
+  };
 
   @action
   updateVerDesc = (describe: string): void => {
@@ -375,7 +371,7 @@ class FaasStore {
     }).catch((err) => {
       toast.error(err);
     });
-  }
+  };
 
   @action
   offlineVer = (id: string): void => {
@@ -384,7 +380,7 @@ class FaasStore {
     }).catch((err) => {
       toast.error(err);
     });
-  }
+  };
 
   @action
   servingVer = (id: string): void => {
@@ -393,7 +389,7 @@ class FaasStore {
     }).catch((err) => {
       toast.error(err);
     });
-  }
+  };
 
   @action
   deleteVer = (id: string): void => {
@@ -403,16 +399,16 @@ class FaasStore {
     }).catch((err) => {
       toast.error(err);
     });
-  }
+  };
 
-  getVersion =(): void => {
+  getVersion = (): void => {
     getVersion(this.groupID, this.currentFuncID, this.buildID).then((res) => {
       const { build } = res;
       this.currentVersionFunc = build;
     }).catch((err) => {
       toast.error(err);
     });
-  }
+  };
 
   @action
   registerAPI = (id: string): void => {
@@ -421,7 +417,7 @@ class FaasStore {
     }).catch((err) => {
       toast.error(err);
     });
-  }
+  };
 
   @action
   getApiPath = (): void => {
@@ -433,7 +429,7 @@ class FaasStore {
       toast.error(err);
       this.isAPILoadingErr = err;
     }).finally(() => this.isAPILoading = false);
-  }
+  };
 
   @action
   fetchApiDoc = (path: string): void => {
@@ -451,7 +447,7 @@ class FaasStore {
       this.isAPILoadingErr = err.message;
       this.isAPILoading = false;
     });
-  }
+  };
 
   @action
   versionStateChangeListener = async (buildID: string, socket: SocketData, type: 'state' | 'serverState',
@@ -477,14 +473,14 @@ class FaasStore {
 
       toast.success('操作成功！');
     }
-  }
+  };
 
   @action
   clear = (): void => {
     this.isAPILoading = false;
     this.isAPILoadingErr = '';
     this.initErr = false;
-  }
+  };
 }
 
 export default new FaasStore();

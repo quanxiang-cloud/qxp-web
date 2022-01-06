@@ -1,9 +1,11 @@
 import React, { useContext, useMemo } from 'react';
 import cs from 'classnames';
+
 import Icon from '../icon';
-import { TabbarItemProps } from '@m/qxp-ui-mobile/tabbar/types';
-import TabbarContext from '@m/qxp-ui-mobile/tabbar/context';
-import Badge from '@m/qxp-ui-mobile/badge';
+import Badge from '../badge';
+
+import TabbarContext from './context';
+import { TabbarItemProps } from './types';
 
 const TabbarItem: React.FC<TabbarItemProps> = (props) => {
   const { setActive, index } = props;

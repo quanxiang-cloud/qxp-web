@@ -14,10 +14,10 @@ class AuditLog {
   paging = {
     size: 10,
     page: 1,
-  }
+  };
 
   @observable
-  userName = ''
+  userName = '';
 
   @observable
   operationTimeBegin = Math.round(new Date('2021-3-1').getTime() / 1000);
@@ -30,17 +30,17 @@ class AuditLog {
     pageSize: 10,
     current: 1,
     total: 0,
-  }
+  };
 
   @observable
-  data: any = []
+  data: any = [];
 
   @observable
   logRequestInfo: LogRequestInfo = {
     isLoading: false,
     isError: false,
     isFetching: false,
-  }
+  };
 
   @computed get logPageParams() {
     const { pageSize, current: currentPage } = this.logPageInfo;
@@ -55,37 +55,37 @@ class AuditLog {
   @action
   setLogPageInfo = (pageInfo: LogPage) => {
     this.logPageInfo = pageInfo;
-  }
+  };
 
   @action
   setUserName = (userName: string) => {
     this.userName = userName;
-  }
+  };
 
   @action
   setOperationTimeBegin = (timeStamp: number) => {
     this.operationTimeBegin = timeStamp;
-  }
+  };
 
   @action
   setOperationTimeEnd = (timeStamp: number) => {
     this.operationTimeEnd = timeStamp;
-  }
+  };
 
   @action
   setAuditLogData = (data: any) => {
     this.data = data;
-  }
+  };
 
   @action
   setLogRequestInfo = (logRequestInfo: LogRequestInfo) => {
     this.logRequestInfo = logRequestInfo;
-  }
+  };
 
   @action
   setLogPaging = (params: Record<string, unknown>) => {
     Object.assign(this.paging, params);
-  }
+  };
 }
 
 export default new AuditLog();

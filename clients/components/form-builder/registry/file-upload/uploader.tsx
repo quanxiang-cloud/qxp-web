@@ -1,6 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 
-import FileUploader from '@c/file-upload';
+import FileUploader, { FileList } from '@c/file-upload';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import type { FileUploaderProps } from '@c/file-upload/uploader/file-uploader';
@@ -12,35 +12,56 @@ export type QxpFileFormData = {
   size?: number;
 }
 export default function FormFileUploader(props: FileUploaderProps & ISchemaFieldComponentProps): JSX.Element {
+  const { value, form, path } = props;
+  const { readOnly } = props.props;
   const configProps = props?.props['x-component-props'];
-  const subTableTempRef = useRef<QxpFileFormData[]>([]);
-  const { value, mutators } = props;
 
-  useEffect(() => {
-    subTableTempRef.current = value;
-  }, []);
-
-  const handleFileSuccess = (currentFile: QXPUploadFileBaseProps): void => {
-    const currentFileFromData: QxpFileFormData = {
+  function handleFileSuccess(currentFile: QXPUploadFileBaseProps): void {
+    const currentFileFormData: QxpFileFormData = {
       label: currentFile.name,
       value: currentFile.uid,
       type: currentFile.type,
       size: currentFile.size,
     };
-    subTableTempRef.current.push(currentFileFromData);
-    mutators.change(subTableTempRef.current);
-  };
+    pushFieldValue(currentFileFormData);
+  }
 
-  const handleFileDelete = (currentFile: QXPUploadFileBaseProps): void => {
-    subTableTempRef.current = subTableTempRef.current.filter(((file: QxpFileFormData) => {
+  function handleFileDelete(currentFile: QXPUploadFileBaseProps): void {
+    const newFiles = value.filter(((file: QxpFileFormData) => {
       return file.label !== currentFile.name;
     }));
-    mutators.change(subTableTempRef.current);
-  };
+    setFieldValue(newFiles);
+  }
+
+  function pushFieldValue(value: QxpFileFormData): void {
+    form.setFieldValue(path, [...form.getFieldValue(path), value]);
+  }
+
+  function setFieldValue(value: QxpFileFormData[]): void {
+    form.setFieldValue(path, value);
+  }
+
+  if (readOnly) {
+    return (
+      <div className="w-280">
+        <FileList
+          files={value.map((file: QxpFileFormData) =>
+            ({
+              name: file.label,
+              uid: file.value,
+              type: file.type,
+              size: file.size,
+            }),
+          )}
+        />
+      </div>
+    );
+  }
+
   return (
     <FileUploader
       {...configProps}
-      className='max-w-290'
+      className='w-280'
       fileData={value?.map((file: QxpFileFormData) =>
         ({
           name: file.label,
@@ -49,7 +70,7 @@ export default function FormFileUploader(props: FileUploaderProps & ISchemaField
           size: file.size,
         }),
       )}
-      disabled={!configProps.multiple && subTableTempRef.current?.length >= 1}
+      disabled={!configProps.multiple && value?.length >= 1}
       onFileSuccess={handleFileSuccess}
       onFileDelete={handleFileDelete}
     />

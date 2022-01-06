@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
 const useMergedState = <T, R = T>(option?: {
-    defaultValue?: T | (() => T);
-    value?: T;
+  defaultValue?: T | (() => T);
+  value?: T;
 }): [R, (value: T) => void] => {
   const { defaultValue, value } = option || {};
 

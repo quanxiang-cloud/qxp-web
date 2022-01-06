@@ -1,17 +1,23 @@
+import { generateRandomTabId } from './util';
 
 export interface LayoutTabsConfig {
   isLayoutComponent: boolean;
   position: 'top' | 'left';
-  currentEdit: string;
-  tabs: string[];
+  currentEdit: LabelValue[];
+  tabs: LabelValue[];
   displayModifier: FormBuilder.DisplayModifier;
 }
+
+const initTab = {
+  label: '选项卡1',
+  value: generateRandomTabId(),
+};
 
 export const defaultConfig: LayoutTabsConfig = {
   isLayoutComponent: true,
   position: 'top',
-  tabs: ['选项卡1'],
-  currentEdit: '选项卡1',
+  tabs: [initTab],
+  currentEdit: [initTab],
   displayModifier: 'normal',
 };
 

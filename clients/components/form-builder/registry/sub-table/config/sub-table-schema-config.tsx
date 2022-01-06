@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useMemo } from 'react';
-import { Button } from 'antd';
 import { createFormActions, SchemaForm } from '@formily/antd';
 import { observer } from 'mobx-react';
 
+import Button from '@c/button';
 import { StoreContext } from '@c/form-builder/context';
 import { FieldConfigContext } from '@c/form-builder/form-settings-panel/form-field-config/context';
 

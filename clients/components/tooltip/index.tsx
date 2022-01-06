@@ -1,6 +1,6 @@
 import React, { DetailedHTMLProps, HTMLAttributes, useRef, cloneElement } from 'react';
 
-import Popper from '@c/popper';
+import Popper, { Theme } from '@c/popper';
 
 import Tip from './tip';
 
@@ -10,6 +10,7 @@ export type Props = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivEle
   children?: JSX.Element;
   labelClassName?: string;
   wrapperClassName?: string;
+  theme?: Theme;
 }
 
 const modifiers = [
@@ -38,6 +39,7 @@ export default function ToolTip(props: Props): JSX.Element {
         placement={position || 'bottom-start'}
         modifiers={modifiers}
         trigger='hover'
+        theme={props.theme}
       >
         <Tip
           {...otp}

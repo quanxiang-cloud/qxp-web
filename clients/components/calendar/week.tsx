@@ -35,22 +35,22 @@ export default class Week extends React.Component<Props> {
   isSelectedDate = (day: moment.Moment): boolean => {
     const { selectedDate } = this.props;
     return selectedDate ? day.isSame(selectedDate, 'day') : false;
-  }
+  };
 
   isOutsideMonth = (day: moment.Moment): boolean => {
     return !day.isSame(this.props.displayDate, 'month');
-  }
+  };
 
   isDateOutRange = (date: moment.Moment): boolean => {
     const { minDate, maxDate } = this.props;
     return isDateOutRange(date, minDate, maxDate, 'day');
-  }
+  };
 
   handleWeekClick = (date: moment.Moment): void => {
     if (this.props.picker === 'week' && !this.isWeekOutRange) {
       this.props.onDayClick(date);
     }
-  }
+  };
 
   handleDayClick = (date: moment.Moment): void => {
     if (this.props.picker === 'week') {
@@ -58,7 +58,7 @@ export default class Week extends React.Component<Props> {
     }
 
     this.props.onDayClick(date);
-  }
+  };
 
   render(): JSX.Element {
     const startOfWeek = this.props.week.clone().startOf('isoWeek');

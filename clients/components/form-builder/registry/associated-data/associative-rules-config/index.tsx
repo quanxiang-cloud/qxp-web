@@ -11,7 +11,7 @@ import './index.scss';
 function AssociativeConfig({ props, value, mutators }: ISchemaFieldComponentProps): JSX.Element {
   const [visible, setVisible] = useState(false);
   const [rules, setRules] = useState<FormBuilder.DataAssignment[]>();
-  const { currentFormFields, sourceTableFields, associativeRules } = props?.['x-component-props'];
+  const { currentFormFields, sourceTableFields, associativeRules } = props?.['x-component-props'] ?? {};
 
   function onSubmit(value: Record<string, FormBuilder.DataAssignment[]>): void {
     mutators.change(value);

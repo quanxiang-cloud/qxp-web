@@ -43,6 +43,12 @@
   }
 }
 
+.api-search-input {
+  input.search-input {
+    @apply bg-white;
+  }
+}
+
 .polynamespacedetail-table {
   height: calc(100% - 32px);
   @mixin _firsColumn {

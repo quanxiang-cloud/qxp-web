@@ -103,8 +103,8 @@ class ApiProxyStore {
   @observable loadingNs = false;
   @observable filterNsList: PolyAPI.Namespace[] | null = null; // filtered ns list, like search
   @observable isLoading = false; // fetching sub page's data
-  @observable svc: PolyAPI.Service | null=null;
-  @observable svcApis: {list?: PolyAPI.Api[], total?: number} | null=null;
+  @observable svc: PolyAPI.Service | null = null;
+  @observable svcApis: {list?: PolyAPI.Api[], total?: number} | null = null;
   @observable apiKeyList: Array<PolyAPI.ApiKeyList> = [];
   @observable apiKeyTotal = 0;
 
@@ -119,35 +119,35 @@ class ApiProxyStore {
   @action
   setNamespaces = (namespaces: PolyAPI.Namespace[]): void => {
     this.namespaces = namespaces;
-  }
+  };
 
   @action
   setAppRooNs = (ns: string): void => {
     this.appRootNs = ns;
-  }
+  };
 
   @action
   setAppId = (appId: string): void => {
     this.appId = appId;
-  }
+  };
 
   @action
   setActiveNs = (ns: PolyAPI.Namespace): void => {
     this.currentNs = ns;
     this.treeStore?.onSelectNode(ns?.id);
-  }
+  };
 
   @action
   setTreeStore = (store: ApiGroupStore): void => {
     this.treeStore = store;
-  }
+  };
 
   @action
   setApiKey = async (): Promise<void> => {
     const { keys, total } = await apis.getApiKeyList({ page: 1, limit: 10, service: this.svc?.fullPath });
     this.apiKeyList = keys;
     this.apiKeyTotal = total;
-  }
+  };
 
   @action
   fetchNamespaces = async (appId: string): Promise<PolyAPI.Namespace[] | void> => {
@@ -167,7 +167,7 @@ class ApiProxyStore {
     } finally {
       this.loadingNs = false;
     }
-  }
+  };
 
   @action
   searchNamespace = async (word: string): Promise<PolyAPI.Namespace[] | void> => {
@@ -181,12 +181,12 @@ class ApiProxyStore {
     } finally {
       this.loadingNs = false;
     }
-  }
+  };
 
   @action
   clearFilterNs = (): void => {
     this.filterNsList = null;
-  }
+  };
 
   @action
   createNs = async (ns: string, params: PolyAPI.CreateNamespaceParams): Promise<void> => {
@@ -194,7 +194,7 @@ class ApiProxyStore {
     // this.treeStore?.addChildren(ROOT_NODE_ID, mapGroupsToTreeNodes([newNs]));
     await this.fetchNamespaces(this.appId);
     toast.success('添加分组成功');
-  }
+  };
 
   @action
   updateNs = async (
@@ -203,25 +203,25 @@ class ApiProxyStore {
     await apis.updateNamespace(ns, params);
     this.treeStore?.patchNode(node.id, node.name, toJS(node));
     toast.success('修改分组成功');
-  }
+  };
 
   @action
   deleteNs = async (ns: string): Promise<void> => {
     await apis.deleteNamespace(ns);
     await this.fetchNamespaces(this.appId);
-  }
+  };
 
   @action
-  createSvc=async (ns: string, params: PolyAPI.CreateServiceParams): Promise<void> => {
+  createSvc = async (ns: string, params: PolyAPI.CreateServiceParams): Promise<void> => {
     await apis.createService(ns, params);
     this.svc = Object.assign({}, this.svc, params, { authContent: params.authorize });
-  }
+  };
 
   @action
-  updateSvc=async (params: Omit<PolyAPI.CreateServiceParams, 'name'>): Promise<void> => {
+  updateSvc = async (params: Omit<PolyAPI.CreateServiceParams, 'name'>): Promise<void> => {
     await apis.updateService(this.currentSvcPath, params);
     this.svc = Object.assign({}, this.svc, params, { authContent: params.authorize });
-  }
+  };
 
   @action
   fetchSvc = async (): Promise<void> => {
@@ -234,10 +234,10 @@ class ApiProxyStore {
     } finally {
       this.isLoading = false;
     }
-  }
+  };
 
   @action
-  fetchApiListInSvc=async (paging: {page: number; pageSize: number, search?: string}): Promise<void> => {
+  fetchApiListInSvc = async (paging: {page: number; pageSize: number, search?: string}): Promise<void> => {
     this.isLoading = true;
     try {
       if (paging.search) {
@@ -256,26 +256,26 @@ class ApiProxyStore {
     } finally {
       this.isLoading = false;
     }
-  }
+  };
 
   @action
-  registerApi=async (params: PolyAPI.CreateApiParams): Promise<void> => {
+  registerApi = async (params: PolyAPI.CreateApiParams): Promise<void> => {
     await apis.registerApi(this.svc?.fullPath || '', params);
-  }
+  };
 
   @action
-  disableApi=async (apiPath: string, active: number): Promise<void> => {
+  disableApi = async (apiPath: string, active: number): Promise<void> => {
     await apis.activeApi(apiPath, { active });
-  }
+  };
 
   @action
-  uploadSwagger=async (file: File): Promise<void> => {
+  uploadSwagger = async (file: File): Promise<void> => {
     const fd = new FormData();
     fd.append('version', 'v1');
     fd.append('file', file);
     fd.append('svcPath', this.currentSvcPath);
     await apis.uploadSwagger(fd);
-  }
+  };
 
   @action
   reset = (): void => {
@@ -288,7 +288,7 @@ class ApiProxyStore {
     this.loadingNs = false;
     this.isLoading = false;
     this.svcApis = null;
-  }
+  };
 }
 
 export default new ApiProxyStore();

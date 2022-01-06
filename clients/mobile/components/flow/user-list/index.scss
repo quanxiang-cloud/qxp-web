@@ -1,0 +1,13 @@
+.user-list-wrapper {
+  background-color: white;
+  padding: .08rem .16rem;
+  border-radius: .02rem .08rem .08rem .08rem;
+}
+
+.user-list-avatar-wrapper {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  overflow: hidden;
+  height: .27rem;
+}

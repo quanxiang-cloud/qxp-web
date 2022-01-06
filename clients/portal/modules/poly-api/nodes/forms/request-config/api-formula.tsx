@@ -2,13 +2,19 @@ import React, { MutableRefObject, forwardRef, ForwardedRef } from 'react';
 
 import Operates from '@polyApi/components/operates';
 import FormulaTree, { RefType } from '@polyApi/components/poly-node-path-tree';
-import { RefType as ApiParamsConfigRefType } from './api-params-config';
 import { OPERATES_MAP } from '@portal/modules/poly-api/constants';
+
+import { RefType as ApiParamsConfigRefType } from './api-params-config';
+
+import './formula.scss';
 
 type Props = {
   currentFormulaEditorRef: MutableRefObject<ApiParamsConfigRefType | undefined>;
+  sourceGetter?: () => POLY_API.PolyNodeInput[];
 }
-function ApiFormulaConfig({ currentFormulaEditorRef }: Props, ref: ForwardedRef<RefType>): JSX.Element {
+function ApiFormulaConfig(
+  { currentFormulaEditorRef, sourceGetter }: Props, ref: ForwardedRef<RefType>,
+): JSX.Element {
   function handleTreeNodeClick(node: any): void {
     if (node.isLeaf) {
       currentFormulaEditorRef?.current?.getCurrent()?.insertEntity(
@@ -25,7 +31,11 @@ function ApiFormulaConfig({ currentFormulaEditorRef }: Props, ref: ForwardedRef<
     <div className="formula-config">
       <Operates operates={OPERATES_MAP} onClick={handleOperatesClick} />
       <div className="pt-6 border-gray-200 flex-1 text-12 overflow-auto">
-        <FormulaTree ref={ref} onSelect={handleTreeNodeClick} />
+        <FormulaTree
+          ref={ref}
+          onSelect={handleTreeNodeClick}
+          sourceGetter={sourceGetter}
+        />
       </div>
     </div>
   );

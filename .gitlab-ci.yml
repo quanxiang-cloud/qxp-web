@@ -33,13 +33,37 @@ integrate:
   script:
     - node_modules/.bin/tsc --noEmit --skipLibCheck --pretty
 
-build_all:
+build_for_testing:
+  tags:
+    - qxp-web-runner
+  stage: build
+  only:
+    - /^release\/v*/
+  script:
+    - make build
+    - NODE_ENV=production ./node_modules/.bin/rollup --config rollup.config.js
+    - go mod tidy
+    - go mod vendor
+    - IMAGE_TAG="v$(date "+%Y%m%d")-$(git rev-parse --short HEAD)"
+    - docker build -t "$IMAGE_REPO/qxp-web-portal:$IMAGE_TAG" -f ./deploy/Dockerfile-portal .
+    - docker build -t "$IMAGE_REPO/qxp-web-home:$IMAGE_TAG" -f ./deploy/Dockerfile-home .
+    - docker build -t "$IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG" -f ./deploy/Dockerfile-nginx .
+    - docker push "$IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG"
+    - docker push "$IMAGE_REPO/qxp-web-portal:$IMAGE_TAG"
+    - docker push "$IMAGE_REPO/qxp-web-home:$IMAGE_TAG"
+    - docker rmi "$IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG"
+    - docker rmi "$IMAGE_REPO/qxp-web-portal:$IMAGE_TAG"
+    - docker rmi "$IMAGE_REPO/qxp-web-home:$IMAGE_TAG"
+
+build_for_staging:
   tags:
     - qxp-web-runner
   stage: build
   only:
     - tags
-    - release
+    - /^v(\d+\.)+(\d+)/
+  except:
+    - branches
   script:
     - make build
     - NODE_ENV=production ./node_modules/.bin/rollup --config rollup.config.js
@@ -79,16 +103,13 @@ deploy_testing:
     - qxp-web-runner
   stage: release
   only:
-    - release
+    - /^release\/v*/
   script:
     - IMAGE_TAG="v$(date "+%Y%m%d")-$(git rev-parse --short HEAD)"
-    - bash -c "/opt/upImage.sh $IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG"
-    - bash -c "/opt/upImage.sh $IMAGE_REPO/qxp-web-portal:$IMAGE_TAG"
-    - bash -c "/opt/upImage.sh $IMAGE_REPO/qxp-web-home:$IMAGE_TAG"
-    # - bash -c "helm upgrade qxp-web-portal /root/quanxiang_charts_test/qxp-web-portal --set image.tag=$IMAGE_TAG --set image.repo=dockerhub.qingcloud.com/lowcode -n lowcode"
-    # - bash -c "helm upgrade qxp-web-home /root/quanxiang_charts_test/qxp-web-home --set image.tag=$IMAGE_TAG --set image.repo=dockerhub.qingcloud.com/lowcode -n lowcode"
-    # - bash -c "helm upgrade qxp-web-nginx /root/quanxiang_charts_test/qxp-web-nginx --set image.tag=$IMAGE_TAG --set image.repo=dockerhub.qingcloud.com/lowcode -n lowcode"
-    - echo "deploy testing done!"
+    - bash -c "/opt/upImage.sh $IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG $CI_COMMIT_REF_NAME"
+    - bash -c "/opt/upImage.sh $IMAGE_REPO/qxp-web-portal:$IMAGE_TAG $CI_COMMIT_REF_NAME"
+    - bash -c "/opt/upImage.sh $IMAGE_REPO/qxp-web-home:$IMAGE_TAG $CI_COMMIT_REF_NAME"
+    - echo "images uploaded, please contact baronkong@yunify.com to deploy!"
 
 deploy_staging:
   tags:

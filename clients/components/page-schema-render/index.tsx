@@ -1,5 +1,5 @@
 import React from 'react';
-import { Repository, SchemaRender, Schema } from '@ofa/render-engine';
+import { Repository, SchemaRender } from '@ofa/render-engine';
 
 import { useSchemaWithAdapter } from './api';
 import ErrorBoundary from './error-boundary';
@@ -8,10 +8,12 @@ type Props = {
   schemaKey: string;
   version: string;
   repository?: Repository;
-  schemaConvertor?: (schema: Schema) => any;
+  maxHeight?: string;
 }
 
-export default function PageSchemaRender({ schemaKey, version, repository, schemaConvertor }: Props): JSX.Element | null {
+export default function PageSchemaRender(
+  { schemaKey, version, repository, maxHeight }: Props,
+): JSX.Element | null {
   const { schema, adapter } = useSchemaWithAdapter(schemaKey, version);
 
   if (!schema || !adapter) {
@@ -20,7 +22,9 @@ export default function PageSchemaRender({ schemaKey, version, repository, schem
 
   return (
     <ErrorBoundary>
-      <SchemaRender schema={schemaConvertor ? schemaConvertor(schema) : schema} apiSpecAdapter={adapter} repository={repository} />
+      <div className="overflow-auto relative z-0" style={{ maxHeight: maxHeight || '100vh' }}>
+        <SchemaRender schema={schema} apiSpecAdapter={adapter} repository={repository} />
+      </div>
     </ErrorBoundary>
   );
 }

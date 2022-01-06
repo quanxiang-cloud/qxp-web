@@ -29,10 +29,11 @@ type Props = {
   onSelect: (node: TreeNode<POLY_API.PolyNodeInput & { descPath: string }>) => void;
   className?: string;
   ref?: Ref<RefType>;
+  sourceGetter?: () => POLY_API.PolyNodeInput[];
 }
 
 function FormulaConfigTree(
-  { onSelect, className }: Props, ref: ForwardedRef<RefType>,
+  { onSelect, className, sourceGetter }: Props, ref: ForwardedRef<RefType>,
 ): JSX.Element {
   const polyNodeStore = useObservable(store$);
   const apiRequestNodeId = polyNodeStore.currentNodeConfigParams?.currentNode?.get('name') as string;
@@ -44,7 +45,13 @@ function FormulaConfigTree(
     return [];
   }, [apiRequestNodeId, polyNodeStore]);
 
-  const store = useMemo(() => new Store(root, sourceNodes), [root, sourceNodes]);
+  const sourceNodesAlternatives = useMemo(() => {
+    return sourceGetter?.();
+  }, [sourceGetter]);
+
+  const storeSource = sourceNodesAlternatives ?? sourceNodes;
+
+  const store = useMemo(() => new Store(root, storeSource), [root, storeSource]);
 
   useImperativeHandle(ref, () => ({
     getCustomRules: () => {
@@ -55,11 +62,16 @@ function FormulaConfigTree(
           key: node.path,
         }));
     },
-  }), [store]);
+  }));
 
   const handleSelect = useCallback(() => {
     const currentNode = store.currentFocusedNode as TreeNode<POLY_API.PolyNodeInput & { descPath: string }>;
-    if (!currentNode.visible || (currentNode.level === 2 && currentNode.name === 'start')) {
+    if (!currentNode.visible ||
+      (currentNode.level === 2 && currentNode.name === 'start') ||
+      (currentNode.level === 2 && currentNode.path.startsWith('$.formData')) ||
+      (currentNode.level === 2 && currentNode.path.startsWith('$.webhook-')) ||
+      (currentNode.level === 2 && currentNode.path.startsWith('$.variable'))
+    ) {
       return;
     }
     onSelect(currentNode);

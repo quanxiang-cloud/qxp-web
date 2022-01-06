@@ -1,8 +1,10 @@
 import React, { isValidElement } from 'react';
-import { ButtonProps } from './types';
 import cs from 'classnames';
-import Loading from '@m/qxp-ui-mobile/loading';
-import Icon from '@m/qxp-ui-mobile/icon';
+
+import Loading from '../loading';
+import Icon from '../icon';
+
+import { ButtonProps } from './types';
 
 const Button: React.FC<ButtonProps> = (props) => {
   const {
@@ -14,7 +16,7 @@ const Button: React.FC<ButtonProps> = (props) => {
     loadingText,
     block,
     icon,
-    iconSize = '.2rem',
+    iconSize = '.18rem',
     iconPosition = 'left',
     iconClassName,
   } = props;

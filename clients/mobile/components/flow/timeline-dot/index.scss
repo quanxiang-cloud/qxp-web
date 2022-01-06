@@ -1,0 +1,21 @@
+.timeline-dot {
+  width: .1rem;
+  height: .1rem;
+  border-radius: 50%;
+  background-color: var(--gray-300);
+}
+
+.timeline-dot-processing {
+  background-color: var(--blue-600);
+}
+
+.timeline-dot-end {
+  background-color: var(--red-600);
+}
+
+.timeline-dot-wrapper {
+  background-color: white;
+  width: .14rem;
+  height: .14rem;
+  border-radius: 50%;
+}

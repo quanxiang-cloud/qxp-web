@@ -23,7 +23,7 @@ export interface IList<T> {
   header?: JSX.Element;
 }
 
-export default function List<T extends unknown>({
+export default function List<T>({
   className,
   itemClassName,
   items = [],

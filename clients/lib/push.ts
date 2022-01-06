@@ -2,7 +2,7 @@ import { wsSubscribe } from '@lib/api/common';
 import { parseJSON } from '@lib/utils';
 
 export type SocketEventListener = (data: SocketData) => any;
-export type SocketData = { types?: string; content?: any, uuid?: string, [key: string]: any };
+export type SocketData = { type?: string; content?: any, uuid?: string, [key: string]: any };
 
 type SubscribeParams = {
   key: string;
@@ -97,7 +97,7 @@ class PushServer {
     this.connection.onerror = () => {
       this.closeConnection();
     };
-  }
+  };
 
   detachEvents() {
     this.connection.onopen = null;
@@ -113,11 +113,11 @@ class PushServer {
       this.attachEvents();
       this.heartbeat();
     });
-  }
+  };
 
   offlineHandler = () => {
     this.closeConnection();
-  }
+  };
 
   heartbeat() {
     const echo = () => {
@@ -143,14 +143,14 @@ class PushServer {
 
   setUp = (cb?: any) => {
     this.initConnection().then(cb || this.attachEvents);
-  }
+  };
 
   dispatchEvent = (data: SocketData): void => {
-    const listenerMap = this.listenersMap.get(data.types || '') || {};
+    const listenerMap = this.listenersMap.get(data.type || '') || {};
     Object.entries(listenerMap).map(([key, listener]) => {
       listener(data);
     });
-  }
+  };
 
   addEventListener(type: string, key: string, listener: SocketEventListener): void {
     const listeners = this.listenersMap.get(type) || {};

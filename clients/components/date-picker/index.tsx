@@ -58,14 +58,14 @@ export default class DatePicker extends React.Component<Props> {
     this.selectedDate = date;
     this.props.onChange(this.inputValue);
     this.popperRef.current && this.popperRef.current.close();
-  }
+  };
 
   @action
   handleClearDay = (): void => {
     this.selectedDate = null;
     this.props.onChange('');
     this.popperRef.current && this.popperRef.current.close();
-  }
+  };
 
   renderCalendar(): JSX.Element {
     const { minDate, maxDate, picker } = this.props;

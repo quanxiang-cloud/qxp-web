@@ -9,7 +9,6 @@ import PopConfirm from '@c/pop-confirm';
 import PageLoading from '@c/page-loading';
 import { MenuType } from '@portal/modules/apps-management/pages/app-details/type';
 import SchemaPage from '@portal/modules/apps-management/pages/page-design/schema-page';
-import { toRenderSchema } from '@ofa/page-engine';
 
 import { getOperateButtonPer } from '../utils';
 import CreateDataForm from './create-data-form';
@@ -137,7 +136,7 @@ function PageDetails(): JSX.Element | null {
       );
     } else if (menuType === MenuType.schemaPage) {
       return (
-        <SchemaPage appId={store.appID} pageId={store.pageID} convertor={toRenderSchema} />
+        <SchemaPage appId={store.appID} pageId={store.pageID} />
       );
     } else {
       if (fetchSchemeLoading) {

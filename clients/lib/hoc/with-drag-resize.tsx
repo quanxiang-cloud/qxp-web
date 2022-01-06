@@ -111,16 +111,17 @@ export default function withDragResize(
       };
     }, [onMouseMove, onMouseUp]);
 
-    const styles: CSSProperties = {
-      ...style,
-      cursor: ['left', 'right'].includes(position) ? 'col-resize' : 'row-resize',
-    };
-
     return (
-      <div className={className} ref={setResizableEl} style={styles}>
-        <div className={cls} onMouseDown={onMouseDown}>
+      <div className={className} ref={setResizableEl} style={style}>
+        <div
+          className={cls}
+          onMouseDown={onMouseDown}
+          style={{
+            cursor: ['left', 'right'].includes(position) ? 'col-resize' : 'row-resize',
+          }}
+        >
         </div>
-        <Comp {...props} ref={ref}>{props.children}</Comp>
+        <Comp {...props} ref={ref} parentElement={resizableEl}>{props.children}</Comp>
       </div>
     );
   });
