@@ -97,7 +97,7 @@ export default function FileList({
                 </span>
               )}
             </div>
-            <div className='flex justify-end items-center text-12 gap-x-5 pr-5 flex-shrink-0 text-gray-400 file-opt'>
+            <div className='flex justify-end items-center text-12 gap-x-5 pr-5 flex-shrink-0 file-opt'>
               {
                 deleteFileItem &&
                 (<span className='text-center order-last transition-opacity ease-linear opacity-0 group-hover:opacity-100 file-delete-btn'>

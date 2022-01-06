@@ -5,6 +5,8 @@ import { isAcceptedFileType } from '@lib/utils';
 
 import { FILE_LIST_ICON, DEFAULT_IMG_TYPES } from '../constants';
 
+import '../index.scss';
+
 type Props = {
   file: QXPUploadFileBaseProps;
   size?: number;
@@ -19,7 +21,7 @@ export default function FileIcon({ file, size = 20 }: Props): JSX.Element {
         width: size,
         height: size,
       }}
-      className="flex justify-center items-center flex-shrink-0 text-center mx-5 my-0">
+      className='flex justify-center items-center flex-shrink-0 text-center text-white mx-5 my-0'>
       <Icon {...FILE_LIST_ICON[iconType]}/>
     </span>
   );
