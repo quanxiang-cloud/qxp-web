@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import Modal from '@c/modal';
@@ -15,6 +15,7 @@ type Props = {
 function CreatedAppModal({ modalType, onCancel }: Props): JSX.Element {
   const history = useHistory();
   const formRef: any = useRef(null);
+  const [appZipInfo, setAppZipInfo] = useState<AppZipInfo | undefined>(undefined);
 
   const handleSubmit = (): void => {
     const formDom = formRef.current;
@@ -24,6 +25,7 @@ function CreatedAppModal({ modalType, onCancel }: Props): JSX.Element {
   function submitCallback(): void {
     const formDom = formRef.current;
     const data = formDom.getFieldsValue();
+
     if (modalType === 'importApp') {
       store.importApp(data).then(() => {
         onCancel();
@@ -60,6 +62,7 @@ function CreatedAppModal({ modalType, onCancel }: Props): JSX.Element {
           iconName: 'check',
           modifier: 'primary',
           onClick: handleSubmit,
+          forbidden: modalType === 'importApp' && !appZipInfo,
         },
       ]}
     >
@@ -67,6 +70,7 @@ function CreatedAppModal({ modalType, onCancel }: Props): JSX.Element {
         ref={formRef}
         className="p-20"
         modalType={modalType}
+        onValuesChange={() => setAppZipInfo(formRef.current.getFieldValue('appZipInfo'))}
         onSubmitCallback={submitCallback}
       />
     </Modal>

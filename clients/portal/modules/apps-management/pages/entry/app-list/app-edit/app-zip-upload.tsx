@@ -4,7 +4,7 @@ import FileUpload from '@c/file-upload';
 
 interface Props {
   value?: string;
-  onChange?: (value: AppZipInfo) => void;
+  onChange?: (value: AppZipInfo | undefined) => void;
 }
 
 function appZipUpload({ onChange }: Props): JSX.Element {
@@ -15,6 +15,10 @@ function appZipUpload({ onChange }: Props): JSX.Element {
       size: file.size,
       title: file.name,
     });
+  }
+
+  function handleFileDelete(): void {
+    onChange?.(undefined);
   }
 
   function ZipUploadDescription(): JSX.Element {
@@ -33,6 +37,7 @@ function appZipUpload({ onChange }: Props): JSX.Element {
       accept={['.zip']}
       uploaderDescription={<ZipUploadDescription />}
       onFileSuccess={handleFileSuccess}
+      onFileDelete={handleFileDelete}
     />
   );
 }
