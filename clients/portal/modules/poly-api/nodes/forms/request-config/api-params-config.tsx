@@ -13,6 +13,7 @@ type Props = {
   url: string;
   onChange: (value: POLY_API.PolyNodeInput[]) => void;
   customRules: CustomRule[];
+  validating?: boolean;
 }
 
 export type RefType = {
@@ -21,7 +22,7 @@ export type RefType = {
 }
 
 function ApiParamsConfig(
-  { value, onChange, customRules, url }: Props,
+  { value, onChange, customRules, url, validating }: Props,
   ref: ForwardedRef<RefType | undefined>,
 ): JSX.Element {
   const formulaRefs = useRef<Record<string, RefProps>>({});
@@ -137,7 +138,7 @@ function ApiParamsConfig(
                         onChange={handleFormulaChange(path, name, !!required, data)}
                         onBlur={handleFormulaBlur(path, name, !!required, data)}
                       />
-                      {errorsRef.current[path] && changedRef.current[path] && (
+                      {errorsRef.current[path] && (changedRef.current[path] || validating) && (
                         <span className="text-red-600 px-3 pb-3">{errorsRef.current[path]}</span>
                       )}
                     </div>
