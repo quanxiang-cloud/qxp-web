@@ -23,6 +23,42 @@ function PageDetails(): JSX.Element | null {
   const [modalType, setModalType] = useState('');
   const [curRowID, setCurRowID] = useState('');
   const formTableRef = useRef<Ref>(null);
+  const BUTTON_GROUP: Record<number, TableHeaderBtn> = {
+    2: {
+      key: 'add',
+      action: () => {
+        store.operationType = '新建';
+        goEdit('');
+      },
+      text: '新建',
+      iconName: 'add',
+    },
+    4: {
+      key: 'batchRemove',
+      action: () => delFormData,
+      text: '批量删除',
+      iconName: 'restore_from_trash',
+      type: 'popConfirm',
+      isBatch: true,
+      popText: '确认删除选择数据？',
+    },
+    5: {
+      key: 'import',
+      action: () => {
+        store.operationType = '导入';
+      },
+      text: '导入',
+      iconName: 'file_download',
+    },
+    6: {
+      key: 'export',
+      action: () => {
+        store.operationType = '导出';
+      },
+      text: '导出',
+      iconName: 'file_upload',
+    },
+  };
 
   useEffect(() => {
     handleCancel();
@@ -49,31 +85,13 @@ function PageDetails(): JSX.Element | null {
     formTableRef.current?.refresh();
   };
 
-  const tableHeaderBtnList: TableHeaderBtn[] = [];
-
-  if (getOperateButtonPer(2, store.authority)) {
-    tableHeaderBtnList.push({
-      key: 'add',
-      action: () => {
-        store.operationType = '新建';
-        goEdit('');
-      },
-      text: '新建',
-      iconName: 'add',
-    });
-  }
-
-  if (getOperateButtonPer(4, store.authority)) {
-    tableHeaderBtnList.push({
-      key: 'batchRemove',
-      action: delFormData,
-      text: '批量删除',
-      iconName: 'restore_from_trash',
-      type: 'popConfirm',
-      isBatch: true,
-      popText: '确认删除选择数据？',
-    });
-  }
+  const tableHeaderBtnList: TableHeaderBtn[] =
+  Object.entries(BUTTON_GROUP).reduce((acc: TableHeaderBtn[], [key, buttonValue]) => {
+    if (getOperateButtonPer(Number(key), store.authority)) {
+      return [...acc, buttonValue];
+    }
+    return acc;
+  }, []);
 
   const customColumns = [{
     id: 'action',

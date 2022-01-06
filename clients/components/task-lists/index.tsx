@@ -80,19 +80,20 @@ const NavTaskBar = ({ type, className }: Props): JSX.Element => {
       </div>
       { store.showJumpModal && (
         <Modal
-          title="确定?"
-          className='z-50'
+          title="提示"
           onClose={() => store.showJumpModal = false}
           footerBtns={[
             {
               text: '取消',
               key: 'cancel',
+              iconName: 'close',
               onClick: () => store.showJumpModal = false,
             },
             {
               text: '确定',
               key: 'confirm',
               modifier: 'primary',
+              iconName: 'check',
               onClick: () => {
                 const { value } = store.currentTask as Qxp.TaskItem;
                 history.push(`/apps/${value.appID}?pageID=${value.tableID}`);
@@ -101,9 +102,13 @@ const NavTaskBar = ({ type, className }: Props): JSX.Element => {
             },
           ]}
         >
-          <p className="text-h5 p-20">
-          确定离开当前页面？
-          </p>
+          <div className='py-24 px-40'>
+            <div className='flex text-yellow-600 text-14 items-center font-semibold'>
+              <Icon size={20} name="info" className="mr-8"/>
+              <div>确认要离开吗？</div>
+            </div>
+            <div className='text-gray-900 text-14 ml-28 mt-8'>当前页面数据未提交，离开后将丢失更改。</div>
+          </div>
         </Modal>
       )}
     </>
