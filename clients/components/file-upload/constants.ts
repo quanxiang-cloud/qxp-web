@@ -1,3 +1,5 @@
+import { iconColor } from '@c/icon';
+
 // API for upload and download
 export const FILE_DELETE_API = '/api/v1/fileserver/del';
 export const IMG_THUMBNAIL_API = '/api/v1/fileserver/thumbnail';
@@ -17,25 +19,25 @@ export const PARALLEL_UPLOAD_SIZE = 3;
 export const MAX_SMALL_FILE_SIZE = 1024 * 1024 * 20; // 20 MB
 
 // File list icon config
-export const FILE_LIST_ICON: Record<string, { name: string, size: number, className?: string }> = {
-  failed: { name: 'error', size: 20, className: 'text-red-600' },
-  retry: { name: 'refresh', size: 24, className: 'text-red-600' },
-  success: { name: 'done', size: 20, className: 'file-upload-success-icon' },
+export const FILE_LIST_ICON: Record<string, { name: string, size: number, className?: string, color?: iconColor }> = {
+  failed: { name: 'error', size: 20, color: 'red' },
+  retry: { name: 'refresh', size: 20, color: 'yellow' },
+  success: { name: 'done', size: 20, color: 'green' },
   download: { name: 'download', size: 20 },
   delete: { name: 'restore_from_trash', size: 20 },
-  uploading: { name: 'loading', size: 20, className: 'animate-spin text-blue-500' },
-  processing: { name: 'hourglass_empty', size: 20, className: 'animate-spin text-gray-600' },
+  uploading: { name: 'loading', size: 20, className: 'animate-spin', color: 'blue' },
+  processing: { name: 'hourglass_empty', size: 20, className: 'animate-spin', color: 'gray' },
   img: { name: 'insert_photo', size: 20, className: 'file-list-icon img-type' },
   file: { name: 'insert_drive_file', size: 20, className: 'file-list-icon file-type' },
 };
 
 // Default img types
 export const DEFAULT_IMG_TYPES: string[] = [
-  '.gif',
-  '.tiff',
-  '.png',
-  '.bmp',
-  '.jpeg',
+  'image/gif',
+  'image/tiff',
+  'image/png',
+  'image/bmp',
+  'image/jpeg',
 ];
 
 export const THUMBNAIL_SIZE = 52;
