@@ -77,7 +77,7 @@ function FilePicker({
         'flex justify-center items-center flex-col bg-transparent text-gray-600 cursor-pointer',
         className, {
           'opacity-50': disabled,
-          'qxp-file-picker-dragover': isDragging,
+          'qxp-file-picker-dragover border-blue-600': isDragging,
           'cursor-not-allowed': disabled,
         })}
     >

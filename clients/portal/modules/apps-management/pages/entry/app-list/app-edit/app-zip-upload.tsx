@@ -34,7 +34,7 @@ function appZipUpload({ onChange }: Props): JSX.Element {
     <FileUpload
       iconName="upload_file"
       className="app-upload"
-      accept={['.zip']}
+      accept={['application/zip', 'application/x-zip-compressed']}
       uploaderDescription={<ZipUploadDescription />}
       onFileSuccess={handleFileSuccess}
       onFileDelete={handleFileDelete}
