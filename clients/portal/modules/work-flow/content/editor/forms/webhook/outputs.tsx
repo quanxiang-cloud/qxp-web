@@ -32,7 +32,7 @@ export default function Outputs({ value, parentElement }: Props): JSX.Element {
     }
     observer.observe(el);
     return () => observer.unobserve(el);
-  }, [parentElement, sectionRef.current]);
+  }, [parentElement, sectionRef.current, observer]);
 
   function handleCollapse(): void {
     const el = parentElement ?? sectionRef.current;

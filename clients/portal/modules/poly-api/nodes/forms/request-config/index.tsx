@@ -33,9 +33,15 @@ export function mergeInputs(
   const values = diff2Sets.reduce((acc, diff) => {
     const { path, value } = diff;
     const lastPath = `${last(path)}`;
-    const targetPath = lastPath === 'type' ? path : path.slice(0, -1).concat('type');
-    const targetValue = view(lensPath(targetPath), acc);
-    if (targetValue === 'direct_expr') {
+    const typePath = lastPath === 'type' ? path : path.slice(0, -1).concat('type');
+    const oldTypeValue = view(lensPath(typePath), acc);
+    const newTypeValue = view(lensPath(typePath), apiInputs);
+    const isUpdateData = last(path) === 'data';
+    const isUpdateType = last(path) === 'type';
+    const isNewTypeSimple = !['array', 'object'].includes(newTypeValue);
+    const isExpressSeted = oldTypeValue === 'direct_expr';
+
+    if (isExpressSeted && (isUpdateData || isUpdateType) && isNewTypeSimple) {
       return acc;
     }
     return set(lensPath(path), value, acc);

@@ -3,6 +3,14 @@ import { isArray, isEmpty, isString, omit } from 'lodash';
 import { isObjectField } from './object-editor';
 import { RawApiDetail } from '../effects/api/raw';
 
+type ParamsConfig = Omit<POLY_API.PolyNodeInput, 'data' | 'type' | 'in'> & {
+  type: string;
+  data: string;
+  path: string;
+  in: string;
+  arrayParent?: { name: string, title: string };
+}
+
 export function parseParamOfPath(url: string): Record<string, ParamsConfig[]> {
   const pathArr = url.split('/:');
   pathArr.shift();
@@ -22,52 +30,12 @@ export function parseParamOfPath(url: string): Record<string, ParamsConfig[]> {
   return { path: config };
 }
 
-export function mapNamespacePathsToLabelValue1(namespacePath: Array<any> | null): any {
-  if (!namespacePath) {
-    return;
-  }
-
-  return namespacePath.map(({ name, parent, children }: any) => {
-    return {
-      label: name,
-      value: `${parent}/${name}`,
-      path: `${parent}/${name}`,
-      isLeaf: false,
-      childrenData: mapNamespacePathsToLabelValue1(children),
-    };
-  });
-}
-
-export function mapNamespacePathsToLabelValue(namespacePath: Array<any> | null, path?: string): any {
-  if (!namespacePath) {
-    return;
-  }
-
-  return namespacePath.map(({ name, parent, children }: any, index: number) => {
-    const optionPath = path ? `${path}.${index}` : `${index}`;
-
-    return {
-      label: name,
-      value: `${parent}/${name}`,
-      children: children ? mapNamespacePathsToLabelValue(children, optionPath) :
-        [{ label: '暂无API', value: '', isLeaf: true, disabled: true }],
-      path: optionPath,
-    };
-  });
-}
-
-type ParamsConfig = Omit<POLY_API.PolyNodeInput, 'data' | 'type' | 'in'> & {
-  type: string;
-  data: string;
-  path: string;
-  in: string;
-}
-
 export function convertToParamsConfig(
   originalInputs: POLY_API.PolyNodeInput[],
   parentPath = '',
   parentIn = 'body',
   acc: Record<string, ParamsConfig[]> = {},
+  arrayParent: { name: string, title: string } | undefined = undefined,
 ): Record<string, ParamsConfig[]> {
   originalInputs.forEach((apiDocInput: POLY_API.PolyNodeInput, index: number) => {
     const currentPath = parentPath ? `${parentPath}.${index}` : `${index}`;
@@ -75,11 +43,20 @@ export function convertToParamsConfig(
     const currentIn = apiDocInput.in || parentIn;
     acc[currentIn] = acc[currentIn] || [];
     if (!isObjectField(type)) {
-      acc[currentIn].push({
-        ...omit(apiDocInput, 'data'), data: isString(data) ? data : '', path: currentPath,
-      });
+      const currentInput = {
+        ...omit(apiDocInput, 'data'),
+        path: currentPath,
+        data: isString(data) ? data : '',
+      } as ParamsConfig;
+
+      if (arrayParent) {
+        currentInput.arrayParent = arrayParent;
+      }
+
+      acc[currentIn].push(currentInput);
     } else if (isArray(apiDocInput.data)) {
-      convertToParamsConfig(apiDocInput.data, `${currentPath}.data`, currentIn, acc);
+      convertToParamsConfig(apiDocInput.data, `${currentPath}.data`, currentIn, acc,
+        type === 'array' ? { name: apiDocInput.name || '', title: apiDocInput.title || '' } : undefined);
     }
   });
   return acc;
@@ -92,34 +69,50 @@ export type PolyApiSelectorOption = {
   isLeaf: boolean;
   disabled: boolean;
 }
-export function convertRawApiListToOptions(rawApiList: RawApiDetail[]): PolyApiSelectorOption[] {
-  if (!rawApiList.length) {
-    return [{ label: '暂无api', value: '', path: '', isLeaf: true, disabled: true }];
+
+export type ApiCascaderOption = {
+  label: string;
+  value: string;
+  children: ApiCascaderOption[] | undefined;
+  isLeaf: boolean;
+  path: string;
+  childrenData?: any;
+  disabled?: boolean;
+}
+
+export function mergeApiListToChildNameSpace(
+  childNameSpace: ApiCascaderOption[] | undefined, rawApiList: RawApiDetail[],
+): ApiCascaderOption[] {
+  if (!rawApiList.length && !childNameSpace) {
+    return [{ label: '暂无api', value: '', path: '', children: undefined, isLeaf: true, disabled: true }];
   }
-  return rawApiList.map(({ name, fullPath }: RawApiDetail) => {
+
+  return (childNameSpace || []).concat(rawApiList.map(({ title, name, fullPath }: RawApiDetail) => {
     return {
-      label: name,
+      label: title || name.split('.').shift() || '',
       value: fullPath,
       path: fullPath,
+      children: undefined,
       isLeaf: true,
       disabled: false,
     };
-  });
+  }));
 }
 
 const Title_Map: Record<string, string> = {
   inner: '平台API',
   customer: '第三方API',
 };
-export function getChildrenOfCurrentSelectOption(currentChildrenData: any): any {
+export function getChildrenOfCurrentSelectOption(currentChildrenData: any): ApiCascaderOption[] | undefined {
   if (!currentChildrenData) {
-    return null;
+    return;
   }
 
   return currentChildrenData.map(({ name, children, parent, title }: any) => {
     return {
       label: title ? title : (Title_Map[name] || name),
       value: name,
+      children: undefined,
       childrenData: children,
       isLeaf: false,
       path: `${parent}/${name}`,
@@ -171,4 +164,32 @@ function reduceNoiseNodeInputData(inputs: POLY_API.PolyNodeInput[]): POLY_API.Po
 export function filterPolyApiInputs(inputs: POLY_API.PolyNodeInput[]): POLY_API.PolyNodeInput[] {
   const _inputs = reduceNoiseNodeInputData(inputs);
   return omitNodeInputProperties(_inputs, ['mock', 'desc']);
+}
+
+export function appendApiListToTargetOption(
+  option: ApiCascaderOption, targetOptionPath: string, apiList: RawApiDetail[],
+): ApiCascaderOption {
+  if (option.path === targetOptionPath) {
+    return {
+      ...option,
+      children: mergeApiListToChildNameSpace(option.children, apiList),
+      childrenData: (option.childrenData || []).concat(apiList),
+    };
+  }
+
+  if (option.children) {
+    option.children = option.children.map((option: ApiCascaderOption) => {
+      return appendApiListToTargetOption(option, targetOptionPath, apiList);
+    });
+  }
+
+  return option;
+}
+
+export function mergeApiListToOptions(
+  options: ApiCascaderOption[], targetOptionPath: string, apiList: RawApiDetail[],
+): ApiCascaderOption[] {
+  return options.map((option) => {
+    return appendApiListToTargetOption(option, targetOptionPath, apiList);
+  });
 }

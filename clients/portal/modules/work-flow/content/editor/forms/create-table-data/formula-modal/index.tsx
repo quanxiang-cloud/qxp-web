@@ -4,6 +4,8 @@ import Modal from '@c/modal';
 
 import ConfigForm from './config-form';
 
+import './style.scss';
+
 interface Props {
   value: string;
   onClose: () => void;
@@ -27,6 +29,7 @@ function FormulaModal({ onClose, onSubmit, value }: Props): JSX.Element {
 
   return (
     <Modal
+      className='webhook-formula-modal-wrapper'
       title="配置公式"
       onClose={onClose}
       footerBtns={[

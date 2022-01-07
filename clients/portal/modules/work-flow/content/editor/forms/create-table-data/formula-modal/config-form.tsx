@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback, useMemo, useContext } from 'react';
+import { mergeRight } from 'ramda';
 import { useQuery } from 'react-query';
 
 import FormularEditor, { RefProps, CustomRule } from '@c/formula-editor';
@@ -6,7 +7,7 @@ import PolyNodePathTree, { RefType } from '@polyApi/components/poly-node-path-tr
 import { getElementHeight } from '@polyApi/utils/dom';
 import { TreeNode } from '@c/headless-tree/types';
 import Operates from '@polyApi/components/operates';
-import { CONDITION_OPERATES_MAP } from '@polyApi/constants';
+import { CONDITION_OPERATES_MAP, OPERATES_MAP } from '@polyApi/constants';
 import { webhookPathTreeSourceGetter } from '@flow/content/editor/forms/webhook/utils';
 import sourceTable from '@flow/content/editor/forms/flow-source-table';
 import store from '@flow/content/editor/store';
@@ -43,7 +44,7 @@ function ConfigForm({ value, onChange }: Props): JSX.Element {
     const parentElement = ref.current.parentElement;
     const height = getElementHeight(parentElement);
     if (height) {
-      ref.current.style.height = `${height}px`;
+      ref.current.style.height = `${height + 18}px`;
     }
   });
 
@@ -91,7 +92,7 @@ function ConfigForm({ value, onChange }: Props): JSX.Element {
       </div>
       <div className="flex-1 overflow-hidden formula-config">
         <Operates
-          operates={CONDITION_OPERATES_MAP}
+          operates={mergeRight(CONDITION_OPERATES_MAP, OPERATES_MAP)}
           onClick={handleOperateChange}
           className="bg-white"
         />
