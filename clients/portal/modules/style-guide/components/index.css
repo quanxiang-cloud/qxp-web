@@ -15,10 +15,10 @@
   user-select: none;
 }
 
-.qxp-btn:hover:active {
+/* .qxp-btn:hover:active {
   color: white;
   background-color: var(--gray-900);
-}
+} */
 
 .drawer-modal-mask {
   background-color: rgba(0, 0, 0, 0);

@@ -69,13 +69,14 @@ export function useGetGlobalConfig<T>(
   return [userConfig, loading];
 }
 
-export function setGlobalConfig(key: string, version: string, config: any): void {
+export function setGlobalConfig(key: string, version: string, config: any): Promise<void> {
   // define a local variable is necessary,
   // if config can not be stringified, an error will be throw
+  globalConfigMapTmp[key] = config;
   const configStr = JSON.stringify(config);
 
   globalConfigMapTmp[key] = config;
-  setBatchGlobalConfig([{
+  return setBatchGlobalConfig([{
     key,
     version: version,
     value: configStr,

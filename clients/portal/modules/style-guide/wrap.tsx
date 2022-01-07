@@ -1,35 +1,37 @@
-import React, { useState, useMemo } from 'react';
-import { SchemaForm } from '@formily/antd';
-import { get } from 'lodash';
-import { CssNodePlain, generate, fromPlainObject, toPlainObject, parse, DeclarationPlain } from 'css-tree';
+import React, { useState, useEffect } from 'react';
+import { CssNodePlain, generate, fromPlainObject } from 'css-tree';
+import { Controlled as CodeMirror } from 'react-codemirror2';
+// @ts-ignore
+import csslint from 'csslint';
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/theme/material.css';
+import 'codemirror/mode/css/css';
+import 'codemirror/addon/hint/show-hint';
+import 'codemirror/addon/hint/show-hint.css';
+import 'codemirror/addon/hint/css-hint';
+import 'codemirror/addon/lint/lint';
+import 'codemirror/addon/lint/lint.css';
+import 'codemirror/addon/lint/css-lint';
 
 import Drawer from '@c/drawer';
+import Button from '@c/button';
+import toast from '@lib/toast';
 
-import configComponent from './config-component';
+import { schemaToInitCss } from './utils';
 import store from './store';
-import { getConfigFormSchema } from './utils';
 
 export default function componentWarp(compObj: ComponentObjectType) {
   return function ComponentConfig(props: any): JSX.Element {
     const [configVisible, setConfigVisible] = useState(false);
+    const [value, setValue] = useState('');
     const { config_schema, Component, key } = compObj;
 
-    const initialValues = useMemo(() => {
+    useEffect(() => {
       if (!configVisible) {
         return;
       }
 
-      const cssAst = parse(store.customCssMap[key]);
-      toPlainObject(cssAst);
-      const _initialValues: Record<string, DeclarationPlain> = {};
-      (cssAst as any).children.forEach((ast: any)=> {
-        const classnames = get(ast, 'prelude.children[0].children[0].name');
-        ast.block.children.forEach((block: any) => {
-          _initialValues[`${classnames}&&${block.property}`] = block;
-        });
-      });
-
-      return _initialValues;
+      setValue(store.customCssMap[key] || schemaToInitCss(config_schema));
     }, [configVisible]);
 
     function handleConfigChange(formData: Record<string, any>): void {
@@ -69,14 +71,32 @@ export default function componentWarp(compObj: ComponentObjectType) {
         });
       });
 
+      const styleID = `custom-css-${key}`;
+
       const css = generate(fromPlainObject(initCssTree));
-      const style = document.getElementById('custom-css') || document.createElement('style');
+      const style = document.getElementById(styleID) || document.createElement('style');
       style.innerHTML = '';
-      style.setAttribute('id', 'custom-css');
+      style.setAttribute('id', styleID);
       style.appendChild(document.createTextNode(css));
       const head = document.getElementsByTagName('head')[0];
       head.appendChild(style);
       store.setCustomCss(key, css);
+    }
+
+    function handleSave(): void {
+      const results = csslint.verify(value);
+      if (!results.messages.every(({ type }: any) => type !== 'error')) {
+        toast.error('css 格式错误');
+        return;
+      }
+
+      const style = document.getElementById('custom-css') || document.createElement('style');
+      style.innerHTML = '';
+      style.setAttribute('id', 'custom-css');
+      style.appendChild(document.createTextNode(value));
+      const head = document.getElementsByTagName('head')[0];
+      head.appendChild(style);
+      store.setCustomCss(key, value);
     }
 
     return (
@@ -91,12 +111,23 @@ export default function componentWarp(compObj: ComponentObjectType) {
           visible={configVisible}
         >
           <div className='p-10'>
-            <SchemaForm
-              initialValues={initialValues}
-              onChange={handleConfigChange}
-              components={configComponent}
-              schema={getConfigFormSchema(config_schema)}
+            <CodeMirror
+              value={value}
+              options={{
+                mode: 'css',
+                theme: 'material',
+                lineNumbers: true,
+                lint: true,
+                gutters: ['CodeMirror-lint-markers'],
+                extraKeys: {
+                  Alt: 'autocomplete',
+                },
+              }}
+              onBeforeChange={(editor, data, value) => {
+                setValue(value);
+              }}
             />
+            <Button className='mt-20' onClick={handleSave} >应用</Button>
           </div>
         </Drawer>
       </>

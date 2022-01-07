@@ -145,6 +145,7 @@ function Table<T extends Record<string, any>>({
                   <th
                     {...header.getHeaderProps()}
                     key={header.id}
+                    className='qxp-table-th'
                   >
                     {header.render('Header')}
                     {canSetColumnWidth && header.id !== '_selector' && index !== _columns.length - 1 && (
@@ -176,6 +177,7 @@ function Table<T extends Record<string, any>>({
                   {row.cells.map((cell) => {
                     return (
                       <td
+                        className='qxp-table-td'
                         {...cell.getCellProps()}
                         key={cell.column.id}
                       >

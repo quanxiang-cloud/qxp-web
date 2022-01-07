@@ -3,10 +3,10 @@ import { DeclarationPlain } from 'css-tree';
 
 declare global {
   type ComponentConfigType = {
-    title: string,
-    type: string,
-    classnames: string,
-    property?: string,
+    selector: string;
+    desc?: string;
+    pseudo?: ComponentConfigType[];
+    children?: ComponentConfigType[];
   }
 
   type ComponentObjectType = {

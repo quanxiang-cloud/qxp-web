@@ -5,9 +5,12 @@ import {
 } from '@formily/antd';
 
 import toast from '@lib/toast';
+// import httpClient from '@lib/http-client';
 import { setGlobalConfig, useGetGlobalConfig } from '@lib/configuration-center';
 
 import buttonComponent from './components/button';
+import tableComponent from './components/table';
+import tooltipComponent from './components/tooltip';
 import { COLORS, COLOR_DEPTH, DEFAULT_CONFIG } from './constant';
 import componentWarp from './wrap';
 import store from './store';
@@ -20,6 +23,8 @@ type UserStyleConfig = {
 
 const KEY = 'user_style_config';
 const ButtonPreviewConfigurable = componentWarp(buttonComponent);
+const TablePreviewConfigurable = componentWarp(tableComponent);
+const ToolTipPreviewConfigurable = componentWarp(tooltipComponent);
 
 function ColorSelect({ value, onChange }: SelectProps<string>): JSX.Element {
   return (
@@ -66,7 +71,7 @@ export default function UserStyleConfig(): JSX.Element {
     if (loading) {
       return;
     }
-    store.setCustomCss('button', userStyleConfig.css);
+    store.customCssMap = userStyleConfig.css;
   }, [loading]);
   const form = useForm({
     initialValues: userStyleConfig,
@@ -74,7 +79,7 @@ export default function UserStyleConfig(): JSX.Element {
   });
 
   function handleSave(formData: UserStyleConfig): void {
-    setGlobalConfig(formData, KEY, '0.1.0').then(() => {
+    setGlobalConfig(KEY, '0.1.0', formData).then(() => {
       window.TENANT_CONFIG = formData;
       const favicon = document.querySelector<HTMLLinkElement>('link[rel="shortcut icon"]');
       if (favicon) {
@@ -99,9 +104,10 @@ export default function UserStyleConfig(): JSX.Element {
   }
 
   function saveComponentStyle(): void {
-    const cssList = Object.entries(store.customCssMap).map(([_, cssString]) => cssString);
-    const cssFile = new Blob([cssList.join('')], { type: 'text/css' });
-    setGlobalConfig({ css: cssList.join('') }, KEY, '0.1.0');
+    const cssStr = Object.entries(store.customCssMap).map(([key, cssString]) => cssString).join('');
+    const newStr = cssStr.replace(/\/\*.*\*\//g, '');
+    const cssFile = new Blob([cssStr], { type: 'text/css' });
+    setGlobalConfig(KEY, '0.1.0', { css: store.customCssMap });
     // httpClient('/api/v1/fileserver/sign/upload', {
     //   path: 'qxp-static/style-guide/component.css',
     //   contentType: 'text/css',
@@ -123,7 +129,7 @@ export default function UserStyleConfig(): JSX.Element {
 
   return (
     <div className='py-32'>
-      <div className='mx-auto p-28 bg-white w-552 rounded-12'>
+      <div className='mx-auto p-28 bg-white w-552 rounded-12 grid gap-20'>
         {/* <SchemaForm
           form={form as any}
           components={{ Input, ColorSelect, ImgUpload }}
@@ -135,7 +141,9 @@ export default function UserStyleConfig(): JSX.Element {
           </FormButtonGroup>
         </SchemaForm> */}
         <ButtonPreviewConfigurable />
-        <Button onClick={saveComponentStyle} className='mt-10'>保存</Button>
+        <TablePreviewConfigurable />
+        <ToolTipPreviewConfigurable />
+        <Button onClick={saveComponentStyle}>保存</Button>
       </div>
     </div>
   );

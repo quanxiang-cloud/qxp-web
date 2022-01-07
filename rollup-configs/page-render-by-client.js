@@ -71,6 +71,7 @@ const config = {
     // 'react-dnd-html5-backend',
     'react-flow-renderer',
     'xlsx',
+    'csslint',
 
     /@ofa\/.*/,
   ],

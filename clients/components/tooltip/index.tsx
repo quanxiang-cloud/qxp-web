@@ -1,6 +1,6 @@
 import React, { DetailedHTMLProps, HTMLAttributes, useRef, cloneElement } from 'react';
 
-import Popper, { Theme } from '@c/popper';
+import Popper, { Theme, TriggerMethod } from '@c/popper';
 
 import Tip from './tip';
 
@@ -11,6 +11,7 @@ export type Props = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivEle
   labelClassName?: string;
   wrapperClassName?: string;
   theme?: Theme;
+  trigger?: TriggerMethod;
 }
 
 const modifiers = [
@@ -38,7 +39,7 @@ export default function ToolTip(props: Props): JSX.Element {
         className='qxp-tooltip-container'
         placement={position || 'bottom-start'}
         modifiers={modifiers}
-        trigger='hover'
+        trigger={props.trigger || 'hover'}
         theme={props.theme}
       >
         <Tip

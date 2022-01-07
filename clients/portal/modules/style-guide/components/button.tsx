@@ -51,32 +51,18 @@ function ButtonPreview(
 
 const config_schema = [
   {
-    title: '宽度',
-    type: 'size',
-    property: 'width',
-    classnames: 'qxp-btn-custom',
-  },
-  {
-    title: '边框',
-    type: 'border',
-    classnames: 'qxp-btn-custom',
-  },
-  {
-    title: '圆角',
-    type: 'border-radius',
-    classnames: 'qxp-btn-custom',
-  },
-  {
-    title: '背景色',
-    type: 'color',
-    property: 'background-color',
-    classnames: 'qxp-btn-custom',
-  },
-  {
-    title: '字体颜色',
-    type: 'color',
-    property: 'color',
-    classnames: 'qxp-btn-custom',
+    selector: '.qxp-btn-custom',
+    desc: '可编辑属性有宽度、边框、圆角等',
+    pseudo: [
+      {
+        selector: 'active',
+        desc: '按钮点击效果',
+      },
+      {
+        selector: 'hover',
+        desc: '按钮鼠标移入效果',
+      },
+    ],
   },
 ];
 
