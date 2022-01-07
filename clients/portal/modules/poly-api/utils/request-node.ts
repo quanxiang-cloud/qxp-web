@@ -61,6 +61,7 @@ type ParamsConfig = Omit<POLY_API.PolyNodeInput, 'data' | 'type' | 'in'> & {
   data: string;
   path: string;
   in: string;
+  arrayParent?: { name: string, title: string };
 }
 
 export function convertToParamsConfig(
@@ -68,6 +69,7 @@ export function convertToParamsConfig(
   parentPath = '',
   parentIn = 'body',
   acc: Record<string, ParamsConfig[]> = {},
+  arrayParent: { name: string, title: string } | undefined = undefined,
 ): Record<string, ParamsConfig[]> {
   originalInputs.forEach((apiDocInput: POLY_API.PolyNodeInput, index: number) => {
     const currentPath = parentPath ? `${parentPath}.${index}` : `${index}`;
@@ -75,11 +77,20 @@ export function convertToParamsConfig(
     const currentIn = apiDocInput.in || parentIn;
     acc[currentIn] = acc[currentIn] || [];
     if (!isObjectField(type)) {
-      acc[currentIn].push({
-        ...omit(apiDocInput, 'data'), data: isString(data) ? data : '', path: currentPath,
-      });
+      const currentInput = {
+        ...omit(apiDocInput, 'data'),
+        path: currentPath,
+        data: isString(data) ? data : '',
+      } as ParamsConfig;
+
+      if (arrayParent) {
+        currentInput.arrayParent = arrayParent;
+      }
+
+      acc[currentIn].push(currentInput);
     } else if (isArray(apiDocInput.data)) {
-      convertToParamsConfig(apiDocInput.data, `${currentPath}.data`, currentIn, acc);
+      convertToParamsConfig(apiDocInput.data, `${currentPath}.data`, currentIn, acc,
+        type === 'array' ? { name: apiDocInput.name || '', title: apiDocInput.title || '' } : undefined);
     }
   });
   return acc;
@@ -92,19 +103,23 @@ export type PolyApiSelectorOption = {
   isLeaf: boolean;
   disabled: boolean;
 }
-export function convertRawApiListToOptions(rawApiList: RawApiDetail[]): PolyApiSelectorOption[] {
-  if (!rawApiList.length) {
+
+export function mergeApiListToChildNameSpace(
+  childNameSpace: any, rawApiList: RawApiDetail[],
+): PolyApiSelectorOption[] {
+  if (!rawApiList.length && !childNameSpace) {
     return [{ label: '暂无api', value: '', path: '', isLeaf: true, disabled: true }];
   }
-  return rawApiList.map(({ name, fullPath }: RawApiDetail) => {
+
+  return (childNameSpace || []).concat(rawApiList.map(({ title, name, fullPath }: RawApiDetail) => {
     return {
-      label: name,
+      label: title || name.split('.').shift() || '',
       value: fullPath,
       path: fullPath,
       isLeaf: true,
       disabled: false,
     };
-  });
+  }));
 }
 
 const Title_Map: Record<string, string> = {
@@ -171,4 +186,36 @@ function reduceNoiseNodeInputData(inputs: POLY_API.PolyNodeInput[]): POLY_API.Po
 export function filterPolyApiInputs(inputs: POLY_API.PolyNodeInput[]): POLY_API.PolyNodeInput[] {
   const _inputs = reduceNoiseNodeInputData(inputs);
   return omitNodeInputProperties(_inputs, ['mock', 'desc']);
+}
+
+export function appendApiListToTargetOption(
+  option: any, targetOptionPath: string, apiList: RawApiDetail[],
+): any {
+  if (!option) {
+    return;
+  }
+
+  if (option.path === targetOptionPath) {
+    return {
+      ...option,
+      children: mergeApiListToChildNameSpace(option.children, apiList),
+      childrenData: (option.childrenData || []).concat(apiList),
+    };
+  }
+
+  if (option.children) {
+    option.children = option.children.map((option: any) => {
+      return appendApiListToTargetOption(option, targetOptionPath, apiList);
+    });
+  }
+
+  return option;
+}
+
+export function mergeApiListToOptions(
+  options: any[], targetOptionPath: string, apiList: RawApiDetail[],
+): any[] {
+  return options.map((option) => {
+    return appendApiListToTargetOption(option, targetOptionPath, apiList);
+  });
 }

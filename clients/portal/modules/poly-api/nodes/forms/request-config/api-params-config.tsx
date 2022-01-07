@@ -112,7 +112,7 @@ function ApiParamsConfig(
           <div key={type} className="my-20">
             <div className="pb-4 text-gray-900">{type.replace(/^\S/, (s: string) => s.toUpperCase())}</div>
             <div className="config-param">
-              {params.map(({ path, name, title, data, required }) => {
+              {params.map(({ path, name, title, data, required, arrayParent }) => {
                 !data && required && initError(path, name);
                 return (
                   <div
@@ -122,8 +122,8 @@ function ApiParamsConfig(
                   >
                     <div className="flex items-center justify-between w-142 p-8 border-r-1">
                       <div className="flex-1 truncate relative">
-                        <span>{title}</span>
-                        <span className="mx-4 text-gray-400">{name}</span>
+                        <span>{!title ? arrayParent?.title : title}</span>
+                        <span className="mx-4 text-gray-400">{!name ? arrayParent?.name : name}</span>
                         {required && <span className="text-red-600 absolute top-0 right-0">*</span>}
                       </div>
                       <Icon className="ml-8" name="arrow_left_alt" />
