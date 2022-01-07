@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
+import cs from 'classnames';
 import { clone } from 'ramda';
 import { Cascader } from 'antd';
 import { useParams } from 'react-router-dom';
-import cs from 'classnames';
+import { SingleValueType, DefaultOptionType } from 'rc-cascader/lib/Cascader';
 
 import toast from '@lib/toast';
 import ApiDocDetail from '@polyApi/components/api-doc-detail';
 import { RawApiDocDetail, useGetRequestNodeApiList } from '@polyApi/effects/api/raw';
 import { useGetNamespaceFullPath, useQueryNameSpaceRawRootPath } from '@polyApi/effects/api/namespace';
-import { getChildrenOfCurrentSelectOption, mergeApiListToOptions } from '@polyApi/utils/request-node';
+import {
+  ApiCascaderOption, getChildrenOfCurrentSelectOption, mergeApiListToOptions,
+} from '@polyApi/utils/request-node';
 
 type Props = {
   apiDocDetail?: RawApiDocDetail;
@@ -25,26 +28,26 @@ function ApiSelector({
 }: Props): JSX.Element {
   const { appID } = useParams<{ appID: string }>();
   const [apiNamespacePath, setApiNamespacePath] = useState('');
-  const [options, setOptions] = useState<any[]>();
+  const [options, setOptions] = useState<ApiCascaderOption[] | undefined>();
 
   const { data: namespace, error: fetchRootPathError } = useQueryNameSpaceRawRootPath(appID);
   const { data: namespacePaths, error: fetchNameSpacePathError } = useGetNamespaceFullPath({
     path: namespace?.appPath?.slice(1) || '',
     body: { active: -1 },
   }, { enabled: !!namespace?.appPath });
-  const { data: currentRawApiDetails, isLoading, error: fetchApiListError } = useGetRequestNodeApiList({
+  const { data: apiListDetails, isLoading, error: fetchApiListError } = useGetRequestNodeApiList({
     path: apiNamespacePath.slice(1) || '',
     body: { active: 1, page: 1, pageSize: -1 },
   }, { enabled: !!apiNamespacePath });
 
   // api cascader merge apiList options
   useEffect(() => {
-    if ((isLoading && !currentRawApiDetails) || !options) {
+    if ((isLoading && !apiListDetails) || !options) {
       return;
     }
 
-    setOptions(mergeApiListToOptions(options, apiNamespacePath, currentRawApiDetails?.list || []));
-  }, [currentRawApiDetails, isLoading]);
+    setOptions(mergeApiListToOptions(options, apiNamespacePath, apiListDetails?.list || []));
+  }, [apiListDetails, isLoading]);
 
   // api cascader load root options
   useEffect(() => {
@@ -57,7 +60,7 @@ function ApiSelector({
     fetchRootPathError && toast.error(fetchRootPathError.message);
   }, [fetchApiListError, fetchNameSpacePathError, fetchRootPathError]);
 
-  function onChange(value: any, selectedOptions: any): any {
+  function onChange(value: SingleValueType | SingleValueType[], selectedOptions: DefaultOptionType[]): void {
     const leafOption = clone(selectedOptions).pop();
     if (leafOption?.isLeaf) {
       setApiPath(leafOption.path);
@@ -65,7 +68,7 @@ function ApiSelector({
     }
   }
 
-  function loadData(selectedOptions: any): void {
+  function loadData(selectedOptions: DefaultOptionType[]): void {
     const targetOption = selectedOptions[selectedOptions.length - 1];
 
     setApiNamespacePath(targetOption.path);
