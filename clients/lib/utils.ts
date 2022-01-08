@@ -276,7 +276,7 @@ export function handleTimeFormat(time: string): string {
   return dayjs(time).format('YYYY-MM-DD HH:mm');
 }
 
-export function isEmpty(value: any): boolean {
+export function isMeanless(value: any): boolean {
   if (value === undefined || value === null || value === '' || value.toString() === '') {
     return true;
   }
