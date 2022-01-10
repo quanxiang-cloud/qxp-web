@@ -108,5 +108,8 @@ func SetupContext(configFile string, sessionCookieName string, appName string) (
 	// 	log.Fatalf("error: %v", err)
 	// }
 
+	// init OSSConfig
+	Config.ClientConfig.OSSConfig = getOSSConfig()
+
 	return nil
 }
