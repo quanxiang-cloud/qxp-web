@@ -35,7 +35,7 @@ function FormulaModal(props: Props): JSX.Element | null {
   }, {}), [allFields]);
 
   const formulaCustomRules: CustomRule[] = allFields.map(({ label, value }) => ({
-    key: value,
+    key: `[${value}]`,
     name: label,
     type: 'field',
   }));
