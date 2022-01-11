@@ -3,17 +3,19 @@ import { useQuery } from 'react-query';
 import { get } from 'lodash';
 
 import { FormRenderer } from '@c/form-builder';
-import Select, { SelectOption } from '@c/select';
+import Select from '@c/select';
 import IconBtn from '@c/icon-btn';
 import Button from '@c/button';
-import { getSchemaFields, getValidProcessVariables, isFieldTypeMatch } from '../../utils';
-import { Rule, FormulaFields } from './index';
+import { getSchemaFields, isFieldTypeMatch } from '../../utils';
 import FlowSourceTableContext from '@flow/content/editor/forms/flow-source-table';
 import FlowContext from '@flow/flow-context';
 import { getFlowVariables } from '@flow/content/editor/forms/api';
+import { schemaToMap } from '@lib/schema-convert';
+import ProcessVariableSelector from '@flow/content/editor/forms/variable-selector';
+
+import { Rule, FormulaFields } from './index';
 import Context from '../context';
 import FormulaModal from '../formula-modal';
-import { schemaToMap } from '@lib/schema-convert';
 
 interface Props {
   targetSchema?: ISchema;
@@ -113,11 +115,9 @@ function RuleItem(props: Props): JSX.Element {
       }
 
       return (
-        <Select
-          options={getValidProcessVariables(variables || [],
-            targetSchemaMap[item.fieldName]?.type || 'string') as SelectOption<string>[]}
+        <ProcessVariableSelector
           value={item.valueOf as string}
-          onChange={(val) => onChange({ valueOf: val })}
+          onChange={(val: string) => onChange({ valueOf: val })}
         />
       );
     }

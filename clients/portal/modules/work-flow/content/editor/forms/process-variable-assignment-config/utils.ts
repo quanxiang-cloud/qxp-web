@@ -26,6 +26,7 @@ export const ConfigSchema = {
               { label: '表单值', value: 'currentFormValue' },
               { label: '固定值', value: 'fixedValue' },
               { label: '公式', value: 'formula' },
+              { label: '流程变量', value: 'processVariable' },
             ],
           },
           valueOf: {
