@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import { Popconfirm } from 'antd';
 
+import Popconfirm from '@c/pop-confirm';
 import Icon from '@c/icon';
 
 import store from '../store';
@@ -16,7 +16,7 @@ interface Props {
 function DeleteOptionSetItem({ type, idx = 0, nodePath = '', prefix = '' }: Props): JSX.Element {
   return (
     <Popconfirm
-      title={(
+      content={(
         <div className='w-316'>
           <div className='mb-8 text-yellow-600'>
             确定要删除该选项数据吗？
@@ -28,9 +28,7 @@ function DeleteOptionSetItem({ type, idx = 0, nodePath = '', prefix = '' }: Prop
       )}
       okText='确定删除'
       cancelText='取消'
-      okButtonProps={{ shape: 'round' }}
-      cancelButtonProps={{ shape: 'round' }}
-      onConfirm={() => {
+      onOk={() => {
         type === 'tree' ?
           store.removeItem(nodePath) :
           store.removeListItem(idx);
