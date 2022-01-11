@@ -6,12 +6,12 @@ import { getFormFieldSchema } from '@flow/content/editor/forms/api';
 import { FormRenderer } from '@c/form-builder';
 import { ValueRule, ValueRuleVal } from '@flow/content/editor/type';
 import { schemaToMap } from '@lib/schema-convert';
+import { getTableSchema } from '@lib/http-client';
 
 import CustomField from './custom-field';
 import SubTableFields from './sub-table-fields';
 import Context from './context';
 import { transformSchema } from '../utils';
-import { getTableSchema } from '@lib/http-client';
 
 interface Props {
   appId: string;
