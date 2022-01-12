@@ -90,11 +90,12 @@ export default function renderNode<T>({
   // When focused not is invisible,
   // apply focused style on the first visible parent.
   const bubbledFocusedStyle = node.id === actualFocusedNodeID && upwardFocusedStyleToParent;
+  const showPlaceholder = typeof node.level === 'number' && node.level > 1;
 
   return (
     <div
       key={node.id}
-      style={{ transform: `translateY(${node.positionY}px)`, zIndex: 100 - node.level }}
+      style={{ transform: `translateY(${node.positionY}px)`, zIndex: 100 - (node.level ?? 0) }}
       onClick={(): void => onClick(node)}
       onDragLeave={(): void => setAcceptDrop(false)}
       onDragOver={(e): void => {
@@ -118,7 +119,7 @@ export default function renderNode<T>({
         'tree-node--accept-drop': isAcceptDrop,
       })}
     >
-      {Array.from(Array(node.level - 1)).map(function(_, i) {
+      {showPlaceholder && Array(node.level - 1).fill(0).map(function(_, i) {
         // todo refactor this after get catalog by access_sys_id available
         return <span key={i} className="tree-node__indent-placeholder" />;
       })}
