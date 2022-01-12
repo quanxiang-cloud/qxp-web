@@ -37,6 +37,7 @@ function PageNav(): JSX.Element {
   }, [pageID]);
 
   const onSelect = (pageNode: PageInfo): void => {
+    document.title = `${store.appName}-${pageNode.name}`;
     history.replace(`/apps/${appID}?pageID=${pageNode.id}`);
   };
 
