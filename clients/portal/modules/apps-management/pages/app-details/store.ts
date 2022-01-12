@@ -5,7 +5,7 @@ import { mutateTree, TreeData, TreeItem } from '@atlaskit/tree';
 
 import toast from '@lib/toast';
 import { buildAppPagesTreeData } from '@lib/utils';
-import { getCustomPageInfo, getSchemaPageInfo, getTableSchema } from '@lib/http-client';
+import { fetchPageList, getCustomPageInfo, getSchemaPageInfo, getTableSchema } from '@lib/http-client';
 
 import { BindState, CardList, CustomPageInfo, MenuType } from './type';
 import { fetchAppList } from '../entry/app-list/api';
@@ -23,7 +23,6 @@ import {
   fetchAppDetails,
   updateAppStatus,
   updateApp,
-  fetchPageList,
   createPage,
   updatePageOrGroup,
   createGroup,
@@ -520,7 +519,7 @@ class AppDetailsStore {
 
   @action setActiveMenu = (menuItem: Menu): void => {
     this.activeMenu = menuItem;
-  }
+  };
 
   @action updatePageInitList = (newPageList: PageInfo[]): void => {
     this.pageInitList = newPageList;
@@ -532,7 +531,7 @@ class AppDetailsStore {
 
   @action setDraggingNode = (node: any): void => {
     this.draggingNode = node;
-  }
+  };
 
   @action patchNode = (id: string, data: Partial<Menu>): void => {
     const nodeToPatch = flatMnues(this.pageInitList)[id];
@@ -545,7 +544,7 @@ class AppDetailsStore {
       ...nodeToPatch,
       ...data,
     }));
-  }
+  };
 }
 
 export default new AppDetailsStore();

@@ -22,10 +22,6 @@ export const updateApp = async (data: AppInfo)=> {
   return await httpClient('/api/v1/app-center/update', data);
 };
 
-export const fetchPageList = async (appID: string): Promise<fetchPageListRes> => {
-  return await httpClient(`/api/v1/structor/${appID}/m/menu/list`, { appID });
-};
-
 export const fetchCustomPageList = async (appID: string, params?: CustomPageParams): Promise<fetchCustomListRes> => {
   return await httpClient(`/api/v1/structor/${appID}/m/page/condition`, params);
 };
