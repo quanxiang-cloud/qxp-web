@@ -101,6 +101,7 @@ function Inputs({ value, onChange, values, error }: Props): JSX.Element | null {
         />
       )}
       <ApiFormulaConfig
+        hasSuffix
         currentFormulaEditorRef={formulaEditorRef}
         ref={polyNodePathTreeRef}
         sourceGetter={sourceGetter}

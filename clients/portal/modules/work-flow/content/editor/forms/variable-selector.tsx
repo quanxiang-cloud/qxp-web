@@ -82,6 +82,7 @@ export default function ProcessVariableSelector({ value, onChange }: Props): JSX
         className="rounded shadow-md"
       >
         <FormulaTree
+          hasSuffix
           onSelect={handleTreeNodeClick}
           sourceGetter={sourceGetter}
         />
