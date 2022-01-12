@@ -97,6 +97,7 @@ function ConfigForm({ value, onChange }: Props): JSX.Element {
           className="bg-white"
         />
         <PolyNodePathTree
+          hasSuffix
           className="h-full bg-white overflow-auto"
           onSelect={onSelect}
           ref={nodePathTreeRef}

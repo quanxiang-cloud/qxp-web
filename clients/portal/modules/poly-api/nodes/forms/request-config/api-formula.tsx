@@ -11,9 +11,10 @@ import './formula.scss';
 type Props = {
   currentFormulaEditorRef: MutableRefObject<ApiParamsConfigRefType | undefined>;
   sourceGetter?: () => POLY_API.PolyNodeInput[];
+  hasSuffix?: boolean;
 }
 function ApiFormulaConfig(
-  { currentFormulaEditorRef, sourceGetter }: Props, ref: ForwardedRef<RefType>,
+  { currentFormulaEditorRef, sourceGetter, hasSuffix }: Props, ref: ForwardedRef<RefType>,
 ): JSX.Element {
   function handleTreeNodeClick(node: any): void {
     if (node.isLeaf) {
@@ -33,6 +34,7 @@ function ApiFormulaConfig(
       <div className="pt-6 border-gray-200 flex-1 text-12 overflow-auto">
         <FormulaTree
           ref={ref}
+          hasSuffix={hasSuffix}
           onSelect={handleTreeNodeClick}
           sourceGetter={sourceGetter}
         />
