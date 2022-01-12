@@ -768,9 +768,9 @@
   version "0.3.1"
   resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-api-spec-adapter-v0.3.1.tgz#b9bb96abe2bb144cdf399cb30e33cbbb2864d361"
 
-"@ofa/page-engine@https://ofapkg.pek3b.qingstor.com/tarball/ofa-page-engine-v0.3.5.tgz":
-  version "0.3.5"
-  resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-page-engine-v0.3.5.tgz#9d8376bb07f8d322e93bc0dd25cc445ae890204f"
+"@ofa/page-engine@https://ofapkg.pek3b.qingstor.com/tarball/ofa-page-engine-v0.3.6.tgz":
+  version "0.3.6"
+  resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-page-engine-v0.3.6.tgz#368b110079a36cbac86098f1c902a76982d06a76"
   dependencies:
     "@codemirror/lang-javascript" "^0.19.3"
     "@uiw/react-codemirror" "~4.2.0"
@@ -791,9 +791,9 @@
     react-dom "^17.0.2"
     rxjs "^7.4.0"
 
-"@ofa/ui@https://ofapkg.pek3b.qingstor.com/tarball/ofa-ui-v0.2.7.tgz":
-  version "0.2.7"
-  resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-ui-v0.2.7.tgz#5dfbb0319dfdca21cc7837338fca9f2ce916684e"
+"@ofa/ui@https://ofapkg.pek3b.qingstor.com/tarball/ofa-ui-v0.2.9.tgz":
+  version "0.2.9"
+  resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-ui-v0.2.9.tgz#0f8b8e09a386167eeb278fa39aa67dc637c34d5e"
   dependencies:
     "@popperjs/core" "^2.11.0"
     classnames "^2.3.1"
