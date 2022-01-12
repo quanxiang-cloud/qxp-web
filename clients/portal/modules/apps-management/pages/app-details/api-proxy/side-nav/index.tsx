@@ -4,8 +4,8 @@ import { toJS } from 'mobx';
 import { useForm } from 'react-hook-form';
 import { useUpdateEffect, useDebounce } from 'react-use';
 import { useParams } from 'react-router-dom';
-import { Tooltip } from '@QCFE/lego-ui';
 
+import Tooltip from '@c/tooltip';
 import Tree from '@c/headless-tree';
 import { flatTree } from '@c/headless-tree/utils';
 import Search from '@c/search';
@@ -100,7 +100,9 @@ function SideNav(): JSX.Element | null {
     <div className='flex flex-col api-proxy--sider max-h-full overflow-auto api-doc-details-nav'>
       <div className='py-10 px-16 flex justify-between items-center'>
         <span className='text-h6-bold text-gray-400 mr-auto'>API 分组</span>
-        <Tooltip content='新建分组'>
+        <Tooltip
+          position='top'
+          label='新建分组'>
           <Icon
             name='create_new_folder'
             className='cursor-pointer'

@@ -1,12 +1,10 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 import { useParams } from 'react-router';
 
 import toast from '@lib/toast';
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
-import { FileInfo } from '@c/filelist';
-import FileUpload, { RefProps } from '@c/upload';
 
 import MessageItem from './message-item';
 import * as apis from '../../api';
@@ -36,20 +34,20 @@ interface Props {
 }
 
 export default function Discuss({ showInput }: Props): JSX.Element {
-  const [file, setFile] = useState<Array<FileInfo>>(([]).map((itm: FileInfo) => ({
-    filename: itm.filename,
-    url: itm.url,
-    status: 'success',
-  })));
+  // const [file, setFile] = useState<Array<FileInfo>>(([]).map((itm: FileInfo) => ({
+  //   filename: itm.filename,
+  //   url: itm.url,
+  //   status: 'success',
+  // })));
   const [inputValue, setInputValue] = useState('');
   const { processInstanceID, taskID } = useParams<{ processInstanceID: string; taskID: string }>();
   const queryClient = useQueryClient();
   const userinfo = window.USER;
-  const fileRef = useRef<RefProps>(null);
+  // const fileRef = useRef<RefProps>(null);
 
-  const showFiles = (f: Array<FileInfo>) => {
-    setFile(f);
-  };
+  // const showFiles = (f: Array<FileInfo>) => {
+  //   setFile(f);
+  // };
 
   const {
     isLoading, data: commentsData, isError,
@@ -78,12 +76,12 @@ export default function Discuss({ showInput }: Props): JSX.Element {
       taskId: taskID,
       content: inputValue,
       commentUserId: userinfo.id,
-      attachments: file.map((itm) => {
-        return {
-          attachmentName: itm.filename,
-          attachmentUrl: itm.url,
-        };
-      }).filter(Boolean),
+      // attachments: file.map((itm) => {
+      //   return {
+      //     attachmentName: itm.filename,
+      //     attachmentUrl: itm.url,
+      //   };
+      // }).filter(Boolean),
     };
     apis.addComment(params).then(() => {
       try {
@@ -94,9 +92,9 @@ export default function Discuss({ showInput }: Props): JSX.Element {
         toast.error('发送失败');
       }
     });
-    if (fileRef.current) {
-      fileRef.current.emptyFiles();
-    }
+    // if (fileRef.current) {
+    //   fileRef.current.emptyFiles();
+    // }
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>): void {
@@ -149,14 +147,14 @@ export default function Discuss({ showInput }: Props): JSX.Element {
                 className="w-full focus:outline-none"
               />
             </div>
-            <FileUpload
+            {/* <FileUpload
               showFiles={showFiles}
               addSend={
                 (<div className="flex items-center">
                   <span className="text-12 text-gray-400 mr-8">{inputValue.length}/200</span>
                   <div className="text-blue-600 cursor-pointer" onClick={handleSend}>发送</div>
                 </div>)}
-              ref={fileRef} />
+              ref={fileRef} /> */}
           </div>
         )
       }
