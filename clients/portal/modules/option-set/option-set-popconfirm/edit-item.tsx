@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { observer } from 'mobx-react';
-import { Popconfirm } from 'antd';
 
+import Popconfirm from '@c/pop-confirm';
 import Icon from '@c/icon';
 
 import store from '../store';
@@ -18,8 +18,8 @@ function EditOptionSetItem({ type, label, idx = 0, nodePath = '' }: Props): JSX.
 
   return (
     <Popconfirm
-      title={(
-        <div className='option-set-popper -ml-24'>
+      content={(
+        <div className='option-set-popper'>
           <div className='mb-8 text-blueGray-400'>
             修改选项集名称
           </div>
@@ -34,13 +34,10 @@ function EditOptionSetItem({ type, label, idx = 0, nodePath = '' }: Props): JSX.
           </div>
         </div>
       )}
-      icon=''
       okText='保存'
       cancelText='取消'
-      okButtonProps={{ shape: 'round' }}
-      cancelButtonProps={{ shape: 'round' }}
       onCancel={() => setLabelValue(label)}
-      onConfirm={() => {
+      onOk={() => {
         type === 'tree' ?
           store.handleChangeField(nodePath, 'label', labelValue) :
           store.handleChangeListField(idx, 'label', labelValue);

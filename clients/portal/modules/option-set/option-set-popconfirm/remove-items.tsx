@@ -1,7 +1,7 @@
 import React from 'react';
-import { Popconfirm } from 'antd';
 import { observer } from 'mobx-react';
 
+import Popconfirm from '@c/pop-confirm';
 import Icon from '@c/icon';
 
 import store from '../store';
@@ -14,7 +14,7 @@ interface Props {
 function RemoveOptionSetItems({ zhCNLevel, prefix }: Props): JSX.Element {
   return (
     <Popconfirm
-      title={(
+      content={(
         <div className='w-316'>
           <div className='text-yellow-600'>
             确定要删除{zhCNLevel}级可选项吗？
@@ -27,9 +27,7 @@ function RemoveOptionSetItems({ zhCNLevel, prefix }: Props): JSX.Element {
       )}
       okText='确定删除'
       cancelText='取消'
-      okButtonProps={{ shape: 'round' }}
-      cancelButtonProps={{ shape: 'round' }}
-      onConfirm={() => {
+      onOk={() => {
         store.removeAllItem(prefix);
       }}
     >
