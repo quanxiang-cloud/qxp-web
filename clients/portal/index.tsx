@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider as MobxProvider } from 'mobx-react';
-import { LocaleProvider } from '@QCFE/lego-ui';
 import { ConfigProvider } from 'antd';
 import zhCN from 'antd/lib/locale/zh_CN';
 
@@ -13,7 +12,6 @@ import '@lib/push';
 
 import App from './application';
 import stores from './stores';
-import locales from './locales';
 import './scss/index.scss';
 import '../styles/index.css';
 import { registerValidationFormats, setValidationLocale } from '@formily/antd';
@@ -44,11 +42,9 @@ ReactDOM.render(
   <MobxProvider {...stores}>
     <QueryClientProvider client={queryClient}>
       <ConfigProvider locale={zhCN}>
-        <LocaleProvider locales={locales}>
-          <Router>
-            <App/>
-          </Router>
-        </LocaleProvider>
+        <Router>
+          <App/>
+        </Router>
       </ConfigProvider>
     </QueryClientProvider>
   </MobxProvider>,

@@ -8,7 +8,6 @@ import Header from './header';
 import SideNavs from './side-navs';
 import AppAdmin from './app-admin';
 import AppInfo from './app-info';
-import CustomPage from './custom-page';
 import DataModels from './data-models';
 import PageMenuDesign from './page-menu-design';
 import UsersAndPermissions from './users-and-permissions';
@@ -33,7 +32,6 @@ function AppDetailsContent(): JSX.Element {
           <React.Suspense fallback={<Loading className="w-screen h-screen" desc="加载中..." />}>
             <Switch>
               <Route exact path='/apps/details/:appID/page_setting' component={PageMenuDesign} />
-              <Route exact path='/apps/details/:appID/custom_page' component={CustomPage} />
               <Route exact path='/apps/details/:appID/setting_flow' component={WorkFlows} />
               <Route exact path='/apps/details/:appID/data_models' component={DataModels} />
               <Route exact path='/apps/details/:appID/file_api' component={ApiDocument} />
