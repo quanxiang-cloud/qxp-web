@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"html/template"
 	"net/http"
 	"qxp-web/server/pkg/contexts"
 
@@ -18,10 +19,10 @@ type BatchGetValueReq struct {
 }
 
 type UserConfig struct {
-	PrimaryColor string `json:"primaryColor"`
-	TitleIcon    string `json:"titleIcon"`
-	Favicons     string `json:"favicons"`
-	Css          string `json:"css"`
+	PrimaryColor    string       `json:"primaryColor"`
+	TitleIcon       string       `json:"titleIcon"`
+	Favicons        string       `json:"favicons"`
+	ComponentCssUrl template.URL `json:"componentCssUrl"`
 }
 
 func getUserConfig(r *http.Request) UserConfig {
@@ -34,10 +35,10 @@ func getUserConfig(r *http.Request) UserConfig {
 
 	result := gjson.Get(string(respBody), "data.result.user_style_config").Str
 	config := UserConfig{
-		PrimaryColor: "blue",
-		TitleIcon:    "/dist/images/quanxiangyun.svg",
-		Favicons:     "/dist/images/favicons/favicon-32x32.png",
-		Css:          "",
+		PrimaryColor:    "blue",
+		TitleIcon:       "/dist/images/quanxiangyun.svg",
+		Favicons:        "/dist/images/favicons/favicon-32x32.png",
+		ComponentCssUrl: "",
 	}
 
 	if err := json.Unmarshal([]byte(result), &config); err != nil {

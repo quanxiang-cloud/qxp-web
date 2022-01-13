@@ -29,7 +29,7 @@ export const DEFAULT_CONFIG = {
   primaryColor: 'blue',
   titleIcon: '/dist/images/quanxiangyun.svg',
   favicons: '/dist/images/favicons/favicon-32x32.png',
-  css: {},
+  css: '',
 };
 
 export const SCHEMA: ISchema = {

@@ -37,10 +37,10 @@ function Button(
       {...rest}
       type={type}
       ref={ref}
-      className={cs('qxp-btn qxp-btn-custom', className, {
-        [`qxp-btn--${modifier}`]: modifier,
-        'qxp-btn--forbidden opacity-50': forbidden,
-        'qxp-btn--loading': loading,
+      className={cs('btn', className, {
+        [`btn--${modifier}`]: modifier,
+        'btn--forbidden opacity-50': forbidden,
+        'btn--loading': loading,
         'pointer-events-none': loading || forbidden,
       })}
       disabled={forbidden}

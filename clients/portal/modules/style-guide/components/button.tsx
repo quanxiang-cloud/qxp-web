@@ -16,16 +16,17 @@ interface Props extends React.DetailedHTMLProps<
 }
 
 function ButtonPreview(
-  {
+  props: Props,
+): JSX.Element {
+  const {
     iconName,
     modifier,
     forbidden,
     loading,
-  }: Props,
-): JSX.Element {
+  } = props;
   return (
     <button
-      className={cs('qxp-btn qxp-btn-custom', {
+      className={cs('qxp-btn', {
         [`qxp-btn--${modifier}`]: modifier,
         'qxp-btn--forbidden opacity-50': forbidden,
         'qxp-btn--loading': loading,
@@ -33,7 +34,7 @@ function ButtonPreview(
       })}
       disabled={forbidden}
     >
-      {iconName && (
+      {(iconName || loading) && (
         <Icon
           name='refresh'
           type={modifier === 'primary' ? 'light' : 'dark'}
@@ -49,18 +50,67 @@ function ButtonPreview(
   );
 }
 
-const config_schema = [
+const schemas: ComponentStyleStatus[] = [
   {
-    selector: '.qxp-btn-custom',
-    desc: '可编辑属性有宽度、边框、圆角等',
-    pseudo: [
+    key: 'default',
+    configSchema: [
       {
-        selector: 'active',
-        desc: '按钮点击效果',
+        selector: '.qxp-btn',
+        desc: '可编辑属性有宽度、边框、圆角等',
+        pseudo: [
+          {
+            selector: 'active',
+            desc: '按钮点击效果',
+          },
+          {
+            selector: 'hover',
+            desc: '按钮鼠标移入效果',
+          },
+        ],
       },
+    ],
+  },
+  {
+    key: 'forbidden',
+    property: 'forbidden',
+    value: true,
+    configSchema: [
       {
-        selector: 'hover',
-        desc: '按钮鼠标移入效果',
+        selector: '.qxp-btn--forbidden',
+        desc: '禁止',
+      },
+    ],
+  },
+  {
+    key: 'loading',
+    property: 'loading',
+    value: true,
+    configSchema: [
+      {
+        selector: '.qxp-btn--loading',
+        desc: 'loading',
+      },
+    ],
+  },
+  {
+    key: 'primary',
+    property: 'modifier',
+    value: 'primary',
+    configSchema: [
+      {
+        selector: '.qxp-btn--primary',
+        desc: '默认样式',
+      },
+    ],
+  },
+  {
+    key: 'danger',
+    property: 'modifier',
+    value: 'danger',
+    configSchema: [
+      {
+        selector: '.qxp-btn--danger',
+        desc: 'loading',
       },
     ],
   },
@@ -68,7 +118,7 @@ const config_schema = [
 
 export default {
   key: 'button',
-  config_schema,
+  schemas,
   Component: ButtonPreview,
 };
 

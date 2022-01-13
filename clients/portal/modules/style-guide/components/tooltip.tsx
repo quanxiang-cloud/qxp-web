@@ -13,7 +13,7 @@ function ToolTipPreview(): JSX.Element {
   );
 }
 
-const config_schema = [
+const configSchema = [
   {
     selector: '.qxp-tooltip-container',
     children: [
@@ -33,6 +33,6 @@ const config_schema = [
 
 export default {
   key: 'tooltip',
-  config_schema,
+  configSchema,
   Component: ToolTipPreview,
 };

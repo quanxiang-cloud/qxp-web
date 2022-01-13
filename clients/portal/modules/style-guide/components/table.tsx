@@ -5,7 +5,7 @@ import Table from '@c/table';
 
 import './index.css';
 
-const config_schema = [
+const configSchema = [
   {
     selector: '.qxp-table-th',
     desc: '表头样式',
@@ -18,7 +18,7 @@ const config_schema = [
 
 export default {
   key: 'table',
-  config_schema,
+  configSchema,
   Component: (): JSX.Element => {
     const columns: UnionColumn<any>[] = [
       {
