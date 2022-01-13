@@ -1,4 +1,4 @@
-import { action, observable, reaction, IReactionDisposer, computed, toJS } from 'mobx';
+import { action, observable, computed, toJS } from 'mobx';
 import { isEqual, omit, set, unset } from 'lodash';
 
 import toast from '@lib/toast';
@@ -10,14 +10,6 @@ import { fetchDataModels } from '../api';
 import { INIT_MODEL_SCHEMA } from '../utils';
 
 class AppModelStore {
-  fetchDataModelDisposer: IReactionDisposer;
-  constructor() {
-    this.fetchDataModelDisposer = reaction(() => {
-      return { params: this.params, appID: this.appID };
-    }, this.fetchDataModels);
-    reaction(() => this.curDataModel?.tableID, this.fetchSchema);
-  }
-
   @observable appID = '';
   @observable dataModels: DataModel[] = [];
   @observable curModelTableID = '';
@@ -109,11 +101,6 @@ class AppModelStore {
   };
 
   @action
-  setParams = (newParams: Partial<DataModelParams>): void => {
-    this.params = { ...this.params, ...newParams };
-  };
-
-  @action
   setCurDataModal = (modal: DataModel): void => {
     this.curDataModel = modal;
     this.curModelTableID = modal.tableID;
@@ -157,7 +144,7 @@ class AppModelStore {
         basicInfo.description || '',
       ).then(() => {
         toast.success('复制成功');
-        this.setParams({});
+        this.fetchDataModels();
         this.curModelTableID = basicInfo.tableID;
       }).catch((err) => {
         toast.error(err);
@@ -170,7 +157,7 @@ class AppModelStore {
       { ...this.dataModelSchema.schema, ...omit(basicInfo, 'tableID') },
       2,
     ).then(() => {
-      this.setParams({});
+      this.fetchDataModels();
       this.curModelTableID = basicInfo.tableID;
 
       if (modalType === 'create') {
