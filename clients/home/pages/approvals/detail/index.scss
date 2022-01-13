@@ -20,13 +20,11 @@
     }
 
     .right-btns {
-      width: 240px;
       display: flex;
-      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
       > button {
         border: none;
-        margin-right: 16px;
-        margin-bottom: 10px;
         &:last-child {
           margin-right: 0;
         }
@@ -50,14 +48,12 @@
 
   &-tab {
     width: 400px;
-    background: #F1F5F9 !important;
     box-shadow: inset 1px 0px 0px #E2E8F0;
-    padding: 15px 20px;
   }
 }
 
 .approval-panel {
-  background: white;
   border-radius: 12px;
-  min-height: calc(100vh - 100px);
+  height: calc(100vh - 100px);
+  overflow: hidden;
 }

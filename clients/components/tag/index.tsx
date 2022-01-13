@@ -3,6 +3,8 @@ import cs from 'classnames';
 
 import Icon from '@c/icon';
 
+import './index.scss';
+
 type Props<T> = {
   value: React.ReactNode;
   id?: T;
@@ -21,7 +23,7 @@ export default function Tag<T>({
   deleteIconSize,
 }: Props<T>): JSX.Element {
   return (
-    <span className={cs('tag inline-flex items-center', className)} style={style}>
+    <span className={cs('tag text-12 inline-flex items-center', className)} style={style}>
       {value}
       {
         onDelete && (

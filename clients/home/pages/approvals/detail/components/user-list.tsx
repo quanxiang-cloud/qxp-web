@@ -10,7 +10,10 @@ interface Props {
 
 export default function UserList({ userList, clickHandle }: Props): JSX.Element {
   return (
-    <div className="bg-white corner-2-8-8-8 mt-9 px-16 pt-8 pb-4 flex justify-between">
+    <div
+      className="bg-white corner-2-8-8-8 mt-9 px-16 pt-8 pb-4 flex justify-between cursor-pointer"
+      onClick={clickHandle}
+    >
       <div className="flex flex-wrap">
         {
           userList.map((user: any, index: number) => {
@@ -24,7 +27,7 @@ export default function UserList({ userList, clickHandle }: Props): JSX.Element 
         }
       </div>
       <div>
-        <Icon name="chevron_right" onClick={clickHandle} />
+        <Icon name="chevron_right"/>
       </div>
     </div>
   );

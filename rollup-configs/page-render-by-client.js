@@ -52,8 +52,6 @@ const config = {
     '@formily/shared',
     '@formily/validator',
     'antd',
-    '@QCFE/lego-ui',
-
     'rxjs',
     /rxjs\/.*/,
     'moment',

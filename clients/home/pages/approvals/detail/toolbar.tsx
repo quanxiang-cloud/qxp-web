@@ -55,7 +55,7 @@ function Toolbar({ currTask, permission, onClickAction, globalActions, workFlowT
   }
 
   return (
-    <div className="approval-detail-toolbar flex justify-between items-center px-10 pb-20 mb-24">
+    <div className="approval-detail-toolbar flex justify-between items-center py-10 px-24 mb-10">
       <div className="left-btns task-custom-actions flex flex-1 flex-wrap">
         {custom?.map(({ name, value, enabled, defaultText, text }: PermissionItem, idx) => {
           if (!enabled) {
