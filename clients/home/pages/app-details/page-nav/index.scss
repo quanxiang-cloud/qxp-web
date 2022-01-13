@@ -11,6 +11,9 @@
   width: 208px;
   height: 100%;
   background: #F8FAFC;
+  .nav-content-header {
+    background-color: var(--menu-bg-color);
+  }
   .nav-content-header .truncate{
     width: 110px;
   }

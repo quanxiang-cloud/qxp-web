@@ -15,7 +15,7 @@ import { getFlowInstanceCount } from './api';
 type ListType = 'todo' | 'done' | 'cc_to_me' | 'my_applies' | 'all';
 
 // eslint-disable-next-line max-len
-const listClassName = 'h-56 flex items-center justify-between hover:bg-blue-100 px-24 font-normal';
+const listClassName = 'h-56 flex items-center justify-between hover:bg-enfi-400 hover:text-white px-24 font-normal';
 
 const typeList: Array<{ label: string, value: ListType } | 'divide'> = [
   { label: '我发起的', value: 'my_applies' },
@@ -55,7 +55,7 @@ function ApprovalTypeList({ listType, countMap, onClick }: ApprovalTypeListProps
   };
 
   return (
-    <div className="bg-white h-full flex-shrink-0" style={{ width: '200px' }}>
+    <div className="h-full flex-shrink-0" style={{ width: '200px', backgroundColor: 'var(--menu-bg-color)' }}>
       {
         typeList.map((type, index) => {
           if (type === 'divide') {
@@ -71,7 +71,7 @@ function ApprovalTypeList({ listType, countMap, onClick }: ApprovalTypeListProps
               onClick={() => onClick(value)}
               className={cs(listClassName, {
                 'cursor-pointer': value !== listType,
-                'text-blue-500 font-medium bg-blue-100': value === listType,
+                'text-white font-medium bg-enfi-400': value === listType,
               })}
             >
               <span>

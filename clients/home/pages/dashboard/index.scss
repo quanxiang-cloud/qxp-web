@@ -17,7 +17,9 @@
 
 .todo-list-bg {
   background-image: url('/dist/images/todo-card-bgc.svg');
-  @apply bg-white bg-no-repeat bg-right-bottom;
+  @apply bg-no-repeat;
+  background-position: right bottom;
+  background-repeat: no-repeat;
 }
 
 .user-card {

@@ -57,7 +57,7 @@ function PageNav(): JSX.Element {
         <div className={cs(
           'nav-content-header w-208 h-52 overflow-hidden',
           'flex items-center justify-center',
-          'sticky top-0 z-20 bg-gray-50')}>
+          'sticky top-0 z-20')}>
           <div
             onClick={() => history.push('/')}
             className='app-header-icon text-gray-400 corner-8-8-8-2'>

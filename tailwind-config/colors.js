@@ -70,6 +70,18 @@ module.exports = {
   //   800: 'var(--violet-800)',
   //   900: 'var(--violet-900)',
   // },
+  enfi: {
+    50: 'var(--enfi-50)',
+    100: 'var(--enfi-100)',
+    200: 'var(--enfi-200)',
+    300: 'var(--enfi-300)',
+    400: 'var(--enfi-400)',
+    500: 'var(--enfi-500)',
+    600: 'var(--enfi-600)',
+    700: 'var(--enfi-700)',
+    800: 'var(--enfi-800)',
+    900: 'var(--enfi-900)',
+  },
   indigo: {
     50: 'var(--indigo-50)',
     100: 'var(--indigo-100)',
