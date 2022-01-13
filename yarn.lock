@@ -768,9 +768,9 @@
   version "0.3.1"
   resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-api-spec-adapter-v0.3.1.tgz#b9bb96abe2bb144cdf399cb30e33cbbb2864d361"
 
-"@ofa/page-engine@https://ofapkg.pek3b.qingstor.com/tarball/ofa-page-engine-v0.3.6.tgz":
-  version "0.3.6"
-  resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-page-engine-v0.3.6.tgz#368b110079a36cbac86098f1c902a76982d06a76"
+"@ofa/page-engine@https://ofapkg.pek3b.qingstor.com/tarball/ofa-page-engine-v0.3.7.tgz":
+  version "0.3.7"
+  resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-page-engine-v0.3.7.tgz#b6a7cfa0a3338fe26488915e3bfa6d487f0e8e3d"
   dependencies:
     "@codemirror/lang-javascript" "^0.19.3"
     "@uiw/react-codemirror" "~4.2.0"
