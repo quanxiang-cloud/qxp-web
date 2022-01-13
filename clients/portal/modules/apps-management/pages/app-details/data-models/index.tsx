@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { observer } from 'mobx-react';
 import { toJS } from 'mobx';
+import { observer } from 'mobx-react';
 import { useParams } from 'react-router-dom';
 
 import TextHeader from '@c/text-header';
@@ -19,20 +19,17 @@ function DataModels(): JSX.Element {
     saveDataModel,
     editModalType,
     curModelField,
-    setEditModalType,
-    fetchDataModels,
     editFieldType,
+    fetchDataModels,
+    setEditModalType,
     setCurModelField,
     setEditFieldType,
   } = store;
 
   useEffect(() => {
+    store.appID = appID;
     fetchDataModels();
   }, []);
-
-  useEffect(() => {
-    store.appID = appID;
-  }, [appID]);
 
   function handleEditModal(modalInfo: DataModelBasicInfo): void {
     saveDataModel(modalInfo, editModalType);
