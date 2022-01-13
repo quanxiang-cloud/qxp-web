@@ -87,7 +87,7 @@ export default function ProcessHistory(props: Props) {
   }
 
   return (
-    <div className="mt-16">
+    <>
       {
         showType === 'list' && (
           <Timeline>
@@ -118,6 +118,6 @@ export default function ProcessHistory(props: Props) {
             workData={currWork} />
         )
       }
-    </div>
+    </>
   );
 }

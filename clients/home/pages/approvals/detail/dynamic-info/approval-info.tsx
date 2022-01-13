@@ -45,8 +45,8 @@ export default function ApprovalInfo({ workData, returnFlowPage }: Props): JSX.E
 
   return (
     <div>
-      <div className="flex items-center border-b pb-14">
-        <Icon name="keyboard_backspace" size={20} onClick={returnFlowPage} />
+      <div className="flex items-center border-b pb-10">
+        <Icon name="keyboard_backspace" size={20} clickable onClick={returnFlowPage} />
         <div className="text-h5-bold ml-12">{taskName} · {operationRecords.length}</div>
       </div>
       <div className="py-16">

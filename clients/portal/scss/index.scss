@@ -12,10 +12,14 @@ html {
   font-size: 62.5%;
   overflow: auto;
   min-width: 1280px;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 body {
   font-size: 1.4rem;
+  color: #324558;
+  font-weight: 400;
 }
 
 .w-316 {
@@ -246,6 +250,14 @@ body {
 }
 
 .input {
+  border: 1px solid transparent;
+  border-color: #d5dee7;
+  position: relative;
+  vertical-align: top;  
+  padding-bottom: calc(0.375em - 1px);
+  padding-left: calc(0.625em - 1px);
+  padding-right: calc(0.625em - 1px);
+  padding-top: calc(0.375em - 1px);
   border-radius: 2px 8px 8px 8px !important;
   &.error, &.error:focus {
     border-color: var(--red-500) !important;
