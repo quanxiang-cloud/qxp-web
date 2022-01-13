@@ -64,28 +64,20 @@ function PageDataTable(): JSX.Element {
                   forbidden={isBatch && selected.length === 0 ? true : false}
                   modifier='primary'
                   key={key}
-                  onClick={() => action(selected)}
+                  onClick={() => {
+                    if (key === 'import') {
+                      setShowUpModal(true);
+                    }
+                    if (key === 'export') {
+                      setShowDownModal(true);
+                    }
+                    action(selected);
+                  }}
                 >
                   {text}
                 </Button>
               );
             })}
-            <Button
-              iconName='file_download'
-              modifier='primary'
-              key='file_download'
-              onClick={() => setShowUpModal(true)}
-            >
-              导入
-            </Button>
-            <Button
-              iconName='file_upload'
-              modifier='primary'
-              key='file_upload'
-              onClick={() => setShowDownModal(true)}
-            >
-              导出
-            </Button>
           </div>
           <div className='flex gap-x-5 items-center'>
             <TableConfig />

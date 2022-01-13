@@ -13,6 +13,7 @@ type Props = {
   url: string;
   onChange: (value: POLY_API.PolyNodeInput[]) => void;
   customRules: CustomRule[];
+  validating?: boolean;
 }
 
 export type RefType = {
@@ -21,7 +22,7 @@ export type RefType = {
 }
 
 function ApiParamsConfig(
-  { value, onChange, customRules, url }: Props,
+  { value, onChange, customRules, url, validating }: Props,
   ref: ForwardedRef<RefType | undefined>,
 ): JSX.Element {
   const formulaRefs = useRef<Record<string, RefProps>>({});
@@ -111,7 +112,7 @@ function ApiParamsConfig(
           <div key={type} className="my-20">
             <div className="pb-4 text-gray-900">{type.replace(/^\S/, (s: string) => s.toUpperCase())}</div>
             <div className="config-param">
-              {params.map(({ path, name, title, data, required }) => {
+              {params.map(({ path, name, title, data, required, arrayParent }) => {
                 !data && required && initError(path, name);
                 return (
                   <div
@@ -121,8 +122,8 @@ function ApiParamsConfig(
                   >
                     <div className="flex items-center justify-between w-142 p-8 border-r-1">
                       <div className="flex-1 truncate relative">
-                        <span>{title}</span>
-                        <span className="mx-4 text-gray-400">{name}</span>
+                        <span>{!title ? arrayParent?.title : title}</span>
+                        <span className="mx-4 text-gray-400">{!name ? arrayParent?.name : name}</span>
                         {required && <span className="text-red-600 absolute top-0 right-0">*</span>}
                       </div>
                       <Icon className="ml-8" name="arrow_left_alt" />
@@ -137,7 +138,7 @@ function ApiParamsConfig(
                         onChange={handleFormulaChange(path, name, !!required, data)}
                         onBlur={handleFormulaBlur(path, name, !!required, data)}
                       />
-                      {errorsRef.current[path] && changedRef.current[path] && (
+                      {errorsRef.current[path] && (changedRef.current[path] || validating) && (
                         <span className="text-red-600 px-3 pb-3">{errorsRef.current[path]}</span>
                       )}
                     </div>

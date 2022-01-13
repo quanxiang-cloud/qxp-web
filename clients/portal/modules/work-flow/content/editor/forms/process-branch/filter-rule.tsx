@@ -88,7 +88,7 @@ function FilterRule({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
   const variablesRules = (variables?.map?.((item) => {
     return {
       name: item.name,
-      key: item.code,
+      key: `[${item.code}]`,
       type: item.fieldType?.toLowerCase(),
     };
   }) || []);
@@ -96,7 +96,7 @@ function FilterRule({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
   const tableSchemaRules = tableSchema.filter((schema) => {
     return !SYSTEM_FIELDS.includes(schema.fieldName);
   }).map((schema) => ({
-    name: schema.title as string, key: schema.id, type: schema.type || '',
+    name: schema.title as string, key: `[${schema.id}]`, type: schema.type || '',
   }));
 
   if (isLoading || !tableSchema.length) {

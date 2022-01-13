@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Popconfirm } from 'antd';
 import { observer } from 'mobx-react';
 import { isEqual } from 'lodash';
 
 import { generateRandomFormFieldID as genId } from '@c/form-builder/utils';
+import Popconfirm from '@c/pop-confirm';
 import Icon from '@c/icon';
 import toast from '@lib/toast';
 
@@ -39,8 +39,8 @@ function AddOptionSetItem({ type, prefix = '' }: Props): JSX.Element {
 
   return (
     <Popconfirm
-      title={(
-        <div className='option-set-popper -ml-24 text-gray-600'>
+      content={(
+        <div className='option-set-popper text-gray-600'>
           <span>选项数据名称</span>
           <textarea
             maxLength={100}
@@ -54,13 +54,10 @@ function AddOptionSetItem({ type, prefix = '' }: Props): JSX.Element {
           <div>每个选项名称不超过100字符。</div>
         </div>
       )}
-      icon=''
       okText='保存'
       cancelText='取消'
-      okButtonProps={{ shape: 'round' }}
-      cancelButtonProps={{ shape: 'round' }}
       onCancel={() => setLabel('')}
-      onConfirm={
+      onOk={
         type === 'tree' ?
           () => handleTreeAddConfirm(prefix) : handleListAddConfirm
       }

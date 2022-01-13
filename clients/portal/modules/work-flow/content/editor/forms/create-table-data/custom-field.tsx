@@ -3,7 +3,7 @@ import { useQuery } from 'react-query';
 import { get, set } from 'lodash';
 import cs from 'classnames';
 
-import Select, { SelectOption } from '@c/select';
+import Select from '@c/select';
 import Button from '@c/button';
 
 import FormulaModal from './formula-modal';
@@ -11,7 +11,8 @@ import FlowSourceTableContext from '../flow-source-table';
 import FlowContext from '../../../../flow-context';
 import Context from './context';
 import { getFlowVariables } from '../api';
-import { getSchemaFields, getValidProcessVariables, isFieldTypeMatch } from '../utils';
+import { getSchemaFields, isFieldTypeMatch } from '../utils';
+import ProcessVariableSelector from '../variable-selector';
 
 import './styles.scss';
 
@@ -118,16 +119,15 @@ export default function CustomField(props: Props): JSX.Element {
       }
 
       return (
-        <Select
-          options={getValidProcessVariables(variables || [], fieldDataType) as SelectOption<string>[]}
-          value={getVal() as string}
+        <ProcessVariableSelector
+          value={getVal()}
           onChange={onChangeFieldValue}
         />
       );
     }
 
     if (rule === 'formula') {
-      const value = getVal() as string;
+      const value = typeof getVal() === 'string' ? getVal() : '';
       return (
         <div className="flex items-center justify-between">
           <Button onClick={handleConfigFormula}>配置公式</Button>
@@ -167,7 +167,7 @@ export default function CustomField(props: Props): JSX.Element {
       {isFormulaShow && (
         <FormulaModal
           onClose={handleFormulaClose}
-          value={getVal() as string}
+          value={typeof getVal() === 'string' ? getVal() : ''}
           onSubmit={handleSubmit}
         />
       )}

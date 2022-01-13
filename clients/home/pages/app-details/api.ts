@@ -16,10 +16,6 @@ export function getSchemaAndRecord(
   });
 }
 
-export const fetchPageList = (appID: string) => {
-  return httpClient(`/api/v1/structor/${appID}/home/menu/list`, { appID });
-};
-
 export const getOperate = <T>(appID: string, formID: string) => {
   return httpClient<T>(
     `/api/v1/structor/${appID}/home/permission/operatePer/getOperate`,

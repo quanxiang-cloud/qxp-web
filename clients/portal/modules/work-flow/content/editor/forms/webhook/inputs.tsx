@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect, useContext, useCallback } from 'rea
 import { useQuery } from 'react-query';
 import { usePrevious } from 'react-use';
 import { nanoid } from 'nanoid';
+import { isUndefined } from 'lodash';
 import { equals } from 'ramda';
 
 import type { CustomRule } from '@c/formula-editor';
@@ -24,11 +25,12 @@ interface Props {
   value: Input[];
   onChange: (v: Input[]) => void;
   values: Record<string, any>;
+  error?: string;
 }
 
 type SourceGetter = () => POLY_API.PolyNodeInput[];
 
-function Inputs({ value, onChange, values }: Props): JSX.Element | null {
+function Inputs({ value, onChange, values, error }: Props): JSX.Element | null {
   const formulaEditorRef = useRef<RefType>();
   const [customRules, setCustomRules] = useState<CustomRule[]>();
   const polyNodePathTreeRef = useRef<PathTreeRefType | null>(null);
@@ -87,6 +89,7 @@ function Inputs({ value, onChange, values }: Props): JSX.Element | null {
           value={value}
           url={values.url}
           customRules={customRules}
+          validating={!isUndefined(error)}
         />
       )}
       {values.type === 'send' && customRules && (
@@ -98,6 +101,7 @@ function Inputs({ value, onChange, values }: Props): JSX.Element | null {
         />
       )}
       <ApiFormulaConfig
+        hasSuffix
         currentFormulaEditorRef={formulaEditorRef}
         ref={polyNodePathTreeRef}
         sourceGetter={sourceGetter}

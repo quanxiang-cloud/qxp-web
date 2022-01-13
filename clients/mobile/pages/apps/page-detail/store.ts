@@ -2,12 +2,15 @@ import { action, computed, observable } from 'mobx';
 
 import { FetchPageListResponse, Menu } from '@m/pages/apps/types';
 import { CustomPageInfo, MenuType } from '@portal/modules/apps-management/pages/app-details/type';
-import { fetchPageList, getOperate } from '@home/pages/app-details/api';
-import { delFormDataRequest, fetchFormDataList, getCustomPageInfo, getTableSchema } from '@lib/http-client';
+import { getOperate } from '@home/pages/app-details/api';
 import { getOperateButtonPer } from '@home/pages/app-details/utils';
 import toast from '@lib/toast';
 import { Task } from '@m/pages/approvals/types';
 import { getFlowSummary } from '@m/lib/value-render';
+import {
+  delFormDataRequest, fetchFormDataList, fetchPageList, getCustomPageInfo, getTableSchema,
+} from '@lib/http-client';
+
 import { mapMenu } from '../utils';
 
 class AppDetailStore {

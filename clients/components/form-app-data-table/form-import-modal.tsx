@@ -99,10 +99,14 @@ function ImportFormModal({ onClose }: Props): JSX.Element {
           uploaderDescription={<UploadDescription/>}
           maxFileSize={20}
           accept={[
-            '.csv',
-            // 'application/vnd.ms-excel',
-            // 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'text/csv',
+            'text/x-csv',
+            'application/csv',
+            'application/x-csv',
+            'application/vnd.ms-excel',
+            'text/comma-separated-values',
           ]}
+          onFileDelete={setfFleDetail}
           onFileSuccess={(fileDetail: QXPUploadFileTask) => setfFleDetail(fileDetail)}
         />
         <p className="mt-12 select-none px-40 text-12">

@@ -29,6 +29,7 @@ const statusMap = {
   'IN_REVIEW-WRITE': '待填写',
   'REVIEW-READ': '待阅示',
   'IN_REVIEW-READ': '待阅示',
+  'SEND_BACK-SEND_BACK': '待补充',
 };
 
 function Status({ label, value, className }: Props): JSX.Element {

@@ -2,9 +2,8 @@ import { action, observable } from 'mobx';
 
 import { fetchUserList } from '@home/lib/api';
 import { parseAppIcon } from '@m/pages/dashboard/workbench/utils';
-import { fetchPageList } from '@home/pages/app-details/api';
 import { MenuType } from '@portal/modules/apps-management/pages/app-details/type';
-import { fetchFormDataList } from '@lib/http-client';
+import { fetchFormDataList, fetchPageList } from '@lib/http-client';
 import toast from '@lib/toast';
 import { FetchPageListResponse, Menu } from '../types';
 import { mapMenu } from '../utils';

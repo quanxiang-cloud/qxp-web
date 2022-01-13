@@ -276,7 +276,7 @@ export function handleTimeFormat(time: string): string {
   return dayjs(time).format('YYYY-MM-DD HH:mm');
 }
 
-export function isEmpty(value: any): boolean {
+export function isMeanless(value: any): boolean {
   if (value === undefined || value === null || value === '' || value.toString() === '') {
     return true;
   }
@@ -345,12 +345,11 @@ export async function copyContent(content: string, successMes?: string, errorMes
 // macOS X:1000 KB = 1 MB Non-macOS X : 1024 KB = 1 MB
 export const isMacosX = /macintosh|mac os x/i.test(navigator.userAgent);
 
-export function isAcceptedFileType(file: File | QXPUploadFileBaseProps, accept: string | string[]): boolean {
-  if (!accept) return false;
-  const fileType = file.type || '/' + file.name.split('.').pop();
-  const acceptMatchStr = accept.toString().replace(/\./g, '').replace(/,/g, '|');
-  const fileTypeReg = RegExp(`\\w*/(${acceptMatchStr})$`);
-  return fileTypeReg.test(fileType);
+export function isAcceptedFileType(file: File | QXPUploadFileBaseProps, accept: string[]): boolean {
+  const suffix = file.name.split('.').pop();
+  if (!accept || !suffix) return false;
+  const { type: fileType } = file;
+  return accept.some((acceptType) => acceptType === fileType || acceptType.split('/')[1].includes(suffix));
 }
 
 export function createQueue(

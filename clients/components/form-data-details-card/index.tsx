@@ -4,7 +4,7 @@ import cs from 'classnames';
 import FormDataValueRenderer from '@c/form-data-value-renderer';
 import Loading from '@c/page-loading';
 import { fetchOneFormDataWithSchema } from '@lib/http-client';
-import { isEmpty } from '@lib/utils';
+import { isMeanless } from '@lib/utils';
 import schemaToFields from '@lib/schema-convert';
 
 import GroupCard, { InfoCard } from './group-card';
@@ -65,7 +65,7 @@ function FormDataDetailsCard({
 
     tempSchema.forEach(([fieldId, fieldSchema]) => {
       const fieldKey = fieldId;
-      const hasValue = record && !isEmpty(record[fieldKey]);
+      const hasValue = record && !isMeanless(record[fieldKey]);
       if ((fieldSchema as ISchema)['x-internal']?.isSystem) {
         _systems.push({
           label: fieldSchema.title as string,
@@ -88,7 +88,7 @@ function FormDataDetailsCard({
         fieldSchemaTemp.forEach((field) => {
           const fieldKey = field.id;
           const fieldSchema = field;
-          const hasValue = record && !isEmpty(record[fieldKey]);
+          const hasValue = record && !isMeanless(record[fieldKey]);
           _group.push({
             label: fieldSchema.title as string,
             key: fieldKey,

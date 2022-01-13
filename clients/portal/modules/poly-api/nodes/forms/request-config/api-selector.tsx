@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from 'react';
+import cs from 'classnames';
 import { clone } from 'ramda';
 import { Cascader } from 'antd';
 import { useParams } from 'react-router-dom';
-import cs from 'classnames';
+import { SingleValueType, DefaultOptionType } from 'rc-cascader/lib/Cascader';
 
+import toast from '@lib/toast';
+import ApiDocDetail from '@polyApi/components/api-doc-detail';
 import { RawApiDocDetail, useGetRequestNodeApiList } from '@polyApi/effects/api/raw';
 import { useGetNamespaceFullPath, useQueryNameSpaceRawRootPath } from '@polyApi/effects/api/namespace';
-import { convertRawApiListToOptions, getChildrenOfCurrentSelectOption } from '@polyApi/utils/request-node';
-import ApiDocDetail from '@polyApi/components/api-doc-detail';
+import {
+  ApiCascaderOption, getChildrenOfCurrentSelectOption, mergeApiListToOptions,
+} from '@polyApi/utils/request-node';
 
 type Props = {
   apiDocDetail?: RawApiDocDetail;
@@ -24,47 +28,39 @@ function ApiSelector({
 }: Props): JSX.Element {
   const { appID } = useParams<{ appID: string }>();
   const [apiNamespacePath, setApiNamespacePath] = useState('');
-  const [options, setOptions] = useState<any[]>();
+  const [options, setOptions] = useState<ApiCascaderOption[] | undefined>();
 
-  const { data: namespace } = useQueryNameSpaceRawRootPath(appID);
-  const { data: namespacePaths } = useGetNamespaceFullPath({
+  const { data: namespace, error: fetchRootPathError } = useQueryNameSpaceRawRootPath(appID);
+  const { data: namespacePaths, error: fetchNameSpacePathError } = useGetNamespaceFullPath({
     path: namespace?.appPath?.slice(1) || '',
     body: { active: -1 },
   }, { enabled: !!namespace?.appPath });
-  const { data: currentRawApiDetails } = useGetRequestNodeApiList({
+  const { data: apiListDetails, isLoading, error: fetchApiListError } = useGetRequestNodeApiList({
     path: apiNamespacePath.slice(1) || '',
-    body: { withSub: true, active: -1, page: 1, pageSize: -1 },
+    body: { active: 1, page: 1, pageSize: -1 },
   }, { enabled: !!apiNamespacePath });
 
-  // load api nodes options
+  // api cascader merge apiList options
   useEffect(() => {
-    setOptions(clone(options)?.map(updateApiLeafOptions));
-  }, [currentRawApiDetails]);
+    if ((isLoading && !apiListDetails) || !options) {
+      return;
+    }
 
-  // load name space path options
+    setOptions(mergeApiListToOptions(options, apiNamespacePath, apiListDetails?.list || []));
+  }, [apiListDetails, isLoading]);
+
+  // api cascader load root options
   useEffect(() => {
     setOptions(getChildrenOfCurrentSelectOption(namespacePaths?.root.children));
   }, [namespacePaths?.root.children]);
 
-  function updateApiLeafOptions(option: any): any {
-    if (!option) {
-      return;
-    }
+  useEffect(() => {
+    fetchApiListError && toast.error(fetchApiListError.message);
+    fetchNameSpacePathError && toast.error(fetchNameSpacePathError.message);
+    fetchRootPathError && toast.error(fetchRootPathError.message);
+  }, [fetchApiListError, fetchNameSpacePathError, fetchRootPathError]);
 
-    if (option.path === apiNamespacePath) {
-      return {
-        ...option,
-        children: convertRawApiListToOptions(currentRawApiDetails?.list || []),
-        childrenData: currentRawApiDetails?.list,
-      };
-    } else if (option.children) {
-      option.children = option.children.map(updateApiLeafOptions);
-    }
-
-    return option;
-  }
-
-  function onChange(value: any, selectedOptions: any): any {
+  function onChange(value: SingleValueType | SingleValueType[], selectedOptions: DefaultOptionType[]): void {
     const leafOption = clone(selectedOptions).pop();
     if (leafOption?.isLeaf) {
       setApiPath(leafOption.path);
@@ -72,11 +68,11 @@ function ApiSelector({
     }
   }
 
-  function loadData(selectedOptions: any): void {
+  function loadData(selectedOptions: DefaultOptionType[]): void {
     const targetOption = selectedOptions[selectedOptions.length - 1];
 
-    targetOption.children = getChildrenOfCurrentSelectOption(targetOption.childrenData) ||
     setApiNamespacePath(targetOption.path);
+    targetOption.children = getChildrenOfCurrentSelectOption(targetOption.childrenData);
   }
 
   if (simpleMode) {
@@ -95,8 +91,8 @@ function ApiSelector({
 
   return (
     <div className={cs('px-20 py-12 flex', className)}>
-      <div className="poly-api-selector mb-8">
-        <label>{label}</label>
+      <div className="poly-api-selector">
+        <label className="mr-8">{label}</label>
         <Cascader
           changeOnSelect
           className="cascader"

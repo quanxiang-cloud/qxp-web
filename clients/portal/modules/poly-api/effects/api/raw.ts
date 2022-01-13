@@ -46,7 +46,7 @@ export function useGetRequestNodeApiList(
     [GET_REQUEST_NODE_API_LIST, input.path],
     (): Promise<QueryRequestNodeApiListResponse> => {
       return httpClient<QueryRequestNodeApiListResponse>(
-        `/api/v1/polyapi/raw/search/${input.path}`, input.body,
+        `/api/v1/polyapi/raw/list/${input.path}`, input.body,
       );
     },
     options,

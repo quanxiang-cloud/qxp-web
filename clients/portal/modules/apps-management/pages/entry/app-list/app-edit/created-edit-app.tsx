@@ -14,9 +14,12 @@ type Props = {
   appInfo?: AppInfo;
   modalType: string;
   onSubmitCallback?: () => void;
+  onValuesChange?: () => void;
 }
 
-function CreatedEditApp({ appInfo, modalType, className, onSubmitCallback }: Props, ref?: any): JSX.Element {
+function CreatedEditApp({
+  appInfo, modalType, className, onSubmitCallback, onValuesChange,
+}: Props, ref?: any): JSX.Element {
   const [form] = Form.useForm();
 
   function handleFinish(): void {
@@ -42,6 +45,7 @@ function CreatedEditApp({ appInfo, modalType, className, onSubmitCallback }: Pro
         appIcon,
       }}
       onFinish={handleFinish}
+      onValuesChange={onValuesChange}
     >
       <Form.Item
         name='appName'
@@ -109,6 +113,7 @@ function CreatedEditApp({ appInfo, modalType, className, onSubmitCallback }: Pro
       </Form.Item>
       {modalType === 'importApp' && (
         <Form.Item
+          required
           name="appZipInfo"
           label="上传应用"
         >

@@ -8,6 +8,7 @@ import { RoundMethod } from '@c/form-builder/registry/aggregation-records/conver
 import { FileList } from '@c/file-upload';
 import { QxpFileFormData } from '@c/form-builder/registry/file-upload/uploader';
 import { isEmpty } from 'lodash';
+import { isMeanless } from '@lib/utils';
 
 const ReadOnlySubTable = React.lazy(
   () => import('@c/form-builder/registry/sub-table/preview/read-only-sub-table'),
@@ -194,7 +195,7 @@ export function FormDataSubTableValueRenderer({ value, schema, className }: Prop
       </div>
     );
   }
-  return isEmpty(value) ? (
+  return isMeanless(value) ? (
     <span className="text-gray-300">——</span>
   ) : (
     <FormDataValueRenderer
