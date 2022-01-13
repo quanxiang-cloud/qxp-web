@@ -19,7 +19,7 @@ function ApiFormulaConfig(
   function handleTreeNodeClick(node: any): void {
     if (node.isLeaf) {
       currentFormulaEditorRef?.current?.getCurrent()?.insertEntity(
-        { key: node.path, name: node.data.descPath },
+        { key: hasSuffix ? `[${node.path}]` : node.path, name: node.data.descPath },
       );
     }
   }
