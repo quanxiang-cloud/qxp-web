@@ -51,7 +51,7 @@ const methodOptions = [
 const regApiName = /^[a-zA-Z_]\w*$/; // api标识，swagger的 api path部分
 const regPathParam = /:([^/:]+)/g;
 const regApiTitle = /^[\u4e00-\u9fa5_a-zA-Z0-9\s]+$/; // 中英文数字，空格
-const regApiPath = /^[a-zA-Z_/][\w/:.?]+$/;
+const regApiPath = /^[/][-\w/:.*~?]*$/;
 
 function getAllPathParamNames(url: string): string[] {
   return url.match(regPathParam) || [];
@@ -251,7 +251,7 @@ function AddApi(props: Props): JSX.Element {
           <div className={cs('mb-16', { hidden: props.tinyMode })}>
             <p>API 名称</p>
             <input
-              className={cs('api-from-input input', { error: errors.title })}
+              className={cs('api-from-input', { error: errors.title })}
               placeholder='请输入'
               maxLength={32}
               {...register('title', {
@@ -266,7 +266,7 @@ function AddApi(props: Props): JSX.Element {
           <div className={cs('mb-16', { hidden: props.tinyMode })}>
             <p>API 路径</p>
             <input
-              className={cs('api-from-input input', {
+              className={cs('api-from-input', {
                 error: errors.apiPath,
                 'bg-gray-100': isEdit,
               })}
@@ -297,7 +297,7 @@ function AddApi(props: Props): JSX.Element {
             <div className='mr-12 flex-1'>
               <p>代理路径</p>
               <input
-                className='api-from-input input min-w-259 bg-gray-100'
+                className='api-from-input min-w-259 bg-gray-100'
                 readOnly
                 {...register('proxyPath')}
               />
@@ -308,7 +308,7 @@ function AddApi(props: Props): JSX.Element {
                 placeholder='请输入，分组内不可重复'
                 maxLength={32}
                 readOnly={isEdit}
-                className={cs('api-from-input input', {
+                className={cs('api-from-input', {
                   error: errors.apiName,
                   'bg-gray-100': isEdit,
                 })}
@@ -320,7 +320,7 @@ function AddApi(props: Props): JSX.Element {
           <div className={cs('mb-16', { hidden: props.tinyMode })}>
             <p>描述</p>
             <textarea
-              className='api-from-textarea textarea'
+              className='api-from-textarea'
               rows={3}
               placeholder='选填 (不超过 200 字符)'
               maxLength={200}
