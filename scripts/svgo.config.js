@@ -1,3 +1,5 @@
+const { isBoolean } = require("lodash");
+
 const plugins = {
   cleanupAttrs: true,
   removeDoctype: true,
@@ -32,7 +34,17 @@ const plugins = {
   convertShapeToPath: true,
   sortAttrs: true,
   removeDimensions: true,
-  removeAttrs: { attrs: '(stroke)' },
+  removeAttrs: { 
+    attrs: [
+      '(class|style)',
+      'xlink:href',
+      'aria-labelledby',
+      'aria-describedby',
+      'xmlns:xlink',
+      'data-name',
+      '(stroke)',
+    ] 
+  },
   removeAttributesBySelector: {
     selectors: [
       { selector: "[fill = 'none']", attributes: 'fill' },
@@ -43,7 +55,16 @@ const plugins = {
 
 module.exports = {
   multipass: false,
-  plugins: Object.keys(plugins).map(key => ({ [key]: plugins[key] })),
+  plugins: Object.entries(plugins).map(([key, value]) => {
+    if (isBoolean(value)) {
+      return { name: key, active: value}
+    }
+
+    return {
+      name: key,
+      params: value
+    }
+  })
   // js2svg: {
   //   pretty: true,
   //   indent: '  ',
