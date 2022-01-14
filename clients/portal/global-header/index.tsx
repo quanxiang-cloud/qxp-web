@@ -28,7 +28,7 @@ export default function GlobalHeader() {
       <div className="flex justify-between items-center px-24 bg-white shadow-flow-header">
         <HeaderNav />
         <img
-          className="flex-1 h-52"
+          className="h-52"
           src="/dist/images/enfi1.png"
           alt="quanxiangyun"
         />
