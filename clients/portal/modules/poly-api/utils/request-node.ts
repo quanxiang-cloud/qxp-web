@@ -79,11 +79,21 @@ export type ApiCascaderOption = {
   disabled?: boolean;
 }
 
+const placeholder_option = [
+  {
+    label: '暂无api',
+    value: '',
+    path: '',
+    children: undefined,
+    isLeaf: true,
+    disabled: true,
+  },
+];
 export function mergeApiListToChildNameSpace(
   childNameSpace: ApiCascaderOption[] | undefined, rawApiList: RawApiDetail[],
 ): ApiCascaderOption[] {
   if (!rawApiList.length && !childNameSpace) {
-    return [{ label: '暂无api', value: '', path: '', children: undefined, isLeaf: true, disabled: true }];
+    return placeholder_option;
   }
 
   return (childNameSpace || []).concat(rawApiList.map(({ title, name, fullPath }: RawApiDetail) => {

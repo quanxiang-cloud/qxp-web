@@ -1,64 +1,32 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import cs from 'classnames';
 import { clone } from 'ramda';
 import { Cascader } from 'antd';
 import { useParams } from 'react-router-dom';
 import { SingleValueType, DefaultOptionType } from 'rc-cascader/lib/Cascader';
 
-import toast from '@lib/toast';
 import ApiDocDetail from '@polyApi/components/api-doc-detail';
-import { RawApiDocDetail, useGetRequestNodeApiList } from '@polyApi/effects/api/raw';
-import { useGetNamespaceFullPath, useQueryNameSpaceRawRootPath } from '@polyApi/effects/api/namespace';
-import {
-  ApiCascaderOption, getChildrenOfCurrentSelectOption, mergeApiListToOptions,
-} from '@polyApi/utils/request-node';
+import { RawApiDocDetail } from '@polyApi/effects/api/raw';
+import { getChildrenOfCurrentSelectOption } from '@polyApi/utils/request-node';
+import { useGetOptions } from './hook';
 
 type Props = {
-  apiDocDetail?: RawApiDocDetail;
   initRawApiPath: string;
   setApiPath: (apiPath: string) => void;
-  simpleMode?: boolean;
-  className?: string;
   label?: string;
   error?: string;
+  className?: string;
+  useInPoly?: boolean;
+  simpleMode?: boolean;
+  apiDocDetail?: RawApiDocDetail;
 }
 
 function ApiSelector({
-  apiDocDetail, setApiPath, initRawApiPath, simpleMode, className, label = '全部API:', error,
+  apiDocDetail, setApiPath, initRawApiPath, simpleMode, className, label = '全部API:', useInPoly = false, error,
 }: Props): JSX.Element {
   const { appID } = useParams<{ appID: string }>();
   const [apiNamespacePath, setApiNamespacePath] = useState('');
-  const [options, setOptions] = useState<ApiCascaderOption[] | undefined>();
-
-  const { data: namespace, error: fetchRootPathError } = useQueryNameSpaceRawRootPath(appID);
-  const { data: namespacePaths, error: fetchNameSpacePathError } = useGetNamespaceFullPath({
-    path: namespace?.appPath?.slice(1) || '',
-    body: { active: -1 },
-  }, { enabled: !!namespace?.appPath });
-  const { data: apiListDetails, isLoading, error: fetchApiListError } = useGetRequestNodeApiList({
-    path: apiNamespacePath.slice(1) || '',
-    body: { active: 1, page: 1, pageSize: -1 },
-  }, { enabled: !!apiNamespacePath });
-
-  // api cascader merge apiList options
-  useEffect(() => {
-    if ((isLoading && !apiListDetails) || !options) {
-      return;
-    }
-
-    setOptions(mergeApiListToOptions(options, apiNamespacePath, apiListDetails?.list || []));
-  }, [apiListDetails, isLoading]);
-
-  // api cascader load root options
-  useEffect(() => {
-    setOptions(getChildrenOfCurrentSelectOption(namespacePaths?.root.children));
-  }, [namespacePaths?.root.children]);
-
-  useEffect(() => {
-    fetchApiListError && toast.error(fetchApiListError.message);
-    fetchNameSpacePathError && toast.error(fetchNameSpacePathError.message);
-    fetchRootPathError && toast.error(fetchRootPathError.message);
-  }, [fetchApiListError, fetchNameSpacePathError, fetchRootPathError]);
+  const options = useGetOptions(appID, apiNamespacePath, useInPoly);
 
   function onChange(value: SingleValueType | SingleValueType[], selectedOptions: DefaultOptionType[]): void {
     const leafOption = clone(selectedOptions).pop();
