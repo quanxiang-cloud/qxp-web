@@ -62,8 +62,8 @@ function WebMessage({ defaultValue, onSubmit, onCancel, onChange }: Props): JSX.
     return asRaw ? raw : draftToHtml(raw);
   };
 
-  const handleSave = (data: WebMessageData): void => {
-    onSubmit(data);
+  const handleSave = (_data: unknown): void => {
+    onSubmit(_data as WebMessageData);
   };
 
   const handleChangeEditor = (editorState: EditorState): void => {

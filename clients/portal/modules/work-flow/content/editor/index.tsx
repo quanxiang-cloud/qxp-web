@@ -1,6 +1,8 @@
-import React, { useState, DragEvent, useContext } from 'react';
+import React, { DragEvent, useContext, Fragment, useMemo } from 'react';
 import cs from 'classnames';
 import { Elements, XYPosition, Node } from 'react-flow-renderer';
+import edgeTypes from './edges';
+import nodeTypes from './nodes';
 
 import useObservable from '@lib/hooks/use-observable';
 import { uuid } from '@lib/utils';
@@ -32,7 +34,6 @@ interface NodeInfo {
 export default function Editor(): JSX.Element {
   const { appID } = useContext(FlowContext);
   const { currentConnection, elements, nodeIdForDrawerForm } = useObservable<StoreValue>(store);
-  const [fitViewFinished, setFitViewFinished] = useState(false);
 
   function setElements(eles: Elements): void {
     updateStore((s) => ({ ...s, elements: eles }));
@@ -106,21 +107,28 @@ export default function Editor(): JSX.Element {
     updateStore((s) => ({ ...s, currentConnection: {} }));
   }
 
+  const siblings = useMemo(() => {
+    return (
+      <Fragment>
+        <Components />
+        {nodeIdForDrawerForm && (
+          <DrawerForm key={nodeIdForDrawerForm} />
+        )}
+      </Fragment>
+    );
+  }, [nodeIdForDrawerForm]);
+
   return (
-    <div className={cs('w-full h-full flex-1 relative transition', {
-      'opacity-0': !fitViewFinished,
-    })}>
-      <div className="reactflow-wrapper w-full h-full">
-        <FlowRender
-          elements={elements}
-          onDrop={onDrop}
-          setFitViewFinished={setFitViewFinished}
-        />
-      </div>
-      <Components />
-      {nodeIdForDrawerForm && (
-        <DrawerForm key={nodeIdForDrawerForm} />
-      )}
+    <div className={cs('w-full h-full flex-1 relative transition')}>
+      <FlowRender
+        elements={elements}
+        onDrop={onDrop}
+        siblings={siblings}
+        nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
+        layoutType='elk'
+        direction="bottom"
+      />
     </div>
   );
 }

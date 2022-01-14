@@ -61,14 +61,6 @@ export function convertToParamsConfig(
   return acc;
 }
 
-export type PolyApiSelectorOption = {
-  label: string;
-  value: string;
-  path: string;
-  isLeaf: boolean;
-  disabled: boolean;
-}
-
 export type ApiCascaderOption = {
   label: string;
   value: string;
@@ -79,7 +71,7 @@ export type ApiCascaderOption = {
   disabled?: boolean;
 }
 
-export function mergeApiListToChildNameSpace(
+function mergeApiListToChildNameSpace(
   childNameSpace: ApiCascaderOption[] | undefined, rawApiList: RawApiDetail[],
 ): ApiCascaderOption[] {
   if (!rawApiList.length && !childNameSpace) {
@@ -165,7 +157,7 @@ export function filterPolyApiInputs(inputs: POLY_API.PolyNodeInput[]): POLY_API.
   return omitNodeInputProperties(_inputs, ['mock', 'desc']);
 }
 
-export function appendApiListToTargetOption(
+function appendApiListToTargetOption(
   option: ApiCascaderOption, targetOptionPath: string, apiList: RawApiDetail[],
 ): ApiCascaderOption {
   if (option.path === targetOptionPath) {

@@ -2,13 +2,13 @@ import React from 'react';
 
 import { CustomRule } from '@c/formula-editor';
 
-export interface Props {
+interface Props {
   label: string;
   ruleList: CustomRule[];
   onInsert: (rule: CustomRule) => void;
 }
 
-export default function RuleItem<T>({ label, ruleList, onInsert }: Props): JSX.Element {
+export default function RuleItem({ label, ruleList, onInsert }: Props): JSX.Element {
   return (
     <div className="mb-16">
       <h1 className="mb-8">{label}</h1>

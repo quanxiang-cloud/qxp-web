@@ -3,15 +3,6 @@ import { isArray } from 'lodash';
 import TreeStore from '@c/headless-tree/store';
 import { TreeNode } from '@c/headless-tree/types';
 
-export type Formula = {
-  id: string;
-  name: string;
-  title?: string;
-  type?: string;
-  parent: string;
-  subCount: number;
-}
-
 function apiRequestFormulaTreeNode(
   formula: POLY_API.PolyNodeInput,
   child: POLY_API.PolyNodeInput[] = [],

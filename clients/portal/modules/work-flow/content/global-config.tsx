@@ -93,9 +93,7 @@ export default function GlobalConfig(): JSX.Element | null {
     updateStore((s) => ({ ...s, cancelable }));
   };
 
-  const handleSaveConfig = (
-    config: Omit<StoreValue, 'elements' | 'errors' | 'currentDataNotSaveConfirmCallback'>,
-  ): void => {
+  const handleSaveConfig = (config: Partial<StoreValue>): void => {
     updateStore((s) => ({ ...s, ...config }));
     saver({
       ...buildWorkFlowSaveData(appID),

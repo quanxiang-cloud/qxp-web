@@ -89,6 +89,10 @@ function MultipleSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
     }
   }, [isAllowCustom, options, otherCustomValue]);
 
+  function handleOnSelect(v: unknown): void {
+    fieldProps.mutators.change([...fieldProps.value, v]);
+  }
+
   if (fieldProps.props.readOnly) {
     return <FormDataValueRenderer value={fieldProps.value} schema={fieldProps.schema} />;
   }
@@ -101,13 +105,8 @@ function MultipleSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
         ref={selectRef}
         options={allOptions.map((option) => ({ label: option, value: option }))}
         placeholder="请选择选项"
-        onSelect={(v) => {
-          fieldProps.mutators.change([
-            ...fieldProps.value,
-            v,
-          ]);
-        }}
-        onDeselect={(v) => {
+        onSelect={handleOnSelect}
+        onDeselect={(v: unknown) => {
           fieldProps.mutators.change([
             ...fieldProps.value.filter((value: string) => v !== value),
           ]);

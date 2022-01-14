@@ -4,7 +4,7 @@ import nodes from './nodes';
 
 export const POLY_DESIGN_CONFIG = {
   EDGE_COLOR: '#CBD5E1',
-  BACKGROUND_COLOR: '#E6ECF9',
+  BACKGROUND_COLOR: 'transparent',
   ARROW_HEAD_TYPE: ArrowHeadType.ArrowClosed,
   EDGE_TYPE: 'smart',
   NODE_TYPES: nodes,
@@ -75,3 +75,10 @@ export const POLY_STATUS_MAP = {
 };
 
 export const PATH_TREE_AVAILABLE_NODE_TYPE = ['input', 'request'];
+
+export const CURRENT_NODE_CONFIG_PARAMS = {
+  currentNode: undefined,
+  schema: {},
+  onClose: undefined,
+  excludedFields: [],
+};
