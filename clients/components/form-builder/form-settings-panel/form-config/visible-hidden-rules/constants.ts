@@ -4,7 +4,7 @@ type Validator = (currentCompareValue: string, format?: string) => boolean;
 
 export const compareValueValidateMap: Record<string, Validator> = {
   input: (currentCompareValue: string) => {
-    return typeof currentCompareValue !== 'string' ? true : false;
+    return true;
   },
   datepicker: (currentCompareValue: string, format?: string) => {
     return moment(currentCompareValue).format(format) === 'Invalid date' ? true : false;

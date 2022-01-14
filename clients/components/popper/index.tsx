@@ -40,7 +40,7 @@ export default class Popper2 extends React.Component<Props, State> {
 
     const { trigger = 'click', theme = 'light', className } = props;
     const classNameList = ['popper-container', `popper-container--${theme}`];
-    className && classNameList.push(className);
+    className && classNameList.push(...className.split(' '));
 
     this.trigger = trigger;
     this.popperContainer.classList.add(...classNameList);

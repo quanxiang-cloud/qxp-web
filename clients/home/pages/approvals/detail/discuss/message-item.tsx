@@ -2,10 +2,9 @@ import React from 'react';
 import classnames from 'classnames';
 
 import Avatar from '@c/avatar';
-import Icon from '@c/icon';
 import { handleTimeFormat } from '@lib/utils';
 
-import { CommentItem, FileItem } from './index';
+import { CommentItem } from './index';
 
 interface Props {
   isOwn?: boolean;
@@ -32,7 +31,7 @@ export default function MessageItem({ isOwn, messageData }: Props): JSX.Element 
         )}>
           {messageData.content}
         </div>
-        <div className="flex flex-col">
+        {/* <div className="flex flex-col">
           {
             messageData.attachments && messageData.attachments.map((file: FileItem) => {
               return (
@@ -52,7 +51,7 @@ export default function MessageItem({ isOwn, messageData }: Props): JSX.Element 
               );
             })
           }
-        </div>
+        </div> */}
       </div>
     </div>
   );

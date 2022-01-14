@@ -1,4 +1,4 @@
-import { isArray, isEmpty, isString, omit } from 'lodash';
+import { isEmpty, isString, omit } from 'lodash';
 
 import { isObjectField } from './object-editor';
 import { RawApiDetail } from '../effects/api/raw';
@@ -35,30 +35,29 @@ export function convertToParamsConfig(
   parentPath = '',
   parentIn = 'body',
   acc: Record<string, ParamsConfig[]> = {},
-  arrayParent: { name: string, title: string } | undefined = undefined,
 ): Record<string, ParamsConfig[]> {
   originalInputs.forEach((apiDocInput: POLY_API.PolyNodeInput, index: number) => {
     const currentPath = parentPath ? `${parentPath}.${index}` : `${index}`;
     const { type, data } = apiDocInput;
     const currentIn = apiDocInput.in || parentIn;
     acc[currentIn] = acc[currentIn] || [];
-    if (!isObjectField(type)) {
+    if (type !== 'object') {
       const currentInput = {
         ...omit(apiDocInput, 'data'),
         path: currentPath,
         data: isString(data) ? data : '',
       } as ParamsConfig;
 
-      if (arrayParent) {
-        currentInput.arrayParent = arrayParent;
-      }
-
       acc[currentIn].push(currentInput);
-    } else if (isArray(apiDocInput.data)) {
-      convertToParamsConfig(apiDocInput.data, `${currentPath}.data`, currentIn, acc,
-        type === 'array' ? { name: apiDocInput.name || '', title: apiDocInput.title || '' } : undefined);
+    }
+
+    if (type === 'object') {
+      convertToParamsConfig(
+        apiDocInput.data as POLY_API.PolyNodeInput[], `${currentPath}.data`, currentIn, acc,
+      );
     }
   });
+
   return acc;
 }
 

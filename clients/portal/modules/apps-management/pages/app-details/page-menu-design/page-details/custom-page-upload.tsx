@@ -20,7 +20,7 @@ function CustomPageUpload({ appID, files, onStart, onProgress, onSuccess }: Prop
     <div>
       <FilePicker
         className="p-20"
-        accept="zip rar"
+        accept={'application/zip,application/x-zip-compressed,application/x-rar-compressed'}
         multiple={false}
         description="点击该区域上传文件。支持 zip 格式，单个文件不超过 30M。"
         onSelectFiles={(files) => {

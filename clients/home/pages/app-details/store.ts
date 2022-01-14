@@ -1,13 +1,12 @@
 import { action, reaction, IReactionDisposer, observable } from 'mobx';
 
 import toast from '@lib/toast';
-import { getCustomPageInfo, delFormDataRequest } from '@lib/http-client';
-import { CustomPageInfo, MenuType } from '@portal/modules/apps-management/pages/app-details/type';
-import { treeFind, pageListToTree, NodeItem } from '@c/two-level-menu';
-
-import { fetchPageList, getOperate } from './api';
-
 import { getPerOption, roleChange } from '@home/lib/api';
+import { treeFind, pageListToTree, NodeItem } from '@c/two-level-menu';
+import { getCustomPageInfo, delFormDataRequest, fetchPageList } from '@lib/http-client';
+import { CustomPageInfo, MenuType } from '@portal/modules/apps-management/pages/app-details/type';
+
+import { getOperate } from './api';
 
 type PerItem = {
   id: string;

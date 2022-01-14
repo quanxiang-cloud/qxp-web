@@ -37,6 +37,7 @@ function PageNav(): JSX.Element {
   }, [pageID]);
 
   const onSelect = (pageNode: PageInfo): void => {
+    document.title = `${store.appName ?? ''}-${pageNode.name ?? ''}`;
     history.replace(`/apps/${appID}?pageID=${pageNode.id}`);
   };
 
@@ -53,11 +54,13 @@ function PageNav(): JSX.Element {
       <div className={cs('nav-content ease-in-out duration-300 shadow-more-action', {
         collapse: !store.showPageNav,
       })}>
-        <div className='nav-content-header w-208 h-52 overflow-hidden flex items-center justify-center sticky top-0 z-20 bg-gray-50'>
+        <div className={cs(
+          'nav-content-header w-208 h-52 overflow-hidden',
+          'flex items-center justify-center',
+          'sticky top-0 z-20 bg-gray-50')}>
           <div
             onClick={() => history.push('/')}
-            className='app-header-icon text-gray-400 corner-8-8-8-2'
-          >
+            className='app-header-icon text-gray-400 corner-8-8-8-2'>
             <Icon size={20} className='m-6 fill-current' name='home_qxp'/>
           </div>
           <span className='mx-8 text-14'>/</span>
@@ -65,8 +68,7 @@ function PageNav(): JSX.Element {
             hiddenStatus={true}
             apps={store.appList}
             currentAppID={appID}
-            onChange={handleChange}
-          />
+            onChange={handleChange}/>
         </div>
         <div className='app-page-tree-wrapper flex flex-col-reverse'>
           {store.roleOptions.length > 1 && <RoleSwitcher />}
@@ -77,8 +79,7 @@ function PageNav(): JSX.Element {
               defaultSelected={store.curPage.id}
               onSelect={(page) => onSelect(page.source as PageInfo)}
               className='app-page-tree overflow-x-hidden'
-              groupBanSelect
-            />
+              groupBanSelect/>
           ) : (
             <AbsoluteCentered>
               <div className='app-no-data'>
@@ -100,8 +101,7 @@ function PageNav(): JSX.Element {
               localStorage?.setItem('HOME_APP_PAGE_NAV_STATUS_v1', `${appID}:close`);
               store.closePageNav();
               store.openMouseControl();
-            }}
-          />
+            }}/>
         )}
         {store.isMouseControl && (
           <Icon
@@ -113,8 +113,7 @@ function PageNav(): JSX.Element {
               localStorage?.setItem('HOME_APP_PAGE_NAV_STATUS_v1', `${appID}:open`);
               store.openPageNav();
               store.closeMouseControl();
-            }}
-          />
+            }}/>
         )}
       </div>
     </div>

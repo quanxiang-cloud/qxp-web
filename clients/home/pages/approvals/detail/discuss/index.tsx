@@ -1,12 +1,10 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 import { useParams } from 'react-router';
 
 import toast from '@lib/toast';
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
-import { FileInfo } from '@c/filelist';
-import FileUpload, { RefProps } from '@c/upload';
 
 import MessageItem from './message-item';
 import * as apis from '../../api';
@@ -36,20 +34,20 @@ interface Props {
 }
 
 export default function Discuss({ showInput }: Props): JSX.Element {
-  const [file, setFile] = useState<Array<FileInfo>>(([]).map((itm: FileInfo) => ({
-    filename: itm.filename,
-    url: itm.url,
-    status: 'success',
-  })));
+  // const [file, setFile] = useState<Array<FileInfo>>(([]).map((itm: FileInfo) => ({
+  //   filename: itm.filename,
+  //   url: itm.url,
+  //   status: 'success',
+  // })));
   const [inputValue, setInputValue] = useState('');
   const { processInstanceID, taskID } = useParams<{ processInstanceID: string; taskID: string }>();
   const queryClient = useQueryClient();
   const userinfo = window.USER;
-  const fileRef = useRef<RefProps>(null);
+  // const fileRef = useRef<RefProps>(null);
 
-  const showFiles = (f: Array<FileInfo>) => {
-    setFile(f);
-  };
+  // const showFiles = (f: Array<FileInfo>) => {
+  //   setFile(f);
+  // };
 
   const {
     isLoading, data: commentsData, isError,
@@ -78,12 +76,12 @@ export default function Discuss({ showInput }: Props): JSX.Element {
       taskId: taskID,
       content: inputValue,
       commentUserId: userinfo.id,
-      attachments: file.map((itm) => {
-        return {
-          attachmentName: itm.filename,
-          attachmentUrl: itm.url,
-        };
-      }).filter(Boolean),
+      // attachments: file.map((itm) => {
+      //   return {
+      //     attachmentName: itm.filename,
+      //     attachmentUrl: itm.url,
+      //   };
+      // }).filter(Boolean),
     };
     apis.addComment(params).then(() => {
       try {
@@ -94,9 +92,9 @@ export default function Discuss({ showInput }: Props): JSX.Element {
         toast.error('发送失败');
       }
     });
-    if (fileRef.current) {
-      fileRef.current.emptyFiles();
-    }
+    // if (fileRef.current) {
+    //   fileRef.current.emptyFiles();
+    // }
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>): void {
@@ -116,7 +114,7 @@ export default function Discuss({ showInput }: Props): JSX.Element {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex-1 overflow-autopr-5">
+      <div className="flex-1 overflow-auto pr-5">
         {
           commentsData.map((msg: CommentItem) => {
             return (
@@ -131,32 +129,32 @@ export default function Discuss({ showInput }: Props): JSX.Element {
       </div>
       {
         showInput && (
-          <div className="py-12 mt-16 bg-gray-100 corner-2-8-8-8 send-message-box-shadow">
-            <div>
-              <textarea
-                style={{
-                  maxHeight: 110,
-                  minHeight: 45,
-                  height: 45,
-                  padding: '12px 16px',
-                  borderRadius: '2px 8px 8px 8px',
-                }}
-                maxLength={200}
-                onChange={inputChange}
-                value={inputValue}
-                onKeyDown={(e) => handleKeyDown(e)}
-                placeholder="发表评论（Enter 快速发送）"
-                className="w-full focus:outline-none"
-              />
+          <div className="relative max-h-230 overflow-auto p-12 bg-white corner-2-8-8-8 shadow-more-action">
+            <textarea
+              style={{
+                maxHeight: 110,
+                minHeight: 45,
+                height: 45,
+              }}
+              maxLength={200}
+              onChange={inputChange}
+              value={inputValue}
+              onKeyDown={(e) => handleKeyDown(e)}
+              placeholder="发表评论（Enter 快速发送）"
+              className="w-full focus:outline-none"
+            />
+            <div className="flex items-center">
+              <span className="text-12 text-gray-400 mr-8">{inputValue.length}/200</span>
+              <div className="text-blue-600 cursor-pointer" onClick={handleSend}>发送</div>
             </div>
-            <FileUpload
+            {/* <FileUpload
               showFiles={showFiles}
               addSend={
                 (<div className="flex items-center">
                   <span className="text-12 text-gray-400 mr-8">{inputValue.length}/200</span>
                   <div className="text-blue-600 cursor-pointer" onClick={handleSend}>发送</div>
                 </div>)}
-              ref={fileRef} />
+              ref={fileRef} /> */}
           </div>
         )
       }

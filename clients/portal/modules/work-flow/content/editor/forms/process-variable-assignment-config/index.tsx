@@ -5,7 +5,7 @@ import { Input, Select as AntdSelect, Switch, DatePicker, NumberPicker } from '@
 import {
   SchemaForm,
   FormEffectHooks,
-  createFormActions,
+  createAsyncFormActions,
   IFormEffectSelector,
   LifeCycleTypes,
 } from '@formily/antd';
@@ -18,6 +18,7 @@ import { getFlowVariables } from '../api';
 import RulesList from './rules-list';
 import { useTableFieldOptions, ConfigSchema, availableVariableCtx } from './utils';
 import FormulaModalOpener from './formula-modal-opener';
+import ProcessVariableSelector from '../variable-selector';
 
 type Props = {
   defaultValue: ProcessVariableAssignmentData;
@@ -28,7 +29,7 @@ type Props = {
 
 const { onFieldValueChange$ } = FormEffectHooks;
 
-const ACTIONS = createFormActions();
+const ACTIONS = createAsyncFormActions();
 const { setFieldState, getFormState, getFieldValue } = ACTIONS;
 const COMPONENTS = {
   AntdSelect,
@@ -38,6 +39,7 @@ const COMPONENTS = {
   DatePicker,
   NumberPicker,
   FormulaModalOpener,
+  ProcessVariableSelector,
 };
 
 export default function AssignmentConfig({ defaultValue, onSubmit, onCancel }: Props): JSX.Element {
@@ -67,10 +69,10 @@ export default function AssignmentConfig({ defaultValue, onSubmit, onCancel }: P
 
   function formEffect($: IFormEffectSelector): void {
     $(LifeCycleTypes.ON_FORM_MOUNT).subscribe(() => setIsFormMounted(true));
-    onFieldValueChange$('assignmentRules.*.valueFrom').subscribe((state) => {
+    onFieldValueChange$('assignmentRules.*.valueFrom').subscribe(async (state) => {
       const valueOfPath = FormPath.transform(state.name, /\d/, ($1) => `assignmentRules.${$1}.valueOf`);
       const variableNamePath = FormPath.transform(state.name, /\d/, ($1) => `assignmentRules.${$1}.variableName`);
-      const variableCode: string = getFieldValue(variableNamePath);
+      const variableCode: string = await getFieldValue(variableNamePath);
       const variableType = variables?.find(({ code }) => code === variableCode)?.fieldType;
       if (state.value === 'currentFormValue') {
         setFieldState(valueOfPath, (valueOfFieldState) => {
@@ -83,11 +85,18 @@ export default function AssignmentConfig({ defaultValue, onSubmit, onCancel }: P
         return;
       }
 
+      let componentName = '';
       if (state.value === 'formula') {
+        componentName = 'FormulaModalOpener';
+      }
+      if (state.value === 'processVariable') {
+        componentName = 'ProcessVariableSelector';
+      }
+      if (componentName) {
         setFieldState(valueOfPath, (valueOfFieldState) => {
           valueOfFieldState.value = '';
           valueOfFieldState.props.enum = undefined;
-          valueOfFieldState.props['x-component'] = 'FormulaModalOpener';
+          valueOfFieldState.props['x-component'] = componentName;
         });
         return;
       }
@@ -122,8 +131,8 @@ export default function AssignmentConfig({ defaultValue, onSubmit, onCancel }: P
     });
   }
 
-  function onSave(): void {
-    const { values } = getFormState();
+  async function onSave(): Promise<void> {
+    const { values } = await getFormState();
     onSubmit(values);
   }
 
@@ -133,7 +142,7 @@ export default function AssignmentConfig({ defaultValue, onSubmit, onCancel }: P
     return (<div>loading...</div>);
   }
 
-  if (!variables || !variables.length) {
+  if (!variables?.length) {
     return (<span className="text-caption py-24">没有可被赋值的流程参数，请先在工作流变量页面添加。</span>);
   }
 

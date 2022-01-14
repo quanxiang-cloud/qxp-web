@@ -20,6 +20,7 @@ export type FileUploaderProps = {
   style?: React.CSSProperties;
   uploaderDescription?: React.ReactNode;
   fileData?: QXPUploadFileBaseProps[];
+  children?: React.ReactNode;
   onFileDelete?: (file: QXPUploadFileBaseProps) => void;
   onFileSuccess?: (file: QXPUploadFileBaseProps) => void;
   onFileError?: (err: Error, file: QXPUploadFileBaseProps) => void;
@@ -33,6 +34,7 @@ function FileUploader({
   iconName,
   className,
   accept,
+  children,
   maxFileSize,
   fileData = [],
   uploaderDescription,
@@ -115,7 +117,9 @@ function FileUploader({
         onSelectFiles={(files) => {
           files.every((file)=> beforeUpload(file, files, storeFiles)) && prepareFilesUpload(files);
         }}
-      />
+      >
+        {children}
+      </FilePicker>
       <FileList
         className="w-full"
         canDownload
