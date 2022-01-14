@@ -2,39 +2,6 @@
 # yarn lockfile v1
 
 
-"@QCFE/lego-locale@^0.1.10":
-  version "0.1.10"
-  resolved "http://r.npm.internal.yunify.com/@QCFE/lego-locale/download/@QCFE/lego-locale-0.1.10.tgz#0ac27c6ddfe26ee78f1056b3a57cecc23152ec4d"
-  integrity sha1-CsJ8bd/ibuePEFazpXzswjFS7E0=
-  dependencies:
-    "@babel/runtime" "^7.6.3"
-    console-polyfill "^0.3.0"
-    cookie "^0.3.1"
-    escape-html "^1.0.3"
-    intl "^1.2.5"
-    intl-messageformat "^2.2.0"
-    invariant "^2.2.4"
-    querystring "^0.2.0"
-
-"@QCFE/lego-ui@^0.1.30":
-  version "0.1.48"
-  resolved "http://r.npm.internal.yunify.com/@QCFE/lego-ui/download/@QCFE/lego-ui-0.1.48.tgz#0f192aed6df8e85c98c5acb3ca0bf82dc5c204d5"
-  integrity sha1-Dxkq7W346FyYxayzygv4LcXCBNU=
-  dependencies:
-    "@QCFE/lego-locale" "^0.1.10"
-    bulma "^0.6.2"
-    classnames "^2.2.6"
-    component-classes "^1.2.6"
-    fast-deep-equal "^3.1.3"
-    flatpickr "^4.6.3"
-    fuse.js "^3.2.1"
-    hoist-non-react-statics "^3.3.0"
-    lodash "^4.17.20"
-    nprogress "^0.2.0"
-    popper.js "^1.14.6"
-    react-input-autosize "^2.2.2"
-    sortablejs "^1.8.1"
-
 "@ant-design/colors@^6.0.0":
   version "6.0.0"
   resolved "https://registry.npm.taobao.org/@ant-design/colors/download/@ant-design/colors-6.0.0.tgz#9b9366257cffcc47db42b9d0203bb592c13c0298"
@@ -172,7 +139,7 @@
     core-js "^2.6.5"
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2", "@babel/runtime@^7.10.1", "@babel/runtime@^7.10.2", "@babel/runtime@^7.10.4", "@babel/runtime@^7.11.1", "@babel/runtime@^7.11.2", "@babel/runtime@^7.12.1", "@babel/runtime@^7.12.13", "@babel/runtime@^7.12.5", "@babel/runtime@^7.15.4", "@babel/runtime@^7.16.3", "@babel/runtime@^7.16.5", "@babel/runtime@^7.5.5", "@babel/runtime@^7.6.2", "@babel/runtime@^7.6.3", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7", "@babel/runtime@^7.9.2":
+"@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2", "@babel/runtime@^7.10.1", "@babel/runtime@^7.10.2", "@babel/runtime@^7.10.4", "@babel/runtime@^7.11.1", "@babel/runtime@^7.11.2", "@babel/runtime@^7.12.1", "@babel/runtime@^7.12.13", "@babel/runtime@^7.12.5", "@babel/runtime@^7.15.4", "@babel/runtime@^7.16.3", "@babel/runtime@^7.16.5", "@babel/runtime@^7.5.5", "@babel/runtime@^7.6.2", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7", "@babel/runtime@^7.9.2":
   version "7.16.5"
   resolved "https://registry.npmmirror.com/@babel/runtime/download/@babel/runtime-7.16.5.tgz#7f3e34bf8bdbbadf03fbb7b1ea0d929569c9487a"
   integrity sha512-TXWihFIS3Pyv5hzR7j6ihmeLkZfrXGxAr5UfSl8CHf+6q/wpiYDkUau0czckpYG8QmnCIuPpdLtuA9VmuGGyMA==
@@ -811,11 +778,6 @@
   resolved "https://registry.npmmirror.com/@popperjs/core/download/@popperjs/core-2.11.0.tgz#6734f8ebc106a0860dff7f92bf90df193f0935d7"
   integrity sha512-zrsUxjLOKAzdewIDRWy9nsV1GQsKBCWaGwsZQlCgr6/q+vjyZhFgqedLfFBuI9anTPEUT4APq9Mu0SZBTzIcGQ==
 
-"@qcfe/types@^1.1.0":
-  version "1.1.0"
-  resolved "http://r.npm.internal.yunify.com/@qcfe/types/download/@qcfe/types-1.1.0.tgz#c77cdd8d289fc5c4cb3d4a7284c450277f6838c1"
-  integrity sha1-x3zdjSifxcTLPUpyhMRQJ39oOME=
-
 "@react-dnd/asap@^4.0.0":
   version "4.0.0"
   resolved "https://registry.npm.taobao.org/@react-dnd/asap/download/@react-dnd/asap-4.0.0.tgz#b300eeed83e9801f51bd66b0337c9a6f04548651"
@@ -986,6 +948,11 @@
     pathfinding "0.4.18"
     react-use "17.3.1"
     tiny-warning "1.0.3"
+
+"@trysound/sax@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.nlark.com/@trysound/sax/download/@trysound/sax-0.1.1.tgz?cache=0&sync_timestamp=1630365886388&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40trysound%2Fsax%2Fdownload%2F%40trysound%2Fsax-0.1.1.tgz#3348564048e7a2d7398c935d466c0414ebb6a669"
+  integrity sha1-M0hWQEjnotc5jJNdRmwEFOu2pmk=
 
 "@types/classnames@^2.2.11":
   version "2.3.1"
@@ -2010,11 +1977,6 @@ builtin-modules@^3.1.0:
   resolved "https://registry.npm.taobao.org/builtin-modules/download/builtin-modules-3.2.0.tgz#45d5db99e7ee5e6bc4f362e008bf917ab5049887"
   integrity sha1-RdXbmefuXmvE82LgCL+RerUEmIc=
 
-bulma@^0.6.2:
-  version "0.6.2"
-  resolved "https://registry.nlark.com/bulma/download/bulma-0.6.2.tgz#f4b1d11d5acc51a79644eb0a2b0b10649d3d71f5"
-  integrity sha1-9LHRHVrMUaeWROsKKwsQZJ09cfU=
-
 bytes@^3.0.0:
   version "3.1.1"
   resolved "https://registry.npmmirror.com/bytes/download/bytes-3.1.1.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2Fbytes%2Fdownload%2Fbytes-3.1.1.tgz#3f018291cb4cbad9accb6e6970bca9c8889e879a"
@@ -2298,7 +2260,7 @@ color@^4.0.1:
     color-convert "^2.0.1"
     color-string "^1.9.0"
 
-colorette@^1.4.0:
+colorette@^1.2.2, colorette@^1.4.0:
   version "1.4.0"
   resolved "https://registry.npmmirror.com/colorette/download/colorette-1.4.0.tgz?cache=0&sync_timestamp=1633673060735&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2Fcolorette%2Fdownload%2Fcolorette-1.4.0.tgz#5190fbb87276259a86ad700bff2c6d6faa3fca40"
   integrity sha1-UZD7uHJ2JZqGrXAL/yxtb6o/ykA=
@@ -2312,6 +2274,11 @@ commander@^2.19.0:
   version "2.20.3"
   resolved "https://registry.npmmirror.com/commander/download/commander-2.20.3.tgz#fd485e84c03eb4881c20722ba48035e8531aeb33"
   integrity sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==
+
+commander@^7.1.0:
+  version "7.2.0"
+  resolved "https://registry.npmmirror.com/commander/download/commander-7.2.0.tgz#a36cb57d0b501ce108e4d20559a150a391d97ab7"
+  integrity sha512-QrWXB+ZQSVPmIWIhtEO9H+gwHaMGYiF5ChvoJ+K9ZGHG/sVsa6yiesAD1GC/x46sET00Xlwo1u49RVVVzvcSkw==
 
 commander@^8.0.0, commander@^8.2.0:
   version "8.3.0"
@@ -2352,22 +2319,10 @@ compare-func@^2.0.0:
     array-ify "^1.0.0"
     dot-prop "^5.1.0"
 
-component-classes@^1.2.6:
-  version "1.2.6"
-  resolved "https://registry.nlark.com/component-classes/download/component-classes-1.2.6.tgz#c642394c3618a4d8b0b8919efccbbd930e5cd691"
-  integrity sha1-xkI5TDYYpNiwuJGe/Mu9kw5c1pE=
-  dependencies:
-    component-indexof "0.0.3"
-
 component-emitter@^1.2.1:
   version "1.3.0"
   resolved "https://registry.npm.taobao.org/component-emitter/download/component-emitter-1.3.0.tgz#16e4070fba8ae29b679f2215853ee181ab2eabc0"
   integrity sha1-FuQHD7qK4ptnnyIVhT7hgasuq8A=
-
-component-indexof@0.0.3:
-  version "0.0.3"
-  resolved "https://registry.nlark.com/component-indexof/download/component-indexof-0.0.3.tgz#11d091312239eb8f32c8f25ae9cb002ffe8d3c24"
-  integrity sha1-EdCRMSI5648yyPJa6csAL/6NPCQ=
 
 compute-scroll-into-view@^1.0.17:
   version "1.0.17"
@@ -2396,11 +2351,6 @@ config-chain@^1.1.12:
     ini "^1.3.4"
     proto-list "~1.2.1"
 
-console-polyfill@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.npm.taobao.org/console-polyfill/download/console-polyfill-0.3.0.tgz#84900902a18c47a5eba932be75fa44d23e8af861"
-  integrity sha1-hJAJAqGMR6XrqTK+dfpE0j6K+GE=
-
 conventional-changelog-angular@^5.0.11:
   version "5.0.13"
   resolved "https://registry.nlark.com/conventional-changelog-angular/download/conventional-changelog-angular-5.0.13.tgz#896885d63b914a70d4934b59d2fe7bde1832b28c"
@@ -2420,11 +2370,6 @@ conventional-commits-parser@^3.2.2:
     meow "^8.0.0"
     split2 "^3.0.0"
     through2 "^4.0.0"
-
-cookie@^0.3.1:
-  version "0.3.1"
-  resolved "https://registry.nlark.com/cookie/download/cookie-0.3.1.tgz#e7e0a1f9ef43b4c8ba925c5c5a96e806d16873bb"
-  integrity sha1-5+Ch+e9DtMi6klxcWpboBtFoc7s=
 
 cool-path@^0.1.31:
   version "0.1.32"
@@ -2602,6 +2547,17 @@ css-select@^2.0.0:
     domutils "^1.7.0"
     nth-check "^1.0.2"
 
+css-select@^4.1.3:
+  version "4.2.1"
+  resolved "https://registry.npmmirror.com/css-select/download/css-select-4.2.1.tgz#9e665d6ae4c7f9d65dbe69d0316e3221fb274cdd"
+  integrity sha512-/aUslKhzkTNCQUB2qTX84lVmfia9NyjP3WpDGtj/WxhwBzWBYUV3DgUpurHTme8UTPcPlAD1DJ+b0nN/t50zDQ==
+  dependencies:
+    boolbase "^1.0.0"
+    css-what "^5.1.0"
+    domhandler "^4.3.0"
+    domutils "^2.8.0"
+    nth-check "^2.0.1"
+
 css-selector-tokenizer@^0.7.0:
   version "0.7.3"
   resolved "https://registry.nlark.com/css-selector-tokenizer/download/css-selector-tokenizer-0.7.3.tgz#735f26186e67c749aaf275783405cf0661fae8f1"
@@ -2652,6 +2608,11 @@ css-what@^3.2.1:
   version "3.4.2"
   resolved "https://registry.npmmirror.com/css-what/download/css-what-3.4.2.tgz#ea7026fcb01777edbde52124e21f327e7ae950e4"
   integrity sha1-6nAm/LAXd+295SEk4h8yfnrpUOQ=
+
+css-what@^5.1.0:
+  version "5.1.0"
+  resolved "https://registry.npmmirror.com/css-what/download/css-what-5.1.0.tgz#3f7b707aadf633baf62c2ceb8579b545bb40f7fe"
+  integrity sha1-P3tweq32M7r2LCzrhXm1RbtA9/4=
 
 css@^2.0.0:
   version "2.2.4"
@@ -2736,7 +2697,7 @@ cssnano@^4.1.10:
     is-resolvable "^1.0.0"
     postcss "^7.0.0"
 
-csso@^4.0.2:
+csso@^4.0.2, csso@^4.2.0:
   version "4.2.0"
   resolved "https://registry.npmmirror.com/csso/download/csso-4.2.0.tgz#ea3a561346e8dc9f546d6febedd50187cf389529"
   integrity sha1-6jpWE0bo3J9UbW/r7dUBh884lSk=
@@ -3016,15 +2977,31 @@ dom-serializer@0:
     domelementtype "^2.0.1"
     entities "^2.0.0"
 
+dom-serializer@^1.0.1:
+  version "1.3.2"
+  resolved "https://registry.nlark.com/dom-serializer/download/dom-serializer-1.3.2.tgz#6206437d32ceefaec7161803230c7a20bc1b4d91"
+  integrity sha1-YgZDfTLO767HFhgDIwx6ILwbTZE=
+  dependencies:
+    domelementtype "^2.0.1"
+    domhandler "^4.2.0"
+    entities "^2.0.0"
+
 domelementtype@1:
   version "1.3.1"
   resolved "https://registry.nlark.com/domelementtype/download/domelementtype-1.3.1.tgz#d048c44b37b0d10a7f2a3d5fee3f4333d790481f"
   integrity sha1-0EjESzew0Qp/Kj1f7j9DM9eQSB8=
 
-domelementtype@^2.0.1:
+domelementtype@^2.0.1, domelementtype@^2.2.0:
   version "2.2.0"
   resolved "https://registry.nlark.com/domelementtype/download/domelementtype-2.2.0.tgz#9a0b6c2782ed6a1c7323d42267183df9bd8b1d57"
   integrity sha1-mgtsJ4LtahxzI9QiZxg9+b2LHVc=
+
+domhandler@^4.2.0, domhandler@^4.3.0:
+  version "4.3.0"
+  resolved "https://registry.npmmirror.com/domhandler/download/domhandler-4.3.0.tgz#16c658c626cf966967e306f966b431f77d4a5626"
+  integrity sha512-fC0aXNQXqKSFTr2wDNZDhsEYjCiYsDWl3D01kwt25hm1YIPyDGHvvi3rw+PLqHAl/m71MaiF7d5zvBr0p5UB2g==
+  dependencies:
+    domelementtype "^2.2.0"
 
 domutils@^1.7.0:
   version "1.7.0"
@@ -3033,6 +3010,15 @@ domutils@^1.7.0:
   dependencies:
     dom-serializer "0"
     domelementtype "1"
+
+domutils@^2.8.0:
+  version "2.8.0"
+  resolved "https://registry.nlark.com/domutils/download/domutils-2.8.0.tgz#4437def5db6e2d1f5d6ee859bd95ca7d02048135"
+  integrity sha1-RDfe9dtuLR9dbuhZvZXKfQIEgTU=
+  dependencies:
+    dom-serializer "^1.0.1"
+    domelementtype "^2.2.0"
+    domhandler "^4.2.0"
 
 dot-prop@^5.1.0, dot-prop@^5.2.0:
   version "5.3.0"
@@ -3294,11 +3280,6 @@ escalade@^3.1.1:
   version "3.1.1"
   resolved "https://registry.nlark.com/escalade/download/escalade-3.1.1.tgz#d8cfdc7000965c5a0174b4a82eaa5c0552742e40"
   integrity sha1-2M/ccACWXFoBdLSoLqpcBVJ0LkA=
-
-escape-html@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.nlark.com/escape-html/download/escape-html-1.0.3.tgz#0258eae4d3d0c0974de1c169188ef0051d1d1988"
-  integrity sha1-Aljq5NPQwJdN4cFpGI7wBR0dGYg=
 
 escape-string-regexp@^1.0.2, escape-string-regexp@^1.0.5:
   version "1.0.5"
@@ -3684,11 +3665,6 @@ flat-cache@^3.0.4:
     flatted "^3.1.0"
     rimraf "^3.0.2"
 
-flatpickr@^4.6.3:
-  version "4.6.9"
-  resolved "https://registry.npm.taobao.org/flatpickr/download/flatpickr-4.6.9.tgz#9a13383e8a6814bda5d232eae3fcdccb97dc1499"
-  integrity sha1-mhM4PopoFL2l0jLq4/zcy5fcFJk=
-
 flatted@^3.1.0:
   version "3.2.4"
   resolved "https://registry.npmmirror.com/flatted/download/flatted-3.2.4.tgz?cache=0&sync_timestamp=1636473925233&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2Fflatted%2Fdownload%2Fflatted-3.2.4.tgz#28d9969ea90661b5134259f312ab6aa7929ac5e2"
@@ -3762,11 +3738,6 @@ functional-red-black-tree@^1.0.1:
   version "1.0.1"
   resolved "https://registry.nlark.com/functional-red-black-tree/download/functional-red-black-tree-1.0.1.tgz#1b0ab3bd553b2a0d6399d29c0e3ea0b252078327"
   integrity sha1-GwqzvVU7Kg1jmdKcDj6gslIHgyc=
-
-fuse.js@^3.2.1:
-  version "3.6.1"
-  resolved "https://registry.npmmirror.com/fuse.js/download/fuse.js-3.6.1.tgz#7de85fdd6e1b3377c23ce010892656385fd9b10c"
-  integrity sha1-fehf3W4bM3fCPOAQiSZWOF/ZsQw=
 
 generic-names@^1.0.2:
   version "1.0.3"
@@ -4187,30 +4158,6 @@ internal-slot@^1.0.3:
     get-intrinsic "^1.1.0"
     has "^1.0.3"
     side-channel "^1.0.4"
-
-intl-messageformat-parser@1.4.0:
-  version "1.4.0"
-  resolved "https://registry.npmmirror.com/intl-messageformat-parser/download/intl-messageformat-parser-1.4.0.tgz#b43d45a97468cadbe44331d74bb1e8dea44fc075"
-  integrity sha1-tD1FqXRoytvkQzHXS7Ho3qRPwHU=
-
-intl-messageformat@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.npmmirror.com/intl-messageformat/download/intl-messageformat-2.2.0.tgz#345bcd46de630b7683330c2e52177ff5eab484fc"
-  integrity sha1-NFvNRt5jC3aDMwwuUhd/9eq0hPw=
-  dependencies:
-    intl-messageformat-parser "1.4.0"
-
-intl@^1.2.5:
-  version "1.2.5"
-  resolved "https://registry.npm.taobao.org/intl/download/intl-1.2.5.tgz#82244a2190c4e419f8371f5aa34daa3420e2abde"
-  integrity sha1-giRKIZDE5Bn4Nx9ao02qNCDiq94=
-
-invariant@^2.2.4:
-  version "2.2.4"
-  resolved "https://registry.nlark.com/invariant/download/invariant-2.2.4.tgz#610f3c92c9359ce1db616e538008d23ff35158e6"
-  integrity sha1-YQ88ksk1nOHbYW5TgAjSP/NRWOY=
-  dependencies:
-    loose-envify "^1.0.0"
 
 is-absolute-url@^2.0.0:
   version "2.1.0"
@@ -4875,7 +4822,7 @@ lodash.uniq@^4.5.0:
   resolved "https://registry.nlark.com/lodash.uniq/download/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
   integrity sha1-0CJTc662Uq3BvILklFM5qEJ1R3M=
 
-lodash@^4.0.1, lodash@^4.17.11, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.17.21, lodash@^4.17.4:
+lodash@^4.0.1, lodash@^4.17.11, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.21, lodash@^4.17.4:
   version "4.17.21"
   resolved "https://registry.npmmirror.com/lodash/download/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
@@ -5396,17 +5343,19 @@ npm-run-path@^4.0.1:
   dependencies:
     path-key "^3.0.0"
 
-nprogress@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.npmmirror.com/nprogress/download/nprogress-0.2.0.tgz#cb8f34c53213d895723fcbab907e9422adbcafb1"
-  integrity sha512-I19aIingLgR1fmhftnbWWO3dXc0hSxqHQHQb3H8m+K3TnEn/iSeTZZOyvKXWqQESMwuUVnatlCnZdLBZZt2VSA==
-
 nth-check@^1.0.2:
   version "1.0.2"
   resolved "https://registry.nlark.com/nth-check/download/nth-check-1.0.2.tgz#b2bd295c37e3dd58a3bf0700376663ba4d9cf05c"
   integrity sha1-sr0pXDfj3VijvwcAN2Zjuk2c8Fw=
   dependencies:
     boolbase "~1.0.0"
+
+nth-check@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.nlark.com/nth-check/download/nth-check-2.0.1.tgz?cache=0&sync_timestamp=1631793715685&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fnth-check%2Fdownload%2Fnth-check-2.0.1.tgz#2efe162f5c3da06a28959fbd3db75dbeea9f0fc2"
+  integrity sha1-Lv4WL1w9oGoolZ+9PbddvuqfD8I=
+  dependencies:
+    boolbase "^1.0.0"
 
 num2fraction@^1.2.2:
   version "1.2.2"
@@ -5749,11 +5698,6 @@ please-upgrade-node@^3.2.0:
   integrity sha1-rt3T+ZTJM+StmLmdmlVu+g4v6UI=
   dependencies:
     semver-compare "^1.0.0"
-
-popper.js@^1.14.6:
-  version "1.16.1"
-  resolved "https://registry.npmmirror.com/popper.js/download/popper.js-1.16.1.tgz#2a223cb3dc7b6213d740e40372be40de43e65b1b"
-  integrity sha512-Wb4p1J4zyFTbM+u6WuO4XstYx4Ky9Cewe4DWrel7B0w6VVICvPwdOpotjzcf6eD8TsckVnIMNONQyPIUFOUbCQ==
 
 posix-character-classes@^0.1.0:
   version "0.1.1"
@@ -6273,11 +6217,6 @@ query-string@^6.13.8:
     split-on-first "^1.0.0"
     strict-uri-encode "^2.0.0"
 
-querystring@^0.2.0:
-  version "0.2.1"
-  resolved "https://registry.npmmirror.com/querystring/download/querystring-0.2.1.tgz#40d77615bb09d16902a85c3e38aa8b5ed761c2dd"
-  integrity sha512-wkvS7mL/JMugcup3/rMitHmd9ecIGd2lhFhK9N3UUQ450h66d1r3Y9nvXzQAW1Lq+wyx61k/1pfKS5KuKiyEbg==
-
 queue-microtask@^1.2.2:
   version "1.2.3"
   resolved "https://registry.nlark.com/queue-microtask/download/queue-microtask-1.2.3.tgz#4929228bbc724dfac43e0efb058caf7b6cfb6243"
@@ -6734,17 +6673,7 @@ react-dnd@^14.0.3, react-dnd@^14.0.4:
     fast-deep-equal "^3.1.3"
     hoist-non-react-statics "^3.3.2"
 
-react-dom@16.13.1:
-  version "16.13.1"
-  resolved "https://registry.npmmirror.com/react-dom/download/react-dom-16.13.1.tgz#c1bd37331a0486c078ee54c4740720993b2e0e7f"
-  integrity sha512-81PIMmVLnCNLO/fFOQxdQkvEq/+Hfpv24XNJfpyZhTRfO0QcmQIF/PgCa1zCOj2w1hrn12MFLyaJ/G0+Mxtfag==
-  dependencies:
-    loose-envify "^1.1.0"
-    object-assign "^4.1.1"
-    prop-types "^15.6.2"
-    scheduler "^0.19.1"
-
-react-dom@^17.0.1, react-dom@^17.0.2:
+react-dom@17.0.2, react-dom@^17.0.1, react-dom@^17.0.2:
   version "17.0.2"
   resolved "https://registry.npmmirror.com/react-dom/download/react-dom-17.0.2.tgz#ecffb6845e3ad8dbfcdc498f0d0a939736502c23"
   integrity sha512-s4h96KtLDUQlsENhMn1ar8t2bEa+q/YAtj8pPPdIjPDGBDIVNsrD9aXNWqspUe6AzKCIG0C1HZZLqLV7qpOBGA==
@@ -6813,13 +6742,6 @@ react-hook-form@^7.20.4, react-hook-form@^7.4.2:
   version "7.22.5"
   resolved "https://registry.npmmirror.com/react-hook-form/download/react-hook-form-7.22.5.tgz#85a135f3c5ae02ccf73096a03fc14b45607e9baa"
   integrity sha512-Q2zaeQFXdVQ8l3hcywhltH+Nzj4vo50wMVujHDVN/1Xy9IOaSZJwYBXA2CYTpK6rq41fnXviw3jTLb04c7Gu9Q==
-
-react-input-autosize@^2.2.2:
-  version "2.2.2"
-  resolved "https://registry.npm.taobao.org/react-input-autosize/download/react-input-autosize-2.2.2.tgz#fcaa7020568ec206bc04be36f4eb68e647c4d8c2"
-  integrity sha1-/KpwIFaOwga8BL429Oto5kfE2MI=
-  dependencies:
-    prop-types "^15.5.8"
 
 react-is@^16.12.0, react-is@^16.13.1, react-is@^16.6.0, react-is@^16.7.0:
   version "16.13.1"
@@ -6977,16 +6899,7 @@ react-use@^17.3.2:
     ts-easing "^0.2.0"
     tslib "^2.1.0"
 
-react@16.13.1:
-  version "16.13.1"
-  resolved "https://registry.npmmirror.com/react/download/react-16.13.1.tgz#2e818822f1a9743122c063d6410d85c1e3afe48e"
-  integrity sha512-YMZQQq32xHLX0bz5Mnibv1/LHb3Sqzngu7xstSM+vrkE5Kzr9xE0yMByK5kMoTK30YVJE61WfbxIFFvfeDKT1w==
-  dependencies:
-    loose-envify "^1.1.0"
-    object-assign "^4.1.1"
-    prop-types "^15.6.2"
-
-react@^17.0.1, react@^17.0.2:
+react@17.0.2, react@^17.0.1, react@^17.0.2:
   version "17.0.2"
   resolved "https://registry.npmmirror.com/react/download/react-17.0.2.tgz#d0b5cc516d29eb3eee383f75b62864cfb6800037"
   integrity sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA==
@@ -7399,18 +7312,18 @@ sax@^1.2.4, sax@~1.2.4:
   resolved "https://registry.npm.taobao.org/sax/download/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
   integrity sha1-KBYjTiN4vdxOU1T6tcqold9xANk=
 
-scheduler@^0.19.1, scheduler@~0.19.0:
-  version "0.19.1"
-  resolved "https://registry.npmmirror.com/scheduler/download/scheduler-0.19.1.tgz#4f3e2ed2c1a7d65681f4c854fa8c5a1ccb40f196"
-  integrity sha1-Tz4u0sGn1laB9MhU+oxaHMtA8ZY=
-  dependencies:
-    loose-envify "^1.1.0"
-    object-assign "^4.1.1"
-
 scheduler@^0.20.2:
   version "0.20.2"
   resolved "https://registry.npmmirror.com/scheduler/download/scheduler-0.20.2.tgz#4baee39436e34aa93b4874bddcbf0fe8b8b50e91"
   integrity sha1-S67jlDbjSqk7SHS93L8P6Li1DpE=
+  dependencies:
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
+
+scheduler@~0.19.0:
+  version "0.19.1"
+  resolved "https://registry.npmmirror.com/scheduler/download/scheduler-0.19.1.tgz#4f3e2ed2c1a7d65681f4c854fa8c5a1ccb40f196"
+  integrity sha1-Tz4u0sGn1laB9MhU+oxaHMtA8ZY=
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
@@ -7601,7 +7514,7 @@ snapdragon@^0.8.1:
     source-map-resolve "^0.5.0"
     use "^3.1.0"
 
-sortablejs@^1.13.0, sortablejs@^1.8.1:
+sortablejs@^1.13.0:
   version "1.14.0"
   resolved "https://registry.npmmirror.com/sortablejs/download/sortablejs-1.14.0.tgz#6d2e17ccbdb25f464734df621d4f35d4ab35b3d8"
   integrity sha512-pBXvQCs5/33fdN1/39pPL0NZF20LeRbLQ5jtnheIPN9JQAaufGjKdWduZn4U7wCtVuzKhmRkI0DFYHYRbB2H1w==
@@ -7977,18 +7890,31 @@ supports-color@^7.1.0:
   dependencies:
     has-flag "^4.0.0"
 
-svg-spreact@1.3.1:
-  version "1.3.1"
-  resolved "https://registry.npmmirror.com/svg-spreact/download/svg-spreact-1.3.1.tgz#872f78cdd8e25915f383fa33fe7e874f067a6501"
-  integrity sha1-hy94zdjiWRXzg/oz/n6HTwZ6ZQE=
+svg-spreact@^1.3.2:
+  version "1.3.2"
+  resolved "https://registry.npmmirror.com/svg-spreact/download/svg-spreact-1.3.2.tgz#4029d5e2f8d33394742b6ca2987f951d383bff50"
+  integrity sha1-QCnV4vjTM5R0K2yimH+VHTg7/1A=
   dependencies:
     pretty "2.0.0"
-    react "16.13.1"
-    react-dom "16.13.1"
-    svgo "1.3.2"
-    svgson "4.1.0"
+    react "17.0.2"
+    react-dom "17.0.2"
+    svgo "2.4.0"
+    svgson "5.2.1"
 
-svgo@1.3.2, svgo@^1.0.0:
+svgo@2.4.0:
+  version "2.4.0"
+  resolved "https://registry.npmmirror.com/svgo/download/svgo-2.4.0.tgz#0c42653101fd668692c0f69b55b8d7b182ef422b"
+  integrity sha512-W25S1UUm9Lm9VnE0TvCzL7aso/NCzDEaXLaElCUO/KaVitw0+IBicSVfM1L1c0YHK5TOFh73yQ2naCpVHEQ/OQ==
+  dependencies:
+    "@trysound/sax" "0.1.1"
+    colorette "^1.2.2"
+    commander "^7.1.0"
+    css-select "^4.1.3"
+    css-tree "^1.1.2"
+    csso "^4.2.0"
+    stable "^0.1.8"
+
+svgo@^1.0.0:
   version "1.3.2"
   resolved "https://registry.npmmirror.com/svgo/download/svgo-1.3.2.tgz#b6dc511c063346c9e415b81e43401145b96d4167"
   integrity sha512-yhy/sQYxR5BkC98CY7o31VGsg014AKLEPxdfhora76l36hD9Rdy5NZA/Ocn6yayNPgSamYdtX2rFJdcv07AYVw==
@@ -8007,10 +7933,10 @@ svgo@1.3.2, svgo@^1.0.0:
     unquote "~1.1.1"
     util.promisify "~1.0.0"
 
-svgson@4.1.0:
-  version "4.1.0"
-  resolved "https://registry.npm.taobao.org/svgson/download/svgson-4.1.0.tgz#eb70dac8d0075c61e5bfd45411a56014e2d3610e"
-  integrity sha1-63DayNAHXGHlv9RUEaVgFOLTYQ4=
+svgson@5.2.1:
+  version "5.2.1"
+  resolved "https://registry.npm.taobao.org/svgson/download/svgson-5.2.1.tgz#7481fb1af4a58be542a6bd2020c168c6b71381cb"
+  integrity sha1-dIH7GvSli+VCpr0gIMFoxrcTgcs=
   dependencies:
     deep-rename-keys "^0.2.1"
     omit-deep "0.3.0"

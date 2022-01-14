@@ -105,6 +105,7 @@ function PageDetails({ pageID }: Props): JSX.Element {
     setFiles((prevFiles) => [{
       ...prevFiles[0],
       progress: progress,
+      state: 'uploading',
     }]);
   }
 
@@ -318,16 +319,21 @@ function PageDetails({ pageID }: Props): JSX.Element {
     );
   }
 
+  function handleModalClose(): void {
+    setFiles([]);
+    setModalType('');
+  }
+
   function renderModal(modalType: string) {
     return (
       <Modal
         title={modalType === 'create' ? '新建自定义页面' : '修改自定义页面'}
-        onClose={() => setModalType('')}
+        onClose={handleModalClose}
         footerBtns={[
           {
             key: 'close',
             text: '取消',
-            onClick: () => setModalType(''),
+            onClick: handleModalClose,
           },
           {
             key: 'sure',
@@ -338,7 +344,13 @@ function PageDetails({ pageID }: Props): JSX.Element {
         ]}
       >
         <div className="p-40">
-          <CustomPageUpload files={files} onSuccess={onSuccess} onProgress={onProgress} onStart={onStart} appID={appID} />
+          <CustomPageUpload
+            files={files}
+            appID={appID}
+            onStart={onStart}
+            onSuccess={onSuccess}
+            onProgress={onProgress}
+          />
           <p className="mt-8 select-none">1. 支持上传静态的页面代码，包含 html、javascript、css、图片等。</p>
         </div>
       </Modal>
