@@ -71,7 +71,7 @@ function NavItem<T>({
         style={{ paddingLeft: (16 * (level + 1)) + 'px' }}
         key={node.id}
         className={cs('two-level-menu-node px-16 hover:bg-enfi-600 flex items-center h-36', {
-          'two-level-menu-node-active bg-enfi-600 text-white': (!groupBanSelect || node.type !== 'group') && activeNode?.id === node.id,
+          'two-level-menu-node-active bg-enfi-600': (!groupBanSelect || node.type !== 'group') && activeNode?.id === node.id,
         })}
         onClick={() => {
           setExpand(!expand);
