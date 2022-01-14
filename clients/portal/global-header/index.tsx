@@ -29,7 +29,7 @@ export default function GlobalHeader() {
         <HeaderNav />
         <img
           className="h-52"
-          src="/dist/images/enfi1.png"
+          src="/dist/images/enfi1.svg"
           alt="quanxiangyun"
         />
         <HeaderMenu />
