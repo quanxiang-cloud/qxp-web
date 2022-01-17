@@ -126,20 +126,29 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
     title: defaultValue.title,
     mes_attachment: defaultValue.mes_attachment,
   };
-  const { register, handleSubmit, control, reset, formState: { errors }, watch } = useForm();
+  const { register, handleSubmit, control, reset, formState: { errors }, watch } = useForm<SendEmailData>();
   const { appID } = useContext(FlowContext);
-  const [editorCont, setEditorCont] = useState(defaultValueEncode?.content ?
-    EditorState.createWithContent(
-      ContentState.createFromBlockArray(
-        htmlToDraft(defaultValueEncode.content).contentBlocks),
-    ) : EditorState.createEmpty());
+  const [editorCont, setEditorCont] = useState(
+    defaultValueEncode?.content ?
+      EditorState.createWithContent(
+        ContentState.createFromBlockArray(
+          htmlToDraft(defaultValueEncode.content).contentBlocks),
+      ) :
+      EditorState.createEmpty(),
+  );
   const { elements = [] } = useObservable<StoreValue>(store);
   const formDataElement = elements?.find(({ type }) => type === 'formData') as CurrentElement;
   const workFormValue = (formDataElement?.data?.businessData as FormDataData)?.form?.value;
-  const allFields = watch(
-    ['content', 'recivers', 'title', 'mes_attachment', 'type', 'approvePersons', 'formulaFields',
-      'fieldType'],
-  );
+  const allFields = watch([
+    'content',
+    'recivers',
+    'title',
+    'mes_attachment',
+    'type',
+    'approvePersons',
+    'formulaFields',
+    'fieldType',
+  ]);
   const previousFields = usePrevious(allFields);
   const { tableSchema } = useContext(FlowTableContext);
   const formulaFields = useMemo(()=> tableSchema.filter((schema) => {
