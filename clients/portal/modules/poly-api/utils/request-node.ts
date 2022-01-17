@@ -2,6 +2,7 @@ import { isEmpty, isString, omit } from 'lodash';
 
 import { isObjectField } from './object-editor';
 import { RawApiDetail } from '../effects/api/raw';
+import { PLACEHOLDER_OPTION } from '../constants';
 
 type ParamsConfig = Omit<POLY_API.PolyNodeInput, 'data' | 'type' | 'in'> & {
   type: string;
@@ -79,21 +80,11 @@ export type ApiCascaderOption = {
   disabled?: boolean;
 }
 
-const placeholder_option = [
-  {
-    label: '暂无api',
-    value: '',
-    path: '',
-    children: undefined,
-    isLeaf: true,
-    disabled: true,
-  },
-];
 export function mergeApiListToChildNameSpace(
   childNameSpace: ApiCascaderOption[] | undefined, rawApiList: RawApiDetail[],
 ): ApiCascaderOption[] {
   if (!rawApiList.length && !childNameSpace) {
-    return placeholder_option;
+    return PLACEHOLDER_OPTION;
   }
 
   return (childNameSpace || []).concat(rawApiList.map(({ title, name, fullPath }: RawApiDetail) => {

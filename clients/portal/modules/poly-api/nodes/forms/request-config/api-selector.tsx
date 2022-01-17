@@ -5,10 +5,11 @@ import { Cascader } from 'antd';
 import { useParams } from 'react-router-dom';
 import { SingleValueType, DefaultOptionType } from 'rc-cascader/lib/Cascader';
 
-import ApiDocDetail from '@polyApi/components/api-doc-detail';
 import { RawApiDocDetail } from '@polyApi/effects/api/raw';
+import ApiDocDetail from '@polyApi/components/api-doc-detail';
 import { getChildrenOfCurrentSelectOption } from '@polyApi/utils/request-node';
-import { useGetOptions } from './hook';
+
+import { useGetOptions } from './hooks/api-selector-hooks';
 
 type Props = {
   initRawApiPath: string;
