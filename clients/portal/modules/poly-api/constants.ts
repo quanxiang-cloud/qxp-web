@@ -2,6 +2,17 @@ import { ArrowHeadType } from 'react-flow-renderer';
 
 import nodes from './nodes';
 
+export const PLACEHOLDER_OPTION = [
+  {
+    label: '暂无api',
+    value: '',
+    path: '',
+    children: undefined,
+    isLeaf: true,
+    disabled: true,
+  },
+];
+
 export const POLY_DESIGN_CONFIG = {
   EDGE_COLOR: '#CBD5E1',
   BACKGROUND_COLOR: '#E6ECF9',
