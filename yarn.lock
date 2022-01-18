@@ -966,6 +966,11 @@
   resolved "http://r.npm.internal.yunify.com/@types/css-tree/download/@types/css-tree-1.0.7.tgz#4483b824a7923d9a7819408a33144014b0c5124c"
   integrity sha1-RIO4JKeSPZp4GUCKMxRAFLDFEkw=
 
+"@types/cssbeautify@^0.3.2":
+  version "0.3.2"
+  resolved "https://registry.npmmirror.com/@types/cssbeautify/download/@types/cssbeautify-0.3.2.tgz#8a76207cd980d3e7b29b4b6dea1f4ed861285615"
+  integrity sha1-inYgfNmA0+eym0tt6h9O2GEoVhU=
+
 "@types/cssnano@^4.0.0":
   version "4.0.1"
   resolved "https://registry.npmmirror.com/@types/cssnano/download/@types/cssnano-4.0.1.tgz?cache=0&sync_timestamp=1637264933627&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2F%40types%2Fcssnano%2Fdownload%2F%40types%2Fcssnano-4.0.1.tgz#67fa912753d80973a016e7684a47fedf338aacff"
@@ -2623,6 +2628,11 @@ css@^2.0.0:
     source-map "^0.6.1"
     source-map-resolve "^0.5.2"
     urix "^0.1.0"
+
+cssbeautify@^0.3.1:
+  version "0.3.1"
+  resolved "https://registry.nlark.com/cssbeautify/download/cssbeautify-0.3.1.tgz#12dd1f734035c2e6faca67dcbdcef74e42811397"
+  integrity sha1-Et0fc0A1wub6ymfcvc73TkKBE5c=
 
 cssesc@^3.0.0:
   version "3.0.0"

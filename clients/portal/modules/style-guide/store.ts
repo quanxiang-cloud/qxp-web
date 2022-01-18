@@ -1,8 +1,10 @@
 import { observable, action } from 'mobx';
 
+import { applyStyle } from './utils';
 class StyleGuideStore {
   @observable customCompCssMap: Record<string, string> = {};
-  @observable currentConfigComp: null | ActiveConfigurationComponent = null;
+  @observable currentCompStatus: null | ActiveConfigurationComponent = null;
+  @observable currentComp: ComponentPackagingObject | null = null;
   @observable commonConfig: StyleGuideCommonConfig = { primaryColor: 'blue' };
 
   @action
@@ -13,11 +15,20 @@ class StyleGuideStore {
   @action
   setCustomCss = (name: string, newCss: string): void => {
     this.customCompCssMap = { ...this.customCompCssMap, [name]: newCss };
+    const newCompCss = this.currentComp?.schemas.map(({ key }) => {
+      const cssKey = `${this.currentComp?.key}.${key}`;
+      if (cssKey === name) {
+        return newCss;
+      }
+      return this.customCompCssMap[cssKey] || '';
+    }) || [];
+
+    applyStyle(this.currentComp?.key || '', newCompCss?.join(' '));
   };
 
   @action
-  setCurrentComp = (key: string, configSchema: ComponentStyleConfigSchema[]): void => {
-    this.currentConfigComp = {
+  setCurrentCompStatus = (key: string, configSchema: ComponentStyleConfigSchema[]): void => {
+    this.currentCompStatus = {
       key,
       configSchema,
     };

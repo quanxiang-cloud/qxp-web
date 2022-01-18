@@ -5,6 +5,7 @@ import { observer } from 'mobx-react';
 import { get, isEqual } from 'lodash';
 // @ts-ignore
 import csslint from 'csslint';
+import cssbeautify from 'cssbeautify';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css';
 import 'codemirror/mode/css/css';
@@ -43,10 +44,10 @@ function classFilter(css: string, configSchema: ComponentStyleConfigSchema[]): s
 function CSSEditor(): JSX.Element {
   const [value, setValue] = useState('');
 
-  const { configSchema, key } = store.currentConfigComp as ActiveConfigurationComponent;
+  const { configSchema, key } = store.currentCompStatus as ActiveConfigurationComponent;
 
   useEffect(() => {
-    setValue(store.customCompCssMap[key] || schemaToInitCss(configSchema));
+    setValue(cssbeautify(store.customCompCssMap[key] || schemaToInitCss(configSchema)));
   }, [key]);
 
   function handleSave(): void {
@@ -57,15 +58,6 @@ function CSSEditor(): JSX.Element {
     }
 
     const newCss = classFilter(value, configSchema);
-
-    const styleID = `custom-css-${key}`;
-
-    const style = document.getElementById(styleID) || document.createElement('style');
-    style.innerHTML = '';
-    style.setAttribute('id', styleID);
-    style.appendChild(document.createTextNode(newCss));
-    const head = document.getElementsByTagName('head')[0];
-    head.appendChild(style);
     store.setCustomCss(key, newCss);
   }
 

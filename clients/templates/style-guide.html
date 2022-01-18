@@ -2,7 +2,8 @@
   {{$primaryColor := .userStyleGuideConfig.PrimaryColor}}
   <link rel="shortcut icon" href="{{.userStyleGuideConfig.Favicons}}" />
   <link rel="stylesheet"  href="{{ .userStyleGuideConfig.ComponentCssUrl }}" />
-  <link rel="stylesheet" href="https://ofapkg.pek3b.qingstor.com/@ofa/style-guide@0.0.1/index.min.css" />
+  <!-- <link rel="stylesheet" href="https://ofapkg.pek3b.qingstor.com/@ofa/style-guide@0.0.1/index.min.css" /> -->
+  <link rel="stylesheet" href="http://localhost:8081/dist/@ofa/style-guide@0.0.1/web/index.min.css" />
   <style>
     :root {
       --primary-50: var(--{{$primaryColor}}-50);

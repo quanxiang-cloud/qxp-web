@@ -18,3 +18,13 @@ export function schemaToInitCss(configSchemas: ComponentStyleConfigSchema[], pre
 
   return _initialValues;
 }
+
+export function applyStyle(compKey: string, css: string): void {
+  const styleID = `custom-css-${compKey}`;
+  const style = document.getElementById(styleID) || document.createElement('style');
+  style.innerHTML = '';
+  style.setAttribute('id', styleID);
+  style.appendChild(document.createTextNode(css));
+  const head = document.getElementsByTagName('head')[0];
+  head.appendChild(style);
+}

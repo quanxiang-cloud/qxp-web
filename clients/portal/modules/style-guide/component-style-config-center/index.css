@@ -5,3 +5,7 @@
 .style-guide-comp-item:hover {
   border: 1px solid var(--blue-500);
 }
+
+.style-guide-comp-list { 
+  border-right: 1px solid var(--gray-200);
+}

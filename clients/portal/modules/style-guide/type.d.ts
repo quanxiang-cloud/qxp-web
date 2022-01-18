@@ -1,6 +1,4 @@
 import React from 'react';
-import { DeclarationPlain } from 'css-tree';
-
 declare global {
   type ComponentStyleConfigSchema = {
     selector: string;
@@ -9,15 +7,18 @@ declare global {
     children?: ComponentStyleConfigSchema[];
   }
 
-  type ComponentStyleStatus = {
+  type ComponentStyleConfigInterface = {
     key: string;
+    title: string;
+    commonStatus?: Record<string, any>[];
     property?: string;
     value?: unknown;
     configSchema: ComponentStyleConfigSchema[];
   }
 
-  type ComponentObjectType = {
-    configSchema: ComponentStyleConfigSchema[];
+  type ComponentPackagingObject = {
+    name: string;
+    schemas: ComponentStyleConfigInterface[];
     Component: React.FC;
     key: string;
   }
@@ -25,12 +26,6 @@ declare global {
   type ActiveConfigurationComponent = {
     key: string;
     configSchema: ComponentStyleConfigSchema[];
-  }
-
-  type StyleFieldBaseProps = {
-    value?: DeclarationPlain;
-    property?: string;
-    onChange: (v: DeclarationPlain) => void;
   }
 
   type StyleGuideCommonConfig = {
