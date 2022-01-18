@@ -35,7 +35,7 @@ export function useSchemaWithAdapter(schemaKey: string, version: string): Partia
       return;
     }
 
-    setAdatper(new SwaggerRPCSpecAdapter(data.swagger));
+    setAdatper(new SwaggerRPCSpecAdapter(data.swagger, { __disableResponseAdapter: true }));
   }, [isLoading, data]);
 
   return { schema: data?.schema, adapter: adapter };
