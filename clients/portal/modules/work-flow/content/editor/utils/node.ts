@@ -53,7 +53,7 @@ const approveAndFillInCommonData = {
   events: {},
 };
 
-export function getNodeInitialData(type: NodeType): BusinessData {
+function getNodeInitialData(type: NodeType): BusinessData {
   const dataMap = {
     formData: {
       form: { name: '', value: '' },
@@ -184,13 +184,13 @@ export function isCurrentNodeFirstLogicNode(): boolean {
   return !!parents?.find((parent) => parent.type === 'formData');
 }
 
-export function getBranchNodes(branchID: string, elements: FlowElement<Data>[]): FlowElement<Data>[] {
+function getBranchNodes(branchID: string, elements: FlowElement<Data>[]): FlowElement<Data>[] {
   return elements.filter((ele) => {
     return ele.data?.nodeData.branchID === branchID;
   });
 }
 
-export function branchSourceChildIdFilter(id: string): boolean {
+function branchSourceChildIdFilter(id: string): boolean {
   return id.startsWith('processBranch') && !id.startsWith('processBranchSource') &&
       !id.startsWith('processBranchTarget');
 }
@@ -223,7 +223,7 @@ export function onRemoveNode(
   return removeElements([elementToRemove], newElements);
 }
 
-export function updateParentAndChildNodeElementRelationship(
+function updateParentAndChildNodeElementRelationship(
   elements: FlowElement<Data>[],
   elementToRemove: FlowElement<Data>,
   parentID?: string[],

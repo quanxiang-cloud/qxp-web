@@ -79,7 +79,7 @@ export function useCreatePoly(
   return usePoly<CreatePolyInput, CreatePolyResponse>(options);
 }
 
-export type SearchPolyParams = {
+type SearchPolyParams = {
   name?: string;
   title: string;
   active: number;
@@ -87,13 +87,13 @@ export type SearchPolyParams = {
   pageSize: number;
   withSub: boolean;
 }
-export type SearchPolyInput = Input<SearchPolyParams>;
-export type PolyListSearchItem = PolyListItem & {
+type SearchPolyInput = Input<SearchPolyParams>;
+type PolyListSearchItem = PolyListItem & {
   url: string;
   version: string;
   action: string;
 };
-export type SearchPolyResponse = undefined | {
+type SearchPolyResponse = undefined | {
   total: number;
   page: number;
   list: PolyListSearchItem[];
@@ -114,9 +114,9 @@ export function useSearchPoly(
   );
 }
 
-export type ActivePolyParams = { active: number };
-export type ActivePolyInput = Input<ActivePolyParams>;
-export type ActivePolyResponse = {
+type ActivePolyParams = { active: number };
+type ActivePolyInput = Input<ActivePolyParams>;
+type ActivePolyResponse = {
   fullPath: string;
   active: number;
 };

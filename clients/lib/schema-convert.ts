@@ -11,7 +11,6 @@ import {
 export type FilterFunc = (currentSchema: ISchema) => boolean;
 export type FieldsFilterFunc = (currentSchema: SchemaFieldItem) => boolean;
 export type SchemaToOptionsOptions = SchemaToArrayOptions;
-export type SchemaToMapOptions = SchemaToArrayOptions;
 export interface SchemaToArrayOptions {
   keepLayout?: boolean;
   parseSubTable?: boolean;

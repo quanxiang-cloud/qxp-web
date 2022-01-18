@@ -9,7 +9,7 @@ export * from './branch';
 export * from './node';
 export * from './edge';
 
-export interface GetCenterParams {
+interface GetCenterParams {
   sourceX: number;
   sourceY: number;
   targetX: number;

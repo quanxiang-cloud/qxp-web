@@ -5,15 +5,15 @@ import cs from 'classnames';
 import ToolTip from '@c/tooltip/tip';
 import useObservable from '@lib/hooks/use-observable';
 
-import store, { updateStoreByKey } from '../store';
-import type { EdgeProps, FormDataData, StoreValue } from '../type';
-import { getCenter, getFixedSourcePosition } from '../utils';
+import store, { updateStoreByKey } from '../../store';
+import type { EdgeProps, FormDataData, StoreValue } from '../../type';
+import { getCenter, getFixedSourcePosition } from '../../utils';
 import EdgeText from './_components/edge-text';
 import useEdgeSwitch from './hooks/use-edge-switch';
 
 import './style.scss';
 
-export default function CustomEdge({
+export default function PlusEdge({
   id,
   sourceX,
   sourceY,

@@ -91,10 +91,13 @@ export default function TriggerCondition({
   function onDelete(curCondition: TriggerConditionExpressionItem): void {
     const newValue = updateTriggerConditionField(value, curCondition, null);
     if (newValue.op === 'or') {
-      newValue.expr = newValue.expr.filter((item) => {
+      const newExpr = newValue.expr.filter((item) => {
         const isEmptyAnd = item.op === 'and' && !item.expr.length;
         return !isEmptyAnd;
       });
+      if (newExpr.length) {
+        newValue.expr = newExpr;
+      }
     }
     onChange(newValue);
   }

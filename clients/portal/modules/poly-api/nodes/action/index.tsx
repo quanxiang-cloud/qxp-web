@@ -18,20 +18,19 @@ function NodeAction(
   { position, onHide, currentNodeId, hideConditionSelect }: Props, ref: ForwardedRef<HTMLElement | null>,
 ): JSX.Element {
   const actionRef = useRef<HTMLElement | null>(null);
-  const elements$ = store$.value.nodes;
-  const elements = useObservable<POLY_API.Element[]>(elements$, []);
+  const elements = useObservable<POLY_API.Element[]>(store$.nodes$, []);
 
   useClickAway(actionRef, onHide);
 
   function handleAddRequestNode(): void {
     const newElements = addRequestNode(currentNodeId, position, elements);
-    elements$.set(newElements, true);
+    store$.nodes$.set(newElements, true);
     onHide();
   }
 
   function handleAddConditionNode(): void {
     const newElements = addConditionNode(currentNodeId, position, elements);
-    elements$.set(newElements, true);
+    store$.nodes$.set(newElements, true);
     onHide();
   }
 

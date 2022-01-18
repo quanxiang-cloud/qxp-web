@@ -4,7 +4,7 @@ import httpClient from '@lib/http-client';
 
 import { GET_REQUEST_NODE_API_LIST } from './names';
 
-export interface Input<I> {
+interface Input<I> {
   path: string;
   body?: I;
 }

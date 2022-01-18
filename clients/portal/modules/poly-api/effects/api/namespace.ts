@@ -8,7 +8,7 @@ import httpClient from '@lib/http-client';
 
 import { GET_NAMESPACE_FULL_PATH, NAMESPACE_ROW } from './names';
 
-export interface Input<I> {
+interface Input<I> {
   path: string;
   body?: I;
 }

@@ -31,15 +31,6 @@ export interface WorkFlowData {
   canCancelNodes: string,
 }
 
-export interface NodeProps {
-  id: string;
-  data: Record<string, unknown>;
-  type: string;
-  selected: boolean;
-  sourcePosition: string;
-  targetPosition: string;
-}
-
 export interface EdgeProps {
   id: string;
   source: string;
@@ -80,12 +71,12 @@ export interface EdgeTextProps extends HTMLAttributes<SVGElement> {
 
 export interface Rect extends Dimensions, XYPosition { }
 
-export interface Dimensions {
+interface Dimensions {
   width: number;
   height: number;
 }
 
-export interface XYPosition {
+interface XYPosition {
   x: number;
   y: number;
 }
@@ -103,14 +94,14 @@ export type TriggerCondition = {
   op: 'or' | 'and' | '';
   expr: TriggerConditionExpression;
 }
-export type AsideDrawerType = string | 'components';
+type AsideDrawerType = string | 'components';
 export type CurrentConnection = {
   source?: string;
   target?: string;
   position?: XYPosition;
 }
 export type TriggerWayValue = string | 'whenAdd' | 'whenAlter' | '';
-export type TriggerWay = TriggerWayValue[];
+type TriggerWay = TriggerWayValue[];
 export type NodeWorkForm = { name?: string; value: string };
 export type FormDataData = {
   form: NodeWorkForm;
@@ -142,7 +133,7 @@ export interface WhenTimeout {
   type: 'noDealWith' | 'autoDealWith' | 'jump' | '';
   value: string;
 }
-export type BreakPoint = 'firstEntry' | 'entry' | 'flowWorked';
+type BreakPoint = 'firstEntry' | 'entry' | 'flowWorked';
 export interface DeadLine {
   breakPoint: BreakPoint;
   day: number;
@@ -150,7 +141,7 @@ export interface DeadLine {
   minutes: number;
   urge: Urge;
 }
-export type TimeRule = {
+type TimeRule = {
   enabled: boolean;
   deadLine: DeadLine;
   whenTimeout: WhenTimeout;
@@ -259,7 +250,7 @@ export type Attachment = {
   file_url: string;
 }
 
-export type Receiver = {
+type Receiver = {
   type: 1 | 2,
   id: string,
   name: string,
@@ -328,7 +319,7 @@ export interface NewFieldPermission {
 export type BusinessData = FormDataData | FillInData | ProcessBranchData |
   ProcessVariableAssignmentData | TableDataCreateData | TableDataUpdateData | SendEmailData |
   WebMessageData | CCData | ProcessBranchTargetData | WebhookData;
-export type NodeData = {
+type NodeData = {
   width: number;
   height: number;
   name: string;
@@ -338,56 +329,56 @@ export type NodeData = {
   branchTargetElementID?: string;
   parentBranchTargetElementID?: string;
 };
-export interface BaseNodeData {
+interface BaseNodeData {
   type: NodeType;
   nodeData: NodeData;
   businessData: BusinessData;
 }
-export interface FillInNodeData extends BaseNodeData {
+interface FillInNodeData extends BaseNodeData {
   type: 'fillIn';
   businessData: FillInData;
 }
-export interface WebhookNodeData extends BaseNodeData {
+interface WebhookNodeData extends BaseNodeData {
   type: 'webhook';
   businessData: WebhookData;
 }
-export interface ApproveNodeData extends BaseNodeData {
+interface ApproveNodeData extends BaseNodeData {
   type: 'approve';
   businessData: FillInData;
 }
-export interface FormDataNodeData extends BaseNodeData {
+interface FormDataNodeData extends BaseNodeData {
   type: 'formData';
   businessData: FormDataData;
 }
-export interface ProcessBranchNodeData extends BaseNodeData {
+interface ProcessBranchNodeData extends BaseNodeData {
   type: 'processBranch';
   businessData: ProcessBranchData;
 }
-export interface ProcessVariableAssignmentNodeData extends BaseNodeData {
+interface ProcessVariableAssignmentNodeData extends BaseNodeData {
   type: 'processVariableAssignment';
   businessData: ProcessVariableAssignmentData;
 }
-export interface TableDataCreateNodeData extends BaseNodeData {
+interface TableDataCreateNodeData extends BaseNodeData {
   type: 'tableDataCreate';
   businessData: TableDataCreateData;
 }
-export interface TableDataUpdateNodeData extends BaseNodeData {
+interface TableDataUpdateNodeData extends BaseNodeData {
   type: 'tableDataUpdate';
   businessData: TableDataUpdateData;
 }
-export interface SendEmailNodeData extends BaseNodeData {
+interface SendEmailNodeData extends BaseNodeData {
   type: 'email';
   businessData: SendEmailData;
 }
-export interface WebMessageNodeData extends BaseNodeData {
+interface WebMessageNodeData extends BaseNodeData {
   type: 'letter';
   businessData: WebMessageData;
 }
-export interface CCNodeData extends BaseNodeData {
+interface CCNodeData extends BaseNodeData {
   type: 'autocc';
   businessData: CCData;
 }
-export interface ProcessBranchTargetNodeData extends BaseNodeData {
+interface ProcessBranchTargetNodeData extends BaseNodeData {
   type: 'processBranchTarget';
   businessData: ProcessBranchTargetData;
 }
@@ -406,8 +397,7 @@ export interface CurrentElement {
 export interface FormDataElement extends CurrentElement {
   data: FormDataNodeData;
 }
-
-export type Errors = Record<string, unknown> & {
+type Errors = Record<string, unknown> & {
   publish: {
     data?: FlowElement;
     msg?: string;
