@@ -4,8 +4,11 @@ export type TemplateListRes = {
   count: number;
   templates: any;
 }
-export function fetchTemplateList(): Promise<TemplateListRes> {
-  return httpClient(
-    '/api/v1/app-center/template/selfList',
-  );
+
+export async function fetchTemplateList(): Promise<TemplateListRes> {
+  return await httpClient('/api/v1/app-center/template/selfList');
+}
+
+export async function deleteTemplate(id: string): Promise<any> {
+  return await httpClient('/api/v1/app-center/template/delete', { id });
 }

@@ -11,9 +11,9 @@ import { MenuItem } from '@c/more-menu';
 type Props = {
   appInfo: AppInfo;
   openModal: (modalType: string, appInfo: AppInfo) => void;
-  menus?: MenuItem[];
+  menus: MenuItem[];
   readonly?: boolean;
-  onClick?: (appID: string) => void;
+  onClick?: (appInfo: AppInfo) => void;
 }
 
 function getItemClassName(status: number): string {
@@ -34,7 +34,7 @@ function AppItem({ appInfo, onClick, readonly, openModal, menus }: Props): JSX.E
       return;
     }
 
-    onClick?.(appInfo.id);
+    onClick?.(appInfo);
   }
 
   return (

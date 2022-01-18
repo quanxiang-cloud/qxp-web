@@ -4,14 +4,15 @@ import { Input } from 'antd';
 import Icon from '@c/icon';
 import Modal from '@c/modal';
 import toast from '@lib/toast';
-import { saveAppAsTemplate } from '../api';
+import { saveAppAsTemplate } from '../../apps-management/pages/entry/app-list/api';
 
 type Props = {
-  appInfo: AppInfo | null;
+  modalType: string;
+  appInfo: AppInfo;
   onCancel: () => void;
 }
 
-function SaveAppModal({ appInfo, onCancel }: Props): JSX.Element {
+function EditTemplateModal({ modalType, appInfo, onCancel }: Props): JSX.Element {
   const [templateName, setAppName] = useState(appInfo?.appName || '');
 
   function handleSubmit(): void {
@@ -72,4 +73,4 @@ function SaveAppModal({ appInfo, onCancel }: Props): JSX.Element {
   );
 }
 
-export default SaveAppModal;
+export default EditTemplateModal;
