@@ -37,7 +37,7 @@ function MyApp(): JSX.Element {
         title="我的应用"
         desc="一个应用是由若干表单、流程表单、报表、自定义页面组成的业务管理系统。"
         // action="👋 快速开始"
-        className="app-list-headertitle bg-gray-1000 px-20 py-16 header-background-image"
+        className="app-list-headertitle bg-gray-1000 px-20 py-16 header-background-image h-44"
         itemTitleClassName="text-h6"
       />
       <Header

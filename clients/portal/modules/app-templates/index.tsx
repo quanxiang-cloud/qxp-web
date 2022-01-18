@@ -9,7 +9,7 @@ function AppTemplates(): JSX.Element {
         title="模版库"
         desc="……"
         // action="👋 快速开始"
-        className="app-list-headertitle bg-gray-1000 px-20 py-16 header-background-image"
+        className="app-list-headertitle bg-gray-1000 px-20 py-16 header-background-image h-44"
         itemTitleClassName="text-h6"
       />
     </div>
