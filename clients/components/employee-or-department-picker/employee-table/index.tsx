@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import cs from 'classnames';
 
 import Table from '@c/table';
+import CheckBox from '@c/checkbox';
 import Pagination from '@c/pagination';
 import EmptyTips from '@c/empty-tips';
 // todo remove this
@@ -32,7 +33,13 @@ export default observer(function EmployeeTable({
   const { data } = useQuery(
     [
       'adminSearchUserList',
-      { depID, userName, page: current, limit: pageSize },
+      {
+        depID,
+        userName,
+        page: current,
+        limit: pageSize,
+        includeChildDEPChild: Number(ownerStore.isIncludeSubDep),
+      },
     ],
     (params) => {
       return adminSearchUserList(params).then((res) => {
@@ -51,6 +58,7 @@ export default observer(function EmployeeTable({
     store.setSelectedKeys([]);
     store.setTotal(0);
   }, [depID, userName]);
+
   useEffect(() => {
     if (data?.total) {
       store.setTotal(data.total);
@@ -105,12 +113,16 @@ export default observer(function EmployeeTable({
 
   return (
     <div
-      className={cs('h-full bg-white', className)}
+      className={cs('flex-1 overflow-hidden flex flex-col bg-white', className)}
     >
-      <div
-        className="flex w-full border-b"
-        style={{ height: 'calc(100% - 80px)' }}
-      >
+      <div className='mb-6 flex flex-row-reverse'>
+        <CheckBox
+          defaultChecked
+          onChange={(e) => ownerStore.isIncludeSubDep = e.target.checked}
+          label='包含子部门成员'
+        />
+      </div>
+      <div className="flex w-full border-b flex-1 overflow-hidden">
         <Table
           // className="rounded-bl-none rounded-br-none h-full"
           showCheckbox
