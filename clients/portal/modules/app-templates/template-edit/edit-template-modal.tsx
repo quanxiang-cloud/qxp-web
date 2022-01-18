@@ -8,12 +8,13 @@ import { saveAppAsTemplate } from '../../apps-management/pages/entry/app-list/ap
 
 type Props = {
   modalType: string;
-  appInfo: AppInfo;
+  tmpInfo: AppInfo;
   onCancel: () => void;
 }
 
-function EditTemplateModal({ modalType, appInfo, onCancel }: Props): JSX.Element {
-  const [templateName, setAppName] = useState(appInfo?.appName || '');
+function EditTemplateModal({ modalType, tmpInfo, onCancel }: Props): JSX.Element {
+  const isEdit = modalType === 'editTemplate';
+  const [templateName, setAppName] = useState(tmpInfo?.appName);
 
   function handleSubmit(): void {
     if (templateName.length > 30) {
@@ -22,8 +23,15 @@ function EditTemplateModal({ modalType, appInfo, onCancel }: Props): JSX.Element
     }
 
     // before this todo name repeat validate
+
+    if (isEdit) {
+      // todo edit template info
+
+      return onCancel();
+    }
+
     saveAppAsTemplate(
-      { appID: appInfo?.id ?? '', name: templateName, appIcon: appInfo?.appIcon ?? '' },
+      { appID: tmpInfo?.id ?? '', name: templateName, appIcon: tmpInfo?.appIcon ?? '' },
       `【${templateName}】 模版保存`,
     ).catch((err) => {
       toast.error('模版保存失败: ', err.message);
@@ -34,7 +42,7 @@ function EditTemplateModal({ modalType, appInfo, onCancel }: Props): JSX.Element
 
   return (
     <Modal
-      title='确定保存为模版'
+      title={isEdit ? '修改模版信息' : '确定保存为模版'}
       onClose={onCancel}
       className="static-modal text-12"
       footerBtns={[
@@ -49,14 +57,14 @@ function EditTemplateModal({ modalType, appInfo, onCancel }: Props): JSX.Element
           iconName: 'check',
           modifier: 'primary',
           onClick: handleSubmit,
-          text: '确定保存',
+          text: isEdit ? '确定修改' : '确定保存',
         },
       ]}
     >
       <div className="flex-1 p-20">
         <p className="mb-8 bg-gray-50 px-16 py-8 text-blue-600 rounded-12 rounded-tl-4 flex items-center">
           <Icon size={20} className='mr-8 app-icon-color-inherit' name='info' />
-          模版不包含应用数据，且保存为模版后，对模版的修改将不回影响此应用
+          模版不包含应用数据，{isEdit ? '' : '且保存为模版后，'}对模版的修改不会影响应用
         </p>
         <div className="px-20 py-16 text-12">
           应用名称

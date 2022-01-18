@@ -8,6 +8,7 @@ import PageLoading from '@c/page-loading';
 import DeleteAppModal from './app-edit/del-app-modal';
 import AppSetStatusModal from './app-edit/app-set-status-modal';
 import AppItem from './app-item';
+import EditTemplateModal from '@portal/modules/app-templates/template-edit/edit-template-modal';
 
 type Props = {
   isLoading: boolean;
@@ -85,6 +86,33 @@ function AppList({ isLoading, appList, openCreatedModal }: Props): JSX.Element {
     history.push(`/apps/details/${id}/page_setting`);
   };
 
+  function RenderModal() {
+    if (!curApp) {
+      return null;
+    }
+    return (
+      <>
+        {modalType === 'delete' && (
+          <DeleteAppModal appInfo={curApp} onCancel={() => setModalType('')} />
+        )}
+        {modalType === 'publish' && (
+          <AppSetStatusModal
+            appID={curApp.id}
+            status={curApp.useStatus > 0 ? 'soldOut' : 'publish'}
+            onCancel={() => setModalType('')}
+          />
+        )}
+        {modalType === 'saveAsTemplate' && (
+          <EditTemplateModal
+            tmpInfo={curApp}
+            modalType={modalType}
+            onCancel={() => setModalType('')}
+          />
+        )}
+      </>
+    );
+  }
+
   if (isLoading) {
     return <div className='relative flex-1'><PageLoading /></div>;
   }
@@ -112,16 +140,7 @@ function AppList({ isLoading, appList, openCreatedModal }: Props): JSX.Element {
           menus={getAppItemMenus(appInfo)}
         />
       ))}
-      {modalType === 'delete' && curApp !== null && (
-        <DeleteAppModal appInfo={curApp} onCancel={() => setModalType('')} />
-      )}
-      {modalType === 'publish' && curApp !== null && (
-        <AppSetStatusModal
-          status={curApp.useStatus > 0 ? 'soldOut' : 'publish'}
-          appID={curApp.id}
-          onCancel={() => setModalType('')}
-        />
-      )}
+      <RenderModal />
     </div>
   );
 }

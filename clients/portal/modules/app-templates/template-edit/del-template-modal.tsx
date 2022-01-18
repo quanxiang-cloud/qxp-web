@@ -1,9 +1,10 @@
 import React from 'react';
 
-import Modal from '@c/modal';
 import Icon from '@c/icon';
+import Modal from '@c/modal';
+import toast from '@lib/toast';
 
-import '../index.scss';
+import { deleteTemplate } from '../api';
 
 type Props = {
   appInfo: AppInfo;
@@ -12,7 +13,12 @@ type Props = {
 
 function DelTemplateModal({ onCancel, appInfo }: Props): JSX.Element {
   function handleSubmit(): void {
-    console.log(appInfo?.id, appInfo);
+    deleteTemplate(appInfo.id).then(() => {
+      toast.success('模版删除成功');
+      onCancel();
+    }).catch(() => {
+      toast.error('模版删除成功');
+    });
   }
 
   return (
@@ -30,7 +36,7 @@ function DelTemplateModal({ onCancel, appInfo }: Props): JSX.Element {
         iconName: 'check',
         modifier: 'primary',
         onClick: handleSubmit,
-        text: '删除应用',
+        text: '删除模版',
       }]}
     >
       <div className='flex-1 p-20'>

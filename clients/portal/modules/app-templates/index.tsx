@@ -6,9 +6,12 @@ import TextHeader from '@c/text-header';
 
 import { fetchTemplateList, TemplateListRes } from './api';
 import AppItem from '../apps-management/pages/entry/app-list/app-item';
-import EditTemplateModal from './template-edit/app-save-modal';
-import DelTemplateModal from './template-edit/del-app-modal';
+import EditTemplateModal from './template-edit/edit-template-modal';
+import DelTemplateModal from './template-edit/del-template-modal';
 
+type TemplateInfo = AppInfo & {
+  name: string;
+}
 function AppTemplates(): JSX.Element {
   const [state, setState] = useState<TemplateListRes>();
   const [modalType, setModalType] = useState('');
@@ -31,7 +34,7 @@ function AppTemplates(): JSX.Element {
       ),
     },
     {
-      key: 'deleteTemplate',
+      key: 'delTemplate',
       label: (
         <div className="flex items-center text-red-600">
           <Icon name="restore_from_trash" className="mr-4" />
@@ -41,6 +44,11 @@ function AppTemplates(): JSX.Element {
     },
   ];
 
+  const openModal = (_modalType: string, _curApp: AppInfo): void => {
+    setModalType(_modalType);
+    setCurrentAppInfo(_curApp);
+  };
+
   function RenderModal() {
     if (!currentAppInfo) {
       return null;
@@ -48,10 +56,10 @@ function AppTemplates(): JSX.Element {
 
     return (
       <>
-        {modalType === 'saveAsTemplate' &&
+        {modalType === 'editTemplate' &&
           (<EditTemplateModal
             modalType={modalType}
-            appInfo={currentAppInfo}
+            tmpInfo={currentAppInfo}
             onCancel={() => setModalType('')}
           />)
         }
@@ -74,13 +82,12 @@ function AppTemplates(): JSX.Element {
         />
         <div className="p-16 font-semibold">我的模板 · {state?.count ?? 0}</div>
         <div className="flex-1 border-t-1 border-gray-200 app-list-container p-16">
-          {state?.templates.map((appInfo: AppInfo) => (
+          {state?.templates.map((tmpInfo: TemplateInfo) => (
             <AppItem
               menus={menus}
-              key={appInfo.id}
-              appInfo={appInfo}
-              openModal={setModalType}
-              onClick={setCurrentAppInfo}
+              key={tmpInfo.id}
+              appInfo={{ ...tmpInfo, appName: tmpInfo.name }}
+              openModal={openModal}
             />
           ))}
         </div>

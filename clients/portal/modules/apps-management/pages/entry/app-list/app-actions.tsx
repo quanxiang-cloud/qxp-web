@@ -6,7 +6,6 @@ import MoreMenu, { MenuItem } from '@c/more-menu';
 import { subscribeStatusChange } from '@c/task-lists/utils';
 
 import { exportAppAndCreateTask } from './api';
-import { deleteTemplate } from '@portal/modules/app-templates/api';
 
 type Props = {
   appInfo: AppInfo;
@@ -49,14 +48,10 @@ function AppActions({ openModal, appInfo, menus }: Props): JSX.Element {
       openModal('saveAsTemplate', appInfo);
       break;
     case 'editTemplate':
-      openModal('saveAsTemplate', appInfo);
+      openModal('editTemplate', appInfo);
       break;
-    case 'deleteTemplate':
-      deleteTemplate(appInfo.id).then(() => {
-        toast.success('模版删除成功');
-      }).catch(() => {
-        toast.error('模版删除成功');
-      });
+    case 'delTemplate':
+      openModal('delTemplate', appInfo);
       break;
     }
   }
