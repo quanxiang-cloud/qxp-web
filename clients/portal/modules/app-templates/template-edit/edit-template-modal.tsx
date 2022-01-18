@@ -5,6 +5,7 @@ import Icon from '@c/icon';
 import Modal from '@c/modal';
 import toast from '@lib/toast';
 import { saveAppAsTemplate } from '../../apps-management/pages/entry/app-list/api';
+import { validateTemplateName } from '../api';
 
 type Props = {
   modalType: string;
@@ -22,22 +23,26 @@ function EditTemplateModal({ modalType, tmpInfo, onCancel }: Props): JSX.Element
       return;
     }
 
-    // before this todo name repeat validate
+    validateTemplateName(templateName).then(() => {
+      // before this todo name repeat validate
 
-    if (isEdit) {
-      // todo edit template info
+      if (isEdit) {
+        // todo edit template info
 
-      return onCancel();
-    }
+        return onCancel();
+      }
 
-    saveAppAsTemplate(
-      { appID: tmpInfo?.id ?? '', name: templateName, appIcon: tmpInfo?.appIcon ?? '' },
-      `【${templateName}】 模版保存`,
-    ).catch((err) => {
-      toast.error('模版保存失败: ', err.message);
+      saveAppAsTemplate(
+        { appID: tmpInfo?.id ?? '', name: templateName, appIcon: tmpInfo?.appIcon ?? '' },
+        `【${templateName}】 模版保存`,
+      ).catch((err) => {
+        toast.error('模版保存失败: ', err.message);
+      });
+
+      onCancel();
+    }).catch(() => {
+      toast.error('模版名称已存在');
     });
-
-    onCancel();
   }
 
   return (

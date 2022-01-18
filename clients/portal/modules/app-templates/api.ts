@@ -12,3 +12,7 @@ export async function fetchTemplateList(): Promise<TemplateListRes> {
 export async function deleteTemplate(id: string): Promise<any> {
   return await httpClient('/api/v1/app-center/template/delete', { id });
 }
+
+export async function validateTemplateName(name: string): Promise<any> {
+  return await httpClient('/api/v1/app-center/template/checkNameRepeat', { name });
+}
