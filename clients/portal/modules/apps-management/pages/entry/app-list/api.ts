@@ -26,9 +26,20 @@ export const createImportAppTask = async (data: AppZipInfo): Promise<CreateTaskR
 };
 
 export const exportAppAndCreateTask = async (data: Partial<AppZipInfo>): Promise<CreateTaskRes> => {
-  return httpClient('/api/v1/entrepot/task/create/appExport', data);
+  return await httpClient('/api/v1/entrepot/task/create/appExport', data);
 };
 
 export const delApp = async (id: string): Promise<unknown> => {
   return await httpClient('/api/v1/app-center/del', { id });
+};
+
+type TemplateInfo = {
+  appID: string;
+  name: string;
+  appName?: string;
+  version?: string;
+  groupID?: string;
+}
+export const saveAppAsTemplate = async (value: TemplateInfo, title: string): Promise<unknown> => {
+  return await httpClient('/api/v1/entrepot/task/create/createTemplate', { value, title });
 };

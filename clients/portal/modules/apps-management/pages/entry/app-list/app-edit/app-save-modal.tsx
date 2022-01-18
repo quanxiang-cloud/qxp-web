@@ -4,7 +4,7 @@ import { Input } from 'antd';
 import Icon from '@c/icon';
 import Modal from '@c/modal';
 import toast from '@lib/toast';
-import { exportAppAndCreateTask } from '../api';
+import { saveAppAsTemplate } from '../api';
 
 type Props = {
   appInfo: AppInfo | null;
@@ -12,19 +12,22 @@ type Props = {
 }
 
 function SaveAppModal({ appInfo, onCancel }: Props): JSX.Element {
-  const [appName, setAppName] = useState(appInfo?.appName || '');
+  const [templateName, setAppName] = useState(appInfo?.appName || '');
 
   function handleSubmit(): void {
-    if (appName.length > 30) {
+    if (templateName.length > 30) {
       toast.error('应用名称不超过30个字符');
       return;
     }
 
-    exportAppAndCreateTask({ value: { appID: appInfo?.id || '' }, title: appName }).then(() => {
-      toast.success('APP 正在导出，请在右上方”同步列表“中查看导出结果');
-    }).catch((err) => {
-      toast.error(err.message);
+    // before this todo name repeat validate
+    saveAppAsTemplate(
+      { appID: appInfo?.id ?? '', name: templateName },
+      `【${templateName}】 模版保存`,
+    ).catch((err) => {
+      toast.error('模版保存失败: ', err.message);
     });
+
     onCancel();
   }
 
@@ -59,7 +62,7 @@ function SaveAppModal({ appInfo, onCancel }: Props): JSX.Element {
           <Input
             className="mt-8 mb-4 rounded-12 rounded-tl-4"
             placeholder='请输入模版应用名称'
-            value={appName}
+            value={templateName}
             onChange={(e) => setAppName(e.target.value)}
           />
           <span>不超过30个字符，应用名称不可重复。</span>

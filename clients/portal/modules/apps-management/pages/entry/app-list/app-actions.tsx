@@ -38,12 +38,22 @@ function AppActions({ openModal, appInfo }: Props): JSX.Element {
       ),
     },
     {
-      key: 'saveAsTemplate',
+      key: 'exportApp',
       disabled: appInfo.useStatus < -1,
       label: (
         <div className="flex items-center">
           <Icon name="save" className="mr-4" />
           导出应用
+        </div>
+      ),
+    },
+    {
+      key: 'saveAsTemplate',
+      disabled: appInfo.useStatus < -1,
+      label: (
+        <div className="flex items-center">
+          <Icon name="save" className="mr-4" />
+          保存为模版
         </div>
       ),
     },
@@ -72,8 +82,7 @@ function AppActions({ openModal, appInfo }: Props): JSX.Element {
     case 'delete':
       openModal('delete', appInfo);
       break;
-    case 'saveAsTemplate':
-      // openModal('saveAsTemplate', appInfo);
+    case 'exportApp':
       exportAppAndCreateTask({
         value: { appID: appInfo?.id || '' },
         title: `【${appInfo.appName}】 应用导出`,
@@ -82,6 +91,9 @@ function AppActions({ openModal, appInfo }: Props): JSX.Element {
       }).catch((err) => {
         toast.error(err.message);
       });
+      break;
+    case 'saveAsTemplate':
+      openModal('saveAsTemplate', appInfo);
       break;
     }
   }
