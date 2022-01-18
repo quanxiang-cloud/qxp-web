@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { setBatchGlobalConfig } from '@lib/api/user-config';
-import { Schema } from '@ofa/render-engine';
+import type { Schema } from '@ofa/schema-spec';
 import toast from '@lib/toast';
 import PageSchemaRender from '@c/page-schema-render';
 

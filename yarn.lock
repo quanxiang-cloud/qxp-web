@@ -735,9 +735,9 @@
   version "0.3.1"
   resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-api-spec-adapter-v0.3.1.tgz#b9bb96abe2bb144cdf399cb30e33cbbb2864d361"
 
-"@ofa/page-engine@https://ofapkg.pek3b.qingstor.com/tarball/ofa-page-engine-v0.3.9.tgz":
-  version "0.3.9"
-  resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-page-engine-v0.3.9.tgz#303232b0b8bc4c4804de5422b5dd1d12ca1f4590"
+"@ofa/page-engine@https://ofapkg.pek3b.qingstor.com/tarball/ofa-page-engine-v0.5.0.tgz":
+  version "0.5.0"
+  resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-page-engine-v0.5.0.tgz#9df9446c4cd3da9e15cd94f113c4eb5ec84e32f6"
   dependencies:
     "@codemirror/lang-javascript" "^0.19.3"
     "@uiw/react-codemirror" "~4.2.0"
@@ -750,13 +750,17 @@
     react-hook-form "^7.20.4"
     react-use "^17.3.2"
 
-"@ofa/render-engine@https://ofapkg.pek3b.qingstor.com/tarball/ofa-render-engine-v0.6.0.tgz":
-  version "0.6.0"
-  resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-render-engine-v0.6.0.tgz#7bd6a80cccb263a435cab21f4dfea194b5143d38"
+"@ofa/render-engine@https://ofapkg.pek3b.qingstor.com/tarball/ofa-render-engine-v0.9.1.tgz":
+  version "0.9.1"
+  resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-render-engine-v0.9.1.tgz#af860d815ae667658e4314479aa8c4a3e828d52b"
   dependencies:
     react "^17.0.2"
     react-dom "^17.0.2"
     rxjs "^7.4.0"
+
+"@ofa/schema-spec@https://ofapkg.pek3b.qingstor.com/tarball/ofa-schema-spec-v0.9.0.tgz":
+  version "0.9.0"
+  resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-schema-spec-v0.9.0.tgz#07228b77fcf627bb5bef2db87b56017881e7334a"
 
 "@ofa/ui@https://ofapkg.pek3b.qingstor.com/tarball/ofa-ui-v0.2.11.tgz":
   version "0.2.11"

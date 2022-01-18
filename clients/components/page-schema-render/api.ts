@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
-import { Schema } from '@ofa/render-engine';
+import type { Schema } from '@ofa/schema-spec';
 import { Spec } from '@ofa/api-spec-adapter/lib/src/swagger-schema-official';
 
 import logger from '@lib/logger';
