@@ -19,6 +19,58 @@ function AppList({ isLoading, appList, openCreatedModal }: Props) {
   const [curApp, setCurApp] = useState<AppInfo | null>(null);
   const history = useHistory();
 
+  // const menus: MenuItem[] = [
+  //   {
+  //     key: 'publish',
+  //     disabled: appInfo.useStatus < -1,
+  //     label: (
+  //       <div className="flex items-center">
+  //         <Icon name="toggle_on" className="mr-4" />
+  //         {appInfo.useStatus > 0 ? '下架应用' : '发布应用'}
+  //       </div>
+  //     ),
+  //   },
+  //   {
+  //     key: 'visit',
+  //     disabled: appInfo.useStatus < 0,
+  //     label: (
+  //       <div className='flex items-center'>
+  //         <Icon name="login" className="mr-4" />
+  //         访问应用
+  //       </div>
+  //     ),
+  //   },
+  //   {
+  //     key: 'exportApp',
+  //     disabled: appInfo.useStatus < -1,
+  //     label: (
+  //       <div className="flex items-center">
+  //         <Icon name="save" className="mr-4" />
+  //         导出应用
+  //       </div>
+  //     ),
+  //   },
+  //   {
+  //     key: 'saveAsTemplate',
+  //     disabled: appInfo.useStatus < -1,
+  //     label: (
+  //       <div className="flex items-center">
+  //         <Icon name="save" className="mr-4" />
+  //         保存为模版
+  //       </div>
+  //     ),
+  //   },
+  //   {
+  //     key: 'delete',
+  //     label: (
+  //       <div className="flex items-center text-red-600">
+  //         <Icon name="restore_from_trash" className="mr-4" />
+  //         删除
+  //       </div>
+  //     ),
+  //   },
+  // ];
+
   const openModal = (_modalType: string, _curApp: AppInfo) => {
     setModalType(_modalType);
     setCurApp(_curApp);

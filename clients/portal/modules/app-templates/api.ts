@@ -1,6 +1,6 @@
 import httpClient from '@lib/http-client';
 
-type TemplateListRes = {
+export type TemplateListRes = {
   count: number;
   templates: any;
 }

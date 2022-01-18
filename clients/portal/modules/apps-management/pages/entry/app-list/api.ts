@@ -34,8 +34,9 @@ export const delApp = async (id: string): Promise<unknown> => {
 };
 
 type TemplateInfo = {
-  appID: string;
   name: string;
+  appID: string;
+  appIcon: string;
   appName?: string;
   version?: string;
   groupID?: string;

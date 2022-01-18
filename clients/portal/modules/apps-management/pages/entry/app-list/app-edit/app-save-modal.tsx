@@ -22,7 +22,7 @@ function SaveAppModal({ appInfo, onCancel }: Props): JSX.Element {
 
     // before this todo name repeat validate
     saveAppAsTemplate(
-      { appID: appInfo?.id ?? '', name: templateName },
+      { appID: appInfo?.id ?? '', name: templateName, appIcon: appInfo?.appIcon ?? '' },
       `【${templateName}】 模版保存`,
     ).catch((err) => {
       toast.error('模版保存失败: ', err.message);

@@ -11,12 +11,13 @@ import { exportAppAndCreateTask } from './api';
 type Props = {
   appInfo: AppInfo;
   openModal: (modalType: string, appInfo: AppInfo) => void;
+  menus?: MenuItem[];
 }
 
-function AppActions({ openModal, appInfo }: Props): JSX.Element {
+function AppActions({ openModal, appInfo, menus }: Props): JSX.Element {
   const history = useHistory();
 
-  const menus: MenuItem[] = [
+  const MENUS: MenuItem[] = [
     {
       key: 'publish',
       disabled: appInfo.useStatus < -1,
@@ -100,7 +101,7 @@ function AppActions({ openModal, appInfo }: Props): JSX.Element {
 
   return (
     <MoreMenu
-      menus={menus}
+      menus={MENUS}
       placement="bottom-end"
       onMenuClick={handleClick}
     />
