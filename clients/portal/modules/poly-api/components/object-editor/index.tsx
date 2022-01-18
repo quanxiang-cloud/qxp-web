@@ -1,7 +1,6 @@
 import React, { useMemo, useCallback } from 'react';
 import { isFunction, isString } from 'lodash';
 import { useUpdateEffect } from 'react-use';
-import cs from 'classnames';
 
 import useObservable from '@lib/hooks/use-observable';
 import { storeValuesToDataSource } from '@polyApi/utils/object-editor';
@@ -28,11 +27,10 @@ interface Props<T extends { children: T[]; id: string }> {
   value: T[];
   onChange: (value: T[]) => void;
   onAddField: (row: Row<T> | null, store: Store<T>) => void;
-  addFilter?: (row: Row<T>) => boolean;
 }
 
 function ObjectEditor<T extends { children: T[]; id: string }>(
-  { columns, value, onAddField, onChange, addFilter }: Props<T>,
+  { columns, value, onAddField, onChange }: Props<T>,
 ): JSX.Element | null {
   const store$: Store<T> = useMemo(() => createStore(value || []), []);
   const storeValues$ = useObservable(store$, []);
@@ -58,23 +56,19 @@ function ObjectEditor<T extends { children: T[]; id: string }>(
   }, []);
 
   const rowActionRender = useCallback((row: Row<T>, store$: Store<T>): JSX.Element => {
-    const showAdd = addFilter?.(row);
     return (
       <div className="flex items-center gap-12">
         <Icon
           clickable
           name="add-object-field"
           size={20}
-          onClick={showAdd ? handleAddField(row, store$) : undefined}
-          className={cs('transition duration-240', {
-            'opacity-100': showAdd,
-            'opacity-0 cursor-default pointer-events-none absolute': !showAdd,
-          })}
+          onClick={handleAddField(row, store$)}
+          className='transition duration-240'
         />
         <Icon clickable name="delete" size={20} onClick={handleDeleteField(row, store$)} />
       </div>
     );
-  }, [addFilter, handleAddField, handleDeleteField]);
+  }, [handleAddField, handleDeleteField]);
 
   const distColumns = useMemo(() => {
     return columns.concat({
