@@ -21,7 +21,7 @@ function PageDataFilter(): JSX.Element | null {
     const values = filterDom.current.getValues();
     const condition = conditionBuilder(store, values);
     store.filterData = values;
-    store.setParams({ condition });
+    store.setParams({ condition, page: 1 });
   };
 
   const reset = (): void => {
