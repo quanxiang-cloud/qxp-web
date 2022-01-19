@@ -6,6 +6,8 @@ import { mutateTree, TreeData, TreeItem } from '@atlaskit/tree';
 import toast from '@lib/toast';
 import { buildAppPagesTreeData } from '@lib/utils';
 import { fetchPageList, getCustomPageInfo, getSchemaPageInfo, getTableSchema } from '@lib/http-client';
+import { globalSettings } from '@portal/modules/apps-management/pages/app-details/constants';
+import { cloneUserData, setPageEngineMenuType } from '@lib/api/user-config';
 
 import { BindState, CardList, CustomPageInfo, MenuType } from './type';
 import { fetchAppList } from '../entry/app-list/api';
@@ -33,7 +35,7 @@ import {
 } from './api';
 import { getFirstMenu, flatMnues } from './page-menu-design/menu-tree/utils';
 import { Menu } from './page-menu-design/menu-tree/type';
-import { getPage as getSchemaPage } from '../page-design/api';
+import { getPage as getSchemaPage, getSchemaKey } from '../page-design/api';
 
 type DeletePageOrGroupParams = {
   treeItem: TreeItem;
@@ -326,8 +328,18 @@ class AppDetailsStore {
       });
     }
     // create
-    return createPage({ appID: this.appID, ...PageInfoPick }).then((res: { id: string }) => {
-      this.addNewPageToList(PageInfoPick, res.id);
+    return createPage({ appID: this.appID, ...PageInfoPick }).then(async (res: { id: string }) => {
+      let menuType = pageInfo.menuType;
+      const isCopySchemaPage = pageInfo.menuType === MenuType.schemaPage;
+      // copy schema page
+      if (isCopySchemaPage) {
+        menuType = (await setPageEngineMenuType(this.appID, res.id)).menu_type || menuType;
+        const sourceKey = getSchemaKey(this.appID, pageInfo.id, false);
+        const targetKey = getSchemaKey(this.appID, res.id, false);
+        const version = globalSettings.version;
+        await cloneUserData({ key: sourceKey, version }, { key: targetKey, version });
+      }
+      this.addNewPageToList({ ...PageInfoPick, menuType }, res.id);
     });
   };
 
