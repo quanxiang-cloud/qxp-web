@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
-import { Schema } from '@ofa/render-engine';
+import { Schema } from '@ofa/schema-spec';
 
 import { parseJSON } from '@lib/utils';
 import { useGetGlobalConfig } from '@lib/configuration-center';

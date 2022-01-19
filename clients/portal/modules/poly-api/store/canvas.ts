@@ -47,5 +47,3 @@ export class PolyCanvasStore extends BehaviorSubject<POLY_API.Element[]> {
     });
   }
 }
-
-export default PolyCanvasStore;

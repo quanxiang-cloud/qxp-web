@@ -1,16 +1,12 @@
 import React, { MutableRefObject, Ref } from 'react';
 import { Edge, isEdge, removeElements } from 'react-flow-renderer';
 import { ifElse, flatten } from 'ramda';
-import { fromEvent, of, Subscription } from 'rxjs';
-import { map, mergeAll } from 'rxjs/operators';
 import { customAlphabet } from 'nanoid';
 
 import { not } from '@lib/utils';
 
 import { POLY_DESIGN_CONFIG } from '../constants';
 import { PolyNodeStore } from '../store/node';
-import layout from './layout';
-import store$ from '../store';
 
 interface BuildEdgeOption {
   direction?: 'right' | 'bottom';
@@ -25,7 +21,7 @@ function nanoid(): string {
   return `${first()}${_nanoid()}`;
 }
 
-export function buildEdge(
+function buildEdge(
   source: string,
   target: string,
   {
@@ -56,7 +52,7 @@ export function buildEdge(
   return predicate(label);
 }
 
-export function buildInputNode(): POLY_API.NodeElement {
+function buildInputNode(): POLY_API.NodeElement {
   return {
     id: 'start',
     type: 'input',
@@ -72,7 +68,7 @@ export function buildInputNode(): POLY_API.NodeElement {
   };
 }
 
-export function buildRequestNode(): POLY_API.NodeElement {
+function buildRequestNode(): POLY_API.NodeElement {
   const id = nanoid();
   return {
     id,
@@ -92,7 +88,7 @@ export function buildRequestNode(): POLY_API.NodeElement {
   };
 }
 
-export function buildConditionNode(): POLY_API.NodeElement {
+function buildConditionNode(): POLY_API.NodeElement {
   const id = nanoid();
   return {
     id,
@@ -116,7 +112,7 @@ export function buildConditionNode(): POLY_API.NodeElement {
   };
 }
 
-export function buildEndNode(): POLY_API.NodeElement {
+function buildEndNode(): POLY_API.NodeElement {
   return {
     id: 'end',
     type: 'output',
@@ -152,24 +148,6 @@ export function initGraphElements(): POLY_API.Element[] {
   return [inputNode, requestNode, endNode, irEdge, reEdge];
 }
 
-interface SubScribeEventParams {
-  els: (HTMLElement | null)[];
-  types: string[];
-  handler: (e: Event) => void;
-}
-export function subscribeEvents({ els, types, handler }: SubScribeEventParams): Subscription[] {
-  return els.filter(Boolean).map((el: HTMLElement | null) => {
-    return of(...types).pipe(
-      map((type) => fromEvent(el as HTMLElement, type)),
-      mergeAll(),
-    ).subscribe(handler);
-  });
-}
-
-export function unSubscribeSubscriptions(...subs: Subscription[]): void {
-  subs.forEach((sub) => sub.unsubscribe());
-}
-
 export function isSomeActionShow(el: HTMLElement | null): boolean {
   if (!el) {
     return false;
@@ -190,14 +168,7 @@ export function mergeRefs<T>(...refs: Array<MutableRefObject<T> | Ref<T>>): Reac
   };
 }
 
-export async function layoutPolyCanvas(
-  nodes: POLY_API.NodeElement[], edges: POLY_API.EdgeElement[],
-): Promise<void> {
-  const layoutResult = await layout(nodes, edges);
-  store$.value.nodes.set(layoutResult);
-}
-
-export function elementsToMap(
+function elementsToMap(
   elements: POLY_API.Element[], effect?: (element: POLY_API.Element) => void,
 ): Record<string, POLY_API.Element> {
   const elementIDMap = elements.reduce((acc: Record<string, POLY_API.Element>, element) => {

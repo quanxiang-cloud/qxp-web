@@ -30,8 +30,6 @@ function SchemaForm<T extends Record<string, any>>({
     control,
     formState: { errors },
     watch,
-    setError,
-    clearErrors,
     reset,
     setValue,
     getValues,
@@ -89,13 +87,6 @@ function SchemaForm<T extends Record<string, any>>({
     previsousRealWatchValues && !equals(previsousRealWatchValues, realWatchValues) &&
     !equals(realWatchValues, defaultValue) && onChange?.(realWatchValues as T);
   }, [realWatchValues, onChange, previsousRealWatchValues]);
-
-  const validates = useMemo(
-    () => fields.filter(({ validate }) => !!validate).map(({ validate }) => validate),
-    [fields],
-  );
-
-  validates.forEach((validate) => validate?.(realWatchValues, { errors, setError, clearErrors }));
 
   const hideIds = hideFields.map(({ id }) => id);
 

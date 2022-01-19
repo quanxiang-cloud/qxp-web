@@ -74,23 +74,40 @@ export async function publishPoly(queryClient: QueryClient): Promise<any> {
   }
 }
 
+function _parseArrangeFromString(): (arrange: string) => Arrange | undefined {
+  const arrangeCache: Record<string, Arrange> = {};
+  return (arrange: string): Arrange | undefined => {
+    try {
+      if (arrangeCache[arrange]) {
+        return arrangeCache[arrange];
+      }
+      const result = JSON.parse(arrange) as Arrange;
+      arrangeCache[arrange] = result;
+      return result;
+    } catch (e) {
+      toast.error('获取编排信息失败');
+    }
+  };
+}
+
+export const parseArrangeFromString = _parseArrangeFromString();
+
 type Arrange = POLY_API.POLY_INFO & {
   nodes: POLY_API.PolyNode[];
   uis: POLY_API.POLY_UIS;
 }
 export function parsePolySourceFromApi(data: POLY_API.POLY_INFO & { arrange: string }): void {
   const { arrange, ...polyInfo } = data;
-  try {
-    const arrangeResult = JSON.parse(arrange) as Arrange;
-    const { nodes = [], uis } = arrangeResult;
-    const { metas = [], edges = [] } = uis || {};
-    store$.init(polyInfo);
-    const distNodes: POLY_API.Element[] = nodes?.map((node, index) => {
-      const nodeInfo = metas[index];
-      return { data: new PolyNodeStore(node), ...nodeInfo };
-    }) || [];
-    store$.value.nodes.set([...distNodes, ...(edges as unknown as POLY_API.EdgeElement[])]);
-  } catch (e) {
-    toast.error('获取编排信息失败');
+  const arrangeResult = parseArrangeFromString(arrange);
+  if (!arrangeResult?.nodes) {
+    return;
   }
+  const { nodes = [], uis } = arrangeResult;
+  const { metas = [], edges = [] } = uis || {};
+  const distNodes: POLY_API.Element[] = nodes?.map((node, index) => {
+    const nodeInfo = metas[index];
+    return { data: new PolyNodeStore(node), ...nodeInfo };
+  }) || [];
+  store$.init(polyInfo);
+  store$.nodes$.set([...distNodes, ...(edges as unknown as POLY_API.EdgeElement[])]);
 }

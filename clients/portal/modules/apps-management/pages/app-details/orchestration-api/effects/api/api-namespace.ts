@@ -87,19 +87,6 @@ export function useUpdateNameSpace(
   return useNameSpace<UpdateInput, UpdateResponse>(options);
 }
 
-type ActiveInput = Input<{ active: number }>;
-interface ActiveResponse {
-  data?: {
-    fullPath: string;
-    active: number;
-  }
-}
-export function useActiveNameSpace(
-  options?: UseMutationOptions<ActiveResponse, Error, ActiveInput>,
-): UseMutationResult<ActiveResponse, Error, ActiveInput> {
-  return useNameSpace<ActiveInput, ActiveResponse>(options);
-}
-
 type QueryListInput = string;
 type QueryListResponse = CreateResponse;
 export function useQueryNameSpaceList(
@@ -126,7 +113,7 @@ export function useSearchNameSpaceList(
     options,
   );
 }
-export function searchNamespaceList(path: string, title?: string): Promise<CreateResponse> {
+function searchNamespaceList(path: string, title?: string): Promise<CreateResponse> {
   return httpClient(`/api/v1/polyapi/namespace/search/${path}`, {
     active: -1, page: 1, pageSize: -1, withSub: true, title,
   });

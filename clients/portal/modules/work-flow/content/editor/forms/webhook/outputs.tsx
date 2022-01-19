@@ -3,7 +3,7 @@ import React, { Fragment, useRef, useEffect, useMemo } from 'react';
 import Icon from '@c/icon';
 import { Input } from '@flow/content/editor/type';
 
-export interface Props {
+interface Props {
   value: Input[];
   parentElement?: HTMLDivElement;
 }
