@@ -9,10 +9,10 @@ import useObservable from '@lib/hooks/use-observable';
 import PolyDetailsHeader from './header';
 import NodeConfigDrawer from './node-config';
 import { useQueryPolyInfo } from '../effects/api/poly';
-import { parseArrangeFromString, parsePolySourceFromApi } from '../utils/build';
+import { parsePolySourceFromApi } from '../utils/build';
 import store$ from '../store';
 import { POLY_DESIGN_CONFIG } from '../constants';
-import { initGraphElements, isSomeActionShow } from '../utils';
+import { isSomeActionShow } from '../utils';
 import useCloseNodeAction from '../effects/hooks/use-close-node-action';
 
 function PolyDetails(): JSX.Element {
@@ -23,15 +23,11 @@ function PolyDetails(): JSX.Element {
   }, { enabled: !!polyFullPath, cacheTime: -1 });
 
   useEffect(() => {
-    data && parsePolySourceFromApi(data);
-  }, [data]);
+    store$.reset();
+  }, []);
 
   useEffect(() => {
-    if (!data?.arrange) {
-      return;
-    }
-    const { nodes } = parseArrangeFromString(data.arrange) ?? {};
-    !nodes && store$.nodes$.set(initGraphElements());
+    data && parsePolySourceFromApi(data);
   }, [data]);
 
   useCloseNodeAction();

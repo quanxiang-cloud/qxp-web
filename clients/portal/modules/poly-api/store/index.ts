@@ -4,17 +4,37 @@ import { lensPath, set, dissocPath, path } from 'ramda';
 import { PolyCanvasStore } from './canvas';
 import { CURRENT_NODE_CONFIG_PARAMS } from '../constants';
 
+function getInitPolyInfo(): POLY_API.POLY_INFO {
+  return {
+    id: '', owner: '', ownerName: '', namespace: '', name: '', title: 'API名称',
+    active: 0, desc: '', access: [], method: '', createAt: '', updateAt: '', buildAt: '',
+  };
+}
+
+function getDefaultState(): POLY_API.Root {
+  return {
+    currentNodeConfigParams: CURRENT_NODE_CONFIG_PARAMS,
+    nodes: new PolyCanvasStore([]),
+    polyInfo: getInitPolyInfo(),
+  };
+}
+
 class PolyStore extends BehaviorSubject<POLY_API.Root> {
   constructor(initialState: POLY_API.Root) {
     super(initialState);
   }
 
-  init(polyInfo?: POLY_API.POLY_INFO): void {
-    this.set('polyInfo', polyInfo);
+  reset(): void {
+    this.next({ ...getDefaultState(), nodes: this.nodes$ });
   }
 
   set(key: string, value: any): void {
     this.next(set(lensPath(key.split('.')), value, this.value));
+  }
+
+  setSource(polyInfo: POLY_API.POLY_INFO, nodes: POLY_API.Element[]): void {
+    this.set('polyInfo', polyInfo);
+    this.nodes$.set(nodes);
   }
 
   get<T>(key: string): T {
@@ -35,9 +55,6 @@ class PolyStore extends BehaviorSubject<POLY_API.Root> {
   }
 }
 
-const store$ = new PolyStore({
-  currentNodeConfigParams: CURRENT_NODE_CONFIG_PARAMS,
-  nodes: new PolyCanvasStore([]),
-});
+const store$ = new PolyStore(getDefaultState());
 
 export default store$;
