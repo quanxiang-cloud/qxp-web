@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
+import { omit } from 'ramda';
 
 import Table from '@c/table';
 import EmptyTips from '@c/empty-tips';
@@ -49,7 +50,7 @@ export default function Employees({
 
   const { data: employeesList, isLoading, refetch } = useQuery(
     ['GET_USER_ADMIN_INFO', pageParams, department.id],
-    () => getUserAdminInfo(department.id, pageParams),
+    () => getUserAdminInfo(department.id, omit(['page'], pageParams)),
     {
       refetchOnWindowFocus: false,
     },
