@@ -1,17 +1,16 @@
 import React from 'react';
 import { groupBy } from 'ramda';
 
-import useObservable from '@lib/hooks/use-observable';
-
-import store, { toggleNodeForm } from '../store';
-import type { StoreValue } from '../type';
+import { toggleNodeForm } from '../store';
 import Drawer from '../forms/drawer';
 import DragNode from './drag-node';
 import { nodeLists, groupType2WeightMap, groupType2NameMap } from '../utils/constants';
 
-export default function ComponentsSelector(): JSX.Element {
-  const { nodeIdForDrawerForm } = useObservable<StoreValue>(store);
+type Props = {
+  nodeIdForDrawerForm: string;
+}
 
+export default function ComponentsSelector({ nodeIdForDrawerForm }: Props): JSX.Element {
   const groupedNodeMap = groupBy((node) => node.groupType, nodeLists);
 
   const groupedNodeList = Object.entries(groupedNodeMap).sort(
@@ -30,7 +29,7 @@ export default function ComponentsSelector(): JSX.Element {
           )}
           distanceTop={0}
           onCancel={() => toggleNodeForm('')}
-          className="flow-editor-drawer"
+          className="flow-editor-drawer flow-editor-drawer-components"
         >
           {groupedNodeList.map(([groupType, nodeList]) => (
             <div key={groupType}>
