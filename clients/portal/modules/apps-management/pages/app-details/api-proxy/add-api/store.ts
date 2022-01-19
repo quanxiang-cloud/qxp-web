@@ -227,13 +227,15 @@ export default class Store {
         }
 
         const preload = getDefaultParam();
-        if (v.in !== 'body' || !['object', 'array'].includes(v.type)) {
-          return { ...preload, ...omit(v, 'in') };
+        if (v.in === 'body') {
+          return mapObjectNode(v, true);
         }
 
         if (['object', 'array'].includes(v.type)) {
-          return mapObjectNode(v, true);
+          return mapObjectNode(v, false);
         }
+
+        return { ...preload, ...omit(v, 'in') };
       }).filter(Boolean);
       if (items[0]?.in === 'body') {
         this.setParams(gp as ParamGroup, items[0]?._object_nodes_);
