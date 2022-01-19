@@ -40,7 +40,7 @@ export default function Employees({
   searchWord,
 }: Props): JSX.Element {
   const [modalType, setModalType] = useState<ModalType>('');
-  const [check, setCheck] = useState(0);
+  const [isIncludeSubDep, setIsIncludeSubDep] = useState(true);
   const [userState, setUserState] = useState<UserStatus>(UserStatus.normal);
   const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<Employee[]>([]);
@@ -56,11 +56,11 @@ export default function Employees({
   );
 
   useEffect(() => {
-    setPageParams({ ...pageParams, userName: searchWord, includeChildDEPChild: check });
-  }, [searchWord, check]);
+    setPageParams({ ...pageParams, userName: searchWord, includeChildDEPChild: Number(isIncludeSubDep) });
+  }, [searchWord, isIncludeSubDep]);
 
   useEffect(() => {
-    setPageParams({ page: 1, limit: 10, userName: '', includeChildDEPChild: check });
+    setPageParams({ page: 1, limit: 10, userName: searchWord, includeChildDEPChild: Number(isIncludeSubDep) });
     setSelectedUserIds([]);
   }, [department.id]);
 
@@ -144,7 +144,7 @@ export default function Employees({
   }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement & HTMLTextAreaElement>): void {
-    setCheck(Number(e.target.checked));
+    setIsIncludeSubDep(e.target.checked);
   }
 
   function handleSelectChange(selectedRowKeys: string[], selectedRows: Employee[]): void {
@@ -284,6 +284,7 @@ export default function Employees({
                   </MoreMenu>
                 </div>
                 <CheckBox
+                  defaultChecked
                   onChange={handleChange}
                   label='包含子部门成员'
                 />
