@@ -17,17 +17,24 @@ type Props = {
   label?: string;
   error?: string;
   className?: string;
-  useInPoly?: boolean;
+  usePolyApiOption?: boolean;
   simpleMode?: boolean;
   apiDocDetail?: RawApiDocDetail;
 }
 
 function ApiSelector({
-  apiDocDetail, setApiPath, initRawApiPath, simpleMode, className, label = '全部API:', useInPoly = false, error,
+  error,
+  className,
+  simpleMode,
+  setApiPath,
+  apiDocDetail,
+  initRawApiPath,
+  label = '全部API:',
+  usePolyApiOption = false,
 }: Props): JSX.Element {
   const { appID } = useParams<{ appID: string }>();
   const [apiNamespacePath, setApiNamespacePath] = useState('');
-  const options = useGetOptions(appID, apiNamespacePath, useInPoly);
+  const options = useGetOptions(appID, apiNamespacePath, usePolyApiOption);
 
   function onChange(value: SingleValueType | SingleValueType[], selectedOptions: DefaultOptionType[]): void {
     const leafOption = clone(selectedOptions).pop();
