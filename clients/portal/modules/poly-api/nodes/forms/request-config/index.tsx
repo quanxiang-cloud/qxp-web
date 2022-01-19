@@ -114,7 +114,6 @@ function RequestConfigForm(
   return (
     <>
       <ApiSelector
-        useInPoly
         setApiPath={handleApiPathChange}
         initRawApiPath={value.rawPath}
         apiDocDetail={apiDocDetail}
