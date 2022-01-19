@@ -5,7 +5,7 @@ import { mutateTree, TreeData, TreeItem } from '@atlaskit/tree';
 
 import toast from '@lib/toast';
 import { buildAppPagesTreeData } from '@lib/utils';
-import { getCustomPageInfo, getSchemaPageInfo, getTableSchema } from '@lib/http-client';
+import { fetchPageList, getCustomPageInfo, getSchemaPageInfo, getTableSchema } from '@lib/http-client';
 
 import { BindState, CardList, CustomPageInfo, MenuType } from './type';
 import { fetchAppList } from '../entry/app-list/api';
@@ -23,7 +23,6 @@ import {
   fetchAppDetails,
   updateAppStatus,
   updateApp,
-  fetchPageList,
   createPage,
   updatePageOrGroup,
   createGroup,

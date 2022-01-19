@@ -291,8 +291,14 @@ export function getTableSchema(appID: string, tableID: string): Promise<GetTable
 }
 
 export function getCustomPageInfo(appID: string, menuId: string): Promise<CustomPageInfo> {
-  return httpClient(`/api/v1/structor/${appID}/m/page/getByMenu`, { menuId });
+  const side = window.SIDE === 'portal' ? 'm' : 'home';
+  return httpClient(`/api/v1/structor/${appID}/${side}/page/getByMenu`, { menuId });
 }
+
+export const fetchPageList = async (appID: string): Promise<fetchPageListRes> => {
+  const side = window.SIDE === 'portal' ? 'm' : 'home';
+  return await httpClient(`/api/v1/structor/${appID}/${side}/menu/list`, { appID });
+};
 
 export function getSchemaPageInfo(appID: string, menuId: string): Promise<SchemaPageInfo> {
   return httpClient(`/api/v1/structor/${appID}/m/table/getInfo`, { menuId });

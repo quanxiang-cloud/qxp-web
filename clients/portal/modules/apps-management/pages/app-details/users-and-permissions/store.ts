@@ -1,9 +1,9 @@
 import { action, observable } from 'mobx';
 
 import toast from '@lib/toast';
-import { getTableSchema } from '@lib/http-client';
 import { deepClone } from '@lib/utils';
 import schemaToFields from '@lib/schema-convert';
+import { fetchPageList, getTableSchema } from '@lib/http-client';
 
 import {
   fetchRights,
@@ -20,7 +20,6 @@ import {
   fetchPerCustom,
   copyPerGroup,
 } from './api';
-import { fetchPageList } from '../api';
 import { INIT_CURRENT_RIGHTS } from './constants';
 
 type PerData = {
