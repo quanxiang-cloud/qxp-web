@@ -2,21 +2,23 @@ import React, { KeyboardEvent, useCallback, useState } from 'react';
 import { toJS } from 'mobx';
 import { Form, Input } from 'antd';
 
-import Radio from '@c/radio';
-import RadioGroup from '@c/radio/group';
+import Select from '@c/select';
+
 import AppZipUpload from './app-zip-upload';
+import AppCreatedBy from './app-created-by';
 import AppIconPicker from './app-icon-picker';
 
 import './style.scss';
+import { fetchTemplateList, TemplateListRes } from '../../app-templates/api';
 
 const DISABLE_SPECIAL_SYMBOL_REG = /[#$@^&=`'":;,.~¥-。、（）「」·“”；：？，《》【】+/\\()<>{}[\] ]/gi;
 
 type Props = {
+  modalType: string;
   className?: string;
   appInfo?: AppInfo;
-  modalType: string;
+  onValuesChange?: (value: any) => void;
   onSubmitCallback?: () => void;
-   onValuesChange?: () => void;
 }
 
 function CreatedEditApp({
@@ -24,20 +26,31 @@ function CreatedEditApp({
 }: Props, ref?: any): JSX.Element {
   const [form] = Form.useForm();
   const initData = appInfo && toJS(appInfo);
+  const [createdBy, setCreatedBy] = useState('base');
   const { appName, appIcon = '{}', appSign } = initData || {};
   const handleEnterSubmit = useCallback((e: KeyboardEvent<HTMLInputElement>) => {
     e.key === 'Enter' && handleFinish();
   }, []);
-  const [checkedValue, setCheckedValue] = useState('base');
 
   function handleFinish(): void {
     onSubmitCallback && onSubmitCallback();
   }
 
-  const options = [
-    { label: '从空白创建', value: 'base' },
-    { label: '从模版创建', value: 'template' },
-  ];
+  function handleValuesChange(value: any): void {
+    'createdBy' in value && setCreatedBy(value.createdBy);
+    onValuesChange?.(value);
+  }
+
+  function getTemplateOptions(): LabelValue[] {
+    const options: LabelValue[] = [];
+    fetchTemplateList().then(({ templates }: TemplateListRes) => {
+      templates.forEach(({ name, id }: any) => {
+        options.push({ label: name, value: id });
+      });
+    });
+
+    return options;
+  }
 
   return (
     <Form
@@ -49,9 +62,10 @@ function CreatedEditApp({
         appName,
         appSign,
         appIcon,
+        createdBy: 'base',
       }}
       onFinish={handleFinish}
-      onValuesChange={onValuesChange}
+      onValuesChange={handleValuesChange}
     >
       <Form.Item
         name='appName'
@@ -119,31 +133,21 @@ function CreatedEditApp({
       </Form.Item>
       {modalType === 'createdApp' && (
         <Form.Item
-          name="createWay"
+          name="createdBy"
           label="新建方式"
         >
-          <div className="flex items-center">
-            <RadioGroup onChange={(value) => setCheckedValue(value.toString())}>
-              {options.map((option) => {
-                return (
-                  <Radio
-                    key={option.value}
-                    value={option.value}
-                    label={option.label}
-                    className="mr-8"
-                    defaultChecked={checkedValue === option.value ? true : false}
-                  />
-                );
-              })}
-            </RadioGroup>
-          </div>
+          <AppCreatedBy value={createdBy} />
         </Form.Item>
       )}
-      {checkedValue === 'template' && (
+      {createdBy === 'template' && (
         <Form.Item
           name="template"
           label="选择模版"
         >
+          <Select
+            className='w-full'
+            options={getTemplateOptions()}
+          />
         </Form.Item>
       )}
       {modalType === 'importApp' && (

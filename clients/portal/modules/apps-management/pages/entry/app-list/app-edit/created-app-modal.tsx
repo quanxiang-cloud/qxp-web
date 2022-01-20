@@ -35,6 +35,11 @@ function CreatedAppModal({ modalType, onCancel }: Props): JSX.Element {
       return;
     }
 
+    if (modalType === 'createdApp') {
+      console.log(data);
+      return;
+    }
+
     store.createdApp({ ...data, useStatus: -1 }).then((res: string) => {
       toast.success('创建应用成功！');
       onCancel();
@@ -70,7 +75,9 @@ function CreatedAppModal({ modalType, onCancel }: Props): JSX.Element {
         ref={formRef}
         className="p-20"
         modalType={modalType}
-        onValuesChange={() => setAppZipInfo(formRef.current.getFieldValue('appZipInfo'))}
+        onValuesChange={(value) => {
+          'appZipInfo' in value && setAppZipInfo(formRef.current.getFieldValue('appZipInfo'));
+        }}
         onSubmitCallback={submitCallback}
       />
     </Modal>
