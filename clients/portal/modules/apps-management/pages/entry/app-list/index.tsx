@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { observer } from 'mobx-react';
 import { useTitle } from 'react-use';
+import { observer } from 'mobx-react';
 
 import TextHeader from '@c/text-header';
 import { useTaskComplete } from '@c/task-lists/utils';
 
-import CreatedAppModal from './app-edit/created-app-modal';
+import store from './store';
 import Header from './header';
 import AppList from './app-list';
-import store from './store';
+import CreatedAppModal from './app-edit/created-app-modal';
 
 import './index.scss';
 
