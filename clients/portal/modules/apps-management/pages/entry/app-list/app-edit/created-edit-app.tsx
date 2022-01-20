@@ -1,7 +1,9 @@
-import React, { KeyboardEvent, useCallback } from 'react';
+import React, { KeyboardEvent, useCallback, useState } from 'react';
 import { toJS } from 'mobx';
 import { Form, Input } from 'antd';
 
+import Radio from '@c/radio';
+import RadioGroup from '@c/radio/group';
 import AppZipUpload from './app-zip-upload';
 import AppIconPicker from './app-icon-picker';
 
@@ -14,24 +16,28 @@ type Props = {
   appInfo?: AppInfo;
   modalType: string;
   onSubmitCallback?: () => void;
-  onValuesChange?: () => void;
+   onValuesChange?: () => void;
 }
 
 function CreatedEditApp({
   appInfo, modalType, className, onSubmitCallback, onValuesChange,
 }: Props, ref?: any): JSX.Element {
   const [form] = Form.useForm();
+  const initData = appInfo && toJS(appInfo);
+  const { appName, appIcon = '{}', appSign } = initData || {};
+  const handleEnterSubmit = useCallback((e: KeyboardEvent<HTMLInputElement>) => {
+    e.key === 'Enter' && handleFinish();
+  }, []);
+  const [checkedValue, setCheckedValue] = useState('base');
 
   function handleFinish(): void {
     onSubmitCallback && onSubmitCallback();
   }
 
-  const initData = appInfo && toJS(appInfo);
-  const { appName, appIcon = '{}', appSign } = initData || {};
-
-  const handleEnterSubmit = useCallback((e: KeyboardEvent<HTMLInputElement>) => {
-    e.key === 'Enter' && handleFinish();
-  }, []);
+  const options = [
+    { label: '从空白创建', value: 'base' },
+    { label: '从模版创建', value: 'template' },
+  ];
 
   return (
     <Form
@@ -111,6 +117,35 @@ function CreatedEditApp({
       >
         <AppIconPicker />
       </Form.Item>
+      {modalType === 'createdApp' && (
+        <Form.Item
+          name="createWay"
+          label="新建方式"
+        >
+          <div className="flex items-center">
+            <RadioGroup onChange={(value) => setCheckedValue(value.toString())}>
+              {options.map((option) => {
+                return (
+                  <Radio
+                    key={option.value}
+                    value={option.value}
+                    label={option.label}
+                    className="mr-8"
+                    defaultChecked={checkedValue === option.value ? true : false}
+                  />
+                );
+              })}
+            </RadioGroup>
+          </div>
+        </Form.Item>
+      )}
+      {checkedValue === 'template' && (
+        <Form.Item
+          name="template"
+          label="选择模版"
+        >
+        </Form.Item>
+      )}
       {modalType === 'importApp' && (
         <Form.Item
           required
