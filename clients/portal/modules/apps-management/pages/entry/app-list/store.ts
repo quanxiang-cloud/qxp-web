@@ -127,6 +127,23 @@ class AppListStore {
   };
 
   @action
+  createdAppByTemplate = async (appInfo: AppInfo): Promise<any> => {
+    const createdAppRes = await importApp(appInfo);
+    const taskRes = await createImportAppTask({
+      ...appInfo.appZipInfo,
+      title: `【${appInfo.appName}】 应用导入`,
+      value: { appID: createdAppRes.id },
+    });
+    const newApp = { ...appInfo, ...createdAppRes, useStatus: -2 };
+    const isFinish = await subscribeStatusChange(taskRes.taskID, '导入');
+    if (isFinish) {
+      newApp.useStatus = -1;
+    }
+    this.appList = [newApp, ...this.appList];
+    this.allAppList = [newApp, ...this.allAppList];
+  };
+
+  @action
   updateApp = (appInfo: AppInfo): void => {
     this.allAppList = this.allAppList.map((appItem: AppInfo) => {
       if (appItem.id === appInfo.id) {

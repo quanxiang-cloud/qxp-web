@@ -26,17 +26,18 @@ function CreatedAppModal({ modalType, onCancel }: Props): JSX.Element {
     const formDom = formRef.current;
     const data = formDom.getFieldsValue();
 
+    if ('template' in data) {
+      // createdAppByTemplate(data);
+      console.log('created app by template');
+      return;
+    }
+
     if (modalType === 'importApp') {
       store.importApp(data).then(() => {
         onCancel();
       }).catch((e) => {
         toast.error(e.message);
       });
-      return;
-    }
-
-    if (modalType === 'createdApp') {
-      console.log(data);
       return;
     }
 
