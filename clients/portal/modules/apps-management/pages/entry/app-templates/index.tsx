@@ -1,26 +1,21 @@
 import React, { useEffect, useState } from 'react';
+import { observer } from 'mobx-react';
 
 import Icon from '@c/icon';
 import { MenuItem } from '@c/more-menu';
 import TextHeader from '@c/text-header';
 
+import store, { TemplateInfo } from './store';
 import AppItem from '../components/render-item';
-import { fetchTemplateList, TemplateListRes } from './api';
 import EditTemplateModal from './template-edit/edit-template-modal';
 import DelTemplateModal from './template-edit/del-template-modal';
 
-type TemplateInfo = AppInfo & {
-  name: string;
-}
 function AppTemplates(): JSX.Element {
-  const [state, setState] = useState<TemplateListRes>();
   const [modalType, setModalType] = useState('');
-  const [currentAppInfo, setCurrentAppInfo] = useState<AppInfo | null>(null);
+  const { templateList, fetchList, curTemplate, setCurTemplate } = store;
 
   useEffect(() => {
-    fetchTemplateList().then((res) => {
-      setState(res);
-    });
+    fetchList();
   }, []);
 
   const menus: MenuItem[] = [
@@ -46,7 +41,7 @@ function AppTemplates(): JSX.Element {
 
   const openModal = (_modalType: string, _curApp: AppInfo): void => {
     setModalType(_modalType);
-    setCurrentAppInfo(_curApp);
+    setCurTemplate(_curApp as TemplateInfo);
   };
 
   function handleActions(key: string, itemData: AppInfo): void {
@@ -63,7 +58,7 @@ function AppTemplates(): JSX.Element {
   }
 
   function RenderModal() {
-    if (!currentAppInfo) {
+    if (!curTemplate) {
       return null;
     }
 
@@ -72,12 +67,12 @@ function AppTemplates(): JSX.Element {
         {modalType === 'editTemplate' &&
           (<EditTemplateModal
             modalType={modalType}
-            tmpInfo={currentAppInfo}
+            tmpInfo={curTemplate}
             onCancel={() => setModalType('')}
           />)
         }
         {modalType === 'delTemplate' &&
-          <DelTemplateModal appInfo={currentAppInfo} onCancel={() => setModalType('')} />
+          <DelTemplateModal appInfo={curTemplate} onCancel={() => setModalType('')} />
         }
       </>
     );
@@ -93,9 +88,9 @@ function AppTemplates(): JSX.Element {
           className="app-list-headertitle bg-gray-1000 px-20 py-16 header-background-image h-44"
           itemTitleClassName="text-h6"
         />
-        <div className="p-16 font-semibold">我的模板 · {state?.count ?? 0}</div>
+        <div className="p-16 font-semibold">我的模板 · {templateList.length}</div>
         <div className="flex-1 border-t-1 border-gray-200 app-list-container p-16">
-          {state?.templates.map((tmpInfo: TemplateInfo) => (
+          {templateList.map((tmpInfo: TemplateInfo) => (
             <AppItem
               menus={menus}
               key={tmpInfo.id}
@@ -111,4 +106,4 @@ function AppTemplates(): JSX.Element {
   );
 }
 
-export default AppTemplates;
+export default observer(AppTemplates);

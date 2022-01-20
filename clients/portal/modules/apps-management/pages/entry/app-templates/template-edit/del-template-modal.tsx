@@ -2,9 +2,8 @@ import React from 'react';
 
 import Icon from '@c/icon';
 import Modal from '@c/modal';
-import toast from '@lib/toast';
 
-import { deleteTemplate } from '../api';
+import store from '../store';
 
 type Props = {
   appInfo: AppInfo;
@@ -12,13 +11,11 @@ type Props = {
 }
 
 function DelTemplateModal({ onCancel, appInfo }: Props): JSX.Element {
-  function handleSubmit(): void {
-    deleteTemplate(appInfo.id).then(() => {
-      toast.success('模版删除成功');
-      onCancel();
-    }).catch(() => {
-      toast.error('模版删除成功');
-    });
+  const { delTemplate } = store;
+
+  async function handleSubmit(): Promise<void> {
+    await delTemplate(appInfo.id);
+    onCancel();
   }
 
   return (
