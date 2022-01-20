@@ -27,12 +27,12 @@ function EditTemplateModal({ modalType, tmpInfo, onCancel }: Props): JSX.Element
 
     if (isEdit) {
       // todo edit template info
-      editTemplate();
+      editTemplate(tmpInfo.id, templateName, tmpInfo.appIcon);
       return onCancel();
     }
 
     validateTemplateName(templateName).then(async () => {
-      await addTemplate(tmpInfo);
+      await addTemplate({ ...tmpInfo, name: templateName });
       onCancel();
     }).catch(() => toast.error('模版名称校验失败'));
   }

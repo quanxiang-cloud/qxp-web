@@ -2,7 +2,7 @@ import { observable, action } from 'mobx';
 
 import toast from '@lib/toast';
 
-import { fetchTemplateList, TemplateListRes, deleteTemplate, saveAppAsTemplate } from './api';
+import { fetchTemplateList, TemplateListRes, deleteTemplate, saveAppAsTemplate, editTemplateInfo } from './api';
 
 export type TemplateInfo = AppInfo & {
   name: string;
@@ -49,8 +49,13 @@ class TemplateStore {
   };
 
   @action
-  editTemplate = (): void => {
-
+  editTemplate = async (id: string, name: string, appIcon: string): Promise<void> => {
+    return await editTemplateInfo(id, name, appIcon).then(() => {
+      toast.success('修改成功');
+      this.fetchList();
+    }).catch(() => {
+      toast.error('修改失败');
+    });
   };
 }
 

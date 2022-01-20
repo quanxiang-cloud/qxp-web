@@ -28,3 +28,7 @@ export async function deleteTemplate(id: string): Promise<any> {
 export async function validateTemplateName(name: string): Promise<any> {
   return await httpClient('/api/v1/app-center/template/checkNameRepeat', { name });
 }
+
+export async function editTemplateInfo(id: string, name: string, appIcon: string): Promise<any> {
+  return await httpClient('/api/v1/app-center/template/update', { id, name, appIcon });
+}

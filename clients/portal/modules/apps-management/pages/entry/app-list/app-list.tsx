@@ -12,6 +12,7 @@ import AppItem from '../components/render-item';
 import DeleteAppModal from './app-edit/del-app-modal';
 import AppSetStatusModal from './app-edit/app-set-status-modal';
 import EditTemplateModal from '../app-templates/template-edit/edit-template-modal';
+import { TemplateInfo } from '../app-templates/store';
 
 type Props = {
   isLoading: boolean;
@@ -144,7 +145,7 @@ function AppList({ isLoading, appList, openCreatedModal }: Props): JSX.Element {
         )}
         {modalType === 'saveAsTemplate' && (
           <EditTemplateModal
-            tmpInfo={curApp}
+            tmpInfo={curApp as TemplateInfo}
             modalType={modalType}
             onCancel={() => setModalType('')}
           />
