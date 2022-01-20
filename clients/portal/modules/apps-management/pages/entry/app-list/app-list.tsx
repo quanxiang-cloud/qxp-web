@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import Icon from '@c/icon';
+import toast from '@lib/toast';
 import { MenuItem } from '@c/more-menu';
 import PageLoading from '@c/page-loading';
 
@@ -9,6 +10,8 @@ import DeleteAppModal from './app-edit/del-app-modal';
 import AppSetStatusModal from './app-edit/app-set-status-modal';
 import AppItem from './app-item';
 import EditTemplateModal from '@portal/modules/app-templates/template-edit/edit-template-modal';
+import { exportAppAndCreateTask } from './api';
+import { subscribeStatusChange } from '@c/task-lists/utils';
 
 type Props = {
   isLoading: boolean;
@@ -86,10 +89,47 @@ function AppList({ isLoading, appList, openCreatedModal }: Props): JSX.Element {
     history.push(`/apps/details/${id}/page_setting`);
   };
 
+  function exportApp(): void {
+    exportAppAndCreateTask({
+      value: { appID: curApp?.id || '' },
+      title: `【${curApp?.appName}】 应用导出`,
+    }).then((res) => {
+      subscribeStatusChange(res.taskID, '导出');
+    }).catch((err) => {
+      toast.error(err.message);
+    });
+  }
+
+  function handleActions(key: string, itemData: AppInfo): void {
+    switch (key) {
+    case 'publish':
+      openModal('publish', itemData);
+      break;
+    case 'setting':
+      history.push(`/apps/details/${itemData.id}/setting/info`);
+      break;
+    case 'visit':
+      window.open(`//${window.CONFIG.home_hostname}/apps/` + itemData.id);
+      break;
+    case 'delete':
+      openModal('delete', itemData);
+      break;
+    case 'exportApp':
+      exportApp();
+      break;
+    case 'saveAsTemplate':
+      openModal('saveAsTemplate', itemData);
+      break;
+    default:
+      break;
+    }
+  }
+
   function RenderModal() {
     if (!curApp) {
       return null;
     }
+
     return (
       <>
         {modalType === 'delete' && (
@@ -137,6 +177,7 @@ function AppList({ isLoading, appList, openCreatedModal }: Props): JSX.Element {
           appInfo={appInfo}
           onClick={goDetails}
           openModal={openModal}
+          handleActions={handleActions}
           menus={getAppItemMenus(appInfo)}
         />
       ))}

@@ -12,6 +12,7 @@ type Props = {
   appInfo: AppInfo;
   openModal: (modalType: string, appInfo: AppInfo) => void;
   menus: MenuItem[];
+  handleActions: (key: string, appInfo: AppInfo) => void;
   readonly?: boolean;
   onClick?: (appInfo: AppInfo) => void;
 }
@@ -28,7 +29,7 @@ function getItemClassName(status: number): string {
   return '';
 }
 
-function AppItem({ appInfo, onClick, readonly, openModal, menus }: Props): JSX.Element {
+function AppItem({ appInfo, onClick, readonly, menus, handleActions }: Props): JSX.Element {
   function handleAppItemClick(): void {
     if (appInfo.useStatus < -1) {
       return;
@@ -40,7 +41,9 @@ function AppItem({ appInfo, onClick, readonly, openModal, menus }: Props): JSX.E
   return (
     <div className={cs('app-item-box', getItemClassName(appInfo.useStatus))}>
       <AppInfoView appInfo={appInfo} onClick={handleAppItemClick} />
-      {readonly ? null : <AppActions appInfo={appInfo} openModal={openModal} menus={menus} />}
+      {readonly ? null :
+        <AppActions menus={menus} handleActions={handleActions} appInfo={appInfo} />
+      }
     </div>
   );
 }

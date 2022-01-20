@@ -49,6 +49,19 @@ function AppTemplates(): JSX.Element {
     setCurrentAppInfo(_curApp);
   };
 
+  function handleActions(key: string, itemData: AppInfo): void {
+    switch (key) {
+    case 'editTemplate':
+      openModal('editTemplate', itemData);
+      break;
+    case 'delTemplate':
+      openModal('delTemplate', itemData);
+      break;
+    default:
+      break;
+    }
+  }
+
   function RenderModal() {
     if (!currentAppInfo) {
       return null;
@@ -86,8 +99,9 @@ function AppTemplates(): JSX.Element {
             <AppItem
               menus={menus}
               key={tmpInfo.id}
-              appInfo={{ ...tmpInfo, appName: tmpInfo.name }}
               openModal={openModal}
+              handleActions={handleActions}
+              appInfo={{ ...tmpInfo, appName: tmpInfo.name }}
             />
           ))}
         </div>
