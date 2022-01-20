@@ -13,6 +13,7 @@ type Props = {
 }
 
 function CreatedAppModal({ modalType, onCancel }: Props): JSX.Element {
+  const { createdApp, importApp, createdAppByTemplate } = store;
   const history = useHistory();
   const formRef: any = useRef(null);
   const [appZipInfo, setAppZipInfo] = useState<AppZipInfo | undefined>(undefined);
@@ -27,13 +28,7 @@ function CreatedAppModal({ modalType, onCancel }: Props): JSX.Element {
     const data = formDom.getFieldsValue();
 
     if ('template' in data) {
-      // createdAppByTemplate(data);
-      console.log('created app by template');
-      return;
-    }
-
-    if (modalType === 'importApp') {
-      store.importApp(data).then(() => {
+      createdAppByTemplate(data).then(() => {
         onCancel();
       }).catch((e) => {
         toast.error(e.message);
@@ -41,7 +36,16 @@ function CreatedAppModal({ modalType, onCancel }: Props): JSX.Element {
       return;
     }
 
-    store.createdApp({ ...data, useStatus: -1 }).then((res: string) => {
+    if (modalType === 'importApp') {
+      importApp(data).then(() => {
+        onCancel();
+      }).catch((e) => {
+        toast.error(e.message);
+      });
+      return;
+    }
+
+    createdApp({ ...data, useStatus: -1 }).then((res: string) => {
       toast.success('创建应用成功！');
       onCancel();
       history.push(`/apps/details/${res}/page_setting`);

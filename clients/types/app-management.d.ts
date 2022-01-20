@@ -6,8 +6,10 @@ declare global {
     appIcon: string;
     useStatus: number;
     appSign: string;
-    appZipInfo?: any;
     name?: string;
+    appZipInfo?: any;
+    createdBy?: string;
+    template?: string;
   }
 
   type AppZipInfo = {

@@ -4,11 +4,19 @@ import toast from '@lib/toast';
 import { subscribeStatusChange } from '@c/task-lists/utils';
 
 import { updateAppStatus, createPage } from '../../app-details/api';
-import { fetchAppList, delApp, createdApp, importApp, CreatedAppRes, createImportAppTask } from './api';
+import {
+  delApp,
+  importApp,
+  createdApp,
+  fetchAppList,
+  CreatedAppRes,
+  createImportAppTask,
+  createAppByTemplateTask,
+} from './api';
 
 export type Params = {
-  useStatus?: number;
   appName?: string;
+  useStatus?: number;
 }
 
 type CountMapsParams = {
@@ -128,12 +136,15 @@ class AppListStore {
 
   @action
   createdAppByTemplate = async (appInfo: AppInfo): Promise<any> => {
+    if (!appInfo.template) {
+      return;
+    }
+
     const createdAppRes = await importApp(appInfo);
-    const taskRes = await createImportAppTask({
-      ...appInfo.appZipInfo,
-      title: `【${appInfo.appName}】 应用导入`,
-      value: { appID: createdAppRes.id },
-    });
+    const taskRes = await createAppByTemplateTask(
+      `【${appInfo.appName}】 模版应用创建`,
+      { templateID: appInfo.template, appID: createdAppRes.id },
+    );
     const newApp = { ...appInfo, ...createdAppRes, useStatus: -2 };
     const isFinish = await subscribeStatusChange(taskRes.taskID, '导入');
     if (isFinish) {
