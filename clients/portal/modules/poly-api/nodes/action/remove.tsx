@@ -11,8 +11,7 @@ interface Props {
 }
 
 function NodeRemove({ id }: Props, ref: ForwardedRef<HTMLDivElement | null>): JSX.Element {
-  const elements$ = store$.value.nodes;
-  const elements = useObservable<POLY_API.Element[]>(elements$);
+  const elements = useObservable<POLY_API.Element[]>(store$.nodes$, []);
 
   const style: CSSProperties = {
     boxShadow: '0px 8px 24px 4px rgba(148, 163, 184, 0.25)',
@@ -24,7 +23,7 @@ function NodeRemove({ id }: Props, ref: ForwardedRef<HTMLDivElement | null>): JS
       return;
     }
     const newElements: POLY_API.Element[] = removeNode(elementToRemove, elements);
-    elements$.set(newElements, true);
+    store$.nodes$.set(newElements, true);
   }, [elements, id]);
 
   return (

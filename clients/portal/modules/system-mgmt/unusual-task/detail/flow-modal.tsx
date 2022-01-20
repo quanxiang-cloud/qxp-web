@@ -92,7 +92,7 @@ function FlowModal({ processInstanceId, closeModal }: Props): JSX.Element | null
       <ReactFlowProvider>
         <div className="w-full h-full reactflow-wrapper p-20" ref={setFlowParentElement}>
           {flowParentElement && (
-            <FlowRender elements={elements} />
+            <FlowRender elements={elements} layoutType='elk' direction='bottom' />
           )}
         </div>
       </ReactFlowProvider>

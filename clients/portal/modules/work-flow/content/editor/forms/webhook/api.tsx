@@ -20,7 +20,7 @@ interface Props {
 }
 
 export default function API(
-  { value, onChange, setFormValue, values, error: errorMessage, ...props }: Props,
+  { value, onChange, setFormValue, values, error: errorMessage }: Props,
 ): JSX.Element {
   const { data: apiDocDetail, isLoading, error } = useGetRequestNodeApi({
     path: value.value.slice(1),

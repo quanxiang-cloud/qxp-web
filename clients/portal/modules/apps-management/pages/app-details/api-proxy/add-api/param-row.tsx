@@ -86,6 +86,9 @@ function ParamRow({
     if (group === 'path') {
       return paramTypes.filter(({ value })=> ['string', 'number'].includes(value));
     }
+    if (group === 'query') {
+      return paramTypes.filter(({ value })=> ['string', 'number', 'boolean', 'array'].includes(value));
+    }
     if (group === 'body') {
       return paramTypes.filter(
         ({ value })=> !['timestamp', 'action'].includes(value),
@@ -96,7 +99,7 @@ function ParamRow({
         ({ value })=> ['string', 'number', 'boolean', 'timestamp', 'action'].includes(value),
       );
     }
-    if (['query', 'header'].includes(group)) {
+    if (group === 'header') {
       return paramTypes.filter(({ value })=> ['string', 'number', 'boolean'].includes(value));
     }
     if (group === 'response') {

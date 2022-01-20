@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Schema } from '@ofa/render-engine';
+import { Schema } from '@ofa/schema-spec';
 
 import toast from '@lib/toast';
 

@@ -7,7 +7,7 @@ import { ISchemaFieldComponentProps, IMutators } from '@formily/react-schema-ren
 
 import logger from '@lib/logger';
 import FormDataValueRenderer from '@c/form-data-value-renderer';
-import { isEmpty } from '@lib/utils';
+import { isMeanless } from '@lib/utils';
 import schemaToFields from '@lib/schema-convert';
 import { getTableSchema } from '@lib/http-client';
 
@@ -60,7 +60,7 @@ function SubTable({
     () => getTableSchema(appID, tableID),
     { enabled: !!(isFromForeign && tableID && appID) },
   );
-  const isInitialValueEmpty = value?.every((v: Record<string, unknown>) => isEmpty(v));
+  const isInitialValueEmpty = value?.every((v: Record<string, unknown>) => isMeanless(v));
   schema = isFromForeign ? data?.schema : schema;
 
   useEffect(() => {
@@ -116,7 +116,7 @@ function SubTable({
       readOnly: props.readOnly || !!sc.readOnly,
       rules: schemaRulesTransform(sc),
       render: (value: any) => {
-        if (isEmpty(value)) {
+        if (isMeanless(value)) {
           return <span className='text-gray-300'>——</span>;
         }
 

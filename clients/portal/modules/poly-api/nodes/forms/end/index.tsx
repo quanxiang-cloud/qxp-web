@@ -45,7 +45,7 @@ function EndForm(props: ISchemaFieldComponentProps): JSX.Element {
 
   return (
     <div className="h-full flex" ref={ref}>
-      <div className="h-full flex-2 px-20 overflow-hidden">
+      <div className="h-full flex-2 px-20">
         <OutputEditor
           {...props}
           customRules={customRules}

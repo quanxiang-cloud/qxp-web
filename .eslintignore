@@ -1,6 +1,5 @@
 .eslintrc.js
 clients/components/table/react-table-config.d.ts
-clients/types/lego-ui.d.ts
 cypress
 dist
 node_modules

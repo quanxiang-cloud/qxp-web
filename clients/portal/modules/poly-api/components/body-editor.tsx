@@ -147,6 +147,7 @@ function BodyEditor(props: Props): JSX.Element {
     store$: Store<POLY_API.ObjectSchema>,
   ): void {
     onAddField?.();
+    row?.current$.showChildren();
     if (!row) {
       return store$?.addChild(
         getObjectEditorNewField(null, 'body', defaultFieldType), store$.Value.length,
@@ -214,7 +215,6 @@ function BodyEditor(props: Props): JSX.Element {
         value={fromApiDataToObjectSchema((valueFrom || []) as POLY_API.PolyNodeInput[])}
         onAddField={handleAddField}
         onChange={handleChange}
-        addFilter={(row: Row<POLY_API.ObjectSchema>) => !!row.name}
       />
     </>
   );

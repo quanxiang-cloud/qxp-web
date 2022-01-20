@@ -17,7 +17,7 @@ type Props = {
 }
 
 function CopyTo({ defaultValue, onSubmit, onCancel, onChange }: Props): JSX.Element {
-  const { handleSubmit, control, reset, watch } = useForm();
+  const { handleSubmit, control, reset, watch } = useForm<CCData>();
   const approvePersons = approvePersonEncoder(defaultValue);
   const defaultValueTemp = { approvePersons };
 

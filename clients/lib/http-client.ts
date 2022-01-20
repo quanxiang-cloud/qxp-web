@@ -80,11 +80,6 @@ export type FormDataRequestUpdateParams = {
   ref?: FormDataRequestUpdateParamsRef;
 }
 
-export type FormDataRequestParams =
-  FormDataRequestQueryDeleteParams |
-  FormDataRequestCreateParams |
-  FormDataRequestUpdateParams;
-
 export type FormDataListResponse = { entities: Record<string, any>[]; total: number };
 
 // new

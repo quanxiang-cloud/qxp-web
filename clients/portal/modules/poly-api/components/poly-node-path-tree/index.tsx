@@ -30,10 +30,11 @@ type Props = {
   className?: string;
   ref?: Ref<RefType>;
   sourceGetter?: () => POLY_API.PolyNodeInput[];
+  hasSuffix?: boolean;
 }
 
 function FormulaConfigTree(
-  { onSelect, className, sourceGetter }: Props, ref: ForwardedRef<RefType>,
+  { onSelect, className, sourceGetter, hasSuffix }: Props, ref: ForwardedRef<RefType>,
 ): JSX.Element {
   const polyNodeStore = useObservable(store$);
   const apiRequestNodeId = polyNodeStore.currentNodeConfigParams?.currentNode?.get('name') as string;
@@ -59,7 +60,7 @@ function FormulaConfigTree(
         .filter(({ name }) => !!name)
         .map((node) => ({
           name: get(node, 'data.descPath', ''),
-          key: node.path,
+          key: hasSuffix ? `[${node.path}]` : node.path,
         }));
     },
   }));

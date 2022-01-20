@@ -1,5 +1,10 @@
 .react-flow__edge-path {
   stroke: #CBD5E1 !important;
+  stroke-width: 2px;
+  cursor: pointer;
+  &:hover {
+    stroke: #375FF3 !important;
+  }
 }
 
 .react-flow__handle {
@@ -117,10 +122,11 @@ $nodeTypes: input, request, if, end, default, output;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+    font-size: 28px;
   }
   svg {
     use {
-      transform: scale(2) translate(-12.6px, -8.8px);
+      transform: scale(2) translate(-38px, -26px);
     }
   }
 }

@@ -1,32 +1,25 @@
 .btn {
   flex-shrink: 0;
-
   display: inline-flex;
   justify-content: center;
   align-items: center;
   padding-left: 16px;
   padding-right: 16px;
   line-height: 30px;
-
   font-weight: 400;
   font-size: 12px;
-
   border-radius: 8px 2px 8px 8px;
   border: 1px solid var(--gray-700);
   background-color: white;
-
   cursor: pointer;
   user-select: none;
+  font-weight: 500;
+  color: var(--gray-600);
+  transition: all 0.3s linear;
 }
 
 .btn--disabled {
   cursor: not-allowed;
-}
-
-.btn {
-  font-weight: 500;
-  color: var(--gray-600);
-  transition: all 0.3s linear;
 }
 
 .btn:hover:not(.btn--forbidden) {

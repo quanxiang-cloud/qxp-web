@@ -5,7 +5,7 @@ import { useQuery } from 'react-query';
 import Button from '@c/button';
 import Icon from '@c/icon';
 import FormDataValueRenderer from '@c/form-data-value-renderer';
-import { isEmpty } from '@lib/utils';
+import { isMeanless } from '@lib/utils';
 import { buildQueryRef } from '@lib/http-client';
 import { getFlowFormData } from '@lib/api/flow';
 import { schemaToFields } from '@lib/schema-convert';
@@ -58,7 +58,7 @@ function UnusualTaskDetail(): JSX.Element {
     const _systems: FormDataProp[] = [];
 
     schemaToFields(formSchema).forEach((field) => {
-      const hasValue = formData && !isEmpty(formData[field.id]);
+      const hasValue = formData && !isMeanless(formData[field.id]);
       if (field['x-internal']?.isSystem) {
         _systems.push({
           label: field.title as string,

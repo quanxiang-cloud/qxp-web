@@ -109,7 +109,7 @@ function ApprovalDetail(): JSX.Element {
 
   const renderSchemaForm = (task: any): JSX.Element | null => {
     return (
-      <div className='task-form'>
+      <div className='task-form overflow-auto px-24'>
         <FormRenderer
           value={formData}
           schema={task.formSchema || {}}
@@ -146,11 +146,11 @@ function ApprovalDetail(): JSX.Element {
           { key: 'list', text: '审批列表', path: `/approvals?list=${listType}` },
           { key: 'current', text: data?.flowName },
         ]}
-        className="px-24 py-20"
+        className="px-24 py-10"
       />
 
-      <div className="approval-detail w-full h-full flex px-20">
-        <Panel className="flex flex-col flex-1 px-24 py-24">
+      <div className="approval-detail w-full h-full flex px-20 gap-20">
+        <Panel className="flex flex-col flex-1 bg-white">
           {
             <>
               {showSwitch &&
@@ -177,9 +177,10 @@ function ApprovalDetail(): JSX.Element {
         </Panel>
         {
           data.canViewStatusAndMsg && (
-            <Panel className="ml-20 approval-detail-tab w-400 opacity-95">
+            <Panel className="approval-detail-tab overflow-auto bg-gray-100">
               <Tab
-                style={{ backgroundColor: 'var(--gray-100)' }}
+                navsClassName="px-16"
+                contentClassName="px-16"
                 items={[
                   {
                     id: 'history',

@@ -2,7 +2,7 @@
 import { FillInData, WorkFlow } from '../type';
 import { CURRENT_WORK_FLOW_VERSION } from './constants';
 
-export function dot1ToLatest(flowData: WorkFlow): WorkFlow {
+function dot1ToLatest(flowData: WorkFlow): WorkFlow {
   if (flowData.version === '0.1') {
     flowData.version = CURRENT_WORK_FLOW_VERSION;
     flowData.shapes.map((shape) => {
