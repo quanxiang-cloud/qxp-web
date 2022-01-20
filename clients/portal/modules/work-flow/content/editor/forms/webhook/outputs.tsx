@@ -3,6 +3,8 @@ import React, { Fragment, useRef, useEffect, useMemo } from 'react';
 import Icon from '@c/icon';
 import { Input } from '@flow/content/editor/type';
 
+import { flattenOutputs } from './utils';
+
 interface Props {
   value: Input[];
   parentElement?: HTMLDivElement;
@@ -12,6 +14,7 @@ export default function Outputs({ value, parentElement }: Props): JSX.Element {
   const sectionRef = useRef<HTMLElement | null>(null);
   const triggerRef = useRef<SVGSVGElement | null>(null);
   const isOpenRef = useRef<boolean>(false);
+  const outputs = flattenOutputs(value);
 
   const observer = useMemo(() => new ResizeObserver(([{ contentRect }]) => {
     const { height } = contentRect;
@@ -69,10 +72,10 @@ export default function Outputs({ value, parentElement }: Props): JSX.Element {
         <div className={headerClassName} style={headerStyle}>参数名</div>
         <div className={headerClassName} style={headerStyle}>类型</div>
         <div className={headerClassName} style={headerStyle}>描述</div>
-        {value.map((item, index) => {
+        {outputs.map((item, index) => {
           return (
             <Fragment key={index}>
-              <div className={bodyClassName}>{item.name}</div>
+              <div className={bodyClassName} style={{ paddingLeft: item.level * 10 }}>{item.name}</div>
               <div className={bodyClassName}>{item.type}</div>
               <div className={bodyClassName}>{item.desc || '-'}</div>
             </Fragment>
