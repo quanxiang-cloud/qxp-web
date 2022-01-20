@@ -7,7 +7,7 @@ import SideNavCard from '@c/side-nav-card';
 import ItemWithTitleDesc from '@c/item-with-title-desc';
 
 import OptionSet from '../option-set';
-import AppTemplates from '../app-templates';
+import AppTemplates from './pages/entry/app-templates';
 import AppList from './pages/entry/app-list';
 
 const MENU = [

@@ -4,7 +4,7 @@ import { Input } from 'antd';
 import Icon from '@c/icon';
 import Modal from '@c/modal';
 import toast from '@lib/toast';
-import { saveAppAsTemplate } from '../../apps-management/pages/entry/app-list/api';
+import { saveAppAsTemplate } from '../../app-list/api';
 import { validateTemplateName } from '../api';
 
 type Props = {

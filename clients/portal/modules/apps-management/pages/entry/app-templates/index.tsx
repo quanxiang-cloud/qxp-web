@@ -4,8 +4,8 @@ import Icon from '@c/icon';
 import { MenuItem } from '@c/more-menu';
 import TextHeader from '@c/text-header';
 
+import AppItem from '../components/render-item';
 import { fetchTemplateList, TemplateListRes } from './api';
-import AppItem from '../apps-management/pages/entry/app-list/app-item';
 import EditTemplateModal from './template-edit/edit-template-modal';
 import DelTemplateModal from './template-edit/del-template-modal';
 
