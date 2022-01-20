@@ -339,7 +339,8 @@ class AppDetailsStore {
         const version = globalSettings.version;
         await cloneUserData({ key: sourceKey, version }, { key: targetKey, version });
       }
-      this.addNewPageToList({ ...PageInfoPick, menuType }, res.id);
+      menuType && Reflect.set(PageInfoPick, 'menuType', menuType);
+      this.addNewPageToList(PageInfoPick, res.id);
     });
   };
 
