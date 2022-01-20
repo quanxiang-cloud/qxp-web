@@ -10,7 +10,7 @@ export type TemplateInfo = AppInfo & {
 
 class TemplateStore {
   @observable templateList: TemplateInfo[] = [];
-  @observable curTemplate: TemplateInfo = {} as any;
+  @observable curTemplate: TemplateInfo | undefined = undefined;
 
   @action
   setCurTemplate = (template: TemplateInfo): void => {
@@ -37,12 +37,12 @@ class TemplateStore {
   };
 
   @action
-  addTemplate = async (appID: string, name: string, appIcon: string): Promise<void> => {
+  addTemplate = async (tmpInfo: TemplateInfo): Promise<void> => {
     return await saveAppAsTemplate(
-      { appID, name, appIcon },
-      `【${name}】 模版新建`,
+      { appID: tmpInfo.id, name: tmpInfo.name, appIcon: tmpInfo.appIcon },
+      `【${tmpInfo.name}】 模版新建`,
     ).then(() => {
-      toast.success('模版保存成功');
+      toast.success('模版保存中');
     }).catch((err) => {
       toast.error('模版保存失败: ', err.message);
     });

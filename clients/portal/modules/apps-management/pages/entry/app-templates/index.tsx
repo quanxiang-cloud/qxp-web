@@ -94,9 +94,9 @@ function AppTemplates(): JSX.Element {
             <AppItem
               menus={menus}
               key={tmpInfo.id}
+              appInfo={tmpInfo}
               openModal={openModal}
               handleActions={handleActions}
-              appInfo={{ ...tmpInfo, appName: tmpInfo.name }}
             />
           ))}
         </div>

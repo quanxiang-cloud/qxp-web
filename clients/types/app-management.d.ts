@@ -7,6 +7,7 @@ declare global {
     useStatus: number;
     appSign: string;
     appZipInfo?: any;
+    name?: string;
   }
 
   type AppZipInfo = {

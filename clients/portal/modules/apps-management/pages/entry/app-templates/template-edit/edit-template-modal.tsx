@@ -5,28 +5,24 @@ import Icon from '@c/icon';
 import Modal from '@c/modal';
 import toast from '@lib/toast';
 
-import store from '../store';
+import store, { TemplateInfo } from '../store';
+import { validateTemplateName } from '../api';
 
 type Props = {
   modalType: string;
-  tmpInfo: AppInfo;
+  tmpInfo: TemplateInfo;
   onCancel: () => void;
 }
 
 function EditTemplateModal({ modalType, tmpInfo, onCancel }: Props): JSX.Element {
   const isEdit = modalType === 'editTemplate';
-  const { templateList, addTemplate, editTemplate } = store;
-  const templateNames = templateList.map(({ appName }) => appName);
-  const [templateName, setAppName] = useState(tmpInfo?.appName);
+  const { addTemplate, editTemplate } = store;
+  const [templateName, setAppName] = useState(tmpInfo?.name);
 
   async function handleSubmit(): Promise<void> {
     if (templateName.length > 30) {
       toast.error('应用名称不超过30个字符');
       return;
-    }
-
-    if (templateNames.includes(templateName)) {
-      toast.error('模版名称已存在');
     }
 
     if (isEdit) {
@@ -35,8 +31,10 @@ function EditTemplateModal({ modalType, tmpInfo, onCancel }: Props): JSX.Element
       return onCancel();
     }
 
-    await addTemplate(tmpInfo.id, tmpInfo.appName, tmpInfo.appIcon);
-    onCancel();
+    validateTemplateName(templateName).then(async () => {
+      await addTemplate(tmpInfo);
+      onCancel();
+    }).catch(() => toast.error('模版名称校验失败'));
   }
 
   return (
@@ -66,7 +64,7 @@ function EditTemplateModal({ modalType, tmpInfo, onCancel }: Props): JSX.Element
           模版不包含应用数据，{isEdit ? '' : '且保存为模版后，'}对模版的修改不会影响应用
         </p>
         <div className="px-20 py-16 text-12">
-          应用名称
+          模版名称
           <Input
             className="mt-8 mb-4 rounded-12 rounded-tl-4"
             placeholder='请输入模版应用名称'
