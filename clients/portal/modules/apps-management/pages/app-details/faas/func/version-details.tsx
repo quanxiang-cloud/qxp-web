@@ -136,7 +136,7 @@ function VersionDetails(): JSX.Element {
                   <TextArea
                     name="name"
                     defaultValue={des}
-                    maxLength={30}
+                    maxLength={100}
                     className="description-input"
                     onChange={(e) => setDes(e.target.value)}
                   />

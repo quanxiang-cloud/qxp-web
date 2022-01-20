@@ -107,7 +107,7 @@ function DataList(): JSX.Element {
                   <TextArea
                     name="name"
                     defaultValue={description}
-                    maxLength={30}
+                    maxLength={100}
                     className="description-input"
                     onChange={(e) => descriptionValue = e.target.value}
                   />
