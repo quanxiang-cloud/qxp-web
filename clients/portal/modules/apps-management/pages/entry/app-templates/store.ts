@@ -2,18 +2,20 @@ import { observable, action } from 'mobx';
 
 import toast from '@lib/toast';
 
-import { fetchTemplateList, TemplateListRes, deleteTemplate, saveAppAsTemplate, editTemplateInfo } from './api';
-
-export type TemplateInfo = AppInfo & {
-  name: string;
-}
+import {
+  deleteTemplate,
+  TemplateListRes,
+  editTemplateInfo,
+  saveAppAsTemplate,
+  fetchTemplateList,
+} from './api';
 
 class TemplateStore {
-  @observable templateList: TemplateInfo[] = [];
-  @observable curTemplate: TemplateInfo | undefined = undefined;
+  @observable templateList: AppInfo[] = [];
+  @observable curTemplate: AppInfo | undefined = undefined;
 
   @action
-  setCurTemplate = (template: TemplateInfo): void => {
+  setCurTemplate = (template: AppInfo): void => {
     this.curTemplate = template;
   };
 
@@ -37,7 +39,11 @@ class TemplateStore {
   };
 
   @action
-  addTemplate = async (tmpInfo: TemplateInfo): Promise<void> => {
+  addTemplate = async (tmpInfo: AppInfo): Promise<void> => {
+    if (!tmpInfo.name) {
+      return;
+    }
+
     return await saveAppAsTemplate(
       { appID: tmpInfo.id, name: tmpInfo.name, appIcon: tmpInfo.appIcon },
       `【${tmpInfo.name}】 模版新建`,

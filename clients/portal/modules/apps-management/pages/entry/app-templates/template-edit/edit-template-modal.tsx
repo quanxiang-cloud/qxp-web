@@ -5,19 +5,19 @@ import Icon from '@c/icon';
 import Modal from '@c/modal';
 import toast from '@lib/toast';
 
-import store, { TemplateInfo } from '../store';
+import store from '../store';
 import { validateTemplateName } from '../api';
 
 type Props = {
   modalType: string;
-  tmpInfo: TemplateInfo;
+  tmpInfo: AppInfo;
   onCancel: () => void;
 }
 
 function EditTemplateModal({ modalType, tmpInfo, onCancel }: Props): JSX.Element {
   const isEdit = modalType === 'editTemplate';
   const { addTemplate, editTemplate } = store;
-  const [templateName, setAppName] = useState(tmpInfo?.name);
+  const [templateName, setAppName] = useState(tmpInfo?.name ?? tmpInfo.appName);
 
   async function handleSubmit(): Promise<void> {
     if (templateName.length > 30) {
@@ -26,8 +26,7 @@ function EditTemplateModal({ modalType, tmpInfo, onCancel }: Props): JSX.Element
     }
 
     if (isEdit) {
-      // todo edit template info
-      editTemplate(tmpInfo.id, templateName, tmpInfo.appIcon);
+      await editTemplate(tmpInfo.id, templateName, tmpInfo.appIcon);
       return onCancel();
     }
 

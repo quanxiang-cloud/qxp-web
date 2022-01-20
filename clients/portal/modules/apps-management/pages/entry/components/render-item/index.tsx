@@ -1,12 +1,12 @@
 import React from 'react';
 import cs from 'classnames';
 
+import { MenuItem } from '@c/more-menu';
 import AppInfoView from '@c/app-info-view';
 
 import AppActions from './app-actions';
 
 import './app-item.scss';
-import { MenuItem } from '@c/more-menu';
 
 type Props = {
   appInfo: AppInfo;

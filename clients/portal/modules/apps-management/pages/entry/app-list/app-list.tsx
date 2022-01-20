@@ -12,7 +12,6 @@ import AppItem from '../components/render-item';
 import DeleteAppModal from './app-edit/del-app-modal';
 import AppSetStatusModal from './app-edit/app-set-status-modal';
 import EditTemplateModal from '../app-templates/template-edit/edit-template-modal';
-import { TemplateInfo } from '../app-templates/store';
 
 type Props = {
   isLoading: boolean;
@@ -43,7 +42,7 @@ function AppList({ isLoading, appList, openCreatedModal }: Props): JSX.Element {
         label: (
           <div className='flex items-center'>
             <Icon name="login" className="mr-4" />
-          访问应用
+            访问应用
           </div>
         ),
       },
@@ -52,8 +51,8 @@ function AppList({ isLoading, appList, openCreatedModal }: Props): JSX.Element {
         disabled: appInfo.useStatus < -1,
         label: (
           <div className="flex items-center">
-            <Icon name="save" className="mr-4" />
-          导出应用
+            <Icon name="upload" className="mr-4" />
+            导出应用
           </div>
         ),
       },
@@ -63,7 +62,7 @@ function AppList({ isLoading, appList, openCreatedModal }: Props): JSX.Element {
         label: (
           <div className="flex items-center">
             <Icon name="save" className="mr-4" />
-          保存为模版
+            保存为模版
           </div>
         ),
       },
@@ -72,7 +71,7 @@ function AppList({ isLoading, appList, openCreatedModal }: Props): JSX.Element {
         label: (
           <div className="flex items-center text-red-600">
             <Icon name="restore_from_trash" className="mr-4" />
-          删除
+            删除
           </div>
         ),
       },
@@ -139,14 +138,14 @@ function AppList({ isLoading, appList, openCreatedModal }: Props): JSX.Element {
         {modalType === 'publish' && (
           <AppSetStatusModal
             appID={curApp.id}
-            status={curApp.useStatus > 0 ? 'soldOut' : 'publish'}
             onCancel={() => setModalType('')}
+            status={curApp.useStatus > 0 ? 'soldOut' : 'publish'}
           />
         )}
         {modalType === 'saveAsTemplate' && (
           <EditTemplateModal
-            tmpInfo={curApp as TemplateInfo}
             modalType={modalType}
+            tmpInfo={curApp}
             onCancel={() => setModalType('')}
           />
         )}

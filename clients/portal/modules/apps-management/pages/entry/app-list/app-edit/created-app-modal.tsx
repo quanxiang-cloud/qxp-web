@@ -4,8 +4,8 @@ import { useHistory } from 'react-router-dom';
 import Modal from '@c/modal';
 import toast from '@lib/toast';
 
-import CreatedEditApp from './created-edit-app';
 import store from '../store';
+import CreatedEditApp from './created-edit-app';
 
 type Props = {
   modalType: string;

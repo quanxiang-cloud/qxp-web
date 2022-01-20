@@ -17,7 +17,7 @@ export const createdApp = async (data: AppInfo): Promise<CreatedAppRes> => {
   return await httpClient('/api/v1/app-center/add', data);
 };
 
-export const importApp = async (data: AppInfo): Promise<CreatedAppRes> => {
+export const createDummyApp = async (data: AppInfo): Promise<CreatedAppRes> => {
   return await httpClient('/api/v1/app-center/importApp', data);
 };
 

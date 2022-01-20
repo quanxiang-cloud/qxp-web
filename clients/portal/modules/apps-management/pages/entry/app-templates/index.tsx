@@ -5,7 +5,7 @@ import Icon from '@c/icon';
 import { MenuItem } from '@c/more-menu';
 import TextHeader from '@c/text-header';
 
-import store, { TemplateInfo } from './store';
+import store from './store';
 import AppItem from '../components/render-item';
 import EditTemplateModal from './template-edit/edit-template-modal';
 import DelTemplateModal from './template-edit/del-template-modal';
@@ -41,7 +41,7 @@ function AppTemplates(): JSX.Element {
 
   const openModal = (_modalType: string, _curApp: AppInfo): void => {
     setModalType(_modalType);
-    setCurTemplate(_curApp as TemplateInfo);
+    setCurTemplate(_curApp);
   };
 
   function handleActions(key: string, itemData: AppInfo): void {
@@ -64,13 +64,13 @@ function AppTemplates(): JSX.Element {
 
     return (
       <>
-        {modalType === 'editTemplate' &&
-          (<EditTemplateModal
+        {modalType === 'editTemplate' && (
+          <EditTemplateModal
             modalType={modalType}
             tmpInfo={curTemplate}
             onCancel={() => setModalType('')}
-          />)
-        }
+          />
+        )}
         {modalType === 'delTemplate' &&
           <DelTemplateModal appInfo={curTemplate} onCancel={() => setModalType('')} />
         }
@@ -90,7 +90,7 @@ function AppTemplates(): JSX.Element {
         />
         <div className="p-16 font-semibold">我的模板 · {templateList.length}</div>
         <div className="flex-1 border-t-1 border-gray-200 app-list-container p-16">
-          {templateList.map((tmpInfo: TemplateInfo) => (
+          {templateList.map((tmpInfo: AppInfo) => (
             <AppItem
               menus={menus}
               key={tmpInfo.id}

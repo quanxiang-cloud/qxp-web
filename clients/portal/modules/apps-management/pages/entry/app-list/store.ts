@@ -6,10 +6,10 @@ import { subscribeStatusChange } from '@c/task-lists/utils';
 import { updateAppStatus, createPage } from '../../app-details/api';
 import {
   delApp,
-  importApp,
   createdApp,
   fetchAppList,
   CreatedAppRes,
+  createDummyApp,
   createImportAppTask,
   createAppByTemplateTask,
 } from './api';
@@ -119,7 +119,7 @@ class AppListStore {
 
   @action
   importApp = async (appInfo: AppInfo): Promise<any> => {
-    const createdAppRes = await importApp(appInfo);
+    const createdAppRes = await createDummyApp(appInfo);
     const taskRes = await createImportAppTask({
       ...appInfo.appZipInfo,
       title: `【${appInfo.appName}】 应用导入`,
@@ -140,7 +140,7 @@ class AppListStore {
       return;
     }
 
-    const createdAppRes = await importApp(appInfo);
+    const createdAppRes = await createDummyApp(appInfo);
     const taskRes = await createAppByTemplateTask(
       `【${appInfo.appName}】 模版应用创建`,
       { templateID: appInfo.template, appID: createdAppRes.id },

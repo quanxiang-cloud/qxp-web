@@ -9,6 +9,7 @@ import CreatedAppModal from './app-edit/created-app-modal';
 import Header from './header';
 import AppList from './app-list';
 import store from './store';
+
 import './index.scss';
 
 function MyApp(): JSX.Element {

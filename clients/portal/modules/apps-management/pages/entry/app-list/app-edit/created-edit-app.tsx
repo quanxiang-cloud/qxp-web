@@ -7,9 +7,9 @@ import Select from '@c/select';
 import AppZipUpload from './app-zip-upload';
 import AppCreatedBy from './app-created-by';
 import AppIconPicker from './app-icon-picker';
+import { fetchTemplateList, TemplateListRes } from '../../app-templates/api';
 
 import './style.scss';
-import { fetchTemplateList, TemplateListRes } from '../../app-templates/api';
 
 const DISABLE_SPECIAL_SYMBOL_REG = /[#$@^&=`'":;,.~¥-。、（）「」·“”；：？，《》【】+/\\()<>{}[\] ]/gi;
 
@@ -17,8 +17,8 @@ type Props = {
   modalType: string;
   className?: string;
   appInfo?: AppInfo;
-  onValuesChange?: (value: any) => void;
   onSubmitCallback?: () => void;
+  onValuesChange?: (value: any) => void;
 }
 
 function CreatedEditApp({
@@ -36,8 +36,8 @@ function CreatedEditApp({
     onSubmitCallback && onSubmitCallback();
   }
 
-  function handleValuesChange(value: any): void {
-    'createdBy' in value && setCreatedBy(value.createdBy);
+  function handleValuesChange(value: Record<string, unknown>): void {
+    'createdBy' in value && setCreatedBy(value.createdBy as string);
     onValuesChange?.(value);
   }
 
