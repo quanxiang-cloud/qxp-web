@@ -2,7 +2,7 @@ import { observable, action } from 'mobx';
 
 import toast from '@lib/toast';
 
-import { fetchTemplateList, TemplateListRes, deleteTemplate } from './api';
+import { fetchTemplateList, TemplateListRes, deleteTemplate, saveAppAsTemplate } from './api';
 
 export type TemplateInfo = AppInfo & {
   name: string;
@@ -34,6 +34,23 @@ class TemplateStore {
     }).catch(() => {
       toast.error('模版删除成功');
     });
+  };
+
+  @action
+  addTemplate = async (appID: string, name: string, appIcon: string): Promise<void> => {
+    return await saveAppAsTemplate(
+      { appID, name, appIcon },
+      `【${name}】 模版新建`,
+    ).then(() => {
+      toast.success('模版保存成功');
+    }).catch((err) => {
+      toast.error('模版保存失败: ', err.message);
+    });
+  };
+
+  @action
+  editTemplate = (): void => {
+
   };
 }
 

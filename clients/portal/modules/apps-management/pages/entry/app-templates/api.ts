@@ -5,6 +5,18 @@ export type TemplateListRes = {
   templates: any;
 }
 
+type TemplateInfo = {
+  name: string;
+  appID: string;
+  appIcon: string;
+  appName?: string;
+  version?: string;
+  groupID?: string;
+}
+export const saveAppAsTemplate = async (value: TemplateInfo, title: string): Promise<void> => {
+  return await httpClient('/api/v1/entrepot/task/create/createTemplate', { value, title });
+};
+
 export async function fetchTemplateList(): Promise<TemplateListRes> {
   return await httpClient('/api/v1/app-center/template/selfList');
 }

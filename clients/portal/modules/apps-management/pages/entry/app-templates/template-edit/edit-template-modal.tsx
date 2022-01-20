@@ -4,8 +4,8 @@ import { Input } from 'antd';
 import Icon from '@c/icon';
 import Modal from '@c/modal';
 import toast from '@lib/toast';
-import { saveAppAsTemplate } from '../../app-list/api';
-import { validateTemplateName } from '../api';
+
+import store from '../store';
 
 type Props = {
   modalType: string;
@@ -15,34 +15,28 @@ type Props = {
 
 function EditTemplateModal({ modalType, tmpInfo, onCancel }: Props): JSX.Element {
   const isEdit = modalType === 'editTemplate';
+  const { templateList, addTemplate, editTemplate } = store;
+  const templateNames = templateList.map(({ appName }) => appName);
   const [templateName, setAppName] = useState(tmpInfo?.appName);
 
-  function handleSubmit(): void {
+  async function handleSubmit(): Promise<void> {
     if (templateName.length > 30) {
       toast.error('应用名称不超过30个字符');
       return;
     }
 
-    validateTemplateName(templateName).then(() => {
-      // before this todo name repeat validate
-
-      if (isEdit) {
-        // todo edit template info
-
-        return onCancel();
-      }
-
-      saveAppAsTemplate(
-        { appID: tmpInfo?.id ?? '', name: templateName, appIcon: tmpInfo?.appIcon ?? '' },
-        `【${templateName}】 模版保存`,
-      ).catch((err) => {
-        toast.error('模版保存失败: ', err.message);
-      });
-
-      onCancel();
-    }).catch(() => {
+    if (templateNames.includes(templateName)) {
       toast.error('模版名称已存在');
-    });
+    }
+
+    if (isEdit) {
+      // todo edit template info
+      editTemplate();
+      return onCancel();
+    }
+
+    await addTemplate(tmpInfo.id, tmpInfo.appName, tmpInfo.appIcon);
+    onCancel();
   }
 
   return (

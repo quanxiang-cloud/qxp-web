@@ -32,15 +32,3 @@ export const exportAppAndCreateTask = async (data: Partial<AppZipInfo>): Promise
 export const delApp = async (id: string): Promise<unknown> => {
   return await httpClient('/api/v1/app-center/del', { id });
 };
-
-type TemplateInfo = {
-  name: string;
-  appID: string;
-  appIcon: string;
-  appName?: string;
-  version?: string;
-  groupID?: string;
-}
-export const saveAppAsTemplate = async (value: TemplateInfo, title: string): Promise<unknown> => {
-  return await httpClient('/api/v1/entrepot/task/create/createTemplate', { value, title });
-};
