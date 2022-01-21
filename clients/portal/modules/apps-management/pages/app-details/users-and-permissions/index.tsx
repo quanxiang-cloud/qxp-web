@@ -40,7 +40,7 @@ function UsersAndPermissions(): JSX.Element {
     store.appID = appID;
     store.fetchRights();
     return () => {
-      store.appID = '';
+      store.clear();
     };
   }, [appID]);
 

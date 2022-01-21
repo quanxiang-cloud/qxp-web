@@ -18,8 +18,8 @@ interface Props {
   deleteTaskItem: (id: string) => void;
 }
 
-const IMPORT_TYPE = ['formImport'];
-const EXPORT_TYPE = ['formExport', 'formTemplate'];
+const IMPORT_TYPE = ['formImport', 'appImport'];
+const EXPORT_TYPE = ['formExport', 'formTemplate', 'appExport'];
 
 export function multipledownloadFile(pathArr: { fileName: string, url: string }[]): void {
   pathArr.forEach((path) => {
@@ -52,9 +52,9 @@ function TaskItem({ task, deleteTaskItem }: Props): JSX.Element {
   const { appID } = useParams<{ appID: string }>();
 
   function getIcon(): string {
-    if (IMPORT_TYPE.includes(command)) return 'export-icon';
-    if (EXPORT_TYPE.includes(command)) return 'import-icon';
-    return 'download-ok';
+    if (IMPORT_TYPE.includes(command) && (status === 3 || status === 1)) return 'upload-apps';
+    if (EXPORT_TYPE.includes(command) && (status === 3 || status === 1)) return 'download-apps';
+    return 'download-success';
   }
 
   function onClickItem(command: string): void {

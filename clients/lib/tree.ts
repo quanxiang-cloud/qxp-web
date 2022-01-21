@@ -1,4 +1,5 @@
 import { curry, map, clone } from 'ramda';
+import { isEmpty } from 'lodash';
 
 const { isArray } = Array;
 
@@ -71,6 +72,9 @@ function treeMap<T extends Record<string, any> >(
 }
 
 function toArray<T extends Record<string, any>>(childKey: string | string[], tree: T): T[] {
+  if (isEmpty(tree)) {
+    return [];
+  }
   function flattenToArray(arr: T[], node: T, nodeIndex?: string | number): T[] {
     Object.assign(node, { fieldIndex: nodeIndex });
     return arr.concat(node);
