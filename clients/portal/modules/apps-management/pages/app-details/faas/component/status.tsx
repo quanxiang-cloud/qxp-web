@@ -43,13 +43,13 @@ function StatusDisplay({
     }
 
     return () => {
-      ws.removeEventListener('faas', dataID);
+      ws.removeEventListener('faas', `status-${dataID}`);
     };
   }, [status]);
 
   useUpdateEffect(() => {
     if (status !== 'Unknown') {
-      ws.removeEventListener('faas', dataID);
+      ws.removeEventListener('faas', `status-${dataID}`);
     }
   }, [status]);
 

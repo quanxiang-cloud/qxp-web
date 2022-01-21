@@ -20,18 +20,7 @@ import '../../api-documentation/prism.css';
 const { TextArea } = Input;
 
 function VersionDetails(): JSX.Element {
-  const {
-    tag,
-    creator,
-    createdAt,
-    updatedAt,
-    describe,
-    serverState,
-    message,
-    visibility,
-    updater,
-  } = store.currentVersionFunc;
-  const [des, setDes] = useState(describe);
+  const [des, setDes] = useState(store.currentVersionFunc?.describe || '');
   const tabItems = [
     {
       id: 'build',
@@ -53,7 +42,26 @@ function VersionDetails(): JSX.Element {
 
   useEffect(() => {
     store.getVersion();
+    return () => {
+      store.currentVersionFunc = null;
+    };
   }, [store.buildID]);
+
+  if (!store.currentVersionFunc) {
+    return <div>Loading...</div>;
+  }
+
+  const {
+    tag,
+    creator,
+    createdAt,
+    updatedAt,
+    describe,
+    serverState,
+    message,
+    visibility,
+    updater,
+  } = store.currentVersionFunc;
 
   return (
     <div className='flex flex-col flex-1 h-full px-20 version-detail'>

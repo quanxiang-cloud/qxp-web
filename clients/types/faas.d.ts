@@ -80,4 +80,6 @@ type FaasProcessSpanProps = {
 type BuildLog = {
   log: string;
   timestamp: number;
+  run: string;
+  step: string;
 }

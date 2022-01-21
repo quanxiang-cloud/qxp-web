@@ -48,21 +48,6 @@ const INIT_CURRENT_FUNC = {
   versionNum: 0,
 };
 
-const INIT_VERSION: VersionField = {
-  id: '',
-  state: 'Unknown',
-  serverState: 'Unknown',
-  message: '',
-  creator: '',
-  createdAt: 0,
-  updatedAt: 0,
-  tag: '',
-  visibility: 'offline',
-  describe: '',
-  serverMsg: '',
-  updater: '',
-};
-
 function getBuildStatusMap(statusList: FaasBuildStatus[]): Record<string, FaasProcessStatus> {
   return statusList.reduce<Record<string, FaasProcessStatus>>((acc, _status) => {
     if (_status.children) {
@@ -100,7 +85,7 @@ class FaasStore {
   @observable funcList: FuncField[] = [];
   @observable currentFunc: FuncField = INIT_CURRENT_FUNC;
   @observable versionList: VersionField[] = [];
-  @observable currentVersionFunc: VersionField = INIT_VERSION;
+  @observable currentVersionFunc: VersionField | null = null;
   @observable initErr = false;
   @observable APiContent: APiContent = INIT_API_CONTENT;
   @observable isAPILoadingErr = '';
@@ -479,7 +464,7 @@ class FaasStore {
         return version;
       });
 
-      if (this.currentVersionFunc.id === buildID) {
+      if (this.currentVersionFunc?.id === buildID) {
         this.currentVersionFunc = { ...this.currentVersionFunc, [type]: versionInfo.build[type] };
       }
 

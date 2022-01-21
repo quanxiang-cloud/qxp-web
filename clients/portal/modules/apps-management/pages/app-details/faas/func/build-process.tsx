@@ -1,13 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import ReactFlow, {
-  MiniMap,
-  Controls,
-  Elements,
-  Background,
-} from 'react-flow-renderer';
+import { Elements } from 'react-flow-renderer';
 
 import ws from '@lib/push';
 import PageLoading from '@c/page-loading';
+import FlowRender from '@c/flow-render';
 
 import ProcessSpan from './process-span';
 import store from '../store';
@@ -103,16 +99,14 @@ function BuildProcess(): JSX.Element {
   return (
     <div className='faas-build-process h-full'>
       {loading ? <PageLoading /> : (
-        <ReactFlow
+        <FlowRender
           elements={elements}
           snapToGrid={true}
           nodeTypes={nodeTypes}
           snapGrid={[15, 15]}
-        >
-          <MiniMap />
-          <Controls />
-          <Background color="#aaa" gap={16} />
-        </ReactFlow>
+          layoutType='elk'
+          direction='right'
+        />
       )}
     </div>
   );

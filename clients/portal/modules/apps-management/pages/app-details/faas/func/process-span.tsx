@@ -68,6 +68,8 @@ function ProcessSpan({ data, id }: NodeProps<FaasProcessSpanProps>): JSX.Element
       {
         logVisible && (
           <LoggerModal
+            isChild={data.isChildNode}
+            isOngoing={status === 'Unknown' || !status}
             step={id}
             onClose={() => setLogVisible(false)}
           />

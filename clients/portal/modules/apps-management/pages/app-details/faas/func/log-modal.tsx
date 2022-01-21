@@ -9,6 +9,8 @@ import { getBuildLog } from '../api';
 type Props = {
   onClose: () => void;
   step: string;
+  isOngoing: boolean;
+  isChild?: boolean;
 }
 
 const INTERVAL = 3000;
@@ -17,12 +19,11 @@ function getCurrentTime(): number {
   return Math.floor(new Date().getTime() / 1000);
 }
 
-function LoggerModal({ onClose, step }: Props): JSX.Element {
+function LoggerModal({ onClose, step, isChild, isOngoing }: Props): JSX.Element {
   const [logs, setLogs] = useState<BuildLog[]>([]);
   const [loading, setLoading] = useState(true);
   const timer = useRef<number | null>(null);
-  const isOngoing = store.currentVersionFunc.state === 'Unknown' ||
-    store.currentVersionFunc.serverState === 'Unknown';
+  const logsRef = useRef<BuildLog[]>([]);
   let logRefreshTime = getCurrentTime();
 
   function updateLogs(): Promise<void> {
@@ -32,7 +33,16 @@ function LoggerModal({ onClose, step }: Props): JSX.Element {
       store.buildID,
       { timestamp: getCurrentTime() - logRefreshTime },
     ).then((res) => {
-      setLogs([...logs, ...res.logs]);
+      const _logs = res.logs.filter((log) => {
+        if (isChild) {
+          return log.step === step;
+        }
+
+        return log.run === step;
+      });
+      const newLogs = [...logsRef.current, ..._logs];
+      setLogs(newLogs);
+      logsRef.current = newLogs;
       logRefreshTime = getCurrentTime();
     });
   }
@@ -64,8 +74,9 @@ function LoggerModal({ onClose, step }: Props): JSX.Element {
     <Modal
       onClose={onClose}
       title='构建日志'
+      width='700px'
     >
-      <div className='p-10 faas-build-log relative'>
+      <div className='p-10 faas-build-log relative overflow-auto'>
         {loading && <PageLoading />}
         {!loading && logs.length !== 0 && (
           <>
