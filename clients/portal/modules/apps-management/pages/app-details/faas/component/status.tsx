@@ -5,6 +5,8 @@ import Icon from '@c/icon';
 import Tooltip from '@c/tooltip';
 import ws, { SocketData } from '@lib/push';
 
+import { wsSubscribe } from '../api';
+
 import './index.scss';
 
 type Props = {
@@ -32,9 +34,12 @@ function StatusDisplay({
 }: Props): JSX.Element {
   useEffect(() => {
     if (status === 'Unknown') {
-      ws.subscribe({
-        key: dataID, topic, type: 'faas', cb: callBack,
+      wsSubscribe({
+        topic,
+        key: dataID,
+        uuid: ws.uuid,
       });
+      ws.addEventListener('faas', `status-${dataID}`, callBack);
     }
 
     return () => {
