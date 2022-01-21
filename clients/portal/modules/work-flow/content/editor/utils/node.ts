@@ -123,6 +123,7 @@ function getNodeInitialData(type: NodeType): BusinessData {
       type: 'request',
       config: {
         api: { value: '' },
+        method: '',
         url: '',
         inputs: [],
         outputs: [],
