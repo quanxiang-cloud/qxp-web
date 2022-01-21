@@ -41,11 +41,11 @@ function AddOptionSetItem({ type, prefix = '' }: Props): JSX.Element {
     <Popconfirm
       content={(
         <div className='option-set-popper text-gray-600'>
-          <span>选项数据名称</span>
+          <div>选项数据名称</div>
           <textarea
             maxLength={100}
-            rows={2}
-            className='textarea textarea-default my-8'
+            rows={3}
+            className='my-8'
             value={label}
             onChange={(e) => setLabel(e.target.value)}
           />
