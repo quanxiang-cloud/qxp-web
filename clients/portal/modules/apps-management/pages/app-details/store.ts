@@ -442,11 +442,13 @@ class AppDetailsStore {
     }
 
     if (pageInfo.menuType === MenuType.schemaPage) {
-    // todo
       getSchemaPage(this.appID, this.pageID).then((schema)=> {
         if (schema) {
           this.designPageSchema = schema;
         }
+        return getPageCardList(this.appID, this.pageID, this.curPageCardList, pageInfo.menuType);
+      }).then((res) => {
+        this.curPageCardList = res;
       }).catch((err) => {
         toast.error(err.message);
       }).finally(() => {
@@ -477,7 +479,7 @@ class AppDetailsStore {
   };
 
   @action
-  updatePageHideStatus = (appID: string, pageInfo: PageInfo) => {
+  updatePageHideStatus = (appID: string, pageInfo: PageInfo): Promise<void> => {
     return isHiddenMenu(appID, { id: pageInfo.id, hide: pageInfo.isHide ? false : true }).then(() => {
       const hideMenu = (pageInitList: Menu[]): Menu[] => {
         return (pageInitList || []).map((item: Menu) => {
