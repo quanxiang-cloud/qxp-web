@@ -101,6 +101,9 @@ export default function PersonPicker({ value, typeText, onChange }: Props): JSX.
     [equals('person'), always(specifyPerson)],
     [equals('field'), always(specifyField)],
     [equals('position'), always(position)],
+    [equals('superior'), always(() => <></>)],
+    [equals('leadOfDepartment'), always(() => <></>)],
+    [equals('processInitiator'), always(() => <></>)],
     [T, always(specifyFlowVariable)],
   ]);
   const PersonPicker = getPickerHandler(type);
