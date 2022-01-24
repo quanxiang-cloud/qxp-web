@@ -157,7 +157,7 @@ export function getBuildLog(
   groupID: string,
   projectID: string,
   buildID: string,
-  position: { timestamp: number },
+  position: { index: number },
 ): Promise<{ logs: BuildLog[] }> {
   return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/build/${buildID}/logger`, position);
 }

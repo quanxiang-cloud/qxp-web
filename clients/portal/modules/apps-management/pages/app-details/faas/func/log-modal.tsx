@@ -15,23 +15,19 @@ type Props = {
 
 const INTERVAL = 3000;
 
-function getCurrentTime(): number {
-  return Math.floor(new Date().getTime() / 1000);
-}
-
 function LoggerModal({ onClose, step, isChild, isOngoing }: Props): JSX.Element {
   const [logs, setLogs] = useState<BuildLog[]>([]);
   const [loading, setLoading] = useState(true);
   const timer = useRef<number | null>(null);
   const logsRef = useRef<BuildLog[]>([]);
-  let logRefreshTime = getCurrentTime();
+  let startCount = 1;
 
   function updateLogs(): Promise<void> {
     return getBuildLog(
       store.groupID,
       store.currentFuncID,
       store.buildID,
-      { timestamp: getCurrentTime() - logRefreshTime },
+      { index: startCount },
     ).then((res) => {
       const _logs = res.logs.filter((log) => {
         if (isChild) {
@@ -43,7 +39,7 @@ function LoggerModal({ onClose, step, isChild, isOngoing }: Props): JSX.Element 
       const newLogs = [...logsRef.current, ..._logs];
       setLogs(newLogs);
       logsRef.current = newLogs;
-      logRefreshTime = getCurrentTime();
+      startCount += res.logs.length;
     });
   }
 
