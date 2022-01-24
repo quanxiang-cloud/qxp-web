@@ -56,6 +56,7 @@ const INIT_VERSION: VersionField = {
   creator: '',
   createdAt: 0,
   updatedAt: 0,
+  completionTime: 0,
   tag: '',
   visibility: 'offline',
   describe: '',
