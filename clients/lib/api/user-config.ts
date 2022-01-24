@@ -17,6 +17,10 @@ export function setBatchUserData(params: SetParams[]): Promise<void> {
   return httpClient('/api/v1/persona/userBatchSetValue', { params });
 }
 
+export function cloneUserData(sourceKey: GetParams, targetKey: GetParams): Promise<any> {
+  return httpClient('/api/v1/persona/cloneValue', { key: sourceKey, newKey: targetKey });
+}
+
 export function getBatchGlobalConfig(keys: GetParams[]): Promise<{ result: Record<string, string> }> {
   return httpClient('/api/v1/persona/batchGetValue', { keys });
 }

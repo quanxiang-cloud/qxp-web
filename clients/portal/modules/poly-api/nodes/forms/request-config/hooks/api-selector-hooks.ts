@@ -36,17 +36,17 @@ export function useGetNamespaceTree(
 }
 
 export function useGetOptions(
-  appID: string, apiNamespacePath: string, useInPoly: boolean,
+  appID: string, apiNamespacePath: string, usePolyApiOption: boolean,
 ): ApiCascaderOption[] {
   const rawTree = useGetNamespaceTree(appID, 'raw.root');
   const polyTree = useGetNamespaceTree(appID, 'poly');
   const [options, setOptions] = useState<ApiCascaderOption[] | undefined>();
   const apiNamespacePathTree = useMemo(() => {
-    if (useInPoly) {
-      return rawTree;
+    if (usePolyApiOption) {
+      return rawTree.concat(polyTree);
     }
 
-    return rawTree.concat(polyTree);
+    return rawTree;
   }, [polyTree, rawTree]);
 
   const { data: apiListDetails, isLoading, error } = useGetRequestNodeApiList({

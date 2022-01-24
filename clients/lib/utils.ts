@@ -135,7 +135,7 @@ export function departmentToTreeNode(department: Department, level = 0): TreeNod
     childrenStatus: 'resolved',
     expanded: level === 0,
     order: 0,
-    level: department.grade,
+    level: level,
     children: children,
   };
 }

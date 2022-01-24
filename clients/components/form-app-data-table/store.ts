@@ -12,7 +12,7 @@ import { SizeType } from '@c/table';
 import { TableHeaderBtn, TableConfig, ColumnConfig, FormTableConfig, TableUserConfig } from './type';
 import { Config, getPageDataSchema } from './utils';
 
-type Params = {
+export type Params = {
   condition?: Condition[] | [],
   tag?: FilterTag,
   sort?: string[] | [],

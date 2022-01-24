@@ -43,10 +43,10 @@ function PageDesign(): JSX.Element {
       <div className='flex flex-col mb-24 relative -top-8'>
         <p className='text-12 text-gray-600'>选择API</p>
         <ApiSelector
+          simpleMode
           className='api-selector-wrap'
           initRawApiPath={apiPath}
           setApiPath={setApiPath}
-          simpleMode
         />
       </div>
     ));

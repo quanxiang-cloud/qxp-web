@@ -1,5 +1,6 @@
 import { isString, flattenDeep, isArray } from 'lodash';
 import { Node, isNode } from 'react-flow-renderer';
+import { mergeLeft, flatten } from 'ramda';
 
 import store, { getNodeElementById } from '@flow/content/editor/store';
 import { Data, Input } from '@flow/content/editor/type';
@@ -92,4 +93,15 @@ export function inputValidator(value: Input[]): boolean {
 
 export function requestApiValidator({ value }: { value: string}): true | string {
   return value ? true : '请选择触发的API';
+}
+
+type Output = Input & { level: number; };
+export function flattenOutputs(outputs: Input[], level = 1): Output[] {
+  return flatten(outputs.map((output) => {
+    const current = mergeLeft(output, { level });
+    if ((output.type === 'object' || output.type === 'array') && isArray(output.data)) {
+      return [current, ...flattenOutputs(output.data, level + 1)];
+    }
+    return current;
+  }));
 }
