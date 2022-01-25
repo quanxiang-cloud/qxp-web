@@ -28,18 +28,14 @@ function CreatedAppModal({ modalType, onCancel }: Props): JSX.Element {
     const data = formDom.getFieldsValue();
 
     if ('template' in data) {
-      createdAppByTemplate(data).then(() => {
-        onCancel();
-      }).catch((e) => {
+      createdAppByTemplate(data).then(onCancel).catch((e) => {
         toast.error(e.message);
       });
       return;
     }
 
     if (modalType === 'importApp') {
-      importApp(data).then(() => {
-        onCancel();
-      }).catch((e) => {
+      importApp(data).then(onCancel).catch((e) => {
         toast.error(e.message);
       });
       return;

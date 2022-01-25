@@ -12,7 +12,7 @@ import {
 
 class TemplateStore {
   @observable templateList: AppInfo[] = [];
-  @observable curTemplate: AppInfo | undefined = undefined;
+  @observable curTemplate?: AppInfo;
 
   @action
   setCurTemplate = (template: AppInfo): void => {

@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { observer } from 'mobx-react';
 
 import Icon from '@c/icon';
-import { MenuItem } from '@c/more-menu';
 import TextHeader from '@c/text-header';
 
 import store from './store';
@@ -18,44 +17,33 @@ function AppTemplates(): JSX.Element {
     fetchList();
   }, []);
 
-  const menus: MenuItem[] = [
-    {
-      key: 'editTemplate',
-      label: (
-        <div className="flex items-center">
-          <Icon name="save" className="mr-4" />
-          修改信息
-        </div>
-      ),
-    },
-    {
-      key: 'delTemplate',
-      label: (
-        <div className="flex items-center text-red-600">
-          <Icon name="restore_from_trash" className="mr-4" />
-          删除
-        </div>
-      ),
-    },
-  ];
+  const MENUS = useMemo(() => {
+    return [
+      {
+        key: 'editTemplate',
+        label: (
+          <div className="flex items-center">
+            <Icon name="save" className="mr-4" />
+            修改信息
+          </div>
+        ),
+      },
+      {
+        key: 'delTemplate',
+        label: (
+          <div className="flex items-center text-red-600">
+            <Icon name="restore_from_trash" className="mr-4" />
+            删除
+          </div>
+        ),
+      },
+    ];
+  }, []);
 
   const openModal = (_modalType: string, _curApp: AppInfo): void => {
     setModalType(_modalType);
     setCurTemplate(_curApp);
   };
-
-  function handleActions(key: string, itemData: AppInfo): void {
-    switch (key) {
-    case 'editTemplate':
-      openModal('editTemplate', itemData);
-      break;
-    case 'delTemplate':
-      openModal('delTemplate', itemData);
-      break;
-    default:
-      break;
-    }
-  }
 
   function RenderModal() {
     if (!curTemplate) {
@@ -92,11 +80,11 @@ function AppTemplates(): JSX.Element {
         <div className="flex-1 border-t-1 border-gray-200 app-list-container p-16">
           {templateList.map((tmpInfo: AppInfo) => (
             <AppItem
-              menus={menus}
+              menus={MENUS}
               key={tmpInfo.id}
               appInfo={tmpInfo}
               openModal={openModal}
-              handleActions={handleActions}
+              handleActions={openModal}
             />
           ))}
         </div>

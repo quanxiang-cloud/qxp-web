@@ -120,8 +120,6 @@ function AppList({ isLoading, appList, openCreatedModal }: Props): JSX.Element {
     case 'saveAsTemplate':
       openModal('saveAsTemplate', itemData);
       break;
-    default:
-      break;
     }
   }
 

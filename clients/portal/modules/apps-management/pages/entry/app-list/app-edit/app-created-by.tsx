@@ -8,12 +8,12 @@ type Props = {
   onChange?: (value: string) => void;
 }
 
-function AppCreatedBy({ value, onChange }: Props): JSX.Element {
-  const options = [
-    { label: '从空白创建', value: 'base' },
-    { label: '从模版创建', value: 'template' },
-  ];
+const options = [
+  { label: '从空白创建', value: 'base' },
+  { label: '从模版创建', value: 'template' },
+];
 
+function AppCreatedBy({ value, onChange }: Props): JSX.Element {
   return (
     <div className="flex items-center">
       <RadioGroup onChange={(value) => onChange?.(value.toString())}>
