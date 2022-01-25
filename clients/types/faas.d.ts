@@ -14,6 +14,7 @@ type FuncField = {
 }
 
 type VersionField = {
+  completionTime: number,
   createdAt: number,
   creator: string,
   describe: string,

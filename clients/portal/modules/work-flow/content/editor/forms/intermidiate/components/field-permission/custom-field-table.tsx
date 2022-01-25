@@ -33,7 +33,7 @@ export default function CustomFieldTable({
   schema,
 }: Props): JSX.Element {
   const { flowID: flowId } = useContext(flowContext);
-  const schemaMap = schemaToMap(schema);
+  const schemaMap = schemaToMap(schema, null, { keepLayout: true, parseSubTable: true });
   const layoutFields = schemaToArray(schema, { parseSubTable: true, keepLayout: true })
     .reduce((layoutFields: string[], schema) => {
       const internal = schema['x-internal'];
@@ -177,7 +177,8 @@ export default function CustomFieldTable({
     }, []);
 
     if (!key) {
-      const path = without(layoutFields, model.cell.row.original.path?.split('.') || []);
+      const fieldPath = model.cell.row.original.path.replace('.*.', '.');
+      const path = without(layoutFields, fieldPath.split('.') || []);
       const level = path.length - 1 > 0 ? path.length - 1 : 0;
       return (
         <div
@@ -319,8 +320,10 @@ export default function CustomFieldTable({
           Header: () => getValueHeader('提交值', '该节点提交工作表后对应字段呈现提交值'),
           id: 'submitValue',
           accessor: 'submitValue',
-          Cell: (model: any) => model.cell.row.original.write &&
-            getValueCell(model, 'submitValue', editable),
+          Cell: (model: any) => {
+            return model.cell.row.original.write && !model.cell.row.original.editable &&
+            getValueCell(model, 'submitValue', editable);
+          },
         }].filter(Boolean) as UnionColumn<CustomFieldPermission>[]
       }
       data={fields.filter((field) => !field.hidden)}

@@ -105,6 +105,7 @@ function MultipleSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
         ref={selectRef}
         options={allOptions.map((option) => ({ label: option, value: option }))}
         placeholder="请选择选项"
+        getPopupContainer={(triggerNode) => triggerNode.parentNode as HTMLElement}
         onSelect={handleOnSelect}
         onDeselect={(v: unknown) => {
           fieldProps.mutators.change([
