@@ -95,7 +95,7 @@ export function getFuncVersionList(
 export function getVersion(
   groupID: string,
   projectID: string,
-  buildID: string): Promise<{build: VersionField}> {
+  buildID: string): Promise<{ build: VersionField }> {
   return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/build/${buildID}/get`);
 }
 
@@ -135,4 +135,39 @@ export function getVersionInfo(
   buildID: string,
 ): Promise<{ build: VersionField }> {
   return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/build/${buildID}/get`);
+}
+
+export function getBuildProcess(
+  groupID: string,
+  projectID: string,
+  buildID: string,
+): Promise<FaasBuildProcess> {
+  return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/build/${buildID}/graph`);
+}
+
+export function getBuildProcessStatus(
+  groupID: string,
+  projectID: string,
+  buildID: string,
+): Promise<{ events: FaasBuildStatus[] }> {
+  return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/build/${buildID}/event`);
+}
+
+export function getBuildLog(
+  groupID: string,
+  projectID: string,
+  buildID: string,
+  position: { index: number },
+): Promise<{ logs: BuildLog[] }> {
+  return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/build/${buildID}/logger`, position);
+}
+
+type SubscribeParams = {
+  topic: string;
+  key: string;
+  uuid: string;
+}
+
+export function wsSubscribe(params: SubscribeParams): Promise<TaskForm> {
+  return httpClient('/api/v1/midfielder/cm/subscribe', params);
 }

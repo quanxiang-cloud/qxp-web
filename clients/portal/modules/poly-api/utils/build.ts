@@ -8,6 +8,7 @@ import httpClient from '@lib/http-client';
 import store$ from '../store';
 import PolyNodeStore from '../store/node';
 import { POLY, POLY_QUERY } from '../effects/api/names';
+import { initGraphElements } from '.';
 
 const excludes = ['currentNodeConfigParams', 'polyInfo'];
 function getArrange(): [string, string, 0 | 1, string] {
@@ -98,16 +99,11 @@ type Arrange = POLY_API.POLY_INFO & {
 }
 export function parsePolySourceFromApi(data: POLY_API.POLY_INFO & { arrange: string }): void {
   const { arrange, ...polyInfo } = data;
-  const arrangeResult = parseArrangeFromString(arrange);
-  if (!arrangeResult?.nodes) {
-    return;
-  }
-  const { nodes = [], uis } = arrangeResult;
-  const { metas = [], edges = [] } = uis || {};
+  const { nodes = [], uis } = parseArrangeFromString(arrange) ?? {};
+  const { metas = [], edges = [] } = uis ?? {};
   const distNodes: POLY_API.Element[] = nodes?.map((node, index) => {
     const nodeInfo = metas[index];
     return { data: new PolyNodeStore(node), ...nodeInfo };
-  }) || [];
-  store$.init(polyInfo);
-  store$.nodes$.set([...distNodes, ...(edges as unknown as POLY_API.EdgeElement[])]);
+  }) ?? initGraphElements();
+  store$.setSource(polyInfo, [...distNodes, ...(edges as unknown as POLY_API.EdgeElement[])]);
 }

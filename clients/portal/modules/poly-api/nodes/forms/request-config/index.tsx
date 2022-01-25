@@ -71,12 +71,12 @@ function RequestConfigForm(
   }, { enabled: !!value.rawPath });
 
   useEffect(() => {
-    if (customRules.length || !polyNodePathTreeRef.current) {
+    if (customRules.length || !polyNodePathTreeRef.current || !apiDocDetail) {
       return;
     }
     const rules = polyNodePathTreeRef.current.getCustomRules();
     setCustomRules(rules || []);
-  }, [customRules, polyNodePathTreeRef.current]);
+  }, [customRules, polyNodePathTreeRef.current, apiDocDetail]);
 
   useEffect(() => {
     if (isLoading || !apiDocDetail) {
@@ -114,7 +114,6 @@ function RequestConfigForm(
   return (
     <>
       <ApiSelector
-        useInPoly
         setApiPath={handleApiPathChange}
         initRawApiPath={value.rawPath}
         apiDocDetail={apiDocDetail}

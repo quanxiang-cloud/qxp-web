@@ -39,6 +39,7 @@ export function approvePersonEncoder(businessData: BusinessData): ApprovePerson 
     departments: [],
     positions: [],
     fields: [],
+    variablePath: '',
   };
   return approvePersons;
 }

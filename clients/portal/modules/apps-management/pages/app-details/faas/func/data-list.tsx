@@ -13,7 +13,6 @@ import Search from '@c/search';
 import PopConfirm from '@c/pop-confirm';
 import Pagination from '@c/pagination';
 import TableMoreFilterMenu from '@c/more-menu/table-filter';
-import { parseJSON } from '@lib/utils';
 
 import store from '../store';
 import BuildModal from './build-modal';
@@ -76,7 +75,7 @@ function DataList(): JSX.Element {
             topic='project'
             dataID={id}
             callBack={async (data) => {
-              const { key }: FaasSoketData = parseJSON(data?.message, { key: '', topic: '' });
+              const { key }: FaasSoketData = data?.content || {};
               if (key !== id) {
                 return;
               }
@@ -107,7 +106,7 @@ function DataList(): JSX.Element {
                   <TextArea
                     name="name"
                     defaultValue={description}
-                    maxLength={30}
+                    maxLength={100}
                     className="description-input"
                     onChange={(e) => descriptionValue = e.target.value}
                   />
@@ -151,10 +150,10 @@ function DataList(): JSX.Element {
             )}
             {info.state === 'False' && (
               <span className="cursor-pointer text-red-600" onClick={() => onClickTool(info, 'deletefunc')}>
-                  删除
+                删除
               </span>
             )}
-            {(info.state === 'Unknown' || !info.state) && <span>-</span> }
+            {(info.state === 'Unknown' || !info.state) && <span>-</span>}
           </div>
         );
       },
@@ -178,7 +177,7 @@ function DataList(): JSX.Element {
     if (e.key !== 'Enter') {
       return;
     }
-    store.fetchFuncList(store.searchAlias, 1, 10 );
+    store.fetchFuncList(store.searchAlias, 1, 10);
   }
 
   return (
@@ -196,7 +195,7 @@ function DataList(): JSX.Element {
           className="func-search text-12"
           placeholder="搜索函数名称"
           onChange={(v) => {
-            if (!v)store.fetchFuncList('', 1, 10);
+            if (!v) store.fetchFuncList('', 1, 10);
             setTimeout(() => {
               store.searchAlias = v;
             }, 500);

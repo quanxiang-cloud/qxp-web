@@ -89,6 +89,7 @@ function CustomSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
         options={allOptions.map((option) => ({ label: option, value: option }))}
         placeholder="请选择选项"
         value={fieldProps.value}
+        getPopupContainer={(triggerNode) => triggerNode.parentNode as HTMLElement}
         onSelect={(v: unknown, option: LabelValue[] | LabelValue) => {
           // This shouldn't happen
           if (Array.isArray(option)) {

@@ -70,7 +70,7 @@ function FuncDetailsDrawer(): JSX.Element {
     {
       Header: '构建时间',
       id: 'build',
-      accessor: ({ updatedAt, createdAt }: VersionField) => `${updatedAt - createdAt}s`,
+      accessor: ({ completionTime, createdAt }: VersionField) => `${completionTime - createdAt}s`,
     },
     {
       Header: '创建人',
@@ -99,14 +99,14 @@ function FuncDetailsDrawer(): JSX.Element {
               <PopConfirm content='确认上线改版本？' onOk={() => store.servingVer(id)} >
                 <span className="operate">上线</span>
               </PopConfirm>)}
-            { _visibility !== 'online' && (
-              <PopConfirm content='确认删除改版本？' onOk={() => store.deleteVer(id)} >
-                <span className="cursor-pointer text-red-600">删除</span>
-              </PopConfirm>
-            )}
             {state === 'True' && (
               <PopConfirm content='确定生成API文档？' onOk={() => store.registerAPI(id)} >
                 <span className="operate">生成API文档</span>
+              </PopConfirm>
+            )}
+            { !!state && _visibility !== 'online' && (
+              <PopConfirm content='确认删除改版本？' onOk={() => store.deleteVer(id)} >
+                <span className="cursor-pointer text-red-600">删除</span>
               </PopConfirm>
             )}
           </div>

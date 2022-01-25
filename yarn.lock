@@ -750,9 +750,9 @@
     react-hook-form "^7.20.4"
     react-use "^17.3.2"
 
-"@ofa/render-engine@https://ofapkg.pek3b.qingstor.com/tarball/ofa-render-engine-v0.9.1.tgz":
-  version "0.9.1"
-  resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-render-engine-v0.9.1.tgz#af860d815ae667658e4314479aa8c4a3e828d52b"
+"@ofa/render-engine@https://ofapkg.pek3b.qingstor.com/tarball/ofa-render-engine-v0.10.2.tgz":
+  version "0.10.2"
+  resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-render-engine-v0.10.2.tgz#e222c6bc5e5f19e1ab98856eddb00182314d208b"
   dependencies:
     react "^17.0.2"
     react-dom "^17.0.2"

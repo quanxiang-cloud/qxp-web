@@ -160,6 +160,7 @@ export type ApprovePerson = {
   departments: EmployeeOrDepartmentOfRole[];
   positions: string[];
   fields: string[];
+  variablePath: string;
 }
 export interface BasicNodeConfig {
   approvePersons: ApprovePerson;

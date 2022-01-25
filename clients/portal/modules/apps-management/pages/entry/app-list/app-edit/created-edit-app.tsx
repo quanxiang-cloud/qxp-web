@@ -77,6 +77,10 @@ function CreatedEditApp({
             message: '请输入应用名称',
           },
           {
+            pattern: /^((?!(\ud83c[\udf00-\udfff])|(\ud83d[\udc00-\ude4f])|(\ud83d[\ude80-\udeff])).)*$/,
+            message: '不能输入emoji表情符号',
+          },
+          {
             type: 'string',
             max: 30,
             message: '不能超过 30 个字符',

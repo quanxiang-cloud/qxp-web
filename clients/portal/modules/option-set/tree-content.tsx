@@ -35,7 +35,7 @@ function TreeContent({ className }: Props): JSX.Element {
       level-2: path=[0].children[1].children[2]
      */
     if (!prefix) {
-      return `[${idx}].children[0].children[0].children[0]`;
+      return `[${idx}]`;
     }
     return `${prefix}.children[${idx}]`;
   }
@@ -97,6 +97,9 @@ function TreeContent({ className }: Props): JSX.Element {
                     title={itm.label}
                     className='w-2/3 items-center text-gray-900 overflow-hidden overflow-ellipsis whitespace-nowrap flex-1'
                     onClick={() => {
+                      if (idx.toString() === levelHighLight[level]) {
+                        return;
+                      }
                       store.path = nodePath;
                       setAddLevel(false);
                     }}
@@ -181,8 +184,8 @@ function TreeContent({ className }: Props): JSX.Element {
       <>
         {getLevelFromPrefix(path) > 2 && (
           <div className='dataset-alert mx-16 items-center bg-blue-100 text-blueGray-400 py-12 pl-16 mb-8'>
-            <Icon name='info' type='primary' className='mb-2' />
-            <span className='ml-16 text-blue-600'>可选项仅支持添加 4 级。</span>
+            <Icon name='info' size={18} color='blue' className='mb-2' />
+            <span className='ml-8 text-blue-600'>可选项仅支持添加 4 级。</span>
           </div>
         )}
         <div className='tree-content flex h-full overflow-auto mx-16 text-blueGray-400'>

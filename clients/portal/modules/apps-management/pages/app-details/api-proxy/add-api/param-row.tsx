@@ -27,6 +27,7 @@ const paramTypes = [
   { label: 'array', value: 'array' },
   { label: 'timestamp', value: 'timestamp' },
   { label: 'action', value: 'action' },
+  { label: 'array_string', value: 'array_string' },
 ];
 
 const timeTypes = [
@@ -91,12 +92,12 @@ function ParamRow({
     }
     if (group === 'body') {
       return paramTypes.filter(
-        ({ value })=> !['timestamp', 'action'].includes(value),
+        ({ value })=> !['timestamp', 'action', 'array_string'].includes(value),
       );
     }
     if (group === 'constant') {
       return paramTypes.filter(
-        ({ value })=> ['string', 'number', 'boolean', 'timestamp', 'action'].includes(value),
+        ({ value })=> ['string', 'number', 'boolean', 'timestamp', 'action', 'array_string'].includes(value),
       );
     }
     if (group === 'header') {
@@ -104,7 +105,7 @@ function ParamRow({
     }
     if (group === 'response') {
       return paramTypes.filter(
-        ({ value })=> !['timestamp', 'action'].includes(value),
+        ({ value })=> !['timestamp', 'action', 'array_string'].includes(value),
       );
     }
     return paramTypes;
