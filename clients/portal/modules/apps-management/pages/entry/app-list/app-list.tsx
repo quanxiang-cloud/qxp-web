@@ -89,10 +89,10 @@ function AppList({ isLoading, appList, openCreatedModal }: Props): JSX.Element {
     history.push(`/apps/details/${id}/page_setting`);
   };
 
-  function exportApp(): void {
+  function exportApp({ id, appName }: AppInfo): void {
     exportAppAndCreateTask({
-      value: { appID: curApp?.id || '' },
-      title: `【${curApp?.appName}】 应用导出`,
+      value: { appID: id ?? '' },
+      title: `【${appName}】 应用导出`,
     }).then((res) => {
       subscribeStatusChange(res.taskID, '导出');
     }).catch((err) => {
@@ -115,7 +115,7 @@ function AppList({ isLoading, appList, openCreatedModal }: Props): JSX.Element {
       openModal('delete', itemData);
       break;
     case 'exportApp':
-      exportApp();
+      exportApp(itemData);
       break;
     case 'saveAsTemplate':
       openModal('saveAsTemplate', itemData);
