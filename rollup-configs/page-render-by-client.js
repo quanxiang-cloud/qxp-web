@@ -71,7 +71,7 @@ const config = {
     'react-flow-renderer',
     'xlsx',
 
-    /@ofa\/.*/,
+    /@one-for-all\/.*/,
   ],
 
   plugins: [

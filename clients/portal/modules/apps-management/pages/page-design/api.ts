@@ -1,4 +1,4 @@
-import { getStore } from '@ofa/page-engine';
+import { getStore } from '@one-for-all/page-engine';
 
 import {
   setBatchGlobalConfig,

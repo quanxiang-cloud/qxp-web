@@ -1,4 +1,4 @@
-import { Schema } from '@ofa/schema-spec';
+import { Schema } from '@one-for-all/schema-spec';
 
 const schema: Schema = {
   apiStateSpec: {

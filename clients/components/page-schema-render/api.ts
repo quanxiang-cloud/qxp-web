@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
-import type { Schema } from '@ofa/schema-spec';
-import { Spec } from '@ofa/api-spec-adapter/lib/src/swagger-schema-official';
+import type { Schema } from '@one-for-all/schema-spec';
+import { Spec } from '@one-for-all/api-spec-adapter/lib/src/swagger-schema-official';
 
 import logger from '@lib/logger';
 import SwaggerRPCSpecAdapter from '@lib/adapter-swagger-rpc';

@@ -1,4 +1,4 @@
-import type { Schema } from '@ofa/schema-spec';
+import type { Schema } from '@one-for-all/schema-spec';
 
 export function getKeyOfCustomPageEditor(appID: string, pageId: string): string {
   return `custom_page_editor:app_id:${appID}:page_id:${pageId}`;

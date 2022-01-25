@@ -8,7 +8,7 @@ import toast from '@lib/toast';
 import ApiSelector from '@polyApi/nodes/forms/request-config/api-selector';
 import ApiSpec from '../app-details/api-proxy/add-api';
 
-import { Designer, getStore } from '@ofa/page-engine';
+import { Designer, getStore } from '@one-for-all/page-engine';
 import { getPage, savePage, updatePageEngineMenuType } from './api';
 
 import './index.scss';
