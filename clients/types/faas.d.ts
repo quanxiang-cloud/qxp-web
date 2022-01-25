@@ -57,3 +57,30 @@ type FaasSoketData = {
   key: string;
   topic: string;
 }
+
+type FaasBuildProcess = {
+  runs: string[];
+  steps: string[][];
+}
+
+type FaasBuildStatus = {
+  id: string;
+  name: string;
+  status: FaasProcessStatus;
+  children: FaasBuildStatus[];
+}
+
+type FaasProcessSpanProps = {
+  title: string;
+  isEnd?: boolean;
+  isStart?: boolean;
+  isChildNode?: boolean;
+  hasChild?: boolean;
+}
+
+type BuildLog = {
+  log: string;
+  timestamp: number;
+  run: string;
+  step: string;
+}

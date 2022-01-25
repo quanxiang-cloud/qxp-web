@@ -1,7 +1,6 @@
 import { action, observable, reaction } from 'mobx';
 
 import { SocketData } from '@lib/push';
-import { parseJSON } from '@lib/utils';
 
 import {
   checkHasGroup,
@@ -28,6 +27,7 @@ import {
   getApiPath,
   getVersionInfo,
   getVersion,
+  getBuildProcessStatus,
 } from './api';
 import toast from '@lib/toast';
 import { getApiDoc } from '../api-documentation/api';
@@ -48,21 +48,15 @@ const INIT_CURRENT_FUNC = {
   versionNum: 0,
 };
 
-const INIT_VERSION: VersionField = {
-  id: '',
-  state: 'Unknown',
-  serverState: 'Unknown',
-  message: '',
-  creator: '',
-  createdAt: 0,
-  updatedAt: 0,
-  completionTime: 0,
-  tag: '',
-  visibility: 'offline',
-  describe: '',
-  serverMsg: '',
-  updater: '',
-};
+function getBuildStatusMap(statusList: FaasBuildStatus[]): Record<string, FaasProcessStatus> {
+  return statusList.reduce<Record<string, FaasProcessStatus>>((acc, _status) => {
+    if (_status.children) {
+      return { ...acc, ...getBuildStatusMap(_status.children), [_status.name]: _status.status };
+    }
+
+    return { ...acc, [_status.name]: _status.status };
+  }, {});
+}
 
 class FaasStore {
   @observable appDetails: AppInfo = {
@@ -91,13 +85,15 @@ class FaasStore {
   @observable funcList: FuncField[] = [];
   @observable currentFunc: FuncField = INIT_CURRENT_FUNC;
   @observable versionList: VersionField[] = [];
-  @observable currentVersionFunc: VersionField = INIT_VERSION;
+  @observable currentVersionFunc: VersionField | null = null;
   @observable initErr = false;
   @observable APiContent: APiContent = INIT_API_CONTENT;
   @observable isAPILoadingErr = '';
   @observable isAPILoading = false;
   @observable searchAlias = '';
   @observable apiPath = '';
+  @observable buildSteps: string[] = [];
+  @observable buildStatusMap: Record<string, FaasProcessStatus> = {};
   @observable versionsParams: VersionListParams = {
     state: '',
     page: 1,
@@ -453,13 +449,13 @@ class FaasStore {
   @action
   versionStateChangeListener = async (buildID: string, socket: SocketData, type: 'state' | 'serverState',
   ): Promise<void> => {
-    const { key, topic }: FaasSoketData = parseJSON(socket?.message, { key: '', topic: '' });
+    const { key, topic }: FaasSoketData = socket?.content || {};
     if (key !== buildID || topic !== 'builder') {
       return;
     }
 
     const versionInfo = await getVersionInfo(this.groupID, this.currentFuncID, buildID);
-    if (versionInfo.build.state !== 'Unknown') {
+    if (!['Unknown', ''].includes(versionInfo.build.state)) {
       this.versionList = this.versionList.map((version) => {
         if (version.id === buildID) {
           return { ...version, [type]: versionInfo.build[type] };
@@ -468,12 +464,19 @@ class FaasStore {
         return version;
       });
 
-      if (this.currentVersionFunc.id === buildID) {
+      if (this.currentVersionFunc?.id === buildID) {
         this.currentVersionFunc = { ...this.currentVersionFunc, [type]: versionInfo.build[type] };
       }
 
       toast.success('操作成功！');
     }
+  };
+
+  @action
+  updateBuildStatus = (): void => {
+    getBuildProcessStatus(this.groupID, this.currentFuncID, this.buildID).then((status) => {
+      this.buildStatusMap = getBuildStatusMap(status.events);
+    });
   };
 
   @action
