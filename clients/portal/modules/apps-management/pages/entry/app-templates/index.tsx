@@ -12,11 +12,6 @@ import DelTemplateModal from './template-edit/del-template-modal';
 function AppTemplates(): JSX.Element {
   const [modalType, setModalType] = useState('');
   const { templateList, fetchList, curTemplate, setCurTemplate } = store;
-
-  useEffect(() => {
-    fetchList();
-  }, []);
-
   const MENUS = useMemo(() => {
     return [
       {
@@ -40,10 +35,14 @@ function AppTemplates(): JSX.Element {
     ];
   }, []);
 
-  const openModal = (_modalType: string, _curApp: AppInfo): void => {
+  useEffect(() => {
+    fetchList();
+  }, []);
+
+  function openModal(_modalType: string, _curApp: AppInfo): void {
     setModalType(_modalType);
     setCurTemplate(_curApp);
-  };
+  }
 
   function RenderModal() {
     if (!curTemplate) {

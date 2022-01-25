@@ -1,5 +1,6 @@
 import React, { KeyboardEvent, useCallback, useState } from 'react';
 import { toJS } from 'mobx';
+import { has } from 'ramda';
 import { Form, Input } from 'antd';
 
 import Select from '@c/select';
@@ -37,7 +38,7 @@ function CreatedEditApp({
   }
 
   function handleValuesChange(value: Record<string, unknown>): void {
-    'createdBy' in value && setCreatedBy(value.createdBy as string);
+    has('createdBy', value) && setCreatedBy(value.createdBy as string);
     onValuesChange?.(value);
   }
 

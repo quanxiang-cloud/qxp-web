@@ -25,7 +25,7 @@ function AppList({ isLoading, appList, openCreatedModal }: Props): JSX.Element {
   const history = useHistory();
 
   function getAppItemMenus(appInfo: AppInfo): MenuItem[] {
-    const menus: MenuItem[] = [
+    return [
       {
         key: 'publish',
         disabled: appInfo.useStatus < -1,
@@ -76,18 +76,16 @@ function AppList({ isLoading, appList, openCreatedModal }: Props): JSX.Element {
         ),
       },
     ];
-
-    return menus;
   }
 
-  const openModal = (_modalType: string, _curApp: AppInfo): void => {
+  function openModal(_modalType: string, _curApp: AppInfo): void {
     setModalType(_modalType);
     setCurApp(_curApp);
-  };
+  }
 
-  const goDetails = ({ id }: AppInfo): void => {
+  function goDetails({ id }: AppInfo): void {
     history.push(`/apps/details/${id}/page_setting`);
-  };
+  }
 
   function exportApp({ id, appName }: AppInfo): void {
     exportAppAndCreateTask({
@@ -100,27 +98,24 @@ function AppList({ isLoading, appList, openCreatedModal }: Props): JSX.Element {
     });
   }
 
-  function handleActions(key: string, itemData: AppInfo): void {
-    switch (key) {
-    case 'publish':
-      openModal('publish', itemData);
-      break;
-    case 'setting':
+  const actionsExecutorMap: Record<string, (itemData: AppInfo) => void> = {
+    setting: (itemData: AppInfo) => {
       history.push(`/apps/details/${itemData.id}/setting/info`);
-      break;
-    case 'visit':
+    },
+    visit: (itemData: AppInfo) => {
       window.open(`//${window.CONFIG.home_hostname}/apps/` + itemData.id);
-      break;
-    case 'delete':
-      openModal('delete', itemData);
-      break;
-    case 'exportApp':
-      exportApp(itemData);
-      break;
-    case 'saveAsTemplate':
-      openModal('saveAsTemplate', itemData);
-      break;
+    },
+    exportApp,
+  };
+
+  function handleActions(key: string, itemData: AppInfo): void {
+    const actionExecutor = actionsExecutorMap[key];
+    if (!actionExecutor) {
+      openModal(key, itemData);
+      return;
     }
+
+    actionExecutor(itemData);
   }
 
   function RenderModal() {

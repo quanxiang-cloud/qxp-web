@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import { has } from 'ramda';
 import { useHistory } from 'react-router-dom';
 
 import Modal from '@c/modal';
@@ -23,21 +24,21 @@ function CreatedAppModal({ modalType, onCancel }: Props): JSX.Element {
     formDom.submit();
   };
 
+  function toastError(err: any): void {
+    toast.error(err.message);
+  }
+
   function submitCallback(): void {
     const formDom = formRef.current;
-    const data = formDom.getFieldsValue();
+    const data = formDom.getFieldsValue() as AppInfo;
 
-    if ('template' in data) {
-      createdAppByTemplate(data).then(onCancel).catch((e) => {
-        toast.error(e.message);
-      });
+    if (has('template', data)) {
+      createdAppByTemplate(data).then(onCancel).catch(toastError);
       return;
     }
 
     if (modalType === 'importApp') {
-      importApp(data).then(onCancel).catch((e) => {
-        toast.error(e.message);
-      });
+      importApp(data).then(onCancel).catch(toastError);
       return;
     }
 
@@ -45,9 +46,7 @@ function CreatedAppModal({ modalType, onCancel }: Props): JSX.Element {
       toast.success('创建应用成功！');
       onCancel();
       history.push(`/apps/details/${res}/page_setting`);
-    }).catch((e) => {
-      toast.error(e.message);
-    });
+    }).catch(toastError);
   }
 
   return (
@@ -77,7 +76,7 @@ function CreatedAppModal({ modalType, onCancel }: Props): JSX.Element {
         className="p-20"
         modalType={modalType}
         onValuesChange={(value) => {
-          'appZipInfo' in value && setAppZipInfo(formRef.current.getFieldValue('appZipInfo'));
+          has('appZipInfo', value) && setAppZipInfo(formRef.current.getFieldValue('appZipInfo'));
         }}
         onSubmitCallback={submitCallback}
       />

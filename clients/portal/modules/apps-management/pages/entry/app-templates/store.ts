@@ -20,9 +20,14 @@ class TemplateStore {
   };
 
   @action
+  setTemplateList = (templates: AppInfo[]): void => {
+    this.templateList = templates;
+  };
+
+  @action
   fetchList = (): void => {
     fetchTemplateList().then((res: TemplateListRes) => {
-      this.templateList = res.templates;
+      this.setTemplateList(res.templates);
     }).catch(() => {
       toast.error('获取模版列表失败');
     });
@@ -31,7 +36,7 @@ class TemplateStore {
   @action
   delTemplate = async (tmpId: string): Promise<void> => {
     return await deleteTemplate(tmpId).then(() => {
-      this.templateList = this.templateList.filter(({ id }) => id !== tmpId);
+      this.setTemplateList(this.templateList.filter(({ id }) => id !== tmpId));
       toast.success('模版删除成功');
     }).catch(() => {
       toast.error('模版删除成功');
