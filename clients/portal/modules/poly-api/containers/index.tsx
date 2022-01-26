@@ -3,7 +3,7 @@ import { useParams } from 'react-router';
 import { ReactFlowProvider } from 'react-flow-renderer';
 
 import Loading from '@c/loading';
-import FlowRender from '@c/flow-render';
+import FlowRender from '@c/logic/flow-render';
 import useObservable from '@lib/hooks/use-observable';
 
 import PolyDetailsHeader from './header';

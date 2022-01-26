@@ -48,6 +48,7 @@ module.exports = {
     "@typescript-eslint/no-invalid-this": ["error"],
     '@typescript-eslint/no-unused-vars': ['warn', { varsIgnorePattern: '_' }],
     '@typescript-eslint/no-empty-function': ['warn'],
+    '@typescript-eslint/no-non-null-assertion': ['off'],
     'func-call-spacing': 'off',
     camelcase: 'off',
     'arrow-parens': ['error', 'always'],

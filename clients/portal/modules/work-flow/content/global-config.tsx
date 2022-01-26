@@ -66,7 +66,7 @@ export default function GlobalConfig(): JSX.Element | null {
     () => {
       return getFlowVariables(flowID).then((vars) => {
         return vars.map(({ code, name }) => ({
-          key: code,
+          key: '$' + code,
           name,
         }));
       });

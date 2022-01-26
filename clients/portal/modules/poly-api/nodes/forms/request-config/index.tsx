@@ -1,5 +1,5 @@
 import { diff } from 'just-diff';
-import { groupBy, lensPath, set, dissocPath, last, view } from 'ramda';
+import { groupBy, lensPath, set, dissocPath, last, view, and, or } from 'ramda';
 import React, {
   useEffect, useRef, useCallback, useState, forwardRef, ForwardedRef, useImperativeHandle,
 } from 'react';
@@ -9,10 +9,9 @@ import PageLoading from '@c/page-loading';
 import type { CustomRule } from '@c/formula-editor';
 import { useGetRequestNodeApi } from '@polyApi/effects/api/raw';
 import { filterPolyApiInputs } from '@polyApi/utils/request-node';
-import type { RefType as PathTreeRefType } from '@polyApi/components/poly-node-path-tree';
 
 import ApiSelector from './api-selector';
-import ApiFormulaConfig from './api-formula';
+import PathTreeWithOperates from './path-tree-with-operates';
 import ApiParamsConfig, { RefType } from './api-params-config';
 
 type Props = {
@@ -58,8 +57,7 @@ function RequestConfigForm(
   ref: ForwardedRef<RequestConfigRef>,
 ): JSX.Element {
   const formulaEditorRef = useRef<RefType>();
-  const polyNodePathTreeRef = useRef<PathTreeRefType | null>(null);
-  const [customRules, setCustomRules] = useState<CustomRule[]>([]);
+  const [customRules, setCustomRules] = useState<CustomRule[]>();
 
   useImperativeHandle(ref, () => ({
     validate: () => formulaEditorRef.current?.validate(),
@@ -69,14 +67,6 @@ function RequestConfigForm(
     path: value.rawPath.slice(1),
     body: { docType: 'raw', titleFirst: true },
   }, { enabled: !!value.rawPath });
-
-  useEffect(() => {
-    if (customRules.length || !polyNodePathTreeRef.current || !apiDocDetail) {
-      return;
-    }
-    const rules = polyNodePathTreeRef.current.getCustomRules();
-    setCustomRules(rules || []);
-  }, [customRules, polyNodePathTreeRef.current, apiDocDetail]);
 
   useEffect(() => {
     if (isLoading || !apiDocDetail) {
@@ -111,6 +101,8 @@ function RequestConfigForm(
     onChange({ ...value, inputs });
   }, [onChange, value]);
 
+  const isNoData = or(!value.rawPath, and(!isLoading, !apiDocDetail));
+
   return (
     <>
       <ApiSelector
@@ -122,20 +114,22 @@ function RequestConfigForm(
         {isLoading && <PageLoading />}
         {apiDocDetail && (
           <>
-            <ApiParamsConfig
-              onChange={setRequestNodeInputs}
-              ref={formulaEditorRef}
-              value={value.inputs}
-              url={apiDocDetail.doc.url}
-              customRules={customRules}
-            />
-            <ApiFormulaConfig
+            {customRules && (
+              <ApiParamsConfig
+                onChange={setRequestNodeInputs}
+                ref={formulaEditorRef}
+                value={value.inputs}
+                url={apiDocDetail.doc.url}
+                customRules={customRules}
+              />
+            )}
+            <PathTreeWithOperates
               currentFormulaEditorRef={formulaEditorRef}
-              ref={polyNodePathTreeRef}
+              onRulesChange={setCustomRules}
             />
           </>
         )}
-        {(!value.rawPath || (!isLoading && !apiDocDetail)) && (
+        {isNoData && (
           <div className="m-auto flex flex-col items-center">
             <img src='/dist/images/no-approval-task.svg'/>
             <span className="mt-8 text-12 text-gray-400">暂无数据，请选择上方“全部API”选项</span>

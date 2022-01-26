@@ -2,7 +2,6 @@ import { BehaviorSubject } from 'rxjs';
 import { lensPath, set, dissocPath, path } from 'ramda';
 
 import { PolyCanvasStore } from './canvas';
-import { CURRENT_NODE_CONFIG_PARAMS } from '../constants';
 
 function getInitPolyInfo(): POLY_API.POLY_INFO {
   return {
@@ -13,7 +12,12 @@ function getInitPolyInfo(): POLY_API.POLY_INFO {
 
 function getDefaultState(): POLY_API.Root {
   return {
-    currentNodeConfigParams: CURRENT_NODE_CONFIG_PARAMS,
+    currentNodeConfigParams: {
+      currentNode: undefined,
+      schema: {},
+      onClose: undefined,
+      excludedFields: [],
+    },
     nodes: new PolyCanvasStore([]),
     polyInfo: getInitPolyInfo(),
   };
