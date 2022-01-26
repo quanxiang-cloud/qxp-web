@@ -8,7 +8,7 @@ import Loading from '@c/loading';
 import useObservable from '@lib/hooks/use-observable';
 import ErrorTips from '@c/error-tips';
 import dataTransfer from '@flow/content/editor/utils/data-transfer';
-import FlowRender from '@c/flow-render';
+import FlowRender from '@c/logic/flow-render';
 import type { Data, WorkFlow, StoreValue } from '@flow/content/editor/type';
 import { CURRENT_WORK_FLOW_VERSION } from '@flow/content/editor/utils/constants';
 import store, {

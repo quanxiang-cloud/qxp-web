@@ -3,7 +3,7 @@ import { Elements } from 'react-flow-renderer';
 
 import ws from '@lib/push';
 import PageLoading from '@c/page-loading';
-import FlowRender from '@c/flow-render';
+import FlowRender from '@c/logic/flow-render';
 
 import ProcessSpan from './process-span';
 import store from '../store';
