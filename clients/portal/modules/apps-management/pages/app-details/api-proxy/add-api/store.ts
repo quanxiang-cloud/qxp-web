@@ -238,9 +238,9 @@ export default class Store {
         return { ...preload, ...omit(v, 'in') };
       }).filter(Boolean);
       if (items[0]?.in === 'body') {
-        this.setParams(gp as ParamGroup, items[0]?._object_nodes_);
+        this.setParams(gp as ParamGroup, items[0]?._object_nodes_ || []);
       } else {
-        this.setParams(gp as ParamGroup, items as ApiParam[]);
+        this.setParams(gp as ParamGroup, items as ApiParam[] || []);
       }
     });
   };
