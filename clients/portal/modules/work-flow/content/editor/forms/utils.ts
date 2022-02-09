@@ -1,7 +1,7 @@
-import { get, flatten, cloneDeep } from 'lodash';
+import { get, cloneDeep } from 'lodash';
 
-export const primitiveTypes = ['string', 'number', 'boolean', 'datetime'];
-export const advancedCompTypes = [
+const primitiveTypes = ['string', 'number', 'boolean', 'datetime'];
+const advancedCompTypes = [
   'SubTable',
   'AssociatedRecords',
   'UserPicker',
@@ -12,13 +12,6 @@ export const advancedCompTypes = [
   'AssociatedData',
 ];
 export const excludeComps = ['subtable'];
-
-type TableListItem = {
-  label: string;
-  value: string;
-  isGroup: boolean;
-  children?: Array<TableListItem>
-}
 
 type Options = {
   noSystem?: boolean;
@@ -49,7 +42,7 @@ export const getSchemaFields = (
   });
 };
 
-export function isAdvancedField(type: string, xCompName?: string): boolean {
+function isAdvancedField(type: string, xCompName?: string): boolean {
   if (xCompName && advancedCompTypes.map((t)=> t.toLowerCase()).includes(xCompName.toLowerCase())) {
     return true;
   }
@@ -68,17 +61,6 @@ export function isFieldTypeMatch(
   // primitive type should be equal
   return targetFieldSchema.type === srcFieldType;
 }
-
-// filter target tables with group
-export const filterTables = (tables: Array<TableListItem> = []): Array<TableListItem> => {
-  const allTables = tables.map((tb) => {
-    if (tb.isGroup) {
-      return tb.children || [];
-    }
-    return tb;
-  });
-  return flatten(allTables);
-};
 
 const mapSchemaProps = <T extends SchemaFieldItem>(
   props: Record<string, T>,
@@ -177,16 +159,6 @@ export const transformSchema = (
     ...schema,
     properties: mappedProps,
   };
-};
-
-export const getValidProcessVariables = (
-  variables: Array<ProcessVariable>, compareType: string,
-): LabelValue[] => {
-  return variables?.map(({ code, name, fieldType }) => {
-    if (primitiveTypes.includes(fieldType) && fieldType === compareType) {
-      return { label: name, value: code };
-    }
-  }).filter((v): v is LabelValue => !!v) || [];
 };
 
 /*

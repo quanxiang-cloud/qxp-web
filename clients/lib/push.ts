@@ -1,15 +1,7 @@
-import { wsSubscribe } from '@lib/api/common';
 import { parseJSON } from '@lib/utils';
 
 export type SocketEventListener = (data: SocketData) => any;
 export type SocketData = { type?: string; content?: any, uuid?: string, [key: string]: any };
-
-type SubscribeParams = {
-  key: string;
-  topic: string;
-  type: string;
-  cb: SocketEventListener;
-}
 
 let retryCount = 0;
 
@@ -26,12 +18,6 @@ class PushServer {
 
     window.addEventListener('offline', this.offlineHandler);
     window.addEventListener('online', this.onlineHandler);
-  }
-
-  subscribe({ key, topic, type, cb }: SubscribeParams): void {
-    wsSubscribe({ key, topic, uuid: this.uuid }).then(() => {
-      this.addEventListener(type, key, cb);
-    });
   }
 
   getToken(): Promise<string> {

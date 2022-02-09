@@ -11,7 +11,7 @@ copyStatics:
 	@mkdir -p dist
 	@cp -r ./clients/assets/* dist
 	@echo "copy ofa/ui assets..."
-	@cp -r ./node_modules/@ofa/ui/dist/images/* dist/images
+	@cp -r ./node_modules/@one-for-all/ui/dist/images/* dist/images
 
 copyTemplates: clients/templates/*
 	@echo "copy clients/templates/* to dist/templates..."

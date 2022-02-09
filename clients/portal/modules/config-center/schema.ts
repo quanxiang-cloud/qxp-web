@@ -1,4 +1,4 @@
-import { NodePropType, NodeType, Schema } from '@ofa/render-engine';
+import { Schema } from '@one-for-all/schema-spec';
 
 const schema: Schema = {
   apiStateSpec: {
@@ -12,11 +12,11 @@ const schema: Schema = {
   sharedStatesSpec: {},
   node: {
     id: 'container',
-    type: NodeType.HTMLNode,
+    type: 'html-element',
     name: 'div',
     props: {
       style: {
-        type: NodePropType.ConstantProperty,
+        type: 'constant_property',
         value: {
           padding: '20px',
           width: '700px',
@@ -26,11 +26,11 @@ const schema: Schema = {
     children: [
       {
         id: 'toolbar',
-        type: NodeType.HTMLNode,
+        type: 'html-element',
         name: 'div',
         props: {
           style: {
-            type: NodePropType.ConstantProperty,
+            type: 'constant_property',
             value: {
               display: 'grid',
               gap: '24px',
@@ -42,20 +42,20 @@ const schema: Schema = {
         children: [
           {
             id: 'container-for-key',
-            type: NodeType.HTMLNode,
+            type: 'html-element',
             name: 'span',
             children: [
               {
                 id: 'span-schema-key',
-                type: NodeType.HTMLNode,
+                type: 'html-element',
                 name: 'span',
                 props: {
                   children: {
-                    type: NodePropType.ConstantProperty,
+                    type: 'constant_property',
                     value: 'Schema Key:',
                   },
                   style: {
-                    type: NodePropType.ConstantProperty,
+                    type: 'constant_property',
                     value: {
                       marginRight: '8px',
                     },
@@ -64,26 +64,26 @@ const schema: Schema = {
               },
               {
                 id: 'schema-key-input',
-                type: NodeType.HTMLNode,
+                type: 'html-element',
                 name: 'input',
                 props: {
                   id: {
-                    type: NodePropType.ConstantProperty,
+                    type: 'constant_property',
                     value: 'schema-key-input',
                   },
                   style: {
-                    type: NodePropType.ConstantProperty,
+                    type: 'constant_property',
                     value: {
                       display: 'block',
                     },
                   },
                   value: {
-                    type: NodePropType.SharedStateProperty,
+                    type: 'shared_state_property',
                     stateID: 'key',
                     fallback: '',
                   },
                   onChange: {
-                    type: NodePropType.FunctionalProperty,
+                    type: 'functional_property',
                     func: {
                       type: 'raw',
                       args: 'e',
@@ -96,20 +96,20 @@ const schema: Schema = {
           },
           {
             id: 'container-for-version',
-            type: NodeType.HTMLNode,
+            type: 'html-element',
             name: 'span',
             children: [
               {
                 id: 'span-schema-version',
-                type: NodeType.HTMLNode,
+                type: 'html-element',
                 name: 'span',
                 props: {
                   children: {
-                    type: NodePropType.ConstantProperty,
+                    type: 'constant_property',
                     value: 'Schema Version:',
                   },
                   style: {
-                    type: NodePropType.ConstantProperty,
+                    type: 'constant_property',
                     value: {
                       marginRight: '8px',
                     },
@@ -118,26 +118,26 @@ const schema: Schema = {
               },
               {
                 id: 'schema-version-input',
-                type: NodeType.HTMLNode,
+                type: 'html-element',
                 name: 'input',
                 props: {
                   id: {
-                    type: NodePropType.ConstantProperty,
+                    type: 'constant_property',
                     value: 'schema-version-input',
                   },
                   style: {
-                    type: NodePropType.ConstantProperty,
+                    type: 'constant_property',
                     value: {
                       display: 'block',
                     },
                   },
                   value: {
-                    type: NodePropType.SharedStateProperty,
+                    type: 'shared_state_property',
                     stateID: 'version',
                     fallback: '',
                   },
                   onChange: {
-                    type: NodePropType.FunctionalProperty,
+                    type: 'functional_property',
                     func: {
                       type: 'raw',
                       args: 'e',
@@ -150,24 +150,24 @@ const schema: Schema = {
           },
           {
             id: 'query-btn-container',
-            type: NodeType.HTMLNode,
+            type: 'html-element',
             name: 'div',
             children: [
               {
                 id: 'btn-query',
-                type: NodeType.HTMLNode,
+                type: 'html-element',
                 name: 'button',
                 props: {
                   className: {
-                    type: NodePropType.ConstantProperty,
+                    type: 'constant_property',
                     value: 'btn btn--primary',
                   },
                   children: {
-                    type: NodePropType.ConstantProperty,
+                    type: 'constant_property',
                     value: '查询',
                   },
                   onClick: {
-                    type: NodePropType.FunctionalProperty,
+                    type: 'functional_property',
                     func: {
                       type: 'raw',
                       args: '',
@@ -196,23 +196,23 @@ const schema: Schema = {
       },
       {
         id: 'schema-textarea',
-        type: NodeType.HTMLNode,
+        type: 'html-element',
         name: 'textarea',
         props: {
           style: {
-            type: NodePropType.ConstantProperty,
+            type: 'constant_property',
             value: {
               width: '100%',
               height: '400px',
             },
           },
           value: {
-            type: NodePropType.SharedStateProperty,
+            type: 'shared_state_property',
             stateID: 'schema',
             fallback: '',
           },
           onChange: {
-            type: NodePropType.FunctionalProperty,
+            type: 'functional_property',
             func: {
               type: 'raw',
               args: 'e',
@@ -223,24 +223,24 @@ const schema: Schema = {
       },
       {
         id: 'footer',
-        type: NodeType.HTMLNode,
+        type: 'html-element',
         name: 'div',
         children: [
           {
             id: 'update-btn',
-            type: NodeType.HTMLNode,
+            type: 'html-element',
             name: 'button',
             props: {
               className: {
-                type: NodePropType.ConstantProperty,
+                type: 'constant_property',
                 value: 'btn btn--primary',
               },
               children: {
-                type: NodePropType.ConstantProperty,
+                type: 'constant_property',
                 value: '更新',
               },
               onClick: {
-                type: NodePropType.FunctionalProperty,
+                type: 'functional_property',
                 func: {
                   type: 'raw',
                   args: '',
@@ -273,15 +273,15 @@ const schema: Schema = {
           },
           {
             id: 'log-container',
-            type: NodeType.HTMLNode,
+            type: 'html-element',
             name: 'ul',
             children: [
               {
                 id: 'logs-loop',
-                type: NodeType.LoopContainerNode,
+                type: 'loop-container',
                 loopKey: '',
                 iterableState: {
-                  type: NodePropType.SharedStateProperty,
+                  type: 'shared_state_property',
                   stateID: 'logs',
                   fallback: [],
                   convertor: {
@@ -292,12 +292,12 @@ const schema: Schema = {
                 },
                 toProps: {
                   type: 'to_props_function_spec',
-                  args: 'log',
-                  body: 'return { children: log }',
+                  args: 'state',
+                  body: 'return { children: state }',
                 },
                 node: {
                   id: 'log-li',
-                  type: NodeType.HTMLNode,
+                  type: 'html-element',
                   name: 'li',
                 },
               },

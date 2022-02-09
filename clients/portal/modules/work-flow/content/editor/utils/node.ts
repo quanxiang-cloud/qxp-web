@@ -1,15 +1,18 @@
-import { XYPosition, Node, FlowElement, removeElements, isNode } from 'react-flow-renderer';
+import { XYPosition, Node, FlowElement, removeElements, isNode, Elements } from 'react-flow-renderer';
 import { cloneDeep, set } from 'lodash';
 
 import { getFormFieldSchema } from '@flow/content/editor/forms/api';
-
-import type { NodeType, Data, Operation, BusinessData } from '../type';
-import { SYSTEM_OPERATOR_PERMISSION, CUSTOM_OPERATOR_PERMISSION } from './constants';
-import store, { getNodeElementById } from '../store';
-import { edgeBuilder } from './edge';
+import { uuid } from '@lib/utils';
 import {
   getInitFieldPermissionFromSchema,
 } from '@flow/content/editor/forms/intermidiate/components/field-permission/util';
+
+import { buildBranchNodes, getBranchTargetElementID, getBranchID } from './branch';
+import type { NodeType, Data, Operation, BusinessData } from '../type';
+import { SYSTEM_OPERATOR_PERMISSION, CUSTOM_OPERATOR_PERMISSION } from './constants';
+import store, { getNodeElementById, getFormDataElement, updateStore } from '../store';
+import { getCenterPosition, removeEdge } from '.';
+import { edgeBuilder } from './edge';
 
 const approveAndFillInCommonData = {
   basicConfig: {
@@ -53,7 +56,7 @@ const approveAndFillInCommonData = {
   events: {},
 };
 
-export function getNodeInitialData(type: NodeType): BusinessData {
+function getNodeInitialData(type: NodeType): BusinessData {
   const dataMap = {
     formData: {
       form: { name: '', value: '' },
@@ -120,6 +123,7 @@ export function getNodeInitialData(type: NodeType): BusinessData {
       type: 'request',
       config: {
         api: { value: '' },
+        method: '',
         url: '',
         inputs: [],
         outputs: [],
@@ -184,13 +188,13 @@ export function isCurrentNodeFirstLogicNode(): boolean {
   return !!parents?.find((parent) => parent.type === 'formData');
 }
 
-export function getBranchNodes(branchID: string, elements: FlowElement<Data>[]): FlowElement<Data>[] {
+function getBranchNodes(branchID: string, elements: FlowElement<Data>[]): FlowElement<Data>[] {
   return elements.filter((ele) => {
     return ele.data?.nodeData.branchID === branchID;
   });
 }
 
-export function branchSourceChildIdFilter(id: string): boolean {
+function branchSourceChildIdFilter(id: string): boolean {
   return id.startsWith('processBranch') && !id.startsWith('processBranchSource') &&
       !id.startsWith('processBranchTarget');
 }
@@ -223,7 +227,7 @@ export function onRemoveNode(
   return removeElements([elementToRemove], newElements);
 }
 
-export function updateParentAndChildNodeElementRelationship(
+function updateParentAndChildNodeElementRelationship(
   elements: FlowElement<Data>[],
   elementToRemove: FlowElement<Data>,
   parentID?: string[],
@@ -308,4 +312,62 @@ export async function prepareNodeData(
   if (schema && ['approve', 'fillIn'].includes(newNode.type || '')) {
     set(newNode, 'data.businessData.fieldPermission', getInitFieldPermissionFromSchema(schema));
   }
+}
+
+interface NodeInfo {
+  nodeType: NodeType;
+  nodeName: string;
+  source: string;
+  target: string;
+  position: XYPosition;
+  width: number;
+  height: number;
+}
+export async function addNewNode(elements: Elements, appID: string, info: NodeInfo): Promise<void> {
+  const { nodeType, source, target, position, width, height, nodeName } = info;
+  const id = nodeType + uuid();
+  const newElements: Elements = [...elements];
+  const sourceElement = newElements.find(({ id }) => id === source) as Node<Data>;
+  const targetElement = newElements.find(({ id }) => id === target) as Node<Data>;
+  let sourceChildrenID = id;
+  let targetParentID = id;
+  if (nodeType === 'processBranch') {
+    const { elements: nodes, sourceID, targetID } = buildBranchNodes(source, target, position, width, height);
+    sourceChildrenID = sourceID;
+    targetParentID = targetID;
+    newElements.push(...nodes);
+  } else {
+    const sourceElement = getNodeElementById(source);
+    const targetElement = getNodeElementById(target);
+    const branchTargetElementID = getBranchTargetElementID(sourceElement, targetElement);
+    const newNode = nodeBuilder(id, nodeType, nodeName, {
+      width,
+      height,
+      parentID: [source],
+      childrenID: [target],
+      branchID: getBranchID(sourceElement, targetElement),
+      position: getCenterPosition(position, width, height),
+      branchTargetElementID,
+    });
+    await prepareNodeData(newNode, {
+      tableID: getFormDataElement()?.data?.businessData?.form?.value,
+      appID,
+    });
+    newElements.push(newNode);
+    newElements.push(...edgeBuilder(source, id));
+    newElements.push(...edgeBuilder(id, target));
+  }
+  if (sourceElement.data?.nodeData.childrenID) {
+    sourceElement.data.nodeData.childrenID = [
+      ...sourceElement.data.nodeData.childrenID.filter((id) => id !== target),
+      sourceChildrenID,
+    ];
+  }
+  if (targetElement.data?.nodeData.parentID) {
+    targetElement.data.nodeData.parentID = [
+      ...targetElement.data.nodeData.parentID.filter((id) => id !== source),
+      targetParentID,
+    ];
+  }
+  updateStore((s) => ({ ...s, elements: removeEdge(newElements, source, target), currentConnection: {} }));
 }

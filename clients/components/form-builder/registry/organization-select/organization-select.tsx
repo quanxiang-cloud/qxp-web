@@ -175,6 +175,7 @@ const OrganizationPicker = ({
       labelInValue
       showSearch
       value={selected}
+      getPopupContainer={(triggerNode) => triggerNode.parentNode as HTMLElement}
       className='flex-1 dep-selector'
       dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
       treeNodeFilterProp="title"

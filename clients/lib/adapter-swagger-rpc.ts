@@ -1,11 +1,24 @@
-import { AjaxConfig, FetchParams, Res, SwaggerSpecAdapter } from '@ofa/api-spec-adapter';
+import { AjaxConfig, FetchParams, Res, SwaggerSpecAdapter } from '@one-for-all/api-spec-adapter';
+import { Spec } from '@one-for-all/api-spec-adapter/lib/src/swagger-schema-official';
 
 type Response = {
   body?: any;
   error?: Error;
 }
 
+type Options = {
+  __disableResponseAdapter?: boolean;
+}
+
 export default class SwaggerRPCSpecAdapter extends SwaggerSpecAdapter {
+  options: Options | undefined;
+
+  constructor(spec: Spec, options?: Options) {
+    super(spec);
+
+    this.options = options;
+  }
+
   build(apiID: string, fetchParams?: FetchParams): AjaxConfig | undefined {
     const ajaxConfig = SwaggerSpecAdapter.prototype.build.call(this, apiID, fetchParams);
 
@@ -17,6 +30,10 @@ export default class SwaggerRPCSpecAdapter extends SwaggerSpecAdapter {
   }
 
   responseAdapter = ({ body, error }: Response): Res => {
+    if (this.options?.__disableResponseAdapter) {
+      return { result: body, error };
+    }
+
     if (error || !body) {
       return { result: body, error };
     }

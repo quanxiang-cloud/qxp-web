@@ -46,7 +46,14 @@ function PageDataTable(): JSX.Element {
             {store.tableHeaderBtnList.map(({ key, text, action, type, popText, iconName, isBatch }) => {
               if (type === 'popConfirm') {
                 return (
-                  <PopConfirm key={key} content={popText} onOk={() => action(selected)} >
+                  <PopConfirm
+                    key={key}
+                    content={popText}
+                    onOk={() => {
+                      action(selected);
+                      setSelected([], []);
+                    }}
+                  >
                     <Button
                       forbidden={isBatch && selected.length === 0 ? true : false}
                       iconName={iconName}

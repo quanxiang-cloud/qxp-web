@@ -9,7 +9,7 @@ import type { ProcessBranchTargetData, NodeType } from '@flow/content/editor/typ
 import Tab from '@c/tab';
 import SaveButtonGroup from '@flow/content/editor/components/_common/action-save-button-group';
 
-export interface Props {
+interface Props {
   nodeType: NodeType;
   defaultValue: ProcessBranchTargetData;
   onSubmit: (data: ProcessBranchTargetData) => void;

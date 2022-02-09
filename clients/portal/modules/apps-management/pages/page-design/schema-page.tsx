@@ -22,6 +22,7 @@ function SchemaPage({ appId, pageId, draft, convertor }: Props) {
       schemaKey={getSchemaKey(appId, pageId, !!draft)}
       version={getVersionKey()}
       repository={repository}
+      maxHeight='100%'
     />
   );
 }

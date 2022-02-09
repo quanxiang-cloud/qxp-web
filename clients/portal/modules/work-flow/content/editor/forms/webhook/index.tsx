@@ -14,9 +14,9 @@ import ContentType from './content-type';
 import Outputs from './outputs';
 import SendMethod from './send-method';
 import { isUrl, inputValidator, requestApiValidator } from './utils';
+import useDrawerContainerPadding from './hooks/use-drawer-container-padding';
 
 import './style.scss';
-import useDrawerContainerPadding from './hooks/use-drawer-container-padding';
 
 type LocalValue = (RequestConfig | SendConfig) & { type: 'request' | 'send' };
 

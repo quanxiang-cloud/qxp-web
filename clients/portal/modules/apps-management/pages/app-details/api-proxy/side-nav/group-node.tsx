@@ -74,7 +74,8 @@ function GroupNodeRender({ node }: NodeRenderProps<PolyAPI.Namespace>): JSX.Elem
   }
 
   function saveGroup(): void {
-    formInst.handleSubmit(async (data: PolyAPI.CreateNamespaceParams)=> {
+    formInst.handleSubmit(async (_data: unknown)=> {
+      const data = _data as PolyAPI.CreateNamespaceParams;
       if (modalType === 'edit' && !data.name) {
         data.name = node.data.name;
       }

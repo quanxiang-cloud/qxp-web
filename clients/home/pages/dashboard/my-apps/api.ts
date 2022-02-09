@@ -1,4 +1,4 @@
-import { Spec } from '@ofa/api-spec-adapter/lib/src/swagger-schema-official';
+import { Spec } from '@one-for-all/api-spec-adapter/lib/src/swagger-schema-official';
 
 const spec: Spec = {
   swagger: 'some_version',

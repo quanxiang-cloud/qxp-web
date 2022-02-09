@@ -3,24 +3,6 @@ import { QueryFunctionContext } from 'react-query';
 import httpClient from '@lib/http-client';
 import { WorkFlowData } from '@flow/content/editor/type';
 
-interface AddWorkFlow {
-  bpmnText: string;
-  canCancel: '0' | '1';
-  canMsg: '0' | '1';
-  canUrge: '0' | '1';
-  canViewStatusMsg: '0' | '1';
-  creatorId: string;
-  name: string;
-  processKey: string;
-  triggerMode: 'FORM_DATA' | 'FORM_TIME';
-}
-export function addWorkFlow({ queryKey }: QueryFunctionContext): Promise<WorkFlowData> {
-  return httpClient<WorkFlowData>(
-    '/api/v1/flow/addFlow',
-    queryKey[1] as AddWorkFlow,
-  );
-}
-
 export function getWorkFlowInfo({ queryKey }: QueryFunctionContext): Promise<WorkFlowData> {
   return httpClient<WorkFlowData>(`/api/v1/flow/flowInfo/${queryKey[1] as string}`);
 }
@@ -44,22 +26,6 @@ export function saveWorkFlow(flowData: SaveWorkFlowParamsType): Promise<WorkFlow
   return httpClient<WorkFlowData>(
     '/api/v1/flow/saveFlow',
     flowData,
-  );
-}
-
-interface UpdateWorkFlow {
-  bpmnText: string;
-  canCancel: 0 | 1;
-  canMsg: 0 | 1;
-  canUrge: 0 | 1;
-  canViewStatusMsg: 0 | 1;
-  name: string;
-  modifierId: string;
-}
-export function updateWorkflow({ queryKey }: QueryFunctionContext): Promise<WorkFlowData> {
-  return httpClient<WorkFlowData>(
-    '/api/v1/flow/updateFlow',
-    queryKey[1] as UpdateWorkFlow,
   );
 }
 

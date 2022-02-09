@@ -11,7 +11,7 @@ import Select from '@c/select';
 import Button from '@c/button';
 import toast from '@lib/toast';
 import Loading from '@c/loading';
-import { getStore } from '@ofa/page-engine';
+import { getStore } from '@one-for-all/page-engine';
 
 import Header from '../comps/header';
 import { ErrorMsg } from '../comps/form';
@@ -342,7 +342,9 @@ function AddApi(props: Props): JSX.Element {
         </form>
       </FormProvider>
 
-      <div className={cs('flex items-center justify-end w-full h-64 bg-gray-100 px-20', { hidden: props.tinyMode })}>
+      <div className={cs(
+        'flex items-center justify-end w-full h-64 bg-gray-100 px-20', { hidden: props.tinyMode },
+      )}>
         <Button onClick={history.goBack} iconName='close' className='mr-20'>取消</Button>
         <Button
           modifier='primary'

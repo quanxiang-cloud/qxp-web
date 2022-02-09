@@ -1,6 +1,6 @@
 import { flattenDeep, isString, isArray, isEmpty } from 'lodash';
 import {
-  ArrowHeadType, Edge, XYPosition, Position,
+  ArrowHeadType, Edge, XYPosition, Position, Elements, isNode, isEdge,
 } from 'react-flow-renderer';
 
 import { getNodeElementById } from '../store';
@@ -62,4 +62,10 @@ export function getFixedSourcePosition(nodeID: string, position: Position): XYPo
       y: y + (height / 2),
     };
   }
+}
+
+export function removeEdge(eles: Elements, source: string, target: string): Elements {
+  return eles.filter((el) => {
+    return isNode(el) || (isEdge(el) && (el.source !== source || el.target !== target));
+  });
 }

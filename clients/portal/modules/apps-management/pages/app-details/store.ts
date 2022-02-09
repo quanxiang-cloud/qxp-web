@@ -6,6 +6,8 @@ import { mutateTree, TreeData, TreeItem } from '@atlaskit/tree';
 import toast from '@lib/toast';
 import { buildAppPagesTreeData } from '@lib/utils';
 import { fetchPageList, getCustomPageInfo, getSchemaPageInfo, getTableSchema } from '@lib/http-client';
+import { globalSettings } from '@portal/modules/apps-management/pages/app-details/constants';
+import { cloneUserData, setPageEngineMenuType } from '@lib/api/user-config';
 
 import { BindState, CardList, CustomPageInfo, MenuType } from './type';
 import { fetchAppList } from '../entry/app-list/api';
@@ -33,7 +35,7 @@ import {
 } from './api';
 import { getFirstMenu, flatMnues } from './page-menu-design/menu-tree/utils';
 import { Menu } from './page-menu-design/menu-tree/type';
-import { getPage as getSchemaPage } from '../page-design/api';
+import { getPage as getSchemaPage, getSchemaKey } from '../page-design/api';
 
 type DeletePageOrGroupParams = {
   treeItem: TreeItem;
@@ -326,7 +328,18 @@ class AppDetailsStore {
       });
     }
     // create
-    return createPage({ appID: this.appID, ...PageInfoPick }).then((res: { id: string }) => {
+    return createPage({ appID: this.appID, ...PageInfoPick }).then(async (res: { id: string }) => {
+      let menuType = pageInfo.menuType;
+      const isCopySchemaPage = pageInfo.menuType === MenuType.schemaPage;
+      // copy schema page
+      if (isCopySchemaPage) {
+        menuType = (await setPageEngineMenuType(this.appID, res.id)).menu_type || menuType;
+        const sourceKey = getSchemaKey(this.appID, pageInfo.id, false);
+        const targetKey = getSchemaKey(this.appID, res.id, false);
+        const version = globalSettings.version;
+        await cloneUserData({ key: sourceKey, version }, { key: targetKey, version });
+      }
+      menuType && Reflect.set(PageInfoPick, 'menuType', menuType);
       this.addNewPageToList(PageInfoPick, res.id);
     });
   };
@@ -429,11 +442,13 @@ class AppDetailsStore {
     }
 
     if (pageInfo.menuType === MenuType.schemaPage) {
-    // todo
       getSchemaPage(this.appID, this.pageID).then((schema)=> {
         if (schema) {
           this.designPageSchema = schema;
         }
+        return getPageCardList(this.appID, this.pageID, this.curPageCardList, pageInfo.menuType);
+      }).then((res) => {
+        this.curPageCardList = res;
       }).catch((err) => {
         toast.error(err.message);
       }).finally(() => {
@@ -464,7 +479,7 @@ class AppDetailsStore {
   };
 
   @action
-  updatePageHideStatus = (appID: string, pageInfo: PageInfo) => {
+  updatePageHideStatus = (appID: string, pageInfo: PageInfo): Promise<void> => {
     return isHiddenMenu(appID, { id: pageInfo.id, hide: pageInfo.isHide ? false : true }).then(() => {
       const hideMenu = (pageInitList: Menu[]): Menu[] => {
         return (pageInitList || []).map((item: Menu) => {

@@ -2,7 +2,7 @@ import React, { forwardRef, useRef, ForwardedRef } from 'react';
 import cs from 'classnames';
 
 import Action from './index';
-import { mergeRefs } from '@portal/modules/poly-api/utils';
+import { mergeRefs } from '@polyApi/utils';
 
 interface Props {
   type: 'right' | 'bottom';

@@ -2,6 +2,7 @@ import { isEmpty, isString, omit } from 'lodash';
 
 import { isObjectField } from './object-editor';
 import { RawApiDetail } from '../effects/api/raw';
+import { PLACEHOLDER_OPTION } from '../constants';
 
 type ParamsConfig = Omit<POLY_API.PolyNodeInput, 'data' | 'type' | 'in'> & {
   type: string;
@@ -61,14 +62,6 @@ export function convertToParamsConfig(
   return acc;
 }
 
-export type PolyApiSelectorOption = {
-  label: string;
-  value: string;
-  path: string;
-  isLeaf: boolean;
-  disabled: boolean;
-}
-
 export type ApiCascaderOption = {
   label: string;
   value: string;
@@ -79,11 +72,11 @@ export type ApiCascaderOption = {
   disabled?: boolean;
 }
 
-export function mergeApiListToChildNameSpace(
+function mergeApiListToChildNameSpace(
   childNameSpace: ApiCascaderOption[] | undefined, rawApiList: RawApiDetail[],
 ): ApiCascaderOption[] {
   if (!rawApiList.length && !childNameSpace) {
-    return [{ label: '暂无api', value: '', path: '', children: undefined, isLeaf: true, disabled: true }];
+    return PLACEHOLDER_OPTION;
   }
 
   return (childNameSpace || []).concat(rawApiList.map(({ title, name, fullPath }: RawApiDetail) => {
@@ -165,7 +158,7 @@ export function filterPolyApiInputs(inputs: POLY_API.PolyNodeInput[]): POLY_API.
   return omitNodeInputProperties(_inputs, ['mock', 'desc']);
 }
 
-export function appendApiListToTargetOption(
+function appendApiListToTargetOption(
   option: ApiCascaderOption, targetOptionPath: string, apiList: RawApiDetail[],
 ): ApiCascaderOption {
   if (option.path === targetOptionPath) {

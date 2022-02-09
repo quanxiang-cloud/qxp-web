@@ -26,6 +26,9 @@ class OwnerStore {
   usernameKeyword = '';
 
   @observable
+  isIncludeSubDep = true;
+
+  @observable
   leader = {
     id: '',
     userName: '',

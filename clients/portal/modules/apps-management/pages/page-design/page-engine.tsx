@@ -8,7 +8,7 @@ import toast from '@lib/toast';
 import ApiSelector from '@polyApi/nodes/forms/request-config/api-selector';
 import ApiSpec from '../app-details/api-proxy/add-api';
 
-import { Designer, getStore } from '@ofa/page-engine';
+import { Designer, getStore } from '@one-for-all/page-engine';
 import { getPage, savePage, updatePageEngineMenuType } from './api';
 
 import './index.scss';
@@ -43,10 +43,10 @@ function PageDesign(): JSX.Element {
       <div className='flex flex-col mb-24 relative -top-8'>
         <p className='text-12 text-gray-600'>选择API</p>
         <ApiSelector
+          simpleMode
           className='api-selector-wrap'
           initRawApiPath={apiPath}
           setApiPath={setApiPath}
-          simpleMode
         />
       </div>
     ));

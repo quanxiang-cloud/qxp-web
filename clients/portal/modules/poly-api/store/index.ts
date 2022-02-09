@@ -3,7 +3,14 @@ import { lensPath, set, dissocPath, path } from 'ramda';
 
 import { PolyCanvasStore } from './canvas';
 
-function getInitState(): POLY_API.Root {
+function getInitPolyInfo(): POLY_API.POLY_INFO {
+  return {
+    id: '', owner: '', ownerName: '', namespace: '', name: '', title: 'API名称',
+    active: 0, desc: '', access: [], method: '', createAt: '', updateAt: '', buildAt: '',
+  };
+}
+
+function getDefaultState(): POLY_API.Root {
   return {
     currentNodeConfigParams: {
       currentNode: undefined,
@@ -12,24 +19,34 @@ function getInitState(): POLY_API.Root {
       excludedFields: [],
     },
     nodes: new PolyCanvasStore([]),
+    polyInfo: getInitPolyInfo(),
   };
 }
 
-export class PolyStore extends BehaviorSubject<POLY_API.Root> {
+class PolyStore extends BehaviorSubject<POLY_API.Root> {
   constructor(initialState: POLY_API.Root) {
     super(initialState);
   }
 
-  init(polyInfo?: POLY_API.POLY_INFO): void {
-    this.next({ ...getInitState(), polyInfo });
+  reset(): void {
+    this.next({ ...getDefaultState(), nodes: this.nodes$ });
   }
 
   set(key: string, value: any): void {
     this.next(set(lensPath(key.split('.')), value, this.value));
   }
 
+  setSource(polyInfo: POLY_API.POLY_INFO, nodes: POLY_API.Element[]): void {
+    this.set('polyInfo', polyInfo);
+    this.nodes$.set(nodes);
+  }
+
   get<T>(key: string): T {
     return path(key.split('.'), this.value) as T;
+  }
+
+  get nodes$(): PolyCanvasStore {
+    return this.value.nodes;
   }
 
   unset(key: string): void {
@@ -42,6 +59,6 @@ export class PolyStore extends BehaviorSubject<POLY_API.Root> {
   }
 }
 
-const store$ = new PolyStore(getInitState());
+const store$ = new PolyStore(getDefaultState());
 
 export default store$;

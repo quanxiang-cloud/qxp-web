@@ -32,8 +32,11 @@ function ImportFormModal({ onClose }: Props): JSX.Element {
         title: `【${store.appName}-${store.pageName}】表单数据导入 `,
       });
 
-      const isFinish = await subscribeStatusChange(taskID, '导入');
-      isFinish && store.setParams({});
+      const [isFinish, isSuccess] = await subscribeStatusChange(taskID, '导入');
+      if (isFinish) {
+        isSuccess && store.setParams({});
+        !isSuccess && toast.error('导入失败请稍后再试！');
+      }
       setfFleDetail(undefined);
       onClose();
     } catch (err) {
@@ -89,14 +92,14 @@ function ImportFormModal({ onClose }: Props): JSX.Element {
     >
       <>
         <div className='rounded-12 rounded-tl-4 mx-16 my-20 flex items-center bg-blue-100 text-blue-600 py-10 px-16'>
-          <Icon name='info' color='blue' className='w-16 h-16 fill-current' size={18}/>
+          <Icon name='info' color='blue' className='w-16 h-16 fill-current' size={18} />
           <span className='ml-10 text-12'>
             支持：单行文本、多行文本、多选框等基础字段，以及人员选择器、部门选择器字段，其他字段暂不支持
           </span>
         </div>
         <FileUploader
           className='px-40 form-upload'
-          uploaderDescription={<UploadDescription/>}
+          uploaderDescription={<UploadDescription />}
           maxFileSize={20}
           accept={[
             'text/csv',

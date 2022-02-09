@@ -3,7 +3,7 @@ import cs from 'classnames';
 
 import List from '@c/list';
 import Icon from '@c/icon';
-import useFitView from '@flow/content/editor/hooks/use-fit-view';
+import useFitView from '@c/logic/flow-render/hooks/use-fit-view';
 
 import AsideMenuItem from './menu-item';
 

@@ -1,5 +1,5 @@
 import {
-  Position, XYPosition, isNode, Elements, isEdge,
+  Position, XYPosition,
 } from 'react-flow-renderer';
 import { update } from 'lodash';
 
@@ -9,7 +9,7 @@ export * from './branch';
 export * from './node';
 export * from './edge';
 
-export interface GetCenterParams {
+interface GetCenterParams {
   sourceX: number;
   sourceY: number;
   targetX: number;
@@ -63,10 +63,4 @@ export function mergeDataAdapter<T, S>(
 
 export function getCenterPosition(position: XYPosition, width: number, height: number): XYPosition {
   return { x: position.x - (width / 2), y: position.y - (height / 2) };
-}
-
-export function removeEdge(eles: Elements, source: string, target: string): Elements {
-  return eles.filter((el) => {
-    return isNode(el) || (isEdge(el) && (el.source !== source || el.target !== target));
-  });
 }

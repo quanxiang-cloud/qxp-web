@@ -8,7 +8,7 @@ import httpClient from '@lib/http-client';
 
 import { GET_NAMESPACE_FULL_PATH, NAMESPACE_ROW } from './names';
 
-export interface Input<I> {
+interface Input<I> {
   path: string;
   body?: I;
 }
@@ -21,11 +21,12 @@ type QueryRootPathResponse = {
 };
 export function useQueryNameSpaceRawRootPath(
   appID: QueryRootPathInput,
+  pathType: 'raw.root' | 'poly',
   options?: UseQueryOptions<QueryRootPathResponse, Error>,
 ): UseQueryResult<QueryRootPathResponse, Error> {
   return useQuery<QueryRootPathResponse, Error>(
-    [NAMESPACE_ROW, appID],
-    () => httpClient('/api/v1/polyapi/namespace/appPath', { pathType: 'raw.root', appID }),
+    [NAMESPACE_ROW, appID, pathType],
+    () => httpClient('/api/v1/polyapi/namespace/appPath', { pathType, appID }),
     options,
   );
 }

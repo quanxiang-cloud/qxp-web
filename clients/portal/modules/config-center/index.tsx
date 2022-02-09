@@ -1,6 +1,7 @@
 import React from 'react';
 import { useQuery } from 'react-query';
-import { SchemaRender, Schema } from '@ofa/render-engine';
+import { SchemaRender } from '@one-for-all/render-engine';
+import type { Schema } from '@one-for-all/schema-spec';
 import logger from '@lib/logger';
 
 import ErrorBoundary from '@c/page-schema-render/error-boundary';

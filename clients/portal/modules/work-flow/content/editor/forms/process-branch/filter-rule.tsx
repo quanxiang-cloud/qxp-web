@@ -1,73 +1,16 @@
 import React, { useContext, useRef } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/antd';
 import { useQuery } from 'react-query';
+import { defaultTo } from 'ramda';
 
 import FlowContext from '@flow/flow-context';
-import { SYSTEM_FIELDS } from '@c/form-builder/constants';
 import FormulaEditor, { CustomRule, RefProps } from '@c/formula-editor';
 
 import { getFlowVariables } from '../api';
 import FlowTableContext from '../flow-source-table';
 import RuleItem from './rule-item';
-
-const COLLECTION_OPERATORS = [
-  {
-    name: '==',
-    key: '==',
-  },
-  {
-    name: '!=',
-    key: '!=',
-  },
-  {
-    name: '||',
-    key: '||',
-  },
-  {
-    name: '&&',
-    key: '&&',
-  },
-  {
-    name: '∈',
-    key: '∈',
-  },
-  {
-    name: '∉',
-    key: '∉',
-  },
-  {
-    name: '>',
-    key: '>',
-  },
-  {
-    name: '<',
-    key: '<',
-  },
-  {
-    name: '<=',
-    key: '<=',
-  },
-  {
-    name: '>=',
-    key: '>=',
-  },
-  {
-    name: '+',
-    key: '+',
-  },
-  {
-    name: '-',
-    key: '-',
-  },
-  {
-    name: '*',
-    key: '*',
-  },
-  {
-    name: '/',
-    key: '/',
-  },
-];
+import { COLLECTION_OPERATORS } from './constants';
+import { variableToRule, tableSchemaFilter, tableSchemaToRule } from './util';
 
 function FilterRule({ mutators, value }: ISchemaFieldComponentProps): JSX.Element | null {
   const { tableSchema } = useContext(FlowTableContext);
@@ -85,19 +28,9 @@ function FilterRule({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
     formulaRef.current?.insertText(rule.key);
   }
 
-  const variablesRules = (variables?.map?.((item) => {
-    return {
-      name: item.name,
-      key: `[${item.code}]`,
-      type: item.fieldType?.toLowerCase(),
-    };
-  }) || []);
-
-  const tableSchemaRules = tableSchema.filter((schema) => {
-    return !SYSTEM_FIELDS.includes(schema.fieldName);
-  }).map((schema) => ({
-    name: schema.title as string, key: `[${schema.id}]`, type: schema.type || '',
-  }));
+  const defaultToEmptyArray = defaultTo([]);
+  const variablesRules = defaultToEmptyArray(variables).map(variableToRule);
+  const tableSchemaRules = tableSchema.filter(tableSchemaFilter).map(tableSchemaToRule);
 
   if (isLoading || !tableSchema.length) {
     return null;

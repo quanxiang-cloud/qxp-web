@@ -135,6 +135,7 @@ function PageList(): JSX.Element {
           pageInfo={modalType === 'createPage' ? undefined : activeMenu as any}
           onCancel={closeModal}
           onSubmit={handleEditPage}
+          isCopy={modalType === 'copyPage'}
         />
       )}
       {modalType === 'hide' && (

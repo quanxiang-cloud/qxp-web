@@ -17,6 +17,12 @@ rect {
       height: calc(100% - 56px);
     }
   }
+
+  &.flow-editor-drawer-components .drawer-container {
+    min-width: unset;
+    width: 384px;
+    padding-bottom: 10px;
+  }
 }
 
 .work-flow-node-header-input {

@@ -88,6 +88,7 @@ function CascadeSelector({
       displayRender={(labels) => {
         return showFullPath ? labels.join(' / ') : last(labels);
       }}
+      getPopupContainer={(triggerNode) => triggerNode.parentNode as HTMLElement}
       value={_value}
       onChange={handleChange}
       options={options}

@@ -207,6 +207,7 @@ const AllUserPicker = ({ appID, value, ...otherProps }: AllUserPickerProps): JSX
       {...componentsProps}
       options={undefined}
       allowClear
+      getPopupContainer={(triggerNode) => triggerNode.parentNode as HTMLElement}
       className={cs('user-selector', componentsProps.className)}
     >
       {

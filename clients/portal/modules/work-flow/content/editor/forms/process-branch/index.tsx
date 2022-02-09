@@ -14,7 +14,7 @@ import { getFieldValuePath } from '@flow/content/editor/forms/utils';
 import FilterRule from './filter-rule';
 import FlowTableContext from '../flow-source-table';
 
-export interface Props {
+interface Props {
   nodeType: NodeType;
   defaultValue: ProcessBranchData;
   onSubmit: (data: ProcessBranchData) => void;
