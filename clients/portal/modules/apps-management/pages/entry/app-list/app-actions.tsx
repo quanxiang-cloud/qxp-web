@@ -15,13 +15,11 @@ type Props = {
 
 function AppActions({ openModal, appInfo }: Props): JSX.Element {
   const history = useHistory();
-  const hasReadAccess = window.ADMIN_USER_FUNC_TAGS.includes('application/read');
-  const hasWriteAccess = window.ADMIN_USER_FUNC_TAGS.includes('application/write');
 
   const menus: MenuItem[] = [
     {
       key: 'publish',
-      disabled: appInfo.useStatus < -1 || !hasWriteAccess,
+      disabled: appInfo.useStatus < -1,
       label: (
         <div className="flex items-center">
           <Icon name="toggle_on" className="mr-4" />
@@ -31,7 +29,7 @@ function AppActions({ openModal, appInfo }: Props): JSX.Element {
     },
     {
       key: 'visit',
-      disabled: appInfo.useStatus < 0 || !hasReadAccess,
+      disabled: appInfo.useStatus < 0,
       label: (
         <div className='flex items-center'>
           <Icon name="login" className="mr-4" />
@@ -41,7 +39,7 @@ function AppActions({ openModal, appInfo }: Props): JSX.Element {
     },
     {
       key: 'saveAsTemplate',
-      disabled: appInfo.useStatus < -1 || !hasWriteAccess,
+      disabled: appInfo.useStatus < -1,
       label: (
         <div className="flex items-center">
           <Icon name="save" className="mr-4" />
@@ -51,7 +49,6 @@ function AppActions({ openModal, appInfo }: Props): JSX.Element {
     },
     {
       key: 'delete',
-      disabled: !hasWriteAccess,
       label: (
         <div className="flex items-center text-red-600">
           <Icon name="restore_from_trash" className="mr-4" />
