@@ -39,7 +39,7 @@ export function numberTransform(schema: ISchema): number {
 export function wrapSchemaByMegaLayout(schema: ISchema): ISchema {
   const properties = get(schema, 'properties', {});
   const xInternal = get(schema, 'x-internal', {});
-  const labelAlign = get(xInternal, 'labelAlign', 'right');
+  const labelAlign = get(xInternal, 'labelAlign', 'top');
   // const columnsCount = get(xInternal, 'columns', 1);
 
   return {
@@ -56,7 +56,7 @@ export function wrapSchemaByMegaLayout(schema: ISchema): ISchema {
         'x-component': 'mega-layout',
         'x-component-props': {
           labelAlign,
-          wrapperCol: 20,
+          wrapperCol: labelAlign === 'top' ? '24' : '20',
           // grid: true,
           // columns: columnsCount,
           // autoRow: true,

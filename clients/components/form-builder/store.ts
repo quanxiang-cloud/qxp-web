@@ -66,7 +66,7 @@ export default class FormBuilderStore {
     this.pageID = pageID;
     this.visibleHiddenLinkages = schema['x-internal']?.visibleHiddenLinkages || [];
     this.columnsCount = schema['x-internal']?.columns || 1;
-    this.labelAlign = schema?.['x-internal']?.labelAlign || 'right';
+    this.labelAlign = schema?.['x-internal']?.labelAlign || 'top';
     this.validations = schema['x-internal']?.validations || [];
     this.setSerialFieldIds(schema);
   }
