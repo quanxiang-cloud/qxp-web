@@ -1,15 +1,13 @@
-import React, { useRef, useState, useEffect, useContext, useCallback } from 'react';
+import React, { useRef, useState, useEffect, useContext, useCallback, useMemo } from 'react';
 import { useQuery } from 'react-query';
-import { usePrevious } from 'react-use';
 import { nanoid } from 'nanoid';
 import { isUndefined } from 'lodash';
-import { equals } from 'ramda';
+import { cond, propEq, and, always, T } from 'ramda';
 
 import type { CustomRule } from '@c/formula-editor';
 import { Input } from '@flow/content/editor/type';
-import ApiFormulaConfig from '@polyApi/nodes/forms/request-config/api-formula';
+import PathTreeWithOperates from '@polyApi/nodes/forms/request-config/path-tree-with-operates';
 import ApiParamsConfig, { RefType } from '@polyApi/nodes/forms/request-config/api-params-config';
-import type { RefType as PathTreeRefType } from '@polyApi/components/poly-node-path-tree';
 import sourceTable from '@flow/content/editor/forms/flow-source-table';
 import { getVariableList } from '@flow/api';
 import store from '@flow/content/editor/store';
@@ -19,7 +17,7 @@ import type { StoreValue } from '@flow/content/editor/type';
 
 import Send from './send';
 
-import { webhookPathTreeSourceGetter } from './utils';
+import { getWebhookPathTreeValue } from './utils';
 
 interface Props {
   value: Input[];
@@ -28,12 +26,9 @@ interface Props {
   error?: string;
 }
 
-type SourceGetter = () => POLY_API.PolyNodeInput[];
-
 function Inputs({ value, onChange, values, error }: Props): JSX.Element | null {
   const formulaEditorRef = useRef<RefType>();
   const [customRules, setCustomRules] = useState<CustomRule[]>();
-  const polyNodePathTreeRef = useRef<PathTreeRefType | null>(null);
   const { tableSchema } = useContext(sourceTable);
   const { id: flowId = '' } = useObservable<StoreValue>(store);
 
@@ -46,22 +41,7 @@ function Inputs({ value, onChange, values, error }: Props): JSX.Element | null {
     enabled: !!flowId,
   });
 
-  const [sourceGetter, setSourceGetter] = useState<SourceGetter>(
-    () => webhookPathTreeSourceGetter(tableSchema, data),
-  );
-  const previousTableSchema = usePrevious(tableSchema);
-  useEffect(() => {
-    const isChanged = previousTableSchema && !equals(tableSchema, previousTableSchema);
-    isChanged && setSourceGetter(() => webhookPathTreeSourceGetter(tableSchema, data));
-  }, [tableSchema, data, previousTableSchema]);
-
-  useEffect(() => {
-    if (customRules?.length || !polyNodePathTreeRef.current) {
-      return;
-    }
-    const rules = polyNodePathTreeRef.current.getCustomRules();
-    setCustomRules(rules ?? []);
-  }, [customRules, polyNodePathTreeRef.current]);
+  const pathTreeValue = useMemo(() => getWebhookPathTreeValue(tableSchema, data), [tableSchema, data]);
 
   useEffect(() => {
     const getInit = (type: 'header' | 'body' | 'query'): Input => ({
@@ -71,6 +51,39 @@ function Inputs({ value, onChange, values, error }: Props): JSX.Element | null {
       onChange(['header' as const, 'body' as const, 'query' as const].map(getInit));
     }
   }, [values.type]);
+
+  function apiParamsConfig(): JSX.Element {
+    return (
+      <ApiParamsConfig
+        onChange={onChange}
+        ref={formulaEditorRef}
+        value={value}
+        url={values.url}
+        customRules={customRules!}
+        validating={!isUndefined(error)}
+      />
+    );
+  }
+
+  function send(): JSX.Element {
+    return (
+      <Send
+        value={value}
+        onChange={onChange}
+        ref={formulaEditorRef}
+        customRules={customRules!}
+      />
+    );
+  }
+
+  const isRequest = propEq('type', 'request');
+  const isSend = propEq('type', 'send');
+  const getInputsConfig = cond([
+    [(val) => and(isRequest(val), !!customRules), always(apiParamsConfig)],
+    [(val) => and(isSend(val), !!customRules), always(send)],
+    [T, always(() => <></>)],
+  ]);
+  const InputsConfig = useMemo(() => getInputsConfig(values), [values.type, value.length, customRules]);
 
   if (isLoading) {
     return <Loading desc="加载中..." />;
@@ -82,29 +95,11 @@ function Inputs({ value, onChange, values, error }: Props): JSX.Element | null {
 
   return (
     <div className="grid items-stretch webhook-request-inputs">
-      {values.type === 'request' && customRules && (
-        <ApiParamsConfig
-          onChange={onChange}
-          ref={formulaEditorRef}
-          value={value}
-          url={values.url}
-          customRules={customRules}
-          validating={!isUndefined(error)}
-        />
-      )}
-      {values.type === 'send' && customRules && (
-        <Send
-          value={value}
-          onChange={onChange}
-          ref={formulaEditorRef}
-          customRules={customRules}
-        />
-      )}
-      <ApiFormulaConfig
-        hasSuffix
+      <InputsConfig />
+      <PathTreeWithOperates
         currentFormulaEditorRef={formulaEditorRef}
-        ref={polyNodePathTreeRef}
-        sourceGetter={sourceGetter}
+        pathTreeValue={pathTreeValue}
+        onRulesChange={setCustomRules}
       />
     </div>
   );

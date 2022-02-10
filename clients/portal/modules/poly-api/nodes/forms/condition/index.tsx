@@ -1,26 +1,18 @@
 import React, { useRef, useEffect, useCallback } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
-import FormularEditor, { RefProps, CustomRule } from '@c/formula-editor';
-import PolyNodePathTree, { RefType } from '@polyApi/components/poly-node-path-tree';
+import FormulaEditor, { RefProps, CustomRule } from '@c/formula-editor';
+import PathTree, { CurrentNode } from '@c/logic/path-tree';
 import { getElementHeight } from '@polyApi/utils/dom';
-import { TreeNode } from '@c/headless-tree/types';
 import Operates from '@polyApi/components/operates';
 import { CONDITION_OPERATES_MAP } from '@polyApi/constants';
+import usePathTreeSource from '@polyApi/effects/hooks/use-path-tree-source';
 
 function ConditionForm(props: ISchemaFieldComponentProps): JSX.Element {
-  const [customRules, setCustomRules] = React.useState<CustomRule[]>([]);
-  const polyNodePathTreeRef = useRef<RefType | null>(null);
-  const formularRef = useRef<RefProps | null>(null);
+  const [customRules, setCustomRules] = React.useState<CustomRule[]>();
+  const formulaRef = useRef<RefProps | null>(null);
   const ref = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    if (customRules.length) {
-      return;
-    }
-    const rules = polyNodePathTreeRef.current?.getCustomRules();
-    setCustomRules(rules || []);
-  }, [customRules]);
+  const polyPathTreeValue = usePathTreeSource();
 
   useEffect(() => {
     const el = document.querySelector('.node-config-form-section') as HTMLDivElement;
@@ -30,8 +22,8 @@ function ConditionForm(props: ISchemaFieldComponentProps): JSX.Element {
     ref.current.style.height = `${getElementHeight(el)}px`;
   }, []);
 
-  function onSelect(node: TreeNode<POLY_API.PolyNodeInput & { descPath: string }>): void {
-    formularRef.current?.insertEntity({
+  function onSelectVariable(node: CurrentNode): void {
+    formulaRef.current?.insertEntity({
       name: node.data?.descPath,
       key: node.path,
     });
@@ -42,16 +34,16 @@ function ConditionForm(props: ISchemaFieldComponentProps): JSX.Element {
   }
 
   const handleOperateChange = useCallback((operate: string) => {
-    formularRef.current?.insertText(operate);
+    formulaRef.current?.insertText(operate);
   }, []);
 
   return (
     <div className="h-full flex" ref={ref}>
       <div className="h-full flex-2">
-        {!!customRules?.length && (
-          <FormularEditor
+        {customRules && (
+          <FormulaEditor
             className="h-full node-formula-editor"
-            ref={formularRef}
+            ref={formulaRef}
             onChange={handleChange}
             customRules={customRules}
             defaultValue={props.initialValue?.data || props.value?.data || ''}
@@ -65,10 +57,11 @@ function ConditionForm(props: ISchemaFieldComponentProps): JSX.Element {
           onClick={handleOperateChange}
           className="bg-white"
         />
-        <PolyNodePathTree
+        <PathTree
           className="h-full bg-white overflow-auto"
-          onSelect={onSelect}
-          ref={polyNodePathTreeRef}
+          value={polyPathTreeValue}
+          onChange={onSelectVariable}
+          onRulesChange={setCustomRules}
         />
       </div>
     </div>

@@ -3,13 +3,13 @@ import { UnionColumn } from 'react-table';
 import { values, map } from 'ramda';
 
 import toast from '@lib/toast';
-import { schemaToMap } from '@lib/schema-convert';
 import FormStore from '@c/form-builder/store';
+import { schemaToMap } from '@lib/schema-convert';
 import AppPageDataStore from '@c/form-app-data-table/store';
 import { getTableSchema, saveTableSchema } from '@lib/http-client';
 import { SYSTEM_FIELDS, INVALID_INVISIBLE } from '@c/form-builder/constants';
 import { TableConfig, TableColumnConfig } from '@c/form-app-data-table/type';
-import { numberTransform, validateFieldConfig, validatePageConfig } from '@c/form-builder/utils';
+import { numberTransform, validatePageConfig, validateFieldConfig } from '@c/form-builder/utils';
 import {
   setFixedParameters,
   columnStringToObject,
@@ -277,7 +277,7 @@ class FormDesignStore {
   @action
   saveForm = async (): Promise<void | boolean> => {
     try {
-      await validateFieldConfig(this.formStore?.configValidate);
+      await validateFieldConfig(this.formStore?.fieldConfigValidator, this.formStore?.getFieldValueFunc);
       await validatePageConfig(this.formStore?.flattenFields.length || 0, this.pageTableColumns?.length);
       await this.saveFormConfig();
     } catch (err) {

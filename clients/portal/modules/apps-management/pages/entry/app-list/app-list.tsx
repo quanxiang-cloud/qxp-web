@@ -23,12 +23,15 @@ function AppList({ isLoading, appList, openCreatedModal }: Props): JSX.Element {
   const [modalType, setModalType] = useState('');
   const [curApp, setCurApp] = useState<AppInfo | null>(null);
   const history = useHistory();
+  const hasUpdateAccess = window.ADMIN_USER_FUNC_TAGS.includes('application/update');
+  const hasReadAccess = window.ADMIN_USER_FUNC_TAGS.includes('application/read');
+  const hasDeleteAccess = window.ADMIN_USER_FUNC_TAGS.includes('application/delete');
 
   function getAppItemMenus(appInfo: AppInfo): MenuItem[] {
     return [
       {
         key: 'publish',
-        disabled: appInfo.useStatus < -1,
+        disabled: appInfo.useStatus < -1 || !hasUpdateAccess,
         label: (
           <div className="flex items-center">
             <Icon name="toggle_on" className="mr-4" />
@@ -38,7 +41,7 @@ function AppList({ isLoading, appList, openCreatedModal }: Props): JSX.Element {
       },
       {
         key: 'visit',
-        disabled: appInfo.useStatus < 0,
+        disabled: appInfo.useStatus < 0 || !hasReadAccess,
         label: (
           <div className='flex items-center'>
             <Icon name="login" className="mr-4" />
@@ -48,7 +51,7 @@ function AppList({ isLoading, appList, openCreatedModal }: Props): JSX.Element {
       },
       {
         key: 'exportApp',
-        disabled: appInfo.useStatus < -1,
+        disabled: appInfo.useStatus < -1 || !hasReadAccess,
         label: (
           <div className="flex items-center">
             <Icon name="upload" className="mr-4" />
@@ -58,7 +61,7 @@ function AppList({ isLoading, appList, openCreatedModal }: Props): JSX.Element {
       },
       {
         key: 'saveAsTemplate',
-        disabled: appInfo.useStatus < -1,
+        disabled: appInfo.useStatus < -1 || !hasUpdateAccess,
         label: (
           <div className="flex items-center">
             <Icon name="save" className="mr-4" />
@@ -68,6 +71,7 @@ function AppList({ isLoading, appList, openCreatedModal }: Props): JSX.Element {
       },
       {
         key: 'delete',
+        disabled: !hasDeleteAccess,
         label: (
           <div className="flex items-center text-red-600">
             <Icon name="restore_from_trash" className="mr-4" />

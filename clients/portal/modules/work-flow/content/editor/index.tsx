@@ -2,7 +2,7 @@ import React, { DragEvent, useContext, Fragment, useMemo } from 'react';
 import cs from 'classnames';
 
 import useObservable from '@lib/hooks/use-observable';
-import FlowRender from '@c/flow-render';
+import FlowRender from '@c/logic/flow-render';
 import FlowContext from '@flow/flow-context';
 
 import edgeTypes from './edges';

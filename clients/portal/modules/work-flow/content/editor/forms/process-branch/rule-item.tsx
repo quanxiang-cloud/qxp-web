@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { CustomRule } from '@c/formula-editor';
+import type { CustomRule } from '@c/formula-editor';
 
 interface Props {
   label: string;

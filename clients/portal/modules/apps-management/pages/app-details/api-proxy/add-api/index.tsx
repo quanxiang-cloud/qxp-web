@@ -11,7 +11,7 @@ import Select from '@c/select';
 import Button from '@c/button';
 import toast from '@lib/toast';
 import Loading from '@c/loading';
-import { getStore } from '@ofa/page-engine';
+import { getStore } from '@one-for-all/page-engine';
 
 import Header from '../comps/header';
 import { ErrorMsg } from '../comps/form';

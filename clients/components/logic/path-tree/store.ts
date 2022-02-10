@@ -3,33 +3,35 @@ import { isArray } from 'lodash';
 import TreeStore from '@c/headless-tree/store';
 import { TreeNode } from '@c/headless-tree/types';
 
-function apiRequestFormulaTreeNode(
-  formula: POLY_API.PolyNodeInput,
-  child: POLY_API.PolyNodeInput[] = [],
+import type { TreeNodeDataType } from './type';
+
+function buildRootNode(
+  data: TreeNodeDataType,
+  child: TreeNodeDataType[] = [],
   level = 1,
   visible = false,
   expanded = true,
   parentId = '',
   parentDescPath = '',
   order = 0,
-): TreeNode<POLY_API.PolyNodeInput> {
+): TreeNode<TreeNodeDataType> {
   let name = '';
   let desc = '';
-  if (formula.desc) {
-    desc = formula.desc;
+  if (data.desc) {
+    desc = data.desc;
   }
-  if (formula.name) {
-    name = formula.name;
-  } else if (order - 1 >= 0) {
-    name = `${order - 1}`;
+  if (data.name) {
+    name = data.name;
+  } else if (order >= 1) {
+    name = `[${order - 1}]`;
   }
   if (!desc) {
     desc = name;
   }
-  const id = parentId ? `${parentId}.${name}` : name || '$';
+  const id = parentId ? `${parentId}.${name}` : `${name ? '$' + name : ''}`;
   const descPath = parentDescPath ? `${parentDescPath}.${desc}` : desc;
 
-  const children = child?.filter(Boolean).map((polyNodeInput, index) => apiRequestFormulaTreeNode(
+  const children = child?.filter(Boolean).map((polyNodeInput, index) => buildRootNode(
     polyNodeInput,
     isArray(polyNodeInput.data) ? polyNodeInput.data : [],
     level + 1,
@@ -40,8 +42,8 @@ function apiRequestFormulaTreeNode(
     index + 1,
   ));
 
-  const treeNode: TreeNode<POLY_API.PolyNodeInput> = {
-    data: formula,
+  const treeNode: TreeNode<TreeNodeDataType> = {
+    data,
     name,
     id,
     path: id,
@@ -62,8 +64,8 @@ function apiRequestFormulaTreeNode(
   return treeNode;
 }
 
-export default class ApiFormulaTreeStore extends TreeStore<POLY_API.PolyNodeInput> {
-  constructor(root: POLY_API.PolyNodeInput, child: POLY_API.PolyNodeInput[]) {
-    super({ rootNode: apiRequestFormulaTreeNode(root, child), disableExpandNodeOnSelect: true }, true);
+export default class PathTreeStore extends TreeStore<TreeNodeDataType> {
+  constructor(root: TreeNodeDataType, child: TreeNodeDataType[]) {
+    super({ rootNode: buildRootNode(root, child), disableExpandNodeOnSelect: true }, true);
   }
 }

@@ -147,7 +147,7 @@ type TimeRule = {
   whenTimeout: WhenTimeout;
 }
 export type ApprovePersonType =
-|'person'
+| 'person'
 | 'field'
 | 'position'
 | 'superior'

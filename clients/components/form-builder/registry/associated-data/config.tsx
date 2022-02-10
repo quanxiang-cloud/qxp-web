@@ -65,7 +65,7 @@ async function getTableFieldsToOptions(
 }
 
 function AssociatedDataConfig({ initialValue, onChange, subTableSchema }: Props): JSX.Element {
-  const { appID, pageID, schema: _schema, setConfigValidate } = useContext(StoreContext);
+  const { appID, pageID, schema: _schema, setFieldConfigValidator } = useContext(StoreContext);
   const schema = subTableSchema || _schema;
   const actions = createAsyncFormActions();
   const { setFieldState } = actions;
@@ -138,7 +138,7 @@ function AssociatedDataConfig({ initialValue, onChange, subTableSchema }: Props)
   });
 
   useEffect(() => {
-    setConfigValidate(form.validate);
+    setFieldConfigValidator(form.validate);
   }, [form.validate]);
 
   useEffect(() => {

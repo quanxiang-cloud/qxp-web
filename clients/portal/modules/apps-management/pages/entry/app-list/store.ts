@@ -126,9 +126,9 @@ class AppListStore {
       value: { appID: createdAppRes.id },
     });
     const newApp = { ...appInfo, ...createdAppRes, useStatus: -2 };
-    const isFinish = await subscribeStatusChange(taskRes.taskID, '导入');
+    const [isFinish, isSuccess] = await subscribeStatusChange(taskRes.taskID, '导入');
     if (isFinish) {
-      newApp.useStatus = -1;
+      newApp.useStatus = isSuccess ? -1 : -3;
     }
     this.appList = [newApp, ...this.appList];
     this.allAppList = [newApp, ...this.allAppList];

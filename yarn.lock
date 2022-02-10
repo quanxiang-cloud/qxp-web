@@ -731,51 +731,86 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@ofa/api-spec-adapter@https://ofapkg.pek3b.qingstor.com/tarball/ofa-api-spec-adapter-v0.3.1.tgz":
-  version "0.3.1"
-  resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-api-spec-adapter-v0.3.1.tgz#b9bb96abe2bb144cdf399cb30e33cbbb2864d361"
+"@one-for-all/api-spec-adapter@0.3.3", "@one-for-all/api-spec-adapter@https://ofapkg.pek3b.qingstor.com/tarball/one-for-all-api-spec-adapter-v0.3.3.tgz":
+  version "0.3.3"
+  resolved "https://ofapkg.pek3b.qingstor.com/tarball/one-for-all-api-spec-adapter-v0.3.3.tgz#66e389b480d1c064fd1ddd7db4c240137424d1d7"
 
-"@ofa/page-engine@https://ofapkg.pek3b.qingstor.com/tarball/ofa-page-engine-v0.5.0.tgz":
-  version "0.5.0"
-  resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-page-engine-v0.5.0.tgz#9df9446c4cd3da9e15cd94f113c4eb5ec84e32f6"
+"@one-for-all/page-engine@https://ofapkg.pek3b.qingstor.com/tarball/one-for-all-page-engine-v0.5.3.tgz":
+  version "0.5.3"
+  resolved "https://ofapkg.pek3b.qingstor.com/tarball/one-for-all-page-engine-v0.5.3.tgz#c6ecc8a980e23e9b31fbd9cc283fca2c2e254cb8"
   dependencies:
     "@codemirror/lang-javascript" "^0.19.3"
+    "@one-for-all/render-engine" "0.10.2"
+    "@one-for-all/schema-spec" "0.10.1"
+    "@one-for-all/ui" "0.2.15"
     "@uiw/react-codemirror" "~4.2.0"
     classnames "^2.3.1"
     mobx "^6.3.8"
     mobx-react "^7.2.1"
     nanoid "^3.1.30"
+    react "^17.0.2"
     react-dnd "^14.0.4"
     react-dnd-html5-backend "^14.0.2"
+    react-dom "^17.0.2"
     react-hook-form "^7.20.4"
     react-use "^17.3.2"
 
-"@ofa/render-engine@https://ofapkg.pek3b.qingstor.com/tarball/ofa-render-engine-v0.10.2.tgz":
+"@one-for-all/render-engine@0.10.2":
   version "0.10.2"
-  resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-render-engine-v0.10.2.tgz#e222c6bc5e5f19e1ab98856eddb00182314d208b"
+  resolved "https://registry.npmmirror.com/@one-for-all/render-engine/download/@one-for-all/render-engine-0.10.2.tgz#bf73ec14b63258aa3dc8f18042bc72cd396d9720"
+  integrity sha512-2kP34VetgglqSdTNakbVSK0M05lmIkhqStddKz1Z/IMYkbHgJFQ07Qc4wgUsj1YCiCtpvjrmG7b1diPbMOKBhw==
   dependencies:
+    "@one-for-all/api-spec-adapter" "0.3.3"
+    "@one-for-all/schema-spec" "0.10.1"
+    "@one-for-all/utils" "0.1.0"
     react "^17.0.2"
     react-dom "^17.0.2"
     rxjs "^7.4.0"
 
-"@ofa/schema-spec@https://ofapkg.pek3b.qingstor.com/tarball/ofa-schema-spec-v0.9.0.tgz":
-  version "0.9.0"
-  resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-schema-spec-v0.9.0.tgz#07228b77fcf627bb5bef2db87b56017881e7334a"
+"@one-for-all/render-engine@https://ofapkg.pek3b.qingstor.com/tarball/one-for-all-render-engine-v0.10.2.tgz":
+  version "0.10.2"
+  resolved "https://ofapkg.pek3b.qingstor.com/tarball/one-for-all-render-engine-v0.10.2.tgz#8e677e6805554a30769698a0d1702e06fc024672"
+  dependencies:
+    "@one-for-all/api-spec-adapter" "0.3.3"
+    "@one-for-all/schema-spec" "0.10.1"
+    "@one-for-all/utils" "0.1.0"
+    react "^17.0.2"
+    react-dom "^17.0.2"
+    rxjs "^7.4.0"
 
-"@ofa/ui@https://ofapkg.pek3b.qingstor.com/tarball/ofa-ui-v0.2.11.tgz":
-  version "0.2.11"
-  resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-ui-v0.2.11.tgz#14ac0aa27b4a86b7f85b59d68a71614e07f456aa"
+"@one-for-all/schema-spec@0.10.1":
+  version "0.10.1"
+  resolved "https://registry.npmmirror.com/@one-for-all/schema-spec/download/@one-for-all/schema-spec-0.10.1.tgz#9bd3a108ef056d3a647fa02cbee275b3a65d8891"
+  integrity sha512-V41EZhtRG4d+ec1+fbS7r91lzs2rkuMG/jmslmiIWxF2lPXYOxGXAmu43o/rF0p1vemVfnpoJzU2taddXnYP4Q==
+
+"@one-for-all/schema-spec@https://ofapkg.pek3b.qingstor.com/tarball/one-for-all-schema-spec-v0.10.1.tgz":
+  version "0.10.1"
+  resolved "https://ofapkg.pek3b.qingstor.com/tarball/one-for-all-schema-spec-v0.10.1.tgz#743f9fadaa707de1702467b6e45a9eb8b262277f"
+
+"@one-for-all/ui@0.2.15":
+  version "0.2.15"
+  resolved "https://registry.npmmirror.com/@one-for-all/ui/download/@one-for-all/ui-0.2.15.tgz#c819e7f925b4e59ef9c33cc2128c177373c20e8a"
+  integrity sha512-QSKnn5ifbe0BooOumeP2tYSXKP4XpeCtW8Dt7ptKsR8m6FDht8bK1wGLRV/EiIro/MOmMS5rXc9yIyNKDj/vcA==
   dependencies:
     "@popperjs/core" "^2.11.0"
     classnames "^2.3.1"
+    lodash "^4.17.21"
     nanoid "^3.1.30"
+    react "^17.0.2"
     react-color "^2.19.3"
+    react-dom "^17.0.2"
+    react-is ">= 16.8.0"
     react-popper "^2.2.5"
     styled-components "^5.3.3"
 
-"@ofa/utils@https://ofapkg.pek3b.qingstor.com/tarball/ofa-utils-v0.0.1.tgz":
-  version "0.0.1"
-  resolved "https://ofapkg.pek3b.qingstor.com/tarball/ofa-utils-v0.0.1.tgz#50afb46bd98dacb11b2c39939c4c2a29e48ffd15"
+"@one-for-all/utils@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.npmmirror.com/@one-for-all/utils/download/@one-for-all/utils-0.1.0.tgz#fe0e8023c7e30b461756f349454b65a6932cc56b"
+  integrity sha512-u0DJ6Z6T3FwnXPxaDnYjJF3AFoQC9VyqRz8a1+1cjb51PP9jgzJrTrVVdtdmx+uWdLJJsoKFZQBMJ9S0D++GGw==
+
+"@one-for-all/utils@https://ofapkg.pek3b.qingstor.com/tarball/one-for-all-utils-v0.1.0.tgz":
+  version "0.1.0"
+  resolved "https://ofapkg.pek3b.qingstor.com/tarball/one-for-all-utils-v0.1.0.tgz#48642080d310f1a5e0a028d3b10bc196350ab199"
 
 "@popperjs/core@^2.11.0", "@popperjs/core@^2.9.1":
   version "2.11.2"
@@ -6503,15 +6538,15 @@ react-hook-form@^7.20.4, react-hook-form@^7.4.2:
   resolved "https://registry.npmmirror.com/react-hook-form/download/react-hook-form-7.23.0.tgz#1332aea2049187a443b7b6f74e1f681076f96002"
   integrity sha512-bO1JCkPAjmpuKhfUpFhsjWn2RIPgWUpep8qpMAKCoc8NM8ytBA5nDx5p99wNhZWrblYQFvU+dVy9g1oYo/JKoQ==
 
+"react-is@>= 16.8.0", react-is@^17.0.2:
+  version "17.0.2"
+  resolved "https://registry.npmmirror.com/react-is/download/react-is-17.0.2.tgz#e691d4a8e9c789365655539ab372762b0efb54f0"
+  integrity sha1-5pHUqOnHiTZWVVOas3J2Kw77VPA=
+
 react-is@^16.12.0, react-is@^16.13.1, react-is@^16.6.0, react-is@^16.7.0:
   version "16.13.1"
   resolved "https://registry.npmmirror.com/react-is/download/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha1-eJcppNw23imZ3BVt1sHZwYzqVqQ=
-
-react-is@^17.0.2:
-  version "17.0.2"
-  resolved "https://registry.npmmirror.com/react-is/download/react-is-17.0.2.tgz#e691d4a8e9c789365655539ab372762b0efb54f0"
-  integrity sha1-5pHUqOnHiTZWVVOas3J2Kw77VPA=
 
 react-popper@^2.2.4, react-popper@^2.2.5:
   version "2.2.5"

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Repository, SchemaRender } from '@ofa/render-engine';
+import { Repository, SchemaRender } from '@one-for-all/render-engine';
 
 import { useSchemaWithAdapter } from './api';
 import ErrorBoundary from './error-boundary';
