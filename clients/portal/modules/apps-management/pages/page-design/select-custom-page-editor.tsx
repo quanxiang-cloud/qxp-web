@@ -20,7 +20,9 @@ type Props = {
 
 function SelectCustomPageEditor({ pageId, appID, onSelect }: Props): JSX.Element {
   function handleSelect(editor: string): void {
-    setGlobalConfig(getKeyOfCustomPageEditor(appID, pageId), '1.0.0', editor);
+    const [key, newKey] = getKeyOfCustomPageEditor(appID, pageId);
+    setGlobalConfig(key, '1.0.0', editor);
+    setGlobalConfig(newKey, '1.0.0', editor);
     savePage(appID, pageId, initialSchema).then(() => {
       updatePageEngineMenuType(appID, pageId);
       onSelect(editor);
