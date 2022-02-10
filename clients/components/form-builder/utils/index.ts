@@ -39,7 +39,7 @@ export function numberTransform(schema: ISchema): number {
 export function wrapSchemaByMegaLayout(schema: ISchema): ISchema {
   const properties = get(schema, 'properties', {});
   const xInternal = get(schema, 'x-internal', {});
-  const labelAlign = get(xInternal, 'labelAlign', 'right');
+  const labelAlign = get(xInternal, 'labelAlign', 'top');
   // const columnsCount = get(xInternal, 'columns', 1);
 
   return {
@@ -56,7 +56,7 @@ export function wrapSchemaByMegaLayout(schema: ISchema): ISchema {
         'x-component': 'mega-layout',
         'x-component-props': {
           labelAlign,
-          wrapperCol: 20,
+          wrapperCol: labelAlign === 'top' ? '24' : '20',
           // grid: true,
           // columns: columnsCount,
           // autoRow: true,
@@ -162,14 +162,31 @@ function parseError(errors: any): Error {
   return new Error(errors[0].messages[0]);
 }
 
+function validateNumberRange(getValueFunc?: (path: string) => any): string | void {
+  const maxi = getValueFunc?.('maximum');
+  const mini = getValueFunc?.('minimum');
+
+  if (mini > maxi) {
+    return '请设置合法的极值取值区间';
+  }
+}
+
 export type ValidateFuncType = (
-  path?: string | undefined, opts?: IFormExtendedValidateFieldOptions | undefined
+  path?: string, opts?: IFormExtendedValidateFieldOptions
 ) => Promise<ValidateNodeResult>;
 
-export async function validateFieldConfig(validator: ValidateFuncType | undefined): Promise<any> {
+export async function validateFieldConfig(
+  validator?: ValidateFuncType, getNumberRangeValueFunc?: (path: string) => any,
+): Promise<any> {
+  const numberValidateResult = validateNumberRange(getNumberRangeValueFunc);
+
+  if (numberValidateResult) {
+    throw new Error(numberValidateResult);
+  }
+
   try {
-    return await validator?.();
-  } catch ({ errors }: any) {
+    await validator?.();
+  } catch ({ errors }) {
     throw parseError(errors);
   }
 }

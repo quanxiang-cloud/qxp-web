@@ -2,7 +2,7 @@ import React, { CSSProperties, useRef, forwardRef, ForwardedRef } from 'react';
 import { useClickAway } from 'react-use';
 
 import Icon from '@c/icon';
-import { mergeRefs } from '@portal/modules/poly-api/utils';
+import { mergeRefs } from '@polyApi/utils';
 import useObservable from '@lib/hooks/use-observable';
 import store$ from '@polyApi/store';
 import { addRequestNode, addConditionNode } from '@polyApi/utils';

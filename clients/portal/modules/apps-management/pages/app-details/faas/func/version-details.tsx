@@ -9,10 +9,10 @@ import Icon from '@c/icon';
 import PopConfirm from '@c/pop-confirm';
 import Loading from '@c/loading';
 
-import store from '../store';
 import VersionStatus from '../component/version-status';
 import ApiDetails from '../../api-documentation/api-details';
-// import BuildProcess from './build-process';
+import BuildProcess from './build-process';
+import store from '../store';
 
 import '../index.scss';
 import '../../api-documentation/prism.css';
@@ -20,8 +20,38 @@ import '../../api-documentation/prism.css';
 const { TextArea } = Input;
 
 function VersionDetails(): JSX.Element {
+  const [des, setDes] = useState(store.currentVersionFunc?.describe || '');
+  const tabItems = [
+    {
+      id: 'build',
+      name: '构建过程',
+      content: (
+        <>
+          <div className='h-full'>
+            <BuildProcess />
+          </div>
+        </>
+      ),
+    },
+    {
+      id: 'apidoc',
+      name: 'API文档',
+      content: store.isAPILoading ? <Loading /> : <ApiDetails apiPath={store.apiPath} />,
+    },
+  ];
+
+  useEffect(() => {
+    store.getVersion();
+    return () => {
+      store.currentVersionFunc = null;
+    };
+  }, [store.buildID]);
+
+  if (!store.currentVersionFunc) {
+    return <div>Loading...</div>;
+  }
+
   const {
-    id,
     tag,
     creator,
     createdAt,
@@ -32,29 +62,6 @@ function VersionDetails(): JSX.Element {
     visibility,
     updater,
   } = store.currentVersionFunc;
-  const [des, setDes] = useState(describe);
-  const tabItems = [
-    {
-      id: 'build',
-      name: '构建过程',
-      content: (
-        <>
-          <div className='h-full'>
-            {/* <BuildProcess /> */}
-          </div>
-        </>
-      ),
-    },
-    {
-      id: 'apidoc',
-      name: 'API文档',
-      content: store.isAPILoading ? <Loading/> : <ApiDetails apiPath={store.apiPath}/>,
-    },
-  ];
-
-  useEffect(() => {
-    store.getVersion();
-  }, [store.buildID]);
 
   return (
     <div className='flex flex-col flex-1 h-full px-20 version-detail'>
@@ -75,7 +82,7 @@ function VersionDetails(): JSX.Element {
           <div className='text-gray-900 font-semibold mr-16'>版本号：{tag}</div>
           <VersionStatus
             state={store.currentVersionFunc?.state || 'Unknown'}
-            versionID={id}
+            versionID={store.buildID}
             message={message}
             visibility={visibility}
             serverState={serverState}

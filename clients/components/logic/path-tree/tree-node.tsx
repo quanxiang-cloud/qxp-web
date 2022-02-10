@@ -4,9 +4,11 @@ import cs from 'classnames';
 
 import type { NodeRenderProps } from '@c/headless-tree/types';
 
-type Props = NodeRenderProps<POLY_API.PolyNodeInput>
+import type { TreeNodeDataType } from './type';
 
-function NamespaceNode({ node }: Props): JSX.Element | null {
+type Props = NodeRenderProps<TreeNodeDataType>
+
+function NodeRender({ node }: Props): JSX.Element | null {
   return (
     <div className={cs('transition-all w-full flex items-center justify-between', {
       'cursor-not-allowed': node.name === 'start' && node.level === 2,
@@ -21,4 +23,4 @@ function NamespaceNode({ node }: Props): JSX.Element | null {
   );
 }
 
-export default observer(NamespaceNode);
+export default observer(NodeRender);

@@ -50,7 +50,12 @@ export default function Employees({
 
   const { data: employeesList, isLoading, refetch } = useQuery(
     ['GET_USER_ADMIN_INFO', pageParams, department.id],
-    () => getUserAdminInfo(department.id, omit(['page'], pageParams)),
+    () => {
+      if (searchWord) {
+        return getUserAdminInfo(department.id, omit(['page'], pageParams));
+      }
+      return getUserAdminInfo(department.id, pageParams);
+    },
     {
       refetchOnWindowFocus: false,
     },
@@ -61,7 +66,12 @@ export default function Employees({
   }, [searchWord, isIncludeSubDep]);
 
   useEffect(() => {
-    setPageParams({ page: 1, limit: 10, userName: searchWord, includeChildDEPChild: Number(isIncludeSubDep) });
+    setPageParams({
+      page: 1,
+      limit: 10,
+      userName: searchWord,
+      includeChildDEPChild: Number(isIncludeSubDep),
+    });
     setSelectedUserIds([]);
   }, [department.id]);
 

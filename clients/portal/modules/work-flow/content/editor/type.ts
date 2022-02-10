@@ -147,7 +147,7 @@ type TimeRule = {
   whenTimeout: WhenTimeout;
 }
 export type ApprovePersonType =
-|'person'
+| 'person'
 | 'field'
 | 'position'
 | 'superior'
@@ -160,6 +160,7 @@ export type ApprovePerson = {
   departments: EmployeeOrDepartmentOfRole[];
   positions: string[];
   fields: string[];
+  variablePath: string;
 }
 export interface BasicNodeConfig {
   approvePersons: ApprovePerson;

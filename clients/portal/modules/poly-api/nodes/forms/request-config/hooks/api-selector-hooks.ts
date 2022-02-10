@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
-import { toast } from '@ofa/ui';
+import { toast } from '@one-for-all/ui';
 import {
   useGetNamespaceFullPath, useQueryNameSpaceRawRootPath,
-} from '@portal/modules/poly-api/effects/api/namespace';
+} from '@polyApi/effects/api/namespace';
 import {
   ApiCascaderOption, getChildrenOfCurrentSelectOption, mergeApiListToOptions,
-} from '@portal/modules/poly-api/utils/request-node';
-import { useGetRequestNodeApiList } from '@portal/modules/poly-api/effects/api/raw';
+} from '@polyApi/utils/request-node';
+import { useGetRequestNodeApiList } from '@polyApi/effects/api/raw';
 import { isEmpty } from 'lodash';
 
 export function useGetNamespaceTree(

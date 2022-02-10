@@ -1,5 +1,5 @@
-import { AjaxConfig, FetchParams, Res, SwaggerSpecAdapter } from '@ofa/api-spec-adapter';
-import { Spec } from '@ofa/api-spec-adapter/lib/src/swagger-schema-official';
+import { AjaxConfig, FetchParams, Res, SwaggerSpecAdapter } from '@one-for-all/api-spec-adapter';
+import { Spec } from '@one-for-all/api-spec-adapter/lib/src/swagger-schema-official';
 
 type Response = {
   body?: any;

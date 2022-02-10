@@ -1,6 +1,6 @@
 import React, { SetStateAction, useEffect, useMemo, useState } from 'react';
 import cs from 'classnames';
-import { Checkbox, Input, Space } from 'antd';
+import { Checkbox, Input } from 'antd';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 
@@ -17,7 +17,7 @@ function useCustomOtherValues(
 ): [string[], React.Dispatch<SetStateAction<string[]>>] {
   const [customValues, setCustomValues] = useState<string[]>([]);
   useEffect(() => {
-    if (customValues.length) {
+    if (customValues?.length) {
       return;
     }
     const initCustomValues = initialValues?.filter((value) => options.length && !options.includes(value));
@@ -125,48 +125,62 @@ function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
     return <FormDataValueRenderer value={fieldProps.value} schema={fieldProps.schema} />;
   }
 
+  const isVertical = optionsLayout === 'vertical';
+
   return (
     <div className="flex items-center">
       <Checkbox.Group onChange={handleCheckBoxChange} value={checkedValues}>
-        <Space direction={optionsLayout}>
-          {options.map((option): JSX.Element => (
-            <Checkbox key={option} value={option}>{option}</Checkbox>
-          ))}
+        <div className={cs('flex', isVertical ? 'flex-col' : 'flex-row')}>
+          {
+            options.map((option): JSX.Element => (
+              <div className={cs('flex', 'items-center', {
+                'mr-8': !isVertical,
+                'mb-8': isVertical,
+              })} key={option}>
+                <Checkbox value={option}>{option}</Checkbox>
+              </div>
+            ))
+          }
           {
             isAllowCustom && (
               customValues.map((option, index): JSX.Element => (
-                <Checkbox
-                  value={customCheckValues[index]}
-                  key={customCheckValues[index]}
-                  disabled={customValues[index] === ''}
-                >
-                  <Input
-                    className='w-80'
-                    value={option}
-                    onChange={(e) => handleCustomValuesChange(e, index)}
-                    onBlur={() => handleBlur(index)}
-                    placeholder="请输入"
-                    maxLength={15}
-                  />
-                </Checkbox>
+                <div className={cs('flex', 'items-center', {
+                  'mr-8': !isVertical,
+                  'mb-8': isVertical,
+                })} key={customCheckValues[index]}>
+                  <Checkbox
+                    value={customCheckValues[index]}
+                    disabled={customValues[index] === ''}
+                  >
+                    <Input
+                      className='w-80'
+                      value={option}
+                      onChange={(e) => handleCustomValuesChange(e, index)}
+                      onBlur={() => handleBlur(index)}
+                      placeholder="请输入"
+                      maxLength={15}
+                    />
+                  </Checkbox>
+                </div>
               ))
             )
           }
-        </Space>
-        {
-          isAllowCustom && (
-            <Icon
-              className={cs({
-                'cursor-not-allowed': customValues.length > 2,
-              })}
-              name="add"
-              size={16}
-              clickable
-              disabled={customValues.length > 2}
-              onClick={handleCustomValuesAdd}
-            ></Icon>
-          )
-        }
+          {
+            isAllowCustom && (
+              <Icon
+                className={cs({
+                  'self-center': optionsLayout === 'horizontal',
+                  'cursor-not-allowed': customValues.length > 2,
+                })}
+                name="add"
+                size={16}
+                clickable
+                disabled={customValues.length > 2}
+                onClick={handleCustomValuesAdd}
+              ></Icon>
+            )
+          }
+        </div>
       </Checkbox.Group>
     </div>
   );

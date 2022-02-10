@@ -36,7 +36,7 @@ function Field(props: IAntdFormItemProps): JSX.Element {
 }
 
 function Config({ initialValue, onChange }: Props): JSX.Element {
-  const { setConfigValidate } = useContext(StoreContext);
+  const { setFieldConfigValidator } = useContext(StoreContext);
 
   useEffect(() => {
     actions.getFieldState('tabs', (state) => {
@@ -63,7 +63,7 @@ function Config({ initialValue, onChange }: Props): JSX.Element {
   }, [onChange, initialValue]);
 
   useEffect(() => {
-    setConfigValidate(actions.validate);
+    setFieldConfigValidator(actions.validate);
   }, [actions.validate]);
 
   return (

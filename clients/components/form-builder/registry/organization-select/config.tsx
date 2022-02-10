@@ -25,7 +25,7 @@ interface Props {
 }
 
 const OrganizationPickerConfigForm = ({ initialValue, onChange }: Props): JSX.Element => {
-  const { appID, setConfigValidate } = useContext(StoreContext);
+  const { appID, setFieldConfigValidator } = useContext(StoreContext);
   const actions = createAsyncFormActions();
   const { setFieldState } = actions;
 
@@ -58,7 +58,7 @@ const OrganizationPickerConfigForm = ({ initialValue, onChange }: Props): JSX.El
   });
 
   useEffect(() => {
-    setConfigValidate(form.validate);
+    setFieldConfigValidator(form.validate);
   }, [form.validate]);
 
   return (
