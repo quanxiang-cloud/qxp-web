@@ -6,7 +6,7 @@ import Icon from '@c/icon';
 import Modal from '@c/modal';
 import FileUploader from '@c/file-upload';
 import { getFormTemplate, getTaskDetail, importForm } from '@c/task-lists/api';
-import { multipledownloadFile } from '@c/task-lists/unread-task-box/task-item';
+import { multipleDownloadFile } from '@c/task-lists/unread-task-box/task-item';
 import { subscribeStatusChange } from '@c/task-lists/utils';
 
 import { StoreContext } from './context';
@@ -55,7 +55,7 @@ function ImportFormModal({ onClose }: Props): JSX.Element {
           onClose();
           return;
         }
-        multipledownloadFile(res.result.path);
+        multipleDownloadFile(res.result.path);
       });
     });
   }

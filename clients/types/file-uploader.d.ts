@@ -16,7 +16,6 @@ interface QXPUploadFileTask extends QXPUploadFileBaseProps {
   state?: 'uploading' | 'processing' | 'success' | 'failed';
   blob?: File;
   md5?: string;
-  isExist?: boolean;
   uploadUrl?: string;
   md5Worker?: Worker | null;
   fileChunks?: QXPFilePartBlob[] | null;
