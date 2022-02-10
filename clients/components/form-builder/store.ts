@@ -57,7 +57,8 @@ export default class FormBuilderStore {
   @observable flattenFields: FormItem[] = [];
   @observable activeSubtableFieldId = '';
   @observable serialFieldIds: Array<string> = [];
-  @observable configValidate: ValidateFuncType | undefined;
+  @observable fieldConfigValidator?: ValidateFuncType;
+  @observable getFieldValueFunc?: any;
 
   constructor({ schema, appID, pageID }: Props) {
     this.flattenFields = flattenSchemaToFields(schema);
@@ -130,8 +131,12 @@ export default class FormBuilderStore {
   }
 
   @action.bound
-  setConfigValidate(validate: ValidateFuncType): void {
-    this.configValidate = validate;
+  setFieldConfigValidator(validator: ValidateFuncType, func?: (path: string) => any): void {
+    this.fieldConfigValidator = validator;
+
+    if (func) {
+      this.getFieldValueFunc = func;
+    }
   }
 
   // field to schema; using: submit stage
