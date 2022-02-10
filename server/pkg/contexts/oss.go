@@ -13,7 +13,7 @@ func getOSSConfig() OSSConfig {
 		ReadableBucket: "",
 	}
 
-	body, err := SendRequest(Ctx, "POST", "/api/v1/fileserver1/domain", []byte("{}"), map[string]string{
+	body, err := SendRequest(Ctx, "POST", "/api/v1/fileserver/domain", []byte("{}"), map[string]string{
 		"Content-Type": "application/json",
 	})
 
