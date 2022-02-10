@@ -735,16 +735,17 @@
   version "0.3.3"
   resolved "https://ofapkg.pek3b.qingstor.com/tarball/one-for-all-api-spec-adapter-v0.3.3.tgz#66e389b480d1c064fd1ddd7db4c240137424d1d7"
 
-"@one-for-all/page-engine@https://ofapkg.pek3b.qingstor.com/tarball/one-for-all-page-engine-v0.5.3.tgz":
-  version "0.5.3"
-  resolved "https://ofapkg.pek3b.qingstor.com/tarball/one-for-all-page-engine-v0.5.3.tgz#c6ecc8a980e23e9b31fbd9cc283fca2c2e254cb8"
+"@one-for-all/page-engine@https://ofapkg.pek3b.qingstor.com/tarball/one-for-all-page-engine-v0.5.4.tgz":
+  version "0.5.4"
+  resolved "https://ofapkg.pek3b.qingstor.com/tarball/one-for-all-page-engine-v0.5.4.tgz#24b464060840b878c138445dc76b92837df06ff9"
   dependencies:
     "@codemirror/lang-javascript" "^0.19.3"
     "@one-for-all/render-engine" "0.10.2"
     "@one-for-all/schema-spec" "0.10.1"
-    "@one-for-all/ui" "0.2.15"
+    "@one-for-all/ui" "0.2.16"
     "@uiw/react-codemirror" "~4.2.0"
     classnames "^2.3.1"
+    lodash "^4.17.21"
     mobx "^6.3.8"
     mobx-react "^7.2.1"
     nanoid "^3.1.30"
@@ -787,10 +788,10 @@
   version "0.10.1"
   resolved "https://ofapkg.pek3b.qingstor.com/tarball/one-for-all-schema-spec-v0.10.1.tgz#743f9fadaa707de1702467b6e45a9eb8b262277f"
 
-"@one-for-all/ui@0.2.15":
-  version "0.2.15"
-  resolved "https://registry.npmmirror.com/@one-for-all/ui/download/@one-for-all/ui-0.2.15.tgz#c819e7f925b4e59ef9c33cc2128c177373c20e8a"
-  integrity sha512-QSKnn5ifbe0BooOumeP2tYSXKP4XpeCtW8Dt7ptKsR8m6FDht8bK1wGLRV/EiIro/MOmMS5rXc9yIyNKDj/vcA==
+"@one-for-all/ui@0.2.16":
+  version "0.2.16"
+  resolved "https://registry.npmmirror.com/@one-for-all/ui/-/ui-0.2.16.tgz#97dd3ec2f0220e977790cb5b82e5ce4a615a43b9"
+  integrity sha512-qbwdPpr24yfuL+KLiPJiuGR1c1X9dK+1IQCPHjfysy5iQaI/2L+eFaS4pmG1aPaZVA3s4sIj0ZbNuwc8uetnZQ==
   dependencies:
     "@popperjs/core" "^2.11.0"
     classnames "^2.3.1"

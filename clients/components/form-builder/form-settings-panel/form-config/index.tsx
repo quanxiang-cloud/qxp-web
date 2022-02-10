@@ -16,6 +16,17 @@ function RenderLayoutOption({ labelAlign, onChange }: RenderLayoutOptionProps): 
   return (
     <>
       <div
+        className={cs('content-item', { 'item-checked': labelAlign === 'top' })}
+        onClick={() => onChange('top')}
+      >
+        <div className="grid grid-cols-1">
+          <span className="item-label"></span>
+          <span className="item-body mt-8" style={{ width: '96px' }}></span>
+        </div>
+        <div className="text-center">上下</div>
+        <Icon name='done' type="light" className="check-icon" style={{ color: 'white' }} />
+      </div>
+      <div
         className={cs('content-item', { 'item-checked': labelAlign === 'right' })}
         onClick={() => onChange('right')}
       >
@@ -28,17 +39,6 @@ function RenderLayoutOption({ labelAlign, onChange }: RenderLayoutOptionProps): 
           <span className="item-body"></span>
         </div>
         <div className="text-center">左右</div>
-        <Icon name='done' type="light" className="check-icon" style={{ color: 'white' }} />
-      </div>
-      <div
-        className={cs('content-item', { 'item-checked': labelAlign === 'top' })}
-        onClick={() => onChange('top')}
-      >
-        <div className="grid grid-cols-1">
-          <span className="item-label"></span>
-          <span className="item-body mt-8" style={{ width: '96px' }}></span>
-        </div>
-        <div className="text-center">上下</div>
         <Icon name='done' type="light" className="check-icon" style={{ color: 'white' }} />
       </div>
     </>

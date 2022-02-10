@@ -9,6 +9,7 @@ export type ContentProps = {
   field: ISchema;
   description: string;
   Comp: JSXElementConstructor<any>;
+  isTopAlign?: boolean;
 };
 
 function FieldContent({
@@ -16,9 +17,13 @@ function FieldContent({
   readOnly = false,
   field,
   description,
+  isTopAlign,
   Comp,
 }: ContentProps): JSX.Element {
-  const layout_col_span = (isLayoutComponent) ? 24 : 24 - LAYOUT_COL_SPAN;
+  let layout_col_span = 24;
+  if (!isTopAlign) {
+    layout_col_span = isLayoutComponent ? 24 : 24 - LAYOUT_COL_SPAN;
+  }
 
   return (
     <>
