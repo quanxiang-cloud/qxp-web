@@ -37,7 +37,7 @@ const { onFieldInputChange$ } = FormEffectHooks;
 const actions = createFormActions();
 
 function AssociatedRecordsConfig({ initialValue, onChange }: Props): JSX.Element {
-  const { appID, schema, setConfigValidate } = useContext(StoreContext);
+  const { appID, schema, setFieldConfigValidator } = useContext(StoreContext);
 
   useEffect(() => {
     actions.setFieldState('filterConfig', (state) => {
@@ -48,7 +48,7 @@ function AssociatedRecordsConfig({ initialValue, onChange }: Props): JSX.Element
   }, [appID, initialValue.linkedTable]);
 
   useEffect(() => {
-    setConfigValidate(actions.validate);
+    setFieldConfigValidator(actions.validate);
   }, [actions.validate]);
 
   const formModelEffect = (): void => {

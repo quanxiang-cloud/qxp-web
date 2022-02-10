@@ -28,7 +28,7 @@ interface Props {
 }
 
 const UserPickerConfigForm = ({ initialValue, onChange }: Props): JSX.Element => {
-  const { appID, setConfigValidate } = useContext(StoreContext);
+  const { appID, setFieldConfigValidator } = useContext(StoreContext);
 
   useEffect(() => {
     onChange({ ...initialValue, appID });
@@ -52,7 +52,7 @@ const UserPickerConfigForm = ({ initialValue, onChange }: Props): JSX.Element =>
   }
 
   useEffect(() => {
-    setConfigValidate(actions.validate);
+    setFieldConfigValidator(actions.validate);
   }, [actions.validate]);
 
   return (

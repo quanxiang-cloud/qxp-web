@@ -54,11 +54,11 @@ function FieldItem(field: ISchema): JSX.Element {
     Comp,
   };
 
-  const setActiveFieldId = (e: ReactMouseEvent, fieldId: string): void => {
+  const setActiveFieldId = async (e: ReactMouseEvent, fieldId: string): Promise<void> => {
     e.stopPropagation();
     e.preventDefault();
 
-    validateFieldConfig(store.configValidate).then(() => {
+    validateFieldConfig(store.fieldConfigValidator, store.getFieldValueFunc).then(() => {
       store.setActiveFieldKey(fieldId);
     }).catch((err) => toast.error(err));
   };
