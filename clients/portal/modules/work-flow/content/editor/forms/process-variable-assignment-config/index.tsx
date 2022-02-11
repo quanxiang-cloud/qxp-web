@@ -13,6 +13,7 @@ import {
 import SaveButtonGroup from '@flow/content/editor/components/_common/action-save-button-group';
 import FlowContext from '@flow/flow-context';
 import type { ProcessVariableAssignmentData } from '@flow/content/editor/type';
+import toast from '@lib/toast';
 
 import { getFlowVariables } from '../api';
 import RulesList from './rules-list';
@@ -132,8 +133,17 @@ export default function AssignmentConfig({ defaultValue, onSubmit, onCancel }: P
   }
 
   async function onSave(): Promise<void> {
-    const { values } = await getFormState();
-    onSubmit(values);
+    const { values }: { values: ProcessVariableAssignmentData } = await getFormState();
+    try {
+      values.assignmentRules.forEach((val) => {
+        if (!val.valueOf) {
+          throw new Error('流程参数未填写完整');
+        }
+      });
+      onSubmit(values);
+    } catch (error: any) {
+      toast.error(error?.message);
+    }
   }
 
   // remove this conditional render will cause react maximum update depth exceeded
