@@ -3,6 +3,7 @@ import cs from 'classnames';
 
 import List from '@c/list';
 import Icon from '@c/icon';
+import store from '@flow/content/editor/store';
 import useFitView from '@c/logic/flow-render/hooks/use-fit-view';
 
 import AsideMenuItem from './menu-item';
@@ -55,16 +56,18 @@ export default function WorkFlowAsideMenu({ onChange, currentOperateType }: Prop
             iconName="settings"
             text={isCollapsed ? '' : '全局配置'}
             title="全局配置"
-            onClick={() => onChange('settings')}
+            onClick={() => store.value.id && onChange('settings')}
             isActive={currentOperateType === 'settings'}
+            disabled={!store.value.id}
           />,
           <AsideMenuItem
             key="variables"
             iconName="settings_ethernet"
             text={isCollapsed ? '' : '工作流变量'}
             title="工作流变量"
-            onClick={() => onChange('variables')}
+            onClick={() => store.value.id && onChange('variables')}
             isActive={currentOperateType === 'variables'}
+            disabled={!store.value.id}
           />,
         ]}
       />
