@@ -45,7 +45,7 @@ function SchemaFieldConfig({ onChange, initialValue, schema, components, effects
   const { actions } = useContext(FieldConfigContext);
 
   useEffect(() => {
-    store.setConfigValidate(actions.validate);
+    store.setFieldConfigValidator(actions.validate, actions.getFieldValue);
   }, [actions.validate]);
 
   return (

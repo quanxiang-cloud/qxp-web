@@ -29,7 +29,7 @@ const actions = createFormActions();
 
 function SerialConfig({ initialValue, onChange }: Props): JSX.Element {
   const {
-    activeFieldId, activeSubtableFieldId, serialFieldIds, setConfigValidate,
+    activeFieldId, activeSubtableFieldId, serialFieldIds, setFieldConfigValidator,
   } = useContext(StoreContext);
 
   useEffect(() => {
@@ -45,7 +45,7 @@ function SerialConfig({ initialValue, onChange }: Props): JSX.Element {
   }, [activeFieldId, activeSubtableFieldId, serialFieldIds]);
 
   useEffect(() => {
-    setConfigValidate(actions.validate);
+    setFieldConfigValidator(actions.validate);
   }, [actions.validate]);
 
   return (

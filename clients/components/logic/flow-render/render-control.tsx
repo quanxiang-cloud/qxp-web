@@ -9,6 +9,7 @@ import {
 } from 'react-flow-renderer';
 
 import Icon from '@c/icon';
+import Tooltip from '@c/tooltip';
 
 import ControlButton from './render-control-button';
 import useFitView from './hooks/use-fit-view';
@@ -21,29 +22,31 @@ export default function Controls({
   showZoom = true, showFitView = true, nodeDraggable = false, onZoomIn, onZoomOut,
   onFitView, style, className, fitViewParams,
 }: Props): JSX.Element {
-  const zoomLevel: number | undefined = useStoreState(path(['transform', 2]));
+  const zoomLevel: number = useStoreState(path(['transform', 2])) ?? 0.5;
   const setNodesDraggable = useStoreActions(prop('setNodesDraggable'));
   const fitView = useFitView(fitViewParams);
-  const { zoomIn, zoomOut } = useZoomPanHelper();
+  const { zoomTo } = useZoomPanHelper();
 
   useEffect(() => {
     setNodesDraggable(nodeDraggable);
   }, [nodeDraggable]);
 
-  const onZoomInHandler = useCallback(() => {
-    zoomIn?.();
+  function onZoomInHandler(): void {
+    zoomTo(+(zoomLevel + 0.1).toFixed(1));
     onZoomIn?.();
-  }, [zoomIn, onZoomIn]);
+  }
 
-  const onZoomOutHandler = useCallback(() => {
-    zoomOut?.();
+  function onZoomOutHandler(): void {
+    zoomTo(+(zoomLevel - 0.1).toFixed(1));
     onZoomOut?.();
-  }, [zoomOut, onZoomOut]);
+  }
 
   const onFitViewHandler = useCallback(() => {
     fitView?.();
     onFitView?.();
   }, [fitView, onFitView]);
+
+  const offset: [number, number] = [0, 15];
 
   const zoom = useMemo(() => {
     if (!showZoom) {
@@ -51,29 +54,41 @@ export default function Controls({
     }
     return (
       <Fragment>
-        <ControlButton onClick={onZoomOutHandler}>
-          <Icon name="remove_circle_outline"/>
-        </ControlButton>
+        <Tooltip position="bottom" label="缩小" theme="dark" offset={offset}>
+          <div>
+            <ControlButton onClick={onZoomOutHandler}>
+              <Icon name="remove_circle_outline"/>
+            </ControlButton>
+          </div>
+        </Tooltip>
         <div
           className="flex items-center bg-white cursor-text"
         >
           {`${Math.ceil((zoomLevel ?? 0) * 100)}%`}
         </div>
-        <ControlButton onClick={onZoomInHandler}>
-          <Icon name="add_circle_outline"/>
-        </ControlButton>
+        <Tooltip position="bottom" label="放大" theme="dark" offset={offset}>
+          <div>
+            <ControlButton onClick={onZoomInHandler}>
+              <Icon name="add_circle_outline"/>
+            </ControlButton>
+          </div>
+        </Tooltip>
       </Fragment>
     );
-  }, [zoomLevel, showZoom]);
+  }, [zoomLevel, showZoom, onZoomInHandler, onZoomOutHandler]);
 
   const fit = useMemo(() => {
     if (!showFitView) {
       return null;
     }
     return (
-      <ControlButton onClick={onFitViewHandler}>
-        <Icon name="my_location"/>
-      </ControlButton>
+      <Tooltip position="bottom" label="自适应视图" theme="dark" offset={offset}>
+        <div>
+          <ControlButton onClick={onFitViewHandler}>
+            <Icon name="my_location"/>
+          </ControlButton>
+        </div>
+      </Tooltip>
     );
   }, [showFitView, onFitViewHandler]);
 

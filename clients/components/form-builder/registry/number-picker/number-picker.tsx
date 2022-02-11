@@ -1,7 +1,11 @@
 import React, { useEffect } from 'react';
 import { InputNumber, InputNumberProps } from 'antd';
 
-function NumberPicker({ defaultValue, ...other }: InputNumberProps): JSX.Element {
+type Props = Omit<InputNumberProps, 'onChange'> & {
+  onChange: (val: any) => void;
+}
+
+function NumberPicker({ defaultValue, ...other }: Props): JSX.Element {
   useEffect(() => {
     if (other.value || defaultValue === undefined) {
       return;
@@ -12,9 +16,15 @@ function NumberPicker({ defaultValue, ...other }: InputNumberProps): JSX.Element
     }
   }, []);
 
-  return (
-    <InputNumber {...other} />
-  );
+  function handleChange(val: null | number | string): void {
+    if (val === null) {
+      other.onChange?.(undefined);
+      return;
+    }
+    other.onChange?.(val);
+  }
+
+  return <InputNumber {...other} onChange={handleChange} />;
 }
 
 export default NumberPicker;
