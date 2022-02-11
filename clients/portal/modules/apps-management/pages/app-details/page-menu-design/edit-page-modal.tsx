@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Input } from 'antd';
-import { always, cond, last, T } from 'ramda';
+import { always, cond, T } from 'ramda';
 
 import Modal from '@c/modal';
 import { APP_ICON_LIST } from '@c/app-icon-select';
@@ -73,14 +73,14 @@ function EditPageModal({ pageInfo, onCancel, onSubmit, appID, isCopy }: Props): 
   const { name, icon, describe, groupID, appID: curAppID } = pageInfo || { icon: APP_ICON_LIST[0] };
 
   const getTitle = cond([
-    [last, always('复制页面')],
-    [([first]) => !!first, always('修改名称与图标')],
+    [() => isCopy, always('复制页面')],
+    [() => !!curAppID, always('修改名称与图标')],
     [T, always('新建页面')],
   ]);
 
   return (
     <Modal
-      title={getTitle([curAppID, isCopy])}
+      title={getTitle()}
       onClose={onCancel}
       footerBtns={[{
         key: 'close',
