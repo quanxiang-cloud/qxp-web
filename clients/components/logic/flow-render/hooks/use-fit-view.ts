@@ -7,7 +7,7 @@ import {
 } from 'react-flow-renderer';
 
 export default function useFitView(fitViewParams?: FitViewParams): () => void {
-  const { setCenter, fitView } = useZoomPanHelper();
+  const { setCenter, fitView, zoomTo } = useZoomPanHelper();
   const nodes = useStoreState(prop('nodes'));
 
   function notNodeEmptyOrNoWrapper(nodes: Node[], el: HTMLElement | null): el is HTMLElement {
@@ -21,6 +21,7 @@ export default function useFitView(fitViewParams?: FitViewParams): () => void {
       const y = el.offsetHeight / 2;
       setCenter(x, y, 1.0);
       fitView({ ...fitViewParams, padding: 0.5 });
+      zoomTo(1);
     }
   }
 
