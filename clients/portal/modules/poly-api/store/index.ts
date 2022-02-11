@@ -28,17 +28,13 @@ class PolyStore extends BehaviorSubject<POLY_API.Root> {
     super(initialState);
   }
 
-  reset(): void {
-    this.next({ ...getDefaultState(), nodes: this.nodes$ });
-  }
-
   set(key: string, value: any): void {
     this.next(set(lensPath(key.split('.')), value, this.value));
   }
 
   setSource(polyInfo: POLY_API.POLY_INFO, nodes: POLY_API.Element[]): void {
-    this.set('polyInfo', polyInfo);
     this.nodes$.set(nodes);
+    this.set('polyInfo', polyInfo);
   }
 
   get<T>(key: string): T {
