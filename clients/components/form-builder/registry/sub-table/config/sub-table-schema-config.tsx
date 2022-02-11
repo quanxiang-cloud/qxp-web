@@ -1,14 +1,15 @@
 import React, { useContext, useEffect, useMemo } from 'react';
-import { createFormActions, SchemaForm } from '@formily/antd';
 import { observer } from 'mobx-react';
+import { createFormActions, SchemaForm } from '@formily/antd';
 
+import toast from '@lib/toast';
 import Button from '@c/button';
 import { StoreContext } from '@c/form-builder/context';
+import { validateFieldConfig } from '@c/form-builder/utils';
 import { FieldConfigContext } from '@c/form-builder/form-settings-panel/form-field-config/context';
 
 import { ItemActionsContext } from './context';
 import { CONFIG_COMPONENTS, COMPONENTS, KeyOfConfigComponent } from './constants';
-import toast from '@lib/toast';
 
 interface Props {
   currentSubSchema?: ISchema;
@@ -22,7 +23,7 @@ function SubTableSchemaConfig({
 }: Props): JSX.Element | null {
   const itemActions = useMemo(() => createFormActions(), []);
   const { actions } = useContext(FieldConfigContext);
-  const { setConfigValidate, configValidate } = useContext(StoreContext);
+  const { setFieldConfigValidator, fieldConfigValidator, getFieldValueFunc } = useContext(StoreContext);
 
   const currentConfigComponent = currentSchemaType ? CONFIG_COMPONENTS[currentSchemaType] : undefined;
   const currentSubSchemaDefault = currentConfigComponent?.configSchema;
@@ -33,22 +34,22 @@ function SubTableSchemaConfig({
 
   useEffect(() => {
     if (!currentSubSchema) {
-      setConfigValidate(actions.validate);
+      setFieldConfigValidator(actions.validate, actions.getFieldValue);
       return;
     }
 
     if (!CurrentSubSchemaForm) {
-      setConfigValidate(itemActions.validate);
+      setFieldConfigValidator(itemActions.validate, itemActions.getFieldValue);
       return;
     }
   }, [actions.validate, currentSubSchema, CurrentSubSchemaForm]);
 
   function onGoBack(): void {
-    configValidate?.().then(() => {
+    validateFieldConfig(fieldConfigValidator, getFieldValueFunc).then(() => {
       actions.setFieldState('Fields.curConfigSubTableKey', (state) => {
         state.value = '';
       });
-    }).catch(({ errors }) => toast.error(errors[0].messages[0]));
+    }).catch((err) => toast.error(err));
   }
 
   if (!currentSubSchema || !currentSchemaType) {

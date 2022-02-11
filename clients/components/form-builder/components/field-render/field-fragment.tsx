@@ -16,7 +16,7 @@ const FieldFragment = (props: FieldFragmentProps): JSX.Element => {
     return (
       <>
         <Row><FieldLabel {...labelProps} /></Row>
-        <Row><FieldContent {...contentProps} /></Row>
+        <Row><FieldContent {...contentProps} isTopAlign/></Row>
       </>
     );
   }
@@ -24,7 +24,7 @@ const FieldFragment = (props: FieldFragmentProps): JSX.Element => {
   return (
     <Row>
       <FieldLabel {...labelProps} />
-      <FieldContent {...contentProps} />
+      <FieldContent {...contentProps}/>
     </Row>
   );
 };
