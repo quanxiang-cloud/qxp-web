@@ -5,16 +5,20 @@ import { useSchemaWithAdapter } from './api';
 import ErrorBoundary from './error-boundary';
 
 type Props = {
-  schemaKey: string;
+  schemaKeys: string[];
   version: string;
   repository?: Repository;
   maxHeight?: string;
 }
 
 export default function PageSchemaRender(
-  { schemaKey, version, repository, maxHeight }: Props,
+  { schemaKeys, version, repository, maxHeight }: Props,
 ): JSX.Element | null {
-  const { schema, adapter } = useSchemaWithAdapter(schemaKey, version);
+  const [schemaKey, newSchemaKey] = schemaKeys;
+  const { schema: oldSchema, adapter: oldAdapter } = useSchemaWithAdapter(schemaKey, version);
+  const { schema: newSchema, adapter: newAdapter } = useSchemaWithAdapter(newSchemaKey, version);
+  const schema = newSchema || oldSchema;
+  const adapter = newAdapter || oldAdapter;
 
   if (!schema || !adapter) {
     return null;

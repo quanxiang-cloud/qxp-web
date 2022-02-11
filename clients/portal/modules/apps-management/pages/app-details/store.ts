@@ -334,10 +334,11 @@ class AppDetailsStore {
       // copy schema page
       if (isCopySchemaPage) {
         menuType = (await setPageEngineMenuType(this.appID, res.id)).menu_type || menuType;
-        const sourceKey = getSchemaKey(this.appID, pageInfo.id, false);
-        const targetKey = getSchemaKey(this.appID, res.id, false);
+        const [sourceKey, newSourceKey] = getSchemaKey(this.appID, pageInfo.id, false);
+        const [targetKey, newTargetKey] = getSchemaKey(this.appID, res.id, false);
         const version = globalSettings.version;
         await cloneUserData({ key: sourceKey, version }, { key: targetKey, version });
+        await cloneUserData({ key: newSourceKey, version }, { key: newTargetKey, version });
       }
       menuType && Reflect.set(PageInfoPick, 'menuType', menuType);
       this.addNewPageToList(PageInfoPick, res.id);
