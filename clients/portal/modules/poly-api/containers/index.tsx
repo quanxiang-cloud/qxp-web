@@ -19,7 +19,10 @@ import useCloseNodeAction from '../effects/hooks/use-close-node-action';
 function PolyDetails(): JSX.Element {
   const { polyFullPath } = useParams<POLY_API.PolyParams>();
   const elements = useObservable<POLY_API.Element[]>(store$.nodes$, []);
-  const { data, isLoading } = useQueryPolyInfo({ path: polyFullPath }, { enabled: !!polyFullPath });
+  const { data, isLoading } = useQueryPolyInfo(
+    { path: polyFullPath },
+    { enabled: !!polyFullPath, cacheTime: -1 },
+  );
 
   useEffect(() => {
     if (isLoading || !data) {
