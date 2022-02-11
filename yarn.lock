@@ -811,6 +811,22 @@
     react-popper "^2.2.5"
     styled-components "^5.3.3"
 
+"@one-for-all/ui@0.2.18":
+  version "0.2.18"
+  resolved "https://registry.npmmirror.com/@one-for-all/ui/-/ui-0.2.18.tgz#d3b809c8f277c72764a43730534bcc73a13b7abb"
+  integrity sha512-ilJp/1IjFODEEsLp2z4kYjY5RdsAo7K34npJ3CU9CnhIGrEbF0F++mmyfvzWHZAN+Id+knGTafgTHQ/ua35QWQ==
+  dependencies:
+    "@popperjs/core" "^2.11.0"
+    classnames "^2.3.1"
+    lodash "^4.17.21"
+    nanoid "^3.1.30"
+    react "^17.0.2"
+    react-color "^2.19.3"
+    react-dom "^17.0.2"
+    react-is ">= 16.8.0"
+    react-popper "^2.2.5"
+    styled-components "^5.3.3"
+
 "@one-for-all/utils@0.1.0":
   version "0.1.0"
   resolved "https://registry.npmmirror.com/@one-for-all/utils/download/@one-for-all/utils-0.1.0.tgz#fe0e8023c7e30b461756f349454b65a6932cc56b"

@@ -35,7 +35,7 @@
     "@one-for-all/page-engine": "https://ofapkg.pek3b.qingstor.com/tarball/one-for-all-page-engine-v0.7.0.tgz",
     "@one-for-all/render-engine": "https://ofapkg.pek3b.qingstor.com/tarball/one-for-all-render-engine-v0.10.2.tgz",
     "@one-for-all/schema-spec": "https://ofapkg.pek3b.qingstor.com/tarball/one-for-all-schema-spec-v0.10.1.tgz",
-    "@one-for-all/ui": "0.2.17",
+    "@one-for-all/ui": "0.2.18",
     "@one-for-all/utils": "https://ofapkg.pek3b.qingstor.com/tarball/one-for-all-utils-v0.1.0.tgz",
     "@popperjs/core": "^2.9.1",
     "@tisoap/react-flow-smart-edge": "^0.4.0",
