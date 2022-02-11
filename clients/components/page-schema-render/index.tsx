@@ -26,7 +26,10 @@ export default function PageSchemaRender(
 
   return (
     <ErrorBoundary>
-      <div className="overflow-auto relative z-0" style={{ maxHeight: maxHeight || '100vh' }}>
+      <div
+        className="overflow-auto relative z-0"
+        style={{ maxHeight: maxHeight || '100vh', height: '100vh' }}
+      >
         <SchemaRender schema={schema} apiSpecAdapter={adapter} repository={repository} />
       </div>
     </ErrorBoundary>
