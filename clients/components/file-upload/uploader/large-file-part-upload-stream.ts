@@ -4,16 +4,16 @@ import { createQueue } from '@lib/utils';
 
 import {
   CHUNK_SIZE,
-  FILE_STORE_OPTION,
-  FILE_PART_SIGN_API,
   PARALLEL_UPLOAD_SIZE,
-  FINISH_FILE_UPLOAD_API,
   GET_MULTIPART_LIST_API,
+  FILE_PART_SIGN_API,
   COMPLETE_MULTIPART_API,
+  FINISH_FILE_UPLOAD_API,
 } from '../constants';
 
 export type FileUploadStreamProps = {
   file: QXPUploadFileTask;
+  fileBucket: string;
   onError?: (err: Error, file: QXPUploadFileTask) => void;
   onSuccess?: (file: QXPUploadFileTask) => void
   onProgress?: (file: QXPUploadFileTask, progress: number,) => void;
@@ -26,20 +26,21 @@ type QxpFilePartBlob = {
 
 export default function fileMultiPartUpload({
   file,
+  fileBucket,
   onError,
   onProgress,
   onSuccess,
 }: FileUploadStreamProps): () => void {
-  const { uid: path, uploadID, fileChunks, size } = file;
+  const { uid, uploadID, fileChunks, size } = file;
+  const path = `${fileBucket}/${file.uid}`;
   const percentPreChunk = 100 / Math.ceil(size / CHUNK_SIZE);
   let totalProgress = 0;
 
-  if (!path && !uploadID && fileChunks) throw new Error('No path or uploadID provided');
+  if (!uid && !uploadID && fileChunks) throw new Error('No path or uploadID provided');
 
   const fetchAbortController: AbortController = new AbortController();
 
   httpClient<{ parts: number[] }>(GET_MULTIPART_LIST_API, {
-    option: FILE_STORE_OPTION,
     uploadID,
     path,
   }).then(({ parts }) => {
@@ -59,7 +60,6 @@ export default function fileMultiPartUpload({
     return createQueue(fileChunksPromise, PARALLEL_UPLOAD_SIZE);
   }).then(()=> {
     return httpClient(COMPLETE_MULTIPART_API, {
-      option: FILE_STORE_OPTION,
       uploadID,
       path,
     });
@@ -74,14 +74,11 @@ export default function fileMultiPartUpload({
   const generatePartUploadTask = (partNumber: number, filePart: QxpFilePartBlob): () => Promise<void> => {
     const { chunkBlob } = filePart;
     return () => new Promise((resolve, reject) => {
-      const { size, type } = chunkBlob;
+      const { type } = chunkBlob;
       httpClient(FILE_PART_SIGN_API, {
         path,
-        option: FILE_STORE_OPTION,
         partNumber,
-        length: size,
-        contentType: type || file.type,
-        uploadID: uploadID,
+        uploadID,
       }).then((res: any) => {
         if (!res) throw new Error('file part sign request failed');
         return res.url;

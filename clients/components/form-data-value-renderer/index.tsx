@@ -97,7 +97,7 @@ export default function FormDataValueRenderer({ value, schema, className }: Prop
     return (<AssociatedDataValueRender schema={schema} value={value as LabelValue} />);
   case 'imageupload': {
     return (
-      <div className="flex flex-wrap">
+      <div className="flex flex-wrap gap-4 w-full max-h-144 overflow-auto">
         <FileList
           canDownload
           imgOnly={true}
@@ -179,16 +179,17 @@ export function FormDataSubTableValueRenderer({ value, schema, className }: Prop
       <div className="flex items-center">
         <Icon name="image" size={22} className="mr-2"></Icon>
         {!isEmpty(value) ? (
-          <FileList
-            canDownload
-            imgOnly={true}
-            files={(value as QxpFileFormData[]).map((file) => ({
-              name: file.label,
-              uid: file.value,
-              type: file.type,
-              size: file.size || 0,
-            }))}
-          />
+          <div className="flex flex-nowrap gap-4">
+            <FileList
+              canDownload
+              files={(value as QxpFileFormData[]).map((file) => ({
+                name: file.label,
+                uid: file.value,
+                type: file.type,
+                size: file.size || 0,
+              }))}
+            />
+          </div>
         ) : (
           <span className="text-gray-500">无图片</span>
         )}

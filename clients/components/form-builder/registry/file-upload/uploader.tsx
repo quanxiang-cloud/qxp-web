@@ -1,5 +1,7 @@
 import React from 'react';
+import { useParams } from 'react-router-dom';
 
+import { getQuery } from '@lib/utils';
 import FileUploader, { FileList } from '@c/file-upload';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
@@ -15,6 +17,8 @@ export default function FormFileUploader(props: FileUploaderProps & ISchemaField
   const { value, form, path } = props;
   const { readOnly } = props.props;
   const configProps = props?.props['x-component-props'];
+  const { pageID } = getQuery<{ pageID: string }>();
+  const { appID } = useParams<{ appID: string }>();
 
   function handleFileSuccess(currentFile: QXPUploadFileBaseProps): void {
     const currentFileFormData: QxpFileFormData = {
@@ -62,6 +66,7 @@ export default function FormFileUploader(props: FileUploaderProps & ISchemaField
     <FileUploader
       {...configProps}
       className='w-280'
+      additionalPathPrefix={`${appID}/${pageID}`}
       fileData={value?.map((file: QxpFileFormData) =>
         ({
           name: file.label,

@@ -19,13 +19,14 @@ async function calcFileMd5(
   SparkArrayBufferConstructor: any): Promise<void> {
   const { blob, chunkSize, maxSmallFileSize } = data;
   const spark = new SparkArrayBufferConstructor();
+  const timeStamp = Date.now();
 
   if (blob.size <= maxSmallFileSize) {
     blob.arrayBuffer().then((buffer: ArrayBuffer) => {
       spark.append(buffer);
       self.postMessage({
         percentage: 100,
-        md5: spark.end(),
+        md5: workerContext.btoa(spark.end() + timeStamp),
       });
     });
     return;
@@ -52,7 +53,7 @@ async function calcFileMd5(
   self.postMessage({
     fileChunks,
     percentage: 100,
-    md5: spark.end(),
+    md5: workerContext.btoa(spark.end() + timeStamp),
   });
 }
 

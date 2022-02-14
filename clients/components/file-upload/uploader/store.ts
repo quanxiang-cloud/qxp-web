@@ -1,34 +1,49 @@
 import { observable, action } from 'mobx';
+import { uniqueId } from 'lodash';
 
 import toast from '@lib/toast';
 import httpClient from '@lib/http-client';
-import { uniqueId } from 'lodash';
+import { isAcceptedFileType } from '@lib/utils';
 
 import Md5Worker from 'web-worker:../utils/md5-worker';
 import smallFileUploadRequest from './small-file-upload-stream';
-import bigFileMultipartUpload from './big-file-part-upload-stream';
+import bigFileMultipartUpload, { FileUploadStreamProps } from './large-file-part-upload-stream';
 
 import {
   CHUNK_SIZE,
-  FILE_DELETE_API,
-  BIG_FILE_SIGN_API,
-  FILE_STORE_OPTION,
-  SMALL_FILE_SIGN_API,
   MAX_SMALL_FILE_SIZE,
+  SMALL_FILE_SIGN_API,
+  BIG_FILE_SIGN_API,
+  FILE_DELETE_API,
   ABORT_MULTIPART_API,
+  DEFAULT_IMG_TYPES,
+  THUMBNAIL_SIZE,
+  IMG_THUMBNAIL_API,
 } from '../constants';
 
 export type FileStoreProps = {
   files: QXPUploadFileBaseProps[],
+  fileBucket: string;
+  requestThumbnail?: boolean;
+  additionalPathPrefix?: string;
   onSuccess?: (file: QXPUploadFileTask) => void,
   onError?: (err: Error, file: QXPUploadFileTask) => void,
 }
-
 class FileStore {
+  pageID: string | undefined;
+  isPrivate: boolean | undefined;
+  fileBucket: string;
+  requestThumbnail: boolean | undefined;
+  additionalPathPrefix: string;
+  appID?: string;
   onSuccess?: (file: QXPUploadFileTask) => void;
   onError?: (err: Error, file: QXPUploadFileTask) => void;
+
   constructor(props: FileStoreProps) {
     this.files = props.files;
+    this.fileBucket = props.fileBucket;
+    this.additionalPathPrefix = props.additionalPathPrefix || '';
+    this.requestThumbnail = props.requestThumbnail;
     this.onSuccess = props.onSuccess;
     this.onError = props.onError;
   }
@@ -46,12 +61,12 @@ class FileStore {
     this.abortFile(deleteFile);
     if (deleteFile.uploadID && deleteFile.state !== 'success') {
       httpClient(ABORT_MULTIPART_API, {
-        path: deleteFile.uid,
+        path: `${this.fileBucket}/${deleteFile.uid}`,
         uploadID: deleteFile.uploadID,
       });
     }
     httpClient(FILE_DELETE_API, {
-      id: deleteFile.uid,
+      path: `${this.fileBucket}/${deleteFile.uid}`,
     });
     this.files = this.files.filter((file) => file.name !== deleteFile.name);
   };
@@ -77,7 +92,7 @@ class FileStore {
   prepareFilesUpload = (files: File[]): void => {
     const extendedFiles: QXPUploadFileTask[] = files.map((file: File) => ({
       name: file.name,
-      uid: uniqueId('qxp-file'), // Use uuid as a temp uid for key props in file list render, and it will be replaced after file signed
+      uid: uniqueId('qxp-file/'), // Use uuid as a temp uid for key props in file list render, and it will be replaced after file signed
       size: file.size,
       type: file.type || 'application/octet-stream',
       blob: file,
@@ -91,7 +106,7 @@ class FileStore {
 
   startUploadFile = (fileWithMd5: QXPUploadFileTask): void => {
     this.signFile(fileWithMd5).then((signedFile) => {
-      signedFile.isExist ? this.onFileUploadSuccess(signedFile) : this.putFileStream(signedFile);
+      this.putFileStream(signedFile);
     }).catch((err) => {
       this.onFileUploadError(err, fileWithMd5);
     });
@@ -135,22 +150,28 @@ class FileStore {
 
   signFile = (file: QXPUploadFileTask): Promise<QXPUploadFileTask> => {
     const { md5 } = file;
-    if (!md5) throw new Error('no file md5 provided.');
+    if (!md5) throw Error('no file md5 provided.');
+    const fileSignPath = [];
+    const fileUid = [md5, file.name];
     const signUrl = file.size >= MAX_SMALL_FILE_SIZE ? BIG_FILE_SIGN_API : SMALL_FILE_SIGN_API;
+
     this.updateUploadFile(file.name, file);
+
+    fileSignPath.push(this.fileBucket);
+
+    this.additionalPathPrefix && fileUid.unshift(this.additionalPathPrefix);
+
+    fileSignPath.push(...fileUid);
+
     return httpClient(signUrl, {
-      digest: md5,
       contentType: file.type,
-      contentLength: file.size,
-      path: `${md5}/${file.name}`,
-      option: FILE_STORE_OPTION,
+      path: fileSignPath.join('/'),
     }).then((response) => {
-      const { path, url, exist, uploadID } = response as any;
+      const { url, uploadID } = response as { url?: string, uploadID?: string};
       const signedFile = this.updateUploadFile(file.name, {
-        uid: path,
+        uid: fileUid.join('/'),
         uploadID,
         uploadUrl: url,
-        isExist: exist,
       });
       return signedFile;
     });
@@ -160,8 +181,9 @@ class FileStore {
   putFileStream = (file: QXPUploadFileTask): void => {
     const fileUploadStreamRequest = file.size > MAX_SMALL_FILE_SIZE ?
       bigFileMultipartUpload : smallFileUploadRequest;
-    const putFileData = {
+    const putFileData: FileUploadStreamProps = {
       file,
+      fileBucket: this.fileBucket,
       onSuccess: this.onFileUploadSuccess,
       onProgress: this.onFileUploading,
       onError: this.onFileUploadError,
@@ -174,10 +196,6 @@ class FileStore {
     const { name } = file;
     const retryFile = this.getUploadFile(name);
     if (!retryFile) {
-      return;
-    }
-    if (file.isExist === undefined) {
-      this.startUploadFile(retryFile);
       return;
     }
     this.putFileStream(retryFile);
@@ -207,8 +225,14 @@ class FileStore {
     this.onError?.(err, file);
   };
 
-  onFileUploadSuccess = (file: QXPUploadFileTask): void => {
+  onFileUploadSuccess = async (file: QXPUploadFileTask): Promise<void> => {
     const { uid, name } = file;
+    if (isAcceptedFileType(file, DEFAULT_IMG_TYPES) && this.requestThumbnail) {
+      await httpClient(IMG_THUMBNAIL_API, {
+        path: `${this.fileBucket}/${file.uid}`,
+        width: THUMBNAIL_SIZE / 2,
+      });
+    }
     file.state = 'success';
     file.md5Worker = null;
     file.fileChunks = null;

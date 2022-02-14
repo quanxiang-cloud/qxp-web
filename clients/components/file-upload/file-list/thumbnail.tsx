@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Icon from '@c/icon';
 import httpClient from '@lib/http-client';
 
-import { IMG_THUMBNAIL_API } from '../constants';
+import { FILE_DOWNLOAD_INFO_API } from '../constants';
 
 type Props = {
   imgPath: string;
@@ -24,19 +24,23 @@ export default function Thumbnail({
 }: Props): JSX.Element {
   const [thumbnailSrc, setThumbnailSrc] = useState('');
   useEffect(() => {
-    let isSubscribed = true;
+    if (imgPath.split('/')[0] === 'qxp-file') return;
+    const zoomSize = size / 2;
+    let isMounted = true;
+    const thumbnailPath = imgPath.split('/');
+    thumbnailPath.splice(-1, 0, `${zoomSize}x${0}`);
 
-    !imgPath.includes('qxp-file') &&
-      httpClient(IMG_THUMBNAIL_API, {
-        path: imgPath,
-        width: size,
-        hight: size,
-      }).then((res: any) => {
-        isSubscribed && setThumbnailSrc(res.info);
-      }).catch(onError);
+    httpClient<{ url: string }>(FILE_DOWNLOAD_INFO_API, {
+      path: thumbnailPath.join('/'),
+    }).then(({ url }) => {
+      if (!url) throw Error('缩略图下载失败');
+      isMounted && setThumbnailSrc(url);
+    }).catch((err) => {
+      onError?.(err);
+    });
 
     return () => {
-      isSubscribed = false; // deny the thumbnailSrc update for memory leaking
+      isMounted = false; // deny the thumbnailSrc update to void memory leaking
     };
   }, []);
 

@@ -12,6 +12,11 @@ export const ABORT_MULTIPART_API = '/api/v1/fileserver/sign/abortMultipart';
 export const GET_MULTIPART_LIST_API = '/api/v1/fileserver/sign/listMultipart';
 export const COMPLETE_MULTIPART_API = '/api/v1/fileserver/sign/completeMultipart';
 
+// File services path config
+export const OSS_DOMAIN = window.CONFIG.oss_config.domain;
+export const OSS_PRIVATE_BUCKET_NAME = window.CONFIG.oss_config.private;
+export const OSS_PUBLIC_BUCKET_NAME = window.CONFIG.oss_config.readable;
+
 // File chunk config
 export const FILE_STORE_OPTION = 'minio';
 export const CHUNK_SIZE = 1024 * 1024 * 5;
@@ -40,4 +45,4 @@ export const DEFAULT_IMG_TYPES: string[] = [
   'image/jpeg',
 ];
 
-export const THUMBNAIL_SIZE = 52;
+export const THUMBNAIL_SIZE = 64;
