@@ -102,6 +102,7 @@ function ImgUploader({
       style={style}
     >
       <FileList
+        imgOnly
         canDownload
         isPrivate={isPrivate}
         files={toJS(storeFiles)}
