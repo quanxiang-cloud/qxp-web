@@ -49,6 +49,60 @@ export function getWebhookPathTreeValue(
         name: item.id,
       };
     }
+    if (item.data?.type === 'fillIn') {
+      return {
+        type: 'object',
+        data: [{
+          type: 'string',
+          in: '',
+          desc: '填写人名称',
+          name: 'handleUserName',
+          data: [],
+        }, {
+          type: 'string',
+          in: '',
+          desc: '填写人ID',
+          name: 'handleUserId',
+          data: [],
+        }, {
+          type: 'string',
+          in: '',
+          desc: '填写时间',
+          name: 'handleTime',
+          data: [],
+        }],
+        in: '',
+        desc: item.data.nodeData.name,
+        name: item.id,
+      };
+    }
+    if (item.data?.type === 'approve') {
+      return {
+        type: 'object',
+        data: [{
+          type: 'string',
+          in: '',
+          desc: '审批人名称',
+          name: 'handleUserName',
+          data: [],
+        }, {
+          type: 'string',
+          in: '',
+          desc: '审批人ID',
+          name: 'handleUserId',
+          data: [],
+        }, {
+          type: 'string',
+          in: '',
+          desc: '审批时间',
+          name: 'handleTime',
+          data: [],
+        }],
+        in: '',
+        desc: item.data.nodeData.name,
+        name: item.id,
+      };
+    }
     return false;
   }).filter((source): source is POLY_API.PolyNodeInput => !!source);
 
