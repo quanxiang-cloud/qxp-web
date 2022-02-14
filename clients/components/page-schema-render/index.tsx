@@ -30,7 +30,7 @@ export default function PageSchemaRender(
         className="overflow-auto relative z-0"
         style={{ maxHeight: maxHeight || '100vh', height: '100vh' }}
       >
-        <SchemaRender schema={schema} apiSpecAdapter={adapter} repository={repository} />
+        <SchemaRender schema={schema} plugins={{ apiSpecAdapter: adapter, repository }} />
       </div>
     </ErrorBoundary>
   );
