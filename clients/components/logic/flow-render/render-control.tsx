@@ -52,27 +52,40 @@ export default function Controls({
     if (!showZoom) {
       return null;
     }
+    const currentLevel = +((zoomLevel ?? 0) * 100).toFixed(0);
     return (
       <Fragment>
-        <Tooltip position="bottom" label="缩小" theme="dark" offset={offset}>
-          <div>
-            <ControlButton onClick={onZoomOutHandler}>
-              <Icon name="remove_circle_outline"/>
-            </ControlButton>
-          </div>
-        </Tooltip>
+        {currentLevel <= 50 ? (
+          <ControlButton style={{ cursor: 'not-allowed' }}>
+            <Icon name="remove_circle_outline" className="opacity-50" />
+          </ControlButton>
+        ) : (
+          <Tooltip position="bottom" label="缩小" theme="dark" offset={offset}>
+            <div>
+              <ControlButton onClick={onZoomOutHandler}>
+                <Icon name="remove_circle_outline"/>
+              </ControlButton>
+            </div>
+          </Tooltip>
+        )}
         <div
           className="flex items-center bg-white cursor-text"
         >
-          {`${Math.ceil((zoomLevel ?? 0) * 100)}%`}
+          {`${currentLevel}%`}
         </div>
-        <Tooltip position="bottom" label="放大" theme="dark" offset={offset}>
-          <div>
-            <ControlButton onClick={onZoomInHandler}>
-              <Icon name="add_circle_outline"/>
-            </ControlButton>
-          </div>
-        </Tooltip>
+        {currentLevel >= 200 ? (
+          <ControlButton style={{ cursor: 'not-allowed' }}>
+            <Icon name="add_circle_outline" className="opacity-50"/>
+          </ControlButton>
+        ) : (
+          <Tooltip position="bottom" label="放大" theme="dark" offset={offset}>
+            <div>
+              <ControlButton onClick={onZoomInHandler}>
+                <Icon name="add_circle_outline"/>
+              </ControlButton>
+            </div>
+          </Tooltip>
+        )}
       </Fragment>
     );
   }, [zoomLevel, showZoom, onZoomInHandler, onZoomOutHandler]);
