@@ -94,7 +94,7 @@ function Inputs({ value, onChange, values, error }: Props): JSX.Element | null {
   }
 
   return (
-    <div className="grid items-stretch webhook-request-inputs">
+    <div className="webhook-request-inputs">
       <InputsConfig />
       <PathTreeWithOperates
         currentFormulaEditorRef={formulaEditorRef}
