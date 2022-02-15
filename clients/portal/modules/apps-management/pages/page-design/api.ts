@@ -1,3 +1,5 @@
+import { isEmpty } from 'lodash';
+
 import { getStore } from '@one-for-all/page-engine';
 
 import {
@@ -37,7 +39,7 @@ export function savePage(app_id: string, page_id: string, page_schema: any, opti
   })));
 }
 
-export function getPage(app_id: string, page_id: string, options?: Option) {
+export function getPage(app_id: string, page_id: string, options?: Option): Promise<string | void> {
   const [queryId, newQueryId] = getSchemaKey(app_id, page_id, !!options?.draft);
   const result = getBatchGlobalConfig([{
     key: queryId,
@@ -48,7 +50,7 @@ export function getPage(app_id: string, page_id: string, options?: Option) {
     version: PG_VERSION,
   }]);
   return Promise.all([result, newResult]).then(([{ result }, { result: newResult }]) => {
-    if (newResult) {
+    if (newResult && !isEmpty(newResult)) {
       return newResult[newQueryId];
     }
     return result[queryId];
