@@ -69,5 +69,7 @@ func GetRouter() http.Handler {
 
 	r.PathPrefix("/").Methods("GET").HandlerFunc(loginRequired(handlers.PortalHandler))
 
+	probe.SetRunning()
+
 	return contexts.WithUtilContext(r)
 }
