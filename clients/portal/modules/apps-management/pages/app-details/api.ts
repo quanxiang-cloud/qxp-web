@@ -126,3 +126,7 @@ export const formDuplicate = (
 ): Promise<{id: string}> => {
   return httpClient(`/api/v1/form/${appID}/m/table/formDuplicate`, data);
 };
+
+export const initAppPath = (appID: string): Promise<void> => {
+  return httpClient('/api/v1/polyapi/namespace/initAppPath', { data: { appID } });
+};

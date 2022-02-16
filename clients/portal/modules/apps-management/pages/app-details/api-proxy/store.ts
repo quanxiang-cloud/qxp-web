@@ -3,6 +3,7 @@ import { pick } from 'lodash';
 
 import TreeStore from '@c/headless-tree/store';
 import { TreeNode } from '@c/headless-tree/types';
+import { initAppPath } from '../api';
 import toast from '@lib/toast';
 
 import * as apis from './api';
@@ -107,6 +108,7 @@ class ApiProxyStore {
   @observable svcApis: {list?: PolyAPI.Api[], total?: number} | null = null;
   @observable apiKeyList: Array<PolyAPI.ApiKeyList> = [];
   @observable apiKeyTotal = 0;
+  @observable isInitSuccessed = true;
 
   @computed get currentSvcPath(): string {
     if (this.currentNs) {
@@ -152,6 +154,7 @@ class ApiProxyStore {
   @action
   fetchNamespaces = async (appId: string): Promise<PolyAPI.Namespace[] | void> => {
     this.loadingNs = true;
+    this.isInitSuccessed = true;
     try {
       if (!this.appRootNs) {
         const { appPath } = await apis.getAppPath(appId);
@@ -163,7 +166,15 @@ class ApiProxyStore {
         this.setTreeStore(new ApiGroupStore(list));
       }
     } catch (err) {
-      toast.error(err);
+      initAppPath(appId).then(() => {
+        return apis.getNamespaceList(this.appRootNs, { page: 1, pageSize: -1 });
+      }).then(({ list }) => {
+        this.setNamespaces(list);
+        this.setTreeStore(new ApiGroupStore(list));
+      }).catch(() => {
+        toast.error(err);
+        this.isInitSuccessed = false;
+      });
     } finally {
       this.loadingNs = false;
     }
