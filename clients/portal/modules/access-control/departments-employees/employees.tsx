@@ -62,7 +62,9 @@ export default function Employees({
   );
 
   useEffect(() => {
-    setPageParams({ ...pageParams, userName: searchWord, includeChildDEPChild: Number(isIncludeSubDep) });
+    setPageParams({
+      ...pageParams, page: 1, userName: searchWord, includeChildDEPChild: Number(isIncludeSubDep),
+    });
   }, [searchWord, isIncludeSubDep]);
 
   useEffect(() => {
