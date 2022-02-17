@@ -70,7 +70,8 @@ function FuncDetailsDrawer(): JSX.Element {
     {
       Header: '构建时间',
       id: 'build',
-      accessor: ({ completionTime, createdAt }: VersionField) => `${completionTime - createdAt}s`,
+      accessor: ({ state, completionTime, createdAt }: VersionField) =>
+        state === 'True' ? `${completionTime - createdAt}s` : '构建中...',
     },
     {
       Header: '创建人',

@@ -61,6 +61,8 @@ function VersionDetails(): JSX.Element {
     message,
     visibility,
     updater,
+    state,
+    completionTime,
   } = store.currentVersionFunc;
 
   return (
@@ -105,7 +107,7 @@ function VersionDetails(): JSX.Element {
         <div className='flex text-12 p-8 items-center '>
           <div className='text-gray-600'>构建时间：</div>
           <div className='text-gray-900 flex-1 card-value'>
-            {`${updatedAt - createdAt}s`}
+            {state === 'True' ? `${completionTime - createdAt}s` : '构建中...'}
           </div>
         </div>
         <div className='flex text-12 p-8 items-center '>
