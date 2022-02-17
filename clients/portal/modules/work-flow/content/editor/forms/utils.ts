@@ -17,6 +17,7 @@ type Options = {
   noSystem?: boolean;
   matchTypeFn?: (...args: any[]) => boolean;
   excludeComps?: string[],
+  sort?: boolean, // sort field by type
   [key: string]: any,
 }
 
@@ -24,7 +25,7 @@ export const getSchemaFields = (
   schemaFields: SchemaFieldItem[] = [],
   options: Options = {},
 ): LabelValue[] => {
-  return schemaFields.filter((schema) => {
+  const fields = schemaFields.filter((schema) => {
     const compName = schema.componentName;
     const isSystem = !!get(schema, 'x-internal.isSystem');
     if (options.noSystem && isSystem) {
@@ -37,16 +38,26 @@ export const getSchemaFields = (
       return options.matchTypeFn.call(null, schema);
     }
     return !!compName;
-  }).map((schema) => {
+  });
+
+  if (options.sort) {
+    fields.sort((f1, f2) => {
+      if (isAdvancedField(f1.type, f1.componentName)) return 1;
+      if (isAdvancedField(f2.type, f2.componentName)) return -1;
+      return 0;
+    });
+  }
+
+  return fields.map((schema) => {
     return { label: schema.title as string, value: schema.id };
   });
 };
 
-function isAdvancedField(type: string, xCompName?: string): boolean {
+export function isAdvancedField(type?: string, xCompName?: string): boolean {
   if (xCompName && advancedCompTypes.map((t)=> t.toLowerCase()).includes(xCompName.toLowerCase())) {
     return true;
   }
-  return !primitiveTypes.includes(type);
+  return !primitiveTypes.includes(type || '');
 }
 
 export function isFieldTypeMatch(
