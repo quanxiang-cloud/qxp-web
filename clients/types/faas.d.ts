@@ -41,6 +41,7 @@ type creatFuncParams = {
   alias: string;
   language: string;
   description: string;
+  tag: string;
 }
 
 type VersionListParams = {

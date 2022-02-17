@@ -1,5 +1,6 @@
 import { action, observable, reaction } from 'mobx';
 
+import getRsaKeys from '@lib/generate-ssh-key';
 import { SocketData } from '@lib/push';
 
 import {
@@ -14,7 +15,6 @@ import {
   getFuncInfo,
   updateFuncDesc,
   getFuncVersionList,
-  hasCoder,
   defineFunc,
   buildFunc,
   deleteFunc,
@@ -22,7 +22,6 @@ import {
   offlineVer,
   servingVer,
   deleteVer,
-  creatCoder,
   registerAPI,
   getApiPath,
   getVersionInfo,
@@ -172,25 +171,34 @@ class FaasStore {
   };
 
   @action
-  createDeveloper = (email: string): Promise<void> => {
-    return new Promise((resolve, reject) => {
-      createDeveloper({
+  createDeveloper = async (email: string): Promise<void> => {
+    try {
+      const keys = await getRsaKeys(email);
+      if (!keys) {
+        throw new Error('获取ssh key失败，请重试');
+      }
+      const a = document.createElement('a');
+      a.href = 'data:text/paint; utf-8,' + keys.privateKey;
+      a.download = 'id_rsa';
+      a.click();
+      toast.success('私钥下载成功');
+
+      await createDeveloper({
         email,
-      }).then(() => {
-        const intervalBox = setInterval(async () => {
-          await this.isaDeveloper();
-          if (this.isDeveloper) {
-            clearInterval(intervalBox);
-            resolve();
-          }
-        }, 5000);
-      }).catch((err) => {
-        toast.error(err);
-        this.initLoading = false;
-        this.initErr = true;
-        reject(err);
+        publicKey: keys.publicKey,
       });
-    });
+      const intervalBox = setInterval(async () => {
+        await this.isaDeveloper();
+        if (this.isDeveloper) {
+          clearInterval(intervalBox);
+        }
+      }, 5000);
+      Promise.resolve();
+    } catch (error) {
+      toast.error(error);
+      this.initLoading = false;
+      this.initErr = true;
+    }
   };
 
   @action
@@ -258,30 +266,11 @@ class FaasStore {
   };
 
   @action
-  checkHasCoder = (): Promise<boolean | void> => {
-    return hasCoder().then((res) => {
-      return res.hasCoder;
-    }).catch((err) => toast.error(err));
-  };
-
-  @action
-  creatCoder = (): void => {
-    creatCoder().then(() => {
-      toast.success('创建成功');
-    }).catch((err) => {
-      toast.error(err);
-    });
-  };
-
-  @action
   createFunc = (data: creatFuncParams): void => {
-    createFaasFunc(this.groupID, data).then((res) => {
+    createFaasFunc(this.groupID, { ...data, tag: '1.16' }).then((res) => {
       this.currentFuncID = res.id;
       this.currentFunc = { ...res, ...data, state: 'Unknown' };
       this.funcList = [this.currentFunc, ...this.funcList];
-      this.checkHasCoder().then((res) => {
-        if (!res) this.creatCoder();
-      });
     }).catch((err) => {
       toast.error(err);
     });
