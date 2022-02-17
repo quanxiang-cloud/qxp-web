@@ -29,7 +29,7 @@ function DataList(): JSX.Element {
 
   function getDomain(name: string): void {
     getGitLabDomain().then((res) => {
-      copyContent(`git clone ${res.domain}/${store.appDetails.appSign}/${name}.git`);
+      copyContent(`git clone ${res.domain}${store.appDetails.appSign}/${name}.git`);
     });
   }
 
