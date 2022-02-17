@@ -458,14 +458,22 @@ class FaasStore {
     if (!['Unknown', ''].includes(versionInfo.build.state)) {
       this.versionList = this.versionList.map((version) => {
         if (version.id === buildID) {
-          return { ...version, [type]: versionInfo.build[type] };
+          return {
+            ...version,
+            [type]: versionInfo.build[type],
+            completionTime: versionInfo.build.completionTime,
+          };
         }
 
         return version;
       });
 
       if (this.currentVersionFunc?.id === buildID) {
-        this.currentVersionFunc = { ...this.currentVersionFunc, [type]: versionInfo.build[type] };
+        this.currentVersionFunc = {
+          ...this.currentVersionFunc,
+          [type]: versionInfo.build[type],
+          completionTime: versionInfo.build.completionTime,
+        };
       }
 
       toast.success('操作成功！');
