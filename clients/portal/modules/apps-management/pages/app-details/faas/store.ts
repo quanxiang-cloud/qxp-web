@@ -179,7 +179,7 @@ class FaasStore {
       }
       const a = document.createElement('a');
       a.href = 'data:text/paint; utf-8,' + keys.privateKey;
-      a.download = 'id_rsa';
+      a.download = 'faas_private_key';
       a.click();
       toast.success('私钥下载成功');
 
