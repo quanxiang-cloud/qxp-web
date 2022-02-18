@@ -198,7 +198,7 @@ function AddSwagger(): JSX.Element {
         <FilePicker
           accept='application/json'
           className={cs(
-            'swagger-upload w-full h-86',
+            'swagger-upload w-full h-86 relative',
             'flex flex-col items-center justify-center',
             {
               'swagger-upload-fail': fileError || upLoadFail,
