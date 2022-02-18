@@ -1,6 +1,5 @@
 import { action, observable, reaction } from 'mobx';
 
-import getRsaKeys from '@lib/generate-ssh-key';
 import { SocketData } from '@lib/push';
 
 import {
@@ -114,9 +113,10 @@ class FaasStore {
   };
 
   @action
-  isaDeveloper = (): Promise<void> => {
+  developerCheck = (): Promise<boolean | void> => {
     return checkIsDeveloper().then((res) => {
       this.isDeveloper = res.isDeveloper;
+      return res.isDeveloper;
     }).catch((err) => toast.error(err));
   };
 
@@ -162,7 +162,7 @@ class FaasStore {
   @action
   checkUserState = async (): Promise<void> => {
     this.checkUserLoading = true;
-    await this.isaDeveloper();
+    await this.developerCheck();
     await this.isGroup();
     if (this.hasGroup && this.isDeveloper) {
       await this.isDeveloperInGroup();
@@ -171,34 +171,22 @@ class FaasStore {
   };
 
   @action
-  createDeveloper = async (email: string): Promise<void> => {
-    try {
-      const keys = await getRsaKeys(email);
-      if (!keys) {
-        throw new Error('获取ssh key失败，请重试');
-      }
-      const a = document.createElement('a');
-      a.href = 'data:text/paint; utf-8,' + keys.privateKey;
-      a.download = 'faas_private_key';
-      a.click();
-      toast.success('私钥下载成功');
-
-      await createDeveloper({
-        email,
-        publicKey: keys.publicKey,
-      });
+  createDeveloper = (email: string, publicKey: string): Promise<void> => {
+    return createDeveloper({
+      email,
+      publicKey,
+    }).then(() => {
       const intervalBox = setInterval(async () => {
-        await this.isaDeveloper();
+        await this.developerCheck();
         if (this.isDeveloper) {
           clearInterval(intervalBox);
         }
       }, 5000);
-      Promise.resolve();
-    } catch (error) {
+    }).catch((error) => {
       toast.error(error);
       this.initLoading = false;
       this.initErr = true;
-    }
+    });
   };
 
   @action
@@ -229,15 +217,12 @@ class FaasStore {
   };
 
   @action
-  initFaas = async (email: string): Promise<void> => {
+  initFaas = async (): Promise<void> => {
     if (this.initErr) {
       await this.checkUserState();
     }
     this.initLoading = true;
     this.initErr = false;
-    if (!this.isDeveloper) {
-      await this.createDeveloper(email);
-    }
     if (!this.hasGroup && this.isDeveloper) {
       await this.createGroup();
     }
