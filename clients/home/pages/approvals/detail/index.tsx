@@ -169,6 +169,8 @@ function ApprovalDetail(): JSX.Element {
                 globalActions={pick(task, globalActionKeys)}
                 onClickAction={store.handleClickAction}
                 workFlowType={type}
+                schema={task?.formSchema}
+                formData={formValues}
               />
               <div className='flow-name hidden'>{data?.flowName}</div>
               {renderSchemaForm(task)}
