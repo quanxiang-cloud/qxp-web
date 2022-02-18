@@ -10,10 +10,11 @@ import { getSchemaFields, isAdvancedField } from '../utils';
 interface Props {
   tableId: string;
   onChangeField: (field_id: string) => void;
+  fieldId?: string;
   className?: string;
 }
 
-function SelectTargetFields({ tableId, onChangeField }: Props): JSX.Element | null {
+function SelectTargetFields({ tableId, fieldId, onChangeField }: Props): JSX.Element | null {
   const { appID } = useContext(FlowCtx);
   const { data: targetSchema } = useQuery(['GET_TARGET_TABLE_SCHEMA', tableId, appID], getFormFieldSchema, {
     enabled: !!appID && !!tableId,
@@ -35,8 +36,6 @@ function SelectTargetFields({ tableId, onChangeField }: Props): JSX.Element | nu
     }
   }, [hasComplexType]);
 
-  console.log('target fields: ', targetSchemaMap);
-
   if (!tableId || !hasComplexType) {
     return null;
   }
@@ -47,7 +46,7 @@ function SelectTargetFields({ tableId, onChangeField }: Props): JSX.Element | nu
       <Select
         options={fields}
         placeholder="选择字段"
-        value={tableId}
+        value={fieldId}
         onChange={onChangeField}
       />
     </div>

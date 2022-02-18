@@ -1,4 +1,4 @@
-import React, { useState, forwardRef, useImperativeHandle } from 'react';
+import React, { useState, forwardRef, useImperativeHandle, useEffect } from 'react';
 import { useQuery } from 'react-query';
 
 import Button from '@c/button';
@@ -34,6 +34,10 @@ function UpdateRules({ appId, tableId, defaultValue }: Props, ref: React.Ref<Ref
       getValues: () => rules,
     };
   });
+
+  useEffect(()=> {
+    setRules(defaultValue);
+  }, [defaultValue]);
 
   const onAdd = (): void => {
     setRules((items) => [...items, { fieldName: '', valueFrom: 'currentFormValue', valueOf: '' }]);

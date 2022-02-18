@@ -89,10 +89,7 @@ export default function UpdateTableData({
       updateRule,
       formQueryRef,
     });
-    // remove useless keys
-    delete value.selectField;
-    console.log('submit data: ', value);
-    // onSubmit(value);
+    onSubmit(value);
   };
 
   const onClose = (): void => {
@@ -202,10 +199,11 @@ export default function UpdateTableData({
           )}
         </div>
         <SelectTargetFields
+          fieldId={value.selectField}
           tableId={value.targetTableId}
           onChangeField={(selectField)=> {
-            console.log('change select field: ', selectField);
-            onChange({ selectField });
+            // when change select field, reset update rules
+            onChange({ selectField, updateRule: [] });
           }}
         />
         {renderMain()}
