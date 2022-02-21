@@ -43,16 +43,20 @@ const SCHEMA = {
         },
         customPublicKey: {
           type: 'string',
-          title: 'public key',
+          title: '密钥',
           required: true,
-          description: '必须以该账户的邮箱作为KeyName',
           'x-component-props': {
-            placeholder: '请输入public key',
+            placeholder: '请输入密钥',
           },
           'x-rules': [
             {
               required: true,
-              message: '请输入public key',
+              message: '请输入密钥',
+            },
+            {
+              /* eslint-disable */
+              pattern: 'ssh-rsa AAAA[0-9A-Za-z+\/]+[=]{0,3} ([^@]+@[^@]+)',
+              message: '请输入正确的密钥',
             },
           ],
           'x-component': 'TextArea',
@@ -70,7 +74,7 @@ const { onFieldValueChange$ } = FormEffectHooks;
 const actions = createFormActions();
 
 function NotAvailable(): JSX.Element {
-  const [modalVisible, setVisible] = useState(false);
+  const [modalVisible, setVisible] = useState(true);
   const { hasGroup, initLoading, initErr } = store;
 
   const form = useForm({
