@@ -29,7 +29,7 @@ function PageRelatedInfo(): JSX.Element {
 
     if (cardID === 'AuthorizedRoles') {
       if (id) {
-        history.push(`/apps/details/${appID}/app_permission?id=${id}`);
+        history.push(`/apps/details/${appID}/app_control?id=${id}`);
         return;
       }
       history.push(`/apps/details/${appID}/app_control`);
