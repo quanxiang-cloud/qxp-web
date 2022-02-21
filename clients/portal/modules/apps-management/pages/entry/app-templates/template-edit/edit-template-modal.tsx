@@ -11,15 +11,15 @@ import AppIconPicker from '../../app-list/app-edit/app-icon-picker';
 
 type Props = {
   modalType: string;
-  tmpInfo: AppInfo;
+  templateInfo: TemplateInfo;
   onCancel: () => void;
 }
 
-function EditTemplateModal({ modalType, tmpInfo, onCancel }: Props): JSX.Element {
+function EditTemplateModal({ modalType, templateInfo, onCancel }: Props): JSX.Element {
   const isEdit = modalType === 'editTemplate';
   const { addTemplate, editTemplate } = store;
-  const [templateName, setAppName] = useState(tmpInfo?.name ?? tmpInfo.appName);
-  const [appIcon, setAppIcon] = useState(tmpInfo.appIcon);
+  const [templateName, setAppName] = useState(templateInfo?.name ?? templateInfo.appName);
+  const [appIcon, setAppIcon] = useState(templateInfo.appIcon);
 
   async function handleSubmit(): Promise<void> {
     if (templateName.length > 30) {
@@ -28,12 +28,12 @@ function EditTemplateModal({ modalType, tmpInfo, onCancel }: Props): JSX.Element
     }
 
     if (isEdit) {
-      await editTemplate(tmpInfo.id, templateName, appIcon);
+      await editTemplate(templateInfo.id, templateName, appIcon);
       return onCancel();
     }
 
     validateTemplateName(templateName).then(async () => {
-      await addTemplate({ ...tmpInfo, name: templateName, appIcon });
+      await addTemplate({ ...templateInfo, name: templateName, appIcon });
       onCancel();
     }).catch(() => toast.error('模版名称校验失败'));
   }

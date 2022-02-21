@@ -32,7 +32,7 @@ function AppInfoView({ appInfo, onClick, className = '' }: Props): JSX.Element {
         size={44}
       />
       <div className='flex-1 app-info-view-text overflow-hidden'>
-        <p className='truncate app-info-view-name text-gray-900'>{appInfo.name ?? appInfo.appName}</p>
+        <p className='truncate app-info-view-name text-gray-900'>{appInfo.appName}</p>
         {'useStatus' in appInfo && (
           <p className='app-info-view-status flex items-center'>
             {STATUS_MAP[appInfo.useStatus]}

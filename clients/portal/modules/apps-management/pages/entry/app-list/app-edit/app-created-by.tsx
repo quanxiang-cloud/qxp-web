@@ -20,10 +20,10 @@ function AppCreatedBy({ value, onChange }: Props): JSX.Element {
         {options.map((option) => {
           return (
             <Radio
+              className="mr-8"
               key={option.value}
               value={option.value}
               label={option.label}
-              className="mr-8"
               defaultChecked={value === option.value}
             />
           );

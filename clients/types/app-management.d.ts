@@ -6,10 +6,19 @@ declare global {
     appIcon: string;
     useStatus: number;
     appSign: string;
-    name?: string;
     appZipInfo?: any;
     createdBy?: string;
     template?: string;
+  }
+
+  type TemplateInfo = {
+    id: string;
+    name: string;
+    appID: string;
+    appIcon: string;
+    appName?: string;
+    version?: string;
+    groupID?: string;
   }
 
   type AppZipInfo = {

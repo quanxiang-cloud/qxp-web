@@ -11,9 +11,10 @@ import CreatedEditApp from './created-edit-app';
 type Props = {
   modalType: string;
   onCancel: () => void;
+  templateID?: string;
 }
 
-function CreatedAppModal({ modalType, onCancel }: Props): JSX.Element {
+function CreatedAppModal({ modalType, onCancel, templateID }: Props): JSX.Element {
   const { createdApp, importApp, createdAppByTemplate } = store;
   const history = useHistory();
   const formRef: any = useRef(null);
@@ -75,6 +76,7 @@ function CreatedAppModal({ modalType, onCancel }: Props): JSX.Element {
         ref={formRef}
         className="p-20"
         modalType={modalType}
+        templateID={templateID}
         onValuesChange={(value) => {
           has('appZipInfo', value) && setAppZipInfo(formRef.current.getFieldValue('appZipInfo'));
         }}

@@ -18,16 +18,17 @@ type Props = {
   modalType: string;
   className?: string;
   appInfo?: AppInfo;
+  templateID?: string;
   onSubmitCallback?: () => void;
   onValuesChange?: (value: any) => void;
 }
 
 function CreatedEditApp({
-  appInfo, modalType, className, onSubmitCallback, onValuesChange,
+  appInfo, modalType, className, onSubmitCallback, onValuesChange, templateID,
 }: Props, ref?: any): JSX.Element {
   const [form] = Form.useForm();
   const initData = appInfo && toJS(appInfo);
-  const [createdBy, setCreatedBy] = useState('base');
+  const [createdBy, setCreatedBy] = useState(templateID ? 'template' : 'base');
   const { appName, appIcon = '{}', appSign } = initData || {};
   const handleEnterSubmit = useCallback((e: KeyboardEvent<HTMLInputElement>) => {
     e.key === 'Enter' && handleFinish();
@@ -63,7 +64,8 @@ function CreatedEditApp({
         appName,
         appSign,
         appIcon,
-        createdBy: 'base',
+        createdBy,
+        template: templateID,
       }}
       onFinish={handleFinish}
       onValuesChange={handleValuesChange}
@@ -151,6 +153,7 @@ function CreatedEditApp({
         >
           <Select
             className='w-full'
+            defaultValue={templateID}
             options={getTemplateOptions()}
           />
         </Form.Item>

@@ -5,15 +5,7 @@ export type TemplateListRes = {
   templates: any;
 }
 
-type TemplateInfo = {
-  name: string;
-  appID: string;
-  appIcon: string;
-  appName?: string;
-  version?: string;
-  groupID?: string;
-}
-export const saveAppAsTemplate = async (value: TemplateInfo, title: string): Promise<void> => {
+export const saveAppAsTemplate = async (value: Omit<TemplateInfo, 'id'>, title: string): Promise<void> => {
   return await httpClient('/api/v1/entrepot/task/create/createTemplate', { value, title });
 };
 

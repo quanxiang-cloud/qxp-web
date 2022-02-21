@@ -11,25 +11,29 @@ import {
 } from './api';
 
 class TemplateStore {
-  @observable templateList: AppInfo[] = [];
-  @observable curTemplate?: AppInfo;
+  @observable templateList: TemplateInfo[] = [];
+  @observable templateListLoading = false;
+  @observable curTemplate?: TemplateInfo;
 
   @action
-  setCurTemplate = (template: AppInfo): void => {
+  setCurTemplate = (template?: TemplateInfo): void => {
     this.curTemplate = template;
   };
 
   @action
-  setTemplateList = (templates: AppInfo[]): void => {
+  setTemplateList = (templates: TemplateInfo[]): void => {
     this.templateList = templates;
   };
 
   @action
   fetchList = (): void => {
+    this.templateListLoading = true;
     fetchTemplateList().then((res: TemplateListRes) => {
       this.setTemplateList(res.templates);
+      this.templateListLoading = false;
     }).catch(() => {
       toast.error('获取模版列表失败');
+      this.templateListLoading = false;
     });
   };
 
@@ -44,7 +48,7 @@ class TemplateStore {
   };
 
   @action
-  addTemplate = async (tmpInfo: AppInfo): Promise<void> => {
+  addTemplate = async (tmpInfo: TemplateInfo): Promise<void> => {
     if (!tmpInfo.name) {
       return;
     }

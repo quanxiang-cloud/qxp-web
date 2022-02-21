@@ -6,15 +6,15 @@ import Modal from '@c/modal';
 import store from '../store';
 
 type Props = {
-  appInfo: AppInfo;
+  templateInfo: TemplateInfo;
   onCancel: () => void;
 }
 
-function DelTemplateModal({ onCancel, appInfo }: Props): JSX.Element {
+function DelTemplateModal({ onCancel, templateInfo }: Props): JSX.Element {
   const { delTemplate } = store;
 
   async function handleSubmit(): Promise<void> {
-    await delTemplate(appInfo.id);
+    await delTemplate(templateInfo.id ?? '');
     onCancel();
   }
 
@@ -39,7 +39,7 @@ function DelTemplateModal({ onCancel, appInfo }: Props): JSX.Element {
       <div className='flex-1 p-20'>
         <p className='app-del-title mb-8'>
           <Icon size={20} className='mr-8 app-icon-color-inherit' name='sms_failed' />
-          确定要删除模版 {appInfo?.appName} 吗？
+          确定要删除模版 {templateInfo?.appName} 吗？
         </p>
       </div>
     </Modal>

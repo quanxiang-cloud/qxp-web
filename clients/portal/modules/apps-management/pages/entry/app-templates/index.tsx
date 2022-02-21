@@ -1,17 +1,20 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { observer } from 'mobx-react';
+import { UnionColumn } from 'react-table';
 
 import Icon from '@c/icon';
+import Table from '@c/table';
+import MoreMenu from '@c/more-menu';
 import TextHeader from '@c/text-header';
 
 import store from './store';
-import AppItem from '../components/render-item';
 import EditTemplateModal from './template-edit/edit-template-modal';
 import DelTemplateModal from './template-edit/del-template-modal';
+import CreatedAppModal from '../app-list/app-edit/created-app-modal';
 
 function AppTemplates(): JSX.Element {
   const [modalType, setModalType] = useState('');
-  const { templateList, fetchList, curTemplate, setCurTemplate } = store;
+  const { templateList, templateListLoading, fetchList, curTemplate, setCurTemplate } = store;
   const MENUS = useMemo(() => {
     return [
       {
@@ -34,14 +37,45 @@ function AppTemplates(): JSX.Element {
       },
     ];
   }, []);
+  const COLUMNS: UnionColumn<TemplateInfo>[] = [
+    {
+      Header: '名称',
+      accessor: 'name',
+    },
+    {
+      Header: '来源',
+      accessor: 'appName',
+    },
+    {
+      Header: '操作',
+      accessor: (row) => {
+        return (
+          <>
+            <span
+              className="text-blue-600 cursor-pointer mr-20"
+              onClick={() => handelMenuClick('createdApp', row)}
+            >
+              使用
+            </span>
+            <MoreMenu
+              menus={MENUS}
+              onMenuClick={(key) => handelMenuClick(key, row)}
+            >
+              <Icon changeable clickable name='more_horiz' />
+            </MoreMenu>
+          </>
+        );
+      },
+    },
+  ];
 
   useEffect(() => {
     fetchList();
   }, []);
 
-  function openModal(_modalType: string, _curApp: AppInfo): void {
+  function handelMenuClick(_modalType: string, rowData: TemplateInfo): void {
     setModalType(_modalType);
-    setCurTemplate(_curApp);
+    setCurTemplate(rowData);
   }
 
   function RenderModal() {
@@ -54,13 +88,20 @@ function AppTemplates(): JSX.Element {
         {modalType === 'editTemplate' && (
           <EditTemplateModal
             modalType={modalType}
-            tmpInfo={curTemplate}
+            templateInfo={curTemplate}
             onCancel={() => setModalType('')}
           />
         )}
         {modalType === 'delTemplate' &&
-          <DelTemplateModal appInfo={curTemplate} onCancel={() => setModalType('')} />
+          <DelTemplateModal templateInfo={curTemplate} onCancel={() => setModalType('')} />
         }
+        {modalType === 'createdApp' && (
+          <CreatedAppModal
+            modalType={modalType}
+            templateID={curTemplate.id}
+            onCancel={() => setModalType('')}
+          />
+        )}
       </>
     );
   }
@@ -76,16 +117,13 @@ function AppTemplates(): JSX.Element {
           itemTitleClassName="text-h6"
         />
         <div className="p-16 font-semibold">我的模板 · {templateList.length}</div>
-        <div className="flex-1 border-t-1 border-gray-200 app-list-container p-16">
-          {templateList.map((tmpInfo: AppInfo) => (
-            <AppItem
-              menus={MENUS}
-              key={tmpInfo.id}
-              appInfo={tmpInfo}
-              openModal={openModal}
-              handleActions={openModal}
-            />
-          ))}
+        <div className="flex-1 px-16">
+          <Table
+            rowKey="id"
+            data={templateList}
+            columns={COLUMNS}
+            loading={templateListLoading}
+          />
         </div>
       </div>
       <RenderModal />
