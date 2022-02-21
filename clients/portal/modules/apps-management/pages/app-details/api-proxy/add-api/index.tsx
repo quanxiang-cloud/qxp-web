@@ -48,7 +48,7 @@ const methodOptions = [
   { label: 'PATCH', value: 'patch' },
 ];
 
-const regApiName = /^[a-zA-Z_]\w*$/; // api标识，swagger的 api path部分
+const regApiName = /^[a-zA-Z_][\w-]*$/; // api标识，swagger的 api path部分
 const regPathParam = /:([^/:]+)/g;
 const regApiTitle = /^[\u4e00-\u9fa5_a-zA-Z0-9\s]+$/; // 中英文数字，空格
 const regApiPath = /^[/][-\w/:.*~?]*$/;

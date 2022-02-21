@@ -314,7 +314,12 @@ export default function CustomFieldTable({
           Header: () => getValueHeader('初始值', '该节点初次打开工作表时对应字段呈现初始值'),
           id: 'initialValue',
           accessor: 'initialValue',
-          Cell: (model: any) => getValueCell(model, 'initialValue', editable),
+          Cell: (model: any) => {
+            if (model.cell.row.original.invisible) {
+              return null;
+            }
+            return getValueCell(model, 'initialValue', editable);
+          },
         },
         {
           Header: () => getValueHeader('提交值', '该节点提交工作表后对应字段呈现提交值'),

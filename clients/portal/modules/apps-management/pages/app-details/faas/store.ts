@@ -14,7 +14,6 @@ import {
   getFuncInfo,
   updateFuncDesc,
   getFuncVersionList,
-  hasCoder,
   defineFunc,
   buildFunc,
   deleteFunc,
@@ -22,7 +21,6 @@ import {
   offlineVer,
   servingVer,
   deleteVer,
-  creatCoder,
   registerAPI,
   getApiPath,
   getVersionInfo,
@@ -115,9 +113,10 @@ class FaasStore {
   };
 
   @action
-  isaDeveloper = (): Promise<void> => {
+  developerCheck = (): Promise<boolean | void> => {
     return checkIsDeveloper().then((res) => {
       this.isDeveloper = res.isDeveloper;
+      return res.isDeveloper;
     }).catch((err) => toast.error(err));
   };
 
@@ -163,7 +162,7 @@ class FaasStore {
   @action
   checkUserState = async (): Promise<void> => {
     this.checkUserLoading = true;
-    await this.isaDeveloper();
+    await this.developerCheck();
     await this.isGroup();
     if (this.hasGroup && this.isDeveloper) {
       await this.isDeveloperInGroup();
@@ -172,24 +171,21 @@ class FaasStore {
   };
 
   @action
-  createDeveloper = (email: string): Promise<void> => {
-    return new Promise((resolve, reject) => {
-      createDeveloper({
-        email,
-      }).then(() => {
-        const intervalBox = setInterval(async () => {
-          await this.isaDeveloper();
-          if (this.isDeveloper) {
-            clearInterval(intervalBox);
-            resolve();
-          }
-        }, 5000);
-      }).catch((err) => {
-        toast.error(err);
-        this.initLoading = false;
-        this.initErr = true;
-        reject(err);
-      });
+  createDeveloper = (email: string, publicKey: string): Promise<void> => {
+    return createDeveloper({
+      email,
+      publicKey,
+    }).then(() => {
+      const intervalBox = setInterval(async () => {
+        await this.developerCheck();
+        if (this.isDeveloper) {
+          clearInterval(intervalBox);
+        }
+      }, 5000);
+    }).catch((error) => {
+      toast.error(error);
+      this.initLoading = false;
+      this.initErr = true;
     });
   };
 
@@ -221,15 +217,12 @@ class FaasStore {
   };
 
   @action
-  initFaas = async (email: string): Promise<void> => {
+  initFaas = async (): Promise<void> => {
     if (this.initErr) {
       await this.checkUserState();
     }
     this.initLoading = true;
     this.initErr = false;
-    if (!this.isDeveloper) {
-      await this.createDeveloper(email);
-    }
     if (!this.hasGroup && this.isDeveloper) {
       await this.createGroup();
     }
@@ -258,30 +251,11 @@ class FaasStore {
   };
 
   @action
-  checkHasCoder = (): Promise<boolean | void> => {
-    return hasCoder().then((res) => {
-      return res.hasCoder;
-    }).catch((err) => toast.error(err));
-  };
-
-  @action
-  creatCoder = (): void => {
-    creatCoder().then(() => {
-      toast.success('创建成功');
-    }).catch((err) => {
-      toast.error(err);
-    });
-  };
-
-  @action
   createFunc = (data: creatFuncParams): void => {
-    createFaasFunc(this.groupID, data).then((res) => {
+    createFaasFunc(this.groupID, { ...data, tag: '1.16' }).then((res) => {
       this.currentFuncID = res.id;
       this.currentFunc = { ...res, ...data, state: 'Unknown' };
       this.funcList = [this.currentFunc, ...this.funcList];
-      this.checkHasCoder().then((res) => {
-        if (!res) this.creatCoder();
-      });
     }).catch((err) => {
       toast.error(err);
     });
@@ -458,14 +432,22 @@ class FaasStore {
     if (!['Unknown', ''].includes(versionInfo.build.state)) {
       this.versionList = this.versionList.map((version) => {
         if (version.id === buildID) {
-          return { ...version, [type]: versionInfo.build[type] };
+          return {
+            ...version,
+            [type]: versionInfo.build[type],
+            completionTime: versionInfo.build.completionTime,
+          };
         }
 
         return version;
       });
 
       if (this.currentVersionFunc?.id === buildID) {
-        this.currentVersionFunc = { ...this.currentVersionFunc, [type]: versionInfo.build[type] };
+        this.currentVersionFunc = {
+          ...this.currentVersionFunc,
+          [type]: versionInfo.build[type],
+          completionTime: versionInfo.build.completionTime,
+        };
       }
 
       toast.success('操作成功！');

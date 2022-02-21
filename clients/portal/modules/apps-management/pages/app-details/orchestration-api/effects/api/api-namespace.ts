@@ -11,6 +11,7 @@ import {
 import httpClient from '@lib/http-client';
 
 import { NAMESPACES, ROOTPATH, NAMESPACES_SEARCH } from './names';
+import { initAppPath } from '@portal/modules/apps-management/pages/app-details/api';
 
 export interface NameSpace {
   id: string;
@@ -90,11 +91,17 @@ export function useUpdateNameSpace(
 type QueryListInput = string;
 type QueryListResponse = CreateResponse;
 export function useQueryNameSpaceList(
-  path: QueryListInput, options?: UseQueryOptions<QueryListResponse, Error>,
-): UseQueryResult<QueryListResponse, Error> {
-  return useQuery<QueryListResponse, Error>(
+  path: QueryListInput, appID: string, options?: UseQueryOptions<QueryListResponse | void, Error>,
+): UseQueryResult<QueryListResponse | void, Error> {
+  return useQuery<QueryListResponse | void, Error>(
     [NAMESPACES, path],
-    () => getNameSpaceList(path),
+    () => {
+      try {
+        return getNameSpaceList(path);
+      } catch (error) {
+        return initAppPath(appID);
+      }
+    },
     options,
   );
 }

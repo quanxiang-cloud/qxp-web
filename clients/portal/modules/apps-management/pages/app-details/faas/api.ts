@@ -14,24 +14,16 @@ export function checkInGroup(data: { group: string }): Promise<{ isMember: boole
   return httpClient('/api/v1/midfielder/check/member', data);
 }
 
-export function hasCoder(): Promise<{ hasCoder: boolean }> {
-  return httpClient('/api/v1/midfielder/check/coder');
-}
-
 export function createGroup(data: { group: string, appID: string }): Promise<{ id: string }> {
   return httpClient('/api/v1/midfielder/group', data);
 }
 
-export function createDeveloper(data: { email: string }): Promise<void> {
+export function createDeveloper(data: { email: string, publicKey: string }): Promise<void> {
   return httpClient('/api/v1/midfielder/user', data);
 }
 
 export function addToGroup(groupID: string, data: { memberID: string }): Promise<void> {
   return httpClient(`/api/v1/midfielder/group/${groupID}/addmember`, data);
-}
-
-export function creatCoder(): Promise<void> {
-  return httpClient('/api/v1/midfielder/user/coder');
 }
 
 export function fetchFuncList(
@@ -170,4 +162,8 @@ type SubscribeParams = {
 
 export function wsSubscribe(params: SubscribeParams): Promise<TaskForm> {
   return httpClient('/api/v1/midfielder/cm/subscribe', params);
+}
+
+export function getGitLabDomain(): Promise<{ domain: string }> {
+  return httpClient('/api/v1/midfielder/gitlab/domain');
 }

@@ -7,7 +7,7 @@ import {
   FormButtonGroup,
   createFormActions,
 } from '@formily/antd';
-import { tap, skip } from 'rxjs/operators';
+import { tap, skip, filter } from 'rxjs/operators';
 import { Input, Switch, Select, Radio } from '@formily/antd-components';
 
 import Modal from '@c/modal';
@@ -31,7 +31,7 @@ function Rules({
   onClose, onSubmit, defaultValue, currentFormFields, sourceTableFields,
 }: Props): JSX.Element {
   const actions = createFormActions();
-  const { setFieldState } = actions;
+  const { setFieldState, getFieldValue } = actions;
 
   useEffect(() => {
     setFieldState('rules.*.dataTarget', ({ value, props }) => {
@@ -46,16 +46,16 @@ function Rules({
     });
   }, []);
 
-  function formatFieldInputAndOption(filterType: string): LabelValue[] {
-    return currentFormFields.filter(({ type }) =>{
-      return type === filterType;
+  function formatFieldInputAndOption(filterComponentName: string): LabelValue[] {
+    return currentFormFields.filter(({ componentName }) =>{
+      return componentName === filterComponentName;
     }).map(({ fieldName, title }: SchemaFieldItem) => {
       return { label: title as string, value: fieldName };
     });
   }
 
   function initDataTargetEnum({ value, name }: IFieldState): void {
-    const sourceType = sourceTableFields.find(({ fieldName }) => fieldName === value)?.type;
+    const sourceType = sourceTableFields.find(({ fieldName }) => fieldName === value)?.componentName;
     const targetPath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.dataTarget`);
     setFieldState(targetPath, (state) => {
       state.props.enum = formatFieldInputAndOption(sourceType || '');
@@ -64,12 +64,19 @@ function Rules({
 
   function formEffect(): void {
     onFieldValueChange$('rules.*.dataSource').pipe(
+      filter(({ value }) => !!value),
       tap(initDataTargetEnum),
-      skip(defaultValue?.rules?.length),
-    ).subscribe(({ name }) => {
+      skip(defaultValue?.rules?.length ?? 0),
+    ).subscribe(({ name, value }) => {
       const targetPath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.dataTarget`);
+      const targetCurrentValue = getFieldValue(targetPath);
+      const sourceType = sourceTableFields.find(({ fieldName }) => fieldName === value)?.componentName;
+      const targeType = currentFormFields.find(
+        ({ fieldName }) => fieldName === targetCurrentValue,
+      )?.componentName;
+      const shouldReset = sourceType !== targeType;
 
-      setFieldState(targetPath, (state) => {
+      shouldReset && setFieldState(targetPath, (state) => {
         state.value = undefined;
       });
     });

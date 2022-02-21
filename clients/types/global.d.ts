@@ -52,3 +52,9 @@ interface Pagination {
 }
 
 type ErrorWithData<T> = Error & T;
+
+type OSSConfig = {
+  private: string;
+  readable: string;
+  domain: string;
+}

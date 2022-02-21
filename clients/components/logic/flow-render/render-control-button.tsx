@@ -3,9 +3,9 @@ import cc from 'classcat';
 
 export type Props = HTMLAttributes<HTMLDivElement>
 
-export default function ControlButton({ children, className, onClick }: Props): JSX.Element {
+export default function ControlButton({ children, className, ...props }: Props): JSX.Element {
   return (
-    <div className={cc(['react-flow__controls-button', className])} onClick={onClick}>
+    <div {...props} className={cc(['react-flow__controls-button', className])}>
       {children}
     </div>
   );

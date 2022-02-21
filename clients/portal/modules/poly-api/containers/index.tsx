@@ -12,23 +12,25 @@ import { useQueryPolyInfo } from '../effects/api/poly';
 import { parsePolySourceFromApi } from '../utils/build';
 import store$ from '../store';
 import { POLY_DESIGN_CONFIG } from '../constants';
+import nodeTypes from '../nodes';
 import { isSomeActionShow } from '../utils';
 import useCloseNodeAction from '../effects/hooks/use-close-node-action';
 
 function PolyDetails(): JSX.Element {
   const { polyFullPath } = useParams<POLY_API.PolyParams>();
   const elements = useObservable<POLY_API.Element[]>(store$.nodes$, []);
-  const { data, isLoading } = useQueryPolyInfo({
-    path: polyFullPath,
-  }, { enabled: !!polyFullPath, cacheTime: -1 });
+  const { data, isLoading } = useQueryPolyInfo(
+    { path: polyFullPath },
+    { enabled: !!polyFullPath, cacheTime: -1 },
+  );
 
   useEffect(() => {
-    store$.reset();
-  }, []);
-
-  useEffect(() => {
-    data && parsePolySourceFromApi(data);
-  }, [data]);
+    if (isLoading || !data) {
+      store$.nodes$.reset();
+      return;
+    }
+    parsePolySourceFromApi(data);
+  }, [data, isLoading]);
 
   useCloseNodeAction();
 
@@ -57,7 +59,7 @@ function PolyDetails(): JSX.Element {
         <FlowRender
           elements={elements}
           siblings={siblings}
-          nodeTypes={POLY_DESIGN_CONFIG.NODE_TYPES}
+          nodeTypes={nodeTypes}
           layoutType='elk'
           direction="right"
           onPaneClick={handleCanvasClick}

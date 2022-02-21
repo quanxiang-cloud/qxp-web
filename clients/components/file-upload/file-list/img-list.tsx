@@ -1,7 +1,7 @@
 import React from 'react';
 import cs from 'classnames';
+
 import Icon from '@c/icon';
-import toast from '@lib/toast';
 
 import Thumbnail from './thumbnail';
 import { FILE_LIST_ICON, THUMBNAIL_SIZE } from '../constants';
@@ -10,6 +10,7 @@ type Props = {
   files: QXPUploadFileTask[];
   className?: string;
   canDownload?: boolean;
+  fileBucket: string;
   style?: React.CSSProperties;
   handleDownload?: (file: QXPUploadFileTask) => void;
   deleteFileItem?: (file: QXPUploadFileTask) => void;
@@ -20,6 +21,7 @@ export function ImgList({
   files,
   style,
   className,
+  fileBucket,
   canDownload = true,
   handleDownload,
   deleteFileItem,
@@ -34,8 +36,8 @@ export function ImgList({
             key={uid}
             style={style}
             className={cs(
-              'w-56 h-56 relative flex justify-center items-center rounded-4 mr-4 mb-4',
-              'border-1 transition-all duration-300 hover:border-blue-600 qxp-img-item',
+              'w-64 h-64 relative flex justify-center items-center rounded-4 overflow-hidden',
+              'border-1 transition-all duration-300 hover:border-blue-600 qxp-img-item flex-shrink-0',
               {
                 'border-blue-600 border-dashed': state === 'uploading',
                 'border-red-600 border-solid text-red-600 ': state === 'failed',
@@ -57,17 +59,15 @@ export function ImgList({
                 (state === 'success' || !state) && (
                   <>
                     <Thumbnail
-                      imgPath={`${file.uid?.split('/')[0]}/${file.uid?.split('/')[1]}`}
-                      imgName={file.name}
+                      imgPath={`${fileBucket}/${uid}`}
+                      imgName={name}
                       size={THUMBNAIL_SIZE}
-                      onError={(error) => {
-                        toast.error(error.message);
-                      }} />
+                    />
                     <div
                       className={cs(
-                        'w-52 h-52 absolute top-1 left-1 transition-opacity duration-300',
+                        'w-full h-full absolute top-0 left-0 transition-opacity duration-300',
                         'opacity-0 hover:opacity-100 text-white text-12',
-                        'flex justify-center items-center z-10 bg-gray-900 qxp-file-img-opt',
+                        'flex justify-center items-center bg-gray-900 qxp-file-img-opt',
                       )}
                     >
                       {

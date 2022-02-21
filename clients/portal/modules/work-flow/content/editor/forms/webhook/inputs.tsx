@@ -78,7 +78,7 @@ function Inputs({ value, onChange, values, error }: Props): JSX.Element | null {
 
   const isRequest = propEq('type', 'request');
   const isSend = propEq('type', 'send');
-  const getInputsConfig = cond([
+  const getInputsConfig = cond<Record<string, any>[], any>([
     [(val) => and(isRequest(val), !!customRules), always(apiParamsConfig)],
     [(val) => and(isSend(val), !!customRules), always(send)],
     [T, always(() => <></>)],
@@ -94,7 +94,7 @@ function Inputs({ value, onChange, values, error }: Props): JSX.Element | null {
   }
 
   return (
-    <div className="grid items-stretch webhook-request-inputs">
+    <div className="webhook-request-inputs">
       <InputsConfig />
       <PathTreeWithOperates
         currentFormulaEditorRef={formulaEditorRef}

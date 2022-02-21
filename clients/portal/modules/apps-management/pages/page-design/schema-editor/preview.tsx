@@ -14,12 +14,13 @@ type Props = {
 }
 
 function Preview({ appID, pageID, previewSchema }: Props): JSX.Element {
-  const schemaKey = getSchemaKey(appID, pageID, true);
+  const schemaKeys = getSchemaKey(appID, pageID, true);
   const [savingDraft, setSavingDraft] = useState(true);
 
   useEffect(() => {
-    const config = { key: schemaKey, version: '1.0.0', value: JSON.stringify(previewSchema) };
-    setBatchGlobalConfig([config]).then(() => {
+    setBatchGlobalConfig(schemaKeys.map((schemaKey) => ({
+      key: schemaKey, version: '1.0.0', value: JSON.stringify(previewSchema),
+    }))).then(() => {
       setSavingDraft(false);
     }).catch((err) => {
       toast.error(err);
@@ -34,7 +35,7 @@ function Preview({ appID, pageID, previewSchema }: Props): JSX.Element {
 
   return (
     <PageSchemaRender
-      schemaKey={schemaKey}
+      schemaKeys={schemaKeys}
       version="1.0.0"
     />
   );
