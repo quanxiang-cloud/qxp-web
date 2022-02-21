@@ -74,7 +74,7 @@ const { onFieldValueChange$ } = FormEffectHooks;
 const actions = createFormActions();
 
 function NotAvailable(): JSX.Element {
-  const [modalVisible, setVisible] = useState(true);
+  const [modalVisible, setVisible] = useState(false);
   const { hasGroup, initLoading, initErr } = store;
 
   const form = useForm({
