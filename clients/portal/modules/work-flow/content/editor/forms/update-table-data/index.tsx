@@ -1,6 +1,6 @@
 import React, { useContext, useRef, useState } from 'react';
 import { useQuery } from 'react-query';
-import { every } from 'lodash';
+import { every, isEmpty } from 'lodash';
 import { useUpdateEffect } from 'react-use';
 
 import Select from '@c/select';
@@ -85,10 +85,13 @@ export default function UpdateTableData({
     const { formQueryRef, ..._filterRule } = filterRule || {};
     Object.assign(value, {
       // if no rule conditions, ignore filter rules
-      filterRule: _filterRule?.conditions?.length ? _filterRule : undefined,
+      filterRule: isEmpty(_filterRule) ? { conditions: [] } : _filterRule,
       updateRule,
       formQueryRef,
     });
+    if (formType === 'work-form') {
+      Object.assign(value, { silent: false });
+    }
     onSubmit(value);
   };
 

@@ -13,11 +13,14 @@ const advancedCompTypes = [
 ];
 export const excludeComps = ['subtable'];
 
+export const complexFieldTypes = ['subtable', 'associatedrecords', 'associateddata'];
+
 type Options = {
   noSystem?: boolean;
   matchTypeFn?: (...args: any[]) => boolean;
   excludeComps?: string[],
   sort?: boolean, // sort field by type
+  mergeNormal?: boolean; // merge all normal components
   [key: string]: any,
 }
 
@@ -46,6 +49,14 @@ export const getSchemaFields = (
       if (isAdvancedField(f2.type, f2.componentName)) return -1;
       return 0;
     });
+  }
+
+  if (options.mergeNormal) {
+    const hasNormal = fields.some(({ componentName })=> !complexFieldTypes.includes(componentName.toLowerCase()));
+    const groups = fields
+      .filter(({ componentName }) => complexFieldTypes.includes(componentName.toLowerCase()))
+      .map(({ title, id })=> ({ label: title as string, value: id }));
+    return hasNormal ? [{ label: '普通组件', value: 'normal' }].concat(groups) : groups;
   }
 
   return fields.map((schema) => {

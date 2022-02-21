@@ -1,12 +1,12 @@
 import React, { useContext, useState, useMemo } from 'react';
 import { useQuery } from 'react-query';
-import { get } from 'lodash';
+import { get, isEmpty } from 'lodash';
 
 import { FormRenderer } from '@c/form-builder';
 import Select from '@c/select';
 import IconBtn from '@c/icon-btn';
 import Button from '@c/button';
-import { getSchemaFields, isFieldTypeMatch } from '../../utils';
+import { getSchemaFields, isFieldTypeMatch, isAdvancedField } from '../../utils';
 import FlowSourceTableContext from '@flow/content/editor/forms/flow-source-table';
 import FlowContext from '@flow/flow-context';
 import { getFlowVariables, getFormFieldSchema } from '@flow/content/editor/forms/api';
@@ -46,9 +46,12 @@ function RuleItem(props: Props): JSX.Element {
   ], ({ queryKey, meta }) => {
     const selectField = targetSchemaMap[data.selectField || ''];
     const compName = selectField?.componentName;
-    // if(compName === 'subtable'){
-    //
-    // }
+    if (compName === 'subtable') {
+      const { tableID, appID, subordination } = selectField['x-component-props'] || {};
+      if (subordination === 'foreign_table') {
+        return getFormFieldSchema({ queryKey: ['', tableID, appID], meta });
+      }
+    }
     if (compName === 'associateddata') {
       const { appID, associationTableID } = get(selectField, 'x-component-props', {}) as any;
       return getFormFieldSchema({ queryKey: ['', associationTableID, appID], meta });
@@ -80,8 +83,15 @@ function RuleItem(props: Props): JSX.Element {
         const compName = get(selectField, 'componentName');
 
         if (compName === 'subtable') {
-          const subItem = get(selectField, `items.properties.${item.fieldName}`);
-          return subItem && isFieldTypeMatch(subItem.type, subItem['x-component'], schema);
+          // check foreign table and sub table from blank
+          const sub = get(selectField, 'x-component-props.subordination');
+          const subItem = sub === 'foreign_table' ?
+            get(relatedTableSchema, `properties.${item.fieldName}`) :
+            get(selectField, `items.properties.${item.fieldName}`);
+
+          return subItem &&
+            !isAdvancedField(subItem.type, subItem['x-component']) &&
+            isFieldTypeMatch(subItem.type, subItem['x-component'], schema);
         }
         if (compName === 'associatedrecords') {
           const assocItem = get(selectField, `x-component-props.associatedTable.properties.${item.fieldName}`);
@@ -122,19 +132,34 @@ function RuleItem(props: Props): JSX.Element {
 
     if (rule === 'fixedValue') {
       const { fieldName } = item;
-      const fieldProps = get(targetSchemaMap, fieldName) || {};
+      let fieldProps = get(targetSchemaMap, fieldName) || {};
+      const selectField = targetSchemaMap[data.selectField || ''];
       const defaultVal = (data.updateRule || []).find(
         ({ fieldName }) => fieldName === item.fieldName,
       )?.valueOf;
-      if (!fieldProps['x-component']) {
-        return null;
+
+      if (isEmpty(fieldProps)) {
+        if (selectField) {
+          const { componentName } = selectField;
+          if (componentName === 'subtable') {
+            const subItem = get(selectField, 'x-component-props.subordination') === 'foreign_table' ?
+              get(relatedTableSchema, `properties.${fieldName}`) :
+              get(selectField, `items.properties.${fieldName}`);
+
+            fieldProps = subItem || {};
+          }
+        } else {
+          return null;
+        }
       }
+
       const fieldSchema = {
         type: 'object',
         properties: {
           [fieldName]: { ...fieldProps, title: '', default: defaultVal },
         },
       };
+
       return (
         <FormRenderer
           schema={fieldSchema}
@@ -191,8 +216,14 @@ function RuleItem(props: Props): JSX.Element {
         }];
       }
       if (componentName === 'subtable') {
-        return Object.entries(get(selectField, 'items.properties', {}))
-          .filter(([, conf]: [string, any]) => !get(conf, 'x-internal.isSystem'))
+        const sub = get(selectField, 'x-component-props.subordination');
+        const subItems = sub === 'foreign_table' ? get(relatedTableSchema, 'properties') :
+          get(selectField, 'items.properties');
+
+        return Object.entries(subItems || {})
+          .filter(([, conf]: [string, any]) => {
+            return !get(conf, 'x-internal.isSystem') && !isAdvancedField(conf.type, conf['x-component']);
+          })
           .map(([field_id, conf]: [string, any]) => {
             return {
               label: conf.title || field_id,

@@ -1,11 +1,11 @@
-import React, { useContext, useEffect, useMemo } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { useQuery } from 'react-query';
 
 import Select from '@c/select';
 import FlowCtx from '@flow/flow-context';
 import { getFormFieldSchema } from '@flow/content/editor/forms/api';
 import { schemaToMap } from '@lib/schema-convert';
-import { getSchemaFields, isAdvancedField } from '../utils';
+import { getSchemaFields } from '../utils';
 
 interface Props {
   tableId: string;
@@ -20,23 +20,17 @@ function SelectTargetFields({ tableId, fieldId, onChangeField }: Props): JSX.Ele
     enabled: !!appID && !!tableId,
   });
   const targetSchemaMap = useMemo(() => schemaToMap(targetSchema), [targetSchema]);
-  const hasComplexType = Object.values(targetSchemaMap).some((field)=> isAdvancedField(field.type, field.componentName));
   const fields = useMemo(()=> {
-    // primitive type before complex type
+    // merge all normal fields into one group before complex fields
     return getSchemaFields(Object.values(targetSchemaMap), {
       noSystem: true,
       excludeComps: ['serial'],
       sort: true,
+      mergeNormal: true,
     });
   }, [targetSchema]);
 
-  useEffect(()=> {
-    if (!hasComplexType) {
-      onChangeField('');
-    }
-  }, [hasComplexType]);
-
-  if (!tableId || !hasComplexType) {
+  if (!tableId) {
     return null;
   }
 
