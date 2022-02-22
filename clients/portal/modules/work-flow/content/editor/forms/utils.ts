@@ -13,10 +13,14 @@ const advancedCompTypes = [
 ];
 export const excludeComps = ['subtable'];
 
+export const complexFieldTypes = ['subtable', 'associatedrecords', 'associateddata'];
+
 type Options = {
   noSystem?: boolean;
   matchTypeFn?: (...args: any[]) => boolean;
   excludeComps?: string[],
+  sort?: boolean, // sort field by type
+  mergeNormal?: boolean; // merge all normal components
   [key: string]: any,
 }
 
@@ -24,7 +28,7 @@ export const getSchemaFields = (
   schemaFields: SchemaFieldItem[] = [],
   options: Options = {},
 ): LabelValue[] => {
-  return schemaFields.filter((schema) => {
+  const fields = schemaFields.filter((schema) => {
     const compName = schema.componentName;
     const isSystem = !!get(schema, 'x-internal.isSystem');
     if (options.noSystem && isSystem) {
@@ -37,16 +41,34 @@ export const getSchemaFields = (
       return options.matchTypeFn.call(null, schema);
     }
     return !!compName;
-  }).map((schema) => {
+  });
+
+  if (options.sort) {
+    fields.sort((f1, f2) => {
+      if (isAdvancedField(f1.type, f1.componentName)) return 1;
+      if (isAdvancedField(f2.type, f2.componentName)) return -1;
+      return 0;
+    });
+  }
+
+  if (options.mergeNormal) {
+    const hasNormal = fields.some(({ componentName })=> !complexFieldTypes.includes(componentName.toLowerCase()));
+    const groups = fields
+      .filter(({ componentName }) => complexFieldTypes.includes(componentName.toLowerCase()))
+      .map(({ title, id })=> ({ label: title as string, value: id }));
+    return hasNormal ? [{ label: '普通组件', value: 'normal' }].concat(groups) : groups;
+  }
+
+  return fields.map((schema) => {
     return { label: schema.title as string, value: schema.id };
   });
 };
 
-function isAdvancedField(type: string, xCompName?: string): boolean {
+export function isAdvancedField(type?: string, xCompName?: string): boolean {
   if (xCompName && advancedCompTypes.map((t)=> t.toLowerCase()).includes(xCompName.toLowerCase())) {
     return true;
   }
-  return !primitiveTypes.includes(type);
+  return !primitiveTypes.includes(type || '');
 }
 
 export function isFieldTypeMatch(
@@ -56,7 +78,7 @@ export function isFieldTypeMatch(
 ): boolean {
   if (isAdvancedField(srcFieldType, srcFieldCompName)) {
     // advanced field should be the same component type
-    return targetFieldSchema['x-component']?.toLowerCase() === srcFieldCompName.toLowerCase();
+    return targetFieldSchema['x-component']?.toLowerCase() === srcFieldCompName?.toLowerCase();
   }
   // primitive type should be equal
   return targetFieldSchema.type === srcFieldType;

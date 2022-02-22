@@ -231,6 +231,7 @@ export interface TableDataCreateData {
 export interface TableDataUpdateData {
   targetTableId: string;
   silent: boolean;
+  selectField?: string;
   filterRule?: {
     tag: 'and' | 'or';
     conditions: Array<{

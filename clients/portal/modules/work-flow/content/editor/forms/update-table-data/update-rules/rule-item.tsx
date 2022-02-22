@@ -1,15 +1,15 @@
 import React, { useContext, useState, useMemo } from 'react';
 import { useQuery } from 'react-query';
-import { get } from 'lodash';
+import { get, isEmpty } from 'lodash';
 
 import { FormRenderer } from '@c/form-builder';
 import Select from '@c/select';
 import IconBtn from '@c/icon-btn';
 import Button from '@c/button';
-import { getSchemaFields, isFieldTypeMatch } from '../../utils';
+import { getSchemaFields, isFieldTypeMatch, isAdvancedField } from '../../utils';
 import FlowSourceTableContext from '@flow/content/editor/forms/flow-source-table';
 import FlowContext from '@flow/flow-context';
-import { getFlowVariables } from '@flow/content/editor/forms/api';
+import { getFlowVariables, getFormFieldSchema } from '@flow/content/editor/forms/api';
 import { schemaToMap } from '@lib/schema-convert';
 import ProcessVariableSelector from '@flow/content/editor/forms/variable-selector';
 
@@ -35,12 +35,31 @@ function RuleItem(props: Props): JSX.Element {
   const [item, setItem] = useState<Rule>(props.rule);
   const { tableSchema: curTableSchema } = useContext(FlowSourceTableContext);
   const { data } = useContext(Context);
-  const { flowID } = useContext(FlowContext);
+  const { flowID, appID } = useContext(FlowContext);
   const [formulaModalOpen, setFormulaModalOpen] = useState(false);
   const { data: variables, isLoading: loadingVariables } = useQuery(['FETCH_PROCESS_VARIABLES'], () => {
     return getFlowVariables(flowID);
   });
   const targetSchemaMap = useMemo(() => schemaToMap(props.targetSchema), [props.targetSchema]);
+  const { data: relatedTableSchema, isLoading: loadingRelatedTable } = useQuery([
+    'GET_TABLE_SCHEMA', data.selectField, appID,
+  ], ({ queryKey, meta }) => {
+    const selectField = targetSchemaMap[data.selectField || ''];
+    const compName = selectField?.componentName;
+    if (compName === 'subtable') {
+      const { tableID, appID, subordination } = selectField['x-component-props'] || {};
+      if (subordination === 'foreign_table') {
+        return getFormFieldSchema({ queryKey: ['', tableID, appID], meta });
+      }
+    }
+    if (compName === 'associateddata') {
+      const { appID, associationTableID } = get(selectField, 'x-component-props', {}) as any;
+      return getFormFieldSchema({ queryKey: ['', associationTableID, appID], meta });
+    }
+    // if(compName === 'associatedrecords'){
+    //
+    // }
+  }, { enabled: !!data.selectField && !!appID });
 
   const onChange = (val: Partial<Rule> = {}): void => {
     setItem((v) => ({ ...v, ...val }));
@@ -55,20 +74,55 @@ function RuleItem(props: Props): JSX.Element {
     onChange({ valueOf: rule, formulaFields });
   };
 
+  function getCurFieldList(): LabelValue[] {
+    return getSchemaFields(curTableSchema, {
+      noSystem: true,
+      matchTypeFn: (schema: ISchema) => {
+        const field = targetSchemaMap[item.fieldName];
+        const selectField = targetSchemaMap[data.selectField || ''];
+        const compName = get(selectField, 'componentName');
+
+        if (compName === 'subtable') {
+          // check foreign table and sub table from blank
+          const sub = get(selectField, 'x-component-props.subordination');
+          const subItem = sub === 'foreign_table' ?
+            get(relatedTableSchema, `properties.${item.fieldName}`) :
+            get(selectField, `items.properties.${item.fieldName}`);
+
+          return subItem &&
+            !isAdvancedField(subItem.type, subItem['x-component']) &&
+            isFieldTypeMatch(subItem.type, subItem['x-component'], schema);
+        }
+        if (compName === 'associatedrecords') {
+          const assocItem = get(selectField, `x-component-props.associatedTable.properties.${item.fieldName}`);
+          return assocItem && isFieldTypeMatch(assocItem.type, assocItem['x-component'], schema);
+        }
+        if (compName === 'associateddata') {
+          const assocItem = get(relatedTableSchema, `properties.${item.fieldName}`);
+          return assocItem && isFieldTypeMatch(assocItem.type, assocItem['x-component'], schema);
+        }
+
+        if (!field) {
+          return false;
+        }
+        return isFieldTypeMatch(field.type || 'string', field.componentName, schema);
+      },
+    });
+  }
+
   const renderValueBox = (): JSX.Element | null | undefined => {
     const rule = item.valueFrom;
+    if (loadingRelatedTable) {
+      return (
+        <div>Loading related table...</div>
+      );
+    }
     if (rule === 'currentFormValue') {
       return (
         <>
           <span className="text-caption ml-5">当前字段:</span>
           <Select
-            options={getSchemaFields(curTableSchema, { noSystem: true, matchTypeFn: (schema: ISchema)=> {
-              const field = targetSchemaMap[item.fieldName];
-              if (!field) {
-                return false;
-              }
-              return isFieldTypeMatch(field.type || 'string', field.componentName, schema);
-            } })}
+            options={getCurFieldList()}
             value={item.valueOf as string}
             onChange={(val) => onChange({ valueOf: val })}
           />
@@ -78,19 +132,34 @@ function RuleItem(props: Props): JSX.Element {
 
     if (rule === 'fixedValue') {
       const { fieldName } = item;
-      const fieldProps = get(targetSchemaMap, fieldName) || {};
+      let fieldProps = get(targetSchemaMap, fieldName) || {};
+      const selectField = targetSchemaMap[data.selectField || ''];
       const defaultVal = (data.updateRule || []).find(
         ({ fieldName }) => fieldName === item.fieldName,
       )?.valueOf;
-      if (!fieldProps['x-component']) {
-        return null;
+
+      if (isEmpty(fieldProps)) {
+        if (selectField) {
+          const { componentName } = selectField;
+          if (componentName === 'subtable') {
+            const subItem = get(selectField, 'x-component-props.subordination') === 'foreign_table' ?
+              get(relatedTableSchema, `properties.${fieldName}`) :
+              get(selectField, `items.properties.${fieldName}`);
+
+            fieldProps = subItem || {};
+          }
+        } else {
+          return null;
+        }
       }
+
       const fieldSchema = {
         type: 'object',
         properties: {
           [fieldName]: { ...fieldProps, title: '', default: defaultVal },
         },
       };
+
       return (
         <FormRenderer
           schema={fieldSchema}
@@ -123,17 +192,62 @@ function RuleItem(props: Props): JSX.Element {
     }
   };
 
+  function getTargetFieldList(): LabelValue[] {
+    const selectField = targetSchemaMap[data.selectField || ''];
+    if (selectField) {
+      const { componentName, fieldName } = selectField;
+      if (componentName === 'associatedrecords') {
+        return Object.entries(get(selectField, 'x-component-props.associatedTable.properties', {}))
+          .filter(([, conf]: [string, any]) => !get(conf, 'x-internal.isSystem'))
+          .map(([field_id, conf]: [string, any]) => {
+            return {
+              label: conf.title || field_id,
+              value: field_id,
+            };
+          });
+      }
+      if (componentName === 'associateddata') {
+        const { fieldName } = get(selectField, 'x-component-props', {}) as SchemaFieldItem;
+        const relatedField = get(relatedTableSchema, `properties.${fieldName}`);
+
+        return [{
+          label: relatedField.title as string,
+          value: fieldName,
+        }];
+      }
+      if (componentName === 'subtable') {
+        const sub = get(selectField, 'x-component-props.subordination');
+        const subItems = sub === 'foreign_table' ? get(relatedTableSchema, 'properties') :
+          get(selectField, 'items.properties');
+
+        return Object.entries(subItems || {})
+          .filter(([, conf]: [string, any]) => {
+            return !get(conf, 'x-internal.isSystem') && !isAdvancedField(conf.type, conf['x-component']);
+          })
+          .map(([field_id, conf]: [string, any]) => {
+            return {
+              label: conf.title || field_id,
+              value: field_id,
+            };
+          });
+      }
+    }
+    return getSchemaFields(Object.values(targetSchemaMap), {
+      noSystem: true,
+      excludeComps: ['serial', 'associatedrecords', 'associateddata', 'subtable'],
+    });
+  }
+
   return (
     <div className="flex items-center mb-10">
       <span className="text-caption">目标字段:</span>
-      <Select
-        options={getSchemaFields(Object.values(targetSchemaMap), {
-          noSystem: true,
-          excludeComps: ['associatedrecords', 'serial', 'aggregationrecords', 'subtable'],
-        })}
-        value={item.fieldName}
-        onChange={(fieldName: string) => onChange({ fieldName } as Rule)}
-      />
+      {loadingRelatedTable ? <div>Loading related table fields..</div> : (
+        <Select
+          options={getTargetFieldList()}
+          value={item.fieldName}
+          onChange={(fieldName: string) => onChange({ fieldName } as Rule)}
+        />
+      )}
       {item.fieldName && (
         <>
           <div className="mx-5">=</div>
