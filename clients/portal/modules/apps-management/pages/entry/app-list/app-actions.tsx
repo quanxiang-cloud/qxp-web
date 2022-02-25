@@ -52,7 +52,7 @@ function AppActions({ openModal, appInfo }: Props): JSX.Element {
     },
     {
       key: 'delete',
-      disabled: !hasDeleteAccess,
+      disabled: appInfo.useStatus === -2 || !hasDeleteAccess,
       label: (
         <div className="flex items-center text-red-600">
           <Icon name="restore_from_trash" className="mr-4" />
