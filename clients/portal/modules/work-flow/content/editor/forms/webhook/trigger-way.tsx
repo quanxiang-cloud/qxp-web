@@ -21,7 +21,7 @@ export default function TriggerWay({ value, onChange, setFormValue }: Props): JS
   return (
     <div className="mb-8">
       <p className="mt-16 mb-8 text-caption-no-color-weight text-gray-600">触发方式</p>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-start gap-100">
         <Checkbox
           rounded
           label="获取数据"
