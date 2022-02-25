@@ -1,8 +1,10 @@
 import React, { forwardRef, ForwardedRef, useEffect, useMemo, useImperativeHandle } from 'react';
-import { useForm, UnpackNestedValue } from 'react-hook-form';
+import { useForm, UnpackNestedValue, FieldErrors } from 'react-hook-form';
 import { pick, equals, groupBy } from 'ramda';
 import { usePrevious } from 'react-use';
 import { nanoid } from 'nanoid';
+
+import toast from '@lib/toast';
 
 import Fields from './fields';
 import type { SchemaFormSchema, OnSubmit, Field } from './type';
@@ -28,7 +30,7 @@ function SchemaForm<T extends Record<string, any>>({
   const {
     register,
     control,
-    formState: { errors },
+    formState,
     watch,
     reset,
     setValue,
@@ -43,6 +45,7 @@ function SchemaForm<T extends Record<string, any>>({
       };
     });
   }, [schema.fields]);
+  const { errors } = formState;
 
   // controlled mode
   useEffect(() => {
@@ -80,6 +83,10 @@ function SchemaForm<T extends Record<string, any>>({
         onSubmit(pick(keepFieldNames, getValues()) as UnpackNestedValue<any>);
       });
       handleOnSubmit();
+      setTimeout(() => {
+        const error = Object.values(formState.errors as FieldErrors)[0]?.message;
+        error && toast.error(error);
+      });
     },
   }));
 

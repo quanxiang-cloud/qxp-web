@@ -127,15 +127,15 @@ export function isUrl(value: string): boolean {
   return /^(http|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-.,@?^=%&:/~+#]*[\w\-@?^=%&/~+#])?$/.test(value);
 }
 
-export function inputValidator(value: Input[]): boolean {
-  let isValid = true;
+export function inputValidator(value: Input[]): boolean | string {
+  let isValid: string | boolean = true;
   function loopValue(v: Input[]): void {
     v.forEach((v) => {
       if (isArray(v)) {
         loopValue(v);
       }
       if (v.required && !v.data) {
-        isValid = false;
+        isValid = `请输入${v.name}配置`;
       }
     });
   }
