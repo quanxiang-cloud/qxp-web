@@ -6,10 +6,10 @@ import React, {
 import { pipe, mergeRight, filter, map, cond, propEq, always, T, and, or, when } from 'ramda';
 import { get } from 'lodash';
 
-import Tree from '@c/headless-tree';
 import type { TreeNode } from '@c/headless-tree/types';
 import Loading from '@c/loading';
 
+import Tree from './tree';
 import Store from './store';
 import NodeRender from './tree-node';
 import type { TreeNodeDataType, Props, State, CurrentNode } from './type';

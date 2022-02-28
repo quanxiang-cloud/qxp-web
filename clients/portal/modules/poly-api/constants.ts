@@ -1,7 +1,5 @@
 import { ArrowHeadType } from 'react-flow-renderer';
 
-import nodes from './nodes';
-
 export const PLACEHOLDER_OPTION = [
   {
     label: '暂无api',
@@ -18,7 +16,6 @@ export const POLY_DESIGN_CONFIG = {
   BACKGROUND_COLOR: 'transparent',
   ARROW_HEAD_TYPE: ArrowHeadType.ArrowClosed,
   EDGE_TYPE: 'smart',
-  NODE_TYPES: nodes,
 };
 
 export const NODE_INIT_CONFIG_PARAMS = {

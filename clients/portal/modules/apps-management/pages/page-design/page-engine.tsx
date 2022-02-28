@@ -5,6 +5,7 @@ import { observer } from 'mobx-react';
 import Icon from '@c/icon';
 import { getQuery } from '@lib/utils';
 import toast from '@lib/toast';
+import FileUploader from '@c/file-upload';
 import ApiSelector from '@polyApi/nodes/forms/request-config/api-selector';
 import ApiSpec from '../app-details/api-proxy/add-api';
 
@@ -15,20 +16,20 @@ import './index.scss';
 
 function PageDesign(): JSX.Element {
   const { designer, page } = getStore();
-  const { appID, pageId } = useParams<{appID: string; pageId: string}>();
+  const { appID, pageId } = useParams<{ appID: string; pageId: string }>();
   const { pageName } = getQuery<{ pageName: string }>();
   const history = useHistory();
   const [apiPath, setApiPath] = useState('');
 
-  useEffect(()=> {
-    getPage(appID, pageId).then((schema)=> {
+  useEffect(() => {
+    getPage(appID, pageId).then((schema) => {
       if (schema) {
         page.setSchema(JSON.parse(schema));
       }
     });
   }, []);
 
-  useEffect(()=> {
+  useEffect(() => {
     // set page title
     designer.setVdom('title', (
       <div className='inline-flex items-center text-gray-900 text-12'>
@@ -50,11 +51,45 @@ function PageDesign(): JSX.Element {
         />
       </div>
     ));
+
+    // set img upload
+    designer.setVdom('uploadImage', (
+      <div>
+        <FileUploader
+          className='px-40 form-upload'
+          uploaderDescription={<UploadDescription />}
+          isPrivate={false}
+          maxFileSize={10}
+          additionalPathPrefix='message'
+          accept={['image/gif', 'image/jpeg', 'image/jpg', 'image/png', 'image/svg']}
+          onFileSuccess={handleFileSuccess}
+        >
+          <Icon name='upload_file' />
+        </FileUploader>
+      </div>
+    ));
   }, []);
 
-  useEffect(()=> {
+  useEffect(() => {
     designer.setVdom('apiStateDetail', renderApiStateDetail());
   }, [apiPath]);
+
+  function handleFileSuccess(file: QXPUploadFileTask): void {
+    const { readable: readableBucket, domain }: OSSConfig = window.CONFIG.oss_config;
+    if (file.state === 'success' || !file.state) {
+      const url = `${window.location.protocol}//${readableBucket}.${domain}/${file.uid}`;
+      designer.setUploadImage(url);
+    }
+  }
+
+  function UploadDescription(): JSX.Element {
+    return (
+      <>
+        <div className="my-4">点击或拖拽文件到此区域</div>
+        <div className="text-gray-400">支持 20MB 以内的 csv 文件</div>
+      </>
+    );
+  }
 
   function renderApiStateDetail(): JSX.Element {
     if (!apiPath) {
@@ -71,12 +106,12 @@ function PageDesign(): JSX.Element {
   }
 
   function handleSave(page_schema: any, options?: Record<string, any>): void {
-    savePage(appID, pageId, page_schema, options).then(()=> {
+    savePage(appID, pageId, page_schema, options).then(() => {
       if (!options?.silent) {
         updatePageEngineMenuType(appID, pageId);
         toast.success('页面已保存');
       }
-    }).catch((err: Error)=> {
+    }).catch((err: Error) => {
       toast.error(err.message);
     });
   }

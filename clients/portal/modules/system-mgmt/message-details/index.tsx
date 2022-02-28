@@ -84,6 +84,7 @@ function ContentWithoutRef() {
             </div>
             <div className='mb-50' dangerouslySetInnerHTML={{ __html: msgDetail?.content as any }} />
             <FileList
+              isPrivate={false}
               files={fileList}
               canDownload={true}
             />

@@ -95,8 +95,10 @@ function EditorField({ value, onChange }: Props): JSX.Element {
           <FileUploader
             fileData={files}
             multiple
+            isPrivate={false}
             maxFileSize={5}
-            uploaderDescription="上传附件"
+            additionalPathPrefix='message'
+            uploaderDescription="上传附件(最大5MB)"
             onFileSuccess={handleFileSuccessUpload}
             onFileError={(err) => toast.error(err.message)}
             onFileDelete={deleteFiles}

@@ -1,5 +1,4 @@
 import { BehaviorSubject } from 'rxjs';
-import { omit, merge } from 'ramda';
 import { isEdge, isNode } from 'react-flow-renderer';
 
 import { savePolyApiResult } from '@polyApi/utils/build';
@@ -21,22 +20,12 @@ export class PolyCanvasStore extends BehaviorSubject<POLY_API.Element[]> {
     this.next([...this.value, element]);
   }
 
+  reset(): void {
+    this.next([]);
+  }
+
   set(elements: POLY_API.Element[], isSave = false): void {
-    const elementsMap = elements.reduce((acc: Record<string, POLY_API.Element>, element) => {
-      acc[element.id] = element;
-      return acc;
-    }, {});
-    const idToRemove: string[] = [];
-    const newValue: POLY_API.Element[] = [];
-    this.value.forEach((element) => {
-      const newElement = elementsMap[element.id];
-      if (newElement) {
-        newValue.push(merge(element, newElement));
-        idToRemove.push(element.id);
-      }
-    });
-    const newElements: POLY_API.Element[] = Object.values(omit(idToRemove, elementsMap));
-    this.next([...newValue, ...newElements]);
+    this.next(elements);
     isSave && savePolyApiResult();
   }
 

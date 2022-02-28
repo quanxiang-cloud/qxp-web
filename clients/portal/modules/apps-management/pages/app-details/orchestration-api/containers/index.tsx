@@ -35,6 +35,7 @@ function ApiNamespace(): JSX.Element | null {
   const rootPath = appRootPathData?.appPath?.slice(1) || '';
   const { data: initialData, isLoading: isNamespaceRootListLoading, error } = useQueryNameSpaceList(
     rootPath,
+    appID,
     { enabled: !!rootPath },
   );
   rootData.subCount = initialData?.list.length || 0;
@@ -46,7 +47,12 @@ function ApiNamespace(): JSX.Element | null {
   }, [isLoading]);
 
   useEffect(() => {
-    error && toast.error(error);
+    if (error) {
+      orchestrationAPIStore?.updateProperty({ isInitSuccessed: false });
+      toast.error(error);
+    } else {
+      orchestrationAPIStore?.updateProperty({ isInitSuccessed: true });
+    }
   }, [error]);
 
   if (isLoading) {

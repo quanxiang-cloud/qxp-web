@@ -100,7 +100,7 @@ class AppListStore {
       this.appList = [newApp, ...this.appList];
       this.allAppList = [newApp, ...this.allAppList];
       createPage({
-        describe: '补充说明信息。',
+        describe: undefined,
         icon: 'event_available',
         name: '示例页面',
         appID: res.id, id: '',

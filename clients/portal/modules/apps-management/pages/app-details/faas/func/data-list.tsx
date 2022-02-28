@@ -13,11 +13,12 @@ import Search from '@c/search';
 import PopConfirm from '@c/pop-confirm';
 import Pagination from '@c/pagination';
 import TableMoreFilterMenu from '@c/more-menu/table-filter';
+import { copyContent } from '@lib/utils';
 
 import store from '../store';
 import BuildModal from './build-modal';
 import StatusDisplay from '../component/status';
-import { getFuncInfo } from '../api';
+import { getFuncInfo, getGitLabDomain } from '../api';
 
 import '../index.scss';
 
@@ -25,6 +26,12 @@ const { TextArea } = Input;
 
 function DataList(): JSX.Element {
   const { setModalType, updateFuncDesc } = store;
+
+  function getDomain(name: string): void {
+    getGitLabDomain().then((res) => {
+      copyContent(`git clone ${res.domain}${store.appDetails.appSign}/${name}.git`);
+    });
+  }
 
   const COLUMNS: UnionColumn<FuncField>[] = [
     {
@@ -141,7 +148,7 @@ function DataList(): JSX.Element {
           <div className="flex gap-20">
             {info.state === 'True' && (
               <>
-                <span className="operate" onClick={() => defineFunc(info.id)}>定义</span>
+                <span className="operate" onClick={() => getDomain(info.name)}>复制clone地址</span>
                 <span className="operate" onClick={() => onClickTool(info, 'build')}>构建</span>
                 <span className="cursor-pointer text-red-600" onClick={() => onClickTool(info, 'deletefunc')}>
                   删除
@@ -164,13 +171,6 @@ function DataList(): JSX.Element {
     store.currentFunc = info;
     store.currentFuncID = info.id;
     store.modalType = type;
-  }
-
-  function defineFunc(id: string): void {
-    store.checkHasCoder().then((hasCode) => {
-      if (hasCode) return store.defineFunc(id);
-      store.creatCoder();
-    });
   }
 
   function handleInputKeydown(e: React.KeyboardEvent): void {

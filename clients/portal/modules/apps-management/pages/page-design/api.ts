@@ -1,3 +1,5 @@
+import { isEmpty } from 'lodash';
+
 import { getStore } from '@one-for-all/page-engine';
 
 import {
@@ -18,33 +20,41 @@ type Option={
   [key: string]: any
 }
 
-export function getSchemaKey(appID: string, pageID: string, isDraft: boolean): string {
+export function getSchemaKey(appID: string, pageID: string, isDraft: boolean): string[] {
   const key = `custom_page_schema:app_id:${appID}:page_id:${pageID}`;
+  const newKey = `app_id:${appID}:page_id:${pageID}:custom_page_schema`;
   if (isDraft) {
-    return `${key}:draft`;
+    return [`${key}:draft`, `${newKey.replace(':custom_page_schema', '')}:draft:custom_page_schema`];
   }
 
-  return key;
+  return [key, newKey];
 }
 
 export function savePage(app_id: string, page_id: string, page_schema: any, options?: Option): Promise<any> {
-  return setBatchGlobalConfig([{
-    key: getSchemaKey(app_id, page_id, !!options?.draft),
+  const schemaKeys = getSchemaKey(app_id, page_id, !!options?.draft);
+  return setBatchGlobalConfig(schemaKeys.map((key) => ({
+    key,
     version: PG_VERSION,
     value: typeof page_schema === 'object' ? JSON.stringify(page_schema) : page_schema,
-  }]);
+  })));
 }
 
-export function getPage(app_id: string, page_id: string, options?: Option) {
-  const queryId = getSchemaKey(app_id, page_id, !!options?.draft);
-  return getBatchGlobalConfig([{
+export function getPage(app_id: string, page_id: string, options?: Option): Promise<string | void> {
+  const [queryId, newQueryId] = getSchemaKey(app_id, page_id, !!options?.draft);
+  const result = getBatchGlobalConfig([{
     key: queryId,
     version: PG_VERSION,
-  }])
-    .then(({ result })=> {
-      return result[queryId];
-    })
-    .catch((err)=> toast.error(err.message));
+  }]);
+  const newResult = getBatchGlobalConfig([{
+    key: newQueryId,
+    version: PG_VERSION,
+  }]);
+  return Promise.all([result, newResult]).then(([{ result }, { result: newResult }]) => {
+    if (newResult && !isEmpty(newResult)) {
+      return newResult[newQueryId];
+    }
+    return result[queryId];
+  }).catch(toast.error);
 }
 
 export function getVersionKey(): string {

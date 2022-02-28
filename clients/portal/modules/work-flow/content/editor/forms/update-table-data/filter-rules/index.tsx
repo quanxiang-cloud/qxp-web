@@ -92,7 +92,7 @@ function FilterRules({ appId, tableId, defaultValue }: Props, ref: React.Ref<Ref
             />
             条件时
           </div>
-          <Button onClick={onAdd}>新增条件</Button>
+          <Button onClick={onAdd} className='mr-20'>新增条件</Button>
         </div>
         <div className="flex flex-col update-conditions">
           {conditions.map((cond, idx) =>

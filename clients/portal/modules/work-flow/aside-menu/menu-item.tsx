@@ -10,14 +10,18 @@ interface Props {
   title: string;
   onClick: () => void;
   isActive: boolean;
+  disabled?: boolean;
 }
 
-export default function AsideMenuItem({ iconName, title, text, onClick, isActive }: Props): JSX.Element {
+export default function AsideMenuItem({
+  iconName, title, text, onClick, isActive, disabled = false,
+}: Props): JSX.Element {
   return (
     <div className={cs('flex items-center py-16', {
       'bg-blue-100': isActive,
       'pl-24 pr-100': text,
       'px-24': !text,
+      'cursor-not-allowed': disabled,
     })} onClick={onClick}>
       {text ? (
         <Icon name={iconName} className={cs('mr-8 group-hover:text-blue-600', {

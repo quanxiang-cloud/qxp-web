@@ -48,7 +48,7 @@ export default function MyApps(): JSX.Element | null {
 
   return (
     <ErrorBoundary>
-      <SchemaRender schema={schema} apiSpecAdapter={apiSpecAdapter} />
+      <SchemaRender schema={schema} plugins={{ apiSpecAdapter }} />
     </ErrorBoundary>
   );
 }

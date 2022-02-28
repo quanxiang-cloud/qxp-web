@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect, useContext, useCallback, useMemo } 
 import { useQuery } from 'react-query';
 import { nanoid } from 'nanoid';
 import { isUndefined } from 'lodash';
-import { cond, propEq, and, always, T } from 'ramda';
+import { propEq, and } from 'ramda';
 
 import type { CustomRule } from '@c/formula-editor';
 import { Input } from '@flow/content/editor/type';
@@ -52,38 +52,8 @@ function Inputs({ value, onChange, values, error }: Props): JSX.Element | null {
     }
   }, [values.type]);
 
-  function apiParamsConfig(): JSX.Element {
-    return (
-      <ApiParamsConfig
-        onChange={onChange}
-        ref={formulaEditorRef}
-        value={value}
-        url={values.url}
-        customRules={customRules!}
-        validating={!isUndefined(error)}
-      />
-    );
-  }
-
-  function send(): JSX.Element {
-    return (
-      <Send
-        value={value}
-        onChange={onChange}
-        ref={formulaEditorRef}
-        customRules={customRules!}
-      />
-    );
-  }
-
   const isRequest = propEq('type', 'request');
   const isSend = propEq('type', 'send');
-  const getInputsConfig = cond([
-    [(val) => and(isRequest(val), !!customRules), always(apiParamsConfig)],
-    [(val) => and(isSend(val), !!customRules), always(send)],
-    [T, always(() => <></>)],
-  ]);
-  const InputsConfig = useMemo(() => getInputsConfig(values), [values.type, value.length, customRules]);
 
   if (isLoading) {
     return <Loading desc="加载中..." />;
@@ -93,9 +63,28 @@ function Inputs({ value, onChange, values, error }: Props): JSX.Element | null {
     return null;
   }
 
+  const hasCustomRulesAnd = and(!!customRules);
+
   return (
-    <div className="grid items-stretch webhook-request-inputs">
-      <InputsConfig />
+    <div className="webhook-request-inputs">
+      {hasCustomRulesAnd(isRequest(values)) && (
+        <ApiParamsConfig
+          onChange={onChange}
+          ref={formulaEditorRef}
+          value={value}
+          url={values.url}
+          customRules={customRules!}
+          validating={!isUndefined(error)}
+        />
+      )}
+      {hasCustomRulesAnd(isSend(values)) && (
+        <Send
+          value={value}
+          onChange={onChange}
+          ref={formulaEditorRef}
+          customRules={customRules!}
+        />
+      )}
       <PathTreeWithOperates
         currentFormulaEditorRef={formulaEditorRef}
         pathTreeValue={pathTreeValue}
