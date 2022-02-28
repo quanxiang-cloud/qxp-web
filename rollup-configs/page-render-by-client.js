@@ -61,7 +61,7 @@ const config = {
     // 'react-use',
     // /react-use\/.*/,
 
-    // 'draft-js',
+    'draft-js',
     // 'html-to-draftjs',
     // 'react-draft-wysiwyg',
     'jszip',
