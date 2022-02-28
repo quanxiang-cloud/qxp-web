@@ -12,9 +12,7 @@ import FileList from '@c/file-upload/file-list';
 
 import Container from '../container';
 
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-
-const MessageDetails = () => {
+const MessageDetails = (): JSX.Element => {
   return (
     <Container
       hideInfoCard
@@ -30,7 +28,7 @@ const MessageDetails = () => {
   );
 };
 
-function ContentWithoutRef() {
+function ContentWithoutRef(): JSX.Element {
   const param: { id: string } = useParams();
 
   const { data: msgDetail, isLoading } = useQuery(
@@ -104,12 +102,13 @@ function ContentWithoutRef() {
                 发送范围:
                 <span>
                   {receivers?.type}
-                  {receivers && receivers.map((receiver: { id: string; type: 1 | 2; name: string }) => (<Person
-                    className={`${receiver.type === 2 ? 'isDep' : 'isPerson'} `}
-                    key={receiver.id}
-                  >
-                    <span>{receiver.name}</span>
-                  </Person>))
+                  {receivers && receivers.map(
+                    (receiver: { id: string; type: 1 | 2; name: string }) => (<Person
+                      className={`${receiver.type === 2 ? 'isDep' : 'isPerson'} `}
+                      key={receiver.id}
+                    >
+                      <span>{receiver.name}</span>
+                    </Person>))
                   }
                 </span>
               </li>
