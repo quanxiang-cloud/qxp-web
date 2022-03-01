@@ -33,7 +33,7 @@ function PageDesign(): JSX.Element {
     // set page title
     designer.setVdom('title', (
       <div className='inline-flex items-center text-gray-900 text-12'>
-        <Icon name='keyboard_backspace' className='mr-8' onClick={history.goBack} clickable />
+        <Icon name='keyboard_backspace' className='mr-8' onClick={handleGoBack} clickable />
         <span className='mr-4'>正在设计页面:</span>
         <span>{pageName}</span>
       </div>
@@ -73,6 +73,10 @@ function PageDesign(): JSX.Element {
   useEffect(() => {
     designer.setVdom('apiStateDetail', renderApiStateDetail());
   }, [apiPath]);
+
+  function handleGoBack(): void {
+    history.push(`/apps/details/${appID}/page_setting?pageID=${pageId}`);
+  }
 
   function handleFileSuccess(file: QXPUploadFileTask): void {
     const { readable: readableBucket, domain }: OSSConfig = window.CONFIG.oss_config;
