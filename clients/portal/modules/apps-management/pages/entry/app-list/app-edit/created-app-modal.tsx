@@ -1,18 +1,21 @@
 import React, { useRef, useState } from 'react';
+import { has } from 'ramda';
 import { useHistory } from 'react-router-dom';
 
 import Modal from '@c/modal';
 import toast from '@lib/toast';
 
-import CreatedEditApp from './created-edit-app';
 import store from '../store';
+import CreatedEditApp from './created-edit-app';
 
 type Props = {
   modalType: string;
   onCancel: () => void;
+  templateID?: string;
 }
 
-function CreatedAppModal({ modalType, onCancel }: Props): JSX.Element {
+function CreatedAppModal({ modalType, onCancel, templateID }: Props): JSX.Element {
+  const { createdApp, importApp, createdAppByTemplate } = store;
   const history = useHistory();
   const formRef: any = useRef(null);
   const [appZipInfo, setAppZipInfo] = useState<AppZipInfo | undefined>(undefined);
@@ -22,26 +25,29 @@ function CreatedAppModal({ modalType, onCancel }: Props): JSX.Element {
     formDom.submit();
   };
 
+  function toastError(err: any): void {
+    toast.error(err.message);
+  }
+
   function submitCallback(): void {
     const formDom = formRef.current;
-    const data = formDom.getFieldsValue();
+    const data = formDom.getFieldsValue() as AppInfo;
 
-    if (modalType === 'importApp') {
-      store.importApp(data).then(() => {
-        onCancel();
-      }).catch((e) => {
-        toast.error(e.message);
-      });
+    if (has('template', data)) {
+      createdAppByTemplate(data).then(onCancel).catch(toastError);
       return;
     }
 
-    store.createdApp({ ...data, useStatus: -1 }).then((res: string) => {
+    if (modalType === 'importApp') {
+      importApp(data).then(onCancel).catch(toastError);
+      return;
+    }
+
+    createdApp({ ...data, useStatus: -1 }).then((res: string) => {
       toast.success('创建应用成功！');
       onCancel();
       history.push(`/apps/details/${res}/page_setting`);
-    }).catch((e) => {
-      toast.error(e.message);
-    });
+    }).catch(toastError);
   }
 
   return (
@@ -70,7 +76,10 @@ function CreatedAppModal({ modalType, onCancel }: Props): JSX.Element {
         ref={formRef}
         className="p-20"
         modalType={modalType}
-        onValuesChange={() => setAppZipInfo(formRef.current.getFieldValue('appZipInfo'))}
+        templateID={templateID}
+        onValuesChange={(value) => {
+          has('appZipInfo', value) && setAppZipInfo(formRef.current.getFieldValue('appZipInfo'));
+        }}
         onSubmitCallback={submitCallback}
       />
     </Modal>

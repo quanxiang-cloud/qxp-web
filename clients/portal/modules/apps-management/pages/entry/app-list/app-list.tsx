@@ -3,10 +3,10 @@ import { useHistory } from 'react-router-dom';
 
 import PageLoading from '@c/page-loading';
 
+import AppItem from './app-item';
 import DeleteAppModal from './app-edit/del-app-modal';
 import AppSetStatusModal from './app-edit/app-set-status-modal';
-import AppItem from './app-item';
-import SaveAppModal from './app-edit/app-save-modal';
+import EditTemplateModal from '../app-templates/template-edit/edit-template-modal';
 
 type Props = {
   isLoading: boolean;
@@ -14,19 +14,47 @@ type Props = {
   openCreatedModal: () => void;
 }
 
-function AppList({ isLoading, appList, openCreatedModal }: Props) {
+function AppList({ isLoading, appList, openCreatedModal }: Props): JSX.Element {
   const [modalType, setModalType] = useState('');
   const [curApp, setCurApp] = useState<AppInfo | null>(null);
   const history = useHistory();
 
-  const openModal = (_modalType: string, _curApp: AppInfo) => {
+  function openModal(_modalType: string, _curApp: AppInfo): void {
     setModalType(_modalType);
     setCurApp(_curApp);
-  };
+  }
 
-  const goDetails = (id: string) => {
+  function goDetails(id: string): void {
     history.push(`/apps/details/${id}/page_setting`);
-  };
+  }
+
+  function RenderModal() {
+    if (!curApp) {
+      return null;
+    }
+
+    return (
+      <>
+        {modalType === 'delete' && (
+          <DeleteAppModal appInfo={curApp} onCancel={() => setModalType('')} />
+        )}
+        {modalType === 'publish' && (
+          <AppSetStatusModal
+            appID={curApp.id}
+            onCancel={() => setModalType('')}
+            status={curApp.useStatus > 0 ? 'soldOut' : 'publish'}
+          />
+        )}
+        {modalType === 'saveAsTemplate' && (
+          <EditTemplateModal
+            modalType={modalType}
+            templateInfo={{ ...curApp, name: curApp.appName, appID: curApp.id }}
+            onCancel={() => setModalType('')}
+          />
+        )}
+      </>
+    );
+  }
 
   if (isLoading) {
     return <div className='relative flex-1'><PageLoading /></div>;
@@ -49,17 +77,7 @@ function AppList({ isLoading, appList, openCreatedModal }: Props) {
       {appList.map((appInfo: AppInfo) => (
         <AppItem onClick={goDetails} key={appInfo.id} appInfo={appInfo} openModal={openModal} />
       ))}
-      {modalType === 'delete' && curApp !== null && (
-        <DeleteAppModal appInfo={curApp} onCancel={() => setModalType('')} />
-      )}
-      {modalType === 'publish' && curApp !== null && (
-        <AppSetStatusModal
-          status={curApp.useStatus > 0 ? 'soldOut' : 'publish'}
-          appID={curApp.id}
-          onCancel={() => setModalType('')}
-        />
-      )}
-      {modalType === 'saveAsTemplate' && <SaveAppModal appInfo={curApp} onCancel={() => setModalType('')} />}
+      <RenderModal />
     </div>
   );
 }
