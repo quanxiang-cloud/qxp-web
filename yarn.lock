@@ -1255,15 +1255,15 @@
     "@types/react" "*"
     csstype "^3.0.2"
 
-"@types/tough-cookie@*":
-  version "4.0.1"
-  resolved "https://registry.npmmirror.com/@types/tough-cookie/-/tough-cookie-4.0.1.tgz#8f80dd965ad81f3e1bc26d6f5c727e132721ff40"
-  integrity sha512-Y0K95ThC3esLEYD6ZuqNek29lNX2EM1qxV8y2FTLUB0ff5wWrk7az+mLrnNFUnaXcgKye22+sFBRXOgpPILZNg==
-
 "@types/systemjs@^6.1.1":
   version "6.1.1"
   resolved "https://registry.npmmirror.com/@types/systemjs/-/systemjs-6.1.1.tgz#eae17f2a080e867d01a2dd614f524ab227cf5a41"
   integrity sha512-d1M6eDKBGWx7RbYy295VEFoOF9YDJkPI959QYnmzcmeaV+SP4D0xV7dEh3sN5XF3GvO3PhGzm+17Z598nvHQuQ==
+
+"@types/tough-cookie@*":
+  version "4.0.1"
+  resolved "https://registry.npmmirror.com/@types/tough-cookie/-/tough-cookie-4.0.1.tgz#8f80dd965ad81f3e1bc26d6f5c727e132721ff40"
+  integrity sha512-Y0K95ThC3esLEYD6ZuqNek29lNX2EM1qxV8y2FTLUB0ff5wWrk7az+mLrnNFUnaXcgKye22+sFBRXOgpPILZNg==
 
 "@typescript-eslint/eslint-plugin@^5.8.1":
   version "5.9.1"
@@ -7092,10 +7092,10 @@ rollup-plugin-web-worker-loader@^1.6.1:
   resolved "https://registry.nlark.com/rollup-plugin-web-worker-loader/download/rollup-plugin-web-worker-loader-1.6.1.tgz#9d7a27575b64b0780fe4e8b3bc87470d217e485f"
   integrity sha1-nXonV1tksHgP5OizvIdHDSF+SF8=
 
-rollup@^2.56.3:
-  version "2.63.0"
-  resolved "https://registry.npmmirror.com/rollup/download/rollup-2.63.0.tgz#fe2f7fec2133f3fab9e022b9ac245628d817c6bb"
-  integrity sha512-nps0idjmD+NXl6OREfyYXMn/dar3WGcyKn+KBzPdaLecub3x/LrId0wUcthcr8oZUAcZAR8NKcfGGFlNgGL1kQ==
+rollup@2.68.0:
+  version "2.68.0"
+  resolved "https://registry.npmmirror.com/rollup/-/rollup-2.68.0.tgz#6ccabfd649447f8f21d62bf41662e5caece3bd66"
+  integrity sha512-XrMKOYK7oQcTio4wyTz466mucnd8LzkiZLozZ4Rz0zQD+HeX4nUK4B8GrTX/2EvN2/vBF/i2WnaXboPxo0JylA==
   optionalDependencies:
     fsevents "~2.3.2"
 
