@@ -15,7 +15,7 @@ import { getPage, savePage, updatePageEngineMenuType } from './api';
 import './index.scss';
 
 function PageDesign(): JSX.Element {
-  const { designer, page } = getStore();
+  const { designer, page, eventBus } = getStore();
   const { appID, pageId } = useParams<{ appID: string; pageId: string }>();
   const { pageName } = getQuery<{ pageName: string }>();
   const history = useHistory();
@@ -30,25 +30,16 @@ function PageDesign(): JSX.Element {
   }, []);
 
   useEffect(() => {
+    eventBus.on('clear:api-path', ()=> {
+      setApiPath('');
+    });
+
     // set page title
     designer.setVdom('title', (
       <div className='inline-flex items-center text-gray-900 text-12'>
-        <Icon name='keyboard_backspace' className='mr-8' onClick={history.goBack} clickable />
+        <Icon name='keyboard_backspace' className='mr-8' onClick={handleGoBack} clickable />
         <span className='mr-4'>正在设计页面:</span>
         <span>{pageName}</span>
-      </div>
-    ));
-
-    // todo: api path not update
-    designer.setVdom('platformApis', (
-      <div className='flex flex-col mb-24 relative -top-8'>
-        <p className='text-12 text-gray-600'>选择API</p>
-        <ApiSelector
-          simpleMode
-          className='api-selector-wrap'
-          initRawApiPath={apiPath}
-          setApiPath={setApiPath}
-        />
       </div>
     ));
 
@@ -72,7 +63,25 @@ function PageDesign(): JSX.Element {
 
   useEffect(() => {
     designer.setVdom('apiStateDetail', renderApiStateDetail());
+
+    // setApiPath from another mobx store will not trigger update
+    // because mobx instance is isolated
+    designer.setVdom('platformApis', (
+      <div className='flex flex-col mb-24 relative -top-8'>
+        <p className='text-12 text-gray-600'>选择API</p>
+        <ApiSelector
+          simpleMode
+          className='api-selector-wrap'
+          initRawApiPath={apiPath}
+          setApiPath={setApiPath}
+        />
+      </div>
+    ));
   }, [apiPath]);
+
+  function handleGoBack(): void {
+    history.push(`/apps/details/${appID}/page_setting?pageID=${pageId}`);
+  }
 
   function handleFileSuccess(file: QXPUploadFileTask): void {
     const { readable: readableBucket, domain }: OSSConfig = window.CONFIG.oss_config;
