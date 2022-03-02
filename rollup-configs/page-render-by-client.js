@@ -42,6 +42,7 @@ const config = {
     'react',
     'react-dom',
     'react-is',
+    'elkjs',
 
     '@formily/antd-components',
     '@formily/antd',
