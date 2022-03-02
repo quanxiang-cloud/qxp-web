@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import ELK, { ElkExtendedEdge, ElkNode, ElkLayoutArguments } from 'elkjs/lib/elk.bundled';
+import { default as ELK, ElkExtendedEdge, ElkNode, ElkLayoutArguments } from 'elkjs';
 import { Elements, isNode, Node, Edge, useStoreState } from 'react-flow-renderer';
 import { groupBy, prop } from 'ramda';
 
