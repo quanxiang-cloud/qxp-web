@@ -1,0 +1,31 @@
+.topic-text-area-wrapper {
+  max-height: 2.12rem;
+  box-sizing: border-box;
+  border-radius: .12rem .12rem 0 0;
+}
+
+.topic-text-area {
+  border-radius: .12rem .12rem 0 0;
+  border: 0;
+  outline: none;
+  appearance: none;
+  max-width: 100%;
+  max-height: 100%;
+  padding: 0;
+  margin: 0;
+
+  &::placeholder {
+    color: var(--gray-400);
+    font-family: inherit;
+  }
+}
+
+.topic-text-area-bottom {
+  padding-top: .06rem;
+  padding-bottom: .12rem;
+}
+
+.topic-btn-send {
+  padding: .05rem;
+  border-radius: .08rem;
+}
