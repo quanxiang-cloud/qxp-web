@@ -742,10 +742,10 @@
   version "0.3.3"
   resolved "https://ofapkg.pek3b.qingstor.com/tarball/one-for-all-api-spec-adapter-v0.3.3.tgz#66e389b480d1c064fd1ddd7db4c240137424d1d7"
 
-"@one-for-all/page-engine@0.9.2":
-  version "0.9.2"
-  resolved "https://registry.npmmirror.com/@one-for-all/page-engine/-/page-engine-0.9.2.tgz#82513a1fd0ca77934038e4b67527c22d2e33da39"
-  integrity sha512-UVWynFJ6Vb0WrrMeZSX2ydJSqmGjss5201Vuu+Eq56YGdXqdla4HabOio2B7o+Vq+VvvAuY1wil41b3gStaxzA==
+"@one-for-all/page-engine@0.9.3":
+  version "0.9.3"
+  resolved "https://registry.npmmirror.com/@one-for-all/page-engine/-/page-engine-0.9.3.tgz#4e55ae8b8491d8a1f583280e59067252381afb6b"
+  integrity sha512-PPHLMIVeeUWg+hfGpmiJYBSw6TZeOMN2pWMv6DE9T+q0K6hzsXAod/zqmiM3hcMptlhBUOvZxDEm9ty/0m0INw==
   dependencies:
     "@codemirror/lang-javascript" "^0.19.3"
     "@one-for-all/render-engine" "0.13.1"
