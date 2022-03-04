@@ -50,6 +50,7 @@ function IconBtn(
         type={btnType}
         name={loading ? 'loading' : iconName}
         className={cs({ 'animate-spin': loading })}
+        style={{ minWidth: `${iconSize}px` }}
         {...iconProps}
       />
     </button>
