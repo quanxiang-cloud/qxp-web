@@ -11,6 +11,7 @@ import store from './store';
 import EditTemplateModal from './template-edit/edit-template-modal';
 import DelTemplateModal from './template-edit/del-template-modal';
 import CreatedAppModal from '../app-list/app-edit/created-app-modal';
+import EmptyTips from '@c/empty-tips';
 
 function AppTemplates(): JSX.Element {
   const [modalType, setModalType] = useState('');
@@ -123,6 +124,7 @@ function AppTemplates(): JSX.Element {
             data={templateList}
             columns={COLUMNS}
             loading={templateListLoading}
+            emptyTips={<EmptyTips text="暂无模版数据" className="py-32" />}
           />
         </div>
       </div>
