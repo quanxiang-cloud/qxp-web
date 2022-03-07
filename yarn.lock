@@ -742,14 +742,14 @@
   version "0.3.3"
   resolved "https://ofapkg.pek3b.qingstor.com/tarball/one-for-all-api-spec-adapter-v0.3.3.tgz#66e389b480d1c064fd1ddd7db4c240137424d1d7"
 
-"@one-for-all/page-engine@0.9.3":
-  version "0.9.3"
-  resolved "https://registry.npmmirror.com/@one-for-all/page-engine/-/page-engine-0.9.3.tgz#4e55ae8b8491d8a1f583280e59067252381afb6b"
-  integrity sha512-PPHLMIVeeUWg+hfGpmiJYBSw6TZeOMN2pWMv6DE9T+q0K6hzsXAod/zqmiM3hcMptlhBUOvZxDEm9ty/0m0INw==
+"@one-for-all/page-engine@0.9.5":
+  version "0.9.5"
+  resolved "https://registry.npmmirror.com/@one-for-all/page-engine/-/page-engine-0.9.5.tgz#ef87347077f15c96ab7ea754d504ad5dc537b6e2"
+  integrity sha512-y6PKdWiJ1e+hzgI4IW8P1t5ZgHJHEJBr+SH4F5yoBwOzCi7H8F/cuBX22jgP08kdr1nA7NVhYzqqgbvSG8vwAA==
   dependencies:
     "@codemirror/lang-javascript" "^0.19.3"
-    "@one-for-all/render-engine" "0.13.1"
-    "@one-for-all/schema-spec" "0.12.1"
+    "@one-for-all/render-engine" "0.13.6-0"
+    "@one-for-all/schema-spec" "0.13.1-0"
     "@one-for-all/ui" "0.2.18"
     "@uiw/react-codemirror" "~4.2.0"
     classnames "^2.3.1"
@@ -777,14 +777,14 @@
     react-dom "^17.0.2"
     rxjs "^7.4.0"
 
-"@one-for-all/render-engine@0.13.1":
-  version "0.13.1"
-  resolved "https://registry.npmmirror.com/@one-for-all/render-engine/-/render-engine-0.13.1.tgz#53a5065a4c9906b4c34239c43e62ceb0cf6caff3"
-  integrity sha512-4iBJVJxFlyrex5h+8xWHgZ5z8xQYi+pWL+mg1Y8ORV3ESCJ+ih3aXs0+BHjf1plxVWVxDvnzuAAoJufZq3mIDQ==
+"@one-for-all/render-engine@0.13.6-0":
+  version "0.13.6-0"
+  resolved "https://registry.npmmirror.com/@one-for-all/render-engine/-/render-engine-0.13.6-0.tgz#a514db68e5c2f0258893ada812a1aec2976efd1c"
+  integrity sha512-8stD8fm5PRP4sQmicN3Q/eAt+xMYJVztozrhMUvQvtAUNrLpqRd38XKwBmvhFTc5c10Q2MuGrrrP9HkMv/R2Lw==
   dependencies:
     "@one-for-all/api-spec-adapter" "0.3.3"
-    "@one-for-all/schema-spec" "0.12.1"
-    "@one-for-all/utils" "0.1.0"
+    "@one-for-all/schema-spec" "0.13.0"
+    "@one-for-all/utils" "0.1.1"
     react "^17.0.2"
     react-dom "^17.0.2"
     react-jsx-parser "1.29.0"
@@ -795,10 +795,15 @@
   resolved "https://registry.npmmirror.com/@one-for-all/schema-spec/download/@one-for-all/schema-spec-0.10.1.tgz#9bd3a108ef056d3a647fa02cbee275b3a65d8891"
   integrity sha512-V41EZhtRG4d+ec1+fbS7r91lzs2rkuMG/jmslmiIWxF2lPXYOxGXAmu43o/rF0p1vemVfnpoJzU2taddXnYP4Q==
 
-"@one-for-all/schema-spec@0.12.1":
-  version "0.12.1"
-  resolved "https://registry.npmmirror.com/@one-for-all/schema-spec/-/schema-spec-0.12.1.tgz#b9bf8ace7ecbac04c4c6bcb93e8c1b3081c8ffb8"
-  integrity sha512-edIP7bYERa7a3/zU4MFi4PlX7BW6VuPqSE2XO7KAceFv5JGogIObih6feIDQDjHAkvRIMrYHt7RBjvqO+DpZpg==
+"@one-for-all/schema-spec@0.13.0":
+  version "0.13.0"
+  resolved "https://registry.npmmirror.com/@one-for-all/schema-spec/-/schema-spec-0.13.0.tgz#a465129ff244f43d625fc3e79f8cadd2b89f2031"
+  integrity sha512-6IWesLQTaPz61vAj1E8ePr530bzKJu+RS7N55nu7OuQzjZsSFrumBfuaUWcvtvuQhVYZjjUnN36q5IrHN3CbeQ==
+
+"@one-for-all/schema-spec@0.13.1-0":
+  version "0.13.1-0"
+  resolved "https://registry.npmmirror.com/@one-for-all/schema-spec/-/schema-spec-0.13.1-0.tgz#6133bb595a0abaeda045925ee41a220bc94fe9bd"
+  integrity sha512-SVHv7zVxiJRuLVHY7vdPZehrxPzu10018YKu7x+KsRo3uIygWAYsKmdqqxcMhOPm+462n0YlXDttBe1yx3kieA==
 
 "@one-for-all/ui@0.2.18":
   version "0.2.18"
@@ -836,6 +841,11 @@
   version "0.1.0"
   resolved "https://registry.npmmirror.com/@one-for-all/utils/download/@one-for-all/utils-0.1.0.tgz#fe0e8023c7e30b461756f349454b65a6932cc56b"
   integrity sha512-u0DJ6Z6T3FwnXPxaDnYjJF3AFoQC9VyqRz8a1+1cjb51PP9jgzJrTrVVdtdmx+uWdLJJsoKFZQBMJ9S0D++GGw==
+
+"@one-for-all/utils@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.npmmirror.com/@one-for-all/utils/-/utils-0.1.1.tgz#a5c41c6e64d158c36d50a61c402e5c910fb0258f"
+  integrity sha512-mNTwU6dRBbDDfVA4HpzZhn1oJ6R4C+3u93Rf3Fu6K5XlIxGuOtLWUvBlBAuQMoJF0HZW+c+f+K6PGQ8d6i5eSA==
 
 "@popperjs/core@^2.11.0", "@popperjs/core@^2.9.1":
   version "2.11.2"
