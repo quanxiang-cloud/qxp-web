@@ -1,31 +1,23 @@
 import React, { useEffect, useState, useContext, useMemo, useRef } from 'react';
 import { usePrevious, useUpdateEffect } from 'react-use';
-import { useQuery } from 'react-query';
 import { get, isEqual } from 'lodash';
 import { Upload } from 'antd';
 import { useForm, Controller } from 'react-hook-form';
 
-import { getFormFieldSchema } from '@flow/content/editor/forms/api';
-import FlowContext from '@flow/flow-context';
 import formFieldWrap from '@c/form-field-wrap';
-import useObservable from '@lib/hooks/use-observable';
-import store from '@flow/content/editor/store';
 import Button from '@c/button';
 import SaveButtonGroup from '@flow/content/editor/components/_common/action-save-button-group';
 import type {
-  StoreValue,
-  CurrentElement,
-  FormDataData,
   SendEmailData,
   Attachment,
 } from '@flow/content/editor/type';
-import schemaToFields from '@lib/schema-convert';
 import { SYSTEM_FIELDS } from '@c/form-builder/constants';
 
 import PersonPicker from '../../components/_common/person-picker';
 import { approvePersonEncoder } from '../../components/_common/utils';
 import FlowTableContext from '../flow-source-table';
 import QuillEditor from './quill-editor';
+import { isAdvancedField } from '../utils';
 
 import './index.scss';
 
@@ -36,7 +28,7 @@ type Props = {
   defaultValue: SendEmailData;
 }
 
-const props = {
+const UPLOAD_PROPS = {
   name: 'file',
   action: '/api/v1/fileserver/uploadFile',
   headers: {
@@ -75,10 +67,6 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
   const editorRef = useRef<any>(null);
   const [errorText, setErrorText] = useState('');
   const { register, handleSubmit, control, reset, formState: { errors }, watch } = useForm();
-  const { appID } = useContext(FlowContext);
-  const { elements = [] } = useObservable<StoreValue>(store);
-  const formDataElement = elements?.find(({ type }) => type === 'formData') as CurrentElement;
-  const workFormValue = (formDataElement?.data?.businessData as FormDataData)?.form?.value;
   const allFields = watch([
     'content',
     'recivers',
@@ -130,13 +118,6 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
     }
   }, [allFields]);
 
-  const { data: schema = {} } = useQuery(
-    ['GET_WORK_FORM_FIELD_SCHEMA', workFormValue, appID],
-    getFormFieldSchema, {
-      enabled: !!workFormValue && !!appID,
-    },
-  );
-
   const handleSave = (data: any): void => {
     const bol = handleValidate();
     if (!bol) return;
@@ -170,11 +151,13 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
     reset(defaultValueEncode);
   }, []);
 
-  const fieldOption = React.useMemo(() => {
-    return schemaToFields(schema).filter((field) => field.id !== '_id').map((field) => {
-      return { label: field.title, key: field.id };
+  const contentVariables = React.useMemo(() => {
+    return tableSchema.filter(({ type, componentName }) => {
+      return !isAdvancedField(type, componentName);
+    }).map((field) => {
+      return { label: field.title as string, key: field.id };
     });
-  }, [schema]);
+  }, [tableSchema]);
 
   return (
     <div className="flex flex-col overflow-auto flex-1 py-24">
@@ -208,7 +191,7 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
         <QuillEditor
           ref={editorRef}
           value={defaultValueEncode?.content || ''}
-          options={fieldOption}
+          contentVariables={contentVariables}
         />
         {errorText && <div className="text-14 text-red-500">{errorText}</div>}
       </div>
@@ -219,7 +202,7 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
         render={({ field }) => {
           return (
             <Upload
-              {...props}
+              {...UPLOAD_PROPS}
               defaultFileList={
                 (defaultValueEncode?.mes_attachment || []).map(({ file_name, file_url }: Attachment) => {
                   return {
