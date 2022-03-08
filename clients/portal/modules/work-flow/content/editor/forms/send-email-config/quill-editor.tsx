@@ -21,21 +21,21 @@ function FieldOption({ options, onInsert }: FieldOptionProps): JSX.Element {
         insertText(menuKey);
       }}
     >
-      <div className='rdw-option-wrapper'>表单字段选择</div>
+      <button className="btn mt-8">插入表单字段</button>
     </MoreMenu>
   );
 }
 
-export type RefProps = {
+export type QuillEditorRef = {
   getContent: () => string;
 }
 
 interface Props {
   value?: string;
-  options?: { label: string | React.ReactNode, key: string }[];
+  contentVariables: { label: string; key: string }[];
 }
 
-function QuillEditorWrapper({ value, options = [] }: Props, ref: React.Ref<RefProps>): JSX.Element {
+function QuillEditorWrapper({ value, contentVariables }: Props, ref: React.Ref<QuillEditorRef>): JSX.Element {
   const quillRef = useRef<Quill>(null);
 
   useImperativeHandle(ref, () => {
@@ -48,17 +48,15 @@ function QuillEditorWrapper({ value, options = [] }: Props, ref: React.Ref<RefPr
 
   return (
     <div className="relative">
-      <div className="absolute cursor-pointer" style={{ top: 33, left: 290 }}>
-        <FieldOption
-          options={options}
-          onInsert={(text: string): void => {
-            quillRef.current?.insertText(quillRef.current?.getLength(), text);
-          }}
-        />
-      </div>
       <QuillEditor initialValue={value || ''} ref={quillRef} />
+      <FieldOption
+        options={contentVariables}
+        onInsert={(text: string): void => {
+          quillRef.current?.insertText(quillRef.current?.getLength(), text);
+        }}
+      />
     </div>
   );
 }
 
-export default forwardRef(QuillEditorWrapper);
+export default forwardRef<QuillEditorRef, Props>(QuillEditorWrapper);

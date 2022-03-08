@@ -1,41 +1,14 @@
-import React, { useRef, useEffect, forwardRef, useImperativeHandle, useState } from 'react';
-import type { QuillOptionsStatic, Quill } from 'quill';
+import React, { useRef, useEffect, useImperativeHandle, useState } from 'react';
+import type { Quill } from 'quill';
 
 import logger from '@lib/logger';
 
-export { Quill };
+import OPTIONS from './options';
 
-const theme = 'snow';
+export type { Quill };
+
 const quillSrc = 'https://ofapkg.pek3b.qingstor.com/@one-for-all/quill@1.3.6/index.min.js';
 const styleSrc = 'https://ofapkg.pek3b.qingstor.com/@one-for-all/quill@1.3.6/1.3.6-quill.snow.css';
-
-const modules = {
-  toolbar: [
-    ['bold', 'italic', 'underline', 'strike'],
-    [{ align: [] }],
-
-    [{ list: 'ordered' }, { list: 'bullet' }],
-    [{ indent: '-1' }, { indent: '+1' }],
-
-    [{ size: ['small', false, 'large', 'huge'] }],
-    [{ header: [1, 2, 3, 4, 5, 6, false] }],
-    // ['link', 'image', 'video'],
-    ['link', 'video'],
-    [{ color: [] }, { background: [] }],
-
-    ['clean'],
-  ],
-  clipboard: {
-    matchVisual: false,
-  },
-};
-
-const formats = [
-  'bold', 'italic', 'underline', 'strike', 'align', 'list', 'indent',
-  'size', 'header', 'link', 'image', 'video', 'color', 'background', 'clean',
-];
-
-const OPTIONS: QuillOptionsStatic = { modules, formats, theme };
 
 function loadQuill(): Promise<Quill | null> {
   return System.import(styleSrc).then((module) => {
@@ -68,13 +41,15 @@ function QuillEditor({ initialValue }: Props, ref: React.Ref<Quill | null>): JSX
   useEffect(() => {
     let isUnmounting = false;
 
-    loadQuill().then((module) => {
-      if (module && !isUnmounting) {
-        const quill = new (module as any)(containerRef.current, OPTIONS);
-        quill.setContents(quill.clipboard.convert(initialValue));
-        quillRef.current = quill;
-        setLoaded(true);
+    loadQuill().then((quillClass) => {
+      if (!quillClass || isUnmounting) {
+        return;
       }
+
+      const quill = new (quillClass as any)(containerRef.current, OPTIONS);
+      quill.setContents(quill.clipboard.convert(initialValue));
+      quillRef.current = quill;
+      setLoaded(true);
     });
 
     return () => {
@@ -85,4 +60,4 @@ function QuillEditor({ initialValue }: Props, ref: React.Ref<Quill | null>): JSX
   return (<div ref={containerRef} style={{ height: 350 }} />);
 }
 
-export default forwardRef<Quill | null, Props>(QuillEditor);
+export default React.forwardRef<Quill | null, Props>(QuillEditor);
