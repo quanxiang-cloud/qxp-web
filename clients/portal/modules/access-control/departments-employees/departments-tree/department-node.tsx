@@ -104,6 +104,7 @@ function DepartmentNode({ node, store }: NodeRenderProps<Department>): JSX.Eleme
             <EditDepartment
               department={departmentToEdit}
               closeModal={closeModal}
+              store={store}
             />
           </span>
         )
