@@ -7,7 +7,6 @@ import { useUpdateEffect } from 'react-use';
 
 import Select from '@c/select';
 import Button from '@c/button';
-import Radio from '@c/radio';
 import Icon from '@c/icon';
 import toast from '@lib/toast';
 import Loading from '@c/loading';
@@ -16,7 +15,7 @@ import ParamsSection from '../add-api/params-section';
 import { ErrorMsg } from '../comps/form';
 import store from '../store';
 
-type AuthType='none' | 'signature'
+type AuthType='none' | 'signature' | 'cookie' | 'system'
 
 const protocols = [
   { label: 'HTTPS', value: 'https' },
@@ -26,6 +25,8 @@ const protocols = [
 const authTypes = [
   { label: '无', value: 'none' },
   { label: '签名', value: 'signature' },
+  { label: 'cookie', value: 'cookie' },
+  { label: 'system', value: 'system' },
 ];
 
 function GroupSetting(): JSX.Element {
@@ -151,19 +152,18 @@ function GroupSetting(): JSX.Element {
               <span>鉴权方式</span>
               <Icon name='help_outline' className='ml-3 cursor-pointer' />
             </p>
-            <div className='flex items-center gap-x-16'>
-              {authTypes.map(({ label, value }, idx)=> (
-                <Radio
-                  key={idx}
-                  value={value}
-                  label={label}
-                  defaultChecked={value === auth}
-                  onChange={(val: any)=> setAuth(val)}
-                />
-              ))}
+            <div className='mt-8'>
+              <Select
+                multiple={false}
+                className='w-100'
+                options={authTypes}
+                defaultValue='none'
+                value={auth}
+                onChange={(val: any)=> setAuth(val)}
+              />
             </div>
           </div>
-          {auth === 'signature' && (
+          {auth !== 'none' && (
             <>
               <div>
                 <p>鉴权方法</p>
