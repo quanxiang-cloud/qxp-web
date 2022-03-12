@@ -805,6 +805,14 @@
   resolved "https://registry.npmmirror.com/@one-for-all/schema-spec/-/schema-spec-0.13.1-0.tgz#6133bb595a0abaeda045925ee41a220bc94fe9bd"
   integrity sha512-SVHv7zVxiJRuLVHY7vdPZehrxPzu10018YKu7x+KsRo3uIygWAYsKmdqqxcMhOPm+462n0YlXDttBe1yx3kieA==
 
+"@one-for-all/schema-utils@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.npmmirror.com/@one-for-all/schema-utils/-/schema-utils-0.5.0.tgz#9d5a8be9651d4b8cb412c6b6bdec515a6a8f4593"
+  integrity sha512-QjkhJulSFuIDcHyMdkyVioIS6rNfA3hdbReaKhDAgnX5OSwtCfz7gdCfUtnLqiQ3o9q6B0hQ0Ibwm7nn36nAeg==
+  dependencies:
+    "@one-for-all/schema-spec" "0.13.1-0"
+    immutable "4.0.0"
+
 "@one-for-all/ui@0.2.18":
   version "0.2.18"
   resolved "https://registry.npmmirror.com/@one-for-all/ui/-/ui-0.2.18.tgz#d3b809c8f277c72764a43730534bcc73a13b7abb"
@@ -3957,7 +3965,7 @@ immer@^8.0.1:
   resolved "https://registry.npmmirror.com/immer/download/immer-8.0.4.tgz#3a21605a4e2dded852fb2afd208ad50969737b7a"
   integrity sha1-OiFgWk4t3thS+yr9IIrVCWlze3o=
 
-immutable@^4.0.0:
+immutable@4.0.0, immutable@^4.0.0:
   version "4.0.0"
   resolved "https://registry.npmmirror.com/immutable/download/immutable-4.0.0.tgz#b86f78de6adef3608395efb269a91462797e2c23"
   integrity sha512-zIE9hX70qew5qTUjSS7wi1iwj/l7+m54KWU247nhM3v806UdGj1yDndXj+IOYxxtW9zyLI+xqFNZjTuDaLUqFw==
