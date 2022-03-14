@@ -64,7 +64,7 @@ function ImportFormModal({ onClose }: Props): JSX.Element {
     return (
       <>
         <div className="my-4">点击或拖拽文件到此区域</div>
-        <div className="text-gray-400">支持 20MB 以内的 csv 文件</div>
+        <div className="text-gray-400">支持 20MB 以内的 xlsx 文件</div>
       </>
     );
   }
@@ -102,12 +102,7 @@ function ImportFormModal({ onClose }: Props): JSX.Element {
           uploaderDescription={<UploadDescription />}
           maxFileSize={20}
           accept={[
-            'text/csv',
-            'text/x-csv',
-            'application/csv',
-            'application/x-csv',
-            'application/vnd.ms-excel',
-            'text/comma-separated-values',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
           ]}
           onFileDelete={setfFleDetail}
           onFileSuccess={(fileDetail: QXPUploadFileTask) => setfFleDetail(fileDetail)}
