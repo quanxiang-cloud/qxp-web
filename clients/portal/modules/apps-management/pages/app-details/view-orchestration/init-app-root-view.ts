@@ -11,13 +11,28 @@ export async function initAppRootView(appID: string, layoutType: LayoutType | 'f
   if (layoutType === 'free') {
     return saveSchema(
       rootSchemaKey,
-      { node: { id: ROOT_NODE_ID, type: 'html-element', name: 'div', children: [] } },
+      {
+        node: {
+          id: 'root_route_node',
+          type: 'route-node',
+          path: `/a/${appID}`,
+          node: { id: ROOT_NODE_ID, type: 'html-element', name: 'div', children: [] },
+        },
+      },
     );
   }
 
   const refSchemaKey = await createRefSchema(appID);
   const rootNode = createLayoutSchema('ROOT_LAYOUT', layoutType, refSchemaKey, true);
-  const rootSchema: SchemaSpec.Schema = { node: rootNode };
+
+  const rootSchema: SchemaSpec.Schema = {
+    node: {
+      id: 'root_route_node',
+      type: 'route-node',
+      path: `/a/${appID}`,
+      node: rootNode,
+    },
+  };
 
   return saveSchema(rootSchemaKey, rootSchema);
 }

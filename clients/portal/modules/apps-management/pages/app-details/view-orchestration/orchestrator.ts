@@ -1,3 +1,4 @@
+import { get } from 'lodash';
 import { action, computed, observable } from 'mobx';
 import {
   ReactComponentNode,
@@ -6,7 +7,7 @@ import {
   APIStatesSpec,
   SharedStatesSpec,
 } from '@one-for-all/schema-spec';
-import { deleteByID, patchNode } from '@one-for-all/schema-utils';
+import { deleteByID, findNodeByID, patchNode } from '@one-for-all/schema-utils';
 
 import addLayoutToRoot from './helpers/add-layout-to-root';
 import addViewToRoot from './helpers/add-view-to-root';
@@ -27,6 +28,7 @@ import type {
   CreateViewParams,
   ExternalView,
 } from './types';
+import { ROOT_NODE_ID } from './constants';
 
 class Orchestrator {
   @observable loading = true;
@@ -35,6 +37,7 @@ class Orchestrator {
   rootSchemaKey: string;
   apiStateSpec: APIStatesSpec | undefined;
   sharedStatesSpec: SharedStatesSpec | undefined;
+  appLayout: LayoutType | undefined;
 
   constructor(appID: string, rootSchema: Schema) {
     this.appID = appID;
@@ -45,6 +48,9 @@ class Orchestrator {
     this.rootNode = node;
     this.apiStateSpec = apiStateSpec;
     this.sharedStatesSpec = sharedStatesSpec;
+
+    const _rootNOde = findNodeByID(node, ROOT_NODE_ID);
+    this.appLayout = get(_rootNOde, 'props.data-layout-type.value', undefined);
   }
 
   @computed get layouts(): Array<Layout> {

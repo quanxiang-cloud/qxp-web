@@ -5,7 +5,7 @@ import { Schema, RouteNode, SchemaNode } from '@one-for-all/schema-spec';
 
 import { setBatchGlobalConfig } from '@lib/api/user-config';
 
-import { VERSION } from '../constants';
+import { ROOT_NODE_ID, VERSION } from '../constants';
 
 export function genNodeID(): string {
   return nanoid(8);
@@ -68,10 +68,7 @@ export function addRouteNodeToLayout(
   layoutID: string,
   routeNode: RouteNode,
 ): SchemaNode | undefined {
-  const routesContainerID = isLayoutNode(rootNode) ?
-    getLayoutRoutesContainerID(rootNode, layoutID) :
-    rootNode.id as string;
-
+  const routesContainerID = getLayoutRoutesContainerID(rootNode, layoutID);
   if (!routesContainerID) {
     return;
   }
@@ -89,9 +86,14 @@ export function findFirstRouteParentID(rootNode: SchemaNode, id: string): string
 }
 
 export function addRouteNodeToRootNode(rootNode: SchemaNode, routeNode: RouteNode): SchemaNode | undefined {
-  if (!isLayoutNode(rootNode)) {
-    return appendChild(rootNode, rootNode.id as string, routeNode);
+  const _rootNode = findNodeByID(rootNode, ROOT_NODE_ID);
+  if (!_rootNode) {
+    return;
   }
 
-  return addRouteNodeToLayout(rootNode, rootNode.id as string, routeNode);
+  if (!isLayoutNode(_rootNode)) {
+    return appendChild(rootNode, rootNode.id, routeNode);
+  }
+
+  return addRouteNodeToLayout(rootNode, _rootNode.id, routeNode);
 }
