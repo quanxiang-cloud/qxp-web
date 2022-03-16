@@ -12,7 +12,7 @@ import { fetchTemplateList, TemplateListRes } from '../../app-templates/api';
 
 import './style.scss';
 
-const DISABLE_SPECIAL_SYMBOL_REG = /[#$@^&=`'":;,.~¥-。、（）「」·“”；：？，《》【】+/\\()<>{}[\] ]/gi;
+export const DISABLE_SPECIAL_SYMBOL_REG = /[#$@^&=`'":;,.~¥-。、（）「」·“”；：？，《》【】+/\\()<>{}[\] ]/gi;
 
 type Props = {
   modalType: string;
@@ -105,7 +105,7 @@ function CreatedEditApp({
       </Form.Item>
       <Form.Item
         name='appSign'
-        label='应用标志:'
+        label='应用标识:'
         // extra='必须以字母开头,由字母、数字、单下划线组成'
         extra='必须以字母开头,由字母、数字组成'
         rules={[
