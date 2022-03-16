@@ -20,13 +20,6 @@ export type Option = {
   children?: Option[];
 };
 
-export async function getFormDataOptions(appID: string): Promise<Option[]> {
-  const { menu } = await httpClient(
-    `/api/v1/structor/${appID}/${window.SIDE === 'portal' ? 'm' : 'home'}/menu/list`,
-    { appID });
-  return parseMenuListWithOptions(menu ? menu : []);
-}
-
 export async function getFormDataMenuList(appID: string): Promise<LabelValue[]> {
   const { pages } = await httpClient(`/api/v1/structor/${appID}/m/menu/listPage`, { appID });
   return pages ? pages.map(({ id, name }: MenuListPageItem) => ({ label: name, value: id })) : [];

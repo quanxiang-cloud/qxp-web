@@ -7,13 +7,14 @@ import httpClient from '@lib/http-client';
 
 import FileIcon from './file-icon';
 import { ImgList } from './img-list';
-import { FILE_LIST_ICON, FILE_DOWNLOAD_INFO_API } from '../constants';
+import { FILE_LIST_ICON, FILE_DOWNLOAD_INFO_API, OSS_PRIVATE_BUCKET_NAME, OSS_PUBLIC_BUCKET_NAME, OSS_DOMAIN } from '../constants';
 
 type FileListProps = {
   files: QXPUploadFileTask[];
   imgOnly?: boolean;
   className?: string;
   canDownload?: boolean;
+  isPrivate?: boolean;
   style?: React.CSSProperties;
   showFileName?: boolean;
   deleteFileItem?: (file: QXPUploadFileTask) => void;
@@ -25,22 +26,37 @@ export default function FileList({
   style,
   imgOnly,
   className,
+  isPrivate = true,
   canDownload = true,
   showFileName = true,
   deleteFileItem,
   onRetryFileUpload,
 }: FileListProps): JSX.Element | null {
   function handleSingleFileDownload(file: QXPUploadFileTask): void {
-    const { uid, name } = file;
     if (!canDownload) return;
-    (file.state === 'success' || !file.state) &&
-      httpClient(FILE_DOWNLOAD_INFO_API, { path: uid, fileName: name }).then((res: any) => {
-        const { url } = res;
-        if (!url) throw Error('无法下载该文件');
-        window.open(url, '_self');
-      }).catch((reason) => {
-        toast.error(reason);
-      });
+
+    if (file.state === 'success' || !file.state) {
+      const { uid } = file;
+
+      if (!OSS_PUBLIC_BUCKET_NAME || !OSS_PRIVATE_BUCKET_NAME || !OSS_DOMAIN ) {
+        toast.error('QXP Uploader : Bucket or domain is not provided for file signature');
+        return;
+      }
+
+      if (!isPrivate) {
+        window.open(`${window.location.protocol}//${OSS_PUBLIC_BUCKET_NAME}.${OSS_DOMAIN}/${uid}`, '_blank');
+        return;
+      }
+
+      httpClient<{ url: string }>(FILE_DOWNLOAD_INFO_API, {
+        path: `${OSS_PRIVATE_BUCKET_NAME}/${uid}`,
+        fileName: file.name,
+      })
+        .then(({ url }) => {
+          if (!url) throw Error('无法下载该文件');
+          window.open(url, '_self');
+        }).catch(toast.error);
+    }
   }
 
   function fileUploadProgressRender(file: QXPUploadFileTask): React.ReactNode {
@@ -62,6 +78,7 @@ export default function FileList({
       <ImgList
         files={files}
         style={style}
+        fileBucket={isPrivate ? OSS_PRIVATE_BUCKET_NAME : OSS_PUBLIC_BUCKET_NAME}
         className={className}
         deleteFileItem={deleteFileItem}
         handleDownload={handleSingleFileDownload}
@@ -80,7 +97,7 @@ export default function FileList({
             style={style}
             className={cs(
               'grid grid-cols-3 w-full relative justify-between items-center rounded-8 p-2',
-              'hover:bg-blue-100 group qxp-file-item', className,
+              'flex-shrink-0 hover:bg-blue-100 group qxp-file-item', className,
             )}
           >
             <div
@@ -88,7 +105,7 @@ export default function FileList({
               className={cs('flex items-center overflow-hidden col-start-1 col-end-3',
                 { 'cursor-pointer': canDownload },
               )}
-              onClick={(): void => handleSingleFileDownload(file)}
+              onClick={() => handleSingleFileDownload(file)}
             >
               <FileIcon file={file} size={30} />
               {showFileName && (

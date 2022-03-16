@@ -57,3 +57,62 @@
   height: calc(100vh - 100px);
   overflow: hidden;
 }
+
+@media  print{
+  * {
+    -webkit-print-color-adjust: exact;
+  }
+
+  #root > :not(.approval-detail) {
+    display: none;
+  }
+
+  body {
+    background-color: #fff;
+  }
+
+  .approval-detail {
+    display: block;
+    padding: 0;
+    border: 1px solid #ccc;
+
+    .approval-detail-toolbar {
+      display: none;
+    }
+
+    .task-form {
+      padding: 10px 24px 0 0;
+    }
+
+    .tab-navs {
+      display: none;
+    }
+
+    .approval-panel {
+      height: fit-content;
+    }
+
+    .approval-detail-tab {
+      margin-left: 12%;
+      background-color: #fff;
+      box-shadow: none;
+    }
+
+    .flow-name {
+      display: block;
+      border-bottom: 1px solid #ccc;
+      padding: 10px;
+    }
+
+    .approval-detail-tab-name {
+      display: block;
+      border-top: 1px solid #ccc;
+      border-bottom: 1px solid #ccc;
+      padding: 10px;
+    }
+
+    .ant-row {
+      break-inside: avoid;
+    }  
+  }
+}

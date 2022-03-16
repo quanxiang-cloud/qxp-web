@@ -1,4 +1,4 @@
-import { action, observable, computed, toJS } from 'mobx';
+import { action, observable, reaction, computed, toJS } from 'mobx';
 import { isEqual, omit, set, unset } from 'lodash';
 
 import toast from '@lib/toast';
@@ -10,6 +10,10 @@ import { fetchDataModels } from '../api';
 import { INIT_MODEL_SCHEMA } from '../utils';
 
 class AppModelStore {
+  constructor() {
+    reaction(() => this.curDataModel?.tableID, this.fetchSchema);
+  }
+
   @observable appID = '';
   @observable dataModels: DataModel[] = [];
   @observable curModelTableID = '';

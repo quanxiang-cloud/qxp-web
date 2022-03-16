@@ -4,11 +4,19 @@ import toast from '@lib/toast';
 import { subscribeStatusChange } from '@c/task-lists/utils';
 
 import { updateAppStatus, createPage } from '../../app-details/api';
-import { fetchAppList, delApp, createdApp, importApp, CreatedAppRes, createImportAppTask } from './api';
+import {
+  delApp,
+  createdApp,
+  fetchAppList,
+  CreatedAppRes,
+  createDummyApp,
+  createImportAppTask,
+  createAppByTemplateTask,
+} from './api';
 
 export type Params = {
-  useStatus?: number;
   appName?: string;
+  useStatus?: number;
 }
 
 type CountMapsParams = {
@@ -100,7 +108,7 @@ class AppListStore {
       this.appList = [newApp, ...this.appList];
       this.allAppList = [newApp, ...this.allAppList];
       createPage({
-        describe: '补充说明信息。',
+        describe: undefined,
         icon: 'event_available',
         name: '示例页面',
         appID: res.id, id: '',
@@ -111,12 +119,32 @@ class AppListStore {
 
   @action
   importApp = async (appInfo: AppInfo): Promise<any> => {
-    const createdAppRes = await importApp(appInfo);
+    const createdAppRes = await createDummyApp(appInfo);
     const taskRes = await createImportAppTask({
       ...appInfo.appZipInfo,
       title: `【${appInfo.appName}】 应用导入`,
       value: { appID: createdAppRes.id },
     });
+    const newApp = { ...appInfo, ...createdAppRes, useStatus: -2 };
+    const [isFinish, isSuccess] = await subscribeStatusChange(taskRes.taskID, '导入');
+    if (isFinish) {
+      newApp.useStatus = isSuccess ? -1 : -3;
+    }
+    this.appList = [newApp, ...this.appList];
+    this.allAppList = [newApp, ...this.allAppList];
+  };
+
+  @action
+  createdAppByTemplate = async (appInfo: AppInfo): Promise<any> => {
+    if (!appInfo.template) {
+      return;
+    }
+
+    const createdAppRes = await createDummyApp(appInfo);
+    const taskRes = await createAppByTemplateTask(
+      `【${appInfo.appName}】 模版应用创建`,
+      { templateID: appInfo.template, appID: createdAppRes.id },
+    );
     const newApp = { ...appInfo, ...createdAppRes, useStatus: -2 };
     const isFinish = await subscribeStatusChange(taskRes.taskID, '导入');
     if (isFinish) {

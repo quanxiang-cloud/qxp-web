@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { observer } from 'mobx-react';
 import cs from 'classnames';
-import { useHistory, useParams } from 'react-router-dom';
-import { FormButtonGroup } from '@formily/antd';
 import { useCss } from 'react-use';
+import { observer } from 'mobx-react';
+import { FormButtonGroup } from '@formily/antd';
+import { useHistory, useParams } from 'react-router-dom';
 
 import Icon from '@c/icon';
 import Modal from '@c/modal';
@@ -13,8 +13,9 @@ import { FormRenderer } from '@c/form-builder';
 import Tab, { TabProps } from '@c/no-content-tab';
 import { validateFieldConfig } from '@c/form-builder/utils';
 
-import NotSavedModal from './not-saved-modal';
 import store from './store';
+import NotSavedModal from './not-saved-modal';
+
 import './index.scss';
 
 const TABS: TabProps[] = [
@@ -33,18 +34,20 @@ function FormDesignHeader(): JSX.Element {
     '.ant-col-4+.ant-form-item-control': { width: '83%' },
   });
 
-  const tabChange = (tabKey: string): void => {
+  function tabChange(tabKey: string): void {
     const query = store.pageName ? `?pageName=${store.pageName}` : '';
 
     if (tabKey === 'pageSetting') {
-      validateFieldConfig(store.formStore?.configValidate).then(() => {
+      validateFieldConfig(
+        store.formStore?.fieldConfigValidator, store.formStore?.getFieldValueFunc,
+      ).then(() => {
         history.replace(`/apps/formDesign/${tabKey}/${pageId}/${appID}${query}`);
       }).catch((err) => toast.error(err));
       return;
     }
 
     history.replace(`/apps/formDesign/${tabKey}/${pageId}/${appID}${query}`);
-  };
+  }
 
   const goBack = (): void => {
     if (store.formStore?.hasEdit) {

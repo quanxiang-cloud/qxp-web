@@ -201,16 +201,22 @@ textarea.textarea:not([readonly]):not([disabled]):focus#option_set_tag {
   border-color: #ca2621;
 }
 
-.option-set-popper>.input-default:focus,
-.textarea-default:focus {
-  border-color: var(--blue-600);
-}
+.option-set-popper {
+  width: 334px;
+  height: 184px;
+  textarea {
+    width: 100%;
+    border: 1px solid var(--gray-200);
+    padding: 7px 16px;
+    margin-top: 8px;
+    border-radius: 2px 8px 8px 8px;
 
-.option-set-popper>textarea.textarea:not([readonly]):not([disabled]):focus {
-  border-color: var(--blue-600);
-}
+    &:focus-visible {
+      outline: 0px;
+    }
 
-.option-set-popper>input.input:not([readonly]):not([disabled]):focus,
-textarea.textarea:not([readonly]):not([disabled]):focus {
-  border-color: var(--blue-600);
+    &:focus {
+      border: 1px solid var(--blue-600);
+    }
+  }
 }

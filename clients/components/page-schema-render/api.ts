@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
-import { Schema } from '@ofa/render-engine';
-import { Spec } from '@ofa/api-spec-adapter/lib/src/swagger-schema-official';
+import type { Schema } from '@one-for-all/schema-spec';
+import { Spec } from '@one-for-all/api-spec-adapter/lib/src/swagger-schema-official';
 
 import logger from '@lib/logger';
 import SwaggerRPCSpecAdapter from '@lib/adapter-swagger-rpc';
@@ -35,7 +35,7 @@ export function useSchemaWithAdapter(schemaKey: string, version: string): Partia
       return;
     }
 
-    setAdatper(new SwaggerRPCSpecAdapter(data.swagger));
+    setAdatper(new SwaggerRPCSpecAdapter(data.swagger, { __disableResponseAdapter: true }));
   }, [isLoading, data]);
 
   return { schema: data?.schema, adapter: adapter };

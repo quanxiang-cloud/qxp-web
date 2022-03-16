@@ -62,13 +62,13 @@ const NumberPickerField: Omit<FormBuilder.SourceElement<NumberPickerConfig>, 'di
 
     onFieldInputChange$('minSet').subscribe(({ value }) => {
       setFieldState('minimum', (state) => {
-        state.visible = value.length === 0 ? false : true;
+        state.visible = !!value.length;
       });
     });
 
     onFieldInputChange$('maxSet').subscribe(({ value }) => {
       setFieldState('maximum', (state) => {
-        state.visible = value.length === 0 ? false : true;
+        state.visible = !!value.length;
       });
     });
 

@@ -4,8 +4,8 @@ import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { Store, ItemStore } from '@polyApi/components/object-editor/store';
 import { Row } from '@polyApi/components/object-editor/';
 import BodyEditor from '@polyApi/components/body-editor';
-import FormularEditor, { CustomRule, RefProps } from '@c/formula-editor';
-import { isObjectField } from '@portal/modules/poly-api/utils/object-editor';
+import FormulaEditor, { CustomRule, RefProps } from '@c/formula-editor';
+import { isObjectField } from '@polyApi/utils/object-editor';
 
 type Props = ISchemaFieldComponentProps & {
   customRules: CustomRule[];
@@ -15,14 +15,12 @@ const columnsDataIndexToOmit = ['required', 'desc'];
 
 export type RefType = { getCurrent: () => RefProps | null; }
 
-function EndOutputEditor(props: Props, ref: ForwardedRef<RefType>): JSX.Element {
-  const formularRefs = useRef<Map<ItemStore<POLY_API.ObjectSchema>, RefProps>>(new Map());
-  const currentFormularRef = useRef<RefProps | null>(null);
+function EndOutputEditor({ customRules, ...props }: Props, ref: ForwardedRef<RefType>): JSX.Element {
+  const formulaRefs = useRef<Map<ItemStore<POLY_API.ObjectSchema>, RefProps>>(new Map());
+  const currentFormulaRef = useRef<RefProps | null>(null);
   useImperativeHandle(ref, () => ({
-    getCurrent: () => currentFormularRef.current,
+    getCurrent: () => currentFormulaRef.current,
   }));
-
-  const { customRules } = props;
 
   function handleRuleChange(
     current$: ItemStore<POLY_API.ObjectSchema>, store$: Store<POLY_API.ObjectSchema>,
@@ -35,15 +33,15 @@ function EndOutputEditor(props: Props, ref: ForwardedRef<RefType>): JSX.Element 
   }
 
   function handleRuleClick(current$: ItemStore<POLY_API.ObjectSchema>): void {
-    currentFormularRef.current = formularRefs.current.get(current$) || null;
+    currentFormulaRef.current = formulaRefs.current.get(current$) || null;
   }
 
   function handleOnAddField(): void {
-    currentFormularRef.current = null;
+    currentFormulaRef.current = null;
   }
 
   function setRef(current$: ItemStore<POLY_API.ObjectSchema>, ref: RefProps | null): void {
-    ref && formularRefs.current.set(current$, ref);
+    ref && formulaRefs.current.set(current$, ref);
   }
 
   function ruleRender(
@@ -52,12 +50,10 @@ function EndOutputEditor(props: Props, ref: ForwardedRef<RefType>): JSX.Element 
     if (isObjectField(type)) {
       return <span className="text-caption-no-color-weight text-gray-400">仅原始参数类型可配置</span>;
     }
-    if (!customRules.length) {
-      return null;
-    }
+
     return (
       <div onClick={() => handleRuleClick(current$)}>
-        <FormularEditor
+        <FormulaEditor
           className="h-full node-formula-editor"
           ref={(node) => setRef(current$, node)}
           onChange={handleRuleChange(current$, store$)}

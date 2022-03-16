@@ -17,7 +17,7 @@ install_node_modules_go_packages:
     - qxp-web-runner
   stage: install
   script:
-    - yarn install --registry=http://r.npm.internal.yunify.com
+    - yarn install
 
 lint_js:
   tags:

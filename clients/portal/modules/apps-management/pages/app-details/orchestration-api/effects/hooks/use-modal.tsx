@@ -12,7 +12,7 @@ import useSchemaformKeypressSubmit from '@orchestrationAPI/effects/hooks/use-sch
 import InputWithDesc from '@orchestrationAPI/components/input-with-desc';
 import CopyPolySelect from '@orchestrationAPI/components/copy-poly-select';
 
-export const actions = createAsyncFormActions();
+const actions = createAsyncFormActions();
 
 export default function useModal<I, O, D>(
   modalType: ModalType | undefined,

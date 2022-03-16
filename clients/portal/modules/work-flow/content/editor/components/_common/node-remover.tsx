@@ -35,7 +35,7 @@ export default function NodeRemover({
 
   function handleOnSubmitRemoveNode(): void {
     const newElements = onRemoveNode(id, elements);
-    updateStore((s) => ({ ...s, elements: newElements }));
+    updateStore((s) => ({ ...s, elements: newElements, needSaveFlow: true }));
   }
 
   function onMouseDown(e: MouseEvent): void {

@@ -42,6 +42,7 @@ const config = {
     'react',
     'react-dom',
     'react-is',
+    'elkjs',
 
     '@formily/antd-components',
     '@formily/antd',
@@ -61,7 +62,7 @@ const config = {
     // 'react-use',
     // /react-use\/.*/,
 
-    // 'draft-js',
+    'draft-js',
     // 'html-to-draftjs',
     // 'react-draft-wysiwyg',
     'jszip',
@@ -72,7 +73,7 @@ const config = {
     'xlsx',
     'csslint',
 
-    /@ofa\/.*/,
+    /@one-for-all\/.*/,
   ],
 
   plugins: [

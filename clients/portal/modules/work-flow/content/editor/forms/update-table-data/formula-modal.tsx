@@ -35,7 +35,7 @@ function FormulaModal(props: Props): JSX.Element | null {
   }, {}), [allFields]);
 
   const formulaCustomRules: CustomRule[] = allFields.map(({ label, value }) => ({
-    key: `[${value}]`,
+    key: '$' + value,
     name: label,
     type: 'field',
   }));
@@ -77,7 +77,7 @@ function FormulaModal(props: Props): JSX.Element | null {
               return (
                 <span
                   key={value}
-                  onClick={() => addField({ key: value, name: label })}
+                  onClick={() => addField({ key: `$${value}`, name: label })}
                   className="inline-block mb-8 p-2 bg-gray-100 mr-4 border border-gray-300 cursor-pointer"
                 >
                   {label}
@@ -124,7 +124,7 @@ function FormulaModal(props: Props): JSX.Element | null {
               return (
                 <span
                   key={value}
-                  onClick={() => addField({ key: value, name: label })}
+                  onClick={() => addField({ key: `$${value}`, name: label })}
                   className="inline-block mb-8 p-2 bg-gray-100 mr-4 border border-gray-300 cursor-pointer"
                 >
                   {label}

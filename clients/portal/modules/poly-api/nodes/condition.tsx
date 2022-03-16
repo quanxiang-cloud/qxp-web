@@ -41,7 +41,7 @@ export default function ConditionNode(props: NodeProps<POLY_API.SubjectPolyNode>
       >
         <Icon
           name="condition"
-          size={50}
+          size={155}
           style={{ backgroundColor: POLY_DESIGN_CONFIG.BACKGROUND_COLOR }}
         />
       </div>

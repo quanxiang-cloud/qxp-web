@@ -76,6 +76,7 @@ function BodyEditor(props: Props): JSX.Element {
     const path = getFullPath(parentPath, name, index);
     const level = path.split('.').length;
     isValidating && updateErrors(name || '', current$.id, errorsRef);
+    const showInput = !isNull(name) && current$.parent$?.get('type') !== 'array';
 
     return (
       <div className="flex items-center" style={{ marginLeft: (level - 1) * 20 }}>
@@ -86,7 +87,7 @@ function BodyEditor(props: Props): JSX.Element {
             onToggle={handleHideChildren(current$, store$)}
           />
         )}
-        {!isNull(name) && (
+        {showInput && (
           <>
             <InputEditor
               className="flex-1"
@@ -99,7 +100,7 @@ function BodyEditor(props: Props): JSX.Element {
             )}
           </>
         )}
-        {isNull(name) && <span className="text-caption-no-color-weight text-gray-400">{index}</span>}
+        {!showInput && <span className="text-caption-no-color-weight text-gray-400">{index}</span>}
       </div>
     );
   }
@@ -147,6 +148,7 @@ function BodyEditor(props: Props): JSX.Element {
     store$: Store<POLY_API.ObjectSchema>,
   ): void {
     onAddField?.();
+    row?.current$.showChildren();
     if (!row) {
       return store$?.addChild(
         getObjectEditorNewField(null, 'body', defaultFieldType), store$.Value.length,
@@ -214,7 +216,6 @@ function BodyEditor(props: Props): JSX.Element {
         value={fromApiDataToObjectSchema((valueFrom || []) as POLY_API.PolyNodeInput[])}
         onAddField={handleAddField}
         onChange={handleChange}
-        addFilter={(row: Row<POLY_API.ObjectSchema>) => !!row.name}
       />
     </>
   );

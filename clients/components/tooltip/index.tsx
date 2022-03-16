@@ -12,21 +12,20 @@ export type Props = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivEle
   wrapperClassName?: string;
   theme?: Theme;
   trigger?: TriggerMethod;
+  offset?: [number, number];
 }
 
-const modifiers = [
-  {
-    name: 'offset',
-    options: {
-      offset: [0, 5],
-    },
-  },
-];
-
 export default function ToolTip(props: Props): JSX.Element {
-  const { children, position, ...otp } = props;
+  const { children, position, offset = [0, 5], ...otp } = props;
   const popperRef = useRef<Popper>(null);
   const reference = useRef<any>(null);
+
+  const modifiers = [
+    {
+      name: 'offset',
+      options: { offset },
+    },
+  ];
 
   return (
     <>

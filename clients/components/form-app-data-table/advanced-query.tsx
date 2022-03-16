@@ -4,10 +4,11 @@ import { Popover } from 'antd';
 import DataFilter, { RefProps } from '@c/data-filter';
 import Icon from '@c/icon';
 import Button from '@c/button';
+import { Params } from './store';
 
 type Props = {
   fields: SchemaFieldItem[];
-  search: (params: { tag: FilterTag, condition: Condition[] }) => void;
+  search: (params: Params) => void;
   tag?: FilterTag;
 }
 
@@ -29,7 +30,7 @@ function AdvancedQuery({ fields, search, tag }: Props): JSX.Element {
 
     const { condition, tag } = dataFilterRef.current.getDataValues();
     if (condition.length || conditionCount !== 0) {
-      search({ tag, condition });
+      search({ tag, condition, page: 1 });
     }
     setConditionCount(condition.length);
   };

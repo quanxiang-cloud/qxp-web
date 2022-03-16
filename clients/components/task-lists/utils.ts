@@ -7,7 +7,7 @@ import store from './store';
 import { subscribe } from './api';
 import { TaskStatus } from './type';
 
-export function subscribeStatusChange(taskID: string, actionName: string): Promise<boolean> {
+export function subscribeStatusChange(taskID: string, actionName: string): Promise<[boolean, boolean]> {
   return subscribe(taskID).then((res) => {
     if (res.status === TaskStatus.fail) {
       toast.error(`${actionName}失败，请在右上方“同步列表”中查看${actionName}结果`);
@@ -18,7 +18,7 @@ export function subscribeStatusChange(taskID: string, actionName: string): Promi
       toast.success(`${actionName}成功，请在右上方“同步列表”中查看${actionName}结果`);
     }
 
-    return res.isFinish && res.status === TaskStatus.success;
+    return [res.isFinish, res.status === TaskStatus.success];
   });
 }
 

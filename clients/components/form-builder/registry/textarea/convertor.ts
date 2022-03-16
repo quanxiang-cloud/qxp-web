@@ -37,6 +37,8 @@ export function toSchema(value: TextareaConfig): ISchema {
     ['x-component-props']: {
       placeholder: value.placeholder,
       defaultValue: value.defaultValue,
+      autoSize: { minRows: 4 },
+      rows: 4,
     },
     ['x-internal']: {
       sortable: value.sortable,

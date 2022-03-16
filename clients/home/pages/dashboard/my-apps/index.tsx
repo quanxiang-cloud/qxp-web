@@ -1,6 +1,7 @@
 import React from 'react';
 import { useQuery } from 'react-query';
-import { Repository, SchemaRender, Schema } from '@ofa/render-engine';
+import { Repository, SchemaRender } from '@one-for-all/render-engine';
+import type { Schema } from '@one-for-all/schema-spec';
 import logger from '@lib/logger';
 
 import ErrorBoundary from '@c/page-schema-render/error-boundary';
@@ -49,7 +50,7 @@ export default function MyApps(): JSX.Element | null {
 
   return (
     <ErrorBoundary>
-      <SchemaRender schema={schema} apiSpecAdapter={apiSpecAdapter} repository={repository} />
+      <SchemaRender schema={schema} plugins={{ apiSpecAdapter, repository }} />
     </ErrorBoundary>
   );
 }

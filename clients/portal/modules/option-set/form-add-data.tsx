@@ -50,7 +50,7 @@ function FormAddData({
       >
         <Form.Item
           name="option_set_name"
-          label="选项集名称1"
+          label="选项集名称"
           rules={[
             {
               required: true,

@@ -12,7 +12,7 @@ export const copyPerGroup = (appID: string, data: {
   return httpClient(`/api/v1/form/${appID}/m/permission/duplicatePer`, data);
 };
 
-export const fetchRights = (appID: string) => {
+export const fetchRights = (appID: string): Promise<{list: Rights[]}> => {
   return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/getList`, {});
 };
 

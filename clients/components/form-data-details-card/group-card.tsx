@@ -9,7 +9,7 @@ type Props = {
   list: FormInfoCardDataProp[];
 }
 
-const FULL_COMP = ['AssociatedRecords', 'SubTable'];
+const FULL_COMP = ['AssociatedRecords', 'SubTable', 'ImageUpload', 'FileUpload'];
 
 export function InfoCard({ list }: {list: FormInfoCardDataProp}): JSX.Element {
   const { label, value, key, fieldSchema } = list;
@@ -23,7 +23,7 @@ export function InfoCard({ list }: {list: FormInfoCardDataProp}): JSX.Element {
         },
       )}
     >
-      <div className='text-gray-600'>{label}：</div>
+      <div className='text-gray-600 flex-shrink-0'>{label}：</div>
       <div className={cs(
         'text-gray-900 flex-1 card-value',
         {

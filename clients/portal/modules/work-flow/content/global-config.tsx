@@ -1,6 +1,6 @@
 import React, { useRef, useContext, useState } from 'react';
 import { useQuery } from 'react-query';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { Radio, RadioChangeEvent } from 'antd';
 
 import Toggle from '@c/toggle';
@@ -66,7 +66,7 @@ export default function GlobalConfig(): JSX.Element | null {
     () => {
       return getFlowVariables(flowID).then((vars) => {
         return vars.map(({ code, name }) => ({
-          key: code,
+          key: '$' + code,
           name,
         }));
       });
@@ -93,9 +93,7 @@ export default function GlobalConfig(): JSX.Element | null {
     updateStore((s) => ({ ...s, cancelable }));
   };
 
-  const handleSaveConfig = (
-    config: Omit<StoreValue, 'elements' | 'errors' | 'currentDataNotSaveConfirmCallback'>,
-  ): void => {
+  const handleSaveConfig = (config: Partial<StoreValue>): void => {
     updateStore((s) => ({ ...s, ...config }));
     saver({
       ...buildWorkFlowSaveData(appID),
@@ -214,7 +212,7 @@ export default function GlobalConfig(): JSX.Element | null {
           className="bg-gray-1000 p-16 header-background-image h-44 shadow-header rounded-t-12"
           descClassName="text-gray-400"
         />
-        <form onSubmit={handleSubmit(handleSaveConfig)} className='p-16'>
+        <form onSubmit={handleSubmit(handleSaveConfig as SubmitHandler<Partial<StoreValue>>)} className='p-16'>
           {options.map((option) => (
             <div key={option.field} className='mb-16'>
               <div className='flex'>

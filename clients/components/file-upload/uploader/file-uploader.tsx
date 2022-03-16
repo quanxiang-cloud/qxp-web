@@ -9,15 +9,18 @@ import { isAcceptedFileType, isMacosX } from '@lib/utils';
 import FileList from '../file-list';
 import FilePicker from './file-picker';
 import useFileStore from './useFileStore';
+import { OSS_PRIVATE_BUCKET_NAME, OSS_PUBLIC_BUCKET_NAME } from '../constants';
 
 export type FileUploaderProps = {
   accept?: string[];
   iconName?: string;
+  isPrivate?: boolean;
   multiple?: boolean;
   disabled?: boolean;
   className?: string;
   maxFileSize?: number;
   style?: React.CSSProperties;
+  additionalPathPrefix?: string;
   uploaderDescription?: React.ReactNode;
   fileData?: QXPUploadFileBaseProps[];
   children?: React.ReactNode;
@@ -37,13 +40,21 @@ function FileUploader({
   children,
   maxFileSize,
   fileData = [],
+  isPrivate = true,
   uploaderDescription,
+  additionalPathPrefix,
   onFileError,
   onFileAbort,
   onFileDelete,
   onFileSuccess,
 }: FileUploaderProps): JSX.Element {
-  const fileStore = useFileStore({ files: fileData, onSuccess: onFileSuccess, onError: onFileError });
+  const fileStore = useFileStore({
+    fileBucket: isPrivate ? OSS_PRIVATE_BUCKET_NAME : OSS_PUBLIC_BUCKET_NAME,
+    files: fileData,
+    additionalPathPrefix,
+    onError: onFileError,
+    onSuccess: onFileSuccess,
+  });
 
   const {
     files: storeFiles,
@@ -121,8 +132,9 @@ function FileUploader({
         {children}
       </FilePicker>
       <FileList
-        className="w-full"
         canDownload
+        className="w-full"
+        isPrivate={isPrivate}
         files={toJS(storeFiles)}
         deleteFileItem={deleteFileItem}
         onRetryFileUpload={retryUploadFile}

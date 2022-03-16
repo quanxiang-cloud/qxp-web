@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { observer } from 'mobx-react';
 
 import Icon from '@c/icon';
@@ -28,6 +28,7 @@ const modifiers = [
 ];
 
 function UsersAndPermissions(): JSX.Element {
+  const history = useHistory();
   const [modalType, setModalType] = useState('');
   const [showEditRightModal, setShowEditRightModal] = useState(false);
   const [tabCurrentKey, setTabCurrentKey] = useState('associate');
@@ -40,7 +41,7 @@ function UsersAndPermissions(): JSX.Element {
     store.appID = appID;
     store.fetchRights();
     return () => {
-      store.appID = '';
+      store.clear();
     };
   }, [appID]);
 
@@ -166,6 +167,7 @@ function UsersAndPermissions(): JSX.Element {
                 onSelect={(role) => {
                   store.currentRights = role.source as Rights;
                   store.rightsGroupID = role.id;
+                  history.push(`/apps/details/${appID}/app_control?id=${role.id}`);
                 }}
                 defaultSelected={store.rightsGroupID}
                 menus={roles}

@@ -2,16 +2,14 @@ import React, { createContext, useContext, PropsWithChildren, useMemo, useEffect
 import { useLocalStorage } from 'react-use';
 import { first } from 'lodash';
 
-import orchestrationAPIStoreFactory, { OrchestrationAPIStore } from './store';
+import { OrchestrationAPIStore } from './store';
 import APINamespaceTreeStore from './store/namespace';
 import type { NameSpace } from './effects/api/api-namespace';
 import { getNamespaceNodeSiblingNodes } from './utils';
 
-type Props = PropsWithChildren<{ appID: string }>;
+type Props = PropsWithChildren<{ orchestrationApiStore: OrchestrationAPIStore }>;
 const OrchestrationAPIStoreContext = createContext<OrchestrationAPIStore | null>(null);
-export function OrchestrationAPIStoreProvider({ children, appID }: Props): JSX.Element {
-  const orchestrationApiStore = useMemo(() => orchestrationAPIStoreFactory(appID), [appID]);
-
+export function OrchestrationAPIStoreProvider({ children, orchestrationApiStore }: Props): JSX.Element {
   return (
     <OrchestrationAPIStoreContext.Provider value={orchestrationApiStore}>
       {children}

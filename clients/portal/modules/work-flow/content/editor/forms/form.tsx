@@ -1,4 +1,4 @@
-import React, { JSXElementConstructor, useEffect, useState, useContext } from 'react';
+import React, { JSXElementConstructor, useEffect, useState, useContext, useMemo } from 'react';
 import { useQuery } from 'react-query';
 
 import { getTableSchema } from '@lib/http-client';
@@ -50,7 +50,9 @@ function useTableSchema(appID: string, tableID: string): [ReturnType<typeof sche
     setSchema(data);
   }, [data, isLoading, isError]);
 
-  return [schemaToFields(schema), isLoading];
+  const schemaFields = useMemo(() => schemaToFields(schema), [schema]);
+
+  return [schemaFields, isLoading];
 }
 
 const components: Record<string, JSXElementConstructor<any>> = {

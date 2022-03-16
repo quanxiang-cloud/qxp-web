@@ -1,7 +1,7 @@
-import { get, flatten, cloneDeep } from 'lodash';
+import { get, cloneDeep } from 'lodash';
 
-export const primitiveTypes = ['string', 'number', 'boolean', 'datetime'];
-export const advancedCompTypes = [
+const primitiveTypes = ['string', 'number', 'boolean', 'datetime'];
+const advancedCompTypes = [
   'SubTable',
   'AssociatedRecords',
   'UserPicker',
@@ -13,17 +13,14 @@ export const advancedCompTypes = [
 ];
 export const excludeComps = ['subtable'];
 
-type TableListItem = {
-  label: string;
-  value: string;
-  isGroup: boolean;
-  children?: Array<TableListItem>
-}
+export const complexFieldTypes = ['subtable', 'associatedrecords', 'associateddata'];
 
 type Options = {
   noSystem?: boolean;
   matchTypeFn?: (...args: any[]) => boolean;
   excludeComps?: string[],
+  sort?: boolean, // sort field by type
+  mergeNormal?: boolean; // merge all normal components
   [key: string]: any,
 }
 
@@ -31,7 +28,7 @@ export const getSchemaFields = (
   schemaFields: SchemaFieldItem[] = [],
   options: Options = {},
 ): LabelValue[] => {
-  return schemaFields.filter((schema) => {
+  const fields = schemaFields.filter((schema) => {
     const compName = schema.componentName;
     const isSystem = !!get(schema, 'x-internal.isSystem');
     if (options.noSystem && isSystem) {
@@ -44,16 +41,34 @@ export const getSchemaFields = (
       return options.matchTypeFn.call(null, schema);
     }
     return !!compName;
-  }).map((schema) => {
+  });
+
+  if (options.sort) {
+    fields.sort((f1, f2) => {
+      if (isAdvancedField(f1.type, f1.componentName)) return 1;
+      if (isAdvancedField(f2.type, f2.componentName)) return -1;
+      return 0;
+    });
+  }
+
+  if (options.mergeNormal) {
+    const hasNormal = fields.some(({ componentName })=> !complexFieldTypes.includes(componentName.toLowerCase()));
+    const groups = fields
+      .filter(({ componentName }) => complexFieldTypes.includes(componentName.toLowerCase()))
+      .map(({ title, id })=> ({ label: title as string, value: id }));
+    return hasNormal ? [{ label: '普通组件', value: 'normal' }].concat(groups) : groups;
+  }
+
+  return fields.map((schema) => {
     return { label: schema.title as string, value: schema.id };
   });
 };
 
-export function isAdvancedField(type: string, xCompName?: string): boolean {
+export function isAdvancedField(type?: string, xCompName?: string): boolean {
   if (xCompName && advancedCompTypes.map((t)=> t.toLowerCase()).includes(xCompName.toLowerCase())) {
     return true;
   }
-  return !primitiveTypes.includes(type);
+  return !primitiveTypes.includes(type || '');
 }
 
 export function isFieldTypeMatch(
@@ -63,22 +78,11 @@ export function isFieldTypeMatch(
 ): boolean {
   if (isAdvancedField(srcFieldType, srcFieldCompName)) {
     // advanced field should be the same component type
-    return targetFieldSchema['x-component']?.toLowerCase() === srcFieldCompName.toLowerCase();
+    return targetFieldSchema['x-component']?.toLowerCase() === srcFieldCompName?.toLowerCase();
   }
   // primitive type should be equal
   return targetFieldSchema.type === srcFieldType;
 }
-
-// filter target tables with group
-export const filterTables = (tables: Array<TableListItem> = []): Array<TableListItem> => {
-  const allTables = tables.map((tb) => {
-    if (tb.isGroup) {
-      return tb.children || [];
-    }
-    return tb;
-  });
-  return flatten(allTables);
-};
 
 const mapSchemaProps = <T extends SchemaFieldItem>(
   props: Record<string, T>,
@@ -177,16 +181,6 @@ export const transformSchema = (
     ...schema,
     properties: mappedProps,
   };
-};
-
-export const getValidProcessVariables = (
-  variables: Array<ProcessVariable>, compareType: string,
-): LabelValue[] => {
-  return variables?.map(({ code, name, fieldType }) => {
-    if (primitiveTypes.includes(fieldType) && fieldType === compareType) {
-      return { label: name, value: code };
-    }
-  }).filter((v): v is LabelValue => !!v) || [];
 };
 
 /*

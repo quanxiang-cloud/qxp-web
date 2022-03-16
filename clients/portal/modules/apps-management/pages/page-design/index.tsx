@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
-import { Schema } from '@ofa/render-engine';
+import { Schema } from '@one-for-all/schema-spec';
 
 import { parseJSON } from '@lib/utils';
 import { useGetGlobalConfig } from '@lib/configuration-center';
@@ -36,8 +36,10 @@ export function useCustomPageSchema(appID: string, pageId: string): { loading: b
 }
 
 function useWhichCustomPageEditor(appID: string, pageId: string): { editor: string; loading: boolean; } {
-  const [editor, loading] = useGetGlobalConfig(getKeyOfCustomPageEditor(appID, pageId), '1.0.0', '');
-  return { editor, loading };
+  const [key, newKey] = getKeyOfCustomPageEditor(appID, pageId);
+  const [editor, loading] = useGetGlobalConfig(key, '1.0.0', '');
+  const [newEditor, newLoading] = useGetGlobalConfig(newKey, '1.0.0', '');
+  return { editor: newEditor || editor, loading: newLoading || loading };
 }
 
 function PageDesign(): JSX.Element | null {

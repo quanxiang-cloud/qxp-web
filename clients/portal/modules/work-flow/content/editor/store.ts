@@ -10,7 +10,7 @@ import { edgeBuilder, nodeBuilder } from './utils';
 import type { StoreValue, BusinessData, CurrentElement, Data, FormDataElement } from './type';
 import { CURRENT_WORK_FLOW_VERSION } from './utils/constants';
 
-export const getStoreInitialData = (): StoreValue => {
+const getStoreInitialData = (): StoreValue => {
   const startID = 'formData' + uuid();
   const endID = 'end' + uuid();
   return {
@@ -75,22 +75,6 @@ export function updateStoreByKey<T>(key: keyof StoreValue, updater: (st: T) => T
   });
 }
 
-export function updateBusinessDataByKey<T>(
-  id: string,
-  fieldName: keyof BusinessData,
-  updater: (v: T) => T,
-): void {
-  store.next({
-    ...store.value,
-    elements: store.value.elements.map((element): FlowElement => {
-      if (element.id === id && element?.data?.businessData) {
-        update(element, `data.businessData.${fieldName}`, updater);
-      }
-      return element;
-    }),
-  });
-}
-
 export function updateBusinessData(
   id: string,
   updater: (v: BusinessData) => BusinessData,
@@ -144,7 +128,7 @@ export function getFormDataElement(): FormDataElement {
   return store.value.elements?.find(({ type }) => type === 'formData') as FormDataElement;
 }
 
-export function numberTransform(keys: string[], data: any): any {
+function numberTransform(keys: string[], data: any): any {
   keys.forEach((key) => update(data, key, (v) => +v));
   return data;
 }
@@ -172,7 +156,7 @@ export function buildWorkFlowSaveData(
   };
 }
 
-export function buildBpmnText(
+function buildBpmnText(
   version: string,
   nodeID: string,
   newBusinessData: Partial<BusinessData>,

@@ -20,6 +20,7 @@ export default {
           marginBottom: 0,
         },
         itemClassName: 'bg-gray-100 h-full',
+        help: null,
       },
       'x-rules': [
         (values: POLY_API.PolyEndBody): string => {

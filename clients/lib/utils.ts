@@ -1,6 +1,6 @@
 import qs from 'qs';
 import { TreeData, TreeItem } from '@atlaskit/tree';
-import _, { isObject } from 'lodash';
+import { isObject } from 'lodash';
 import { TreeNode } from '@c/headless-tree/types';
 import { nanoid } from 'nanoid';
 import dayjs from 'dayjs';
@@ -67,8 +67,6 @@ export const isNull = (v: unknown): boolean => v === null;
 export const either = <S>(pred1: (...args: S[]) => boolean, pred2: (...args: S[]) => boolean): any => (
   ...args: S[]
 ) => pred1(...args) || pred2(...args);
-export const isVoid = either<null | undefined>(isUndefined, isNull);
-
 export const searchByKey = <T, S, K>(key: string, value: T, obj: S): K | void => {
   for (const k in obj) {
     if (k === key && ((obj[k] as unknown) as T) === value) {
@@ -137,7 +135,7 @@ export function departmentToTreeNode(department: Department, level = 0): TreeNod
     childrenStatus: 'resolved',
     expanded: level === 0,
     order: 0,
-    level: department.grade,
+    level: level,
     children: children,
   };
 }
@@ -304,14 +302,6 @@ export function quickSortObjectArray<T extends Record<string, T[keyof T]>>(key: 
   const left = tail.filter((e) => (e[key] ?? 0) < (head[key] ?? 0));
   const right = tail.filter((e) => (e[key] ?? 0) >= (head[key] ?? 0));
   return quickSortObjectArray<T>(key, left).concat(head, quickSortObjectArray(key, right));
-}
-
-export function isEmptyObject(value: unknown): boolean {
-  return _.isObject(value) && _.isEmpty(value);
-}
-
-export function isEmptyArray(value: unknown): boolean {
-  return _.isArray(value) && _.isEmpty(value);
 }
 
 export async function copyContent(content: string, successMes?: string, errorMes?: string): Promise<void> {

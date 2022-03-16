@@ -2,7 +2,7 @@ import React, { KeyboardEvent, MouseEvent } from 'react';
 import cs from 'classnames';
 
 import Icon from '@c/icon';
-import { updateNodeDataByKey } from '@flow/content/editor/store';
+import { updateNodeDataByKey, updateStore } from '@flow/content/editor/store';
 
 interface Props {
   title: string;
@@ -25,6 +25,10 @@ export default function NodeHeader({
     e.stopPropagation();
   }
 
+  function onBlur(): void {
+    updateStore((s) => ({ ...s, needSaveFlow: true }));
+  }
+
   return (
     <header
       className={cs(
@@ -44,8 +48,10 @@ export default function NodeHeader({
           onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
             if (e.key === 'Enter') {
               (e.target as HTMLInputElement).blur();
+              onBlur();
             }
           }}
+          onBlur={onBlur}
           className={cs(
             'text-caption-no-color-weight font-medium',
             'outline-none work-flow-node-header-input transition duration-240',

@@ -5,7 +5,7 @@ import { PATH_TREE_AVAILABLE_NODE_TYPE } from '../constants';
 
 const uniqByName = uniqBy(({ name }: POLY_API.PolyNodeInput) => name);
 
-export function addNodeNamePrefix2PolyNodeInput(
+function addNodeNamePrefix2PolyNodeInput(
   inputs: POLY_API.PolyNodeInput[], prefix: POLY_API.PolyNodeInput,
 ): POLY_API.PolyNodeInput {
   prefix.data = inputs;

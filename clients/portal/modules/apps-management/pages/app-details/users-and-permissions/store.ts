@@ -1,7 +1,7 @@
 import { action, observable } from 'mobx';
 
 import toast from '@lib/toast';
-import { deepClone } from '@lib/utils';
+import { deepClone, getQuery } from '@lib/utils';
 import schemaToFields from '@lib/schema-convert';
 import { fetchPageList, getTableSchema } from '@lib/http-client';
 
@@ -86,18 +86,27 @@ class UserAndPerStore {
   };
 
   @action
+  setRights = (res: {list: Rights[]}): void => {
+    const { list = [] } = res || {};
+    this.rightsList = list;
+    this.tempRightList = deepClone(this.rightsList);
+    const { id } = getQuery<{ id: string }>();
+    if (!id) {
+      this.currentRights = this.rightsList[0] || INIT_CURRENT_RIGHTS;
+      this.rightsGroupID = this.rightsList[0]?.id;
+      return;
+    }
+    this.currentRights = this.rightsList.find((right) => right.id === id) || INIT_CURRENT_RIGHTS;
+    this.rightsGroupID = this.currentRights.id;
+  };
+
+  @action
   fetchRights = (): void => {
     if (!this.appID) {
       return;
     }
 
-    fetchRights(this.appID).then((res: any) => {
-      const { list = [] } = res || {};
-      this.rightsList = list;
-      this.tempRightList = deepClone(this.rightsList);
-      this.currentRights = this.rightsList[0] || INIT_CURRENT_RIGHTS;
-      this.rightsGroupID = this.rightsList[0]?.id;
-    }).catch((err) => {
+    fetchRights(this.appID).then(this.setRights).catch((err) => {
       toast.error(err);
     });
   };
@@ -339,6 +348,18 @@ class UserAndPerStore {
     }).catch((err) => {
       toast.error(err);
     });
+  };
+
+  @action
+  clear = (): void => {
+    this.appID = '';
+    this.rightsGroupID = '';
+    this.rightsList = [];
+    this.perData = {
+      conditions: {},
+      schema: null,
+      authority: 0,
+    };
   };
 }
 

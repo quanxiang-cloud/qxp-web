@@ -133,7 +133,7 @@ function ApprovalDetail(): JSX.Element {
   const tableID = get(data, 'tableId');
 
   return (
-    <div>
+    <>
       <Breadcrumb
         segments={[
           {
@@ -169,7 +169,10 @@ function ApprovalDetail(): JSX.Element {
                 globalActions={pick(task, globalActionKeys)}
                 onClickAction={store.handleClickAction}
                 workFlowType={type}
+                schema={task?.formSchema}
+                formData={formValues}
               />
+              <div className='flow-name hidden'>{data?.flowName}</div>
               {renderSchemaForm(task)}
             </>
           }
@@ -177,24 +180,26 @@ function ApprovalDetail(): JSX.Element {
         </Panel>
         {
           data.canViewStatusAndMsg && (
-            <Panel className="approval-detail-tab overflow-auto bg-gray-100">
-              <Tab
-                navsClassName="px-16"
-                contentClassName="px-16"
-                items={[
-                  {
-                    id: 'history',
-                    name: '动态',
-                    content: (<Dynamic onTaskEnd={setTaskEnd} />),
-                  },
-                  {
-                    id: 'discuss',
-                    name: '讨论',
-                    content: (<Discuss showInput={data.canMsg} />),
-                  },
-                ]}
-              />
-            </Panel>
+            <>
+              <div className='approval-detail-tab-name hidden'>审批详情</div>
+              <Panel className="approval-detail-tab overflow-auto bg-gray-100">
+                <Tab
+                  navsClassName="px-16"
+                  contentClassName="px-16"
+                  items={[
+                    {
+                      id: 'history',
+                      name: '动态',
+                      content: (<Dynamic onTaskEnd={setTaskEnd} />),
+                    },
+                    {
+                      id: 'discuss',
+                      name: '讨论',
+                      content: (<Discuss showInput={data.canMsg} />),
+                    },
+                  ]} />
+              </Panel>
+            </>
           )
         }
       </div>
@@ -208,7 +213,7 @@ function ApprovalDetail(): JSX.Element {
           schema={task?.formSchema}
         />
       )}
-    </div>
+    </>
   );
 }
 

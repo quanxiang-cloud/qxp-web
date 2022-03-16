@@ -1,8 +1,11 @@
 import { QueryFunctionContext } from 'react-query';
+import { isEmpty } from 'lodash';
+import { and, pick } from 'ramda';
 
-import httpClient from '@lib/http-client';
+import httpClient, { getTableSchema } from '@lib/http-client';
 import { schemaToOptions, SchemaToOptionsOptions } from '@lib/schema-convert';
 import logger from '@lib/logger';
+import { SYSTEM_FIELDS } from '@c/form-builder/constants';
 
 import { Operation } from '../type';
 import { SYSTEM_OPERATOR_PERMISSION, CUSTOM_OPERATOR_PERMISSION } from '../utils/constants';
@@ -33,11 +36,43 @@ export async function getFormFieldSchema({ queryKey }: QueryFunctionContext): Pr
   return data?.schema ?? {};
 }
 
-export async function getFormFieldOptions({ queryKey, meta }: QueryFunctionContext): Promise<{
+async function rebuildSchema(_schema: ISchema): Promise<ISchema> {
+  const isSubTable = _schema['x-component'] === 'SubTable';
+  const props = _schema['x-component-props'];
+  const isForeignSubTable = props?.subordination === 'foreign_table';
+  const { tableID, appID, columns } = props ?? {};
+  if (and(isSubTable, isForeignSubTable)) {
+    const tableSchema = await getTableSchema(appID, tableID);
+    if (!tableSchema) {
+      return _schema;
+    }
+    const keepColumns = columns.filter((column: string) => !SYSTEM_FIELDS.includes(column));
+    tableSchema.schema.properties = pick(keepColumns, tableSchema.schema.properties);
+    Object.assign(_schema, { items: tableSchema.schema });
+    return _schema;
+  }
+  const { properties = {} } = _schema;
+  if (isEmpty(properties)) {
+    return _schema;
+  }
+  for (const [key, schema] of Object.entries(properties)) {
+    Object.assign(_schema.properties, { [key]: await rebuildSchema(schema) });
+  }
+  return _schema;
+}
+
+export async function getFormFieldOptions(
+  { queryKey, meta }: QueryFunctionContext, parseSubTableForeign?: boolean,
+): Promise<{
   options: FormFieldOption[],
   schema: ISchema,
 }> {
-  const schema = await getFormFieldSchema({ queryKey, meta });
+  let schema = await getFormFieldSchema({ queryKey, meta });
+
+  if (parseSubTableForeign) {
+    schema = await rebuildSchema(schema);
+  }
+
   return {
     options: schemaToOptions(schema, queryKey[3] as SchemaToOptionsOptions),
     schema,

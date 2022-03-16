@@ -103,7 +103,7 @@ func renewToken(r *http.Request, refreshToken string) bool {
 	})
 
 	if errMsg != "" {
-		contexts.Logger.Errorf("refresh token failed: %s, request_id: %s", errMsg, requestID)
+		contexts.Logger.Errorf("failed to renew token by refresh_token: %s, error: %s, request_id: %s", refreshToken, errMsg, requestID)
 		return false
 	}
 
@@ -138,7 +138,7 @@ func saveToken(r *http.Request, token string, refreshToken string, expireTime ti
 		log.Fatalf("failed to save user token to cache: %s", err.Error())
 	}
 
-	err = contexts.Cache.Set(contexts.Ctx, refreshTokenKey, refreshToken, time.Hour*72).Err()
+	err = contexts.Cache.Set(contexts.Ctx, refreshTokenKey, refreshToken, time.Hour*23).Err()
 	if err != nil {
 		log.Fatalf("failed to save user refresh_token to cache: %s", err.Error())
 	}

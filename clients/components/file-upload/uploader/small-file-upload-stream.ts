@@ -2,10 +2,11 @@ import httpClient from '@lib/http-client';
 
 import { FINISH_FILE_UPLOAD_API } from '../constants';
 
-import type { FileUploadStreamProps } from './big-file-part-upload-stream';
+import type { FileUploadStreamProps } from './large-file-part-upload-stream';
 
 export default function smallFileUploadRequest({
   file,
+  fileBucket,
   onError,
   onProgress,
   onSuccess,
@@ -42,7 +43,7 @@ export default function smallFileUploadRequest({
 
     xhr.send(blob);
   }).then(() => {
-    return httpClient(FINISH_FILE_UPLOAD_API, { path: file.uid });
+    return httpClient(FINISH_FILE_UPLOAD_API, { path: `${fileBucket}/${file.uid}` });
   }).then(() => {
     onSuccess?.(file);
   }).catch((reason) => {
