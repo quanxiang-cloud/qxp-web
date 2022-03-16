@@ -1,11 +1,11 @@
 import { get } from 'lodash';
 import { nanoid } from 'nanoid';
 import { findNodeByID, appendChild, getNodeParents } from '@one-for-all/schema-utils';
-import { Schema, RouteNode, SchemaNode } from '@one-for-all/schema-spec';
+import { Schema, RouteNode, SchemaNode, HTMLNode } from '@one-for-all/schema-spec';
 
 import { setBatchGlobalConfig } from '@lib/api/user-config';
 
-import { ROOT_NODE_ID, VERSION } from '../constants';
+import { LAYOUT_CHILD_TYPE_ROUTES_CONTAINER, ROOT_NODE_ID, VERSION } from '../constants';
 
 export function genNodeID(): string {
   return nanoid(8);
@@ -60,7 +60,19 @@ export function attachToRouteNode(node: SchemaNode, routeFor: 'layout' | 'view')
 
 function getLayoutRoutesContainerID(rootNode: SchemaNode, layoutID: string): string | undefined {
   const layoutNode = findNodeByID(rootNode, layoutID);
-  return get(layoutNode, 'children.1.id');
+  if (!layoutNode) {
+    return;
+  }
+
+  const childNode = ((layoutNode as HTMLNode).children || []).find((childNode) => {
+    return get(childNode, 'props.data-layout-child.value') === LAYOUT_CHILD_TYPE_ROUTES_CONTAINER;
+  });
+
+  if (!childNode) {
+    return;
+  }
+
+  return childNode.id;
 }
 
 export function addRouteNodeToLayout(

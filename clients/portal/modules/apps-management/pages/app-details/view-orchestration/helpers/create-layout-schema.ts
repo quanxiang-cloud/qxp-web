@@ -1,5 +1,9 @@
 import { SchemaNode } from '@one-for-all/schema-spec';
-import { ROOT_NODE_ID } from '../constants';
+import {
+  LAYOUT_CHILD_TYPE_FRAGMENT_CONTAINER,
+  LAYOUT_CHILD_TYPE_ROUTES_CONTAINER,
+  ROOT_NODE_ID,
+} from '../constants';
 
 import { LayoutType } from '../types';
 import { genNodeID } from './utils';
@@ -35,9 +39,9 @@ export default function createLayoutSchema(
         type: 'html-element',
         name: 'div',
         props: {
-          'data-layout-element': {
+          'data-layout-child': {
             type: 'constant_property',
-            value: 'fragment-container',
+            value: LAYOUT_CHILD_TYPE_FRAGMENT_CONTAINER,
           },
         },
         children: [
@@ -53,9 +57,9 @@ export default function createLayoutSchema(
         type: 'html-element',
         name: 'div',
         props: {
-          'data-layout-element': {
+          'data-layout-child': {
             type: 'constant_property',
-            value: 'routes-container',
+            value: LAYOUT_CHILD_TYPE_ROUTES_CONTAINER,
           },
         },
         children: [],
