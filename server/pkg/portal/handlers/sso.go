@@ -24,8 +24,8 @@ func HandleSSOLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resBody, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/jwt/auth", []byte(""), map[string]string{
-		"Content-Type": "application/json",
+	resBody, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/warden/auth", []byte(""), map[string]string{
+		"Content-Type": "application/x-www-form-urlencoded",
 		"Access-Token": code,
 	})
 

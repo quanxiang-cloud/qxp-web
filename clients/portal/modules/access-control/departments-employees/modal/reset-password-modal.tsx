@@ -5,23 +5,36 @@ import { Form } from 'antd';
 import Icon from '@c/icon';
 import toast from '@lib/toast';
 import Modal from '@c/modal';
-import CheckboxGroup from '@c/checkbox/checkbox-group';
+import RadioGroup from '@c/radio/group';
+import Radio from '@c/radio';
 
 import { resetUserPWD } from '../api';
+import { SEND_MAP } from './edit-employees-modal';
 
-export type sendPasswordBy = {
-  sendPhone: -1 | 1;
-  sendEmail: -1 | 1;
-};
-
+export type SendMessage = {
+  userID: string;
+  sendChannel: number;
+  sendTo: string;
+}
 interface Props {
-  userIds: string[];
+  selectedUsers: Employee[];
   closeModal(): void;
   clearSelectRows(): void;
 }
 
+export const sendMsgOption = [
+  {
+    label: '通过邮箱',
+    value: 1,
+  },
+  {
+    label: '通过短信',
+    value: 2,
+  },
+];
+
 export default function ResetPasswordModal({
-  userIds,
+  selectedUsers,
   closeModal,
   clearSelectRows,
 }: Props): JSX.Element {
@@ -44,17 +57,19 @@ export default function ResetPasswordModal({
     form.submit();
   }
 
-  function handleFinish(values: {sendPasswordBy: string}): void {
+  function handleFinish(values: { sendPasswordBy: number }): void {
     const { sendPasswordBy } = values;
-    const checkedWay: sendPasswordBy = {
-      sendEmail: -1,
-      sendPhone: -1,
-    };
+    const userIds: string[] = [];
+    const sendMessage: SendMessage[] = selectedUsers.map((user) => {
+      userIds.push(user.id);
+      return {
+        userID: user.id,
+        sendChannel: sendPasswordBy,
+        sendTo: user[SEND_MAP[sendPasswordBy]] || '',
+      };
+    });
 
-    sendPasswordBy.includes('email') && (checkedWay.sendEmail = 1);
-    sendPasswordBy.includes('phone') && (checkedWay.sendPhone = 1);
-
-    resetMutation.mutate({ userIDs: userIds, ...checkedWay });
+    resetMutation.mutate({ userIDs: userIds, sendMessage });
   }
 
   return (
@@ -99,18 +114,18 @@ export default function ResetPasswordModal({
               { required: true, message: '请选择重置密码的发送方式' },
             ]}
           >
-            <CheckboxGroup
-              options={[
-                {
-                  label: '通过邮箱',
-                  value: 'email',
-                },
-                {
-                  label: '通过短信',
-                  value: 'phone',
-                },
-              ]}
-            />
+            <RadioGroup onChange={(value) => value}>
+              {sendMsgOption.map((option) => {
+                return (
+                  <Radio
+                    className="mr-8"
+                    key={option.value}
+                    value={option.value}
+                    label={option.label}
+                  />
+                );
+              })}
+            </RadioGroup>
           </Form.Item>
         </Form>
       </div>

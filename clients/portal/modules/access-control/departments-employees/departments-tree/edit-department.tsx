@@ -53,6 +53,9 @@ function EditDepartment({ department, closeModal }: Props): JSX.Element {
     const params = { ...values };
     if (department.id) {
       params.id = department?.id;
+      params.attr = department?.attr;
+    } else {
+      params.attr = 2;
     }
 
     if (!params.pid && !department.id) {
@@ -99,12 +102,12 @@ function EditDepartment({ department, closeModal }: Props): JSX.Element {
           form={form}
           onFinish={handleFinish}
           initialValues={{
-            departmentName: department.departmentName,
+            name: department.name,
             pid: department.pid,
           }}
         >
           <Form.Item
-            name="departmentName"
+            name="name"
             label="部门名称"
             extra={HELP_TEXT_NORMAL}
             rules={[
@@ -133,7 +136,7 @@ function EditDepartment({ department, closeModal }: Props): JSX.Element {
               >
                 <DepartmentPicker
                   treeData={departmentToTreeNode(depData as Department)}
-                  labelKey="departmentName"
+                  labelKey="name"
                 />
               </Form.Item>
             )

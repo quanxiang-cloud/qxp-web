@@ -8,11 +8,14 @@ import Icon from '@c/icon';
 import toast from '@lib/toast';
 import Modal from '@c/modal';
 import Table from '@c/table';
-import CheckboxGroup from '@c/checkbox/checkbox-group';
+import RadioGroup from '@c/radio/group';
+import Radio from '@c/radio';
 
 import { FileUploadStatus } from '../type';
 import { exportEmployeesFail } from '../utils';
 import { getUserTemplate, importTempFile, resetUserPWD } from '../api';
+import { SendMessage, sendMsgOption } from './reset-password-modal';
+import { SEND_MAP } from './edit-employees-modal';
 
 const columns: UnionColumn<any>[] = [
   {
@@ -45,11 +48,6 @@ type UploadRes = {
 
 type ButtonStatus = 0 | 1;
 
-type CheckedWay = {
-  sendEmail: -1 | 1;
-  sendPhone: -1 | 1;
-};
-
 interface Props {
   currDepId: string;
   closeModal(): void;
@@ -60,10 +58,7 @@ const MAX_SIZE = (BYTE_SIZE ** 2) * 5;
 
 function ImportEmployeesModal({ currDepId, closeModal }: Props): JSX.Element {
   const [fileList, setFileList] = useState<File[]>([]);
-  const [checkWay, setCheckWay] = useState<CheckedWay>({
-    sendPhone: -1,
-    sendEmail: -1,
-  });
+  const [checkWay, setCheckWay] = useState<{ sendChannel: number; sendTo: string }>({ sendChannel: 0, sendTo: '' });
   const [uploadStatus, setUploadStatus] = useState<UploadRes>({
     status: FileUploadStatus.init,
     successTotal: 0,
@@ -182,24 +177,27 @@ function ImportEmployeesModal({ currDepId, closeModal }: Props): JSX.Element {
     exportEmployeesFail(columns, failUsers, '失败人员列表.xlsx');
   }
 
-  function changeCheckbox(val: Array<string | number>): void {
-    const checkedWay: CheckedWay = {
-      sendEmail: -1,
-      sendPhone: -1,
+  function changeCheckbox(val: any): void {
+    // ignore
+    const checkedWay = {
+      sendChannel: val || 0,
+      sendTo: SEND_MAP[val] || '',
     };
-    if (val.length > 0) {
-      val.includes('email') && (checkedWay.sendEmail = 1);
-      val.includes('phone') && (checkedWay.sendPhone = 1);
-    }
     setCheckWay(checkedWay);
   }
 
   function handleSubmit(): void {
-    if (checkWay && checkWay.sendEmail === -1 && checkWay.sendPhone === -1) {
+    if (checkWay && !checkWay.sendChannel) {
       toast.error('请选择发送方式');
       return;
     }
-    resetMutation.mutate({ userIDs: successUsersId, ...checkWay });
+    const sendMessage: SendMessage[] = successUsersId.map((id) => {
+      return {
+        userID: id,
+        ...checkWay,
+      };
+    });
+    resetMutation.mutate({ userIDs: successUsersId, sendMessage });
   }
 
   return (
@@ -316,19 +314,18 @@ function ImportEmployeesModal({ currDepId, closeModal }: Props): JSX.Element {
                   接下来选择：
                 </p>
                 <p className="text-14 py-8">向已导入的员工发送随机密码</p>
-                <CheckboxGroup
-                  onChange={(value: Array<string | number>) => changeCheckbox(value)}
-                  options={[
-                    {
-                      label: '通过邮箱',
-                      value: 'email',
-                    },
-                    {
-                      label: '通过短信',
-                      value: 'phone',
-                    },
-                  ]}
-                />
+                <RadioGroup onChange={changeCheckbox}>
+                  {sendMsgOption.map((option) => {
+                    return (
+                      <Radio
+                        className="mr-8"
+                        key={option.value}
+                        value={option.value}
+                        label={option.label}
+                      />
+                    );
+                  })}
+                </RadioGroup>
               </div>
             )
           }

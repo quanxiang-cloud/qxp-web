@@ -41,7 +41,7 @@ const UserPicker = ({
   ...componentsProps
 }: Props): JSX.Element => {
   const currentUser = {
-    label: window.USER.userName,
+    label: window.USER.name,
     value: window.USER.id,
     email: window.USER.email,
   };

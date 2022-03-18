@@ -1,4 +1,4 @@
-import { imgChange, removeError, validateCaptcha, validateUsername, httpClient } from './login-common';
+import { imgChange, removeError, validateCaptcha, validateUsername, httpClientGET } from './login-common';
 import './style.scss';
 
 window.onload = function() {
@@ -26,7 +26,7 @@ window.onload = function() {
   }
 
   function callSendApi(): any {
-    return httpClient('/api/v1/org/forget/code', { userName: username?.value }, {
+    return httpClientGET('/api/v1/reorg/h/account/forget/code', { userName: username?.value }, {
       'X-Proxy': 'API-NO-AUTH',
     });
   }

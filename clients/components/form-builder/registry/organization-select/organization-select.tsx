@@ -66,13 +66,13 @@ const OrganizationPicker = ({
   ...otherProps
 }: Props): JSX.Element => {
   useEffect(() => {
-    const { id, departmentName } = getUserDepartment(window.USER);
+    const { id, name } = getUserDepartment(window.USER);
     if (value.length) {
       return;
     }
 
     if (defaultRange === 'currentUserDep' || optionalRange === 'currentUserDep') {
-      onChange?.([{ label: departmentName, value: id }]);
+      onChange?.([{ label: name, value: id }]);
       return;
     }
 
@@ -132,12 +132,12 @@ const OrganizationPicker = ({
     }
 
     if (optionalRange === 'currentUserDep') {
-      const { id, departmentName } = getUserDepartment(window.USER);
+      const { id, name } = getUserDepartment(window.USER);
       const myDep = {
         id,
         fullPath: id,
         pId: 0,
-        title: departmentName,
+        title: name,
         value: id,
       };
       return [myDep] || [];

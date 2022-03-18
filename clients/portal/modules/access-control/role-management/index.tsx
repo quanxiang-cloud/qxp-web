@@ -9,7 +9,9 @@ import RoleDetail from './role-detail';
 import { getRoles } from './api';
 
 export default function RoleManagement(): JSX.Element | null {
-  const { data: roleList = [], isLoading } = useQuery('getRoles', getRoles, {
+  const { data: roleList = [], isLoading } = useQuery('getRoles', () => {
+    return getRoles({ page: 1, limit: 10 });
+  }, {
     refetchOnWindowFocus: false,
   });
   const [roleId, setRoleId] = useState<string | number>('');
