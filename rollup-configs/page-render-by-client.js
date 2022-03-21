@@ -29,6 +29,7 @@ const output = {
 const input = {
   portal: 'clients/portal/index.tsx',
   home: 'clients/home/index.tsx',
+  appLand: 'clients/app-land/index.tsx',
 };
 
 const config = {
