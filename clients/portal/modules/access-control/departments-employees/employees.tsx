@@ -7,7 +7,6 @@ import EmptyTips from '@c/empty-tips';
 import Pagination from '@c/pagination';
 import Authorized from '@c/authorized';
 import Button from '@c/button';
-import IconButton from '@c/icon-btn';
 import MoreMenu from '@c/more-menu';
 import { getTwoDimenArrayHead } from '@lib/utils';
 // import toast from '@lib/toast';
@@ -23,7 +22,7 @@ import ExportEmployees from './export-employees';
 
 // import { exportEmployees } from './utils';
 import { UserStatus } from './type';
-import { EmployeesColumns, EmployeesActions, ExpandActions } from './constant';
+import { EmployeesColumns, EmployeesActions } from './constant';
 import { getUserAdminInfo } from './api';
 import { buildGraphQLQuery } from './utils';
 
@@ -279,14 +278,14 @@ export default function Employees({
             ) : (
               <>
                 <div className="flex">
-                  <Button
+                  {/* <Button
                     modifier="primary"
                     iconName="create_new_folder"
                     onClick={(): void => openModal('import_employees')}
                     className="mr-16"
                   >
                   excel 批量导入
-                  </Button>
+                  </Button> */}
                   <Button
                     iconName="add"
                     onClick={(): void => handleUserInfo(initUserInfo)}
@@ -294,7 +293,7 @@ export default function Employees({
                   >
                   添加员工
                   </Button>
-                  <MoreMenu
+                  {/* <MoreMenu
                     menus={ExpandActions}
                     placement="bottom-end"
                     className="opacity-1"
@@ -306,7 +305,7 @@ export default function Employees({
                     }}
                   >
                     <IconButton iconName="more_horiz" />
-                  </MoreMenu>
+                  </MoreMenu> */}
                 </div>
                 {/* <CheckBox
                   defaultChecked
