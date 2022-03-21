@@ -21,7 +21,7 @@ export default function ForgetPwd(): JSX.Element {
     if (usernameError) return false;
     try {
       await httpClient.get(
-        '/api/v1/reorg/h/account/forget/code',
+        '/api/v1/org/h/account/forget/code',
         { userName: usernameRef?.current?.value },
         { 'X-Proxy': 'API-NO-AUTH' },
       );

@@ -9,7 +9,7 @@ import (
 )
 
 func getAdminUserFuncTags(r *http.Request) []string {
-	respBody, errMsg := sendRequest(r.Context(), "POST", "/api/v1/regoalie/role/func/user/list", map[string]string{})
+	respBody, errMsg := sendRequest(r.Context(), "POST", "/api/v1/goalie/role/func/user/list", map[string]string{})
 	if errMsg != "" {
 		contexts.Logger.Errorf("failed to get user func tags: %s", errMsg)
 		return []string{}
@@ -35,7 +35,7 @@ type Role struct {
 }
 
 func getUserAdminRoles(r *http.Request) []Role {
-	respBody, errMsg := sendRequest(r.Context(), "GET", "/api/v1/regoalie/role/now/list", map[string]string{})
+	respBody, errMsg := sendRequest(r.Context(), "GET", "/api/v1/goalie/role/now/list", map[string]string{})
 	if errMsg != "" {
 		contexts.Logger.Errorf("failed to get user roles: %s", errMsg)
 		return []Role{}

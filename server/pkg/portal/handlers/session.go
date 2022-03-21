@@ -165,7 +165,7 @@ func getToken(r *http.Request) string {
 }
 
 func getCurrentUser(ctx context.Context, token string) *User {
-	respBody, errMsg := contexts.SendRequest(ctx, "GET", "/api/v1/reorg/h/user/info", nil, map[string]string{
+	respBody, errMsg := contexts.SendRequest(ctx, "GET", "/api/v1/org/h/user/info", nil, map[string]string{
 		"Access-Token": token,
 	})
 

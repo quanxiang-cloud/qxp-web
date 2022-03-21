@@ -6,11 +6,11 @@ import { UserStatus } from './type';
 import { SendMessage } from './modal/reset-password-modal';
 
 export async function getERPTree() {
-  return await httpClient.get<Department>('/api/v1/reorg/m/dep/tree');
+  return await httpClient.get<Department>('/api/v1/org/m/dep/tree');
 }
 
 export async function createDepartment(params: { pid: string; name: string; attr: number}) {
-  return await httpClient('/api/v1/reorg/m/dep/add', params);
+  return await httpClient('/api/v1/org/m/dep/add', params);
 }
 
 export async function editDepartment(params: {
@@ -18,7 +18,7 @@ export async function editDepartment(params: {
   name?: string;
   leaderID?: string;
 }) {
-  return await httpClient.put('/api/v1/reorg/m/dep/update', params);
+  return await httpClient.put('/api/v1/org/m/dep/update', params);
 }
 
 export async function getAdminDEPSuperPID() {
@@ -26,7 +26,7 @@ export async function getAdminDEPSuperPID() {
 }
 
 export async function deleteDEP(id: string) {
-  return await httpClient('/api/v1/reorg/m/oth/dep/del', { id });
+  return await httpClient('/api/v1/org/m/oth/dep/del', { id });
 }
 
 export async function getUserAdminInfo<T>(params: { query: string }) {
@@ -42,11 +42,11 @@ export async function importTempFile({ depID, file }: FileParams) {
 }
 
 export async function addDepUser(values: FormValues) {
-  return await httpClient('/api/v1/reorg/m/user/add', values);
+  return await httpClient('/api/v1/org/m/user/add', values);
 }
 
 export async function updateUser(values: FormValues) {
-  return await httpClient.put('/api/v1/reorg/m/user/update', values);
+  return await httpClient.put('/api/v1/org/m/user/update', values);
 }
 
 export interface LeaderParams {
@@ -56,11 +56,11 @@ export interface LeaderParams {
 }
 
 export async function setDEPLeader(params: LeaderParams) {
-  return await httpClient.put('/api/v1/reorg/m/dep/set/leader', params);
+  return await httpClient.put('/api/v1/org/m/dep/set/leader', params);
 }
 
 export async function cancelDEPLeader(params: LeaderParams) {
-  return await httpClient.put('/api/v1/reorg/m/dep/cancel/leader', params);
+  return await httpClient.put('/api/v1/org/m/dep/cancel/leader', params);
 }
 
 export async function updateUserStatus({ id, status }: {
@@ -75,7 +75,7 @@ export async function batchAdjustDep({ usersID, oldDepID, newDepID }: {
   oldDepID: string;
   newDepID: string;
 }) {
-  return httpClient.put('/api/v1/reorg/m/user/change/dep', { usersID, oldDepID, newDepID });
+  return httpClient.put('/api/v1/org/m/user/change/dep', { usersID, oldDepID, newDepID });
 }
 
 export async function resetUserPWD({ userIDs, sendMessage }: {

@@ -37,7 +37,7 @@ func HandleResetPasswordSubmit(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	respBody, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/reorg/h/account/user/first/reset", resetPasswordParams, map[string]string{
+	respBody, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/org/h/account/user/first/reset", resetPasswordParams, map[string]string{
 		"Content-Type": "application/json",
 		"Access-Token": getToken(r),
 	})

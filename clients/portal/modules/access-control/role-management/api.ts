@@ -10,7 +10,7 @@ export async function getRoles(params: {
   page: number;
   limit: number
 }) {
-  const { data } = await httpClient.get('/api/v1/regoalie/role/list', params);
+  const { data } = await httpClient.get('/api/v1/goalie/role/list', params);
   return data as IRoleListItem[];
 }
 
@@ -29,7 +29,7 @@ export async function getRoleFunctions({ queryKey }: QueryFunctionContext) {
   const data: {
     func: IRoleFunc;
     lastSaveTime: number;
-  } = await httpClient.get('/api/v1/regoalie/role/func/role/list', { roleID: queryKey[1] });
+  } = await httpClient.get('/api/v1/goalie/role/func/role/list', { roleID: queryKey[1] });
   return data;
 }
 
@@ -53,7 +53,7 @@ interface GetRoleAssociationParams {
 export async function getRoleAssociations({ queryKey }: QueryFunctionContext<[
   string, GetRoleAssociationParams
 ]>) {
-  const data: any = await httpClient.get('/api/v1/regoalie/role/owner/list', queryKey[1]);
+  const data: any = await httpClient.get('/api/v1/goalie/role/owner/list', queryKey[1]);
   return ({
     departments: data?.owners.filter(({ type }: { type: number }) => type === ROLE_BIND_TYPE.employee) || [],
     employees: data?.owners.filter(({ type }: { type: number }) => type === ROLE_BIND_TYPE.department) || [],
@@ -73,12 +73,12 @@ export interface IUpdateRoleAssociations {
 }
 
 export async function updateRoleAssociations(arg: IUpdateRoleAssociations) {
-  return await httpClient('/api/v1/regoalie/role/update/owner', arg);
+  return await httpClient('/api/v1/goalie/role/update/owner', arg);
 }
 
 // search for department structure
 export const getDepartmentStructure = () => {
-  return httpClient.get<Department>('/api/v1/reorg/m/dep/tree');
+  return httpClient.get<Department>('/api/v1/org/m/dep/tree');
 };
 
 interface IUserDepartment extends Department {
@@ -100,5 +100,5 @@ export interface IUser {
 }
 
 export async function transferRoleSuper(id: string): Promise<{ code: number, msg: string }> {
-  return await httpClient('/api/v1/regoalie/role/transferRoleSuper', { transferee: id });
+  return await httpClient('/api/v1/goalie/role/transferRoleSuper', { transferee: id });
 }

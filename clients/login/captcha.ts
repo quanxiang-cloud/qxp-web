@@ -23,7 +23,7 @@ window.onload = function() {
   }
 
   function callSendApi(): any {
-    return httpClientGET('/api/v1/reorg/h/account/login/code', { userName: username?.value }, {
+    return httpClientGET('/api/v1/org/h/account/login/code', { userName: username?.value }, {
       'X-Proxy': 'API-NO-AUTH',
     });
   }
