@@ -1,13 +1,15 @@
 import httpClient, { httpClientGraphQL } from '@lib/http-client';
 export interface Organization {
-  departmentName: string,
+  name: string,
   id: string;
   pid: string;
   child?: Organization[];
   fullPath?: string;
 }
 
-export const searchOrganization = (appID: string, props?: any): Promise<Organization> => httpClient(`/api/v1/structor/${appID}/home/org/DEPTree`, props);
+export async function getERPTree() {
+  return await httpClient.get<Organization>('/api/v1/org/m/dep/tree');
+}
 
 export const getOrganizationDetail = <T>(params: { query: string }) => {
   return httpClientGraphQL<T>('/api/v1/nurturing/getDepIDs', params);

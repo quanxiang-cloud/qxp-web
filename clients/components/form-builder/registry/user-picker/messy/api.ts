@@ -1,4 +1,4 @@
-import httpClient, { httpClientGraphQL } from '@lib/http-client';
+import { httpClientGraphQL } from '@lib/http-client';
 interface User {
   userName: string,
   id: string,
@@ -9,7 +9,9 @@ export interface Res {
   total_count: number
 }
 
-export const searchUser = (appID: string, props?: any): Promise<Res | null> => httpClient(`/api/v1/structor/${appID}/home/org/userList`, props);
+export async function searchUser<T>(params: { query: string }) {
+  return await httpClientGraphQL<T>('/api/v1/search/user', params);
+}
 
 export const getUserDetail = <T>(params: { query: string }) => {
   return httpClientGraphQL<T>('/api/v1/nurturing/getUserByIDs', params);

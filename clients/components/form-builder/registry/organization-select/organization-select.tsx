@@ -7,7 +7,7 @@ import { DataNode } from 'rc-tree-select/lib/interface';
 import { labelValueRenderer } from '@c/form-data-value-renderer';
 import { getUserDepartment } from '@lib/utils';
 import { getNoLabelValues } from '@c/form-builder/utils';
-import { searchOrganization, Organization, getOrganizationDetail } from './messy/api';
+import { getERPTree, Organization, getOrganizationDetail } from './messy/api';
 
 import './index.scss';
 
@@ -42,7 +42,7 @@ function parseTree({
   const _fullPath = fullPath ? `${fullPath}/${depTreeData?.id}` : depTreeData?.id;
   initData.push({
     id: depTreeData?.id,
-    title: depTreeData?.departmentName,
+    title: depTreeData?.name,
     pId: depTreeData?.pid || rootPId,
     value: depTreeData?.id,
     fullPath: _fullPath,
@@ -101,7 +101,7 @@ const OrganizationPicker = ({
     }
   }, []);
 
-  const { data } = useQuery(['query_user_picker', appID], () => searchOrganization(appID));
+  const { data } = useQuery(['query_dep_picker'], () => getERPTree());
   const treeData = React.useMemo(() => {
     const treeDataTmp = parseTree({ depTreeData: data, rootPId: 0 });
     if (optionalRange === 'customize') {

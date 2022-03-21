@@ -171,9 +171,10 @@ export const getImgColor = (text: string, colors = imgBgColors): {name: string, 
   };
 };
 
-export function buildGraphQLQuery(params: Record<string, string | number>): string {
+export function buildGraphQLQuery(params: Record<string, any>): string {
   const queryMap = Object.entries(params);
   const queryCondition = queryMap.reduce((acc, [key, value], index) => {
+    if (value === undefined || value === null) return acc;
     const _value = typeof value === 'string' ? `"${value}"` : value;
     const isLast = index === queryMap.length - 1;
     let query = acc + `${key}:${_value}`;
