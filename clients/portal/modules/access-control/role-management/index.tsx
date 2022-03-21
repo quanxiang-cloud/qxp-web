@@ -17,12 +17,12 @@ export default function RoleManagement(): JSX.Element | null {
   const [roleId, setRoleId] = useState<string | number>('');
   useEffect(() => {
     document.title = '访问控制 - 角色管理';
-    if (roleList.length) {
+    if (roleList?.length) {
       setRoleId(roleList[0].id);
     }
   }, [roleList]);
 
-  if (isLoading || !roleList.length) {
+  if (isLoading || !roleList?.length) {
     return null;
   }
   if (!window.ADMIN_USER_FUNC_TAGS.includes('accessControl/role/read')) {

@@ -44,7 +44,7 @@ export default function ForgetPwd(): JSX.Element {
     }
     setLoading(true);
     httpClient(
-      '/api/v1/nurturing/userForgetResetPWD',
+      '/api/v1/warden/org/h/account/forget/reset',
       {
         userName: usernameRef?.current?.value,
         newPassword: passwordRef?.current?.value,
