@@ -1,8 +1,9 @@
-import React, { KeyboardEvent, useCallback, useState } from 'react';
+import React, { KeyboardEvent, useCallback, useEffect, useState } from 'react';
 import { toJS } from 'mobx';
 import { has } from 'ramda';
 import { Form, Input } from 'antd';
 
+import toast from '@lib/toast';
 import Select from '@c/select';
 
 import AppZipUpload from './app-zip-upload';
@@ -24,13 +25,26 @@ type Props = {
   onValuesChange?: (value: any) => void;
 }
 
+async function getTemplateOptions(): Promise<LabelValue[]> {
+  let options: LabelValue[] = [];
+  await fetchTemplateList().then(({ templates }: TemplateListRes) => {
+    options = templates.map(({ name, id }: any) => {
+      return { label: name, value: id };
+    });
+  }).catch(() => toast.error('获取模版列表失败'));
+
+  return options;
+}
+
 function CreatedEditApp({
   appInfo, modalType, className, onSubmitCallback, onValuesChange, templateID, basic = false,
 }: Props, ref?: any): JSX.Element {
   const [form] = Form.useForm();
   const initData = appInfo && toJS(appInfo);
-  const [createdBy, setCreatedBy] = useState(templateID ? 'template' : 'base');
+  const [options, setOptions] = useState<LabelValue[]>([]);
   const { appName, appIcon = '{}', appSign } = initData || {};
+  const [createdBy, setCreatedBy] = useState(templateID ? 'template' : 'base');
+
   const handleEnterSubmit = useCallback((e: KeyboardEvent<HTMLInputElement>) => {
     e.key === 'Enter' && handleFinish();
   }, []);
@@ -44,16 +58,9 @@ function CreatedEditApp({
     onValuesChange?.(value);
   }
 
-  function getTemplateOptions(): LabelValue[] {
-    const options: LabelValue[] = [];
-    fetchTemplateList().then(({ templates }: TemplateListRes) => {
-      templates.forEach(({ name, id }: any) => {
-        options.push({ label: name, value: id });
-      });
-    });
-
-    return options;
-  }
+  useEffect(() => {
+    getTemplateOptions().then(setOptions);
+  }, []);
 
   return (
     <Form
@@ -152,11 +159,7 @@ function CreatedEditApp({
           name="template"
           label="选择模版"
         >
-          <Select
-            className='w-full'
-            defaultValue={templateID}
-            options={getTemplateOptions()}
-          />
+          <Select className='w-full' options={options}/>
         </Form.Item>
       )}
       {modalType === 'importApp' && (
