@@ -45,7 +45,7 @@ async function request<TData, TBody = unknown>(path: string, method: HttpMethods
       alert('当前会话已失效，请重新登录!');
     }
 
-    // window.location.reload();
+    window.location.reload();
     return Promise.reject(new Error('当前会话已失效，请重新登录!'));
   }
 
