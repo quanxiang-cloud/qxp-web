@@ -19,12 +19,13 @@ type Props = {
   className?: string;
   appInfo?: AppInfo;
   templateID?: string;
+  basic?: boolean;
   onSubmitCallback?: () => void;
   onValuesChange?: (value: any) => void;
 }
 
 function CreatedEditApp({
-  appInfo, modalType, className, onSubmitCallback, onValuesChange, templateID,
+  appInfo, modalType, className, onSubmitCallback, onValuesChange, templateID, basic = false,
 }: Props, ref?: any): JSX.Element {
   const [form] = Form.useForm();
   const initData = appInfo && toJS(appInfo);
@@ -138,7 +139,7 @@ function CreatedEditApp({
       >
         <AppIconPicker />
       </Form.Item>
-      {modalType === 'createdApp' && (
+      {modalType === 'createdApp' && !basic && (
         <Form.Item
           name="createdBy"
           label="新建方式"
