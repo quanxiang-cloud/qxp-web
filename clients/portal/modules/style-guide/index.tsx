@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
+import { useParams } from 'react-router';
 
-// import Button from '@c/button';
+import Button from '@c/button';
 import toast from '@lib/toast';
 import Tab from '@c/tab';
 import httpClient from '@lib/http-client';
 import { setGlobalConfig, useGetGlobalConfig } from '@lib/configuration-center';
-// @ts-ignore
-import { Button } from '@ofa/ui-test';
+import CssASTStore from '@one-for-all/style-guide';
 
 import ComponentStyleConfigCenter from './component-style-config-center';
 import CommonConfig from './common-config';
@@ -14,8 +14,9 @@ import { DEFAULT_CONFIG, COLOR_DEPTH } from './constant';
 import store from './store';
 
 export default function StyleGuide(): JSX.Element {
-  const KEY = 'user_style_config';
-  const COMPONENT_STYLE_CONFIG_KEY = 'style_guide_component_style_config';
+  const { appID } = useParams<{ appID?: string }>();
+  const KEY = `user_style_config.${appID}`;
+  const COMPONENT_STYLE_CONFIG_KEY = `style_guide_component_style_config.${appID}`;
   const [userStyleConfig, commonLoading] = useGetGlobalConfig<StyleGuideCommonConfig>(KEY, '0.1.0', DEFAULT_CONFIG);
   const [customCompCssMap, componentLoading] = useGetGlobalConfig(COMPONENT_STYLE_CONFIG_KEY, '0.1.0', {});
 
@@ -25,13 +26,13 @@ export default function StyleGuide(): JSX.Element {
     }
 
     store.commonConfig = userStyleConfig;
-    store.customCompCssMap = customCompCssMap;
+    store.cssStore = new CssASTStore(customCompCssMap);
   }, [commonLoading, componentLoading]);
 
   async function generateCssUrl(): Promise<string> {
-    const cssStr = Object.entries(store.customCompCssMap).map(([key, cssString]) => cssString).join('');
-    // cssStr = cssStr.replace(/\/\*.*\*\//g, '');
-    const cssFile = new Blob([cssStr], { type: 'text/css' });
+    const cssFile = await store.cssStore?.getGzipFile().then((cssBlob: Blob | null) => {
+      return cssBlob;
+    });
     const { domain, readable } = await httpClient<{
       domain: string;
       private: string;
@@ -41,7 +42,7 @@ export default function StyleGuide(): JSX.Element {
     const { url } = await httpClient<{ url: string }>('/api/v1/fileserver/sign/upload', {
       path: `${readable}/style-guide/component.css`,
       contentType: 'text/css',
-      contentLength: cssFile.size,
+      contentLength: cssFile?.size,
     });
 
     fetch(url, {
@@ -49,14 +50,15 @@ export default function StyleGuide(): JSX.Element {
       body: cssFile,
       headers: {
         'Content-Type': 'text/css',
+        'Content-Encoding': 'gzip',
       },
     });
 
-    return `//${domain}/${readable}/style-guide/component.css`;
+    return `//${readable}.${domain}/style-guide/component.css`;
   }
 
   async function handleSave(): Promise<void> {
-    setGlobalConfig(COMPONENT_STYLE_CONFIG_KEY, '0.1.0', store.customCompCssMap);
+    setGlobalConfig(COMPONENT_STYLE_CONFIG_KEY, '0.1.0', store.cssStore?.cssASTMap);
     const componentCssUrl = await generateCssUrl();
     setGlobalConfig(KEY, '0.1.0', { ...store.commonConfig, componentCssUrl }).then(() => {
       COLOR_DEPTH.forEach((depth) => {

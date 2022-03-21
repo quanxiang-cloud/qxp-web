@@ -1,11 +1,12 @@
 import { observable, action } from 'mobx';
+import CssASTStore, { ComponentSpec, StyleConfigInterface } from '@one-for-all/style-guide';
 
-import { applyStyle } from './utils';
 class StyleGuideStore {
-  @observable customCompCssMap: Record<string, string> = {};
+  @observable cssStore: CssASTStore | null = null;
   @observable currentCompStatus: null | ActiveConfigurationComponent = null;
-  @observable currentComp: ComponentPackagingObject | null = null;
+  @observable currentComp: ComponentSpec | null = null;
   @observable commonConfig: StyleGuideCommonConfig = { primaryColor: 'blue' };
+  @observable shadowRoot: ShadowRoot | null = null;
 
   @action
   setCommonConfig = (newConfig: Partial<StyleGuideCommonConfig>): void => {
@@ -13,24 +14,10 @@ class StyleGuideStore {
   };
 
   @action
-  setCustomCss = (name: string, newCss: string): void => {
-    this.customCompCssMap = { ...this.customCompCssMap, [name]: newCss };
-    const newCompCss = this.currentComp?.schemas.map(({ key }) => {
-      const cssKey = `${this.currentComp?.key}.${key}`;
-      if (cssKey === name) {
-        return newCss;
-      }
-      return this.customCompCssMap[cssKey] || '';
-    }) || [];
-
-    applyStyle(this.currentComp?.key || '', newCompCss?.join(' '));
-  };
-
-  @action
-  setCurrentCompStatus = (key: string, configSchema: ComponentStyleConfigSchema[]): void => {
+  setCurrentCompStatus = (key: string, spec: StyleConfigInterface): void => {
     this.currentCompStatus = {
       key,
-      configSchema,
+      spec,
     };
   };
 }

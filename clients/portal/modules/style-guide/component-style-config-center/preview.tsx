@@ -1,39 +1,84 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import ReactDOM from 'react-dom';
 import { observer } from 'mobx-react';
+
+import * as headlessUI from '@one-for-all/headless-ui';
 
 import store from '../store';
 
+function ShadowContent({ shadowRoot, children }: { children: JSX.Element[], shadowRoot: ShadowRoot }): JSX.Element {
+  useEffect(() => {
+    const style = document.createElement('style');
+    const compStyle = document.createElement('link');
+    compStyle.href = 'https://ofapkg.pek3b.qingstor.com/@one-for-all/headless-ui@0.1.0/ofa-headless-ui-web.css';
+    compStyle.rel = 'stylesheet';
+    style.textContent = `
+    .style-guide-comp-item {
+     cursor: pointer;
+     border: 1px solid transparent;
+     padding:5px;
+     display:flex;
+     gap:5px;
+     align-items: center;
+    }
+
+    .style-guide-comp-item:hover {
+      border: 1px solid var(--blue-500);
+    }`;
+    shadowRoot.appendChild(compStyle);
+    shadowRoot.appendChild(style);
+  }, []);
+
+  return ReactDOM.createPortal(children, shadowRoot as unknown as Element);
+}
+
 function PreviewConfigurableComponent(): JSX.Element {
+  const previewRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!previewRef.current || store.shadowRoot) {
+      return;
+    }
+
+    store.shadowRoot = previewRef.current?.attachShadow({ mode: 'open' });
+  }, [previewRef.current]);
+
+  useEffect(() => {
+    return () => {
+      store.shadowRoot = null;
+    };
+  }, []);
+
   if (!store.currentComp) {
     return <div />;
   }
 
-  const { Component, key } = store.currentComp;
+  const { key } = store.currentComp;
+  const Component = (headlessUI as any)[key];
+
   return (
-    <div className='gird'>
-      {
-        store.currentComp.schemas.map((status) => {
-          return (
-            <div className='px-5' key={status.key}>
-              <div className='mb-5'>{status.title}</div>
-              <div
-                onClick={() => store.setCurrentCompStatus(`${key}.${status.key}`, status.configSchema)}
-                className='style-guide-comp-item cursor-pointer p-5 flex gap-5 items-center'
-              >
-                <Component {...{ [status?.property || '']: status.value }} />
-                {status.commonStatus && status.commonStatus.map((additionalStatus) => {
-                  return (
-                    <Component
-                      key={JSON.stringify(additionalStatus)}
-                      {...{ [status?.property || '']: status.value }}
-                      {...additionalStatus} />
-                  );
-                })}
-              </div>
-            </div>
-          );
-        })
-      }
+    <div ref={previewRef} className='gird'>
+      {store.shadowRoot && (
+        <ShadowContent shadowRoot={store.shadowRoot}>
+          {
+            store.currentComp.specs.map((spec) => {
+              return (
+                <div style={{ padding: '5px 0' }} key={spec.title}>
+                  <div style={{ marginBottom: '5px' }}>{spec.title}</div>
+                  <div
+                    onClick={() => store.setCurrentCompStatus(key, spec)}
+                    className='style-guide-comp-item'
+                  >
+                    {Array.isArray(spec.componentProps) ? spec.componentProps.map((props) => (
+                      <Component key={JSON.stringify(props)} {...props} />
+                    )) : (<Component {...spec.componentProps} />)}
+                  </div>
+                </div>
+              );
+            })
+          }
+        </ShadowContent>
+      )}
     </div >
   );
 }

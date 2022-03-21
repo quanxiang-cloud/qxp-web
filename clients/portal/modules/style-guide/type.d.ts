@@ -1,4 +1,5 @@
 import React from 'react';
+import { StyleConfigInterface } from '@one-for-all/style-guide';
 declare global {
   type ComponentStyleConfigSchema = {
     selector: string;
@@ -25,7 +26,7 @@ declare global {
 
   type ActiveConfigurationComponent = {
     key: string;
-    configSchema: ComponentStyleConfigSchema[];
+    spec: StyleConfigInterface;
   }
 
   type StyleGuideCommonConfig = {

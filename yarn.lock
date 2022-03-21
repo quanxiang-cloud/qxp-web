@@ -742,6 +742,28 @@
   version "0.3.3"
   resolved "https://ofapkg.pek3b.qingstor.com/tarball/one-for-all-api-spec-adapter-v0.3.3.tgz#66e389b480d1c064fd1ddd7db4c240137424d1d7"
 
+"@one-for-all/headless-ui@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.npmmirror.com/@one-for-all/headless-ui/-/headless-ui-0.1.0.tgz#9e7be6df6b2a79e4708546246997c8029d4d6762"
+  integrity sha512-kqpVZ59xsVCR4fUIHaAD0fMDJ/CNXYCZOnTSdEjj4s1oCDk4Y7kHC8lDvb6ZMwd9Gb+kyQp6LpNB5hZ0z+q0aA==
+  dependencies:
+    "@one-for-all/icon" "0.3.0"
+    "@one-for-all/ui" "0.2.18"
+    "@popperjs/core" "^2.11.0"
+    classnames "^2.3.1"
+    lodash "^4.17.21"
+    nanoid "^3.1.30"
+    react "^17.0.2"
+    react-dom "^17.0.2"
+    react-table "^7.7.0"
+
+"@one-for-all/icon@0.3.0":
+  version "0.3.0"
+  resolved "https://registry.npmmirror.com/@one-for-all/icon/-/icon-0.3.0.tgz#5ad9364361af5c1415417f7a357db37b13def379"
+  integrity sha512-zgdAdS8dx6+smbIyRHAXf0ihqJ8gMRx7XA18WzFM3AfuoHp5njSTbFsGYeLsTgtTYC661jRXR0ttVYVSWNpaGw==
+  dependencies:
+    react "^17.0.2"
+
 "@one-for-all/page-engine@0.9.5":
   version "0.9.5"
   resolved "https://registry.npmmirror.com/@one-for-all/page-engine/-/page-engine-0.9.5.tgz#ef87347077f15c96ab7ea754d504ad5dc537b6e2"
@@ -804,6 +826,14 @@
   version "0.13.1-0"
   resolved "https://registry.npmmirror.com/@one-for-all/schema-spec/-/schema-spec-0.13.1-0.tgz#6133bb595a0abaeda045925ee41a220bc94fe9bd"
   integrity sha512-SVHv7zVxiJRuLVHY7vdPZehrxPzu10018YKu7x+KsRo3uIygWAYsKmdqqxcMhOPm+462n0YlXDttBe1yx3kieA==
+
+"@one-for-all/style-guide@0.0.1":
+  version "0.0.1"
+  resolved "https://registry.npmmirror.com/@one-for-all/style-guide/-/style-guide-0.0.1.tgz#91f0241c9f18c3a7ac0e3034d7f6f87047a24cdd"
+  integrity sha512-D57aYDJUFDCgRsQLce7LB60aCWf7zJTuqLu7Gmzjn+uo5pUT4WghQibkG1FWMV0JxtJ/X49xgT8DrZFPtF2Ytg==
+  dependencies:
+    css-tree "^2.0.4"
+    cssbeautify "^0.3.1"
 
 "@one-for-all/ui@0.2.18":
   version "0.2.18"
@@ -6772,10 +6802,10 @@ react-stikky@^0.1.15:
     classnames "^2.2.6"
     window-scroll "^1.0.0"
 
-react-table@^7.6.3:
+react-table@^7.6.3, react-table@^7.7.0:
   version "7.7.0"
-  resolved "https://registry.npmmirror.com/react-table/download/react-table-7.7.0.tgz#e2ce14d7fe3a559f7444e9ecfe8231ea8373f912"
-  integrity sha1-4s4U1/46VZ90ROns/oIx6oNz+RI=
+  resolved "https://registry.npmmirror.com/react-table/-/react-table-7.7.0.tgz#e2ce14d7fe3a559f7444e9ecfe8231ea8373f912"
+  integrity sha512-jBlj70iBwOTvvImsU9t01LjFjy4sXEtclBovl3mTiqjz23Reu0DKnRza4zlLtOPACx6j2/7MrQIthIK1Wi+LIA==
 
 react-transition-group@^4.4.2:
   version "4.4.2"
