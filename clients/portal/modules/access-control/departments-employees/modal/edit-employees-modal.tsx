@@ -42,7 +42,7 @@ export type FormValues = {
   selfEmail?: string;
   dep: Dep[];
   id?: string;
-  useStatus?: 1 | 2;
+  useStatus?: number;
   sendMessage?: SendMessage;
 };
 
@@ -112,6 +112,7 @@ function EditEmployeesModal( { user, closeModal }: Props): JSX.Element {
         name,
         phone,
         email,
+        useStatus: user.useStatus,
         dep: depID ? [{
           depID: depID,
           attr: '',

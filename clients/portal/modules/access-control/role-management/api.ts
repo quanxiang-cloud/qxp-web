@@ -100,5 +100,5 @@ export interface IUser {
 }
 
 export async function transferRoleSuper(id: string): Promise<{ code: number, msg: string }> {
-  return await httpClient('/api/v1/goalie/transferRoleSuper', { transferee: id });
+  return await httpClient('/api/v1/regoalie/role/transferRoleSuper', { transferee: id });
 }
