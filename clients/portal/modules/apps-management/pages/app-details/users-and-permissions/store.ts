@@ -339,12 +339,8 @@ class UserAndPerStore {
 
   @action
   fetchUserDetailList = (usersIDList: string[]): void => {
-    getUserDetail<{user: []}>({
-      query: `{user(ids:${
-        JSON.stringify(usersIDList)
-      }) {id , email ,userName ,phone ,dep{id,departmentName}}}`,
-    }).then((res) => {
-      this.UserDetailList = res?.user;
+    getUserDetail<{ users: [] }>(usersIDList).then((res) => {
+      this.UserDetailList = res?.users || [];
     }).catch((err) => {
       toast.error(err);
     });

@@ -52,13 +52,11 @@ const UserPicker = ({
   useEffect(() => {
     const noLabelValues = getNoLabelValues(value);
     if (noLabelValues.length) {
-      getUserDetail<{ user: { id: string, userName: string }[] }>({
-        query: `{user(ids:${JSON.stringify(noLabelValues)}) {id, userName }}`,
-      }).then((res) => {
+      getUserDetail<{ user: { id: string, name: string }[] }>(noLabelValues).then((res) => {
         const newValue = (value as LabelValue[]).map(({ label, value }) => {
           if (value && !label) {
             const curUser = res.user.find(({ id }) => id === value);
-            return { label: curUser?.userName ? curUser.userName : '', value };
+            return { label: curUser?.name ? curUser.name : '', value };
           }
           return { label, value };
         });

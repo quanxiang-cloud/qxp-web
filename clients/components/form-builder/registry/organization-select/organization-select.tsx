@@ -85,13 +85,12 @@ const OrganizationPicker = ({
     const noLabelValues = getNoLabelValues(value);
 
     if (noLabelValues.length) {
-      getOrganizationDetail<{ department: { id: string, departmentName: string }[] }>({
-        query: `{department(ids:${JSON.stringify(noLabelValues)}) {id, departmentName }}`,
-      }).then((res) => {
+      getOrganizationDetail<{ deps: { id: string, name: string }[] }>(noLabelValues).then((res) => {
         const newValue = (value as LabelValue[]).map(({ label, value }) => {
           if (value && !label) {
-            const curUser = res.department.find(({ id }) => id === value);
-            return { label: curUser?.departmentName || '', value };
+            const deps = res?.deps || [];
+            const curUser = deps.find(({ id }) => id === value);
+            return { label: curUser?.name || '', value };
           }
 
           return { label, value };
