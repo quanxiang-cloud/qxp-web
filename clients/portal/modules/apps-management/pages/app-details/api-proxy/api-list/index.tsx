@@ -14,6 +14,7 @@ import store from '../store';
 
 import './index.scss';
 
+const AUTHTYPE_WITHOUT_KEY = ['none', 'system'];
 const defaultKey = 'api-list';
 
 function renderApiListTips(): JSX.Element | string {
@@ -55,7 +56,7 @@ function ListPage(): JSX.Element {
         name: '配置分组',
         content: <GroupSetting/>,
       },
-      (!store.svc || store.svc.authType === 'none') ? null : {
+      (!store.svc || AUTHTYPE_WITHOUT_KEY.includes(store.svc.authType)) ? null : {
         id: 'api-keys',
         name: 'API 密钥',
         content: <ApiKeys/>,

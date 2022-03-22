@@ -1,6 +1,7 @@
 package contexts
 
 import (
+	"context"
 	"log"
 	"net/http"
 
@@ -34,6 +35,11 @@ func GetRequestID(r *http.Request) string {
 // GetCurrentRequestSession get session of current request
 func GetCurrentRequestSession(r *http.Request) *sessions.Session {
 	session, err := SessionStore.Get(r, Config.SessionCookieName)
+
+	if err == context.Canceled || err == context.DeadlineExceeded {
+		return session
+	}
+
 	if err != nil {
 		log.Fatalf("failed to get session from SessionStore, request_id: %s, %s", GetRequestID(r), err.Error())
 	}

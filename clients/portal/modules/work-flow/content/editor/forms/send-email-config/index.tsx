@@ -1,41 +1,23 @@
-import React, { useEffect, useState, useContext, useMemo } from 'react';
-import draftToHtml from 'draftjs-to-html';
-import htmlToDraft from 'html-to-draftjs';
+import React, { useEffect, useState, useContext, useMemo, useRef } from 'react';
 import { usePrevious, useUpdateEffect } from 'react-use';
-import { useQuery } from 'react-query';
 import { get, isEqual } from 'lodash';
 import { Upload } from 'antd';
 import { useForm, Controller } from 'react-hook-form';
-import {
-  EditorState,
-  convertToRaw,
-  ContentState,
-  Modifier,
-  SelectionState,
-} from 'draft-js';
-import { Editor } from 'react-draft-wysiwyg';
 
-import MoreMenu from '@c/more-menu';
-import { getFormFieldSchema } from '@flow/content/editor/forms/api';
-import FlowContext from '@flow/flow-context';
 import formFieldWrap from '@c/form-field-wrap';
-import useObservable from '@lib/hooks/use-observable';
-import store from '@flow/content/editor/store';
 import Button from '@c/button';
 import SaveButtonGroup from '@flow/content/editor/components/_common/action-save-button-group';
 import type {
-  StoreValue,
-  CurrentElement,
-  FormDataData,
   SendEmailData,
   Attachment,
 } from '@flow/content/editor/type';
-import schemaToFields from '@lib/schema-convert';
 import { SYSTEM_FIELDS } from '@c/form-builder/constants';
 
 import PersonPicker from '../../components/_common/person-picker';
 import { approvePersonEncoder } from '../../components/_common/utils';
 import FlowTableContext from '../flow-source-table';
+import QuillEditor from './quill-editor';
+import { isAdvancedField } from '../utils';
 
 import './index.scss';
 
@@ -46,13 +28,7 @@ type Props = {
   defaultValue: SendEmailData;
 }
 
-type FieldOPType = {
-  onChange: (editorCont: EditorState) => void;
-  editorState: EditorState;
-  options: { label: string | React.ReactNode, key: string }[];
-}
-
-const props = {
+const UPLOAD_PROPS = {
   name: 'file',
   action: '/api/v1/fileserver/uploadFile',
   headers: {
@@ -61,7 +37,6 @@ const props = {
 };
 
 const Input = formFieldWrap({ field: <input className='input' /> });
-const FieldEditor = formFieldWrap({ FieldFC: Editor });
 const LablePathMap = {
   // AssociatedRecords: '', // string[]
   UserPicker: '[].label', // {label, value}[]
@@ -80,43 +55,6 @@ function getFieldLabelPath(fieldSchema?: ISchema): string {
   return get(LablePathMap, fieldSchema['x-component'] || '', '');
 }
 
-function FieldOption({ onChange, editorState, options }: FieldOPType): JSX.Element {
-  const insertText = (text: string, hasSpacing = true): void => {
-    let contentState = editorState.getCurrentContent();
-    let selection = editorState.getSelection();
-    let textTmp = '${' + text + '}';
-    if (hasSpacing) {
-      textTmp += ' ';
-    }
-
-    if (selection.isCollapsed()) {
-      contentState = Modifier.insertText(contentState, selection, textTmp);
-    } else {
-      contentState = Modifier.replaceText(contentState, selection, textTmp);
-    }
-
-    let newEditorState = EditorState.set(editorState, { currentContent: contentState });
-    selection = selection.merge({
-      anchorOffset: selection.getAnchorOffset() + textTmp.length,
-      focusOffset: selection.getFocusOffset() + textTmp.length,
-    }) as SelectionState;
-
-    newEditorState = EditorState.forceSelection(newEditorState, selection);
-    onChange(newEditorState);
-  };
-
-  return (
-    <MoreMenu
-      menus={options}
-      onMenuClick={(menuKey) => {
-        insertText(menuKey);
-      }}
-    >
-      <div className='rdw-option-wrapper'>表单字段选择</div>
-    </MoreMenu>
-  );
-}
-
 function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props): JSX.Element {
   const approvePersons = approvePersonEncoder(defaultValue);
   const defaultValueEncode = {
@@ -126,19 +64,9 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
     title: defaultValue.title,
     mes_attachment: defaultValue.mes_attachment,
   };
-  const { register, handleSubmit, control, reset, formState: { errors }, watch } = useForm<SendEmailData>();
-  const { appID } = useContext(FlowContext);
-  const [editorCont, setEditorCont] = useState(
-    defaultValueEncode?.content ?
-      EditorState.createWithContent(
-        ContentState.createFromBlockArray(
-          htmlToDraft(defaultValueEncode.content).contentBlocks),
-      ) :
-      EditorState.createEmpty(),
-  );
-  const { elements = [] } = useObservable<StoreValue>(store);
-  const formDataElement = elements?.find(({ type }) => type === 'formData') as CurrentElement;
-  const workFormValue = (formDataElement?.data?.businessData as FormDataData)?.form?.value;
+  const editorRef = useRef<any>(null);
+  const [errorText, setErrorText] = useState('');
+  const { register, handleSubmit, control, reset, formState: { errors }, watch } = useForm();
   const allFields = watch([
     'content',
     'recivers',
@@ -151,7 +79,7 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
   ]);
   const previousFields = usePrevious(allFields);
   const { tableSchema } = useContext(FlowTableContext);
-  const formulaFields = useMemo(()=> tableSchema.filter((schema) => {
+  const formulaFields = useMemo(() => tableSchema.filter((schema) => {
     return !SYSTEM_FIELDS.includes(schema.fieldName);
   }).reduce((acc: Record<string, string>, field) => {
     const labelPath = getFieldLabelPath(field);
@@ -163,7 +91,7 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
   }, {}), [tableSchema]);
 
   // This field is required by the backend
-  const fieldType = useMemo(()=> tableSchema.filter((schema) => {
+  const fieldType = useMemo(() => tableSchema.filter((schema) => {
     return !SYSTEM_FIELDS.includes(schema.fieldName);
   }).reduce((acc: Record<string, string>, field) => {
     if (VerCompontType.includes(field.componentName)) {
@@ -190,24 +118,30 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
     }
   }, [allFields]);
 
-  const { data: schema = {} } = useQuery(
-    ['GET_WORK_FORM_FIELD_SCHEMA', workFormValue, appID],
-    getFormFieldSchema, {
-      enabled: !!workFormValue && !!appID,
-    },
-  );
-
-  const getEditorCont = (cont: EditorState, asRaw?: boolean): any => {
-    const raw = convertToRaw(cont.getCurrentContent());
-    return asRaw ? raw : draftToHtml(raw);
+  const handleSave = (data: any): void => {
+    const bol = handleValidate();
+    if (!bol) return;
+    const content = editorRef.current.getContent();
+    onSubmit({ ...data, content, templateId: 'quanliang', formulaFields, fieldType });
   };
 
-  const handleSave = (data: SendEmailData): void => {
-    onSubmit({ ...data, templateId: 'quanliang', formulaFields, fieldType });
-  };
-  const handleChangeEditor = (editorCont: EditorState): void => {
-    setEditorCont(editorCont);
-  };
+  function handleValidate(): boolean {
+    const value = editorRef.current.getContent();
+    const _content = value.substring(3, value.length - 4);
+
+    if (_content === '<br>') {
+      setErrorText('请输入内容');
+      return false;
+    }
+
+    if (_content.trim() === '') {
+      setErrorText('消息内容不能为空');
+      return false;
+    }
+
+    setErrorText('');
+    return true;
+  }
 
   const handleCancel = (): void => {
     onCancel();
@@ -217,11 +151,13 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
     reset(defaultValueEncode);
   }, []);
 
-  const fieldOption = React.useMemo(() => {
-    return schemaToFields(schema).filter((field) => field.id !== '_id').map((field) => {
-      return { label: field.title, key: field.id };
+  const contentVariables = React.useMemo(() => {
+    return tableSchema.filter(({ type, componentName }) => {
+      return !isAdvancedField(type, componentName);
+    }).map((field) => {
+      return { label: field.title as string, key: field.id };
     });
-  }, [schema]);
+  }, [tableSchema]);
 
   return (
     <div className="flex flex-col overflow-auto flex-1 py-24">
@@ -247,40 +183,18 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
         error={errors.title}
         register={register('title', { required: '请输入主题' })}
       />
-      <Controller
-        name='content'
-        control={control}
-        rules={{ required: '请填写邮件正文' }}
-        render={({ field }) => {
-          return (
-            <FieldEditor
-              label={<><span className='text-red-600'>*</span>正文</>}
-              wrapperClassName='web-message-editor-wrapper'
-              editorClassName='web-message-editor'
-              placeholder='在此输入正文'
-              editorState={editorCont}
-              toolbarCustomButtons={[
-                <FieldOption
-                  key='fieldOption'
-                  options={fieldOption}
-                  onChange={handleChangeEditor}
-                  editorState={editorCont}
-                />,
-              ]}
-              localization={{
-                locale: 'zh',
-              }}
-              register={{}}
-              onEditorStateChange={(_editorCont: EditorState) => {
-                handleChangeEditor(_editorCont);
-                field.onChange(getEditorCont(_editorCont));
-              }}
-              error={errors.content}
-            />
-          );
-        }
-        }
-      />
+      <div className="mb-20">
+        <label className='form-field-label'>
+          <span className="text-red-600">*</span>
+          内容
+        </label>
+        <QuillEditor
+          ref={editorRef}
+          value={defaultValueEncode?.content || ''}
+          contentVariables={contentVariables}
+        />
+        {errorText && <div className="text-14 text-red-500">{errorText}</div>}
+      </div>
       <div style={{ display: 'block' }} className='form-field-label'>附件</div>
       <Controller
         name='mes_attachment'
@@ -288,7 +202,7 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
         render={({ field }) => {
           return (
             <Upload
-              {...props}
+              {...UPLOAD_PROPS}
               defaultFileList={
                 (defaultValueEncode?.mes_attachment || []).map(({ file_name, file_url }: Attachment) => {
                   return {

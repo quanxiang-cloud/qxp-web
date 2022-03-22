@@ -1,36 +1,65 @@
-import React, { KeyboardEvent, useCallback } from 'react';
+import React, { KeyboardEvent, useCallback, useEffect, useState } from 'react';
 import { toJS } from 'mobx';
+import { has } from 'ramda';
 import { Form, Input } from 'antd';
 
+import toast from '@lib/toast';
+import Select from '@c/select';
+
 import AppZipUpload from './app-zip-upload';
+import AppCreatedBy from './app-created-by';
 import AppIconPicker from './app-icon-picker';
+import { fetchTemplateList, TemplateListRes } from '../../app-templates/api';
 
 import './style.scss';
 
-const DISABLE_SPECIAL_SYMBOL_REG = /[#$@^&=`'":;,.~¥-。、（）「」·“”；：？，《》【】+/\\()<>{}[\] ]/gi;
+export const DISABLE_SPECIAL_SYMBOL_REG = /[#$@^&=`'":;,.~¥-。、（）「」·“”；：？，《》【】+/\\()<>{}[\] ]/gi;
 
 type Props = {
+  modalType: string;
   className?: string;
   appInfo?: AppInfo;
-  modalType: string;
+  templateID?: string;
+  basic?: boolean;
   onSubmitCallback?: () => void;
-  onValuesChange?: () => void;
+  onValuesChange?: (value: any) => void;
+}
+
+async function getTemplateOptions(): Promise<LabelValue[]> {
+  let options: LabelValue[] = [];
+  await fetchTemplateList().then(({ templates }: TemplateListRes) => {
+    options = templates.map(({ name, id }: any) => {
+      return { label: name, value: id };
+    });
+  }).catch(() => toast.error('获取模版列表失败'));
+
+  return options;
 }
 
 function CreatedEditApp({
-  appInfo, modalType, className, onSubmitCallback, onValuesChange,
+  appInfo, modalType, className, onSubmitCallback, onValuesChange, templateID, basic = false,
 }: Props, ref?: any): JSX.Element {
   const [form] = Form.useForm();
+  const initData = appInfo && toJS(appInfo);
+  const [options, setOptions] = useState<LabelValue[]>([]);
+  const { appName, appIcon = '{}', appSign } = initData || {};
+  const [createdBy, setCreatedBy] = useState(templateID ? 'template' : 'base');
+
+  const handleEnterSubmit = useCallback((e: KeyboardEvent<HTMLInputElement>) => {
+    e.key === 'Enter' && handleFinish();
+  }, []);
 
   function handleFinish(): void {
     onSubmitCallback && onSubmitCallback();
   }
 
-  const initData = appInfo && toJS(appInfo);
-  const { appName, appIcon = '{}', appSign } = initData || {};
+  function handleValuesChange(value: Record<string, unknown>): void {
+    has('createdBy', value) && setCreatedBy(value.createdBy as string);
+    onValuesChange?.(value);
+  }
 
-  const handleEnterSubmit = useCallback((e: KeyboardEvent<HTMLInputElement>) => {
-    e.key === 'Enter' && handleFinish();
+  useEffect(() => {
+    getTemplateOptions().then(setOptions);
   }, []);
 
   return (
@@ -43,9 +72,11 @@ function CreatedEditApp({
         appName,
         appSign,
         appIcon,
+        createdBy,
+        template: templateID,
       }}
       onFinish={handleFinish}
-      onValuesChange={onValuesChange}
+      onValuesChange={handleValuesChange}
     >
       <Form.Item
         name='appName'
@@ -82,7 +113,7 @@ function CreatedEditApp({
       </Form.Item>
       <Form.Item
         name='appSign'
-        label='应用标志:'
+        label='应用标识:'
         // extra='必须以字母开头,由字母、数字、单下划线组成'
         extra='必须以字母开头,由字母、数字组成'
         rules={[
@@ -115,6 +146,22 @@ function CreatedEditApp({
       >
         <AppIconPicker />
       </Form.Item>
+      {modalType === 'createdApp' && !basic && (
+        <Form.Item
+          name="createdBy"
+          label="新建方式"
+        >
+          <AppCreatedBy value={createdBy} />
+        </Form.Item>
+      )}
+      {createdBy === 'template' && (
+        <Form.Item
+          name="template"
+          label="选择模版"
+        >
+          <Select className='w-full' options={options}/>
+        </Form.Item>
+      )}
       {modalType === 'importApp' && (
         <Form.Item
           required

@@ -34,9 +34,10 @@ function OptionLabels({ defaultValue, onClose, onSubmit }: Props): JSX.Element {
             optionLabels: {
               type: 'string',
               'x-component': 'TextArea',
-              description: '每行为一个选项，且选项不能超过 15 个字符',
+              description: '每行为一个选项，且选项不能超过 50 个字符',
               'x-component-props': {
                 style: {
+                  width: '730px',
                   height: '150px',
                 },
               },
@@ -46,7 +47,7 @@ function OptionLabels({ defaultValue, onClose, onSubmit }: Props): JSX.Element {
         components={{ TextArea }}
         defaultValue={{ optionLabels: defaultValue }}
         onSubmit={(values) => onSubmit(values.optionLabels.split(/\r?\n/).map((label: any) => {
-          return label.trim().slice(0, 15);
+          return label.trim().slice(0, 50);
         }).filter(Boolean))}
       >
         <FormButtonGroup offset={8}>

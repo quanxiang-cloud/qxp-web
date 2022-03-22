@@ -91,16 +91,25 @@ function mergeApiListToChildNameSpace(
   }));
 }
 
+export type ApiOptionData = {
+  name: string;
+  title: string;
+  parent: string;
+  children: ApiOptionData[] | null;
+}
+
 const Title_Map: Record<string, string> = {
   inner: '平台API',
   customer: '第三方API',
 };
-export function getChildrenOfCurrentSelectOption(currentChildrenData: any): ApiCascaderOption[] | undefined {
+export function getChildrenOfCurrentSelectOption(
+  currentChildrenData: ApiOptionData[],
+): ApiCascaderOption[] | undefined {
   if (!currentChildrenData) {
     return;
   }
 
-  return currentChildrenData.map(({ name, children, parent, title }: any) => {
+  return currentChildrenData.map(({ name, children, parent, title }: ApiOptionData) => {
     return {
       label: title ? title : (Title_Map[name] || name),
       value: name,

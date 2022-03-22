@@ -1,13 +1,14 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 
-import SideNavCard from '@c/side-nav-card';
-import NotFoundError from '@c/404-error';
-import ItemWithTitleDesc from '@c/item-with-title-desc';
 import AppIcon from '@c/app-icon';
+import NotFoundError from '@c/404-error';
+import SideNavCard from '@c/side-nav-card';
+import ItemWithTitleDesc from '@c/item-with-title-desc';
 
-import AppList from './pages/entry/app-list';
 import OptionSet from '../option-set';
+import AppList from './pages/entry/app-list';
+import AppTemplates from './pages/entry/app-templates';
 
 const MENU = [
   {
@@ -23,6 +24,13 @@ const MENU = [
     name: '选项集',
     url: '/apps/option-set',
     authority: 'dataset/read',
+  },
+  {
+    id: 'app-templates',
+    icon: 'template',
+    name: '模版库',
+    url: '/apps/app-templates',
+    authority: 'application/read',
   },
 ];
 
@@ -52,6 +60,7 @@ function AppManagerEntry(): JSX.Element {
           <Route exact path="/apps" component={AppList} />
           <Route path="/apps/my-apps" component={AppList} />
           <Route path="/apps/option-set" component={OptionSet} />
+          <Route path="/apps/app-templates" component={AppTemplates} />
           <Route component={NotFoundError}/>
         </Switch>
       </div>
