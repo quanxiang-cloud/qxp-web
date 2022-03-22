@@ -118,7 +118,7 @@ function AppTemplates(): JSX.Element {
           itemTitleClassName="text-h6"
         />
         <div className="p-16 font-semibold">我的模板 · {templateList.length}</div>
-        <div className="flex-1 px-16">
+        <div className="flex-1 px-16 overflow-auto">
           <Table
             rowKey="id"
             data={templateList}
