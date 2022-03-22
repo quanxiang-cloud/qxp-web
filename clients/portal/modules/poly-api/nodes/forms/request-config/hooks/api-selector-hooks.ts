@@ -35,7 +35,7 @@ export function useGetNamespaceTree(
         title: '编排 API',
         parent: '/',
         children: namespaceTree?.root.children ?? [],
-      }] as any;
+      }] as ApiOptionData[];
       setState(polyNameSpaceTree);
       return;
     }
