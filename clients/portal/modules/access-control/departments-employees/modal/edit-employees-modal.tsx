@@ -128,7 +128,6 @@ function EditEmployeesModal( { user, closeModal }: Props): JSX.Element {
   const dep = getTwoDimenArrayHead(user.departments);
   const isLeader = dep?.attr === '1';
   const showDepTree = !user.id || (user.id && !isLeader);
-  console.log(dep);
 
   if (isLoading && !departmentTree) {
     return <Loading desc="加载中..." />;
