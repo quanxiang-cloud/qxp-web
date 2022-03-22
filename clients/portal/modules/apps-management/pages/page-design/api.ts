@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash';
 
-import { getStore } from '@one-for-all/page-engine';
+import stores from './stores';
 
 import {
   setBatchGlobalConfig,
@@ -62,13 +62,12 @@ export function getVersionKey(): string {
 }
 
 export function getRenderRepository(): any {
-  const pageCtx = getStore();
   return {
-    'ofa-ui@latest': pageCtx.registry.toComponentMap(),
+    'ofa-ui@latest': stores.registry.toComponentMap(),
   };
 }
 
-export function updatePageEngineMenuType(appID: string, id: string) {
+export function updatePageEngineMenuType(appID: string, id: string): void {
   setPageEngineMenuType(appID, id).then((res) => {
     store.setActiveMenu({ ...store.curPage, menuType: 3 });
   }).catch((err) => toast.error(err));

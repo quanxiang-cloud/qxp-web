@@ -155,7 +155,7 @@ function PageDetails({ pageID }: Props): JSX.Element {
               textClassName='app-content--op_btn'
               onClick={goPageDesign}
             >
-                设计页面
+              设计页面
             </Button>
           </div>
           <Tab

@@ -5,12 +5,8 @@ import Button from '@c/button';
 import { setGlobalConfig } from '@lib/configuration-center';
 
 import { savePage, updatePageEngineMenuType } from './api';
-import {
-  getKeyOfCustomPageEditor,
-  CUSTOM_PAGE_EDITOR_SCHEMA,
-  CUSTOM_PAGE_EDITOR_PAGE_ENGINE,
-  initialSchema,
-} from './utils';
+import { getInitSchemaByPageType, getPageTypeKey } from './utils';
+import { PAGE_TYPE } from './constants';
 
 type Props = {
   appID: string;
@@ -19,13 +15,13 @@ type Props = {
 }
 
 function SelectCustomPageEditor({ pageId, appID, onSelect }: Props): JSX.Element {
-  function handleSelect(editor: string): void {
-    const [key, newKey] = getKeyOfCustomPageEditor(appID, pageId);
-    setGlobalConfig(key, '1.0.0', editor);
-    setGlobalConfig(newKey, '1.0.0', editor);
-    savePage(appID, pageId, initialSchema).then(() => {
+  function handleSelect(pageType: string): void {
+    const [key, newKey] = getPageTypeKey(appID, pageId);
+    setGlobalConfig(key, '1.0.0', pageType);
+    setGlobalConfig(newKey, '1.0.0', pageType);
+    savePage(appID, pageId, getInitSchemaByPageType(pageType)).then(() => {
       updatePageEngineMenuType(appID, pageId);
-      onSelect(editor);
+      onSelect(pageType);
     }).catch((err: Error) => {
       toast.error(err.message);
     });
@@ -38,10 +34,10 @@ function SelectCustomPageEditor({ pageId, appID, onSelect }: Props): JSX.Element
     >
       <h1 className="text-center mb-20">请选择构建自定义页面的方式</h1>
       <div className="w-6/12 flex items-center justify-between m-auto">
-        <Button onClick={() => handleSelect(CUSTOM_PAGE_EDITOR_SCHEMA)}>
+        <Button onClick={() => handleSelect(PAGE_TYPE.SCHEMA_EDITOR)}>
           使用 Schema 编辑器
         </Button>
-        <Button onClick={() => handleSelect(CUSTOM_PAGE_EDITOR_PAGE_ENGINE)}>
+        <Button onClick={() => handleSelect(PAGE_TYPE.PAGE_DESIGN_EDITOR)}>
           使用页面引擎
         </Button>
       </div>

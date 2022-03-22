@@ -153,6 +153,13 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
+"@babel/runtime@^7.7.6":
+  version "7.17.8"
+  resolved "https://registry.npmmirror.com/@babel/runtime/-/runtime-7.17.8.tgz#3e56e4aff81befa55ac3ac6a0967349fd1c5bca2"
+  integrity sha512-dQpEpK0O9o6lj6oPu0gRDbbnk+4LeHlNcBpspf6Olzt3GIX4P1lWF1gS+pHLDFlaJvbR6q7jCfQ08zA4QJBnmA==
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
 "@babel/template@^7.16.7":
   version "7.16.7"
   resolved "https://registry.npmmirror.com/@babel/template/download/@babel/template-7.16.7.tgz#8d126c8701fde4d66b264b3eba3d96f07666d155"
@@ -742,6 +749,25 @@
   version "0.3.3"
   resolved "https://ofapkg.pek3b.qingstor.com/tarball/one-for-all-api-spec-adapter-v0.3.3.tgz#66e389b480d1c064fd1ddd7db4c240137424d1d7"
 
+"@one-for-all/api-spec-adapter@0.4.0":
+  version "0.4.0"
+  resolved "https://registry.npmmirror.com/@one-for-all/api-spec-adapter/-/api-spec-adapter-0.4.0.tgz#fd662bf3e0e4dfc75f25cdb78b69215aac9856f6"
+  integrity sha512-0AvMUdxfWa6/gdIgk0PPOzBO17XJnD/6QUAoAdvm1kOU+hmVydXLY4ODRvDHs9cVNvBDjcZwLsdQ0esRelnT7g==
+
+"@one-for-all/page-engine-v2@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.npmmirror.com/@one-for-all/page-engine-v2/-/page-engine-v2-1.1.0.tgz#818a04a20357a5221ebb9bff77bd0baa6bba18da"
+  integrity sha512-RH0RIZGyEfidibvYXqlvqEl74Rioa8/gCIavp88epHIKaDjQPchL1GHE5WXxQkSpnSb9wQ2VLcVlylmaAdJA1w==
+  dependencies:
+    "@one-for-all/render-engine" "0.18.0"
+    "@one-for-all/schema-spec" "0.15.0"
+    classnames "^2.3.1"
+    nanoid "^3.1.30"
+    ramda "^0.27.1"
+    react "^17.0.2"
+    react-dom "^17.0.2"
+    rxjs "^7.4.0"
+
 "@one-for-all/page-engine@0.9.5":
   version "0.9.5"
   resolved "https://registry.npmmirror.com/@one-for-all/page-engine/-/page-engine-0.9.5.tgz#ef87347077f15c96ab7ea754d504ad5dc537b6e2"
@@ -790,6 +816,20 @@
     react-jsx-parser "1.29.0"
     rxjs "^7.4.0"
 
+"@one-for-all/render-engine@0.18.0":
+  version "0.18.0"
+  resolved "https://registry.npmmirror.com/@one-for-all/render-engine/-/render-engine-0.18.0.tgz#42b1679308b21aec8b4e9a56d2898943cd6fa284"
+  integrity sha512-m8UYK6pIsWEleXMgampPmDkXu9BOdiKhGixanNK/vqdukLZdMRYEaXPT+RXdo8BYhWNxyLsIhARLZdKiKhF0KA==
+  dependencies:
+    "@one-for-all/api-spec-adapter" "0.4.0"
+    "@one-for-all/schema-spec" "0.15.0"
+    "@one-for-all/utils" "0.3.0"
+    history "^5.2.0"
+    react "^17.0.2"
+    react-dom "^17.0.2"
+    react-jsx-parser "1.29.0"
+    rxjs "^7.4.0"
+
 "@one-for-all/schema-spec@0.10.1":
   version "0.10.1"
   resolved "https://registry.npmmirror.com/@one-for-all/schema-spec/download/@one-for-all/schema-spec-0.10.1.tgz#9bd3a108ef056d3a647fa02cbee275b3a65d8891"
@@ -804,6 +844,11 @@
   version "0.13.1-0"
   resolved "https://registry.npmmirror.com/@one-for-all/schema-spec/-/schema-spec-0.13.1-0.tgz#6133bb595a0abaeda045925ee41a220bc94fe9bd"
   integrity sha512-SVHv7zVxiJRuLVHY7vdPZehrxPzu10018YKu7x+KsRo3uIygWAYsKmdqqxcMhOPm+462n0YlXDttBe1yx3kieA==
+
+"@one-for-all/schema-spec@0.15.0":
+  version "0.15.0"
+  resolved "https://registry.npmmirror.com/@one-for-all/schema-spec/-/schema-spec-0.15.0.tgz#665d9a4b40dbeb399d8dbe1c48b80d55f7bf6a7f"
+  integrity sha512-tPqHVGyGfAJnfNoVvbGJEMxLFPr4VsKySE9WDZw1IYGDLCzXrhSotb7M59aNww4XlCo+PFM/mhQtUpupH9lBww==
 
 "@one-for-all/ui@0.2.18":
   version "0.2.18"
@@ -846,6 +891,11 @@
   version "0.1.1"
   resolved "https://registry.npmmirror.com/@one-for-all/utils/-/utils-0.1.1.tgz#a5c41c6e64d158c36d50a61c402e5c910fb0258f"
   integrity sha512-mNTwU6dRBbDDfVA4HpzZhn1oJ6R4C+3u93Rf3Fu6K5XlIxGuOtLWUvBlBAuQMoJF0HZW+c+f+K6PGQ8d6i5eSA==
+
+"@one-for-all/utils@0.3.0":
+  version "0.3.0"
+  resolved "https://registry.npmmirror.com/@one-for-all/utils/-/utils-0.3.0.tgz#853a78ee8b25a82a66f07c4a85bd1c8134627e8f"
+  integrity sha512-8wfgOTt36wcilOlfLgiHL3/Uv5HlTs6aiO71WJrKOPvbvhBKoDYzRghxoG2BjYy+PSaeGVcD4TulgUsw8b/tEg==
 
 "@popperjs/core@^2.11.0", "@popperjs/core@^2.9.1":
   version "2.11.2"
@@ -1185,6 +1235,14 @@
   dependencies:
     "@types/react" "*"
 
+"@types/react-color@^3.0.6":
+  version "3.0.6"
+  resolved "https://registry.npmmirror.com/@types/react-color/-/react-color-3.0.6.tgz#602fed023802b2424e7cd6ff3594ccd3d5055f9a"
+  integrity sha512-OzPIO5AyRmLA7PlOyISlgabpYUa3En74LP8mTMa0veCA719SvYQov4WLMsHvCgXP+L+KI9yGhYnqZafVGG0P4w==
+  dependencies:
+    "@types/react" "*"
+    "@types/reactcss" "*"
+
 "@types/react-dom@^17.0.0":
   version "17.0.11"
   resolved "https://registry.npmmirror.com/@types/react-dom/download/@types/react-dom-17.0.11.tgz#e1eadc3c5e86bdb5f7684e00274ae228e7bcc466"
@@ -1250,6 +1308,13 @@
     "@types/prop-types" "*"
     "@types/scheduler" "*"
     csstype "^3.0.2"
+
+"@types/reactcss@*":
+  version "1.2.6"
+  resolved "https://registry.npmmirror.com/@types/reactcss/-/reactcss-1.2.6.tgz#133c1e7e896f2726370d1d5a26bf06a30a038bcc"
+  integrity sha512-qaIzpCuXNWomGR1Xq8SCFTtF4v8V27Y6f+b9+bzHiv087MylI/nTCqqdChNeWS7tslgROmYB7yeiruWX7WnqNg==
+  dependencies:
+    "@types/react" "*"
 
 "@types/resolve@1.17.1":
   version "1.17.1"
@@ -3863,6 +3928,13 @@ history@^4.9.0:
     tiny-invariant "^1.0.2"
     tiny-warning "^1.0.0"
     value-equal "^1.0.1"
+
+history@^5.2.0:
+  version "5.3.0"
+  resolved "https://registry.npmmirror.com/history/-/history-5.3.0.tgz#1548abaa245ba47992f063a0783db91ef201c73b"
+  integrity sha512-ZqaKwjjrAYUYfLG+htGaIIZ4nioX2L70ZUMIFysS3xvBsSG4x/n1V6TXV3N8ZYNuFGlDirFg32T7B6WOUPDYcQ==
+  dependencies:
+    "@babel/runtime" "^7.7.6"
 
 hoist-non-react-statics@^3.0.0, hoist-non-react-statics@^3.1.0, hoist-non-react-statics@^3.3.0, hoist-non-react-statics@^3.3.2:
   version "3.3.2"
