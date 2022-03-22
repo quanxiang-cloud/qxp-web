@@ -6,6 +6,7 @@ import { GET_REQUEST_NODE_API_LIST } from './names';
 
 interface Input<I> {
   path: string;
+  type?: string;
   body?: I;
 }
 
@@ -46,9 +47,8 @@ export function useGetRequestNodeApiList(
   return useQuery<QueryRequestNodeApiListResponse, Error>(
     [GET_REQUEST_NODE_API_LIST, input.path],
     (): Promise<QueryRequestNodeApiListResponse> => {
-      const type = input.path.split('/')[3];
       return httpClient<QueryRequestNodeApiListResponse>(
-        `/api/v1/polyapi/${type}/list/${input.path}`, input.body,
+        `/api/v1/polyapi/${input.type ?? 'raw'}/list/${input.path}`, input.body,
       );
     },
     options,
