@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { setBatchGlobalConfig } from '@lib/api/user-config';
 import type { Schema } from '@one-for-all/schema-spec';
 import toast from '@lib/toast';
-import PageSchemaRender from '@c/page-schema-render';
 
 import { getSchemaKey } from '../api';
 
@@ -34,11 +33,15 @@ function Preview({ appID, pageID, previewSchema }: Props): JSX.Element {
   }
 
   return (
-    <PageSchemaRender
-      schemaKeys={schemaKeys}
-      version="1.0.0"
-    />
+    <h1>this will be implement later</h1>
   );
+
+  // return (
+  //   <PageSchemaRender
+  //     schemaKeys={schemaKeys}
+  //     version="1.0.0"
+  //   />
+  // );
 }
 
 export default Preview;
