@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useRef, useState, useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { every, isEmpty } from 'lodash';
 import { useUpdateEffect } from 'react-use';
@@ -41,7 +41,7 @@ export default function UpdateTableData({
   defaultValue, onSubmit, onCancel, onChange: _onChange,
 }: Props): JSX.Element {
   const { appID } = useContext(FlowContext);
-  const { tableID: workFormId } = useContext(FlowSourceTableCtx);
+  const { tableID: workFormId, tableSchema } = useContext(FlowSourceTableCtx);
   const [value, setValue] = useState<TableDataUpdateData>(defaultValue || {});
   const filterRef = useRef<FilterRuleRef>(null);
   const updateRef = useRef<UpdateRuleRef>(null);
@@ -60,7 +60,7 @@ export default function UpdateTableData({
   } = useQuery(['GET_WORK_FORM_LIST', appID], () => getFormDataMenuList(appID), {
     enabled: !!appID,
   });
-
+  const associatedDataList = useMemo(() => tableSchema.filter((item) => item.componentName === 'associatedrecords') ?? [] as SchemaFieldItem[], [tableSchema]);
   const onSave = (): void => {
     if (!value.targetTableId) {
       toast.error('请选择目标数据表');
@@ -92,6 +92,15 @@ export default function UpdateTableData({
     if (formType === 'work-form') {
       Object.assign(value, { silent: false });
     }
+    if (value.selectField === 'normal') {
+      Object.assign(value, { selectField: '', selectFieldType: undefined, selectFieldTableId: undefined });
+    }
+    associatedDataList.forEach((item) => {
+      if (item.id === value.selectField) {
+        Object.assign(value, { selectFieldType: 'associatedrecords', selectFieldTableId: value.targetTableId });
+      }
+    });
+
     onSubmit(value);
   };
 
@@ -204,7 +213,7 @@ export default function UpdateTableData({
         <SelectTargetFields
           fieldId={value.selectField}
           tableId={value.targetTableId}
-          onChangeField={(selectField)=> {
+          onChangeField={(selectField) => {
             // when change select field, reset update rules
             onChange({ selectField, updateRule: [] });
           }}
