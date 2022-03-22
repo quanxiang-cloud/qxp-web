@@ -1,4 +1,4 @@
-import { AjaxConfig, FetchParams, Res, SwaggerSpecAdapter } from '@one-for-all/api-spec-adapter';
+import { AjaxConfig, FetchParams, SwaggerSpecAdapter } from '@one-for-all/api-spec-adapter';
 import { Spec } from '@one-for-all/api-spec-adapter/lib/src/swagger-schema-official';
 
 type Response = {
@@ -29,23 +29,23 @@ export default class SwaggerRPCSpecAdapter extends SwaggerSpecAdapter {
     return ajaxConfig;
   }
 
-  responseAdapter = ({ body, error }: Response): Res => {
-    if (this.options?.__disableResponseAdapter) {
-      return { result: body, error };
-    }
+  // responseAdapter = ({ body, error }: Response): Res => {
+  //   if (this.options?.__disableResponseAdapter) {
+  //     return { result: body, error };
+  //   }
 
-    if (error || !body) {
-      return { result: body, error };
-    }
+  //   if (error || !body) {
+  //     return { result: body, error };
+  //   }
 
-    if (body.code !== 0) {
-      const e = new Error(body.msg);
-      if (body.data) {
-        Object.assign(e, { data: body.data });
-      }
-      return { result: undefined, error: e };
-    }
+  //   if (body.code !== 0) {
+  //     const e = new Error(body.msg);
+  //     if (body.data) {
+  //       Object.assign(e, { data: body.data });
+  //     }
+  //     return { result: undefined, error: e };
+  //   }
 
-    return { result: body.data, error: undefined };
-  };
+  //   return { result: body.data, error: undefined };
+  // };
 }
