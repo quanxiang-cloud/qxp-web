@@ -13,7 +13,7 @@ func PortalHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userStyleGuideConfig := getUserConfig(r)
+	userStyleGuideConfig := getUserConfig(r, "")
 	adminUserFuncTags := getAdminUserFuncTags(r)
 	userAdminRoles := getUserAdminRoles(r)
 

@@ -54,7 +54,7 @@ export default function StyleGuide(): JSX.Element {
       },
     });
 
-    return `//${readable}.${domain}/style-guide/component.css`;
+    return `//${readable}.${domain}/style-guide/${appID}/component.css`;
   }
 
   async function handleSave(): Promise<void> {

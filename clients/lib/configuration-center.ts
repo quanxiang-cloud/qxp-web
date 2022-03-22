@@ -69,7 +69,7 @@ export function useGetGlobalConfig<T>(
   return [userConfig, loading];
 }
 
-export function setGlobalConfig(key: string, version: string, config: any): Promise<void> {
+export function setGlobalConfig(key: string, version: string, config: any): Promise<string | ''> {
   // define a local variable is necessary,
   // if config can not be stringified, an error will be throw
   globalConfigMapTmp[key] = config;

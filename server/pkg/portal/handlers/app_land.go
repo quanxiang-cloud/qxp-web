@@ -1,15 +1,19 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"path"
 	"qxp-web/server/pkg/contexts"
+
+	"github.com/gorilla/mux"
 )
 
 // AppLandHandler handle normal user side request
 func AppLandHandler(w http.ResponseWriter, r *http.Request) {
-	// vars := mux.Vars(r)
-	// appID := vars["appID"]
+	vars := mux.Vars(r)
+	appID := vars["appID"]
+	fmt.Printf(appID)
 	// w.Write([]byte(appID))
 	user := r.Context().Value(ctxUser).(*User)
 	if user.Status == 0 {
@@ -24,12 +28,14 @@ func AppLandHandler(w http.ResponseWriter, r *http.Request) {
 
 	adminUserFuncTags := getAdminUserFuncTags(r)
 	userAdminRoles := getUserAdminRoles(r)
+	userStyleGuideConfig := getUserConfig(r, appID)
 
 	renderWebAppPage(w, "appLand.html", map[string]interface{}{
-		"user":              user,
-		"adminUserFuncTags": adminUserFuncTags,
-		"userAdminRoles":    userAdminRoles,
-		"debugMode":         contexts.Config.DevMode,
-		"CONFIG":            contexts.Config.ClientConfig,
+		"user":                 user,
+		"adminUserFuncTags":    adminUserFuncTags,
+		"userAdminRoles":       userAdminRoles,
+		"debugMode":            contexts.Config.DevMode,
+		"CONFIG":               contexts.Config.ClientConfig,
+		"userStyleGuideConfig": userStyleGuideConfig,
 	})
 }
