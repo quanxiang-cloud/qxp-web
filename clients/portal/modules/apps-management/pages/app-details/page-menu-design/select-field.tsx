@@ -11,7 +11,7 @@ interface Props {
 function SelectField({ value, onChange, options }: Props): JSX.Element {
   return (
     <Select
-      placeholder="选填"
+      placeholder="请填写"
       options={options}
       onChange={onChange}
       defaultValue={value}

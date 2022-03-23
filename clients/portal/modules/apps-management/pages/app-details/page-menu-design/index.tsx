@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import { toJS } from 'mobx';
@@ -12,20 +12,40 @@ import DelModal from './del-modal';
 import appPagesStore from '../store';
 import PageDetails from './page-details';
 import AddGroupPoper from './add-group-poper';
-import EditPageModal from './edit-page-modal';
+import EditViewModal from './edit-view-modal';
 import EditGroupModal from './edit-group-modal';
 import HidePageConfirmModal from './hide-modal';
 import AppMenuTree from './menu-tree';
 import { Menu } from './menu-tree/type';
 import { MenuType } from '../type';
+import Orchestrator from '../view-orchestration/orchestrator';
 
 import './index.scss';
-
+import { getBatchGlobalConfig } from '@lib/api/user-config';
+import { useQuery } from 'react-query';
+import { CreateViewParams, ViewType } from '../view-orchestration/types.d';
 function PageList(): JSX.Element {
   const history = useHistory();
 
   const { appID } = useParams<{ appID: string }>();
   const { pageID } = getQuery<{ pageID: string }>();
+  const [appSchemaStore, setAppSchemaStore] = useState<Orchestrator>();
+  const [mType, setMType] = useState('');
+  // const [isLoading, setLoading] = useState<boolean>(true);
+
+  const { data: appLayoutSchema, isLoading } = useQuery(['desktop_view_schema'], () => {
+    const key = `app_id:${appID}:desktop_view_schema:root`;
+    return getBatchGlobalConfig([{ key: key, version: '1.0.0' }])
+      .then(({ result }) => JSON.parse(result[key])).then((appLayoutSchema) => {
+        setAppSchemaStore(() => {
+          const store = new Orchestrator(appID, appLayoutSchema);
+          window.store = store;
+          console.log(appLayoutSchema);
+          return store;
+        });
+      });
+  });
+
   const {
     editPage,
     setPageID,
@@ -54,8 +74,14 @@ function PageList(): JSX.Element {
     closeModal();
   }
 
-  function handleEditPage(pageInfo: PageInfo): void {
-    editPage(pageInfo).then(closeModal);
+  function handleEditPage(viewInfo: CreateViewParams & { layoutType: string }): void {
+    // editPage(pageInfo).then(closeModal)
+    if (viewInfo.layoutType === ViewType.TableSchemaView) {
+      appSchemaStore?.addTableSchemaView(viewInfo).then(() => {
+        return appSchemaStore?.fetchSchema(appID);
+      }).then(closeModal);
+    }
+    console.log(viewInfo);
   }
 
   function handleVisibleHiddenPage(): void {
@@ -70,7 +96,7 @@ function PageList(): JSX.Element {
   };
 
   const closeModal = (): void => {
-    setModalType('');
+    setMType('');
   };
 
   useEffect(() => {
@@ -85,7 +111,7 @@ function PageList(): JSX.Element {
     setModalType(key);
   };
 
-  if (pageListLoading) {
+  if (isLoading && !appSchemaStore) {
     return <div className='app-details-nav'><PageLoading /></div>;
   }
 
@@ -93,9 +119,9 @@ function PageList(): JSX.Element {
     <div className="flex h-full">
       <div className='app-details-nav rounded-tl-8 bg-gray-50'>
         <div className='h-44 flex flex-end items-center px-16 py-20 justify-center'>
-          <span className='font-semibold text-gray-400 mr-auto text-12'>菜单</span>
+          <span className='font-semibold text-gray-400 mr-auto text-12'>页面</span>
           <div className="flex items-center">
-            <div onClick={() => setModalType('createPage')}>
+            <div onClick={() => setMType('createView')}>
               <Tooltip label='新建菜单' position='bottom' wrapperClassName="whitespace-nowrap">
                 <Icon className='app-page-add-group mr-8' size={16} name='post_add' />
               </Tooltip>
@@ -129,10 +155,19 @@ function PageList(): JSX.Element {
           onSubmit={handleEditGroup}
         />
       )}
-      {['editPage', 'createPage', 'copyPage'].includes(modalType) && (
+      {/* {['editPage', 'createPage', 'copyPage'].includes(modalType) && (
         <EditPageModal
           appID={appID}
           pageInfo={modalType === 'createPage' ? undefined : activeMenu as any}
+          onCancel={closeModal}
+          onSubmit={handleEditPage}
+          isCopy={modalType === 'copyPage'}
+        />
+      )} */}
+      {['editView', 'createView', 'copyView'].includes(mType) && (
+        <EditViewModal
+          modalType={modalType}
+          store={appSchemaStore as Orchestrator}
           onCancel={closeModal}
           onSubmit={handleEditPage}
           isCopy={modalType === 'copyPage'}

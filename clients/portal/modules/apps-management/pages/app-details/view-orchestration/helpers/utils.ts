@@ -3,7 +3,7 @@ import { nanoid } from 'nanoid';
 import { findNodeByID, appendChild, getNodeParents } from '@one-for-all/schema-utils';
 import { Schema, RouteNode, SchemaNode, HTMLNode } from '@one-for-all/schema-spec';
 
-import { setBatchGlobalConfig } from '@lib/api/user-config';
+import { getBatchGlobalConfig, setBatchGlobalConfig } from '@lib/api/user-config';
 
 import { LAYOUT_CHILD_TYPE_ROUTES_CONTAINER, ROOT_NODE_ID, VERSION } from '../constants';
 
@@ -33,6 +33,12 @@ export function saveSchema(schemaKey: string, schema: Schema): FutureErrorMessag
   return setBatchGlobalConfig([params]).catch(() => {
     return 'failed to save schema';
   });
+}
+
+export async function fetchSchema(appID: string): Promise<SchemaNode> {
+  const key = genDesktopRootViewSchemaKey(appID);
+  const { result } = await getBatchGlobalConfig([{ key: key, version: '1.0.0' }]);
+  return JSON.parse(result[key]);
 }
 
 export async function createRefSchema(appID: string): Promise<string> {

@@ -19,6 +19,7 @@ import {
   genNodeID,
   genDesktopRootViewSchemaKey,
   saveSchema,
+  fetchSchema,
 } from './helpers/utils';
 import type {
   Layout,
@@ -29,6 +30,7 @@ import type {
   ExternalView,
 } from './types';
 import { ROOT_NODE_ID } from './constants';
+import { createPage } from '../api';
 
 class Orchestrator {
   @observable loading = true;
@@ -85,7 +87,7 @@ class Orchestrator {
   // async changeViewGroup(viewID: string, from: string, to?: string): FutureErrorMessage {
 
   // }
-
+  @action
   async addLayout(name: string, layoutType: LayoutType): FutureErrorMessage {
     const rootNode = await addLayoutToRoot({
       appID: this.appID,
@@ -97,37 +99,52 @@ class Orchestrator {
     return this.saveSchema(rootNode);
   }
 
+  @action
   async addTableSchemaView(params: CreateViewParams): FutureErrorMessage {
     if (!this.rootNode) {
       return 'no root node found for this app, please init root node again!';
     }
-
-    // todo create empty table schema?
-    const tableID = 'todo_implement_this';
-    const renderTableSchemaViewNode: ReactComponentNode = {
-      id: genNodeID(),
-      type: 'react-component',
-      // todo implement this
-      packageName: 'todo_implement_this',
-      // todo implement this
-      packageVersion: 'todo_implement_this',
-      // todo implement this
-      exportName: 'todo_implement_this',
-      props: {
-        tableID: {
-          type: 'constant_property',
-          value: tableID,
+    return createPage({
+      appID: this.appID,
+      name: params.name,
+      icon: params.icon,
+    }).then((id) => {
+      // todo create empty table schema?
+      const tableID = id;
+      const renderTableSchemaViewNode: ReactComponentNode = {
+        id: genNodeID(),
+        type: 'react-component',
+        label: params.name,
+        // todo implement this
+        packageName: 'package_name',
+        // todo implement this
+        packageVersion: '1.0.0',
+        // todo implement this
+        exportName: 'export_name',
+        props: {
+          tableID: {
+            type: 'constant_property',
+            value: tableID,
+          },
+          name: {
+            type: 'constant_property',
+            value: params.name,
+          },
+          icon: {
+            type: 'constant_property',
+            value: params.icon,
+          },
         },
-      },
-    };
+      };
 
-    if (!params.layoutID) {
-      return this.saveSchema(addViewToRoot(this.rootNode, renderTableSchemaViewNode));
-    }
+      if (!params.layoutID) {
+        return this.saveSchema(addViewToRoot(this.rootNode, renderTableSchemaViewNode));
+      }
 
-    const rootNode = addViewToLayout(this.rootNode, params.layoutID, renderTableSchemaViewNode);
+      const rootNode = addViewToLayout(this.rootNode, params.layoutID, renderTableSchemaViewNode);
 
-    return this.saveSchema(rootNode);
+      return this.saveSchema(rootNode);
+    });
   }
 
   async addSchemaView(params: CreateViewParams): FutureErrorMessage {
@@ -192,6 +209,13 @@ class Orchestrator {
     }).then(() => {
       this.loading = false;
       return '';
+    });
+  }
+
+  @action
+  async fetchSchema(appID: string): Promise<void> {
+    return fetchSchema(appID).then((schemaNode) => {
+      this.rootNode = schemaNode;
     });
   }
 }

@@ -13,7 +13,7 @@ import {
 
 import logger from '@lib/logger';
 
-import { ExternalView, View, ViewType, SchemaView, StaticView, TableSchemaView } from '../types';
+import { ExternalView, View, ViewType, SchemaView, StaticView, TableSchemaView } from '../types.d';
 import { isLayoutNode } from './utils';
 
 const VIEW_RENDER_MAP: Record<string, ViewType> = {
