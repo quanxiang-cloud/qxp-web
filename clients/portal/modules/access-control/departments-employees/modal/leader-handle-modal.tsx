@@ -4,8 +4,8 @@ import { useMutation, useQueryClient } from 'react-query';
 import Icon from '@c/icon';
 import Modal from '@c/modal';
 import toast from '@lib/toast';
+import { getTwoDimenArrayHead } from '@lib/utils';
 
-import { LeaderStatus } from '../type';
 import { setDEPLeader, cancelDEPLeader, LeaderParams } from '../api';
 
 interface Props {
@@ -14,7 +14,9 @@ interface Props {
 }
 
 export default function LeaderHandleModal({ user, closeModal }: Props) {
-  const isLeader = user.isDEPLeader === LeaderStatus.true;
+  const dep = getTwoDimenArrayHead(user.departments);
+  const isLeader = dep?.attr === '1';
+
   const title = isLeader ? '取消' : '设为';
   const isHave = isLeader ? '没有' : '拥有';
   const api = isLeader ? cancelDEPLeader : setDEPLeader;
@@ -31,12 +33,12 @@ export default function LeaderHandleModal({ user, closeModal }: Props) {
     },
   });
 
-  function handleSubmit() {
-    const params: LeaderParams = { depID: '' };
-    params.depID = user.dep ? user.dep.id : '';
-    if (!isLeader) {
-      params.userID = user.id;
-    }
+  function handleSubmit(): void {
+    const params: LeaderParams = {
+      depID: dep?.id ? dep?.id : '',
+      userID: user.id,
+      attr: !isLeader ? '1' : '0',
+    };
     mutation.mutate(params);
   }
 
@@ -65,7 +67,7 @@ export default function LeaderHandleModal({ user, closeModal }: Props) {
         <div className='flex items-center'>
           <Icon name="info" size={20} style={{ color: '#D97706' }} className='mr-8' />
           <div className="text-yellow-600 text-14">
-            确定将员工<span className='mx-4'>{user.userName}</span>{title}主管吗？
+            确定将员工<span className='mx-4'>{user.name}</span>{title}主管吗？
           </div>
         </div>
         <div className='ml-28 mt-8 text-14'>

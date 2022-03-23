@@ -126,7 +126,7 @@ export function departmentToTreeNode(department: Department, level = 0): TreeNod
 
   return {
     data: department,
-    name: department.departmentName,
+    name: department.name,
     id: department.id,
     parentId: department.pid,
     path: '',
@@ -282,12 +282,13 @@ export function isMeanless(value: any): boolean {
   return false;
 }
 
-export function getUserDepartment(user: CurrentUser): UserDepartment {
-  let dep = user.dep;
-  while (dep.child) {
-    dep = dep.child;
-  }
+export function getUserDepartment(user: CurrentUser): Department {
+  const dep = getTwoDimenArrayHead(user.dep) as Department;
   return dep;
+}
+
+export function getTwoDimenArrayHead<T>(dep?: T[][]): T | undefined {
+  return dep?.[0]?.[0];
 }
 
 export function not<A extends any[]>(fn: (...args: [...A]) => boolean) {

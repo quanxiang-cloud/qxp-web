@@ -45,7 +45,7 @@ const PreviewMsg = ({
     txt = '未知消息类型';
   }
   const infoText = [
-    dayjs(createdAt).format('YYYY-MM-DD HH:mm:ss'), txt, creatorName || window.USER.userName,
+    dayjs(createdAt).format('YYYY-MM-DD HH:mm:ss'), txt, creatorName || window.USER.name,
   ].join(' · ');
 
   return (

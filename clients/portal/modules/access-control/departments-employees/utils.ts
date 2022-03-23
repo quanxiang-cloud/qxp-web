@@ -170,3 +170,10 @@ export const getImgColor = (text: string, colors = imgBgColors): {name: string, 
     color: colors[num],
   };
 };
+
+export function buildGraphQLQuery(params: Record<string, any>): string {
+  const str = JSON.stringify(params).replace(/"(.+?)":(("(.*?)")|([0-9]+))/g, '$1:$2');
+  const _str = str.slice(1, str.length - 1);
+  return `query(${_str})`;
+}
+
