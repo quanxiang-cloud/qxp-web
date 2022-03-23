@@ -26,6 +26,7 @@ export default function PageSchemaRender({ schemaKey, version }: Props): JSX.Ele
 
   return (
     <ErrorBoundary>
+      {/* @ts-ignore */}
       <SchemaRender schema={schema} plugins={{ apiSpecAdapter: adapter, repository, componentLoader }} />
     </ErrorBoundary>
   );

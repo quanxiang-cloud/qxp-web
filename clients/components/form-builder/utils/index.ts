@@ -220,7 +220,10 @@ export function schemaPermissionTransformer<T extends ISchema>(
       [isPermissionNormal, permissionTransformer({ display: true, readOnly: false }, field)],
     ]);
     const conditions = cond([
-      [(isReadOnly) => !!isReadOnly, permissionTransformer({ display: true, readOnly: true }, field)],
+      [
+        (isReadOnly: boolean | undefined) => !!isReadOnly,
+        permissionTransformer({ display: true, readOnly: true }, field),
+      ],
       [stubTrue, () => transformer(permission)],
     ]);
     conditions(readOnly && !isPermissionReadOnly(permission) && !isPermissionInvisible(permission));
