@@ -97,7 +97,7 @@ export default function UpdateTableData({
     }
     associatedDataList.forEach((item) => {
       if (item.id === value.selectField) {
-        Object.assign(value, { selectFieldType: 'associatedrecords', selectFieldTableId: value.targetTableId });
+        Object.assign(value, { selectFieldType: 'associated_records', selectFieldTableId: value.targetTableId });
       }
     });
 
