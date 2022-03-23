@@ -20,12 +20,11 @@ import store from '../store';
 
 function CSSEditor(): JSX.Element {
   const [value, setValue] = useState('');
-
   const { spec, key } = store.currentCompStatus as ActiveConfigurationComponent;
 
   useEffect(() => {
     setValue(store.cssStore?.getInitCompCss(`${key}.${spec.title}`, spec.rules) || '');
-  }, [key]);
+  }, [store.currentCompStatus]);
 
   function handleSave(): void {
     store.cssStore?.setCss(`${key}.${spec.title}`, value, spec.rules, (msg) => toast.error(msg));
