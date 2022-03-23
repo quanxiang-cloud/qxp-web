@@ -5,10 +5,9 @@ import { always, cond, T } from 'ramda';
 import Modal from '@c/modal';
 
 import SelectField from './select-field';
-import { BaseView, CreateViewParams, ViewType } from '../view-orchestration/types.d';
-import Orchestrator from '../view-orchestration/orchestrator';
+import { BaseView, CreateViewParams, Layout, View, ViewGroup, ViewType } from '../view-orchestration/types.d';
 import { RadioButtonGroup } from '@one-for-all/ui';
-import IconSelected from './icon-selected';
+import { observer } from 'mobx-react';
 
 const { TextArea } = Input;
 
@@ -16,7 +15,8 @@ type Props = {
   onCancel: () => void;
   onSubmit: (viewParams: CreateViewParams & { layoutType: string}) => void;
   isCopy: boolean;
-  store: Orchestrator;
+  layouts: Layout[];
+  views: Array<View | ViewGroup>;
   modalType: string;
   viewParams?: CreateViewParams;
 };
@@ -46,11 +46,11 @@ const viewTypeMap: LabelValue[] = [
 ];
 
 function EditPageModal(
-  { viewParams, onCancel, onSubmit, isCopy, store, modalType }: Props,
+  { viewParams, onCancel, onSubmit, isCopy, views, layouts, modalType }: Props,
 ): JSX.Element {
   const [viewType, setViewType] = useState<ViewType>(ViewType.TableSchemaView);
   const [form] = Form.useForm();
-  const [allViewNames, setAllViewNames] = useState(store.views.map((view) => (view as BaseView).name));
+  const [allViewNames, setAllViewNames] = useState(views.map((view) => (view as BaseView).name));
 
   if (modalType === 'editPage') {
     setAllViewNames(allViewNames.filter((name) => name !== viewParams?.name));
@@ -139,6 +139,7 @@ function EditPageModal(
               required: true,
               message: '选择页面类型',
             }]}
+          initialValue={viewType}
         >
           <RadioButtonGroup
             radioBtnClass="bg-white"
@@ -150,24 +151,12 @@ function EditPageModal(
           />
         </Form.Item>
         <Form.Item
-          name="icon"
-          label="显示图标"
-          rules={[
-            {
-              required: true,
-              message: '请选择显示图标',
-            },
-          ]}
-        >
-          <IconSelected />
-        </Form.Item>
-        <Form.Item
           name='layoutID'
           label="页面布局"
         >
           <SelectField
             value={layoutID}
-            options={store.layouts.map((layout) => ({
+            options={layouts.map((layout) => ({
               label: layout.name,
               value: layout.id,
             }))}
@@ -190,4 +179,4 @@ function EditPageModal(
   );
 }
 
-export default EditPageModal;
+export default observer(EditPageModal);

@@ -54,7 +54,7 @@ export async function createRefSchema(appID: string): Promise<string> {
 
 export function attachToRouteNode(node: SchemaNode, routeFor: 'layout' | 'view'): RouteNode {
   // todo generate route path by chinese
-  const routePath = routeFor === 'layout' ? `l-${genNodeID()}` : 'p-${genNodeID()}';
+  const routePath = routeFor === 'layout' ? `l-${genNodeID()}` : `p-${genNodeID()}`;
 
   return {
     id: genNodeID(),

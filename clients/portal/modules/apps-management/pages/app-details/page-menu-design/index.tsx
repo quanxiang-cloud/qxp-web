@@ -167,7 +167,8 @@ function PageList(): JSX.Element {
       {['editView', 'createView', 'copyView'].includes(mType) && (
         <EditViewModal
           modalType={modalType}
-          store={appSchemaStore as Orchestrator}
+          layouts={appSchemaStore?.layouts || []}
+          views={appSchemaStore?.views || []}
           onCancel={closeModal}
           onSubmit={handleEditPage}
           isCopy={modalType === 'copyPage'}

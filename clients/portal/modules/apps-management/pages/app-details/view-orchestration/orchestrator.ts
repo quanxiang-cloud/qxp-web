@@ -1,5 +1,5 @@
 import { get } from 'lodash';
-import { action, computed, observable } from 'mobx';
+import { action, computed, observable, toJS } from 'mobx';
 import {
   ReactComponentNode,
   SchemaNode,
@@ -30,7 +30,8 @@ import type {
   ExternalView,
 } from './types';
 import { ROOT_NODE_ID } from './constants';
-import { createPage } from '../api';
+import { createBlank } from '../api';
+import { NODE } from './node';
 
 class Orchestrator {
   @observable loading = true;
@@ -44,7 +45,7 @@ class Orchestrator {
   constructor(appID: string, rootSchema: Schema) {
     this.appID = appID;
     this.rootSchemaKey = genDesktopRootViewSchemaKey(appID);
-
+    findLayouts(NODE);
     const { node, apiStateSpec, sharedStatesSpec } = rootSchema;
 
     this.rootNode = node;
@@ -56,6 +57,9 @@ class Orchestrator {
   }
 
   @computed get layouts(): Array<Layout> {
+    console.log(toJS(this.rootNode));
+    console.log(!this.rootNode);
+
     if (!this.rootNode) {
       return [];
     }
@@ -104,11 +108,7 @@ class Orchestrator {
     if (!this.rootNode) {
       return 'no root node found for this app, please init root node again!';
     }
-    return createPage({
-      appID: this.appID,
-      name: params.name,
-      icon: params.icon,
-    }).then((id) => {
+    return createBlank(this.appID).then(({ tableID: id }) => {
       // todo create empty table schema?
       const tableID = id;
       const renderTableSchemaViewNode: ReactComponentNode = {
@@ -120,7 +120,7 @@ class Orchestrator {
         // todo implement this
         packageVersion: '1.0.0',
         // todo implement this
-        exportName: 'export_name',
+        exportName: 'TableSchemaViewRender',
         props: {
           tableID: {
             type: 'constant_property',
@@ -130,10 +130,6 @@ class Orchestrator {
             type: 'constant_property',
             value: params.name,
           },
-          icon: {
-            type: 'constant_property',
-            value: params.icon,
-          },
         },
       };
 
@@ -142,6 +138,7 @@ class Orchestrator {
       }
 
       const rootNode = addViewToLayout(this.rootNode, params.layoutID, renderTableSchemaViewNode);
+      console.log(rootNode);
 
       return this.saveSchema(rootNode);
     });
@@ -215,6 +212,7 @@ class Orchestrator {
   @action
   async fetchSchema(appID: string): Promise<void> {
     return fetchSchema(appID).then((schemaNode) => {
+      console.log(schemaNode);
       this.rootNode = schemaNode;
     });
   }
