@@ -14,19 +14,9 @@ interface Employee {
   status?: number;
   position?: string;
   depName?: string;
-  departments?: Department[][]
-  leaders?: Leader[][]
-  // deprecated
-  userName?: string;
-  isDEPLeader?: number;
-  leaderName?: string;
-  leaderID?: string;
-  dep?: Department;
-  userIconURL?: string;
-  depIds?: string[];
-  authority?: string[];
-  roleId?: string;
-  deleteId?: string;
+  departments?: Department[][];
+  deps?: Department[][];
+  leaders?: Leader[][];
 }
 
 interface EmployeeOfRole {
