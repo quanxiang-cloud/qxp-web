@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useQuery } from 'react-query';
 import type { Schema } from '@one-for-all/schema-spec';
 import { Spec } from '@one-for-all/api-spec-adapter/lib/src/swagger-schema-official';
 
@@ -16,27 +15,33 @@ type SchemaWithAdapter = {
   adapter: SwaggerRPCSpecAdapter;
 }
 
-export function useSchemaWithAdapter(schemaKey: string, version: string): Partial<SchemaWithAdapter> {
-  const [adapter, setAdatper] = useState<SwaggerRPCSpecAdapter | undefined>(undefined);
-  const { isLoading, data } = useQuery<Partial<SchemaWithSwagger>>([schemaKey, version], () => {
-    const url = `/api/page_schema_with_swagger?schema_key=${schemaKey}&version=${version}`;
+function fetchSchemaWithSwagger(schemaKey: string, version: string): Promise<Partial<SchemaWithSwagger>> {
+  const url = `/api/page_schema_with_swagger?schema_key=${schemaKey}&version=${version}`;
 
-    return fetch(url, { method: 'GET' })
-      .then((response) => response.json())
-      .then(({ data }) => data)
-      .catch((err) => {
-        logger.error(err);
-        return;
-      });
-  });
+  return fetch(url, { method: 'GET' })
+    .then((response) => response.json())
+    .then(({ data }) => data)
+    .catch((err) => {
+      logger.error(err);
+      return {};
+    });
+}
+
+export function useSchemaWithAdapter(schemaKey: string, version: string): Partial<SchemaWithAdapter> {
+  const [adapter, setAdapter] = useState<SwaggerRPCSpecAdapter>();
+  const [schema, setSchema] = useState<Schema>();
 
   useEffect(() => {
-    if (isLoading || !data || !data.schema || !data.swagger) {
-      return;
-    }
+    fetchSchemaWithSwagger(schemaKey, version).then((res) => {
+      if (res.schema) {
+        setSchema(res.schema);
+      }
 
-    setAdatper(new SwaggerRPCSpecAdapter(data.swagger, { __disableResponseAdapter: true }));
-  }, [isLoading, data]);
+      if (res.swagger) {
+        setAdapter(new SwaggerRPCSpecAdapter(res.swagger));
+      }
+    });
+  }, [schemaKey, version]);
 
-  return { schema: data?.schema, adapter: adapter };
+  return { schema, adapter };
 }
