@@ -70,8 +70,8 @@ function PageList(): JSX.Element {
   }, [pageID]);
 
   useEffect(() => {
-    console.log('views', appSchemaStore?.views);
-  }, [appSchemaStore]);
+    console.log(appSchemaStore?.views);
+  }, [appSchemaStore?.views]);
 
   async function delPageOrGroup(): Promise<void> {
     await del(toJS(activeMenu), modalType);
