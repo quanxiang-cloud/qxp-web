@@ -40,7 +40,7 @@ function PageList(): JSX.Element {
         setAppSchemaStore(() => {
           const store = new Orchestrator(appID, appLayoutSchema);
           window.store = store;
-          console.log(appLayoutSchema);
+          console.log(1111, appLayoutSchema);
           return store;
         });
       });
@@ -69,6 +69,10 @@ function PageList(): JSX.Element {
     setPageID(pageID);
   }, [pageID]);
 
+  useEffect(() => {
+    console.log('views', appSchemaStore?.views);
+  }, [appSchemaStore]);
+
   async function delPageOrGroup(): Promise<void> {
     await del(toJS(activeMenu), modalType);
     closeModal();
@@ -81,7 +85,10 @@ function PageList(): JSX.Element {
         return appSchemaStore?.fetchSchema(appID);
       }).then(closeModal);
     }
-    console.log(viewInfo);
+
+    if (viewInfo.layoutType === ViewType.SchemaView) {
+      appSchemaStore?.addSchemaView(viewInfo).then(closeModal);
+    }
   }
 
   function handleVisibleHiddenPage(): void {

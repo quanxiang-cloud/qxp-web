@@ -1,11 +1,12 @@
 import { get } from 'lodash';
 import { action, computed, observable } from 'mobx';
 import {
-  ReactComponentNode,
-  SchemaNode,
   Schema,
+  RefNode,
+  SchemaNode,
   APIStatesSpec,
   SharedStatesSpec,
+  ReactComponentNode,
 } from '@one-for-all/schema-spec';
 import { deleteByID, findNodeByID, patchNode } from '@one-for-all/schema-utils';
 
@@ -20,6 +21,7 @@ import {
   genDesktopRootViewSchemaKey,
   saveSchema,
   fetchSchema,
+  genDesktopViewSchemaKey,
 } from './helpers/utils';
 import type {
   Layout,
@@ -148,7 +150,50 @@ class Orchestrator {
   }
 
   async addSchemaView(params: CreateViewParams): FutureErrorMessage {
-    return Promise.reject(new Error('todo, implement this'));
+    if (!this.rootNode) {
+      return 'no root node found for this app, please init root node again!';
+    }
+
+    const pageSchemaKey = genDesktopViewSchemaKey(this.appID);
+    const InitPageSchema = {
+      node: {
+        id: genNodeID(),
+        pid: '',
+        type: 'react-component',
+        packageName: 'ofa-ui',
+        packageVersion: 'latest',
+        exportName: 'page',
+        label: '页面',
+        props: {
+          style: {
+            type: 'constant_property',
+            value: {
+              width: '100%',
+              height: '100%',
+            },
+          },
+        },
+        children: [],
+      },
+      apiStateSpec: {},
+      sharedStatesSpec: {},
+    } as Schema;
+    saveSchema(pageSchemaKey, InitPageSchema);
+
+    const renderSchemaView: RefNode = {
+      id: genNodeID(),
+      type: 'ref-node',
+      schemaID: pageSchemaKey,
+      label: params.name,
+    };
+
+    if (!params.layoutID) {
+      return this.saveSchema(addViewToRoot(this.rootNode, renderSchemaView));
+    }
+
+    const rootNode = addViewToLayout(this.rootNode, params.layoutID, renderSchemaView);
+
+    return this.saveSchema(rootNode);
   }
 
   async addStaticView(params: CreateViewParams & { fileUrl: string; }): FutureErrorMessage {
