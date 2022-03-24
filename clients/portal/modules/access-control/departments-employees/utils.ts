@@ -171,9 +171,17 @@ export const getImgColor = (text: string, colors = imgBgColors): {name: string, 
   };
 };
 
-export function buildGraphQLQuery(params: Record<string, any>): string {
-  const str = JSON.stringify(params).replace(/"(.+?)":(("(.*?)")|([0-9]+))/g, '$1:$2');
-  const _str = str.slice(1, str.length - 1);
-  return `query(${_str})`;
+export function buildGraphQLQuery(params: any): number | string {
+  if (typeof params === 'number') {
+    return params;
+  }
+
+  if (typeof params !== 'object' || Array.isArray(params)) {
+    return JSON.stringify(params);
+  }
+
+  const props = Object.entries(params).map(([key, value]) => `${key}:${buildGraphQLQuery(value)}`).join(',');
+
+  return `query(${props})`;
 }
 
