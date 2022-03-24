@@ -1,23 +1,15 @@
-import { RawResponse } from '@one-for-all/api-spec-adapter';
-import { Res } from '.';
 import type { Spec, Operation } from './swagger-schema-official';
 
 import type { APISpecAdapter, AjaxConfig, FetchParams } from './types';
 import { indexOperation, join, toKeyPathPair } from './utils';
 
-type Options = {
-  __disableResponseAdapter?: boolean;
-}
-
 export default class SwaggerSpecAdapter implements APISpecAdapter {
-  options: Options | undefined;
   spec: Spec;
   operationMap: Record<string, Operation>;
 
-  constructor(spec: Spec, options?: Options) {
+  constructor(spec: Spec) {
     this.operationMap = indexOperation(spec);
     this.spec = spec;
-    this.options = options;
   }
 
   build(apiID: string, fetchParams?: FetchParams): AjaxConfig | undefined {
@@ -68,29 +60,4 @@ export default class SwaggerSpecAdapter implements APISpecAdapter {
 
     return { method, url, queryParams, headers, body: fetchParams?.body };
   }
-
-  responseAdapter = ({ body, error }: RawResponse): Res => {
-    if (this.options?.__disableResponseAdapter) {
-      return { result: body, error };
-    }
-
-    if (error || !body) {
-      return { result: body, error };
-    }
-
-    // @ts-ignore
-    if (body.code !== 0) {
-      // @ts-ignore
-      const e = new Error(body.msg);
-      // @ts-ignore
-      if (body.data) {
-        // @ts-ignore
-        Object.assign(e, { data: body.data });
-      }
-      return { result: undefined, error: e };
-    }
-
-    // @ts-ignore
-    return { result: body.data, error: undefined };
-  };
 }
