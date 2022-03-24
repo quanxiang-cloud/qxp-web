@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 
-import { getRenderRepository } from './api';
+import PageSchemaRender from '@c/page-schema-render';
+import { getSchemaKey, getVersionKey, getRenderRepository } from './api';
 
 interface Props {
   appId: string;
@@ -16,17 +17,14 @@ function SchemaPage({ appId, pageId, draft, convertor }: Props) {
   const repository = useMemo(()=> getRenderRepository(), []);
 
   return (
-    <h1>this will be implement later</h1>
+    <PageSchemaRender
+      key={pageId}
+      schemaKeys={getSchemaKey(appId, pageId, !!draft)}
+      version={getVersionKey()}
+      repository={repository}
+      maxHeight='100%'
+    />
   );
-  // return (
-  //   <PageSchemaRender
-  //     key={pageId}
-  //     schemaKeys={getSchemaKey(appId, pageId, !!draft)}
-  //     version={getVersionKey()}
-  //     repository={repository}
-  //     maxHeight='100%'
-  //   />
-  // );
 }
 
 export default SchemaPage;

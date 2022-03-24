@@ -1,4 +1,5 @@
 import { action, observable } from 'mobx';
+import dayjs from 'dayjs';
 
 import { getComments } from '@home/pages/approvals/api';
 import toast from '@lib/toast';
@@ -19,9 +20,8 @@ class TopicStore {
         const mapped = (res as Comment[])
           .filter((comment) => !comment.isDeleted)
           .map((comment) => {
-            const time = comment.modifyTime || comment.createTime;
-            if (time) {
-              comment.modifyTime = formatRelativeTime(time);
+            if (comment.modifyTime) {
+              comment.modifyTime = formatRelativeTime(dayjs(comment.modifyTime).toDate());
             }
             return comment;
           })

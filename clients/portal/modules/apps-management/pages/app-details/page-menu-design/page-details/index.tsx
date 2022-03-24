@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
-// import PageSchemaRender from '@c/page-schema-render';
+import PageSchemaRender from '@c/page-schema-render';
 
 import Icon from '@c/icon';
 import Modal from '@c/modal';
@@ -18,7 +18,7 @@ import { MenuType, Resp } from '../../type';
 import { createCustomPage, updateCustomPage } from '../../api';
 import { formatFileSize } from '../../utils';
 import PageRelatedInfo from './page-related-info';
-// import { getSchemaKey, getVersionKey, getRenderRepository } from '../../../page-design/api';
+import { getSchemaKey, getVersionKey, getRenderRepository } from '../../../page-design/api';
 
 import './index.scss';
 
@@ -99,7 +99,7 @@ function PageDetails({ pageID }: Props): JSX.Element {
     }
   }
 
-  function onProgress(file: QXPUploadFileTask, progress: number ): void {
+  function onProgress(file: QXPUploadFileTask, progress: number): void {
     setFiles((prevFiles) => [{
       ...prevFiles[0],
       progress: progress,
@@ -155,27 +155,27 @@ function PageDetails({ pageID }: Props): JSX.Element {
               textClassName='app-content--op_btn'
               onClick={goPageDesign}
             >
-                设计页面
+              设计页面
             </Button>
           </div>
           <Tab
             items={[
-              // {
-              //   id: 'page-preview',
-              //   name: '视图预览',
-              //   content: (
-              //     <PageSchemaRender
-              //       schemaKeys={getSchemaKey(appID, pageID, false)}
-              //       version={getVersionKey()}
-              //       repository={getRenderRepository()}
-              //       maxHeight="calc(100vh - 250px)"
-              //     />
-              //   ),
-              // },
+              {
+                id: 'page-preview',
+                name: '视图预览',
+                content: (
+                  <PageSchemaRender
+                    schemaKeys={getSchemaKey(appID, pageID, false)}
+                    version={getVersionKey()}
+                    repository={getRenderRepository()}
+                    maxHeight="calc(100vh - 250px)"
+                  />
+                ),
+              },
               {
                 id: 'relate-info',
                 name: '关联信息',
-                content: (<PageRelatedInfo/>),
+                content: (<PageRelatedInfo />),
               },
             ]}
           />
@@ -233,7 +233,7 @@ function PageDetails({ pageID }: Props): JSX.Element {
               </Button>
             )}
           </div>
-          <PageRelatedInfo/>
+          <PageRelatedInfo />
         </div>
       </>
     );

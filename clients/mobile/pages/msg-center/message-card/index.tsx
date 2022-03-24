@@ -53,7 +53,7 @@ function MessageCard(props: HomePageProps): JSX.Element {
                 className='mr-4'/>
               <p className='flex-1 truncate mr-8'>{m.title}</p>
               <p className='caption text-placeholder'>
-                {m.createdAt ? formatRelativeTime(m.createdAt) : ''}
+                {formatRelativeTime(new Date((m.createdAt ?? 0) * 1000))}
               </p>
             </div>
           ))}

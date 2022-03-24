@@ -1,4 +1,4 @@
-import { formatRelativeTime } from '@m/lib/formatter';
+import { formatTimeSeconds } from '@m/lib/formatter';
 
 export interface Attachment {
   fileName: string;
@@ -19,7 +19,7 @@ export interface Message {
 export function getSubtitle(data?: Message): string {
   if (!data) return '';
   const updateTime = data.updateAt ?? data.createdAt ?? 0;
-  const updated = updateTime > 0 ? formatRelativeTime(updateTime) : '';
+  const updated = updateTime > 0 ? formatTimeSeconds(updateTime, false) : '';
   let types: string;
   switch (data.types) {
   case 1:

@@ -42,14 +42,6 @@
   border-radius: .02rem .08rem .08rem .08rem;
 }
 
-.radius-0-4-4-4 {
-  border-radius: 0 .04rem .04rem .04rem;
-}
-
-.radius-4-0-4-4 {
-  border-radius: .04rem 0 .04rem .04rem;
-}
-
 @mixin pointer {
   cursor: pointer;
   &:active {
@@ -58,11 +50,6 @@
 }
 
 .pointer {
-  @include pointer
-}
-
-.pointer-4 {
-  border-radius: .04rem;
   @include pointer
 }
 

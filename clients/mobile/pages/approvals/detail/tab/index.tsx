@@ -1,18 +1,16 @@
-import React, { RefObject, useEffect, useMemo, useRef, useState } from 'react';
+import React, { RefObject, useEffect, useMemo, useRef } from 'react';
 import { observer } from 'mobx-react';
 import { useSetState } from 'react-use';
 import { useParams } from 'react-router';
 import { useHistory } from 'react-router-dom';
 import cs from 'classnames';
-import { toJS } from 'mobx';
 
 import { ApprovalDetailParams } from '@m/pages/approvals/types';
 import Loading from '@m/qxp-ui-mobile/loading';
 import { Empty } from '@m/qxp-ui-mobile/empty';
 import Icon from '@m/qxp-ui-mobile/icon';
 import Popper from '@c/popper';
-import { FormRenderer } from '@c/form-builder';
-
+import { approvalActionPath } from '@m/constant';
 import store from '../store';
 
 import './index.scss';
@@ -28,16 +26,12 @@ function ApprovalsDetailTab(props: ApprovalsDetailTabProps): JSX.Element {
 
   const history = useHistory();
 
-  const submitRef = useRef<HTMLButtonElement>(null);
-
   const [state, setState] = useSetState({
     loading: false,
     error: false,
   });
 
   const task = useMemo(() => store.taskDetails[props.index], [props.index]);
-
-  const [formValues, setFormValues] = useState<Record<string, any>>({});
 
   useEffect(init, []);
   useEffect(() => {
@@ -57,11 +51,10 @@ function ApprovalsDetailTab(props: ApprovalsDetailTabProps): JSX.Element {
   function onActionClick(action: string): void {
     // Todo: Add action click
     popperRef?.current?.close();
-    submitRef?.current?.click();
-    // const actionPath = approvalActionPath.replace(':processInstanceID/:taskID/:type',
-    //   `${processInstanceID}/${taskID}/${type}`,
-    // );
-    // history.push(`${actionPath}?action=${action}`);
+    const actionPath = approvalActionPath.replace(':processInstanceID/:taskID/:type',
+      `${processInstanceID}/${taskID}/${type}`,
+    );
+    history.push(`${actionPath}?action=${action}`);
   }
 
   const popperRef = useRef<Popper>(null);
@@ -105,18 +98,11 @@ function ApprovalsDetailTab(props: ApprovalsDetailTabProps): JSX.Element {
             image='/dist/images/no-approval-task.svg'/>
         )}
 
-        {!state.loading && !state.error && !!task.formSchema && (
+        {!state.loading && !state.error && (
           <>
             <div className='flex-1 overflow-scroll'>
-              <FormRenderer
-                className='h-full'
-                value={toJS(task.formData)}
-                schema={toJS(task.formSchema)}
-                onSubmit={setFormValues}
-                readOnly={type === 'APPLY_PAGE' || type === 'HANDLED_PAGE' }
-                usePermission>
-                <button type='submit' ref={submitRef} className='hidden'/>
-              </FormRenderer>
+              <div style={{ marginTop: '.6rem' }}/>
+              <p className='text-center text-placeholder'>Schema Render is now working in progress</p>
             </div>
 
             {(!!task.custom?.length || !!task.system?.length) && (

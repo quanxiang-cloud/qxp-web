@@ -65,7 +65,6 @@ func GetRouter() http.Handler {
 
 	// todo server this request in a different package
 	r.Host(contexts.Config.ClientConfig.HomeHostname).PathPrefix("/mobile").Methods("GET").HandlerFunc(loginRequired(handlers.MobileHandler))
-	r.Host(contexts.Config.ClientConfig.HomeHostname).PathPrefix("/a/{appID}").Methods("GET").HandlerFunc(loginRequired(handlers.AppLandHandler))
 	r.Host(contexts.Config.ClientConfig.HomeHostname).Methods("GET").HandlerFunc(loginRequired(handlers.HomeHandler))
 
 	r.PathPrefix("/").Methods("GET").HandlerFunc(loginRequired(handlers.PortalHandler))
