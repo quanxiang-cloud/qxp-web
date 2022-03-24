@@ -65,8 +65,8 @@ export default function FormFileUploader(props: FileUploaderProps & ISchemaField
   return (
     <FileUploader
       {...configProps}
-      className='w-280'
-      additionalPathPrefix={`/app/${appID}/form-attachment/${pageID}`}
+      className='w-full max-w-290'
+      additionalPathPrefix={`${appID}/${pageID}`}
       fileData={value?.map((file: QxpFileFormData) =>
         ({
           name: file.label,
