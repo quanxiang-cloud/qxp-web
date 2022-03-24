@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { ForwardedRef, forwardRef } from 'react';
 import { noop } from 'lodash';
 
 import { Modal } from '@one-for-all/ui';
 import { Props as ConfigProps } from './config-form';
 
-function Dialog({ children, hideFooter, okIconName, okText, cancelIconName, cancelText, ...rest }: ConfigProps) {
+function Dialog(props: ConfigProps, ref: ForwardedRef<HTMLDivElement>): JSX.Element {
+  const { children, hideFooter, okIconName, okText, cancelIconName, cancelText, ...rest } = props;
   return (
     <Modal
+      {...rest}
       controlled
       wrapStyle={{
         position: 'absolute',
@@ -29,11 +31,11 @@ function Dialog({ children, hideFooter, okIconName, okText, cancelIconName, canc
           text: okText,
         },
       ]}
-      {...rest}
+      ref={ref}
     >
       {children}
     </Modal>
   );
 }
 
-export default Dialog;
+export default forwardRef(Dialog);
