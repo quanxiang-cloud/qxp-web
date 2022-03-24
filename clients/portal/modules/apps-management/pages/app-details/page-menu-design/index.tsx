@@ -82,6 +82,10 @@ function PageList(): JSX.Element {
     if (viewInfo.layoutType === ViewType.SchemaView) {
       appSchemaStore?.addSchemaView(viewInfo).then(closeModal);
     }
+
+    if (viewInfo.layoutType === ViewType.StaticView) {
+      appSchemaStore?.addStaticView(viewInfo as any).then(closeModal);
+    }
   }
 
   // function handleVisibleHiddenPage(): void {

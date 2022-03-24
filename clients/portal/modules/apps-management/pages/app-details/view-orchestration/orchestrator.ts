@@ -150,7 +150,7 @@ class Orchestrator {
     }
 
     const pageSchemaKey = genDesktopViewSchemaKey(this.appID);
-    const InitPageSchema = {
+    const customPageSchema = {
       node: {
         id: genNodeID(),
         pid: '',
@@ -173,7 +173,7 @@ class Orchestrator {
       apiStateSpec: {},
       sharedStatesSpec: {},
     } as Schema;
-    saveSchema(pageSchemaKey, InitPageSchema);
+    saveSchema(pageSchemaKey, customPageSchema);
 
     const renderSchemaView: RefNode = {
       id: genNodeID(),
@@ -191,9 +191,38 @@ class Orchestrator {
     return this.saveSchema(rootNode);
   }
 
-  async addStaticView(params: CreateViewParams & { fileUrl: string; }): FutureErrorMessage {
-    return Promise.reject(new Error('todo, implement this'));
+  async addStaticView(params: CreateViewParams & { fileUrl: any; }): FutureErrorMessage {
+    const staticViewNode: ReactComponentNode = {
+      id: genNodeID(),
+      type: 'react-component',
+      label: params.name,
+      // todo implement this
+      packageName: 'package_name',
+      // todo implement this
+      packageVersion: '1.0.0',
+      // todo implement this
+      exportName: 'StaticViewRender',
+      props: {
+        fileUrl: {
+          type: 'constant_property',
+          value: params.fileUrl,
+        },
+        name: {
+          type: 'constant_property',
+          value: params.name,
+        },
+      },
+    };
+
+    if (!params.layoutID) {
+      return this.saveSchema(addViewToRoot(this.rootNode, staticViewNode));
+    }
+
+    const rootNode = addViewToLayout(this.rootNode, params.layoutID, staticViewNode);
+
+    return this.saveSchema(rootNode);
   }
+
   async addExternalView(params: CreateViewParams & { link: string; }): FutureErrorMessage {
     return Promise.reject(new Error('todo, implement this'));
   }

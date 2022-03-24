@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { Form, Input } from 'antd';
 import { always, cond, T } from 'ramda';
+import { RadioButtonGroup } from '@one-for-all/ui';
 
 import Modal from '@c/modal';
 
 import SelectField from './select-field';
+import StaticViewUpload from './static-view-upload';
 import { BaseView, CreateViewParams, Layout, View, ViewGroup, ViewType } from '../view-orchestration/types.d';
-import { RadioButtonGroup } from '@one-for-all/ui';
 
 const { TextArea } = Input;
 
@@ -149,6 +150,15 @@ function EditPageModal(
             currentValue={viewType}
           />
         </Form.Item>
+        {viewType === ViewType.StaticView && (
+          <Form.Item
+            required
+            name="fileUrl"
+            label="上传静态页面"
+          >
+            <StaticViewUpload />
+          </Form.Item>
+        )}
         <Form.Item
           name='layoutID'
           label="页面布局"
