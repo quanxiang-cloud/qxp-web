@@ -81,10 +81,10 @@ function CreatedAppModal({ modalType, onCancel, templateID }: Props): JSX.Elemen
         className="p-20"
         modalType={modalType}
         templateID={templateID}
+        onSubmitCallback={submitCallback}
         onValuesChange={(value) => {
           has('appZipInfo', value) && setAppZipInfo(formRef.current.getFieldValue('appZipInfo'));
         }}
-        onSubmitCallback={submitCallback}
       />
       <AppLayoutType onSelect={setDefaultAppLayout} />
     </Modal>

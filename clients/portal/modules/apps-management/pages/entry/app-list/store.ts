@@ -137,7 +137,7 @@ class AppListStore {
   @action
   createdAppByTemplate = async (appInfo: AppInfo): Promise<any> => {
     if (!appInfo.template) {
-      return;
+      throw new Error('请选择模版');
     }
 
     const createdAppRes = await createDummyApp(appInfo);

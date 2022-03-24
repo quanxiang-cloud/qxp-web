@@ -6,7 +6,9 @@ import cs from 'classnames';
 
 import Icon from '@c/icon';
 import { StoreContext } from '@c/form-builder/context';
+import toast from '@lib/toast';
 import { getFieldId } from '../utils/fields-operator';
+import { validateFieldConfig } from '../utils';
 
 export type DragEle = { dataId: string; index: number };
 
@@ -35,22 +37,26 @@ function SourceElement(props: Props): JSX.Element {
 
   // quick insert field
   const quickInsert = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, curFieldName: string): void => {
-    const dropField = [...store.flattenFields].find(
-      (v) => getFieldId(v) === store.activeFieldId);
+    validateFieldConfig(store?.fieldConfigValidator, store?.getFieldValueFunc).then(() => {
+      const dropField = [...store.flattenFields].find(
+        (v) => getFieldId(v) === store.activeFieldId);
 
-    const { parentFieldId, tabIndex } = dropField?.['x-internal'] || {};
-    let index = (dropField?.['x-index'] || 0) + 1;
-    if (e.shiftKey) {
-      index = (dropField?.['x-index'] || 0);
-    }
-    index = Math.max(index, 0);
-    const quickInsertParam: any = {
-      fieldId: curFieldName,
-      index,
-      parentFieldId,
-      tabIndex,
-    };
-    store.insert(quickInsertParam);
+      const { parentFieldId, tabIndex } = dropField?.['x-internal'] || {};
+      let index = (dropField?.['x-index'] || 0) + 1;
+      if (e.shiftKey) {
+        index = (dropField?.['x-index'] || 0);
+      }
+      index = Math.max(index, 0);
+      const quickInsertParam: any = {
+        fieldId: curFieldName,
+        index,
+        parentFieldId,
+        tabIndex,
+      };
+      store.insert(quickInsertParam);
+    }).catch((err) => {
+      toast.error(err);
+    });
   };
 
   return (
