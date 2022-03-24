@@ -37,6 +37,7 @@ function convertNodeToLayout(node: SchemaNode): Layout {
 
 export default function findLayouts(node: SchemaNode): Array<Layout> {
   const layouts: Array<Layout> = [];
+
   travel(node, {
     htmlNode: (currentNode: HTMLNode) => {
       if (!isLayoutNode(currentNode)) {
@@ -46,6 +47,7 @@ export default function findLayouts(node: SchemaNode): Array<Layout> {
       layouts.push(convertNodeToLayout(currentNode));
     },
   });
+
   // sort layouts by name
   return layouts.sort((a, b): number => {
     return a.name < b.name ? -1 : 1;

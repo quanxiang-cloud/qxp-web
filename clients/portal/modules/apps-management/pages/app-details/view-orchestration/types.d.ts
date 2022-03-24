@@ -64,5 +64,4 @@ export interface CreateViewParams {
   layoutID: string;
   group?: string;
   description: string;
-  icon: string;
 }

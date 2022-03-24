@@ -32,7 +32,7 @@ import type {
   ExternalView,
 } from './types';
 import { ROOT_NODE_ID } from './constants';
-import { createPage } from '../api';
+import { createBlank } from '../api';
 
 class Orchestrator {
   @observable loading = true;
@@ -46,7 +46,6 @@ class Orchestrator {
   constructor(appID: string, rootSchema: Schema) {
     this.appID = appID;
     this.rootSchemaKey = genDesktopRootViewSchemaKey(appID);
-
     const { node, apiStateSpec, sharedStatesSpec } = rootSchema;
 
     this.rootNode = node;
@@ -106,11 +105,7 @@ class Orchestrator {
     if (!this.rootNode) {
       return 'no root node found for this app, please init root node again!';
     }
-    return createPage({
-      appID: this.appID,
-      name: params.name,
-      icon: params.icon,
-    }).then((id) => {
+    return createBlank(this.appID).then(({ tableID: id }) => {
       // todo create empty table schema?
       const tableID = id;
       const renderTableSchemaViewNode: ReactComponentNode = {
@@ -122,7 +117,7 @@ class Orchestrator {
         // todo implement this
         packageVersion: '1.0.0',
         // todo implement this
-        exportName: 'export_name',
+        exportName: 'TableSchemaViewRender',
         props: {
           tableID: {
             type: 'constant_property',
@@ -132,9 +127,9 @@ class Orchestrator {
             type: 'constant_property',
             value: params.name,
           },
-          icon: {
+          appID: {
             type: 'constant_property',
-            value: params.icon,
+            value: this.appID,
           },
         },
       };
@@ -258,11 +253,10 @@ class Orchestrator {
   }
 
   @action
-  async fetchSchema(appID: string): Promise<void> {
-    return fetchSchema(appID).then((schemaNode) => {
-      this.rootNode = schemaNode;
-    });
-  }
+  fetchSchema = async (): Promise<void> => {
+    const { node } = await fetchSchema(this.appID);
+    this.rootNode = node;
+  };
 }
 
 export default Orchestrator;

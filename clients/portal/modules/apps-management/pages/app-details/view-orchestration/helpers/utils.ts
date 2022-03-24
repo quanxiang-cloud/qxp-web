@@ -35,7 +35,7 @@ export function saveSchema(schemaKey: string, schema: Schema): FutureErrorMessag
   });
 }
 
-export async function fetchSchema(appID: string): Promise<SchemaNode> {
+export async function fetchSchema(appID: string): Promise<Schema> {
   const key = genDesktopRootViewSchemaKey(appID);
   const { result } = await getBatchGlobalConfig([{ key: key, version: '1.0.0' }]);
   return JSON.parse(result[key]);
@@ -54,7 +54,7 @@ export async function createRefSchema(appID: string): Promise<string> {
 
 export function attachToRouteNode(node: SchemaNode, routeFor: 'layout' | 'view'): RouteNode {
   // todo generate route path by chinese
-  const routePath = routeFor === 'layout' ? `l-${genNodeID()}` : 'p-${genNodeID()}';
+  const routePath = routeFor === 'layout' ? `l-${genNodeID()}` : `p-${genNodeID()}`;
 
   return {
     id: genNodeID(),

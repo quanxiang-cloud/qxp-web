@@ -1,27 +1,39 @@
 interface Employee {
   id: string;
-  userName: string;
+  name: string;
   phone: string;
   email: string;
-  userIconURL?: string;
+  selfEmail?: string;
+  idCard?: string;
+  address?: string;
+  avatar?: string;
+  jobNumber?: string;
+  gender?: 0 | 1 | 2;
+  source?: string;
+  useStatus?: number;
+  status?: number;
+  position?: string;
+  depName?: string;
+  departments?: Department[][]
+  leaders?: Leader[][]
+  // deprecated
+  userName?: string;
+  isDEPLeader?: number;
+  leaderName?: string;
+  leaderID?: string;
   dep?: Department;
+  userIconURL?: string;
   depIds?: string[];
   authority?: string[];
   roleId?: string;
   deleteId?: string;
-  useStatus?: number;
-  isDEPLeader?: number;
-  depName?: string;
-  status?: number;
-  position?: string;
-  leaderName?: string;
-  leaderID?: string;
 }
 
 interface EmployeeOfRole {
   createdAt: number;
   departmentID: string;
   departmentName: string;
+  deps?: { departmentID: string; departmentName: string; pid: string }[]
   email: string;
   id: string
   ownerID: string;
@@ -40,5 +52,5 @@ type EmployeeTableColumn = {
 
 type Leader = {
   id: string;
-  userName: string;
+  name: string;
 }

@@ -4,6 +4,7 @@ import * as OneForAllUI from '@one-for-all/ui';
 
 import { useSchemaWithAdapter } from './api';
 import ErrorBoundary from './error-boundary';
+import componentLoader from './component-loader';
 
 // todo fix this
 const repository: Repository = {
@@ -25,7 +26,7 @@ export default function PageSchemaRender({ schemaKey, version }: Props): JSX.Ele
 
   return (
     <ErrorBoundary>
-      <SchemaRender schema={schema} plugins={{ apiSpecAdapter: adapter, repository }} />
+      <SchemaRender schema={schema} plugins={{ apiSpecAdapter: adapter, repository, componentLoader }} />
     </ErrorBoundary>
   );
 }
