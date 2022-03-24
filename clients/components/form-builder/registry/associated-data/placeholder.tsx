@@ -1,14 +1,13 @@
 import React from 'react';
+import { ISchemaFieldComponentProps } from '@formily/antd';
 
-function Placeholder(): JSX.Element {
+function Placeholder({ props }: ISchemaFieldComponentProps): JSX.Element {
+  const placeholder = props?.['x-component-props']?.placeholder;
   return (
     <div className='w-full h-32'>
       <div className='ant-input h-full flex justify-between py-2 items-center'>
-        <div className='flex-1'>
-          <span className='text-gray-300'>请选择</span>
-        </div>
         <span className='cursor-pointer text-blue-500'>
-          选择关联数据
+          {placeholder || '选择关联数据'}
         </span>
       </div>
     </div>

@@ -1,6 +1,7 @@
-import { get } from 'lodash';
+import { get, set, findIndex } from 'lodash';
 import { action, computed, observable } from 'mobx';
 import {
+  RouteNode,
   Schema,
   RefNode,
   SchemaNode,
@@ -101,6 +102,19 @@ class Orchestrator {
   }
 
   @action
+  async editLayout(layoutID: string, name: string): FutureErrorMessage {
+    const layoutList = get(this.rootNode, 'node.children[1].children', []);
+    const index = findIndex(layoutList, (layoutItem: RouteNode) => layoutItem.node.id === layoutID);
+    const oldName = get(this.rootNode, `node.children[1].children[${index}].node.label`, '');
+
+    if (oldName === name) {
+      return 'No changes were made';
+    }
+
+    set(this.rootNode, `node.children[1].children[${index}].node.label`, name);
+    return this.saveSchema(this.rootNode);
+  }
+
   async addTableSchemaView(params: CreateViewParams): FutureErrorMessage {
     if (!this.rootNode) {
       return 'no root node found for this app, please init root node again!';

@@ -40,7 +40,7 @@ export default function findLayouts(node: SchemaNode): Array<Layout> {
 
   travel(node, {
     htmlNode: (currentNode: HTMLNode) => {
-      if (!isLayoutNode(currentNode)) {
+      if (!isLayoutNode(currentNode) || currentNode.id === 'root_node') {
         return;
       }
 

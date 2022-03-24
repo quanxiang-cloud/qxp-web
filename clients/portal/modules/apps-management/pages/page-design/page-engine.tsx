@@ -71,6 +71,7 @@ function PageDesign(): JSX.Element {
         <p className='text-12 text-gray-600'>选择API</p>
         <ApiSelector
           simpleMode
+          usePolyApiOption
           className='api-selector-wrap'
           initRawApiPath={apiPath}
           setApiPath={setApiPath}
