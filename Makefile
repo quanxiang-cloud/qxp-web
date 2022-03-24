@@ -44,9 +44,6 @@ rollup:
 bundleHome:
 	./node_modules/.bin/rollup -c rollup.config.js -w --input home
 
-bundleAppLand:
-	./node_modules/.bin/rollup -c rollup.config.js -w --input appLand
-
 bundlePortal:
 	./node_modules/.bin/rollup -c rollup.config.js -w --input portal
 
@@ -54,8 +51,6 @@ bundleMobile:
 	./node_modules/.bin/rollup -c rollup.config.js -w --input mobile
 
 home: buildAssets startHomeServer bundleHome
-
-appLand: buildAssets startHomeServer bundleAppLand
 
 portal: buildAssets startPortalServer bundlePortal
 
