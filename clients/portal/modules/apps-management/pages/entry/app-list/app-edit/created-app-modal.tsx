@@ -86,7 +86,7 @@ function CreatedAppModal({ modalType, onCancel, templateID }: Props): JSX.Elemen
           has('appZipInfo', value) && setAppZipInfo(formRef.current.getFieldValue('appZipInfo'));
         }}
       />
-      <AppLayoutType onSelect={setDefaultAppLayout} />
+      <AppLayoutType title='默认应用布局 (应用布局会应用在所有页面):' onSelect={setDefaultAppLayout} />
     </Modal>
   );
 }

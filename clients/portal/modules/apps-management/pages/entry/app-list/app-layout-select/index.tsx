@@ -6,12 +6,16 @@ import { LayoutType } from '../../../app-details/view-orchestration/types.d';
 export type SelectLayoutType = LayoutType | 'free';
 
 type Props = {
+  title: string;
+  includeFree?: boolean;
+  className?: string;
   onSelect?: (layoutType: SelectLayoutType) => void;
 }
 
 const LAYOUT_TYPES: Array<SelectLayoutType> = [...Object.values(LayoutType), 'free'];
+const NO_FREE_LAYOUT_TYPES: Array<LayoutType> = [...Object.values(LayoutType)];
 
-function AppLayoutSelector({ onSelect }: Props): JSX.Element {
+function AppLayoutSelector({ title, includeFree = true, className, onSelect }: Props): JSX.Element {
   const [currentLayoutType, setCurrentLayoutType] = useState<SelectLayoutType>('free');
 
   function layoutBoxContentRender(
@@ -37,11 +41,11 @@ function AppLayoutSelector({ onSelect }: Props): JSX.Element {
   }
 
   return (
-    <div className='-mt-24 px-20'>
-      <span>默认应用布局 (应用布局会应用在所有页面):</span>
+    <div className={cs('-mt-24 px-20', className)}>
+      <span>{title}</span>
       <div className='w-full py-20 flex justify-between gap-20'>
         {
-          LAYOUT_TYPES.map((layoutType) => (
+          (includeFree ? LAYOUT_TYPES : NO_FREE_LAYOUT_TYPES).map((layoutType) => (
             <div
               key={layoutType}
               className={cs('flex-1 h-92 flex justify-center gap-4 cursor-pointer duration-300', {
