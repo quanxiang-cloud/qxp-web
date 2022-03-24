@@ -72,10 +72,3 @@ export const SCHEMA: ISchema = {
     },
   },
 };
-
-export const COMPONENT_MAP: Record<string, string> = {
-  size: 'SizingField',
-  border: 'BorderField',
-  color: 'ColorField',
-  'border-radius': 'BorderRadiusField',
-};

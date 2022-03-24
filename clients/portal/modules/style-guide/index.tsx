@@ -15,8 +15,8 @@ import store from './store';
 
 export default function StyleGuide(): JSX.Element {
   const { appID } = useParams<{ appID?: string }>();
-  const KEY = `user_style_config.${appID}`;
-  const COMPONENT_STYLE_CONFIG_KEY = `style_guide_component_style_config.${appID}`;
+  const KEY = appID ? `user_style_config.${appID}` : 'user_style_config';
+  const COMPONENT_STYLE_CONFIG_KEY = appID ? `style_guide_component_style_config.${appID}` : 'style_guide_component_style_config';
   const [userStyleConfig, commonLoading] = useGetGlobalConfig<StyleGuideCommonConfig>(KEY, '0.1.0', DEFAULT_CONFIG);
   const [customCompCssMap, componentLoading] = useGetGlobalConfig(COMPONENT_STYLE_CONFIG_KEY, '0.1.0', {});
 
@@ -54,7 +54,7 @@ export default function StyleGuide(): JSX.Element {
       },
     });
 
-    return `//${readable}.${domain}/style-guide/${appID}/component.css`;
+    return `//${readable}.${domain}/style-guide${appID ? '/' + appID : ''}/component.css`;
   }
 
   async function handleSave(): Promise<void> {
