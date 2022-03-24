@@ -40,7 +40,6 @@ export default function findLayouts(node: SchemaNode): Array<Layout> {
 
   travel(node, {
     htmlNode: (currentNode: HTMLNode) => {
-      console.log(currentNode);
       if (!isLayoutNode(currentNode)) {
         return;
       }
@@ -48,7 +47,6 @@ export default function findLayouts(node: SchemaNode): Array<Layout> {
       layouts.push(convertNodeToLayout(currentNode));
     },
   });
-  console.log(layouts);
 
   // sort layouts by name
   return layouts.sort((a, b): number => {

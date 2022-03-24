@@ -35,7 +35,7 @@ export function saveSchema(schemaKey: string, schema: Schema): FutureErrorMessag
   });
 }
 
-export async function fetchSchema(appID: string): Promise<SchemaNode> {
+export async function fetchSchema(appID: string): Promise<Schema> {
   const key = genDesktopRootViewSchemaKey(appID);
   const { result } = await getBatchGlobalConfig([{ key: key, version: '1.0.0' }]);
   return JSON.parse(result[key]);

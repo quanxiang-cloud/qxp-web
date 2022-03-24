@@ -1,5 +1,5 @@
 import { get } from 'lodash';
-import { action, computed, observable, toJS } from 'mobx';
+import { action, computed, observable } from 'mobx';
 import {
   ReactComponentNode,
   SchemaNode,
@@ -31,7 +31,6 @@ import type {
 } from './types';
 import { ROOT_NODE_ID } from './constants';
 import { createBlank } from '../api';
-import { NODE } from './node';
 
 class Orchestrator {
   @observable loading = true;
@@ -45,7 +44,6 @@ class Orchestrator {
   constructor(appID: string, rootSchema: Schema) {
     this.appID = appID;
     this.rootSchemaKey = genDesktopRootViewSchemaKey(appID);
-    findLayouts(NODE);
     const { node, apiStateSpec, sharedStatesSpec } = rootSchema;
 
     this.rootNode = node;
@@ -57,9 +55,6 @@ class Orchestrator {
   }
 
   @computed get layouts(): Array<Layout> {
-    console.log(toJS(this.rootNode));
-    console.log(!this.rootNode);
-
     if (!this.rootNode) {
       return [];
     }
@@ -130,6 +125,10 @@ class Orchestrator {
             type: 'constant_property',
             value: params.name,
           },
+          appID: {
+            type: 'constant_property',
+            value: this.appID,
+          },
         },
       };
 
@@ -138,7 +137,6 @@ class Orchestrator {
       }
 
       const rootNode = addViewToLayout(this.rootNode, params.layoutID, renderTableSchemaViewNode);
-      console.log(rootNode);
 
       return this.saveSchema(rootNode);
     });
@@ -210,12 +208,10 @@ class Orchestrator {
   }
 
   @action
-  async fetchSchema(appID: string): Promise<void> {
-    return fetchSchema(appID).then((schemaNode) => {
-      console.log(schemaNode);
-      this.rootNode = schemaNode;
-    });
-  }
+  fetchSchema = async (): Promise<void> => {
+    const { node } = await fetchSchema(this.appID);
+    this.rootNode = node;
+  };
 }
 
 export default Orchestrator;

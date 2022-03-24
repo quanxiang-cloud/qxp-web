@@ -7,7 +7,6 @@ import Modal from '@c/modal';
 import SelectField from './select-field';
 import { BaseView, CreateViewParams, Layout, View, ViewGroup, ViewType } from '../view-orchestration/types.d';
 import { RadioButtonGroup } from '@one-for-all/ui';
-import { observer } from 'mobx-react';
 
 const { TextArea } = Input;
 
@@ -179,4 +178,4 @@ function EditPageModal(
   );
 }
 
-export default observer(EditPageModal);
+export default EditPageModal;
