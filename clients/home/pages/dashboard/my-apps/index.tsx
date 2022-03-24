@@ -5,7 +5,7 @@ import type { Schema } from '@one-for-all/schema-spec';
 import logger from '@lib/logger';
 
 import ErrorBoundary from '@c/page-schema-render/error-boundary';
-import SwaggerRPCSpecAdapter from '@lib/adapter-swagger-rpc';
+import SwaggerRPCSpecAdapter from '@lib/api-adapter';
 // import schema from './schema';
 import apiSpec from './api';
 import MyAppsComponent from './demo-components/my-apps';

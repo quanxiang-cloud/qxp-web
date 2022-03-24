@@ -4,7 +4,7 @@ import type { Schema } from '@one-for-all/schema-spec';
 import { Spec } from '@one-for-all/api-spec-adapter/lib/src/swagger-schema-official';
 
 import logger from '@lib/logger';
-import SwaggerRPCSpecAdapter from '@lib/adapter-swagger-rpc';
+import SwaggerRPCSpecAdapter from '@lib/api-adapter';
 
 type SchemaWithSwagger = {
   schema: Schema;
