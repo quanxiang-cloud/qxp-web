@@ -38,6 +38,11 @@ function Canvas({ schema }: BlockItemProps<BlocksCommunicationType>): JSX.Elemen
     schema && page.setSchema(schema as any);
   }, []);
 
+  useEffect(() => {
+    const canvasTag = document.querySelector('.pge-canvas');
+    canvasTag?.parentElement?.classList.add('overflow-auto');
+  }, []);
+
   useLayoutEffect(() => {
     // get all elems on page
     const root = document.querySelector('.pge-canvas') as HTMLDivElement;
