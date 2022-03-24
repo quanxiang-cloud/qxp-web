@@ -73,11 +73,11 @@ const RuleList = ({ onEdit }: VisibleHiddenLinkagesProps): JSX.Element => {
               </div>
               {rules.map(({ sourceKey, compareValue, compareOperator }, index) => (
                 <div key={index} className="text-h6-bold pl-24 mb-8">
-                  - {`${keyLabels[sourceKey].title} ${compareOperator} `}
-                  <FormDataValueRenderer
+                  - {`${keyLabels[sourceKey]?.title || sourceKey} ${compareOperator} `}
+                  {keyLabels[sourceKey] ? (<FormDataValueRenderer
                     value={compareValue}
                     schema={schemaToMap(store.schema)?.[sourceKey]}
-                  />
+                  />) : compareValue}
                 </div>
               ))}
               <div className="pl-12">

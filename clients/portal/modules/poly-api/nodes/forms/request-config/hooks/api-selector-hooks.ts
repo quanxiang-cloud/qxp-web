@@ -4,15 +4,15 @@ import {
   useGetNamespaceFullPath, useQueryNameSpaceRawRootPath,
 } from '@polyApi/effects/api/namespace';
 import {
-  ApiCascaderOption, getChildrenOfCurrentSelectOption, mergeApiListToOptions,
+  ApiCascaderOption, ApiOptionData, getChildrenOfCurrentSelectOption, mergeApiListToOptions,
 } from '@polyApi/utils/request-node';
 import { useGetRequestNodeApiList } from '@polyApi/effects/api/raw';
 import { isEmpty } from 'lodash';
 
 export function useGetNamespaceTree(
   appID: string, pathType: 'raw.root' | 'poly',
-): any {
-  const [state, setState] = useState([]);
+): ApiOptionData[] {
+  const [state, setState] = useState<ApiOptionData[]>([]);
   const { data: namespace, error: fetchRootPathError } = useQueryNameSpaceRawRootPath(appID, pathType);
   const { data: namespaceTree, isLoading, error: fetchNameSpacePathError } = useGetNamespaceFullPath({
     path: namespace?.appPath?.slice(1) || '',
@@ -26,6 +26,17 @@ export function useGetNamespaceTree(
 
   useEffect(() => {
     if (!isLoading && !namespaceTree) {
+      return;
+    }
+
+    if (pathType === 'poly') {
+      const polyNameSpaceTree = [{
+        name: 'poly_api',
+        title: '编排 API',
+        parent: '/',
+        children: namespaceTree?.root.children ?? [],
+      }] as ApiOptionData[];
+      setState(polyNameSpaceTree);
       return;
     }
 
@@ -49,10 +60,18 @@ export function useGetOptions(
     return rawTree;
   }, [polyTree, rawTree]);
 
+  // to prevent poly api root option fetch api list
+  let path = apiNamespacePath.slice(1) || '';
+  const type = path.split('/')[3];
+  if (!type) {
+    path = ''; // useGetRequestNodeApiList hook disabled when path is not exist
+  }
+
   const { data: apiListDetails, isLoading, error } = useGetRequestNodeApiList({
-    path: apiNamespacePath.slice(1) || '',
+    path,
+    type,
     body: { active: 1, page: 1, pageSize: -1 },
-  }, { enabled: !!apiNamespacePath });
+  }, { enabled: !!path });
 
   // api cascader load apiList options
   useEffect(() => {

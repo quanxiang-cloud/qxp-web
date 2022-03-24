@@ -1,11 +1,12 @@
 import { get } from 'lodash';
 import { action, computed, observable } from 'mobx';
 import {
-  ReactComponentNode,
-  SchemaNode,
   Schema,
+  RefNode,
+  SchemaNode,
   APIStatesSpec,
   SharedStatesSpec,
+  ReactComponentNode,
 } from '@one-for-all/schema-spec';
 import { deleteByID, findNodeByID, patchNode } from '@one-for-all/schema-utils';
 
@@ -19,6 +20,8 @@ import {
   genNodeID,
   genDesktopRootViewSchemaKey,
   saveSchema,
+  fetchSchema,
+  genDesktopViewSchemaKey,
 } from './helpers/utils';
 import type {
   Layout,
@@ -29,6 +32,7 @@ import type {
   ExternalView,
 } from './types';
 import { ROOT_NODE_ID } from './constants';
+import { createBlank } from '../api';
 
 class Orchestrator {
   @observable loading = true;
@@ -42,7 +46,6 @@ class Orchestrator {
   constructor(appID: string, rootSchema: Schema) {
     this.appID = appID;
     this.rootSchemaKey = genDesktopRootViewSchemaKey(appID);
-
     const { node, apiStateSpec, sharedStatesSpec } = rootSchema;
 
     this.rootNode = node;
@@ -85,7 +88,7 @@ class Orchestrator {
   // async changeViewGroup(viewID: string, from: string, to?: string): FutureErrorMessage {
 
   // }
-
+  @action
   async addLayout(name: string, layoutType: LayoutType): FutureErrorMessage {
     const rootNode = await addLayoutToRoot({
       appID: this.appID,
@@ -97,46 +100,129 @@ class Orchestrator {
     return this.saveSchema(rootNode);
   }
 
+  @action
   async addTableSchemaView(params: CreateViewParams): FutureErrorMessage {
     if (!this.rootNode) {
       return 'no root node found for this app, please init root node again!';
     }
+    return createBlank(this.appID).then(({ tableID: id }) => {
+      // todo create empty table schema?
+      const tableID = id;
+      const renderTableSchemaViewNode: ReactComponentNode = {
+        id: genNodeID(),
+        type: 'react-component',
+        label: params.name,
+        // todo implement this
+        packageName: 'package_name',
+        // todo implement this
+        packageVersion: '1.0.0',
+        // todo implement this
+        exportName: 'TableSchemaViewRender',
+        props: {
+          tableID: {
+            type: 'constant_property',
+            value: tableID,
+          },
+          name: {
+            type: 'constant_property',
+            value: params.name,
+          },
+          appID: {
+            type: 'constant_property',
+            value: this.appID,
+          },
+        },
+      };
 
-    // todo create empty table schema?
-    const tableID = 'todo_implement_this';
-    const renderTableSchemaViewNode: ReactComponentNode = {
+      if (!params.layoutID) {
+        return this.saveSchema(addViewToRoot(this.rootNode, renderTableSchemaViewNode));
+      }
+
+      const rootNode = addViewToLayout(this.rootNode, params.layoutID, renderTableSchemaViewNode);
+
+      return this.saveSchema(rootNode);
+    });
+  }
+
+  async addSchemaView(params: CreateViewParams): FutureErrorMessage {
+    if (!this.rootNode) {
+      return 'no root node found for this app, please init root node again!';
+    }
+
+    const pageSchemaKey = genDesktopViewSchemaKey(this.appID);
+    const customPageSchema = {
+      node: {
+        id: genNodeID(),
+        pid: '',
+        type: 'react-component',
+        packageName: 'ofa-ui',
+        packageVersion: 'latest',
+        exportName: 'page',
+        label: '页面',
+        props: {
+          style: {
+            type: 'constant_property',
+            value: {
+              width: '100%',
+              height: '100%',
+            },
+          },
+        },
+        children: [],
+      },
+      apiStateSpec: {},
+      sharedStatesSpec: {},
+    } as Schema;
+    saveSchema(pageSchemaKey, customPageSchema);
+
+    const renderSchemaView: RefNode = {
+      id: genNodeID(),
+      type: 'ref-node',
+      schemaID: pageSchemaKey,
+      label: params.name,
+    };
+
+    if (!params.layoutID) {
+      return this.saveSchema(addViewToRoot(this.rootNode, renderSchemaView));
+    }
+
+    const rootNode = addViewToLayout(this.rootNode, params.layoutID, renderSchemaView);
+
+    return this.saveSchema(rootNode);
+  }
+
+  async addStaticView(params: CreateViewParams & { fileUrl: any; }): FutureErrorMessage {
+    const staticViewNode: ReactComponentNode = {
       id: genNodeID(),
       type: 'react-component',
+      label: params.name,
       // todo implement this
-      packageName: 'todo_implement_this',
+      packageName: 'package_name',
       // todo implement this
-      packageVersion: 'todo_implement_this',
+      packageVersion: '1.0.0',
       // todo implement this
-      exportName: 'todo_implement_this',
+      exportName: 'StaticViewRender',
       props: {
-        tableID: {
+        fileUrl: {
           type: 'constant_property',
-          value: tableID,
+          value: params.fileUrl,
+        },
+        name: {
+          type: 'constant_property',
+          value: params.name,
         },
       },
     };
 
     if (!params.layoutID) {
-      return this.saveSchema(addViewToRoot(this.rootNode, renderTableSchemaViewNode));
+      return this.saveSchema(addViewToRoot(this.rootNode, staticViewNode));
     }
 
-    const rootNode = addViewToLayout(this.rootNode, params.layoutID, renderTableSchemaViewNode);
+    const rootNode = addViewToLayout(this.rootNode, params.layoutID, staticViewNode);
 
     return this.saveSchema(rootNode);
   }
 
-  async addSchemaView(params: CreateViewParams): FutureErrorMessage {
-    return Promise.reject(new Error('todo, implement this'));
-  }
-
-  async addStaticView(params: CreateViewParams & { fileUrl: string; }): FutureErrorMessage {
-    return Promise.reject(new Error('todo, implement this'));
-  }
   async addExternalView(params: CreateViewParams & { link: string; }): FutureErrorMessage {
     return Promise.reject(new Error('todo, implement this'));
   }
@@ -194,6 +280,12 @@ class Orchestrator {
       return '';
     });
   }
+
+  @action
+  fetchSchema = async (): Promise<void> => {
+    const { node } = await fetchSchema(this.appID);
+    this.rootNode = node;
+  };
 }
 
 export default Orchestrator;
