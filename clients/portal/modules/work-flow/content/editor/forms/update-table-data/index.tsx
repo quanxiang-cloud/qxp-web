@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useRef, useState, useMemo, useCallback } from 'react';
 import { useQuery } from 'react-query';
 import { every, isEmpty } from 'lodash';
 import { useUpdateEffect } from 'react-use';
@@ -27,9 +27,9 @@ interface Props {
   onChange: (data: BusinessData) => void;
   onCancel: () => void;
 }
-
+export type SelectComponentName = 'associatedrecords' | 'associateddata' | 'subtable'
 type SelectFormType = 'work-form' | 'others';
-
+const selectComponentNames: SelectComponentName[] = ['associatedrecords', 'associateddata', 'subtable'];
 const initialValue: TableDataUpdateData = {
   targetTableId: '',
   silent: true,
@@ -41,7 +41,7 @@ export default function UpdateTableData({
   defaultValue, onSubmit, onCancel, onChange: _onChange,
 }: Props): JSX.Element {
   const { appID } = useContext(FlowContext);
-  const { tableID: workFormId } = useContext(FlowSourceTableCtx);
+  const { tableID: workFormId, tableSchema } = useContext(FlowSourceTableCtx);
   const [value, setValue] = useState<TableDataUpdateData>(defaultValue || {});
   const filterRef = useRef<FilterRuleRef>(null);
   const updateRef = useRef<UpdateRuleRef>(null);
@@ -60,7 +60,34 @@ export default function UpdateTableData({
   } = useQuery(['GET_WORK_FORM_LIST', appID], () => getFormDataMenuList(appID), {
     enabled: !!appID,
   });
-
+  const associatedDataList = useMemo(() => {
+    return tableSchema.filter((item) => {
+      return selectComponentNames.includes(item.componentName as SelectComponentName);
+    }) ?? [] as SchemaFieldItem[];
+  }, [tableSchema]);
+  const setTypeAndTableId = useCallback((value, associatedDataList) => {
+    if (value.selectField === 'normal') {
+      Object.assign(value, { selectField: '', selectFieldType: undefined, selectFieldTableId: undefined });
+      return;
+    }
+    associatedDataList.forEach((item: SchemaFieldItem) => {
+      if (item.id === value.selectField) {
+        const compoentProps = item['x-component-props'];
+        const componentName = item.componentName;
+        if (componentName === 'associatedrecords') {
+          const recordsTableId = compoentProps?.tableID ?? '';
+          Object.assign(value, { selectFieldType: 'associated_records', selectFieldTableId: recordsTableId });
+        } else if (componentName === 'associateddata') {
+          const dataTableId = compoentProps?.associationTableID ?? '';
+          Object.assign(value, { selectFieldType: 'associated_data', selectFieldTableId: dataTableId });
+        } else if (componentName === 'subtable') {
+          const tableId = compoentProps?.tableID ?? '';
+          const selectFieldType = compoentProps?.subordination ?? '';
+          Object.assign(value, { selectFieldType, selectFieldTableId: tableId });
+        }
+      }
+    });
+  }, [associatedDataList, value]);
   const onSave = (): void => {
     if (!value.targetTableId) {
       toast.error('请选择目标数据表');
@@ -92,6 +119,7 @@ export default function UpdateTableData({
     if (formType === 'work-form') {
       Object.assign(value, { silent: false });
     }
+    setTypeAndTableId(value, associatedDataList);
     onSubmit(value);
   };
 
@@ -204,7 +232,7 @@ export default function UpdateTableData({
         <SelectTargetFields
           fieldId={value.selectField}
           tableId={value.targetTableId}
-          onChangeField={(selectField)=> {
+          onChangeField={(selectField) => {
             // when change select field, reset update rules
             onChange({ selectField, updateRule: [] });
           }}
