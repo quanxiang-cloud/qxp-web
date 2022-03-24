@@ -5,6 +5,7 @@ import Button from './button';
 import Paragraph from './paragraph';
 import Link from './link';
 import Modal from './modal';
+import Icon from './icon';
 
 export {
   Page,
@@ -14,4 +15,5 @@ export {
   Paragraph,
   Modal,
   Link,
+  Icon,
 };
