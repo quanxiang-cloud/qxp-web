@@ -19,7 +19,7 @@ const AssociatedRecords = React.lazy(
 
 type ValueRendererProps = { value: FormDataValue; schema: ISchema; className?: string; };
 type Props = {
-  value: FormDataValue;
+  value?: FormDataValue;
   className?: string;
   schema: ISchema;
 }
@@ -88,6 +88,9 @@ function stringListValue({ value }: ValueRendererProps): string {
 }
 
 export default function FormDataValueRenderer({ value, schema, className }: Props): JSX.Element {
+  if (!value) {
+    return <></>;
+  }
   switch (schema['x-component']?.toLowerCase()) {
   case 'subtable':
     return (<SubTableValueRenderer schema={schema} value={value} />);
