@@ -35,6 +35,13 @@ const ApprovalsTab = (props: ApprovalsTabProps): JSX.Element => {
 
   useEffect(() => store[storeType].clear, []);
 
+  useEffect(() => {
+    if (detailStore.isRefresh) {
+      loadApprovals(1);
+      detailStore.isRefresh = false;
+    }
+  }, [detailStore.isRefresh]);
+
   function onTaskCardClick(task: Task): void {
     detailStore.init(task.name);
     const path = approvalDetailPath.replace(':processInstanceID', task.processInstanceId)
