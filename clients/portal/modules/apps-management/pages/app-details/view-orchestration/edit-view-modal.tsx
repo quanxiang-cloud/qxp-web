@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { Form, Input } from 'antd';
 import { always, cond, T } from 'ramda';
-import { RadioButtonGroup } from '@one-for-all/ui';
 
 import Modal from '@c/modal';
+import { RadioButtonGroup } from '@one-for-all/ui';
+import Select from '@c/select';
 
-import SelectField from './select-field';
-import StaticViewUpload from './static-view-upload';
 import { BaseView, CreateViewParams, Layout, View, ViewGroup, ViewType } from '../view-orchestration/types.d';
 
 const { TextArea } = Input;
@@ -20,11 +19,6 @@ type Props = {
   modalType: string;
   viewParams?: CreateViewParams;
 };
-
-// type GroupList = {
-//   id: string;
-//   name: string;
-// }
 
 const viewTypeMap: LabelValue[] = [
   {
@@ -150,25 +144,17 @@ function EditPageModal(
             currentValue={viewType}
           />
         </Form.Item>
-        {viewType === ViewType.StaticView && (
-          <Form.Item
-            required
-            name="fileUrl"
-            label="上传静态页面"
-          >
-            <StaticViewUpload />
-          </Form.Item>
-        )}
         <Form.Item
           name='layoutID'
           label="页面布局"
         >
-          <SelectField
-            value={layoutID}
+          <Select
+            placeholder="请选择"
             options={layouts.map((layout) => ({
               label: layout.name,
               value: layout.id,
             }))}
+            defaultValue={layoutID}
           />
         </Form.Item>
         <Form.Item
