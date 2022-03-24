@@ -772,6 +772,13 @@
   dependencies:
     react "^17.0.2"
 
+"@one-for-all/icon@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.npmmirror.com/@one-for-all/icon/-/icon-0.5.0.tgz#6f5b08b0cf47275ed4c9f754f4fb9401c1657de9"
+  integrity sha512-3f7qjb4G42CER1NNbjwU07WNzmC4diYRyiY0PuhehwpOpdG/QPjOmV98UMYGyAtAp459Ub9rfqAD08aqzXb0fw==
+  dependencies:
+    react "^17.0.2"
+
 "@one-for-all/page-engine@0.10.0":
   version "0.10.0"
   resolved "https://registry.npmmirror.com/@one-for-all/page-engine/-/page-engine-0.10.0.tgz#36f54ce301587c50dcde633dd52b01286094a2ec"
@@ -827,13 +834,6 @@
   resolved "https://registry.npmmirror.com/@one-for-all/schema-spec/-/schema-spec-0.13.1-0.tgz#6133bb595a0abaeda045925ee41a220bc94fe9bd"
   integrity sha512-SVHv7zVxiJRuLVHY7vdPZehrxPzu10018YKu7x+KsRo3uIygWAYsKmdqqxcMhOPm+462n0YlXDttBe1yx3kieA==
 
-"@one-for-all/style-guide@0.0.1":
-  version "0.0.1"
-  resolved "https://registry.npmmirror.com/@one-for-all/style-guide/-/style-guide-0.0.1.tgz#91f0241c9f18c3a7ac0e3034d7f6f87047a24cdd"
-  integrity sha512-D57aYDJUFDCgRsQLce7LB60aCWf7zJTuqLu7Gmzjn+uo5pUT4WghQibkG1FWMV0JxtJ/X49xgT8DrZFPtF2Ytg==
-  dependencies:
-    css-tree "^2.0.4"
-    cssbeautify "^0.3.1"
 "@one-for-all/schema-spec@0.14.0":
   version "0.14.0"
   resolved "https://registry.npmmirror.com/@one-for-all/schema-spec/-/schema-spec-0.14.0.tgz#b27b02ff384ec88150d49a43da8a3d5636aee378"
@@ -851,6 +851,14 @@
   dependencies:
     "@one-for-all/schema-spec" "0.14.0"
     immutable "4.0.0"
+
+"@one-for-all/style-guide@0.0.1":
+  version "0.0.1"
+  resolved "https://registry.npmmirror.com/@one-for-all/style-guide/-/style-guide-0.0.1.tgz#91f0241c9f18c3a7ac0e3034d7f6f87047a24cdd"
+  integrity sha512-D57aYDJUFDCgRsQLce7LB60aCWf7zJTuqLu7Gmzjn+uo5pUT4WghQibkG1FWMV0JxtJ/X49xgT8DrZFPtF2Ytg==
+  dependencies:
+    css-tree "^2.0.4"
+    cssbeautify "^0.3.1"
 
 "@one-for-all/ui@0.2.18":
   version "0.2.18"
