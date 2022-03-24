@@ -69,7 +69,7 @@ export default class SwaggerSpecAdapter implements APISpecAdapter {
     return { method, url, queryParams, headers, body: fetchParams?.body };
   }
 
-  responseAdapter({ body, error }: RawResponse): Res {
+  responseAdapter = ({ body, error }: RawResponse): Res => {
     if (this.options?.__disableResponseAdapter) {
       return { result: body, error };
     }
@@ -92,5 +92,5 @@ export default class SwaggerSpecAdapter implements APISpecAdapter {
 
     // @ts-ignore
     return { result: body.data, error: undefined };
-  }
+  };
 }
