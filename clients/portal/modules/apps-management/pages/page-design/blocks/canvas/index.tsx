@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useLayoutEffect } from 'react';
+import React, { useEffect, useRef, useLayoutEffect, useMemo } from 'react';
 import cs from 'classnames';
 import { observer } from 'mobx-react';
 import { useDrop } from 'react-dnd';
@@ -10,6 +10,7 @@ import { ElementInfo, BlocksCommunicationType } from '../../types';
 import NodeRender from './node-render';
 import NodeToolbox from './node-toolbox';
 import { loadDevEnvPageSchema } from '../../utils/helpers';
+import { useStyle } from '../../hooks/use-style';
 
 import styles from './index.m.scss';
 import './style.scss';
@@ -38,10 +39,18 @@ function Canvas({ schema }: BlockItemProps<BlocksCommunicationType>): JSX.Elemen
     schema && page.setSchema(schema as any);
   }, []);
 
-  useEffect(() => {
-    const canvasTag = document.querySelector('.pge-canvas');
-    canvasTag?.parentElement?.classList.add('overflow-auto');
-  }, []);
+  useStyle(
+    '.page-engine-layer-block:nth-child(3)',
+    useMemo(
+      () => ({
+        overflow: 'hidden',
+        paddingBottom: '10px',
+        transition: 'all .3s linear',
+        paddingLeft: designer.panelOpen ? '268px' : '0px',
+      }),
+      [designer.panelOpen],
+    ),
+  );
 
   useLayoutEffect(() => {
     // get all elems on page

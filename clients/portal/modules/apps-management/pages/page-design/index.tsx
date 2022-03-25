@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import React, { useState, useMemo, useEffect, useCallback, CSSProperties } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import PageEngineV2 from '@one-for-all/page-engine-v2';
 import cs from 'classnames';
@@ -20,6 +20,7 @@ import { PAGE_TYPE, PAGE_DESIGN_ID, LAYERS } from './constants';
 import { getInitSchemaByPageType } from './utils';
 import Ctx from './ctx';
 import stores from './stores';
+import { useStyle } from './hooks/use-style';
 import { savePage, updatePageEngineMenuType } from './api';
 
 import './index.scss';
@@ -29,6 +30,10 @@ function PageDesign(): JSX.Element | null {
   const { appID, pageId } = useParams<{appID: string; pageId: string}>();
   const [pageType, setPageType] = useState('');
   const history = useHistory();
+
+  const resetStyle: CSSProperties = useMemo(() => ({ overflow: 'hidden' }), [])
+  useStyle('body', resetStyle);
+  useStyle('html', resetStyle);
 
   const { pageType: savedPageType, isLoading: isSavedPageTypeLoading } = usePageTypeKey(appID, pageId);
   const { data: schema, isLoading: isSchemaLoading } = useQuerySchema(

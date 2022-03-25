@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState, useImperativeHandle, useLayoutEffect } from 'react';
 import { observer } from 'mobx-react';
 import { Icon, Popper } from '@one-for-all/ui';
+import cs from 'classnames';
 
 import { useCtx } from '../../ctx';
 
@@ -9,6 +10,7 @@ interface Props {
 }
 
 function NodeToolbox(props: Props, ref: any): JSX.Element {
+  const domRef = useRef<HTMLDivElement>(null);
   const popperRef = useRef<Popper>(null);
   const reference = useRef<any>(null);
   const toolbarEle = useRef<HTMLDivElement>(null);
@@ -30,6 +32,20 @@ function NodeToolbox(props: Props, ref: any): JSX.Element {
     // 监听浏览器窗口变动
     window.addEventListener('resize', computedPlace);
   }, []);
+
+  useEffect(() => {
+    if (!domRef.current) {
+      return;
+    }
+    domRef.current.style.opacity = '0';
+    const tid = setTimeout(() => {
+      computedPlace();
+      domRef.current!.style.opacity = '1';
+    }, 400);
+    return () => {
+      clearTimeout(tid);
+    };
+  }, [designer.panelOpen]);
 
   useLayoutEffect(()=> {
     computedPlace();
@@ -151,7 +167,11 @@ function NodeToolbox(props: Props, ref: any): JSX.Element {
 
   return (
     <div
-      className='absolute top-0 left-0 bottom-0 right-0 overflow-visible z-10 inline-block'
+      ref={domRef}
+      className={cs(
+        'absolute top-0 left-0 bottom-0 right-0 overflow-visible z-10',
+        'inline-block transition duration-100',
+      )}
       style={{ transform: 'translate(0px 0px)', pointerEvents: 'none' }}
     >
       {
