@@ -33,7 +33,7 @@ import Prefix from '@c/form-builder/registry/serial-number/prefix';
 import DefaultValueLinkageConfigBtn from
   '@c/form-builder/form-settings-panel/form-field-config/default-value-linkage-config-btn';
 import OptionsConfig from
-  '@c/form-builder/form-settings-panel/form-field-config/options_config';
+  '@c/form-builder/form-settings-panel/form-field-config/options-config';
 import CalculationFormulaBtn
   from '@c/form-builder/form-settings-panel/form-field-config/calculation-formula-btn';
 

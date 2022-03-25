@@ -30,7 +30,7 @@ import { getLinkageTables } from '@c/form-builder/utils/api';
 import { fetchLinkedTableFields } from './get-tables';
 import SCHEMA from './schema';
 import { convertFormValues, convertLinkage } from './convertor';
-import { compareValueValidateMap } from '../../form-config/visible-hidden-rules/constants';
+import { compareValueValidateMap } from '../../utils';
 
 const { onFieldValueChange$ } = FormEffectHooks;
 const COMPONENTS = {
