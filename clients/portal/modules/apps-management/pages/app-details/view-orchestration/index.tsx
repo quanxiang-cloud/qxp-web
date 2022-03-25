@@ -42,8 +42,8 @@ function PageList(): JSX.Element {
   });
 
   useEffect(() => {
-    console.log(appSchemaStore?.views);
-  }, [appSchemaStore?.views]);
+    console.log(currentView);
+  }, [currentView]);
 
   // async function delPageOrGroup(): Promise<void> {
   //   await del(toJS(activeMenu), modalType);
@@ -95,7 +95,7 @@ function PageList(): JSX.Element {
           <span className='font-semibold text-gray-400 mr-auto text-12'>页面</span>
           <div className="flex items-center">
             <div onClick={() => setModalType('createView')}>
-              <Tooltip label='新建菜单' position='bottom' wrapperClassName="whitespace-nowrap">
+              <Tooltip label='新建页面' position='bottom' wrapperClassName="whitespace-nowrap">
                 <Icon className='cursor-pointer mr-8 hover:text-blue-600' size={16} name='post_add' />
               </Tooltip>
             </div>
@@ -117,6 +117,15 @@ function PageList(): JSX.Element {
       </div>
       <div className='view-details-container h-full'>
         {!currentView && <EmptyTips className="empty" text='暂无页面数据,请先新建页面' />}
+        {!!currentView && (
+          <>
+            <div className='h-44 page-details-nav header-background-image border-b-1 px-16 flex items-center bg-gray-50'>
+              <span className='text-12 mr-8 font-semibold'>{currentView.name}</span>
+              {/* <span className='text-caption align-top'>{currentView.describe}</span> */}
+            </div>
+            <div>页面详情</div>
+          </>
+        )}
       </div>
       {/* {['delPage'].includes(modalType) && (
         <DelModal

@@ -27,8 +27,7 @@ function ViewList({
           key={view.id}
           view={view}
         />
-      ),
-      )}
+      ))}
     </ul >
   );
 }

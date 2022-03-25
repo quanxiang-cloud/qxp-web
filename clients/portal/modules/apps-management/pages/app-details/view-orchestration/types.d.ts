@@ -1,3 +1,4 @@
+
 export enum LayoutType {
   HeaderContent = 'header-content',
   LeftSidebarContent = 'left-sidebar-content',
@@ -57,7 +58,7 @@ export interface ExternalView extends BaseView {
 }
 
 export type View = TableSchemaView | SchemaView | StaticView | ExternalView;
-export type ViewGroup = { group: string; views: Array<View>; }
+export type ViewGroup = { name: string; views: Array<View>; }
 
 export interface CreateViewParams {
   name: string;
