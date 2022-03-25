@@ -13,15 +13,6 @@ type Props = {
   view: View;
 }
 
-const DEFAULT_VIEW_DEPS = [
-  { id: 'type', title: '页面类型', value: '表单' },
-  { id: 'fieldLen', title: '已配置字段总数', value: '' },
-  { id: 'createdBy', title: '创建人', value: '' },
-  { id: 'createdAt', title: '创建时间', value: '' },
-  { id: 'updatedBy', title: '修改人', value: '' },
-  { id: 'updatedAt', title: '修改时间', value: '' },
-];
-
 type View_Map = {
   icon: string;
   viewType: string;
@@ -60,6 +51,41 @@ function ViewInfo({ view }: Props): JSX.Element {
     history.push(`/apps/formDesign/formBuild/${view.id}/${appID}?pageName=${view.name}`);
   }
 
+  function handleBtnClick(): void {
+    if (type === ViewType.StaticView) {
+      return console.log('修改静态页面');
+    }
+
+    if (type === ViewType.SchemaView) {
+      return goPageDesign();
+    }
+
+    goFormBuild();
+  }
+
+  function Preview(): JSX.Element | null {
+    if (type === ViewType.StaticView) {
+      return (
+        <iframe
+          className="w-full h-full"
+          src={view.fileUrl}
+          style={{ border: 'none' }}
+        />
+      );
+    }
+
+    if (type === ViewType.SchemaView) {
+      return (
+        <PageSchemaRender
+          schemaKey={view.schemaID}
+          version={getVersionKey()}
+        />
+      );
+    }
+
+    return null;
+  }
+
   return (
     <div className='relative flex-1 overflow-hidden p-16'>
       <div className='px-16 py-8 rounded-8 border-1 flex items-center'>
@@ -85,34 +111,18 @@ function ViewInfo({ view }: Props): JSX.Element {
           className="mr-18"
           modifier='primary'
           textClassName='app-content--op_btn'
-          onClick={() => {
-            if (type === ViewType.StaticView) {
-              console.log('修改静态页面');
-              return;
-            }
-
-            if (type === ViewType.SchemaView) {
-              goPageDesign();
-            }
-
-            goFormBuild();
-          }}
+          onClick={handleBtnClick}
         >
           {VIEW_MAP[type].operator}
         </Button>
       </div>
-      {view.type === ViewType.SchemaView && (
+      {[ViewType.SchemaView, ViewType.StaticView].includes(type) && (
         <Tab
           items={[
             {
               id: 'page-preview',
-              name: '视图预览',
-              content: (
-                <PageSchemaRender
-                  schemaKey={view.schemaID}
-                  version={getVersionKey()}
-                />
-              ),
+              name: '页面预览',
+              content: <Preview />,
             },
           ]}
         />
