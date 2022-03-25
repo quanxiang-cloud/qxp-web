@@ -30,7 +30,6 @@ import { getLinkageTables } from '@c/form-builder/utils/api';
 import { fetchLinkedTableFields } from './get-tables';
 import SCHEMA from './schema';
 import { convertFormValues, convertLinkage } from './convertor';
-import { compareValueValidateMap } from '../../utils';
 
 const { onFieldValueChange$ } = FormEffectHooks;
 const COMPONENTS = {
@@ -216,16 +215,14 @@ function LinkageConfig({
       (field) => field.value === currentFieldNameValue,
     );
     const enumerable = !!(linkTableField?.fieldEnum || []).length;
-    let shouldReset = false;
-    if (linkTableField) {
-      shouldReset = compareValueValidateMap[linkTableField.componentName](currentCompareValue);
-    }
 
     setFieldState(compareValuePath, (state) => {
       const compareOperator = getFieldValue(operatePath);
 
+      const preComponent = state.props['x-component'];
+      console.log(preComponent);
       if (currentCompareToValue === 'fixedValue' && enumerable) {
-        state.props['x-component'] = 'AntdSelect';
+        state.props['x-component'] = 'antdSelect';
         state.props['x-component-props'] = ['⊇', '⊋', '∩', '∈', '∉']
           .includes(compareOperator) ? { mode: 'multiple' } : {};
         state.props.enum = linkTableField?.fieldEnum;
@@ -242,6 +239,7 @@ function LinkageConfig({
       }
 
       if (currentCompareToValue === 'fixedValue') {
+        const shouldReset = preComponent !== (linkTableField?.componentName || 'input');
         state.props['x-component'] = linkTableField?.componentName || 'input';
         state.props.enum = undefined;
 
@@ -256,7 +254,7 @@ function LinkageConfig({
           return componentName === linkTableField?.componentName;
         })
         .map((field) => ({ label: field.title as string, value: field.id }));
-      state.props['x-component'] = 'AntdSelect';
+      state.props['x-component'] = 'antdSelect';
       state.props.enum = compareFields;
       state.props['x-component-props'] = ['∩', '∈', '∉']
         .includes(compareOperator) ? { mode: 'multiple' } : {};
