@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import { useQuery } from 'react-query';
@@ -13,10 +13,10 @@ import EditViewModal from './edit-view-modal';
 import Orchestrator from '../view-orchestration/orchestrator';
 import ViewList from './view-list';
 
-import { CreateViewParams, View, ViewGroup, ViewType } from '../view-orchestration/types.d';
+import { CreateViewParams, View, ViewType } from '../view-orchestration/types.d';
 
 import './index.scss';
-import EmptyTips from '@c/empty-tips';
+import ViewDetails from './view-details';
 
 function PageList(): JSX.Element {
   const history = useHistory();
@@ -24,7 +24,7 @@ function PageList(): JSX.Element {
   const { appID } = useParams<{ appID: string }>();
   const [appSchemaStore, setAppSchemaStore] = useState<Orchestrator>();
   const [modalType, setModalType] = useState('');
-  const [currentView, setCurrentView] = useState<View | ViewGroup>();
+  const [currentView, setCurrentView] = useState<View>();
 
   const { isLoading } = useQuery(['desktop_view_schema'], () => {
     const key = `app_id:${appID}:desktop_view_schema:root`;
@@ -33,17 +33,13 @@ function PageList(): JSX.Element {
         setAppSchemaStore(() => {
           const store = new Orchestrator(appID, appLayoutSchema);
           window.store = store;
-          setCurrentView(store.views[0]);
+          setCurrentView(store.views[0] as View);
           console.log(appLayoutSchema);
           return store;
         });
         return appLayoutSchema;
       });
   });
-
-  useEffect(() => {
-    console.log(currentView);
-  }, [currentView]);
 
   // async function delPageOrGroup(): Promise<void> {
   //   await del(toJS(activeMenu), modalType);
@@ -115,18 +111,7 @@ function PageList(): JSX.Element {
           />
         </div>
       </div>
-      <div className='view-details-container h-full'>
-        {!currentView && <EmptyTips className="empty" text='暂无页面数据,请先新建页面' />}
-        {!!currentView && (
-          <>
-            <div className='h-44 page-details-nav header-background-image border-b-1 px-16 flex items-center bg-gray-50'>
-              <span className='text-12 mr-8 font-semibold'>{currentView.name}</span>
-              {/* <span className='text-caption align-top'>{currentView.describe}</span> */}
-            </div>
-            <div>页面详情</div>
-          </>
-        )}
-      </div>
+      <ViewDetails viewInfo={currentView} />
       {/* {['delPage'].includes(modalType) && (
         <DelModal
           type={modalType === 'delView' ? 'group' : 'page'}
