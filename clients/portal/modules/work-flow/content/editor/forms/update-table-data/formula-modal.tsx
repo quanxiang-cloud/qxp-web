@@ -8,7 +8,6 @@ import FlowTableContext from '@flow/content/editor/forms/flow-source-table';
 import schemaToFields from '@lib/schema-convert';
 import { SYSTEM_FIELDS } from '@c/form-builder/constants';
 import { FormulaFields } from './update-rules';
-import Context from './context';
 interface Props {
   onClose: () => void;
   onSave: (rule: string, formulaFields: FormulaFields) => void;
@@ -18,9 +17,7 @@ interface Props {
 
 function FormulaModal(props: Props): JSX.Element | null {
   const formulaRef = useRef<RefProps>();
-  const { tableSchema: sourceSchema, tableID } = useContext(FlowTableContext);
-  const { data } = useContext(Context);
-  const isWorkForm = useMemo(()=>data.targetTableId === tableID, [data, tableID]);
+  const { tableSchema: sourceSchema } = useContext(FlowTableContext);
   const targetSchemaFields = useMemo(()=> schemaToFields(props.targetSchema), []);
   const targetFields = getSchemaFields(targetSchemaFields);
   const sourceFields = getSchemaFields(sourceSchema);
@@ -72,10 +69,10 @@ function FormulaModal(props: Props): JSX.Element | null {
       ]}
     >
       <div className="p-20">
-        <div className="flex flex-col mb-20">
+        <div className="flex flex-col mb-20" style={{ display: 'none' }}>
           <div>目标表单字段</div>
           <div className="target-table-fields">
-            {!isWorkForm && targetFields.map(({ label, value }) => {
+            {targetFields.map(({ label, value }) => {
               return (
                 <span
                   key={value}
