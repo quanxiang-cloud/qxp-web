@@ -8,15 +8,14 @@ import Icon from '@c/icon';
 import Tooltip from '@c/tooltip';
 import { getBatchGlobalConfig } from '@lib/api/user-config';
 
-// import PageDetails from './page-details';
+import ViewList from './view-list';
+import ViewDetails from './view-details';
 import EditViewModal from './edit-view-modal';
 import Orchestrator from '../view-orchestration/orchestrator';
-import ViewList from './view-list';
 
 import { CreateViewParams, View, ViewType } from '../view-orchestration/types.d';
 
 import './index.scss';
-import ViewDetails from './view-details';
 
 function PageList(): JSX.Element {
   const history = useHistory();

@@ -3,13 +3,37 @@ import React from 'react';
 import EmptyTips from '@c/empty-tips';
 
 import ViewInfo from './view-info';
-import { View } from '../types.d';
+import { View, ViewType, CardInfo } from '../types.d';
 
 type Props = {
   viewInfo?: View;
 }
+const DEFAULT_CARD_LIST = [
+  {
+    id: 'linkedFlows',
+    title: '关联工作流',
+    list: [],
+  },
+  {
+    id: 'AuthorizedRoles',
+    title: '已授权角色',
+    list: [],
+  },
+];
+
+function getCardList(type?: ViewType): CardInfo[] {
+  if (type !== ViewType.TableSchemaView) {
+    return [DEFAULT_CARD_LIST[1]];
+  }
+
+  return DEFAULT_CARD_LIST;
+}
 
 function ViewDetails({ viewInfo }: Props): JSX.Element {
+  const cardList = getCardList(viewInfo?.type);
+
+  // todo get pageDescriptions and related
+
   return (
     <div className='view-details-container h-full'>
       {!viewInfo && <EmptyTips className="empty" text='暂无页面数据,请先新建页面' />}
@@ -19,7 +43,7 @@ function ViewDetails({ viewInfo }: Props): JSX.Element {
             <span className='text-12 mr-8 font-semibold'>{viewInfo.name}</span>
             {/* <span className='text-caption align-top'>{currentView.describe}</span> */}
           </div>
-          <ViewInfo view={viewInfo} />
+          <ViewInfo cardList={cardList} view={viewInfo} />
         </>
       )}
     </div>

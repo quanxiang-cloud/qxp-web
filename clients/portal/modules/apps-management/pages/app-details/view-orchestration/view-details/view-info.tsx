@@ -6,13 +6,23 @@ import Icon from '@c/icon';
 import Button from '@c/button';
 
 import ViewRelated from './view-related';
-import { View, ViewType } from '../types.d';
+import { CardInfo, View, ViewType } from '../types.d';
 
 type Props = {
   view: View;
+  cardList?: CardInfo[];
 }
 
-function ViewInfo({ view }: Props): JSX.Element {
+const DEFAULT_VIEW_DEPS = [
+  { id: 'type', title: '页面类型', value: '表单' },
+  { id: 'fieldLen', title: '已配置字段总数', value: '' },
+  { id: 'createdBy', title: '创建人', value: '' },
+  { id: 'createdAt', title: '创建时间', value: '' },
+  { id: 'updatedBy', title: '修改人', value: '' },
+  { id: 'updatedAt', title: '修改时间', value: '' },
+];
+
+function ViewInfo({ view, cardList }: Props): JSX.Element {
   const { type } = view;
   const history = useHistory();
   const { appID } = useParams<{ appID: string }>();
@@ -72,7 +82,7 @@ function ViewInfo({ view }: Props): JSX.Element {
             {
               id: 'relate-info',
               name: '关联信息',
-              content: (<ViewRelated />),
+              content: (<ViewRelated cardList={cardList} />),
             },
           ]}
         />
@@ -132,7 +142,7 @@ function ViewInfo({ view }: Props): JSX.Element {
           </Button>
         )}
       </div>
-      <ViewRelated />
+      <ViewRelated cardList={cardList} />
     </div>
   );
 }

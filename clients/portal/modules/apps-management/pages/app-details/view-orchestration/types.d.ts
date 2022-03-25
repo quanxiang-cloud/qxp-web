@@ -57,6 +57,18 @@ export interface ExternalView extends BaseView {
   link: string;
 }
 
+export type CardListInfo = {
+  id: string,
+  name: string,
+  status?: string
+}
+
+export type CardInfo = {
+  id: string,
+  title: string,
+  list: CardListInfo[],
+}
+
 export type View = TableSchemaView | SchemaView | StaticView | ExternalView;
 export type ViewGroup = { name: string; views: Array<View>; }
 

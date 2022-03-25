@@ -1,21 +1,21 @@
 import React from 'react';
 import cs from 'classnames';
 import { observer } from 'mobx-react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 
 import Icon from '@c/icon';
 import Card from '@c/card';
 
-import { MenuType } from '../../type';
-import appPagesStore from '../../store';
+import { CardInfo } from '../types.d';
 
-function ViewRelated(): JSX.Element {
+type Props = {
+  cardList?: CardInfo[];
+}
+
+function ViewRelated({ cardList }: Props): JSX.Element {
   const history = useHistory();
-  const {
-    activeMenu,
-    curPageCardList,
-    appID,
-  } = appPagesStore;
+  const { appID } = useParams<{ appID: string }>();
+  // const [cardList, setCardList] = useState<CardInfo[]>([]);
 
   function goLink(cardID: string, id?: string): void {
     if (cardID === 'linkedFlows') {
@@ -39,13 +39,7 @@ function ViewRelated(): JSX.Element {
 
   return (
     <div className='rounded-12 flex select-none py-16'>
-      {curPageCardList.map(({ title, list, id: cardID }) => {
-        if (
-          [MenuType.schemaPage, MenuType.customPage].includes(activeMenu.menuType || 0) &&
-          cardID === 'linkedFlows'
-        ) {
-          return;
-        }
+      {cardList?.map(({ title, list, id: cardID }) => {
         return (
           <Card
             key={title}
