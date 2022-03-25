@@ -283,7 +283,7 @@ export function isMeanless(value: any): boolean {
 }
 
 export function getUserDepartment(user: CurrentUser): Department {
-  const dep = getTwoDimenArrayHead(user.dep) as Department;
+  const dep = getTwoDimenArrayHead(user.deps) as Department;
   return dep;
 }
 

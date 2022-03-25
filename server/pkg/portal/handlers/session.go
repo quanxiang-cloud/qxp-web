@@ -75,7 +75,7 @@ type User struct {
 	Phone     string            `json:"phone"`
 	UseStatus int               `json:"useStatus"`
 	Status    int               `json:"status"`
-	Dep       []([]Department)  `json:"dep"`
+	Deps      []([]Department)  `json:"deps"`
 }
 
 func getTokenKey(r *http.Request) string {
