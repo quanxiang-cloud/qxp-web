@@ -14,3 +14,16 @@
     padding: 0 16px;
   }
 }
+
+.view-details-container {
+  @apply flex-1 bg-white rounded-tr-8 relative overflow-hidden;
+
+  .empty {
+    @apply absolute;
+
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+

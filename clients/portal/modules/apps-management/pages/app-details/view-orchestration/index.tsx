@@ -16,6 +16,7 @@ import ViewList from './view-list';
 import { CreateViewParams, View, ViewGroup, ViewType } from '../view-orchestration/types.d';
 
 import './index.scss';
+import EmptyTips from '@c/empty-tips';
 
 function PageList(): JSX.Element {
   const history = useHistory();
@@ -53,7 +54,14 @@ function PageList(): JSX.Element {
     if (viewInfo.layoutType === ViewType.TableSchemaView) {
       appSchemaStore?.addTableSchemaView(viewInfo).then(closeModal);
     }
-    console.log(viewInfo);
+
+    if (viewInfo.layoutType === ViewType.SchemaView) {
+      appSchemaStore?.addSchemaView(viewInfo).then(closeModal);
+    }
+
+    if (viewInfo.layoutType === ViewType.StaticView) {
+      appSchemaStore?.addStaticView(viewInfo as any).then(closeModal);
+    }
   }
 
   function closeModal(): void {
@@ -107,7 +115,9 @@ function PageList(): JSX.Element {
           />
         </div>
       </div>
-      {/* <PageDetails pageID={pageID} /> */}
+      <div className='view-details-container h-full'>
+        {!currentView && <EmptyTips className="empty" text='暂无页面数据,请先新建页面' />}
+      </div>
       {/* {['delPage'].includes(modalType) && (
         <DelModal
           type={modalType === 'delView' ? 'group' : 'page'}
