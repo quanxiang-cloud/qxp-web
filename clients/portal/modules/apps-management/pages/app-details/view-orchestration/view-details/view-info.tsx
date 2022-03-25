@@ -5,12 +5,12 @@ import Tab from '@c/tab';
 import Icon from '@c/icon';
 import Button from '@c/button';
 
-import ViewRelated from './view-related';
-import { CardInfo, View, ViewType } from '../types.d';
+import { View, ViewType } from '../types.d';
+import PageSchemaRender from '@c/page-schema-render';
+import { getVersionKey } from '../../../page-design/api';
 
 type Props = {
   view: View;
-  cardList?: CardInfo[];
 }
 
 const DEFAULT_VIEW_DEPS = [
@@ -22,10 +22,35 @@ const DEFAULT_VIEW_DEPS = [
   { id: 'updatedAt', title: '修改时间', value: '' },
 ];
 
-function ViewInfo({ view, cardList }: Props): JSX.Element {
+type View_Map = {
+  icon: string;
+  viewType: string;
+  operator: string;
+}
+
+const VIEW_MAP: Record<string, View_Map> = {
+  table_schema_view: {
+    icon: 'schema-form',
+    viewType: '表单页面',
+    operator: '设计表单',
+  },
+  static_view: {
+    icon: 'custom-page',
+    viewType: '静态页面',
+    operator: '修改页面',
+  },
+  schema_view: {
+    icon: 'view',
+    viewType: '自定义页面',
+    operator: '设计页面',
+  },
+};
+
+function ViewInfo({ view }: Props): JSX.Element {
   const { type } = view;
   const history = useHistory();
   const { appID } = useParams<{ appID: string }>();
+  const pageDescriptions = [{ id: 'type', title: '页面类型', value: VIEW_MAP[type].viewType }];
 
   function goPageDesign(): void {
     history.push(`/apps/page-design/${view.id}/${appID}?pageName=${view.name}`);
@@ -35,61 +60,6 @@ function ViewInfo({ view, cardList }: Props): JSX.Element {
     history.push(`/apps/formDesign/formBuild/${view.id}/${appID}?pageName=${view.name}`);
   }
 
-  if (type === ViewType.SchemaView) {
-    return (
-      <div className='relative flex-1 overflow-hidden p-16'>
-        <div className='px-16 py-8 rounded-8 border-1 flex items-center'>
-          <div className="page-details-icon">
-            <Icon
-              size={24}
-              type="dark"
-              name='view'
-            />
-          </div>
-          <div className='flex-1 grid grid-cols-6 mr-48'>
-            {[{ title: '页面类型', value: '自定义页面' }].map(({ title, value }) => {
-              return (
-                <div key={title}>
-                  <p className={!value ? 'text-gray-400' : ''}>{value ? value : '-'}</p>
-                  <p className='page-details-text'>{title}</p>
-                </div>
-              );
-            })}
-          </div>
-          <Button
-            iconName="edit"
-            modifier="primary"
-            textClassName='app-content--op_btn'
-            onClick={goPageDesign}
-          >
-          设计页面
-          </Button>
-        </div>
-        <Tab
-          items={[
-            // {
-            //   id: 'page-preview',
-            //   name: '视图预览',
-            //   content: (
-            //     <PageSchemaRender
-            //       schemaKeys={getSchemaKey(appID, pageID, false)}
-            //       version={getVersionKey()}
-            //       repository={getRenderRepository()}
-            //       maxHeight="calc(100vh - 250px)"
-            //     />
-            //   ),
-            // },
-            {
-              id: 'relate-info',
-              name: '关联信息',
-              content: (<ViewRelated cardList={cardList} />),
-            },
-          ]}
-        />
-      </div>
-    );
-  }
-
   return (
     <div className='relative flex-1 overflow-hidden p-16'>
       <div className='px-16 py-8 rounded-8 border-1 flex items-center'>
@@ -97,52 +67,56 @@ function ViewInfo({ view, cardList }: Props): JSX.Element {
           <Icon
             size={24}
             type="dark"
-            name={view.type === ViewType.TableSchemaView ? 'schema-form' : 'custom-page'}
+            name={VIEW_MAP[type].icon}
           />
         </div>
         <div className='flex-1 grid grid-cols-6 mr-48'>
-          {/* {pageDescriptions.map(({ title, value }) => {
+          {pageDescriptions.map(({ title, value }) => {
             return (
               <div key={title}>
                 <p className={!value ? 'text-gray-400' : ''}>{value ? value : '-'}</p>
                 <p className='page-details-text'>{title}</p>
               </div>
             );
-          })} */}
+          })}
         </div>
-        {view.type === ViewType.StaticView ? (
-          <>
-            <Button
-              iconName='edit'
-              className="mr-18"
-              modifier='primary'
-              textClassName='app-content--op_btn'
-              onClick={() => console.log('todo edit page')}
-            >
-            修改页面
-            </Button>
-            <Button
-              iconName="preview"
-              textClassName='app-content--op_btn'
-              onClick={() => {
-                history.push(`/apps/preview/customPage/${appID}/${view.id}`);
-              }}
-            >
-            预览
-            </Button>
-          </>
-        ) : (
-          <Button
-            iconName="edit"
-            modifier="primary"
-            textClassName='app-content--op_btn'
-            onClick={goFormBuild}
-          >
-            设计表单
-          </Button>
-        )}
+        <Button
+          iconName='edit'
+          className="mr-18"
+          modifier='primary'
+          textClassName='app-content--op_btn'
+          onClick={() => {
+            if (type === ViewType.StaticView) {
+              console.log('修改静态页面');
+              return;
+            }
+
+            if (type === ViewType.SchemaView) {
+              goPageDesign();
+            }
+
+            goFormBuild();
+          }}
+        >
+          {VIEW_MAP[type].operator}
+        </Button>
       </div>
-      <ViewRelated cardList={cardList} />
+      {view.type === ViewType.SchemaView && (
+        <Tab
+          items={[
+            {
+              id: 'page-preview',
+              name: '视图预览',
+              content: (
+                <PageSchemaRender
+                  schemaKey={view.schemaID}
+                  version={getVersionKey()}
+                />
+              ),
+            },
+          ]}
+        />
+      )}
     </div>
   );
 }
