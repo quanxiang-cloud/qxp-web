@@ -20,6 +20,7 @@ function SchemaPage({ appId, pageId, draft }: Props): JSX.Element {
 
   return (
     <PageSchemaRender
+      key={schemaKey}
       schemaKey={schemaKey}
       version="0.1.0"
     />
