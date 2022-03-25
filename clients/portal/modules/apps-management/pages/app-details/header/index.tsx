@@ -111,7 +111,7 @@ function DetailsHeader(): JSX.Element {
               className="cursor-pointer flex items-center h-36
             hover:blue-100 transition group-hover:text-blue-600"
             >
-              <Avatar username={window.USER.userName}/>
+              <Avatar username={window.USER.name}/>
               <Icon name="arrow_drop_down" size={20} />
             </div>
           </MoreMenu>
