@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import PageEngineV2 from '@one-for-all/page-engine-v2';
 import cs from 'classnames';
@@ -10,6 +10,7 @@ import Icon from '@c/icon';
 import FileUploader from '@c/file-upload';
 import { getQuery } from '@lib/utils';
 import ApiSelector from '@polyApi/nodes/forms/request-config/api-selector';
+import toast from '@lib/toast';
 
 import ApiSpec from '../app-details/api-proxy/add-api';
 import SelectCustomPageEditor from './select-custom-page-editor';
@@ -19,6 +20,7 @@ import { PAGE_TYPE, PAGE_DESIGN_ID, LAYERS } from './constants';
 import { getInitSchemaByPageType } from './utils';
 import Ctx from './ctx';
 import stores from './stores';
+import { savePage, updatePageEngineMenuType } from './api';
 
 import './index.scss';
 import styles from './index.m.scss';
@@ -135,11 +137,19 @@ function PageDesign(): JSX.Element | null {
     );
   }
 
-  // todo refactor this
-  if (pageType === PAGE_TYPE.PAGE_DESIGN_EDITOR) {
-    return (
+  const handleSave = useCallback((page_schema: any, options?: Record<string, any>): void => {
+    savePage(appID, pageId, page_schema, options).then(() => {
+      if (!options?.silent) {
+        updatePageEngineMenuType(appID, pageId);
+        toast.success('页面已保存');
+      }
+    }).catch((err: Error) => {
+      toast.error(err.message);
+    });
+  }, []);
+  const PageEngineEntry = useMemo(() => (
       <DndProvider backend={HTML5Backend}>
-        <Ctx.Provider value={stores}>
+        <Ctx.Provider value={Object.assign(stores, { onSave: handleSave })}>
           <div className={cs(styles.designer)}>
             <div id={PAGE_DESIGN_ID}>
               <PageEngineV2 schema={initialSchema} layers={layers} />
@@ -147,7 +157,11 @@ function PageDesign(): JSX.Element | null {
           </div>
         </Ctx.Provider>
       </DndProvider>
-    );
+  ), [initialSchema, layers]);
+
+  // todo refactor this
+  if (pageType === PAGE_TYPE.PAGE_DESIGN_EDITOR) {
+    return PageEngineEntry;
   }
 
   if (isSchemaLoading || isSavedPageTypeLoading) {
@@ -162,17 +176,7 @@ function PageDesign(): JSX.Element | null {
     return (<SchemaEditor appID={appID} pageId={pageId} initialSchema={schema} />);
   }
 
-  return (
-    <DndProvider backend={HTML5Backend}>
-      <Ctx.Provider value={stores}>
-        <div className={cs(styles.designer)}>
-          <div id={PAGE_DESIGN_ID}>
-            <PageEngineV2 schema={initialSchema} layers={layers} />
-          </div>
-        </div>
-      </Ctx.Provider>
-    </DndProvider>
-  );
+  return PageEngineEntry;
 }
 
 export default PageDesign;
