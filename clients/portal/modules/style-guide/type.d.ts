@@ -1,5 +1,6 @@
-import { StyleConfigInterface } from '@one-for-all/style-guide';
+import { StyleConfigInterface, ComponentSpec } from '@one-for-all/style-guide';
 declare global {
+  type ComponentSpecs = ComponentSpec[];
   type ActiveConfigurationComponent = {
     key: string;
     spec: StyleConfigInterface;
@@ -12,4 +13,3 @@ declare global {
     componentCssUrl?: string,
   }
 }
-

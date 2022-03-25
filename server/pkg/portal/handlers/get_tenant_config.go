@@ -10,13 +10,13 @@ import (
 	"github.com/tidwall/gjson"
 )
 
-type UserConfigParams struct {
+type TenantStyleConfig struct {
 	Version string `json:"version" binding:"required"`
 	Key     string `json:"key" binding:"required"`
 }
 
 type BatchGetValueReq struct {
-	Keys []UserConfigParams `json:"keys" binding:"required"`
+	Keys []TenantStyleConfig `json:"keys" binding:"required"`
 }
 
 type UserConfig struct {
@@ -26,10 +26,10 @@ type UserConfig struct {
 	ComponentCssUrl template.URL `json:"componentCssUrl"`
 }
 
-func getUserConfig(r *http.Request, appID string) UserConfig {
-	params := []UserConfigParams{{Key: "user_style_config", Version: "0.1.0"}}
+func getTenantConfig(r *http.Request, appID string) UserConfig {
+	params := []TenantStyleConfig{{Key: "COMMON_STYLE_CONFIG", Version: "0.1.0"}}
 	if appID != "" {
-		params = []UserConfigParams{{Key: "user_style_config", Version: "0.1.0"}, {Key: fmt.Sprintf("user_style_config.%s", appID), Version: "0.1.0"}}
+		params = []TenantStyleConfig{{Key: "COMMON_STYLE_CONFIG", Version: "0.1.0"}, {Key: fmt.Sprintf("APP_COMMON_STYLE_CONFIG_%s", appID), Version: "0.1.0"}}
 	}
 
 	respBody, errMsg := sendRequest(r.Context(), "POST", "/api/v1/persona/batchGetValue", BatchGetValueReq{Keys: params})
@@ -38,8 +38,8 @@ func getUserConfig(r *http.Request, appID string) UserConfig {
 		return UserConfig{}
 	}
 
-	result1 := gjson.Get(string(respBody), "data.result.user_style_config").Str
-	result2 := gjson.Get(string(respBody), fmt.Sprintf("user_style_config.%s", appID)).Str
+	result1 := gjson.Get(string(respBody), "data.result.COMMON_STYLE_CONFIG").Str
+	result2 := gjson.Get(string(respBody), fmt.Sprintf("APP_COMMON_STYLE_CONFIG_%s", appID)).Str
 	config := UserConfig{
 		PrimaryColor:    "blue",
 		TitleIcon:       "/dist/images/quanxiangyun.svg",

@@ -5,7 +5,7 @@
   <link rel="stylesheet" href="/dist/css/antd.css">
   {{template "_import-map" .}}
   {{template "_systemjs" .}}
-  {{template "_style_guide" .}}
+  {{template "_style_sources_head" .}}
   {{template "_polyfill" .}}
 </head>
 <body>
@@ -16,7 +16,7 @@
     window.USER_ADMIN_ROLES = {{ .userAdminRoles }}
     window.CONFIG = {{ .CONFIG }}
     window.__verbose_log__ = {{ .debugMode }}
-    window.TENANT_CONFIG = {{ .userStyleGuideConfig }}
+    window.TENANT_CONFIG = {{ .tenantStyleConfig }}
     window.SIDE = 'portal';
     // fixme: react throw process not defined
     if (!window.process) {

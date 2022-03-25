@@ -44,7 +44,7 @@ export default function HeaderLeft(): JSX.Element {
         <Icon name="system_management" className="mr-4 fill-current" size={20} />
         系统管理
       </NavLink>
-      <NavLink
+      {/* <NavLink
         to="/style-guide"
         activeClassName="global-header-nav--active"
         isActive={() => location.pathname === '/style-guide'}
@@ -52,7 +52,7 @@ export default function HeaderLeft(): JSX.Element {
       >
         <Icon name="palette" className="mr-4" size={20} />
         配置中心
-      </NavLink>
+      </NavLink> */}
     </div>
   );
 }

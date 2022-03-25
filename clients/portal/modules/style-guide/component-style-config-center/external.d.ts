@@ -1,5 +1,4 @@
-import { ComponentSpec } from '@one-for-all/style-guide';
-
-declare global {
-  type ComponentSpecs = ComponentSpec[];
+declare module '@one-for-all/headless-ui-interfaces' {
+  const value: ComponentSpecs;
+  export default value;
 }

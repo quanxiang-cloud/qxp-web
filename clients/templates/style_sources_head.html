@@ -1,0 +1,6 @@
+{{define "_style_sources_head"}}
+  {{$primaryColor := .tenantStyleConfig.PrimaryColor}}
+  <link rel="shortcut icon" href="{{.tenantStyleConfig.Favicons}}" />
+  <link rel="stylesheet"  href="{{ .tenantStyleConfig.ComponentCssUrl }}" />
+  <link rel="stylesheet" href="https://ofapkg.pek3b.qingstor.com/@one-for-all/headless-ui@0.1.1/ofa-headless-ui-web.css" />
+{{end}}

@@ -3,7 +3,7 @@ import { toJS } from 'mobx';
 import { observer } from 'mobx-react';
 
 import { Button, Table } from '@one-for-all/headless-ui';
-// import Table, { SizeType } from '@c/table';
+
 import Icon from '@c/icon';
 import Pagination from '@c/pagination';
 import PopConfirm from '@c/pop-confirm';

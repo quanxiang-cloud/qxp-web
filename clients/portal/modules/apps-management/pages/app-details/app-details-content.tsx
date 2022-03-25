@@ -14,7 +14,6 @@ import UsersAndPermissions from './users-and-permissions';
 import ApiDocument from './api-documentation';
 import FaaS from './faas';
 import ApiKey from './api-key';
-import StyleGuide from '@portal/modules/style-guide';
 
 import './index.scss';
 
@@ -44,7 +43,6 @@ function AppDetailsContent(): JSX.Element {
               <Route exact path='/apps/details/:appID/app_control' component={AppControl} />
               <Route exact path='/apps/details/:appID/api_proxy' component={ApiProxy} />
               <Route exact path="/apps/details/:appID/orchestration_api" component={OrchestrationAPI} />
-              <Route exact path="/apps/details/:appID/app_style" component={StyleGuide} />
               <Route
                 component={() =>
                   (<NotFoundError url='/apps' classnames='h-full'/>)
