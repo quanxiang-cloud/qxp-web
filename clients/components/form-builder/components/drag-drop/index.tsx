@@ -5,6 +5,8 @@ import { observer } from 'mobx-react';
 
 import { AddOrUpdateField } from '@c/form-builder/store';
 import { getFieldId } from '@c/form-builder/utils/fields-operator';
+import { validateFieldConfig } from '@c/form-builder/utils';
+import toast from '@lib/toast';
 
 import { StoreContext } from '../../context';
 import { draggingStyle } from './utils';
@@ -79,7 +81,13 @@ function DragDrop(props: Props): JSX.Element {
       if (from === 'canvas') {
         store.update(changedField);
       } else {
-        store.insert(changedField);
+        validateFieldConfig(
+          store?.fieldConfigValidator, store?.getFieldValueFunc,
+        ).then(() => {
+          store.insert(changedField);
+        }).catch((err) => {
+          toast.error(err);
+        });
       }
     },
 

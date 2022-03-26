@@ -1,4 +1,4 @@
-import React, { RefObject, useEffect, useMemo, useRef, useState } from 'react';
+import React, { RefObject, useEffect, useMemo, useRef } from 'react';
 import { observer } from 'mobx-react';
 import { useSetState } from 'react-use';
 import { useParams } from 'react-router';
@@ -12,10 +12,14 @@ import { Empty } from '@m/qxp-ui-mobile/empty';
 import Icon from '@m/qxp-ui-mobile/icon';
 import Popper from '@c/popper';
 import { FormRenderer } from '@c/form-builder';
+import { approvalActionPath } from '@m/constant';
 
+import { handleCc } from '../actions/api';
 import store from '../store';
+import ApprovalsActionStore from '../actions/store';
 
 import './index.scss';
+import toast from '@lib/toast';
 
 export interface ApprovalsDetailTabProps {
   height: string;
@@ -37,8 +41,6 @@ function ApprovalsDetailTab(props: ApprovalsDetailTabProps): JSX.Element {
 
   const task = useMemo(() => store.taskDetails[props.index], [props.index]);
 
-  const [formValues, setFormValues] = useState<Record<string, any>>({});
-
   useEffect(init, []);
   useEffect(() => {
     if (props.active) return;
@@ -54,14 +56,23 @@ function ApprovalsDetailTab(props: ApprovalsDetailTabProps): JSX.Element {
       .then((res) => setState({ loading: false, error: !res }));
   }
 
-  function onActionClick(action: string): void {
-    // Todo: Add action click
+  function onActionClick(action: string, reasonRequired?: boolean): void {
+    ApprovalsActionStore.reset();
     popperRef?.current?.close();
     submitRef?.current?.click();
-    // const actionPath = approvalActionPath.replace(':processInstanceID/:taskID/:type',
-    //   `${processInstanceID}/${taskID}/${type}`,
-    // );
-    // history.push(`${actionPath}?action=${action}`);
+    if ('hasCcHandleBtn' === action) {
+      handleCc(taskID).then(() => {
+        toast.success('标记已读完成');
+      }).catch((err) => toast.error(err));
+      return;
+    }
+
+    const actionPath = approvalActionPath.replace(':processInstanceID/:taskID/:type',
+      `${processInstanceID}/${taskID}/${type}`,
+    );
+    history.push(
+      reasonRequired ? `${actionPath}?action=${action}&reasonRequired=1` : `${actionPath}?action=${action}`,
+    );
   }
 
   const popperRef = useRef<Popper>(null);
@@ -77,7 +88,7 @@ function ApprovalsDetailTab(props: ApprovalsDetailTabProps): JSX.Element {
                 className='more-pop-item body2 text-secondary pointer'
                 onClick={(e) => {
                   e.stopPropagation();
-                  onActionClick(item.key);
+                  onActionClick(item.key, item.reasonRequired);
                 }}
               >
                 {!!item.icon && <Icon name={item.icon} size='.2rem' className='mr-4'/>}
@@ -112,7 +123,7 @@ function ApprovalsDetailTab(props: ApprovalsDetailTabProps): JSX.Element {
                 className='h-full'
                 value={toJS(task.formData)}
                 schema={toJS(task.formSchema)}
-                onSubmit={setFormValues}
+                onSubmit={(val) => store.formValues = val}
                 readOnly={type === 'APPLY_PAGE' || type === 'HANDLED_PAGE' }
                 usePermission>
                 <button type='submit' ref={submitRef} className='hidden'/>
@@ -130,7 +141,10 @@ function ApprovalsDetailTab(props: ApprovalsDetailTabProps): JSX.Element {
                             key={item.key}
                             className='action-button__custom flex justify-center items-center'
                             ref={item.key === 'MORE' ? reference : undefined}
-                            onClick={item.key === 'MORE' ? undefined : () => onActionClick(item.key)}
+                            onClick={
+                              item.key === 'MORE' ?
+                                undefined : () => onActionClick(item.key, item.reasonRequired)
+                            }
                           >
                             {!!item.icon && <Icon name={item.icon} size='.2rem' className='mb-4'/>}
                             <div className='action-button__custom-text body2 truncate w-full'>
@@ -149,7 +163,7 @@ function ApprovalsDetailTab(props: ApprovalsDetailTabProps): JSX.Element {
                     <div
                       key={item.key}
                       className={cs('action-button__system flex justify-center items-center', item.className)}
-                      onClick={() => onActionClick(item.key)}>
+                      onClick={() => onActionClick(item.key, item.reasonRequired)}>
                       {!!item.icon && <Icon name={item.icon} size='.2rem' className='mr-4'/>}
                       <div className='truncate'>{item.text}</div>
                     </div>

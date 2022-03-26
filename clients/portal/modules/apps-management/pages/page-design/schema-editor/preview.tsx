@@ -5,6 +5,7 @@ import type { Schema } from '@one-for-all/schema-spec';
 import toast from '@lib/toast';
 
 import { getSchemaKey } from '../api';
+import PageSchemaRender from '@c/page-schema-render';
 
 type Props = {
   appID: string;
@@ -33,15 +34,11 @@ function Preview({ appID, pageID, previewSchema }: Props): JSX.Element {
   }
 
   return (
-    <h1>this will be implement later</h1>
+    <PageSchemaRender
+      schemaKey={schemaKeys[0]}
+      version="0.1.0"
+    />
   );
-
-  // return (
-  //   <PageSchemaRender
-  //     schemaKeys={schemaKeys}
-  //     version="1.0.0"
-  //   />
-  // );
 }
 
 export default Preview;

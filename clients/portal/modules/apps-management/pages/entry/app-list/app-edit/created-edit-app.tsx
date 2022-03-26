@@ -156,6 +156,7 @@ function CreatedEditApp({
       )}
       {createdBy === 'template' && (
         <Form.Item
+          required
           name="template"
           label="选择模版"
         >

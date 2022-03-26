@@ -8,7 +8,6 @@ import FlowTableContext from '@flow/content/editor/forms/flow-source-table';
 import schemaToFields from '@lib/schema-convert';
 import { SYSTEM_FIELDS } from '@c/form-builder/constants';
 import { FormulaFields } from './update-rules';
-
 interface Props {
   onClose: () => void;
   onSave: (rule: string, formulaFields: FormulaFields) => void;
@@ -70,7 +69,7 @@ function FormulaModal(props: Props): JSX.Element | null {
       ]}
     >
       <div className="p-20">
-        <div className="flex flex-col mb-20">
+        <div className="flex flex-col mb-20" style={{ display: 'none' }}>
           <div>目标表单字段</div>
           <div className="target-table-fields">
             {targetFields.map(({ label, value }) => {

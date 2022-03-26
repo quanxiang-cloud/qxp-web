@@ -1,16 +1,13 @@
 import React from 'react';
 import { Repository, SchemaRender } from '@one-for-all/render-engine';
-import * as OneForAllUI from '@one-for-all/ui';
 
 import { useSchemaWithAdapter } from './api';
 import ErrorBoundary from './error-boundary';
 import componentLoader from './component-loader';
+import { getRenderRepository } from '@portal/modules/apps-management/pages/page-design/api';
 
 // todo fix this
-const repository: Repository = {
-  // @ts-ignore
-  'ofa-ui@latest': OneForAllUI,
-};
+const repository: Repository = getRenderRepository();
 
 type Props = {
   schemaKey: string;
