@@ -5,6 +5,7 @@ import { observer } from 'mobx-react';
 import { pickBy } from 'lodash';
 import { useUpdateEffect, useDebounce } from 'react-use';
 
+import ApiSelector from '@polyApi/nodes/forms/request-config/api-selector';
 import { Search, Icon, Tooltip, Modal, toast } from '@one-for-all/ui';
 import { useCtx } from '../../../../ctx';
 
@@ -149,7 +150,16 @@ function ApiState(props: Props): JSX.Element {
               <p className='text-12 text-gray-600'>不超过 20 字符，支持字母、数字、下划线、中文，名称不可重复。</p>
             </div>
             <div>
-              {ctx.designer.vdoms.platformApis}
+              <div className='flex flex-col mb-24 relative -top-8'>
+                <p className='text-12 text-gray-600'>选择 API</p>
+                <ApiSelector
+                  simpleMode
+                  usePolyApiOption
+                  className='api-selector-wrap'
+                  initRawApiPath=""
+                  setApiPath={ctx.dataSource.setCurApiId}
+                />
+              </div>
             </div>
             <div className='hidden'>
               {ctx.designer.vdoms.apiStateDetail}
