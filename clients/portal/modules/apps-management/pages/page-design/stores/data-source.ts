@@ -142,7 +142,7 @@ class DataSource {
 
   @action
   setCurApiId = (api_id: string): void => {
-    this.curApiId = api_id;
+    this.curApiId = `post:${api_id}`;
   };
 
   @action
