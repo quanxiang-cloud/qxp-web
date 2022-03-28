@@ -30,7 +30,6 @@ import { getLinkageTables } from '@c/form-builder/utils/api';
 import { fetchLinkedTableFields } from './get-tables';
 import SCHEMA from './schema';
 import { convertFormValues, convertLinkage } from './convertor';
-import { compareValueValidateMap } from '../../form-config/visible-hidden-rules/constants';
 
 const { onFieldValueChange$ } = FormEffectHooks;
 const COMPONENTS = {
@@ -211,41 +210,44 @@ function LinkageConfig({
     const compareValuePath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.compareValue`);
     const currentFieldNameValue = getFieldValue(fieldNamePath);
     const currentCompareToValue = getFieldValue(compareToPath);
-    const currentCompareValue = getFieldValue(compareValuePath);
     const linkTableField = linkedTableFieldsRef.current.find(
       (field) => field.value === currentFieldNameValue,
     );
     const enumerable = !!(linkTableField?.fieldEnum || []).length;
-    let shouldReset = false;
-    if (linkTableField) {
-      shouldReset = compareValueValidateMap[linkTableField.componentName](currentCompareValue);
-    }
 
     setFieldState(compareValuePath, (state) => {
       const compareOperator = getFieldValue(operatePath);
+      const preComponent = state.props['x-component'];
+      const currentValue = state.value;
 
       if (currentCompareToValue === 'fixedValue' && enumerable) {
-        state.props['x-component'] = 'AntdSelect';
+        state.props['x-component'] = 'antdselect';
         state.props['x-component-props'] = ['⊇', '⊋', '∩', '∈', '∉']
           .includes(compareOperator) ? { mode: 'multiple' } : {};
         state.props.enum = linkTableField?.fieldEnum;
+
+        if (!!linkTableField && preComponent !== 'antdselect') {
+          state.value = undefined;
+          return;
+        }
+
         if (linkTableField?.fieldEnum && !!linkTableField?.fieldEnum?.length) {
           const optionValues = linkTableField?.fieldEnum;
-          if (Array.isArray(currentCompareValue)) {
-            state.value = currentCompareValue.filter((value: any) => optionValues.includes(value));
+          if (Array.isArray(currentValue)) {
+            state.value = currentValue.filter((value: any) => optionValues.includes(value));
             return;
           }
 
-          state.value = optionValues.includes(currentCompareValue) ? currentCompareValue : undefined;
+          state.value = optionValues.includes(currentValue) ? currentValue : undefined;
           return;
         }
       }
 
       if (currentCompareToValue === 'fixedValue') {
-        state.props['x-component'] = linkTableField?.componentName || 'input';
+        state.props['x-component'] = linkTableField?.componentName;
         state.props.enum = undefined;
 
-        if (shouldReset) {
+        if (!!linkTableField && !!preComponent && linkTableField?.componentName !== preComponent) {
           state.value = undefined;
         }
         return;
@@ -256,19 +258,24 @@ function LinkageConfig({
           return componentName === linkTableField?.componentName;
         })
         .map((field) => ({ label: field.title as string, value: field.id }));
-      state.props['x-component'] = 'AntdSelect';
+      state.props['x-component'] = 'antdselect';
       state.props.enum = compareFields;
       state.props['x-component-props'] = ['∩', '∈', '∉']
         .includes(compareOperator) ? { mode: 'multiple' } : {};
       if (compareFields.length) {
-        const optionValues = compareFields
-          .map(({ value }) => value);
-        if (Array.isArray(currentCompareValue)) {
-          state.value = currentCompareValue.filter((value: any) => optionValues.includes(value));
+        if (!!linkTableField && preComponent !== 'antdselect') {
+          state.value = undefined;
           return;
         }
 
-        if (currentCompareValue && !optionValues.includes(currentCompareValue)) {
+        const optionValues = compareFields
+          .map(({ value }) => value);
+        if (Array.isArray(currentValue)) {
+          state.value = currentValue.filter((value: any) => optionValues.includes(value));
+          return;
+        }
+
+        if (currentValue && !optionValues.includes(currentValue)) {
           state.value = undefined;
           return;
         }
