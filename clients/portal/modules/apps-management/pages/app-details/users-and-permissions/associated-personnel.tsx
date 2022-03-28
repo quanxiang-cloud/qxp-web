@@ -10,6 +10,7 @@ import Table from '@c/table';
 import Avatar from '@c/avatar';
 import toast from '@lib/toast';
 import RadioButtonGroup from '@c/radio/radio-button-group';
+import { getTwoDimenArrayHead } from '@lib/utils';
 
 type UserOrDept = {
   id: string,
@@ -95,12 +96,12 @@ function AssociatedPerson(): JSX.Element {
     columns.unshift(...[
       {
         Header: '姓名',
-        id: 'userName',
+        id: 'name',
         width: 120,
         accessor: (user: any) => (
           <div className='flex items-center'>
-            <Avatar username={user.userName} size={24}/>
-            <span className='ml-4'>{user.userName}</span>
+            <Avatar username={user.name} size={24}/>
+            <span className='ml-4'>{user.name}</span>
           </div>
         ),
       },
@@ -117,7 +118,10 @@ function AssociatedPerson(): JSX.Element {
       {
         Header: '部门',
         id: 'departmentName',
-        accessor: (user: any) => user.dep[0].departmentName,
+        accessor: (user: any) => {
+          const dep = getTwoDimenArrayHead(user.deps) as Department;
+          return dep?.name;
+        },
       },
     ]);
   }

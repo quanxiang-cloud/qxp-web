@@ -5,11 +5,12 @@ import { MenuItem } from '@c/more-menu';
 
 import UserCell from './table-column/user-cell';
 import { UserStatus, LeaderStatus } from './type';
+import { getTwoDimenArrayHead } from '@lib/utils';
 
 export const EmployeesColumns = [
   {
     Header: '姓名',
-    id: 'userName',
+    id: 'name',
     fixed: true,
     width: 120,
     accessor: (record: Employee) => {
@@ -29,8 +30,8 @@ export const EmployeesColumns = [
   {
     Header: '部门',
     id: 'dep',
-    accessor: ({ dep }: Employee) => {
-      return dep?.departmentName;
+    accessor: ({ departments }: Employee) => {
+      return getTwoDimenArrayHead(departments)?.name;
     },
   },
   {
@@ -41,7 +42,9 @@ export const EmployeesColumns = [
   {
     Header: '直属上级',
     id: 'leaderName',
-    accessor: 'leaderName',
+    accessor: ({ leaders }: Employee) => {
+      return getTwoDimenArrayHead(leaders)?.name;
+    },
   },
 ];
 

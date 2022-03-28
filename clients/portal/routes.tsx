@@ -1,10 +1,10 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { isEmpty } from 'lodash';
+// import { isEmpty } from 'lodash';
 
 import Loading from '@c/loading';
 import NotFoundError from '@c/404-error';
-import { getNestedPropertyToArray } from '@lib/utils';
+// import { getNestedPropertyToArray } from '@lib/utils';
 
 import AppsRoutes from './modules/apps-management/routes';
 import RedirectToApps from './modules/dashboard/redirect-to-apps';
@@ -15,10 +15,10 @@ const SystemMgmt = React.lazy(() => import('./modules/system-mgmt'));
 const PolyAPI = React.lazy(() => import('./modules/poly-api'));
 const ConfigCenter = React.lazy(() => import('./modules/config-center'));
 
-const { USER } = window;
-if (USER && !isEmpty(USER)) {
-  USER.depIds = getNestedPropertyToArray<string>(USER?.dep, 'id', 'child');
-}
+// const { USER } = window;
+// if (USER && !isEmpty(USER)) {
+//   USER.depIds = getNestedPropertyToArray<string>(USER?.dep, 'id', 'child');
+// }
 
 export default function Routes(): JSX.Element {
   return (

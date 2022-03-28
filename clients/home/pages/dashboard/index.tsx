@@ -8,6 +8,7 @@ import ItemWithTitleDesc from '@c/item-with-title-desc';
 import Card from '@c/card';
 import Icon from '@c/icon';
 import GlobalHeader from '@home/components/global-header';
+import { getTwoDimenArrayHead } from '@lib/utils';
 
 import MyApps from './my-apps';
 import store from '../store';
@@ -23,6 +24,8 @@ function Dashboard(): JSX.Element {
     store.fetchAppList();
   }, []);
 
+  const dep = getTwoDimenArrayHead(window.USER.deps);
+
   return (
     <>
       <GlobalHeader />
@@ -35,9 +38,9 @@ function Dashboard(): JSX.Element {
               <div className="z-10">
                 <ItemWithTitleDesc
                   itemRender={(
-                    <Avatar size={48} username={window.USER.userName}/>
+                    <Avatar size={48} username={window.USER.name}/>
                   )}
-                  title={`${window.USER.userName}, 下午好!`}
+                  title={`${window.USER.name}, 下午好!`}
                   desc="不是杰出者才能做梦，而是善梦者才杰出"
                   descClassName="text-12"
                   titleClassName="text-h4"
@@ -49,7 +52,7 @@ function Dashboard(): JSX.Element {
                   </div>
                   <div className="mt-8">
                     <img className="inline-block mr-8" src="/dist/images/department.svg" />
-                  部门：{window.USER.dep.departmentName}
+                  部门：{dep?.name}
                   </div>
                 </div>
               </div>
