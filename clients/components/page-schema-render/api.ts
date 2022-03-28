@@ -3,7 +3,7 @@ import type { Schema } from '@one-for-all/schema-spec';
 import { Spec } from '@one-for-all/api-spec-adapter/lib/src/swagger-schema-official';
 
 import logger from '@lib/logger';
-import SwaggerRPCSpecAdapter from '@lib/adapter-swagger-rpc';
+import SwaggerRPCSpecAdapter from '@lib/api-adapter';
 
 type SchemaWithSwagger = {
   schema: Schema;
@@ -15,7 +15,9 @@ type SchemaWithAdapter = {
   adapter: SwaggerRPCSpecAdapter;
 }
 
-function fetchSchemaWithSwagger(schemaKey: string, version: string): Promise<Partial<SchemaWithSwagger>> {
+export function fetchSchemaWithSwagger(
+  schemaKey: string, version: string,
+): Promise<Partial<SchemaWithSwagger>> {
   const url = `/api/page_schema_with_swagger?schema_key=${schemaKey}&version=${version}`;
 
   return fetch(url, { method: 'GET' })

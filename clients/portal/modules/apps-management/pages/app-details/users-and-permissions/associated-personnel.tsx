@@ -10,7 +10,7 @@ import Table from '@c/table';
 import Avatar from '@c/avatar';
 import toast from '@lib/toast';
 import RadioButtonGroup from '@c/radio/radio-button-group';
-import { getUserDepartment } from '@lib/utils';
+import { getTwoDimenArrayHead } from '@lib/utils';
 
 type UserOrDept = {
   id: string,
@@ -119,7 +119,7 @@ function AssociatedPerson(): JSX.Element {
         Header: '部门',
         id: 'departmentName',
         accessor: (user: any) => {
-          const dep = getUserDepartment(user);
+          const dep = getTwoDimenArrayHead(user.deps) as Department;
           return dep?.name;
         },
       },

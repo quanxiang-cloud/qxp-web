@@ -48,7 +48,7 @@ const FileUploader = React.forwardRef<FileUploaderInstance, FileUploaderProps>(
             <p className='truncate'>{props.desc ? props.desc : '点击上传附件'}</p>
           </div>
           <input
-            className='opacity-0 w-full h-full absolute'
+            className='opacity-0 w-full h-full absolute z-10 inset-0'
             type='file'
             multiple={props.multiple}
             onChange={onInputChange}>

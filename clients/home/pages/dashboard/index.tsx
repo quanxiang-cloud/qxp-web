@@ -24,7 +24,7 @@ function Dashboard(): JSX.Element {
     store.fetchAppList();
   }, []);
 
-  const dep = getTwoDimenArrayHead(window.USER.dep);
+  const dep = getTwoDimenArrayHead(window.USER.deps);
 
   return (
     <>

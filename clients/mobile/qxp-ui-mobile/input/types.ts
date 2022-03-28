@@ -27,6 +27,19 @@ export interface InputProps extends Props {
   validate?: (val: string) => string | undefined;
 }
 
+export interface TextAreaProps extends Props {
+  placeholder?: string;
+  defaultValue?: string;
+  disabled?: boolean;
+  readOnly?: boolean;
+  maxLength?: number;
+  rows?: number;
+  onChange?: (val: string) => void;
+  onFocus?: (e: React.FocusEvent<HTMLTextAreaElement>) => void;
+  onBlur?: (e: React.FocusEvent<HTMLTextAreaElement>) => void;
+  validate?: (val: string) => string | undefined;
+}
+
 export interface InputInstance {
   focus: () => void;
   blur: () => void;

@@ -2,7 +2,9 @@ import React, { lazy, Suspense } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
 import PageLoading from './components/page-loading';
-import { appsPath, approvalsPath, pathPrefix, accountPath, messagesPath } from './constant';
+import {
+  appsPath, approvalsPath, pathPrefix, accountPath, messagesPath, userOrgPickerPath,
+} from './constant';
 
 const Dashboard = lazy(
   () => import('./pages/dashboard'),
@@ -24,6 +26,10 @@ const Account = lazy(
   () => import('./pages/account/routes'),
 );
 
+const UserOrgPicker = lazy(
+  () => import('./pages/approvals/detail/actions/user-org-picker'),
+);
+
 export default (
   <Suspense fallback={<PageLoading />}>
     <Switch>
@@ -32,6 +38,7 @@ export default (
       <Route path={messagesPath} component={Messages} />
       <Route path={approvalsPath} component={Approvals} />
       <Route path={accountPath} component={Account} />
+      <Route path={userOrgPickerPath} component={UserOrgPicker}/>
     </Switch>
   </Suspense>
 );

@@ -37,7 +37,7 @@ type CurrentUser = {
   email: string;
   phone: string;
   depIds: string[]
-  dep: UserDepartment[][];
+  deps: UserDepartment[][];
 }
 
 interface Window {
