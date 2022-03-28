@@ -8,18 +8,11 @@ import Icon from '@m/qxp-ui-mobile/icon';
 import AlertDialog from '@m/components/alert-dialog';
 import { accountPath } from '@m/constant';
 import { HomePageProps } from '../types';
-
-function getDepName(dep?: UserDepartment): string {
-  let child = dep;
-  if (!child) return '';
-  while (child.child) {
-    child = child.child;
-  }
-  return child.departmentName;
-}
+import { getUserDepartment } from '@lib/utils';
 
 const Mine: React.FC<HomePageProps> = (props) => {
-  const { userName, email, dep } = window.USER;
+  const { name, email } = window.USER;
+  const dep = getUserDepartment(window.USER);
   const [showPopup, setShowPopup] = useState(false);
   const history = useHistory();
 
@@ -39,7 +32,7 @@ const Mine: React.FC<HomePageProps> = (props) => {
 
       <div className='mine-content-wrapper'>
         <div className='user-card bg-white'>
-          <Avatar name={userName}
+          <Avatar name={name}
             size='.48rem'
             className='user-avatar title2'
           />
@@ -47,7 +40,7 @@ const Mine: React.FC<HomePageProps> = (props) => {
             size='.36rem'
             className='ic-more pointer-8'
             onClick={() => setShowPopup(true)}/>
-          <div className="title1 text-primary">{greeting(userName)}</div>
+          <div className="title1 text-primary">{greeting(name)}</div>
           <div className="caption text-placeholder">不是杰出者才能做梦，而是善梦者才杰出</div>
           <div className="user-info-card mt-12">
             <div className='flex items-center text-secondary'>
@@ -56,7 +49,7 @@ const Mine: React.FC<HomePageProps> = (props) => {
             </div>
             <div className='flex items-center text-secondary mt-6'>
               <Icon name='organization_chart' addPrefix />
-              <p className='flex-1 ml-8 mr-8 truncate'>{getDepName(dep)}</p>
+              <p className='flex-1 ml-8 mr-8 truncate'>{dep.name}</p>
             </div>
           </div>
         </div>
