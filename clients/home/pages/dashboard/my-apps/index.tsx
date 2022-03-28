@@ -1,6 +1,5 @@
 import React from 'react';
 
-// import schema from './schema';
 import MyAppsComponent from './demo-components/my-apps';
 import AppInfoView from './demo-components/app-info-view';
 

@@ -1,16 +1,11 @@
 import React from 'react';
-import { Repository, SchemaRender } from '@one-for-all/render-engine';
-import * as OneForAllUI from '@one-for-all/ui';
+import { SchemaRender } from '@one-for-all/render-engine';
 
 import { useSchemaWithAdapter } from './api';
 import ErrorBoundary from './error-boundary';
 import componentLoader from './component-loader';
-
-// todo fix this
-const repository: Repository = {
-  // @ts-ignore
-  'ofa-ui@latest': OneForAllUI,
-};
+import repository from './repository';
+import refLoader from './ref-loader';
 
 type Props = {
   schemaKey: string;
@@ -26,7 +21,10 @@ export default function PageSchemaRender({ schemaKey, version }: Props): JSX.Ele
 
   return (
     <ErrorBoundary>
-      <SchemaRender schema={schema} plugins={{ apiSpecAdapter: adapter, repository, componentLoader }} />
+      <SchemaRender
+        schema={schema}
+        plugins={{ apiSpecAdapter: adapter, repository, componentLoader, refLoader }}
+      />
     </ErrorBoundary>
   );
 }
