@@ -17,6 +17,8 @@ import Orchestrator from '../view-orchestration/orchestrator';
 
 import { CreateViewParams, View, ViewType } from '../view-orchestration/types.d';
 
+import EditStaticViewModal from './view-details/edit-static-view-modal';
+
 import './index.scss';
 
 function PageList(): JSX.Element {
@@ -44,7 +46,7 @@ function PageList(): JSX.Element {
     viewInfo: (CreateViewParams & { layoutType: string, fileUrl: string, link: string }),
   ): void {
     Promise.resolve().then(() => {
-      if ( modalType === 'createView') {
+      if (modalType === 'createView') {
         if (viewInfo.layoutType === ViewType.TableSchemaView) {
           return appSchemaStore?.addTableSchemaView(viewInfo);
         }
@@ -63,7 +65,7 @@ function PageList(): JSX.Element {
       return appSchemaStore?.updateViewName(currentView!, viewInfo.name);
     }).then(() => {
       closeModal();
-      toast.success((modalType === 'editView' ? '修改' : '添加') + '成功');
+      toast.success((modalType === 'createView' ? '添加' : '修改') + '成功');
     });
   }
 
@@ -97,9 +99,7 @@ function PageList(): JSX.Element {
             className='pb-10'
             currentViewID={(currentView as View)?.id || ''}
             views={appSchemaStore?.views as View[]}
-            onViewClick={(view) => {
-              setCurrentView(view);
-            }}
+            onViewClick={(view) => setCurrentView(view)}
             onOptionClick={(key, view) => {
               setCurrentView(view);
               setModalType(key);
@@ -121,7 +121,7 @@ function PageList(): JSX.Element {
           />
         </div>
       </div>
-      <ViewDetails viewInfo={currentView} />
+      <ViewDetails openModal={setModalType} viewInfo={currentView} />
       {['editView', 'createView'].includes(modalType) && (
         <EditViewModal
           modalType={modalType}
@@ -129,6 +129,13 @@ function PageList(): JSX.Element {
           views={appSchemaStore?.views || []}
           onCancel={closeModal}
           viewParams={modalType === 'editView' ? currentView : undefined}
+          onSubmit={handleViewInfoSubmit}
+        />
+      )}
+      {modalType === 'editStaticView' && (
+        <EditStaticViewModal
+          view={currentView}
+          onClose={closeModal}
           onSubmit={handleViewInfoSubmit}
         />
       )}

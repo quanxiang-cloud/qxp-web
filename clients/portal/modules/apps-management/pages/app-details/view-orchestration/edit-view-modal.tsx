@@ -40,7 +40,7 @@ const viewTypeMap: LabelValue[] = [
   },
 ];
 
-function EditPageModal(
+function EditViewModal(
   { viewParams, onCancel, onSubmit, views, layouts, modalType }: Props,
 ): JSX.Element {
   const [viewType, setViewType] = useState<ViewType>(ViewType.TableSchemaView);
@@ -190,4 +190,4 @@ function EditPageModal(
   );
 }
 
-export default EditPageModal;
+export default EditViewModal;

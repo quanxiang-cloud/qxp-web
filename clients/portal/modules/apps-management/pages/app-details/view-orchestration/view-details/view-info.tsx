@@ -11,6 +11,7 @@ import { getVersionKey } from '../../../page-design/api';
 
 type Props = {
   view: View;
+  openModal: (type: string) => void;
 }
 
 type View_Map = {
@@ -42,7 +43,7 @@ const VIEW_MAP: Record<string, View_Map> = {
   },
 };
 
-function ViewInfo({ view }: Props): JSX.Element {
+function ViewInfo({ view, openModal }: Props): JSX.Element {
   const { type } = view;
   const history = useHistory();
   const { appID } = useParams<{ appID: string }>();
@@ -58,7 +59,7 @@ function ViewInfo({ view }: Props): JSX.Element {
 
   function handleBtnClick(): void {
     if (type === ViewType.StaticView) {
-      return console.log('修改静态页面');
+      return openModal('editStaticView');
     }
 
     if (type === ViewType.SchemaView) {
