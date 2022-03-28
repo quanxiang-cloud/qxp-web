@@ -12,7 +12,7 @@ type CascaderOptionType = DefaultOptionType;
 type SingleValueType = (string | number)[];
 type CascaderValueType = SingleValueType | SingleValueType[];
 
-interface FetchOptions extends CascaderProps<any> {
+type FetchOptions = CascaderProps<any> & {
   predefinedDataset?: string;
   defaultValueFrom: DefaultValueFrom;
   options: CascaderOptionType[];
@@ -73,9 +73,8 @@ function CascadeSelector({
     defaultValueFrom,
     options: cascadeProps.options || [],
   });
-
-  function handleChange(_value: CascaderValueType, selected?: CascaderOptionType[]): void {
-    const labelToSave = (selected || []).map(({ label }) => label).join('/');
+  function handleChange(_value: CascaderValueType, selected?: any): void {
+    const labelToSave = (selected || []).map(({ label }: any) => label).join('/');
     const valueToSave = _value.join('/');
     cascadeProps && cascadeProps.onChange({ label: labelToSave, value: valueToSave });
   }
