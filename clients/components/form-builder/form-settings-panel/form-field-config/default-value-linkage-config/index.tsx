@@ -218,13 +218,14 @@ function LinkageConfig({
     setFieldState(compareValuePath, (state) => {
       const compareOperator = getFieldValue(operatePath);
       const preComponent = state.props['x-component'];
-      const currentCompareValue = state.value;
+      const currentValue = state.value;
 
       if (currentCompareToValue === 'fixedValue' && enumerable) {
         state.props['x-component'] = 'antdselect';
         state.props['x-component-props'] = ['⊇', '⊋', '∩', '∈', '∉']
           .includes(compareOperator) ? { mode: 'multiple' } : {};
         state.props.enum = linkTableField?.fieldEnum;
+
         if (!!linkTableField && preComponent !== 'antdselect') {
           state.value = undefined;
           return;
@@ -232,12 +233,12 @@ function LinkageConfig({
 
         if (linkTableField?.fieldEnum && !!linkTableField?.fieldEnum?.length) {
           const optionValues = linkTableField?.fieldEnum;
-          if (Array.isArray(currentCompareValue)) {
-            state.value = currentCompareValue.filter((value: any) => optionValues.includes(value));
+          if (Array.isArray(currentValue)) {
+            state.value = currentValue.filter((value: any) => optionValues.includes(value));
             return;
           }
 
-          state.value = optionValues.includes(currentCompareValue) ? currentCompareValue : undefined;
+          state.value = optionValues.includes(currentValue) ? currentValue : undefined;
           return;
         }
       }
@@ -269,12 +270,12 @@ function LinkageConfig({
 
         const optionValues = compareFields
           .map(({ value }) => value);
-        if (Array.isArray(currentCompareValue)) {
-          state.value = currentCompareValue.filter((value: any) => optionValues.includes(value));
+        if (Array.isArray(currentValue)) {
+          state.value = currentValue.filter((value: any) => optionValues.includes(value));
           return;
         }
 
-        if (currentCompareValue && !optionValues.includes(currentCompareValue)) {
+        if (currentValue && !optionValues.includes(currentValue)) {
           state.value = undefined;
           return;
         }
