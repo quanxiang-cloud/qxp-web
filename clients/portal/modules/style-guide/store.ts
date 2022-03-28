@@ -34,7 +34,7 @@ class StyleGuideStore {
     }>('/api/v1/fileserver/domain');
 
     const { url } = await httpClient<{ url: string }>('/api/v1/fileserver/sign/upload', {
-      path: `${readable}/style-guide/component.css`,
+      path: `${readable}/${window.location.hostname}/style-guide/component.css`,
       contentType: 'text/css',
       contentLength: cssFile?.size,
     });
