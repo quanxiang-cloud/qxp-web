@@ -35,6 +35,11 @@ const VIEW_MAP: Record<string, View_Map> = {
     viewType: '自定义页面',
     operator: '设计页面',
   },
+  external_view: {
+    icon: 'view',
+    viewType: '外部链接页面',
+    operator: '修改页面',
+  },
 };
 
 function ViewInfo({ view }: Props): JSX.Element {
@@ -74,6 +79,16 @@ function ViewInfo({ view }: Props): JSX.Element {
       );
     }
 
+    if (type === ViewType.ExternalView) {
+      return (
+        <iframe
+          className="w-full h-full"
+          src={view.link}
+          style={{ border: 'none' }}
+        />
+      );
+    }
+
     if (type === ViewType.SchemaView) {
       return (
         <PageSchemaRender
@@ -87,7 +102,7 @@ function ViewInfo({ view }: Props): JSX.Element {
   }
 
   return (
-    <div className='relative flex-1 overflow-hidden p-16'>
+    <div className='relative h-full flex-1 overflow-hidden p-16'>
       <div className='px-16 py-8 rounded-8 border-1 flex items-center'>
         <div className="page-details-icon">
           <Icon
@@ -116,8 +131,9 @@ function ViewInfo({ view }: Props): JSX.Element {
           {VIEW_MAP[type].operator}
         </Button>
       </div>
-      {[ViewType.SchemaView, ViewType.StaticView].includes(type) && (
+      {[ViewType.SchemaView, ViewType.StaticView, ViewType.ExternalView].includes(type) && (
         <Tab
+          contentClassName='h-full'
           items={[
             {
               id: 'page-preview',

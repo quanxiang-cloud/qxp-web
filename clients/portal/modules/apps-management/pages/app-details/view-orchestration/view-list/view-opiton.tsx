@@ -12,7 +12,7 @@ type Props = {
 
 const MENUS = [
   {
-    key: 'editPage',
+    key: 'editView',
     disabled: false,
     label: (
       <div className="flex items-center">

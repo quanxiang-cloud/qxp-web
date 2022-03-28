@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import { useQuery } from 'react-query';
 
@@ -7,6 +7,8 @@ import PageLoading from '@c/page-loading';
 import Icon from '@c/icon';
 import Tooltip from '@c/tooltip';
 import { getBatchGlobalConfig } from '@lib/api/user-config';
+import toast from '@lib/toast';
+import Modal from '@c/modal';
 
 import ViewList from './view-list';
 import ViewDetails from './view-details';
@@ -18,8 +20,6 @@ import { CreateViewParams, View, ViewType } from '../view-orchestration/types.d'
 import './index.scss';
 
 function PageList(): JSX.Element {
-  const history = useHistory();
-
   const { appID } = useParams<{ appID: string }>();
   const [appSchemaStore, setAppSchemaStore] = useState<Orchestrator>();
   const [modalType, setModalType] = useState('');
@@ -40,40 +40,36 @@ function PageList(): JSX.Element {
       });
   });
 
-  // async function delPageOrGroup(): Promise<void> {
-  //   await del(toJS(activeMenu), modalType);
-  //   closeModal();
-  // }
+  function handleViewInfoSubmit(
+    viewInfo: (CreateViewParams & { layoutType: string, fileUrl: string, link: string }),
+  ): void {
+    Promise.resolve().then(() => {
+      if ( modalType === 'createView') {
+        if (viewInfo.layoutType === ViewType.TableSchemaView) {
+          return appSchemaStore?.addTableSchemaView(viewInfo);
+        }
 
-  function handleEditPage(viewInfo: CreateViewParams & { layoutType: string }): void {
-    if (viewInfo.layoutType === ViewType.TableSchemaView) {
-      appSchemaStore?.addTableSchemaView(viewInfo).then(closeModal);
-    }
+        if (viewInfo.layoutType === ViewType.SchemaView) {
+          return appSchemaStore?.addSchemaView(viewInfo);
+        }
 
-    if (viewInfo.layoutType === ViewType.SchemaView) {
-      appSchemaStore?.addSchemaView(viewInfo).then(closeModal);
-    }
-
-    if (viewInfo.layoutType === ViewType.StaticView) {
-      appSchemaStore?.addStaticView(viewInfo as any).then(closeModal);
-    }
+        if (viewInfo.layoutType === ViewType.StaticView) {
+          return appSchemaStore?.addStaticView(viewInfo);
+        }
+        if (viewInfo.layoutType === ViewType.ExternalView) {
+          return appSchemaStore?.addExternalView(viewInfo);
+        }
+      }
+      return appSchemaStore?.updateViewName(currentView!, viewInfo.name);
+    }).then(() => {
+      closeModal();
+      toast.success((modalType === 'editView' ? '修改' : '添加') + '成功');
+    });
   }
 
   function closeModal(): void {
     setModalType('');
   }
-
-  // useEffect(() => {
-  //   if (!activeMenu.id || activeMenu.menuType === MenuType.group) {
-  //     return;
-  //   }
-  //   history.replace(`/apps/details/${appID}/page_setting?pageID=${activeMenu.id}`);
-  // }, [activeMenu, appID]);
-
-  // const handleMenuClick = (key: string, menu: Menu): void => {
-  //   setActiveMenu(menu);
-  //   setModalType(key);
-  // };
 
   if (isLoading) {
     return (
@@ -105,42 +101,37 @@ function PageList(): JSX.Element {
               setCurrentView(view);
             }}
             onOptionClick={(key, view) => {
-              console.log(view, key);
+              setCurrentView(view);
+              setModalType(key);
+              if (key === 'delView') {
+                const delViewModal = Modal.open({
+                  title: '删除页面',
+                  content: `确定要删除页面 ${view.name} 吗?`,
+                  confirmText: '确认删除',
+                  onConfirm: () => {
+                    appSchemaStore?.deleteViewOrLayout(view.id).then(() => {
+                      delViewModal.close();
+                      toast.success('删除成功');
+                      setCurrentView(appSchemaStore?.views[0] as View);
+                    });
+                  },
+                });
+              }
             }}
           />
         </div>
       </div>
       <ViewDetails viewInfo={currentView} />
-      {/* {['delPage'].includes(modalType) && (
-        <DelModal
-          type={modalType === 'delView' ? 'group' : 'page'}
-          onOk={delPageOrGroup}
-          onCancel={closeModal}
-        />
-      )} */}
-      {/* {modalType === 'editGroup' && (
-        <EditGroupModal
-          groupInfo={activeMenu as any}
-          onCancel={closeModal}
-          onSubmit={handleEditGroup}
-        />
-      )} */}
-      {['editView', 'createView', 'copyView'].includes(modalType) && (
+      {['editView', 'createView'].includes(modalType) && (
         <EditViewModal
           modalType={modalType}
           layouts={appSchemaStore?.layouts || []}
           views={appSchemaStore?.views || []}
           onCancel={closeModal}
-          onSubmit={handleEditPage}
-          isCopy={modalType === 'copyPage'}
+          viewParams={modalType === 'editView' ? currentView : undefined}
+          onSubmit={handleViewInfoSubmit}
         />
       )}
-      {/* {modalType === 'hide' && (
-        <HidePageConfirmModal
-          onCancel={closeModal}
-          onOk={handleVisibleHiddenPage}
-        />
-      )} */}
     </div >
   );
 }

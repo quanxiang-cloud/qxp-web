@@ -76,5 +76,5 @@ export interface CreateViewParams {
   name: string;
   layoutID: string;
   group?: string;
-  description: string;
+  description?: string;
 }

@@ -115,6 +115,23 @@ class Orchestrator {
     return this.saveSchema(this.rootNode);
   }
 
+  @action
+  async updateViewName(view: View, name: string): FutureErrorMessage {
+    if (!this.rootNode) {
+      return 'no root node found for this app, please init root node again!';
+    }
+
+    const targetNode = findNodeByID(this.rootNode, view.id);
+
+    if (!targetNode) {
+      return 'target node not found';
+    }
+
+    const rootNode = patchNode(this.rootNode, { ...targetNode, label: name });
+
+    return this.saveSchema(rootNode);
+  }
+
   async addTableSchemaView(params: CreateViewParams): FutureErrorMessage {
     if (!this.rootNode) {
       return 'no root node found for this app, please init root node again!';
@@ -205,7 +222,7 @@ class Orchestrator {
     return this.saveSchema(rootNode);
   }
 
-  async addStaticView(params: CreateViewParams & { fileUrl: any; }): FutureErrorMessage {
+  async addStaticView(params: CreateViewParams & { fileUrl: string; }): FutureErrorMessage {
     const staticViewNode: ReactComponentNode = {
       id: genNodeID(),
       type: 'react-component',
@@ -221,10 +238,6 @@ class Orchestrator {
           type: 'constant_property',
           value: params.fileUrl,
         },
-        name: {
-          type: 'constant_property',
-          value: params.name,
-        },
       },
     };
 
@@ -238,10 +251,38 @@ class Orchestrator {
   }
 
   async addExternalView(params: CreateViewParams & { link: string; }): FutureErrorMessage {
-    return Promise.reject(new Error('todo, implement this'));
+    console.log(params);
+
+    const staticViewNode: ReactComponentNode = {
+      id: genNodeID(),
+      type: 'react-component',
+      label: params.name,
+      // todo implement this
+      packageName: 'external_view',
+      // todo implement this
+      packageVersion: '1.0.0',
+      // todo implement this
+      exportName: 'ExternalViewRender',
+      props: {
+        link: {
+          type: 'constant_property',
+          value: params.link,
+        },
+      },
+    };
+
+    if (!params.layoutID) {
+      return this.saveSchema(addViewToRoot(this.rootNode, staticViewNode));
+    }
+
+    const rootNode = addViewToLayout(this.rootNode, params.layoutID, staticViewNode);
+
+    return this.saveSchema(rootNode);
   }
 
-  // async editTableSchemaView(view: TableSchemaView): FutureErrorMessage;
+  // async editTableSchemaView(view: TableSchemaView): FutureErrorMessage {
+
+  // };
   // async editSchemaView(view: SchemaView): FutureErrorMessage;
   // async editStaticView(view: StaticView): FutureErrorMessage;
 
@@ -266,6 +307,7 @@ class Orchestrator {
     return this.saveSchema(rootNode);
   }
 
+  @action
   async deleteViewOrLayout(id: string): FutureErrorMessage {
     const routeNodeID = findFirstRouteParentID(this.rootNode, id);
     if (!routeNodeID) {
