@@ -5,6 +5,7 @@ import type { Schema } from '@one-for-all/schema-spec';
 import toast from '@lib/toast';
 
 import { getSchemaKey } from '../api';
+import PageSchemaRender from '@c/page-schema-render';
 
 type Props = {
   appID: string;
