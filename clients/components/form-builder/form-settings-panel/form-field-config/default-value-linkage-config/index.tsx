@@ -210,7 +210,6 @@ function LinkageConfig({
     const compareValuePath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.compareValue`);
     const currentFieldNameValue = getFieldValue(fieldNamePath);
     const currentCompareToValue = getFieldValue(compareToPath);
-    const currentCompareValue = getFieldValue(compareValuePath);
     const linkTableField = linkedTableFieldsRef.current.find(
       (field) => field.value === currentFieldNameValue,
     );
@@ -218,14 +217,19 @@ function LinkageConfig({
 
     setFieldState(compareValuePath, (state) => {
       const compareOperator = getFieldValue(operatePath);
-
       const preComponent = state.props['x-component'];
-      console.log(preComponent);
+      const currentCompareValue = state.value;
+
       if (currentCompareToValue === 'fixedValue' && enumerable) {
-        state.props['x-component'] = 'antdSelect';
+        state.props['x-component'] = 'antdselect';
         state.props['x-component-props'] = ['⊇', '⊋', '∩', '∈', '∉']
           .includes(compareOperator) ? { mode: 'multiple' } : {};
         state.props.enum = linkTableField?.fieldEnum;
+        if (!!linkTableField && preComponent !== 'antdselect') {
+          state.value = undefined;
+          return;
+        }
+
         if (linkTableField?.fieldEnum && !!linkTableField?.fieldEnum?.length) {
           const optionValues = linkTableField?.fieldEnum;
           if (Array.isArray(currentCompareValue)) {
@@ -239,11 +243,10 @@ function LinkageConfig({
       }
 
       if (currentCompareToValue === 'fixedValue') {
-        const shouldReset = preComponent !== (linkTableField?.componentName || 'input');
-        state.props['x-component'] = linkTableField?.componentName || 'input';
+        state.props['x-component'] = linkTableField?.componentName;
         state.props.enum = undefined;
 
-        if (shouldReset) {
+        if (!!linkTableField && !!preComponent && linkTableField?.componentName !== preComponent) {
           state.value = undefined;
         }
         return;
@@ -254,11 +257,16 @@ function LinkageConfig({
           return componentName === linkTableField?.componentName;
         })
         .map((field) => ({ label: field.title as string, value: field.id }));
-      state.props['x-component'] = 'antdSelect';
+      state.props['x-component'] = 'antdselect';
       state.props.enum = compareFields;
       state.props['x-component-props'] = ['∩', '∈', '∉']
         .includes(compareOperator) ? { mode: 'multiple' } : {};
       if (compareFields.length) {
+        if (!!linkTableField && preComponent !== 'antdselect') {
+          state.value = undefined;
+          return;
+        }
+
         const optionValues = compareFields
           .map(({ value }) => value);
         if (Array.isArray(currentCompareValue)) {
