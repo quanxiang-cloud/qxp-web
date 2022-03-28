@@ -3,7 +3,6 @@ import { observer } from 'mobx-react';
 import Editor from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 import { pick, get } from 'lodash';
-import { useUpdateEffect } from 'react-use';
 import cs from 'classnames';
 import { toJS } from 'mobx';
 
@@ -54,20 +53,20 @@ function RendererPanel(): JSX.Element {
     }
   }, [page.activeElemId]);
 
-  useUpdateEffect(()=> {
-    // console.log('sync all loop conf to elem: %s, %s, %o', toPropsFn, loopKey, toJS(bindConst));
-    // todo: debounce update
-    const rawNode = page.rawActiveElem;
-    if (rawNode.type === 'loop-container') {
-      page.updateCurNodeAsLoopContainer('loopKey', loopKey || defaultLoopKey);
-      page.updateCurNodeAsLoopContainer('toProps', toPropsFn || defaultToPropsFn);
-    }
-  }, [toPropsFn, loopKey]);
+  // useUpdateEffect(()=> {
+  //   // console.log('sync all loop conf to elem: %s, %s, %o', toPropsFn, loopKey, toJS(bindConst));
+  //   // todo: debounce update
+  //   const rawNode = page.rawActiveElem;
+  //   if (rawNode.type === 'loop-container') {
+  //     page.updateCurNodeAsLoopContainer('loopKey', loopKey || defaultLoopKey);
+  //     page.updateCurNodeAsLoopContainer('toProps', toPropsFn || defaultToPropsFn);
+  //   }
+  // }, [toPropsFn, loopKey]);
 
-  useUpdateEffect(()=> {
-    page.updateCurNodeAsLoopContainer('loopKey', loopKey || defaultLoopKey);
-    page.updateCurNodeAsLoopContainer('toProps', toPropsFn || defaultToPropsFn);
-  }, [bindConst]);
+  // useUpdateEffect(()=> {
+  //   page.updateCurNodeAsLoopContainer('loopKey', loopKey || defaultLoopKey);
+  //   page.updateCurNodeAsLoopContainer('toProps', toPropsFn || defaultToPropsFn);
+  // }, [bindConst]);
 
   function handleBindConstVal(): void {
     try {
@@ -187,6 +186,7 @@ function RendererPanel(): JSX.Element {
                   value={loopKey}
                   onChange={(ev)=> {
                     setLoopKey(ev.target.value);
+                    page.updateCurNodeAsLoopContainer('loopKey', ev.target.value);
                   }}
                 />
               </div>
@@ -214,6 +214,7 @@ function RendererPanel(): JSX.Element {
                 extensions={[javascript()]}
                 onChange={(value) => {
                   setToPropsFn(value);
+                  page.updateCurNodeAsLoopContainer('toProps', value);
                 }}
               />
             </div>

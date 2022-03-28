@@ -375,7 +375,7 @@ class PageStore {
 
   @action
   updateElemProperty = (elem_id: string, propKey: string, conf: any, options?: Record<string, any>): void => {
-    const elem = findNode(this.schema.node, elem_id) || findNode(this.schema.node, elem_id, true);
+    const elem = findNode(this.schema.node, elem_id, true) || findNode(this.schema.node, elem_id);
     if (!elem) return;
 
     let actualNode = elem;

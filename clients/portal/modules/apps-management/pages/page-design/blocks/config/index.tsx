@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { observer } from 'mobx-react';
 import { Tab } from '@one-for-all/ui';
 
@@ -14,6 +14,9 @@ import './style.scss';
 
 function SettingPanel(): JSX.Element {
   const { page, designer, registry } = useCtx();
+  const eventPanelContent = useMemo(() => <EventPanel />, []);
+  const rendererPanelContent = useMemo(() => <RendererPanel />, []);
+
   const getAvailablePanels = useCallback(() => {
     const panels = [
       {
@@ -36,12 +39,12 @@ function SettingPanel(): JSX.Element {
       {
         id: 'event',
         name: '事件',
-        content: <EventPanel />,
+        content: eventPanelContent,
       },
       {
         id: 'renderer',
         name: '动态渲染',
-        content: <RendererPanel />,
+        content: rendererPanelContent,
       },
     ]);
   }, [page.activeElemId]);
