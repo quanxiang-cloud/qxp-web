@@ -45,7 +45,7 @@ export default function index({ closeModal, onSubmit }: Props) {
       add.push({
         type: 2,
         ownerID: node.id,
-        ownerName: node.departmentName,
+        ownerName: node.name,
         phone: '',
         email: '',
         departmentName: parent?.name,

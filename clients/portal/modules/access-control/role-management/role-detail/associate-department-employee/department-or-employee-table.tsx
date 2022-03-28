@@ -53,7 +53,7 @@ export default function DepartmentTable(
       'GET_ROLE_ASSOCIATIONS',
       {
         type,
-        roleId: roleID,
+        roleID,
         page: pagination.current,
         limit: pagination.pageSize,
       },
@@ -112,7 +112,7 @@ export default function DepartmentTable(
     );
   }
 
-  async function handleChangeSuperManage(user: { id: string, userName: string }): Promise<any> {
+  async function handleChangeSuperManage(user: { id: string, name: string }): Promise<any> {
     transferRoleSuper(user.id).then(() => {
       toast.success('操作成功！');
       queryClient.invalidateQueries('GET_ROLE_ASSOCIATIONS');
@@ -183,15 +183,18 @@ export default function DepartmentTable(
       {
         Header: '部门',
         id: 'departmentName',
-        accessor: (record: EmployeeOrDepartmentOfRole) => record.departmentName,
+        accessor: (record: EmployeeOrDepartmentOfRole) => {
+          const dep = record?.deps?.[0];
+          return dep?.departmentName;
+        },
       },
     ]);
   }
   if (type === ROLE_BIND_TYPE.employee) {
     columns.unshift({
       Header: '名称',
-      id: 'departmentName',
-      accessor: 'departmentName',
+      id: 'ownerName',
+      accessor: 'ownerName',
     });
   }
 
@@ -230,7 +233,7 @@ export default function DepartmentTable(
           onCancel={() => setShowUserModal(false)}
           current={{
             id: '',
-            userName: '',
+            name: '',
           }}
         />
       )}

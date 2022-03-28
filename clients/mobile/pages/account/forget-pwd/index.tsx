@@ -20,8 +20,8 @@ export default function ForgetPwd(): JSX.Element {
     const usernameError = usernameRef?.current?.validate();
     if (usernameError) return false;
     try {
-      await httpClient(
-        '/api/v1/org/forget/code',
+      await httpClient.get(
+        '/api/v1/org/h/account/forget/code',
         { userName: usernameRef?.current?.value },
         { 'X-Proxy': 'API-NO-AUTH' },
       );
@@ -44,7 +44,7 @@ export default function ForgetPwd(): JSX.Element {
     }
     setLoading(true);
     httpClient(
-      '/api/v1/nurturing/userForgetResetPWD',
+      '/api/v1/warden/org/h/account/forget/reset',
       {
         userName: usernameRef?.current?.value,
         newPassword: passwordRef?.current?.value,

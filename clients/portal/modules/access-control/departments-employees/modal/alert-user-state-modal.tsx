@@ -77,20 +77,20 @@ export default function AccountHandleModal(
         {status === UserStatus.delete && (
           <span
             className="mx-4 text-16 text-gray-900 font-semibold">
-            删除账号后，在平台内无法恢复员工{user?.userName}数据，确定要删除该账号吗？
+            删除账号后，在平台内无法恢复员工{user?.name}数据，确定要删除该账号吗？
           </span>
 
         )}
         {status === UserStatus.disable && (
           <span
             className="mx-4 text-16 text-gray-900 font-semibold">
-            禁用账号后，员工{user?.userName}无法登录该平台，确定要禁用该账号吗？
+            禁用账号后，员工{user?.name}无法登录该平台，确定要禁用该账号吗？
           </span>
         )}
         {status === UserStatus.normal && (
           <span
             className="mx-4 text-16 text-gray-900 font-semibold">
-            启用账号后，员工{user?.userName}可以登录该平台，确定要启用该账号吗？
+            启用账号后，员工{user?.name}可以登录该平台，确定要启用该账号吗？
           </span>
         )}
       </div>

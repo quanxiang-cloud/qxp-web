@@ -1,13 +1,11 @@
 import React from 'react';
-import { Repository, SchemaRender } from '@one-for-all/render-engine';
+import { SchemaRender } from '@one-for-all/render-engine';
 
 import { useSchemaWithAdapter } from './api';
 import ErrorBoundary from './error-boundary';
 import componentLoader from './component-loader';
-import { getRenderRepository } from '@portal/modules/apps-management/pages/page-design/api';
-
-// todo fix this
-const repository: Repository = getRenderRepository();
+import repository from './repository';
+import refLoader from './ref-loader';
 
 type Props = {
   schemaKey: string;
@@ -16,6 +14,7 @@ type Props = {
 
 export default function PageSchemaRender({ schemaKey, version }: Props): JSX.Element | null {
   const { schema, adapter } = useSchemaWithAdapter(schemaKey, version);
+  const plugins = { apiSpecAdapter: adapter, repository, componentLoader, refLoader };
 
   if (!schema || !adapter) {
     return null;
@@ -24,7 +23,7 @@ export default function PageSchemaRender({ schemaKey, version }: Props): JSX.Ele
   return (
     <ErrorBoundary>
       {/* @ts-ignore */}
-      <SchemaRender schema={schema} plugins={{ apiSpecAdapter: adapter, repository, componentLoader }} />
+      <SchemaRender schema={schema} plugins={plugins} />
     </ErrorBoundary>
   );
 }

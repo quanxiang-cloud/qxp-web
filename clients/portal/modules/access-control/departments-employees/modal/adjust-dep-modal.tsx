@@ -9,7 +9,7 @@ import DepartmentPicker from '@c/form/input/tree-picker-field';
 import { departmentToTreeNode } from '@lib/utils';
 
 import { getERPTree, batchAdjustDep } from '../api';
-import { LeaderStatus } from '../type';
+import { getTwoDimenArrayHead } from '@lib/utils';
 
 type BatchDepParams = {
   usersID: string[];
@@ -47,7 +47,10 @@ function AdjustDepModal({ users: userList, closeModal }: Props): JSX.Element {
   }
 
   function handleFinish(values: any): void {
-    const isHaveLeader = userList.find((user) => user.isDEPLeader === LeaderStatus.true);
+    const isHaveLeader = userList.find((user) => {
+      const dep = getTwoDimenArrayHead(user.departments);
+      return dep?.attr === '1';
+    });
     if (isHaveLeader) {
       toast.error('当前已选择员工列表中存在部门主管，不能参与调整部门！');
       return;
@@ -59,8 +62,10 @@ function AdjustDepModal({ users: userList, closeModal }: Props): JSX.Element {
       newDepID: '',
     };
 
+    const dep = getTwoDimenArrayHead(userList[0].departments);
+
     params.newDepID = values.pid;
-    params.oldDepID = (userList && userList[0] && userList[0].dep?.id) || '';
+    params.oldDepID = dep?.id || '';
     userList.forEach((user) => params.usersID.push(user.id));
     depMutation.mutate(params);
   }
@@ -94,7 +99,7 @@ function AdjustDepModal({ users: userList, closeModal }: Props): JSX.Element {
               return (
                 <li key={user.id} className="rounded-tl-4 rounded-br-4
                 px-8 bg-blue-200 mr-8 mb-8 whitespace-nowrap">
-                  <span className="text-blue-600 text-14">{user.userName}</span>
+                  <span className="text-blue-600 text-14">{user.name}</span>
                 </li>
               );
             })}
@@ -113,7 +118,7 @@ function AdjustDepModal({ users: userList, closeModal }: Props): JSX.Element {
             >
               <DepartmentPicker
                 treeData={departmentToTreeNode(depData as Department)}
-                labelKey="departmentName"
+                labelKey="name"
               />
             </Form.Item>
           )}

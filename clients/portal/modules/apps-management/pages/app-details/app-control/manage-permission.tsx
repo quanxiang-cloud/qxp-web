@@ -12,10 +12,11 @@ import Modal from '@c/modal';
 import {
   appAddAdmin, fetchAppAdminUsers, delAppAdminUsers,
 } from '../api';
+import { getTwoDimenArrayHead } from '@lib/utils';
 
 type Admin = {
   id: string;
-  userName: string;
+  name: string;
 }
 
 function ManagePermission(): JSX.Element {
@@ -31,8 +32,8 @@ function ManagePermission(): JSX.Element {
     setLoading(true);
     fetchAppAdminUsers(params).then((res: any) => {
       setLoading(false);
-      setAppAdminList(res.data.map((admin: Admin) => {
-        return { ...admin, ownerID: admin.id, type: 1, ownerName: admin.userName };
+      setAppAdminList(res.data.users.map((admin: Admin) => {
+        return { ...admin, ownerID: admin.id, type: 1, ownerName: admin.name };
       }));
     });
   };
@@ -84,9 +85,9 @@ function ManagePermission(): JSX.Element {
 
   const columns: UnionColumn<Employee>[] = React.useMemo(() => [
     {
-      id: 'userName',
+      id: 'name',
       Header: '员工',
-      accessor: 'userName',
+      accessor: 'name',
     },
     {
       id: 'phone',
@@ -101,8 +102,9 @@ function ManagePermission(): JSX.Element {
     {
       id: 'dep',
       Header: '部门',
-      accessor: ({ dep }) => {
-        return dep?.departmentName || '未分配部门';
+      accessor: ({ deps }) => {
+        const dep = getTwoDimenArrayHead(deps);
+        return dep?.name || '未分配部门';
       },
     },
     {

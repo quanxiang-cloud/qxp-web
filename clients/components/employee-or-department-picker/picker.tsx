@@ -53,7 +53,7 @@ export default observer(function EmployeeOrDepartmentPicker({
       add.push({
         type: 2,
         ownerID: node.id,
-        ownerName: node.departmentName,
+        ownerName: node.name,
         phone: '',
         email: '',
         departmentName: parent?.name,
