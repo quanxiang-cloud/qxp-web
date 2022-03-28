@@ -1,23 +1,24 @@
 import { httpFile } from '@lib/utils';
-import httpClient from '@lib/http-client';
+import httpClient, { httpClientGraphQL } from '@lib/http-client';
 
 import { FormValues } from './modal/edit-employees-modal';
 import { UserStatus } from './type';
+import { SendMessage } from './modal/reset-password-modal';
 
 export async function getERPTree() {
-  return await httpClient<Department>('/api/v1/org/DEPTree');
+  return await httpClient.get<Department>('/api/v1/org/m/dep/tree');
 }
 
-export async function createDepartment(params: { pid: string; departmentName: string; }) {
-  return await httpClient('/api/v1/org/addDEP', params);
+export async function createDepartment(params: { pid: string; name: string; attr: number}) {
+  return await httpClient('/api/v1/org/m/dep/add', params);
 }
 
 export async function editDepartment(params: {
   pid: string;
-  departmentName?: string;
-  departmentLeaderID?: string;
+  name?: string;
+  leaderID?: string;
 }) {
-  return await httpClient('/api/v1/org/updateDEP', params);
+  return await httpClient.put('/api/v1/org/m/dep/update', params);
 }
 
 export async function getAdminDEPSuperPID() {
@@ -25,18 +26,11 @@ export async function getAdminDEPSuperPID() {
 }
 
 export async function deleteDEP(id: string) {
-  return await httpClient('/api/v1/org/delDEP', { id });
+  return await httpClient('/api/v1/org/m/oth/dep/del', { id });
 }
 
-export async function getUserAdminInfo(depID: string, params: any) {
-  const data: {
-    total_count: number;
-    data: Employee[]
-  } = await httpClient('/api/v1/org/adminUserList', { depID, ...params });
-  return {
-    total: data.total_count || 0,
-    data: data.data || [],
-  };
+export async function getUserAdminInfo<T>(params: { query: string }) {
+  return await httpClientGraphQL<T>('/api/v1/search/user', params);
 }
 
 export async function getUserTemplate() {
@@ -48,31 +42,32 @@ export async function importTempFile({ depID, file }: FileParams) {
 }
 
 export async function addDepUser(values: FormValues) {
-  return await httpClient('/api/v1/nurturing/addUser', values);
+  return await httpClient('/api/v1/org/m/user/add', values);
 }
 
 export async function updateUser(values: FormValues) {
-  return await httpClient('/api/v1/nurturing/updateUser', values);
+  return await httpClient.put('/api/v1/org/m/user/update', values);
 }
 
 export interface LeaderParams {
   depID: string;
   userID?: string;
+  attr?: string;
 }
 
-export async function setDEPLeader({ depID, userID }: LeaderParams) {
-  return await httpClient('/api/v1/org/setDEPLeader', { depID, userID });
+export async function setDEPLeader(params: LeaderParams) {
+  return await httpClient.put('/api/v1/org/m/dep/set/leader', params);
 }
 
-export async function cancelDEPLeader({ depID }: LeaderParams) {
-  return await httpClient('/api/v1/org/cancelDEPLeader', { depID });
+export async function cancelDEPLeader(params: LeaderParams) {
+  return await httpClient.put('/api/v1/org/m/dep/cancel/leader', params);
 }
 
 export async function updateUserStatus({ id, status }: {
   id: string;
   status: UserStatus;
 }) {
-  return await httpClient('/api/v1/nurturing/updateUserStatus', { id, useStatus: status });
+  return await httpClient('/api/v1/warden/org/m/user/update/status', { id, useStatus: status });
 }
 
 export async function batchAdjustDep({ usersID, oldDepID, newDepID }: {
@@ -80,15 +75,14 @@ export async function batchAdjustDep({ usersID, oldDepID, newDepID }: {
   oldDepID: string;
   newDepID: string;
 }) {
-  return httpClient('/api/v1/org/adminChangeUsersDEP', { usersID, oldDepID, newDepID });
+  return httpClient.put('/api/v1/org/m/user/change/dep', { usersID, oldDepID, newDepID });
 }
 
-export async function resetUserPWD({ userIDs, sendEmail, sendPhone }: {
+export async function resetUserPWD({ userIDs, sendMessage }: {
   userIDs: string[];
-  sendEmail: -1 | 1;
-  sendPhone: -1 | 1;
+  sendMessage: SendMessage[]
 }) {
-  return await httpClient( '/api/v1/nurturing/adminResetPWD', { userIDs, sendEmail, sendPhone });
+  return await httpClient('/api/v1/warden/org/m/account/reset/password', { userIDs, sendMessage });
 }
 
 export type FileParams = {

@@ -18,8 +18,7 @@ import statusStore from './status/store';
 import topicStore from './topic/store';
 
 export default function ApprovalDetail(): JSX.Element {
-  const { processInstanceID, taskID, type } =
-    useParams<ApprovalDetailParams>();
+  const { processInstanceID, taskID, type } = useParams<ApprovalDetailParams>();
 
   const [state, setState] = useSetState<ApprovalDetailTab>({
     tabs: [],

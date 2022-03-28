@@ -31,7 +31,7 @@ class OwnerStore {
   @observable
   leader = {
     id: '',
-    userName: '',
+    name: '',
   };
 
   @observable
@@ -55,10 +55,10 @@ class OwnerStore {
   };
 
   @action
-  setLeader = (id: string, userName: string) => {
+  setLeader = (id: string, name: string) => {
     this.leader = {
       id,
-      userName,
+      name,
     };
   };
 

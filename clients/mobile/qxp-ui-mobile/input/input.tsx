@@ -13,7 +13,7 @@ import { useSetState } from 'react-use';
 
 import { getRect } from '../utils/hooks/use-rect';
 
-import { InputInstance, InputProps } from './types';
+import { InputInstance, InputProps, TextAreaProps } from './types';
 
 const InputComponent = (props: InputProps, ref: ForwardedRef<InputInstance>): JSX.Element => {
   const nativeInputRef = useRef<HTMLInputElement>(null);
@@ -133,4 +133,70 @@ const InputComponent = (props: InputProps, ref: ForwardedRef<InputInstance>): JS
   );
 };
 
+const TextAreaComponent = (props: TextAreaProps, ref: ForwardedRef<InputInstance>): JSX.Element => {
+  const nativeTextAreaRef = useRef<HTMLTextAreaElement>(null);
+  const [value, setValue] = useState(props.defaultValue ?? '');
+  const [hasFocus, setHasFocus] = useState(false);
+  const [error, setError] = useState<string | undefined>('');
+
+  useImperativeHandle(ref, () => ({
+    focus: () => {
+      nativeTextAreaRef.current?.focus();
+    },
+    blur: () => {
+      nativeTextAreaRef.current?.blur();
+    },
+    value,
+    setValue,
+    error,
+    validate: () => {
+      const err = props.validate?.(value);
+      setError(err);
+      return err;
+    },
+  }));
+
+  return (
+    <>
+      <div style={props.style}
+        className={cs('input--wrapper', props.className, {
+          'input--wrapper__focus': hasFocus,
+          'input--wrapper__error': error,
+          'input--wrapper__readonly': props.readOnly,
+        })}>
+        <textarea
+          ref={nativeTextAreaRef}
+          className={cs('input--input')}
+          value={value}
+          onChange={(e) => {
+            setValue(e.target.value);
+            props.onChange?.(e.target.value);
+          }}
+          onFocus={(e) => {
+            setHasFocus(true);
+            props.onFocus?.(e);
+          }}
+          onBlur={(e) => {
+            setHasFocus(false);
+            if (props.validate) {
+              setError(props.validate(value));
+            }
+            props.onBlur?.(e);
+          }}
+          placeholder={props.placeholder}
+          disabled={props.disabled}
+          readOnly={props.readOnly}
+          maxLength={props.maxLength}
+        />
+      </div>
+      {!!error && !hasFocus && (
+        <p className='caption text-red-600 mt-4'>
+          {error}
+        </p>
+      )}
+    </>
+  );
+};
+
 export const Input = forwardRef<InputInstance, InputProps>(InputComponent);
+export const TextArea = forwardRef<InputInstance, TextAreaProps>(TextAreaComponent);
