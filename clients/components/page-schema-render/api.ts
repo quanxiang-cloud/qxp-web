@@ -16,6 +16,20 @@ type SchemaWithAdapter = {
   adapter: SwaggerRPCSpecAdapter;
 }
 
+export function fetchSchemaWithSwagger(
+  schemaKey: string, version: string,
+): Promise<Partial<SchemaWithSwagger>> {
+  const url = `/api/page_schema_with_swagger?schema_key=${schemaKey}&version=${version}`;
+
+  return fetch(url, { method: 'GET' })
+    .then((response) => response.json())
+    .then(({ data }) => data)
+    .catch((err) => {
+      logger.error(err);
+      return {};
+    });
+}
+
 export function useSchemaWithAdapter(schemaKey: string, version: string): Partial<SchemaWithAdapter> {
   const [adapter, setAdatper] = useState<SwaggerRPCSpecAdapter | undefined>(undefined);
   const { isLoading, data } = useQuery<Partial<SchemaWithSwagger>>([schemaKey, version], () => {

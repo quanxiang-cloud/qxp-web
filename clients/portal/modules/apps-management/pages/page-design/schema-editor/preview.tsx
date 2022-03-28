@@ -35,8 +35,8 @@ function Preview({ appID, pageID, previewSchema }: Props): JSX.Element {
 
   return (
     <PageSchemaRender
-      schemaKeys={schemaKeys}
-      version="1.0.0"
+      schemaKey={schemaKeys[0]}
+      version="0.1.0"
     />
   );
 }

@@ -24,7 +24,7 @@ export default function AssociateDepartmentEmployee({ roleID, isSuper }: Props):
     [
       'GET_ROLE_ASSOCIATIONS_ALL',
       {
-        roleId: roleID,
+        roleID,
       },
     ],
     getRoleAssociations,
@@ -59,7 +59,7 @@ export default function AssociateDepartmentEmployee({ roleID, isSuper }: Props):
       await mutation.mutateAsync({
         roleID: roleID as string,
         add: adds.map(({ type, ownerID }) => ({ type, ownerID })),
-        delete: deletes?.map(({ id }: { id: string }) => id),
+        delete: deletes?.map(({ ownerID }: { ownerID: string }) => ownerID),
       });
       return true;
     } catch (e: any) {
@@ -70,7 +70,7 @@ export default function AssociateDepartmentEmployee({ roleID, isSuper }: Props):
   function onCancelAssociation(records: EmployeeOrDepartmentOfRole[]): void {
     mutation.mutate({
       roleID: roleID as string,
-      delete: records.map(({ id }) => id),
+      delete: records.map(({ ownerID }) => ownerID),
     });
   }
 

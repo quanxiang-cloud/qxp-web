@@ -8,28 +8,36 @@ import { TIME_ZONE } from './utils';
 
 let alreadyAlertUnauthorizedError = false;
 
-async function httpClient<TData, TBody = unknown>(
-  path: string,
-  body?: TBody,
-  additionalHeaders?: HeadersInit,
-  options?: Record<string, any>,
-): Promise<TData> {
-  const headers = {
+type HttpMethods = 'POST' | 'GET' | 'PUT' | 'DELETE';
+
+async function request<TData, TBody = unknown>(path: string, method: HttpMethods,
+  body?: TBody, additionalHeaders?: HeadersInit, options?: Record<string, any>) {
+  const headers: Record<string, any> = {
     'X-Proxy': 'API',
     'X-Timezone': TIME_ZONE,
     'Content-Type': 'application/json',
     ...additionalHeaders,
   };
-  // while send form-data, do not set content-type
-  if (options?.formData) {
-    // @ts-ignore
-    delete headers['Content-Type'];
-  }
-  const response = await fetch(path, {
-    method: 'POST',
+
+  const configs: {
+    method: HttpMethods,
+    body?: FormData | string,
+    headers: Record<string, any>
+  } = {
+    method: method,
     body: options?.formData ? body as unknown as FormData : JSON.stringify(body || {}),
     headers,
-  });
+  };
+
+  if (method === 'GET') {
+    delete configs['body'];
+  }
+
+  if (options?.formData) {
+    delete headers['Content-Type'];
+  }
+
+  const response = await fetch(path, configs);
 
   if (response.status === 401) {
     if (!alreadyAlertUnauthorizedError) {
@@ -56,6 +64,43 @@ async function httpClient<TData, TBody = unknown>(
 
   return data as TData;
 }
+
+const httpClient = function<TData, TBody = unknown>(path: string,
+  body?: TBody,
+  additionalHeaders?: HeadersInit,
+  options?: Record<string, any>) {
+  return httpClient.post<TData, TBody>(path, body, additionalHeaders, options);
+};
+
+httpClient.get = function<TData, TBody = unknown>(path: string,
+  body?: TBody,
+  additionalHeaders?: HeadersInit,
+  options?: Record<string, any>) {
+  let _path = path;
+  if (body) {
+    _path = `${_path}?${qs.stringify(body)}`;
+  }
+  return request<TData, TBody>(_path, 'GET', body, additionalHeaders, options);
+};
+
+httpClient.post = function<TData, TBody = unknown>(path: string,
+  body?: TBody,
+  additionalHeaders?: HeadersInit,
+  options?: Record<string, any>) {
+  return request<TData, TBody>(path, 'POST', body, additionalHeaders, options);
+};
+
+httpClient.put = function<TData, TBody = unknown>(path: string,
+  body?: TBody,
+  additionalHeaders?: HeadersInit,
+  options?: Record<string, any>) {
+  return request<TData, TBody>(path, 'PUT', body, additionalHeaders, options);
+};
+
+httpClient.delete = function<TData, TBody = unknown>(path: string, body?: TBody,
+  additionalHeaders?: HeadersInit, options?: Record<string, any>) {
+  return request<TData, TBody>(path, 'DELETE', body, additionalHeaders, options);
+};
 
 type FormDataRequestQueryDeleteParams = {
   method: 'find' | 'findOne' | 'delete';

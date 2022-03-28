@@ -14,3 +14,5 @@ export const appsPageDetailPath = `${pathPrefix}/apps/:appID/:pageID`;
 export const accountPath = `${pathPrefix}/account`;
 export const changePwdPath = `${pathPrefix}/account/security`;
 export const forgetPwdPath = `${pathPrefix}/account/security/forget`;
+
+export const userOrgPickerPath = `${pathPrefix}/user-org-picker`;
