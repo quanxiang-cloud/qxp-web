@@ -15,7 +15,9 @@ type SchemaWithAdapter = {
   adapter: SwaggerRPCSpecAdapter;
 }
 
-function fetchSchemaWithSwagger(schemaKey: string, version: string): Promise<Partial<SchemaWithSwagger>> {
+export function fetchSchemaWithSwagger(
+  schemaKey: string, version: string,
+): Promise<Partial<SchemaWithSwagger>> {
   const url = `/api/page_schema_with_swagger?schema_key=${schemaKey}&version=${version}`;
 
   return fetch(url, { method: 'GET' })
