@@ -21,6 +21,7 @@ interface AppendNodeOptions {
 
 class PageStore {
   @observable schema: PageSchema = initPageSchema();
+  @observable hideElemIds = new Set();
   @observable mode: Mode = 'design';
   @observable activeElemId = '';
   @observable hoverElemId = '';
@@ -358,6 +359,18 @@ class PageStore {
   removeNode = (id: string): void => {
     removeTreeNode(this.schema.node, id);
     this.activeElemId = '';
+  };
+
+  @action
+  hideNode = (id: string): void => {
+    this.hideElemIds.add(id);
+    this.activeElemId = '';
+  };
+
+  @action
+  showNode = (id: string): void => {
+    this.hideElemIds.delete(id);
+    this.activeElemId = id;
   };
 
   @action

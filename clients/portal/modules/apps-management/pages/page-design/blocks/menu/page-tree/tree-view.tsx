@@ -9,6 +9,7 @@ import type { DropResult, DragMoveProps } from './tree-node';
 import TreeNode from './tree-node';
 import { findNode } from '../../../utils/tree-utils';
 import { nodeContentRender } from './node-content-render';
+import { traverseSchema } from '@one-for-all/page-engine-v2';
 
 export const COMPONENT_ICON_MAP: Record<string, string> = {
   page: 'insert_drive_file',
@@ -42,6 +43,10 @@ function TreeView(): JSX.Element {
 
   function handleSelect(node: PageNode): void {
     page.setActiveElemId(node.id);
+  }
+
+  function handleSelectModal(node: PageNode): void {
+    page.showNode(node.id);
   }
 
   function onDrop(item: PageNode, monitor: DropTargetMonitor): void {
@@ -141,6 +146,13 @@ function TreeView(): JSX.Element {
     drop: onDrop,
   });
 
+  const modalNodes: Array<SchemaSpec.LoopContainerNode | PageNode> = [];
+  traverseSchema(page.schema as any, (node: any) => {
+    if (node.type === 'react-component' && node.exportName === 'modal') {
+      modalNodes.push(node);
+    }
+  });
+
   return (
     <div
       ref={drop}
@@ -157,6 +169,18 @@ function TreeView(): JSX.Element {
         onDragMove={onDragMove}
         nodeContentRender={nodeContentRender}
       />
+      {modalNodes.map((node) => (
+        <TreeNode
+          key={node.id}
+          node={node}
+          level={0}
+          onSelect={handleSelectModal}
+          canNodeDrop={canNodeDrop}
+          canNodeDrag={canNodeDrag}
+          onDragMove={onDragMove}
+          nodeContentRender={nodeContentRender}
+        />
+      ))}
     </div>
   );
 }

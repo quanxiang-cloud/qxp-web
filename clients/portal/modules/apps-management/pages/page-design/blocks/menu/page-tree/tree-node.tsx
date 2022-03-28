@@ -38,7 +38,7 @@ export type DragMoveProps = {
 
 function TreeNode({
   node: rawNode, level, onSelect, onDragMove, onDragEnd, canNodeDrop, canNodeDrag, nodeContentRender,
-}: NodeItemProps): JSX.Element {
+}: NodeItemProps): JSX.Element | null {
   const { page } = useCtx();
   const treeNodeRef = useRef<HTMLDivElement>(null);
   const isLoopNode = rawNode.type === 'loop-container';
@@ -173,6 +173,10 @@ function TreeNode({
         color="gray"
       />
     );
+  }
+
+  if (level && node.exportName === 'modal') {
+    return null;
   }
 
   return (

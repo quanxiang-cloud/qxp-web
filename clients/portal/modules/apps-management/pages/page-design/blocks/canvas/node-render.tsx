@@ -217,6 +217,10 @@ function NodeRender({ schema }: Props): JSX.Element | null {
     return 'div';
   }
 
+  if (page.hideElemIds.has(node.id)) {
+    return null;
+  }
+
   return (
     <>
       <DragPreviewImage connect={dragPreview} src={svgPreviewImg(label)} />

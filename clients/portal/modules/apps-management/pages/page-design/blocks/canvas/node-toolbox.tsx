@@ -164,6 +164,7 @@ function NodeToolbox(props: Props, ref: any): JSX.Element {
   }
 
   const { width, height, x, y } = seat;
+  const isModal = page.activeElem.exportName === 'modal';
 
   return (
     <div
@@ -216,6 +217,9 @@ function NodeToolbox(props: Props, ref: any): JSX.Element {
                         }}
                       />
                       <Icon name='delete' clickable onClick={() => page.removeNode(page.activeElemId)} />
+                      {isModal && (
+                        <Icon name='close' clickable onClick={() => page.hideNode(page.activeElemId)} />
+                      )}
                     </>
                   )}
                 </div>
