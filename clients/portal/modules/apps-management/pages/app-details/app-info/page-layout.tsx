@@ -108,7 +108,7 @@ function PageLayout(): JSX.Element {
       Header: '关联页面',
       id: 'subViews',
       width: 'auto',
-      accessor: 'subViews',
+      accessor: ({ subViews } ) => subViews.length,
     },
     {
       Header: '操作',

@@ -68,7 +68,7 @@ function convertNodeToExternalView(node: ReactComponentNode): ExternalView {
     id: node.id as string,
     name: node.label || '',
     type: ViewType.ExternalView,
-    link: get(node, 'props.fileUrl.link') || '',
+    link: get(node, 'props.link.value') || '',
     url: '',
   };
 }

@@ -9,16 +9,16 @@ import Select from '@c/select';
 import StaticViewUpload from './static-view-upload';
 import { BaseView, CreateViewParams, Layout, View, ViewGroup, ViewType } from '../view-orchestration/types.d';
 
-const { TextArea } = Input;
+const { Item } = Form;
+// const { TextArea } = Input;
 
 type Props = {
   onCancel: () => void;
-  onSubmit: (viewParams: CreateViewParams & { layoutType: string}) => void;
-  isCopy: boolean;
+  onSubmit: (viewInfo: (CreateViewParams & { layoutType: string, fileUrl: string, link: string })) => void;
   layouts: Layout[];
   views: Array<View | ViewGroup>;
   modalType: string;
-  viewParams?: CreateViewParams;
+  viewParams?: View;
 };
 
 const viewTypeMap: LabelValue[] = [
@@ -41,15 +41,11 @@ const viewTypeMap: LabelValue[] = [
 ];
 
 function EditPageModal(
-  { viewParams, onCancel, onSubmit, isCopy, views, layouts, modalType }: Props,
+  { viewParams, onCancel, onSubmit, views, layouts, modalType }: Props,
 ): JSX.Element {
   const [viewType, setViewType] = useState<ViewType>(ViewType.TableSchemaView);
   const [form] = Form.useForm();
-  const [allViewNames, setAllViewNames] = useState(views.map((view) => (view as BaseView).name));
-
-  if (modalType === 'editPage') {
-    setAllViewNames(allViewNames.filter((name) => name !== viewParams?.name));
-  }
+  const allViewNames = views.map((view) => (view as BaseView).name);
 
   function handleSubmit(): void {
     form.submit();
@@ -63,11 +59,10 @@ function EditPageModal(
     return allViewNames.includes(value);
   }
 
-  const { name, layoutID, group, description } = viewParams || {};
+  const { name } = viewParams || {};
 
   const getTitle = cond([
-    [() => isCopy, always('复制页面')],
-    [() => modalType === 'editView', always('修改名称与图标')],
+    [() => modalType === 'editView', always('编辑名称')],
     [T, always('新建页面')],
   ]);
 
@@ -94,12 +89,10 @@ function EditPageModal(
         form={form}
         onFinish={handleFinish}
         initialValues={{
-          name: modalType === 'copyPage' ? `${name}-副本` : name,
-          description,
-          group,
+          name,
         }}
       >
-        <Form.Item
+        <Item
           name="name"
           label="页面名称"
           extra="不超过 30 个字符，页面名称不可重复。"
@@ -124,60 +117,74 @@ function EditPageModal(
           ]}
         >
           <Input placeholder='请输入页面名称' />
-        </Form.Item>
-        <Form.Item
-          name='layoutType'
-          label="页面类型"
-          rules={[
-            {
-              required: true,
-              message: '选择页面类型',
-            }]}
-          initialValue={viewType}
-        >
-          <RadioButtonGroup
-            radioBtnClass="bg-white"
-            onChange={(value) => {
-              setViewType(value as ViewType);
-            }}
-            listData={viewTypeMap}
-            currentValue={viewType}
-          />
-        </Form.Item>
-        {viewType === ViewType.StaticView && (
-          <Form.Item
-            required
-            name="fileUrl"
-            label="上传静态页面"
-          >
-            <StaticViewUpload />
-          </Form.Item>
-        )}
-        <Form.Item
-          name='layoutID'
-          label="页面布局"
-        >
-          <Select
-            placeholder="请选择"
-            options={layouts.map((layout) => ({
-              label: layout.name,
-              value: layout.id,
-            }))}
-            defaultValue={layoutID}
-          />
-        </Form.Item>
-        <Form.Item
-          name="description"
-          label="描述"
-          rules={[
-            {
-              type: 'string',
-              message: '备注超过 100 字符!',
-            },
-          ]}
-        >
-          <TextArea placeholder='选填（不超过 100 字符）' />
-        </Form.Item>
+        </Item>
+        {
+          modalType !== 'editView' && (<>
+            <Item
+              name='layoutType'
+              label="页面类型"
+              rules={[
+                {
+                  required: true,
+                  message: '选择页面类型',
+                }]}
+              initialValue={viewType}
+            >
+              <RadioButtonGroup
+                radioBtnClass="bg-white"
+                onChange={(value) => {
+                  setViewType(value as ViewType);
+                }}
+                listData={viewTypeMap}
+                currentValue={viewType}
+              />
+            </Item>
+            {viewType === ViewType.StaticView && (
+              <Item
+                required
+                name="fileUrl"
+                label="上传静态页面"
+              >
+                <StaticViewUpload />
+              </Item>
+            )}
+            {viewType === ViewType.ExternalView && (
+              <Item
+                required
+                name="link"
+                label="外部链接地址"
+              >
+                <Input placeholder='请输入链接地址' />
+              </Item>
+            )}
+            <Item
+              name='layoutID'
+              label="页面布局"
+            >
+              <Select
+                placeholder="请选择"
+                options={layouts.map((layout) => ({
+                  label: layout.name,
+                  value: layout.id,
+                }))}
+                defaultValue={''}
+              />
+            </Item>
+            {/* <Item
+              name="description"
+              label="描述"
+              rules={[
+                {
+                  type: 'string',
+                  message: '备注超过 100 字符!',
+                },
+              ]}
+            >
+              <TextArea placeholder='选填（不超过 100 字符）' />
+            </Item> */}
+          </>)
+        }
+
       </Form>
     </Modal>
   );
