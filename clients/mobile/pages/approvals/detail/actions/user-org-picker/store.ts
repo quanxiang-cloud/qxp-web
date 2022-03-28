@@ -1,20 +1,20 @@
 import toast from '@lib/toast';
 import { action, observable } from 'mobx';
 
-import { getAdminOrg, getUserList } from './api';
+import { getAdminOrg, getUserList, searchUser } from './api';
 
 const Limit = 50;
 const qxpRootId = 'qxp-root-id';
+const userGraphQL = '{users{id,email,name},total}';
 const qxpRoot: Department = {
-  departmentName: '全部',
+  name: '全部',
   id: qxpRootId,
   pid: qxpRootId,
   superID: '',
   grade: 1,
-  name: '',
   attr: '',
 };
-const initOrg = { departmentName: '', id: '', pid: '', superID: '', grade: 1, name: '', attr: '' };
+const initOrg = { name: '', id: '', pid: '', superID: '', grade: 1, attr: '' };
 
 class UserOrgPickerStore {
   @observable loading = false;
@@ -22,7 +22,7 @@ class UserOrgPickerStore {
   @observable curOrgList: Array<Department> = [];
   @observable branchPath: Array<Department> = [qxpRoot];
   @observable currentBranch: Department = qxpRoot;
-  @observable userList: Array<UserApi.IUser> = [];
+  @observable userList: Array<UserApi.User> = [];
   @observable total = 0;
   @observable checkedUserList: Array<string> = [];
   @observable isSearch = false;
@@ -59,7 +59,7 @@ class UserOrgPickerStore {
     this.checkedUserList = checkedUserList;
   };
 
-  @action fetchUsers = (page: number, userName?: string): void => {
+  @action fetchUsers = (page: number): void => {
     if (!this.currentBranch?.id) return;
     if (this.currentBranch.id === qxpRootId) {
       this.curOrgList = [this.adminOrg];
@@ -68,7 +68,7 @@ class UserOrgPickerStore {
     }
 
     this.loading = true;
-    getUserList(this.currentBranch.id, Limit, page, userName).then(({ data, total_count }) => {
+    getUserList(this.currentBranch.id, Limit, page).then(({ data, total_count }) => {
       this.userList = data;
       this.total = total_count;
     }).catch((err) => toast.error(err)).finally(() => this.loading = false);
@@ -89,19 +89,20 @@ class UserOrgPickerStore {
     }).catch((err) => toast.error(err)).finally(() => this.loading = false);
   };
 
-  @action searchUser = (keyword: string): void => {
+  @action searchUserList = (queryGraphQL: string | number, keyword: string): void => {
     if (!keyword) {
       this.curOrgList = [this.adminOrg];
       this.branchPath = [qxpRoot];
+      this.currentBranch = qxpRoot;
       this.userList = [];
       this.isSearch = false;
       return;
     }
     this.isSearch = true;
     this.curOrgList = [];
-    getUserList(this.adminOrg.id, Limit, 1, keyword).then(({ data, total_count }) => {
-      this.userList = data;
-      this.total = total_count;
+    searchUser({ query: `{${queryGraphQL}${userGraphQL}}` }).then(({ total, users }) => {
+      this.userList = users;
+      this.total = total;
     }).catch((err) => toast.error(err));
   };
 
