@@ -852,10 +852,10 @@
     "@one-for-all/schema-spec" "0.14.0"
     immutable "4.0.0"
 
-"@one-for-all/style-guide@0.0.1":
-  version "0.0.1"
-  resolved "https://registry.npmmirror.com/@one-for-all/style-guide/-/style-guide-0.0.1.tgz#91f0241c9f18c3a7ac0e3034d7f6f87047a24cdd"
-  integrity sha512-D57aYDJUFDCgRsQLce7LB60aCWf7zJTuqLu7Gmzjn+uo5pUT4WghQibkG1FWMV0JxtJ/X49xgT8DrZFPtF2Ytg==
+"@one-for-all/style-guide@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.npmmirror.com/@one-for-all/style-guide/-/style-guide-0.1.1.tgz#c2768552e15fa182c59e07bfa64b82f318064ffe"
+  integrity sha512-MGvUvnH3EzZcIu2giYCEiZsZhfWCOgCa+EbXpdx3zLTsimFUZuPtZVyRf5K8eW4vlE3cwT0dgqhzfueaU8xTRw==
   dependencies:
     css-tree "^2.0.4"
     cssbeautify "^0.3.1"
@@ -1090,16 +1090,6 @@
   integrity sha1-PCRnqg8ak/HwIeO5vPk4vV39wN0=
   dependencies:
     classnames "*"
-
-"@types/css-tree@^1.0.7":
-  version "1.0.7"
-  resolved "http://r.npm.internal.yunify.com/@types/css-tree/download/@types/css-tree-1.0.7.tgz#4483b824a7923d9a7819408a33144014b0c5124c"
-  integrity sha1-RIO4JKeSPZp4GUCKMxRAFLDFEkw=
-
-"@types/cssbeautify@^0.3.2":
-  version "0.3.2"
-  resolved "https://registry.npmmirror.com/@types/cssbeautify/download/@types/cssbeautify-0.3.2.tgz#8a76207cd980d3e7b29b4b6dea1f4ed861285615"
-  integrity sha1-inYgfNmA0+eym0tt6h9O2GEoVhU=
 
 "@types/cssnano@^4.0.0":
   version "4.0.1"
