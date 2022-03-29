@@ -1,0 +1,14 @@
+name: Code Quality Check
+on:
+  push:
+    branches-ignore:
+      - 'release/**'
+      - main
+      - alpha
+jobs:
+  bundle-clients:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/client-boot-up
+      - uses: ./.github/actions/quality-check
