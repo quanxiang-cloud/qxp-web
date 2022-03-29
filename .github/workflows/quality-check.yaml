@@ -3,7 +3,6 @@ on:
   push:
     branches-ignore:
       - 'release/**'
-      - main
       - alpha
 jobs:
   bundle-clients:
