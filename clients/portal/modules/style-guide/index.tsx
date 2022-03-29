@@ -28,8 +28,8 @@ export default function StyleGuide(): JSX.Element {
 
   async function handleSave(): Promise<void> {
     setGlobalConfig(COMPONENT_STYLE_CONFIG_KEY, '0.1.0', store.cssStore?.cssASTMap);
-    const componentCssUrl = await store.generateCompCssUrl();
-    setGlobalConfig(KEY, '0.1.0', { ...store.commonConfig, componentCssUrl }).then(() => {
+    const styleCssUrl = await store.generateCompCssUrl();
+    setGlobalConfig(KEY, '0.1.0', { ...store.commonConfig, styleCssUrl }).then(() => {
       COLOR_DEPTH.forEach((depth) => {
         document.documentElement.style.setProperty(
           `--primary-${depth}`,

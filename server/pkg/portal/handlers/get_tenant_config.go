@@ -20,10 +20,10 @@ type BatchGetValueReq struct {
 }
 
 type UserConfig struct {
-	PrimaryColor    string       `json:"primaryColor"`
-	TitleIcon       string       `json:"titleIcon"`
-	Favicons        string       `json:"favicons"`
-	ComponentCssUrl template.URL `json:"componentCssUrl"`
+	PrimaryColor string       `json:"primaryColor"`
+	TitleIcon    string       `json:"titleIcon"`
+	Favicons     string       `json:"favicons"`
+	CommonCssUrl template.URL `json:"styleCssUrl"`
 }
 
 func getTenantConfig(r *http.Request, appID string) UserConfig {
@@ -41,10 +41,10 @@ func getTenantConfig(r *http.Request, appID string) UserConfig {
 	result1 := gjson.Get(string(respBody), "data.result.COMMON_STYLE_CONFIG").Str
 	result2 := gjson.Get(string(respBody), fmt.Sprintf("APP_COMMON_STYLE_CONFIG_%s", appID)).Str
 	config := UserConfig{
-		PrimaryColor:    "blue",
-		TitleIcon:       "/dist/images/quanxiangyun.svg",
-		Favicons:        "/dist/images/favicons/favicon-32x32.png",
-		ComponentCssUrl: "",
+		PrimaryColor: "blue",
+		TitleIcon:    "/dist/images/quanxiangyun.svg",
+		Favicons:     "/dist/images/favicons/favicon-32x32.png",
+		CommonCssUrl: "",
 	}
 
 	var result string

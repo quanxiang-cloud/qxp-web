@@ -10,6 +10,6 @@ declare global {
     primaryColor: string;
     titleIcon?: string;
     favicons?: string;
-    componentCssUrl?: string,
+    styleCssUrl?: string,
   }
 }
