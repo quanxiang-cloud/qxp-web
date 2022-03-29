@@ -5,7 +5,6 @@ import { observer } from 'mobx-react';
 import Icon from '@c/icon';
 import Tab from '@c/tab';
 import Modal from '@c/modal';
-import toast from '@lib/toast';
 import Search from '@c/search';
 import Popper from '@c/popper';
 import MoreMenu from '@c/more-menu';
@@ -13,7 +12,7 @@ import TwoLevelMenu from '@c/two-level-menu';
 
 import EditRightModal from './edit-right-modal';
 import AssociatedPerson from './associated-personnel';
-import RightsGroups from './rights-groups';
+import DataSource from './data-source';
 import store from './store';
 
 import './index.scss';
@@ -30,6 +29,7 @@ const modifiers = [
 function UsersAndPermissions(): JSX.Element {
   const history = useHistory();
   const [modalType, setModalType] = useState('');
+  const [searchWords, setSearchWord] = useState('');
   const [showEditRightModal, setShowEditRightModal] = useState(false);
   const [tabCurrentKey, setTabCurrentKey] = useState('associate');
   const [showDeleteRightModal, setShowDeleteRightModal] = useState(false);
@@ -39,7 +39,7 @@ function UsersAndPermissions(): JSX.Element {
 
   useEffect(() => {
     store.appID = appID;
-    store.fetchRights();
+    store.fetchRoles();
     return () => {
       store.clear();
     };
@@ -47,10 +47,19 @@ function UsersAndPermissions(): JSX.Element {
 
   useEffect(() => {
     setTabCurrentKey('associate');
-  }, [store.rightsGroupID]);
+    if (store.currentRoleID) {
+      store.fetchRolePerson();
+    }
+  }, [store.currentRoleID]);
 
   const roles = useMemo(() => {
-    return store.rightsList.map((role) => {
+    let _rolesList = [];
+    if (searchWords) {
+      _rolesList = store.rolesList.filter((role) => role.name?.match(searchWords));
+    } else {
+      _rolesList = store.rolesList;
+    }
+    return _rolesList.map((role) => {
       return {
         id: role.id,
         title: role.name || '',
@@ -59,7 +68,7 @@ function UsersAndPermissions(): JSX.Element {
         source: role,
       };
     });
-  }, [store.rightsList]);
+  }, [store.rolesList, searchWords]);
 
   const menus = [
     {
@@ -110,19 +119,14 @@ function UsersAndPermissions(): JSX.Element {
       content: <AssociatedPerson />,
     },
     {
-      id: 'configuration',
-      name: '配置访问权限',
-      content: <RightsGroups/>,
+      id: 'datasource',
+      name: '数据源权限',
+      content: <DataSource/>,
     },
   ];
 
   const handleDleteSubmit = (): void => {
-    if (store.currentRights.scopes?.length) {
-      toast.error(`${store.currentRights.name}  权限组已存在员工数据，请先移除该权限组下的所有员工数据。`);
-      setShowDeleteRightModal(false);
-      return;
-    }
-    store.deleteRight(store.currentRights.id);
+    store.deleteRole(store.currentRole.id);
     setShowDeleteRightModal(false);
   };
 
@@ -137,7 +141,8 @@ function UsersAndPermissions(): JSX.Element {
               <div className="flex-1">
                 <Search
                   placeholder="搜索名称..."
-                  onChange={store.changeKeyword}
+                  value={searchWords}
+                  onChange={setSearchWord}
                 />
               </div>
               <div
@@ -163,13 +168,13 @@ function UsersAndPermissions(): JSX.Element {
               </Popper>
             </div>
             {roles.length !== 0 && (
-              <TwoLevelMenu<Rights>
+              <TwoLevelMenu<Roles>
                 onSelect={(role) => {
-                  store.currentRights = role.source as Rights;
-                  store.rightsGroupID = role.id;
+                  store.currentRole = role.source as Roles;
+                  store.currentRoleID = role.id;
                   history.push(`/apps/details/${appID}/app_control?id=${role.id}`);
                 }}
-                defaultSelected={store.rightsGroupID}
+                defaultSelected={store.currentRoleID}
                 menus={roles}
                 actions={(role) => (
                   <MoreMenu
@@ -211,12 +216,12 @@ function UsersAndPermissions(): JSX.Element {
             >
               <Icon name="people_alt" className='text-white mr-8' size={32} />
               <div className=''>
-                <div className='text-12 font-semibold'>{store.currentRights.name}</div>
+                <div className='text-12 font-semibold'>{store.currentRole.name}</div>
                 <div
                   className='rights-des text-12'
-                  title={store.currentRights.description}
+                  title={store.currentRole.description}
                 >
-                  {store.currentRights.description}
+                  {store.currentRole.description}
                 </div>
               </div>
             </div>
@@ -253,7 +258,7 @@ function UsersAndPermissions(): JSX.Element {
         >
           <div className='px-20 py-32'>
             删除该权限组后，在平台内无法恢复权限组
-            <span className='text-16 text-gray-900 mx-6'>{store.currentRights.name}</span>
+            <span className='text-16 text-gray-900 mx-6'>{store.currentRole.name}</span>
             数据，确定删除该权限组吗？
           </div>
         </Modal>

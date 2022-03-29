@@ -2,15 +2,15 @@ import React, { useMemo, useState } from 'react';
 import { observer } from 'mobx-react';
 
 import Button from '@c/button';
-import store from './store';
 
-import './index.scss';
 import EmployeeOrDepartmentPickerModal from '@c/employee-or-department-picker';
 import Table from '@c/table';
 import Avatar from '@c/avatar';
-import toast from '@lib/toast';
 import RadioButtonGroup from '@c/radio/radio-button-group';
-import { getTwoDimenArrayHead } from '@lib/utils';
+
+import store from './store';
+
+import './index.scss';
 
 type UserOrDept = {
   id: string,
@@ -25,10 +25,10 @@ function AssociatedPerson(): JSX.Element {
   const [selectUser, setSelectUser] = useState<string[]>([]);
 
   const userAndDept = useMemo(() => {
-    if (store.currentRights.scopes && store.currentRights.scopes.length) {
+    if (store.currentScopes && store.currentScopes.length) {
       const users: UserOrDept[] = [];
       const deptList: UserOrDept[] = [];
-      store.currentRights.scopes.forEach((scope) => {
+      store.currentScopes.forEach((scope) => {
         if (scope.type === 1) {
           users.push({
             id: scope.id,
@@ -51,7 +51,7 @@ function AssociatedPerson(): JSX.Element {
     }
     store.UserDetailList = [];
     return { users: [], deptList: [] };
-  }, [store.currentRights]);
+  }, [store.currentScopes]);
 
   const handleAdd = (
     deptList: EmployeeOrDepartmentOfRole[], employees: EmployeeOrDepartmentOfRole[],
@@ -72,12 +72,31 @@ function AssociatedPerson(): JSX.Element {
         name: employee.ownerName,
       });
     });
-    return store.updatePerGroupUser({ id: store.currentRights.id, scopes });
+
+    const checkedId = scopes && scopes.map((item: any) => item.id);
+    const removeList: DeptAndUser[] = store.currentScopes.filter((item: any) => checkedId.indexOf(item.id) === -1) || [];
+
+    const removeIDList = removeList.map((remove)=>{
+      return remove.id;
+    });
+
+    const checkedId2 = store.currentScopes && store.currentScopes.map((item: any) => item.id);
+
+    const addList: DeptAndUser[] = scopes.filter((item: any) => checkedId2.indexOf(item.id) === -1) || [];
+    store.setCurrentScopes(scopes);
+    return store.updatePerUser({ add: addList, removes: removeIDList });
   };
 
   const deletePerGroupUser = (id: string): void=>{
-    const newScopes = store.currentRights.scopes?.filter((scope) => scope.id !== id);
-    store.updatePerGroupUser({ id: store.currentRights.id, scopes: newScopes });
+    const newScopes = store.currentScopes?.filter((scope) => scope.id !== id);
+    store.setCurrentScopes(newScopes);
+    store.updatePerUser({ add: [], removes: [id] });
+  };
+
+  const handleBatchRemov = (idList: string[]): void => {
+    const newScopes = store.currentScopes?.filter((scope) => !idList.includes(scope.id));
+    store.setCurrentScopes(newScopes);
+    store.updatePerUser({ add: [], removes: idList });
   };
 
   const columns: any = [{
@@ -118,10 +137,7 @@ function AssociatedPerson(): JSX.Element {
       {
         Header: '部门',
         id: 'departmentName',
-        accessor: (user: any) => {
-          const dep = getTwoDimenArrayHead(user.deps) as Department;
-          return dep?.name;
-        },
+        accessor: (user: any) => user.departments[0].name,
       },
     ]);
   }
@@ -135,19 +151,6 @@ function AssociatedPerson(): JSX.Element {
     );
   }
 
-  const OnClickBind = (): void => {
-    if (!store.currentRights.add) {
-      toast.error('未配置访问权限，请先配置');
-      return;
-    }
-    setShowBindModal(true);
-  };
-
-  const handleBatchRemov = (idList: string[]): void => {
-    const newScopes = store.currentRights.scopes?.filter((scope) => !idList.includes(scope.id));
-    store.updatePerGroupUser({ id: store.currentRights.id, scopes: newScopes });
-  };
-
   return (
     <>
       <div className='h-full flex flex-col'>
@@ -157,7 +160,7 @@ function AssociatedPerson(): JSX.Element {
               modifier="primary"
               className="ml-2"
               iconName="link"
-              onClick={OnClickBind}
+              onClick={() => setShowBindModal(true)}
             >
                 关联员工与部门
             </Button>
@@ -200,7 +203,7 @@ function AssociatedPerson(): JSX.Element {
                 <div className='flex flex-col justify-center items-center text-12 text-gray-400'>
                   <img src='/dist/images/links.svg' alt="no data" className="mb-8"/>
                   <span className='text-12'>暂无数据，选择
-                    <span onClick={OnClickBind} className='text-btn'>&nbsp;关联员工与部门</span>
+                    <span onClick={() => setShowBindModal(true)} className='text-btn'>&nbsp;关联员工与部门</span>
                   </span>
                 </div>
               )}

@@ -1,10 +1,10 @@
-import httpClient from '@lib/http-client';
+import httpClient, { httpClientGraphQL } from '@lib/http-client';
 
-export const createPerGroup = (appID: string, data: RightsCreate): Promise<{ id: string }> => {
-  return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/create`, data);
+export const createRole = (appID: string, data: RoleCreate): Promise<{ id: string }> => {
+  return httpClient(`/api/v1/form1/${appID}/m/apiRole/create`, data);
 };
 
-export const copyPerGroup = (appID: string, data: {
+export const copyRole = (appID: string, data: {
   groupID?: string;
   name?: string;
   description?: string;
@@ -12,95 +12,71 @@ export const copyPerGroup = (appID: string, data: {
   return httpClient(`/api/v1/form/${appID}/m/permission/duplicatePer`, data);
 };
 
-export const fetchRights = (appID: string): Promise<{list: Rights[]}> => {
-  return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/getList`, {});
+export const fetchRoles = (appID: string): Promise<{list: Roles[]}> => {
+  return httpClient(`/api/v1/form1/${appID}/m/apiRole/find`);
 };
 
-export const deleteRights = (appID: string, data: any) => {
-  return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/delete`, data);
+export const deleteRole = (appID: string, roleID: string): Promise<void> => {
+  return httpClient(`/api/v1/form1/${appID}/m/apiRole/delete/${roleID}`);
 };
 
-export const movePerGroup = (appID: string, data: any) => {
-  return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/move`, data);
+export const fetchRolePerson = (appID: string, roleID: string): Promise<{list: DeptAndUser[]}> => {
+  return httpClient(`/api/v1/form1/${appID}/m/apiRole/grant/list/${roleID}`);
 };
 
-export const updatePerGroup = (appID: string, data: any) => {
-  return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/updateName`, data);
+export const updateRole = (appID: string, data: Roles): Promise<void> => {
+  return httpClient(`/api/v1/form1/${appID}/m/apiRole/update`, data);
 };
 
-export const updatePerGroupUser = (appID: string, data: any) => {
-  return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/update`, data);
+export const updatePerUser = (
+  appID: string,
+  roleID: string,
+  data: {add: DeptAndUser[], removes: string[]},
+): Promise<void> => {
+  return httpClient(`/api/v1/form1/${appID}/m/apiRole/grant/assign/${roleID}`, data);
 };
 
-export const fetchOperatePer = (appID: string, perGroupID: string) => {
-  return httpClient(`/api/v1/structor/${appID}/m/permission/operatePer/get`, { perGroupID });
+export const getUserDetail = <T>(params: {query: string}): Promise<T> => {
+  return httpClientGraphQL<T>('/api/v1/search/users', params);
 };
 
-export const saveOperatePer = (appID: string, data: any) => {
-  return httpClient(`/api/v1/structor/${appID}/m/permission/operatePer/save`, data);
-};
-
-export const fetchDataAccessPer = (appID: string, perGroupID: string) => {
-  return httpClient(`/api/v1/structor/${appID}/m/permission/dataAccessPer/get`, { perGroupID });
-};
-
-export const saveDataAccessPer = (appID: string, data: any) => {
-  return httpClient(`/api/v1/structor/${appID}/m/permission/dataAccessPer/save`, data);
-};
-
-export const fetchFieldFilter = (appID: string, permissionGroupID: string) => {
-  return httpClient(`/api/v1/structor/${appID}/m/filter/get`, { permissionGroupID });
-};
-
-export const saveFieldFilter = (appID: string, data: any) => {
-  return httpClient(`/api/v1/structor/${appID}/m/filter/save`, data);
-};
-
-// 0.4
-
-export const fetchPerGroupForm = (appID: string, perGroupID: string): Promise<fetchPerGroupFormRes> => {
-  return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/getForm`, { perGroupID });
-};
-
-export const fetchPerCustom = (appID: string, groupId: string): Promise<{pages: string[]}> => {
-  return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/pageList`, { groupId });
-};
-
-type UpdatePerCustomParam = {
-  pageId: string;
-  groupId: string;
-  status: number;
+export type Property = {
+  type: string,
+  properties?: Record<string, Property>
 }
 
-export const updatePerCustom = <T>(appID: string, data: UpdatePerCustomParam): Promise<T> => {
-  return httpClient<T>(`/api/v1/structor/${appID}/m/permission/perGroup/updatePagePer`, data);
-};
-
-type PerDataReq = {
-  formID: string;
-  perGroupID: string;
+export type APIAuth = {
+  path?: string,
+  params?: Record<string, Property> | null,
+  response?: Record<string, Property> | null,
+  // condition:
+  roleID?: string,
+  id?: string
 }
 
-export const fetchPerData = (appID: string, data: PerDataReq) => {
-  return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/getPerData`, data);
+export const createAPIAuth = async (appID: string, data: APIAuth): Promise<void> => {
+  return await httpClient(`/api/v1/form1/${appID}/m/apiPermit/create`, data);
 };
 
-export type PerData = {
-  formID: string;
-  perGroupID: string;
-  authority: number;
-  schema: any;
-  conditions: ConditionMap;
-}
-
-export const savePer = (appID: string, data: PerData) => {
-  return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/saveForm`, data);
+export const updateAPIAuth = async (
+  authID: string,
+  appID: string,
+  data: APIAuth,
+): Promise<PolyAPI.Service> => {
+  return await httpClient(`/api/v1/form1/${appID}/m/apiPermit/update/${authID}`, data);
 };
 
-export const deleteFormPer = (appID: string, data: PerDataReq) => {
-  return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/deleteForm`, data);
+export const fetchAPIListAuth = async (
+  appID: string,
+  data: {roleID: string, path: string}[],
+): Promise<{list: APIAuth[]}> => {
+  return await httpClient(`/api/v1/form1/${appID}/m/apiPermit/list`, data);
 };
 
-export const getUserDetail = <T>(IDs: string[]) => {
-  return httpClient<T>('/api/v1/org/h/user/ids', { IDs } );
+export const deleteAPIAuth = async (
+  appID: string,
+  data: {roleID: string, path: string},
+): Promise<void> => {
+  return await httpClient(`/api/v1/form1/${appID}/m/apiPermit/delete`, data);
 };
+
