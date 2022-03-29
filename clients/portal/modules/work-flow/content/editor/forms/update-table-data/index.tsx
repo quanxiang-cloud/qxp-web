@@ -41,11 +41,11 @@ export default function UpdateTableData({
   defaultValue, onSubmit, onCancel, onChange: _onChange,
 }: Props): JSX.Element {
   const { appID } = useContext(FlowContext);
-  const { tableID: workFormId, tableSchema } = useContext(FlowSourceTableCtx);
+  const { tableID: workFormId } = useContext(FlowSourceTableCtx);
   const [value, setValue] = useState<TableDataUpdateData>(defaultValue || {});
   const filterRef = useRef<FilterRuleRef>(null);
   const updateRef = useRef<UpdateRuleRef>(null);
-  const updateTableSchema = useRef <SchemaFieldItem[]>([]);
+  const updateTableSchema = useRef<SchemaFieldItem[]>([]);
   const [nextTable, setNextTable] = useState<string>('');
   const [switchTableModal, setSwitchTableModal] = useState(false);
   const [formType, setFormType] = useState<SelectFormType>(value.targetTableId === workFormId ? 'work-form' : 'others');
@@ -233,7 +233,7 @@ export default function UpdateTableData({
         <SelectTargetFields
           fieldId={value.selectField}
           tableId={value.targetTableId}
-          onChangeSchema={(val)=>updateTableSchema.current = val}
+          onChangeSchema={(val) => updateTableSchema.current = val}
           onChangeField={(selectField) => {
             // when change select field, reset update rules
             onChange({ selectField, updateRule: [] });
