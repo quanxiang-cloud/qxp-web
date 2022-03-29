@@ -4,6 +4,7 @@ import { UseFormRegister, FieldValues, UseFormSetValue } from 'react-hook-form';
 import { Icon } from '@one-for-all/ui';
 
 import MarginBPadding from './margin-b-padding';
+import SizeSetter from './size-setter';
 
 interface Props {
   register: UseFormRegister<FieldValues>;
@@ -81,57 +82,27 @@ function LayoutConfig({ register, initValues, setValue }: Props): JSX.Element {
     <>
       <div className='p-8 border border-gray-300 rounded-4'>
         <div className='flex items-center justify-between'>
-          <div className='w-1/2 flex items-center'>
-            <span className='mr-8 text-12 text-gray-400 whitespace-nowrap'>宽度</span>
-            <div className='relative flex' style={{ width: 50 }}>
-              <input
-                type={width === 'auto' ? 'hidden' : 'number'}
-                disabled={width === 'auto'}
-                min={0}
-                className='w-full border-none focus:outline-none'
-                style={{ background: 'none' }}
-                {...register('width', {
-                  value: width || '',
-                  onBlur: (e: React.ChangeEvent<HTMLInputElement>) => handleBlur(e, 'width'),
-                })}
-              />
-              {width === 'auto' && (
-                <span className='ml-4 w-16 bg-white text-12 text-gray-400'>{width}</span>
-              )}
-              <div className='ml-4 w-16 absolute right-0 top-0 bg-white text-12 text-gray-400'>
-                <select onChange={(e) => handleUnitChange(e, 'width')} value={widthUnit || 'px'}>
-                  <option label='px' value={'px'} />
-                  <option label='%' value={'%'} />
-                  <option label='auto' value={'auto'} />
-                </select>
-              </div>
-            </div>
-          </div>
-          <div className='w-1/2 flex items-center'>
-            <span className='mr-8 text-12 text-gray-400 whitespace-nowrap'>高度</span>
-            <div className='relative' style={{ width: 50 }}>
-              <input
-                type={height === 'auto' ? 'hidden' : 'number'}
-                disabled={height === 'auto'}
-                className='w-full border-none focus:outline-none'
-                style={{ background: 'none' }}
-                // value={height || ''}
-                {...register('height', {
-                  value: height || '',
-                  onBlur: (e: React.ChangeEvent<HTMLInputElement>) => handleBlur(e, 'height'),
-                })}
-              />
-              {height === 'auto' && (
-                <span className='ml-4 w-16 bg-white text-12 text-gray-400'>{height}</span>
-              )}
-              <div className='ml-4 w-16 absolute right-0 top-0 bg-white text-12 text-gray-400'>
-                <select onChange={(e) => handleUnitChange(e, 'height')} value={heightUnit || 'px'}>
-                  <option>px</option>
-                  <option>%</option>
-                  <option>auto</option>
-                </select>
-              </div>
-            </div>
+          <div className='flex flex-col gap-5'>
+            <SizeSetter
+              name="width"
+              label="宽度"
+              value={width}
+              unit={widthUnit}
+              option={{ label: 'vw', value: 'vw' }}
+              handleBlur={handleBlur}
+              handleChange={handleUnitChange}
+              register={register}
+            />
+            <SizeSetter
+              name="height"
+              label="高度"
+              value={height}
+              unit={heightUnit}
+              option={{ label: 'vh', value: 'vh' }}
+              handleBlur={handleBlur}
+              handleChange={handleUnitChange}
+              register={register}
+            />
           </div>
           <Icon
             name="link"

@@ -41,7 +41,12 @@ function SourceElem(props: SourceElement<any>): JSX.Element {
     end: (item, monitor) => {
       const targetNode: any = monitor.getDropResult();
       if (targetNode?.exportName) {
-        window.__isDev__ && console.log('[source-elem] dropped %o onto: %o, pos: %s', item, targetNode, page.dragPos);
+        window.__isDev__ && console.log(
+          '[source-elem] dropped %o onto: %o, pos: %s',
+          item,
+          targetNode,
+          page.dragPos,
+        );
         addNodeToCanvas(targetNode);
       }
     },

@@ -92,7 +92,7 @@ function Canvas({ schema }: BlockItemProps<BlocksCommunicationType>): JSX.Elemen
 
   return (
     <div
-      className={cs('relative pge-canvas my-8 w-full bg-white overflow-auto h-full', styles.page)}
+      className={cs('relative pge-canvas my-3 w-full bg-white overflow-auto h-full', styles.page)}
       onClick={handleClick}
       ref={drop}
     >

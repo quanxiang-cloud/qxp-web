@@ -124,7 +124,7 @@ export function formatStyleString(value: string | number, unitValue = 'px'): str
     return 'auto';
   }
 
-  if (unitValue === 'px' || unitValue === '%') {
+  if (unitValue === 'px' || unitValue === '%' || unitValue === 'vw' || unitValue === 'vh') {
     return value.toString() + unitValue;
   }
 

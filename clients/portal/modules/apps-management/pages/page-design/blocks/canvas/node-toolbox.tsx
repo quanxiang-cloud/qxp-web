@@ -164,7 +164,7 @@ function NodeToolbox(props: Props, ref: any): JSX.Element {
   }
 
   const { width, height, x, y } = seat;
-  const isModal = page.activeElem.exportName === 'modal';
+  const isModal = page.activeElem?.exportName === 'modal';
 
   return (
     <div
