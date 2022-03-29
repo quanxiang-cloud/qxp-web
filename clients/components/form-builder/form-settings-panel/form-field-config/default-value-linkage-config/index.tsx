@@ -213,12 +213,16 @@ function LinkageConfig({
     const linkTableField = linkedTableFieldsRef.current.find(
       (field) => field.value === currentFieldNameValue,
     );
-    const enumerable = !!(linkTableField?.fieldEnum || []).length;
 
+    if (!linkTableField) {
+      return;
+    }
+
+    const enumerable = !!(linkTableField.fieldEnum || []).length;
     setFieldState(compareValuePath, (state) => {
       const compareOperator = getFieldValue(operatePath);
       const preComponent = state.props['x-component'];
-      const currentValue = state.value;
+      const currentValue = getFieldValue(compareValuePath); // could not use 'state.value', because value is proxy when field is multiple select;
 
       if (currentCompareToValue === 'fixedValue' && enumerable) {
         state.props['x-component'] = 'antdselect';
@@ -226,28 +230,32 @@ function LinkageConfig({
           .includes(compareOperator) ? { mode: 'multiple' } : {};
         state.props.enum = linkTableField?.fieldEnum;
 
-        if (!!linkTableField && preComponent !== 'antdselect') {
-          state.value = undefined;
-          return;
-        }
-
-        if (linkTableField?.fieldEnum && !!linkTableField?.fieldEnum?.length) {
-          const optionValues = linkTableField?.fieldEnum;
+        if (linkTableField.fieldEnum?.length) {
+          const optionValues = linkTableField.fieldEnum;
           if (Array.isArray(currentValue)) {
             state.value = currentValue.filter((value: any) => optionValues.includes(value));
             return;
           }
 
-          state.value = optionValues.includes(currentValue) ? currentValue : undefined;
+          if (currentValue) {
+            state.value = optionValues.includes(currentValue) ? currentValue : undefined;
+            return;
+          }
+        }
+
+        if (preComponent !== 'antdselect') {
+          state.value = undefined;
           return;
         }
+
+        return;
       }
 
       if (currentCompareToValue === 'fixedValue') {
-        state.props['x-component'] = linkTableField?.componentName;
+        state.props['x-component'] = linkTableField.componentName;
         state.props.enum = undefined;
 
-        if (!!linkTableField && !!preComponent && linkTableField?.componentName !== preComponent) {
+        if (!!preComponent && linkTableField.componentName !== preComponent) {
           state.value = undefined;
         }
         return;
@@ -255,7 +263,7 @@ function LinkageConfig({
 
       const compareFields = currentFormFields
         .filter(({ componentName }) => {
-          return componentName === linkTableField?.componentName;
+          return componentName === linkTableField.componentName;
         })
         .map((field) => ({ label: field.title as string, value: field.id }));
       state.props['x-component'] = 'antdselect';
@@ -263,19 +271,18 @@ function LinkageConfig({
       state.props['x-component-props'] = ['∩', '∈', '∉']
         .includes(compareOperator) ? { mode: 'multiple' } : {};
       if (compareFields.length) {
-        if (!!linkTableField && preComponent !== 'antdselect') {
+        if (preComponent !== 'antdselect') {
           state.value = undefined;
           return;
         }
 
-        const optionValues = compareFields
-          .map(({ value }) => value);
+        const optionValues = compareFields.map(({ value }) => value);
         if (Array.isArray(currentValue)) {
           state.value = currentValue.filter((value: any) => optionValues.includes(value));
           return;
         }
 
-        if (currentValue && !optionValues.includes(currentValue)) {
+        if (!!currentValue && !optionValues.includes(currentValue)) {
           state.value = undefined;
           return;
         }
