@@ -5,6 +5,7 @@ import BasicInfoForm from './basic-info-form';
 
 import store from './store';
 import toast from '@lib/toast';
+import { observer } from 'mobx-react';
 
 type Props = {
   type: string;
@@ -16,10 +17,10 @@ function EditRightModal({ type, onCancel }: Props): JSX.Element {
   const formRef = useRef<any>();
 
   const handleSubmit = (): void => {
-    formRef.current?.handleSubmit((rights: RightsCreate) => {
+    formRef.current?.handleSubmit((roleDetails: RoleCreate) => {
       setLoading(true);
       if (type === 'add') {
-        store.addRightsGroup(rights).then(() => {
+        store.addRole(roleDetails).then(() => {
           setLoading(false);
           onCancel();
         }).catch((err) => {
@@ -30,7 +31,7 @@ function EditRightModal({ type, onCancel }: Props): JSX.Element {
       }
 
       if (type === 'copy') {
-        store.copyRightsGroup({ id: store.currentRights.id, ...rights }).then(() => {
+        store.copyRole({ id: store.currentRole.id, ...roleDetails }).then(() => {
           setLoading(false);
           onCancel();
         }).catch((err) => {
@@ -40,7 +41,7 @@ function EditRightModal({ type, onCancel }: Props): JSX.Element {
         return;
       }
 
-      store.updatePerGroup({ id: store.currentRights.id, ...rights }).then(()=>{
+      store.updateRole({ id: store.currentRole.id, ...roleDetails }).then(()=>{
         setLoading(false);
         onCancel();
       }).catch((err) => {
@@ -76,9 +77,9 @@ function EditRightModal({ type, onCancel }: Props): JSX.Element {
         type={type}
         className="p-20"
         ref={formRef}
-        defaultValue={type === 'add' ? {} : store.currentRights}/>
+        defaultValue={type === 'add' ? {} : store.currentRole}/>
     </Modal>
   );
 }
 
-export default EditRightModal;
+export default observer(EditRightModal);

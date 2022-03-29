@@ -1,11 +1,8 @@
-export const INIT_CURRENT_RIGHTS: Rights = {
+export const INIT_CURRENT_RIGHTS: Roles = {
   id: '',
   name: '',
-  createdBy: '',
-  scopes: [],
   description: '',
   appID: '',
-  add: true,
   types: 2,
 };
 

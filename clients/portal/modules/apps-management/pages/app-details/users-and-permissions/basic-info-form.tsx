@@ -7,7 +7,7 @@ import formFieldWrap from '@c/form-field-wrap';
 type Props = {
   type: string
   className?: string
-  defaultValue?: RightsCreate
+  defaultValue?: RoleCreate
 }
 
 const Input = formFieldWrap({ field: <input className='input'/> });

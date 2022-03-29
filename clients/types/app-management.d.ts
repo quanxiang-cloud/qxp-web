@@ -145,18 +145,12 @@ declare global {
     navType?: string;
   }
 
-  type Rights = {
+  type Roles = {
     id: string;
-    types?: number;
     appID?: string;
-    add?: boolean;
-    formID?: string;
-    sequence?: number;
-    createdBy?: string;
-    scopes?: DeptAndUser[];
-  } & RightsCreate
+  } & RoleCreate
 
-  type RightsCreate = {
+  type RoleCreate = {
     name?: string;
     description?: string;
     types?: number;
@@ -166,5 +160,6 @@ declare global {
     type: number;
     id: string;
     name: string;
+    roleID?: string;
   }
 }
