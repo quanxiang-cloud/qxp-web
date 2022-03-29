@@ -10,3 +10,4 @@ export default function AppLand(): JSX.Element {
     <SchemaRender schemaKey={rootSchemaKey} version={VERSION} />
   );
 }
+
