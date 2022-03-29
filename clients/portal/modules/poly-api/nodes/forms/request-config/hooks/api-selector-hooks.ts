@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { toast } from '@one-for-all/ui';
+import toast from '@lib/toast';
 import {
   useGetNamespaceFullPath, useQueryNameSpaceRawRootPath,
 } from '@polyApi/effects/api/namespace';

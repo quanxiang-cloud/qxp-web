@@ -2,20 +2,21 @@ import React from 'react';
 import { Select, SelectProps } from 'antd';
 import { observer } from 'mobx-react';
 
-import { COLORS } from '../constant';
+import colorVars from '../css-variables.json';
+
 import store from '../store';
 
 function ColorSelect({ value, onChange }: SelectProps<string>): JSX.Element {
   return (
     <Select style={{ width: '300px' }} value={value} onChange={onChange}>
-      {COLORS.map((color) => (
-        <Select.Option key={color} value={color}>
-          <div style={{ color: `var(--${color}-500)` }}>
+      {colorVars.baseColors.colors.map((color) => (
+        <Select.Option key={color.name} value={color.name}>
+          <div style={{ color: `var(--${color.name}-${colorVars.baseColors.primaryColorNo})` }}>
             <span
-              style={{ backgroundColor: `var(--${color}-500)` }}
+              style={{ backgroundColor: `var(--${color.name}-500)` }}
               className='inline-block w-10 h-10 mr-5'
             />
-            {color}
+            {color.name}
           </div>
         </Select.Option>
       ))}

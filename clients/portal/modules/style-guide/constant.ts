@@ -1,30 +1,3 @@
-export const COLORS = [
-  'rose',
-  'pink',
-  'fuchsia',
-  'purple',
-  'violet',
-  'indigo',
-  'blue',
-  'lightBlue',
-  'cyan',
-  'teal',
-  'emerald',
-  'green',
-  'lime',
-  'yellow',
-  'amber',
-  'orange',
-  'red',
-  'warmGray',
-  'trueGray',
-  'gray',
-  'coolGray',
-  'blueGray',
-];
-
-export const COLOR_DEPTH = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900];
-
 export const DEFAULT_CONFIG = {
   primaryColor: 'blue',
   titleIcon: '/dist/images/quanxiangyun.svg',

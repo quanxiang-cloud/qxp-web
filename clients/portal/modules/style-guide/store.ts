@@ -13,6 +13,7 @@ class StyleGuideStore {
   @action
   setCommonConfig = (newConfig: Partial<StyleGuideCommonConfig>): void => {
     this.commonConfig = { ...this.commonConfig, ...newConfig };
+    this.cssStore.baseVariables.primaryColor = this.commonConfig.primaryColor || 'blue';
   };
 
   @action
@@ -23,7 +24,7 @@ class StyleGuideStore {
     };
   };
 
-  generateCompCssUrl = async (): Promise<string> => {
+  generateCssUrl = async (): Promise<string> => {
     const cssFile = await this.cssStore?.getGzipFile().then((cssBlob: Blob | null) => {
       return cssBlob;
     });

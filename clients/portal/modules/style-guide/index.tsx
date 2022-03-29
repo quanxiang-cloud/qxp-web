@@ -8,8 +8,10 @@ import { setGlobalConfig, useGetGlobalConfig } from '@lib/configuration-center';
 
 import ComponentStyleConfigCenter from './component-style-config-center';
 import CommonConfig from './common-config';
-import { DEFAULT_CONFIG, COLOR_DEPTH } from './constant';
+import { DEFAULT_CONFIG } from './constant';
 import store from './store';
+
+import colorVars from './css-variables.json';
 
 export default function StyleGuide(): JSX.Element {
   const KEY = 'COMMON_STYLE_CONFIG';
@@ -23,21 +25,17 @@ export default function StyleGuide(): JSX.Element {
     }
 
     store.commonConfig = userStyleConfig;
-    store.cssStore = new CssASTStore(customCompCssMap);
+    store.cssStore = new CssASTStore({
+      initCssMap: customCompCssMap,
+      baseColorVariables: { ...colorVars.baseColors, primaryColor: userStyleConfig.primaryColor || 'blue' },
+    });
   }, [commonLoading, componentLoading]);
 
   async function handleSave(): Promise<void> {
     setGlobalConfig(COMPONENT_STYLE_CONFIG_KEY, '0.1.0', store.cssStore?.cssASTMap);
-    const styleCssUrl = await store.generateCompCssUrl();
-    setGlobalConfig(KEY, '0.1.0', { ...store.commonConfig, styleCssUrl }).then(() => {
-      COLOR_DEPTH.forEach((depth) => {
-        document.documentElement.style.setProperty(
-          `--primary-${depth}`,
-          `var(--${store.commonConfig.primaryColor}-${depth})`,
-        );
-      });
-      toast.success('保存成功');
-    });
+    const styleCssUrl = await store.generateCssUrl();
+    setGlobalConfig(KEY, '0.1.0', { ...store.commonConfig, styleCssUrl });
+    toast.success('保存成功');
   }
 
   return (

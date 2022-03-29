@@ -838,10 +838,10 @@
     "@one-for-all/schema-spec" "0.14.0"
     immutable "4.0.0"
 
-"@one-for-all/style-guide@0.1.1":
-  version "0.1.1"
-  resolved "https://registry.npmmirror.com/@one-for-all/style-guide/-/style-guide-0.1.1.tgz#c2768552e15fa182c59e07bfa64b82f318064ffe"
-  integrity sha512-MGvUvnH3EzZcIu2giYCEiZsZhfWCOgCa+EbXpdx3zLTsimFUZuPtZVyRf5K8eW4vlE3cwT0dgqhzfueaU8xTRw==
+"@one-for-all/style-guide@0.1.2":
+  version "0.1.2"
+  resolved "https://registry.npmmirror.com/@one-for-all/style-guide/-/style-guide-0.1.2.tgz#672937a04ab274785951b26f65aab4fa6de6d17d"
+  integrity sha512-VNqrtHcMoAJUtbR/z+mEthqp/bkdDS+1WTCjez0RfFFowO12JD6JRE4PzHLF4+bnNY97C1LMuFZw01xTfyziZA==
   dependencies:
     css-tree "^2.0.4"
     cssbeautify "^0.3.1"
@@ -850,22 +850,6 @@
   version "0.2.18"
   resolved "https://registry.npmmirror.com/@one-for-all/ui/-/ui-0.2.18.tgz#d3b809c8f277c72764a43730534bcc73a13b7abb"
   integrity sha512-ilJp/1IjFODEEsLp2z4kYjY5RdsAo7K34npJ3CU9CnhIGrEbF0F++mmyfvzWHZAN+Id+knGTafgTHQ/ua35QWQ==
-  dependencies:
-    "@popperjs/core" "^2.11.0"
-    classnames "^2.3.1"
-    lodash "^4.17.21"
-    nanoid "^3.1.30"
-    react "^17.0.2"
-    react-color "^2.19.3"
-    react-dom "^17.0.2"
-    react-is ">= 16.8.0"
-    react-popper "^2.2.5"
-    styled-components "^5.3.3"
-
-"@one-for-all/ui@0.2.19":
-  version "0.2.19"
-  resolved "https://registry.npmmirror.com/@one-for-all/ui/-/ui-0.2.19.tgz#f9c8d060b90cdc62801a77fac3ddd10352f691d2"
-  integrity sha512-z7ZO7BynMX3rdY35kemg1Rt465nTsdpjCbKHEkyYjMyiFA5UCVA/Ud7/EplTiS4PJ4TAIYyiPEmJpiOw7N2gmA==
   dependencies:
     "@popperjs/core" "^2.11.0"
     classnames "^2.3.1"
