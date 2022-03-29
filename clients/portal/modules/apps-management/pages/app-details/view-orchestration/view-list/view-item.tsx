@@ -8,14 +8,14 @@ import './index.scss';
 
 type Props = {
   view: View;
-  currentViewID: string
+  currentView: View;
   className?: string;
   onViewClick?: (view: View) => void;
   onOptionClick?: (key: string, view: View) => void;
 }
 
-function ViewItem({ view, onViewClick, onOptionClick, currentViewID }: Props): JSX.Element {
-  const isActive = currentViewID === view.id;
+function ViewItem({ view, onViewClick, onOptionClick, currentView }: Props): JSX.Element {
+  const isActive = currentView.name === view.name;
 
   return (
     <li

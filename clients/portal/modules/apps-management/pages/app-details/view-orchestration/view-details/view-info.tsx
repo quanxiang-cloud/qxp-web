@@ -20,7 +20,7 @@ type View_Map = {
   operator: string;
 }
 
-const VIEW_MAP: Record<string, View_Map> = {
+const VIEW_MAP: Record<ViewType, View_Map> = {
   table_schema_view: {
     icon: 'schema-form',
     viewType: '表单页面',

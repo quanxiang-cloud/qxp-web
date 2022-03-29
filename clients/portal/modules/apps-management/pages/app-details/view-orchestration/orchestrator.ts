@@ -259,7 +259,7 @@ class Orchestrator {
       type: 'react-component',
       label: params.name,
       // todo implement this
-      packageName: 'external_view',
+      packageName: 'SimpleViewRenders',
       // todo implement this
       packageVersion: '1.0.0',
       // todo implement this

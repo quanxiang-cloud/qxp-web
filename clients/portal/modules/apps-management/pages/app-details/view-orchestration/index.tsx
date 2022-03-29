@@ -47,18 +47,18 @@ function PageList(): JSX.Element {
   ): void {
     Promise.resolve().then(() => {
       if (modalType === 'createView') {
-        if (viewInfo.layoutType === ViewType.TableSchemaView) {
+        if (viewInfo.type === ViewType.TableSchemaView) {
           return appSchemaStore?.addTableSchemaView(viewInfo as CreateViewParams<TableSchemaView>);
         }
 
-        if (viewInfo.layoutType === ViewType.SchemaView) {
+        if (viewInfo.type === ViewType.SchemaView) {
           return appSchemaStore?.addSchemaView(viewInfo as CreateViewParams<SchemaView>);
         }
 
-        if (viewInfo.layoutType === ViewType.StaticView) {
+        if (viewInfo.type === ViewType.StaticView) {
           return appSchemaStore?.addStaticView(viewInfo as CreateViewParams<StaticView>);
         }
-        if (viewInfo.layoutType === ViewType.ExternalView) {
+        if (viewInfo.type === ViewType.ExternalView) {
           return appSchemaStore?.addExternalView(viewInfo as CreateViewParams<ExternalView>);
         }
       }
@@ -69,6 +69,8 @@ function PageList(): JSX.Element {
 
       return appSchemaStore?.updateViewName(currentView!, viewInfo.name!);
     }).then(() => {
+      console.log(viewInfo);
+
       closeModal();
       toast.success((modalType === 'createView' ? '添加' : '修改') + '成功');
       setCurrentView(viewInfo);
@@ -103,7 +105,7 @@ function PageList(): JSX.Element {
         <div className='app-view-list-wrapper h-full'>
           <ViewList
             className='pb-10'
-            currentViewID={(currentView as View)?.id || ''}
+            currentView={(currentView as View)}
             views={appSchemaStore?.views as View[]}
             onViewClick={(view) => setCurrentView(view)}
             onOptionClick={(key, view) => {

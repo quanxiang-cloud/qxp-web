@@ -119,7 +119,7 @@ function EditViewModal(
         {
           modalType === 'createView' && (<>
             <Item
-              name='layoutType'
+              name='type'
               label="页面类型"
               rules={[
                 {

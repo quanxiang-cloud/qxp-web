@@ -10,6 +10,7 @@ import {
 import toast from '@lib/toast';
 
 import store from '../app-details/store';
+import SimpleViewRenders from './simple-view-render';
 
 export const PG_SAVED_PREFIX = 'pge-';
 export const PG_DRAFT_PREFIX = 'pge-draft-';
@@ -65,6 +66,7 @@ export function getRenderRepository(): any {
   const pageCtx = getStore();
   return {
     'ofa-ui@latest': pageCtx.registry.toComponentMap(),
+    'SimpleViewRenders@1.0.0': SimpleViewRenders,
   };
 }
 
