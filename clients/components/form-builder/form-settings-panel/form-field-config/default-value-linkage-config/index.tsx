@@ -59,13 +59,8 @@ const DEFAULT_VALUE_LINKAGE: FormBuilder.DefaultValueLinkage = {
 };
 
 export type LinkedTableFieldOptions = FormBuilder.Option & {
-  fieldEnum: Array<FormBuilder.Option>;
+  fieldEnum: string[];
   componentName: string;
-}
-
-type Option = {
-  label: string,
-  value: string,
 }
 
 type Props = {
@@ -184,20 +179,21 @@ function LinkageConfig({
   }
 
   function updateCompareValueFieldOnCompareOperatorChanged({ name, value }: IFieldState): void {
-    const isMultiple = ['∩', '∈', '∉'].includes(value);
+    const isMultiple = ['⊋', '⊇', '∈', '∉'].includes(value);
     const fieldNamePath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.fieldName`);
     const compareToPath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.compareTo`);
     const currentFieldNameValue = getFieldValue(fieldNamePath);
     const currentCompareToValue = getFieldValue(compareToPath);
-    let compareValueOptions: Option[] | undefined = [];
+    let compareValueOptions: string[] | undefined = [];
+
     if (currentCompareToValue === 'fixedValue') {
       compareValueOptions = linkedTableFieldsRef.current.find(
         (field) => field.value === currentFieldNameValue,
-      )?.fieldEnum.map(({ label, value })=> ({ label, value }));
+      )?.fieldEnum;
     }
+
     if (currentCompareToValue === 'currentFormValue') {
-      compareValueOptions = currentFormFields
-        .map((field) => ({ label: field.title as string, value: field.id }));
+      compareValueOptions = currentFormFields.map((field) => field.id);
     }
 
     updateCompareValueFieldMode(name, isMultiple, compareValueOptions);
@@ -213,34 +209,32 @@ function LinkageConfig({
     const linkTableField = linkedTableFieldsRef.current.find(
       (field) => field.value === currentFieldNameValue,
     );
-
-    if (!linkTableField) {
-      return;
-    }
-
-    const enumerable = !!(linkTableField.fieldEnum || []).length;
+    const enumerable = !!(linkTableField?.fieldEnum || []).length;
     setFieldState(compareValuePath, (state) => {
       const compareOperator = getFieldValue(operatePath);
       const preComponent = state.props['x-component'];
       const currentValue = getFieldValue(compareValuePath); // could not use 'state.value', because value is proxy when field is multiple select;
 
       if (currentCompareToValue === 'fixedValue' && enumerable) {
+        if (!linkTableField) {
+          return;
+        }
+
         state.props['x-component'] = 'antdselect';
-        state.props['x-component-props'] = ['⊇', '⊋', '∩', '∈', '∉']
-          .includes(compareOperator) ? { mode: 'multiple' } : {};
         state.props.enum = linkTableField?.fieldEnum;
+        state.props['x-component-props'] = ['⊇', '⊋', '∈', '∉']
+          .includes(compareOperator) ? { mode: 'multiple' } : {};
 
         if (linkTableField.fieldEnum?.length) {
           const optionValues = linkTableField.fieldEnum;
+
           if (Array.isArray(currentValue)) {
             state.value = currentValue.filter((value: any) => optionValues.includes(value));
-            return;
+          } else if (!Array.isArray(currentValue)) {
+            state.value = optionValues.includes(currentValue) ? currentValue : undefined;
           }
 
-          if (currentValue) {
-            state.value = optionValues.includes(currentValue) ? currentValue : undefined;
-            return;
-          }
+          return;
         }
 
         if (preComponent !== 'antdselect') {
@@ -251,11 +245,11 @@ function LinkageConfig({
         return;
       }
 
-      if (currentCompareToValue === 'fixedValue') {
-        state.props['x-component'] = linkTableField.componentName;
+      if (currentCompareToValue === 'fixedValue' && !enumerable) {
+        state.props['x-component'] = linkTableField?.componentName;
         state.props.enum = undefined;
 
-        if (!!preComponent && linkTableField.componentName !== preComponent) {
+        if (preComponent && linkTableField?.componentName && linkTableField?.componentName !== preComponent) {
           state.value = undefined;
         }
         return;
@@ -263,26 +257,27 @@ function LinkageConfig({
 
       const compareFields = currentFormFields
         .filter(({ componentName }) => {
-          return componentName === linkTableField.componentName;
+          return componentName === linkTableField?.componentName;
         })
         .map((field) => ({ label: field.title as string, value: field.id }));
       state.props['x-component'] = 'antdselect';
       state.props.enum = compareFields;
-      state.props['x-component-props'] = ['∩', '∈', '∉']
+      state.props['x-component-props'] = ['⊇', '⊋', '∈', '∉']
         .includes(compareOperator) ? { mode: 'multiple' } : {};
-      if (compareFields.length) {
-        if (preComponent !== 'antdselect') {
-          state.value = undefined;
-          return;
-        }
 
+      if (compareFields.length) {
         const optionValues = compareFields.map(({ value }) => value);
         if (Array.isArray(currentValue)) {
           state.value = currentValue.filter((value: any) => optionValues.includes(value));
           return;
         }
 
-        if (!!currentValue && !optionValues.includes(currentValue)) {
+        if (!optionValues.includes(currentValue)) {
+          state.value = undefined;
+          return;
+        }
+
+        if (preComponent !== 'antdselect') {
           state.value = undefined;
           return;
         }
@@ -291,27 +286,27 @@ function LinkageConfig({
   }
 
   function updateCompareValueFieldMode(
-    name: string, isMultiple: boolean, options: Option[] | undefined,
+    name: string, isMultiple: boolean, optionValues: string[] | undefined,
   ): void {
     const compareValuePath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.compareValue`);
     setFieldState(compareValuePath, (state) => {
       const compareValue = getFieldValue(compareValuePath);
       state.props['x-component-props'] = isMultiple ? { mode: 'multiple' } : {};
 
-      if (options && !!options?.length) {
+      if (!!compareValue && optionValues?.length) {
         if (isMultiple && !Array.isArray(compareValue)) {
-          const shouldResetToValue = options.find(({ value }) => {
+          const shouldResetToValue = optionValues.find((value) => {
             return value === compareValue;
-          })?.value;
+          });
 
-          state.value = [shouldResetToValue];
+          state.value = shouldResetToValue ? [shouldResetToValue] : undefined;
           return;
         }
 
         if (!isMultiple && Array.isArray(compareValue)) {
-          const shouldResetToValue = options.find(({ value }) => {
+          const shouldResetToValue = optionValues.find((value) => {
             return compareValue.includes(value);
-          })?.value;
+          });
 
           state.value = shouldResetToValue;
           return;
