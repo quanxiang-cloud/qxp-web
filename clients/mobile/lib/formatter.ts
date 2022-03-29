@@ -1,27 +1,20 @@
 import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
+
+dayjs.extend(duration);
 
 export function formatTime(date: Date, absolute = false): string {
+  if (!absolute) {
+    return formatRelativeTime(date);
+  }
+
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
   const day = date.getDate();
   const hour = date.getHours();
   const minute = date.getMinutes();
-
-  if (!absolute) {
-    const now = new Date();
-    const nowYear = now.getFullYear();
-
-    if (nowYear - year > 0) {
-      return `${nowYear - year}年前`;
-    } else if (nowYear - year < 0) {
-      return `${year - nowYear}年后`;
-    } else if (now.getMonth() - month - 1 === 0 && now.getDate() - day) { // Today
-      return [hour, minute].map(formatNumber).join(':');
-    }
-    return `${month}月${day}日`;
-  }
-
   const second = date.getSeconds();
+
   return (
     [year, month, day].map(formatNumber).join('/') +
     ' ' +
@@ -29,55 +22,46 @@ export function formatTime(date: Date, absolute = false): string {
   );
 }
 
-export function formatRelativeTime(time: Date): string {
-  const timeStamp = new Date(time).getTime();
-  const currTimeStamp = new Date().getTime();
+export function formatRelativeTime(time: dayjs.ConfigType): string {
+  const now = dayjs();
+  const diffDate = dayjs(time);
 
-  const timeDiffer = Math.abs(currTimeStamp - timeStamp);
-
-  const _second = Math.floor(timeDiffer / 1000);
-  if (_second < 60) {
-    return '刚刚';
+  let unit = '前';
+  if (now.isBefore(diffDate)) {
+    unit = '后';
   }
 
-  const _minute = Math.floor(timeDiffer / (1000 * 60));
-  if (0 < _minute && _minute < 60) {
-    return `${_minute}分钟前`;
+  const duration = dayjs.duration(now.diff(diffDate));
+
+  const years = duration.years();
+  if (years > 0) return `${years}年${unit}`;
+
+  const months = duration.months();
+  if (months > 0) {
+    // Check if the years equal
+    if (now.year() === diffDate.year()) return diffDate.format('M月D日');
+    else return diffDate.format('YYYY年M月D日');
   }
 
-  const currZeroPointStamp = new Date().getTime();
-  const oldZeroPointStamp = currZeroPointStamp - 86400000;
-
-  if (timeStamp >= currZeroPointStamp && timeStamp <= currTimeStamp) {
-    const _hour = Math.floor(timeDiffer / (1000 * 60 * 60));
-    return `${_hour}小时前`;
+  const days = duration.days();
+  if (days === 1) {
+    if (unit === '前') return `昨天 ${diffDate.format('HH:mm')}`;
+    else return `明天 ${diffDate.format('HH:mm')}`;
   }
+  if (days > 0) return `${days}天${unit}`;
 
-  if (timeStamp >= oldZeroPointStamp && timeStamp < currZeroPointStamp) {
-    return '昨天 ' + dayjs(time).format('HH:mm');
-  }
+  const hours = duration.hours();
+  if (hours > 0) return `${hours}小时${unit}`;
 
-  const currYear = new Date().getFullYear();
-  const currYearZeroPointStamp = new Date(`${currYear}/01/01 00:00:00`).getTime();
-  if (currYearZeroPointStamp <= timeStamp) {
-    return dayjs(time).format('M月D日');
-  }
+  const minutes = duration.minutes();
+  if (minutes > 0) return `${minutes}分钟${unit}`;
 
-  const timeYear = time.getFullYear();
-  if (timeYear < currYear) {
-    return `${currYear - timeYear}年前`;
-  } else {
-    return `${timeYear - currYear}年后`;
-  }
+  return '刚刚';
 }
 
 function formatNumber(n: number): string {
   const s = n.toString();
   return s[1] ? s : '0' + s;
-}
-
-export function formatTimeSeconds(time: number, absolute = false): string {
-  return formatTime(new Date(time * 1000), absolute);
 }
 
 export function greeting(username?: string): string {

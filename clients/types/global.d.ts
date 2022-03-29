@@ -61,3 +61,5 @@ type OSSConfig = {
   readable: string;
   domain: string;
 }
+
+type FutureErrorMessage = Promise<'' | string>;
