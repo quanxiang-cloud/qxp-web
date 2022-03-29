@@ -31,6 +31,9 @@ import type {
   LayoutType,
   CreateViewParams,
   ExternalView,
+  StaticView,
+  SchemaView,
+  TableSchemaView,
 } from './types';
 import { ROOT_NODE_ID } from './constants';
 import { createBlank } from '../api';
@@ -132,7 +135,7 @@ class Orchestrator {
     return this.saveSchema(rootNode);
   }
 
-  async addTableSchemaView(params: CreateViewParams): FutureErrorMessage {
+  async addTableSchemaView(params: CreateViewParams<TableSchemaView>): FutureErrorMessage {
     if (!this.rootNode) {
       return 'no root node found for this app, please init root node again!';
     }
@@ -175,7 +178,7 @@ class Orchestrator {
     });
   }
 
-  async addSchemaView(params: CreateViewParams): FutureErrorMessage {
+  async addSchemaView(params: CreateViewParams<SchemaView>): FutureErrorMessage {
     if (!this.rootNode) {
       return 'no root node found for this app, please init root node again!';
     }
@@ -222,7 +225,7 @@ class Orchestrator {
     return this.saveSchema(rootNode);
   }
 
-  async addStaticView(params: CreateViewParams & { fileUrl: string; }): FutureErrorMessage {
+  async addStaticView(params: CreateViewParams<StaticView>): FutureErrorMessage {
     const staticViewNode: ReactComponentNode = {
       id: genNodeID(),
       type: 'react-component',
@@ -250,9 +253,7 @@ class Orchestrator {
     return this.saveSchema(rootNode);
   }
 
-  async addExternalView(params: CreateViewParams & { link: string; }): FutureErrorMessage {
-    console.log(params);
-
+  async addExternalView(params: CreateViewParams<ExternalView>): FutureErrorMessage {
     const staticViewNode: ReactComponentNode = {
       id: genNodeID(),
       type: 'react-component',
@@ -286,18 +287,45 @@ class Orchestrator {
   // async editSchemaView(view: SchemaView): FutureErrorMessage;
   // async editStaticView(view: StaticView): FutureErrorMessage;
 
+  @action
+  async editStaticView(view: StaticView): FutureErrorMessage {
+    if (!this.rootNode) {
+      return 'no root node found for this app, please init root node again!';
+    }
+
+    const targetNode = findNodeByID(this.rootNode, view.id);
+
+    if (!targetNode) {
+      return 'target node not found';
+    }
+
+    const externalViewNode: ReactComponentNode = {
+      ...(targetNode as ReactComponentNode),
+      label: view.name,
+      props: {
+        fileUrl: { type: 'constant_property', value: view.fileUrl },
+      },
+    };
+
+    const rootNode = patchNode(this.rootNode, externalViewNode);
+    return this.saveSchema(rootNode);
+  }
+
+  @action
   async editExternalView(view: ExternalView): FutureErrorMessage {
     if (!this.rootNode) {
       return 'no root node found for this app, please init root node again!';
     }
 
+    const targetNode = findNodeByID(this.rootNode, view.id);
+
+    if (!targetNode) {
+      return 'target node not found';
+    }
+
     const externalViewNode: ReactComponentNode = {
-      id: view.id,
+      ...(targetNode as ReactComponentNode),
       label: view.name,
-      type: 'react-component',
-      packageName: 'todo_implement_this',
-      packageVersion: 'todo_implement_this',
-      exportName: 'todo_implement_this',
       props: {
         link: { type: 'constant_property', value: view.link },
       },
