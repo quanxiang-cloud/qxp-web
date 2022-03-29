@@ -8,7 +8,7 @@ type Props = {
 
 const elem: SourceElement<Props> = {
   name: 'radio',
-  icon: 'apps',
+  icon: 'radio_button_checked',
   label: '单选',
   category: 'form',
   component: RadioGroupElm,

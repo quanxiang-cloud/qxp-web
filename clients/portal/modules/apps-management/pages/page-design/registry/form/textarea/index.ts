@@ -12,7 +12,7 @@ type Props = {
 
 const elem: SourceElement<Props> = {
   name: 'textarea',
-  icon: 'text-component',
+  icon: 'wrap_text',
   label: '多行文本',
   category: 'form',
   component: Textarea,

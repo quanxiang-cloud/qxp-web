@@ -9,6 +9,11 @@ import { SourceElement } from '../../../types';
 
 import styles from './index.m.scss';
 
+const iconsSizeGroup = {
+  36: ['grid', 'container', 'text', 'para', 'image', 'button', 'link', 'iframe'],
+  24: ['icon', 'radio', 'form', 'table', 'modal', 'input', 'textarea'],
+};
+
 function SourceElem(props: SourceElement<any>): JSX.Element {
   const { page, registry, designer } = useCtx();
   const compName = props.name.toLowerCase();
@@ -42,16 +47,27 @@ function SourceElem(props: SourceElement<any>): JSX.Element {
     },
   }));
 
+  let iconSize = 48;
+  if (iconsSizeGroup[36].includes(props.name)) {
+    iconSize = 36;
+  }
+  if (iconsSizeGroup[24].includes(props.name)) {
+    iconSize = 24;
+  }
+
   return (
     <div
       className={cs(styles.sourceElem, { [styles.dragging]: isDragging })}
       ref={drag}
       onClick={() => addNodeToCanvas()}
     >
-      <div className='w-full h-40 flex items-center justify-center bg-gray-50'>
+      <div
+        className='w-full h-40 flex items-center justify-center bg-gray-50'
+        style={{ filter: 'grayscale(100%)' }}
+      >
         <Icon
           name={props.icon || 'insert_drive_file'}
-          size={48}
+          size={iconSize}
         />
       </div>
       <div>

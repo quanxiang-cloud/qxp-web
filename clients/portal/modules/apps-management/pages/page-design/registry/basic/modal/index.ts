@@ -4,7 +4,7 @@ import type { SourceElement } from '../../../types';
 
 const elem: SourceElement<Props> = {
   name: 'modal',
-  icon: 'grid-12',
+  icon: 'pages',
   label: '模态框',
   category: 'basic',
   component: Dialog,

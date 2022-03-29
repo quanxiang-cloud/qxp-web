@@ -6,14 +6,15 @@ import { fetchSchemaWithSwagger } from './api';
 import repository from './repository';
 
 const refLoader: RefLoader = (schemaID: string) => {
-  return fetchSchemaWithSwagger(schemaID, VERSION).then(({ schema, swagger }) => {
+  return fetchSchemaWithSwagger(schemaID, VERSION).then(({ schema, swagger }: any) => {
     if (!schema) {
       return Promise.reject(new Error('failed to fetch schema'));
     }
 
     const adapter = swagger ? new SwaggerRPCSpecAdapter(swagger) : undefined;
     return {
-      schema, plugins: {
+      schema,
+      plugins: {
         apiSpecAdapter: adapter,
         repository,
       },

@@ -9,7 +9,7 @@ type Props = {
 
 const elem: SourceElement<Props> = {
   name: 'para',
-  icon: 'text-component',
+  icon: 'short_text',
   label: '段落',
   category: 'basic',
   component: Paragraph,

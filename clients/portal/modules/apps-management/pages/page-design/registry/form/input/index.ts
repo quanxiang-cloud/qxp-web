@@ -13,7 +13,7 @@ type Props = {
 
 const elem: SourceElement<Props> = {
   name: 'input',
-  icon: 'text-component',
+  icon: 'text_fields',
   label: '单行文本',
   category: 'form',
   component: Input,
