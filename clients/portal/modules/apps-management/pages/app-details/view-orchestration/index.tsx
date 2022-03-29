@@ -15,7 +15,7 @@ import ViewDetails from './view-details';
 import EditViewModal from './edit-view-modal';
 import Orchestrator from '../view-orchestration/orchestrator';
 
-import { CreateViewParams, View, ViewType } from '../view-orchestration/types.d';
+import { CreateViewParams, ExternalView, SchemaView, StaticView, TableSchemaView, View, ViewType } from '../view-orchestration/types.d';
 
 import EditStaticViewModal from './view-details/edit-static-view-modal';
 
@@ -43,29 +43,35 @@ function PageList(): JSX.Element {
   });
 
   function handleViewInfoSubmit(
-    viewInfo: (CreateViewParams & { layoutType: string, fileUrl: string, link: string }),
+    viewInfo: CreateViewParams<View>,
   ): void {
     Promise.resolve().then(() => {
       if (modalType === 'createView') {
         if (viewInfo.layoutType === ViewType.TableSchemaView) {
-          return appSchemaStore?.addTableSchemaView(viewInfo);
+          return appSchemaStore?.addTableSchemaView(viewInfo as CreateViewParams<TableSchemaView>);
         }
 
         if (viewInfo.layoutType === ViewType.SchemaView) {
-          return appSchemaStore?.addSchemaView(viewInfo);
+          return appSchemaStore?.addSchemaView(viewInfo as CreateViewParams<SchemaView>);
         }
 
         if (viewInfo.layoutType === ViewType.StaticView) {
-          return appSchemaStore?.addStaticView(viewInfo);
+          return appSchemaStore?.addStaticView(viewInfo as CreateViewParams<StaticView>);
         }
         if (viewInfo.layoutType === ViewType.ExternalView) {
-          return appSchemaStore?.addExternalView(viewInfo);
+          return appSchemaStore?.addExternalView(viewInfo as CreateViewParams<ExternalView>);
         }
       }
-      return appSchemaStore?.updateViewName(currentView!, viewInfo.name);
+
+      if (modalType === 'editStaticView') {
+        return appSchemaStore?.editStaticView(viewInfo as StaticView);
+      }
+
+      return appSchemaStore?.updateViewName(currentView!, viewInfo.name!);
     }).then(() => {
       closeModal();
       toast.success((modalType === 'createView' ? '添加' : '修改') + '成功');
+      setCurrentView(viewInfo);
     });
   }
 
@@ -134,7 +140,7 @@ function PageList(): JSX.Element {
       )}
       {modalType === 'editStaticView' && (
         <EditStaticViewModal
-          view={currentView}
+          view={currentView as StaticView}
           onClose={closeModal}
           onSubmit={handleViewInfoSubmit}
         />

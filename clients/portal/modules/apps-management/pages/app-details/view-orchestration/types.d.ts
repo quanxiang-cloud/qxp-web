@@ -72,9 +72,4 @@ export type CardInfo = {
 export type View = TableSchemaView | SchemaView | StaticView | ExternalView;
 export type ViewGroup = { name: string; views: Array<View>; }
 
-export interface CreateViewParams {
-  name: string;
-  layoutID: string;
-  group?: string;
-  description?: string;
-}
+export type CreateViewParams<T> = T & { layoutID?: string, layoutType?: string}

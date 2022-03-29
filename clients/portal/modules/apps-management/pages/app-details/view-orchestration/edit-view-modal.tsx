@@ -7,14 +7,14 @@ import { RadioButtonGroup } from '@one-for-all/ui';
 import Select from '@c/select';
 
 import StaticViewUpload from './static-view-upload';
-import { BaseView, CreateViewParams, Layout, View, ViewGroup, ViewType } from '../view-orchestration/types.d';
+import { BaseView, CreateViewParams, ExternalView, Layout, View, ViewGroup, ViewType } from '../view-orchestration/types.d';
 
 const { Item } = Form;
 // const { TextArea } = Input;
 
 type Props = {
   onCancel: () => void;
-  onSubmit: (viewInfo: (CreateViewParams & { layoutType: string, fileUrl: string, link: string })) => void;
+  onSubmit: (viewInfo: CreateViewParams<View>) => void;
   layouts: Layout[];
   views: Array<View | ViewGroup>;
   modalType: string;
@@ -43,7 +43,7 @@ const viewTypeMap: LabelValue[] = [
 function EditViewModal(
   { viewParams, onCancel, onSubmit, views, layouts, modalType }: Props,
 ): JSX.Element {
-  const [viewType, setViewType] = useState<ViewType>(ViewType.TableSchemaView);
+  const [viewType, setViewType] = useState<ViewType>(viewParams?.type || ViewType.TableSchemaView);
   const [form] = Form.useForm();
   const allViewNames = views.map((view) => (view as BaseView).name);
 
@@ -56,13 +56,11 @@ function EditViewModal(
   }
 
   function validateRepeat(value: string): boolean {
-    return allViewNames.includes(value);
+    return allViewNames.includes(value) && modalType === 'createView';
   }
 
-  const { name } = viewParams || {};
-
   const getTitle = cond([
-    [() => modalType === 'editView', always('编辑名称')],
+    [() => modalType === 'editView', always('编辑页面')],
     [T, always('新建页面')],
   ]);
 
@@ -89,7 +87,7 @@ function EditViewModal(
         form={form}
         onFinish={handleFinish}
         initialValues={{
-          name,
+          name: viewParams?.name,
         }}
       >
         <Item
@@ -119,7 +117,7 @@ function EditViewModal(
           <Input placeholder='请输入页面名称' />
         </Item>
         {
-          modalType !== 'editView' && (<>
+          modalType === 'createView' && (<>
             <Item
               name='layoutType'
               label="页面类型"
@@ -139,24 +137,6 @@ function EditViewModal(
                 currentValue={viewType}
               />
             </Item>
-            {viewType === ViewType.StaticView && (
-              <Item
-                required
-                name="fileUrl"
-                label="上传静态页面"
-              >
-                <StaticViewUpload />
-              </Item>
-            )}
-            {viewType === ViewType.ExternalView && (
-              <Item
-                required
-                name="link"
-                label="外部链接地址"
-              >
-                <Input placeholder='请输入链接地址' />
-              </Item>
-            )}
             <Item
               name='layoutID'
               label="页面布局"
@@ -184,7 +164,24 @@ function EditViewModal(
             </Item> */}
           </>)
         }
-
+        {viewType === ViewType.StaticView && ['createView'].includes(modalType) && (
+          <Item
+            required
+            name="fileUrl"
+            label="上传静态页面"
+          >
+            <StaticViewUpload />
+          </Item>
+        )}
+        {viewType === ViewType.ExternalView && ['createView', 'editView'].includes(modalType) && (
+          <Item
+            required
+            name="link"
+            label="外部链接地址"
+          >
+            <Input placeholder='请输入链接地址' defaultValue={(viewParams as ExternalView)?.link} />
+          </Item>
+        )}
       </Form>
     </Modal>
   );

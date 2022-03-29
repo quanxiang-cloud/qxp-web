@@ -1,21 +1,27 @@
 import React, { useState } from 'react';
 
 import Modal from '@c/modal';
+import toast from '@lib/toast';
 
-import { View, CreateViewParams } from '../types.d';
 import StaticViewUpload from '../static-view-upload';
+
+import type { StaticView } from '../types.d';
 
 type Props = {
   onClose: () => void;
-  onSubmit: (viewInfo: (CreateViewParams & { layoutType: string, fileUrl: string, link: string }),) => void;
-  view?: View;
+  onSubmit: (viewInfo: StaticView,) => void;
+  view?: StaticView;
 }
 
 function EditStaticViewModal({ view, onClose, onSubmit }: Props): JSX.Element {
   const [fileUrl, setFileUrl] = useState<string>('');
 
   function handleSubmit(): void {
-    onSubmit({ ...view, fileUrl } as any);
+    if (!fileUrl) {
+      toast.error('请上传正确的文件');
+      return;
+    }
+    onSubmit({ ...view, fileUrl } as StaticView );
   }
 
   return (

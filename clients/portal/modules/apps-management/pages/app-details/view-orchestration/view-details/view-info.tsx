@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
 import Tab from '@c/tab';
@@ -49,27 +49,7 @@ function ViewInfo({ view, openModal }: Props): JSX.Element {
   const { appID } = useParams<{ appID: string }>();
   const pageDescriptions = [{ id: 'type', title: '页面类型', value: VIEW_MAP[type].viewType }];
 
-  function goPageDesign(): void {
-    history.push(`/apps/page-design/${view.id}/${appID}?pageName=${view.name}`);
-  }
-
-  function goFormBuild(): void {
-    history.push(`/apps/formDesign/formBuild/${view.id}/${appID}?pageName=${view.name}`);
-  }
-
-  function handleBtnClick(): void {
-    if (type === ViewType.StaticView) {
-      return openModal('editStaticView');
-    }
-
-    if (type === ViewType.SchemaView) {
-      return goPageDesign();
-    }
-
-    goFormBuild();
-  }
-
-  function Preview(): JSX.Element | null {
+  const Preview = useMemo((): JSX.Element | null => {
     if (type === ViewType.StaticView) {
       return (
         <iframe
@@ -100,6 +80,30 @@ function ViewInfo({ view, openModal }: Props): JSX.Element {
     }
 
     return null;
+  }, [view]);
+
+  function goPageDesign(): void {
+    history.push(`/apps/page-design/${view.id}/${appID}?pageName=${view.name}`);
+  }
+
+  function goFormBuild(): void {
+    history.push(`/apps/formDesign/formBuild/${view.id}/${appID}?pageName=${view.name}`);
+  }
+
+  function handleBtnClick(): void {
+    if (type === ViewType.StaticView) {
+      return openModal('editStaticView');
+    }
+
+    if (type === ViewType.SchemaView) {
+      return goPageDesign();
+    }
+
+    if (type === ViewType.ExternalView) {
+      return openModal('editView');
+    }
+
+    goFormBuild();
   }
 
   return (
@@ -139,7 +143,7 @@ function ViewInfo({ view, openModal }: Props): JSX.Element {
             {
               id: 'page-preview',
               name: '页面预览',
-              content: <Preview />,
+              content: Preview,
             },
           ]}
         />
