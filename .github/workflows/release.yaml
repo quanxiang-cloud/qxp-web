@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - 'release/**'
+      - release/v1.0.0
 jobs:
   bundle-clients:
     runs-on: ubuntu-latest
