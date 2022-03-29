@@ -46,7 +46,7 @@ class UserAndPerStore {
   };
 
   @action
-  setRoles = (res: {list: Roles[]}): void => {
+  setRoles = (res: { list: Roles[] }): void => {
     const { list = [] } = res || {};
     this.rolesList = list;
     const { id } = getQuery<{ id: string }>();
@@ -71,7 +71,7 @@ class UserAndPerStore {
   @action
   addRole = (role: RoleCreate): Promise<void> => {
     return createRole(this.appID, role)
-      .then((res: {id: string}) => {
+      .then((res: { id: string }) => {
         this.currentRole = { ...role, ...res };
         this.updateUserAndPerStore();
       })
@@ -84,7 +84,7 @@ class UserAndPerStore {
       groupID: rights.id,
       name: rights.name,
       description: rights.description,
-    }).then((res: {id: string}) => {
+    }).then((res: { id: string }) => {
       this.currentRole = { ...this.currentRole, ...rights, ...res };
       this.updateUserAndPerStore();
       toast.success('复制成功！');
@@ -118,7 +118,7 @@ class UserAndPerStore {
     const query = `
     {query(ids:${JSON.stringify(usersIDList)}){users{id,email,phone,name,departments{id,name}}}}
     `;
-    getUserDetail<{users: []}>({
+    getUserDetail<{ users: [] }>({
       query,
     }).then((res: any) => {
       this.UserDetailList = res?.users;
@@ -129,7 +129,7 @@ class UserAndPerStore {
 
   @action
   updatePerUser = (
-    addAndRemoveList: {add: DeptAndUser[], removes: string[]},
+    addAndRemoveList: { add: DeptAndUser[], removes: string[] },
   ): Promise<boolean> => {
     return updatePerUser(this.appID, this.currentRoleID, addAndRemoveList)
       .then(() => {
@@ -146,9 +146,9 @@ class UserAndPerStore {
   };
 
   @action
-  fetchAPIListAuth = (path: {roleID: string, path: string}[]): Promise<APIAuth[]> => {
-    return fetchAPIListAuth(this.appID, path )
-      .then((res: {list: APIAuth[]}) => {
+  fetchAPIListAuth = (path: { roleID: string, path: string }[]): Promise<APIAuth[]> => {
+    return fetchAPIListAuth(this.appID, path)
+      .then((res: { list: APIAuth[] }) => {
         return res.list || [];
       })
       .catch((err) => {

@@ -41,7 +41,7 @@ function EditRightModal({ type, onCancel }: Props): JSX.Element {
         return;
       }
 
-      store.updateRole({ id: store.currentRole.id, ...roleDetails }).then(()=>{
+      store.updateRole({ id: store.currentRole.id, ...roleDetails }).then(() => {
         setLoading(false);
         onCancel();
       }).catch((err) => {
@@ -77,7 +77,7 @@ function EditRightModal({ type, onCancel }: Props): JSX.Element {
         type={type}
         className="p-20"
         ref={formRef}
-        defaultValue={type === 'add' ? {} : store.currentRole}/>
+        defaultValue={type === 'add' ? {} : store.currentRole} />
     </Modal>
   );
 }

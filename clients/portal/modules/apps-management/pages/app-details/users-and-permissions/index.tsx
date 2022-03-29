@@ -121,7 +121,7 @@ function UsersAndPermissions(): JSX.Element {
     {
       id: 'datasource',
       name: '数据源权限',
-      content: <DataSource/>,
+      content: <DataSource />,
     },
   ];
 

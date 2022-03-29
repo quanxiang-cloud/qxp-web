@@ -12,7 +12,7 @@ export const copyRole = (appID: string, data: {
   return httpClient(`/api/v1/form/${appID}/m/permission/duplicatePer`, data);
 };
 
-export const fetchRoles = (appID: string): Promise<{list: Roles[]}> => {
+export const fetchRoles = (appID: string): Promise<{ list: Roles[] }> => {
   return httpClient(`/api/v1/form1/${appID}/m/apiRole/find`);
 };
 
@@ -20,7 +20,7 @@ export const deleteRole = (appID: string, roleID: string): Promise<void> => {
   return httpClient(`/api/v1/form1/${appID}/m/apiRole/delete/${roleID}`);
 };
 
-export const fetchRolePerson = (appID: string, roleID: string): Promise<{list: DeptAndUser[]}> => {
+export const fetchRolePerson = (appID: string, roleID: string): Promise<{ list: DeptAndUser[] }> => {
   return httpClient(`/api/v1/form1/${appID}/m/apiRole/grant/list/${roleID}`);
 };
 
@@ -31,12 +31,12 @@ export const updateRole = (appID: string, data: Roles): Promise<void> => {
 export const updatePerUser = (
   appID: string,
   roleID: string,
-  data: {add: DeptAndUser[], removes: string[]},
+  data: { add: DeptAndUser[], removes: string[] },
 ): Promise<void> => {
   return httpClient(`/api/v1/form1/${appID}/m/apiRole/grant/assign/${roleID}`, data);
 };
 
-export const getUserDetail = <T>(params: {query: string}): Promise<T> => {
+export const getUserDetail = <T>(params: { query: string }): Promise<T> => {
   return httpClientGraphQL<T>('/api/v1/search/users', params);
 };
 
@@ -68,14 +68,14 @@ export const updateAPIAuth = async (
 
 export const fetchAPIListAuth = async (
   appID: string,
-  data: {roleID: string, path: string}[],
-): Promise<{list: APIAuth[]}> => {
+  data: { roleID: string, path: string }[],
+): Promise<{ list: APIAuth[] }> => {
   return await httpClient(`/api/v1/form1/${appID}/m/apiPermit/list`, data);
 };
 
 export const deleteAPIAuth = async (
   appID: string,
-  data: {roleID: string, path: string},
+  data: { roleID: string, path: string },
 ): Promise<void> => {
   return await httpClient(`/api/v1/form1/${appID}/m/apiPermit/delete`, data);
 };

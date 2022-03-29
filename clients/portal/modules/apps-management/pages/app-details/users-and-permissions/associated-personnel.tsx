@@ -76,7 +76,7 @@ function AssociatedPerson(): JSX.Element {
     const checkedId = scopes && scopes.map((item: any) => item.id);
     const removeList: DeptAndUser[] = store.currentScopes.filter((item: any) => checkedId.indexOf(item.id) === -1) || [];
 
-    const removeIDList = removeList.map((remove)=>{
+    const removeIDList = removeList.map((remove) => {
       return remove.id;
     });
 
@@ -87,7 +87,7 @@ function AssociatedPerson(): JSX.Element {
     return store.updatePerUser({ add: addList, removes: removeIDList });
   };
 
-  const deletePerGroupUser = (id: string): void=>{
+  const deletePerGroupUser = (id: string): void => {
     const newScopes = store.currentScopes?.filter((scope) => scope.id !== id);
     store.setCurrentScopes(newScopes);
     store.updatePerUser({ add: [], removes: [id] });
@@ -107,7 +107,7 @@ function AssociatedPerson(): JSX.Element {
         className='text-btn'
         onClick={() => deletePerGroupUser(user.id)}
       >
-      移除
+        移除
       </span>),
   }];
 
@@ -119,7 +119,7 @@ function AssociatedPerson(): JSX.Element {
         width: 120,
         accessor: (user: any) => (
           <div className='flex items-center'>
-            <Avatar username={user.name} size={24}/>
+            <Avatar username={user.name} size={24} />
             <span className='ml-4'>{user.name}</span>
           </div>
         ),
@@ -162,9 +162,9 @@ function AssociatedPerson(): JSX.Element {
               iconName="link"
               onClick={() => setShowBindModal(true)}
             >
-                关联员工与部门
+              关联员工与部门
             </Button>
-            { !!selectUser.length && (
+            {!!selectUser.length && (
               <Button
                 modifier="primary"
                 className="ml-16"
@@ -201,7 +201,7 @@ function AssociatedPerson(): JSX.Element {
               columns={columns}
               emptyTips={(
                 <div className='flex flex-col justify-center items-center text-12 text-gray-400'>
-                  <img src='/dist/images/links.svg' alt="no data" className="mb-8"/>
+                  <img src='/dist/images/links.svg' alt="no data" className="mb-8" />
                   <span className='text-12'>暂无数据，选择
                     <span onClick={() => setShowBindModal(true)} className='text-btn'>&nbsp;关联员工与部门</span>
                   </span>

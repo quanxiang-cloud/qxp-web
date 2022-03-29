@@ -10,7 +10,7 @@ type Props = {
   defaultValue?: RoleCreate
 }
 
-const Input = formFieldWrap({ field: <input className='input'/> });
+const Input = formFieldWrap({ field: <input className='input' /> });
 const Textarea = formFieldWrap({ field: <textarea className='input' /> });
 
 function BasicInfoForm(
