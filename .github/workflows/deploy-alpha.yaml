@@ -11,6 +11,16 @@ jobs:
       - uses: ./.github/actions/client-boot-up
       - uses: ./.github/actions/quality-check
       - uses: ./.github/actions/build-static
+  deploy:
+    needs: [bundle-clients]
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download client statices
+        uses: actions/download-artifact@v3
+        with:
+          name: dist
+          path: dist
       - run: GOOS=linux go build -o ./dist/portal server/cmd/portal/main.go
       - run: GOOS=linux go build -o ./dist/home server/cmd/home/main.go
       - run: scp ./dist/portal qxp-alpha:/tmp
