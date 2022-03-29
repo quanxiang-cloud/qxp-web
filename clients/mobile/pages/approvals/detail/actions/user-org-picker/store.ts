@@ -11,12 +11,14 @@ const qxpRoot: Department = {
   pid: qxpRootId,
   superID: '',
   grade: 1,
+  name: '',
+  attr: '',
 };
-const initOrg = { departmentName: '', id: '', pid: '', superID: '', grade: 1 };
+const initOrg = { departmentName: '', id: '', pid: '', superID: '', grade: 1, name: '', attr: '' };
 
 class UserOrgPickerStore {
   @observable loading = false;
-  @observable adminOrg = initOrg;
+  @observable adminOrg: Department = initOrg;
   @observable curOrgList: Array<Department> = [];
   @observable branchPath: Array<Department> = [qxpRoot];
   @observable currentBranch: Department = qxpRoot;
