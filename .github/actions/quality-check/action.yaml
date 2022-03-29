@@ -1,0 +1,12 @@
+name: quality-check
+description: run list and type check
+runs:
+  using: "composite"
+  steps:
+    - run: yarn install
+      shell: bash
+    - run: yarn run lint
+      shell: bash
+    - run: node_modules/.bin/tsc --noEmit --skipLibCheck --pretty
+      shell: bash
+

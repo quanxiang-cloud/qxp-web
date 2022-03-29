@@ -1,7 +1,7 @@
 import React from 'react';
 import cs from 'classnames';
-import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { Radio } from 'antd';
+import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import Icon from '@c/icon';
 import Checkbox from '@c/checkbox';
