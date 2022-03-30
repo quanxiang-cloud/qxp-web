@@ -25,6 +25,17 @@ const COMP_WITH_PLACEHOLDER: Record<string, string> = {
   form: '拖拽表单组件到这里',
 };
 
+function stringToCamelCase(str: string): string {
+  return str.replace(/-(\w)/g, (all, letter) => letter.toUpperCase());
+}
+
+function objectKeyToCamelCase(value: Record<string, any>): Record<string, any> {
+  return Object.entries(value).reduce((acc: Record<string, any>, [key, val]) => {
+    acc[stringToCamelCase(key)] = val;
+    return acc;
+  }, {});
+}
+
 function NodeRender({ schema }: Props): JSX.Element | null {
   if (typeof schema !== 'object' || !schema) {
     return null;
@@ -73,7 +84,9 @@ function NodeRender({ schema }: Props): JSX.Element | null {
     end: (item, monitor) => {
       const targetNode: any = monitor.getDropResult();
       if (targetNode?.exportName) {
-        window.__isDev__ && console.log('[elem] dropped %o onto: %o, pos: %s', item, targetNode, page.dragPos);
+        window.__isDev__ && console.log(
+          '[elem] dropped %o onto: %o, pos: %s', item, targetNode, page.dragPos,
+        );
         page.appendNode(item, targetNode);
       }
     },
@@ -180,7 +193,14 @@ function NodeRender({ schema }: Props): JSX.Element | null {
       }
     }
 
-    return Object.assign({}, toProps(elemProps), {
+    const { style, ...props } = toProps(elemProps);
+    if (style) {
+      Object.assign(props, {
+        style: objectKeyToCamelCase(style),
+      });
+    }
+
+    return Object.assign({}, props, {
       'data-node-key': schema.id,
       ref: boxRef,
       className: cs(styles.elem, {
@@ -228,7 +248,9 @@ function NodeRender({ schema }: Props): JSX.Element | null {
         React.createElement(
           transformType(node),
           schemaToProps(toJS(node)),
-          ...(node.children || []).filter(Boolean).map((child: any, idx: number) => <NodeRender key={node.id + idx} schema={child} />))
+          ...(node.children || [])
+            .filter(Boolean)
+            .map((child: any, idx: number) => <NodeRender key={node.id + idx} schema={child} />))
       }
     </>
   );

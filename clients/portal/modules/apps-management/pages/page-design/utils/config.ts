@@ -111,6 +111,20 @@ export function parseStyleString(value: string | number): Record<StyleKey, strin
     _value.unit = '%';
     return _value;
   }
+  // vw
+  if (value.indexOf('vw') >= 0) {
+    const _site = value.indexOf('vw');
+    _value.value = value.substring(0, _site);
+    _value.unit = 'vw';
+    return _value;
+  }
+  // vh
+  if (value.indexOf('vh') >= 0) {
+    const _site = value.indexOf('vh');
+    _value.value = value.substring(0, _site);
+    _value.unit = 'vh';
+    return _value;
+  }
 
   return _value;
 }

@@ -26,6 +26,13 @@ export function findNode(tree: PageNode, node_id?: string, loopNode?: boolean): 
       }
     } else if (get(tree, 'node.id') === node_id) {
       return loopNode ? tree : tree.node;
+    } else if (tree.node?.children) {
+      for (const child of tree.node.children) {
+        const found = findNode(child as PageNode, node_id, loopNode);
+        if (found) {
+          return found;
+        }
+      }
     }
   }
 
