@@ -62,8 +62,10 @@ export function getVersionKey(): string {
 }
 
 export function getRenderRepository(): any {
+  const comps = stores.registry.toComponentMap();
   return {
-    'ofa-ui@latest': stores.registry.toComponentMap(),
+    'ofa-ui@latest': comps,
+    '@one-for-all/ui@latest': comps,
   };
 }
 

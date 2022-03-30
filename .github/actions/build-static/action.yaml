@@ -1,0 +1,23 @@
+name: build static files
+description: bundle and upload artifacts
+runs:
+  using: "composite"
+  steps:
+    - run: make buildAssets
+      shell: bash
+    - run: NODE_ENV=production ./node_modules/.bin/rollup --config rollup.config.js
+      shell: bash
+    - name: Upload dist folder
+      uses: actions/upload-artifact@v3
+      with:
+        retention-days: 1
+        name: dist
+        path: dist
+    - name: Upload template and manifest.json
+      uses: actions/upload-artifact@v3
+      with:
+        retention-days: 1
+        name: templates
+        path: |
+          dist/templates
+          dist/manifest.json
