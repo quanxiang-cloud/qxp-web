@@ -3,7 +3,7 @@ import json from '@rollup/plugin-json';
 import resolve from '@rollup/plugin-node-resolve';
 import progress from 'rollup-plugin-progress';
 import html from '@rollup/plugin-html';
-import esbuild from 'rollup-plugin-esbuild';
+import esbuild from 'rollup-plugin-esbuild-ts';
 
 import esbuildConfig from './esbuild-config';
 import typescriptPaths from './plugins/rollup-plugin-typescript-paths';
