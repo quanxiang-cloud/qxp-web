@@ -5,7 +5,7 @@ import cs from 'classnames';
 import { useHistory } from 'react-router-dom';
 
 import Tab from '@c/no-content-tab';
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import Search from '@c/search';
 import { savePer } from './api';
 import toast from '@lib/toast';

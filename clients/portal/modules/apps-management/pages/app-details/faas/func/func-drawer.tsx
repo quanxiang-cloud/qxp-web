@@ -6,9 +6,8 @@ import dayjs from 'dayjs';
 import useCss from 'react-use/lib/useCss';
 
 import Icon from '@c/icon';
-import Table from '@c/table';
+import { Table, Pagination } from '@one-for-all/headless-ui';
 import PopConfirm from '@c/pop-confirm';
-import Pagination from '@c/pagination';
 
 import store from '../store';
 import TableMoreFilterMenu from '@c/more-menu/table-filter';

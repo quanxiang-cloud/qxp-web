@@ -5,7 +5,7 @@ import PageSchemaRender from '@c/page-schema-render';
 
 import Icon from '@c/icon';
 import Modal from '@c/modal';
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import toast from '@lib/toast';
 import EmptyTips from '@c/empty-tips';
 import PageLoading from '@c/page-loading';

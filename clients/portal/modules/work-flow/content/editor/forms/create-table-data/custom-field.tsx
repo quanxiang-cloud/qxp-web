@@ -3,8 +3,7 @@ import { useQuery } from 'react-query';
 import { get, set } from 'lodash';
 import cs from 'classnames';
 
-import Select from '@c/select';
-import Button from '@c/button';
+import { Select, Button } from '@one-for-all/headless-ui';
 
 import FormulaModal from './formula-modal';
 import FlowSourceTableContext from '../flow-source-table';

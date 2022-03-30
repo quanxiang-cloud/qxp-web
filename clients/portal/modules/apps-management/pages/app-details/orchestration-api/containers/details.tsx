@@ -6,10 +6,8 @@ import cs from 'classnames';
 import { useHistory } from 'react-router-dom';
 
 import Icon from '@c/icon';
-import Table from '@c/table';
+import { Table, Pagination, Button } from '@one-for-all/headless-ui';
 import toast from '@lib/toast';
-import Pagination from '@c/pagination';
-import Button from '@c/button';
 import SearchInput from '@c/form/input/search-input';
 import Loading from '@c/loading';
 import Toggle from '@c/toggle';

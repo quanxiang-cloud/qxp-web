@@ -2,7 +2,7 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import cs from 'classnames';
 
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 
 import './index.scss';
 

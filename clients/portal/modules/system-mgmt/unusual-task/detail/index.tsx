@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { NavLink, useHistory, useParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
 
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import Icon from '@c/icon';
 import FormDataValueRenderer from '@c/form-data-value-renderer';
 import { isMeanless } from '@lib/utils';

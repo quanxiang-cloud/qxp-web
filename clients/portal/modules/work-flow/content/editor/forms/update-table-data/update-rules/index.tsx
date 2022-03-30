@@ -1,7 +1,7 @@
 import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import { useQuery } from 'react-query';
 
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import { getFormFieldSchema } from '@flow/content/editor/forms/api';
 import { ValueRuleVal } from '@flow/content/editor/type';
 

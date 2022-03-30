@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import cs from 'classnames';
 
 import TextHeader from '@c/text-header';
-import Tag from '@c/tag';
+import { Tag } from '@one-for-all/headless-ui';
 
 import OwnerStore from './store';
 
@@ -66,7 +66,7 @@ export default observer( function SelectedList({ className, ownerStore }: ISelec
             ...others,
           })
         }
-        value={(
+        label={(
           <div className="truncate inline-block pr-16">
             {ownerName && (<span className={cs('mr-2', {
               'text-blue-600': others.type === 1,

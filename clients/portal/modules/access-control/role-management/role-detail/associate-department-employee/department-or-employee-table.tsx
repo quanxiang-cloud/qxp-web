@@ -3,10 +3,9 @@ import { useQuery, useQueryClient } from 'react-query';
 import { UnionColumn } from 'react-table';
 
 import EmptyData from '@c/empty-tips';
-import Pagination from '@c/pagination';
+import { Table, Pagination } from '@one-for-all/headless-ui';
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
-import Table from '@c/table';
 import Avatar from '@c/avatar';
 import toast from '@lib/toast';
 import CheckedUserModal from '@portal/modules/access-control/departments-employees/modal/direct-leader-modal';

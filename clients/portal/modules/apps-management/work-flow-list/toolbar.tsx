@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import Search from '@c/search';
 import TextHeader from '@c/text-header';
 import ItemWithTitleDesc from '@c/item-with-title-desc';

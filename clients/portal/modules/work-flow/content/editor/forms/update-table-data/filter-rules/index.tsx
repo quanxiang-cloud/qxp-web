@@ -2,8 +2,7 @@ import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import { useQuery } from 'react-query';
 import { pick } from 'lodash';
 
-import Button from '@c/button';
-import Select from '@c/select';
+import { Button, Select } from '@one-for-all/headless-ui';
 import { getFormFieldSchema } from '@flow/content/editor/forms/api';
 import { ValueRuleVal } from '@flow/content/editor/type';
 import { schemaToMap } from '@lib/schema-convert';

@@ -6,11 +6,10 @@ import { useQuery, useMutation } from 'react-query';
 import { useParams, useHistory } from 'react-router-dom';
 
 import Icon from '@c/icon';
-import Table from '@c/table';
+import { Table, Pagination } from '@one-for-all/headless-ui';
 import Modal from '@c/modal';
 import toast from '@lib/toast';
 import ErrorTips from '@c/error-tips';
-import Pagination from '@c/pagination';
 import TableMoreFilterMenu from '@c/more-menu/table-filter';
 
 import { deleteFlow, getFlowList } from './api';

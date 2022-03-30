@@ -3,7 +3,7 @@ import { useQuery } from 'react-query';
 import { useUpdateEffect } from 'react-use';
 import { get } from 'lodash';
 
-import Select from '@c/select';
+import { Select } from '@one-for-all/headless-ui';
 import Toggle from '@c/toggle';
 import SaveButtonGroup from '@flow/content/editor/components/_common/action-save-button-group';
 import { getFormDataMenuList } from '@c/form-table-selector/api';

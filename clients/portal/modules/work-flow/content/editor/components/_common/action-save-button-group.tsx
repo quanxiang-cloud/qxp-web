@@ -1,7 +1,7 @@
 import React, { MouseEventHandler } from 'react';
 import cs from 'classnames';
 
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import useObservable from '@lib/hooks/use-observable';
 import store from '@flow/content/editor/store';
 import { StoreValue } from '@flow/content/editor/type';

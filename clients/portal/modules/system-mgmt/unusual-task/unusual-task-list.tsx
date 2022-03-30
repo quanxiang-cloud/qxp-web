@@ -4,12 +4,10 @@ import { useQuery } from 'react-query';
 import dayjs from 'dayjs';
 import cs from 'classnames';
 
-import Table from '@c/table';
-import Select from '@c/select';
+import { Table, Pagination, Select } from '@one-for-all/headless-ui';
 import Search from '@c/search';
 import Icon from '@c/icon';
 import EmptyTips from '@c/empty-tips';
-import Pagination from '@c/pagination';
 import Authorized from '@c/authorized';
 
 import { getAbnormalTask, getAppList } from './api';

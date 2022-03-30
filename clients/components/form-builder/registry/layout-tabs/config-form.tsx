@@ -10,7 +10,7 @@ import {
 import { Input, Radio, MegaLayout } from '@formily/antd-components';
 
 import { LayoutTabsConfig } from './convertor';
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import Icon from '@c/icon';
 import { nanoid } from '@c/form-builder/utils';
 import { StoreContext } from '@c/form-builder/context';

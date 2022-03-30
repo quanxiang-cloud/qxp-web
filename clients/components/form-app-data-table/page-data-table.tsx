@@ -2,7 +2,7 @@ import React, { useEffect, useContext, useState } from 'react';
 import { toJS } from 'mobx';
 import { observer } from 'mobx-react';
 
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import Table, { SizeType } from '@c/table';
 import Icon from '@c/icon';
 import Pagination from '@c/pagination';

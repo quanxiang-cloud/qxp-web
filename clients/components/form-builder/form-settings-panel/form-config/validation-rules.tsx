@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import { parse } from 'qxp-formula';
 
 import FormulaEditor, { RefProps } from '@c/formula-editor';
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import Modal from '@c/modal';
 import Icon from '@c/icon';
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';

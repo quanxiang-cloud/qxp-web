@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { UnionColumn } from 'react-table';
 
-import Table from '@c/table';
+import { Table } from '@one-for-all/headless-ui';
 import Empty from '@c/form-builder/components/empty';
 
 type Props = Record<string, any>;

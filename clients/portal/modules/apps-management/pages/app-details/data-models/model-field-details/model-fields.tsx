@@ -4,8 +4,7 @@ import cs from 'classnames';
 import { UnionColumn } from 'react-table';
 
 import Icon from '@c/icon';
-import Table from '@c/table';
-import Button from '@c/button';
+import { Table, Button } from '@one-for-all/headless-ui';
 import Search from '@c/search';
 import EmptyTips from '@c/empty-tips';
 import { deepClone } from '@lib/utils';

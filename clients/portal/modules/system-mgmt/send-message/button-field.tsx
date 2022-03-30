@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { toJS } from 'mobx';
 import cs from 'classnames';
 
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import toast from '@lib/toast';
 import Icon from '@c/icon';
 import ModalSelectReceiver from '@c/employee-or-department-picker';

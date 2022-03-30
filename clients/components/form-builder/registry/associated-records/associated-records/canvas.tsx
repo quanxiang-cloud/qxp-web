@@ -4,7 +4,7 @@ import { get } from 'lodash';
 import _, { every, isObject, map, pipe, filter } from 'lodash/fp';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import Icon from '@c/icon';
 import FormDataValueRenderer from '@c/form-data-value-renderer';
 import { isMeanless } from '@lib/utils';

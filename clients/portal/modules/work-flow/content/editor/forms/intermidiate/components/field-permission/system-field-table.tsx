@@ -1,7 +1,7 @@
 import React from 'react';
 import { noop } from 'lodash';
 
-import Table from '@c/table';
+import { Table } from '@one-for-all/headless-ui';
 import Checkbox from '@c/checkbox';
 import type { SystemFieldPermission } from '@flow/content/editor/type';
 

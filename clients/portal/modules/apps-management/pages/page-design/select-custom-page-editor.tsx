@@ -1,7 +1,7 @@
 import React from 'react';
 
 import toast from '@lib/toast';
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import { setGlobalConfig } from '@lib/configuration-center';
 
 import { savePage, updatePageEngineMenuType } from './api';

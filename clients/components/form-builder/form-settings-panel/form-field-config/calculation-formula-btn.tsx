@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { ISchemaFieldComponentProps, IFieldState } from '@formily/react-schema-renderer';
 import { pipe, filter } from 'ramda';
 
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import { StoreContext } from '@c/form-builder/context';
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 import schemaToFields from '@lib/schema-convert';

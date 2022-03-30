@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Select from '@c/select';
+import { Select } from '@one-for-all/headless-ui';
 
 interface Props {
   options: LabelValue[];

@@ -6,9 +6,9 @@ import cs from 'classnames';
 import auditLog from '@portal/modules/system-mgmt/audit-log/store';
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
-import Pagination from '@c/pagination';
+import { Pagination } from '@one-for-all/headless-ui';
 import EmptyTips from '@c/empty-tips';
-import Table from '@c/table';
+import { Table } from '@one-for-all/headless-ui';
 
 interface Props {
   className?: string;

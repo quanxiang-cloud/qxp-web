@@ -6,7 +6,7 @@ import cs from 'classnames';
 
 import Tab from '@c/tab';
 import Icon from '@c/icon';
-import Table from '@c/table';
+import { Table } from '@one-for-all/headless-ui';
 import Loading from '@c/loading';
 import Tooltip from '@c/tooltip';
 import EmptyTips from '@c/empty-tips';

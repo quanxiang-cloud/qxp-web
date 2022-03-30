@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 
 import store from '../store';
 

@@ -4,7 +4,7 @@ import { isUndefined } from 'lodash';
 import { Input } from '@formily/antd-components';
 import { SchemaForm, createFormActions, IFieldState } from '@formily/react-schema-renderer';
 
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import Drawer from '@c/drawer';
 import store$ from '@polyApi/store';
 import EndBody from '@polyApi/nodes/forms/end';

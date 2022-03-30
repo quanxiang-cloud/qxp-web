@@ -4,7 +4,7 @@ import { cond, equals, always, T } from 'ramda';
 import EmployeeOrDepartmentPicker from '@c/employee-or-department-picker';
 import RadioGroup from '@c/radio/group';
 import Radio from '@c/radio';
-import Select from '@c/select';
+import { Select } from '@one-for-all/headless-ui';
 import useObservable from '@lib/hooks/use-observable';
 import store from '@flow/content/editor/store';
 import type { StoreValue } from '@flow/content/editor/type';

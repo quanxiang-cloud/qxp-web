@@ -5,7 +5,7 @@ import { Upload } from 'antd';
 import { useForm, Controller } from 'react-hook-form';
 
 import formFieldWrap from '@c/form-field-wrap';
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import SaveButtonGroup from '@flow/content/editor/components/_common/action-save-button-group';
 import type {
   SendEmailData,

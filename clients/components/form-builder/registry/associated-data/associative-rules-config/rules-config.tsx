@@ -11,7 +11,7 @@ import { tap, skip, filter } from 'rxjs/operators';
 import { Input, Switch, Select, Radio } from '@formily/antd-components';
 
 import Modal from '@c/modal';
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import { RulesList } from '@c/form-builder/customized-fields';
 
 import { SCHEMA } from './schema';

@@ -7,8 +7,7 @@ import { useMutation } from 'react-query';
 import { get, values, keys } from 'lodash';
 import { toJS } from 'mobx';
 
-import Select from '@c/select';
-import Button from '@c/button';
+import { Select, Button } from '@one-for-all/headless-ui';
 import toast from '@lib/toast';
 import Loading from '@c/loading';
 import { getStore } from '@one-for-all/page-engine';

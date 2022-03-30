@@ -2,11 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
 // import { omit } from 'ramda';
 
-import Table from '@c/table';
+import { Table, Button, Pagination } from '@one-for-all/headless-ui';
 import EmptyTips from '@c/empty-tips';
-import Pagination from '@c/pagination';
 import Authorized from '@c/authorized';
-import Button from '@c/button';
 import MoreMenu from '@c/more-menu';
 import { getTwoDimenArrayHead } from '@lib/utils';
 // import toast from '@lib/toast';

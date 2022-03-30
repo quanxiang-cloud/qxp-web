@@ -7,7 +7,7 @@ import { SchemaField } from '@formily/antd';
 
 import Icon from '@c/icon';
 import MoreMenu from '@c/more-menu';
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 
 import { availableVariableCtx } from './utils';
 

@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import cs from 'classnames';
 
-import Select from '@c/select';
+import { Select } from '@one-for-all/headless-ui';
 import type { TriggerWayValue, TriggerValue } from '@flow/content/editor/type';
 
 import { ConditionItemOptions } from './condition-item';

@@ -5,8 +5,7 @@ import { observer } from 'mobx-react';
 import { omit, isEqual, pick } from 'lodash';
 import { useUpdateEffect } from 'react-use';
 
-import Select from '@c/select';
-import Button from '@c/button';
+import { Select, Button } from '@one-for-all/headless-ui';
 import Icon from '@c/icon';
 import toast from '@lib/toast';
 import Loading from '@c/loading';

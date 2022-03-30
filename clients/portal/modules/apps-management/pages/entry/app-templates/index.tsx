@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import { UnionColumn } from 'react-table';
 
 import Icon from '@c/icon';
-import Table from '@c/table';
+import { Table } from '@one-for-all/headless-ui';
 import MoreMenu from '@c/more-menu';
 import TextHeader from '@c/text-header';
 

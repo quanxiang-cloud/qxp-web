@@ -21,7 +21,7 @@ import {
 import { FormPath } from '@formily/shared';
 
 import Modal from '@c/modal';
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import { StoreContext } from '@c/form-builder/context';
 import { JoinOperatorSelect, RulesList } from '@c/form-builder/customized-fields';
 import { getCompareOperatorOptions, getSourceElementOperator } from '@c/form-builder/utils/operator';

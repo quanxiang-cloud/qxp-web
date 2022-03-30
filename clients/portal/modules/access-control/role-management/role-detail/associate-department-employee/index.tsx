@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient, useQuery } from 'react-query';
 
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import Authorized from '@c/authorized';
 import RadioButtonGroup from '@c/radio/radio-button-group';
 import EmployeeOrDepartmentPickerModal from '@c/employee-or-department-picker';

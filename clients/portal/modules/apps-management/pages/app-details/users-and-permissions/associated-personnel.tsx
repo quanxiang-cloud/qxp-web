@@ -1,12 +1,11 @@
 import React, { useMemo, useState } from 'react';
 import { observer } from 'mobx-react';
 
-import Button from '@c/button';
+import { Button, Table } from '@one-for-all/headless-ui';
 import store from './store';
 
 import './index.scss';
 import EmployeeOrDepartmentPickerModal from '@c/employee-or-department-picker';
-import Table from '@c/table';
 import Avatar from '@c/avatar';
 import toast from '@lib/toast';
 import RadioButtonGroup from '@c/radio/radio-button-group';

@@ -11,7 +11,7 @@ import {
 } from '@formily/antd-components';
 
 import Modal from '@c/modal';
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import { operatorOption } from '@c/form-builder/form-settings-panel/utils';
 import schemaToFields from '@lib/schema-convert';
 import {

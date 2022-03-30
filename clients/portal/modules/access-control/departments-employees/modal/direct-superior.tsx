@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Input } from 'antd';
 
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 
 import DirectLeaderChoose from './direct-leader-modal';
 

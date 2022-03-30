@@ -3,7 +3,7 @@ import { useQuery } from 'react-query';
 import { every, isEmpty } from 'lodash';
 import { useUpdateEffect } from 'react-use';
 
-import Select from '@c/select';
+import { Select } from '@one-for-all/headless-ui';
 import Toggle from '@c/toggle';
 import Modal from '@c/modal';
 import RadioButtonGroup from '@c/radio/radio-button-group';

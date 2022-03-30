@@ -4,7 +4,7 @@ import { has } from 'ramda';
 import { Form, Input } from 'antd';
 
 import toast from '@lib/toast';
-import Select from '@c/select';
+import { Select } from '@one-for-all/headless-ui';
 
 import AppZipUpload from './app-zip-upload';
 import AppCreatedBy from './app-created-by';

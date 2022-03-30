@@ -4,7 +4,7 @@ import { useUpdateEffect } from 'react-use';
 
 import RadioGroup from '@c/radio/group';
 import Radio from '@c/radio';
-import Select from '@c/select';
+import { Select } from '@one-for-all/headless-ui';
 import usePrevious from '@lib/hooks/use-previous';
 import useObservable from '@lib/hooks/use-observable';
 import store from '@flow/content/editor/store';

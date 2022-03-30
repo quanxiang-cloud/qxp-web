@@ -4,7 +4,7 @@ import cs from 'classnames';
 import { useHistory } from 'react-router-dom';
 
 import Icon from '@c/icon';
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import useObservable from '@lib/hooks/use-observable';
 
 import store$ from '../store';

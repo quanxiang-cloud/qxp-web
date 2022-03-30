@@ -3,8 +3,8 @@ import { Column } from 'react-table';
 import { get } from 'lodash';
 import cs from 'classnames';
 
-import Table from '@c/table';
-import Button from '@c/button';
+import { Table } from '@one-for-all/headless-ui';
+import { Button } from '@one-for-all/headless-ui';
 import Icon from '@c/icon';
 
 import FormDataValueRenderer from '@c/form-data-value-renderer';

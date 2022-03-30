@@ -15,7 +15,7 @@ import {
   setAllMsgAdRead,
 } from '@portal/modules/msg-center/api';
 import { MsgType, MsgReadStatus } from '@portal/modules/system-mgmt/constants';
-import Pagination from '@c/pagination';
+import { Pagination } from '@one-for-all/headless-ui';
 import msgCenter from '@portal/stores/msg-center';
 
 import Toolbar from './toolbar';

@@ -2,7 +2,7 @@ import React from 'react';
 import cs from 'classnames';
 
 import Icon from '@c/icon';
-import Tag from '@c/tag';
+import { Tag } from '@one-for-all/headless-ui';
 
 import { tagBackgroundColorMap, tagIconNameMap } from './constants';
 
@@ -19,7 +19,7 @@ interface Props {
 
 export default function Member({ member, onDelete }: Props): JSX.Element {
   return (
-    <Tag<string>
+    <Tag
       className="mr-8 rounded-tl-4 rounded-br-4 mb-8 overflow-hidden h-24"
       style={{
         backgroundColor: tagBackgroundColorMap[member.type],
@@ -27,7 +27,7 @@ export default function Member({ member, onDelete }: Props): JSX.Element {
       }}
       key={member.id}
       id={member.id}
-      value={(
+      label={(
         <div
           className="rounded-tl-4 flex items-center mr-4 h-full"
         >

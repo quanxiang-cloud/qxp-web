@@ -3,7 +3,7 @@ import cs from 'classnames';
 
 import Icon from '@c/icon';
 import { getQuery } from '@lib/utils';
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 
 import { EditorMode } from './index';
 

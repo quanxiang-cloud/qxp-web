@@ -7,7 +7,7 @@ import { isMacosX } from '@lib/utils';
 import Icon from '@c/icon';
 import toast from '@lib/toast';
 import Modal from '@c/modal';
-import Table from '@c/table';
+import { Table } from '@one-for-all/headless-ui';
 import RadioGroup from '@c/radio/group';
 import Radio from '@c/radio';
 

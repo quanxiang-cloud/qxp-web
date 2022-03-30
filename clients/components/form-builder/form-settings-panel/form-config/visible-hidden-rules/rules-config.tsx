@@ -16,7 +16,7 @@ import { filter, tap, skip } from 'rxjs/operators';
 
 import DatePicker from '@c/form-builder/registry/date-picker/date-picker';
 import Modal from '@c/modal';
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 import { StoreContext } from '@c/form-builder/context';
 import { JoinOperatorSelect, RulesList } from '@c/form-builder/customized-fields';

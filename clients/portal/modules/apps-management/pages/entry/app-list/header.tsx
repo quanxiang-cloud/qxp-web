@@ -1,7 +1,7 @@
 import React from 'react';
 
 import RadioButtonGroup from '@c/radio/radio-button-group';
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import Search from '@c/search';
 
 import { Params } from './store';

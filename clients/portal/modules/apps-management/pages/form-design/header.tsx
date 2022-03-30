@@ -8,7 +8,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import Icon from '@c/icon';
 import Modal from '@c/modal';
 import toast from '@lib/toast';
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import { FormRenderer } from '@c/form-builder';
 import Tab, { TabProps } from '@c/no-content-tab';
 import { validateFieldConfig } from '@c/form-builder/utils';

@@ -1,7 +1,7 @@
 import React, { useContext, useMemo } from 'react';
 import { useQuery } from 'react-query';
 
-import Select from '@c/select';
+import { Select } from '@one-for-all/headless-ui';
 import FlowCtx from '@flow/flow-context';
 import { getFormFieldSchema } from '@flow/content/editor/forms/api';
 import { schemaToMap } from '@lib/schema-convert';
