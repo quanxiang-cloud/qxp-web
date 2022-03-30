@@ -1,8 +1,16 @@
 {
   "theme": [
     {
-      "key": "--blank-bg",
+      "key": "--blank-bg-color",
       "name": "空白处背景色"
+    },
+    {
+      "key": "--card-bg-color",
+      "name": "卡片背景色"
+    },
+    {
+      "key": "--text-color",
+      "name": "文字颜色"
     }
   ],
   "baseColors": {

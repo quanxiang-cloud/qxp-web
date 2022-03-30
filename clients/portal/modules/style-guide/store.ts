@@ -15,6 +15,7 @@ class StyleGuideStore {
     this.commonConfig = { ...this.commonConfig, ...newConfig };
     if (this.cssStore) {
       this.cssStore.baseVariables.primaryColor = this.commonConfig.primaryColor || 'blue';
+      this.cssStore.themeColorVariables = this.commonConfig.themeVariable || {};
     }
   };
 

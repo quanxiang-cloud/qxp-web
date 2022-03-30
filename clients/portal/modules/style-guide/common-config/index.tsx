@@ -2,6 +2,7 @@ import React from 'react';
 import { Select, SelectProps } from 'antd';
 import { observer } from 'mobx-react';
 
+import ThemeColor from './theme-color';
 import colorVars from '../css-variables.json';
 
 import store from '../store';
@@ -26,7 +27,7 @@ function ColorSelect({ value, onChange }: SelectProps<string>): JSX.Element {
 
 function CommonConfig(): JSX.Element {
   return (
-    <div className='px-10'>
+    <div className='px-10 grid gap-y-12'>
       <div>
         <span>主色：</span>
         <ColorSelect
@@ -34,6 +35,10 @@ function CommonConfig(): JSX.Element {
           onChange={(value) => store.setCommonConfig({ primaryColor: value })}
         />
       </div>
+      <ThemeColor
+        themeConfig={colorVars.theme}
+        colorConfig={colorVars.baseColors}
+      />
     </div>
   );
 }

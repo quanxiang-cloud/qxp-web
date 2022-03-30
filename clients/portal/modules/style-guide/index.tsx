@@ -13,10 +13,12 @@ import store from './store';
 
 import colorVars from './css-variables.json';
 
+import './index.css';
+
 export default function StyleGuide(): JSX.Element {
   const KEY = 'COMMON_STYLE_CONFIG';
   const COMPONENT_STYLE_CONFIG_KEY = 'GLOBAL_COMPONENT_STYLE_CONFIG';
-  const [userStyleConfig, commonLoading] = useGetGlobalConfig<StyleGuideCommonConfig>(KEY, '0.1.0', DEFAULT_CONFIG);
+  const [tenantStyleConfig, commonLoading] = useGetGlobalConfig<StyleGuideCommonConfig>(KEY, '0.1.0', DEFAULT_CONFIG);
   const [customCompCssMap, componentLoading] = useGetGlobalConfig(COMPONENT_STYLE_CONFIG_KEY, '0.1.0', {});
 
   useEffect(() => {
@@ -24,10 +26,11 @@ export default function StyleGuide(): JSX.Element {
       return;
     }
 
-    store.commonConfig = userStyleConfig;
+    store.commonConfig = tenantStyleConfig;
     store.cssStore = new CssASTStore({
       initCssMap: customCompCssMap,
-      baseColorVariables: { ...colorVars.baseColors, primaryColor: userStyleConfig.primaryColor || 'blue' },
+      baseColorVariables: { ...colorVars.baseColors, primaryColor: tenantStyleConfig.primaryColor || 'blue' },
+      themeColorVariables: tenantStyleConfig.themeVariable,
     });
   }, [commonLoading, componentLoading]);
 
