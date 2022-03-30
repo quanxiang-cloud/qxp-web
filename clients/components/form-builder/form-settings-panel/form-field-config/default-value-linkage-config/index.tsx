@@ -183,6 +183,7 @@ function LinkageConfig({
     const isMultiple = ['⊋', '⊇', '∈', '∉'].includes(value);
     const fieldNamePath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.fieldName`);
     const compareToPath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.compareTo`);
+    const compareValuePath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.compareValue`);
     const currentFieldNameValue = getFieldValue(fieldNamePath);
     const currentCompareToValue = getFieldValue(compareToPath);
     let compareValueOptions: string[] | undefined = [];
@@ -197,7 +198,7 @@ function LinkageConfig({
       compareValueOptions = currentFormFields.map((field) => field.id);
     }
 
-    updateCompareValueFieldMode(name, isMultiple, compareValueOptions);
+    updateFieldModeAndValue(compareValuePath, isMultiple, compareValueOptions);
   }
 
   function updateCompareValueFieldEnumAndComponent({ name }: IFieldState): void {
@@ -211,88 +212,83 @@ function LinkageConfig({
       (field) => field.value === currentFieldNameValue,
     );
 
-    if (linkTableField) {
-      const enumerable = !!(linkTableField?.fieldEnum || []).length;
-      setFieldState(compareValuePath, (state) => {
-        if (currentCompareToValue === 'fixedValue' && enumerable) {
-          state.props['x-component'] = 'antdselect';
-          state.props.enum = linkTableField.fieldEnum;
-          return;
-        }
-
-        if (currentCompareToValue === 'fixedValue' && !enumerable) {
-          state.props['x-component'] = linkTableField.componentName;
-          state.props.enum = undefined;
-          return;
-        }
-
-        const compareFields = currentFormFields
-          .filter(({ componentName }) => {
-            return componentName === linkTableField.componentName;
-          })
-          .map((field) => ({ label: field.title as string, value: field.id }));
-        state.props['x-component'] = 'antdselect';
-        state.props.enum = compareFields;
-      });
-
-      // todo reset the value of compareValue
-      const compareOperator = getFieldValue(operatePath);
-      const compareValueComponent = getFieldState(compareValuePath)?.props['x-component'];
-      const compareValueEnum = getFieldState(compareValuePath).props.enum;
-      const compareValue = getFieldState(compareValuePath).value;
-      const optionValues = currentCompareToValue === 'fixedValue' ?
-        compareValueEnum : compareValueEnum.map(({ value }: any) => value);
-      const multiOperator = currentCompareToValue === 'fixedValue' ? ['⊇', '⊋', '∈', '∉'] : ['∈', '∉'];
-      const isMultiple = multiOperator.includes(compareOperator);
-      if (compareValueComponent === 'antdselect' && optionValues?.length) {
-        return updateCompareValueFieldMode(name, isMultiple, optionValues);
-      }
-
-      const shouldReset = compareValueValidateMap[compareValueComponent](compareValue);
-      if (shouldReset) {
-        setFieldValue(compareValuePath, undefined);
-      }
+    if (!linkTableField) {
+      return;
     }
+
+    // update component and enum of compareValue field
+    const enumerable = !!(linkTableField?.fieldEnum || []).length;
+    setFieldState(compareValuePath, (state) => {
+      if (currentCompareToValue === 'fixedValue' && enumerable) {
+        state.props['x-component'] = 'antdselect';
+        state.props.enum = linkTableField.fieldEnum;
+        return;
+      }
+
+      if (currentCompareToValue === 'fixedValue' && !enumerable) {
+        state.props['x-component'] = linkTableField.componentName;
+        state.props.enum = undefined;
+        return;
+      }
+
+      const compareFields = currentFormFields
+        .filter(({ componentName }) => componentName === linkTableField.componentName)
+        .map((field) => ({ label: field.title as string, value: field.id }));
+      state.props['x-component'] = 'antdselect';
+      state.props.enum = compareFields;
+    });
+
+    // update the value of compareValue field
+    const compareOperator = getFieldValue(operatePath);
+    const compareValueComponent = getFieldState(compareValuePath)?.props['x-component'];
+    const compareValueEnum = getFieldState(compareValuePath).props.enum;
+    const compareValue = getFieldState(compareValuePath).value;
+    const optionValues = currentCompareToValue === 'fixedValue' ?
+      compareValueEnum : compareValueEnum.map(({ value }: any) => value);
+    const multiOperator = currentCompareToValue === 'fixedValue' ? ['⊇', '⊋', '∈', '∉'] : ['∈', '∉'];
+    const isMultiple = multiOperator.includes(compareOperator);
+
+    if (compareValueComponent === 'antdselect' && optionValues?.length) {
+      return updateFieldModeAndValue(compareValuePath, isMultiple, optionValues);
+    }
+
+    const shouldReset = compareValueValidateMap[compareValueComponent]?.(compareValue);
+    shouldReset && setFieldValue(compareValuePath, undefined);
   }
 
-  function updateCompareValueFieldMode(
-    name: string, isMultiple: boolean, optionValues: string[] | undefined,
+  function updateFieldModeAndValue(
+    fieldPath: string, isMultiple: boolean, optionValues: string[] | undefined,
   ): void {
-    const compareValuePath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.compareValue`);
-    setFieldState(compareValuePath, (state) => {
-      const compareValue = getFieldValue(compareValuePath);
+    setFieldState(fieldPath, (state) => {
+      const compareValue = getFieldValue(fieldPath);
       state.props['x-component-props'] = isMultiple ? { mode: 'multiple' } : {};
 
-      if (!!compareValue && optionValues?.length) {
-        if (isMultiple) {
-          if (!Array.isArray(compareValue)) {
-            const shouldResetToValue = optionValues.find((value) => value === compareValue);
-            state.value = shouldResetToValue ? [shouldResetToValue] : undefined;
-            return;
-          }
+      if (!compareValue || !optionValues?.length) {
+        return;
+      }
 
-          if (Array.isArray(compareValue)) {
-            const shouldResetToValue = compareValue.filter((value: any) => optionValues.includes(value));
-            state.value = shouldResetToValue.length ? shouldResetToValue : undefined;
-            return;
-          }
+      if (isMultiple) {
+        if (!Array.isArray(compareValue)) {
+          const shouldResetToValue = optionValues.find((value) => value === compareValue);
+          return state.value = shouldResetToValue ? [shouldResetToValue] : undefined;
         }
 
-        if (!isMultiple) {
-          if (Array.isArray(compareValue)) {
-            const shouldResetToValue = optionValues.find((value) => compareValue.includes(value));
-            state.value = shouldResetToValue;
-            return;
-          }
-
-          if (!Array.isArray(compareValue)) {
-            state.value = optionValues.includes(compareValue) ? compareValue : undefined;
-            return;
-          }
+        if (Array.isArray(compareValue)) {
+          const shouldResetToValue = compareValue.filter((value: any) => optionValues.includes(value));
+          return state.value = shouldResetToValue.length ? shouldResetToValue : undefined;
         }
       }
 
-      return;
+      if (!isMultiple) {
+        if (Array.isArray(compareValue)) {
+          const shouldResetToValue = optionValues.find((value) => compareValue.includes(value));
+          return state.value = shouldResetToValue;
+        }
+
+        if (!Array.isArray(compareValue)) {
+          return state.value = optionValues.includes(compareValue) ? compareValue : undefined;
+        }
+      }
     });
   }
 
