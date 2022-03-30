@@ -33,61 +33,61 @@ integrate:
   script:
     - node_modules/.bin/tsc --noEmit --skipLibCheck --pretty
 
-build_for_testing:
-  tags:
-    - qxp-web-runner
-  stage: build
-  only:
-    - /^release\/v*/
-  script:
-    - make build
-    - NODE_ENV=production ./node_modules/.bin/rollup --config rollup.config.js
-    - go mod tidy
-    - go mod vendor
-    - IMAGE_TAG="v$(date "+%Y%m%d")-$(git rev-parse --short HEAD)"
-    - docker build -t "$IMAGE_REPO/qxp-web-portal:$IMAGE_TAG" -f ./deploy/Dockerfile-portal .
-    - docker build -t "$IMAGE_REPO/qxp-web-home:$IMAGE_TAG" -f ./deploy/Dockerfile-home .
-    - docker build -t "$IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG" -f ./deploy/Dockerfile-nginx .
-    - docker push "$IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG"
-    - docker push "$IMAGE_REPO/qxp-web-portal:$IMAGE_TAG"
-    - docker push "$IMAGE_REPO/qxp-web-home:$IMAGE_TAG"
-    - docker rmi "$IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG"
-    - docker rmi "$IMAGE_REPO/qxp-web-portal:$IMAGE_TAG"
-    - docker rmi "$IMAGE_REPO/qxp-web-home:$IMAGE_TAG"
+# build_for_testing:
+#   tags:
+#     - qxp-web-runner
+#   stage: build
+#   only:
+#     - /^release\/v*/
+#   script:
+#     - make build
+#     - NODE_ENV=production ./node_modules/.bin/rollup --config rollup.config.js
+#     - go mod tidy
+#     - go mod vendor
+#     - IMAGE_TAG="v$(date "+%Y%m%d")-$(git rev-parse --short HEAD)"
+#     - docker build -t "$IMAGE_REPO/qxp-web-portal:$IMAGE_TAG" -f ./deploy/Dockerfile-portal .
+#     - docker build -t "$IMAGE_REPO/qxp-web-home:$IMAGE_TAG" -f ./deploy/Dockerfile-home .
+#     - docker build -t "$IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG" -f ./deploy/Dockerfile-nginx .
+#     - docker push "$IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG"
+#     - docker push "$IMAGE_REPO/qxp-web-portal:$IMAGE_TAG"
+#     - docker push "$IMAGE_REPO/qxp-web-home:$IMAGE_TAG"
+#     - docker rmi "$IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG"
+#     - docker rmi "$IMAGE_REPO/qxp-web-portal:$IMAGE_TAG"
+#     - docker rmi "$IMAGE_REPO/qxp-web-home:$IMAGE_TAG"
 
-build_for_staging:
-  tags:
-    - qxp-web-runner
-  stage: build
-  only:
-    - tags
-    - /^v(\d+\.)+(\d+)/
-  except:
-    - branches
-  script:
-    - make build
-    - NODE_ENV=production ./node_modules/.bin/rollup --config rollup.config.js
-    - go mod tidy
-    - go mod vendor
-    - IMAGE_TAG="v$(date "+%Y%m%d")-$(git rev-parse --short HEAD)"
-    - docker build -t "$IMAGE_REPO/qxp-web-portal:$IMAGE_TAG" -f ./deploy/Dockerfile-portal .
-    - docker build -t "$IMAGE_REPO/qxp-web-home:$IMAGE_TAG" -f ./deploy/Dockerfile-home .
-    - docker build -t "$IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG" -f ./deploy/Dockerfile-nginx .
-    - docker tag $IMAGE_REPO/qxp-web-home:$IMAGE_TAG $IMAGE_REPO/qxp-web-home:$CI_COMMIT_REF_NAME
-    - docker tag $IMAGE_REPO/qxp-web-portal:$IMAGE_TAG $IMAGE_REPO/qxp-web-portal:$CI_COMMIT_REF_NAME
-    - docker tag $IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG $IMAGE_REPO/qxp-web-nginx:$CI_COMMIT_REF_NAME
-    - docker push "$IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG"
-    - docker push "$IMAGE_REPO/qxp-web-portal:$IMAGE_TAG"
-    - docker push "$IMAGE_REPO/qxp-web-home:$IMAGE_TAG"
-    - docker push "$IMAGE_REPO/qxp-web-nginx:$CI_COMMIT_REF_NAME"
-    - docker push "$IMAGE_REPO/qxp-web-portal:$CI_COMMIT_REF_NAME"
-    - docker push "$IMAGE_REPO/qxp-web-home:$CI_COMMIT_REF_NAME"
-    - docker rmi "$IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG"
-    - docker rmi "$IMAGE_REPO/qxp-web-portal:$IMAGE_TAG"
-    - docker rmi "$IMAGE_REPO/qxp-web-home:$IMAGE_TAG"
-    - docker rmi "$IMAGE_REPO/qxp-web-nginx:$CI_COMMIT_REF_NAME"
-    - docker rmi "$IMAGE_REPO/qxp-web-portal:$CI_COMMIT_REF_NAME"
-    - docker rmi "$IMAGE_REPO/qxp-web-home:$CI_COMMIT_REF_NAME"
+# build_for_staging:
+#   tags:
+#     - qxp-web-runner
+#   stage: build
+#   only:
+#     - tags
+#     - /^v(\d+\.)+(\d+)/
+#   except:
+#     - branches
+#   script:
+#     - make build
+#     - NODE_ENV=production ./node_modules/.bin/rollup --config rollup.config.js
+#     - go mod tidy
+#     - go mod vendor
+#     - IMAGE_TAG="v$(date "+%Y%m%d")-$(git rev-parse --short HEAD)"
+#     - docker build -t "$IMAGE_REPO/qxp-web-portal:$IMAGE_TAG" -f ./deploy/Dockerfile-portal .
+#     - docker build -t "$IMAGE_REPO/qxp-web-home:$IMAGE_TAG" -f ./deploy/Dockerfile-home .
+#     - docker build -t "$IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG" -f ./deploy/Dockerfile-nginx .
+#     - docker tag $IMAGE_REPO/qxp-web-home:$IMAGE_TAG $IMAGE_REPO/qxp-web-home:$CI_COMMIT_REF_NAME
+#     - docker tag $IMAGE_REPO/qxp-web-portal:$IMAGE_TAG $IMAGE_REPO/qxp-web-portal:$CI_COMMIT_REF_NAME
+#     - docker tag $IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG $IMAGE_REPO/qxp-web-nginx:$CI_COMMIT_REF_NAME
+#     - docker push "$IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG"
+#     - docker push "$IMAGE_REPO/qxp-web-portal:$IMAGE_TAG"
+#     - docker push "$IMAGE_REPO/qxp-web-home:$IMAGE_TAG"
+#     - docker push "$IMAGE_REPO/qxp-web-nginx:$CI_COMMIT_REF_NAME"
+#     - docker push "$IMAGE_REPO/qxp-web-portal:$CI_COMMIT_REF_NAME"
+#     - docker push "$IMAGE_REPO/qxp-web-home:$CI_COMMIT_REF_NAME"
+#     - docker rmi "$IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG"
+#     - docker rmi "$IMAGE_REPO/qxp-web-portal:$IMAGE_TAG"
+#     - docker rmi "$IMAGE_REPO/qxp-web-home:$IMAGE_TAG"
+#     - docker rmi "$IMAGE_REPO/qxp-web-nginx:$CI_COMMIT_REF_NAME"
+#     - docker rmi "$IMAGE_REPO/qxp-web-portal:$CI_COMMIT_REF_NAME"
+#     - docker rmi "$IMAGE_REPO/qxp-web-home:$CI_COMMIT_REF_NAME"
 
 deploy_alpha:
   tags:
@@ -98,31 +98,31 @@ deploy_alpha:
   script:
     - ./scripts/deploy_alpha.sh
 
-deploy_testing:
-  tags:
-    - qxp-web-runner
-  stage: release
-  only:
-    - /^release\/v*/
-  script:
-    - IMAGE_TAG="v$(date "+%Y%m%d")-$(git rev-parse --short HEAD)"
-    - bash -c "/opt/upImage.sh $IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG $CI_COMMIT_REF_NAME"
-    - bash -c "/opt/upImage.sh $IMAGE_REPO/qxp-web-portal:$IMAGE_TAG $CI_COMMIT_REF_NAME"
-    - bash -c "/opt/upImage.sh $IMAGE_REPO/qxp-web-home:$IMAGE_TAG $CI_COMMIT_REF_NAME"
-    - echo "images uploaded, please contact baronkong@yunify.com to deploy!"
+# deploy_testing:
+#   tags:
+#     - qxp-web-runner
+#   stage: release
+#   only:
+#     - /^release\/v*/
+#   script:
+#     - IMAGE_TAG="v$(date "+%Y%m%d")-$(git rev-parse --short HEAD)"
+#     - bash -c "/opt/upImage.sh $IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG $CI_COMMIT_REF_NAME"
+#     - bash -c "/opt/upImage.sh $IMAGE_REPO/qxp-web-portal:$IMAGE_TAG $CI_COMMIT_REF_NAME"
+#     - bash -c "/opt/upImage.sh $IMAGE_REPO/qxp-web-home:$IMAGE_TAG $CI_COMMIT_REF_NAME"
+#     - echo "images uploaded, please contact baronkong@yunify.com to deploy!"
 
-deploy_staging:
-  tags:
-    - qxp-web-runner
-  stage: release
-  only:
-    - tags
-    - /^v(\d+\.)+(\d+)/
-  except:
-    - branches
-  script:
-    - IMAGE_TAG="v$(date "+%Y%m%d")-$(git rev-parse --short HEAD)"
-    - bash -c "helm upgrade qxp-web-portal /root/quanxiang_charts_staging/qxp-web-portal --kubeconfig ~/.kube/config_staging --set image.tag=$IMAGE_TAG --set image.repo=dockerhub.qingcloud.com/lowcode -n lowcode"
-    - bash -c "helm upgrade qxp-web-home /root/quanxiang_charts_staging/qxp-web-home --kubeconfig ~/.kube/config_staging --set image.tag=$IMAGE_TAG --set image.repo=dockerhub.qingcloud.com/lowcode -n lowcode"
-    - bash -c "helm upgrade qxp-web-nginx /root/quanxiang_charts_staging/qxp-web-nginx --kubeconfig ~/.kube/config_staging --set image.tag=$IMAGE_TAG --set image.repo=dockerhub.qingcloud.com/lowcode -n lowcode"
-    - echo "deploy staging done!"
+# deploy_staging:
+#   tags:
+#     - qxp-web-runner
+#   stage: release
+#   only:
+#     - tags
+#     - /^v(\d+\.)+(\d+)/
+#   except:
+#     - branches
+#   script:
+#     - IMAGE_TAG="v$(date "+%Y%m%d")-$(git rev-parse --short HEAD)"
+#     - bash -c "helm upgrade qxp-web-portal /root/quanxiang_charts_staging/qxp-web-portal --kubeconfig ~/.kube/config_staging --set image.tag=$IMAGE_TAG --set image.repo=dockerhub.qingcloud.com/lowcode -n lowcode"
+#     - bash -c "helm upgrade qxp-web-home /root/quanxiang_charts_staging/qxp-web-home --kubeconfig ~/.kube/config_staging --set image.tag=$IMAGE_TAG --set image.repo=dockerhub.qingcloud.com/lowcode -n lowcode"
+#     - bash -c "helm upgrade qxp-web-nginx /root/quanxiang_charts_staging/qxp-web-nginx --kubeconfig ~/.kube/config_staging --set image.tag=$IMAGE_TAG --set image.repo=dockerhub.qingcloud.com/lowcode -n lowcode"
+#     - echo "deploy staging done!"
