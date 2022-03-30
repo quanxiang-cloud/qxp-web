@@ -35,7 +35,7 @@ export async function fetchLinkedTableFields(
     return {
       value: field.id,
       label: (field.title || field.id) as string,
-      fieldEnum: (field.enum || []) as Array<FormBuilder.Option>,
+      fieldEnum: (field.enum || []) as string[],
       componentName: field.componentName || 'antdselect',
     };
   });

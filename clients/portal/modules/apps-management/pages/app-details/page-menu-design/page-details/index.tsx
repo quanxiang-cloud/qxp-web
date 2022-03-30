@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
-import PageSchemaRender from '@c/page-schema-render';
+// import PageSchemaRender from '@c/page-schema-render';
 
 import Icon from '@c/icon';
 import Modal from '@c/modal';
@@ -18,7 +18,7 @@ import { MenuType, Resp } from '../../type';
 import { createCustomPage, updateCustomPage } from '../../api';
 import { formatFileSize } from '../../utils';
 import PageRelatedInfo from './page-related-info';
-import { getSchemaKey, getVersionKey, getRenderRepository } from '../../../page-design/api';
+// import { getSchemaKey, getVersionKey, getRenderRepository } from '../../../page-design/api';
 
 import './index.scss';
 
@@ -160,18 +160,18 @@ function PageDetails({ pageID }: Props): JSX.Element {
           </div>
           <Tab
             items={[
-              {
-                id: 'page-preview',
-                name: '视图预览',
-                content: (
-                  <PageSchemaRender
-                    schemaKeys={getSchemaKey(appID, pageID, false)}
-                    version={getVersionKey()}
-                    repository={getRenderRepository()}
-                    maxHeight="calc(100vh - 250px)"
-                  />
-                ),
-              },
+              // {
+              //   id: 'page-preview',
+              //   name: '视图预览',
+              //   content: (
+              //     <PageSchemaRender
+              //       schemaKeys={getSchemaKey(appID, pageID, false)}
+              //       version={getVersionKey()}
+              //       repository={getRenderRepository()}
+              //       maxHeight="calc(100vh - 250px)"
+              //     />
+              //   ),
+              // },
               {
                 id: 'relate-info',
                 name: '关联信息',

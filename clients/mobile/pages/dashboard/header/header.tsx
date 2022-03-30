@@ -8,7 +8,7 @@ import './header.scss';
 import { getUserDepartment } from '@lib/utils';
 
 const Header: React.FC<HomePageProps> = (props) => {
-  const { name: depName } = getUserDepartment(window.user);
+  const { name: depName } = getUserDepartment(window.USER);
 
   function renderHeader(): JSX.Element {
     return (

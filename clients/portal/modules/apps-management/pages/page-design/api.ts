@@ -1,5 +1,4 @@
 import { isEmpty } from 'lodash';
-
 import { getStore } from '@one-for-all/page-engine';
 
 import {
@@ -63,8 +62,10 @@ export function getVersionKey(): string {
 
 export function getRenderRepository(): any {
   const pageCtx = getStore();
+  const comps = pageCtx.registry.toComponentMap();
   return {
-    'ofa-ui@latest': pageCtx.registry.toComponentMap(),
+    'ofa-ui@latest': comps,
+    '@one-for-all/ui@latest': comps,
   };
 }
 

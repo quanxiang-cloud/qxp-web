@@ -1,10 +1,10 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useContext, useMemo, useEffect } from 'react';
 import { useQuery } from 'react-query';
 
 import { Select } from '@one-for-all/headless-ui';
 import FlowCtx from '@flow/flow-context';
 import { getFormFieldSchema } from '@flow/content/editor/forms/api';
-import { schemaToMap } from '@lib/schema-convert';
+import { schemaToMap, schemaToFields } from '@lib/schema-convert';
 import { getSchemaFields } from '../utils';
 
 interface Props {
@@ -12,9 +12,10 @@ interface Props {
   onChangeField: (field_id: string) => void;
   fieldId?: string;
   className?: string;
+  onChangeSchema?: (val: SchemaFieldItem[]) => void;
 }
 
-function SelectTargetFields({ tableId, fieldId, onChangeField }: Props): JSX.Element | null {
+function SelectTargetFields({ tableId, fieldId, onChangeField, onChangeSchema }: Props): JSX.Element | null {
   const { appID } = useContext(FlowCtx);
   const { data: targetSchema } = useQuery(['GET_TARGET_TABLE_SCHEMA', tableId, appID], getFormFieldSchema, {
     enabled: !!appID && !!tableId,
@@ -28,6 +29,10 @@ function SelectTargetFields({ tableId, fieldId, onChangeField }: Props): JSX.Ele
       sort: true,
       mergeNormal: true,
     });
+  }, [targetSchema]);
+
+  useEffect(()=>{
+    onChangeSchema?.(schemaToFields(targetSchema));
   }, [targetSchema]);
 
   if (!tableId) {
