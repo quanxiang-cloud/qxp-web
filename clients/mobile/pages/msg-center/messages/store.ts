@@ -41,7 +41,7 @@ class MessagesStore {
         data = data.map((message) => {
           return {
             ...message,
-            updated: formatRelativeTime(new Date((message.updatedAt ?? message.createdAt ?? 0) * 1000)),
+            updated: formatRelativeTime(message.updatedAt ?? message.createdAt ?? 0),
           };
         });
       } else {

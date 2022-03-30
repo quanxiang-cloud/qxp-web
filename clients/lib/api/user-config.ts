@@ -25,8 +25,10 @@ export function getBatchGlobalConfig(keys: GetParams[]): Promise<{ result: Recor
   return httpClient('/api/v1/persona/batchGetValue', { keys });
 }
 
-export function setBatchGlobalConfig(params: SetParams[]): Promise<void> {
-  return httpClient('/api/v1/persona/batchSetValue', { params });
+export function setBatchGlobalConfig(params: SetParams[]): FutureErrorMessage {
+  return httpClient('/api/v1/persona/batchSetValue', { params }).then(() => '').catch((err) => {
+    return err;
+  });
 }
 
 export function setPageEngineMenuType(appID: string, id: string): Promise<any> {

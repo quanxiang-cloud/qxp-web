@@ -18,8 +18,7 @@ import statusStore from './status/store';
 import topicStore from './topic/store';
 
 export default function ApprovalDetail(): JSX.Element {
-  const { processInstanceID, taskID, type } =
-    useParams<ApprovalDetailParams>();
+  const { processInstanceID, taskID, type } = useParams<ApprovalDetailParams>();
 
   const [state, setState] = useSetState<ApprovalDetailTab>({
     tabs: [],
@@ -110,14 +109,25 @@ export default function ApprovalDetail(): JSX.Element {
               navBottom={<Divider color='var(--gray-200)'/>}
             />
           )}
-          {state.tabs.length === 1 && renderTab(state.tabs[0], 0)}
-          {state.tabs.length < 1 && (
-            <Empty
-              onClick={init}
-              title='无流程详情'
-              content='暂无流程详情'
-              image='/dist/images/no-approval-task.svg'/>
-          )}
+          {
+            state.tabs.length === 1 && (
+              <NavPage title={store.title || '流程详情'} absolute className='flex flex-col'>
+                {renderTab(state.tabs[0], 0)}
+              </NavPage>
+            )
+          }
+          {
+            state.tabs.length < 1 && (
+              <NavPage title={store.title || '流程详情'} absolute className='flex flex-col'>
+                <Empty
+                  onClick={init}
+                  title='无流程详情'
+                  content='暂无流程详情'
+                  image='/dist/images/no-approval-task.svg'
+                />
+              </NavPage>
+            )
+          }
         </>
       )}
     </>
