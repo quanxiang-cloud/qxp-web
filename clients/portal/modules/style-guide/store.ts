@@ -13,7 +13,9 @@ class StyleGuideStore {
   @action
   setCommonConfig = (newConfig: Partial<StyleGuideCommonConfig>): void => {
     this.commonConfig = { ...this.commonConfig, ...newConfig };
-    this.cssStore.baseVariables.primaryColor = this.commonConfig.primaryColor || 'blue';
+    if (this.cssStore) {
+      this.cssStore.baseVariables.primaryColor = this.commonConfig.primaryColor || 'blue';
+    }
   };
 
   @action
