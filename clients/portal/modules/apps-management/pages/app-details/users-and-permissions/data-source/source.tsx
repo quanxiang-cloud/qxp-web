@@ -44,6 +44,7 @@ function Source(): JSX.Element {
   }, { enabled: !!curNsPath });
 
   useEffect(() => {
+    store.isLoadingAuth = false;
     store.setApiList(apiListDetails?.list || []);
     const _apiAuthList = apiListDetails?.list.map((api) => {
       return {
@@ -51,7 +52,9 @@ function Source(): JSX.Element {
         path: api.fullPath,
       };
     });
-    !!_apiAuthList?.length && store.fetchAPIListAuth(_apiAuthList).then(setAuthList);
+    !!_apiAuthList?.length && store.fetchAPIListAuth(_apiAuthList)
+      .then(setAuthList)
+      .finally(() => store.isLoadingAuth = false);
   }, [apiListDetails]);
 
   const isLoading = isFetchNsTreeLoading && isFetchListLoading;
@@ -95,11 +98,13 @@ function Source(): JSX.Element {
         />
       </div>
       <div className='bg-white h-full p-16'>
-        {!store.apiList.length && (
+        {store.isLoadingAuth && <Loading className="h-full" desc="加载中..." />}
+        {!store.isLoadingAuth && !store.apiList.length && (
           <div>该分组下无API服务</div>
         )}
         <div className='pb-authorized-checkbox-box'>
-          {!!store.apiList.length && store.apiList.map(({ fullPath, title }, index) => (
+          {!store.isLoadingAuth && !!store.apiList.length &&
+          store.apiList.map(({ fullPath, title }, index) => (
             <Checkbox
               key={fullPath}
               className='border rounded-8 py-8 pl-16'
@@ -107,7 +112,6 @@ function Source(): JSX.Element {
               onChange={handleChange}
               value={`${index}-${fullPath}`}
               label={title}
-
             />
           ))}
         </div>

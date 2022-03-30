@@ -29,6 +29,8 @@ class UserAndPerStore {
   @observable apiList: RawApiDetail[] = [];
   @observable UserDetailList: [] = [];
   @observable rootPath = '';
+  @observable isLoadingScope = false;
+  @observable isLoadingAuth = false;
 
   @action
   setCurrentScopes = (currentScopes: DeptAndUser[]): void => {
@@ -115,6 +117,7 @@ class UserAndPerStore {
 
   @action
   fetchUserDetailList = (usersIDList: string[]): void => {
+    this.isLoadingScope = true;
     const query = `
     {query(ids:${JSON.stringify(usersIDList)}){users{id,email,phone,name,departments{id,name}}}}
     `;
@@ -124,7 +127,7 @@ class UserAndPerStore {
       this.UserDetailList = res?.users;
     }).catch((err: any) => {
       toast.error(err);
-    });
+    }).finally(() => this.isLoadingScope = false);
   };
 
   @action

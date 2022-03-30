@@ -196,6 +196,7 @@ function AssociatedPerson(): JSX.Element {
               onSelectChange={(selectedKeys: string[]) => setSelectUser(selectedKeys)}
               showCheckbox
               rowKey="id"
+              loading={store.isLoadingScope}
               data={showBindType === 1 ? store.UserDetailList : userAndDept.deptList}
               className="rounded-bl-none rounded-br-none text-12"
               columns={columns}
