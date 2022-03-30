@@ -1,15 +1,17 @@
 import React from 'react';
 
 type Props = {
-  ctx: any
+  fileUrl: string;
 }
 
-export default function StaticViewRender(props: Props): JSX.Element {
-  console.log(props);
-
+export default function StaticViewRender({ fileUrl }: Props): JSX.Element {
   return (
-    <div>
-      StaticViewRender
+    <div className="w-full h-full">
+      <iframe
+        className="w-full h-full"
+        src={fileUrl}
+        style={{ border: 'none' }}
+      />
     </div>
   );
 }

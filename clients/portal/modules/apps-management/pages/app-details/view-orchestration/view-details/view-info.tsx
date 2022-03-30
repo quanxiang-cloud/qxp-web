@@ -5,7 +5,7 @@ import Tab from '@c/tab';
 import Icon from '@c/icon';
 import Button from '@c/button';
 
-import { View, ViewType } from '../types.d';
+import { SchemaView, TableSchemaView, View, ViewType } from '../types.d';
 import PageSchemaRender from '@c/page-schema-render';
 import { getVersionKey } from '../../../page-design/api';
 
@@ -83,11 +83,16 @@ function ViewInfo({ view, openModal }: Props): JSX.Element {
   }, [view]);
 
   function goPageDesign(): void {
-    history.push(`/apps/page-design/${view.id}/${appID}?pageName=${view.name}`);
+    // view id change to schema id soon
+    const shortSchemaID = (view as SchemaView).schemaID.split(':').pop();
+    console.log(view);
+
+    history.push(`/apps/page-design/${shortSchemaID}/${appID}?pageName=${view.name}`);
+    // history.push(`/apps/page-design/${view.id}/${appID}?pageName=${view.name}`);
   }
 
   function goFormBuild(): void {
-    history.push(`/apps/formDesign/formBuild/${view.id}/${appID}?pageName=${view.name}`);
+    history.push(`/apps/formDesign/formBuild/${(view as TableSchemaView).tableID}/${appID}?pageName=${view.name}`);
   }
 
   function handleBtnClick(): void {

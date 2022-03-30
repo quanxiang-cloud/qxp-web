@@ -7,7 +7,9 @@ import { rootSchemaKey } from './utils';
 
 export default function AppLand(): JSX.Element {
   return (
-    <SchemaRender schemaKey={rootSchemaKey} version={VERSION} />
+    <div style={{ height: '100vh' }}>
+      <SchemaRender schemaKey={rootSchemaKey} version={VERSION} />
+    </div>
   );
 }
 

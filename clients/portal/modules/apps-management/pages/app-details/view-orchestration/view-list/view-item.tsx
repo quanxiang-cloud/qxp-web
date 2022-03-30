@@ -15,7 +15,7 @@ type Props = {
 }
 
 function ViewItem({ view, onViewClick, onOptionClick, currentView }: Props): JSX.Element {
-  const isActive = currentView.name === view.name;
+  const isActive = currentView && currentView.name === view.name;
 
   return (
     <li

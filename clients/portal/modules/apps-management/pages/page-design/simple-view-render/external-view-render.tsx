@@ -1,15 +1,18 @@
 import React from 'react';
 
 type Props = {
-  ctx: any
+  name: string;
+  link: string;
 }
 
-export default function ExternalViewRender(props: Props): JSX.Element {
-  console.log(props);
-
+export default function ExternalViewRender({ name, link }: Props): JSX.Element {
   return (
-    <div>
-      ExternalViewRender
+    <div className="w-full h-full">
+      <iframe
+        className="w-full h-full"
+        src={link}
+        style={{ border: 'none' }}
+      />
     </div>
   );
 }

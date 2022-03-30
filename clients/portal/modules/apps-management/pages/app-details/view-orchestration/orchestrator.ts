@@ -192,7 +192,7 @@ class Orchestrator {
         packageName: 'ofa-ui',
         packageVersion: 'latest',
         exportName: 'page',
-        label: '页面',
+        label: params.name,
         props: {
           style: {
             type: 'constant_property',
@@ -241,6 +241,10 @@ class Orchestrator {
           type: 'constant_property',
           value: params.fileUrl,
         },
+        name: {
+          type: 'constant_property',
+          value: params.name,
+        },
       },
     };
 
@@ -268,6 +272,10 @@ class Orchestrator {
         link: {
           type: 'constant_property',
           value: params.link,
+        },
+        name: {
+          type: 'constant_property',
+          value: params.name,
         },
       },
     };
