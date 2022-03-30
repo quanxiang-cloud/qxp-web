@@ -1,6 +1,6 @@
 name: Build for testing environment
 env:
-  IMAGE_REPO: dockerhub.qingcloud.com/lowcode
+  IMAGE_REPO: qxcr.xyz/lowcode
   DATE: $(date "+%Y%m%d")
 on:
   push:
