@@ -1,4 +1,5 @@
 import httpClient, { httpClientGraphQL } from '@lib/http-client';
+import { QueryRequestNodeApiListInputBody, QueryRequestNodeApiListResponse } from '@portal/modules/poly-api/effects/api/raw';
 
 export const createRole = (appID: string, data: RoleCreate): Promise<{ id: string }> => {
   return httpClient(`/api/v1/form1/${appID}/m/apiRole/create`, data);
@@ -49,7 +50,7 @@ export type APIAuth = {
   path?: string,
   params?: Record<string, Property> | null,
   response?: Record<string, Property> | null,
-  // condition:
+  condition: any;
   roleID?: string,
   id?: string
 }
@@ -68,8 +69,8 @@ export const updateAPIAuth = async (
 
 export const fetchAPIListAuth = async (
   appID: string,
-  data: { roleID: string, path: string }[],
-): Promise<{ list: APIAuth[] }> => {
+  data: { roleID: string, paths: string[] },
+): Promise<Record<string, APIAuth>> => {
   return await httpClient(`/api/v1/form1/${appID}/m/apiPermit/list`, data);
 };
 
@@ -80,3 +81,9 @@ export const deleteAPIAuth = async (
   return await httpClient(`/api/v1/form1/${appID}/m/apiPermit/delete`, data);
 };
 
+export const fetchGroupApiList = (
+  path: string,
+  data: QueryRequestNodeApiListInputBody,
+): Promise<QueryRequestNodeApiListResponse> => {
+  return httpClient(`/api/v1/polyapi/${path.split('/')[3]}/list/${path}`, data);
+};

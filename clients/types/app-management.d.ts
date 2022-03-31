@@ -1,4 +1,8 @@
 import { Moment } from 'moment';
+
+import { RawApiDetail } from '@portal/modules/poly-api/effects/api/raw';
+import { APIAuth } from '@portal/modules/apps-management/pages/app-details/users-and-permissions/api';
+
 declare global {
   type AppInfo = {
     id: string;
@@ -161,5 +165,9 @@ declare global {
     id: string;
     name: string;
     roleID?: string;
+  }
+
+  type APIDetailAuth = RawApiDetail & {
+    auth?: APIAuth | null
   }
 }
