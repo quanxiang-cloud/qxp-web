@@ -37,8 +37,9 @@ function PageList(): JSX.Element {
           const store = new Orchestrator(appID, appLayoutSchema);
           window.store = store;
           setCurrentView(store.views[0] as View);
-          console.log(appLayoutSchema);
-          console.log(store?.views);
+          console.log('To checkout the Mobx AppInfoStore, please command window.store or store to visit it');
+          console.log('rootSchema', appLayoutSchema);
+          console.log('views: ', store?.views);
           return store;
         });
         return appLayoutSchema;

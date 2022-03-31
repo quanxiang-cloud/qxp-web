@@ -65,7 +65,7 @@ export function getRenderRepository(): any {
   const pageCtx = getStore();
   const comps = pageCtx.registry.toComponentMap();
   return {
-    'ofa-ui@latest': pageCtx.registry.toComponentMap(),
+    'ofa-ui@latest': comps,
     'SimpleViewRenders@1.0.0': SimpleViewRenders,
     '@one-for-all/ui@latest': comps,
   };
