@@ -197,8 +197,9 @@ function RuleItem(props: Props): JSX.Element {
     if (selectField) {
       const { componentName, fieldName } = selectField;
       if (componentName === 'associatedrecords') {
+        const columns = get(selectField, 'x-component-props.columns', []);
         return Object.entries(get(selectField, 'x-component-props.associatedTable.properties', {}))
-          .filter(([, conf]: [string, any]) => !get(conf, 'x-internal.isSystem'))
+          .filter(([filedName, conf]: [string, any]) => !get(conf, 'x-internal.isSystem') && columns.includes(filedName))
           .map(([field_id, conf]: [string, any]) => {
             return {
               label: conf.title || field_id,
@@ -211,7 +212,7 @@ function RuleItem(props: Props): JSX.Element {
         const relatedField = get(relatedTableSchema, `properties.${fieldName}`);
 
         return [{
-          label: relatedField.title as string,
+          label: relatedField?.title as string,
           value: fieldName,
         }];
       }

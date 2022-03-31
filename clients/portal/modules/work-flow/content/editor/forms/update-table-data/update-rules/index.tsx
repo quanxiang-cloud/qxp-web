@@ -58,7 +58,7 @@ function UpdateRules({ appId, tableId, defaultValue }: Props, ref: React.Ref<Ref
           <Button onClick={onAdd}>新增</Button>
         </div>
         <div className="flex flex-col update-conditions">
-          {rules.map((rule, idx) =>
+          {targetSchema && rules.map((rule, idx) =>
             (<RuleItem
               key={[rule.fieldName, idx].join('-')}
               targetSchema={targetSchema}
