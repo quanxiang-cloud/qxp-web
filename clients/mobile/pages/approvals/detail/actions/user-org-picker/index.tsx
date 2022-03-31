@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSearchParam } from 'react-use';
 import { observer } from 'mobx-react';
@@ -13,17 +13,26 @@ import Loading from '@m/qxp-ui-mobile/loading';
 import store from './store';
 
 import './index.scss';
+import { buildGraphQLQuery } from '@portal/modules/access-control/departments-employees/utils';
+
+const PAGE_SIZE = 50;
 
 function UserOrgPicker(): JSX.Element {
   const title = useSearchParam('title');
   const single = useSearchParam('single');
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showDialog, setShowDialog] = useState(false);
-  const [searchValue, setSearchValue] = useState('');
+  const [keyword, setKeyword] = useState('');
   const [page, setPage] = useState<number>(1);
   const branchRef = useRef<HTMLDivElement>(null);
   const history = useHistory();
   const state = history.location.state as { curPath: Location, userList: Array<string>};
+
+  const params = useMemo(() => ({
+    name: keyword || '',
+    page,
+    size: PAGE_SIZE,
+  }), [keyword, page]);
 
   useEffect(() => {
     store.setCheckedUserList(state.userList || []);
@@ -34,7 +43,7 @@ function UserOrgPicker(): JSX.Element {
     setPage(1);
     scrollToBottom();
     store.fetchUsers(1);
-  }, [store.currentBranch.id]);
+  }, [store.currentBranch]);
 
   useEffect(() => {
     page > 1 && store.fetchMoreUserList(page);
@@ -45,8 +54,9 @@ function UserOrgPicker(): JSX.Element {
   }, [store.checkedUserList]);
 
   useEffect(() => {
-    store.searchUser(searchValue);
-  }, [searchValue]);
+    const queryGraphQL = buildGraphQLQuery(params);
+    store.searchUserList(queryGraphQL, keyword);
+  }, [params]);
 
   function scrollToBottom(): void {
     if (branchRef.current) {
@@ -75,15 +85,15 @@ function UserOrgPicker(): JSX.Element {
         <div className='mx-16 mt-16 mb-8 search'>
           <Icon name='search' size='0.24rem'/>
           <input
-            value={searchValue}
+            value={keyword}
             placeholder='搜索员工姓名...'
             className='body1 text-primary search-input'
             onChange={(e) => {
-              setSearchValue(e.target.value);
+              setKeyword(e.target.value);
             }}
           />
           {store.isSearch && (
-            <div className='text-gray-400 mr-12' onClick={() => setSearchValue('')}>
+            <div className='text-gray-400 mr-12' onClick={() => setKeyword('')}>
               <Icon name='m-cancel' size='0.20rem' />
             </div>
           )}
@@ -98,7 +108,7 @@ function UserOrgPicker(): JSX.Element {
                     className='mx-16'
                     onClick={() => store.changeCurOrg(branchItem, branchItem?.child)}
                   >
-                    {branchItem.departmentName}
+                    {branchItem.name}
                   </div>
                   {index < store.branchPath.length - 1 && (
                     <div className='text-gray-300 w-16'>
@@ -129,7 +139,7 @@ function UserOrgPicker(): JSX.Element {
                           className='org-item title3'
                           onClick={() => store.changeCurOrg(orgItem, orgItem?.child)}
                         >
-                          <div className='ellipsis text-second'>{orgItem.departmentName}</div>
+                          <div className='ellipsis text-second'>{orgItem.name}</div>
                           <Icon name='keyboard_arrow_right' />
                         </div>
                       </>
@@ -138,23 +148,23 @@ function UserOrgPicker(): JSX.Element {
                   <div className='bottom-line'></div>
                 </>
               )}
-              {store.userList && store.userList.length > 0 && store.userList.map(({ userName, id }) => {
+              {store.userList && store.userList.length > 0 && store.userList.map(({ name, id }) => {
                 return (
                   <>
                     {single === 'true' && (
                       <div
                         key={id}
                         className='user-item'
-                        onClick={() => !store.checkedUserList.includes(`${userName}_${id}`) &&
-                        store.addSingleUserId(`${userName}_${id}`)}
+                        onClick={() => !store.checkedUserList.includes(`${name}_${id}`) &&
+                        store.addSingleUserId(`${name}_${id}`)}
                       >
                         <input
                           name='user'
                           type='radio'
                           className='w-18 h-18'
-                          checked={store.checkedUserList[0] === `${userName}_${id}`}
+                          checked={store.checkedUserList[0] === `${name}_${id}`}
                         />
-                        <span className='user-item-name'>{userName}</span>
+                        <span className='user-item-name'>{name}</span>
                       </div>
                     )}
                     {single === 'false' && (
@@ -162,16 +172,16 @@ function UserOrgPicker(): JSX.Element {
                         key={id}
                         className='user-item'
                         onClick={() => {
-                          store.checkedUserList.find((user) => user === `${userName}_${id}`) ?
-                            store.removeUserId(`${userName}_${id}`) : store.addUserId(`${userName}_${id}`);
+                          store.checkedUserList.find((user) => user === `${name}_${id}`) ?
+                            store.removeUserId(`${name}_${id}`) : store.addUserId(`${name}_${id}`);
                         } }
                       >
                         <input
                           type='checkbox'
                           className='w-18 h-18'
-                          checked={!!store.checkedUserList.find((user) => user === `${userName}_${id}`)}
+                          checked={!!store.checkedUserList.find((user) => user === `${name}_${id}`)}
                         />
-                        <span className='user-item-name'>{userName}</span>
+                        <span className='user-item-name'>{name}</span>
                       </div>
                     )}
                   </>

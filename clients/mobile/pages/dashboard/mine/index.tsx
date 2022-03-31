@@ -49,7 +49,7 @@ const Mine: React.FC<HomePageProps> = (props) => {
             </div>
             <div className='flex items-center text-secondary mt-6'>
               <Icon name='organization_chart' addPrefix />
-              <p className='flex-1 ml-8 mr-8 truncate'>{dep.name}</p>
+              <p className='flex-1 ml-8 mr-8 truncate'>{dep?.name || ''}</p>
             </div>
           </div>
         </div>
