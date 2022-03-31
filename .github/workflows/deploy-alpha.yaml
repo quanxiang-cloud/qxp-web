@@ -11,6 +11,10 @@ jobs:
       - uses: ./.github/actions/client-boot-up
       - uses: ./.github/actions/quality-check
       - uses: ./.github/actions/build-static
+      - uses: ./.github/actions/fail-alert
+        if: ${{ failure() }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
   deploy:
     needs: [bundle-clients]
     runs-on: self-hosted
@@ -27,3 +31,7 @@ jobs:
       - run: scp ./dist/home qxp-alpha:/tmp
       - run: rsync -avz ./dist/ qxp-alpha:/qxp/dist
       - run: ssh qxp-alpha /qxp/script/reload_portal
+      - uses: ./.github/actions/fail-alert
+        if: ${{ failure() }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
