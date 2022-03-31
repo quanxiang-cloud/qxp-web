@@ -2,7 +2,15 @@ import { observable, action } from 'mobx';
 import CssASTStore, { ComponentSpec, StyleConfigInterface } from '@one-for-all/style-guide';
 
 import httpClient from '@lib/http-client';
+import toast from '@lib/toast';
+import { setBatchGlobalConfig, getBatchGlobalConfig } from '@lib/api/user-config';
+import { parseJSON } from '@lib/utils';
 
+import colorVars from './css-variables.json';
+
+const COMPONENT_STYLE_CONFIG_KEY = 'GLOBAL_COMPONENT_STYLE_CONFIG';
+const COMMON_STYLE_CONFIG_KEY = 'COMMON_STYLE_CONFIG';
+const VERSION = '0.1.0';
 class StyleGuideStore {
   @observable cssStore: CssASTStore | null = null;
   @observable currentCompStatus: null | ActiveConfigurationComponent = null;
@@ -13,10 +21,6 @@ class StyleGuideStore {
   @action
   setCommonConfig = (newConfig: Partial<StyleGuideCommonConfig>): void => {
     this.commonConfig = { ...this.commonConfig, ...newConfig };
-    if (this.cssStore) {
-      this.cssStore.baseVariables.primaryColor = this.commonConfig.primaryColor || 'blue';
-      this.cssStore.themeColorVariables = this.commonConfig.themeVariable || {};
-    }
   };
 
   @action
@@ -25,6 +29,33 @@ class StyleGuideStore {
       key,
       spec,
     };
+  };
+
+  @action
+  fetchStyleConfig = (): void => {
+    getBatchGlobalConfig([{ key: COMPONENT_STYLE_CONFIG_KEY, version: VERSION }]).then((res) => {
+      const customCompCssMap = parseJSON(res.result?.[COMPONENT_STYLE_CONFIG_KEY], {});
+      this.cssStore = new CssASTStore({
+        initCssMap: customCompCssMap,
+        baseColorVariables: colorVars.baseColors,
+      });
+    });
+  };
+
+  @action
+  saveStyleConfig = async (): Promise<void> => {
+    const styleCssUrl = await this.generateCssUrl();
+    await setBatchGlobalConfig([{
+      version: VERSION,
+      key: COMPONENT_STYLE_CONFIG_KEY,
+      value: JSON.stringify(this.cssStore?.cssASTMap),
+    }, {
+      version: VERSION,
+      key: COMMON_STYLE_CONFIG_KEY,
+      value: JSON.stringify({ styleCssUrl }),
+    }]);
+
+    toast.success('保存成功');
   };
 
   generateCssUrl = async (): Promise<string> => {

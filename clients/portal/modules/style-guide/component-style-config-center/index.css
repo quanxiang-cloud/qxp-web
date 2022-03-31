@@ -1,3 +1,11 @@
 .style-guide-comp-list {
   border-right: 1px solid var(--gray-200);
 }
+
+.style-guide-code-editor {
+  height: 100%;
+}
+
+.style-guide-code-editor .CodeMirror {
+  height: 100%;
+}

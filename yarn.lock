@@ -757,10 +757,10 @@
   dependencies:
     react "^17.0.2"
 
-"@one-for-all/icon@^0.5.0":
-  version "0.5.0"
-  resolved "https://registry.npmmirror.com/@one-for-all/icon/-/icon-0.5.0.tgz#6f5b08b0cf47275ed4c9f754f4fb9401c1657de9"
-  integrity sha512-3f7qjb4G42CER1NNbjwU07WNzmC4diYRyiY0PuhehwpOpdG/QPjOmV98UMYGyAtAp459Ub9rfqAD08aqzXb0fw==
+"@one-for-all/icon@^0.6.1":
+  version "0.6.1"
+  resolved "https://registry.npmmirror.com/@one-for-all/icon/-/icon-0.6.1.tgz#3b960f472a98d0c663091eb91ef4403ea937e13e"
+  integrity sha512-q5XVGJ0dtKIp2BtorFHP0IApbF6aGra+pB8BhHfyz893WBBzWGl64zQinYIJjboFFHd0J9VRBqb7Tet4J2DuOw==
   dependencies:
     react "^17.0.2"
 

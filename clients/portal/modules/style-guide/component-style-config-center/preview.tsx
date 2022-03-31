@@ -41,7 +41,7 @@ function PreviewConfigurableComponent(): JSX.Element {
     }
 
     store.shadowRoot = previewRef.current?.attachShadow({ mode: 'open' });
-  }, [previewRef.current]);
+  }, [previewRef.current, store.currentComp]);
 
   useEffect(() => {
     return () => {
@@ -55,6 +55,10 @@ function PreviewConfigurableComponent(): JSX.Element {
 
   const { key } = store.currentComp;
   const Component = (headlessUI as any)[key];
+
+  if (!Component) {
+    return <div />;
+  }
 
   return (
     <div ref={previewRef} className='gird'>

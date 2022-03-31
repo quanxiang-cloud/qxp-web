@@ -13,16 +13,16 @@ func PortalHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tenantStyleConfig := getTenantConfig(r, "")
+	personalizedConfig := getPersonalizedConfig(r, "")
 	adminUserFuncTags := getAdminUserFuncTags(r)
 	userAdminRoles := getUserAdminRoles(r)
 
 	renderWebAppPage(w, "portal.html", map[string]interface{}{
-		"user":              user,
-		"adminUserFuncTags": adminUserFuncTags,
-		"userAdminRoles":    userAdminRoles,
-		"tenantStyleConfig": tenantStyleConfig,
-		"debugMode":         contexts.Config.DevMode,
-		"CONFIG":            contexts.Config.ClientConfig,
+		"user":               user,
+		"adminUserFuncTags":  adminUserFuncTags,
+		"userAdminRoles":     userAdminRoles,
+		"personalizedConfig": personalizedConfig,
+		"debugMode":          contexts.Config.DevMode,
+		"CONFIG":             contexts.Config.ClientConfig,
 	})
 }

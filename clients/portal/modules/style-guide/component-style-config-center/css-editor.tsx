@@ -12,7 +12,6 @@ import 'codemirror/addon/lint/lint';
 import 'codemirror/addon/lint/lint.css';
 import 'codemirror/addon/lint/css-lint';
 
-import Button from '@c/button';
 import toast from '@lib/toast';
 
 import { applyStyle } from '../utils';
@@ -20,23 +19,40 @@ import store from '../store';
 
 function CSSEditor(): JSX.Element {
   const [value, setValue] = useState('');
+  const [isFocus, setFocus] = useState(false);
+  const [isChanged, setIsChanged] = useState(false);
   const { spec, key } = store.currentCompStatus as ActiveConfigurationComponent;
 
   useEffect(() => {
     setValue(store.cssStore?.getInitCompCss(`${key}.${spec.title}`, spec.rules) || '');
   }, [store.currentCompStatus]);
 
+  useEffect(() => {
+    if (isFocus) {
+      return;
+    }
+    handleSave();
+  }, [isFocus]);
+
   function handleSave(): void {
+    if (!isChanged) {
+      return;
+    }
+
     store.cssStore?.setCss(`${key}.${spec.title}`, value, spec.rules, (msg) => toast.error(msg));
     const componentName = key;
     const componentCss = store.cssStore?.getComponentCss(componentName, store.currentComp?.specs || []);
     store.shadowRoot && applyStyle(componentName, componentCss || '', store.shadowRoot);
+    setIsChanged(false);
   }
 
   return (
-    <div className='p-10 bg-white'>
+    <div className='pr-16'>
       <CodeMirror
+        className='style-guide-code-editor'
         value={value}
+        onFocus={() => setFocus(true)}
+        onBlur={() => setFocus(false)}
         options={{
           mode: 'css',
           theme: 'material',
@@ -48,10 +64,10 @@ function CSSEditor(): JSX.Element {
           },
         }}
         onBeforeChange={(editor, data, value) => {
+          setIsChanged(true);
           setValue(value);
         }}
       />
-      <Button className='mt-20' onClick={handleSave} >应用</Button>
     </div>
   );
 }

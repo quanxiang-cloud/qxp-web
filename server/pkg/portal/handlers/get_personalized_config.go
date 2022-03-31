@@ -10,37 +10,37 @@ import (
 	"github.com/tidwall/gjson"
 )
 
-type TenantStyleConfig struct {
+type ConfigCenterParams struct {
 	Version string `json:"version" binding:"required"`
 	Key     string `json:"key" binding:"required"`
 }
 
 type BatchGetValueReq struct {
-	Keys []TenantStyleConfig `json:"keys" binding:"required"`
+	Keys []ConfigCenterParams `json:"keys" binding:"required"`
 }
 
-type UserConfig struct {
+type PersonalizedConfig struct {
 	PrimaryColor string       `json:"primaryColor"`
 	TitleIcon    string       `json:"titleIcon"`
 	Favicons     string       `json:"favicons"`
 	CommonCssUrl template.URL `json:"styleCssUrl"`
 }
 
-func getTenantConfig(r *http.Request, appID string) UserConfig {
-	params := []TenantStyleConfig{{Key: "COMMON_STYLE_CONFIG", Version: "0.1.0"}}
+func getPersonalizedConfig(r *http.Request, appID string) PersonalizedConfig {
+	params := []ConfigCenterParams{{Key: "COMMON_STYLE_CONFIG", Version: "0.1.0"}}
 	if appID != "" {
-		params = []TenantStyleConfig{{Key: "COMMON_STYLE_CONFIG", Version: "0.1.0"}, {Key: fmt.Sprintf("APP_COMMON_STYLE_CONFIG_%s", appID), Version: "0.1.0"}}
+		params = []ConfigCenterParams{{Key: "COMMON_STYLE_CONFIG", Version: "0.1.0"}, {Key: fmt.Sprintf("APP_COMMON_STYLE_CONFIG_%s", appID), Version: "0.1.0"}}
 	}
 
 	respBody, errMsg := sendRequest(r.Context(), "POST", "/api/v1/persona/batchGetValue", BatchGetValueReq{Keys: params})
 	if errMsg != "" {
 		contexts.Logger.Errorf("failed to get user config: %s", errMsg)
-		return UserConfig{}
+		return PersonalizedConfig{}
 	}
 
 	result1 := gjson.Get(string(respBody), "data.result.COMMON_STYLE_CONFIG").Str
 	result2 := gjson.Get(string(respBody), fmt.Sprintf("APP_COMMON_STYLE_CONFIG_%s", appID)).Str
-	config := UserConfig{
+	config := PersonalizedConfig{
 		PrimaryColor: "blue",
 		TitleIcon:    "/dist/images/quanxiangyun.svg",
 		Favicons:     "/dist/images/favicons/favicon-32x32.png",
@@ -57,7 +57,7 @@ func getTenantConfig(r *http.Request, appID string) UserConfig {
 	if err := json.Unmarshal([]byte(result), &config); err != nil {
 		contexts.Logger.Errorf("failed to unmarshal userConfig: %s", err.Error())
 
-		return UserConfig{}
+		return PersonalizedConfig{}
 	}
 
 	return config
