@@ -1,4 +1,5 @@
 import httpClient from '@lib/http-client';
+import logger from '@lib/logger';
 
 type GetParams = {
   version: string;
@@ -22,7 +23,10 @@ export function cloneUserData(sourceKey: GetParams, targetKey: GetParams): Promi
 }
 
 export function getBatchGlobalConfig(keys: GetParams[]): Promise<{ result: Record<string, string> }> {
-  return httpClient('/api/v1/persona/batchGetValue', { keys });
+  return httpClient<{ result: Record<string, string> }>('/api/v1/persona/batchGetValue', { keys }).catch((err) => {
+    logger.error(err);
+    return { result: {} };
+  });
 }
 
 export function setBatchGlobalConfig(params: SetParams[]): FutureErrorMessage {

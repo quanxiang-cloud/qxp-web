@@ -41,10 +41,11 @@ export default function UpdateTableData({
   defaultValue, onSubmit, onCancel, onChange: _onChange,
 }: Props): JSX.Element {
   const { appID } = useContext(FlowContext);
-  const { tableID: workFormId, tableSchema } = useContext(FlowSourceTableCtx);
+  const { tableID: workFormId } = useContext(FlowSourceTableCtx);
   const [value, setValue] = useState<TableDataUpdateData>(defaultValue || {});
   const filterRef = useRef<FilterRuleRef>(null);
   const updateRef = useRef<UpdateRuleRef>(null);
+  const updateTableSchema = useRef<SchemaFieldItem[]>([]);
   const [nextTable, setNextTable] = useState<string>('');
   const [switchTableModal, setSwitchTableModal] = useState(false);
   const [formType, setFormType] = useState<SelectFormType>(value.targetTableId === workFormId ? 'work-form' : 'others');
@@ -61,10 +62,10 @@ export default function UpdateTableData({
     enabled: !!appID,
   });
   const associatedDataList = useMemo(() => {
-    return tableSchema.filter((item) => {
+    return updateTableSchema.current.filter((item) => {
       return selectComponentNames.includes(item.componentName as SelectComponentName);
     }) ?? [] as SchemaFieldItem[];
-  }, [tableSchema]);
+  }, [updateTableSchema.current]);
   const setTypeAndTableId = useCallback((value, associatedDataList) => {
     if (value.selectField === 'normal') {
       Object.assign(value, { selectField: '', selectFieldType: undefined, selectFieldTableId: undefined });
@@ -232,6 +233,7 @@ export default function UpdateTableData({
         <SelectTargetFields
           fieldId={value.selectField}
           tableId={value.targetTableId}
+          onChangeSchema={(val) => updateTableSchema.current = val}
           onChangeField={(selectField) => {
             // when change select field, reset update rules
             onChange({ selectField, updateRule: [] });

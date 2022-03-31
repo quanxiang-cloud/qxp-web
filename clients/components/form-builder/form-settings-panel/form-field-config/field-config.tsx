@@ -9,7 +9,7 @@ import {
 import { StoreContext } from '@c/form-builder/context';
 
 import EditLabels from './edit-labels';
-import OptionsConfig from './options_config';
+import OptionsConfig from './options-config';
 import { FieldConfigContext } from './context';
 import InputForLabels from './input-for-labels';
 import CalculationFormulaBtn from './calculation-formula-btn';
