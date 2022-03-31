@@ -16,9 +16,6 @@ const Mine: React.FC<HomePageProps> = (props) => {
   const [showPopup, setShowPopup] = useState(false);
   const history = useHistory();
 
-  console.log('dep', dep);
-  console.log('window.USER', window.USER);
-
   function onLogout(): Promise<boolean> {
     return new Promise<boolean>((resolve) => {
       localStorage?.removeItem('HOME_APP_PAGE_NAV_STATUS_v1');
