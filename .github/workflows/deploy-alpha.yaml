@@ -11,6 +11,10 @@ jobs:
       - uses: ./.github/actions/client-boot-up
       - uses: ./.github/actions/quality-check
       - uses: ./.github/actions/build-static
+      - uses: ./.github/actions/fail-alert
+        if: ${{ failure() }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
   deploy:
     needs: [bundle-clients]
     runs-on: self-hosted
@@ -23,7 +27,11 @@ jobs:
           path: dist
       - run: GOOS=linux go build -o ./dist/portal server/cmd/portal/main.go
       - run: GOOS=linux go build -o ./dist/home server/cmd/home/main.go
-      - run: scp ./dist/portal ubuntu@qxp-alpha:/tmp
-      - run: scp ./dist/home ubuntu@qxp-alpha:/tmp
-      - run: rsync -avz ./dist/ ubuntu@qxp-alpha:/qxp/dist
-      - run: ssh ubuntu@qxp-alpha /qxp/script/reload_portal
+      - run: scp ./dist/portal qxp-alpha:/tmp
+      - run: scp ./dist/home qxp-alpha:/tmp
+      - run: rsync -avz ./dist/ qxp-alpha:/qxp/dist
+      - run: ssh qxp-alpha /qxp/script/reload_portal
+      - uses: ./.github/actions/fail-alert
+        if: ${{ failure() }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
