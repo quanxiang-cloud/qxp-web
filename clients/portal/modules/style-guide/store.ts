@@ -9,7 +9,7 @@ import { parseJSON } from '@lib/utils';
 import colorVars from './css-variables.json';
 
 const COMPONENT_STYLE_CONFIG_KEY = 'GLOBAL_COMPONENT_STYLE_CONFIG';
-const COMMON_STYLE_CONFIG_KEY = 'COMMON_STYLE_CONFIG';
+const PERSONALIZED_CONFIG_KEY = 'PERSONALIZED_CONFIG';
 const VERSION = '0.1.0';
 class StyleGuideStore {
   @observable cssStore: CssASTStore | null = null;
@@ -51,7 +51,7 @@ class StyleGuideStore {
       value: JSON.stringify(this.cssStore?.cssASTMap),
     }, {
       version: VERSION,
-      key: COMMON_STYLE_CONFIG_KEY,
+      key: PERSONALIZED_CONFIG_KEY,
       value: JSON.stringify({ styleCssUrl }),
     }]);
 

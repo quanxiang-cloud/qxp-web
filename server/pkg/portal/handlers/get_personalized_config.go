@@ -20,16 +20,15 @@ type BatchGetValueReq struct {
 }
 
 type PersonalizedConfig struct {
-	PrimaryColor string       `json:"primaryColor"`
 	TitleIcon    string       `json:"titleIcon"`
 	Favicons     string       `json:"favicons"`
 	CommonCssUrl template.URL `json:"styleCssUrl"`
 }
 
 func getPersonalizedConfig(r *http.Request, appID string) PersonalizedConfig {
-	params := []ConfigCenterParams{{Key: "COMMON_STYLE_CONFIG", Version: "0.1.0"}}
+	params := []ConfigCenterParams{{Key: "PERSONALIZED_CONFIG", Version: "0.1.0"}}
 	if appID != "" {
-		params = []ConfigCenterParams{{Key: "COMMON_STYLE_CONFIG", Version: "0.1.0"}, {Key: fmt.Sprintf("APP_COMMON_STYLE_CONFIG_%s", appID), Version: "0.1.0"}}
+		params = []ConfigCenterParams{{Key: "PERSONALIZED_CONFIG", Version: "0.1.0"}, {Key: fmt.Sprintf("PERSONALIZED_CONFIG_FOR_APP_%s", appID), Version: "0.1.0"}}
 	}
 
 	respBody, errMsg := sendRequest(r.Context(), "POST", "/api/v1/persona/batchGetValue", BatchGetValueReq{Keys: params})
@@ -38,20 +37,19 @@ func getPersonalizedConfig(r *http.Request, appID string) PersonalizedConfig {
 		return PersonalizedConfig{}
 	}
 
-	result1 := gjson.Get(string(respBody), "data.result.COMMON_STYLE_CONFIG").Str
-	result2 := gjson.Get(string(respBody), fmt.Sprintf("APP_COMMON_STYLE_CONFIG_%s", appID)).Str
+	tenantConfig := gjson.Get(string(respBody), "data.result.PERSONALIZED_CONFIG").Str
+	applicationConfig := gjson.Get(string(respBody), fmt.Sprintf("PERSONALIZED_CONFIG_FOR_APP_%s", appID)).Str
 	config := PersonalizedConfig{
-		PrimaryColor: "blue",
 		TitleIcon:    "/dist/images/quanxiangyun.svg",
 		Favicons:     "/dist/images/favicons/favicon-32x32.png",
 		CommonCssUrl: "",
 	}
 
 	var result string
-	if result2 != "" {
-		result = result2
+	if applicationConfig != "" {
+		result = applicationConfig
 	} else {
-		result = result1
+		result = tenantConfig
 	}
 
 	if err := json.Unmarshal([]byte(result), &config); err != nil {

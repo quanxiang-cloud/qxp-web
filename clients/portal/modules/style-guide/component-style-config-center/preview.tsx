@@ -4,10 +4,27 @@ import { observer } from 'mobx-react';
 
 import * as headlessUI from '@one-for-all/headless-ui';
 
+import PreviewItem from './preview-item';
+
 import store from '../store';
 
-function ShadowContent({ shadowRoot, children }: { children: JSX.Element[], shadowRoot: ShadowRoot }): JSX.Element {
+function ShadowContent({
+  shadowDomRef,
+  children,
+}: { children: JSX.Element[], shadowDomRef: React.RefObject<HTMLDivElement> }): JSX.Element | null {
   useEffect(() => {
+    if (!shadowDomRef.current || store.shadowRoot) {
+      return;
+    }
+
+    store.shadowRoot = shadowDomRef.current?.attachShadow({ mode: 'open' });
+  }, [shadowDomRef.current, store.currentComp]);
+
+  useEffect(() => {
+    if (!store.shadowRoot) {
+      return;
+    }
+
     const style = document.createElement('style');
     const compStyle = document.createElement('link');
     compStyle.href = 'https://ofapkg.pek3b.qingstor.com/@one-for-all/headless-ui@0.1.1/ofa-headless-ui-web.css';
@@ -25,23 +42,21 @@ function ShadowContent({ shadowRoot, children }: { children: JSX.Element[], shad
     .style-guide-comp-item:hover {
       border: 1px solid var(--blue-500);
     }`;
-    shadowRoot.appendChild(compStyle);
-    shadowRoot.appendChild(style);
-  }, []);
+    store.shadowRoot.appendChild(compStyle);
+    store.shadowRoot.appendChild(style);
+  }, [store.shadowRoot]);
 
-  return ReactDOM.createPortal(children, shadowRoot as unknown as Element);
+  if (!store.shadowRoot) {
+    return null;
+  }
+
+  return ReactDOM.createPortal(children, store.shadowRoot as unknown as Element);
 }
+
+const ShadowContentObservable = observer(ShadowContent);
 
 function PreviewConfigurableComponent(): JSX.Element {
   const previewRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!previewRef.current || store.shadowRoot) {
-      return;
-    }
-
-    store.shadowRoot = previewRef.current?.attachShadow({ mode: 'open' });
-  }, [previewRef.current, store.currentComp]);
 
   useEffect(() => {
     return () => {
@@ -62,27 +77,18 @@ function PreviewConfigurableComponent(): JSX.Element {
 
   return (
     <div ref={previewRef} className='gird'>
-      {store.shadowRoot && (
-        <ShadowContent shadowRoot={store.shadowRoot}>
-          {
-            store.currentComp.specs.map((spec) => {
-              return (
-                <div style={{ padding: '5px 0' }} key={spec.title}>
-                  <div style={{ marginBottom: '5px' }}>{spec.title}</div>
-                  <div
-                    onClick={() => store.setCurrentCompStatus(key, spec)}
-                    className='style-guide-comp-item'
-                  >
-                    {Array.isArray(spec.componentProps) ? spec.componentProps.map((props) => (
-                      <Component key={JSON.stringify(props)} {...props} />
-                    )) : (<Component {...spec.componentProps} />)}
-                  </div>
-                </div>
-              );
-            })
-          }
-        </ShadowContent>
-      )}
+      <ShadowContentObservable shadowDomRef={previewRef}>
+        {
+          store.currentComp.specs.map((spec) => (
+            <PreviewItem
+              key={spec.title}
+              compSpec={spec}
+              onClick={() => store.setCurrentCompStatus(key, spec)}
+              Component={Component}
+            />
+          ))
+        }
+      </ShadowContentObservable>
     </div >
   );
 }
