@@ -25,28 +25,32 @@ export function operatorOption(type: any): any {
   return operators;
 }
 
-type Validator = (currentCompareValue: string, format?: string) => boolean;
+type Validator = (value: unknown, format?: string) => boolean;
 
 export const compareValueValidateMap: Record<string, Validator> = {
-  input: (currentCompareValue: string) => {
-    return typeof currentCompareValue !== 'string' ? true : false;
+  input: (value: unknown) => {
+    if (typeof value === 'string') {
+      return value.startsWith('field_') || value.startsWith('subtable_field');
+    }
+
+    return false;
   },
-  datepicker: (currentCompareValue: string, format?: string) => {
-    return moment(currentCompareValue).format(format) === 'Invalid date' ? true : false;
+  datepicker: (value: unknown, format?: string) => {
+    return moment(value as string).format(format) === 'Invalid date';
   },
-  numberpicker: (currentCompareValue: string) => {
-    return typeof currentCompareValue !== 'number' ? true : false;
+  numberpicker: (value: unknown) => {
+    return typeof value !== 'number';
   },
-  multipleselect: (currentCompareValue: string) => {
-    return typeof currentCompareValue !== 'object' ? true : false;
+  multipleselect: (value: unknown) => {
+    return typeof value !== 'object';
   },
-  checkboxgroup: (currentCompareValue: string) => {
-    return typeof currentCompareValue !== 'object' ? true : false;
+  checkboxgroup: (value: unknown) => {
+    return typeof value !== 'object';
   },
-  radiogroup: (currentCompareValue: string) => {
-    return typeof currentCompareValue !== 'object' ? true : false;
+  radiogroup: (value: unknown) => {
+    return typeof value !== 'object';
   },
-  select: (currentCompareValue: string) => {
-    return typeof currentCompareValue !== 'object' ? true : false;
+  select: (value: unknown) => {
+    return typeof value !== 'object';
   },
 };

@@ -167,6 +167,7 @@ function EditEmployeesModal( { user, closeModal }: Props): JSX.Element {
             id: getTwoDimenArrayHead(user.leaders)?.id,
             name: getTwoDimenArrayHead(user.leaders)?.name,
           },
+          depID: dep?.id,
           position: user.position,
         }}
       >

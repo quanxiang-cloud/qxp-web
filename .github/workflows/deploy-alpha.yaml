@@ -5,15 +5,33 @@ on:
       - alpha
 jobs:
   bundle-clients:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: ./.github/actions/client-boot-up
       - uses: ./.github/actions/quality-check
       - uses: ./.github/actions/build-static
+      - uses: ./.github/actions/fail-alert
+        if: ${{ failure() }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  deploy:
+    needs: [bundle-clients]
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download client statices
+        uses: actions/download-artifact@v3
+        with:
+          name: dist
+          path: dist
       - run: GOOS=linux go build -o ./dist/portal server/cmd/portal/main.go
       - run: GOOS=linux go build -o ./dist/home server/cmd/home/main.go
       - run: scp ./dist/portal qxp-alpha:/tmp
       - run: scp ./dist/home qxp-alpha:/tmp
       - run: rsync -avz ./dist/ qxp-alpha:/qxp/dist
       - run: ssh qxp-alpha /qxp/script/reload_portal
+      - uses: ./.github/actions/fail-alert
+        if: ${{ failure() }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
