@@ -145,7 +145,12 @@ function RuleItem(props: Props): JSX.Element {
             const subItem = get(selectField, 'x-component-props.subordination') === 'foreign_table' ?
               get(relatedTableSchema, `properties.${fieldName}`) :
               get(selectField, `items.properties.${fieldName}`);
-
+            fieldProps = subItem || {};
+          } else if (componentName === 'associatedrecords') {
+            const subItem = get(selectField, `x-component-props.associatedTable.properties.${fieldName}`);
+            fieldProps = subItem || {};
+          } else if (componentName === 'associateddata') {
+            const subItem = get(relatedTableSchema, `properties.${fieldName}`);
             fieldProps = subItem || {};
           }
         } else {
