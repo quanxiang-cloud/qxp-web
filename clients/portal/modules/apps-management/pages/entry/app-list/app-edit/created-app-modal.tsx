@@ -7,7 +7,8 @@ import toast from '@lib/toast';
 
 import store from '../store';
 import CreatedEditApp from './created-edit-app';
-import AppLayoutType, { SelectLayoutType } from '../app-layout-select';
+import AppLayoutType from '../app-layout-select';
+import { SelectLayoutType } from '../app-layout-select/layout-view';
 import { initAppRootView } from '../../../app-details/view-orchestration/init-app-root-view';
 
 type Props = {
