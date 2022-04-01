@@ -55,6 +55,7 @@ export interface StaticView extends BaseView {
 export interface ExternalView extends BaseView {
   type: ViewType.ExternalView;
   link: string;
+  appID: string;
 }
 
 export type CardListInfo = {

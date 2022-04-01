@@ -277,6 +277,10 @@ class Orchestrator {
           type: 'constant_property',
           value: params.name,
         },
+        appID: {
+          type: 'constant_property',
+          value: this.appID,
+        },
       },
     };
 

@@ -5,7 +5,7 @@ import Tab from '@c/tab';
 import Icon from '@c/icon';
 import Button from '@c/button';
 
-import { SchemaView, TableSchemaView, View, ViewType } from '../types.d';
+import { ExternalView, SchemaView, TableSchemaView, View, ViewType } from '../types.d';
 import PageSchemaRender from '@c/page-schema-render';
 import { getVersionKey } from '../../../page-design/api';
 
@@ -43,6 +43,25 @@ const VIEW_MAP: Record<ViewType, View_Map> = {
   },
 };
 
+function realizeLink(view: ExternalView): string {
+  const { link = '', appID = '' } = view;
+  const replacements: Record<string, string> = {
+    user_id: window.USER.id,
+    user_name: window.USER.name,
+    user_email: window.USER.email,
+    user_phone: window.USER.phone,
+    dep_id: window.USER.deps[0][0].id,
+    dep_name: window.USER.deps[0][0].name,
+    appid: appID,
+  };
+
+  let _link = link;
+  Object.keys(replacements).forEach((key) => {
+    _link = _link.replace(new RegExp('\\$\\{' + key + '\\}', 'g'), replacements?.[key]);
+  });
+  return _link;
+}
+
 function ViewInfo({ view, openModal }: Props): JSX.Element {
   const { type } = view;
   const history = useHistory();
@@ -61,10 +80,11 @@ function ViewInfo({ view, openModal }: Props): JSX.Element {
     }
 
     if (type === ViewType.ExternalView) {
+      const link = realizeLink(view);
       return (
         <iframe
           className="w-full h-full"
-          src={view.link}
+          src={link}
           style={{ border: 'none' }}
         />
       );

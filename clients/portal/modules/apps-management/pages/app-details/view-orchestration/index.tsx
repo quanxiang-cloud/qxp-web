@@ -79,6 +79,10 @@ function PageList(): JSX.Element {
     }).then(() => {
       closeModal();
       toast.success((modalType === 'createView' ? '添加' : '修改') + '成功');
+      if (viewInfo.type === ViewType.ExternalView) {
+        setCurrentView({ ...viewInfo, appID } as View);
+        return;
+      }
       setCurrentView(viewInfo);
     });
   }

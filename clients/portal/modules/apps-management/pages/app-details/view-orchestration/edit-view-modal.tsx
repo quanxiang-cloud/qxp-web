@@ -21,6 +21,16 @@ type Props = {
   viewParams?: View;
 };
 
+const URL_PARAM_LIST = [
+  '${user_id}',
+  '${user_name}',
+  '${user_email}',
+  '${user_phone}',
+  '${dep_id}',
+  '${dep_name}',
+  '${appid}',
+];
+
 const viewTypeMap: LabelValue[] = [
   {
     label: '表单页面',
@@ -174,13 +184,28 @@ function EditViewModal(
           </Item>
         )}
         {viewType === ViewType.ExternalView && ['createView', 'editView'].includes(modalType) && (
-          <Item
-            required
-            name="link"
-            label="外部链接地址"
-          >
-            <Input placeholder='请输入链接地址' defaultValue={(viewParams as ExternalView)?.link} />
-          </Item>
+          <>
+            <div>所支持的动态参数：</div>
+            <div>
+              {URL_PARAM_LIST?.map((variable) => {
+                return (
+                  <span
+                    key={variable}
+                    className='inline-block mb-8 p-2 bg-gray-100 mr-4 border border-gray-300 cursor-pointe'
+                  >
+                    {variable}
+                  </span>
+                );
+              })}
+            </div>
+            <Item
+              required
+              name="link"
+              label="外部链接地址"
+            >
+              <Input placeholder='请输入链接地址' defaultValue={(viewParams as ExternalView)?.link} />
+            </Item>
+          </>
         )}
       </Form>
     </Modal>
