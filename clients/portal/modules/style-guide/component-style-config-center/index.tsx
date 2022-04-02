@@ -33,7 +33,7 @@ function ComponentStyleConfigCenter(): JSX.Element {
                   { 'bg-blue-100 text-blue-400': store.currentComp?.key === comp.key },
                 )}
                 key={comp.key}
-                onClick={() => store.currentComp = comp}
+                onClick={() => store.setCurrentComp(comp)}
               >
                 {comp.title}
               </div>

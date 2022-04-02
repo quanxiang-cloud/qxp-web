@@ -43,6 +43,17 @@ class StyleGuideStore {
   };
 
   @action
+  setCurrentComp = (comp: ComponentSpec): void => {
+    this.currentComp = comp;
+    if (comp.specs.length) {
+      this.currentCompStatus = {
+        key: comp.key,
+        spec: comp.specs[0],
+      };
+    }
+  };
+
+  @action
   saveStyleConfig = async (): Promise<void> => {
     const styleCssUrl = await this.generateCssUrl();
     await setBatchGlobalConfig([{

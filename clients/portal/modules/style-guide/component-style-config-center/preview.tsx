@@ -39,6 +39,10 @@ function ShadowContent({
      align-items: center;
     }
 
+    .style-guide-comp-item-active {
+      background-color: var(--blue-50);
+    }
+
     .style-guide-comp-item:hover {
       border: 1px solid var(--blue-500);
     }`;
@@ -82,6 +86,7 @@ function PreviewConfigurableComponent(): JSX.Element {
           store.currentComp.specs.map((spec) => (
             <PreviewItem
               key={spec.title}
+              isActive={`${store.currentCompStatus?.key}.${store.currentCompStatus?.spec.title}` === `${key}.${spec.title}`}
               compSpec={spec}
               onClick={() => store.setCurrentCompStatus(key, spec)}
               Component={Component}
