@@ -15,7 +15,11 @@ import addLayoutToRoot from './helpers/add-layout-to-root';
 import addViewToRoot from './helpers/add-view-to-root';
 import addViewToLayout from './helpers/add-view-to-layout';
 import findLayouts from './helpers/find-layouts';
-import findViews from './helpers/find-views';
+import findViews, {
+  convertNodeToExternalView,
+  convertNodeToStaticView,
+  convertNodeToTableView, convertRefNodeToView,
+} from './helpers/find-views';
 import {
   findFirstRouteParentID,
   genNodeID,
@@ -145,10 +149,11 @@ class Orchestrator {
     if (!this.rootNode) {
       return 'no root node found for this app, please init root node again!';
     }
+    let renderTableSchemaViewNode: ReactComponentNode;
     return createBlank(this.appID).then(({ tableID: id }) => {
       // todo create empty table schema?
       const tableID = id;
-      const renderTableSchemaViewNode: ReactComponentNode = {
+      renderTableSchemaViewNode = {
         id: genNodeID(),
         type: 'react-component',
         label: params.name,
@@ -181,6 +186,9 @@ class Orchestrator {
       const rootNode = addViewToLayout(this.rootNode, params.layoutID, renderTableSchemaViewNode);
 
       return this.saveSchema(rootNode);
+    }).then((msg) => {
+      this.setCurrentView(convertNodeToTableView(renderTableSchemaViewNode));
+      return msg;
     });
   }
 
@@ -188,7 +196,7 @@ class Orchestrator {
     if (!this.rootNode) {
       return 'no root node found for this app, please init root node again!';
     }
-
+    let renderSchemaView: RefNode;
     const pageSchemaKey = genDesktopViewSchemaKey(this.appID);
     const customPageSchema: Schema = {
       node: {
@@ -214,7 +222,7 @@ class Orchestrator {
       sharedStatesSpec: {},
     };
     return saveSchema(pageSchemaKey, customPageSchema).then(() => {
-      const renderSchemaView: RefNode = {
+      renderSchemaView = {
         id: genNodeID(),
         type: 'ref-node',
         schemaID: pageSchemaKey,
@@ -228,6 +236,9 @@ class Orchestrator {
       const rootNode = addViewToLayout(this.rootNode, params.layoutID, renderSchemaView);
 
       return this.saveSchema(rootNode);
+    }).then((msg) => {
+      this.setCurrentView(convertRefNodeToView(renderSchemaView));
+      return (msg);
     });
   }
 
@@ -260,7 +271,10 @@ class Orchestrator {
 
     const rootNode = addViewToLayout(this.rootNode, params.layoutID, staticViewNode);
 
-    return this.saveSchema(rootNode);
+    return this.saveSchema(rootNode).then((msg) => {
+      this.setCurrentView(convertNodeToStaticView(staticViewNode));
+      return msg;
+    });
   }
 
   async addExternalView(params: CreateViewParams<ExternalView>): FutureErrorMessage {
@@ -296,7 +310,10 @@ class Orchestrator {
 
     const rootNode = addViewToLayout(this.rootNode, params.layoutID, staticViewNode);
 
-    return this.saveSchema(rootNode);
+    return this.saveSchema(rootNode).then((msg) => {
+      this.setCurrentView(convertNodeToExternalView(staticViewNode));
+      return msg;
+    });
   }
 
   // async editTableSchemaView(view: TableSchemaView): FutureErrorMessage {
@@ -418,11 +435,6 @@ class Orchestrator {
       if (this.modalType === 'createView' && this.views.length === 1 ) {
         this.setHomeView(viewInfo.name);
       }
-      if (viewInfo.type === ViewType.ExternalView) {
-        this.setCurrentView({ ...viewInfo, appID: this.appID } as View);
-        return;
-      }
-      this.setCurrentView(viewInfo);
     });
   }
 

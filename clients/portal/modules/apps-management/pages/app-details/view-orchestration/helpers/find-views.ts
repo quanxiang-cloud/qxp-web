@@ -32,7 +32,7 @@ function getViewType(node: SchemaNode): ViewType | undefined {
   }
 }
 
-function convertRefNodeToView(node: RefNode): SchemaView {
+export function convertRefNodeToView(node: RefNode): SchemaView {
   return {
     id: node.id as string,
     name: node.label || '',
@@ -42,7 +42,7 @@ function convertRefNodeToView(node: RefNode): SchemaView {
   };
 }
 
-function convertNodeToTableView(node: ReactComponentNode): TableSchemaView {
+export function convertNodeToTableView(node: ReactComponentNode): TableSchemaView {
   return {
     id: node.id as string,
     name: node.label || '',
@@ -53,7 +53,7 @@ function convertNodeToTableView(node: ReactComponentNode): TableSchemaView {
   };
 }
 
-function convertNodeToStaticView(node: ReactComponentNode): StaticView {
+export function convertNodeToStaticView(node: ReactComponentNode): StaticView {
   return {
     id: node.id as string,
     name: node.label || '',
@@ -63,7 +63,7 @@ function convertNodeToStaticView(node: ReactComponentNode): StaticView {
   };
 }
 
-function convertNodeToExternalView(node: ReactComponentNode): ExternalView {
+export function convertNodeToExternalView(node: ReactComponentNode): ExternalView {
   return {
     id: node.id as string,
     name: node.label || '',
