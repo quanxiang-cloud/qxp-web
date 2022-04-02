@@ -1,11 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import { UnionColumn } from 'react-table';
 import { Form, Input } from 'antd';
 import { FormInstance } from 'antd/es/form';
 import { observer } from 'mobx-react';
-import cs from 'classnames';
 
 import Card from '@c/card';
 import Button from '@c/button';
@@ -16,10 +15,11 @@ import Modal, { FooterBtnProps } from '@c/modal';
 import toast from '@lib/toast';
 import Loading from '@c/loading';
 
-import Orchestrator from '../view-orchestration/orchestrator';
 import { genDesktopRootViewSchemaKey } from '../view-orchestration/helpers/utils';
 import { VERSION } from '../view-orchestration/constants';
 import { Layout } from '../view-orchestration/types';
+import { useOrchestrator } from './hooks';
+import LayoutView from '../../entry/app-list/app-layout-select/layout-view';
 import AppLayoutType from '../../entry/app-list/app-layout-select';
 
 import './index.scss';
@@ -35,7 +35,6 @@ const initLayout: Layout = {
 };
 
 function PageLayout(): JSX.Element {
-  const [store, setStore] = useState<Orchestrator>();
   const [showModal, setShowModal] = useState<boolean>(false);
   const [type, setType] = useState<LayoutType>();
   const [curLayoutMsg, setCurLayoutMsg] = useState<Layout>();
@@ -46,10 +45,9 @@ function PageLayout(): JSX.Element {
   const rootSchemaKey = genDesktopRootViewSchemaKey(appID);
   const param = { key: rootSchemaKey, version: VERSION };
   const { data, isLoading } = useQuery(['rootSchema', param], () => getBatchGlobalConfig([param]));
-
-  useEffect(() => {
+  const store = useMemo(() => {
     if (data) {
-      setStore(new Orchestrator(appID, JSON.parse(data?.result[rootSchemaKey])));
+      return useOrchestrator(appID, data.result[rootSchemaKey]);
     }
   }, [data]);
 
@@ -71,20 +69,6 @@ function PageLayout(): JSX.Element {
     ).catch((err) => toast.error(err));
   }
 
-  function renderLayoutType(layoutType: LayoutType): JSX.Element {
-    return (
-      <div
-        className={cs('flex-1 h-92 w-152 flex justify-center gap-4 cursor-pointer', {
-          'flex-col': layoutType === LayoutType.HeaderContent,
-          'flex-row-reverse': layoutType === LayoutType.RightSidebarContent,
-        })}
-      >
-        <div className='flex-1 bg-gray-200' />
-        <div className='flex-5 bg-gray-200' />
-      </div>
-    );
-  }
-
   const columns: UnionColumn<Layout>[] = [
     {
       Header: '页面布局',
@@ -95,8 +79,12 @@ function PageLayout(): JSX.Element {
     {
       Header: '样式',
       id: 'type',
-      width: 'auto',
-      accessor: ({ type }: Layout) => renderLayoutType(type),
+      width: '200',
+      accessor: ({ type }: Layout) => {
+        return (
+          <LayoutView currentLayoutType='free' layoutType={type} />
+        );
+      },
     },
     {
       Header: '页面描述',
@@ -188,7 +176,7 @@ function PageLayout(): JSX.Element {
             emptyTips={<EmptyTips text='暂无页面布局' className="pt-40" />}
             rowKey='id'
             columns={columns}
-            data={store?.layouts || []}
+            data={store?.layouts.filter((layout) => layout.id !== 'root_node') || []}
           />
         </div>
       </Card>

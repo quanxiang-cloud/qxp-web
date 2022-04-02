@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 import { observer } from 'mobx-react';
@@ -10,18 +10,16 @@ import Loading from '@c/loading';
 
 import { genDesktopRootViewSchemaKey } from '../view-orchestration/helpers/utils';
 import { VERSION } from '../view-orchestration/constants';
-import Orchestrator from '../view-orchestration/orchestrator';
+import { useOrchestrator } from './hooks';
 
 function AppLayout(): JSX.Element {
-  const [store, setStore] = useState<Orchestrator>();
   const { appID } = useParams<{ appID: string }>();
   const rootSchemaKey = genDesktopRootViewSchemaKey(appID);
   const param = { key: rootSchemaKey, version: VERSION };
   const { data, isLoading } = useQuery(['rootSchema', param], () => getBatchGlobalConfig([param]));
-
-  useEffect(() => {
+  const store = useMemo(() => {
     if (data) {
-      setStore(new Orchestrator(appID, JSON.parse(data?.result[rootSchemaKey])));
+      return useOrchestrator(appID, data.result[rootSchemaKey]);
     }
   }, [data]);
 

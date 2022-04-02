@@ -14,8 +14,6 @@ type Props = {
 
 export default function PageSchemaRender({ schemaKey, version }: Props): JSX.Element | null {
   const { schema, adapter } = useSchemaWithAdapter(schemaKey, version);
-  console.log(schema);
-  console.log(repository);
 
   if (!schema || !adapter) {
     return null;

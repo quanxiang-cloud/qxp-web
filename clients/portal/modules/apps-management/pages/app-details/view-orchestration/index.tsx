@@ -15,9 +15,11 @@ import ViewDetails from './view-details';
 import EditViewModal from './edit-view-modal';
 import Orchestrator from '../view-orchestration/orchestrator';
 
-import { CreateViewParams, ExternalView, SchemaView, StaticView, TableSchemaView, View, ViewType } from '../view-orchestration/types.d';
-
+import { VERSION } from './constants';
+import { genDesktopRootViewSchemaKey } from './helpers/utils';
 import EditStaticViewModal from './view-details/edit-static-view-modal';
+
+import { CreateViewParams, ExternalView, SchemaView, StaticView, TableSchemaView, View, ViewType } from '../view-orchestration/types.d';
 
 import './index.scss';
 
@@ -28,14 +30,16 @@ function PageList(): JSX.Element {
   const [currentView, setCurrentView] = useState<View>();
 
   const { isLoading } = useQuery(['desktop_view_schema'], () => {
-    const key = `app_id:${appID}:desktop_view_schema:root`;
-    return getBatchGlobalConfig([{ key: key, version: '1.0.0' }])
+    const key = genDesktopRootViewSchemaKey(appID);
+    return getBatchGlobalConfig([{ key, version: VERSION }])
       .then(({ result }) => JSON.parse(result[key])).then((appLayoutSchema) => {
         setAppSchemaStore(() => {
           const store = new Orchestrator(appID, appLayoutSchema);
           window.store = store;
           setCurrentView(store.views[0] as View);
-          console.log(appLayoutSchema);
+          console.log('To checkout the Mobx AppInfoStore, please command window.store or store to visit it');
+          console.log('rootSchema', appLayoutSchema);
+          console.log('views: ', store?.views);
           return store;
         });
         return appLayoutSchema;
@@ -67,12 +71,18 @@ function PageList(): JSX.Element {
         return appSchemaStore?.editStaticView(viewInfo as StaticView);
       }
 
+      if (viewInfo.type === ViewType.ExternalView && modalType === 'editView') {
+        return appSchemaStore?.editExternalView(viewInfo as ExternalView);
+      }
+
       return appSchemaStore?.updateViewName(currentView!, viewInfo.name!);
     }).then(() => {
-      console.log(viewInfo);
-
       closeModal();
       toast.success((modalType === 'createView' ? '添加' : '修改') + '成功');
+      if (viewInfo.type === ViewType.ExternalView) {
+        setCurrentView({ ...viewInfo, appID } as View);
+        return;
+      }
       setCurrentView(viewInfo);
     });
   }
