@@ -1,27 +1,13 @@
-import React, { useMemo } from 'react';
-import { useQuery } from 'react-query';
-import { useParams } from 'react-router-dom';
+import React from 'react';
 import { observer } from 'mobx-react';
 
 import Card from '@c/card';
 import Button from '@c/button';
-import { getBatchGlobalConfig } from '@lib/api/user-config';
 import Loading from '@c/loading';
-
-import { genDesktopRootViewSchemaKey } from '../view-orchestration/helpers/utils';
-import { VERSION } from '../view-orchestration/constants';
-import { useOrchestrator } from './hooks';
+import useAppStore from '../view-orchestration/hooks';
 
 function AppLayout(): JSX.Element {
-  const { appID } = useParams<{ appID: string }>();
-  const rootSchemaKey = genDesktopRootViewSchemaKey(appID);
-  const param = { key: rootSchemaKey, version: VERSION };
-  const { data, isLoading } = useQuery(['rootSchema', param], () => getBatchGlobalConfig([param]));
-  const store = useMemo(() => {
-    if (data) {
-      return useOrchestrator(appID, data.result[rootSchemaKey]);
-    }
-  }, [data]);
+  const { store, isLoading } = useAppStore();
 
   if (isLoading) {
     return <Loading />;

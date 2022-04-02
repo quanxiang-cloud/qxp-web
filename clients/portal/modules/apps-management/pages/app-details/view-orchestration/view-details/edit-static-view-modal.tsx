@@ -9,7 +9,7 @@ import type { StaticView } from '../types.d';
 
 type Props = {
   onClose: () => void;
-  onSubmit: (viewInfo: StaticView,) => void;
+  onSubmit: (viewInfo: StaticView) => void;
   view?: StaticView;
 }
 

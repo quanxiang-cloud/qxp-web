@@ -3,17 +3,15 @@ import { observer } from 'mobx-react';
 
 import Icon from '@c/icon';
 
-import store from '../store';
-
 import './index.scss';
 
 type Props = {
+  tableName: string;
+  operationType: string;
   onCancel?: () => void;
 }
 
-function DetailsHeader({ onCancel }: Props): JSX.Element {
-  const { operationType } = store;
-
+function DetailsHeader({ tableName, operationType, onCancel }: Props): JSX.Element {
   return (
     <div className="app-global-header app-details-header">
       <div className='flex items-center'>
@@ -27,13 +25,13 @@ function DetailsHeader({ onCancel }: Props): JSX.Element {
                 className='text-gray-400'
                 name='keyboard_backspace'
               />
-              <span className="ml-6 text-gray-400 text-12">{store.tableName}</span>
+              <span className="ml-6 text-gray-400 text-12">{tableName}</span>
             </div>
             <div className='mx-8 text-12 text-gray-600'>/</div>
-            <div className="font-semibold text-gray-900 text-12">{store.operationType}</div>
+            <div className="font-semibold text-gray-900 text-12">{operationType}</div>
           </>) : (
           <>
-            <span className="font-semibold text-gray-900 text-12">{store.tableName}</span>
+            <span className="font-semibold text-gray-900 text-12">{tableName}</span>
           </>)}
         <div>
         </div>

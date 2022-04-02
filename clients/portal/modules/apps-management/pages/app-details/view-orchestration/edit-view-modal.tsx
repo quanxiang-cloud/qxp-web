@@ -1,13 +1,21 @@
 import React, { useState } from 'react';
 import { Form, Input } from 'antd';
-import { always, cond, T } from 'ramda';
 
 import Modal from '@c/modal';
 import { RadioButtonGroup } from '@one-for-all/ui';
 import Select from '@c/select';
 
 import StaticViewUpload from './static-view-upload';
-import { BaseView, CreateViewParams, ExternalView, Layout, View, ViewGroup, ViewType } from '../view-orchestration/types.d';
+
+import {
+  BaseView,
+  CreateViewParams,
+  ExternalView,
+  Layout,
+  View,
+  ViewGroup,
+  ViewType,
+} from '../view-orchestration/types.d';
 
 const { Item } = Form;
 // const { TextArea } = Input;
@@ -69,14 +77,9 @@ function EditViewModal(
     return allViewNames.includes(value) && modalType === 'createView';
   }
 
-  const getTitle = cond([
-    [() => modalType === 'editView', always('编辑页面')],
-    [T, always('新建页面')],
-  ]);
-
   return (
     <Modal
-      title={getTitle()}
+      title={modalType === 'editView' ? '编辑页面' : '新建页面'}
       onClose={onCancel}
       footerBtns={[{
         key: 'close',
@@ -202,6 +205,7 @@ function EditViewModal(
               required
               name="link"
               label="外部链接地址"
+              initialValue={(viewParams as ExternalView)?.link}
             >
               <Input placeholder='请输入链接地址' defaultValue={(viewParams as ExternalView)?.link} />
             </Item>

@@ -18,8 +18,8 @@ function ViewDetails({ viewInfo, openModal }: Props): JSX.Element {
       {!!viewInfo && (
         <>
           <div className='h-44 page-details-nav header-background-image border-b-1 px-16 flex items-center bg-gray-50'>
-            <span className='text-12 mr-8 font-semibold'>{viewInfo.name}</span>
-            {/* <span className='text-caption align-top'>{currentView.describe}</span> */}
+            <span className='text-12 mr-8 font-semibold flex justify-between'>{viewInfo.name}</span>
+            <span className='text-caption align-top'>{viewInfo.url}</span>
           </div>
           <ViewInfo openModal={openModal} view={viewInfo} />
         </>

@@ -1,25 +1,43 @@
-import React, { useState, useRef } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { observer } from 'mobx-react';
-
-import FormAppDataTable from '@c/form-app-data-table';
 import { Ref, TableHeaderBtn } from '@c/form-app-data-table/type';
+
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { getOperateButtonPer } from './utils';
 import PopConfirm from '@c/pop-confirm';
 import PageLoading from '@c/page-loading';
-
-import { getOperateButtonPer } from '../utils';
 import CreateDataForm from './create-data-form';
+import FormAppDataTable from '@c/form-app-data-table';
+import Header from './header';
 import DetailsDrawer from './details-drawer';
-import store from '../store';
-import Header from '../header';
+import useTableViewStore from './use-table-view-store';
+import { toast } from '@one-for-all/ui';
 
-import './index.scss';
+export type Props = {
+  appID: string;
+  tableID: string;
+  name: string;
+}
 
-function PageDetails(): JSX.Element | null {
-  const { fetchSchemeLoading } = store;
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: false,
+    },
+  },
+});
+
+function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
+  const store = useTableViewStore({ appID, tableID, name });
+
+  const { fetchSchemeLoading, setCurRowID } = store;
+
   const [modalType, setModalType] = useState('');
-  const [curRowID, setCurRowID] = useState('');
+
   const formTableRef = useRef<Ref>(null);
-  const BUTTON_GROUP: Record<number, TableHeaderBtn> = {
+
+  const BUTTON_GROUP: Record<number, TableHeaderBtn> = useMemo(() => ({
     2: {
       key: 'add',
       action: () => {
@@ -50,7 +68,7 @@ function PageDetails(): JSX.Element | null {
       text: '导出',
       iconName: 'file_upload',
     },
-  };
+  }), [store.operationType]);
 
   function goEdit(rowID: string): void {
     setCurRowID(rowID);
@@ -62,9 +80,22 @@ function PageDetails(): JSX.Element | null {
     setModalType('details');
   }
 
-  async function delFormData(ids: string[]): Promise<any> {
-    await store.delFormData(ids);
-    formTableRef.current?.refresh();
+  function delFormData(ids: string[]): Promise<any> {
+    return store.delFormData(ids).then((data: any) => {
+      if (data.errorCount && data.errorCount === ids.length) {
+        toast.error('删除失败！没有权限');
+        return;
+      }
+
+      if (data.errorCount) {
+        toast.success(`删除成功!,成功${ids.length - data.errorCount}条,失败${data.errorCount}条`);
+        return;
+      }
+
+      toast.success('删除成功!');
+    }).finally(() => {
+      formTableRef.current?.refresh();
+    });
   }
 
   const tableHeaderBtnList: TableHeaderBtn[] =
@@ -118,7 +149,7 @@ function PageDetails(): JSX.Element | null {
   const handleCancel = (isRefresh?: boolean): void => {
     setModalType('');
     setCurRowID('');
-    store.operationType = '';
+    store.setOperationType('');
     if (isRefresh) {
       formTableRef.current?.refresh();
     }
@@ -136,7 +167,7 @@ function PageDetails(): JSX.Element | null {
         tableHeaderBtnList={tableHeaderBtnList}
         customColumns={customColumns}
         appID={store.appID}
-        appName={store.appName}
+        appName={''}
         pageID={store.tableID}
         pageName={store.tableName}
         allowRequestData={true}
@@ -147,30 +178,37 @@ function PageDetails(): JSX.Element | null {
   };
 
   return (
-    <div className='overflow-auto'>
-      <Header onCancel={() => handleCancel(true)} />
-      <div className='main-content relative flex-1 overflow-hidden'>
-        {renderPageBody()}
-        {modalType === 'dataForm' && (
-          <CreateDataForm
-            appID={store.appID}
-            pageID={store.tableID}
-            title={store.tableName}
-            rowID={curRowID}
-            onCancel={() => handleCancel(true)}
-          />
-        )}
-        {modalType === 'details' && (
-          <DetailsDrawer
-            delData={delFormData}
-            goEdit={goEdit}
-            rowID={curRowID}
-            onCancel={handleCancel}
-          />
-        )}
+    <QueryClientProvider client={queryClient}>
+      <div className='h-full'>
+        <Header tableName={name} operationType={store.operationType} onCancel={() => handleCancel(true)} />
+        <div style={{ maxHeight: 'calc(100% - 62px)' }} className='h-full relative overflow-hidden'>
+          {renderPageBody()}
+          {modalType === 'dataForm' && (
+            <CreateDataForm
+              appID={store.appID}
+              pageID={store.tableID}
+              title={store.tableName}
+              rowID={store.curRowID}
+              onCancel={() => handleCancel(true)}
+            />
+          )}
+          {modalType === 'details' && (
+            <DetailsDrawer
+              delData={delFormData}
+              goEdit={goEdit}
+              rowID={store.curRowID}
+              appID={appID}
+              onCancel={handleCancel}
+              tableID={tableID}
+              tableName={name}
+              authority={store.authority}
+            />
+          )}
+        </div>
       </div>
-    </div>
+    </QueryClientProvider>
   );
 }
 
-export default observer(PageDetails);
+export default observer(TableViewDetail);
+

@@ -21,10 +21,9 @@ import {
   genNodeID,
   genDesktopRootViewSchemaKey,
   saveSchema,
-  fetchSchema,
   genDesktopViewSchemaKey,
 } from './helpers/utils';
-import type {
+import {
   Layout,
   View,
   ViewGroup,
@@ -34,13 +33,16 @@ import type {
   StaticView,
   SchemaView,
   TableSchemaView,
-} from './types';
+  ViewType,
+} from './types.d';
 import { ROOT_NODE_ID } from './constants';
 import { createBlank } from '../api';
 
 class Orchestrator {
   @observable loading = true;
   @observable rootNode: SchemaNode;
+  @observable currentView: View | ViewGroup;
+  @observable modalType = '';
   appID: string;
   rootSchemaKey: string;
   apiStateSpec: APIStatesSpec | undefined;
@@ -58,6 +60,8 @@ class Orchestrator {
 
     const _rootNOde = findNodeByID(node, ROOT_NODE_ID);
     this.appLayout = get(_rootNOde, 'props.data-layout-type.value', undefined);
+
+    this.currentView = this.views[0];
   }
 
   @computed get layouts(): Array<Layout> {
@@ -92,6 +96,7 @@ class Orchestrator {
   // async changeViewGroup(viewID: string, from: string, to?: string): FutureErrorMessage {
 
   // }
+
   @action
   async addLayout(name: string, layoutType: LayoutType): FutureErrorMessage {
     const rootNode = await addLayoutToRoot({
@@ -184,7 +189,7 @@ class Orchestrator {
     }
 
     const pageSchemaKey = genDesktopViewSchemaKey(this.appID);
-    const customPageSchema = {
+    const customPageSchema: Schema = {
       node: {
         id: genNodeID(),
         pid: '',
@@ -206,23 +211,23 @@ class Orchestrator {
       },
       apiStateSpec: {},
       sharedStatesSpec: {},
-    } as Schema;
-    saveSchema(pageSchemaKey, customPageSchema);
-
-    const renderSchemaView: RefNode = {
-      id: genNodeID(),
-      type: 'ref-node',
-      schemaID: pageSchemaKey,
-      label: params.name,
     };
+    return saveSchema(pageSchemaKey, customPageSchema).then(() => {
+      const renderSchemaView: RefNode = {
+        id: genNodeID(),
+        type: 'ref-node',
+        schemaID: pageSchemaKey,
+        label: params.name,
+      };
 
-    if (!params.layoutID) {
-      return this.saveSchema(addViewToRoot(this.rootNode, renderSchemaView));
-    }
+      if (!params.layoutID) {
+        return this.saveSchema(addViewToRoot(this.rootNode, renderSchemaView));
+      }
 
-    const rootNode = addViewToLayout(this.rootNode, params.layoutID, renderSchemaView);
+      const rootNode = addViewToLayout(this.rootNode, params.layoutID, renderSchemaView);
 
-    return this.saveSchema(rootNode);
+      return this.saveSchema(rootNode);
+    });
   }
 
   async addStaticView(params: CreateViewParams<StaticView>): FutureErrorMessage {
@@ -378,10 +383,54 @@ class Orchestrator {
   }
 
   @action
-  fetchSchema = async (): Promise<void> => {
-    const { node } = await fetchSchema(this.appID);
-    this.rootNode = node;
-  };
+  handleViewInfoSubmit(
+    viewInfo: CreateViewParams<View>,
+  ): Promise<void> {
+    return Promise.resolve().then(() => {
+      if (this.modalType === 'createView') {
+        if (viewInfo.type === ViewType.TableSchemaView) {
+          return this.addTableSchemaView(viewInfo as CreateViewParams<TableSchemaView>);
+        }
+
+        if (viewInfo.type === ViewType.SchemaView) {
+          return this.addSchemaView(viewInfo as CreateViewParams<SchemaView>);
+        }
+
+        if (viewInfo.type === ViewType.StaticView) {
+          return this.addStaticView(viewInfo as CreateViewParams<StaticView>);
+        }
+        if (viewInfo.type === ViewType.ExternalView) {
+          return this.addExternalView(viewInfo as CreateViewParams<ExternalView>);
+        }
+      }
+
+      if (this.modalType === 'editStaticView') {
+        return this.editStaticView(viewInfo as StaticView);
+      }
+
+      if (viewInfo.type === ViewType.ExternalView && this.modalType === 'editView') {
+        return this.editExternalView(viewInfo as ExternalView);
+      }
+
+      return this.updateViewName(this.currentView as View, viewInfo.name!);
+    }).then(() => {
+      if (viewInfo.type === ViewType.ExternalView) {
+        this.setCurrentView({ ...viewInfo, appID: this.appID } as View);
+        return;
+      }
+      this.setCurrentView(viewInfo);
+    });
+  }
+
+  @action
+  setModalType(modalType: string): void {
+    this.modalType = modalType;
+  }
+
+  @action
+  setCurrentView(view: View | ViewGroup): void {
+    this.currentView = view;
+  }
 }
 
 export default Orchestrator;

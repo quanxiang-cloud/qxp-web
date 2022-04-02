@@ -11,7 +11,7 @@ import toast from '@lib/toast';
 import { FormRenderer } from '@c/form-builder';
 import { createFormDataRequest, editFormDataRequest } from '@lib/http-client';
 
-import { getSchemaAndRecord } from '../api';
+import { getSchemaAndRecord } from './api';
 import { formDataDiff, buildFormDataReqParams } from '@home/utils';
 
 setValidationLanguage('zh');
@@ -27,9 +27,7 @@ type Props = {
 function CreateDataForm({ appID, pageID, rowID, onCancel }: Props): JSX.Element {
   const [loading, setLoading] = useState(false);
 
-  const {
-    data, isLoading,
-  } = useQuery([
+  const { data, isLoading } = useQuery([
     'GET_SCHEMA_AND_RECORD_FOR_CREATE_OR_EDIT',
   ], () => getSchemaAndRecord(appID, pageID, rowID || ''), {
     enabled: !!(pageID && appID),
@@ -47,17 +45,15 @@ function CreateDataForm({ appID, pageID, rowID, onCancel }: Props): JSX.Element 
   }
 
   const handleSubmit = async (currentValue: Record<string, unknown>): Promise<void> => {
-    try {
+    setLoading(true);
+    Promise.resolve().then(() => {
       if (rowID && defaultValues) {
         const newValue = formDataDiff(currentValue, defaultValues, schema);
         if (isEmpty(newValue)) {
           toast.error('内容未更改');
           return;
         }
-
-        setLoading(true);
-
-        await editFormDataRequest(
+        return editFormDataRequest(
           appID,
           pageID,
           rowID,
@@ -68,24 +64,25 @@ function CreateDataForm({ appID, pageID, rowID, onCancel }: Props): JSX.Element 
           }
         });
       } else {
-        setLoading(true);
-        await createFormDataRequest(
+        return createFormDataRequest(
           appID,
           pageID,
           buildFormDataReqParams(schema, 'create', currentValue),
-        );
+        ).then(() => {
+          toast.success('保存成功');
+        });
       }
-      toast.success('保存成功');
+    }).then(() => {
       onCancel();
-      setLoading(false);
-    } catch (err) {
+    }).catch((err) => {
       toast.error(err);
+    }).finally(()=> {
       setLoading(false);
-    }
+    });
   };
 
   return (
-    <div style={{ maxHeight: 'calc(100% - 62px)' }} className='flex flex-col flex-1 px-20 pt-20'>
+    <div className='flex flex-col flex-1 px-20 pt-20'>
       <div className='user-app-schema-form'>
         <FormRenderer
           className='p-40'

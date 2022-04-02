@@ -9,7 +9,7 @@ import {
 import toast from '@lib/toast';
 
 import store from '../app-details/store';
-import SimpleViewRenders from './simple-view-render';
+import SimpleViewRenders from '@c/simple-view-render';
 
 export const PG_SAVED_PREFIX = 'pge-';
 export const PG_DRAFT_PREFIX = 'pge-draft-';

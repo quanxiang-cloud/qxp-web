@@ -7,17 +7,24 @@ import Icon from '@c/icon';
 import PopConfirm from '@c/pop-confirm';
 import FormDataDetailsCard from '@c/form-data-details-card';
 
-import { getOperateButtonPer } from '../utils';
-import store from '../store';
+import { getOperateButtonPer } from './utils';
+
+import './index.scss';
 
 type Props = {
   onCancel: () => void;
   goEdit: (rowID: string) => void;
   delData: (rowIDs: string[]) => Promise<unknown>;
   rowID: string;
+  tableName: string;
+  tableID: string;
+  authority: number;
+  appID: string;
 }
 
-function DetailsDrawer({ onCancel, rowID, goEdit, delData }: Props): JSX.Element {
+function DetailsDrawer(
+  { onCancel, rowID, goEdit, delData, tableName, tableID, authority, appID }: Props,
+): JSX.Element {
   const [beganClose, setBeganClose] = useState<boolean>(false);
   const [visible, setVisible] = useState<boolean>(false);
   const [fullScreen, setFullScreen] = useState<boolean>(false);
@@ -51,19 +58,19 @@ function DetailsDrawer({ onCancel, rowID, goEdit, delData }: Props): JSX.Element
         onClick={(e) => e.stopPropagation()}
       >
         <div className='page-data-drawer-header'>
-          <span className='text-h5'>{store.tableName}</span>
+          <span className='text-h5'>{tableName}</span>
           <div className='flex items-center gap-x-12'>
             <span onClick={() => setFullScreen(!fullScreen)} className='icon-text-btn'>
               <Icon size={20} name={fullScreen ? 'unfull_screen' : 'full_screen'} />
               {fullScreen ? '非' : ''}全屏
             </span>
-            {getOperateButtonPer(3, store.authority) && (
+            {getOperateButtonPer(3, authority) && (
               <span onClick={() => goEdit(rowID)} className='icon-text-btn'>
                 <Icon size={20} name='edit' />
                 修改
               </span>
             )}
-            {getOperateButtonPer(4, store.authority) && (
+            {getOperateButtonPer(4, authority) && (
               <PopConfirm content='确认删除该数据？' onOk={handelDelete} >
                 <span className='icon-text-btn'><Icon size={20} name='delete' />删除</span>
               </PopConfirm>
@@ -74,8 +81,8 @@ function DetailsDrawer({ onCancel, rowID, goEdit, delData }: Props): JSX.Element
         <FormDataDetailsCard
           className='px-20 py-16'
           rowID={rowID}
-          appID={store.appID}
-          tableID={store.tableID}
+          appID={appID}
+          tableID={tableID}
           fullScreen={fullScreen}
         />
       </div>

@@ -1,6 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { useQuery } from 'react-query';
+import React, { useRef, useState } from 'react';
 import { UnionColumn } from 'react-table';
 import { Form, Input } from 'antd';
 import { FormInstance } from 'antd/es/form';
@@ -8,19 +6,16 @@ import { observer } from 'mobx-react';
 
 import Card from '@c/card';
 import Button from '@c/button';
-import { getBatchGlobalConfig } from '@lib/api/user-config';
 import Table from '@c/table';
 import EmptyTips from '@c/empty-tips';
 import Modal, { FooterBtnProps } from '@c/modal';
 import toast from '@lib/toast';
 import Loading from '@c/loading';
 
-import { genDesktopRootViewSchemaKey } from '../view-orchestration/helpers/utils';
-import { VERSION } from '../view-orchestration/constants';
 import { Layout } from '../view-orchestration/types';
-import { useOrchestrator } from './hooks';
-import LayoutView from '../../entry/app-list/app-layout-select/layout-view';
+import useAppStore from '../view-orchestration/hooks';
 import AppLayoutType from '../../entry/app-list/app-layout-select';
+import LayoutView from '../../entry/app-list/app-layout-select/layout-view';
 
 import './index.scss';
 
@@ -41,15 +36,7 @@ function PageLayout(): JSX.Element {
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [isTypeValidate, setIsTypeValidate] = useState<boolean>(true);
   const fromRef = useRef<FormInstance>(null);
-  const { appID } = useParams<{ appID: string }>();
-  const rootSchemaKey = genDesktopRootViewSchemaKey(appID);
-  const param = { key: rootSchemaKey, version: VERSION };
-  const { data, isLoading } = useQuery(['rootSchema', param], () => getBatchGlobalConfig([param]));
-  const store = useMemo(() => {
-    if (data) {
-      return useOrchestrator(appID, data.result[rootSchemaKey]);
-    }
-  }, [data]);
+  const { store, isLoading } = useAppStore();
 
   function handleSubmit(): void {
     const values: { name: string, description: string} = fromRef.current?.getFieldsValue();
