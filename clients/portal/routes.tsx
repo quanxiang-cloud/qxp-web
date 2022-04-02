@@ -5,9 +5,6 @@ import { Route, Switch } from 'react-router-dom';
 import Loading from '@c/loading';
 import NotFoundError from '@c/404-error';
 // import { getNestedPropertyToArray } from '@lib/utils';
-import { createModel } from '@lib/api-model';
-
-window.createModel = createModel;
 
 import AppsRoutes from './modules/apps-management/routes';
 import RedirectToApps from './modules/dashboard/redirect-to-apps';

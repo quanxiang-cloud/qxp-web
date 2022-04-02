@@ -1,9 +1,9 @@
 import { PathType } from './types';
 
-import { createModel, Model } from './index';
+import { createCollection, Collection } from './index';
 import { http } from './utils';
 
-describe('api model', () => {
+describe('api collection', () => {
   const appID = 'sm2nv';
   const firstDirectoryName = 'k76sd';
   const firstDirectory = {
@@ -42,7 +42,7 @@ describe('api model', () => {
     type: PathType.INNER_FORM,
   };
   const pathTypes = [PathType.INNER_FORM];
-  let model: Model;
+  let collection: Collection;
 
   beforeEach(() => {
     http.post = async (url: string): Promise<Record<string, unknown>> => {
@@ -392,13 +392,13 @@ describe('api model', () => {
       }
       return {};
     };
-    model = createModel({ appID, pathTypes });
+    collection = createCollection({ appID, pathTypes });
   });
 
-  it('should get all inner form directory', async (): Promise<void> => {
-    expect(model.getValue().apiDataList).toHaveLength(1);
+  it('should get all inner form directory and api', async (): Promise<void> => {
+    expect(collection.getValue().apiDataList).toHaveLength(1);
     const { parent, name } = firstDirectory;
-    await model.onGetApiList(`${parent}/${name}`, pathTypes[0]);
+    await collection.onGetApiList(`${parent}/${name}`, pathTypes[0]);
     const expectedResult = [{
       directory: {
         id: '', owner: '', ownerName: '', parent: '/system/app/sm2nv/raw', name: 'inner', subCount: 0,
@@ -462,6 +462,6 @@ describe('api model', () => {
       },
       pathType: 'inner.form',
     }];
-    expect(model.getValue().apiDataList).toEqual(expectedResult);
+    expect(collection.getValue().apiDataList).toEqual(expectedResult);
   });
 });
