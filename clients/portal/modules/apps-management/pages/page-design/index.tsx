@@ -61,7 +61,7 @@ function PageDesign(): JSX.Element | null {
     }
   }
   function handleGoBack(): void {
-    history.push(`/apps/details/${appID}/page_setting?pageID=${pageId}`);
+    history.push(`/apps/details/${appID}/app_views?pageID=${pageId}`);
   }
   useEffect(() => {
     eventBus.on('clear:api-path', ()=> {
