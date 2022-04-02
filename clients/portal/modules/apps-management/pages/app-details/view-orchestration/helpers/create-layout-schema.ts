@@ -22,11 +22,11 @@ export default function createLayoutSchema(
     props: {
       'data-internal-node': {
         type: 'constant_property',
-        value: 'true',
+        value: true,
       },
       'data-layout': {
         type: 'constant_property',
-        value: 'true',
+        value: true,
       },
       'data-layout-type': {
         type: 'constant_property',

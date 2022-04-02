@@ -44,7 +44,7 @@ export default function findLayouts(node: SchemaNode): Array<Layout> {
         return;
       }
 
-      layouts.push(convertNodeToLayout(node));
+      layouts.push(convertNodeToLayout(currentNode));
     },
   });
 

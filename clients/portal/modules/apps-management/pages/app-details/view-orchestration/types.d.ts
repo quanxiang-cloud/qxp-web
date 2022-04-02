@@ -1,3 +1,4 @@
+
 export enum LayoutType {
   HeaderContent = 'header-content',
   LeftSidebarContent = 'left-sidebar-content',
@@ -54,14 +55,22 @@ export interface StaticView extends BaseView {
 export interface ExternalView extends BaseView {
   type: ViewType.ExternalView;
   link: string;
+  appID: string;
+}
+
+export type CardListInfo = {
+  id: string,
+  name: string,
+  status?: string
+}
+
+export type CardInfo = {
+  id: string,
+  title: string,
+  list: CardListInfo[],
 }
 
 export type View = TableSchemaView | SchemaView | StaticView | ExternalView;
-export type ViewGroup = { group: string; views: Array<View>; }
+export type ViewGroup = { name: string; views: Array<View>; }
 
-export interface CreateViewParams {
-  name: string;
-  layoutID: string;
-  group?: string;
-  description: string;
-}
+export type CreateViewParams<T> = T & { layoutID?: string }

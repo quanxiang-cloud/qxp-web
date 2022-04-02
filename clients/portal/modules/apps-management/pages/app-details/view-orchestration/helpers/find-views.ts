@@ -13,7 +13,7 @@ import {
 
 import logger from '@lib/logger';
 
-import { ExternalView, View, ViewType, SchemaView, StaticView, TableSchemaView } from '../types';
+import { ExternalView, View, ViewType, SchemaView, StaticView, TableSchemaView } from '../types.d';
 import { isLayoutNode } from './utils';
 
 const VIEW_RENDER_MAP: Record<string, ViewType> = {
@@ -68,7 +68,8 @@ function convertNodeToExternalView(node: ReactComponentNode): ExternalView {
     id: node.id as string,
     name: node.label || '',
     type: ViewType.ExternalView,
-    link: get(node, 'props.fileUrl.link') || '',
+    link: get(node, 'props.link.value') || '',
+    appID: get(node, 'props.appID.value') || '',
     url: '',
   };
 }

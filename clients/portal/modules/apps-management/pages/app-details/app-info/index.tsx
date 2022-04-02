@@ -3,6 +3,8 @@ import React from 'react';
 import Tab from '@c/tab';
 
 import BasicInfo from './basic-info';
+import AppLayout from './app-layout';
+import PageLayout from './page-layout';
 
 function AppInfo(): JSX.Element {
   return (
@@ -25,6 +27,16 @@ function AppInfo(): JSX.Element {
           //   name: '访问端个性化设置',
           //   content: (<div></div>),
           // },
+          {
+            id: 'appLayout',
+            name: '应用布局设置',
+            content: (<AppLayout />),
+          },
+          {
+            id: 'pageLayout',
+            name: '页面布局设置',
+            content: (<PageLayout />),
+          },
         ]}
       />
     </div>

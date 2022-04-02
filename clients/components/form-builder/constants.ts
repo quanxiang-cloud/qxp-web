@@ -5,7 +5,7 @@ export const OPERATORS = {
   ],
   Multiple: [
     { value: '⊇', label: '全部包含' },
-    { value: '∩', label: '任一' },
+    { value: '⊋', label: '不包含' },
   ],
   Single: [
     { value: '==', label: '等于' },

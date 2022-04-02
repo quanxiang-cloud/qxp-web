@@ -64,7 +64,7 @@ function SchemaEditor({ appID, pageId, initialSchema }: Props): JSX.Element {
   }
 
   function handleBack(): void {
-    history.push(`/apps/details/${appID}/page_setting?pageID=${pageId}`);
+    history.push(`/apps/details/${appID}/app_views`);
   }
 
   function handleChangeMode(editorMode: EditorMode): void {
