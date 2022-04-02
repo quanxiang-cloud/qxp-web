@@ -50,6 +50,11 @@ export function mapRawProps(props: Record<string, NodeProperty>): Record<string,
 export function mergeAsRenderEngineProps(prevProps: Record<string, NodeProperty>, newProps: Record<string, any>): Record<string, NodeProperty> {
   return mergeWith(prevProps, newProps, (v: NodeProperty | undefined, newVal: any)=> {
     if (!v) {
+      //  todo refactor this
+      if (typeof newVal === 'object' && 'type' in newVal) {
+        return newVal;
+      }
+
       return { type: 'constant_property', value: newVal };
     }
 

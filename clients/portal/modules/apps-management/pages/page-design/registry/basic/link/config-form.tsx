@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { defaults } from 'lodash';
+import { Radio, RadioGroup } from '@one-for-all/ui';
 
 import { useCtx } from '../../../ctx';
 import ConfigBind from '../../../utils/data-bind';
-// import { Radio, RadioGroup, Select } from '@one-for-all/ui';
+import { INNER_LINK_FUNC_SPEC } from './constants';
 
 export interface Props {
-  content: string,
+  content: string;
   linkType: 'outside' | 'inside',
   linkUrl?: string,
-  linkPage?: string,
   isBlank?: boolean,
 }
 
@@ -17,7 +17,6 @@ export const DEFAULT_CONFIG: Props = {
   content: '链接',
   linkType: 'outside',
   linkUrl: '',
-  linkPage: '',
   isBlank: false,
 };
 
@@ -28,6 +27,13 @@ function ConfigForm(): JSX.Element {
   // const example = [{ label: '示例页面', value: '#' }];
 
   useEffect(() => {
+    if (values.linkType === 'inside') {
+      return page.updateElemProperty(page.activeElem.id, 'props', {
+        ...values,
+        onClick: INNER_LINK_FUNC_SPEC,
+      });
+    }
+
     page.updateElemProperty(page.activeElem.id, 'props', values);
   }, [values]);
 
@@ -61,22 +67,6 @@ function ConfigForm(): JSX.Element {
           <ConfigBind name='content' />
         </div>
       </div>
-      {/* <div className='mb-8'>
-        <p className='text-12 text-gray-600'>链接类型</p>
-        <div className='flex items-center'>
-          <RadioGroup
-            onChange={(linkType) => setValues({ ...values, linkType })}
-          >
-            <Radio
-              label='内部页面'
-              className='mr-20'
-              value='inside'
-              defaultChecked={values.linkType === 'inside'}
-            />
-            <Radio label='外部链接' value='outside' defaultChecked={values.linkType === 'outside'} />
-          </RadioGroup>
-        </div>
-      </div> */}
       {/* {
         values.linkType === 'inside' ? (
           <div className='mb-8'>
@@ -103,16 +93,36 @@ function ConfigForm(): JSX.Element {
       </div>
       {/* )
       } */}
+      <div className='mb-8'>
+        <p className='text-12 text-gray-600'>链接类型</p>
+        <RadioGroup
+          className='flex items-center'
+          onChange={(linkType) => setValues({ ...values, linkType })}
+        >
+          <Radio
+            label='外部链接'
+            value='outside'
+            className='mr-10'
+            defaultChecked={values.linkType === 'outside'}
+          />
+          <Radio
+            label='内部页面'
+            value='inside'
+            defaultChecked={values.linkType === 'inside'}
+          />
+        </RadioGroup>
+      </div>
       <div className='mb-8 flex items-center justify-between'>
         <div className='w-full flex items-center'>
           <input
+            disabled={values.linkType === 'inside'}
             type="checkbox"
             className='w-full h-32 my-4 px-8 mr-4'
             style={{ width: 15 }}
             checked={values.isBlank}
             onChange={(ev) => setValues({ ...values, isBlank: ev.target.checked })}
           />
-          <span className='ml-8 text-12 text-gray-900 whitespace-nowrap'>新开页面</span>
+          <span className='ml-8 text-12 text-gray-900 whitespace-nowrap'>新开标签页</span>
         </div>
         <ConfigBind name='isBlank' />
       </div>
