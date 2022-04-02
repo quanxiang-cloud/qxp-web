@@ -36,12 +36,13 @@ import {
   ViewType,
 } from './types.d';
 import { ROOT_NODE_ID } from './constants';
-import { createBlank } from '../api';
+import { createBlank, updateApp } from '../api';
 
 class Orchestrator {
   @observable loading = true;
   @observable rootNode: SchemaNode;
   @observable currentView: View | ViewGroup;
+  @observable homeView?: View;
   @observable modalType = '';
   appID: string;
   rootSchemaKey: string;
@@ -414,6 +415,9 @@ class Orchestrator {
 
       return this.updateViewName(this.currentView as View, viewInfo.name!);
     }).then(() => {
+      if (this.modalType === 'createView' && this.views.length === 1 ) {
+        this.setHomeView(viewInfo.name);
+      }
       if (viewInfo.type === ViewType.ExternalView) {
         this.setCurrentView({ ...viewInfo, appID: this.appID } as View);
         return;
@@ -430,6 +434,24 @@ class Orchestrator {
   @action
   setCurrentView(view: View | ViewGroup): void {
     this.currentView = view;
+  }
+
+  @action
+  saveAppHomeViewUrl(url: string): Promise<unknown> {
+    return updateApp({
+      id: this.appID,
+      accessURL: url,
+    });
+  }
+
+  @action
+  setHomeView(viewName?: string): Promise<unknown> {
+    if (!viewName) {
+      return this.saveAppHomeViewUrl('');
+    }
+    const view = this.views.find((view) => view.name === viewName) as View;
+    this.homeView = view;
+    return this.saveAppHomeViewUrl(view.url);
   }
 }
 

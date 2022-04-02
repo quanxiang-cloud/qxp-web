@@ -1,10 +1,10 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
 
 import AppIcon from '@c/app-icon';
 import { parseJSON } from '@lib/utils';
 
 import './index.scss';
+import toast from '@lib/toast';
 
 type Props = {
   appInfo: AppInfo;
@@ -12,12 +12,18 @@ type Props = {
 }
 
 function AppInfoView({ appInfo, className = '' }: Props): JSX.Element {
-  const history = useHistory();
   const appIcon = parseJSON<AppIconInfo>(appInfo.appIcon, { bgColor: 'amber', iconName: '' });
 
   return (
-    <div
-      onClick={() => history.push(`/apps/${appInfo.id}`)}
+    <a
+      href={appInfo.accessURL}
+      onClick={(e) => {
+        if (!appInfo.accessURL) {
+          e.preventDefault();
+          toast.error('该应用没有设置主页，暂时无法访问');
+          return;
+        }
+      }}
       className={`${className} flex-1 flex overflow-hidden items-center`}
     >
       <AppIcon
@@ -32,7 +38,7 @@ function AppInfoView({ appInfo, className = '' }: Props): JSX.Element {
           <p className='app-info-view-status'>{appInfo.useStatus > 0 ? '已发布' : '未发布'}</p>
         )}
       </div>
-    </div>
+    </a>
   );
 }
 

@@ -18,9 +18,10 @@ export const updateAppStatus = async (data: any)=> {
   return await httpClient('/api/v1/app-center/updateStatus', data);
 };
 
-export const updateApp = async (data: AppInfo)=> {
+export const updateApp = async (data: Partial<AppInfo> & { id: string })=> {
   return await httpClient('/api/v1/app-center/update', data);
 };
+window.updateApp = updateApp;
 
 export const fetchCustomPageList = async (appID: string, params?: CustomPageParams): Promise<fetchCustomListRes> => {
   return await httpClient(`/api/v1/structor/${appID}/m/page/condition`, params);
