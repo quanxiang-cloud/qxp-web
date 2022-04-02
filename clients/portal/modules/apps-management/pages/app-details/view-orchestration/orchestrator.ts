@@ -192,7 +192,6 @@ class Orchestrator {
     const customPageSchema: Schema = {
       node: {
         id: genNodeID(),
-        pid: '',
         type: 'react-component',
         packageName: 'ofa-ui',
         packageVersion: 'latest',
@@ -429,6 +428,7 @@ class Orchestrator {
 
   @action
   setCurrentView(view: View | ViewGroup): void {
+    console.log(view);
     this.currentView = view;
   }
 }

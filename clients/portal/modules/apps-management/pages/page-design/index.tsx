@@ -27,7 +27,8 @@ import './index.scss';
 import styles from './index.m.scss';
 
 function PageDesign(): JSX.Element | null {
-  const { appID, pageId } = useParams<{appID: string; pageId: string}>();
+  const {  pageId } = useParams<{appID: string; pageId: string}>();
+  const { appID, pageName, schemaID } = getQuery<{ appID: string ,pageName: string, schemaID: string }>();
   const [pageType, setPageType] = useState('');
   const history = useHistory();
 
@@ -35,10 +36,10 @@ function PageDesign(): JSX.Element | null {
   useStyle('body', resetStyle);
   useStyle('html', resetStyle);
 
-  const { pageType: savedPageType, isLoading: isSavedPageTypeLoading } = usePageTypeKey(appID, pageId);
+  const { pageType: savedPageType, isLoading: isSavedPageTypeLoading } = usePageTypeKey(appID, schemaID);
   const { data: schema, isLoading: isSchemaLoading } = useQuerySchema(
-    { appID, pageId },
-    { enabled: !!appID && !!pageId },
+    { appID, schemaID },
+    { enabled: !!appID && !!schemaID },
   );
 
   const { layers, initialSchema } = useMemo(() => {
@@ -67,7 +68,7 @@ function PageDesign(): JSX.Element | null {
     eventBus.on('clear:api-path', ()=> {
       setApiPath('');
     });
-    const { pageName } = getQuery<{ pageName: string }>();
+
     // set page title
     designer.setVdom('title', (
       <div className='inline-flex items-center text-gray-900 text-12'>
@@ -143,7 +144,7 @@ function PageDesign(): JSX.Element | null {
   }
 
   const handleSave = useCallback((page_schema: any, options?: Record<string, any>): void => {
-    savePage(appID, pageId, page_schema, options).then(() => {
+    savePage(appID, schemaID, page_schema, options).then(() => {
       if (!options?.silent) {
         updatePageEngineMenuType(appID, pageId);
         toast.success('页面已保存');

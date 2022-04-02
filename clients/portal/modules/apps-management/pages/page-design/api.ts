@@ -1,10 +1,9 @@
-import { isEmpty } from 'lodash';
 
 import stores from './stores';
 
 import {
-  setBatchGlobalConfig,
   getBatchGlobalConfig,
+  setBatchGlobalConfig,
   setPageEngineMenuType,
 } from '@lib/api/user-config';
 import toast from '@lib/toast';
@@ -14,46 +13,33 @@ import SimpleViewRenders from '@c/simple-view-render';
 
 export const PG_SAVED_PREFIX = 'pge-';
 export const PG_DRAFT_PREFIX = 'pge-draft-';
-export const PG_VERSION = '0.1.0';
+export const PG_VERSION = '1.0.0';
 
 type Option={
   draft?: boolean;
   [key: string]: any
 }
 
-export function getSchemaKey(appID: string, pageID: string, isDraft: boolean): string[] {
-  const key = `custom_page_schema:app_id:${appID}:page_id:${pageID}`;
-  const newKey = `app_id:${appID}:page_id:${pageID}:custom_page_schema`;
-  if (isDraft) {
-    return [`${key}:draft`, `${newKey.replace(':custom_page_schema', '')}:draft:custom_page_schema`];
-  }
-
-  return [key, newKey];
+export function getSchemaKey(appID: string, schemaID: string, isDraft: boolean): string {
+  return isDraft ? `${schemaID}:draft` : schemaID;
 }
 
-export function savePage(app_id: string, page_id: string, page_schema: any, options?: Option): Promise<any> {
-  const schemaKeys = getSchemaKey(app_id, page_id, !!options?.draft);
-  return setBatchGlobalConfig(schemaKeys.map((key) => ({
-    key,
+export function savePage(app_id: string, schemaID: string, page_schema: any, options?: Option): Promise<any> {
+  return setBatchGlobalConfig([{
+    key: options?.draft ? `${schemaID}:draft` : schemaID,
     version: PG_VERSION,
     value: typeof page_schema === 'object' ? JSON.stringify(page_schema) : page_schema,
-  })));
+  }]);
 }
 
-export function getPage(app_id: string, page_id: string, options?: Option): Promise<string | void> {
-  const [queryId, newQueryId] = getSchemaKey(app_id, page_id, !!options?.draft);
+export function getPage(app_id: string, schema_key: string, options?: Option): Promise<string | void> {
+  const queryId = getSchemaKey(app_id, schema_key, !!options?.draft);
   const result = getBatchGlobalConfig([{
     key: queryId,
     version: PG_VERSION,
   }]);
-  const newResult = getBatchGlobalConfig([{
-    key: newQueryId,
-    version: PG_VERSION,
-  }]);
-  return Promise.all([result, newResult]).then(([{ result }, { result: newResult }]) => {
-    if (newResult && !isEmpty(newResult)) {
-      return newResult[newQueryId];
-    }
+
+  return Promise.all([result]).then(([{ result }]) => {
     return result[queryId];
   }).catch(toast.error);
 }
