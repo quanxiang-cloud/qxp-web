@@ -1,5 +1,4 @@
 import { PathType } from './types';
-
 import { createCollection, Collection } from './index';
 import { http } from './utils';
 
@@ -463,5 +462,95 @@ describe('api collection', () => {
       pathType: 'inner.form',
     }];
     expect(collection.getValue().apiDataList).toEqual(expectedResult);
+    const apiList = collection.selectApiList(`${parent}/${name}`, pathTypes[0]);
+    const expectedApiList = [
+      {
+        id: 'raw_AC7SYbDTsKqsSlfAyVuhM-KHWCDtEbIwfYRvwAxGPJLl',
+        owner: 'system',
+        ownerName: '',
+        name: 'k76sd_create.r',
+        title: '示例页面(新增)',
+        desc: '',
+        fullPath: '/system/app/sm2nv/raw/inner/form/k76sd/k76sd_create.r',
+        url: 'http://form/api/v1/form/sm2nv/home/form/k76sd/create',
+        version: 'last',
+        method: 'POST',
+        action: '',
+        active: 1,
+        valid: 1,
+        createAt: 1648625726619,
+        updateAt: 1648625846711,
+      },
+      {
+        id: 'raw_AL4L-XH4xnl_HSDyLuPpymKtt3Mn3r627DKRktXhdpeM',
+        owner: 'system',
+        ownerName: '',
+        name: 'k76sd_delete.r',
+        title: '示例页面(删除) ',
+        desc: '',
+        fullPath: '/system/app/sm2nv/raw/inner/form/k76sd/k76sd_delete.r',
+        url: 'http://form/api/v1/form/sm2nv/home/form/k76sd/delete',
+        version: 'last',
+        method: 'POST',
+        action: '',
+        active: 1,
+        valid: 1,
+        createAt: 1648625726627,
+        updateAt: 1648625846719,
+      },
+      {
+        id: 'raw_AJd6ecBz5qLlOnWHsrqX70oXTo8S1-XjDlUcpUGjNWee',
+        owner: 'system',
+        ownerName: '',
+        name: 'k76sd_get.r',
+        title: '示例页面(查询单条)',
+        desc: '',
+        fullPath: '/system/app/sm2nv/raw/inner/form/k76sd/k76sd_get.r',
+        url: 'http://form/api/v1/form/sm2nv/home/form/k76sd/get',
+        version: 'last',
+        method: 'POST',
+        action: '',
+        active: 1,
+        valid: 1,
+        createAt: 1648625726643,
+        updateAt: 1648625846734,
+      },
+      {
+        id: 'raw_ALtOQ4VLkT9qw7krENcKsP4gNsuO4uPAq6-Gs7ZKOWBp',
+        owner: 'system',
+        ownerName: '',
+        name: 'k76sd_search.r',
+        title: '示例页面(查询多条)',
+        desc: '',
+        fullPath: '/system/app/sm2nv/raw/inner/form/k76sd/k76sd_search.r',
+        url: 'http://form/api/v1/form/sm2nv/home/form/k76sd/search',
+        version: 'last',
+        method: 'POST',
+        action: '',
+        active: 1,
+        valid: 1,
+        createAt: 1648625726635,
+        updateAt: 1648625846726,
+      },
+      {
+        id: 'raw_AClJqZqwRMX0umuJkLoWGva52c3laG-B3Jpy6bDRNBHC',
+        owner: 'system',
+        ownerName: '',
+        name: 'k76sd_update.r',
+        title: '示例页面(更新)',
+        desc: '',
+        fullPath: '/system/app/sm2nv/raw/inner/form/k76sd/k76sd_update.r',
+        url: 'http://form/api/v1/form/sm2nv/home/form/k76sd/update',
+        version: 'last',
+        method: 'POST',
+        action: '',
+        active: 1,
+        valid: 1,
+        createAt: 1648625726650,
+        updateAt: 1648625846705,
+        type: 'inner.form',
+      },
+    ];
+    expect(apiList).toEqual(expectedApiList);
   });
 });
