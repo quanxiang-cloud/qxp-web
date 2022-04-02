@@ -18,6 +18,22 @@ jobs:
         if: ${{ failure() }}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  deploy-to-deprecate-alpha:
+    needs: [bundle-clients]
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download client statices
+        uses: actions/download-artifact@v3
+        with:
+          name: dist
+          path: dist
+      - run: GOOS=linux go build -o ./dist/portal server/cmd/portal/main.go
+      - run: GOOS=linux go build -o ./dist/home server/cmd/home/main.go
+      - run: scp ./dist/portal qxp-alpha:/tmp
+      - run: scp ./dist/home qxp-alpha:/tmp
+      - run: rsync -avz ./dist/ qxp-alpha:/qxp/dist
+      - run: ssh qxp-alpha /qxp/script/reload_portal
   build-qxp-web-nginx:
     needs: [bundle-clients]
     runs-on: self-hosted
