@@ -85,12 +85,12 @@ function AppViews(): JSX.Element {
           />
         </div>
       </div>
-      <ViewDetails openModal={store?.setModalType} viewInfo={store?.currentView as View} />
+      <ViewDetails openModal={(type) => store.setModalType(type)} viewInfo={store?.currentView as View} />
       {['editView', 'createView'].includes(store?.modalType) && (
         <EditViewModal
-          modalType={store?.modalType}
-          layouts={store?.layouts || []}
-          views={store?.views || []}
+          modalType={store.modalType}
+          layouts={store.layouts || []}
+          views={store.views || []}
           onCancel={closeModal}
           viewParams={store?.modalType === 'editView' ? store?.currentView as View : undefined}
           onSubmit={handleModalSubmit}
@@ -98,7 +98,7 @@ function AppViews(): JSX.Element {
       )}
       {store?.modalType === 'editStaticView' && (
         <EditStaticViewModal
-          view={store?.currentView as StaticView}
+          view={store.currentView as StaticView}
           onClose={closeModal}
           onSubmit={handleModalSubmit}
         />
