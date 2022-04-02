@@ -12,4 +12,3 @@ export default function AppLand(): JSX.Element {
     </div>
   );
 }
-
