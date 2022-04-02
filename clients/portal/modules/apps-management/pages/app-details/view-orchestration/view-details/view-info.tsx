@@ -104,11 +104,10 @@ function ViewInfo({ view, openModal }: Props): JSX.Element {
 
   function goPageDesign(): void {
     // to change below line after page engine v2 new update
-    const shortSchemaID = (view as SchemaView).schemaID.split(':').pop();
-    console.log(view);
+    const schemaID = (view as SchemaView).schemaID;
 
     // save page engine schema is not work now
-    history.push(`/apps/page-design/${shortSchemaID}/${appID}?pageName=${view.name}`);
+    history.push(`/page-engine?appID=${appID}&pageName=${view.name}&schemaID=${schemaID}`);
     // history.push(`/apps/page-design/${view.id}/${appID}?pageName=${view.name}`);
   }
 
