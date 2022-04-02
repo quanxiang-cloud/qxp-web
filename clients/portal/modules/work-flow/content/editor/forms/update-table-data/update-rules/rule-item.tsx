@@ -11,6 +11,7 @@ import FlowSourceTableContext from '@flow/content/editor/forms/flow-source-table
 import FlowContext from '@flow/flow-context';
 import { getFlowVariables, getFormFieldSchema } from '@flow/content/editor/forms/api';
 import { schemaToMap } from '@lib/schema-convert';
+
 import ProcessVariableSelector from '@flow/content/editor/forms/variable-selector';
 
 import { Rule, FormulaFields } from './index';
@@ -213,13 +214,10 @@ function RuleItem(props: Props): JSX.Element {
           });
       }
       if (componentName === 'associateddata') {
-        const { fieldName } = get(selectField, 'x-component-props', {}) as SchemaFieldItem;
-        const relatedField = get(relatedTableSchema, `properties.${fieldName}`);
-
-        return [{
-          label: relatedField?.title as string,
-          value: fieldName,
-        }];
+        return getSchemaFields(Object.values(schemaToMap(relatedTableSchema)), {
+          noSystem: true,
+          excludeComps: ['serial', 'associatedrecords', 'associateddata', 'subtable'],
+        });
       }
       if (componentName === 'subtable') {
         const sub = get(selectField, 'x-component-props.subordination');
