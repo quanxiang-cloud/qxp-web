@@ -192,7 +192,6 @@ class Orchestrator {
     const customPageSchema: Schema = {
       node: {
         id: genNodeID(),
-        pid: '',
         type: 'react-component',
         packageName: 'ofa-ui',
         packageVersion: 'latest',
