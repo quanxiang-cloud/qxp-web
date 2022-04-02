@@ -1,135 +1,79 @@
 import { useObservable } from 'react-use';
 import { BehaviorSubject } from 'rxjs';
+import { mergeRight } from 'ramda';
 
-import { APIDirectory, APIItem } from './types';
-import {
-  ApiRootDirectoryPathWithApiType,
-  getApiDoc,
-  getApiList,
-  getApiRootDirectory,
-  getApiRootDirectoryPathWithTypeArray,
-  getDirectoryPath,
-} from './utils';
+import { Directory, PathType } from './types';
+import { getApiListAndUpdateApiDataList, getInitialApiDataList, omitApiFromModelValue } from './utils';
 
 export * from './types';
 
-export interface APIDataList {
-  type: string;
-  rootDirectory: APIDirectory;
-  apiListMap: Record<string, APIItem[]>;
-  apiDocMap: Record<string, Record<string, any>>;
+export interface APIData {
+  pathType: PathType;
+  directory: Directory;
 }
 export interface ModelState {
-  apiDataList: APIDataList[];
+  apiDataList: APIData[];
 }
 export const initialState: ModelState = {
   apiDataList: [],
 };
 
-export class Model extends BehaviorSubject<ModelState> {
-  private appID: string;
-  private apiTypes: string[] = [];
+type ModelMode = 'directoryOnly' | 'directoryWithApi';
 
-  constructor(value: ModelState, appID: string, apiTypes: string[]) {
+interface ModelProps {
+  appID: string;
+  pathTypes: PathType[];
+  mode?: ModelMode;
+}
+export class Model extends BehaviorSubject<ModelState> {
+  public mode: ModelMode;
+  private appID: string;
+  private pathTypes: PathType[] = [];
+
+  constructor(value: ModelState, props: ModelProps) {
+    const { appID, pathTypes, mode } = props;
     super(value);
     this.appID = appID;
-    this.apiTypes = apiTypes;
+    this.pathTypes = pathTypes;
+    this.mode = mode || 'directoryOnly';
     this.fetch();
   }
 
   private update(value: Partial<ModelState>): void {
-    this.next({ ...this.value, ...value });
+    this.next(mergeRight(this.value, value));
   }
-
-  private getApiListMap = async (
-    apiType: string, apiRootDirectory: APIDirectory,
-  ): Promise<Record<string, APIItem[]>> => {
-    const apiRootDirectoryPath = getDirectoryPath(apiRootDirectory);
-    const apiListOfRootDirectory = await getApiList(
-      apiRootDirectoryPath, apiType === 'poly' ? 'poly' : 'raw',
-    );
-    this.assignApiTypeToApiItems(apiType, apiListOfRootDirectory);
-    return {
-      [apiRootDirectoryPath]: apiListOfRootDirectory,
-    };
-  };
-
-  private assignApiTypeToDirectoryTree(type: string, rootDirectory: APIDirectory): void {
-    rootDirectory.type = type;
-    if (rootDirectory.children) {
-      rootDirectory.children.forEach((child) => this.assignApiTypeToDirectoryTree(type, child));
-    }
-  }
-
-  private assignApiTypeToApiItems(type: string, apiItems: APIItem[]): void {
-    apiItems.forEach((apiItem) => apiItem.type = type);
-  }
-
-  private getApiDatas = async (
-    rootDirectoryPathWithTypeArray: ApiRootDirectoryPathWithApiType[],
-  ): Promise<APIDataList[]> => {
-    const promises = rootDirectoryPathWithTypeArray.map(async ({ type, apiRootDirectoryPath }) => {
-      const rootDirectory = await getApiRootDirectory(apiRootDirectoryPath);
-      this.assignApiTypeToDirectoryTree(type, rootDirectory);
-      return {
-        type,
-        rootDirectory,
-        apiListMap: await this.getApiListMap(type, rootDirectory),
-        apiDocMap: {},
-      };
-    });
-    return await Promise.all(promises);
-  };
 
   private fetch = async (): Promise<never | void> => {
-    if (!this.appID) {
-      throw new Error('appID is not set');
-    }
     try {
-      const rootDirectoryPathWithTypeArray = await getApiRootDirectoryPathWithTypeArray(
-        this.appID, this.apiTypes,
-      );
-      const apiDataList = await this.getApiDatas(rootDirectoryPathWithTypeArray);
+      const apiDataList = await getInitialApiDataList(this.appID, this.pathTypes);
       this.update({ apiDataList });
     } catch (error) {
       console.error(error);
     }
   };
 
-  public getApiList = async (directory: APIDirectory): Promise<void> => {
-    const directoryPath = getDirectoryPath(directory);
-    const apiList = await getApiList(directoryPath, directory.type === 'poly' ? 'poly' : 'raw');
-    const { apiDataList } = this.getValue();
-    this.update({
-      apiDataList: apiDataList.map((data) => {
-        if (data.type === directory.type) {
-          this.assignApiTypeToApiItems(data.type, apiList);
-          data.apiListMap[directoryPath] = apiList;
-        }
-        return data;
-      }),
-    });
-  };
-
-  public getApiDoc = async (apiItem: APIItem, docType: string): Promise<void> => {
-    const { fullPath } = apiItem;
-    const docData = await getApiDoc(fullPath, docType);
-    const { apiDataList } = this.getValue();
-    this.update({
-      apiDataList: apiDataList.map((data) => {
-        if (data.type === apiItem.type) {
-          data.apiDocMap[fullPath] = docData;
-        }
-        return data;
-      }),
-    });
+  public onGetApiList = async (directoryPath: string, pathType: PathType): Promise<void> => {
+    try {
+      const apiDataList = await getApiListAndUpdateApiDataList({
+        apiDataList: this.getValue().apiDataList,
+        directoryPath,
+        pathType,
+      });
+      this.update({ apiDataList });
+    } catch (error) {
+      console.error(error);
+    }
   };
 }
 
-export function createModel(appID: string, apiTypes: string[]): Model {
-  return new Model(initialState, appID, apiTypes);
+export function createModel(props: ModelProps): Model {
+  return new Model(initialState, props);
 }
 
 export function useModel(model: Model): ModelState {
-  return useObservable(model, initialState);
+  const modelValue = useObservable(model, initialState);
+  if (model.mode === 'directoryOnly') {
+    return omitApiFromModelValue(modelValue);
+  }
+  return modelValue;
 }
