@@ -12,7 +12,7 @@ type Props = {
   version: string;
 }
 
-export default function PageSchemaRender({ schemaKey, version }: Props): JSX.Element | null {
+export default function ArteryRender({ schemaKey, version }: Props): JSX.Element | null {
   const { schema, adapter } = useSchemaWithAdapter(schemaKey, version);
 
   if (!schema || !adapter) {

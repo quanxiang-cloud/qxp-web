@@ -6,7 +6,7 @@ import Icon from '@c/icon';
 import Button from '@c/button';
 
 import { ExternalView, SchemaView, TableSchemaView, View, ViewType } from '../types.d';
-import PageSchemaRender from '@c/page-schema-render';
+import ArteryRender from '@c/artery-render';
 import { getVersionKey } from '../../../page-design/api';
 
 type Props = {
@@ -92,7 +92,7 @@ function ViewInfo({ view, openModal }: Props): JSX.Element {
 
     if (type === ViewType.SchemaView) {
       return (
-        <PageSchemaRender
+        <ArteryRender
           schemaKey={view.schemaID}
           version={getVersionKey()}
         />

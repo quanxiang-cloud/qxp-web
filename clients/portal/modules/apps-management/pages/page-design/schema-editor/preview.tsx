@@ -5,7 +5,7 @@ import type { Schema } from '@one-for-all/schema-spec';
 import toast from '@lib/toast';
 
 import { getSchemaKey } from '../api';
-import PageSchemaRender from '@c/page-schema-render';
+import ArteryRender from '@c/artery-render';
 
 type Props = {
   appID: string;
@@ -34,7 +34,7 @@ function Preview({ appID, pageID, previewSchema }: Props): JSX.Element {
   }
 
   return (
-    <PageSchemaRender
+    <ArteryRender
       schemaKey={schemaKeys[0]}
       version="0.1.0"
     />

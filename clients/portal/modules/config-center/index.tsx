@@ -4,7 +4,7 @@ import { SchemaRender } from '@one-for-all/render-engine';
 import type { Schema } from '@one-for-all/schema-spec';
 import logger from '@lib/logger';
 
-import ErrorBoundary from '@c/page-schema-render/error-boundary';
+import ErrorBoundary from '@c/artery-render/error-boundary';
 import SwaggerRPCSpecAdapter from '@lib/api-adapter';
 // import schema from './schema';
 import swagger from './swagger';
