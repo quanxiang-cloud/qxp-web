@@ -1,6 +1,6 @@
 import { RefLoader } from '@one-for-all/render-engine';
 import { VERSION } from '@portal/modules/apps-management/pages/app-details/view-orchestration/constants';
-import SwaggerRPCSpecAdapter from '@lib/adapter-swagger-rpc';
+import SwaggerRPCSpecAdapter from '@lib/api-adapter';
 
 import { fetchSchemaWithSwagger } from './api';
 import repository from './repository';
