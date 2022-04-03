@@ -1,23 +1,17 @@
 import { has, mergeRight } from 'ramda';
+import httpClient from '@lib/http-client';
 
 import type { Directory, API, PathType, DirectoryChild } from './types';
 
-export const http = {
-  post: async (url: string, data: Record<string, unknown>): Promise<any> => {
-    const { default: httpClient } = await import('@lib/http-client');
-    return httpClient.post(url, data, { 'X-Proxy': 'API' });
-  },
-};
-
 async function getDirectoryPath(appID: string, pathType: string): Promise<string> {
   const params = { appID, pathType };
-  const { appPath } = await http.post('/api/v1/polyapi/namespace/appPath', params);
+  const { appPath } = await httpClient.post('/api/v1/polyapi/namespace/appPath', params);
   return appPath;
 }
 
 export async function getDirectory(directoryPath: string): Promise<Directory> {
   const params = { active: -1 };
-  const { root } = await http.post(`/api/v1/polyapi/namespace/tree${directoryPath}`, params);
+  const { root } = await httpClient.post(`/api/v1/polyapi/namespace/tree${directoryPath}`, params);
   return root;
 }
 
@@ -37,7 +31,7 @@ export async function getDirectoryPathWithPathTypeArray(
 
 export async function getApiList(directoryPath: string, listType: 'raw' | 'poly'): Promise<API[]> {
   const params = { active: -1 };
-  const { list } = await http.post(`/api/v1/polyapi/${listType}/list${directoryPath}`, params);
+  const { list } = await httpClient.post(`/api/v1/polyapi/${listType}/list${directoryPath}`, params);
   return list;
 }
 

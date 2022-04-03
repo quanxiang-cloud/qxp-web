@@ -1,6 +1,9 @@
 import { PathType } from './types';
 import { createCollection, Collection } from './index';
-import { http } from './utils';
+
+const http = {
+  post: (url: string): Promise<Record<string, unknown>> => Promise.resolve({ url }),
+};
 
 describe('api collection', () => {
   const appID = 'sm2nv';
