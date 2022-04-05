@@ -37,7 +37,6 @@ function convertRefNodeToView(node: RefNode): SchemaView {
     id: node.id as string,
     name: node.label || '',
     type: ViewType.SchemaView,
-    // @ts-ignore
     arteryID: node.arteryID,
     url: '',
   };
