@@ -20,3 +20,14 @@
   margin-top: 8rpx;
   color: var(--red-600);
 }
+
+.picker-error {
+  border: 1px var(--red-600) solid;
+  color: var(--red-600);
+}
+
+.picker-error-text {
+  color: var(--red-600);
+  margin: -0.08rem 0 0.16rem 0;
+  transition: 0.3s;
+}

@@ -1,5 +1,5 @@
 import { UseQueryOptions } from 'react-query';
-import { Schema } from '@one-for-all/schema-spec';
+import { Artery } from '@one-for-all/artery';
 
 import { parseJSON } from '@lib/utils';
 
@@ -11,7 +11,7 @@ interface QuerySchemaInput {
   appID: string;
   pageId: string;
 }
-type QuerySchemaResponse = Schema;
+type QuerySchemaResponse = Artery;
 export function useQuerySchema(
   input: QuerySchemaInput,
   options: UseQueryOptions<QuerySchemaResponse | undefined, Error>,
@@ -25,7 +25,7 @@ export function useQuerySchema(
       if (!schema) {
         return;
       }
-      return parseJSON<Schema | undefined>(schema, undefined);
+      return parseJSON<Artery | undefined>(schema, undefined);
     },
   });
 }

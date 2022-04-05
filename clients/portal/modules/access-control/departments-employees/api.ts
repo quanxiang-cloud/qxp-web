@@ -14,9 +14,11 @@ export async function createDepartment(params: { pid: string; name: string; attr
 }
 
 export async function editDepartment(params: {
-  pid: string;
+  id: string;
+  pid?: string;
   name?: string;
   leaderID?: string;
+  useStatus?: number;
 }) {
   return await httpClient.put('/api/v1/org/m/dep/update', params);
 }
@@ -49,7 +51,7 @@ export async function updateUser(values: FormValues) {
   return await httpClient.put('/api/v1/org/m/user/update', values);
 }
 
-export interface LeaderParams {
+export type LeaderParams = {
   depID: string;
   userID?: string;
   attr?: string;

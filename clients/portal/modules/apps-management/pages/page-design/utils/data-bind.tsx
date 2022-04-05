@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import cs from 'classnames';
 import { get } from 'lodash';
 import { Icon, Tooltip } from '@one-for-all/ui';
-import type { NodePropType } from '@one-for-all/schema-spec';
+import type { NodePropType } from '@one-for-all/artery';
 
 import { useCtx } from '../ctx';
 

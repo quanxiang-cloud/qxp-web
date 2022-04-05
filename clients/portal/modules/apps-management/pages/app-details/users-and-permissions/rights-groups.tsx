@@ -203,7 +203,7 @@ function RightsGroups(): JSX.Element {
                     className='text-btn'
                     onClick={() =>
                       history.push(
-                        `/apps/details/${store.appID}/page_setting?pageID=${store.currentPage.id}`,
+                        `/apps/details/${store.appID}/app_views`,
                       )
                     }
                   >

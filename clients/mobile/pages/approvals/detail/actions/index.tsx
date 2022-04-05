@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
 import { useSearchParam } from 'react-use';
 import { observer } from 'mobx-react';
+import cs from 'classnames';
 
 import NavPage from '@m/components/nav-page';
 import FileUploader, { FileUploaderInstance } from '@m/components/file-uploader';
@@ -10,17 +12,18 @@ import { Button } from '@m/qxp-ui-mobile/button';
 import UserPicker from '@m/components/user-picker';
 import Radio from '@c/radio';
 import RadioGroup from '@c/radio/group';
-import { ApprovalDetailParams } from '../../types';
-import { useHistory, useParams } from 'react-router-dom';
+import Picker from '@m/qxp-ui-mobile/picker';
 import toast from '@lib/toast';
 
 import { getAction } from './utils';
 import ActionItem from './action-item';
 import Warning from './warning';
+import { ApprovalDetailParams } from '../../types';
 import approvalDetailStore from '../store';
 import actionStore from './store';
 import {
   reviewTask, resubmit, readHandle, ccFlow, stepBack, sendBack, inviteReadHandle, deliver, addSign,
+  getStepBackActivityList,
 } from './api';
 
 import './index.scss';
@@ -39,6 +42,19 @@ function ApprovalsActions(): JSX.Element {
   const commonWords = ['我已阅示，非常赞同', '我已阅示，这个情况还是谨慎处理吧', '我已阅示'];
   const [loading, setLoading] = useState(false);
   const textareaRef = useRef<InputInstance>(null);
+
+  useEffect(() => {
+    if (action === 'STEP_BACK') {
+      getStepBackActivityList(processInstanceID).then((res) => {
+        actionStore.stepBackActivityList = res.map((stepBackItem) => {
+          return {
+            value: stepBackItem.taskDefKey,
+            label: stepBackItem.taskName,
+          };
+        });
+      });
+    }
+  }, []);
 
   useEffect(() => {
     if (actionStore.handleUserIds.length) {
@@ -68,6 +84,11 @@ function ApprovalsActions(): JSX.Element {
 
   function handleFlow(): void {
     if (REQUIRED_PROCESS_INSTANCE.includes(action) && !handleUserIds.length) {
+      actionStore.setIsValidate(false);
+      return;
+    }
+
+    if (action === 'STEP_BACK' && !taskDefKey) {
       actionStore.setIsValidate(false);
       return;
     }
@@ -183,8 +204,17 @@ function ApprovalsActions(): JSX.Element {
         )}
         {'STEP_BACK' === action && (
           <>
-            {/* Todo: add picker component */}
             <Warning text='将工作流任务回退至已流转过的节点（除开始节点），不中断任务' />
+            <Picker
+              title='节点'
+              placeholder='请选择要回退到的节点'
+              className={cs('mb-16', { 'picker-error': !actionStore.isValidate })}
+              onChange={(value) => actionStore.taskDefKey = value}
+              options={actionStore.stepBackActivityList}
+            />
+            {!actionStore.isValidate && (
+              <div className='picker-error-text caption flex-1 -mt-8'>请选择节点</div>
+            )}
             <div className='mb-8'>原因</div>
             <TextArea
               placeholder={`请输入${actionName}原因（选填）`}

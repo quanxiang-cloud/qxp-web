@@ -1,4 +1,4 @@
-import type { Schema } from '@one-for-all/schema-spec';
+import type { Artery } from '@one-for-all/artery';
 import { Layer } from '@one-for-all/page-engine-v2';
 
 import Header from './blocks/header';
@@ -7,7 +7,7 @@ import Canvas from './blocks/canvas';
 import Config from './blocks/config';
 import { BlocksCommunicationType } from './types';
 
-export const INIT_SCHEMA_EDITOR_SCHEMA: Schema = {
+export const INIT_SCHEMA_EDITOR_SCHEMA: Artery = {
   apiStateSpec: {},
   sharedStatesSpec: {},
   node: { id: 'root', type: 'html-element', name: 'div' },

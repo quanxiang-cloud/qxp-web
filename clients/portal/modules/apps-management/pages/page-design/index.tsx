@@ -5,6 +5,7 @@ import PageEngineV2 from '@one-for-all/page-engine-v2';
 import cs from 'classnames';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { Artery } from '@one-for-all/artery';
 
 import Icon from '@c/icon';
 import FileUploader from '@c/file-upload';

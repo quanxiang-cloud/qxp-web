@@ -172,6 +172,7 @@ function TreeView(): JSX.Element {
       {modalNodes.map((node) => (
         <TreeNode
           key={node.id}
+          // @ts-ignore
           node={node}
           level={0}
           onSelect={handleSelectModal}

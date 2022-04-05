@@ -79,6 +79,6 @@ export function toConfig(schema: ISchema): AssociatedRecordsConfig {
     columns: schema['x-component-props']?.columns || [],
     required: !!schema.required,
     filterConfig: schema['x-component-props']?.filterConfig || null,
-    defaultValueLinkage: schema['x-component-props']?.defaultValueLinkage,
+    defaultValueLinkage: schema['x-internal']?.defaultValueLinkage,
   };
 }
