@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import { toJS, reaction } from 'mobx';
 import { Icon, Button, Tooltip, Modal } from '@one-for-all/ui';
 import { SchemaRender } from '@one-for-all/render-engine';
-import PageEngine2, { BlockItemProps } from '@one-for-all/page-engine-v2';
+import PageEngine2, { BlockItemProps } from '@one-for-all/artery-engine';
 
 import { useCtx } from '../../ctx';
 import { BlocksCommunicationType } from '../../types';

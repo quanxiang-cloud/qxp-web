@@ -1,4 +1,4 @@
-import { BaseBlocksCommunicationState } from '@one-for-all/page-engine-v2';
+import { BaseBlocksCommunicationState } from '@one-for-all/artery-engine';
 import { Repository } from '@one-for-all/render-engine';
 import {
   Artery,

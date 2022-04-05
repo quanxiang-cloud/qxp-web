@@ -1,7 +1,7 @@
 /* eslint-disable */
 import React, { useState, useMemo, useEffect, useCallback, CSSProperties } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import PageEngineV2 from '@one-for-all/page-engine-v2';
+import PageEngineV2 from '@one-for-all/artery-engine';
 import cs from 'classnames';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';

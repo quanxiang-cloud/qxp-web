@@ -1118,6 +1118,20 @@
   resolved "https://registry.npmmirror.com/@one-for-all/api-spec-adapter/-/api-spec-adapter-0.4.0.tgz#fd662bf3e0e4dfc75f25cdb78b69215aac9856f6"
   integrity sha512-0AvMUdxfWa6/gdIgk0PPOzBO17XJnD/6QUAoAdvm1kOU+hmVydXLY4ODRvDHs9cVNvBDjcZwLsdQ0esRelnT7g==
 
+"@one-for-all/artery-engine@1.1.1":
+  version "1.1.1"
+  resolved "https://registry.npmmirror.com/@one-for-all/artery-engine/-/artery-engine-1.1.1.tgz#eb816ab94c2827a1dae4cafe63130347143a14cf"
+  integrity sha512-w+2WjM8gSNnjovYIHJ/aoaSaF69/B0b3Yg3qR9Q3Wn17jHVFObLsN1rs9zN51bOOJ2wDKjgFQH5LuS7SiXWb/A==
+  dependencies:
+    "@one-for-all/artery" "0.15.0"
+    "@one-for-all/artery-renderer" "0.20.0"
+    classnames "^2.3.1"
+    nanoid "^3.1.30"
+    ramda "^0.27.1"
+    react "^17.0.2"
+    react-dom "^17.0.2"
+    rxjs "^7.4.0"
+
 "@one-for-all/artery-renderer@0.20.0":
   version "0.20.0"
   resolved "https://registry.npmmirror.com/@one-for-all/artery-renderer/-/artery-renderer-0.20.0.tgz#b8ddeac76324f89f25a59ac995497ca824f4bc53"
@@ -1158,20 +1172,6 @@
   version "0.15.0"
   resolved "https://registry.npmmirror.com/@one-for-all/artery/-/artery-0.15.0.tgz#495bdb35365a606a126ecfc8323a5dc086c6f1c5"
   integrity sha512-zZmnK09Zt33s335GBdQHMy5sG7+rSrWHaz1mqjIrdXLHWUvkkOISuEV739SWgnCamqEwUv58/QDTH9/VMIb32w==
-
-"@one-for-all/page-engine-v2@1.1.1":
-  version "1.1.1"
-  resolved "https://registry.npmmirror.com/@one-for-all/page-engine-v2/-/page-engine-v2-1.1.1.tgz#d28aaa4c42492e134381b09c58f7ca1b3ea513c3"
-  integrity sha512-4pDCFCgkC6TrWGhErlenlb7otF9z1ee7Upy6LZ9CBgsWFE467IaCCDsQiOnV2ZLaBCBFm/wFe6iGyetC4mOucA==
-  dependencies:
-    "@one-for-all/artery" "0.15.0"
-    "@one-for-all/artery-renderer" "0.20.0"
-    classnames "^2.3.1"
-    nanoid "^3.1.30"
-    ramda "^0.27.1"
-    react "^17.0.2"
-    react-dom "^17.0.2"
-    rxjs "^7.4.0"
 
 "@one-for-all/page-engine@0.10.0":
   version "0.10.0"

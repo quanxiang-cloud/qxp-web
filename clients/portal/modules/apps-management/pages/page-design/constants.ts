@@ -1,5 +1,5 @@
 import type { Artery } from '@one-for-all/artery';
-import { Layer } from '@one-for-all/page-engine-v2';
+import { Layer } from '@one-for-all/artery-engine';
 
 import Header from './blocks/header';
 import Menu from './blocks/menu';

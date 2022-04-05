@@ -1,4 +1,4 @@
-import { uuid } from '@one-for-all/page-engine-v2';
+import { uuid } from '@one-for-all/artery-engine';
 import type { Artery, ReactComponentNode } from '@one-for-all/artery';
 import { nanoid } from 'nanoid';
 
