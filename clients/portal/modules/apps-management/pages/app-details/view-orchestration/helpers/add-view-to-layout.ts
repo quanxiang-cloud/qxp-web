@@ -1,11 +1,11 @@
-import { SchemaNode } from '@one-for-all/schema-spec';
+import { Node } from '@one-for-all/artery';
 import { addRouteNodeToLayout, attachToRouteNode } from './utils';
 
 export default function addViewToLayout(
-  rootNode: SchemaNode,
+  rootNode: Node,
   layoutID: string,
-  view: SchemaNode,
-): SchemaNode | undefined {
+  view: Node,
+): Node | undefined {
   const routeNode = attachToRouteNode(view, 'view');
   return addRouteNodeToLayout(rootNode, layoutID, routeNode);
 }
