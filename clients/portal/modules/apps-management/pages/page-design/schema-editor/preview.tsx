@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 
 import { setBatchGlobalConfig } from '@lib/api/user-config';
-import type { Schema } from '@one-for-all/schema-spec';
+import type { Artery } from '@one-for-all/artery';
 import toast from '@lib/toast';
 
 import { getSchemaKey } from '../api';
-import ArteryRender from '@c/artery-render';
+import ArteryRender from '@c/artery-renderer';
 
 type Props = {
   appID: string;
   pageID: string;
-  previewSchema: Schema;
+  previewSchema: Artery;
 }
 
 function Preview({ appID, pageID, previewSchema }: Props): JSX.Element {
@@ -35,7 +35,7 @@ function Preview({ appID, pageID, previewSchema }: Props): JSX.Element {
 
   return (
     <ArteryRender
-      schemaKey={schemaKeys[0]}
+      arteryID={schemaKeys[0]}
       version="0.1.0"
     />
   );

@@ -1,28 +1,28 @@
 import React from 'react';
-import { SchemaRender } from '@one-for-all/render-engine';
+import { ArteryRenderer } from '@one-for-all/artery-renderer';
 
-import { useSchemaWithAdapter } from './api';
+import { useArteryWithAdapter } from './api';
 import ErrorBoundary from './error-boundary';
 import componentLoader from './component-loader';
 import repository from './repository';
 import refLoader from './ref-loader';
 
 type Props = {
-  schemaKey: string;
+  arteryID: string;
   version: string;
 }
 
-export default function ArteryRender({ schemaKey, version }: Props): JSX.Element | null {
-  const { schema, adapter } = useSchemaWithAdapter(schemaKey, version);
+export default function Renderer({ arteryID, version }: Props): JSX.Element | null {
+  const { artery, adapter } = useArteryWithAdapter(arteryID, version);
 
-  if (!schema || !adapter) {
+  if (!artery || !adapter) {
     return null;
   }
 
   return (
     <ErrorBoundary>
-      <SchemaRender
-        schema={schema}
+      <ArteryRenderer
+        artery={artery}
         plugins={{ apiSpecAdapter: adapter, repository, componentLoader, refLoader }}
       />
     </ErrorBoundary>

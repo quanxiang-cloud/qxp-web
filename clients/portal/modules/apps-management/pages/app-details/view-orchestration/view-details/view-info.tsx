@@ -6,8 +6,8 @@ import Icon from '@c/icon';
 import Button from '@c/button';
 
 import { ExternalView, SchemaView, TableSchemaView, View, ViewType } from '../types.d';
-import ArteryRender from '@c/artery-render';
-import { getVersionKey } from '../../../page-design/api';
+import ArteryRenderer from '@c/artery-renderer';
+import { VERSION } from '../constants';
 
 type Props = {
   view: View;
@@ -92,9 +92,9 @@ function ViewInfo({ view, openModal }: Props): JSX.Element {
 
     if (type === ViewType.SchemaView) {
       return (
-        <ArteryRender
-          schemaKey={view.schemaID}
-          version={getVersionKey()}
+        <ArteryRenderer
+          arteryID={view.arteryID}
+          version={VERSION}
         />
       );
     }
@@ -104,7 +104,7 @@ function ViewInfo({ view, openModal }: Props): JSX.Element {
 
   function goPageDesign(): void {
     // to change below line after page engine v2 new update
-    const schemaID = (view as SchemaView).schemaID;
+    const schemaID = (view as SchemaView).arteryID;
 
     // save page engine schema is not work now
     history.push(`/page-engine?appID=${appID}&pageName=${view.name}&schemaID=${schemaID}`);

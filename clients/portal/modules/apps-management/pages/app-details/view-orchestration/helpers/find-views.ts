@@ -3,13 +3,13 @@ import {
   findNodeByID,
   getNodeParentIDs,
   travel,
-} from '@one-for-all/schema-utils';
+} from '@one-for-all/artery-utils';
 import {
   ReactComponentNode,
   RefNode,
   RouteNode,
-  SchemaNode,
-} from '@one-for-all/schema-spec';
+  Node,
+} from '@one-for-all/artery';
 
 import logger from '@lib/logger';
 
@@ -22,7 +22,7 @@ const VIEW_RENDER_MAP: Record<string, ViewType> = {
   ExternalViewRender: ViewType.ExternalView,
 };
 
-function getViewType(node: SchemaNode): ViewType | undefined {
+function getViewType(node: Node): ViewType | undefined {
   if (node.type === 'ref-node') {
     return ViewType.SchemaView;
   }
@@ -37,7 +37,8 @@ function convertRefNodeToView(node: RefNode): SchemaView {
     id: node.id as string,
     name: node.label || '',
     type: ViewType.SchemaView,
-    schemaID: node.schemaID,
+    // @ts-ignore
+    arteryID: node.arteryID,
     url: '',
   };
 }
@@ -74,7 +75,7 @@ function convertNodeToExternalView(node: ReactComponentNode): ExternalView {
   };
 }
 
-function convertNodeToView(node: SchemaNode): View | undefined {
+function convertNodeToView(node: Node): View | undefined {
   switch (getViewType(node)) {
   case ViewType.SchemaView:
     return convertRefNodeToView(node as RefNode);
@@ -90,7 +91,7 @@ function convertNodeToView(node: SchemaNode): View | undefined {
   }
 }
 
-function fullFillViewURL(view: View, rootNode: SchemaNode): View {
+function fullFillViewURL(view: View, rootNode: Node): View {
   const parentIDs = getNodeParentIDs(rootNode, view.id);
   if (!parentIDs) {
     return view;
@@ -99,14 +100,14 @@ function fullFillViewURL(view: View, rootNode: SchemaNode): View {
   // todo path need prefix
   const url = parentIDs
     .map((id) => findNodeByID(rootNode, id))
-    .filter<SchemaNode>((node): node is SchemaNode => !!node)
+    .filter<Node>((node): node is Node => !!node)
     .filter((node): node is RouteNode => node.type === 'route-node')
     .map(({ path }) => path).join('/');
 
   return { ...view, url };
 }
 
-export default function findViews(node: SchemaNode): Array<View> {
+export default function findViews(node: Node): Array<View> {
   const views: Array<View> = [];
 
   travel(node, {

@@ -1,17 +1,17 @@
 import { get } from 'lodash';
 import {
   travel,
-} from '@one-for-all/schema-utils';
+} from '@one-for-all/artery-utils';
 import {
   HTMLNode,
   RouteNode,
-  SchemaNode,
-} from '@one-for-all/schema-spec';
+  Node,
+} from '@one-for-all/artery';
 
 import { Layout } from '../types';
 import { isLayoutNode } from './utils';
 
-function getLayoutSubViews(layoutNode: SchemaNode): Array<{ id: string; name: string; }> {
+function getLayoutSubViews(layoutNode: Node): Array<{ id: string; name: string; }> {
   const routeNodes: Array<RouteNode> = get(layoutNode, 'children.1.children') || [];
 
   return routeNodes.filter((routeNode) => {
@@ -20,11 +20,11 @@ function getLayoutSubViews(layoutNode: SchemaNode): Array<{ id: string; name: st
 }
 
 // todo optimize this
-function getRefSchemaID(layoutNode: SchemaNode): string {
+function getRefSchemaID(layoutNode: Node): string {
   return get(layoutNode, 'children.0.children.0.schemaID') || '';
 }
 
-function convertNodeToLayout(node: SchemaNode): Layout {
+function convertNodeToLayout(node: Node): Layout {
   return {
     id: node.id as string,
     name: node.label || '未命名布局',
@@ -35,7 +35,7 @@ function convertNodeToLayout(node: SchemaNode): Layout {
   };
 }
 
-export default function findLayouts(node: SchemaNode): Array<Layout> {
+export default function findLayouts(node: Node): Array<Layout> {
   const layouts: Array<Layout> = [];
 
   travel(node, {
