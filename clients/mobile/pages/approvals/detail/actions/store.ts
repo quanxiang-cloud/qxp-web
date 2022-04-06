@@ -1,5 +1,9 @@
 import { action, observable } from 'mobx';
 
+export interface SelectOption {
+  value: string;
+  label: string;
+}
 class ApprovalsActionStore {
   @observable loading = false;
   @observable remark = '';
@@ -10,6 +14,7 @@ class ApprovalsActionStore {
   @observable isValidate = true;
   @observable typeError = false;
   @observable multiplePersonWayError = false;
+  @observable stepBackActivityList: Array<SelectOption> = [];
 
   @action setRemark = (remark: string): void => {
     this.remark = remark;

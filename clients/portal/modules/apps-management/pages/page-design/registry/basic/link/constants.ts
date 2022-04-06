@@ -1,4 +1,4 @@
-import { FunctionalProperty } from '@one-for-all/schema-spec';
+import { FunctionalProperty } from '@one-for-all/artery';
 
 export const INNER_LINK_FUNC_SPEC: FunctionalProperty = {
   type: 'functional_property',

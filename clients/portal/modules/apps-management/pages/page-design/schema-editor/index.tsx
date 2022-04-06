@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Schema } from '@one-for-all/schema-spec';
+import { Artery } from '@one-for-all/artery';
 
 import toast from '@lib/toast';
 
@@ -13,7 +13,7 @@ export type EditorMode = 'edit' | 'preview';
 type Props = {
   appID: string;
   schemaID: string;
-  initialSchema: Schema
+  initialSchema: Artery
 }
 
 function SchemaEditor({ appID, schemaID, initialSchema }: Props): JSX.Element {

@@ -6,8 +6,8 @@ import Icon from '@c/icon';
 import Button from '@c/button';
 
 import { ExternalView, SchemaView, TableSchemaView, View, ViewType } from '../types.d';
-import PageSchemaRender from '@c/page-schema-render';
-import { getVersionKey } from '../../../page-design/api';
+import ArteryRenderer from '@c/artery-renderer';
+import { VERSION } from '../constants';
 
 type Props = {
   view: View;
@@ -92,9 +92,9 @@ function ViewInfo({ view, openModal }: Props): JSX.Element {
 
     if (type === ViewType.SchemaView) {
       return (
-        <PageSchemaRender
-          schemaKey={view.schemaID}
-          version={getVersionKey()}
+        <ArteryRenderer
+          arteryID={view.arteryID}
+          version={VERSION}
         />
       );
     }
@@ -103,7 +103,8 @@ function ViewInfo({ view, openModal }: Props): JSX.Element {
   }, [view]);
 
   function goPageDesign(): void {
-    const schemaID = (view as SchemaView).schemaID;
+    // to change below line after page engine v2 new update
+    const schemaID = (view as SchemaView).arteryID;
 
     history.push(`/page-engine?appID=${appID}&pageName=${view.name}&schemaID=${schemaID}`);
   }

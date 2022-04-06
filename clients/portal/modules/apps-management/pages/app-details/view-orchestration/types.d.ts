@@ -44,7 +44,7 @@ export interface TableSchemaView extends BaseView {
 
 export interface SchemaView extends BaseView {
   type: ViewType.SchemaView;
-  schemaID: string;
+  arteryID: string;
 }
 
 export interface StaticView extends BaseView {

@@ -1,7 +1,7 @@
-import { SchemaNode } from '@one-for-all/schema-spec';
+import { Node } from '@one-for-all/artery';
 import { addRouteNodeToRootNode, attachToRouteNode } from './utils';
 
-export default function addViewToRoot(rootNode: SchemaNode, view: SchemaNode): SchemaNode | undefined {
+export default function addViewToRoot(rootNode: Node, view: Node): Node | undefined {
   const routeNode = attachToRouteNode(view, 'view');
   return addRouteNodeToRootNode(rootNode, routeNode);
 }

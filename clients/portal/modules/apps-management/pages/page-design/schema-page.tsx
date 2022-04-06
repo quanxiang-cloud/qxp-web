@@ -1,4 +1,4 @@
-import PageSchemaRender from '@c/page-schema-render';
+import ArteryRenderer from '@c/artery-renderer';
 import React, { useEffect, useState } from 'react';
 import { getSchemaKey } from './utils';
 
@@ -17,9 +17,9 @@ function SchemaPage({ schemaID, draft }: Props): JSX.Element {
   }, [schemaID, !!draft]);
 
   return (
-    <PageSchemaRender
+    <ArteryRenderer
       key={schemaKey}
-      schemaKey={schemaKey}
+      arteryID={schemaKey}
       version="1.0.0"
     />
   );

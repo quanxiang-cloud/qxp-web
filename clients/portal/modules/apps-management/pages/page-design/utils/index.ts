@@ -1,5 +1,5 @@
-import { uuid } from '@one-for-all/page-engine-v2';
-import type { Schema, ReactComponentNode } from '@one-for-all/schema-spec';
+import { uuid } from '@one-for-all/artery-engine';
+import type { Artery, ReactComponentNode } from '@one-for-all/artery';
 import { nanoid } from 'nanoid';
 
 import { PAGE_TYPE, INIT_SCHEMA_EDITOR_SCHEMA } from '../constants';
@@ -8,7 +8,7 @@ export function getSchemaKey(schemaID: string, isDraft: boolean): string {
   return isDraft ? `${schemaID}:draft` : schemaID;
 }
 
-function getInitSchema(): Schema {
+function getInitSchema(): Artery {
   return {
     node: {
       id: uuid(),
@@ -33,7 +33,7 @@ function getInitSchema(): Schema {
   };
 }
 
-export function getInitSchemaByPageType(pageType: string): Schema {
+export function getInitSchemaByPageType(pageType: string): Artery {
   return pageType === PAGE_TYPE.SCHEMA_EDITOR ? INIT_SCHEMA_EDITOR_SCHEMA : getInitSchema();
 }
 

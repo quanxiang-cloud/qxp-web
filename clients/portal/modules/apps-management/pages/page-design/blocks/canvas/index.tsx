@@ -3,7 +3,7 @@ import cs from 'classnames';
 import { observer } from 'mobx-react';
 import { useDrop } from 'react-dnd';
 import { toJS } from 'mobx';
-import { BlockItemProps } from '@one-for-all/page-engine-v2';
+import { BlockItemProps } from '@one-for-all/artery-engine';
 
 import { useCtx } from '../../ctx';
 import { ElementInfo, BlocksCommunicationType } from '../../types';

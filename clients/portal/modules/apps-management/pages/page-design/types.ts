@@ -1,19 +1,19 @@
-import { BaseBlocksCommunicationState } from '@one-for-all/page-engine-v2';
+import { BaseBlocksCommunicationState } from '@one-for-all/artery-engine';
 import { Repository } from '@one-for-all/render-engine';
 import {
-  Schema,
+  Artery,
   BaseNode,
   APIStatesSpec,
   SharedStatesSpec,
   PlainState,
   LoopContainerNode,
-} from '@one-for-all/schema-spec';
+} from '@one-for-all/artery';
 
 export interface BlocksCommunicationType extends BaseBlocksCommunicationState {
   componentToAdd?: any;
   docLink?: string;
   hideTestPreview?: boolean;
-  saveSchema?: (schema: Schema) => void;
+  saveSchema?: (schema: Artery) => void;
   repository?: Repository;
   appID?: string;
   pageId?: string;
