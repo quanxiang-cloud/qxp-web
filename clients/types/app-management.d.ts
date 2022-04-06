@@ -9,6 +9,8 @@ declare global {
     appZipInfo?: any;
     createdBy?: string;
     template?: string;
+    accessURL?: string;
+    extension?: Record<string, any>
   }
 
   type TemplateInfo = {

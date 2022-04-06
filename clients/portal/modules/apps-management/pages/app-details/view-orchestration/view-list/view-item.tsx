@@ -9,12 +9,13 @@ import './index.scss';
 type Props = {
   view: View;
   currentView: View;
+  homeView?: View;
   className?: string;
   onViewClick?: (view: View) => void;
   onOptionClick?: (key: string, view: View) => void;
 }
 
-function ViewItem({ view, onViewClick, onOptionClick, currentView }: Props): JSX.Element {
+function ViewItem({ view, onViewClick, onOptionClick, currentView, homeView }: Props): JSX.Element {
   const isActive = currentView && currentView.name === view.name;
 
   return (
@@ -34,10 +35,12 @@ function ViewItem({ view, onViewClick, onOptionClick, currentView }: Props): JSX
         <span className={cs('items-center flex', {
           'text-gray-900': isActive,
         })}>
-          <span title={view.name} className='truncate view-item-title inline-block text-12'>{view.name}</span>
+          <span title={view.name} className='truncate view-item-title inline-block text-12'>
+            {view.name} {homeView?.id === view.id && '⭐️'}
+          </span>
         </span>
         {
-          isActive && (<ViewOption view={view} onViewOptionClick={onOptionClick} />)
+          isActive && (<ViewOption view={view} homeViewID={homeView?.id} onViewOptionClick={onOptionClick} />)
         }
       </div>
     </li >
