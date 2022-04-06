@@ -1276,10 +1276,10 @@
     react-popper "^2.2.5"
     styled-components "^5.3.3"
 
-"@one-for-all/ui@0.3.2":
-  version "0.3.2"
-  resolved "https://registry.npmmirror.com/@one-for-all/ui/-/ui-0.3.2.tgz#2737d34fd90641a3f64eda68ffcaa13cc47633d4"
-  integrity sha512-N4nbjYUR7hSMFB8e/QVXrt/MrunmbU6vGECAhNfL/0D71hnhEb8SjsVwvSHrbX7yDnME7rIF4VL2DwwraYF49g==
+"@one-for-all/ui@0.3.3":
+  version "0.3.3"
+  resolved "https://registry.npmmirror.com/@one-for-all/ui/-/ui-0.3.3.tgz#6a48eb469224c5e23faef5615f8d92cafeb93ace"
+  integrity sha512-B20dsvThP6zkMaEf1duD1vlKVgZI0kjwZiAJZ+l2Tvcfr5+kIFTcyGMJKZDMnB/+Dqycte4uYq5eRQnXr480jw==
   dependencies:
     "@popperjs/core" "^2.11.0"
     classnames "^2.3.1"
