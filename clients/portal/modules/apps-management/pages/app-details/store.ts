@@ -5,9 +5,9 @@ import { mutateTree, TreeData, TreeItem } from '@atlaskit/tree';
 
 import toast from '@lib/toast';
 import { buildAppPagesTreeData } from '@lib/utils';
-import { fetchPageList, getCustomPageInfo, getSchemaPageInfo, getTableSchema } from '@lib/http-client';
+import { fetchPageList, getCustomPageInfo, getArteryPageInfo, getTableSchema } from '@lib/http-client';
 import { globalSettings } from '@portal/modules/apps-management/pages/app-details/constants';
-import { cloneUserData, setPageEngineMenuType } from '@lib/api/user-config';
+import { cloneUserData, setArteryEngineMenuType } from '@lib/api/user-config';
 
 import { BindState, CardList, CustomPageInfo, MenuType } from './type';
 import { fetchAppList } from '../entry/app-list/api';
@@ -16,7 +16,7 @@ import { getNextTreeItem } from './page-menu-design/app-pages-tree';
 import {
   getPageCardList,
   filterDeletedPage,
-  mapToSchemaPageDescription,
+  mapToArteryPageDescription,
   mapToCustomPageDescription,
   hasActiveMenu,
   updateNode,
@@ -35,7 +35,7 @@ import {
 } from './api';
 import { getFirstMenu, flatMnues } from './page-menu-design/menu-tree/utils';
 import { Menu } from './page-menu-design/menu-tree/type';
-import { getPage as getSchemaPage, getSchemaKey } from '../page-design/api';
+import { getPage as getArteryPage, getArteryKey } from '../page-design/api';
 
 type DeletePageOrGroupParams = {
   treeItem: TreeItem;
@@ -330,12 +330,12 @@ class AppDetailsStore {
     // create
     return createPage({ appID: this.appID, ...PageInfoPick }).then(async (res: { id: string }) => {
       let menuType = pageInfo.menuType;
-      const isCopySchemaPage = pageInfo.menuType === MenuType.schemaPage;
+      const isCopyArteryPage = pageInfo.menuType === MenuType.arteryPage;
       // copy schema page
-      if (isCopySchemaPage) {
-        menuType = (await setPageEngineMenuType(this.appID, res.id)).menu_type || menuType;
-        const [sourceKey, newSourceKey] = getSchemaKey(this.appID, pageInfo.id, false);
-        const [targetKey, newTargetKey] = getSchemaKey(this.appID, res.id, false);
+      if (isCopyArteryPage) {
+        menuType = (await setArteryEngineMenuType(this.appID, res.id)).menu_type || menuType;
+        const [sourceKey, newSourceKey] = getArteryKey(this.appID, pageInfo.id, false);
+        const [targetKey, newTargetKey] = getArteryKey(this.appID, res.id, false);
         const version = globalSettings.version;
         await cloneUserData({ key: sourceKey, version }, { key: targetKey, version });
         await cloneUserData({ key: newSourceKey, version }, { key: newTargetKey, version });
@@ -397,13 +397,13 @@ class AppDetailsStore {
         this.hasSchema = !!pageSchema;
         if (!this.appID) return;
         if (this.hasSchema) {
-          return getSchemaPageInfo(this.appID, pageID);
+          return getArteryPageInfo(this.appID, pageID);
         }
       }).then((res) => {
         if (!this.pageID) return;
         if (res) {
           const descriptions = this.pageDescriptions.map((description) => {
-            return mapToSchemaPageDescription(description, res);
+            return mapToArteryPageDescription(description, res);
           });
           this.pageDescriptions = [...descriptions];
           this.curPreviewUrl = '';
@@ -442,8 +442,8 @@ class AppDetailsStore {
       });
     }
 
-    if (pageInfo.menuType === MenuType.schemaPage) {
-      getSchemaPage(this.appID, this.pageID).then((schema)=> {
+    if (pageInfo.menuType === MenuType.arteryPage) {
+      getArteryPage(this.appID, this.pageID).then((schema)=> {
         if (schema) {
           this.designPageSchema = schema;
         }

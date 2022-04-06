@@ -8,7 +8,7 @@ import { Ref, TableHeaderBtn } from '@c/form-app-data-table/type';
 import PopConfirm from '@c/pop-confirm';
 import PageLoading from '@c/page-loading';
 import { MenuType } from '@portal/modules/apps-management/pages/app-details/type';
-import SchemaPage from '@portal/modules/apps-management/pages/page-design/schema-page';
+import ArteryPage from '@portal/modules/apps-management/pages/page-design/artery-page';
 
 import { getOperateButtonPer } from '../utils';
 import CreateDataForm from './create-data-form';
@@ -148,9 +148,9 @@ function PageDetails(): JSX.Element | null {
           style={{ border: 'none' }}
         />
       );
-    } else if (menuType === MenuType.schemaPage) {
+    } else if (menuType === MenuType.arteryPage) {
       return (
-        <SchemaPage appId={store.appID} pageId={store.pageID} />
+        <ArteryPage appId={store.appID} pageId={store.pageID} />
       );
     } else {
       if (fetchSchemeLoading) {

@@ -1,6 +1,6 @@
 import qs from 'qs';
 
-import { CustomPageInfo, SchemaPageInfo } from '@portal/modules/apps-management/pages/app-details/type';
+import { CustomPageInfo, ArteryPageInfo } from '@portal/modules/apps-management/pages/app-details/type';
 import { ESParameter, toEs } from '@c/data-filter/utils';
 import schemaToFields from '@lib/schema-convert';
 
@@ -299,7 +299,7 @@ export const fetchPageList = async (appID: string): Promise<fetchPageListRes> =>
   return await httpClient(`/api/v1/structor/${appID}/${side}/menu/list`, { appID });
 };
 
-export function getSchemaPageInfo(appID: string, menuId: string): Promise<SchemaPageInfo> {
+export function getArteryPageInfo(appID: string, menuId: string): Promise<ArteryPageInfo> {
   return httpClient(`/api/v1/structor/${appID}/m/table/getInfo`, { menuId });
 }
 
