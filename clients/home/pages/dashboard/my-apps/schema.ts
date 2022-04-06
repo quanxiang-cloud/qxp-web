@@ -1,6 +1,6 @@
-import { Schema } from '@one-for-all/schema-spec';
+import { Artery } from '@one-for-all/artery';
 
-const schema: Schema = {
+const schema: Artery = {
   apiStateSpec: {
     'my-apps': {
       apiID: 'post:/api/v1/app-center/userList',

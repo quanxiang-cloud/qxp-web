@@ -2,8 +2,8 @@ import React, { useEffect, useContext, useState } from 'react';
 import { toJS } from 'mobx';
 import { observer } from 'mobx-react';
 
-import { Button } from '@one-for-all/headless-ui';
-import Table, { SizeType } from '@c/table';
+import { Button, Table } from '@one-for-all/headless-ui';
+
 import Icon from '@c/icon';
 import Pagination from '@c/pagination';
 import PopConfirm from '@c/pop-confirm';
@@ -15,7 +15,7 @@ import { StoreContext } from './context';
 import ImportFormModal from './form-import-modal';
 import ExportFormModal from './form-export-modal';
 
-const TABLE_SIZE_MENUS: (LabelValue & { key: SizeType })[] = [
+const TABLE_SIZE_MENUS: (LabelValue & { key: any })[] = [
   { label: '正常', value: 'middle', key: 'middle' },
   { label: '紧凑', value: 'small', key: 'small' },
 ];
@@ -105,7 +105,7 @@ function PageDataTable(): JSX.Element {
         <div className='flex flex-1 overflow-hidden'>
           <Table
             canSetColumnWidth={store.canSetColumnWidth}
-            widthMapChange={(_widthMap) => store.widthMap = _widthMap}
+            widthMapChange={(_widthMap: any) => store.widthMap = _widthMap}
             initWidthMap={store.widthMap}
             showCheckbox={store.showCheckbox}
             emptyTips='暂无数据'
@@ -128,8 +128,8 @@ function PageDataTable(): JSX.Element {
           }}
         />
       </div>
-      {showUpModal && <ImportFormModal onClose={() => setShowUpModal(false)}/>}
-      {showDownModal && <ExportFormModal onClose={() => setShowDownModal(false)}/>}
+      {showUpModal && <ImportFormModal onClose={() => setShowUpModal(false)} />}
+      {showDownModal && <ExportFormModal onClose={() => setShowDownModal(false)} />}
     </>
   );
 }

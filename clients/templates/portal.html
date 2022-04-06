@@ -5,6 +5,7 @@
   <link rel="stylesheet" href="/dist/css/antd.css">
   {{template "_import-map" .}}
   {{template "_systemjs" .}}
+  {{template "_style_sources_head" .}}
   {{template "_polyfill" .}}
 </head>
 <body>
@@ -16,7 +17,6 @@
     window.CONFIG = {{ .CONFIG }}
     window.__verbose_log__ = {{ .debugMode }}
     window.SIDE = 'portal';
-
     // fixme: react throw process not defined
     if (!window.process) {
       window.process = { env: { NODE_ENV: {{if .debugMode}}'development'{{else}}'production'{{end}} } }

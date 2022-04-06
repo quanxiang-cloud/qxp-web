@@ -77,7 +77,7 @@ function PageList(): JSX.Element {
     if (!activeMenu.id || activeMenu.menuType === MenuType.group) {
       return;
     }
-    history.replace(`/apps/details/${appID}/page_setting?pageID=${activeMenu.id}`);
+    history.replace(`/apps/details/${appID}/app_views`);
   }, [activeMenu, appID]);
 
   const handleMenuClick = (key: string, menu: Menu): void => {

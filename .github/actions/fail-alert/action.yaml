@@ -1,0 +1,13 @@
+name: fail-alert
+description: send fail message to slack
+runs:
+  using: "composite"
+  steps:
+    - name: Invoke deployment hook
+      shell: bash
+      env:
+        run_url: https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
+      run: |
+        curl -X "POST" ${{ env.SLACK_WEBHOOK_URL }} \
+        -H 'Content-Type: application/json; charset=utf-8' \
+        -d "{ \"text\": \"👻 Something went 😞 while running job <$run_url|$GITHUB_JOB> which trigger by $GITHUB_ACTOR, please consider fixing it.\" }"

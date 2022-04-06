@@ -38,6 +38,10 @@ export const createPage = async (data: Partial<PageInfo>): Promise<{id: string}>
   return await httpClient(`/api/v1/structor/${data.appID}/m/menu/create`, data);
 };
 
+export const createBlank = async (appID: string): Promise<Record<string, string>> => {
+  return await httpClient(`/api/v1/form1/${appID}/m/table/createBlank`);
+};
+
 export const updatePageOrGroup = async (data: PageInfo)=> {
   return await httpClient(`/api/v1/structor/${data.appID}/m/menu/update`, data);
 };

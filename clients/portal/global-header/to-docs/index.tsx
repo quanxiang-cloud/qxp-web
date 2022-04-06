@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Icon } from '@one-for-all/ui';
+import Icon from '@c/icon';
 import ToolTip from '@c/tooltip';
 
 export default function toDocs(): JSX.Element {

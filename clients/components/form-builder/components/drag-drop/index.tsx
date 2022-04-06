@@ -3,10 +3,10 @@ import { useDrop, useDrag, DropTargetMonitor } from 'react-dnd';
 import { useCss } from 'react-use';
 import { observer } from 'mobx-react';
 
-import { AddOrUpdateField } from '@c/form-builder/store';
-import { getFieldId } from '@c/form-builder/utils/fields-operator';
-import { validateFieldConfig } from '@c/form-builder/utils';
 import toast from '@lib/toast';
+import { AddOrUpdateField } from '@c/form-builder/store';
+import { validateFieldConfig } from '@c/form-builder/utils';
+import { getFieldId } from '@c/form-builder/utils/fields-operator';
 
 import { StoreContext } from '../../context';
 import { draggingStyle } from './utils';

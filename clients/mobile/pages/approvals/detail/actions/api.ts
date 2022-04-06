@@ -1,6 +1,11 @@
 import httpClient from '@lib/http-client';
 import { AttachFile } from '@m/pages/approvals/types';
 
+type StepBack = {
+  taskDefKey: string,
+  taskName: string,
+}
+
 export function reviewTask(
   handleType: string,
   processInstanceId: string,
@@ -90,4 +95,10 @@ export function addSign(
 
 export function handleCc(taskId: string): Promise<void> {
   return httpClient('/api/v1/flow/instance/handleCc', [taskId]);
+}
+
+export function getStepBackActivityList(
+  processInstanceId: string,
+): Promise<Array<StepBack>> {
+  return httpClient(`/api/v1/flow/instance/stepBackActivityList/${processInstanceId}`);
 }

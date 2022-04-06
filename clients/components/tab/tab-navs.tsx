@@ -43,7 +43,7 @@ ref?: React.Ref<HTMLDivElement>): JSX.Element {
                     disabled: item.disabled,
                     'tab-nav-item-separator': separator,
                     'stretch-navs': stretchNav,
-                    'active text-blue-600': active,
+                    active: active,
                     [`tab-nav__${item.state}`]: item.state,
                   },
                   navTitleClassName,

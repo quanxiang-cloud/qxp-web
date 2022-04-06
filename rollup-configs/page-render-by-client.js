@@ -1,5 +1,5 @@
 import commonjs from '@rollup/plugin-commonjs';
-import esbuild from 'rollup-plugin-esbuild';
+import esbuild from 'rollup-plugin-esbuild-ts';
 import json from '@rollup/plugin-json';
 import outputManifest from 'rollup-plugin-output-manifest';
 import progress from 'rollup-plugin-progress';
@@ -44,6 +44,7 @@ const config = {
     'react-dom',
     'react-is',
     'elkjs',
+    'react-codemirror2',
 
     '@formily/antd-components',
     '@formily/antd',

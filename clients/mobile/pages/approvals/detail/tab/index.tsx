@@ -91,7 +91,7 @@ function ApprovalsDetailTab(props: ApprovalsDetailTabProps): JSX.Element {
                   onActionClick(item.key, item.reasonRequired);
                 }}
               >
-                {!!item.icon && <Icon name={item.icon} size='.2rem' className='mr-4'/>}
+                {!!item.icon && <Icon name={item.icon} size='.2rem' className='mr-4' />}
                 <div>{item.text}</div>
               </div>
             );
@@ -113,7 +113,7 @@ function ApprovalsDetailTab(props: ApprovalsDetailTabProps): JSX.Element {
             onClick={init}
             title='加载失败'
             content='请点击此处重新加载'
-            image='/dist/images/no-approval-task.svg'/>
+            image='/dist/images/no-approval-task.svg' />
         )}
 
         {!state.loading && !state.error && !!task.formSchema && (
@@ -124,9 +124,9 @@ function ApprovalsDetailTab(props: ApprovalsDetailTabProps): JSX.Element {
                 value={toJS(task.formData)}
                 schema={toJS(task.formSchema)}
                 onSubmit={(val) => store.formValues = val}
-                readOnly={type === 'APPLY_PAGE' || type === 'HANDLED_PAGE' }
+                readOnly={type === 'APPLY_PAGE' || type === 'HANDLED_PAGE'}
                 usePermission>
-                <button type='submit' ref={submitRef} className='hidden'/>
+                <button type='submit' ref={submitRef} className='hidden' />
               </FormRenderer>
             </div>
 
@@ -146,7 +146,7 @@ function ApprovalsDetailTab(props: ApprovalsDetailTabProps): JSX.Element {
                                 undefined : () => onActionClick(item.key, item.reasonRequired)
                             }
                           >
-                            {!!item.icon && <Icon name={item.icon} size='.2rem' className='mb-4'/>}
+                            {!!item.icon && <Icon name={item.icon} size='.2rem' className='mb-4' />}
                             <div className='action-button__custom-text body2 truncate w-full'>
                               {item.text}
                             </div>
@@ -154,7 +154,7 @@ function ApprovalsDetailTab(props: ApprovalsDetailTabProps): JSX.Element {
                         );
                       })
                     }
-                    {task.custom.length < 3 && <div style={{ flex: 3 - task.custom.length }}/>}
+                    {task.custom.length < 3 && <div style={{ flex: 3 - task.custom.length }} />}
                   </div>
                 )}
 
@@ -164,7 +164,7 @@ function ApprovalsDetailTab(props: ApprovalsDetailTabProps): JSX.Element {
                       key={item.key}
                       className={cs('action-button__system flex justify-center items-center', item.className)}
                       onClick={() => onActionClick(item.key, item.reasonRequired)}>
-                      {!!item.icon && <Icon name={item.icon} size='.2rem' className='mr-4'/>}
+                      {!!item.icon && <Icon name={item.icon} size='.2rem' className='mr-4' />}
                       <div className='truncate'>{item.text}</div>
                     </div>
                   );
@@ -172,7 +172,7 @@ function ApprovalsDetailTab(props: ApprovalsDetailTabProps): JSX.Element {
               </div>
             )}
 
-            <div className='safe-area-bottom'/>
+            <div className='safe-area-bottom' />
           </>
         )}
 

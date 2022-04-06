@@ -53,7 +53,7 @@ function AdvancedQuery({ fields, search, tag }: Props): JSX.Element {
         clickable
         type={conditionCount ? 'primary' : 'dark'}
         ref={reference}
-        size={30}
+        size={24}
         name='filter_alt'
       />
     </Popover>

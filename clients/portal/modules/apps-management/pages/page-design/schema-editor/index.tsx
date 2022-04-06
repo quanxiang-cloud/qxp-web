@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Schema } from '@one-for-all/schema-spec';
+import { Artery } from '@one-for-all/artery';
 
 import toast from '@lib/toast';
 
@@ -13,7 +13,7 @@ export type EditorMode = 'edit' | 'preview';
 type Props = {
   appID: string;
   pageId: string;
-  initialSchema: Schema
+  initialSchema: Artery
 }
 
 function SchemaEditor({ appID, pageId, initialSchema }: Props): JSX.Element {
@@ -64,7 +64,7 @@ function SchemaEditor({ appID, pageId, initialSchema }: Props): JSX.Element {
   }
 
   function handleBack(): void {
-    history.push(`/apps/details/${appID}/page_setting?pageID=${pageId}`);
+    history.push(`/apps/details/${appID}/app_views`);
   }
 
   function handleChangeMode(editorMode: EditorMode): void {

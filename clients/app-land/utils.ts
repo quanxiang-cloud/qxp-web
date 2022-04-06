@@ -1,5 +1,5 @@
 import {
-  genDesktopRootViewSchemaKey,
+  genDesktopRootArteryKey,
 } from '@portal/modules/apps-management/pages/app-details/view-orchestration/helpers/utils';
 
 const matchAppIDReg = /\/a\/([a-zA-Z0-9]+)/;
@@ -13,4 +13,4 @@ function getAppID(): string {
   return execArr[1];
 }
 
-export const rootSchemaKey = genDesktopRootViewSchemaKey(getAppID());
+export const rootSchemaKey = genDesktopRootArteryKey(getAppID());

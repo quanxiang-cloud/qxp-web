@@ -1,24 +1,24 @@
 import { useEffect, useState } from 'react';
-import type { Schema } from '@one-for-all/schema-spec';
+import type { Artery } from '@one-for-all/artery';
 import { Spec } from '@one-for-all/api-spec-adapter/lib/src/swagger-schema-official';
 
 import logger from '@lib/logger';
 import SwaggerRPCSpecAdapter from '@lib/api-adapter';
 
 type SchemaWithSwagger = {
-  schema: Schema;
+  artery: Artery;
   swagger: Spec;
 }
 
 type SchemaWithAdapter = {
-  schema: Schema;
+  artery: Artery;
   adapter: SwaggerRPCSpecAdapter;
 }
 
-export function fetchSchemaWithSwagger(
-  schemaKey: string, version: string,
+export function fetchArteryWithSwagger(
+  arteryID: string, version: string,
 ): Promise<Partial<SchemaWithSwagger>> {
-  const url = `/api/page_schema_with_swagger?schema_key=${schemaKey}&version=${version}`;
+  const url = `/api/page_schema_with_swagger?artery_id=${arteryID}&version=${version}`;
 
   return fetch(url, { method: 'GET' })
     .then((response) => response.json())
@@ -29,21 +29,21 @@ export function fetchSchemaWithSwagger(
     });
 }
 
-export function useSchemaWithAdapter(schemaKey: string, version: string): Partial<SchemaWithAdapter> {
+export function useArteryWithAdapter(arteryID: string, version: string): Partial<SchemaWithAdapter> {
   const [adapter, setAdapter] = useState<SwaggerRPCSpecAdapter>();
-  const [schema, setSchema] = useState<Schema>();
+  const [artery, setSchema] = useState<Artery>();
 
   useEffect(() => {
-    fetchSchemaWithSwagger(schemaKey, version).then((res) => {
-      if (res.schema) {
-        setSchema(res.schema);
+    fetchArteryWithSwagger(arteryID, version).then((res) => {
+      if (res.artery) {
+        setSchema(res.artery);
       }
 
       if (res.swagger) {
         setAdapter(new SwaggerRPCSpecAdapter(res.swagger));
       }
     });
-  }, [schemaKey, version]);
+  }, [arteryID, version]);
 
-  return { schema, adapter };
+  return { artery, adapter };
 }

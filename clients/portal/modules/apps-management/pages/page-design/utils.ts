@@ -1,4 +1,4 @@
-import type { Schema } from '@one-for-all/schema-spec';
+import type { Artery } from '@one-for-all/artery';
 
 export function getKeyOfCustomPageEditor(appID: string, pageId: string): string[] {
   return [
@@ -10,7 +10,7 @@ export function getKeyOfCustomPageEditor(appID: string, pageId: string): string[
 export const CUSTOM_PAGE_EDITOR_SCHEMA = 'schema_editor';
 export const CUSTOM_PAGE_EDITOR_PAGE_ENGINE = 'page_engine';
 
-export const initialSchema: Schema = {
+export const initialSchema: Artery = {
   apiStateSpec: {},
   sharedStatesSpec: {},
   node: { id: 'root', type: 'html-element', name: 'div' },

@@ -39,9 +39,8 @@ function Button(
       ref={ref}
       className={cs('btn', className, {
         [`btn--${modifier}`]: modifier,
-        'btn--forbidden': forbidden,
+        'btn--forbidden opacity-50': forbidden,
         'btn--loading': loading,
-        'opacity-50': forbidden,
         'pointer-events-none': loading || forbidden,
       })}
       disabled={forbidden}

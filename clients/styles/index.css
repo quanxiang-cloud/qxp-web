@@ -1,17 +1,18 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
 @import "./reset.css";
-
-@import "./variables/colors.css";
-@import "./variables/global.css";
-
-@import './components/dropdown.css';
-
 @import "./layout.css";
+@import "./animation.css";
+@import "./scrollbar.css";
+@import "./variables/global.css";
+@import './components/dropdown.css';
 @import "./typography.css";
 @import "./border.css";
 @import "./btn.css";
-@import "./animation.css";
-@import "./scrollbar.css";
 @import "./checkbox.css";
+@import "./variables/colors.css";
 
 /* todo delete this */
 .right-content-container {

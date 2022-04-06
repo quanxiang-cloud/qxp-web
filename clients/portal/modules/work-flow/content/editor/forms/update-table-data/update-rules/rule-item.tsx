@@ -10,6 +10,7 @@ import FlowSourceTableContext from '@flow/content/editor/forms/flow-source-table
 import FlowContext from '@flow/flow-context';
 import { getFlowVariables, getFormFieldSchema } from '@flow/content/editor/forms/api';
 import { schemaToMap } from '@lib/schema-convert';
+
 import ProcessVariableSelector from '@flow/content/editor/forms/variable-selector';
 
 import { Rule, FormulaFields } from './index';
@@ -144,7 +145,12 @@ function RuleItem(props: Props): JSX.Element {
             const subItem = get(selectField, 'x-component-props.subordination') === 'foreign_table' ?
               get(relatedTableSchema, `properties.${fieldName}`) :
               get(selectField, `items.properties.${fieldName}`);
-
+            fieldProps = subItem || {};
+          } else if (componentName === 'associatedrecords') {
+            const subItem = get(selectField, `x-component-props.associatedTable.properties.${fieldName}`);
+            fieldProps = subItem || {};
+          } else if (componentName === 'associateddata') {
+            const subItem = get(relatedTableSchema, `properties.${fieldName}`);
             fieldProps = subItem || {};
           }
         } else {
@@ -196,8 +202,9 @@ function RuleItem(props: Props): JSX.Element {
     if (selectField) {
       const { componentName, fieldName } = selectField;
       if (componentName === 'associatedrecords') {
+        const columns = get(selectField, 'x-component-props.columns', []);
         return Object.entries(get(selectField, 'x-component-props.associatedTable.properties', {}))
-          .filter(([, conf]: [string, any]) => !get(conf, 'x-internal.isSystem'))
+          .filter(([filedName, conf]: [string, any]) => !get(conf, 'x-internal.isSystem') && columns.includes(filedName))
           .map(([field_id, conf]: [string, any]) => {
             return {
               label: conf.title || field_id,
@@ -206,13 +213,10 @@ function RuleItem(props: Props): JSX.Element {
           });
       }
       if (componentName === 'associateddata') {
-        const { fieldName } = get(selectField, 'x-component-props', {}) as SchemaFieldItem;
-        const relatedField = get(relatedTableSchema, `properties.${fieldName}`);
-
-        return [{
-          label: relatedField.title as string,
-          value: fieldName,
-        }];
+        return getSchemaFields(Object.values(schemaToMap(relatedTableSchema)), {
+          noSystem: true,
+          excludeComps: ['serial', 'associatedrecords', 'associateddata', 'subtable'],
+        });
       }
       if (componentName === 'subtable') {
         const sub = get(selectField, 'x-component-props.subordination');
