@@ -103,7 +103,7 @@ function ConfigForm(): JSX.Element {
         <p className='mr-4 text-12 text-gray-600'>链接地址</p>
         <div className='flex items-center'>
           <input
-            placeholder={values.linkType === 'outside' ? '请输入完整url路径 例：http://baidu.com' : '请输入路由path 例：/apps/details'}
+            placeholder={values.linkType === 'outside' ? '请输入完整url路径 例：https://example.com' : '请输入路由path 例：/a/path/to/some/page'}
             className='w-full h-32 my-4 px-8 mr-8 border corner-2-8-8-8 border-gray-300 focus:border-blue-600'
             value={values.linkUrl}
             onChange={(ev) => setValues({ ...values, linkUrl: ev.target.value })}
