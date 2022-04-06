@@ -30,6 +30,7 @@ jobs:
           name: dist
           path: dist
       - run: echo IMAGE_TAG="v${{ env.DATE }}-${GITHUB_SHA::7}" >> $GITHUB_ENV
+      - run: echo GIT_TAG="${{ env.GIT_TAG }}" >> $GITHUB_ENV
       - run: docker build -t "$IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG" -f ./deploy/Dockerfile-nginx .
       - run: docker tag $IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG $IMAGE_REPO/qxp-web-nginx:$GIT_TAG
       - run: docker push "$IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG"
@@ -53,6 +54,7 @@ jobs:
       - run: go mod tidy
       - run: go mod vendor
       - run: echo IMAGE_TAG="v${{ env.DATE }}-${GITHUB_SHA::7}" >> $GITHUB_ENV
+      - run: echo GIT_TAG="${{ env.GIT_TAG }}" >> $GITHUB_ENV
       - run: docker build -t "$IMAGE_REPO/qxp-web-portal:$IMAGE_TAG" -f ./deploy/Dockerfile-portal .
       - run: docker build -t "$IMAGE_REPO/qxp-web-home:$IMAGE_TAG" -f ./deploy/Dockerfile-home .
       - run: docker tag $IMAGE_REPO/qxp-web-portal:$IMAGE_TAG $IMAGE_REPO/qxp-web-portal:$GIT_TAG
@@ -69,7 +71,7 @@ jobs:
         if: ${{ failure() }}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-  deploy-testing:
+  deploy-staging:
     needs: [build-qxp-web-nginx, build-qxp-web-portal-and-home]
     runs-on: self-hosted
     steps:
