@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { observer } from 'mobx-react';
 
 import PageLoading from '@c/page-loading';
@@ -26,13 +26,13 @@ import './index.scss';
 function AppViews(): JSX.Element {
   const { isLoading, store } = useAppStore();
 
-  function handleModalSubmit(viewInfo: CreateViewParams<View>): void {
+  const handleModalSubmit = useCallback((viewInfo: CreateViewParams<View>): void => {
     store?.handleViewInfoSubmit(viewInfo).then(()=> {
-      store?.setCurrentView(viewInfo);
+      store.setCurrentView(viewInfo);
+      toast.success((store.modalType === 'createView' ? '添加' : '修改') + '成功');
       closeModal();
-      toast.success((store?.modalType === 'createView' ? '添加' : '修改') + '成功');
     });
-  }
+  }, [store?.modalType]);
 
   function closeModal(): void {
     store?.setModalType('');

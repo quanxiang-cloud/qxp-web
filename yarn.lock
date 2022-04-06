@@ -1118,10 +1118,10 @@
   resolved "https://registry.npmmirror.com/@one-for-all/api-spec-adapter/-/api-spec-adapter-0.4.0.tgz#fd662bf3e0e4dfc75f25cdb78b69215aac9856f6"
   integrity sha512-0AvMUdxfWa6/gdIgk0PPOzBO17XJnD/6QUAoAdvm1kOU+hmVydXLY4ODRvDHs9cVNvBDjcZwLsdQ0esRelnT7g==
 
-"@one-for-all/artery-renderer@0.20.0":
-  version "0.20.0"
-  resolved "https://registry.npmmirror.com/@one-for-all/artery-renderer/-/artery-renderer-0.20.0.tgz#b8ddeac76324f89f25a59ac995497ca824f4bc53"
-  integrity sha512-A6jwdYr3yBSJ3ytAVa0bDvV4rf0m3jVktudtDdtzVT2jscLehl3QtrFJ/2kSiAm50kdsj5E1GmoL9s29u9mfNg==
+"@one-for-all/artery-renderer@0.20.1":
+  version "0.20.1"
+  resolved "https://registry.npmmirror.com/@one-for-all/artery-renderer/-/artery-renderer-0.20.1.tgz#58552c1731eca90039abc3c457f8d5a06c2f3b12"
+  integrity sha512-9jz+94yne5H0MGCb2lg2xeTdIryTlYv4mSDrFKWG1Fwp6azf+ED7xSak0cPKa52NdTNof9lei0pXgYrXtGKF8Q==
   dependencies:
     "@one-for-all/api-spec-adapter" "0.4.0"
     "@one-for-all/artery" "0.15.0"
