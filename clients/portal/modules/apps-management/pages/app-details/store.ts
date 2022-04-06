@@ -33,7 +33,7 @@ import {
   isHiddenMenu,
   formDuplicate,
 } from './api';
-import { getSchemaKey } from '../page-design/utils';
+import { getArteryKeys } from '../page-design/utils';
 import { Menu } from './page-menu-design/menu-tree/type';
 import { getPage as getSchemaPage } from '../page-design/api';
 import { getFirstMenu, flatMnues } from './page-menu-design/menu-tree/utils';
@@ -335,8 +335,8 @@ class AppDetailsStore {
       // copy schema page
       if (isCopySchemaPage) {
         // todo refactor the getSchemaKey params
-        const [sourceKey, newSourceKey] = getSchemaKey(pageInfo.id, false);
-        const [targetKey, newTargetKey] = getSchemaKey(res.id, false);
+        const [sourceKey, newSourceKey] = getArteryKeys(pageInfo.id, false);
+        const [targetKey, newTargetKey] = getArteryKeys(res.id, false);
         const version = globalSettings.version;
         await cloneUserData({ key: sourceKey, version }, { key: targetKey, version });
         await cloneUserData({ key: newSourceKey, version }, { key: newTargetKey, version });

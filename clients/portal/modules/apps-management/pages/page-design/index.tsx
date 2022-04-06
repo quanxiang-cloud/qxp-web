@@ -27,7 +27,7 @@ import './index.scss';
 import styles from './index.m.scss';
 
 function PageDesign(): JSX.Element | null {
-  const { appID, pageName, schemaID } = getQuery<{ appID: string ,pageName: string, schemaID: string }>();
+  const { appID, pageName, arteryID } = getQuery<{ appID: string ,pageName: string, arteryID: string }>();
   const [pageType, setPageType] = useState('');
   const history = useHistory();
 
@@ -35,10 +35,10 @@ function PageDesign(): JSX.Element | null {
   useStyle('body', resetStyle);
   useStyle('html', resetStyle);
 
-  const { pageType: savedPageType, isLoading: isSavedPageTypeLoading } = usePageTypeKey(schemaID);
+  const { pageType: savedPageType, isLoading: isSavedPageTypeLoading } = usePageTypeKey(arteryID);
   const { data: schema, isLoading: isSchemaLoading } = useQuerySchema(
-    { appID, schemaID },
-    { enabled: !!appID && !!schemaID },
+    { arteryID },
+    { enabled: !!arteryID },
   );
 
   const { layers, initialSchema } = useMemo(() => {
@@ -134,11 +134,11 @@ function PageDesign(): JSX.Element | null {
   // todo refactor this
   if (pageType === PAGE_TYPE.SCHEMA_EDITOR) {
     const initialSchema = schema ?? getInitSchemaByPageType(pageType);
-    return <SchemaEditor appID={appID} schemaID={schemaID} initialSchema={initialSchema} />;
+    return <SchemaEditor appID={appID} arteryID={arteryID} initialSchema={initialSchema} />;
   }
 
   const handleSave = useCallback((page_schema: any, options?: Record<string, any>): void => {
-    savePage(schemaID, page_schema, options).then(() => {
+    savePage(arteryID, page_schema, options).then(() => {
       if (!options?.silent) {
         toast.success('页面已保存');
       }
@@ -168,11 +168,11 @@ function PageDesign(): JSX.Element | null {
   }
 
   if (!schema) {
-    return (<SelectCustomPageEditor schemaID={schemaID} onSelect={setPageType} />);
+    return (<SelectCustomPageEditor arteryID={arteryID} onSelect={setPageType} />);
   }
 
   if (savedPageType === PAGE_TYPE.SCHEMA_EDITOR) {
-    return (<SchemaEditor appID={appID} schemaID={schemaID} initialSchema={schema} />);
+    return (<SchemaEditor appID={appID} arteryID={arteryID} initialSchema={schema} />);
   }
 
   return PageEngineEntry;

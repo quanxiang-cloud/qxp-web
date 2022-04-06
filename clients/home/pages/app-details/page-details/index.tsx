@@ -149,7 +149,7 @@ function PageDetails(): JSX.Element | null {
         />
       );
     } else if (menuType === MenuType.schemaPage) {
-      return <SchemaPage schemaID={store.pageID} />;
+      return <SchemaPage arteryID={store.pageID} />;
     } else {
       if (fetchSchemeLoading) {
         return <PageLoading />;

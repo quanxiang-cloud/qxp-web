@@ -9,14 +9,14 @@ import { getInitSchemaByPageType } from './utils';
 import { PAGE_TYPE } from './constants';
 
 type Props = {
-  schemaID: string;
+  arteryID: string;
   onSelect: (editor: string) => void;
 }
 
-function SelectCustomPageEditor({ schemaID, onSelect }: Props): JSX.Element {
+function SelectCustomPageEditor({ arteryID, onSelect }: Props): JSX.Element {
   function handleSelect(pageType: string): void {
-    setGlobalConfig(schemaID, '1.0.0', pageType);
-    savePage(schemaID, getInitSchemaByPageType(pageType)).then(() => {
+    setGlobalConfig(arteryID, '1.0.0', pageType);
+    savePage(arteryID, getInitSchemaByPageType(pageType)).then(() => {
       onSelect(pageType);
     }).catch((err: Error) => {
       toast.error(err.message);

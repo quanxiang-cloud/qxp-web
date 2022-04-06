@@ -33,8 +33,8 @@ export default function Routes(): JSX.Element {
         <Route path="/apps" component={AppsRoutes} />
         <Route path="/poly/:appID/:polyFullPath+" component={PolyAPI}/>
         <Route path="/config-center" component={ConfigCenter} />
-        <Route path="/page-engine" component={PageDesign} />
-        <Route path="/page-preview" component={PagePreview} />
+        <Route path="/artery-engine" component={PageDesign} />
+        <Route path="/artery-preview" component={PagePreview} />
         <Route component={NotFoundError} />
       </Switch>
     </React.Suspense>

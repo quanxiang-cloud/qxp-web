@@ -8,20 +8,19 @@ import { getPage } from '../api';
 import { QUERY_KEY } from '../constants';
 
 interface QuerySchemaInput {
-  appID: string;
-  schemaID: string;
+  arteryID: string;
 }
 type QuerySchemaResponse = Artery;
 export function useQuerySchema(
   input: QuerySchemaInput,
   options: UseQueryOptions<QuerySchemaResponse | undefined, Error>,
 ): UseAbstractQueryReturn<QuerySchemaResponse> {
-  const { appID, schemaID } = input;
+  const { arteryID } = input;
   return useAbstractQuery<QuerySchemaInput, QuerySchemaResponse | undefined>({}, {
     ...options,
-    getQueryKey: () => [QUERY_KEY.SCHEMA, appID, schemaID],
+    getQueryKey: () => [QUERY_KEY.SCHEMA, arteryID],
     queryFunction: async () => {
-      const schema = await getPage(schemaID);
+      const schema = await getPage(arteryID);
       if (!schema) {
         return;
       }

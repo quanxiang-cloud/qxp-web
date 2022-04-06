@@ -2,23 +2,23 @@ import React, { useEffect, useState } from 'react';
 import type { Artery } from '@one-for-all/artery';
 
 import toast from '@lib/toast';
-import ArteryRender from '@c/artery-renderer';
+import ArteryRenderer from '@c/artery-renderer';
 import { setBatchGlobalConfig } from '@lib/api/user-config';
 
-import { getSchemaKey } from '../utils';
+import { getArteryKeys } from '../utils';
 
 type Props = {
-  schemaID: string;
+  draftArteryID: string;
   previewSchema: Artery;
 }
 
-function Preview({ schemaID, previewSchema }: Props): JSX.Element {
-  const schemaKey = getSchemaKey(schemaID, true);
+function Preview({ draftArteryID, previewSchema }: Props): JSX.Element {
+  const [draftArteryKey] = getArteryKeys(draftArteryID, true);
   const [savingDraft, setSavingDraft] = useState(true);
 
   useEffect(() => {
     setBatchGlobalConfig([{
-      key: schemaKey,
+      key: draftArteryKey,
       version: '1.0.0',
       value: JSON.stringify(previewSchema),
     }]).then(() => {
@@ -35,8 +35,8 @@ function Preview({ schemaID, previewSchema }: Props): JSX.Element {
   }
 
   return (
-    <ArteryRender
-      arteryID={schemaKey}
+    <ArteryRenderer
+      arteryID={draftArteryKey}
       version="0.1.0"
     />
   );

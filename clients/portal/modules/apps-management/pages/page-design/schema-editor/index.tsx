@@ -12,11 +12,11 @@ export type EditorMode = 'edit' | 'preview';
 
 type Props = {
   appID: string;
-  schemaID: string;
+  arteryID: string;
   initialSchema: Artery
 }
 
-function SchemaEditor({ appID, schemaID, initialSchema }: Props): JSX.Element {
+function SchemaEditor({ appID, arteryID, initialSchema }: Props): JSX.Element {
   const [schemaStr, setSchemaStr] = useState(JSON.stringify(initialSchema, null, 2));
   const [saving, setSaving] = useState(false);
   const [mode, setMode] = useState<EditorMode>('edit');
@@ -36,7 +36,7 @@ function SchemaEditor({ appID, schemaID, initialSchema }: Props): JSX.Element {
 
     try {
       const schema = JSON.stringify(JSON.parse(schemaStr));
-      return savePage(schemaID, schema).then(() => {
+      return savePage(arteryID, schema).then(() => {
         toast.success('页面已保存');
         setSaving(false);
         return true;
@@ -103,7 +103,7 @@ function SchemaEditor({ appID, schemaID, initialSchema }: Props): JSX.Element {
           />
         </div>
       )}
-      {mode === 'preview' && <Preview schemaID={schemaID} previewSchema={JSON.parse(schemaStr)} />}
+      {mode === 'preview' && <Preview draftArteryID={arteryID} previewSchema={JSON.parse(schemaStr)} />}
     </div>
   );
 }

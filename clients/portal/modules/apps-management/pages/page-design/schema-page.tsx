@@ -1,25 +1,25 @@
 import ArteryRenderer from '@c/artery-renderer';
 import React, { useEffect, useState } from 'react';
-import { getSchemaKey } from './utils';
+import { getArteryKeys } from './utils';
 
 interface Props {
-  schemaID: string;
+  arteryID: string;
   draft?: boolean;
   convertor?: (...args: any) => any;
   className?: string;
 }
 
-function SchemaPage({ schemaID, draft }: Props): JSX.Element {
-  const [schemaKey, setSchemaKey] = useState(getSchemaKey(schemaID, !!draft));
+function SchemaPage({ arteryID, draft }: Props): JSX.Element {
+  const [arteryKey, setArteryKey] = useState(getArteryKeys(arteryID, !!draft)[0]);
 
   useEffect(() => {
-    setSchemaKey(getSchemaKey(schemaID, !!draft));
-  }, [schemaID, !!draft]);
+    setArteryKey(getArteryKeys(arteryID, !!draft)[0]);
+  }, [arteryID, !!draft]);
 
   return (
     <ArteryRenderer
-      key={schemaKey}
-      arteryID={schemaKey}
+      key={arteryKey}
+      arteryID={arteryKey}
       version="1.0.0"
     />
   );

@@ -9,7 +9,7 @@ import {
 import toast from '@lib/toast';
 import SimpleViewRenders from '@c/simple-view-render';
 
-import { getSchemaKey } from './utils';
+import { getArteryKeys } from './utils';
 import store from '../app-details/store';
 
 export const PG_SAVED_PREFIX = 'pge-';
@@ -21,23 +21,19 @@ type Option={
   [key: string]: any
 }
 
-export function savePage(schemaID: string, page_schema: any, options?: Option): Promise<any> {
-  return setBatchGlobalConfig([{
-    key: options?.draft ? `${schemaID}:draft` : schemaID,
+export function savePage(arteryID: string, page_schema: any, options?: Option): Promise<any> {
+  const arteryKeys = getArteryKeys(arteryID, !!options?.draft);
+  return setBatchGlobalConfig(arteryKeys.map((key) => ({
+    key,
     version: PG_VERSION,
     value: typeof page_schema === 'object' ? JSON.stringify(page_schema) : page_schema,
-  }]);
+  })));
 }
 
-export function getPage(schemaID: string, options?: Option): Promise<string | void> {
-  const queryId = getSchemaKey(schemaID, !!options?.draft);
-  const result = getBatchGlobalConfig([{
-    key: queryId,
-    version: PG_VERSION,
-  }]);
-
-  return Promise.all([result]).then(([{ result }]) => {
-    return result[queryId];
+export function getPage(arteryID: string, options?: Option): Promise<string | void> {
+  const arteryKeys = getArteryKeys(arteryID, !!options?.draft);
+  return getBatchGlobalConfig(arteryKeys.map((key) => ({ key, version: PG_VERSION }))).then(({ result }) => {
+    return result[arteryKeys[0]];
   }).catch(toast.error);
 }
 

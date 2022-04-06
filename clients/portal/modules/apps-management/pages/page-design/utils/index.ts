@@ -4,8 +4,9 @@ import { nanoid } from 'nanoid';
 
 import { PAGE_TYPE, INIT_SCHEMA_EDITOR_SCHEMA } from '../constants';
 
-export function getSchemaKey(schemaID: string, isDraft: boolean): string {
-  return isDraft ? `${schemaID}:draft` : schemaID;
+export function getArteryKeys(arteryID: string, isDraft: boolean): string[] {
+  const draftArteryKey = `${arteryID}:draft`;
+  return isDraft ? [draftArteryKey] : [arteryID, draftArteryKey];
 }
 
 function getInitSchema(): Artery {

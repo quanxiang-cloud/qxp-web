@@ -16,12 +16,12 @@ import './index.scss';
 
 function PageDesign(): JSX.Element {
   const { designer, page, eventBus } = getStore();
-  const { appID, schemaID, pageName } = getQuery<{ appID: string; schemaID: string; pageName: string }>();
+  const { appID, arteryID, pageName } = getQuery<{ appID: string; arteryID: string; pageName: string }>();
   const history = useHistory();
   const [apiPath, setApiPath] = useState('');
 
   useEffect(() => {
-    getPage(schemaID).then((schema) => {
+    getPage(arteryID).then((schema) => {
       if (schema) {
         page.setSchema(JSON.parse(schema));
       }
@@ -115,7 +115,7 @@ function PageDesign(): JSX.Element {
   }
 
   function handleSave(page_schema: any, options?: Record<string, any>): void {
-    savePage(schemaID, page_schema, options).then(() => {
+    savePage(arteryID, page_schema, options).then(() => {
       if (!options?.silent) {
         toast.success('页面已保存');
       }
