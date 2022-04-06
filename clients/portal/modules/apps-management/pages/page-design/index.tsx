@@ -1,16 +1,16 @@
 /* eslint-disable */
 import React, { useState, useMemo, useEffect, useCallback, CSSProperties } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
-import ArteryEngine from '@one-for-all/artery-engine';
 import cs from 'classnames';
 import { DndProvider } from 'react-dnd';
+import { useHistory } from 'react-router-dom';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import ArteryEngine from '@one-for-all/artery-engine';
 
 import Icon from '@c/icon';
-import FileUploader from '@c/file-upload';
-import { getQuery } from '@lib/utils';
-import ApiSelector from '@polyApi/nodes/forms/request-config/api-selector';
 import toast from '@lib/toast';
+import { getQuery } from '@lib/utils';
+import FileUploader from '@c/file-upload';
+import ApiSelector from '@polyApi/nodes/forms/request-config/api-selector';
 
 import ApiSpec from '../app-details/api-proxy/add-api';
 import SelectCustomPageEditor from './select-custom-page-editor';
@@ -21,13 +21,13 @@ import { getInitArteryByPageType } from './utils';
 import Ctx from './ctx';
 import stores from './stores';
 import { useStyle } from './hooks/use-style';
-import { savePage, updateArteryEngineMenuType } from './api';
+import { savePage } from './api';
 
 import './index.scss';
 import styles from './index.m.scss';
 
 function PageDesign(): JSX.Element | null {
-  const { appID, pageId } = useParams<{appID: string; pageId: string}>();
+  const { appID, pageName, arteryID } = getQuery<{ appID: string ,pageName: string, arteryID: string }>();
   const [pageType, setPageType] = useState('');
   const history = useHistory();
 
@@ -35,16 +35,17 @@ function PageDesign(): JSX.Element | null {
   useStyle('body', resetStyle);
   useStyle('html', resetStyle);
 
-  const { pageType: savedPageType, isLoading: isSavedPageTypeLoading } = usePageTypeKey(appID, pageId);
+  const { pageType: savedPageType, isLoading: isSavedPageTypeLoading } = usePageTypeKey(arteryID);
   const { data: artery, isLoading: isArteryLoading } = useQueryArtery(
-    { appID, pageId },
-    { enabled: !!appID && !!pageId },
+    { arteryID },
+    { enabled: !!arteryID },
   );
 
   const { layers, initialArtery } = useMemo(() => {
     const initialArtery = artery ?? getInitArteryByPageType(PAGE_TYPE.PAGE_DESIGN_EDITOR);
     const layer = LAYERS[0];
-    layer.blocksCommunicationStateInitialValue = { activeNodeID: '', appID, pageId };
+    // to remove pageId params
+    layer.blocksCommunicationStateInitialValue = { activeNodeID: '', appID, pageId: '' };
     return {
       layers: [...LAYERS],
       initialArtery,
@@ -61,13 +62,13 @@ function PageDesign(): JSX.Element | null {
     }
   }
   function handleGoBack(): void {
-    history.push(`/apps/details/${appID}/page_setting?pageID=${pageId}`);
+    history.push(`/apps/details/${appID}/app_views?pageName=${pageName}`);
   }
   useEffect(() => {
     eventBus.on('clear:api-path', ()=> {
       setApiPath('');
     });
-    const { pageName } = getQuery<{ pageName: string }>();
+
     // set page title
     designer.setVdom('title', (
       <div className='inline-flex items-center text-gray-900 text-12'>
@@ -133,19 +134,12 @@ function PageDesign(): JSX.Element | null {
   // todo refactor this
   if (pageType === PAGE_TYPE.ARTERY_EDITOR) {
     const initialArtery = artery ?? getInitArteryByPageType(pageType);
-    return (
-      <ArteryEditor
-        appID={appID}
-        pageId={pageId}
-        initialArtery={initialArtery}
-      />
-    );
+    return <ArteryEditor appID={appID} arteryID={arteryID} initialArtery={initialArtery} />;
   }
 
   const handleSave = useCallback((page_artery: any, options?: Record<string, any>): void => {
-    savePage(appID, pageId, page_artery, options).then(() => {
+    savePage(arteryID, page_artery, options).then(() => {
       if (!options?.silent) {
-        updateArteryEngineMenuType(appID, pageId);
         toast.success('页面已保存');
       }
     }).catch((err: Error) => {
@@ -174,11 +168,11 @@ function PageDesign(): JSX.Element | null {
   }
 
   if (!artery) {
-    return (<SelectCustomPageEditor appID={appID} pageId={pageId} onSelect={setPageType} />);
+    return (<SelectCustomPageEditor arteryID={arteryID} onSelect={setPageType} />);
   }
 
   if (savedPageType === PAGE_TYPE.ARTERY_EDITOR) {
-    return (<ArteryEditor appID={appID} pageId={pageId} initialArtery={artery} />);
+    return (<ArteryEditor appID={appID} arteryID={arteryID} initialArtery={artery} />);
   }
 
   return ArteryEngineEntry;

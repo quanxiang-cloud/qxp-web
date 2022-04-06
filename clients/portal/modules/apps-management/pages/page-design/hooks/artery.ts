@@ -8,20 +8,19 @@ import { getPage } from '../api';
 import { QUERY_KEY } from '../constants';
 
 interface QueryArteryInput {
-  appID: string;
-  pageId: string;
+  arteryID: string;
 }
 type QueryArteryResponse = Artery;
 export function useQueryArtery(
   input: QueryArteryInput,
   options: UseQueryOptions<QueryArteryResponse | undefined, Error>,
 ): UseAbstractQueryReturn<QueryArteryResponse> {
-  const { appID, pageId } = input;
+  const { arteryID } = input;
   return useAbstractQuery<QueryArteryInput, QueryArteryResponse | undefined>({}, {
     ...options,
-    getQueryKey: () => [QUERY_KEY.ARTERY, appID, pageId],
+    getQueryKey: () => [QUERY_KEY.ARTERY, arteryID],
     queryFunction: async () => {
-      const artery = await getPage(appID, pageId);
+      const artery = await getPage(arteryID);
       if (!artery) {
         return;
       }

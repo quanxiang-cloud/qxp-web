@@ -2,28 +2,27 @@ import React, { useEffect, useState } from 'react';
 
 import ArteryRenderer from '@c/artery-renderer';
 
-import { getArteryKey } from './api';
+import { getArteryKeys } from './utils';
 
 interface Props {
-  appId: string;
-  pageId: string;
+  arteryID: string;
   draft?: boolean;
   convertor?: (...args: any) => any;
   className?: string;
 }
 
-function ArteryPage({ appId, pageId, draft }: Props): JSX.Element {
-  const [arteryKey, setArteryKey] = useState(getArteryKey(appId, pageId, !!draft)[0]);
+function ArteryPage({ arteryID, draft }: Props): JSX.Element {
+  const [arteryKey, setArteryKey] = useState(getArteryKeys(arteryID, !!draft)[0]);
 
   useEffect(() => {
-    setArteryKey(getArteryKey(appId, pageId, !!draft)[0]);
-  }, [appId, pageId, !!draft]);
+    setArteryKey(getArteryKeys(arteryID, !!draft)[0]);
+  }, [arteryID, !!draft]);
 
   return (
     <ArteryRenderer
       key={arteryKey}
       arteryID={arteryKey}
-      version="0.1.0"
+      version="1.0.0"
     />
   );
 }

@@ -64,7 +64,7 @@ function Toolbar({ blocksCommunicationState$ }: BlockItemProps<BlocksCommunicati
     // open new page
     const aElem = document.createElement('a');
     Object.assign(aElem, {
-      href: location.href.replace(/\/page-design/, '/page-preview'),
+      href: location.href.replace(/\/artery-engine/, '/artery-preview'),
       rel: 'noopener noreferrer',
       target: '_blank',
     });

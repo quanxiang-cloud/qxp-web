@@ -50,7 +50,7 @@ function CreatedAppModal({ modalType, onCancel, templateID }: Props): JSX.Elemen
     createdApp({ ...data, useStatus: -1 }).then((res: string) => {
       toast.success('创建应用成功！');
       onCancel();
-      history.push(`/apps/details/${res}/page_setting`);
+      history.push(`/apps/details/${res}/app_views`);
       return initAppRootView(res, defaultAppLayout);
     }).catch(toastError);
   }

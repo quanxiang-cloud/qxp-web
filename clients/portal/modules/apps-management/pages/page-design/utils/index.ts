@@ -4,11 +4,9 @@ import { nanoid } from 'nanoid';
 
 import { PAGE_TYPE, INIT_ARTERY_EDITOR_ARTERY } from '../constants';
 
-export function getPageTypeKey(appID: string, pageId: string): string[] {
-  return [
-    `custom_page_editor:app_id:${appID}:page_id:${pageId}`,
-    `app_id:${appID}:page_id:${pageId}:custom_page_editor`,
-  ];
+export function getArteryKeys(arteryID: string, isDraft: boolean): string[] {
+  const draftArteryKey = `${arteryID}:draft`;
+  return isDraft ? [draftArteryKey] : [arteryID, draftArteryKey];
 }
 
 function getInitArtery(): Artery {

@@ -33,9 +33,10 @@ import {
   isHiddenMenu,
   formDuplicate,
 } from './api';
-import { getFirstMenu, flatMnues } from './page-menu-design/menu-tree/utils';
+import { getArteryKeys } from '../page-design/utils';
 import { Menu } from './page-menu-design/menu-tree/type';
-import { getPage as getArteryPage, getArteryKey } from '../page-design/api';
+import { getPage as getArteryPage } from '../page-design/api';
+import { getFirstMenu, flatMnues } from './page-menu-design/menu-tree/utils';
 
 type DeletePageOrGroupParams = {
   treeItem: TreeItem;
@@ -83,6 +84,7 @@ class AppDetailsStore {
     appName: '',
     appIcon: '',
     appSign: '',
+    accessURL: '',
   };
   @observable loading = false;
   @observable lastUpdateTime = 0;
@@ -334,8 +336,8 @@ class AppDetailsStore {
       // copy schema page
       if (isCopyArteryPage) {
         menuType = (await setArteryEngineMenuType(this.appID, res.id)).menu_type || menuType;
-        const [sourceKey, newSourceKey] = getArteryKey(this.appID, pageInfo.id, false);
-        const [targetKey, newTargetKey] = getArteryKey(this.appID, res.id, false);
+        const [sourceKey, newSourceKey] = getArteryKeys(pageInfo.id, false);
+        const [targetKey, newTargetKey] = getArteryKeys(res.id, false);
         const version = globalSettings.version;
         await cloneUserData({ key: sourceKey, version }, { key: targetKey, version });
         await cloneUserData({ key: newSourceKey, version }, { key: newTargetKey, version });
@@ -443,7 +445,7 @@ class AppDetailsStore {
     }
 
     if (pageInfo.menuType === MenuType.arteryPage) {
-      getArteryPage(this.appID, this.pageID).then((schema)=> {
+      getArteryPage(this.pageID).then((schema)=> {
         if (schema) {
           this.designPageSchema = schema;
         }

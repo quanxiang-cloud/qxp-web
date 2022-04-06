@@ -1173,6 +1173,20 @@
   resolved "https://registry.npmmirror.com/@one-for-all/artery/-/artery-0.15.0.tgz#495bdb35365a606a126ecfc8323a5dc086c6f1c5"
   integrity sha512-zZmnK09Zt33s335GBdQHMy5sG7+rSrWHaz1mqjIrdXLHWUvkkOISuEV739SWgnCamqEwUv58/QDTH9/VMIb32w==
 
+"@one-for-all/page-engine-v2@^1.1.0":
+  version "1.1.1"
+  resolved "https://registry.npmmirror.com/@one-for-all/page-engine-v2/-/page-engine-v2-1.1.1.tgz#d28aaa4c42492e134381b09c58f7ca1b3ea513c3"
+  integrity sha512-4pDCFCgkC6TrWGhErlenlb7otF9z1ee7Upy6LZ9CBgsWFE467IaCCDsQiOnV2ZLaBCBFm/wFe6iGyetC4mOucA==
+  dependencies:
+    "@one-for-all/artery" "0.15.0"
+    "@one-for-all/artery-renderer" "0.20.0"
+    classnames "^2.3.1"
+    nanoid "^3.1.30"
+    ramda "^0.27.1"
+    react "^17.0.2"
+    react-dom "^17.0.2"
+    rxjs "^7.4.0"
+
 "@one-for-all/page-engine@0.10.0":
   version "0.10.0"
   resolved "https://registry.npmmirror.com/@one-for-all/page-engine/-/page-engine-0.10.0.tgz#36f54ce301587c50dcde633dd52b01286094a2ec"
@@ -1209,6 +1223,20 @@
     react-jsx-parser "1.29.0"
     rxjs "^7.4.0"
 
+"@one-for-all/render-engine@0.19.0":
+  version "0.19.0"
+  resolved "https://registry.npmmirror.com/@one-for-all/render-engine/-/render-engine-0.19.0.tgz#88d10f6ea28a44103399f15341b30179f188aab4"
+  integrity sha512-fnp+5qFpAFIqJuCVUQfrwJb37nznVxO+LU3Y5NO6TyoFeNrkjz2mWHcPvIjrY45xKjJ2hxZTiPmSLWwiQQxfwA==
+  dependencies:
+    "@one-for-all/api-spec-adapter" "0.4.0"
+    "@one-for-all/schema-spec" "0.15.0"
+    "@one-for-all/utils" "0.3.0"
+    history "5.3.0"
+    react "^17.0.2"
+    react-dom "^17.0.2"
+    react-jsx-parser "1.29.0"
+    rxjs "^7.4.0"
+
 "@one-for-all/schema-spec@0.13.1-0":
   version "0.13.1-0"
   resolved "https://registry.npmmirror.com/@one-for-all/schema-spec/-/schema-spec-0.13.1-0.tgz#6133bb595a0abaeda045925ee41a220bc94fe9bd"
@@ -1218,6 +1246,19 @@
   version "0.14.0"
   resolved "https://registry.npmmirror.com/@one-for-all/schema-spec/-/schema-spec-0.14.0.tgz#b27b02ff384ec88150d49a43da8a3d5636aee378"
   integrity sha512-ktrYBcl4tMmq5ywArP4fEHZXB6tzZPWX7uCvi419ayQbO4C3mRPb3p/DnLzyhUiwGJtXRubFlHVWsntKwJVnOg==
+
+"@one-for-all/schema-spec@0.15.0":
+  version "0.15.0"
+  resolved "https://registry.npmmirror.com/@one-for-all/schema-spec/-/schema-spec-0.15.0.tgz#665d9a4b40dbeb399d8dbe1c48b80d55f7bf6a7f"
+  integrity sha512-tPqHVGyGfAJnfNoVvbGJEMxLFPr4VsKySE9WDZw1IYGDLCzXrhSotb7M59aNww4XlCo+PFM/mhQtUpupH9lBww==
+
+"@one-for-all/schema-utils@0.10.0":
+  version "0.10.0"
+  resolved "https://registry.npmmirror.com/@one-for-all/schema-utils/-/schema-utils-0.10.0.tgz#f0719177989c1cae3ce40dbfc97962da11ee30a7"
+  integrity sha512-YaV6e/6+5i1EZob/57SABRQ4ZwojbKAWL9DOyxiom6Br9WHljDbbVWskQPU+g9LMmzT+iXcRu8A9G2z2KqKCEA==
+  dependencies:
+    "@one-for-all/schema-spec" "0.15.0"
+    immutable "4.0.0"
 
 "@one-for-all/ui@0.2.18":
   version "0.2.18"

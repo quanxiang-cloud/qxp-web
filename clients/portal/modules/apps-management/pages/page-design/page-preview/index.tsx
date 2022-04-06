@@ -1,13 +1,13 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { getQuery } from '@lib/utils';
 
 import ArteryPage from '../artery-page';
 
 function PagePreview(): JSX.Element {
-  const { appID, pageId } = useParams<{appID: string, pageId: string}>();
+  const { arteryID } = getQuery<{appID: string, pageId: string, arteryID: string}>();
 
   return (
-    <ArteryPage appId={appID} pageId={pageId} draft />
+    <ArteryPage arteryID={arteryID} draft />
   );
 }
 

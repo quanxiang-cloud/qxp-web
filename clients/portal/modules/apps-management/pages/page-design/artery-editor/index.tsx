@@ -4,19 +4,19 @@ import { Artery } from '@one-for-all/artery';
 
 import toast from '@lib/toast';
 
-import { savePage, updateArteryEngineMenuType } from '../api';
 import Header from './header';
 import Preview from './preview';
+import { savePage } from '../api';
 
 export type EditorMode = 'edit' | 'preview';
 
 type Props = {
   appID: string;
-  pageId: string;
+  arteryID: string;
   initialArtery: Artery
 }
 
-function ArteryEditor({ appID, pageId, initialArtery }: Props): JSX.Element {
+function ArteryEditor({ appID, arteryID, initialArtery }: Props): JSX.Element {
   const [arteryStr, setArteryStr] = useState(JSON.stringify(initialArtery, null, 2));
   const [saving, setSaving] = useState(false);
   const [mode, setMode] = useState<EditorMode>('edit');
@@ -37,8 +37,7 @@ function ArteryEditor({ appID, pageId, initialArtery }: Props): JSX.Element {
     try {
       const artery = JSON.stringify(JSON.parse(arteryStr));
       try {
-        await savePage(appID, pageId, artery);
-        updateArteryEngineMenuType(appID, pageId);
+        await savePage(arteryID, artery);
         toast.success('页面已保存');
         setSaving(false);
         return true;
@@ -93,25 +92,19 @@ function ArteryEditor({ appID, pageId, initialArtery }: Props): JSX.Element {
         onSaveAndExit={handleSaveAndExit}
         onGoBack={handleBack}
       />
-      {
-        mode === 'edit' && (
-          <div
-            style={{ height: 'calc(100vh - 80px)' }}
-            className="block w-10/12 mt-20 mx-auto outline-none"
-          >
-            <textarea
-              className="block p-20 h-full w-full outline-none"
-              value={arteryStr}
-              onChange={(e) => setArteryStr(e.target.value)}
-            />
-          </div>
-        )
-      }
-      {
-        mode === 'preview' && (
-          <Preview appID={appID} pageID={pageId} artery={JSON.parse(arteryStr)} />
-        )
-      }
+      {mode === 'edit' && (
+        <div
+          style={{ height: 'calc(100vh - 80px)' }}
+          className="block w-10/12 mt-20 mx-auto outline-none"
+        >
+          <textarea
+            className="block p-20 h-full w-full outline-none"
+            value={arteryStr}
+            onChange={(e) => setArteryStr(e.target.value)}
+          />
+        </div>
+      )}
+      {mode === 'preview' && <Preview draftArteryID={arteryID} previewSchema={JSON.parse(arteryStr)} />}
     </div>
   );
 }

@@ -150,7 +150,7 @@ function PageDetails(): JSX.Element | null {
       );
     } else if (menuType === MenuType.arteryPage) {
       return (
-        <ArteryPage appId={store.appID} pageId={store.pageID} />
+        <ArteryPage arteryID={store.pageID} />
       );
     } else {
       if (fetchSchemeLoading) {

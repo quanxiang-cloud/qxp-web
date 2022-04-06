@@ -1,26 +1,27 @@
 import React, { useEffect, useState } from 'react';
-
-import { setBatchGlobalConfig } from '@lib/api/user-config';
 import type { Artery } from '@one-for-all/artery';
-import toast from '@lib/toast';
 
-import { getArteryKey } from '../api';
-import ArteryRender from '@c/artery-renderer';
+import toast from '@lib/toast';
+import ArteryRenderer from '@c/artery-renderer';
+import { setBatchGlobalConfig } from '@lib/api/user-config';
+
+import { getArteryKeys } from '../utils';
 
 type Props = {
-  appID: string;
-  pageID: string;
-  artery: Artery;
+  draftArteryID: string;
+  previewSchema: Artery;
 }
 
-function Preview({ appID, pageID, artery }: Props): JSX.Element {
-  const arteryKeys = getArteryKey(appID, pageID, true);
+function Preview({ draftArteryID, previewSchema }: Props): JSX.Element {
+  const [draftArteryKey] = getArteryKeys(draftArteryID, true);
   const [savingDraft, setSavingDraft] = useState(true);
 
   useEffect(() => {
-    setBatchGlobalConfig(arteryKeys.map((arteryKey) => ({
-      key: arteryKey, version: '1.0.0', value: JSON.stringify(artery),
-    }))).then(() => {
+    setBatchGlobalConfig([{
+      key: draftArteryKey,
+      version: '1.0.0',
+      value: JSON.stringify(previewSchema),
+    }]).then(() => {
       setSavingDraft(false);
     }).catch((err) => {
       toast.error(err);
@@ -34,8 +35,8 @@ function Preview({ appID, pageID, artery }: Props): JSX.Element {
   }
 
   return (
-    <ArteryRender
-      arteryID={arteryKeys[0]}
+    <ArteryRenderer
+      arteryID={draftArteryKey}
       version="0.1.0"
     />
   );
