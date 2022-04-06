@@ -24,14 +24,21 @@ function request<TData>(path: string, method: METHOD, body?: unknown): Promise<T
   };
 
   return fetch(path, requestInit)
-    .then((response) => response.json())
+    .then((response) => {
+      if (response.status > 400) {
+        return Promise.reject(new Error(response.statusText));
+      }
+
+      return response.json();
+    })
     .then(({ code, msg, data }) => {
       if (code !== 0) {
         return Promise.reject(new Error(msg));
       }
 
       return data;
-    }).catch((err) => {
+    })
+    .catch((err) => {
       if (err.response?.status === 401) {
         if (!alreadyAlertUnauthorizedError) {
           alreadyAlertUnauthorizedError = true;
