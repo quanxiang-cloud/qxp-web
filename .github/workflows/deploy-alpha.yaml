@@ -80,9 +80,9 @@ jobs:
     runs-on: self-hosted
     steps:
       - run: echo IMAGE_TAG="v${{ env.DATE }}-${GITHUB_SHA::7}" >> $GITHUB_ENV
-      - run: bash -c "helm upgrade qxp-web-portal /root/quanxiang_charts_alpha/qxp-web-portal --kubeconfig ~/.kube/config_alpha --set image.tag=$IMAGE_TAG --set image.repo=$IMAGE_PREFIX -n lowcode"
-      - run: bash -c "helm upgrade qxp-web-home /root/quanxiang_charts_alpha/qxp-web-home --kubeconfig ~/.kube/config_alpha --set image.tag=$IMAGE_TAG --set image.repo=$IMAGE_PREFIX -n lowcode"
-      - run: bash -c "helm upgrade qxp-web-nginx /root/quanxiang_charts_alpha/qxp-web-nginx --kubeconfig ~/.kube/config_alpha --set image.tag=$IMAGE_TAG --set image.repo=$IMAGE_PREFIX -n lowcode"
+      - run: bash -c "helm upgrade qxp-web-portal /root/quanxiang_charts_alpha/qxp-web-portal --kubeconfig ~/.kube/config_alpha --set image.tag=$IMAGE_TAG --set image.repo=$IMAGE_REPO -n lowcode"
+      - run: bash -c "helm upgrade qxp-web-home /root/quanxiang_charts_alpha/qxp-web-home --kubeconfig ~/.kube/config_alpha --set image.tag=$IMAGE_TAG --set image.repo=$IMAGE_REPO -n lowcode"
+      - run: bash -c "helm upgrade qxp-web-nginx /root/quanxiang_charts_alpha/qxp-web-nginx --kubeconfig ~/.kube/config_alpha --set image.tag=$IMAGE_TAG --set image.repo=$IMAGE_REPO -n lowcode"
       - run: echo "deploy alpha done!"
       - uses: ./.github/actions/fail-alert
         if: ${{ failure() }}
