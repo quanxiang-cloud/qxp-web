@@ -13,7 +13,7 @@ import DataBind from '../../../utils/data-bind';
 import { useCtx } from '../../../ctx';
 import Section from '../../../utils/section';
 import { elemId } from '../../../utils';
-import { mapRawProps } from '../../../utils/schema-adapter';
+import { mapRawProps } from '../../../utils/artery-adapter';
 
 import styles from './index.m.scss';
 

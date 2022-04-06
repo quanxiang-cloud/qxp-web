@@ -10,7 +10,7 @@ export type CustomPageInfo = {
   updatedAt?: string,
 }
 
-export type SchemaPageInfo = {
+export type ArteryPageInfo = {
   tableID?: string,
   fieldLen?: string
   createdBy?: string,
@@ -89,7 +89,7 @@ export enum MenuType {
   schemaForm = 0,
   group = 1,
   customPage = 2,
-  schemaPage = 3,
+  arteryPage = 3,
 }
 
 export enum BindState {

@@ -4,7 +4,7 @@ import { Artery } from '@one-for-all/artery';
 
 import toast from '@lib/toast';
 
-import { savePage, updatePageEngineMenuType } from '../api';
+import { savePage, updateArteryEngineMenuType } from '../api';
 import Header from './header';
 import Preview from './preview';
 
@@ -13,18 +13,18 @@ export type EditorMode = 'edit' | 'preview';
 type Props = {
   appID: string;
   pageId: string;
-  initialSchema: Artery
+  initialArtery: Artery
 }
 
-function SchemaEditor({ appID, pageId, initialSchema }: Props): JSX.Element {
-  const [schemaStr, setSchemaStr] = useState(JSON.stringify(initialSchema, null, 2));
+function ArteryEditor({ appID, pageId, initialArtery }: Props): JSX.Element {
+  const [arteryStr, setArteryStr] = useState(JSON.stringify(initialArtery, null, 2));
   const [saving, setSaving] = useState(false);
   const [mode, setMode] = useState<EditorMode>('edit');
   const history = useHistory();
 
-  function handleSaveSchema(): Promise<boolean> {
-    if (!schemaStr) {
-      toast.error('schema 不能为空');
+  async function handleSaveArtery(): Promise<boolean> {
+    if (!arteryStr) {
+      toast.error('artery 不能为空');
       return Promise.resolve(false);
     }
 
@@ -35,26 +35,27 @@ function SchemaEditor({ appID, pageId, initialSchema }: Props): JSX.Element {
     setSaving(true);
 
     try {
-      const schema = JSON.stringify(JSON.parse(schemaStr));
-      return savePage(appID, pageId, schema).then(() => {
-        updatePageEngineMenuType(appID, pageId);
+      const artery = JSON.stringify(JSON.parse(arteryStr));
+      try {
+        await savePage(appID, pageId, artery);
+        updateArteryEngineMenuType(appID, pageId);
         toast.success('页面已保存');
         setSaving(false);
         return true;
-      }).catch((err: Error) => {
+      } catch (err: any) {
         toast.error(err.message);
         setSaving(false);
         return false;
-      });
+      }
     } catch (error) {
-      toast.error('schema 不是合法的 json 字符串');
+      toast.error('artery 不是合法的 json 字符串');
       setSaving(false);
       return Promise.resolve(false);
     }
   }
 
   function handleSaveAndExit(): void {
-    handleSaveSchema().then((isSuccess) => {
+    handleSaveArtery().then((isSuccess) => {
       if (!isSuccess) {
         return;
       }
@@ -74,9 +75,9 @@ function SchemaEditor({ appID, pageId, initialSchema }: Props): JSX.Element {
     }
 
     try {
-      JSON.stringify(JSON.parse(schemaStr));
+      JSON.stringify(JSON.parse(arteryStr));
     } catch (error) {
-      toast.error('schema 不是合法的 json 字符串');
+      toast.error('artery 不是合法的 json 字符串');
       return;
     }
 
@@ -88,7 +89,7 @@ function SchemaEditor({ appID, pageId, initialSchema }: Props): JSX.Element {
       <Header
         editorMode={mode}
         onChangeMode={handleChangeMode}
-        onSave={handleSaveSchema}
+        onSave={handleSaveArtery}
         onSaveAndExit={handleSaveAndExit}
         onGoBack={handleBack}
       />
@@ -100,19 +101,19 @@ function SchemaEditor({ appID, pageId, initialSchema }: Props): JSX.Element {
           >
             <textarea
               className="block p-20 h-full w-full outline-none"
-              value={schemaStr}
-              onChange={(e) => setSchemaStr(e.target.value)}
+              value={arteryStr}
+              onChange={(e) => setArteryStr(e.target.value)}
             />
           </div>
         )
       }
       {
         mode === 'preview' && (
-          <Preview appID={appID} pageID={pageId} previewSchema={JSON.parse(schemaStr)} />
+          <Preview appID={appID} pageID={pageId} artery={JSON.parse(arteryStr)} />
         )
       }
     </div>
   );
 }
 
-export default SchemaEditor;
+export default ArteryEditor;

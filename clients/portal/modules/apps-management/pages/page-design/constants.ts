@@ -7,18 +7,18 @@ import Canvas from './blocks/canvas';
 import Config from './blocks/config';
 import { BlocksCommunicationType } from './types';
 
-export const INIT_SCHEMA_EDITOR_SCHEMA: Artery = {
+export const INIT_ARTERY_EDITOR_ARTERY: Artery = {
   apiStateSpec: {},
   sharedStatesSpec: {},
   node: { id: 'root', type: 'html-element', name: 'div' },
 };
 
 export const QUERY_KEY = {
-  SCHEMA: 'QUERY_SCHEMA',
+  ARTERY: 'QUERY_ARTERY',
 };
 
 export const PAGE_TYPE = {
-  SCHEMA_EDITOR: 'schema_editor',
+  ARTERY_EDITOR: 'artery_editor',
   PAGE_DESIGN_EDITOR: 'page_engine',
 };
 

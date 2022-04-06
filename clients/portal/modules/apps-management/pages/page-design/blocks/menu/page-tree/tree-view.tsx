@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { observer } from 'mobx-react';
 import { DropTargetMonitor, useDrop } from 'react-dnd';
+import { traverseSchema } from '@one-for-all/artery-engine';
 
 import { useCtx } from '../../../ctx';
 import type { PageNode } from '../../../types';
@@ -9,7 +10,6 @@ import type { DropResult, DragMoveProps } from './tree-node';
 import TreeNode from './tree-node';
 import { findNode } from '../../../utils/tree-utils';
 import { nodeContentRender } from './node-content-render';
-import { traverseSchema } from '@one-for-all/artery-engine';
 
 export const COMPONENT_ICON_MAP: Record<string, string> = {
   page: 'insert_drive_file',

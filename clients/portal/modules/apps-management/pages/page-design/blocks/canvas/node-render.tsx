@@ -9,7 +9,7 @@ import { Icon } from '@one-for-all/ui';
 
 import { PageNode, DragPos, LoopNode } from '../../types';
 import { useCtx } from '../../ctx';
-import { mapRawProps } from '../../utils/schema-adapter';
+import { mapRawProps } from '../../utils/artery-adapter';
 import { elemId } from '../../utils';
 import { parseStyleString } from '../../utils/config';
 import { svgPreviewImg } from '../../utils/helpers';

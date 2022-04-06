@@ -2,7 +2,7 @@ import { uuid } from '@one-for-all/artery-engine';
 import type { Artery, ReactComponentNode } from '@one-for-all/artery';
 import { nanoid } from 'nanoid';
 
-import { PAGE_TYPE, INIT_SCHEMA_EDITOR_SCHEMA } from '../constants';
+import { PAGE_TYPE, INIT_ARTERY_EDITOR_ARTERY } from '../constants';
 
 export function getPageTypeKey(appID: string, pageId: string): string[] {
   return [
@@ -11,7 +11,7 @@ export function getPageTypeKey(appID: string, pageId: string): string[] {
   ];
 }
 
-function getInitSchema(): Artery {
+function getInitArtery(): Artery {
   return {
     node: {
       id: uuid(),
@@ -36,8 +36,8 @@ function getInitSchema(): Artery {
   };
 }
 
-export function getInitSchemaByPageType(pageType: string): Artery {
-  return pageType === PAGE_TYPE.SCHEMA_EDITOR ? INIT_SCHEMA_EDITOR_SCHEMA : getInitSchema();
+export function getInitArteryByPageType(pageType: string): Artery {
+  return pageType === PAGE_TYPE.ARTERY_EDITOR ? INIT_ARTERY_EDITOR_ARTERY : getInitArtery();
 }
 
 export function buildNode(id: string, exportName: string, label: string): ReactComponentNode {
@@ -64,16 +64,6 @@ export function openLink(options: Record<string, string>): void {
 
 export function isDev(): boolean {
   return !!window.__isDev__;
-}
-
-// extend json.stringify/parser to serialize and deserialize vdom
-export function serialize(schema: any) {
-  return JSON.stringify(schema, function(key, val) {
-    if (typeof val === 'function') {
-      return val.toString();
-    }
-    return val;
-  }, 2);
 }
 
 export function isFuncSource(source: string) {

@@ -1,11 +1,10 @@
 /* eslint-disable */
 import React, { useState, useMemo, useEffect, useCallback, CSSProperties } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import PageEngineV2 from '@one-for-all/artery-engine';
+import ArteryEngine from '@one-for-all/artery-engine';
 import cs from 'classnames';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { Artery } from '@one-for-all/artery';
 
 import Icon from '@c/icon';
 import FileUploader from '@c/file-upload';
@@ -15,14 +14,14 @@ import toast from '@lib/toast';
 
 import ApiSpec from '../app-details/api-proxy/add-api';
 import SelectCustomPageEditor from './select-custom-page-editor';
-import SchemaEditor from './schema-editor';
-import { useQuerySchema, usePageTypeKey } from './hooks';
+import ArteryEditor from './artery-editor';
+import { useQueryArtery, usePageTypeKey } from './hooks';
 import { PAGE_TYPE, PAGE_DESIGN_ID, LAYERS } from './constants';
-import { getInitSchemaByPageType } from './utils';
+import { getInitArteryByPageType } from './utils';
 import Ctx from './ctx';
 import stores from './stores';
 import { useStyle } from './hooks/use-style';
-import { savePage, updatePageEngineMenuType } from './api';
+import { savePage, updateArteryEngineMenuType } from './api';
 
 import './index.scss';
 import styles from './index.m.scss';
@@ -37,20 +36,20 @@ function PageDesign(): JSX.Element | null {
   useStyle('html', resetStyle);
 
   const { pageType: savedPageType, isLoading: isSavedPageTypeLoading } = usePageTypeKey(appID, pageId);
-  const { data: schema, isLoading: isSchemaLoading } = useQuerySchema(
+  const { data: artery, isLoading: isArteryLoading } = useQueryArtery(
     { appID, pageId },
     { enabled: !!appID && !!pageId },
   );
 
-  const { layers, initialSchema } = useMemo(() => {
-    const initialSchema = schema ?? getInitSchemaByPageType(PAGE_TYPE.PAGE_DESIGN_EDITOR);
+  const { layers, initialArtery } = useMemo(() => {
+    const initialArtery = artery ?? getInitArteryByPageType(PAGE_TYPE.PAGE_DESIGN_EDITOR);
     const layer = LAYERS[0];
     layer.blocksCommunicationStateInitialValue = { activeNodeID: '', appID, pageId };
     return {
       layers: [...LAYERS],
-      initialSchema,
+      initialArtery,
     };
-  }, [schema]);
+  }, [artery]);
 
   const { designer, page, eventBus } = stores;
   const [apiPath, setApiPath] = useState('');
@@ -132,57 +131,57 @@ function PageDesign(): JSX.Element | null {
   }, [apiPath]);
 
   // todo refactor this
-  if (pageType === PAGE_TYPE.SCHEMA_EDITOR) {
-    const initialSchema = schema ?? getInitSchemaByPageType(pageType);
+  if (pageType === PAGE_TYPE.ARTERY_EDITOR) {
+    const initialArtery = artery ?? getInitArteryByPageType(pageType);
     return (
-      <SchemaEditor
+      <ArteryEditor
         appID={appID}
         pageId={pageId}
-        initialSchema={initialSchema}
+        initialArtery={initialArtery}
       />
     );
   }
 
-  const handleSave = useCallback((page_schema: any, options?: Record<string, any>): void => {
-    savePage(appID, pageId, page_schema, options).then(() => {
+  const handleSave = useCallback((page_artery: any, options?: Record<string, any>): void => {
+    savePage(appID, pageId, page_artery, options).then(() => {
       if (!options?.silent) {
-        updatePageEngineMenuType(appID, pageId);
+        updateArteryEngineMenuType(appID, pageId);
         toast.success('页面已保存');
       }
     }).catch((err: Error) => {
       toast.error(err.message);
     });
   }, []);
-  const PageEngineEntry = useMemo(() => (
+  const ArteryEngineEntry = useMemo(() => (
       <DndProvider backend={HTML5Backend}>
         <Ctx.Provider value={Object.assign(stores, { onSave: handleSave })}>
           <div className={cs(styles.designer)}>
             <div id={PAGE_DESIGN_ID}>
-              <PageEngineV2 schema={initialSchema} layers={layers} />
+              <ArteryEngine schema={initialArtery} layers={layers} />
             </div>
           </div>
         </Ctx.Provider>
       </DndProvider>
-  ), [initialSchema, layers]);
+  ), [initialArtery, layers]);
 
   // todo refactor this
   if (pageType === PAGE_TYPE.PAGE_DESIGN_EDITOR) {
-    return PageEngineEntry;
+    return ArteryEngineEntry;
   }
 
-  if (isSchemaLoading || isSavedPageTypeLoading) {
+  if (isArteryLoading || isSavedPageTypeLoading) {
     return null;
   }
 
-  if (!schema) {
+  if (!artery) {
     return (<SelectCustomPageEditor appID={appID} pageId={pageId} onSelect={setPageType} />);
   }
 
-  if (savedPageType === PAGE_TYPE.SCHEMA_EDITOR) {
-    return (<SchemaEditor appID={appID} pageId={pageId} initialSchema={schema} />);
+  if (savedPageType === PAGE_TYPE.ARTERY_EDITOR) {
+    return (<ArteryEditor appID={appID} pageId={pageId} initialArtery={artery} />);
   }
 
-  return PageEngineEntry;
+  return ArteryEngineEntry;
 }
 
 export default PageDesign;

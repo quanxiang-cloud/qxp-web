@@ -10,7 +10,7 @@ import { Modal, Icon, Tooltip, toast } from '@one-for-all/ui';
 import { useCtx } from '../../../ctx';
 import { PageNode } from '../../../types';
 import { elemId } from '../../../utils';
-import { mapRawProps } from '../../../utils/schema-adapter';
+import { mapRawProps } from '../../../utils/artery-adapter';
 
 type LabelValue = {
   label: string;

@@ -5,7 +5,7 @@ import stores from './stores';
 import {
   setBatchGlobalConfig,
   getBatchGlobalConfig,
-  setPageEngineMenuType,
+  setArteryEngineMenuType,
 } from '@lib/api/user-config';
 import toast from '@lib/toast';
 
@@ -21,7 +21,7 @@ type Option={
   [key: string]: any
 }
 
-export function getSchemaKey(appID: string, pageID: string, isDraft: boolean): string[] {
+export function getArteryKey(appID: string, pageID: string, isDraft: boolean): string[] {
   const key = `custom_page_schema:app_id:${appID}:page_id:${pageID}`;
   const newKey = `app_id:${appID}:page_id:${pageID}:custom_page_schema`;
   if (isDraft) {
@@ -31,17 +31,17 @@ export function getSchemaKey(appID: string, pageID: string, isDraft: boolean): s
   return [key, newKey];
 }
 
-export function savePage(app_id: string, page_id: string, page_schema: any, options?: Option): Promise<any> {
-  const schemaKeys = getSchemaKey(app_id, page_id, !!options?.draft);
-  return setBatchGlobalConfig(schemaKeys.map((key) => ({
+export function savePage(app_id: string, page_id: string, page_artery: any, options?: Option): Promise<any> {
+  const arteryKeys = getArteryKey(app_id, page_id, !!options?.draft);
+  return setBatchGlobalConfig(arteryKeys.map((key) => ({
     key,
     version: PG_VERSION,
-    value: typeof page_schema === 'object' ? JSON.stringify(page_schema) : page_schema,
+    value: typeof page_artery === 'object' ? JSON.stringify(page_artery) : page_artery,
   })));
 }
 
 export function getPage(app_id: string, page_id: string, options?: Option): Promise<string | void> {
-  const [queryId, newQueryId] = getSchemaKey(app_id, page_id, !!options?.draft);
+  const [queryId, newQueryId] = getArteryKey(app_id, page_id, !!options?.draft);
   const result = getBatchGlobalConfig([{
     key: queryId,
     version: PG_VERSION,
@@ -71,8 +71,8 @@ export function getRenderRepository(): any {
   };
 }
 
-export function updatePageEngineMenuType(appID: string, id: string): void {
-  setPageEngineMenuType(appID, id).then((res) => {
+export function updateArteryEngineMenuType(appID: string, id: string): void {
+  setArteryEngineMenuType(appID, id).then(() => {
     store.setActiveMenu({ ...store.curPage, menuType: 3 });
-  }).catch((err) => toast.error(err));
+  }).catch((err: any) => toast.error(err));
 }

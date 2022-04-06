@@ -1,47 +1,42 @@
 import React from 'react';
-import { defaults, flow, get, identity } from 'lodash';
+import { defaults, get, identity } from 'lodash';
 
 import { LoopNode, PageNode } from '../types';
-import { mapRawProps } from '../utils/schema-adapter';
+import { mapRawProps } from './artery-adapter';
 import registry from '../stores/registry';
 import page from '../stores/page';
 import { PagePlaceholder, ContainerPlaceholder } from './common-comps';
 import { isDev } from '../utils';
 import { encode } from '../utils/base64';
 
-export function transformType(schema: PageNode | LoopNode): string | React.ComponentType {
-  const { type } = schema;
+export function transformType(artery: PageNode | LoopNode): string | React.ComponentType {
+  const { type } = artery;
   if (type === 'react-component') {
-    return registry.elementMap?.[schema.exportName]?.component || type;
+    return registry.elementMap?.[artery.exportName]?.component || type;
   }
   if (type === 'loop-container') {
-    const nodeType = get(schema, 'node.exportName');
+    const nodeType = get(artery, 'node.exportName');
     return registry.elementMap[nodeType]?.component;
   }
   if (type === 'html-element') {
-    return schema.name || 'div';
+    return artery.name || 'div';
   }
   return 'div';
 }
 
-export const schemaToProps = flow([
-  // mergeStyle,
-  mergeProps,
-]);
-
-export function mergeProps(schema: PageNode): Record<string, any> {
-  const elemConf = registry.getElemByType(schema.exportName) || {};
+export function mergeProps(artery: PageNode): Record<string, any> {
+  const elemConf = registry.getElemByType(artery.exportName) || {};
   const toProps = elemConf?.toProps || identity;
-  const elemProps = defaults({}, mapRawProps(schema.props || {}), elemConf?.defaultConfig);
+  const elemProps = defaults({}, mapRawProps(artery.props || {}), elemConf?.defaultConfig);
 
   // patch certain elem props
-  if (schema.type === 'react-component') {
+  if (artery.type === 'react-component') {
     // add placeholder to page elem
-    if (schema.exportName === 'page' && !schema.children?.length) {
+    if (artery.exportName === 'page' && !artery.children?.length) {
       Object.assign(elemProps, { placeholder: React.createElement(PagePlaceholder) });
     }
     // add placeholder to container elem
-    if (schema.exportName === 'container' && !schema.children?.length) {
+    if (artery.exportName === 'container' && !artery.children?.length) {
       Object.assign(elemProps, { placeholder: React.createElement(ContainerPlaceholder) });
     }
   }
@@ -49,15 +44,15 @@ export function mergeProps(schema: PageNode): Record<string, any> {
   return toProps(elemProps);
 }
 
-export function loadDevEnvPageSchema() {
+export function loadDevEnvPageArtery() {
   if (isDev()) {
-    let storedSchema = localStorage.getItem('page_schema');
+    let storedArtery = localStorage.getItem('page_artery');
     try {
-      storedSchema = JSON.parse(storedSchema as any);
+      storedArtery = JSON.parse(storedArtery as any);
     } catch (err) {
-      storedSchema = null;
+      storedArtery = null;
     }
-    storedSchema && page.setSchema(storedSchema as any);
+    storedArtery && page.setSchema(storedArtery as any);
   }
 }
 

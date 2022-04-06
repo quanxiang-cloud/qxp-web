@@ -1,7 +1,6 @@
 import { BaseBlocksCommunicationState } from '@one-for-all/artery-engine';
 import { Repository } from '@one-for-all/render-engine';
 import {
-  Artery,
   BaseNode,
   APIStatesSpec,
   SharedStatesSpec,
@@ -13,7 +12,6 @@ export interface BlocksCommunicationType extends BaseBlocksCommunicationState {
   componentToAdd?: any;
   docLink?: string;
   hideTestPreview?: boolean;
-  saveSchema?: (schema: Artery) => void;
   repository?: Repository;
   appID?: string;
   pageId?: string;
@@ -42,7 +40,7 @@ export interface PageNode extends BaseNode {
   disableActions?: boolean;
 }
 
-export interface PageSchema {
+export interface PageArtery {
   node: PageNode;
   apiStateSpec: APIStatesSpec;
   sharedStatesSpec: SharedStatesSpec;

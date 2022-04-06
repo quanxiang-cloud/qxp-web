@@ -17,7 +17,7 @@ export function mapShareState(states: Record<string, string>): SharedStatesSpec 
   }, {});
 }
 
-// map render schema props to react comp props
+// map render artery props to react comp props
 export function mapRawProps(props: Record<string, NodeProperty>): Record<string, any> {
   return mapValues(props, (v)=> {
     if (v.type === 'constant_property') {

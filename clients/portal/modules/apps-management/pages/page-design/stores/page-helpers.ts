@@ -1,6 +1,6 @@
 import { toJS } from 'mobx';
 
-import { PageNode, PageSchema } from '../types';
+import { PageNode, PageArtery } from '../types';
 import { elemId } from '../utils';
 
 export function deepMergeNode(node: PageNode): PageNode {
@@ -106,7 +106,7 @@ export function generateGridChildren(
   return target;
 }
 
-export function initPageSchema(): PageSchema {
+export function initPageArtery(): PageArtery {
   return {
     node: {
       id: elemId('page'),

@@ -4,22 +4,22 @@ import { setBatchGlobalConfig } from '@lib/api/user-config';
 import type { Artery } from '@one-for-all/artery';
 import toast from '@lib/toast';
 
-import { getSchemaKey } from '../api';
+import { getArteryKey } from '../api';
 import ArteryRender from '@c/artery-renderer';
 
 type Props = {
   appID: string;
   pageID: string;
-  previewSchema: Artery;
+  artery: Artery;
 }
 
-function Preview({ appID, pageID, previewSchema }: Props): JSX.Element {
-  const schemaKeys = getSchemaKey(appID, pageID, true);
+function Preview({ appID, pageID, artery }: Props): JSX.Element {
+  const arteryKeys = getArteryKey(appID, pageID, true);
   const [savingDraft, setSavingDraft] = useState(true);
 
   useEffect(() => {
-    setBatchGlobalConfig(schemaKeys.map((schemaKey) => ({
-      key: schemaKey, version: '1.0.0', value: JSON.stringify(previewSchema),
+    setBatchGlobalConfig(arteryKeys.map((arteryKey) => ({
+      key: arteryKey, version: '1.0.0', value: JSON.stringify(artery),
     }))).then(() => {
       setSavingDraft(false);
     }).catch((err) => {
@@ -35,7 +35,7 @@ function Preview({ appID, pageID, previewSchema }: Props): JSX.Element {
 
   return (
     <ArteryRender
-      arteryID={schemaKeys[0]}
+      arteryID={arteryKeys[0]}
       version="0.1.0"
     />
   );

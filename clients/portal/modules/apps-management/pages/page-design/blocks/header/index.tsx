@@ -3,8 +3,8 @@ import cs from 'classnames';
 import { observer } from 'mobx-react';
 import { toJS, reaction } from 'mobx';
 import { Icon, Button, Tooltip, Modal } from '@one-for-all/ui';
-import { SchemaRender } from '@one-for-all/render-engine';
-import PageEngine2, { BlockItemProps } from '@one-for-all/artery-engine';
+import { ArteryRenderer } from '@one-for-all/artery-renderer';
+import ArteryEngine, { BlockItemProps } from '@one-for-all/artery-engine';
 
 import { useCtx } from '../../ctx';
 import { BlocksCommunicationType } from '../../types';
@@ -24,7 +24,7 @@ function Toolbar({ blocksCommunicationState$ }: BlockItemProps<BlocksCommunicati
   const repository = useMemo(()=> ({
     'ofa-ui@latest': registry.toComponentMap(),
   }), []);
-  const { docLink = '', hideTestPreview } = PageEngine2.useObservable(
+  const { docLink = '', hideTestPreview } = ArteryEngine.useObservable(
     blocksCommunicationState$, { activeNodeID: '' },
   );
 
@@ -71,13 +71,13 @@ function Toolbar({ blocksCommunicationState$ }: BlockItemProps<BlocksCommunicati
     aElem.click();
   }
 
-  function renderSchemaRender(): JSX.Element {
-    const schema = toJS(page.schema);
-    window.__isDev__ && console.log('preview page schema: ', schema);
+  function rendeArtery(): JSX.Element {
+    const artery = toJS(page.schema);
+    window.__isDev__ && console.log('preview page artery: ', artery);
 
     return (
-      <SchemaRender
-        schema={schema as any}
+      <ArteryRenderer
+        artery={artery as any}
         plugins={{ repository: repository as any }}
       />
     );
@@ -162,7 +162,7 @@ function Toolbar({ blocksCommunicationState$ }: BlockItemProps<BlocksCommunicati
           onClose={()=> setOpenPreview(false)}
           fullscreen
         >
-          {renderSchemaRender()}
+          {rendeArtery()}
         </Modal>
       )}
     </div>

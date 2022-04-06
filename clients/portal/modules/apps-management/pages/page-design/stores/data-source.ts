@@ -5,7 +5,7 @@ import { toast } from '@one-for-all/ui';
 
 import pageStore from './page';
 import eventBus from './event-bus';
-import { mapShareState, mapApiState } from '../utils/schema-adapter';
+import { mapShareState, mapApiState } from '../utils/artery-adapter';
 
 export type SharedVal={
   name: string;

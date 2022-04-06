@@ -8,9 +8,9 @@ import { findNode, findParentId,
   replaceNode as replaceTreeNode } from '../utils/tree-utils';
 import registry from './registry';
 import dataSource from './data-source';
-import type { DragPos, PageNode, PageSchema, SchemaElements, SourceElement } from '../types';
-import { mapRawProps, mergeAsRenderEngineProps, transformLifecycleHooks } from '../utils/schema-adapter';
-import { initPageSchema, deepMergeNode, generateGridChildren } from './page-helpers';
+import type { DragPos, PageNode, PageArtery, SchemaElements, SourceElement } from '../types';
+import { mapRawProps, mergeAsRenderEngineProps, transformLifecycleHooks } from '../utils/artery-adapter';
+import { initPageArtery, deepMergeNode, generateGridChildren } from './page-helpers';
 
 type Mode = 'design' | 'preview'
 
@@ -20,7 +20,7 @@ interface AppendNodeOptions {
 }
 
 class PageStore {
-  @observable schema: PageSchema = initPageSchema();
+  @observable schema: PageArtery = initPageArtery();
   @observable hideElemIds = new Set();
   @observable mode: Mode = 'design';
   @observable activeElemId = '';
@@ -68,13 +68,13 @@ class PageStore {
   }
 
   @action
-  setSchema = (schema: PageSchema): void => {
+  setSchema = (schema: PageArtery): void => {
     // ignore html node
     if (schema.node.type === 'html-element') {
       return;
     }
 
-    this.schema = schema || initPageSchema();
+    this.schema = schema || initPageArtery();
 
     // init data source when set page schema
     runInAction(() => {
@@ -509,7 +509,7 @@ class PageStore {
 
   @action
   reset = (): void => {
-    this.schema = initPageSchema();
+    this.schema = initPageArtery();
     this.mode = 'design';
     this.activeElemId = '';
     this.dragPos = 'down';

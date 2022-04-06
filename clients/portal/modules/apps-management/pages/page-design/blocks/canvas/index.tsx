@@ -9,7 +9,7 @@ import { useCtx } from '../../ctx';
 import { ElementInfo, BlocksCommunicationType } from '../../types';
 import NodeRender from './node-render';
 import NodeToolbox from './node-toolbox';
-import { loadDevEnvPageSchema } from '../../utils/helpers';
+import { loadDevEnvPageArtery } from '../../utils/helpers';
 import { useStyle } from '../../hooks/use-style';
 
 import styles from './index.m.scss';
@@ -34,7 +34,7 @@ function Canvas({ schema }: BlockItemProps<BlocksCommunicationType>): JSX.Elemen
   }));
 
   useEffect(() => {
-    loadDevEnvPageSchema();
+    loadDevEnvPageArtery();
     // sync schema prop with store state
     schema && page.setSchema(schema as any);
   }, []);
