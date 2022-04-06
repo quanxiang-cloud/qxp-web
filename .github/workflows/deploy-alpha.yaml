@@ -75,7 +75,7 @@ jobs:
         if: ${{ failure() }}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-  deploy-testing:
+  deploy-alpha:
     needs: [build-qxp-web-nginx, build-qxp-web-portal-and-home]
     runs-on: self-hosted
     steps:
