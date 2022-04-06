@@ -166,6 +166,7 @@ declare namespace FormBuilder {
     targetField: string;
     ruleJoinOperator: 'every' | 'some';
     rules: Array<FormDataFilterRule>;
+    filterConfig?: FilterConfig
   }
 
   type DataAssignment = {
