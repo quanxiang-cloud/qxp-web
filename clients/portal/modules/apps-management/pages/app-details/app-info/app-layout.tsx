@@ -13,6 +13,10 @@ function AppLayout(): JSX.Element {
     return <Loading />;
   }
 
+  if (!store?.appLayout) {
+    return (<div>暂无应用布局</div>);
+  }
+
   return (
     <div className="border rounded-8">
       <Card
@@ -22,19 +26,13 @@ function AppLayout(): JSX.Element {
         itemTitleClassName="text-h6"
         action={(
           <div className="flex items-center">
-            <Button
-              modifier='primary'
-              onClick={() => {
-                // todo
-              }}
-            >去设计</Button>
+            <Button modifier='primary' onClick={() => { }} >
+              去设计
+            </Button>
           </div>
         )}
         descClassName="text-caption"
       >
-        <div className='flex flex-grow mx-20 mt-20 bg-white rounded-12'>
-          {!store?.appLayout && (<div>暂无应用布局</div>)}
-        </div>
       </Card>
     </div>
   );
