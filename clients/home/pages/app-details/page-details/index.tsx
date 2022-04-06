@@ -150,7 +150,7 @@ function PageDetails(): JSX.Element | null {
       );
     } else if (menuType === MenuType.schemaPage) {
       return (
-        <SchemaPage appId={store.appID} pageId={store.pageID} />
+        <SchemaPage schemaID="" appId={store.appID} pageId={store.pageID} />
       );
     } else {
       if (fetchSchemeLoading) {

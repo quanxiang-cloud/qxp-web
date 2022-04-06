@@ -1,9 +1,9 @@
 import PageSchemaRender from '@c/page-schema-render';
 import React, { useEffect, useState } from 'react';
-
 import { getSchemaKey } from './api';
 
 interface Props {
+  schemaID: string;
   appId: string;
   pageId: string;
   draft?: boolean;
@@ -11,18 +11,19 @@ interface Props {
   className?: string;
 }
 
-function SchemaPage({ appId, pageId, draft }: Props): JSX.Element {
-  const [schemaKey, setSchemaKey] = useState(getSchemaKey(appId, pageId, !!draft)[0]);
+function SchemaPage({ schemaID, appId, pageId, draft }: Props): JSX.Element {
+  console.log(schemaID);
+  const [schemaKey, setSchemaKey] = useState(getSchemaKey(appId, schemaID, !!draft)[0]);
 
   useEffect(() => {
-    setSchemaKey(getSchemaKey(appId, pageId, !!draft)[0]);
+    setSchemaKey(getSchemaKey(appId, schemaID, !!draft));
   }, [appId, pageId, !!draft]);
 
   return (
     <PageSchemaRender
       key={schemaKey}
       schemaKey={schemaKey}
-      version="0.1.0"
+      version="1.0.0"
     />
   );
 }

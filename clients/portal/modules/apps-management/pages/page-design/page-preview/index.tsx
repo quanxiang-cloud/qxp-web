@@ -1,13 +1,13 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { getQuery } from '@lib/utils';
 
 import SchemaPage from '../schema-page';
 
 function PagePreview(): JSX.Element {
-  const { appID, pageId } = useParams<{appID: string, pageId: string}>();
+  const { appID, pageId, schemaID } = getQuery<{appID: string, pageId: string, schemaID: string}>();
 
   return (
-    <SchemaPage appId={appID} pageId={pageId} draft />
+    <SchemaPage schemaID={schemaID} appId={appID} pageId={pageId} draft />
   );
 }
 
