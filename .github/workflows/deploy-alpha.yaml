@@ -1,0 +1,90 @@
+name: Deploy for alpha
+env:
+  IMAGE_REPO: qxcr.xyz/lowcode
+  DATE: $(date "+%Y%m%d")
+on:
+  push:
+    branches:
+      - alpha
+jobs:
+  bundle-clients:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/client-boot-up
+      - uses: ./.github/actions/quality-check
+      - uses: ./.github/actions/build-static
+      - uses: ./.github/actions/fail-alert
+        if: ${{ failure() }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  deploy-to-deprecate-alpha:
+    needs: [bundle-clients]
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download client statices
+        uses: actions/download-artifact@v3
+        with:
+          name: dist
+          path: dist
+      - run: GOOS=linux go build -o ./dist/portal server/cmd/portal/main.go
+      - run: GOOS=linux go build -o ./dist/home server/cmd/home/main.go
+      - run: scp ./dist/portal qxp-alpha:/tmp
+      - run: scp ./dist/home qxp-alpha:/tmp
+      - run: rsync -avz ./dist/ qxp-alpha:/qxp/dist
+      - run: ssh qxp-alpha /qxp/script/reload_portal
+  build-qxp-web-nginx:
+    needs: [bundle-clients]
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download client statices
+        uses: actions/download-artifact@v3
+        with:
+          name: dist
+          path: dist
+      - run: echo IMAGE_TAG="v${{ env.DATE }}-${GITHUB_SHA::7}" >> $GITHUB_ENV
+      - run: docker build -t "$IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG" -f ./deploy/Dockerfile-nginx .
+      - run: docker push "$IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG"
+      - run: docker rmi "$IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG"
+      - uses: ./.github/actions/fail-alert
+        if: ${{ failure() }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  build-qxp-web-portal-and-home:
+    needs: [bundle-clients]
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download templates and manifest.json
+        uses: actions/download-artifact@v3
+        with:
+          name: templates
+          path: dist
+      - run: go mod tidy
+      - run: go mod vendor
+      - run: echo IMAGE_TAG="v${{ env.DATE }}-${GITHUB_SHA::7}" >> $GITHUB_ENV
+      - run: docker build -t "$IMAGE_REPO/qxp-web-portal:$IMAGE_TAG" -f ./deploy/Dockerfile-portal .
+      - run: docker build -t "$IMAGE_REPO/qxp-web-home:$IMAGE_TAG" -f ./deploy/Dockerfile-home .
+      - run: docker push "$IMAGE_REPO/qxp-web-portal:$IMAGE_TAG"
+      - run: docker push "$IMAGE_REPO/qxp-web-home:$IMAGE_TAG"
+      - run: docker rmi "$IMAGE_REPO/qxp-web-home:$IMAGE_TAG"
+      - run: docker rmi "$IMAGE_REPO/qxp-web-portal:$IMAGE_TAG"
+      - uses: ./.github/actions/fail-alert
+        if: ${{ failure() }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  deploy-alpha:
+    needs: [build-qxp-web-nginx, build-qxp-web-portal-and-home]
+    runs-on: self-hosted
+    steps:
+      - run: echo IMAGE_TAG="v${{ env.DATE }}-${GITHUB_SHA::7}" >> $GITHUB_ENV
+      - run: bash -c "helm upgrade qxp-web-portal /root/quanxiang_charts_alpha/qxp-web-portal --kubeconfig ~/.kube/config_alpha --set image.tag=$IMAGE_TAG --set image.repo=$IMAGE_REPO -n lowcode"
+      - run: bash -c "helm upgrade qxp-web-home /root/quanxiang_charts_alpha/qxp-web-home --kubeconfig ~/.kube/config_alpha --set image.tag=$IMAGE_TAG --set image.repo=$IMAGE_REPO -n lowcode"
+      - run: bash -c "helm upgrade qxp-web-nginx /root/quanxiang_charts_alpha/qxp-web-nginx --kubeconfig ~/.kube/config_alpha --set image.tag=$IMAGE_TAG --set image.repo=$IMAGE_REPO -n lowcode"
+      - run: echo "deploy alpha done!"
+      - uses: ./.github/actions/fail-alert
+        if: ${{ failure() }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

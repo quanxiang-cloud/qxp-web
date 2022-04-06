@@ -14,7 +14,7 @@ function DirectSuperior({ value, onChange }: Props): JSX.Element {
   const [showLeaderModal, setShowLeaderModal] = useState(false);
   const [leader, setLeader] = useState<Leader>({
     id: value ? value.id : '',
-    userName: value ? value.userName : '',
+    name: value ? value.name : '',
   });
 
   async function onAssociate( leader: Leader): Promise<any> {
@@ -27,7 +27,7 @@ function DirectSuperior({ value, onChange }: Props): JSX.Element {
     <div className="flex items-center leaderName">
       <Input
         className="flex-1 grid"
-        value={leader.userName}
+        value={leader.name}
         placeholder="直属上级姓名"
       />
       <Button

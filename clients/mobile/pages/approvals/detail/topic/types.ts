@@ -18,4 +18,5 @@ export interface Comment {
   isDeleted: number;
   taskId: string;
   modifyTime: string;
+  createTime: string;
 }

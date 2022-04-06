@@ -1,4 +1,4 @@
-import httpClient, { httpClientGraphQL } from '@lib/http-client';
+import httpClient from '@lib/http-client';
 
 export const createPerGroup = (appID: string, data: RightsCreate): Promise<{ id: string }> => {
   return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/create`, data);
@@ -101,6 +101,6 @@ export const deleteFormPer = (appID: string, data: PerDataReq) => {
   return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/deleteForm`, data);
 };
 
-export const getUserDetail = <T>(params: {query: string}) => {
-  return httpClientGraphQL<T>('/api/v1/nurturing/getUserByIDs', params);
+export const getUserDetail = <T>(IDs: string[]) => {
+  return httpClient<T>('/api/v1/org/h/user/ids', { IDs } );
 };

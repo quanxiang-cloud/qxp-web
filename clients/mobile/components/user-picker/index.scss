@@ -1,0 +1,57 @@
+.add-outline {
+  border: 1px dashed var(--gray-300);
+  border-radius: 0.04rem 0 0.04rem 0.04rem;
+  height: 0.4rem;
+  width: 0.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.person-list {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.person-item {
+  height: 0.4rem;
+  line-height: 0.4rem;
+  width: 1.2rem;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  margin-right: 0.04rem;
+}
+
+.person-img {
+  background-color: var(--blue-600);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 0.425rem;
+  border-radius: 0.08rem 0 0 0;
+}
+
+.person-name {
+  background-color: var(--blue-100);
+  color: var(--blue-600);
+  flex: 1;
+  padding: 0.08rem;
+  line-height: 0.24rem;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-radius: 0 0.02rem 0.08rem 0;
+}
+
+.checked-list-info {
+  display: flex;
+  flex: 1;
+  font-size: 0.12rem;
+  align-items: center;
+  margin-left: 0.2rem;
+  color: var(--gray-400);
+}

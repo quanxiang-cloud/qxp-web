@@ -30,6 +30,49 @@ export function httpClient<TData>(
   });
 }
 
+function stringify(obj: Record<string, any>): string {
+  return Object.entries(obj).reduce((acc, [key, value], index) => {
+    let query = acc + `${key}=${value}`;
+    if (index < Object.entries(obj).length - 1) {
+      query += '&';
+    }
+    return query;
+  }, '');
+}
+
+export function httpClientGET<TData>(
+  path: string, body?: unknown, additionalHeaders?: HeadersInit,
+): Promise<TData> {
+  const headers = {
+    'X-Proxy': 'API',
+    'Content-Type': 'application/json',
+    ...additionalHeaders,
+  };
+
+  const _path = body ? `${path}?${stringify((body as Record<string, any>))}` : path;
+
+  return fetch(_path, {
+    method: 'GET',
+    headers: headers,
+  }).then((response) => {
+    if ([404, 500].includes(response.status)) {
+      return Promise.reject(new Error('请求失败!'));
+    }
+    return response.json();
+  }).then((resp) => {
+    const { code, msg, data } = resp;
+    if (code !== 0) {
+      const e = new Error(msg);
+      if (data) {
+        Object.assign(e, { data });
+      }
+      return Promise.reject(e);
+    }
+
+    return data as TData;
+  });
+}
+
 export function validateUsername(username: HTMLInputElement, message: HTMLElement): boolean {
   if (!username.value) {
     message.innerText = '用户名不能为空';

@@ -40,7 +40,7 @@ export default function UserAvatarMenu({ className }: Props): JSX.Element {
         ref={reference}
       >
         <Avatar
-          username={window.USER?.userName || ''}
+          username={window.USER?.name || ''}
         />
         <Icon name={show ? 'arrow_drop_up' : 'arrow_drop_down'} className='text-current' size={20} />
       </div>
@@ -56,13 +56,13 @@ export default function UserAvatarMenu({ className }: Props): JSX.Element {
           <div className='user-avatar-menu-bg flex py-20'>
             <div className='pl-20'>
               <Avatar
-                username={window.USER?.userName || ''}
+                username={window.USER?.name || ''}
                 size={48}
               />
             </div>
             <div className='flex flex-col ml-8'>
               <span className='text-20 font-medium text-gray-900'>
-                {window.USER.userName}
+                {window.USER.name}
               </span>
               <span className='pr-20 text-12 text-gray-600'>
                 {window.SIDE === 'portal' ?

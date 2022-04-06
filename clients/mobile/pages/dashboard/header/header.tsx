@@ -5,9 +5,10 @@ import Avatar from '@m/qxp-ui-mobile/avatar';
 import { HomePageProps } from '../types';
 
 import './header.scss';
+import { getUserDepartment } from '@lib/utils';
 
 const Header: React.FC<HomePageProps> = (props) => {
-  const depName = window.USER?.dep?.departmentName ?? '';
+  const { name: depName } = getUserDepartment(window.USER);
 
   function renderHeader(): JSX.Element {
     return (

@@ -1,12 +1,12 @@
-import React, { useState, forwardRef, useImperativeHandle } from 'react';
+import React, { useState, forwardRef, useImperativeHandle, useContext } from 'react';
 import { useQuery } from 'react-query';
 
 import Button from '@c/button';
 import { getFormFieldSchema } from '@flow/content/editor/forms/api';
 import { ValueRuleVal } from '@flow/content/editor/type';
-
+import Context from '../context';
 import RuleItem from './rule-item';
-
+import { useUpdateEffect } from 'react-use';
 interface Props {
   appId: string;
   tableId: string;
@@ -24,6 +24,7 @@ export type Rule = {
 export type RefType = { getValues: () => any }
 
 function UpdateRules({ appId, tableId, defaultValue }: Props, ref: React.Ref<RefType>): JSX.Element {
+  const { data } = useContext(Context);
   const [rules, setRules] = useState<Array<Rule>>(defaultValue || []);
   const { data: targetSchema } = useQuery(['GET_TARGET_TABLE_SCHEMA', tableId, appId], getFormFieldSchema, {
     enabled: !!appId && !!tableId,
@@ -49,7 +50,9 @@ function UpdateRules({ appId, tableId, defaultValue }: Props, ref: React.Ref<Ref
       return item;
     }));
   };
-
+  useUpdateEffect(()=>{
+    setRules([]);
+  }, [data]);
   return (
     <div className="flex flex-col wrap-filter-rules">
       <fieldset className="mt-20">
@@ -58,7 +61,7 @@ function UpdateRules({ appId, tableId, defaultValue }: Props, ref: React.Ref<Ref
           <Button onClick={onAdd}>新增</Button>
         </div>
         <div className="flex flex-col update-conditions">
-          {rules.map((rule, idx) =>
+          {targetSchema && rules.map((rule, idx) =>
             (<RuleItem
               key={[rule.fieldName, idx].join('-')}
               targetSchema={targetSchema}

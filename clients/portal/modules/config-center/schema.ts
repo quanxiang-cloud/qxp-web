@@ -179,7 +179,7 @@ const schema: Schema = {
                       };
                       this.apiStates.querySchema.fetch({ body }, () => {
                         try {
-                          const value = this.apiStates.querySchema.result.result[this.states.key];
+                          const value = this.apiStates.querySchema.result.data.result[this.states.key];
                           this.states.schema = JSON.stringify(JSON.parse(value), null, 2);
                         } catch (err) {
                           console.log(err)

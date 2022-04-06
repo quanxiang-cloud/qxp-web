@@ -5,7 +5,7 @@ import { fetchUserList } from '../lib/api';
 import { getFlowInstanceCount } from './approvals/api';
 
 class UserAppStore {
-  @observable appList = [];
+  @observable appList: Array<AppInfo> = [];
   @observable listLoading = false;
 
   @observable TODO_LIST = [
