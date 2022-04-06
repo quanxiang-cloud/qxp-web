@@ -1,10 +1,10 @@
 import React from 'react';
+import cs from 'classnames';
 
 import AppIcon from '@c/app-icon';
 import { parseJSON } from '@lib/utils';
 
 import './index.scss';
-import toast from '@lib/toast';
 
 type Props = {
   appInfo: AppInfo;
@@ -18,13 +18,11 @@ function AppInfoView({ appInfo, className = '' }: Props): JSX.Element {
     <a
       href={appInfo.accessURL}
       onClick={(e) => {
-        if (!appInfo.accessURL) {
-          e.preventDefault();
-          toast.error('该应用没有设置主页，暂时无法访问');
-          return;
-        }
+        if (!appInfo.accessURL) e.preventDefault();
       }}
-      className={`${className} flex-1 flex overflow-hidden items-center`}
+      className={cs('rounded-12 bg-white flex-1 flex overflow-hidden items-center', {
+        'opacity-70': !appInfo.accessURL,
+      }, className)}
     >
       <AppIcon
         className='mr-8'
@@ -34,9 +32,9 @@ function AppInfoView({ appInfo, className = '' }: Props): JSX.Element {
       />
       <div className='flex-1 app-info-view-text overflow-hidden'>
         <p className='truncate app-info-view-name text-gray-900'>{appInfo.appName}</p>
-        {'useStatus' in appInfo && (
-          <p className='app-info-view-status'>{appInfo.useStatus > 0 ? '已发布' : '未发布'}</p>
-        )}
+        {
+          !appInfo.accessURL && (<p className='app-info-view-status'>该应用未配置主页，无法访问</p>)
+        }
       </div>
     </a>
   );

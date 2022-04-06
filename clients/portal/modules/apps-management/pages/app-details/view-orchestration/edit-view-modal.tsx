@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Form, Input } from 'antd';
 
 import Modal from '@c/modal';
@@ -64,6 +64,10 @@ function EditViewModal(
   const [viewType, setViewType] = useState<ViewType>(viewParams?.type || ViewType.TableSchemaView);
   const [form] = Form.useForm();
   const allViewNames = views.map((view) => (view as BaseView).name);
+  const layoutOptions = useMemo(() => layouts.map((layout) => ({
+    label: layout.id === 'root_node' ? '无' : layout.name,
+    value: layout.id,
+  })), [layouts]);
 
   function handleSubmit(): void {
     form.submit();
@@ -156,11 +160,8 @@ function EditViewModal(
             >
               <Select
                 placeholder="请选择"
-                options={layouts.map((layout) => ({
-                  label: layout.name,
-                  value: layout.id,
-                }))}
-                defaultValue={''}
+                options={layoutOptions}
+                defaultValue={'root_node'}
               />
             </Item>
             {/* <Item

@@ -28,6 +28,7 @@ function AppViews(): JSX.Element {
 
   function handleModalSubmit(viewInfo: CreateViewParams<View>): void {
     store?.handleViewInfoSubmit(viewInfo).then(()=> {
+      store?.setCurrentView(viewInfo);
       closeModal();
       toast.success((store?.modalType === 'createView' ? '添加' : '修改') + '成功');
     });

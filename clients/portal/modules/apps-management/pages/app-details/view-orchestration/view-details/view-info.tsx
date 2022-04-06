@@ -68,39 +68,37 @@ function ViewInfo({ view, openModal }: Props): JSX.Element {
   const { appID } = useParams<{ appID: string }>();
   const pageDescriptions = [{ id: 'type', title: '页面类型', value: VIEW_MAP[type].viewType }];
 
-  const Preview = useMemo((): JSX.Element | null => {
-    if (type === ViewType.StaticView) {
-      return (
-        <iframe
-          className="w-full h-full"
-          src={view.fileUrl}
-          style={{ border: 'none' }}
-        />
-      );
-    }
+  const Preview = useMemo((): JSX.Element | null => (
+    <div className='h-full pointer-events-none'>
+      {
+        type === ViewType.StaticView && (
+          <iframe
+            className="w-full h-full"
+            src={view.fileUrl}
+            style={{ border: 'none' }}
+          />
+        ) }
 
-    if (type === ViewType.ExternalView) {
-      const link = realizeLink(view);
-      return (
-        <iframe
-          className="w-full h-full"
-          src={link}
-          style={{ border: 'none' }}
-        />
-      );
-    }
-
-    if (type === ViewType.SchemaView) {
-      return (
-        <ArteryRenderer
-          arteryID={view.arteryID}
-          version={VERSION}
-        />
-      );
-    }
-
-    return null;
-  }, [view]);
+      {
+        type === ViewType.ExternalView && (
+          <iframe
+            className="w-full h-full"
+            src={realizeLink(view)}
+            style={{ border: 'none' }}
+          />
+        )
+      }
+      {
+        type === ViewType.SchemaView && (
+          <ArteryRenderer
+            arteryID={view.arteryID}
+            version={VERSION}
+          />
+        )
+      }
+    </div>
+  )
+  , [view]);
 
   function goPageDesign(): void {
     // to change below line after page engine v2 new update
@@ -132,7 +130,7 @@ function ViewInfo({ view, openModal }: Props): JSX.Element {
   }
 
   return (
-    <div className='relative h-full flex-1 overflow-hidden p-16'>
+    <div className='relative flex flex-col flex-1 overflow-hidden p-16'>
       <div className='px-16 py-8 rounded-8 border-1 flex items-center'>
         <div className="page-details-icon">
           <Icon
@@ -163,7 +161,8 @@ function ViewInfo({ view, openModal }: Props): JSX.Element {
       </div>
       {[ViewType.SchemaView, ViewType.StaticView, ViewType.ExternalView].includes(type) && (
         <Tab
-          contentClassName='h-full'
+          className='flex-1'
+          contentClassName='flex-1'
           items={[
             {
               id: 'page-preview',

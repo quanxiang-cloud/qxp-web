@@ -10,7 +10,7 @@ import {
   CreateCustomPageParams,
 } from './type';
 
-export const fetchAppDetails = async (id: string)=> {
+export const fetchAppDetails = async (id: string): Promise<AppInfo> => {
   return await httpClient('/api/v1/app-center/one', { id });
 };
 

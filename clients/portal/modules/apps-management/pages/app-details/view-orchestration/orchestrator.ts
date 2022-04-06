@@ -40,7 +40,7 @@ import {
   ViewType,
 } from './types.d';
 import { ROOT_NODE_ID } from './constants';
-import { createBlank, updateApp } from '../api';
+import { createBlank, fetchAppDetails, updateApp } from '../api';
 
 class Orchestrator {
   @observable loading = true;
@@ -67,6 +67,7 @@ class Orchestrator {
     this.appLayout = get(_rootNOde, 'props.data-layout-type.value', undefined);
 
     this.currentView = this.views[0];
+    this.fetchAppHomeView(appID);
   }
 
   @computed get layouts(): Array<Layout> {
@@ -464,6 +465,14 @@ class Orchestrator {
     const view = this.views.find((view) => view.name === viewName) as View;
     this.homeView = view;
     return this.saveAppHomeViewUrl(view.url);
+  }
+
+  @action
+  fetchAppHomeView(id: string): void {
+    fetchAppDetails(id).then(({ accessURL }) => {
+      const view = this.views.find((view) => (view as View).url === accessURL);
+      this.homeView = view as View;
+    });
   }
 }
 

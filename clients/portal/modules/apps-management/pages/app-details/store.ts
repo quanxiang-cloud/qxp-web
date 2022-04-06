@@ -83,6 +83,7 @@ class AppDetailsStore {
     appName: '',
     appIcon: '',
     appSign: '',
+    accessURL: '',
   };
   @observable loading = false;
   @observable lastUpdateTime = 0;
