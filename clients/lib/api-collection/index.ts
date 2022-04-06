@@ -1,6 +1,7 @@
-import { useObservable } from 'react-use';
 import { BehaviorSubject } from 'rxjs';
 import { mergeRight } from 'ramda';
+
+import useObservable from '@lib/hooks/use-observable';
 
 import { Directory, PathType, API } from './types';
 import {
