@@ -384,8 +384,7 @@ class Orchestrator {
   @action
   async saveSchema(rootNode: Node | undefined): FutureErrorMessage {
     if (!rootNode) {
-      // todo implement this!!!
-      return Promise.resolve('todo some error message');
+      return Promise.resolve('App rootNode is null');
     }
 
     this.loading = true;

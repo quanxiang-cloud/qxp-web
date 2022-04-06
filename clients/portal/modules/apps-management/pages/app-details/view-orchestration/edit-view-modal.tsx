@@ -65,7 +65,7 @@ function EditViewModal(
   const [form] = Form.useForm();
   const allViewNames = views.map((view) => (view as BaseView).name);
   const layoutOptions = useMemo(() => layouts.map((layout) => ({
-    label: layout.id === 'root_node' ? '无' : layout.name,
+    label: layout.id === 'root_node' ? '应用默认布局（默认）' : layout.name,
     value: layout.id,
   })), [layouts]);
 

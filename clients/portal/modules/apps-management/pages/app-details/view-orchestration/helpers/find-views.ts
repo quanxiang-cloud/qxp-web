@@ -11,8 +11,6 @@ import {
   Node,
 } from '@one-for-all/artery';
 
-import logger from '@lib/logger';
-
 import { ExternalView, View, ViewType, SchemaView, StaticView, TableSchemaView } from '../types.d';
 import { isLayoutNode } from './utils';
 
@@ -85,7 +83,6 @@ function convertNodeToView(node: Node): View | undefined {
   case ViewType.StaticView:
     return convertNodeToStaticView(node as ReactComponentNode);
   default:
-    logger.error('todo some error message');
     break;
   }
 }
