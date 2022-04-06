@@ -18,6 +18,7 @@ export function getFieldPath(linkageRulePath: string, fieldRealPath: string): st
 function fetchLinkedTableData$(
   getFieldValue: (path: string) => any,
   linkage: FormBuilder.DefaultValueLinkage,
+  isMultiple = false,
 ): Observable<Record<string, any>> {
   const rules: Rule[] = linkage.rules.map((rule) => {
     return operatorESParameter(
@@ -40,7 +41,8 @@ function fetchLinkedTableData$(
     }),
   ).pipe(
     catchError(() => of({ entities: [], total: 0 })),
-    map((res: FormDataListResponse) => res?.entities?.[0]),
+    filter((res) => !!res),
+    map((res: FormDataListResponse) => isMultiple ? res.entities : res.entities?.[0]),
     filter((record) => !!record),
   );
 }
@@ -134,7 +136,6 @@ function findAllLinkages(schema: ISchema, subTableFieldName?: string): FormBuild
       const _linkage = subTableFieldName ? transformSubTableLinkage(linkage, subTableFieldName) : linkage;
       linkages.push(_linkage);
     }
-
     return linkages;
   }, []);
 }
@@ -144,7 +145,31 @@ type ExecuteLinkage = {
   formActions: ISchemaFormActions,
 }
 
-function executeLinkage({ linkage, formActions }: ExecuteLinkage): void {
+function getMultipleStatus(schema: ISchema, linkage: FormBuilder.DefaultValueLinkage): boolean {
+  const fieldId = linkage.targetField;
+  return !!schema.properties?.[fieldId]?.['x-component-props']?.multiple;
+}
+
+function getLinkedRows(
+  linkage: FormBuilder.DefaultValueLinkage,
+  getFieldValue: (path: string) => any,
+  linkedRow?: Record<string, any> | any[],
+  fieldRealPath?: string,
+): any[] {
+  if (!linkedRow) return [[], fieldRealPath];
+  const linkedRows = !Array.isArray(linkedRow) ? [linkedRow] : linkedRow;
+  const rows = linkedRows.map((linkedRow) => {
+    const shouldFire = shouldFireEffect({ linkedRow, linkage, getFieldValue });
+    if (shouldFire) {
+      return linkedRow;
+    }
+    return null;
+  }).filter(Boolean);
+  return [rows, fieldRealPath];
+}
+
+function executeLinkage(schema: ISchema, { linkage, formActions }: ExecuteLinkage): void {
+  const isMultiple = getMultipleStatus(schema, linkage);
   const { setFieldState, getFieldValue } = formActions;
   const listenedOnFields: string[] = [];
   linkage.rules.forEach((rule) => {
@@ -155,12 +180,12 @@ function executeLinkage({ linkage, formActions }: ExecuteLinkage): void {
 
   if (!listenedOnFields.length) {
     of(true).pipe(
-      switchMap(() => fetchLinkedTableData$(getFieldValue, linkage)),
-      filter((linkedRow) => shouldFireEffect({ linkedRow, linkage, getFieldValue })),
-    ).subscribe((linkedRow) => {
+      switchMap(() => fetchLinkedTableData$(getFieldValue, linkage, isMultiple)),
+      map((linkedRow) => getLinkedRows(linkage, getFieldValue, linkedRow)),
+    ).subscribe(([linkedRow]) => {
       logger.debug(`execute defaultValueLinkage on field: ${linkage.targetField}`);
       setFieldState(linkage.targetField, (state) => {
-        state.value = linkage.linkedField ? linkedRow[linkage.linkedField] : linkedRow;
+        state.value = linkage.linkedField ? linkedRow[0][linkage.linkedField] : linkedRow;
       });
     });
     return;
@@ -169,18 +194,18 @@ function executeLinkage({ linkage, formActions }: ExecuteLinkage): void {
   onFieldValueChange$(`*(${listenedOnFields.join(',')})`).pipe(
     debounceTime(200),
     filter((state) => shouldFetchLinkedTableData(getFieldValue, linkage, state.path)),
-    switchMap((state) => combineLatest([fetchLinkedTableData$(getFieldValue, linkage), of(state.path)])),
-    filter(([linkedRow]) => shouldFireEffect({ linkedRow, linkage, getFieldValue })),
+    switchMap((state) => combineLatest([fetchLinkedTableData$(getFieldValue, linkage, isMultiple), of(state.path)])),
+    map(([linkedRow, fieldRealPath]) => getLinkedRows(linkage, getFieldValue, linkedRow, fieldRealPath)),
   ).subscribe(([linkedRow, fieldRealPath]) => {
     logger.debug(`execute defaultValueLinkage on field: ${linkage.targetField}`);
     setFieldState(getFieldPath(linkage.targetField, fieldRealPath), (state) => {
-      state.value = linkage.linkedField ? linkedRow[linkage.linkedField] : linkedRow;
+      state.value = linkage.linkedField ? linkedRow[0][linkage.linkedField] : linkedRow;
     });
   });
 }
 
 export default function DefaultValueLinkageEffect(schema: ISchema, formActions: ISchemaFormActions): void {
   findAllLinkages(schema).forEach((linkage) => {
-    executeLinkage({ linkage, formActions });
+    executeLinkage(schema, { linkage, formActions });
   });
 }

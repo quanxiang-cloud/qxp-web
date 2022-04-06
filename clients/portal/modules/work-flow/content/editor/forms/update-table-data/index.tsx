@@ -205,8 +205,8 @@ export default function UpdateTableData({
           <span className="text-body mr-10">更新对象:</span>
           <RadioButtonGroup
             listData={[
-              { label: '本表单数据', value: 'work-form' },
-              { label: '其它表单数据', value: 'others' },
+              { label: '本条数据', value: 'work-form' },
+              { label: '其它数据', value: 'others' },
             ]}
             onChange={(v) => {
               if (v === formType) return;
