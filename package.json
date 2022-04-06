@@ -40,7 +40,7 @@
     "@one-for-all/headless-ui": "0.1.1",
     "@one-for-all/icon": "^0.6.1",
     "@one-for-all/page-engine": "0.10.0",
-    "@one-for-all/style-guide": "0.1.4",
+    "@one-for-all/style-guide": "0.1.5",
     "@one-for-all/ui": "0.3.3",
     "@one-for-all/utils": "0.1.0",
     "@popperjs/core": "^2.9.1",

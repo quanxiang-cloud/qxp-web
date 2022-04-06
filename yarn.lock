@@ -1247,10 +1247,10 @@
   resolved "https://registry.npmmirror.com/@one-for-all/schema-spec/-/schema-spec-0.14.0.tgz#b27b02ff384ec88150d49a43da8a3d5636aee378"
   integrity sha512-ktrYBcl4tMmq5ywArP4fEHZXB6tzZPWX7uCvi419ayQbO4C3mRPb3p/DnLzyhUiwGJtXRubFlHVWsntKwJVnOg==
 
-"@one-for-all/style-guide@0.1.4":
-  version "0.1.4"
-  resolved "https://registry.npmmirror.com/@one-for-all/style-guide/-/style-guide-0.1.4.tgz#81f10f7aa7cd89fe7baf08854b1d1880dda6e83b"
-  integrity sha512-5mzJPbthDjbqPT2OT1RdCWWyzfZBSv6FVWt+WF/kMRNLNzxQ4KYCTEPtEWG/VicSviqOiQZ2rSBmWZQa4G2MrA==
+"@one-for-all/style-guide@0.1.5":
+  version "0.1.5"
+  resolved "https://registry.npmmirror.com/@one-for-all/style-guide/-/style-guide-0.1.5.tgz#eb53165562a0f281b89f04be4c0a3849104d9f23"
+  integrity sha512-wID/jEeZuTlZ1HWcfwkM6SYvrGDHMn4DgvhyP9eLOA/hPbQZpLs/JMFDy29PZbuAlauwMp1PGFvwfCyvV9jGPw==
   dependencies:
     css-tree "^2.0.4"
     cssbeautify "^0.3.1"
