@@ -1,12 +1,14 @@
 import React from 'react';
 
 import { VERSION } from '@portal/modules/apps-management/pages/app-details/view-orchestration/constants';
-import SchemaRender from '@c/page-schema-render';
+import ArteryRender from '@c/artery-renderer';
 
 import { rootSchemaKey } from './utils';
 
 export default function AppLand(): JSX.Element {
   return (
-    <SchemaRender schemaKey={rootSchemaKey} version={VERSION} />
+    <div style={{ height: '100vh' }}>
+      <ArteryRender arteryID={rootSchemaKey} version={VERSION} />
+    </div>
   );
 }

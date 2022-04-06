@@ -3,6 +3,7 @@ import { useQuery } from 'react-query';
 import { Cascader, CascaderProps } from 'antd';
 import { DefaultOptionType } from 'antd/lib/cascader';
 import { omit, last } from 'lodash';
+import { flatten } from 'ramda';
 
 import { getOptionSetById } from '@portal/modules/option-set/api';
 
@@ -73,8 +74,11 @@ function CascadeSelector({
     defaultValueFrom,
     options: cascadeProps.options || [],
   });
-  function handleChange(_value: CascaderValueType, selected?: any): void {
-    const labelToSave = (selected || []).map(({ label }: any) => label).join('/');
+
+  function handleChange(
+    _value: CascaderValueType, selected?: CascaderOptionType[] | CascaderOptionType[][],
+  ): void {
+    const labelToSave = (flatten(selected || [])).map(({ label }) => label).join('/');
     const valueToSave = _value.join('/');
     cascadeProps && cascadeProps.onChange({ label: labelToSave, value: valueToSave });
   }

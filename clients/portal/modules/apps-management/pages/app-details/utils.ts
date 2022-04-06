@@ -5,8 +5,9 @@ import { flattenDeep, isEmpty } from 'lodash';
 import toast from '@lib/toast';
 
 import { fetchCorrelationFlows, fetchCorrelationRoles } from './api';
-import { CardListInfo, CardList, CustomPageInfo, Description, SchemaPageInfo, MenuType } from './type';
+import { CardListInfo, CardList, CustomPageInfo, Description, SchemaPageInfo } from './type';
 import { Menu } from './page-menu-design/menu-tree/type';
+import { ViewType } from './view-orchestration/types.d';
 
 export const SYSTEM_FIELDS: Record<string, ModelFieldSchema> = {
   _id: {
@@ -189,7 +190,7 @@ export async function getPageCardList(
   appID: string,
   pageID: string,
   cardList: CardList[],
-  menuType: number | undefined,
+  menuType?: ViewType,
 ): Promise<CardList[]> {
   let flowList: CardListInfo[] = [];
   let roleList: CardListInfo[] = [];
@@ -199,7 +200,7 @@ export async function getPageCardList(
     toast.error(err.message);
   });
 
-  if (menuType === MenuType.schemaForm) {
+  if (menuType === ViewType.TableSchemaView) {
     await fetchCorrelationFlows({ appID, formID: pageID }).then((res: CardListInfo[]) => {
       flowList = res;
     }).catch((err) => {

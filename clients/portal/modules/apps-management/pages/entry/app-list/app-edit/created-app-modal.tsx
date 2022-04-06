@@ -7,6 +7,9 @@ import toast from '@lib/toast';
 
 import store from '../store';
 import CreatedEditApp from './created-edit-app';
+import AppLayoutType from '../app-layout-select';
+import { SelectLayoutType } from '../app-layout-select/layout-view';
+import { initAppRootView } from '../../../app-details/view-orchestration/init-app-root-view';
 
 type Props = {
   modalType: string;
@@ -19,6 +22,7 @@ function CreatedAppModal({ modalType, onCancel, templateID }: Props): JSX.Elemen
   const history = useHistory();
   const formRef: any = useRef(null);
   const [appZipInfo, setAppZipInfo] = useState<AppZipInfo | undefined>(undefined);
+  const [defaultAppLayout, setDefaultAppLayout] = useState<SelectLayoutType>('free');
 
   const handleSubmit = (): void => {
     const formDom = formRef.current;
@@ -47,6 +51,7 @@ function CreatedAppModal({ modalType, onCancel, templateID }: Props): JSX.Elemen
       toast.success('创建应用成功！');
       onCancel();
       history.push(`/apps/details/${res}/page_setting`);
+      return initAppRootView(res, defaultAppLayout);
     }).catch(toastError);
   }
 
@@ -82,6 +87,7 @@ function CreatedAppModal({ modalType, onCancel, templateID }: Props): JSX.Elemen
           has('appZipInfo', value) && setAppZipInfo(formRef.current.getFieldValue('appZipInfo'));
         }}
       />
+      <AppLayoutType title='默认应用布局 (应用布局会应用在所有页面):' onSelect={setDefaultAppLayout} />
     </Modal>
   );
 }

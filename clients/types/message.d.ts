@@ -91,7 +91,7 @@ declare namespace Qxp {
     files?: Array<File>,
   }
 
-  interface CreateMsgData {
+  type CreateMsgData = {
     web: MsgArgs
   }
 

@@ -1,19 +1,19 @@
-import { RefLoader } from '@one-for-all/render-engine';
+import { RefLoader } from '@one-for-all/artery-renderer';
 import { VERSION } from '@portal/modules/apps-management/pages/app-details/view-orchestration/constants';
-import SwaggerRPCSpecAdapter from '@lib/adapter-swagger-rpc';
+import SwaggerRPCSpecAdapter from '@lib/api-adapter';
 
-import { fetchSchemaWithSwagger } from './api';
+import { fetchArteryWithSwagger } from './api';
 import repository from './repository';
 
-const refLoader: RefLoader = (schemaID: string) => {
-  return fetchSchemaWithSwagger(schemaID, VERSION).then(({ schema, swagger }) => {
-    if (!schema) {
+const refLoader: RefLoader = (arteryID: string) => {
+  return fetchArteryWithSwagger(arteryID, VERSION).then(({ artery, swagger }) => {
+    if (!artery) {
       return Promise.reject(new Error('failed to fetch schema'));
     }
 
     const adapter = swagger ? new SwaggerRPCSpecAdapter(swagger) : undefined;
     return {
-      schema, plugins: {
+      artery, plugins: {
         apiSpecAdapter: adapter,
         repository,
       },

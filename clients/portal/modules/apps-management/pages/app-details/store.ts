@@ -407,7 +407,7 @@ class AppDetailsStore {
           });
           this.pageDescriptions = [...descriptions];
           this.curPreviewUrl = '';
-          return getPageCardList(this.appID, this.pageID, this.curPageCardList, pageInfo.menuType);
+          return getPageCardList(this.appID, this.pageID, this.curPageCardList, pageInfo.menuType as any);
         }
         this.pageDescriptions = DefaultPageDescriptions;
       }).then((res) => {
@@ -432,7 +432,7 @@ class AppDetailsStore {
         });
         this.pageDescriptions = [...descriptions];
         this.curPreviewUrl = res.fileUrl || '';
-        return getPageCardList(this.appID, this.pageID, this.curPageCardList, pageInfo.menuType);
+        return getPageCardList(this.appID, this.pageID, this.curPageCardList, pageInfo.menuType as any);
       }).then((res) => {
         this.curPageCardList = res;
       }).catch(() => {
@@ -447,7 +447,7 @@ class AppDetailsStore {
         if (schema) {
           this.designPageSchema = schema;
         }
-        return getPageCardList(this.appID, this.pageID, this.curPageCardList, pageInfo.menuType);
+        return getPageCardList(this.appID, this.pageID, this.curPageCardList, pageInfo.menuType as any);
       }).then((res) => {
         this.curPageCardList = res;
       }).catch((err) => {
@@ -474,7 +474,7 @@ class AppDetailsStore {
     this.curPage = curPageInfo;
     this.pageDescriptions = descriptions;
     this.curPreviewUrl = data.fileUrl || '';
-    getPageCardList(this.appID, this.pageID, this.curPageCardList, curPageInfo.menuType).then((res) => {
+    getPageCardList(this.appID, this.pageID, this.curPageCardList, curPageInfo.menuType as any).then((res) => {
       this.curPageCardList = res;
     });
   };

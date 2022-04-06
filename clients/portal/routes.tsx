@@ -8,6 +8,7 @@ import NotFoundError from '@c/404-error';
 
 import AppsRoutes from './modules/apps-management/routes';
 import RedirectToApps from './modules/dashboard/redirect-to-apps';
+import PageDesign from './modules/apps-management/pages/page-design';
 
 const MetaData = React.lazy(() => import('./modules/metadata'));
 const AccessControl = React.lazy(() => import('./modules/access-control'));
@@ -33,6 +34,7 @@ export default function Routes(): JSX.Element {
         <Route path="/style-guide" component={StyleGuide} />
         <Route path="/poly/:appID/:polyFullPath+" component={PolyAPI}/>
         <Route path="/config-center" component={ConfigCenter} />
+        <Route path="/page-engine" component={PageDesign} />
         <Route component={NotFoundError} />
       </Switch>
     </React.Suspense>

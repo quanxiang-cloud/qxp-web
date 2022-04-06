@@ -93,14 +93,9 @@ export default forwardRef(function TriggerWay(
                 options={formFieldOptions.filter((item) => !item.isSystem )}
               />
               <span className={cs('ml-22', {
-                'text-caption': !validating || whenAlterFields?.length,
-                'text-caption-no-color text-red-600': validating && !whenAlterFields?.length,
+                'text-caption': whenAlterFields?.length,
               })}>
-                {
-                  validating && !whenAlterFields?.length ?
-                    '请选择工作表中的字段' :
-                    '修改已有工作表中的指定数据时，触发工作流。若不指定则表示修改任意字段均可触发'
-                }
+                修改已有工作表中的指定数据时，触发工作流。若不指定则表示修改任意字段均可触发
               </span>
             </>
           )}
