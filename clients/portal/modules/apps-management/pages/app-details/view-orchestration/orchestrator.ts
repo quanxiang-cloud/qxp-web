@@ -266,20 +266,22 @@ class Orchestrator {
       },
     };
 
-    if (!params.layoutID) {
-      return this.saveSchema(addViewToRoot(this.rootNode, staticViewNode));
-    }
+    return Promise.resolve().then(() => {
+      if (!params.layoutID) {
+        return this.saveSchema(addViewToRoot(this.rootNode, staticViewNode));
+      }
 
-    const rootNode = addViewToLayout(this.rootNode, params.layoutID, staticViewNode);
+      const rootNode = addViewToLayout(this.rootNode, params.layoutID, staticViewNode);
 
-    return this.saveSchema(rootNode).then((msg) => {
+      return this.saveSchema(rootNode);
+    }).then((msg) => {
       this.setCurrentView(convertNodeToStaticView(staticViewNode));
       return msg;
     });
   }
 
   async addExternalView(params: CreateViewParams<ExternalView>): FutureErrorMessage {
-    const staticViewNode: ReactComponentNode = {
+    const externalViewNode: ReactComponentNode = {
       id: genNodeID(),
       type: 'react-component',
       label: params.name,
@@ -305,14 +307,16 @@ class Orchestrator {
       },
     };
 
-    if (!params.layoutID) {
-      return this.saveSchema(addViewToRoot(this.rootNode, staticViewNode));
-    }
+    return Promise.resolve().then(() => {
+      if (!params.layoutID) {
+        return this.saveSchema(addViewToRoot(this.rootNode, externalViewNode));
+      }
 
-    const rootNode = addViewToLayout(this.rootNode, params.layoutID, staticViewNode);
+      const rootNode = addViewToLayout(this.rootNode, params.layoutID, externalViewNode);
 
-    return this.saveSchema(rootNode).then((msg) => {
-      this.setCurrentView(convertNodeToExternalView(staticViewNode));
+      return this.saveSchema(rootNode);
+    }).then((msg) => {
+      this.setCurrentView(convertNodeToExternalView(externalViewNode));
       return msg;
     });
   }
