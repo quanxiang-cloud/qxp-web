@@ -2,7 +2,7 @@ name: Build for staging environment
 env:
   IMAGE_REPO: qxcr.xyz/lowcode
   DATE: $(date "+%Y%m%d")
-  GIT_TAG: $(git describe --tags)
+  GIT_TAG: $(git describe --tags --abbrev=0)
 on:
   push:
     tags:
