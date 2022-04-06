@@ -47,7 +47,7 @@ function usePoly<I extends Input<any>, O>(
 ): UseMutationResult<O, Error, I> {
   const queryClient = useQueryClient();
   return useMutation<O, Error, I>(
-    ({ path, body }: I): Promise<O> => httpClient<O, I>(`/api/v1/polyapi/poly/${path}`, body),
+    ({ path, body }: I): Promise<O> => httpClient<O>(`/api/v1/polyapi/poly/${path}`, body),
     {
       ...options,
       onSuccess: (data, variables, context) => {

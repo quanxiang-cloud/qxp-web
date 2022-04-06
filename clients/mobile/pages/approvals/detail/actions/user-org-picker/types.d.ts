@@ -1,12 +1,12 @@
 declare namespace UserApi {
   interface User {
-    userName: string;
+    name: string;
     id: string;
   }
 
   interface SearchUserResponse {
-    data: User[];
-    total_count: number;
+    users: User[];
+    total: number;
   }
 
   interface AdminUserProps {
@@ -22,16 +22,10 @@ declare namespace UserApi {
   }
 
   interface IUser {
-    createBy?: string;
-    createTime: number;
-    dep: IUserDepartment;
     email: string;
     id: string;
     phone: string;
-    updateTime?: number;
-    useStatus?: number;
-    userIconURL?: string;
-    userName: string;
+    name: string;
   }
 
   interface AdminUserResponse {

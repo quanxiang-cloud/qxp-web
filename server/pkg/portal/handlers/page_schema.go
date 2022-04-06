@@ -28,9 +28,9 @@ func getConfig(ctx context.Context, key string, version string) (string, string)
 	return schemaStr, ""
 }
 
-func getAPISpec(ctx context.Context, schemaStr string) string {
+func getAPISpec(ctx context.Context, arteryStr string) string {
 	apiStatesSpec := map[string]map[string]interface{}{}
-	apiSpecStr := gjson.Get(schemaStr, "apiStateSpec").Raw
+	apiSpecStr := gjson.Get(arteryStr, "apiStateSpec").Raw
 	if apiSpecStr == "" {
 		return `{}`
 	}
@@ -70,42 +70,42 @@ func getAPISpec(ctx context.Context, schemaStr string) string {
 
 // HandleGetSchema return page schema and api swagger
 func HandleGetSchema(w http.ResponseWriter, r *http.Request) {
-	schemaKey := r.URL.Query().Get("schema_key")
+	arteryID := r.URL.Query().Get("artery_id")
 	version := r.URL.Query().Get("version")
 
 	w.Header().Add("Content-Type", "application/json")
 
-	if schemaKey == "" || version == "" {
-		res, _ := json.Marshal(map[string]interface{}{"code": 1, "msg": "schema_key and version required"})
+	if arteryID == "" || version == "" {
+		res, _ := json.Marshal(map[string]interface{}{"code": 1, "msg": "artery_id and version required"})
 		w.Write(res)
 		return
 	}
 
-	schemaStr, errMsg := getConfig(r.Context(), schemaKey, version)
+	arteryStr, errMsg := getConfig(r.Context(), arteryID, version)
 	if errMsg != "" {
 		res, _ := json.Marshal(map[string]interface{}{"code": 1, "msg": errMsg})
 		w.Write(res)
 		return
 	}
 
-	if schemaStr == "" {
-		res, _ := json.Marshal(map[string]interface{}{"code": 1, "msg": "no schema found"})
+	if arteryStr == "" {
+		res, _ := json.Marshal(map[string]interface{}{"code": 1, "msg": "no artery found"})
 		w.Write(res)
 		return
 	}
 
-	swaggerStr := getAPISpec(r.Context(), schemaStr)
+	swaggerStr := getAPISpec(r.Context(), arteryStr)
 	if swaggerStr == "" {
 		res, _ := json.Marshal(map[string]interface{}{"code": 1, "msg": "fail to get swagger"})
 		w.Write(res)
 		return
 	}
 
-	schema := map[string]interface{}{}
-	err := json.Unmarshal([]byte(schemaStr), &schema)
+	artery := map[string]interface{}{}
+	err := json.Unmarshal([]byte(arteryStr), &artery)
 	if err != nil {
 		contexts.Logger.Errorln("failed to unmarshal schema, error:", err.Error())
-		res, _ := json.Marshal(map[string]interface{}{"code": 1, "msg": "fail to unmarshal schema"})
+		res, _ := json.Marshal(map[string]interface{}{"code": 1, "msg": "fail to unmarshal artery"})
 		w.Write(res)
 		return
 	}
@@ -122,7 +122,7 @@ func HandleGetSchema(w http.ResponseWriter, r *http.Request) {
 	result := map[string]interface{}{}
 
 	result["swagger"] = swagger
-	result["schema"] = schema
+	result["artery"] = artery
 
 	res, _ := json.Marshal(map[string]interface{}{"code": 0, "data": result})
 	w.Write(res)

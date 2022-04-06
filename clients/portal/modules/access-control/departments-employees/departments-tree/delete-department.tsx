@@ -4,7 +4,7 @@ import Modal from '@c/modal';
 import toast from '@lib/toast';
 import { NodeRenderProps } from '@c/headless-tree/types';
 
-import { deleteDEP } from '../api';
+import { editDepartment } from '../api';
 
 interface Props extends NodeRenderProps<Department> {
   closeModal(): void;
@@ -12,7 +12,10 @@ interface Props extends NodeRenderProps<Department> {
 
 export default function DeleteModal({ node, store, closeModal }: Props) {
   function handleOk() {
-    deleteDEP(node.id).then(() => {
+    editDepartment({
+      id: node.id,
+      useStatus: -1,
+    }).then(() => {
       toast.success('删除成功');
       store.deleteNode(node);
       closeModal();

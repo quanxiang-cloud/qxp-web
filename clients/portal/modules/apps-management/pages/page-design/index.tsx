@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
-import { Schema } from '@one-for-all/schema-spec';
+import { Artery } from '@one-for-all/artery';
 
 import { parseJSON } from '@lib/utils';
 import { useGetGlobalConfig } from '@lib/configuration-center';
@@ -18,8 +18,8 @@ import {
 } from './utils';
 import './index.scss';
 
-export function useCustomPageSchema(appID: string, pageId: string): { loading: boolean; schema?: Schema } {
-  const { isLoading, data } = useQuery<Schema | undefined>(
+export function useCustomPageSchema(appID: string, pageId: string): { loading: boolean; schema?: Artery } {
+  const { isLoading, data } = useQuery<Artery | undefined>(
     ['check_has_custom_page_schema', appID, pageId],
     () => {
       return getPage(appID, pageId).then((schema) => {

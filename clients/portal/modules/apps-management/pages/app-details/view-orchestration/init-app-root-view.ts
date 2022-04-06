@@ -1,15 +1,15 @@
-import SchemaSpec from '@one-for-all/schema-spec';
+import ArterySpec from '@one-for-all/artery';
 
 import { LayoutType } from './types';
 import createLayoutSchema from './helpers/create-layout-schema';
-import { createRefSchema, genDesktopRootViewSchemaKey, saveSchema } from './helpers/utils';
+import { createRefSchema, genDesktopRootArteryKey, saveArtery } from './helpers/utils';
 import { ROOT_NODE_ID } from './constants';
 
 export async function initAppRootView(appID: string, layoutType: LayoutType | 'free'): FutureErrorMessage {
-  const rootSchemaKey = genDesktopRootViewSchemaKey(appID);
+  const rootSchemaKey = genDesktopRootArteryKey(appID);
 
   if (layoutType === 'free') {
-    return saveSchema(
+    return saveArtery(
       rootSchemaKey,
       {
         node: {
@@ -25,7 +25,7 @@ export async function initAppRootView(appID: string, layoutType: LayoutType | 'f
   const refSchemaKey = await createRefSchema(appID);
   const rootNode = createLayoutSchema('ROOT_LAYOUT', layoutType, refSchemaKey, true);
 
-  const rootSchema: SchemaSpec.Schema = {
+  const rootSchema: ArterySpec.Artery = {
     node: {
       id: 'root_route_node',
       type: 'route-node',
@@ -34,5 +34,5 @@ export async function initAppRootView(appID: string, layoutType: LayoutType | 'f
     },
   };
 
-  return saveSchema(rootSchemaKey, rootSchema);
+  return saveArtery(rootSchemaKey, rootSchema);
 }

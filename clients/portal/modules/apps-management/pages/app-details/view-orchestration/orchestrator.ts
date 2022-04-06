@@ -2,14 +2,14 @@ import { get, set, findIndex } from 'lodash';
 import { action, computed, observable } from 'mobx';
 import {
   RouteNode,
-  Schema,
+  Artery,
   RefNode,
-  SchemaNode,
+  Node,
   APIStatesSpec,
   SharedStatesSpec,
   ReactComponentNode,
-} from '@one-for-all/schema-spec';
-import { deleteByID, findNodeByID, patchNode } from '@one-for-all/schema-utils';
+} from '@one-for-all/artery';
+import { deleteByID, findNodeByID, patchNode } from '@one-for-all/artery-utils';
 
 import addLayoutToRoot from './helpers/add-layout-to-root';
 import addViewToRoot from './helpers/add-view-to-root';
@@ -23,9 +23,9 @@ import findViews, {
 import {
   findFirstRouteParentID,
   genNodeID,
-  genDesktopRootViewSchemaKey,
-  saveSchema,
-  genDesktopViewSchemaKey,
+  genDesktopRootArteryKey,
+  saveArtery,
+  genDesktopArteryKey,
 } from './helpers/utils';
 import {
   Layout,
@@ -44,7 +44,7 @@ import { createBlank, updateApp } from '../api';
 
 class Orchestrator {
   @observable loading = true;
-  @observable rootNode: SchemaNode;
+  @observable rootNode: Node;
   @observable currentView: View | ViewGroup;
   @observable homeView?: View;
   @observable modalType = '';
@@ -54,9 +54,9 @@ class Orchestrator {
   sharedStatesSpec: SharedStatesSpec | undefined;
   appLayout: LayoutType | undefined;
 
-  constructor(appID: string, rootSchema: Schema) {
+  constructor(appID: string, rootSchema: Artery) {
     this.appID = appID;
-    this.rootSchemaKey = genDesktopRootViewSchemaKey(appID);
+    this.rootSchemaKey = genDesktopRootArteryKey(appID);
     const { node, apiStateSpec, sharedStatesSpec } = rootSchema;
 
     this.rootNode = node;
@@ -197,11 +197,11 @@ class Orchestrator {
       return 'no root node found for this app, please init root node again!';
     }
     let renderSchemaView: RefNode;
-    const pageSchemaKey = genDesktopViewSchemaKey(this.appID);
-    const customPageSchema: Schema = {
+
+    const pageSchemaKey = genDesktopArteryKey(this.appID);
+    const customPageSchema: Artery = {
       node: {
         id: genNodeID(),
-        pid: '',
         type: 'react-component',
         packageName: 'ofa-ui',
         packageVersion: 'latest',
@@ -221,11 +221,11 @@ class Orchestrator {
       apiStateSpec: {},
       sharedStatesSpec: {},
     };
-    return saveSchema(pageSchemaKey, customPageSchema).then(() => {
+    return saveArtery(pageSchemaKey, customPageSchema).then(() => {
       renderSchemaView = {
         id: genNodeID(),
         type: 'ref-node',
-        schemaID: pageSchemaKey,
+        arteryID: pageSchemaKey,
         label: params.name,
       };
 
@@ -381,7 +381,7 @@ class Orchestrator {
   }
 
   @action
-  async saveSchema(rootNode: SchemaNode | undefined): FutureErrorMessage {
+  async saveSchema(rootNode: Node | undefined): FutureErrorMessage {
     if (!rootNode) {
       // todo implement this!!!
       return Promise.resolve('todo some error message');
@@ -390,7 +390,7 @@ class Orchestrator {
     this.loading = true;
     this.rootNode = rootNode;
 
-    return saveSchema(this.rootSchemaKey, {
+    return saveArtery(this.rootSchemaKey, {
       node: this.rootNode,
       apiStateSpec: this.apiStateSpec,
       sharedStatesSpec: this.sharedStatesSpec,
