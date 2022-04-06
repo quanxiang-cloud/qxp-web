@@ -4,11 +4,8 @@ import { nanoid } from 'nanoid';
 
 import { PAGE_TYPE, INIT_SCHEMA_EDITOR_SCHEMA } from '../constants';
 
-export function getPageTypeKey(appID: string, pageId: string): string[] {
-  return [
-    `custom_page_editor:app_id:${appID}:page_id:${pageId}`,
-    `app_id:${appID}:page_id:${pageId}:custom_page_editor`,
-  ];
+export function getSchemaKey(appID: string, schemaID: string, isDraft: boolean): string {
+  return isDraft ? `${schemaID}:draft` : schemaID;
 }
 
 function getInitSchema(): Schema {

@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React, { useState, useMemo, useEffect, useCallback, CSSProperties } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import PageEngineV2 from '@one-for-all/page-engine-v2';
 import cs from 'classnames';
 import { DndProvider } from 'react-dnd';
@@ -21,13 +21,12 @@ import { getInitSchemaByPageType } from './utils';
 import Ctx from './ctx';
 import stores from './stores';
 import { useStyle } from './hooks/use-style';
-import { savePage, updatePageEngineMenuType } from './api';
+import { savePage } from './api';
 
 import './index.scss';
 import styles from './index.m.scss';
 
 function PageDesign(): JSX.Element | null {
-  const {  pageId } = useParams<{appID: string; pageId: string}>();
   const { appID, pageName, schemaID } = getQuery<{ appID: string ,pageName: string, schemaID: string }>();
   const [pageType, setPageType] = useState('');
   const history = useHistory();
@@ -45,7 +44,8 @@ function PageDesign(): JSX.Element | null {
   const { layers, initialSchema } = useMemo(() => {
     const initialSchema = schema ?? getInitSchemaByPageType(PAGE_TYPE.PAGE_DESIGN_EDITOR);
     const layer = LAYERS[0];
-    layer.blocksCommunicationStateInitialValue = { activeNodeID: '', appID, pageId };
+    // to remove pageId params
+    layer.blocksCommunicationStateInitialValue = { activeNodeID: '', appID, pageId: '' };
     return {
       layers: [...LAYERS],
       initialSchema,
@@ -62,7 +62,7 @@ function PageDesign(): JSX.Element | null {
     }
   }
   function handleGoBack(): void {
-    history.push(`/apps/details/${appID}/app_views?pageID=${pageId}`);
+    history.push(`/apps/details/${appID}/app_views?pageName=${pageName}`);
   }
   useEffect(() => {
     eventBus.on('clear:api-path', ()=> {
@@ -134,19 +134,12 @@ function PageDesign(): JSX.Element | null {
   // todo refactor this
   if (pageType === PAGE_TYPE.SCHEMA_EDITOR) {
     const initialSchema = schema ?? getInitSchemaByPageType(pageType);
-    return (
-      <SchemaEditor
-        appID={appID}
-        pageId={pageId}
-        initialSchema={initialSchema}
-      />
-    );
+    return <SchemaEditor appID={appID} schemaID={schemaID} initialSchema={initialSchema} />;
   }
 
   const handleSave = useCallback((page_schema: any, options?: Record<string, any>): void => {
     savePage(appID, schemaID, page_schema, options).then(() => {
       if (!options?.silent) {
-        updatePageEngineMenuType(appID, pageId);
         toast.success('页面已保存');
       }
     }).catch((err: Error) => {
@@ -175,11 +168,11 @@ function PageDesign(): JSX.Element | null {
   }
 
   if (!schema) {
-    return (<SelectCustomPageEditor appID={appID} pageId={pageId} onSelect={setPageType} />);
+    return (<SelectCustomPageEditor appID={appID} schemaID={schemaID} onSelect={setPageType} />);
   }
 
   if (savedPageType === PAGE_TYPE.SCHEMA_EDITOR) {
-    return (<SchemaEditor appID={appID} pageId={pageId} initialSchema={schema} />);
+    return (<SchemaEditor appID={appID} schemaID={schemaID} initialSchema={schema} />);
   }
 
   return PageEngineEntry;

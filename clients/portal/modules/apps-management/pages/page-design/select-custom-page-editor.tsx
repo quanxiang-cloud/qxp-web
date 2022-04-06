@@ -4,23 +4,20 @@ import toast from '@lib/toast';
 import Button from '@c/button';
 import { setGlobalConfig } from '@lib/configuration-center';
 
-import { savePage, updatePageEngineMenuType } from './api';
-import { getInitSchemaByPageType, getPageTypeKey } from './utils';
+import { savePage } from './api';
+import { getInitSchemaByPageType } from './utils';
 import { PAGE_TYPE } from './constants';
 
 type Props = {
   appID: string;
-  pageId: string;
+  schemaID: string;
   onSelect: (editor: string) => void;
 }
 
-function SelectCustomPageEditor({ pageId, appID, onSelect }: Props): JSX.Element {
+function SelectCustomPageEditor({ appID, schemaID, onSelect }: Props): JSX.Element {
   function handleSelect(pageType: string): void {
-    const [key, newKey] = getPageTypeKey(appID, pageId);
-    setGlobalConfig(key, '1.0.0', pageType);
-    setGlobalConfig(newKey, '1.0.0', pageType);
-    savePage(appID, pageId, getInitSchemaByPageType(pageType)).then(() => {
-      updatePageEngineMenuType(appID, pageId);
+    setGlobalConfig(schemaID, '1.0.0', pageType);
+    savePage(appID, schemaID, getInitSchemaByPageType(pageType)).then(() => {
       onSelect(pageType);
     }).catch((err: Error) => {
       toast.error(err.message);

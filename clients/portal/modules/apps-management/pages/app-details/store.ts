@@ -7,7 +7,7 @@ import toast from '@lib/toast';
 import { buildAppPagesTreeData } from '@lib/utils';
 import { fetchPageList, getCustomPageInfo, getSchemaPageInfo, getTableSchema } from '@lib/http-client';
 import { globalSettings } from '@portal/modules/apps-management/pages/app-details/constants';
-import { cloneUserData, setPageEngineMenuType } from '@lib/api/user-config';
+import { cloneUserData } from '@lib/api/user-config';
 
 import { BindState, CardList, CustomPageInfo, MenuType } from './type';
 import { fetchAppList } from '../entry/app-list/api';
@@ -33,9 +33,10 @@ import {
   isHiddenMenu,
   formDuplicate,
 } from './api';
-import { getFirstMenu, flatMnues } from './page-menu-design/menu-tree/utils';
+import { getSchemaKey } from '../page-design/utils';
 import { Menu } from './page-menu-design/menu-tree/type';
-import { getPage as getSchemaPage, getSchemaKey } from '../page-design/api';
+import { getPage as getSchemaPage } from '../page-design/api';
+import { getFirstMenu, flatMnues } from './page-menu-design/menu-tree/utils';
 
 type DeletePageOrGroupParams = {
   treeItem: TreeItem;
@@ -329,11 +330,10 @@ class AppDetailsStore {
     }
     // create
     return createPage({ appID: this.appID, ...PageInfoPick }).then(async (res: { id: string }) => {
-      let menuType = pageInfo.menuType;
+      const menuType = pageInfo.menuType;
       const isCopySchemaPage = pageInfo.menuType === MenuType.schemaPage;
       // copy schema page
       if (isCopySchemaPage) {
-        menuType = (await setPageEngineMenuType(this.appID, res.id)).menu_type || menuType;
         const [sourceKey, newSourceKey] = getSchemaKey(this.appID, pageInfo.id, false);
         const [targetKey, newTargetKey] = getSchemaKey(this.appID, res.id, false);
         const version = globalSettings.version;

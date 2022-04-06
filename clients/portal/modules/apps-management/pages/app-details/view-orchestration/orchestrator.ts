@@ -428,7 +428,6 @@ class Orchestrator {
 
   @action
   setCurrentView(view: View | ViewGroup): void {
-    console.log(view);
     this.currentView = view;
   }
 }

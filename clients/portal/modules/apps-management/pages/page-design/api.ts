@@ -7,9 +7,10 @@ import {
   setPageEngineMenuType,
 } from '@lib/api/user-config';
 import toast from '@lib/toast';
-
-import store from '../app-details/store';
 import SimpleViewRenders from '@c/simple-view-render';
+
+import { getSchemaKey } from './utils';
+import store from '../app-details/store';
 
 export const PG_SAVED_PREFIX = 'pge-';
 export const PG_DRAFT_PREFIX = 'pge-draft-';
@@ -18,10 +19,6 @@ export const PG_VERSION = '1.0.0';
 type Option={
   draft?: boolean;
   [key: string]: any
-}
-
-export function getSchemaKey(appID: string, schemaID: string, isDraft: boolean): string {
-  return isDraft ? `${schemaID}:draft` : schemaID;
 }
 
 export function savePage(app_id: string, schemaID: string, page_schema: any, options?: Option): Promise<any> {
