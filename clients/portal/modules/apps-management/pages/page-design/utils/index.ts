@@ -4,7 +4,7 @@ import { nanoid } from 'nanoid';
 
 import { PAGE_TYPE, INIT_SCHEMA_EDITOR_SCHEMA } from '../constants';
 
-export function getSchemaKey(appID: string, schemaID: string, isDraft: boolean): string {
+export function getSchemaKey(schemaID: string, isDraft: boolean): string {
   return isDraft ? `${schemaID}:draft` : schemaID;
 }
 

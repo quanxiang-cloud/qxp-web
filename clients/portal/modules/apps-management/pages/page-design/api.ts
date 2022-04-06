@@ -21,7 +21,7 @@ type Option={
   [key: string]: any
 }
 
-export function savePage(app_id: string, schemaID: string, page_schema: any, options?: Option): Promise<any> {
+export function savePage(schemaID: string, page_schema: any, options?: Option): Promise<any> {
   return setBatchGlobalConfig([{
     key: options?.draft ? `${schemaID}:draft` : schemaID,
     version: PG_VERSION,
@@ -29,8 +29,8 @@ export function savePage(app_id: string, schemaID: string, page_schema: any, opt
   }]);
 }
 
-export function getPage(app_id: string, schema_key: string, options?: Option): Promise<string | void> {
-  const queryId = getSchemaKey(app_id, schema_key, !!options?.draft);
+export function getPage(schemaID: string, options?: Option): Promise<string | void> {
+  const queryId = getSchemaKey(schemaID, !!options?.draft);
   const result = getBatchGlobalConfig([{
     key: queryId,
     version: PG_VERSION,

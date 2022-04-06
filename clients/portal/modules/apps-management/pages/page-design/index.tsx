@@ -35,7 +35,7 @@ function PageDesign(): JSX.Element | null {
   useStyle('body', resetStyle);
   useStyle('html', resetStyle);
 
-  const { pageType: savedPageType, isLoading: isSavedPageTypeLoading } = usePageTypeKey(appID, schemaID);
+  const { pageType: savedPageType, isLoading: isSavedPageTypeLoading } = usePageTypeKey(schemaID);
   const { data: schema, isLoading: isSchemaLoading } = useQuerySchema(
     { appID, schemaID },
     { enabled: !!appID && !!schemaID },
@@ -138,7 +138,7 @@ function PageDesign(): JSX.Element | null {
   }
 
   const handleSave = useCallback((page_schema: any, options?: Record<string, any>): void => {
-    savePage(appID, schemaID, page_schema, options).then(() => {
+    savePage(schemaID, page_schema, options).then(() => {
       if (!options?.silent) {
         toast.success('页面已保存');
       }
@@ -168,7 +168,7 @@ function PageDesign(): JSX.Element | null {
   }
 
   if (!schema) {
-    return (<SelectCustomPageEditor appID={appID} schemaID={schemaID} onSelect={setPageType} />);
+    return (<SelectCustomPageEditor schemaID={schemaID} onSelect={setPageType} />);
   }
 
   if (savedPageType === PAGE_TYPE.SCHEMA_EDITOR) {

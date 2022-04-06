@@ -149,9 +149,7 @@ function PageDetails(): JSX.Element | null {
         />
       );
     } else if (menuType === MenuType.schemaPage) {
-      return (
-        <SchemaPage schemaID="" appId={store.appID} pageId={store.pageID} />
-      );
+      return <SchemaPage schemaID={store.pageID} />;
     } else {
       if (fetchSchemeLoading) {
         return <PageLoading />;

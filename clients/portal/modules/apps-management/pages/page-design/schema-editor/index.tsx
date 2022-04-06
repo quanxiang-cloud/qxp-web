@@ -36,7 +36,7 @@ function SchemaEditor({ appID, schemaID, initialSchema }: Props): JSX.Element {
 
     try {
       const schema = JSON.stringify(JSON.parse(schemaStr));
-      return savePage(appID, schemaID, schema).then(() => {
+      return savePage(schemaID, schema).then(() => {
         toast.success('页面已保存');
         setSaving(false);
         return true;
@@ -103,9 +103,7 @@ function SchemaEditor({ appID, schemaID, initialSchema }: Props): JSX.Element {
           />
         </div>
       )}
-      {mode === 'preview' && (
-        <Preview appID={appID} schemaID={schemaID} previewSchema={JSON.parse(schemaStr)} />
-      )}
+      {mode === 'preview' && <Preview schemaID={schemaID} previewSchema={JSON.parse(schemaStr)} />}
     </div>
   );
 }

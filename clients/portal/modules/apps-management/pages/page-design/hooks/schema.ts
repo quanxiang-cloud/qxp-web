@@ -21,7 +21,7 @@ export function useQuerySchema(
     ...options,
     getQueryKey: () => [QUERY_KEY.SCHEMA, appID, schemaID],
     queryFunction: async () => {
-      const schema = await getPage(appID, schemaID);
+      const schema = await getPage(schemaID);
       if (!schema) {
         return;
       }

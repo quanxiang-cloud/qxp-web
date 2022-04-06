@@ -8,13 +8,12 @@ import { setBatchGlobalConfig } from '@lib/api/user-config';
 import { getSchemaKey } from '../utils';
 
 type Props = {
-  appID: string;
   schemaID: string;
   previewSchema: Schema;
 }
 
-function Preview({ appID, schemaID, previewSchema }: Props): JSX.Element {
-  const schemaKey = getSchemaKey(appID, schemaID, true);
+function Preview({ schemaID, previewSchema }: Props): JSX.Element {
+  const schemaKey = getSchemaKey(schemaID, true);
   const [savingDraft, setSavingDraft] = useState(true);
 
   useEffect(() => {

@@ -1,28 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
 import { observer } from 'mobx-react';
+import { useHistory } from 'react-router-dom';
+import { Designer, getStore } from '@one-for-all/page-engine';
 
 import Icon from '@c/icon';
-import { getQuery } from '@lib/utils';
 import toast from '@lib/toast';
+import { getQuery } from '@lib/utils';
 import FileUploader from '@c/file-upload';
 import ApiSelector from '@polyApi/nodes/forms/request-config/api-selector';
-import ApiSpec from '../app-details/api-proxy/add-api';
 
-import { Designer, getStore } from '@one-for-all/page-engine';
 import { getPage, savePage } from './api';
+import ApiSpec from '../app-details/api-proxy/add-api';
 
 import './index.scss';
 
 function PageDesign(): JSX.Element {
   const { designer, page, eventBus } = getStore();
-  const { appID, pageId } = useParams<{ appID: string; pageId: string }>();
-  const { pageName } = getQuery<{ pageName: string }>();
+  const { appID, schemaID, pageName } = getQuery<{ appID: string; schemaID: string; pageName: string }>();
   const history = useHistory();
   const [apiPath, setApiPath] = useState('');
 
   useEffect(() => {
-    getPage(appID, pageId).then((schema) => {
+    getPage(schemaID).then((schema) => {
       if (schema) {
         page.setSchema(JSON.parse(schema));
       }
@@ -116,7 +115,7 @@ function PageDesign(): JSX.Element {
   }
 
   function handleSave(page_schema: any, options?: Record<string, any>): void {
-    savePage(appID, pageId, page_schema, options).then(() => {
+    savePage(schemaID, page_schema, options).then(() => {
       if (!options?.silent) {
         toast.success('页面已保存');
       }

@@ -334,8 +334,9 @@ class AppDetailsStore {
       const isCopySchemaPage = pageInfo.menuType === MenuType.schemaPage;
       // copy schema page
       if (isCopySchemaPage) {
-        const [sourceKey, newSourceKey] = getSchemaKey(this.appID, pageInfo.id, false);
-        const [targetKey, newTargetKey] = getSchemaKey(this.appID, res.id, false);
+        // todo refactor the getSchemaKey params
+        const [sourceKey, newSourceKey] = getSchemaKey(pageInfo.id, false);
+        const [targetKey, newTargetKey] = getSchemaKey(res.id, false);
         const version = globalSettings.version;
         await cloneUserData({ key: sourceKey, version }, { key: targetKey, version });
         await cloneUserData({ key: newSourceKey, version }, { key: newTargetKey, version });
@@ -443,7 +444,7 @@ class AppDetailsStore {
     }
 
     if (pageInfo.menuType === MenuType.schemaPage) {
-      getSchemaPage(this.appID, this.pageID).then((schema)=> {
+      getSchemaPage(this.pageID).then((schema)=> {
         if (schema) {
           this.designPageSchema = schema;
         }

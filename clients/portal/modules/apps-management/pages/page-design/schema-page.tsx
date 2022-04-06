@@ -4,19 +4,17 @@ import { getSchemaKey } from './utils';
 
 interface Props {
   schemaID: string;
-  appId: string;
-  pageId: string;
   draft?: boolean;
   convertor?: (...args: any) => any;
   className?: string;
 }
 
-function SchemaPage({ schemaID, appId, pageId, draft }: Props): JSX.Element {
-  const [schemaKey, setSchemaKey] = useState(getSchemaKey(appId, schemaID, !!draft)[0]);
+function SchemaPage({ schemaID, draft }: Props): JSX.Element {
+  const [schemaKey, setSchemaKey] = useState(getSchemaKey(schemaID, !!draft));
 
   useEffect(() => {
-    setSchemaKey(getSchemaKey(appId, schemaID, !!draft));
-  }, [appId, pageId, !!draft]);
+    setSchemaKey(getSchemaKey(schemaID, !!draft));
+  }, [schemaID, !!draft]);
 
   return (
     <PageSchemaRender
