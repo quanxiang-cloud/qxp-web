@@ -63,8 +63,8 @@ export default function FormDataForm({ defaultValue, onSubmit, onCancel, onChang
   }
 
   function isTriggerWayValid(): boolean {
-    const { triggerWay, whenAlterFields } = value;
-    return !!triggerWay?.length && (!triggerWay?.includes('whenAlter') || !!whenAlterFields.length);
+    const { triggerWay } = value;
+    return !!triggerWay?.length;
   }
 
   function isTriggerConditionValid(exprs: TriggerConditionExpression): boolean {
@@ -97,7 +97,8 @@ export default function FormDataForm({ defaultValue, onSubmit, onCancel, onChang
 
   const filteredConditionOptions = options?.filter(({ value }) => {
     const field = schemaMap[value] || {};
-    return !excludeComps.includes(field.componentName) && !TRIGGER_CONDITION_EXCLUDE_FIELD_NAMES.includes(value);
+    return !excludeComps.includes(field.componentName) &&
+    !TRIGGER_CONDITION_EXCLUDE_FIELD_NAMES.includes(value);
   });
 
   return (
