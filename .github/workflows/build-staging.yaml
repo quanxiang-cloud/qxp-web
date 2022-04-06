@@ -2,6 +2,7 @@ name: Build for staging environment
 env:
   IMAGE_REPO: qxcr.xyz/lowcode
   DATE: $(date "+%Y%m%d")
+  GIT_TAG: $(git describe --tags)
 on:
   push:
     tags:
@@ -30,11 +31,11 @@ jobs:
           path: dist
       - run: echo IMAGE_TAG="v${{ env.DATE }}-${GITHUB_SHA::7}" >> $GITHUB_ENV
       - run: docker build -t "$IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG" -f ./deploy/Dockerfile-nginx .
-      - run: docker tag $IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG $IMAGE_REPO/qxp-web-nginx:${{ github.event.push.tag_name }}
+      - run: docker tag $IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG $IMAGE_REPO/qxp-web-nginx:$GIT_TAG
       - run: docker push "$IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG"
-      - run: docker push "$IMAGE_REPO/qxp-web-nginx:${{ github.event.push.tag_name }}"
+      - run: docker push "$IMAGE_REPO/qxp-web-nginx:$GIT_TAG"
       - run: docker rmi "$IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG"
-      - run: docker rmi "$IMAGE_REPO/qxp-web-nginx:${{ github.event.push.tag_name }}"
+      - run: docker rmi "$IMAGE_REPO/qxp-web-nginx:$GIT_TAG"
       - uses: ./.github/actions/fail-alert
         if: ${{ failure() }}
         env:
@@ -54,16 +55,16 @@ jobs:
       - run: echo IMAGE_TAG="v${{ env.DATE }}-${GITHUB_SHA::7}" >> $GITHUB_ENV
       - run: docker build -t "$IMAGE_REPO/qxp-web-portal:$IMAGE_TAG" -f ./deploy/Dockerfile-portal .
       - run: docker build -t "$IMAGE_REPO/qxp-web-home:$IMAGE_TAG" -f ./deploy/Dockerfile-home .
-      - run: docker tag $IMAGE_REPO/qxp-web-portal:$IMAGE_TAG $IMAGE_REPO/qxp-web-portal:${{ github.event.push.tag_name }}
-      - run: docker tag $IMAGE_REPO/qxp-web-home:$IMAGE_TAG $IMAGE_REPO/qxp-web-home:${{ github.event.push.tag_name }}
+      - run: docker tag $IMAGE_REPO/qxp-web-portal:$IMAGE_TAG $IMAGE_REPO/qxp-web-portal:$GIT_TAG
+      - run: docker tag $IMAGE_REPO/qxp-web-home:$IMAGE_TAG $IMAGE_REPO/qxp-web-home:$GIT_TAG
       - run: docker push "$IMAGE_REPO/qxp-web-portal:$IMAGE_TAG"
       - run: docker push "$IMAGE_REPO/qxp-web-home:$IMAGE_TAG"
-      - run: docker push "$IMAGE_REPO/qxp-web-portal:${{ github.event.push.tag_name }}"
-      - run: docker push "$IMAGE_REPO/qxp-web-home:${{ github.event.push.tag_name }}"
+      - run: docker push "$IMAGE_REPO/qxp-web-portal:$GIT_TAG"
+      - run: docker push "$IMAGE_REPO/qxp-web-home:$GIT_TAG"
       - run: docker rmi "$IMAGE_REPO/qxp-web-portal:$IMAGE_TAG"
       - run: docker rmi "$IMAGE_REPO/qxp-web-home:$IMAGE_TAG"
-      - run: docker rmi "$IMAGE_REPO/qxp-web-home:${{ github.event.push.tag_name }}"
-      - run: docker rmi "$IMAGE_REPO/qxp-web-portal:${{ github.event.push.tag_name }}"
+      - run: docker rmi "$IMAGE_REPO/qxp-web-home:$GIT_TAG"
+      - run: docker rmi "$IMAGE_REPO/qxp-web-portal:$GIT_TAG"
       - uses: ./.github/actions/fail-alert
         if: ${{ failure() }}
         env:
