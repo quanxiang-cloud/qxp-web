@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import Button from '@c/button';
 import Tab from '@c/tab';
 
-import ComponentStyleConfigCenter from './component-style-config-center';
+import ComponentStyleCustomization from './component-style-customization';
 import store from './store';
 
 import './index.css';
@@ -23,9 +23,9 @@ export default function StyleGuide(): JSX.Element {
         className='bg-white'
         items={[
           {
-            id: 'componentStyleConfigCenter',
+            id: 'componentStyleCustomization',
             name: '组件样式配置',
-            content: <ComponentStyleConfigCenter />,
+            content: <ComponentStyleCustomization />,
           },
         ]}
       />

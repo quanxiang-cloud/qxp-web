@@ -1,5 +1,7 @@
-import { observable, action } from 'mobx';
+import { observable, action, reaction, IReactionDisposer } from 'mobx';
+import { nanoid } from 'nanoid';
 import CssASTStore, { ComponentSpec, StyleConfigInterface } from '@one-for-all/style-guide';
+import componentSpecs from '@one-for-all/headless-ui-interfaces';
 
 import httpClient from '@lib/http-client';
 import toast from '@lib/toast';
@@ -7,16 +9,28 @@ import { setBatchGlobalConfig, getBatchGlobalConfig } from '@lib/api/user-config
 import { parseJSON } from '@lib/utils';
 
 import colorVars from './css-variables.json';
+import { applyStyle } from './utils';
 
 const COMPONENT_STYLE_CONFIG_KEY = 'GLOBAL_COMPONENT_STYLE_CONFIG';
 const PERSONALIZED_CONFIG_KEY = 'PERSONALIZED_CONFIG';
 const VERSION = '0.1.0';
 class StyleGuideStore {
+  destroySetShadowStyle: IReactionDisposer;
   @observable cssStore: CssASTStore | null = null;
   @observable currentCompStatus: null | ActiveConfigurationComponent = null;
   @observable currentComp: ComponentSpec | null = null;
   @observable commonConfig: StyleGuideCommonConfig = { primaryColor: 'blue' };
   @observable shadowRoot: ShadowRoot | null = null;
+
+  constructor() {
+    this.destroySetShadowStyle = reaction(() => this.shadowRoot, (shadowRoot) => {
+      if (!shadowRoot) {
+        return;
+      }
+
+      applyStyle(this.cssStore?.getCssString() || '', shadowRoot);
+    });
+  }
 
   @action
   setCommonConfig = (newConfig: Partial<StyleGuideCommonConfig>): void => {
@@ -38,6 +52,7 @@ class StyleGuideStore {
       this.cssStore = new CssASTStore({
         initCssMap: customCompCssMap,
         baseColorVariables: colorVars.baseColors,
+        componentConfigs: componentSpecs,
       });
     });
   };
@@ -70,17 +85,12 @@ class StyleGuideStore {
   };
 
   generateCssUrl = async (): Promise<string> => {
-    const cssFile = await this.cssStore?.getGzipFile().then((cssBlob: Blob | null) => {
-      return cssBlob;
-    });
-    const { domain, readable } = await httpClient<{
-      domain: string;
-      private: string;
-      readable: string;
-    }>('/api/v1/fileserver/domain');
+    const cssFile = await this.cssStore?.getGzipFile();
+    const { domain, readable } = window.CONFIG.oss_config;
 
+    const cssUrl = `${nanoid()}/style-guide/personalized_style.css`;
     const { url } = await httpClient<{ url: string }>('/api/v1/fileserver/sign/upload', {
-      path: `${readable}/${window.location.hostname}/style-guide/component.css`,
+      path: `${readable}/${cssUrl}`,
       contentType: 'text/css',
       contentLength: cssFile?.size,
     });
@@ -94,7 +104,7 @@ class StyleGuideStore {
       },
     });
 
-    return `//${readable}.${domain}/${window.location.hostname}/style-guide/component.css`;
+    return `//${readable}.${domain}/${cssUrl}`;
   };
 }
 

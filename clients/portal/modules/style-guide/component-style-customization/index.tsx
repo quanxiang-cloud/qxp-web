@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import cs from 'classnames';
 import { observer } from 'mobx-react';
 import comps from '@one-for-all/headless-ui-interfaces';
@@ -6,20 +6,10 @@ import comps from '@one-for-all/headless-ui-interfaces';
 import PreviewConfigurableComponent from './preview';
 import CSSEditor from './css-editor';
 import store from '../store';
-import { applyStyle } from '../utils';
 
 import './index.css';
 
-function ComponentStyleConfigCenter(): JSX.Element {
-  useEffect(() => {
-    comps.forEach((comp) => {
-      const componentCss = store.cssStore?.getComponentCss(comp.key, comp.specs);
-      if (componentCss && store.shadowRoot) {
-        applyStyle(comp.key, componentCss || '', store.shadowRoot);
-      }
-    });
-  }, [store.shadowRoot]);
-
+function ComponentStyleCustomization(): JSX.Element {
   return (
     <div
       style={{ gridTemplateColumns: '200px auto 500px' }}
@@ -47,4 +37,4 @@ function ComponentStyleConfigCenter(): JSX.Element {
   );
 }
 
-export default observer(ComponentStyleConfigCenter);
+export default observer(ComponentStyleCustomization);

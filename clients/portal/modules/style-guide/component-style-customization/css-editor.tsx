@@ -32,9 +32,8 @@ function CSSEditor(): JSX.Element {
     }
 
     store.cssStore?.setCss(`${key}.${spec.title}`, value, spec.rules, (msg) => toast.error(msg));
-    const componentName = key;
-    const componentCss = store.cssStore?.getComponentCss(componentName, store.currentComp?.specs || []);
-    store.shadowRoot && applyStyle(componentName, componentCss || '', store.shadowRoot);
+    const css = store.cssStore?.getCssString();
+    store.shadowRoot && applyStyle(css || '', store.shadowRoot);
     setIsChanged(false);
   }
 

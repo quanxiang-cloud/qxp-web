@@ -17,8 +17,8 @@ function ShadowContent({
       return;
     }
 
-    store.shadowRoot = shadowDomRef.current?.attachShadow({ mode: 'open' });
-  }, [shadowDomRef.current, store.currentComp]);
+    store.shadowRoot = shadowDomRef.current.attachShadow({ mode: 'open' });
+  }, [store.currentComp]);
 
   useEffect(() => {
     if (!store.shadowRoot) {
@@ -79,6 +79,8 @@ function PreviewConfigurableComponent(): JSX.Element {
     return <div />;
   }
 
+  const curCompKey = `${store.currentCompStatus?.key}.${store.currentCompStatus?.spec.title}`;
+
   return (
     <div ref={previewRef} className='gird'>
       <ShadowContentObservable shadowDomRef={previewRef}>
@@ -86,7 +88,7 @@ function PreviewConfigurableComponent(): JSX.Element {
           store.currentComp.specs.map((spec) => (
             <PreviewItem
               key={spec.title}
-              isActive={`${store.currentCompStatus?.key}.${store.currentCompStatus?.spec.title}` === `${key}.${spec.title}`}
+              isActive={curCompKey === `${key}.${spec.title}`}
               compSpec={spec}
               onClick={() => store.setCurrentCompStatus(key, spec)}
               Component={Component}
