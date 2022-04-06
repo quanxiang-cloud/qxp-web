@@ -13,7 +13,7 @@ type Props = {
 function ViewDetails({ viewInfo, openModal }: Props): JSX.Element {
   // todo get pageDescriptions and related
   return (
-    <div className='view-details-container h-full'>
+    <div className='view-details-container flex flex-col h-full'>
       {!viewInfo && <EmptyTips className="empty" text='暂无页面数据,请先新建页面' />}
       {!!viewInfo && (
         <>
