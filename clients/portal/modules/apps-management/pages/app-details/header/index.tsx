@@ -78,12 +78,15 @@ function DetailsHeader(): JSX.Element {
           className="btn mr-16"
           target="_blank"
           rel="noreferrer"
-          href={`/_jump_to_home?to=${appDetails.accessURL}`}
           onClick={(e) => {
-            if (!appDetails.accessURL) {
-              e.preventDefault();
-              toast.error('请为应用位置至少一个页面');
-            }
+            e.preventDefault();
+            appDetailsStore.fetchAppDetails(appID).then(() => {
+              if (!appDetails.accessURL) {
+                toast.error('请为应用位置至少一个页面');
+                return;
+              }
+              window.open(`/_jump_to_home?to=${appDetails.accessURL}`);
+            });
           }}
         >
           访问应用端
