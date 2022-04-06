@@ -181,6 +181,9 @@ function EditEmployeesModal( { user, closeModal }: Props): JSX.Element {
                 if (value && SpecialSymbolsReg.test(value)) {
                   return Promise.reject(new Error('只能包含汉字、英文、横线("-")以及下划线("_")，请修改！'));
                 }
+                if (value && !/^((?!(\ud83c[\udf00-\udfff])|(\ud83d[\udc00-\ude4f])|(\ud83d[\ude80-\udeff])).)*$/.test(value)) {
+                  return Promise.reject(new Error('不能输入emoji表情符号'));
+                }
                 return Promise.resolve();
               },
             },

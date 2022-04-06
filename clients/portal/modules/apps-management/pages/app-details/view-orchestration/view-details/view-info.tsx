@@ -102,11 +102,9 @@ function ViewInfo({ view, openModal }: Props): JSX.Element {
 
   function goPageDesign(): void {
     // to change below line after page engine v2 new update
-    const schemaID = (view as SchemaView).arteryID;
+    const arteryID = (view as SchemaView).arteryID;
 
-    // save page engine schema is not work now
-    history.push(`/page-engine?appID=${appID}&pageName=${view.name}&schemaID=${schemaID}`);
-    // history.push(`/apps/page-design/${view.id}/${appID}?pageName=${view.name}`);
+    history.push(`/artery-engine?appID=${appID}&pageName=${view.name}&arteryID=${arteryID}`);
   }
 
   function goFormBuild(): void {

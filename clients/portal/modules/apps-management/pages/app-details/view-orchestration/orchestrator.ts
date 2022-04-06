@@ -1,5 +1,5 @@
 import { get, set, findIndex } from 'lodash';
-import { action, computed, observable } from 'mobx';
+import { action, computed, observable, toJS } from 'mobx';
 import {
   RouteNode,
   Artery,
@@ -107,7 +107,7 @@ class Orchestrator {
   async addLayout(name: string, layoutType: LayoutType): FutureErrorMessage {
     const rootNode = await addLayoutToRoot({
       appID: this.appID,
-      rootNode: this.rootNode,
+      rootNode: toJS(this.rootNode),
       layoutType,
       layoutName: name,
     });

@@ -1118,6 +1118,34 @@
   resolved "https://registry.npmmirror.com/@one-for-all/api-spec-adapter/-/api-spec-adapter-0.4.0.tgz#fd662bf3e0e4dfc75f25cdb78b69215aac9856f6"
   integrity sha512-0AvMUdxfWa6/gdIgk0PPOzBO17XJnD/6QUAoAdvm1kOU+hmVydXLY4ODRvDHs9cVNvBDjcZwLsdQ0esRelnT7g==
 
+"@one-for-all/artery-engine@1.1.1":
+  version "1.1.1"
+  resolved "https://registry.npmmirror.com/@one-for-all/artery-engine/-/artery-engine-1.1.1.tgz#eb816ab94c2827a1dae4cafe63130347143a14cf"
+  integrity sha512-w+2WjM8gSNnjovYIHJ/aoaSaF69/B0b3Yg3qR9Q3Wn17jHVFObLsN1rs9zN51bOOJ2wDKjgFQH5LuS7SiXWb/A==
+  dependencies:
+    "@one-for-all/artery" "0.15.0"
+    "@one-for-all/artery-renderer" "0.20.0"
+    classnames "^2.3.1"
+    nanoid "^3.1.30"
+    ramda "^0.27.1"
+    react "^17.0.2"
+    react-dom "^17.0.2"
+    rxjs "^7.4.0"
+
+"@one-for-all/artery-renderer@0.20.0":
+  version "0.20.0"
+  resolved "https://registry.npmmirror.com/@one-for-all/artery-renderer/-/artery-renderer-0.20.0.tgz#b8ddeac76324f89f25a59ac995497ca824f4bc53"
+  integrity sha512-A6jwdYr3yBSJ3ytAVa0bDvV4rf0m3jVktudtDdtzVT2jscLehl3QtrFJ/2kSiAm50kdsj5E1GmoL9s29u9mfNg==
+  dependencies:
+    "@one-for-all/api-spec-adapter" "0.4.0"
+    "@one-for-all/artery" "0.15.0"
+    "@one-for-all/utils" "0.3.0"
+    history "5.3.0"
+    react "^17.0.2"
+    react-dom "^17.0.2"
+    react-jsx-parser "1.29.0"
+    rxjs "^7.4.0"
+
 "@one-for-all/artery-renderer@0.20.1":
   version "0.20.1"
   resolved "https://registry.npmmirror.com/@one-for-all/artery-renderer/-/artery-renderer-0.20.1.tgz#58552c1731eca90039abc3c457f8d5a06c2f3b12"
@@ -1144,6 +1172,20 @@
   version "0.15.0"
   resolved "https://registry.npmmirror.com/@one-for-all/artery/-/artery-0.15.0.tgz#495bdb35365a606a126ecfc8323a5dc086c6f1c5"
   integrity sha512-zZmnK09Zt33s335GBdQHMy5sG7+rSrWHaz1mqjIrdXLHWUvkkOISuEV739SWgnCamqEwUv58/QDTH9/VMIb32w==
+
+"@one-for-all/page-engine-v2@^1.1.0":
+  version "1.1.1"
+  resolved "https://registry.npmmirror.com/@one-for-all/page-engine-v2/-/page-engine-v2-1.1.1.tgz#d28aaa4c42492e134381b09c58f7ca1b3ea513c3"
+  integrity sha512-4pDCFCgkC6TrWGhErlenlb7otF9z1ee7Upy6LZ9CBgsWFE467IaCCDsQiOnV2ZLaBCBFm/wFe6iGyetC4mOucA==
+  dependencies:
+    "@one-for-all/artery" "0.15.0"
+    "@one-for-all/artery-renderer" "0.20.0"
+    classnames "^2.3.1"
+    nanoid "^3.1.30"
+    ramda "^0.27.1"
+    react "^17.0.2"
+    react-dom "^17.0.2"
+    rxjs "^7.4.0"
 
 "@one-for-all/page-engine@0.10.0":
   version "0.10.0"
@@ -1181,6 +1223,20 @@
     react-jsx-parser "1.29.0"
     rxjs "^7.4.0"
 
+"@one-for-all/render-engine@0.19.0":
+  version "0.19.0"
+  resolved "https://registry.npmmirror.com/@one-for-all/render-engine/-/render-engine-0.19.0.tgz#88d10f6ea28a44103399f15341b30179f188aab4"
+  integrity sha512-fnp+5qFpAFIqJuCVUQfrwJb37nznVxO+LU3Y5NO6TyoFeNrkjz2mWHcPvIjrY45xKjJ2hxZTiPmSLWwiQQxfwA==
+  dependencies:
+    "@one-for-all/api-spec-adapter" "0.4.0"
+    "@one-for-all/schema-spec" "0.15.0"
+    "@one-for-all/utils" "0.3.0"
+    history "5.3.0"
+    react "^17.0.2"
+    react-dom "^17.0.2"
+    react-jsx-parser "1.29.0"
+    rxjs "^7.4.0"
+
 "@one-for-all/schema-spec@0.13.1-0":
   version "0.13.1-0"
   resolved "https://registry.npmmirror.com/@one-for-all/schema-spec/-/schema-spec-0.13.1-0.tgz#6133bb595a0abaeda045925ee41a220bc94fe9bd"
@@ -1190,6 +1246,19 @@
   version "0.14.0"
   resolved "https://registry.npmmirror.com/@one-for-all/schema-spec/-/schema-spec-0.14.0.tgz#b27b02ff384ec88150d49a43da8a3d5636aee378"
   integrity sha512-ktrYBcl4tMmq5ywArP4fEHZXB6tzZPWX7uCvi419ayQbO4C3mRPb3p/DnLzyhUiwGJtXRubFlHVWsntKwJVnOg==
+
+"@one-for-all/schema-spec@0.15.0":
+  version "0.15.0"
+  resolved "https://registry.npmmirror.com/@one-for-all/schema-spec/-/schema-spec-0.15.0.tgz#665d9a4b40dbeb399d8dbe1c48b80d55f7bf6a7f"
+  integrity sha512-tPqHVGyGfAJnfNoVvbGJEMxLFPr4VsKySE9WDZw1IYGDLCzXrhSotb7M59aNww4XlCo+PFM/mhQtUpupH9lBww==
+
+"@one-for-all/schema-utils@0.10.0":
+  version "0.10.0"
+  resolved "https://registry.npmmirror.com/@one-for-all/schema-utils/-/schema-utils-0.10.0.tgz#f0719177989c1cae3ce40dbfc97962da11ee30a7"
+  integrity sha512-YaV6e/6+5i1EZob/57SABRQ4ZwojbKAWL9DOyxiom6Br9WHljDbbVWskQPU+g9LMmzT+iXcRu8A9G2z2KqKCEA==
+  dependencies:
+    "@one-for-all/schema-spec" "0.15.0"
+    immutable "4.0.0"
 
 "@one-for-all/ui@0.2.18":
   version "0.2.18"
@@ -1207,10 +1276,10 @@
     react-popper "^2.2.5"
     styled-components "^5.3.3"
 
-"@one-for-all/ui@0.2.19":
-  version "0.2.19"
-  resolved "https://registry.npmmirror.com/@one-for-all/ui/-/ui-0.2.19.tgz#f9c8d060b90cdc62801a77fac3ddd10352f691d2"
-  integrity sha512-z7ZO7BynMX3rdY35kemg1Rt465nTsdpjCbKHEkyYjMyiFA5UCVA/Ud7/EplTiS4PJ4TAIYyiPEmJpiOw7N2gmA==
+"@one-for-all/ui@0.3.3":
+  version "0.3.3"
+  resolved "https://registry.npmmirror.com/@one-for-all/ui/-/ui-0.3.3.tgz#6a48eb469224c5e23faef5615f8d92cafeb93ace"
+  integrity sha512-B20dsvThP6zkMaEf1duD1vlKVgZI0kjwZiAJZ+l2Tvcfr5+kIFTcyGMJKZDMnB/+Dqycte4uYq5eRQnXr480jw==
   dependencies:
     "@popperjs/core" "^2.11.0"
     classnames "^2.3.1"
@@ -1662,6 +1731,14 @@
   dependencies:
     "@types/react" "*"
 
+"@types/react-color@^3.0.6":
+  version "3.0.6"
+  resolved "https://registry.npmmirror.com/@types/react-color/-/react-color-3.0.6.tgz#602fed023802b2424e7cd6ff3594ccd3d5055f9a"
+  integrity sha512-OzPIO5AyRmLA7PlOyISlgabpYUa3En74LP8mTMa0veCA719SvYQov4WLMsHvCgXP+L+KI9yGhYnqZafVGG0P4w==
+  dependencies:
+    "@types/react" "*"
+    "@types/reactcss" "*"
+
 "@types/react-dom@^17.0.0":
   version "17.0.14"
   resolved "https://registry.npmmirror.com/@types/react-dom/-/react-dom-17.0.14.tgz#c8f917156b652ddf807711f5becbd2ab018dea9f"
@@ -1718,6 +1795,13 @@
     "@types/prop-types" "*"
     "@types/scheduler" "*"
     csstype "^3.0.2"
+
+"@types/reactcss@*":
+  version "1.2.6"
+  resolved "https://registry.npmmirror.com/@types/reactcss/-/reactcss-1.2.6.tgz#133c1e7e896f2726370d1d5a26bf06a30a038bcc"
+  integrity sha512-qaIzpCuXNWomGR1Xq8SCFTtF4v8V27Y6f+b9+bzHiv087MylI/nTCqqdChNeWS7tslgROmYB7yeiruWX7WnqNg==
+  dependencies:
+    "@types/react" "*"
 
 "@types/resolve@1.17.1":
   version "1.17.1"
@@ -5743,9 +5827,9 @@ jsonparse@^1.2.0:
     object.assign "^4.1.2"
 
 jszip@^3.6.0:
-  version "3.8.0"
-  resolved "https://registry.npmmirror.com/jszip/-/jszip-3.8.0.tgz#a2ac3c33fe96a76489765168213655850254d51b"
-  integrity sha512-cnpQrXvFSLdsR9KR5/x7zdf6c3m8IhZfZzSblFEHSqBaVwD2nvJ4CuCKLyvKvwBgZm08CgfSoiTBQLm5WW9hGw==
+  version "3.9.0"
+  resolved "https://registry.npmmirror.com/jszip/-/jszip-3.9.0.tgz#511b26718aca5f3a553d1f8e072dfd0efdc74481"
+  integrity sha512-Vb3SMfASUN1EKrFzv5A5+lTaZnzLzT5E6A9zyT7WFqMSfhT2Z7iS5FgSOjx2Olm3MDj8OqKj6GHyP2kMt1Ir6w==
   dependencies:
     lie "~3.3.0"
     pako "~1.0.2"

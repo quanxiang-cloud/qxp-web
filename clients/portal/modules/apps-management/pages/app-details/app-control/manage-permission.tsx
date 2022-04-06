@@ -179,6 +179,7 @@ function ManagePermission(): JSX.Element {
         {modalType === 'addAdmin' && (
           <EmployeeOrDepartmentPickerModal
             title='添加管理员'
+            onlyEmployees
             submitText='保存'
             employees={appAdminList}
             departments={[]}
