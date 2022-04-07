@@ -49,7 +49,7 @@ export default function CollapseMenu(): JSX.Element {
           })
         )}
         {!loading && sideNav.length === 0 && (
-          <div className='text-gray-400 text-center text-14'>暂无有权限的菜单，请联系管理员。</div>
+          <div className='text-gray-400 text-center text-14'>暂无应用菜单，请联系管理员配置。</div>
         )}
       </div>
     </div>
