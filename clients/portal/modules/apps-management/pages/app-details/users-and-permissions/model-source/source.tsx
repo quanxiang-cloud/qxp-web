@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { observer } from 'mobx-react';
-import { toJS } from 'mobx';
 import { UnionColumn } from 'react-table';
 
 import Loading from '@c/loading';
@@ -8,16 +7,17 @@ import Checkbox from '@c/checkbox';
 import Tree from '@c/headless-tree';
 import Table from '@c/table';
 import EmptyTips from '@c/empty-tips';
-import { flatTree } from '@c/headless-tree/utils';
+import Pagination from '@c/pagination';
 import { useGetNamespaceFullPath } from '@portal/modules/poly-api/effects/api/namespace';
 
 import store from '../store';
 import NsTreeStore from './store';
 import NodeRender from './group-node';
 
+const initialPage = { page: 1, pageSize: 10 };
 function Source(): JSX.Element {
-  const [nsStore, setNsStore] = useState<NsTreeStore | null>(null);
   const [curNsPath, setCurNsPath] = useState('');
+  const [pagination, setPagination] = useState(initialPage);
 
   const apicol: UnionColumn<APIDetailAuth>[] = [
     {
@@ -40,7 +40,7 @@ function Source(): JSX.Element {
           <Checkbox
             checked={!!api.auth || false}
             onChange={handleChange}
-            value={api.fullPath}
+            value={`${api.accessPath}-${api.uri}`}
           />
         );
       },
@@ -55,33 +55,34 @@ function Source(): JSX.Element {
     body: { active: 1 },
   }, { enabled: !!store.rootPath });
 
+  const nsStore = useMemo(() => {
+    return namespaceTree?.root ? new NsTreeStore(namespaceTree.root) : undefined;
+  }, [namespaceTree?.root]);
+
   useEffect(() => {
-    if (namespaceTree?.root?.children) {
-      const _store = new NsTreeStore(namespaceTree.root);
-      const flattenGroups = flatTree(toJS(_store.rootNode));
-      const firstNode = flattenGroups.find((v)=> v.visible && v.id);
-      firstNode && _store?.onSelectNode(firstNode?.data?.id);
-      setNsStore(_store);
-      store.setCurNamespace(firstNode?.data);
+    if (!nsStore) {
+      store.setCurNamespace(null);
       return;
     }
-    setNsStore(null);
-    store.setCurNamespace(null);
-  }, [namespaceTree]);
+    const firstNode = nsStore.nodeList?.[1] || undefined;
+    firstNode && nsStore?.onSelectNode(firstNode?.data?.id);
+    store.setCurNamespace(firstNode?.data);
+  }, [nsStore]);
 
   useEffect(() => {
     if (curNsPath) {
-      store.fetchAPIFormList(curNsPath);
+      store.fetchAPIFormList(curNsPath, pagination);
       return;
     }
     store.setApiList([]);
     store.setApiAndAuthList([]);
-  }, [curNsPath]);
+  }, [curNsPath, pagination]);
 
   function onSelect(group: PolyAPI.Namespace): void {
     store.setCurNamespace(group);
     const nspath = `${group.parent}/${group.name}`;
     setCurNsPath(nspath.slice(1) || '');
+    setPagination(initialPage);
   }
 
   if (isFetchNsTreeLoading) {
@@ -89,15 +90,21 @@ function Source(): JSX.Element {
   }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>): void {
+    const _path = e.target.value.split('-');
     const _auth = {
-      path: e.target.value,
+      path: _path[0],
       params: null,
       response: null,
       condition: {},
+      uri: _path[1],
       roleID: store.currentRoleID,
     };
     e.target.checked && store.createAPIAuth(_auth);
-    !e.target.checked && store.deleteAPIAuth(e.target.value);
+    !e.target.checked && store.deleteAPIAuth(_path[0], _path[1]);
+  }
+
+  function handlePageChange(page: number, pageSize: number): void {
+    setPagination({ page, pageSize });
   }
 
   return (
@@ -129,13 +136,20 @@ function Source(): JSX.Element {
           配置权限：<span className='text-gray-900'>{store.curNamespace?.title || ''}</span>
           </div>
         </div>
-        <Table
-          className='m-16'
-          rowKey="id"
-          loading={store.isLoadingAuth}
-          data={store.apiAndAuthList || []}
-          emptyTips={<EmptyTips text="无API数据" className="py-10" />}
-          columns={apicol}
+        <div className='max-flex-1 overflow-hidden'>
+          <Table
+            rowKey="id"
+            loading={store.isLoadingAuth}
+            data={store.apiAndAuthList || []}
+            emptyTips={<EmptyTips text="无API数据" className="py-10" />}
+            columns={apicol}
+          />
+        </div>
+        <Pagination
+          current={pagination.page}
+          pageSize={pagination.pageSize}
+          total={store.apiCount}
+          onChange={handlePageChange}
         />
       </div>
     </div>

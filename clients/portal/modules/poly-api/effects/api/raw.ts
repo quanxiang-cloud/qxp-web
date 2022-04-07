@@ -23,6 +23,8 @@ export type RawApiDetail = {
   method: string,
   action: string,
   creatAt: string,
+  uri: string,
+  accessPath: string
 }
 
 export type QueryRequestNodeApiListInputBody = {

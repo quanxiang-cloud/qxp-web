@@ -149,7 +149,7 @@ declare global {
     navType?: string;
   }
 
-  type Roles = {
+  type RoleRight = {
     id: string;
     appID?: string;
   } & RoleCreate
@@ -158,6 +158,13 @@ declare global {
     name?: string;
     description?: string;
     types?: number;
+  }
+
+  type UserOrDept = {
+    id: string,
+    ownerID: string,
+    type: number,
+    ownerName: string,
   }
 
   type DeptAndUser = {

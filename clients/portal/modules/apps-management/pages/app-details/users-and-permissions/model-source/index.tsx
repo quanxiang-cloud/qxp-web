@@ -8,7 +8,7 @@ import { PathType, useQueryNameSpaceRawRootPath } from '@portal/modules/poly-api
 import Source from './source';
 import store from '../store';
 
-function DataSource(): JSX.Element {
+function ModelSource(): JSX.Element {
   const [tabCurrentKey, setTabCurrentKey] = useState<PathType>('inner.form');
 
   const {
@@ -22,10 +22,6 @@ function DataSource(): JSX.Element {
       store.setRootPath(namespace?.appPath.slice(1) || '');
     }
   }, [namespace]);
-
-  useEffect(() => {
-    setTabCurrentKey('inner.form');
-  }, [store.currentRoleID]);
 
   const tabItems = [
     {
@@ -65,4 +61,4 @@ function DataSource(): JSX.Element {
   );
 }
 
-export default observer(DataSource);
+export default observer(ModelSource);

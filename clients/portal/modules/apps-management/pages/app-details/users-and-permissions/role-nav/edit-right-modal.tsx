@@ -7,22 +7,17 @@ import store from './store';
 import toast from '@lib/toast';
 import { observer } from 'mobx-react';
 
-type Props = {
-  type: string;
-  onCancel: () => void;
-}
-
-function EditRightModal({ type, onCancel }: Props): JSX.Element {
+function EditRightModal(): JSX.Element {
   const [loading, setLoading] = useState(false);
   const formRef = useRef<any>();
 
   const handleSubmit = (): void => {
     formRef.current?.handleSubmit((roleDetails: RoleCreate) => {
       setLoading(true);
-      if (type === 'add') {
+      if (store.modalType === 'add') {
         store.addRole(roleDetails).then(() => {
           setLoading(false);
-          onCancel();
+          store.setModalType('');
         }).catch((err) => {
           toast.error(err);
           setLoading(false);
@@ -30,10 +25,10 @@ function EditRightModal({ type, onCancel }: Props): JSX.Element {
         return;
       }
 
-      if (type === 'copy') {
-        store.copyRole({ id: store.currentRole.id, ...roleDetails }).then(() => {
+      if (store.modalType === 'copy') {
+        store.copyRole({ id: store.curRole.id, ...roleDetails }).then(() => {
           setLoading(false);
-          onCancel();
+          store.setModalType('');
         }).catch((err) => {
           toast.error(err);
           setLoading(false);
@@ -41,9 +36,9 @@ function EditRightModal({ type, onCancel }: Props): JSX.Element {
         return;
       }
 
-      store.updateRole({ id: store.currentRole.id, ...roleDetails }).then(() => {
+      store.updateRole({ id: store.curRole.id, ...roleDetails }).then(() => {
         setLoading(false);
-        onCancel();
+        store.setModalType('');
       }).catch((err) => {
         toast.error(err);
         setLoading(false);
@@ -54,14 +49,14 @@ function EditRightModal({ type, onCancel }: Props): JSX.Element {
   return (
     <Modal
       className="static-modal"
-      title={type === 'edit' ? '修改信息' : '添加角色'}
-      onClose={onCancel}
+      title={store.modalType === 'edit' ? '修改信息' : '添加角色'}
+      onClose={() => store.setModalType('')}
       footerBtns={[
         {
           text: '取消',
           key: 'cancel',
           iconName: 'close',
-          onClick: onCancel,
+          onClick: () => store.setModalType(''),
         },
         {
           text: '保存',
@@ -74,10 +69,10 @@ function EditRightModal({ type, onCancel }: Props): JSX.Element {
       ]}
     >
       <BasicInfoForm
-        type={type}
+        type={store.modalType}
         className="p-20"
         ref={formRef}
-        defaultValue={type === 'add' ? {} : store.currentRole} />
+        defaultValue={store.modalType === 'add' ? {} : store.curRole} />
     </Modal>
   );
 }

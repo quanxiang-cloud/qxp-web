@@ -5,9 +5,10 @@ export const fetchUserList = ()=> {
 };
 
 export const getPerOption = <T>(appID: string) => {
-  return httpClient<T>(`/api/v1/structor/${appID}/home/permission/perGroup/getPerOption`);
+  return httpClient<T>(`/api/v1/form/${appID}/home/apiRole/list`);
 };
 
-export const roleChange = <T>(appID: string, perGroupID: string) => {
-  return httpClient<T>(`/api/v1/structor/${appID}/home/permission/perGroup/saveUserPerMatch`, { perGroupID });
+export const roleChange = <T>(appID: string, roleID: string) => {
+  return httpClient<T>(`/api/v1/form/${appID}/home/apiRole/create`, { roleID });
 };
+

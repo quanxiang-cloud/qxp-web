@@ -1,45 +1,53 @@
 import httpClient, { httpClientGraphQL } from '@lib/http-client';
-import { QueryRequestNodeApiListInputBody, QueryRequestNodeApiListResponse } from '@portal/modules/poly-api/effects/api/raw';
+import {
+  QueryRequestNodeApiListInputBody,
+  QueryRequestNodeApiListResponse,
+} from '@portal/modules/poly-api/effects/api/raw';
 
-export const createRole = (appID: string, data: RoleCreate): Promise<{ id: string }> => {
-  return httpClient(`/api/v1/form1/${appID}/m/apiRole/create`, data);
-};
+export function createRole(appID: string, data: RoleCreate): Promise<{ id: string }> {
+  return httpClient(`/api/v1/form/${appID}/m/apiRole/create`, data);
+}
 
-export const copyRole = (appID: string, data: {
+export function copyRole(appID: string, data: {
   groupID?: string;
   name?: string;
   description?: string;
-}): Promise<{ id: string }> => {
+}): Promise<{ id: string }> {
   return httpClient(`/api/v1/form/${appID}/m/permission/duplicatePer`, data);
-};
+}
 
-export const fetchRoles = (appID: string): Promise<{ list: Roles[] }> => {
-  return httpClient(`/api/v1/form1/${appID}/m/apiRole/find`);
-};
+export function fetchRoles(appID: string): Promise<RoleRight[]> {
+  return httpClient<{list: RoleRight[]}>(`/api/v1/form/${appID}/m/apiRole/find`)
+    .then((res) => {
+      return res?.list || [];
+    }).catch(() => {
+      return [];
+    });
+}
 
-export const deleteRole = (appID: string, roleID: string): Promise<void> => {
-  return httpClient(`/api/v1/form1/${appID}/m/apiRole/delete/${roleID}`);
-};
+export function deleteRole(appID: string, roleID: string): Promise<void> {
+  return httpClient(`/api/v1/form/${appID}/m/apiRole/delete/${roleID}`);
+}
 
-export const fetchRolePerson = (appID: string, roleID: string): Promise<{ list: DeptAndUser[] }> => {
-  return httpClient(`/api/v1/form1/${appID}/m/apiRole/grant/list/${roleID}`);
-};
+export function fetchRolePerson(appID: string, roleID: string): Promise<{ list: DeptAndUser[] }> {
+  return httpClient(`/api/v1/form/${appID}/m/apiRole/grant/list/${roleID}`);
+}
 
-export const updateRole = (appID: string, data: Roles): Promise<void> => {
-  return httpClient(`/api/v1/form1/${appID}/m/apiRole/update`, data);
-};
+export function updateRole(appID: string, data: RoleRight): Promise<void> {
+  return httpClient(`/api/v1/form/${appID}/m/apiRole/update`, data);
+}
 
-export const updatePerUser = (
+export function updatePerUser(
   appID: string,
   roleID: string,
   data: { add: DeptAndUser[], removes: string[] },
-): Promise<void> => {
-  return httpClient(`/api/v1/form1/${appID}/m/apiRole/grant/assign/${roleID}`, data);
-};
+): Promise<void> {
+  return httpClient(`/api/v1/form/${appID}/m/apiRole/grant/assign/${roleID}`, data);
+}
 
-export const getUserDetail = <T>(params: { query: string }): Promise<T> => {
+export function getUserDetail <T>(params: { query: string }): Promise<T> {
   return httpClientGraphQL<T>('/api/v1/search/users', params);
-};
+}
 
 export type Property = {
   type: string,
@@ -50,40 +58,45 @@ export type APIAuth = {
   path?: string,
   params?: Record<string, Property> | null,
   response?: Record<string, Property> | null,
-  condition: any;
+  condition?: any;
   roleID?: string,
   id?: string
+  uri?: string
 }
 
-export const createAPIAuth = async (appID: string, data: APIAuth): Promise<void> => {
-  return await httpClient(`/api/v1/form1/${appID}/m/apiPermit/create`, data);
-};
+export async function createAPIAuth(appID: string, data: APIAuth): Promise<void> {
+  return await httpClient(`/api/v1/form/${appID}/m/apiPermit/create`, data);
+}
 
-export const updateAPIAuth = async (
+export async function updateAPIAuth(
   authID: string,
   appID: string,
   data: APIAuth,
-): Promise<PolyAPI.Service> => {
-  return await httpClient(`/api/v1/form1/${appID}/m/apiPermit/update/${authID}`, data);
-};
+): Promise<PolyAPI.Service> {
+  return await httpClient(`/api/v1/form/${appID}/m/apiPermit/update/${authID}`, data);
+}
 
-export const fetchAPIListAuth = async (
+export async function fetchAPIListAuth(
   appID: string,
-  data: { roleID: string, paths: string[] },
-): Promise<Record<string, APIAuth>> => {
-  return await httpClient(`/api/v1/form1/${appID}/m/apiPermit/list`, data);
-};
+  data: {
+    roleID: string,
+    paths: string[],
+    uris: string[],
+  },
+): Promise<Record<string, APIAuth>> {
+  return await httpClient(`/api/v1/form/${appID}/m/apiPermit/list`, data);
+}
 
-export const deleteAPIAuth = async (
+export async function deleteAPIAuth(
   appID: string,
-  data: { roleID: string, path: string },
-): Promise<void> => {
-  return await httpClient(`/api/v1/form1/${appID}/m/apiPermit/delete`, data);
-};
+  data: { roleID: string, path: string, uri: string },
+): Promise<void> {
+  return await httpClient(`/api/v1/form/${appID}/m/apiPermit/delete`, data);
+}
 
-export const fetchGroupApiList = (
+export function fetchGroupApiList(
   path: string,
   data: QueryRequestNodeApiListInputBody,
-): Promise<QueryRequestNodeApiListResponse> => {
+): Promise<QueryRequestNodeApiListResponse> {
   return httpClient(`/api/v1/polyapi/${path.split('/')[3]}/list/${path}`, data);
-};
+}
