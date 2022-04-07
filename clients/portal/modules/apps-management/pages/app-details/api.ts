@@ -40,7 +40,7 @@ export const createPage = async (data: Partial<PageInfo>): Promise<{id: string}>
 };
 
 export const createBlank = async (appID: string): Promise<Record<string, string>> => {
-  return await httpClient(`/api/v1/form/${appID}/m/table/createBlank`);
+  return await httpClient(`/api/v1/form/${appID}/m/table/createBlank`, {});
 };
 
 export const updatePageOrGroup = async (data: PageInfo)=> {

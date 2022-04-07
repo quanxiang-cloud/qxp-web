@@ -114,7 +114,6 @@ function PageLayout(): JSX.Element {
               className='text-btn mr-16'
               onClick={() =>{
                 history.push(`/artery-engine?appID=${store?.appID}&pageName=${layout.name}&arteryID=${layout.refSchemaID}`);
-                // todo
               }}
             >
               去设计
