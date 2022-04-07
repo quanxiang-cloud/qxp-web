@@ -15,11 +15,7 @@ import addLayoutToRoot from './helpers/add-layout-to-root';
 import addViewToRoot from './helpers/add-view-to-root';
 import addViewToLayout from './helpers/add-view-to-layout';
 import findLayouts from './helpers/find-layouts';
-import findViews, {
-  convertNodeToExternalView,
-  convertNodeToStaticView,
-  convertNodeToTableView, convertRefNodeToView,
-} from './helpers/find-views';
+import findViews from './helpers/find-views';
 import {
   findFirstRouteParentID,
   genNodeID,
@@ -187,9 +183,6 @@ class Orchestrator {
       const rootNode = addViewToLayout(this.rootNode, params.layoutID, renderTableSchemaViewNode);
 
       return this.saveSchema(rootNode);
-    }).then((msg) => {
-      this.setCurrentView(convertNodeToTableView(renderTableSchemaViewNode));
-      return msg;
     });
   }
 
@@ -237,9 +230,6 @@ class Orchestrator {
       const rootNode = addViewToLayout(this.rootNode, params.layoutID, renderSchemaView);
 
       return this.saveSchema(rootNode);
-    }).then((msg) => {
-      this.setCurrentView(convertRefNodeToView(renderSchemaView));
-      return (msg);
     });
   }
 
@@ -266,20 +256,19 @@ class Orchestrator {
       },
     };
 
-    if (!params.layoutID) {
-      return this.saveSchema(addViewToRoot(this.rootNode, staticViewNode));
-    }
+    return Promise.resolve().then(() => {
+      if (!params.layoutID) {
+        return this.saveSchema(addViewToRoot(this.rootNode, staticViewNode));
+      }
 
-    const rootNode = addViewToLayout(this.rootNode, params.layoutID, staticViewNode);
+      const rootNode = addViewToLayout(this.rootNode, params.layoutID, staticViewNode);
 
-    return this.saveSchema(rootNode).then((msg) => {
-      this.setCurrentView(convertNodeToStaticView(staticViewNode));
-      return msg;
+      return this.saveSchema(rootNode);
     });
   }
 
   async addExternalView(params: CreateViewParams<ExternalView>): FutureErrorMessage {
-    const staticViewNode: ReactComponentNode = {
+    const externalViewNode: ReactComponentNode = {
       id: genNodeID(),
       type: 'react-component',
       label: params.name,
@@ -306,15 +295,11 @@ class Orchestrator {
     };
 
     if (!params.layoutID) {
-      return this.saveSchema(addViewToRoot(this.rootNode, staticViewNode));
+      return this.saveSchema(addViewToRoot(this.rootNode, externalViewNode));
     }
 
-    const rootNode = addViewToLayout(this.rootNode, params.layoutID, staticViewNode);
-
-    return this.saveSchema(rootNode).then((msg) => {
-      this.setCurrentView(convertNodeToExternalView(staticViewNode));
-      return msg;
-    });
+    const rootNode = addViewToLayout(this.rootNode, params.layoutID, externalViewNode);
+    return this.saveSchema(rootNode);
   }
 
   // async editTableSchemaView(view: TableSchemaView): FutureErrorMessage {
@@ -435,6 +420,12 @@ class Orchestrator {
       if (this.modalType === 'createView' && this.views.length === 1 ) {
         this.setHomeView(viewInfo.name);
       }
+      if (viewInfo.id) {
+        this.setCurrentView(viewInfo);
+        return;
+      }
+      const view = this.views.find((view) => view.name === viewInfo.name);
+      this.setCurrentView(view as View);
     });
   }
 
@@ -462,6 +453,8 @@ class Orchestrator {
       return this.saveAppHomeViewUrl('');
     }
     const view = this.views.find((view) => view.name === viewName) as View;
+    console.log(view);
+
     this.homeView = view;
     return this.saveAppHomeViewUrl(view.url);
   }

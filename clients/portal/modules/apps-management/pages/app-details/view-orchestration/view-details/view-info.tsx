@@ -156,6 +156,17 @@ function ViewInfo({ view, openModal }: Props): JSX.Element {
         >
           {VIEW_MAP[type].operator}
         </Button>
+        <Button
+          iconName='article'
+          className="mr-18"
+          modifier='primary'
+          textClassName='app-content--op_btn'
+          onClick={() => {
+            window.open(`/_jump_to_home?to=${view.url}`);
+          }}
+        >
+          访问页面
+        </Button>
       </div>
       {[ViewType.SchemaView, ViewType.StaticView, ViewType.ExternalView].includes(type) && (
         <Tab

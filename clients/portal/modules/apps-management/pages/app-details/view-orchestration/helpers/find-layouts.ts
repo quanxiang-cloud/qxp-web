@@ -21,7 +21,7 @@ function getLayoutSubViews(layoutNode: Node): Array<{ id: string; name: string; 
 
 // todo optimize this
 function getRefSchemaID(layoutNode: Node): string {
-  return get(layoutNode, 'children.0.children.0.schemaID') || '';
+  return get(layoutNode, 'children.0.children.0.arteryID') || '';
 }
 
 function convertNodeToLayout(node: Node): Layout {
