@@ -25,7 +25,7 @@ export const PAGE_TYPE = {
 export const PAGE_DESIGN_ID = 'page-design-container';
 
 export const LAYERS: Layer<BlocksCommunicationType>[] = [{
-  gridTemplateColumns: '1fr 21fr 5fr',
+  gridTemplateColumns: '1fr 21fr minmax(var(--pg-setting-panel-wid), 5fr)',
   gridTemplateRows: 'minmax(41px, 1fr) 10fr',
   blocks: [{
     gridColumnStart: 'span 3',
