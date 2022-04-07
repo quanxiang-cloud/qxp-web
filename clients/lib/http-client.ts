@@ -66,11 +66,11 @@ httpClient.get = function<TData>(path: string, query?: Record<string, unknown>) 
   return request<TData>(_path, 'GET', undefined);
 };
 
-httpClient.post = function<TData>(path: string, body?: unknown) {
+httpClient.post = function<TData>(path: string, body: unknown) {
   return request<TData>(path, 'POST', body);
 };
 
-httpClient.put = function<TData>(path: string, body?: unknown) {
+httpClient.put = function<TData>(path: string, body: unknown) {
   return request<TData>(path, 'PUT', body);
 };
 
