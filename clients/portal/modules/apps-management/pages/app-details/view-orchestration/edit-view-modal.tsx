@@ -3,7 +3,7 @@ import { Form, Input } from 'antd';
 
 import Modal from '@c/modal';
 import { RadioButtonGroup } from '@one-for-all/ui';
-import Select from '@c/select';
+import { Select } from '@one-for-all/headless-ui';
 
 import StaticViewUpload from './static-view-upload';
 

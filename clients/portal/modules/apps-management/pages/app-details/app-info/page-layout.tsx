@@ -5,7 +5,7 @@ import { FormInstance } from 'antd/es/form';
 import { observer } from 'mobx-react';
 
 import Card from '@c/card';
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import Table from '@c/table';
 import EmptyTips from '@c/empty-tips';
 import Modal, { FooterBtnProps } from '@c/modal';

@@ -3,7 +3,7 @@ import { useHistory, useParams } from 'react-router-dom';
 
 import Tab from '@c/tab';
 import Icon from '@c/icon';
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 
 import { ExternalView, SchemaView, TableSchemaView, View, ViewType } from '../types.d';
 import ArteryRenderer from '@c/artery-renderer';

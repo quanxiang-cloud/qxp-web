@@ -5,7 +5,7 @@ import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
 import { isEmpty } from 'lodash';
 
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import Loading from '@c/loading';
 import toast from '@lib/toast';
 import { FormRenderer } from '@c/form-builder';

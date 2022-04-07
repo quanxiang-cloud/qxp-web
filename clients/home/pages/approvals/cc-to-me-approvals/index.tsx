@@ -4,10 +4,10 @@ import { observer } from 'mobx-react';
 
 import Search from '@c/search';
 import Pagination from '@c/pagination';
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import Modal from '@c/modal';
 import toast from '@lib/toast';
-import Select from '@c/select';
+import { Select } from '@one-for-all/headless-ui';
 import IconBtn from '@c/icon-btn';
 import RadioButtonGroup from '@c/radio/radio-button-group';
 

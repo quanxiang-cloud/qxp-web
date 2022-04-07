@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import Tab from '@c/tab';
 
 import ComponentStyleCustomization from './component-style-customization';

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import cs from 'classnames';
 
 import SvgIcon from '@c/icon';
-import Select from '@c/select';
+import { Select } from '@one-for-all/headless-ui';
 
 import Pager from './pager';
 

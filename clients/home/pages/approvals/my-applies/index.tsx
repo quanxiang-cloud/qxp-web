@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { observer } from 'mobx-react';
 
-import Select from '@c/select';
+import { Select } from '@one-for-all/headless-ui';
 import Search from '@c/search';
 import Pagination from '@c/pagination';
 import RangePicker from '@c/range-picker';

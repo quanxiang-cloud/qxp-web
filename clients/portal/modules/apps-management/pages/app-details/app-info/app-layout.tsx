@@ -2,7 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react';
 
 import Card from '@c/card';
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import Loading from '@c/loading';
 import useAppStore from '../view-orchestration/hooks';
 
