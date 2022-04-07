@@ -12,6 +12,7 @@ import Avatar from '@c/avatar';
 import ResetPasswordModal from '@portal/global-header/reset-password-modal';
 import NavMsgBar from '@portal/modules/msg-center/nav-msg-bar';
 import NavTaskBar from '@c/task-lists';
+import toast from '@lib/toast';
 
 import appDetailsStore from '../store';
 import './index.scss';
@@ -77,7 +78,13 @@ function DetailsHeader(): JSX.Element {
           className="btn mr-16"
           target="_blank"
           rel="noreferrer"
-          href={`/_jump_to_home?to=/apps/${appID}`}
+          href={`/_jump_to_home?to=${appDetails.accessURL}`}
+          onClick={(e) => {
+            if (!appDetails.accessURL) {
+              e.preventDefault();
+              toast.error('请为应用位置至少一个页面');
+            }
+          }}
         >
           访问应用端
         </a>

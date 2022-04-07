@@ -4,28 +4,20 @@ import toast from '@lib/toast';
 import { Button } from '@one-for-all/headless-ui';
 import { setGlobalConfig } from '@lib/configuration-center';
 
-import { savePage, updatePageEngineMenuType } from './api';
-import {
-  getKeyOfCustomPageEditor,
-  CUSTOM_PAGE_EDITOR_SCHEMA,
-  CUSTOM_PAGE_EDITOR_PAGE_ENGINE,
-  initialSchema,
-} from './utils';
+import { savePage } from './api';
+import { getInitArteryByPageType } from './utils';
+import { PAGE_TYPE } from './constants';
 
 type Props = {
-  appID: string;
-  pageId: string;
+  arteryID: string;
   onSelect: (editor: string) => void;
 }
 
-function SelectCustomPageEditor({ pageId, appID, onSelect }: Props): JSX.Element {
-  function handleSelect(editor: string): void {
-    const [key, newKey] = getKeyOfCustomPageEditor(appID, pageId);
-    setGlobalConfig(key, '1.0.0', editor);
-    setGlobalConfig(newKey, '1.0.0', editor);
-    savePage(appID, pageId, initialSchema).then(() => {
-      updatePageEngineMenuType(appID, pageId);
-      onSelect(editor);
+function SelectCustomPageEditor({ arteryID, onSelect }: Props): JSX.Element {
+  function handleSelect(pageType: string): void {
+    setGlobalConfig(arteryID, '1.0.0', pageType);
+    savePage(arteryID, getInitArteryByPageType(pageType)).then(() => {
+      onSelect(pageType);
     }).catch((err: Error) => {
       toast.error(err.message);
     });
@@ -38,10 +30,10 @@ function SelectCustomPageEditor({ pageId, appID, onSelect }: Props): JSX.Element
     >
       <h1 className="text-center mb-20">请选择构建自定义页面的方式</h1>
       <div className="w-6/12 flex items-center justify-between m-auto">
-        <Button onClick={() => handleSelect(CUSTOM_PAGE_EDITOR_SCHEMA)}>
-          使用 Schema 编辑器
+        <Button onClick={() => handleSelect(PAGE_TYPE.ARTERY_EDITOR)}>
+          使用 Artery 编辑器
         </Button>
-        <Button onClick={() => handleSelect(CUSTOM_PAGE_EDITOR_PAGE_ENGINE)}>
+        <Button onClick={() => handleSelect(PAGE_TYPE.PAGE_DESIGN_EDITOR)}>
           使用页面引擎
         </Button>
       </div>

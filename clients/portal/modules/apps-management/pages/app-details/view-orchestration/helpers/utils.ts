@@ -110,7 +110,7 @@ export function addRouteNodeToRootNode(rootNode: Node, routeNode: RouteNode): No
   }
 
   if (!isLayoutNode(_rootNode)) {
-    return appendChild(rootNode, rootNode.id, routeNode);
+    return appendChild(rootNode, _rootNode.id, routeNode);
   }
 
   return addRouteNodeToLayout(rootNode, _rootNode.id, routeNode);
