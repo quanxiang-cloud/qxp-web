@@ -306,8 +306,8 @@ export const fetchPageList = async (appID: string): Promise<fetchPageListRes> =>
   return await httpClient(`/api/v1/structor/${appID}/${side}/menu/list`, { appID });
 };
 
-export function getArteryPageInfo(appID: string, menuId: string): Promise<ArteryPageInfo> {
-  return httpClient(`/api/v1/structor/${appID}/m/table/getInfo`, { menuId });
+export function getArteryPageInfo(appID: string, tableID: string): Promise<ArteryPageInfo> {
+  return httpClient(`/api/v1/form/${appID}/m/table/getInfo`, { tableID });
 }
 
 export function saveTableSchema(

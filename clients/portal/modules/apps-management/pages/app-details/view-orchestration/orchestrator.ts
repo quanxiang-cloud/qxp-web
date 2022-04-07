@@ -309,6 +309,31 @@ class Orchestrator {
   // async editStaticView(view: StaticView): FutureErrorMessage;
 
   @action
+  async editTableSchemaView(view: TableSchemaView): FutureErrorMessage {
+    if (!this.rootNode) {
+      return 'no root node found for this app, please init root node again!';
+    }
+
+    const targetNode = findNodeByID(this.rootNode, view.id);
+
+    if (!targetNode) {
+      return 'target node not found';
+    }
+
+    const tableSchemaViewNode: ReactComponentNode = {
+      ...(targetNode as ReactComponentNode),
+      label: view.name,
+      props: {
+        ...targetNode.props,
+        name: { type: 'constant_property', value: view.name },
+      },
+    };
+
+    const rootNode = patchNode(this.rootNode, tableSchemaViewNode);
+    return this.saveSchema(rootNode);
+  }
+
+  @action
   async editStaticView(view: StaticView): FutureErrorMessage {
     if (!this.rootNode) {
       return 'no root node found for this app, please init root node again!';
@@ -415,9 +440,13 @@ class Orchestrator {
         return this.editExternalView(viewInfo as ExternalView);
       }
 
+      if (viewInfo.type === ViewType.TableSchemaView && this.modalType === 'editView') {
+        return this.editTableSchemaView(viewInfo as TableSchemaView);
+      }
+
       return this.updateViewName(this.currentView as View, viewInfo.name!);
     }).then(() => {
-      if (this.modalType === 'createView' && this.views.length === 1 ) {
+      if (this.modalType === 'createView' && this.views.length === 1) {
         this.setHomeView(viewInfo.name);
       }
       if (viewInfo.id) {

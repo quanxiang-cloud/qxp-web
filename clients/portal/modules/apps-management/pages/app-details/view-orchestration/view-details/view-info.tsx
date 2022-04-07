@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
 import Tab from '@c/tab';
@@ -7,7 +7,10 @@ import Button from '@c/button';
 
 import { ExternalView, SchemaView, TableSchemaView, View, ViewType } from '../types.d';
 import ArteryRenderer from '@c/artery-renderer';
-import { VERSION } from '../constants';
+import { DefaultFormDescriptions, VERSION } from '../constants';
+import { getArteryPageInfo } from '@lib/http-client';
+import { mapToArteryPageDescription } from '../../utils';
+import { toast } from '@one-for-all/ui';
 
 type Props = {
   view: View;
@@ -18,6 +21,12 @@ type View_Map = {
   icon: string;
   viewType: string;
   operator: string;
+}
+
+type ViewDescription = {
+  id: string;
+  title: string;
+  value: string;
 }
 
 const VIEW_MAP: Record<ViewType, View_Map> = {
@@ -66,7 +75,7 @@ function ViewInfo({ view, openModal }: Props): JSX.Element {
   const { type } = view;
   const history = useHistory();
   const { appID } = useParams<{ appID: string }>();
-  const pageDescriptions = [{ id: 'type', title: '页面类型', value: VIEW_MAP[type].viewType }];
+  const [formDescriptions, setFormDescriptions] = useState<ViewDescription[]>();
 
   const Preview = useMemo((): JSX.Element | null => (
     <div className='h-full pointer-events-none'>
@@ -100,10 +109,23 @@ function ViewInfo({ view, openModal }: Props): JSX.Element {
   )
   , [view]);
 
-  function goPageDesign(): void {
-    // to change below line after page engine v2 new update
-    const arteryID = (view as SchemaView).arteryID;
+  useEffect(() => {
+    if (view.type === ViewType.TableSchemaView) {
+      setFormDescriptions(DefaultFormDescriptions),
+      getArteryPageInfo(appID, view.tableID).then((res) => {
+        setFormDescriptions( (prevDescriptions) => prevDescriptions?.map((description) => {
+          return mapToArteryPageDescription(description, res);
+        }));
+      }).catch(() => {
+        toast.error('表单信息获取失败');
+      });
+      return;
+    }
+    setFormDescriptions([{ id: 'type', title: '页面类型', value: VIEW_MAP[type].viewType }]);
+  }, [view.id]);
 
+  function goPageDesign(): void {
+    const arteryID = (view as SchemaView).arteryID;
     history.push(`/artery-engine?appID=${appID}&pageName=${view.name}&arteryID=${arteryID}`);
   }
 
@@ -138,7 +160,7 @@ function ViewInfo({ view, openModal }: Props): JSX.Element {
           />
         </div>
         <div className='flex-1 grid grid-cols-6 mr-48'>
-          {pageDescriptions.map(({ title, value }) => {
+          {formDescriptions?.map(({ title, value }) => {
             return (
               <div key={title}>
                 <p className={!value ? 'text-gray-400' : ''}>{value ? value : '-'}</p>
