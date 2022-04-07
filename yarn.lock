@@ -1118,10 +1118,6 @@
   resolved "https://registry.npmmirror.com/@one-for-all/api-spec-adapter/-/api-spec-adapter-0.4.0.tgz#fd662bf3e0e4dfc75f25cdb78b69215aac9856f6"
   integrity sha512-0AvMUdxfWa6/gdIgk0PPOzBO17XJnD/6QUAoAdvm1kOU+hmVydXLY4ODRvDHs9cVNvBDjcZwLsdQ0esRelnT7g==
 
-"@one-for-all/artery-renderer@0.20.1":
-  version "0.20.1"
-  resolved "https://registry.npmmirror.com/@one-for-all/artery-renderer/-/artery-renderer-0.20.1.tgz#58552c1731eca90039abc3c457f8d5a06c2f3b12"
-  integrity sha512-9jz+94yne5H0MGCb2lg2xeTdIryTlYv4mSDrFKWG1Fwp6azf+ED7xSak0cPKa52NdTNof9lei0pXgYrXtGKF8Q==
 "@one-for-all/artery-engine@1.1.1":
   version "1.1.1"
   resolved "https://registry.npmmirror.com/@one-for-all/artery-engine/-/artery-engine-1.1.1.tgz#eb816ab94c2827a1dae4cafe63130347143a14cf"
@@ -1197,19 +1193,6 @@
   integrity sha512-q5XVGJ0dtKIp2BtorFHP0IApbF6aGra+pB8BhHfyz893WBBzWGl64zQinYIJjboFFHd0J9VRBqb7Tet4J2DuOw==
   dependencies:
     react "^17.0.2"
-"@one-for-all/page-engine-v2@^1.1.0":
-  version "1.1.1"
-  resolved "https://registry.npmmirror.com/@one-for-all/page-engine-v2/-/page-engine-v2-1.1.1.tgz#d28aaa4c42492e134381b09c58f7ca1b3ea513c3"
-  integrity sha512-4pDCFCgkC6TrWGhErlenlb7otF9z1ee7Upy6LZ9CBgsWFE467IaCCDsQiOnV2ZLaBCBFm/wFe6iGyetC4mOucA==
-  dependencies:
-    "@one-for-all/artery" "0.15.0"
-    "@one-for-all/artery-renderer" "0.20.0"
-    classnames "^2.3.1"
-    nanoid "^3.1.30"
-    ramda "^0.27.1"
-    react "^17.0.2"
-    react-dom "^17.0.2"
-    rxjs "^7.4.0"
 
 "@one-for-all/page-engine@0.10.0":
   version "0.10.0"
@@ -1247,20 +1230,6 @@
     react-jsx-parser "1.29.0"
     rxjs "^7.4.0"
 
-"@one-for-all/render-engine@0.19.0":
-  version "0.19.0"
-  resolved "https://registry.npmmirror.com/@one-for-all/render-engine/-/render-engine-0.19.0.tgz#88d10f6ea28a44103399f15341b30179f188aab4"
-  integrity sha512-fnp+5qFpAFIqJuCVUQfrwJb37nznVxO+LU3Y5NO6TyoFeNrkjz2mWHcPvIjrY45xKjJ2hxZTiPmSLWwiQQxfwA==
-  dependencies:
-    "@one-for-all/api-spec-adapter" "0.4.0"
-    "@one-for-all/schema-spec" "0.15.0"
-    "@one-for-all/utils" "0.3.0"
-    history "5.3.0"
-    react "^17.0.2"
-    react-dom "^17.0.2"
-    react-jsx-parser "1.29.0"
-    rxjs "^7.4.0"
-
 "@one-for-all/schema-spec@0.13.1-0":
   version "0.13.1-0"
   resolved "https://registry.npmmirror.com/@one-for-all/schema-spec/-/schema-spec-0.13.1-0.tgz#6133bb595a0abaeda045925ee41a220bc94fe9bd"
@@ -1271,26 +1240,13 @@
   resolved "https://registry.npmmirror.com/@one-for-all/schema-spec/-/schema-spec-0.14.0.tgz#b27b02ff384ec88150d49a43da8a3d5636aee378"
   integrity sha512-ktrYBcl4tMmq5ywArP4fEHZXB6tzZPWX7uCvi419ayQbO4C3mRPb3p/DnLzyhUiwGJtXRubFlHVWsntKwJVnOg==
 
-"@one-for-all/schema-spec@0.15.0":
-  version "0.15.0"
-  resolved "https://registry.npmmirror.com/@one-for-all/schema-spec/-/schema-spec-0.15.0.tgz#665d9a4b40dbeb399d8dbe1c48b80d55f7bf6a7f"
-  integrity sha512-tPqHVGyGfAJnfNoVvbGJEMxLFPr4VsKySE9WDZw1IYGDLCzXrhSotb7M59aNww4XlCo+PFM/mhQtUpupH9lBww==
-
-"@one-for-all/style-guide@0.1.4":
-  version "0.1.3"
-  resolved "https://registry.npmmirror.com/@one-for-all/style-guide/-/style-guide-0.1.3.tgz#f4855a0236ab1a24b3443a5a1179bbe4df091af9"
-  integrity sha512-xT4SAaYGaj9sR9vvTHC+rC1bA37DmVo71pvHn1jgHn5PK1ZlsjjID2RpW1TltwZQYPYTBfVwEmeLk7YG0YiXfQ==
+"@one-for-all/style-guide@0.1.5":
+  version "0.1.5"
+  resolved "https://registry.npmmirror.com/@one-for-all/style-guide/-/style-guide-0.1.5.tgz#eb53165562a0f281b89f04be4c0a3849104d9f23"
+  integrity sha512-wID/jEeZuTlZ1HWcfwkM6SYvrGDHMn4DgvhyP9eLOA/hPbQZpLs/JMFDy29PZbuAlauwMp1PGFvwfCyvV9jGPw==
   dependencies:
     css-tree "^2.0.4"
     cssbeautify "^0.3.1"
-
-"@one-for-all/schema-utils@0.10.0":
-  version "0.10.0"
-  resolved "https://registry.npmmirror.com/@one-for-all/schema-utils/-/schema-utils-0.10.0.tgz#f0719177989c1cae3ce40dbfc97962da11ee30a7"
-  integrity sha512-YaV6e/6+5i1EZob/57SABRQ4ZwojbKAWL9DOyxiom6Br9WHljDbbVWskQPU+g9LMmzT+iXcRu8A9G2z2KqKCEA==
-  dependencies:
-    "@one-for-all/schema-spec" "0.15.0"
-    immutable "4.0.0"
 
 "@one-for-all/ui@0.2.18":
   version "0.2.18"
