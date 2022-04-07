@@ -12,7 +12,6 @@ import Avatar from '@c/avatar';
 import ResetPasswordModal from '@portal/global-header/reset-password-modal';
 import NavMsgBar from '@portal/modules/msg-center/nav-msg-bar';
 import NavTaskBar from '@c/task-lists';
-import toast from '@lib/toast';
 
 import appDetailsStore from '../store';
 import './index.scss';
@@ -30,17 +29,6 @@ function DetailsHeader(): JSX.Element {
   const handleChange = (newAppId: string): void => {
     history.replace(location.pathname.replace(appID, newAppId));
   };
-
-  function handleAccessApp(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>): void {
-    e.preventDefault();
-    appDetailsStore.fetchAppDetails(appID).then(({ accessURL }) => {
-      if (!accessURL) {
-        toast.error('请为应用配置至少一个页面');
-        return;
-      }
-      window.open(`/_jump_to_home?to=${accessURL}`);
-    });
-  }
 
   const statusTipsContent = (isPublish: boolean): JSX.Element => {
     if (isPublish) {
@@ -84,15 +72,6 @@ function DetailsHeader(): JSX.Element {
             {isPublish ? '下线应用' : '发布应用'}
           </Button>
         </PopConfirm>
-        <hr className='app-global-header-hr mx-16' />
-        <a
-          className="btn mr-16"
-          target="_blank"
-          rel="noreferrer"
-          onClick={handleAccessApp}
-        >
-          访问应用端
-        </a>
         <hr className='app-global-header-hr' />
         <NavTaskBar type='manager' className='mx-16'/>
         <NavMsgBar type='portal' className='mr-16'/>
