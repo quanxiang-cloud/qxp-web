@@ -14,7 +14,7 @@ export interface BlocksCommunicationType extends BaseBlocksCommunicationState {
   hideTestPreview?: boolean;
   repository?: Repository;
   appID?: string;
-  schemaID?: string;
+  arteryID?: string;
 }
 
 export type ReactComp = React.ComponentType | React.JSXElementConstructor<any>;
