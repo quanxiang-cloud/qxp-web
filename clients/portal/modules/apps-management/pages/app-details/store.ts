@@ -153,7 +153,7 @@ class AppDetailsStore {
   };
 
   @action
-  fetchAppDetails = (appID: string): Promise<void> => {
+  fetchAppDetails = (appID: string): Promise<AppInfo> => {
     this.loading = true;
     this.appID = appID;
     return fetchAppDetails(appID).then((res: any) => {
@@ -162,6 +162,7 @@ class AppDetailsStore {
         this.lastUpdateTime = res.updateTime;
         this.loading = false;
       });
+      return res;
     }).catch(() => {
       runInAction(() => {
         this.loading = false;

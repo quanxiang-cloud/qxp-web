@@ -31,6 +31,17 @@ function DetailsHeader(): JSX.Element {
     history.replace(location.pathname.replace(appID, newAppId));
   };
 
+  function handleAccessApp(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>): void {
+    e.preventDefault();
+    appDetailsStore.fetchAppDetails(appID).then(({ accessURL }) => {
+      if (!accessURL) {
+        toast.error('请为应用配置至少一个页面');
+        return;
+      }
+      window.open(`/_jump_to_home?to=${accessURL}`);
+    });
+  }
+
   const statusTipsContent = (isPublish: boolean): JSX.Element => {
     if (isPublish) {
       return (
@@ -78,16 +89,7 @@ function DetailsHeader(): JSX.Element {
           className="btn mr-16"
           target="_blank"
           rel="noreferrer"
-          onClick={(e) => {
-            e.preventDefault();
-            appDetailsStore.fetchAppDetails(appID).then(() => {
-              if (!appDetails.accessURL) {
-                toast.error('请为应用位置至少一个页面');
-                return;
-              }
-              window.open(`/_jump_to_home?to=${appDetails.accessURL}`);
-            });
-          }}
+          onClick={handleAccessApp}
         >
           访问应用端
         </a>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react';
+import { useHistory } from 'react-router-dom';
 
 import Card from '@c/card';
 import Button from '@c/button';
@@ -8,6 +9,8 @@ import useAppStore from '../view-orchestration/hooks';
 
 function AppLayout(): JSX.Element {
   const { store, isLoading } = useAppStore();
+  const history = useHistory();
+  const rootLayout = store?.layouts.find((view) => view.id === 'root_node' );
 
   if (isLoading) {
     return <Loading />;
@@ -26,7 +29,9 @@ function AppLayout(): JSX.Element {
         itemTitleClassName="text-h6"
         action={(
           <div className="flex items-center">
-            <Button modifier='primary' onClick={() => { }} >
+            <Button modifier='primary' onClick={() => {
+              history.push(`/artery-engine?appID=${store.appID}&pageName=应用布局&arteryID=${rootLayout?.refSchemaID}`);
+            }} >
               去设计
             </Button>
           </div>
