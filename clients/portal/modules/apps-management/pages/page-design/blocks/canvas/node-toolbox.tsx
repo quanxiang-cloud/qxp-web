@@ -31,6 +31,9 @@ function NodeToolbox(props: Props, ref: any): JSX.Element {
   useEffect(()=> {
     // 监听浏览器窗口变动
     window.addEventListener('resize', computedPlace);
+    return () => {
+      window.removeEventListener('resize', computedPlace);
+    };
   }, []);
 
   useEffect(() => {
