@@ -11,7 +11,7 @@ export const INNER_LINK_FUNC_SPEC: FunctionalProperty = {
       if (!e.currentTarget.href) {
         return;
       }
-      this.history.replace(e.currentTarget.href);
+      this.history.push(e.currentTarget.href);
     `,
   },
 };
