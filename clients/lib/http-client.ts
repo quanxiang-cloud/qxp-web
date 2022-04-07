@@ -1,6 +1,6 @@
 import qs from 'qs';
 
-import { CustomPageInfo, SchemaPageInfo } from '@portal/modules/apps-management/pages/app-details/type';
+import { CustomPageInfo, ArteryPageInfo } from '@portal/modules/apps-management/pages/app-details/type';
 import { ESParameter, toEs } from '@c/data-filter/utils';
 import schemaToFields from '@lib/schema-convert';
 
@@ -24,14 +24,21 @@ function request<TData>(path: string, method: METHOD, body?: unknown): Promise<T
   };
 
   return fetch(path, requestInit)
-    .then((response) => response.json())
+    .then((response) => {
+      if (response.status > 400) {
+        return Promise.reject(new Error(response.statusText));
+      }
+
+      return response.json();
+    })
     .then(({ code, msg, data }) => {
       if (code !== 0) {
         return Promise.reject(new Error(msg));
       }
 
       return data;
-    }).catch((err) => {
+    })
+    .catch((err) => {
       if (err.response?.status === 401) {
         if (!alreadyAlertUnauthorizedError) {
           alreadyAlertUnauthorizedError = true;
@@ -299,7 +306,7 @@ export const fetchPageList = async (appID: string): Promise<fetchPageListRes> =>
   return await httpClient(`/api/v1/structor/${appID}/${side}/menu/list`, { appID });
 };
 
-export function getSchemaPageInfo(appID: string, menuId: string): Promise<SchemaPageInfo> {
+export function getArteryPageInfo(appID: string, menuId: string): Promise<ArteryPageInfo> {
   return httpClient(`/api/v1/structor/${appID}/m/table/getInfo`, { menuId });
 }
 

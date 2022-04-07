@@ -78,7 +78,8 @@ function CascadeSelector({
   function handleChange(
     _value: CascaderValueType, selected?: CascaderOptionType[] | CascaderOptionType[][],
   ): void {
-    const labelToSave = (flatten(selected || [])).map(({ label }) => label).join('/');
+    const selectedArray = flatten(selected ?? []);
+    const labelToSave = selectedArray.map(({ label }) => label).join('/');
     const valueToSave = _value.join('/');
     cascadeProps && cascadeProps.onChange({ label: labelToSave, value: valueToSave });
   }

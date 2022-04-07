@@ -9,6 +9,7 @@ import './index.scss';
 type Props = {
   views: View[];
   currentView: View;
+  homeView?: View;
   className?: string;
   onViewClick?: (view: View) => void;
   onOptionClick?: (key: string, view: View) => void;

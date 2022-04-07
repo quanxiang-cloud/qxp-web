@@ -5,7 +5,7 @@ import { flattenDeep, isEmpty } from 'lodash';
 import toast from '@lib/toast';
 
 import { fetchCorrelationFlows, fetchCorrelationRoles } from './api';
-import { CardListInfo, CardList, CustomPageInfo, Description, SchemaPageInfo } from './type';
+import { CardListInfo, CardList, CustomPageInfo, Description, ArteryPageInfo } from './type';
 import { Menu } from './page-menu-design/menu-tree/type';
 import { ViewType } from './view-orchestration/types.d';
 
@@ -135,7 +135,7 @@ export function filterDeletedPage(
   });
 }
 
-export function getValueOfPageDescription(key: string, data: CustomPageInfo & SchemaPageInfo): string | undefined {
+export function getValueOfPageDescription(key: string, data: CustomPageInfo & ArteryPageInfo): string | undefined {
   switch (key) {
   case 'createdBy':
     return data.createdBy;
@@ -154,8 +154,8 @@ export function getValueOfPageDescription(key: string, data: CustomPageInfo & Sc
   }
 }
 
-export function mapToSchemaPageDescription(
-  { id, title, value }: Description, data: SchemaPageInfo,
+export function mapToArteryPageDescription(
+  { id, title, value }: Description, data: ArteryPageInfo,
 ): Description {
   const test = getValueOfPageDescription(id, { ...data, id: data.tableID || '' });
 

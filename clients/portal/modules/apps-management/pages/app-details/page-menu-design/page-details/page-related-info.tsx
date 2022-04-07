@@ -41,7 +41,7 @@ function PageRelatedInfo(): JSX.Element {
     <div className='rounded-12 flex select-none py-16'>
       {curPageCardList.map(({ title, list, id: cardID }) => {
         if (
-          [MenuType.schemaPage, MenuType.customPage].includes(activeMenu.menuType || 0) &&
+          [MenuType.arteryPage, MenuType.customPage].includes(activeMenu.menuType || 0) &&
           cardID === 'linkedFlows'
         ) {
           return;
