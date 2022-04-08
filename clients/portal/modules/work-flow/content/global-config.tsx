@@ -2,8 +2,8 @@ import React, { useRef, useContext, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { Radio, RadioChangeEvent } from 'antd';
+import { Switch } from '@one-for-all/headless-ui';
 
-import Toggle from '@c/toggle';
 import Icon from '@c/icon';
 import ToolTip from '@c/tooltip';
 import Loading from '@c/loading';
@@ -230,7 +230,7 @@ export default function GlobalConfig(): JSX.Element | null {
                   control={control}
                   defaultValue={option.checked}
                   render={({ field }) => (
-                    <Toggle
+                    <Switch
                       defaultChecked={option.checked}
                       className="mr-16"
                       onChange={(type) => {

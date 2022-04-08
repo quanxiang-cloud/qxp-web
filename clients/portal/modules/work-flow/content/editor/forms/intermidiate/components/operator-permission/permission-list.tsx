@@ -1,6 +1,6 @@
 import React, { useState, ChangeEvent, useEffect, createRef, Ref } from 'react';
+import { Switch } from '@one-for-all/headless-ui';
 
-import Toggle from '@c/toggle';
 import Icon from '@c/icon';
 import Tooltip from '@c/tooltip';
 import { isCurrentNodeFirstLogicNode } from '@flow/content/editor/utils/node';
@@ -98,7 +98,7 @@ export default function PermissionList({ label, operationData, type, onChange }:
             className="flex items-center justify-between px-10 py-16 shadow-header"
           >
             <div className="flex flex-1 justify-center">
-              <Toggle
+              <Switch
                 disabled={!op.changeable}
                 defaultChecked={op.enabled}
                 onChange={(checked) => onUpdateOperation(type, op, {
@@ -148,7 +148,7 @@ export default function PermissionList({ label, operationData, type, onChange }:
             </div>
             {typeof op.reasonRequired !== 'undefined' ? (
               <div className="flex flex-1 justify-center">
-                <Toggle
+                <Switch
                   defaultChecked={op.reasonRequired}
                   onChange={handleCheckReasonRequired(type, op)}
                 />

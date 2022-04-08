@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
+import { Tab } from '@one-for-all/headless-ui';
 
-import Tab from '@c/tab';
 import TextHeader from '@c/text-header';
 import SearchInput from '@c/form/input/search-input';
 import Loading from '@c/loading';
@@ -161,7 +161,6 @@ export default observer(function EmployeeOrDepartmentPicker({
     {
       id: '1',
       name: '按员工',
-      content: renderEmployeePanel(),
     },
   ];
 
@@ -169,19 +168,21 @@ export default observer(function EmployeeOrDepartmentPicker({
     items.push({
       id: '2',
       name: '按部门',
-      content: renderDepartmentPanel(),
     });
   }
 
   return (
     <div className="flex flex-row w-full h-full p-20">
-      <Tab
-        className="mr-20 flex-2"
-        contentClassName="rounded-12 rounded-tl-none"
-        currentKey={store.tabKey}
-        onChange={(key) => store.setTabKey(key as string)}
-        items={items}
-      />
+      <div className="mr-20 flex-2 ">
+        <Tab
+          className='mb-20'
+          currentKey={store.tabKey}
+          onChange={(key) => store.setTabKey(key as string)}
+          items={items}
+        />
+        {store.tabKey === '1' && renderEmployeePanel()}
+        {store.tabKey === '2' && renderDepartmentPanel()}
+      </div>
       <div className="vertical-line flex-grow-0" />
       <SelectedList
         ownerStore={store}

@@ -2,9 +2,9 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useQuery, QueryFunctionContext } from 'react-query';
 import { useUpdateEffect } from 'react-use';
 import { groupBy, merge, first, isEqual } from 'lodash';
+import { Switch } from '@one-for-all/headless-ui';
 import fp from 'lodash/fp';
 
-import Toggle from '@c/toggle';
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
 import useObservable from '@lib/hooks/use-observable';
@@ -159,11 +159,11 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
             <div className="flex justify-between items-center">
               <div className="flex items-center mr-10">
                 <span className="mr-8">为字段赋值</span>
-                <Toggle defaultChecked={editable} onChange={handleEditableChange} />
+                <Switch defaultChecked={editable} onChange={handleEditableChange} />
               </div>
               <div className="flex items-center">
                 <span className="mr-8">数据权限修改</span>
-                <Toggle defaultChecked={dataPermEditable} onChange={handleDataPermEditableChange} />
+                <Switch defaultChecked={dataPermEditable} onChange={handleDataPermEditableChange} />
               </div>
             </div>
           </header>

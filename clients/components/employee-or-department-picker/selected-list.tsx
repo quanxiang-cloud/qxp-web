@@ -12,7 +12,7 @@ export interface ISelectedList {
   ownerStore: OwnerStore;
 }
 
-export default observer( function SelectedList({ className, ownerStore }: ISelectedList) {
+export default observer(function SelectedList({ className, ownerStore }: ISelectedList) {
   const users = ownerStore.owners.filter(({ type }) => type === 1);
   const departments = ownerStore.owners.filter(({ type }) => type === 2);
   const isFirstLoad = useRef<boolean>(true);
@@ -48,15 +48,13 @@ export default observer( function SelectedList({ className, ownerStore }: ISelec
       <Tag
         id={ownerID}
         key={ownerID}
-        className={cs('mr-8 mb-8 tag-border-radius relative bind-role-selector-tag', {
-          'bg-blue-100': others.type === 1,
-          'bg-amber-50': others.type === 2,
-        })}
-        style={{
-          backgroundColor: others.type === 1 ? 'var(--blue-100)' : '#FFFBEB',
-          transition: 'all .1s linear',
-          lineHeight: '24px',
-          maxWidth: '356px',
+        className='mr-8 mb-8 flex items-center'
+        style={others.type === 2 ? {
+          backgroundColor: '#FFFBEB',
+          color: 'var(--yellow-600)',
+        } : {
+          backgroundColor: 'var(--blue-100)',
+          color: 'var(--blue-600)',
         }}
         onDelete={() =>
           onRemove({
@@ -66,23 +64,19 @@ export default observer( function SelectedList({ className, ownerStore }: ISelec
             ...others,
           })
         }
-        label={(
-          <div className="truncate inline-block pr-16">
-            {ownerName && (<span className={cs('mr-2', {
-              'text-blue-600': others.type === 1,
-              'text-yellow-600': others.type === 2,
-            })}>{ownerName}</span>)}
-            {departmentName && (
-              <span className={cs('text-gray-400 mr-1', {
-                'text-yellow-600': others.type === 2,
-              })}>{`${
-                  ownerName ? `(${departmentName})` : departmentName
-                }`}</span>
-            )}
-            {!ownerName && !departmentName && (
-              <span className="text-blue-600 mr-2">{ownerID}</span>
-            )}
-          </div>)
+        label={
+          (
+            <div className="truncate inline-block">
+              {ownerName && (<span className={cs('mr-2')}>{ownerName}</span>)}
+              {departmentName && (
+                <span className={cs('text-gray-400')}>
+                  {`${ownerName ? `(${departmentName})` : departmentName}`}
+                </span>
+              )}
+              {!ownerName && !departmentName && (
+                <span>{ownerID}</span>
+              )}
+            </div>)
         }
       />
     );

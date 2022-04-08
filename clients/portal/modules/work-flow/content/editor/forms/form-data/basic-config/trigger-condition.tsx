@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import cs from 'classnames';
+import { Switch } from '@one-for-all/headless-ui';
 
-import Toggle from '@c/toggle';
 import Icon from '@c/icon';
 import type {
   TriggerCondition as TriggerConditionType,
@@ -238,7 +238,7 @@ export default function TriggerCondition({
           <div className="text-body2">触发条件</div>
           <span className="text-caption">设置触发筛选条件，满足条件后触发工作流</span>
         </div>
-        <Toggle onChange={onValueChange} defaultChecked={openMore} />
+        <Switch onChange={onValueChange} defaultChecked={openMore} />
       </div>
       <div className={cs('overflow-hidden transition', {
         visible: openMore,

@@ -2,9 +2,8 @@ import React, { useContext, useRef, useState, useMemo, useCallback } from 'react
 import { useQuery } from 'react-query';
 import { every, isEmpty } from 'lodash';
 import { useUpdateEffect } from 'react-use';
+import { Select, Switch } from '@one-for-all/headless-ui';
 
-import { Select } from '@one-for-all/headless-ui';
-import Toggle from '@c/toggle';
 import Modal from '@c/modal';
 import RadioButtonGroup from '@c/radio/radio-button-group';
 import SaveButtonGroup from '@flow/content/editor/components/_common/action-save-button-group';
@@ -175,7 +174,7 @@ export default function UpdateTableData({
       <>
         <div className="inline-flex items-center mt-10">
           <span className="text-body mr-10">表单数据是否触发工作流执行:</span>
-          <Toggle
+          <Switch
             onChange={(silent) => {
               onChange({ silent });
             }}
