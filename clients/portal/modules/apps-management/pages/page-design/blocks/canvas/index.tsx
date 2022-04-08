@@ -11,6 +11,7 @@ import NodeRender from './node-render';
 import NodeToolbox from './node-toolbox';
 import { loadDevEnvPageArtery } from '../../utils/helpers';
 import { useStyle } from '../../hooks/use-style';
+import { initPageArtery } from '../../stores/page-helpers';
 
 import styles from './index.m.scss';
 import './style.scss';
@@ -37,6 +38,10 @@ function Canvas({ schema }: BlockItemProps<BlocksCommunicationType>): JSX.Elemen
     loadDevEnvPageArtery();
     // sync schema prop with store state
     schema && page.setSchema(schema as any);
+
+    return () => {
+      page.setSchema(initPageArtery());
+    };
   }, []);
 
   useStyle(
