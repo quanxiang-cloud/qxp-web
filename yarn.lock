@@ -1173,10 +1173,10 @@
   resolved "https://registry.npmmirror.com/@one-for-all/artery/-/artery-0.15.0.tgz"
   integrity sha512-zZmnK09Zt33s335GBdQHMy5sG7+rSrWHaz1mqjIrdXLHWUvkkOISuEV739SWgnCamqEwUv58/QDTH9/VMIb32w==
 
-"@one-for-all/headless-ui@0.1.1":
-  version "0.1.1"
-  resolved "https://registry.npmmirror.com/@one-for-all/headless-ui/-/headless-ui-0.1.1.tgz"
-  integrity sha512-B8Z2z+4MPpwkH1SokqF+4fd+TClXJeShK0BxRbBL4wxoU+XbK73ntUw3ANHjmCKBz4/F26/cLWqQkAmMdWPxPw==
+"@one-for-all/headless-ui@0.1.2":
+  version "0.1.2"
+  resolved "https://registry.npmmirror.com/@one-for-all/headless-ui/-/headless-ui-0.1.2.tgz#6ef9bb994d2f3713429fd90b6900c4199e49f8de"
+  integrity sha512-k6rOEaidl/2tkXfWrYoMU3HreW1tiJ5Byv2fEYOg7mP974xta0hpI4O99nbcY4MInPIPjv/hK/9Xz1dnz43+WA==
   dependencies:
     "@one-for-all/icon" "0.4.0"
     "@popperjs/core" "^2.11.0"
@@ -1186,6 +1186,13 @@
     react "^17.0.2"
     react-dom "^17.0.2"
     react-table "^7.7.0"
+
+"@one-for-all/icon@0.4.0":
+  version "0.4.0"
+  resolved "https://registry.npmmirror.com/@one-for-all/icon/-/icon-0.4.0.tgz#34eb53e5ffdefe89ce84d224871201451bc6bf5c"
+  integrity sha512-clNvOHhpqPiU0rGjkYEdRes1bjyOHkDPM5z/M9viAePVn+EL1nYUE18KQV+c+qMkTCibe+mrpH13wPSy43k/wQ==
+  dependencies:
+    react "^17.0.2"
 
 "@one-for-all/icon@^0.6.1":
   version "0.6.1"
