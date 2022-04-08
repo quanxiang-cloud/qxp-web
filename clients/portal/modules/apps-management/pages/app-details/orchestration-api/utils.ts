@@ -1,6 +1,5 @@
 import { keys, values, path, omit } from 'ramda';
 
-import type { NameSpace } from '@orchestrationAPI/effects/api/api-namespace';
 import type { TreeNode } from '@c/headless-tree/types';
 import { treeNodeSorter } from '@c/headless-tree/utils';
 import { not } from '@lib/utils';
@@ -9,15 +8,15 @@ import type { FieldActiveMap } from './effects/hooks/use-schema-form-keypress-su
 import type APINamespaceTreeStore from './store/namespace';
 
 export function apiNamespaceToTreeNode(
-  namespace: NameSpace,
-  child: NameSpace[] = [],
+  namespace: PolyAPI.Namespace,
+  child: PolyAPI.Namespace[] = [],
   level = 1,
   visible = false,
   expanded = true,
   parentId = namespace.id,
   order = 0,
   sort = false,
-): TreeNode<NameSpace> {
+): TreeNode<PolyAPI.Namespace> {
   let children = child?.map(
     (dir) => apiNamespaceToTreeNode(
       dir, [], level + 1, true, false, namespace.id, stringToAsciiNumber(dir.name), sort,
@@ -46,8 +45,8 @@ export function apiNamespaceToTreeNode(
 
 export function getNamespaceNodeSiblingNodes(
   store?: APINamespaceTreeStore | null,
-): undefined | Array<TreeNode<NameSpace>> {
-  const currentNode = store?.currentFocusedNode as TreeNode<NameSpace> | undefined;
+): undefined | Array<TreeNode<PolyAPI.Namespace>> {
+  const currentNode = store?.currentFocusedNode as TreeNode<PolyAPI.Namespace> | undefined;
   const parentNode = currentNode === store?.rootNode ?
     currentNode :
     store?.getNode(currentNode?.parentId || '');

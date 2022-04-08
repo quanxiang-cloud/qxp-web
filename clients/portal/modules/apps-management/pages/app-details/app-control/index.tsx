@@ -3,7 +3,7 @@ import React from 'react';
 import Tab from '@c/tab';
 
 import ManagePermission from './manage-permission';
-import UserPermission from '../users-and-permissions';
+import AppRoles from '../roles-and-permissions';
 
 function AppControl(): JSX.Element {
   return (
@@ -19,7 +19,7 @@ function AppControl(): JSX.Element {
           {
             id: 'homePermission',
             name: '访问端权限',
-            content: (<UserPermission />),
+            content: (<AppRoles />),
           },
           {
             id: 'managePermission',
