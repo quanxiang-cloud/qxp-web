@@ -1,7 +1,7 @@
 import httpClient from '@lib/http-client';
 
 export function getOptionSetNames(params?: OptionSets): Promise<{ list: OptionSet[] }> {
-  return httpClient('/api/v1/structor/dataset/m/getByCondition', params || {});
+  return httpClient('/api/v1/form/dataset/m/getByCondition', params || {});
 }
 
 export function getOptionSetById(id: string): Promise<OptionSet> {

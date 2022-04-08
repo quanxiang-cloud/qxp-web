@@ -24,19 +24,19 @@ export const updateApp = async (data: Partial<AppInfo> & { id: string })=> {
 window.updateApp = updateApp;
 
 export const fetchCustomPageList = async (appID: string, params?: CustomPageParams): Promise<fetchCustomListRes> => {
-  return await httpClient(`/api/v1/structor/${appID}/m/page/condition`, params);
+  return await httpClient(`/api/v1/form/${appID}/m/page/condition`, params);
 };
 
 export const getUsingList = async (appID: string): Promise<fetchCustomListRes> => {
-  return await httpClient(`/api/v1/structor/${appID}/m/page/getUsingList`);
+  return await httpClient(`/api/v1/form/${appID}/m/page/getUsingList`);
 };
 
 export const isHiddenMenu = async (appID: string, params?: {id: string, hide: boolean} )=> {
-  return await httpClient(`/api/v1/structor/${appID}/m/menu/hidden`, params);
+  return await httpClient(`/api/v1/form/${appID}/m/menu/hidden`, params);
 };
 
 export const createPage = async (data: Partial<PageInfo>): Promise<{id: string}>=> {
-  return await httpClient(`/api/v1/structor/${data.appID}/m/menu/create`, data);
+  return await httpClient(`/api/v1/form/${data.appID}/m/menu/create`, data);
 };
 
 export const createBlank = async (appID: string): Promise<Record<string, string>> => {
@@ -44,19 +44,19 @@ export const createBlank = async (appID: string): Promise<Record<string, string>
 };
 
 export const updatePageOrGroup = async (data: PageInfo)=> {
-  return await httpClient(`/api/v1/structor/${data.appID}/m/menu/update`, data);
+  return await httpClient(`/api/v1/form/${data.appID}/m/menu/update`, data);
 };
 
 export const createGroup = async (data: any)=> {
-  return await httpClient(`/api/v1/structor/${data.appID}/m/group/create`, data);
+  return await httpClient(`/api/v1/form/${data.appID}/m/group/create`, data);
 };
 
 export const deleteGroup = async (data: any)=> {
-  return await httpClient(`/api/v1/structor/${data.appID}/m/group/delete`, data);
+  return await httpClient(`/api/v1/form/${data.appID}/m/group/delete`, data);
 };
 
 export const deletePage = async (data: any)=> {
-  return await httpClient(`/api/v1/structor/${data.appID}/m/menu/delete`, data);
+  return await httpClient(`/api/v1/form/${data.appID}/m/menu/delete`, data);
 };
 
 export const appAddAdmin = async (data: any)=> {
@@ -72,37 +72,37 @@ export const delAppAdminUsers = async (data: any)=> {
 };
 
 export const movePage = async (data: MovePageParams)=> {
-  return await httpClient(`/api/v1/structor/${data.appID}/m/menu/transfer`, data);
+  return await httpClient(`/api/v1/form/${data.appID}/m/menu/transfer`, data);
 };
 
 export const fetchGroupList = async (appID: string)=> {
-  return await httpClient(`/api/v1/structor/${appID}/m/group/list`, { appID });
+  return await httpClient(`/api/v1/form/${appID}/m/group/list`, { appID });
 };
 
 export const createCustomPage = async (
   appID: string, params: CreateCustomPageParams,
 ): Promise<CustomPageInfo> => {
-  return await httpClient(`/api/v1/structor/${appID}/m/page/create`, params);
+  return await httpClient(`/api/v1/form/${appID}/m/page/create`, params);
 };
 
 export const updateCustomPage = async (
   appID: string, params: UpdateCustomPageParams,
 ): Promise<CustomPageInfo> => {
-  return await httpClient(`/api/v1/structor/${appID}/m/page/update`, params);
+  return await httpClient(`/api/v1/form/${appID}/m/page/update`, params);
 };
 
 export const removeCustomPage = async (appID: string, pageId: string)=> {
-  return await httpClient(`/api/v1/structor/${appID}/m/page/delete`, { id: pageId });
+  return await httpClient(`/api/v1/form/${appID}/m/page/delete`, { id: pageId });
 };
 
 export const editeCustomPage = async (appID: string, params: CustomPageParams)=> {
-  return await httpClient(`/api/v1/structor/${appID}/m/page/update`, params);
+  return await httpClient(`/api/v1/form/${appID}/m/page/update`, params);
 };
 
 export const relateCustomPage = async (
   appID: string, params: {menuId: string, pageID: string},
 ): Promise<CustomPageInfo> => {
-  return await httpClient(`/api/v1/structor/${appID}/m/page/relate`, params);
+  return await httpClient(`/api/v1/form/${appID}/m/page/relate`, params);
 };
 
 export const fetchCorrelationFlows = async (
@@ -115,14 +115,14 @@ export const fetchCorrelationRoles = async (
   appID: string,
   menuID: string,
 ): Promise<Record<string, CardListInfo[]>> => {
-  return await httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/getPerGroupByMenu`, { menuID });
+  return await httpClient(`/api/v1/form/${appID}/m/permission/perGroup/getPerGroupByMenu`, { menuID });
 };
 
 export const fetchDataModels = (
   appID: string,
   data: DataModelsParameter,
 ): Promise<DataModelListRes | null> => {
-  return httpClient(`/api/v1/structor/${appID}/m/table/search`, data);
+  return httpClient(`/api/v1/form/${appID}/m/table/search`, data);
 };
 
 export const formDuplicate = (
