@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import cs from 'classnames';
 import { clone } from 'ramda';
 import { Cascader } from 'antd';
-import { useParams } from 'react-router-dom';
+import { getQuery } from '@lib/utils';
 import { SingleValueType, DefaultOptionType } from 'rc-cascader/lib/Cascader';
 
 import { RawApiDocDetail } from '@polyApi/effects/api/raw';
@@ -32,7 +32,7 @@ function ApiSelector({
   label = '全部API:',
   usePolyApiOption = false,
 }: Props): JSX.Element {
-  const { appID } = useParams<{ appID: string }>();
+  const { appID } = getQuery<{appID: string, pageName: string, arteryID: string }>();
   const [apiNamespacePath, setApiNamespacePath] = useState('');
   const options = useGetOptions(appID, apiNamespacePath, usePolyApiOption);
 
