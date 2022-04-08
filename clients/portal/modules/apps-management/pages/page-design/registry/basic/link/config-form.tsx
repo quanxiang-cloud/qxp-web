@@ -27,14 +27,16 @@ function ConfigForm(): JSX.Element {
   // const example = [{ label: '示例页面', value: '#' }];
 
   useEffect(() => {
+    if (!page.activeElemId) return;
+
     if (values.linkType === 'inside') {
-      return page.updateElemProperty(page.activeElem.id, 'props', {
+      return page.updateElemProperty(page.activeElemId, 'props', {
         ...values,
         onClick: INNER_LINK_FUNC_SPEC,
       });
     }
 
-    page.updateElemProperty(page.activeElem.id, 'props', values);
+    page.updateElemProperty(page.activeElemId, 'props', values);
   }, [values]);
 
   useEffect(() => {
@@ -108,7 +110,6 @@ function ConfigForm(): JSX.Element {
             value={values.linkUrl}
             onChange={(ev) => setValues({ ...values, linkUrl: ev.target.value })}
           />
-          <ConfigBind name='linkUrl' />
         </div>
       </div>
       <div className='mb-8 flex items-center justify-between'>

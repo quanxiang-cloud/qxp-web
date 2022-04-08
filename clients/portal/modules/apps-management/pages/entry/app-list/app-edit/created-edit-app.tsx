@@ -59,8 +59,12 @@ function CreatedEditApp({
   }
 
   useEffect(() => {
+    if (createdBy === 'base' || !!options.length) {
+      return;
+    }
+
     getTemplateOptions().then(setOptions);
-  }, []);
+  }, [createdBy]);
 
   return (
     <Form

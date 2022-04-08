@@ -66,11 +66,11 @@ httpClient.get = function<TData>(path: string, query?: Record<string, unknown>) 
   return request<TData>(_path, 'GET', undefined);
 };
 
-httpClient.post = function<TData>(path: string, body?: unknown) {
+httpClient.post = function<TData>(path: string, body: unknown) {
   return request<TData>(path, 'POST', body);
 };
 
-httpClient.put = function<TData>(path: string, body?: unknown) {
+httpClient.put = function<TData>(path: string, body: unknown) {
   return request<TData>(path, 'PUT', body);
 };
 
@@ -306,8 +306,8 @@ export const fetchPageList = async (appID: string): Promise<fetchPageListRes> =>
   return await httpClient(`/api/v1/structor/${appID}/${side}/menu/list`, { appID });
 };
 
-export function getArteryPageInfo(appID: string, menuId: string): Promise<ArteryPageInfo> {
-  return httpClient(`/api/v1/structor/${appID}/m/table/getInfo`, { menuId });
+export function getArteryPageInfo(appID: string, tableID: string): Promise<ArteryPageInfo> {
+  return httpClient(`/api/v1/form/${appID}/m/table/getInfo`, { tableID });
 }
 
 export function saveTableSchema(
