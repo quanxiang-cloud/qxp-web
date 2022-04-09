@@ -9,7 +9,7 @@ import { toJS } from 'mobx';
 import { Button, Icon, Tooltip, Modal, toast } from '@one-for-all/ui';
 
 import { PageNode } from '../../../types';
-import DataBind from '../../../utils/data-bind';
+import DataBind, { iterableStateTypes } from '../../../utils/data-bind';
 import { useCtx } from '../../../ctx';
 import Section from '../../../utils/section';
 import { elemId } from '../../../utils';
@@ -145,6 +145,10 @@ function RendererPanel(): JSX.Element {
     return false;
   }
 
+  const iterType = get(page.rawActiveElem, 'iterableState.type');
+  const hasBindVariable = iterableStateTypes.includes(iterType);
+  const hasBind = hasBindConst() || hasBindVariable;
+
   return (
     <>
       <div className={styles.renderPanel}>
@@ -177,20 +181,22 @@ function RendererPanel(): JSX.Element {
                 <DataBind name='loop-node' isLoopNode isComposedNode={isComposed} />
               </div>
             </div>
-            <div className='mb-8'>
-              <p>循环 Key</p>
-              <div className='flex items-center justify-between'>
-                <input
-                  className='mr-8 pg-input'
-                  placeholder='默认为 id'
-                  value={loopKey}
-                  onChange={(ev)=> {
-                    setLoopKey(ev.target.value);
-                    page.updateCurNodeAsLoopContainer('loopKey', ev.target.value);
-                  }}
-                />
+            {hasBind && (
+              <div className='mb-8'>
+                <p>循环 Key</p>
+                <div className='flex items-center justify-between'>
+                  <input
+                    className='mr-8 pg-input'
+                    placeholder='默认为 id'
+                    value={loopKey}
+                    onChange={(ev)=> {
+                      setLoopKey(ev.target.value);
+                      page.updateCurNodeAsLoopContainer('loopKey', ev.target.value);
+                    }}
+                  />
+                </div>
               </div>
-            </div>
+            )}
             <div className='mb-8'>
               <p className='flex items-center'>
                 <span className='mr-8'>组件属性映射函数(toProps)</span>
@@ -208,15 +214,17 @@ function RendererPanel(): JSX.Element {
                   <p>代码编辑器只接收函数体的表达式，不需要填写完整的函数定义, 注意表达式需带上 return 关键字</p>
                 </div>
               </div>
-              <Editor
-                value={toPropsFn}
-                height="120px"
-                extensions={[javascript()]}
-                onChange={(value) => {
-                  setToPropsFn(value);
-                  page.updateCurNodeAsLoopContainer('toProps', value);
-                }}
-              />
+              {hasBind && (
+                <Editor
+                  value={toPropsFn}
+                  height="120px"
+                  extensions={[javascript()]}
+                  onChange={(value) => {
+                    setToPropsFn(value);
+                    page.updateCurNodeAsLoopContainer('toProps', value);
+                  }}
+                />
+              )}
             </div>
           </form>
         </Section>

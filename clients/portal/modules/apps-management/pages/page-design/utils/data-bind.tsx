@@ -16,7 +16,7 @@ interface Props {
   unBind?: () => void;
 }
 
-const iterableStateTypes: NodePropType[] = [
+export const iterableStateTypes: NodePropType[] = [
   'shared_state_property',
   'api_result_property',
   'constant_property',
