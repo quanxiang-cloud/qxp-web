@@ -9,6 +9,20 @@ export function findNode(tree: PageNode, node_id?: string, loopNode?: boolean): 
   if (!node_id || tree.id === node_id) {
     return tree;
   }
+  if (tree.type === 'composed-node') {
+    const { outLayer, children } = tree || {};
+    if (outLayer && outLayer.id === node_id) {
+      return loopNode ? tree : outLayer;
+    }
+    if (children) {
+      for (const child of children) {
+        const found = findNode(child as PageNode, node_id, loopNode);
+        if (found) {
+          return loopNode ? tree : found;
+        }
+      }
+    }
+  }
   // if loop node, return wrapper node
   if (tree.type === 'loop-container') {
     if (tree.node?.type === 'composed-node') {
