@@ -5,8 +5,9 @@ import ArterySpec from '@one-for-all/artery';
 import { parseJSON } from '@lib/utils';
 import { getBatchGlobalConfig } from '@lib/api/user-config';
 
+import { VERSION } from 'clients/constants';
 import Orchestrator from '../view-orchestration/orchestrator';
-import { ROOT_NODE_ID, VERSION } from '../view-orchestration/constants';
+import { ROOT_NODE_ID } from '../view-orchestration/constants';
 import { genDesktopRootArteryKey } from '../view-orchestration/helpers/utils';
 
 export type UseAppStore = {

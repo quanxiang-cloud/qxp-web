@@ -1,16 +1,17 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
+import { toast } from '@one-for-all/ui';
 
 import Tab from '@c/tab';
 import Icon from '@c/icon';
 import Button from '@c/button';
-
-import { ExternalView, SchemaView, TableSchemaView, View, ViewType } from '../types.d';
 import ArteryRenderer from '@c/artery-renderer';
-import { DefaultFormDescriptions, VERSION } from '../constants';
 import { getArteryPageInfo } from '@lib/http-client';
+
+import { VERSION } from 'clients/constants';
+import { DefaultFormDescriptions } from '../constants';
 import { mapToArteryPageDescription } from '../../utils';
-import { toast } from '@one-for-all/ui';
+import { ExternalView, SchemaView, TableSchemaView, View, ViewType } from '../types.d';
 
 type Props = {
   view: View;

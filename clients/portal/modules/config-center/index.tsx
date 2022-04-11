@@ -2,13 +2,15 @@ import React from 'react';
 import { useQuery } from 'react-query';
 import { ArteryRenderer } from '@one-for-all/artery-renderer';
 import type { Artery } from '@one-for-all/artery';
-import logger from '@lib/logger';
 
-import ErrorBoundary from '@c/artery-renderer/error-boundary';
-import SwaggerRPCSpecAdapter from '@lib/api-adapter';
-// import schema from './schema';
-import swagger from './swagger';
+import logger from '@lib/logger';
 import httpClient from '@lib/http-client';
+import SwaggerRPCSpecAdapter from '@lib/api-adapter';
+import ErrorBoundary from '@c/artery-renderer/error-boundary';
+
+import swagger from './swagger';
+// import schema from './schema';
+import { VERSION } from 'clients/constants';
 
 const CONFIG_CENTER_PAGE_SCHEMA_KEY = 'SCHEMA_CONFIG_CENTER';
 
@@ -17,7 +19,7 @@ const CONFIG_CENTER_PAGE_SCHEMA_KEY = 'SCHEMA_CONFIG_CENTER';
 function useSchema(): { schema?: Artery; loading: boolean; } {
   const { isLoading, data } = useQuery<string>('get_my_apps_schema', (): Promise<string> => {
     return httpClient<{ result: Record<string, string>; }>('/api/v1/persona/batchGetValue', {
-      keys: [{ key: CONFIG_CENTER_PAGE_SCHEMA_KEY, version: '1.0.0' }],
+      keys: [{ key: CONFIG_CENTER_PAGE_SCHEMA_KEY, version: VERSION }],
     }).then(({ result }) => result[CONFIG_CENTER_PAGE_SCHEMA_KEY]);
   });
 

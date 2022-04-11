@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { VERSION } from '@portal/modules/apps-management/pages/app-details/view-orchestration/constants';
+import { VERSION } from 'clients/constants';
 import ArteryRender from '@c/artery-renderer';
 
 import { rootSchemaKey } from './utils';

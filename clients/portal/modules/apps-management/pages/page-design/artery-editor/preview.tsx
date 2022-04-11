@@ -5,6 +5,7 @@ import toast from '@lib/toast';
 import ArteryRenderer from '@c/artery-renderer';
 import { setBatchGlobalConfig } from '@lib/api/user-config';
 
+import { VERSION } from 'clients/constants';
 import { getArteryKeys } from '../utils';
 
 type Props = {
@@ -19,7 +20,7 @@ function Preview({ draftArteryID, previewSchema }: Props): JSX.Element {
   useEffect(() => {
     setBatchGlobalConfig([{
       key: draftArteryKey,
-      version: '1.0.0',
+      version: VERSION,
       value: JSON.stringify(previewSchema),
     }]).then(() => {
       setSavingDraft(false);
@@ -37,7 +38,7 @@ function Preview({ draftArteryID, previewSchema }: Props): JSX.Element {
   return (
     <ArteryRenderer
       arteryID={draftArteryKey}
-      version="0.1.0"
+      version={VERSION}
     />
   );
 }

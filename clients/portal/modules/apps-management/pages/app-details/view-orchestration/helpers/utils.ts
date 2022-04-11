@@ -5,7 +5,8 @@ import { Artery, RouteNode, Node, HTMLNode } from '@one-for-all/artery';
 
 import { getBatchGlobalConfig, setBatchGlobalConfig } from '@lib/api/user-config';
 
-import { LAYOUT_CHILD_TYPE_ROUTES_CONTAINER, ROOT_NODE_ID, VERSION } from '../constants';
+import { VERSION } from 'clients/constants';
+import { LAYOUT_CHILD_TYPE_ROUTES_CONTAINER, ROOT_NODE_ID } from '../constants';
 
 export function genNodeID(): string {
   return nanoid(8);
@@ -37,7 +38,7 @@ export function saveArtery(arteryID: string, schema: Artery): FutureErrorMessage
 
 export async function fetchSchema(appID: string): Promise<Artery> {
   const key = genDesktopRootArteryKey(appID);
-  const { result } = await getBatchGlobalConfig([{ key: key, version: '1.0.0' }]);
+  const { result } = await getBatchGlobalConfig([{ key: key, version: VERSION }]);
   return JSON.parse(result[key]);
 }
 

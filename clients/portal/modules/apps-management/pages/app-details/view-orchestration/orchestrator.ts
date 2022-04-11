@@ -36,6 +36,7 @@ import {
   ViewType,
 } from './types.d';
 import { ROOT_NODE_ID } from './constants';
+import { VERSION } from 'clients/constants';
 import { createBlank, fetchAppDetails, updateApp } from '../api';
 
 class Orchestrator {
@@ -157,7 +158,7 @@ class Orchestrator {
         // todo implement this
         packageName: 'SimpleViewRenders',
         // todo implement this
-        packageVersion: '1.0.0',
+        packageVersion: VERSION,
         // todo implement this
         exportName: 'TableSchemaViewRender',
         props: {
@@ -241,7 +242,7 @@ class Orchestrator {
       // todo implement this
       packageName: 'SimpleViewRenders',
       // todo implement this
-      packageVersion: '1.0.0',
+      packageVersion: VERSION,
       // todo implement this
       exportName: 'StaticViewRender',
       props: {
@@ -275,7 +276,7 @@ class Orchestrator {
       // todo implement this
       packageName: 'SimpleViewRenders',
       // todo implement this
-      packageVersion: '1.0.0',
+      packageVersion: VERSION,
       // todo implement this
       exportName: 'ExternalViewRender',
       props: {

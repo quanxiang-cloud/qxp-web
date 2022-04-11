@@ -1,7 +1,7 @@
 import { RefLoader } from '@one-for-all/artery-renderer';
-import { VERSION } from '@portal/modules/apps-management/pages/app-details/view-orchestration/constants';
 import SwaggerRPCSpecAdapter from '@lib/api-adapter';
 
+import { VERSION } from 'clients/constants';
 import { fetchArteryWithSwagger } from './api';
 import repository from './repository';
 
