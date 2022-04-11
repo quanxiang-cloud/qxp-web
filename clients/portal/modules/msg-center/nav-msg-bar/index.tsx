@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { ForwardedRef, useEffect, useRef } from 'react';
 import cs from 'classnames';
 import { observer } from 'mobx-react';
 import { get } from 'lodash';
@@ -17,7 +17,7 @@ import MsgCenter from '../modal-msg-center';
 
 import styles from './index.module.scss';
 
-type Props = {
+interface Props extends React.HTMLProps<HTMLDivElement> {
   type?: string
   className?: string;
 }
@@ -31,13 +31,15 @@ const modifiers = [
   },
 ];
 
-const NavMsgBar = ({ type, className }: Props): JSX.Element => {
+const NavMsgBar = (
+  { type, className, ...rest }: Props,
+  ref?: ForwardedRef<HTMLDivElement>,
+): JSX.Element => {
   const toggleRef = useRef<HTMLDivElement>(null);
   const msgBoxRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
   const { openUnreadMsgBox, msgBoxOpen, openMsgCenter, countUnread } = msgCenter;
   const { data: countUnreadMsg } = useQuery('count-unread-msg', getUnreadMsgCount);
-  // (this: HTMLElement, ev: MouseEvent) => any
   const handleClickOuter = (ev: Event): void => {
     const target = ev.target as Node | null;
     if (!target || !toggleRef.current || !msgBoxRef.current) {
@@ -89,7 +91,7 @@ const NavMsgBar = ({ type, className }: Props): JSX.Element => {
   }, []);
 
   return (
-    <>
+    <div ref={ref} {...rest}>
       <div className={cs(className, styles.wrap, 'group')}>
         <div
           className={cs(
@@ -121,8 +123,8 @@ const NavMsgBar = ({ type, className }: Props): JSX.Element => {
         {renderUnreadMsgBox()}
       </Popper>
       <MsgCenter />
-    </>
+    </div>
   );
 };
 
-export default observer(NavMsgBar);
+export default observer(React.forwardRef<HTMLDivElement, Props>(NavMsgBar));
