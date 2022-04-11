@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { observer } from 'mobx-react';
 import { RadioButtonGroup } from '@one-for-all/ui';
 
-import { useCtx } from '../../../ctx';
+import { useCtx } from '../../../../../ctx';
 import TreeView from './tree-view';
 
 import './index.scss';

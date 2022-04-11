@@ -4,12 +4,11 @@ import cs from 'classnames';
 import { observer } from 'mobx-react';
 import { pickBy } from 'lodash';
 import { useUpdateEffect, useDebounce } from 'react-use';
-import { Search, Icon, Tooltip, Modal, toast } from '@one-for-all/ui';
 
 import ApiSelector from '@polyApi/nodes/forms/request-config/api-selector';
+import { Search, Icon, Tooltip, Modal, toast } from '@one-for-all/ui';
 import { getQuery } from '@lib/utils';
-
-import { useCtx } from '../../../../ctx';
+import { useCtx } from '@pageDesign/ctx';
 
 import VarItem from './var-item';
 

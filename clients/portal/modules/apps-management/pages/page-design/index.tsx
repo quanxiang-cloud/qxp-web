@@ -5,8 +5,8 @@ import { DndProvider } from 'react-dnd';
 import { useHistory } from 'react-router-dom';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import ArteryEngine from '@one-for-all/artery-engine';
+import Icon from '@one-for-all/icon';
 
-import Icon from '@c/icon';
 import toast from '@lib/toast';
 import { getQuery } from '@lib/utils';
 import FileUploader from '@c/file-upload';
@@ -44,8 +44,12 @@ function PageDesign(): JSX.Element | null {
   const { layers, initialArtery } = useMemo(() => {
     const initialArtery = artery ?? getInitArteryByPageType(PAGE_TYPE.PAGE_DESIGN_EDITOR);
     const layer = LAYERS[0];
-    // to remove pageId params
-    layer.blocksCommunicationStateInitialValue = { activeNodeID: '', appID, arteryID: '' };
+    layer.blocksCommunicationStateInitialValue = {
+      activeNodeID: '',
+      appID,
+      arteryID: '',
+      menu: { pannelWith: 280 }
+    };
     return {
       layers: [...LAYERS],
       initialArtery,
@@ -72,7 +76,9 @@ function PageDesign(): JSX.Element | null {
     // set page title
     designer.setVdom('title', (
       <div className='inline-flex items-center text-gray-900 text-12'>
-        <Icon name='keyboard_backspace' className='mr-8' onClick={handleGoBack} clickable />
+        <span onClick={handleGoBack}>
+          <Icon name='keyboard_backspace' className='mr-8 cursor-pointer' />
+        </span>
         <span className='mr-4'>正在设计页面:</span>
         <span>{pageName}</span>
       </div>

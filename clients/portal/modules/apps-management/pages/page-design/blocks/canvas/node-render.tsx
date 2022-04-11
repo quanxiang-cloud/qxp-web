@@ -10,7 +10,7 @@ import { Icon } from '@one-for-all/ui';
 import { PageNode, DragPos, LoopNode } from '../../types';
 import { useCtx } from '../../ctx';
 import { mapRawProps } from '../../utils/artery-adapter';
-import { elemId } from '../../utils';
+import { generateNodeId } from '../../utils';
 import { parseStyleString } from '../../utils/config';
 import { isSystemComponent, svgPreviewImg } from '../../utils/helpers';
 
@@ -65,7 +65,7 @@ function NodeRender({ schema }: Props): JSX.Element | null {
     node = schema;
   }
 
-  const { exportName, id = elemId(node.exportName), pid = '', label = '' } = node;
+  const { exportName, id = generateNodeId(node.exportName), pid = '', label = '' } = node;
   const { page, registry, dataSource } = useCtx();
   const boxRef = useRef<any>(null);
 

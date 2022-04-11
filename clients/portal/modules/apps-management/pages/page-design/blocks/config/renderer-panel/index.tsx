@@ -12,7 +12,7 @@ import { PageNode } from '../../../types';
 import DataBind, { iterableStateTypes } from '../../../utils/data-bind';
 import { useCtx } from '../../../ctx';
 import Section from '../../../utils/section';
-import { elemId } from '../../../utils';
+import { generateNodeId } from '../../../utils';
 import { mapRawProps } from '../../../utils/artery-adapter';
 
 import styles from './index.m.scss';
@@ -107,7 +107,7 @@ function RendererPanel(): JSX.Element {
         page.updateCurNodeAsComposedNode('iterableState', {
           iterableState,
           node: {
-            id: elemId('composed-node'),
+            id: generateNodeId('composed-node'),
             type: 'composed-node',
             outLayer: { ..._node },
             children: newChildren,

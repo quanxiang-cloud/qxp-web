@@ -5,19 +5,28 @@ import { useDrop } from 'react-dnd';
 import { toJS } from 'mobx';
 import { BlockItemProps } from '@one-for-all/artery-engine';
 
+import useObservable from '@lib/hooks/use-observable';
+
 import { useCtx } from '../../ctx';
 import { ElementInfo, BlocksCommunicationType } from '../../types';
 import NodeRender from './node-render';
 import NodeToolbox from './node-toolbox';
 import { loadDevEnvPageArtery } from '../../utils/helpers';
 import { useStyle } from '../../hooks/use-style';
+import { updateBlocksCommunicationState } from '../../utils/state';
 
 import styles from './index.m.scss';
 import './style.scss';
 import { initPageArtery } from '../../stores/page-helpers';
 
-function Canvas({ schema }: BlockItemProps<BlocksCommunicationType>): JSX.Element {
-  const { page, registry, dataSource, designer } = useCtx();
+function Canvas({ schema, blocksCommunicationState$ }: BlockItemProps<BlocksCommunicationType>): JSX.Element {
+  const { page } = useCtx();
+  const state = useObservable<BlocksCommunicationType>(
+    // @ts-ignore
+    blocksCommunicationState$,
+    { activeNodeID: '', menu: { currentGroupType: '', groupTypeContentPinned: false } },
+  );
+  const { currentGroupType = '', groupTypeContentPinned = false, pannelWith } = state.menu || {};
   const toolRef = useRef<any>();
 
   const [{ isOver }, drop] = useDrop(() => ({
@@ -49,9 +58,9 @@ function Canvas({ schema }: BlockItemProps<BlocksCommunicationType>): JSX.Elemen
         overflow: 'hidden',
         paddingBottom: '10px',
         transition: 'all .3s linear',
-        paddingLeft: designer.panelOpen ? '268px' : '0px',
+        paddingLeft: currentGroupType ? `${pannelWith}px` : '0px',
       }),
-      [designer.panelOpen],
+      [currentGroupType],
     ),
   );
 
@@ -88,9 +97,13 @@ function Canvas({ schema }: BlockItemProps<BlocksCommunicationType>): JSX.Elemen
 
     // get event target's closest parent with attribute data-node-key
     // because some elem may has children, like container
-    const elemId = (e.target as Element)?.closest('[data-node-key]')?.getAttribute('data-node-key') || '';
-    elemId && page.setActiveElemId(elemId);
-    !designer.panelPinned && designer.setPanelOpen(false);
+    const nodeKey = (e.target as Element)?.closest('[data-node-key]')?.getAttribute('data-node-key') || '';
+    nodeKey && page.setActiveElemId(nodeKey);
+    !groupTypeContentPinned && updateBlocksCommunicationState<string>({
+      state: blocksCommunicationState$,
+      path: 'menu.currentGroupType',
+      value: '',
+    });
   }
 
   return (
@@ -100,7 +113,11 @@ function Canvas({ schema }: BlockItemProps<BlocksCommunicationType>): JSX.Elemen
       ref={drop}
     >
       <NodeRender schema={page.schema.node} />
-      <NodeToolbox ref={toolRef} />
+      <NodeToolbox
+        ref={toolRef}
+        currentGroupType={currentGroupType}
+        groupTypeContentPinned={groupTypeContentPinned}
+      />
     </div>
   );
 }

@@ -3,8 +3,8 @@ import React, { useState, useRef, useEffect, ChangeEvent } from 'react';
 
 import { Icon } from '@one-for-all/ui';
 
-import { useCtx } from '../../../ctx';
-import type { PageNode } from '../../../types';
+import { useCtx } from '../../../../../ctx';
+import type { PageNode } from '../../../../../types';
 import { COMPONENT_ICON_MAP } from './tree-view';
 
 export function nodeContentRender(node: PageNode): React.ReactNode {
