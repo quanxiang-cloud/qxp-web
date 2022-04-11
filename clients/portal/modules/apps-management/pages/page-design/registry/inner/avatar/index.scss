@@ -1,0 +1,30 @@
+.user-avatar-menu {
+  min-width: 216px;
+  max-width: 284px;
+  box-shadow: 0px 8px 24px 4px rgba(148, 163, 184, 0.25);
+  border: 1px solid var(--gray-200);
+
+  &-bg {
+    background-image: url(/dist/images/avatar-bg.png);
+    background-size: 100% 100%;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 2px;
+  }
+
+  &-password {
+    border-bottom: 1px;
+    border-color: var(--gray-200);
+    border-style: solid;
+    display: flex;
+    align-items: center;
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
+
+  &-logout {
+    display: flex;
+    align-items: center;
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
+}

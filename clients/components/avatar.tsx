@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ForwardedRef } from 'react';
 
 const imgBgColors: string[] = [
   '#6366F1',
@@ -42,10 +42,10 @@ export interface Avatar {
   size?: AvatarSize;
 }
 
-export default function Avatar({
+function Avatar({
   username = '',
   size = 24,
-}: Avatar): JSX.Element {
+}: Avatar, ref: ForwardedRef<HTMLDivElement>): JSX.Element {
   const avatarStyle = AvatarStyle[size];
   let head = '';
   let imgInfo: { name: string, color: string } = { name: '', color: '' };
@@ -56,6 +56,7 @@ export default function Avatar({
 
   return (
     <div
+      ref={ref}
       className={`${avatarStyle.cornerClassName} text-center text-white`}
       style={{
         width: size,
@@ -70,3 +71,5 @@ export default function Avatar({
     </div>
   );
 }
+
+export default React.forwardRef<HTMLDivElement, Avatar>(Avatar);
