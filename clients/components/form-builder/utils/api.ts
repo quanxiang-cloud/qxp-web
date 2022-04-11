@@ -8,7 +8,7 @@ type PageItem = {
 
 export function getLinkageTables(appID: string): Promise<Array<LabelValue>> {
   return httpClient<{ pages: PageItem[] }>(
-    `/api/v1/structor/${appID}/m/menu/listPage`,
+    `/api/v1/form/${appID}/m/menu/listPage`,
     { appID },
   ).then((res) => {
     if (!res.pages || !res.pages.length) {

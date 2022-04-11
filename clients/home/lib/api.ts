@@ -5,9 +5,9 @@ export const fetchUserList = ()=> {
 };
 
 export const getPerOption = <T>(appID: string) => {
-  return httpClient<T>(`/api/v1/structor/${appID}/home/permission/perGroup/getPerOption`);
+  return httpClient<T>(`/api/v1/form/${appID}/home/permission/perGroup/getPerOption`);
 };
 
 export const roleChange = <T>(appID: string, perGroupID: string) => {
-  return httpClient<T>(`/api/v1/structor/${appID}/home/permission/perGroup/saveUserPerMatch`, { perGroupID });
+  return httpClient<T>(`/api/v1/form/${appID}/home/permission/perGroup/saveUserPerMatch`, { perGroupID });
 };
