@@ -1,21 +1,21 @@
 import logger from '@lib/logger';
 import httpClient, { getTableSchema } from '@lib/http-client';
 
-type PageItem = {
-  id: string;
-  name: string;
+type TableInfo = {
+  tableID: string;
+  title: string;
 }
 
 export function getLinkageTables(appID: string): Promise<Array<LabelValue>> {
-  return httpClient<{ pages: PageItem[] }>(
-    `/api/v1/form/${appID}/m/menu/listPage`,
+  return httpClient<{ list: TableInfo[] }>(
+    `/api/v1/form/${appID}/m/table/search`,
     { appID },
-  ).then((res) => {
-    if (!res.pages || !res.pages.length) {
+  ).then(({ list }) => {
+    if (!list || !list.length) {
       return [];
     }
 
-    return res.pages.map(({ id, name }) => ({ label: name, value: id }));
+    return list.map(({ tableID, title }) => ({ label: title, value: tableID }));
   }).catch((err) => {
     logger.error(err);
     return [];
