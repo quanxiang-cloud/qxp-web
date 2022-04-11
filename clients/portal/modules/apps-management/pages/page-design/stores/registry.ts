@@ -51,7 +51,7 @@ class RegistryStore {
   };
 
   getLabelByElemType = (type: string): string => {
-    return this.elementMap[this.normalizeType(type)].label || '';
+    return this.elementMap[this.normalizeType(type)]?.label || '';
   };
 
   getElemByType = (type: string): SourceElement<any> => {
