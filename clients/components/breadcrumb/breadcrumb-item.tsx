@@ -13,8 +13,8 @@ export default function BreadcrumbItem({
   children,
   className,
   style,
-}: Props) {
-  const childrenRender = () => {
+}: Props): JSX.Element | null {
+  const childrenRender = (): JSX.Element => {
     if (typeof children === 'string') {
       return <span>{children}</span>;
     } else {

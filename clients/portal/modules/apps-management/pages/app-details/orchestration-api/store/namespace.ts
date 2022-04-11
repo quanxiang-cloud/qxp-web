@@ -1,4 +1,3 @@
-
 import TreeStore from '@c/headless-tree/store';
 import { TreeNode } from '@c/headless-tree/types';
 
