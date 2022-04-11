@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, ForwardedRef } from 'react';
 import cs from 'classnames';
 import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
@@ -17,7 +17,7 @@ import store from './store';
 
 import './index.scss';
 
-type Props = {
+interface Props extends React.HTMLProps<HTMLDivElement> {
   type?: string
   className?: string;
 }
@@ -31,7 +31,7 @@ const modifiers = [
   },
 ];
 
-const NavTaskBar = ({ type, className }: Props): JSX.Element => {
+const NavTaskBar = ({ type, className, ...rest }: Props, ref?: ForwardedRef<HTMLDivElement>): JSX.Element => {
   const history = useHistory();
   useEffect(() => {
     store.refreshInProgressCount().then((inProgressCount) => {
@@ -47,7 +47,7 @@ const NavTaskBar = ({ type, className }: Props): JSX.Element => {
   useTaskComplete('refresh-task-in-progress-count', () => store.refreshInProgressCount());
 
   return (
-    <>
+    <div ref={ref} {...rest}>
       <div className={cs('group task-wrap', className)}>
         <div
           ref={toggleRef}
@@ -78,7 +78,7 @@ const NavTaskBar = ({ type, className }: Props): JSX.Element => {
             </Popper>
           </NavTaskBarContext.Provider>)}
       </div>
-      { store.showJumpModal && (
+      {store.showJumpModal && (
         <Modal
           title="提示"
           onClose={() => store.showJumpModal = false}
@@ -111,8 +111,8 @@ const NavTaskBar = ({ type, className }: Props): JSX.Element => {
           </div>
         </Modal>
       )}
-    </>
+    </div>
   );
 };
 
-export default observer(NavTaskBar);
+export default observer(React.forwardRef<HTMLDivElement, Props>(NavTaskBar));

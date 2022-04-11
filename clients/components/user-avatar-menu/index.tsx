@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { ForwardedRef, useRef, useState } from 'react';
 import cs from 'classnames';
 
 import ResetPasswordModal from '@portal/global-header/reset-password-modal';
@@ -8,11 +8,14 @@ import Popper from '@c/popper';
 
 import './index.scss';
 
-interface Props {
+interface Props extends React.HTMLProps<HTMLDivElement> {
   className?: string;
 }
 
-export default function UserAvatarMenu({ className }: Props): JSX.Element {
+function UserAvatarMenu(
+  { className, ...rest }: Props,
+  ref?: ForwardedRef<HTMLDivElement>,
+): JSX.Element {
   const [openResetPasswordModal, setOpenResetPasswordModal] = useState<boolean>(false);
   const reference = useRef<HTMLDivElement>(null);
   const popperRef = useRef<Popper>(null);
@@ -29,7 +32,7 @@ export default function UserAvatarMenu({ className }: Props): JSX.Element {
   }
 
   return (
-    <div>
+    <div ref={ref} {...rest}>
       {openResetPasswordModal && (
         <ResetPasswordModal
           visible={openResetPasswordModal}
@@ -88,3 +91,5 @@ export default function UserAvatarMenu({ className }: Props): JSX.Element {
     </div>
   );
 }
+
+export default React.forwardRef<HTMLDivElement, Props>(UserAvatarMenu);
