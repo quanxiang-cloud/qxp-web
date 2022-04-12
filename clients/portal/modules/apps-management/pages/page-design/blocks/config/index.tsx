@@ -7,6 +7,7 @@ import StylePanel from './style-panel';
 import EventPanel from './event-panel';
 import RendererPanel from './renderer-panel';
 import ModalBindState from './modal-bind-state';
+import { INNER_COMPONENT } from '../../constants';
 import ModalComponentNode from './modal-component-node';
 
 import styles from './index.m.scss';
@@ -31,7 +32,7 @@ function SettingPanel(): JSX.Element {
       },
     ];
 
-    if (page.activeElem?.exportName === 'page') {
+    if (page.activeElem?.exportName === 'page' || INNER_COMPONENT.includes(page.activeElem?.exportName)) {
       return panels;
     }
 

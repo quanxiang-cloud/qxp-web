@@ -25,7 +25,7 @@ export const PAGE_TYPE = {
 export const PAGE_DESIGN_ID = 'page-design-container';
 
 export const LAYERS: Layer<BlocksCommunicationType>[] = [{
-  gridTemplateColumns: '56px 1fr 266px',
+  gridTemplateColumns: '56px 1fr 282px',
   gridTemplateRows: '44px calc(100vh - 44px)',
   blocks: [{
     gridColumnStart: 'span 3',
@@ -39,3 +39,5 @@ export const LAYERS: Layer<BlocksCommunicationType>[] = [{
   }],
   blocksCommunicationStateInitialValue: { activeNodeID: '' },
 }];
+
+export const INNER_COMPONENT = ['avatar', 'task', 'message'];

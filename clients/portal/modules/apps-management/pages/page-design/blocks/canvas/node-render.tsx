@@ -13,6 +13,7 @@ import { mapRawProps } from '../../utils/artery-adapter';
 import { elemId } from '../../utils';
 import { parseStyleString } from '../../utils/config';
 import { svgPreviewImg } from '../../utils/helpers';
+import { INNER_COMPONENT } from '../../constants';
 
 import styles from './index.m.scss';
 
@@ -198,6 +199,11 @@ function NodeRender({ schema }: Props): JSX.Element | null {
       Object.assign(props, {
         style: objectKeyToCamelCase(style),
       });
+    }
+
+    // add 'data-in-canvas' props for inner component to prevent default behavior
+    if (INNER_COMPONENT.includes(node.exportName)) {
+      Object.assign(props, { 'data-in-canvas': true });
     }
 
     return Object.assign({}, props, {
