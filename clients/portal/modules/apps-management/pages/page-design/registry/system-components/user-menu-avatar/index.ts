@@ -1,4 +1,4 @@
-import TaskList from '@c/task-lists';
+import UserAvatarMenu from '@c/user-avatar-menu';
 import type { SourceElement } from '../../../types';
 
 import ConfigForm, { DEFAULT_CONFIG } from './config-form';
@@ -11,11 +11,11 @@ type Props = {
 }
 
 const elem: SourceElement<Props> = {
-  name: 'task',
+  name: 'UserMenuAvatar',
   icon: 'wrap_text',
-  label: '任务列表',
+  label: '头像',
   category: 'inner',
-  component: TaskList,
+  component: UserAvatarMenu,
   configForm: ConfigForm,
   defaultConfig: DEFAULT_CONFIG,
   order: 2,
