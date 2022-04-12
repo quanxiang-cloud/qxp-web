@@ -12,8 +12,7 @@ import { useCtx } from '../../ctx';
 import { mapRawProps } from '../../utils/artery-adapter';
 import { elemId } from '../../utils';
 import { parseStyleString } from '../../utils/config';
-import { svgPreviewImg } from '../../utils/helpers';
-import { SYSTEM_COMPONENT_NAMES } from '../../constants';
+import { isSystemComponent, svgPreviewImg } from '../../utils/helpers';
 
 import styles from './index.m.scss';
 
@@ -149,7 +148,6 @@ function NodeRender({ schema }: Props): JSX.Element | null {
   drag(drop(boxRef));
 
   function mergeProps(schema: PageNode): Record<string, any> {
-    const systemCmpNames = SYSTEM_COMPONENT_NAMES.map((name) => name.toLocaleLowerCase());
     const elemConf = registry.getElemByType(schema.exportName) || {};
     const toProps = elemConf?.toProps || identity;
     const elemProps = defaults({}, mapRawProps(schema.props || {}), elemConf?.defaultConfig);
@@ -203,7 +201,7 @@ function NodeRender({ schema }: Props): JSX.Element | null {
     }
 
     // add 'data-in-canvas' props for system components to prevent default behavior
-    if (node.packageName === 'ofa-ui' && systemCmpNames.includes(node.exportName)) {
+    if (isSystemComponent(node)) {
       Object.assign(props, { 'data-in-canvas': true });
     }
 

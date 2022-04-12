@@ -7,11 +7,11 @@ import StylePanel from './style-panel';
 import EventPanel from './event-panel';
 import RendererPanel from './renderer-panel';
 import ModalBindState from './modal-bind-state';
-import { SYSTEM_COMPONENT_NAMES } from '../../constants';
 import ModalComponentNode from './modal-component-node';
 
 import styles from './index.m.scss';
 import './style.scss';
+import { isSystemComponent } from '../../utils/helpers';
 
 function SettingPanel(): JSX.Element {
   const { page, designer, registry } = useCtx();
@@ -32,9 +32,7 @@ function SettingPanel(): JSX.Element {
       },
     ];
 
-    if (page.activeElem?.exportName === 'page' ||
-      SYSTEM_COMPONENT_NAMES.includes(page.activeElem?.exportName)
-    ) {
+    if (page.activeElem?.exportName === 'page' || isSystemComponent(page.activeElem)) {
       return panels;
     }
 
