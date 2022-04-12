@@ -28,6 +28,7 @@ function FieldOption({ options, onInsert }: FieldOptionProps): JSX.Element {
 
 export type QuillEditorRef = {
   getContent: () => string;
+  getInnerHTML: () => string;
 }
 
 interface Props {
@@ -42,6 +43,9 @@ function QuillEditorWrapper({ value, contentVariables }: Props, ref: React.Ref<Q
     return {
       getContent: () => {
         return quillRef.current?.getText() || '';
+      },
+      getInnerHTML: ()=>{
+        return (quillRef.current?.root as HTMLDivElement).outerHTML ?? '';
       },
     };
   });
