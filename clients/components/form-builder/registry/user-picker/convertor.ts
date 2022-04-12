@@ -61,9 +61,8 @@ export const toSchema = (config: DefaultConfig): ISchema => {
       onSearch(value: string) {
         config.onSearch && config.onSearch(value);
       },
-
-      filterOption: (input: string, option: Option) => {
-        return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+      filterOption: (input: string, option: Option & { children: string[] }) => {
+        return option.children && option.children.join('').toLowerCase().indexOf(input.toLowerCase()) >= 0;
       },
     },
     ['x-internal']: {
