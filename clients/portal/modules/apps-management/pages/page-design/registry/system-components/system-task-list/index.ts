@@ -12,7 +12,7 @@ type Props = {
 
 const elem: SourceElement<Props> = {
   name: 'SystemTaskList',
-  icon: 'wrap_text',
+  icon: 'system_task',
   label: '任务列表',
   category: 'inner',
   component: TaskList,

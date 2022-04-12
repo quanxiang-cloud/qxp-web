@@ -12,7 +12,7 @@ type Props = {
 
 const elem: SourceElement<Props> = {
   name: 'UserMenuAvatar',
-  icon: 'wrap_text',
+  icon: 'user_avatar',
   label: '头像',
   category: 'inner',
   component: UserAvatarMenu,
