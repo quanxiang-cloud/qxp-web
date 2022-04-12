@@ -102,7 +102,7 @@ const OrganizationPicker = ({
 
   const { data } = useQuery(['query_dep_picker'], () => getERPTree());
   const treeData = React.useMemo(() => {
-    const treeDataTmp = parseTree({ depTreeData: data, rootPId: 0 });
+    const treeDataTmp = parseTree({ depTreeData: data, rootPId: data?.id });
     if (optionalRange === 'customize') {
       if (!rangeList || !rangeList.length) {
         return [];
@@ -178,10 +178,10 @@ const OrganizationPicker = ({
       className='flex-1 dep-selector'
       dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
       treeNodeFilterProp="title"
-      treeDataSimpleMode={{
-        id: 'id',
-        rootPId: 0,
-      }}
+      // treeDataSimpleMode={{
+      //   id: 'id',
+      //   rootPId: get(treeData, '0.id'),
+      // }}
       onChange={handleChange}
       treeData={treeData}
     />
