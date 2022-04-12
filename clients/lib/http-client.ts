@@ -298,12 +298,12 @@ export function getTableSchema(appID: string, tableID: string): Promise<GetTable
 
 export function getCustomPageInfo(appID: string, menuId: string): Promise<CustomPageInfo> {
   const side = window.SIDE === 'portal' ? 'm' : 'home';
-  return httpClient(`/api/v1/structor/${appID}/${side}/page/getByMenu`, { menuId });
+  return httpClient(`/api/v1/form/${appID}/${side}/page/getByMenu`, { menuId });
 }
 
 export const fetchPageList = async (appID: string): Promise<fetchPageListRes> => {
   const side = window.SIDE === 'portal' ? 'm' : 'home';
-  return await httpClient(`/api/v1/structor/${appID}/${side}/menu/list`, { appID });
+  return await httpClient(`/api/v1/form/${appID}/${side}/menu/list`, { appID });
 };
 
 export function getArteryPageInfo(appID: string, tableID: string): Promise<ArteryPageInfo> {

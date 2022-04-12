@@ -1,17 +1,15 @@
 import React, { useEffect, useState, useContext, useMemo, useRef } from 'react';
 import { usePrevious, useUpdateEffect } from 'react-use';
 import { get, isEqual } from 'lodash';
-import { Upload } from 'antd';
 import { useForm, Controller } from 'react-hook-form';
-
 import formFieldWrap from '@c/form-field-wrap';
-import Button from '@c/button';
 import SaveButtonGroup from '@flow/content/editor/components/_common/action-save-button-group';
 import type {
   SendEmailData,
   Attachment,
 } from '@flow/content/editor/type';
 import { SYSTEM_FIELDS } from '@c/form-builder/constants';
+import FileUploader from '@c/file-upload';
 
 import PersonPicker from '../../components/_common/person-picker';
 import { approvePersonEncoder } from '../../components/_common/utils';
@@ -27,14 +25,6 @@ type Props = {
   onCancel: () => void;
   defaultValue: SendEmailData;
 }
-
-const UPLOAD_PROPS = {
-  name: 'file',
-  action: '/api/v1/fileserver/uploadFile',
-  headers: {
-    'X-Proxy': 'API',
-  },
-};
 
 const Input = formFieldWrap({ field: <input className='input' /> });
 const LablePathMap = {
@@ -66,6 +56,7 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
   };
   const editorRef = useRef<any>(null);
   const [errorText, setErrorText] = useState('');
+  const [files, setFiles] = useState(setFileParams(defaultValueEncode?.mes_attachment));
   const { register, handleSubmit, control, reset, formState: { errors }, watch } = useForm();
   const allFields = watch([
     'content',
@@ -121,13 +112,13 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
   const handleSave = (data: any): void => {
     const bol = handleValidate();
     if (!bol) return;
-    const content = editorRef.current.getContent();
-    onSubmit({ ...data, content, templateId: 'quanliang', formulaFields, fieldType });
+    const content = editorRef.current.getInnerHTML();
+    const mes_attachment = files.map((item)=>({ file_name: item.name, file_url: item.uid }));
+    onSubmit({ ...data, content, templateId: 'quanliang', formulaFields, fieldType, mes_attachment });
   };
 
   function handleValidate(): boolean {
-    const value = editorRef.current.getContent();
-    const _content = value.substring(3, value.length - 4);
+    const _content = editorRef.current.getContent();
 
     if (_content === '<br>') {
       setErrorText('请输入内容');
@@ -141,6 +132,16 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
 
     setErrorText('');
     return true;
+  }
+
+  function setFileParams(files?: Attachment[]): QXPUploadFileTask[] {
+    if (!files) return [];
+    return files.map((item)=>({
+      type: '',
+      size: 0,
+      name: item.file_name,
+      uid: item.file_url,
+    }));
   }
 
   const handleCancel = (): void => {
@@ -199,32 +200,16 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
       <Controller
         name='mes_attachment'
         control={control}
-        render={({ field }) => {
+        render={() => {
           return (
-            <Upload
-              {...UPLOAD_PROPS}
-              defaultFileList={
-                (defaultValueEncode?.mes_attachment || []).map(({ file_name, file_url }: Attachment) => {
-                  return {
-                    uid: file_url,
-                    name: file_name,
-                    status: 'done',
-                    url: file_url,
-                  };
-                })
-              }
-              onChange={(info) => {
-                field.onChange(info.fileList.filter(({ status }) => {
-                  return status === 'done';
-                }).map(({ name, response }) => {
-                  return {
-                    file_name: name,
-                    file_url: response.data.url,
-                  };
-                }));
-              }}>
-              <Button className='block'>上传</Button>
-            </Upload>
+            <FileUploader
+              multiple={true}
+              fileData={files}
+              className='px-40 form-upload'
+              maxFileSize={20}
+              onFileDelete={(val)=>setFiles((list)=>list.filter((item)=>item.name !== val.name))}
+              onFileSuccess={(fileDetail: QXPUploadFileTask) => setFiles((list)=>[...list, fileDetail])}
+            />
           );
         }
         }

@@ -1,4 +1,4 @@
-type ApiType = 'create' | 'update' | 'delete' | 'search';
+type ApiType = 'create' | 'update' | 'delete' | 'search' | 'get'
 
 type DocType = 'raw' | 'swag' | 'curl' | 'javascript' | 'python'
 

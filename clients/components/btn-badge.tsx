@@ -6,7 +6,7 @@ interface Props {
   className?: string;
 }
 
-export default function BtnBadge({ count = 0, className }: Props) {
+export default function BtnBadge({ count = 0, className }: Props): JSX.Element {
   return (
     <button className={cs('absolute inline-flex items-center btn-badge bg-red-500', className)}>
       {count > 99 ? '99+' : count}

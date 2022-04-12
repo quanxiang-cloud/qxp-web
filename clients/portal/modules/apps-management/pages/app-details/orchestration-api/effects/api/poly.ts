@@ -11,14 +11,14 @@ import {
 import httpClient from '@lib/http-client';
 
 import { POLY, POLY_SEARCH } from './names';
-import type { Input, NameSpace } from './api-namespace';
+import type { Input } from './api-namespace';
 
 type QueryPolyApiListInput = Input<{
   page: number;
   pageSize: number;
   active: number;
 }>;
-export type PolyListItem = Omit<NameSpace, 'parent' | 'subCount'> & {
+export type PolyListItem = Omit<PolyAPI.Namespace, 'parent' | 'subCount'> & {
   fullPath: string;
   method: HTTPMethod;
 }
