@@ -1,5 +1,6 @@
 import { isEmpty, isString, omit } from 'lodash';
 
+import { DirectoryChild, Directory, API } from '@lib/api-collection';
 import { isObjectField } from './object-editor';
 import { RawApiDetail } from '../effects/api/raw';
 import { PLACEHOLDER_OPTION } from '../constants';
@@ -91,32 +92,35 @@ function mergeApiListToChildNameSpace(
   }));
 }
 
-export type ApiOptionData = {
-  name: string;
-  title: string;
-  parent: string;
-  children: ApiOptionData[] | null;
-}
-
 const Title_Map: Record<string, string> = {
   inner: '平台API',
   customer: '第三方API',
 };
 export function getChildrenOfCurrentSelectOption(
-  currentChildrenData: ApiOptionData[],
+  currentChildren: DirectoryChild[],
+  apiNamespacePath: string,
 ): ApiCascaderOption[] | undefined {
-  if (!currentChildrenData) {
+  if (!currentChildren) {
     return;
   }
 
-  return currentChildrenData.map(({ name, children, parent, title }: ApiOptionData) => {
+  return currentChildren.map(({ name, title, pathType, ...extra }: DirectoryChild) => {
+    const { children, parent } = (extra as Partial<Directory>);
+    const { method, fullPath } = (extra as Partial<API>);
+    let _children: ApiCascaderOption[] | undefined;
+    if (children && children.length) {
+      _children = getChildrenOfCurrentSelectOption(children, apiNamespacePath);
+    } else if (apiNamespacePath === `${parent}/${name}`) {
+      _children = PLACEHOLDER_OPTION;
+    }
+
     return {
       label: title ? title : (Title_Map[name] || name),
       value: name,
-      children: undefined,
-      childrenData: children,
-      isLeaf: false,
-      path: `${parent}/${name}`,
+      children: _children,
+      isLeaf: !!method,
+      path: fullPath ? fullPath : `${parent}/${name}`,
+      pathType,
     };
   });
 }

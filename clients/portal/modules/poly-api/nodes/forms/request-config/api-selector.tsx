@@ -7,9 +7,9 @@ import { SingleValueType, DefaultOptionType } from 'rc-cascader/lib/Cascader';
 
 import { RawApiDocDetail } from '@polyApi/effects/api/raw';
 import ApiDocDetail from '@polyApi/components/api-doc-detail';
-import { getChildrenOfCurrentSelectOption } from '@polyApi/utils/request-node';
 
-import { useGetOptions } from './hooks/api-selector-hooks';
+import { useGetOptionFromCollection } from './hooks/api-selector-hooks';
+import { PathType } from '@lib/api-collection';
 
 type Props = {
   initRawApiPath: string;
@@ -33,8 +33,8 @@ function ApiSelector({
   usePolyApiOption = false,
 }: Props): JSX.Element {
   const { appID } = useParams<{ appID: string }>();
-  const [apiNamespacePath, setApiNamespacePath] = useState('');
-  const options = useGetOptions(appID, apiNamespacePath, usePolyApiOption);
+  const [apiPathWithType, setApiPathWithType] = useState({ path: '', pathType: PathType.RAW_ROOT });
+  const options = useGetOptionFromCollection(appID, apiPathWithType, usePolyApiOption);
 
   function onChange(value: SingleValueType | SingleValueType[], selectedOptions: DefaultOptionType[]): void {
     const leafOption = clone(selectedOptions).pop();
@@ -47,8 +47,7 @@ function ApiSelector({
   function loadData(selectedOptions: DefaultOptionType[]): void {
     const targetOption = selectedOptions[selectedOptions.length - 1];
 
-    setApiNamespacePath(targetOption.path);
-    targetOption.children = getChildrenOfCurrentSelectOption(targetOption.childrenData);
+    setApiPathWithType({ path: targetOption.path, pathType: targetOption.pathType });
   }
 
   if (simpleMode) {
