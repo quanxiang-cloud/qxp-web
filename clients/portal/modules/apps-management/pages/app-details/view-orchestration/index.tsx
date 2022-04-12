@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { observer } from 'mobx-react';
 
 import PageLoading from '@c/page-loading';
@@ -26,15 +26,39 @@ import './index.scss';
 function AppViews(): JSX.Element {
   const { isLoading, store } = useAppStore();
 
-  function handleModalSubmit(viewInfo: CreateViewParams<View>): void {
+  const handleModalSubmit = useCallback((viewInfo: CreateViewParams<View>): void => {
     store?.handleViewInfoSubmit(viewInfo).then(()=> {
+      toast.success((store.modalType === 'createView' ? '添加' : '修改') + '成功');
       closeModal();
-      toast.success((store?.modalType === 'createView' ? '添加' : '修改') + '成功');
     });
-  }
+  }, [store?.modalType]);
 
   function closeModal(): void {
     store?.setModalType('');
+  }
+
+  function onViewOptionClick(key: string, view: View): void {
+    store?.setCurrentView(view);
+    store?.setModalType(key);
+    if (key === 'delView') {
+      const delViewModal = Modal.open({
+        title: '删除页面',
+        content: `确定要删除页面 ${view.name} 吗?`,
+        confirmText: '确认删除',
+        onConfirm: () => {
+          store?.deleteViewOrLayout(view.id).then(() => {
+            delViewModal.close();
+            toast.success('删除成功');
+            store?.setCurrentView(store?.views[0] as View);
+          });
+        },
+      });
+    }
+    if ( key === 'setHomeView') {
+      store?.setHomeView(view.name).then(()=> {
+        toast.success(`已将 ${view.name} 设置为应用主页`);
+      });
+    }
   }
 
   if (isLoading || !store) {
@@ -51,7 +75,7 @@ function AppViews(): JSX.Element {
         <div className='h-44 flex flex-end items-center px-16 py-20 justify-center'>
           <span className='font-semibold text-gray-400 mr-auto text-12'>页面</span>
           <div className="flex items-center">
-            <div onClick={() => store?.setModalType('createView')}>
+            <div onClick={() => store.setModalType('createView')}>
               <Tooltip label='新建页面' position='bottom' wrapperClassName="whitespace-nowrap">
                 <Icon className='cursor-pointer mr-8 hover:text-blue-600' size={16} name='post_add' />
               </Tooltip>
@@ -61,42 +85,26 @@ function AppViews(): JSX.Element {
         <div className='app-view-list-wrapper h-full'>
           <ViewList
             className='pb-10'
-            currentView={(store?.currentView as View)}
-            views={store?.views as View[]}
-            onViewClick={(view) => store?.setCurrentView(view)}
-            onOptionClick={(key, view) => {
-              store?.setCurrentView(view);
-              store?.setModalType(key);
-              if (key === 'delView') {
-                const delViewModal = Modal.open({
-                  title: '删除页面',
-                  content: `确定要删除页面 ${view.name} 吗?`,
-                  confirmText: '确认删除',
-                  onConfirm: () => {
-                    store?.deleteViewOrLayout(view.id).then(() => {
-                      delViewModal.close();
-                      toast.success('删除成功');
-                      store?.setCurrentView(store?.views[0] as View);
-                    });
-                  },
-                });
-              }
-            }}
+            currentView={(store.currentView as View)}
+            homeView={store.homeView}
+            views={store.views as View[]}
+            onViewClick={(view) => store.setCurrentView(view)}
+            onOptionClick={onViewOptionClick}
           />
         </div>
       </div>
-      <ViewDetails openModal={(type) => store.setModalType(type)} viewInfo={store?.currentView as View} />
-      {['editView', 'createView'].includes(store?.modalType) && (
+      <ViewDetails openModal={(type) => store.setModalType(type)} viewInfo={store.currentView as View} />
+      {['editView', 'createView'].includes(store.modalType) && (
         <EditViewModal
           modalType={store.modalType}
           layouts={store.layouts || []}
           views={store.views || []}
           onCancel={closeModal}
-          viewParams={store?.modalType === 'editView' ? store?.currentView as View : undefined}
+          viewParams={store.modalType === 'editView' ? store.currentView as View : undefined}
           onSubmit={handleModalSubmit}
         />
       )}
-      {store?.modalType === 'editStaticView' && (
+      {store.modalType === 'editStaticView' && (
         <EditStaticViewModal
           view={store.currentView as StaticView}
           onClose={closeModal}

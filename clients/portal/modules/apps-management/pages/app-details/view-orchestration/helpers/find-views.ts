@@ -11,8 +11,6 @@ import {
   Node,
 } from '@one-for-all/artery';
 
-import logger from '@lib/logger';
-
 import { ExternalView, View, ViewType, SchemaView, StaticView, TableSchemaView } from '../types.d';
 import { isLayoutNode } from './utils';
 
@@ -32,7 +30,7 @@ function getViewType(node: Node): ViewType | undefined {
   }
 }
 
-function convertRefNodeToView(node: RefNode): SchemaView {
+export function convertRefNodeToView(node: RefNode): SchemaView {
   return {
     id: node.id as string,
     name: node.label || '',
@@ -42,7 +40,7 @@ function convertRefNodeToView(node: RefNode): SchemaView {
   };
 }
 
-function convertNodeToTableView(node: ReactComponentNode): TableSchemaView {
+export function convertNodeToTableView(node: ReactComponentNode): TableSchemaView {
   return {
     id: node.id as string,
     name: node.label || '',
@@ -53,7 +51,7 @@ function convertNodeToTableView(node: ReactComponentNode): TableSchemaView {
   };
 }
 
-function convertNodeToStaticView(node: ReactComponentNode): StaticView {
+export function convertNodeToStaticView(node: ReactComponentNode): StaticView {
   return {
     id: node.id as string,
     name: node.label || '',
@@ -63,7 +61,7 @@ function convertNodeToStaticView(node: ReactComponentNode): StaticView {
   };
 }
 
-function convertNodeToExternalView(node: ReactComponentNode): ExternalView {
+export function convertNodeToExternalView(node: ReactComponentNode): ExternalView {
   return {
     id: node.id as string,
     name: node.label || '',
@@ -85,7 +83,6 @@ function convertNodeToView(node: Node): View | undefined {
   case ViewType.StaticView:
     return convertNodeToStaticView(node as ReactComponentNode);
   default:
-    logger.error('todo some error message');
     break;
   }
 }

@@ -3,6 +3,7 @@ import { UnionColumn } from 'react-table';
 import { Form, Input } from 'antd';
 import { FormInstance } from 'antd/es/form';
 import { observer } from 'mobx-react';
+import { useHistory } from 'react-router-dom';
 
 import Card from '@c/card';
 import Button from '@c/button';
@@ -37,6 +38,7 @@ function PageLayout(): JSX.Element {
   const [isTypeValidate, setIsTypeValidate] = useState<boolean>(true);
   const fromRef = useRef<FormInstance>(null);
   const { store, isLoading } = useAppStore();
+  const history = useHistory();
 
   function handleSubmit(): void {
     const values: { name: string, description: string} = fromRef.current?.getFieldsValue();
@@ -111,7 +113,7 @@ function PageLayout(): JSX.Element {
             <span
               className='text-btn mr-16'
               onClick={() =>{
-                // todo
+                history.push(`/artery-engine?appID=${store?.appID}&pageName=${layout.name}&arteryID=${layout.refSchemaID}`);
               }}
             >
               去设计

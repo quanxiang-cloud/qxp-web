@@ -1,6 +1,6 @@
 import qs from 'qs';
 
-import { CustomPageInfo, SchemaPageInfo } from '@portal/modules/apps-management/pages/app-details/type';
+import { CustomPageInfo, ArteryPageInfo } from '@portal/modules/apps-management/pages/app-details/type';
 import { ESParameter, toEs } from '@c/data-filter/utils';
 import schemaToFields from '@lib/schema-convert';
 
@@ -24,14 +24,21 @@ function request<TData>(path: string, method: METHOD, body?: unknown): Promise<T
   };
 
   return fetch(path, requestInit)
-    .then((response) => response.json())
+    .then((response) => {
+      if (response.status > 400) {
+        return Promise.reject(new Error(response.statusText));
+      }
+
+      return response.json();
+    })
     .then(({ code, msg, data }) => {
       if (code !== 0) {
         return Promise.reject(new Error(msg));
       }
 
       return data;
-    }).catch((err) => {
+    })
+    .catch((err) => {
       if (err.response?.status === 401) {
         if (!alreadyAlertUnauthorizedError) {
           alreadyAlertUnauthorizedError = true;
@@ -59,11 +66,11 @@ httpClient.get = function<TData>(path: string, query?: Record<string, unknown>) 
   return request<TData>(_path, 'GET', undefined);
 };
 
-httpClient.post = function<TData>(path: string, body?: unknown) {
+httpClient.post = function<TData>(path: string, body: unknown) {
   return request<TData>(path, 'POST', body);
 };
 
-httpClient.put = function<TData>(path: string, body?: unknown) {
+httpClient.put = function<TData>(path: string, body: unknown) {
   return request<TData>(path, 'PUT', body);
 };
 
@@ -299,8 +306,8 @@ export const fetchPageList = async (appID: string): Promise<fetchPageListRes> =>
   return await httpClient(`/api/v1/structor/${appID}/${side}/menu/list`, { appID });
 };
 
-export function getSchemaPageInfo(appID: string, menuId: string): Promise<SchemaPageInfo> {
-  return httpClient(`/api/v1/structor/${appID}/m/table/getInfo`, { menuId });
+export function getArteryPageInfo(appID: string, tableID: string): Promise<ArteryPageInfo> {
+  return httpClient(`/api/v1/form/${appID}/m/table/getInfo`, { tableID });
 }
 
 export function saveTableSchema(

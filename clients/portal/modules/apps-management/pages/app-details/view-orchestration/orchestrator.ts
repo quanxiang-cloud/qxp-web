@@ -1,5 +1,5 @@
 import { get, set, findIndex } from 'lodash';
-import { action, computed, observable } from 'mobx';
+import { action, computed, observable, toJS } from 'mobx';
 import {
   RouteNode,
   Artery,
@@ -36,12 +36,13 @@ import {
   ViewType,
 } from './types.d';
 import { ROOT_NODE_ID } from './constants';
-import { createBlank } from '../api';
+import { createBlank, fetchAppDetails, updateApp } from '../api';
 
 class Orchestrator {
   @observable loading = true;
   @observable rootNode: Node;
   @observable currentView: View | ViewGroup;
+  @observable homeView?: View;
   @observable modalType = '';
   appID: string;
   rootSchemaKey: string;
@@ -62,6 +63,7 @@ class Orchestrator {
     this.appLayout = get(_rootNOde, 'props.data-layout-type.value', undefined);
 
     this.currentView = this.views[0];
+    this.fetchAppHomeView(appID);
   }
 
   @computed get layouts(): Array<Layout> {
@@ -101,7 +103,7 @@ class Orchestrator {
   async addLayout(name: string, layoutType: LayoutType): FutureErrorMessage {
     const rootNode = await addLayoutToRoot({
       appID: this.appID,
-      rootNode: this.rootNode,
+      rootNode: toJS(this.rootNode),
       layoutType,
       layoutName: name,
     });
@@ -144,10 +146,11 @@ class Orchestrator {
     if (!this.rootNode) {
       return 'no root node found for this app, please init root node again!';
     }
+    let renderTableSchemaViewNode: ReactComponentNode;
     return createBlank(this.appID).then(({ tableID: id }) => {
       // todo create empty table schema?
       const tableID = id;
-      const renderTableSchemaViewNode: ReactComponentNode = {
+      renderTableSchemaViewNode = {
         id: genNodeID(),
         type: 'react-component',
         label: params.name,
@@ -187,6 +190,7 @@ class Orchestrator {
     if (!this.rootNode) {
       return 'no root node found for this app, please init root node again!';
     }
+    let renderSchemaView: RefNode;
 
     const pageSchemaKey = genDesktopArteryKey(this.appID);
     const customPageSchema: Artery = {
@@ -212,7 +216,7 @@ class Orchestrator {
       sharedStatesSpec: {},
     };
     return saveArtery(pageSchemaKey, customPageSchema).then(() => {
-      const renderSchemaView: RefNode = {
+      renderSchemaView = {
         id: genNodeID(),
         type: 'ref-node',
         arteryID: pageSchemaKey,
@@ -252,17 +256,19 @@ class Orchestrator {
       },
     };
 
-    if (!params.layoutID) {
-      return this.saveSchema(addViewToRoot(this.rootNode, staticViewNode));
-    }
+    return Promise.resolve().then(() => {
+      if (!params.layoutID) {
+        return this.saveSchema(addViewToRoot(this.rootNode, staticViewNode));
+      }
 
-    const rootNode = addViewToLayout(this.rootNode, params.layoutID, staticViewNode);
+      const rootNode = addViewToLayout(this.rootNode, params.layoutID, staticViewNode);
 
-    return this.saveSchema(rootNode);
+      return this.saveSchema(rootNode);
+    });
   }
 
   async addExternalView(params: CreateViewParams<ExternalView>): FutureErrorMessage {
-    const staticViewNode: ReactComponentNode = {
+    const externalViewNode: ReactComponentNode = {
       id: genNodeID(),
       type: 'react-component',
       label: params.name,
@@ -289,11 +295,10 @@ class Orchestrator {
     };
 
     if (!params.layoutID) {
-      return this.saveSchema(addViewToRoot(this.rootNode, staticViewNode));
+      return this.saveSchema(addViewToRoot(this.rootNode, externalViewNode));
     }
 
-    const rootNode = addViewToLayout(this.rootNode, params.layoutID, staticViewNode);
-
+    const rootNode = addViewToLayout(this.rootNode, params.layoutID, externalViewNode);
     return this.saveSchema(rootNode);
   }
 
@@ -302,6 +307,31 @@ class Orchestrator {
   // };
   // async editSchemaView(view: SchemaView): FutureErrorMessage;
   // async editStaticView(view: StaticView): FutureErrorMessage;
+
+  @action
+  async editTableSchemaView(view: TableSchemaView): FutureErrorMessage {
+    if (!this.rootNode) {
+      return 'no root node found for this app, please init root node again!';
+    }
+
+    const targetNode = findNodeByID(this.rootNode, view.id);
+
+    if (!targetNode) {
+      return 'target node not found';
+    }
+
+    const tableSchemaViewNode: ReactComponentNode = {
+      ...(targetNode as ReactComponentNode),
+      label: view.name,
+      props: {
+        ...targetNode.props,
+        name: { type: 'constant_property', value: view.name },
+      },
+    };
+
+    const rootNode = patchNode(this.rootNode, tableSchemaViewNode);
+    return this.saveSchema(rootNode);
+  }
 
   @action
   async editStaticView(view: StaticView): FutureErrorMessage {
@@ -364,8 +394,7 @@ class Orchestrator {
   @action
   async saveSchema(rootNode: Node | undefined): FutureErrorMessage {
     if (!rootNode) {
-      // todo implement this!!!
-      return Promise.resolve('todo some error message');
+      return Promise.resolve('App rootNode is null');
     }
 
     this.loading = true;
@@ -411,13 +440,21 @@ class Orchestrator {
         return this.editExternalView(viewInfo as ExternalView);
       }
 
+      if (viewInfo.type === ViewType.TableSchemaView && this.modalType === 'editView') {
+        return this.editTableSchemaView(viewInfo as TableSchemaView);
+      }
+
       return this.updateViewName(this.currentView as View, viewInfo.name!);
     }).then(() => {
-      if (viewInfo.type === ViewType.ExternalView) {
-        this.setCurrentView({ ...viewInfo, appID: this.appID } as View);
+      if (this.modalType === 'createView' && this.views.length === 1) {
+        this.setHomeView(viewInfo.name);
+      }
+      if (viewInfo.id) {
+        this.setCurrentView(viewInfo);
         return;
       }
-      this.setCurrentView(viewInfo);
+      const view = this.views.find((view) => view.name === viewInfo.name);
+      this.setCurrentView(view as View);
     });
   }
 
@@ -429,6 +466,34 @@ class Orchestrator {
   @action
   setCurrentView(view: View | ViewGroup): void {
     this.currentView = view;
+  }
+
+  @action
+  saveAppHomeViewUrl(url: string): Promise<unknown> {
+    return updateApp({
+      id: this.appID,
+      accessURL: url,
+    });
+  }
+
+  @action
+  setHomeView(viewName?: string): Promise<unknown> {
+    if (!viewName) {
+      return this.saveAppHomeViewUrl('');
+    }
+    const view = this.views.find((view) => view.name === viewName) as View;
+    console.log(view);
+
+    this.homeView = view;
+    return this.saveAppHomeViewUrl(view.url);
+  }
+
+  @action
+  fetchAppHomeView(id: string): void {
+    fetchAppDetails(id).then(({ accessURL }) => {
+      const view = this.views.find((view) => (view as View).url === accessURL);
+      this.homeView = view as View;
+    });
   }
 }
 

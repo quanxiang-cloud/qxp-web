@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
 import Tab from '@c/tab';
@@ -7,7 +7,10 @@ import Button from '@c/button';
 
 import { ExternalView, SchemaView, TableSchemaView, View, ViewType } from '../types.d';
 import ArteryRenderer from '@c/artery-renderer';
-import { VERSION } from '../constants';
+import { DefaultFormDescriptions, VERSION } from '../constants';
+import { getArteryPageInfo } from '@lib/http-client';
+import { mapToArteryPageDescription } from '../../utils';
+import { toast } from '@one-for-all/ui';
 
 type Props = {
   view: View;
@@ -18,6 +21,12 @@ type View_Map = {
   icon: string;
   viewType: string;
   operator: string;
+}
+
+type ViewDescription = {
+  id: string;
+  title: string;
+  value: string;
 }
 
 const VIEW_MAP: Record<ViewType, View_Map> = {
@@ -66,49 +75,58 @@ function ViewInfo({ view, openModal }: Props): JSX.Element {
   const { type } = view;
   const history = useHistory();
   const { appID } = useParams<{ appID: string }>();
-  const pageDescriptions = [{ id: 'type', title: '页面类型', value: VIEW_MAP[type].viewType }];
+  const [formDescriptions, setFormDescriptions] = useState<ViewDescription[]>();
 
-  const Preview = useMemo((): JSX.Element | null => {
-    if (type === ViewType.StaticView) {
-      return (
-        <iframe
-          className="w-full h-full"
-          src={view.fileUrl}
-          style={{ border: 'none' }}
-        />
-      );
+  const Preview = useMemo((): JSX.Element | null => (
+    <div className='h-full pointer-events-none'>
+      {
+        type === ViewType.StaticView && (
+          <iframe
+            className="w-full h-full"
+            src={view.fileUrl}
+            style={{ border: 'none' }}
+          />
+        ) }
+
+      {
+        type === ViewType.ExternalView && (
+          <iframe
+            className="w-full h-full"
+            src={realizeLink(view)}
+            style={{ border: 'none' }}
+          />
+        )
+      }
+      {
+        type === ViewType.SchemaView && (
+          <ArteryRenderer
+            arteryID={view.arteryID}
+            version={VERSION}
+          />
+        )
+      }
+    </div>
+  )
+  , [view]);
+
+  useEffect(() => {
+    if (view.type === ViewType.TableSchemaView) {
+      setFormDescriptions(DefaultFormDescriptions),
+      getArteryPageInfo(appID, view.tableID).then((res) => {
+        setFormDescriptions( (prevDescriptions) => prevDescriptions?.map((description) => {
+          return mapToArteryPageDescription(description, res);
+        }));
+      }).catch(() => {
+        toast.error('表单信息获取失败');
+      });
+      return;
     }
-
-    if (type === ViewType.ExternalView) {
-      const link = realizeLink(view);
-      return (
-        <iframe
-          className="w-full h-full"
-          src={link}
-          style={{ border: 'none' }}
-        />
-      );
-    }
-
-    if (type === ViewType.SchemaView) {
-      return (
-        <ArteryRenderer
-          arteryID={view.arteryID}
-          version={VERSION}
-        />
-      );
-    }
-
-    return null;
-  }, [view]);
+    setFormDescriptions([{ id: 'type', title: '页面类型', value: VIEW_MAP[type].viewType }]);
+  }, [view.id]);
 
   function goPageDesign(): void {
-    // to change below line after page engine v2 new update
-    const schemaID = (view as SchemaView).arteryID;
-
-    // save page engine schema is not work now
-    history.push(`/page-engine?appID=${appID}&pageName=${view.name}&schemaID=${schemaID}`);
-    // history.push(`/apps/page-design/${view.id}/${appID}?pageName=${view.name}`);
+    const arteryID = (view as SchemaView).arteryID;
+    history.push(`/artery-engine?appID=${appID}&pageName=${view.name}&arteryID=${arteryID}`);
   }
 
   function goFormBuild(): void {
@@ -132,7 +150,7 @@ function ViewInfo({ view, openModal }: Props): JSX.Element {
   }
 
   return (
-    <div className='relative h-full flex-1 overflow-hidden p-16'>
+    <div className='relative flex flex-col flex-1 overflow-hidden p-16'>
       <div className='px-16 py-8 rounded-8 border-1 flex items-center'>
         <div className="page-details-icon">
           <Icon
@@ -142,7 +160,7 @@ function ViewInfo({ view, openModal }: Props): JSX.Element {
           />
         </div>
         <div className='flex-1 grid grid-cols-6 mr-48'>
-          {pageDescriptions.map(({ title, value }) => {
+          {formDescriptions?.map(({ title, value }) => {
             return (
               <div key={title}>
                 <p className={!value ? 'text-gray-400' : ''}>{value ? value : '-'}</p>
@@ -160,10 +178,22 @@ function ViewInfo({ view, openModal }: Props): JSX.Element {
         >
           {VIEW_MAP[type].operator}
         </Button>
+        <Button
+          iconName='article'
+          className="mr-18"
+          modifier='primary'
+          textClassName='app-content--op_btn'
+          onClick={() => {
+            window.open(`/_jump_to_home?to=${view.url}`);
+          }}
+        >
+          访问页面
+        </Button>
       </div>
       {[ViewType.SchemaView, ViewType.StaticView, ViewType.ExternalView].includes(type) && (
         <Tab
-          contentClassName='h-full'
+          className='flex-1'
+          contentClassName='flex-1'
           items={[
             {
               id: 'page-preview',

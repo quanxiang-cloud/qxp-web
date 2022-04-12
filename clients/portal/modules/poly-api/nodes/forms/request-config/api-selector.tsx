@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import cs from 'classnames';
 import { clone } from 'ramda';
 import { Cascader } from 'antd';
-import { useParams } from 'react-router-dom';
+import { getQuery } from '@lib/utils';
 import { SingleValueType, DefaultOptionType } from 'rc-cascader/lib/Cascader';
 
 import { RawApiDocDetail } from '@polyApi/effects/api/raw';
@@ -20,7 +20,7 @@ type Props = {
   usePolyApiOption?: boolean;
   simpleMode?: boolean;
   apiDocDetail?: RawApiDocDetail;
-}
+};
 
 function ApiSelector({
   error,
@@ -32,11 +32,14 @@ function ApiSelector({
   label = '全部API:',
   usePolyApiOption = false,
 }: Props): JSX.Element {
-  const { appID } = useParams<{ appID: string }>();
+  const { appID } = getQuery<{ appID: string; pageName: string; arteryID: string }>();
   const [apiPathWithType, setApiPathWithType] = useState({ path: '', pathType: PathType.RAW_ROOT });
   const options = useGetOptionFromCollection(appID, apiPathWithType, usePolyApiOption);
 
-  function onChange(value: SingleValueType | SingleValueType[], selectedOptions: DefaultOptionType[]): void {
+  function onChange(
+    value: SingleValueType | SingleValueType[],
+    selectedOptions: DefaultOptionType[],
+  ): void {
     const leafOption = clone(selectedOptions).pop();
     if (leafOption?.isLeaf) {
       setApiPath(leafOption.path);

@@ -257,7 +257,7 @@ export function getValue(
 }
 
 export type ESParameter = {
-  bool: {
+  bool?: {
     [key in FilterTag]?: Rule[]
   }
 }
@@ -418,20 +418,16 @@ export function toEs(filterConfig: FilterConfig): ESParameter {
     rule.push(operatorESParameter(key, op, value));
   });
 
-  return {
-    bool: {
-      [filterConfig.tag]: rule,
-    },
-  };
+  return rule.length ? { bool: { [filterConfig.tag]: rule } } : {};
 }
 
 export function toFilterConfig(esObj: ESParameter): FilterConfig {
   let tag: FilterTag = 'must';
   const condition: Condition[] = [];
-  const tags = Object.keys(esObj.bool) as FilterTag[];
+  const tags = Object.keys(esObj?.bool || {}) as FilterTag[];
   if (tags.length) {
     tag = tags[0];
-    esObj.bool[tag]?.map((rule: Rule) => {
+    (esObj?.bool || {})[tag]?.map((rule: Rule) => {
       OP_ES_LIST.forEach(({ esExpression, op, opIndex, valuePath }) => {
         const match = JSON.stringify(rule).match(new RegExp(esExpression));
         if (match) {

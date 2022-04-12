@@ -128,7 +128,7 @@ function PageDetails({ pageID }: Props): JSX.Element {
       );
     }
 
-    if ((activeMenu.menuType === MenuType.schemaPage && appPagesStore.designPageSchema)) {
+    if ((activeMenu.menuType === MenuType.arteryPage && appPagesStore.designPageSchema)) {
       return (
         <div className='relative flex-1 overflow-hidden p-16'>
           <div className='px-16 py-8 rounded-8 border-1 flex items-center'>
@@ -155,7 +155,7 @@ function PageDetails({ pageID }: Props): JSX.Element {
               textClassName='app-content--op_btn'
               onClick={goPageDesign}
             >
-                设计页面
+              设计页面
             </Button>
           </div>
           <Tab
