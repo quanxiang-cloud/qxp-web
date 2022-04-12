@@ -14,6 +14,7 @@ import { useStyle } from '../../hooks/use-style';
 
 import styles from './index.m.scss';
 import './style.scss';
+import { initPageArtery } from '../../stores/page-helpers';
 
 function Canvas({ schema }: BlockItemProps<BlocksCommunicationType>): JSX.Element {
   const { page, registry, dataSource, designer } = useCtx();
@@ -37,6 +38,8 @@ function Canvas({ schema }: BlockItemProps<BlocksCommunicationType>): JSX.Elemen
     loadDevEnvPageArtery();
     // sync schema prop with store state
     schema && page.setSchema(schema as any);
+
+    return () => page.setSchema(initPageArtery());
   }, []);
 
   useStyle(
