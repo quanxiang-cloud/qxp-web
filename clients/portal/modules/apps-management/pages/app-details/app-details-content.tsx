@@ -10,7 +10,7 @@ import AppAdmin from './app-admin';
 import AppInfo from './app-info';
 import DataModels from './data-models';
 import AppViewOrchestration from './view-orchestration';
-import UsersAndPermissions from './users-and-permissions';
+import AppRoles from './roles-and-permissions';
 import ApiDocument from './api-documentation';
 import FaaS from './faas';
 import ApiKey from './api-key';
@@ -38,7 +38,7 @@ function AppDetailsContent(): JSX.Element {
               <Route exact path='/apps/details/:appID/key_api' component={ApiKey} />
               <Route exact path='/apps/details/:appID/faas' component={FaaS} />
               <Route exact path='/apps/details/:appID/base_info' component={AppInfo} />
-              <Route exact path='/apps/details/:appID/app_permission' component={UsersAndPermissions} />
+              <Route exact path='/apps/details/:appID/app_permission' component={AppRoles} />
               <Route exact path='/apps/details/:appID/app_manager' component={AppAdmin} />
               <Route exact path='/apps/details/:appID/app_control' component={AppControl} />
               <Route exact path='/apps/details/:appID/api_proxy' component={ApiProxy} />

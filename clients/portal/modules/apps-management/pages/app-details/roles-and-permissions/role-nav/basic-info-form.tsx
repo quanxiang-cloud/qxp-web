@@ -7,10 +7,10 @@ import formFieldWrap from '@c/form-field-wrap';
 type Props = {
   type: string
   className?: string
-  defaultValue?: RightsCreate
+  defaultValue?: RoleCreate
 }
 
-const Input = formFieldWrap({ field: <input className='input'/> });
+const Input = formFieldWrap({ field: <input className='input' /> });
 const Textarea = formFieldWrap({ field: <textarea className='input' /> });
 
 function BasicInfoForm(
@@ -32,7 +32,7 @@ function BasicInfoForm(
         defaultValue={type === 'edit' ? defaultValue?.name : ''}
         readOnly={defaultValue?.types === 1 || false}
         register={register('name', {
-          required: '请输入权限组名称',
+          required: '请输入角色名称',
           maxLength: { value: 20, message: '不能超过20个字符' },
           pattern: { value: /^((?!(\ud83c[\udf00-\udfff])|(\ud83d[\udc00-\ude4f])|(\ud83d[\ude80-\udeff])).)*$/, message: '不能输入表情符号' },
         })}
