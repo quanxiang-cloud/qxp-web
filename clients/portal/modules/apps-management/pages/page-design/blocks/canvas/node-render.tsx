@@ -12,7 +12,7 @@ import { useCtx } from '../../ctx';
 import { mapRawProps } from '../../utils/artery-adapter';
 import { elemId } from '../../utils';
 import { parseStyleString } from '../../utils/config';
-import { svgPreviewImg } from '../../utils/helpers';
+import { isSystemComponent, svgPreviewImg } from '../../utils/helpers';
 import { SYSTEM_COMPONENT_NAMES } from '../../constants';
 
 import styles from './index.m.scss';
@@ -203,7 +203,7 @@ function NodeRender({ schema }: Props): JSX.Element | null {
     }
 
     // add 'data-in-canvas' props for system components to prevent default behavior
-    if (node.packageName === 'ofa-ui' && systemCmpNames.includes(node.exportName)) {
+    if (isSystemComponent(node)) {
       Object.assign(props, { 'data-in-canvas': true });
     }
 
