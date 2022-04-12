@@ -2,7 +2,7 @@ import React, { useContext, useRef, useState, useMemo, useCallback } from 'react
 import { useQuery } from 'react-query';
 import { every, isEmpty } from 'lodash';
 import { useUpdateEffect } from 'react-use';
-
+import { getSelectFormType } from '../utils';
 import Select from '@c/select';
 import Toggle from '@c/toggle';
 import Modal from '@c/modal';
@@ -12,7 +12,7 @@ import { getFormDataMenuList } from '@c/form-table-selector/api';
 import FlowContext from '@flow/flow-context';
 import FlowSourceTableCtx from '@flow/content/editor/forms/flow-source-table';
 import toast from '@lib/toast';
-import { BusinessData, TableDataUpdateData } from '@flow/content/editor/type';
+import { BusinessData, TableDataUpdateData, SelectFormType } from '@flow/content/editor/type';
 
 import Context from './context';
 import FilterRules, { RefType as FilterRuleRef } from './filter-rules';
@@ -28,7 +28,7 @@ interface Props {
   onCancel: () => void;
 }
 export type SelectComponentName = 'associatedrecords' | 'associateddata' | 'subtable'
-type SelectFormType = 'work-form' | 'others';
+
 const selectComponentNames: SelectComponentName[] = ['associatedrecords', 'associateddata', 'subtable'];
 const initialValue: TableDataUpdateData = {
   targetTableId: '',
@@ -48,7 +48,7 @@ export default function UpdateTableData({
   const updateTableSchema = useRef<SchemaFieldItem[]>([]);
   const [nextTable, setNextTable] = useState<string>('');
   const [switchTableModal, setSwitchTableModal] = useState(false);
-  const [formType, setFormType] = useState<SelectFormType>(value.targetTableId === workFormId ? 'work-form' : 'others');
+  const [formType, setFormType] = useState<SelectFormType>(getSelectFormType(value.targetTableId, workFormId, value.formType));
 
   useUpdateEffect(() => {
     _onChange(value);
@@ -67,12 +67,15 @@ export default function UpdateTableData({
     }) ?? [] as SchemaFieldItem[];
   }, [updateTableSchema.current]);
   const setTypeAndTableId = useCallback((value, associatedDataList) => {
-    if (value.selectField === 'normal') {
-      Object.assign(value, { selectField: '', selectFieldType: undefined, selectFieldTableId: undefined });
+    const _selectField = value.selectField;
+    if (!_selectField || _selectField === 'normal') {
+      Object.assign(value, { selectFieldType: undefined,
+        selectFieldTableId: undefined, selectField: _selectField ?? '' });
       return;
     }
+
     associatedDataList.forEach((item: SchemaFieldItem) => {
-      if (item.id === value.selectField) {
+      if (item.id === _selectField) {
         const compoentProps = item['x-component-props'];
         const componentName = item.componentName;
         if (componentName === 'associatedrecords') {
@@ -116,6 +119,7 @@ export default function UpdateTableData({
       filterRule: isEmpty(_filterRule) ? { conditions: [] } : _filterRule,
       updateRule,
       formQueryRef,
+      formType,
     });
     if (formType === 'work-form') {
       Object.assign(value, { silent: false });
@@ -133,10 +137,8 @@ export default function UpdateTableData({
   };
 
   function onChangeTargetTable(table_id: string): void {
-    if (table_id !== value.targetTableId) {
-      setNextTable(table_id);
-      setSwitchTableModal(true);
-    }
+    setNextTable(table_id);
+    setSwitchTableModal(true);
   }
 
   if (isLoading) {
@@ -155,12 +157,7 @@ export default function UpdateTableData({
     const { targetTableId } = value;
     if (!targetTableId) return null;
 
-    if (formType === 'others' && targetTableId === workFormId) {
-      // not yet select other table
-      return null;
-    }
-
-    if (targetTableId === workFormId) {
+    if (formType === 'work-form') {
       return (
         <UpdateRules
           appId={appID}
@@ -223,7 +220,7 @@ export default function UpdateTableData({
           {formType === 'others' && (
             <Select
               className='ml-20'
-              options={allTables.filter(({ value }) => value !== workFormId)}
+              options={allTables}
               placeholder="选择数据表"
               value={value.targetTableId}
               onChange={onChangeTargetTable}

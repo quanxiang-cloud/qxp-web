@@ -25,6 +25,8 @@ interface Props {
   onChange: (data: Partial<Rule>) => void;
 }
 
+const excludeComps = ['serial', 'aggregationrecords', 'associatedrecords', 'associateddata', 'subtable'];
+
 const valueFromOptions: Array<{ label: string, value: string }> = [
   { label: '字段值', value: 'currentFormValue' },
   { label: '自定义', value: 'fixedValue' },
@@ -201,11 +203,15 @@ function RuleItem(props: Props): JSX.Element {
   function getTargetFieldList(): LabelValue[] {
     const selectField = targetSchemaMap[data.selectField || ''];
     if (selectField) {
-      const { componentName, fieldName } = selectField;
+      const { componentName } = selectField;
       if (componentName === 'associatedrecords') {
         const columns = get(selectField, 'x-component-props.columns', []);
         return Object.entries(get(selectField, 'x-component-props.associatedTable.properties', {}))
-          .filter(([filedName, conf]: [string, any]) => !get(conf, 'x-internal.isSystem') && columns.includes(filedName))
+          .filter(([, conf]: [string, any]) => !get(conf, 'x-internal.isSystem') )
+          .filter(([filedName])=>columns.includes(filedName))
+          .filter(([, conf]: [string, any])=>{
+            return !excludeComps.includes((conf['x-component']as string).toLocaleLowerCase());
+          })
           .map(([field_id, conf]: [string, any]) => {
             return {
               label: conf.title || field_id,
@@ -216,7 +222,7 @@ function RuleItem(props: Props): JSX.Element {
       if (componentName === 'associateddata') {
         return getSchemaFields(Object.values(schemaToMap(relatedTableSchema)), {
           noSystem: true,
-          excludeComps: ['serial', 'associatedrecords', 'associateddata', 'subtable'],
+          excludeComps,
         });
       }
       if (componentName === 'subtable') {
@@ -238,7 +244,7 @@ function RuleItem(props: Props): JSX.Element {
     }
     return getSchemaFields(Object.values(targetSchemaMap), {
       noSystem: true,
-      excludeComps: ['serial', 'associatedrecords', 'associateddata', 'subtable'],
+      excludeComps,
     });
   }
 
