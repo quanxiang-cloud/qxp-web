@@ -20,6 +20,7 @@ import './index.scss';
 interface Props extends React.HTMLProps<HTMLDivElement> {
   type?: string
   className?: string;
+  'data-in-canvas'?: boolean;
 }
 
 const modifiers = [
@@ -43,12 +44,13 @@ const NavTaskBar = ({ type, className, ...rest }: Props, ref?: ForwardedRef<HTML
     });
   }, []);
 
+  const dataInCanvas = !!rest['data-in-canvas'];
   const toggleRef = useRef<HTMLDivElement>(null);
   useTaskComplete('refresh-task-in-progress-count', () => store.refreshInProgressCount());
 
   return (
-    <div ref={ref} {...rest}>
-      <div className={cs('group task-wrap', className)}>
+    <>
+      <div ref={ref} {...rest} className={cs('group task-wrap', className)}>
         <div
           ref={toggleRef}
           className={cs(
@@ -67,7 +69,7 @@ const NavTaskBar = ({ type, className, ...rest }: Props, ref?: ForwardedRef<HTML
           />
           {!!store.inProgressCount && <BtnBadge className='task_count_btn' count={store.inProgressCount} />}
         </div>
-        { !store.showJumpModal && (
+        {!dataInCanvas && !store.showJumpModal && (
           <NavTaskBarContext.Provider value={{ type }}>
             <Popper
               trigger='hover'
@@ -76,9 +78,10 @@ const NavTaskBar = ({ type, className, ...rest }: Props, ref?: ForwardedRef<HTML
             >
               <UnreadTaskBox />
             </Popper>
-          </NavTaskBarContext.Provider>)}
+          </NavTaskBarContext.Provider>
+        )}
       </div>
-      {store.showJumpModal && (
+      {!dataInCanvas && store.showJumpModal && (
         <Modal
           title="提示"
           onClose={() => store.showJumpModal = false}
@@ -111,7 +114,7 @@ const NavTaskBar = ({ type, className, ...rest }: Props, ref?: ForwardedRef<HTML
           </div>
         </Modal>
       )}
-    </div>
+    </>
   );
 };
 

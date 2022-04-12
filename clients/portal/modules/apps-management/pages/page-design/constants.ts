@@ -39,3 +39,5 @@ export const LAYERS: Layer<BlocksCommunicationType>[] = [{
   }],
   blocksCommunicationStateInitialValue: { activeNodeID: '' },
 }];
+
+export const INNER_COMPONENT = ['avatar', 'task', 'message'];

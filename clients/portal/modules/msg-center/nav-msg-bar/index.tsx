@@ -20,6 +20,7 @@ import styles from './index.module.scss';
 interface Props extends React.HTMLProps<HTMLDivElement> {
   type?: string
   className?: string;
+  'data-in-canvas'?: boolean;
 }
 
 const modifiers = [
@@ -37,6 +38,7 @@ const NavMsgBar = (
 ): JSX.Element => {
   const toggleRef = useRef<HTMLDivElement>(null);
   const msgBoxRef = useRef<HTMLDivElement>(null);
+  const dataInCanvas = !!rest['data-in-canvas'];
   const queryClient = useQueryClient();
   const { openUnreadMsgBox, msgBoxOpen, openMsgCenter, countUnread } = msgCenter;
   const { data: countUnreadMsg } = useQuery('count-unread-msg', getUnreadMsgCount);
@@ -91,8 +93,8 @@ const NavMsgBar = (
   }, []);
 
   return (
-    <div ref={ref} {...rest}>
-      <div className={cs(className, styles.wrap, 'group')}>
+    <>
+      <div ref={ref} {...rest} className={cs(className, styles.wrap, 'group')}>
         <div
           className={cs(
             'relative cursor-pointer text-blue-100',
@@ -111,19 +113,23 @@ const NavMsgBar = (
             style={{ fill: `${type === 'portal' ? 'var(--gray-400)' : 'var(--blue-100)'}` }}
             className="m-6"
           />
-          {countUnread > 0 && <BtnBadge className={styles.count_btn} count={countUnread} />}
+          {!dataInCanvas && countUnread > 0 && <BtnBadge className={styles.count_btn} count={countUnread} />}
         </div>
       </div>
-      <Popper
-        reference={toggleRef}
-        trigger='hover'
-        onVisibilityChange={(visible) => openUnreadMsgBox(visible)}
-        modifiers={modifiers}
-      >
-        {renderUnreadMsgBox()}
-      </Popper>
-      <MsgCenter />
-    </div>
+      {!dataInCanvas && (
+        <>
+          <Popper
+            reference={toggleRef}
+            trigger='hover'
+            onVisibilityChange={(visible) => openUnreadMsgBox(visible)}
+            modifiers={modifiers}
+          >
+            {renderUnreadMsgBox()}
+          </Popper>
+          <MsgCenter />
+        </>
+      )}
+    </>
   );
 };
 

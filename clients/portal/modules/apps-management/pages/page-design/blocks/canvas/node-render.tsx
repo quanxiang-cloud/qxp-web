@@ -15,6 +15,7 @@ import { parseStyleString } from '../../utils/config';
 import { svgPreviewImg } from '../../utils/helpers';
 
 import styles from './index.m.scss';
+import { INNER_COMPONENT } from '../../constants';
 
 interface Props {
   schema: PageNode,
@@ -41,9 +42,17 @@ function NodeRender({ schema }: Props): JSX.Element | null {
     return null;
   }
 
+  let _schema = schema;
+  if (INNER_COMPONENT.includes(schema.exportName)) {
+    _schema = {
+      ...schema,
+      defaultConfig: { inCanvas: true },
+    };
+  }
+
   let node: any;
-  if (schema.type === 'loop-container') {
-    node = (schema as unknown as LoopNode).node as PageNode;
+  if (_schema.type === 'loop-container') {
+    node = (_schema as unknown as LoopNode).node as PageNode;
     // support composed-node
     if (node.type === 'composed-node') {
       if (node.outLayer) {
@@ -62,7 +71,7 @@ function NodeRender({ schema }: Props): JSX.Element | null {
       }
     }
   } else {
-    node = schema;
+    node = _schema;
   }
 
   const { exportName, id = elemId(node.exportName), pid = '', label = '' } = node;
@@ -198,6 +207,11 @@ function NodeRender({ schema }: Props): JSX.Element | null {
       Object.assign(props, {
         style: objectKeyToCamelCase(style),
       });
+    }
+
+    // add 'data-in-canvas' props for inner component to prevent default behavior
+    if (INNER_COMPONENT.includes(node.exportName)) {
+      Object.assign(props, { 'data-in-canvas': true });
     }
 
     return Object.assign({}, props, {
