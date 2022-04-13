@@ -1,10 +1,11 @@
 import React from 'react';
 import { useQuery } from 'react-query';
-import { SchemaRender, Schema } from '@ofa/render-engine';
+import { SchemaRender } from '@one-for-all/render-engine';
+import type { Schema } from '@one-for-all/schema-spec';
 import logger from '@lib/logger';
 
 import ErrorBoundary from '@c/page-schema-render/error-boundary';
-import SwaggerRPCSpecAdapter from '@lib/adapter-swagger-rpc';
+import SwaggerRPCSpecAdapter from '@lib/api-adapter';
 // import schema from './schema';
 import swagger from './swagger';
 import httpClient from '@lib/http-client';
@@ -47,7 +48,7 @@ export default function MyApps(): JSX.Element | null {
 
   return (
     <ErrorBoundary>
-      <SchemaRender schema={schema} apiSpecAdapter={apiSpecAdapter} />
+      <SchemaRender schema={schema} plugins={{ apiSpecAdapter }} />
     </ErrorBoundary>
   );
 }

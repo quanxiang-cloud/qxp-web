@@ -5,6 +5,8 @@ import { debounce, omit } from 'lodash';
 
 import { getNoLabelValues } from '@c/form-builder/utils';
 import { labelValueRenderer } from '@c/form-data-value-renderer';
+import { buildGraphQLQuery } from '@portal/modules/access-control/departments-employees/utils';
+
 import { searchUser, getUserDetail } from './messy/api';
 import { Option } from './messy/enum';
 
@@ -27,6 +29,7 @@ type AllUserPickerProps = SelectProps<any> & {
   appID: string;
 }
 
+const userGraphQL = '{users{id,email,name},total}';
 const PAGE_SIZE = 10;
 const { Option: SelectOption } = Select;
 
@@ -41,7 +44,7 @@ const UserPicker = ({
   ...componentsProps
 }: Props): JSX.Element => {
   const currentUser = {
-    label: window.USER.userName,
+    label: window.USER.name,
     value: window.USER.id,
     email: window.USER.email,
   };
@@ -49,13 +52,11 @@ const UserPicker = ({
   useEffect(() => {
     const noLabelValues = getNoLabelValues(value);
     if (noLabelValues.length) {
-      getUserDetail<{ user: { id: string, userName: string }[] }>({
-        query: `{user(ids:${JSON.stringify(noLabelValues)}) {id, userName }}`,
-      }).then((res) => {
+      getUserDetail<{ user: { id: string, name: string }[] }>(noLabelValues).then((res) => {
         const newValue = (value as LabelValue[]).map(({ label, value }) => {
           if (value && !label) {
             const curUser = res.user.find(({ id }) => id === value);
-            return { label: curUser?.userName ? curUser.userName : '', value };
+            return { label: curUser?.name ? curUser.name : '', value };
           }
           return { label, value };
         });
@@ -150,17 +151,21 @@ const AllUserPicker = ({ appID, value, ...otherProps }: AllUserPickerProps): JSX
   const [page, setCurrent] = useState(1);
 
   const params = useMemo(() => ({
-    userName: keyword,
+    name: keyword || '',
     page,
-    limit: PAGE_SIZE,
+    size: PAGE_SIZE,
   }), [keyword, page]);
 
   useEffect(() => {
     setLoading(true);
-    searchUser(appID, params).then((res) => {
+    const queryGraphQL = buildGraphQLQuery(params);
+    searchUser<{
+      users: Employee[];
+      total: number
+    }>({ query: `{${queryGraphQL}${userGraphQL}}` }).then((res) => {
       if (res) {
-        const newOptions = (res.data || []).map((itm) => ({
-          label: itm.userName,
+        const newOptions = (res.users || []).map((itm) => ({
+          label: itm.name,
           value: itm.id,
           email: itm.email,
         }));
@@ -169,12 +174,12 @@ const AllUserPicker = ({ appID, value, ...otherProps }: AllUserPickerProps): JSX
           totalOptions = [...options, ...newOptions];
         }
         setOptions(totalOptions);
-        setHasNext(res.total_count > page * PAGE_SIZE);
+        setHasNext(res.total > page * PAGE_SIZE);
       }
     }).finally(() => {
       setLoading(false);
     });
-  }, [params, appID]);
+  }, [params]);
 
   const _setKeyword = useCallback((str) => {
     setKeyword(str);
@@ -207,6 +212,7 @@ const AllUserPicker = ({ appID, value, ...otherProps }: AllUserPickerProps): JSX
       {...componentsProps}
       options={undefined}
       allowClear
+      getPopupContainer={(triggerNode) => triggerNode.parentNode as HTMLElement}
       className={cs('user-selector', componentsProps.className)}
     >
       {

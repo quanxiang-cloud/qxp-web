@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { first, last } from 'lodash';
 import { observer } from 'mobx-react';
 
+import toast from '@lib/toast';
 import APINamespaceHeader from '@orchestrationAPI/components/api-namespace-header';
 import APINamespaceTree from '@orchestrationAPI/components/api-namespace-tree';
 import APINamespaceSearchTree from '@orchestrationAPI/components/api-namespace-search-tree';
@@ -32,8 +33,9 @@ function ApiNamespace(): JSX.Element | null {
     title: '', subCount: 0,
   };
   const rootPath = appRootPathData?.appPath?.slice(1) || '';
-  const { data: initialData, isLoading: isNamespaceRootListLoading } = useQueryNameSpaceList(
+  const { data: initialData, isLoading: isNamespaceRootListLoading, error } = useQueryNameSpaceList(
     rootPath,
+    appID,
     { enabled: !!rootPath },
   );
   rootData.subCount = initialData?.list.length || 0;
@@ -43,6 +45,15 @@ function ApiNamespace(): JSX.Element | null {
   useEffect(() => {
     orchestrationAPIStore?.updateProperty({ isApiNameSpaceDetailsLoading: isLoading });
   }, [isLoading]);
+
+  useEffect(() => {
+    if (error) {
+      orchestrationAPIStore?.updateProperty({ isInitSuccessed: false });
+      toast.error(error);
+    } else {
+      orchestrationAPIStore?.updateProperty({ isInitSuccessed: true });
+    }
+  }, [error]);
 
   if (isLoading) {
     return <Loading desc="加载中..." />;

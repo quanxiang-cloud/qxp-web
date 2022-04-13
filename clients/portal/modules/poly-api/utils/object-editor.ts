@@ -141,7 +141,7 @@ export function isObjectField(type: string): boolean {
 }
 
 type EditInputs = POLY_API.PolyNodeInput[] | POLY_API.PolyEndBodyData[] |null
-export function validateName(values: EditInputs, message = ''): string {
+export function validateName(values: EditInputs, message = '', parentType = ''): string {
   if (!values || message) {
     return message;
   }
@@ -149,12 +149,12 @@ export function validateName(values: EditInputs, message = ''): string {
   for (let index = 0; index < values.length; index += 1) {
     const { name, type, data } = values[index];
     if ((type === 'object' || type === 'array') && name) {
-      const _message = validateName(data as EditInputs, message);
+      const _message = validateName(data as EditInputs, message, type);
       if (_message) {
         return _message;
       }
     }
-    if (!name) {
+    if (!name && (parentType !== 'array')) {
       return '参数名称必填';
     } else if (name.length > 30) {
       return '参数名称不能超过30个字符';

@@ -6,11 +6,13 @@ import cs from 'classnames';
 import Table from '@c/table';
 import Pagination from '@c/pagination';
 import EmptyTips from '@c/empty-tips';
-import { adminSearchUserList } from '@portal/modules/access-control/role-management/api';
 import Loading from '@c/loading';
 import OwnerStore from '@c/employee-or-department-picker/store';
+import { getTwoDimenArrayHead } from '@lib/utils';
 
 import { ActionStatus } from '.';
+import { getUserAdminInfo } from '../../api';
+import { buildGraphQLQuery } from '../../utils';
 
 interface IEmployeeTable {
   className?: string;
@@ -21,6 +23,8 @@ interface IEmployeeTable {
   onChange: (leader: Leader) => void;
   actionStatus: ActionStatus;
 }
+
+const userGraphQL = '{users{id,phone,useStatus,email,name,departments{id,name},leaders{id,name}},total}';
 
 export default observer(function EmployeeTable({
   onChange,
@@ -34,15 +38,31 @@ export default observer(function EmployeeTable({
   const store = ownerStore.employeeStore;
   const { current, pageSize } = store.pagination;
   const [isLoading, setIsLoading] = React.useState(true);
-
   const { setLeader } = ownerStore;
   const { data } = useQuery(
     [
-      'adminSearchUserList',
+      'GET_USER_ADMIN_INFO',
       { depID, userName, page: current, limit: pageSize },
     ],
-    (params) => {
-      return adminSearchUserList(params).then((res) => {
+    ({ queryKey }) => {
+      const {
+        depID,
+        userName,
+        limit,
+        page,
+      } = (queryKey[1] as { depID: string; userName: string; limit: number; page: number});
+      const queryGraphQL = buildGraphQLQuery({
+        departmentID: depID,
+        name: userName,
+        page,
+        size: limit,
+      });
+      return getUserAdminInfo<{
+        users: Employee[];
+        total: number
+      }>({
+        query: `{${queryGraphQL}${userGraphQL}}`,
+      }).then((res) => {
         setIsLoading(false);
         return res;
       });
@@ -76,10 +96,10 @@ export default observer(function EmployeeTable({
   function renderTotalTip(): JSX.Element {
     return (
       <div className="text-12 text-gray-600 ">
-        {userLeader.userName && (
+        {userLeader.name && (
           <>
             {isDirect ? '关联' : '转让'}
-            <span className="mx-4">{userLeader.userName}</span>
+            <span className="mx-4">{userLeader.name}</span>
             {isDirect ? '为直属上级' : '为超级管理员'}
           </>
         )}
@@ -102,14 +122,14 @@ export default observer(function EmployeeTable({
           columns={[
             {
               Header: '员工姓名',
-              id: 'userName',
+              id: 'name',
               fixed: true,
               width: 120,
-              accessor: ({ id, userName }: Employee) => {
+              accessor: ({ id, name }: Employee) => {
                 const checked = (userLeader.id === id) || (leader.id === id);
                 const handleModifyModal = (): void => {
-                  setLeader(id, userName);
-                  onChange({ id, userName });
+                  setLeader(id, name);
+                  onChange({ id, name });
                 };
                 return (
                   <label className="cursor-pointer hover:text-blue-600" htmlFor={id}>
@@ -122,7 +142,7 @@ export default observer(function EmployeeTable({
                       onClick={handleModifyModal}
                       defaultChecked={checked}
                     />
-                    {userName}
+                    {name}
                   </label>
                 );
               },
@@ -140,8 +160,8 @@ export default observer(function EmployeeTable({
             {
               Header: '部门',
               id: 'dep.departmentName',
-              accessor: ({ dep }: Employee) => {
-                return dep?.departmentName;
+              accessor: ({ departments }: Employee) => {
+                return getTwoDimenArrayHead(departments)?.name;
               },
             },
           ]}

@@ -45,11 +45,12 @@ func GetRouter() http.Handler {
 	r.Path("/_otp").Methods("GET").HandlerFunc(tokenRequired(handlers.OTPHandler))
 	r.Path("/_jump_to_home").Methods("GET").HandlerFunc(tokenRequired(handlers.JumpToHome))
 	r.Path("/_land_from_portal").Methods("GET").HandlerFunc(handlers.LandFromPortal)
-	r.Path("/__liveness").Methods("GET").HandlerFunc(probe.LivenessProbe)
-	r.Path("/__readiness").HandlerFunc(probe.ReadinessProbe)
+	r.Path("/liveness").Methods("GET").HandlerFunc(probe.LivenessProbe)
+	r.Path("/readiness").HandlerFunc(probe.ReadinessProbe)
 
 	r.Path("/login/{type}").Methods("GET").HandlerFunc(handlers.HandleLogin)
 	r.Path("/login/{type}").Methods("POST").HandlerFunc(handlers.HandleLoginSubmit)
+	r.Path("/sso/auth").Methods("GET").HandlerFunc(handlers.HandleSSOLogin)
 	r.Path("/logout").Methods("GET").HandlerFunc(handlers.LogoutHandler)
 	r.Path("/resetPassword").Methods("GET").HandlerFunc(loginRequired(handlers.HandleResetPassword))
 	r.Path("/resetPassword").Methods("POST").HandlerFunc(handlers.HandleResetPasswordSubmit)
@@ -64,9 +65,12 @@ func GetRouter() http.Handler {
 
 	// todo server this request in a different package
 	r.Host(contexts.Config.ClientConfig.HomeHostname).PathPrefix("/mobile").Methods("GET").HandlerFunc(loginRequired(handlers.MobileHandler))
+	r.Host(contexts.Config.ClientConfig.HomeHostname).PathPrefix("/a/{appID}").Methods("GET").HandlerFunc(loginRequired(handlers.AppLandHandler))
 	r.Host(contexts.Config.ClientConfig.HomeHostname).Methods("GET").HandlerFunc(loginRequired(handlers.HomeHandler))
 
 	r.PathPrefix("/").Methods("GET").HandlerFunc(loginRequired(handlers.PortalHandler))
+
+	probe.SetRunning()
 
 	return contexts.WithUtilContext(r)
 }

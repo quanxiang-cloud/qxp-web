@@ -1,19 +1,18 @@
 import React from 'react';
-import { Repository, SchemaRender } from '@ofa/render-engine';
+import { SchemaRender } from '@one-for-all/render-engine';
 
 import { useSchemaWithAdapter } from './api';
 import ErrorBoundary from './error-boundary';
+import componentLoader from './component-loader';
+import repository from './repository';
+import refLoader from './ref-loader';
 
 type Props = {
   schemaKey: string;
   version: string;
-  repository?: Repository;
-  maxHeight?: string;
 }
 
-export default function PageSchemaRender(
-  { schemaKey, version, repository, maxHeight }: Props,
-): JSX.Element | null {
+export default function PageSchemaRender({ schemaKey, version }: Props): JSX.Element | null {
   const { schema, adapter } = useSchemaWithAdapter(schemaKey, version);
 
   if (!schema || !adapter) {
@@ -22,9 +21,10 @@ export default function PageSchemaRender(
 
   return (
     <ErrorBoundary>
-      <div className="overflow-auto relative z-0" style={{ maxHeight: maxHeight || '100vh' }}>
-        <SchemaRender schema={schema} apiSpecAdapter={adapter} repository={repository} />
-      </div>
+      <SchemaRender
+        schema={schema}
+        plugins={{ apiSpecAdapter: adapter, repository, componentLoader, refLoader }}
+      />
     </ErrorBoundary>
   );
 }

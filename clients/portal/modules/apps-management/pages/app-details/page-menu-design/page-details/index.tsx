@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import cs from 'classnames';
 import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
-import PageSchemaRender from '@c/page-schema-render';
+// import PageSchemaRender from '@c/page-schema-render';
 
 import Icon from '@c/icon';
-import Card from '@c/card';
 import Modal from '@c/modal';
 import Button from '@c/button';
 import toast from '@lib/toast';
@@ -19,7 +17,8 @@ import PageBuildNav from './page-build-nav';
 import { MenuType, Resp } from '../../type';
 import { createCustomPage, updateCustomPage } from '../../api';
 import { formatFileSize } from '../../utils';
-import { getSchemaKey, getVersionKey, getRenderRepository } from '../../../page-design/api';
+import PageRelatedInfo from './page-related-info';
+// import { getSchemaKey, getVersionKey, getRenderRepository } from '../../../page-design/api';
 
 import './index.scss';
 
@@ -33,7 +32,6 @@ function PageDetails({ pageID }: Props): JSX.Element {
   const [files, setFiles] = useState<QXPUploadFileTask[]>([]);
   const {
     activeMenu,
-    curPageCardList,
     appID,
     fetchSchemeLoading,
     pageDescriptions,
@@ -118,15 +116,6 @@ function PageDetails({ pageID }: Props): JSX.Element {
     }]);
   }
 
-  function goLink(cardID: string): void {
-    if (cardID === 'linkedFlows') {
-      history.push(`/apps/details/${appID}/setting_flow`);
-      return;
-    }
-
-    history.push(`/apps/details/${appID}/app_control`);
-  }
-
   function renderPageDetails(): JSX.Element {
     if (activeMenu.menuType === MenuType.schemaForm && !appPagesStore.hasSchema) {
       return (
@@ -169,25 +158,27 @@ function PageDetails({ pageID }: Props): JSX.Element {
                 设计页面
             </Button>
           </div>
-          <Tab items={[
-            {
-              id: 'page-preview',
-              name: '视图预览',
-              content: (
-                <PageSchemaRender
-                  schemaKey={getSchemaKey(appID, pageID, false)}
-                  version={getVersionKey()}
-                  repository={getRenderRepository()}
-                  maxHeight="calc(100vh - 250px)"
-                />
-              ),
-            },
-            {
-              id: 'relate-info',
-              name: '关联信息',
-              content: (<div>暂无数据</div>),
-            },
-          ]}/>
+          <Tab
+            items={[
+              // {
+              //   id: 'page-preview',
+              //   name: '视图预览',
+              //   content: (
+              //     <PageSchemaRender
+              //       schemaKeys={getSchemaKey(appID, pageID, false)}
+              //       version={getVersionKey()}
+              //       repository={getRenderRepository()}
+              //       maxHeight="calc(100vh - 250px)"
+              //     />
+              //   ),
+              // },
+              {
+                id: 'relate-info',
+                name: '关联信息',
+                content: (<PageRelatedInfo/>),
+              },
+            ]}
+          />
         </div>
       );
     }
@@ -242,78 +233,7 @@ function PageDetails({ pageID }: Props): JSX.Element {
               </Button>
             )}
           </div>
-          <div className='rounded-12 flex select-none py-16'>
-            {curPageCardList.map(({ title, list, id: cardID }) => {
-              if (activeMenu.menuType === MenuType.customPage && cardID === 'linkedFlows') {
-                return;
-              }
-              return (
-                <Card
-                  key={title}
-                  className="border-1 card-box mr-16"
-                  headerClassName="p-16"
-                  title={(
-                    <div className="flex items-center text-h6">
-                      <Icon name="link" size={20} />
-                      <span className="mx-8">{title}</span>
-                      <span className="text-gray-400">{`(${list.length})`}</span>
-                    </div>
-                  )}
-                  action={(<Icon
-                    name="arrow_forward"
-                    size={20}
-                    className="anchor-focus"
-                    onClick={() => goLink(cardID)}
-                  />)}
-                  itemTitleClassName="text-h5"
-                  contentClassName="p-0 flex-col"
-                  content={(
-                    <div className="mb-24 h-80 overflow-auto">
-                      {list.length ? list.map(({ name, id, status }) => {
-                        const statusColor = status === 'ENABLE' ? 'green' : 'yellow';
-
-                        return (
-                          <div
-                            key={name}
-                            className={cs('px-4 py-8 link-focus truncate flex items-center', {
-                              'px-44': !status,
-                            })}
-                            onClick={() => {
-                              if (cardID === 'linkedFlows') {
-                                history.push(`/apps/flow/${appID}/${id}`);
-                                return;
-                              }
-
-                              history.push(`/apps/details/${appID}/app_permission?id=${id}`);
-                            }}
-                          >
-                            {status && (
-                              <div
-                                style={{
-                                  '--status-color': `var(--${statusColor}-600)`,
-                                  '--status-shadow-color': `var(--${statusColor}-400)`,
-                                  boxShadow: `0 0 12px var(--${statusColor}-400)`,
-                                } as React.CSSProperties}
-                                className="relative w-8 h-8 rounded-full ml-40"
-                              >
-                                <div className="status-dot"></div>
-                              </div>
-                            )}
-                            <div className="truncate flex-1">
-                              <span className={status && 'ml-10'}>{name}</span>
-                              <span className="ml-4 text-gray-400">
-                                {status && (status === 'ENABLE' ? '(已发布)' : '(草稿)')}
-                              </span>
-                            </div>
-                          </div>
-                        );
-                      }) : <div className="px-44 py-8 text-gray-400">！暂无数据</div>}
-                    </div>
-                  )}
-                />
-              );
-            })}
-          </div>
+          <PageRelatedInfo/>
         </div>
       </>
     );
@@ -324,7 +244,7 @@ function PageDetails({ pageID }: Props): JSX.Element {
     setModalType('');
   }
 
-  function renderModal(modalType: string) {
+  function renderModal(modalType: string): JSX.Element {
     return (
       <Modal
         title={modalType === 'create' ? '新建自定义页面' : '修改自定义页面'}

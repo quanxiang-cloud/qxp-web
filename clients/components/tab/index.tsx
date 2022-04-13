@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
+import cs from 'classnames';
 
 import TabNavs from './tab-navs';
-
-import cs from 'classnames';
 
 import './index.scss';
 
@@ -24,6 +23,7 @@ export type Props<T extends React.Key> = {
   contentClassName?: string;
   style?: Record<string, unknown>;
   currentKey?: string | number;
+  onItemClick?: (item: TabItem<T>) => void;
   onChange?: (key: T) => void;
 }
 
@@ -38,6 +38,7 @@ export default function Tab<T extends React.Key>({
   separator,
   currentKey,
   onChange,
+  onItemClick,
 }: Props<T>): JSX.Element {
   const navsRef = useRef(null);
   const [key, setKey] = useState<string | number>(currentKey || items[0].id);
@@ -71,7 +72,7 @@ export default function Tab<T extends React.Key>({
         separator={separator}
         navsClassName={navsClassName}
         navTitleClassName={navTitleClassName}
-        onClick={handleNavItemClick}
+        onClick={onItemClick || handleNavItemClick}
       />
       <div
         className={cs('tab-content', contentClassName)}

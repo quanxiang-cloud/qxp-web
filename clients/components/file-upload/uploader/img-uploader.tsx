@@ -10,6 +10,7 @@ import FileList from '../file-list';
 import FilePicker from './file-picker';
 import useFileStore from './useFileStore';
 import type { FileUploaderProps } from './file-uploader';
+import { OSS_PRIVATE_BUCKET_NAME, OSS_PUBLIC_BUCKET_NAME } from '../constants';
 
 function ImgUploader({
   style,
@@ -20,13 +21,22 @@ function ImgUploader({
   accept = [],
   maxFileSize,
   fileData = [],
+  isPrivate = true,
   uploaderDescription,
+  additionalPathPrefix,
   onFileError,
   onFileAbort,
   onFileDelete,
   onFileSuccess,
 }: FileUploaderProps): JSX.Element {
-  const fileStore = useFileStore({ files: fileData, onSuccess: onFileSuccess, onError: onFileError });
+  const fileStore = useFileStore({
+    fileBucket: isPrivate ? OSS_PRIVATE_BUCKET_NAME : OSS_PUBLIC_BUCKET_NAME,
+    files: fileData,
+    additionalPathPrefix,
+    requestThumbnail: true,
+    onError: onFileError,
+    onSuccess: onFileSuccess,
+  });
 
   const {
     files: storeFiles,
@@ -88,33 +98,32 @@ function ImgUploader({
 
   return (
     <div
-      className={cs('qxp-img-uploader', className)}
+      className={cs('flex flex-wrap gap-4 w-full max-h-144 overflow-auto relative qxp-img-uploader', className)}
       style={style}
     >
-      <div className={cs('flex flex-wrap relative qxp-file-list-img', className)}>
-        <FileList
-          imgOnly={true}
-          canDownload
-          files={toJS(storeFiles)}
-          deleteFileItem={deleteFileItem}
-          onRetryFileUpload={retryUploadFile}
-        />
-        {
-          (multiple || storeFiles.length < 1) && (
-            <FilePicker
-              className='w-56 h-56 m-0'
-              multiple={multiple}
-              iconName={iconName}
-              accept={accept.toString()}
-              disabled={disabled || (!multiple && storeFiles.length >= 1)}
-              description={uploaderDescription || '上传图片'}
-              onSelectFiles={(files) => {
-                files.every((file)=> beforeUpload(file, files, storeFiles)) && prepareFilesUpload(files);
-              }}
-            />
-          )
-        }
-      </div>
+      <FileList
+        imgOnly
+        canDownload
+        isPrivate={isPrivate}
+        files={toJS(storeFiles)}
+        deleteFileItem={deleteFileItem}
+        onRetryFileUpload={retryUploadFile}
+      />
+      {
+        (multiple || !storeFiles.length) && (
+          <FilePicker
+            className='w-64 h-64 bg-white z-10'
+            multiple={multiple}
+            iconName={iconName}
+            accept={accept.toString()}
+            disabled={disabled || (!multiple && !!storeFiles.length)}
+            description={uploaderDescription || '上传图片'}
+            onSelectFiles={(files) => {
+              files.every((file)=> beforeUpload(file, files, storeFiles)) && prepareFilesUpload(files);
+            }}
+          />
+        )
+      }
     </div>
   );
 }

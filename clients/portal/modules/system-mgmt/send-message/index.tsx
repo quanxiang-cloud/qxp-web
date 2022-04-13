@@ -1,11 +1,8 @@
-import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
+import React, { useState, useEffect, forwardRef, useImperativeHandle, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import cs from 'classnames';
-import draftToHtml from 'draftjs-to-html';
 import { debounce } from 'lodash';
 import { useMutation, useQueryClient } from 'react-query';
-import { EditorState, ContentState, convertToRaw } from 'draft-js';
-import htmlToDraft from 'html-to-draftjs';
 import { Form, Input } from 'antd';
 
 import Button from '@c/button';
@@ -15,13 +12,12 @@ import { createMsg } from '@portal/modules/system-mgmt/api';
 import { MsgType } from '@portal/modules/system-mgmt/constants';
 
 import RadioField from './radio-field';
-import EditorField from './editor-field';
+import EditorField, { RefProps } from './editor-field';
 import ButtonField, { CheckedInfo } from './button-field';
 import Container from '../container';
 import PreviewMsg from './preview-msg';
 
 import styles from './index.module.scss';
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 export type FileInfo = {
   uid: string;
@@ -58,7 +54,7 @@ interface ModifyConfig {
   title?: string
   content?: any
   receivers?: any[], // fixme: typo
-  files?: Array<FileInfo> | null
+  files?: Array<QXPUploadFileBaseProps> | null
 }
 
 interface ContentProps {
@@ -81,9 +77,11 @@ function ContentWithoutRef({
   const [prevData, setPrevData] = useState<Qxp.DraftData | null>(null);
   const [confirmStatus, setConfirmStatus] = useState<'draft' | 'browse' | 'send'>('draft');
   const [openPreviewModal, setOpenPreviewModal] = useState(false);
+  const [errorText, setErrorText] = useState('');
 
   const queryClient = useQueryClient();
   const history = useHistory();
+  const contentRef = useRef<RefProps>(null);
 
   // mutation create msg
   const createMsgMutation = useMutation(createMsg, {
@@ -108,25 +106,11 @@ function ContentWithoutRef({
     },
   });
 
-  const getEditorCont = (cont: EditorState, asRaw?: boolean): any => {
-    const raw = convertToRaw(cont.getCurrentContent());
-    return asRaw ? raw : draftToHtml(raw);
-  };
-
-  function isEditorEmpty(value: string): boolean {
-    const _value = EditorState.createWithContent(
-      ContentState.createFromBlockArray(
-        htmlToDraft(value).contentBlocks),
-    );
-    const rawCont = getEditorCont(_value, true);
-    return !rawCont.blocks.some((v: any) => !!String(v.text).trim());
-  }
-
   function byteCount(s: string): number {
     return encodeURI(s).split(/%..|./).length - 1;
   }
 
-  const getCurrentFiles = (): FileInfo[] => {
+  const getCurrentFiles = (): QXPUploadFileBaseProps[] => {
     const { args } = form.getFieldsValue();
     return [...args.files];
   };
@@ -150,7 +134,33 @@ function ContentWithoutRef({
     toast.error(msg || '');
   }
 
-  function handleReceivers(receivers: CheckedInfo[]): {id: string, type: '1 | 2', name: string}[] {
+  function handleValidate(): boolean {
+    const { content } = contentRef.current?.getValue() || { };
+    const _content = content?.trim() || '';
+
+    if (_content === '<br>') {
+      setErrorText('请输入内容');
+      toast.error('请输入内容');
+      return false;
+    }
+
+    if (!_content) {
+      setErrorText('消息内容不能为空');
+      toast.error('消息内容不能为空');
+      return false;
+    }
+
+    if (byteCount(_content) > 10240) {
+      setErrorText('消息内容文本过长，请修改，或使用附件进行发送。');
+      toast.error('消息内容文本过长，请修改，或使用附件进行发送。');
+      return false;
+    }
+
+    setErrorText('');
+    return true;
+  }
+
+  function handleReceivers(receivers: CheckedInfo[]): { id: string, type: '1 | 2', name: string }[] {
     let newRecovers: any[] = [];
     newRecovers = receivers.map(({ id, name, ownerName, departmentName, type }) => {
       return {
@@ -163,16 +173,20 @@ function ContentWithoutRef({
   }
 
   function handleFinish(values: any): void {
-    const { title, args, type, receivers } = values;
+    const bol = handleValidate();
+    if (!bol) return;
+
+    const { title, type, receivers } = values;
+    const args = contentRef.current?.getValue();
     if (confirmStatus === 'browse') {
       const _currDate = Math.floor(new Date().getTime() / 1000);
       const formData: any = {
         title,
-        content: args.content || '',
+        content: args?.content || '',
         receivers: handleReceivers(receivers),
         type,
         updateAt: _currDate,
-        files: (args.files || []).map((itm: QXPUploadFileBaseProps) => {
+        files: (args?.files || []).map((itm: QXPUploadFileBaseProps) => {
           return {
             fileName: itm.name,
             url: itm.uid,
@@ -194,9 +208,9 @@ function ContentWithoutRef({
         id: '',
         types: type,
         contents: {
-          content: args.content || '',
+          content: args?.content || '',
         },
-        files: (args.files || []).map((itm: QXPUploadFileBaseProps) => {
+        files: (args?.files || []).map((itm: QXPUploadFileBaseProps) => {
           return {
             fileName: itm.name,
             url: itm.uid,
@@ -266,34 +280,29 @@ function ContentWithoutRef({
                 <Input placeholder="请输入消息标题" />
               </Form.Item>
               <Form.Item
-                name="args"
-                label="内容"
-                rules={[
-                  { required: true, message: '请输入内容' },
-                  { validator: (_, value) => {
-                    if (!value.content || value.content === '<p></p>\n') {
-                      return Promise.reject(new Error('请输入内容'));
-                    } else if (isEditorEmpty(value.content)) {
-                      return Promise.reject(new Error('消息内容不能为空'));
-                    } else if (byteCount(value.content) > 10240) {
-                      return Promise.reject(new Error('消息内容文本过长，请修改，或使用附件进行发送。'));
-                    }
-                    return Promise.resolve();
-                  } },
-                ]}
-              >
-                <EditorField />
-              </Form.Item>
-              <Form.Item
                 name="receivers"
                 label="发送至"
                 rules={[
                   { required: true, message: '请选择人员' },
                 ]}
               >
-                <ButtonField/>
+                <ButtonField />
               </Form.Item>
             </Form>
+            <div className="mb-20 flex">
+              <div className="w-2/12 text-right">
+                <label className={styles.formLabel}>内容：</label>
+              </div>
+              <div className="w-8/12">
+                <EditorField
+                  ref={contentRef}
+                  value={{
+                    content: modifyData?.content || '',
+                    files: modifyData?.files || [],
+                  }} />
+                {errorText && <div className="text-14 text-red-500">{errorText}</div>}
+              </div>
+            </div>
           </div>
           {footer ? footer() : (<div className={styles.footer}>
             <Button

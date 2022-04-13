@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { FlowElement, isNode, ReactFlowProvider } from 'react-flow-renderer';
+import { cond, or, always } from 'ramda';
 
 import Modal from '@c/modal';
 import toast from '@lib/toast';
@@ -8,7 +9,9 @@ import Loading from '@c/loading';
 import useObservable from '@lib/hooks/use-observable';
 import ErrorTips from '@c/error-tips';
 import dataTransfer from '@flow/content/editor/utils/data-transfer';
-import FlowRender from '@c/flow-render';
+import FlowRender from '@c/logic/flow-render';
+import nodeTypes from '@flow/content/editor/nodes';
+import edgeTypes from '@flow/content/editor/edges';
 import type { Data, WorkFlow, StoreValue } from '@flow/content/editor/type';
 import { CURRENT_WORK_FLOW_VERSION } from '@flow/content/editor/utils/constants';
 import store, {
@@ -74,13 +77,10 @@ function FlowModal({ processInstanceId, closeModal }: Props): JSX.Element | null
     return dataTransfer({ version: bpmn.version, shapes: elements }).shapes;
   }
 
-  if (isLoading) {
-    return <Loading desc="加载中..." />;
-  }
-
-  if (isError || !elements?.length) {
-    return <ErrorTips desc="出错了..." />;
-  }
+  const Error = cond([
+    [() => isLoading, always(<Loading desc="加载中..." />)],
+    [() => or(isError, !elements?.length), always(<ErrorTips desc="出错了..." />)],
+  ]);
 
   return (
     <Modal
@@ -89,13 +89,21 @@ function FlowModal({ processInstanceId, closeModal }: Props): JSX.Element | null
       width={1000}
       height={600}
     >
-      <ReactFlowProvider>
-        <div className="w-full h-full reactflow-wrapper p-20" ref={setFlowParentElement}>
-          {flowParentElement && (
-            <FlowRender elements={elements} />
-          )}
-        </div>
-      </ReactFlowProvider>
+      {isLoading ? <Error /> : (
+        <ReactFlowProvider>
+          <div className="w-full h-full reactflow-wrapper p-20" ref={setFlowParentElement}>
+            {flowParentElement && (
+              <FlowRender
+                elements={elements}
+                layoutType='elk'
+                direction='bottom'
+                nodeTypes={nodeTypes}
+                edgeTypes={edgeTypes}
+              />
+            )}
+          </div>
+        </ReactFlowProvider>
+      )}
     </Modal>
   );
 }

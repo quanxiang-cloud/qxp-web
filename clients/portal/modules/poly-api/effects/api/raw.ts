@@ -4,8 +4,9 @@ import httpClient from '@lib/http-client';
 
 import { GET_REQUEST_NODE_API_LIST } from './names';
 
-export interface Input<I> {
+interface Input<I> {
   path: string;
+  type?: string;
   body?: I;
 }
 
@@ -40,13 +41,14 @@ type QueryRequestNodeApiListResponse = {
 }
 
 export function useGetRequestNodeApiList(
-  input: QueryRequestNodeApiListInput, options?: UseQueryOptions<QueryRequestNodeApiListResponse, Error>,
+  input: QueryRequestNodeApiListInput,
+  options?: UseQueryOptions<QueryRequestNodeApiListResponse, Error>,
 ): UseQueryResult<QueryRequestNodeApiListResponse, Error> {
   return useQuery<QueryRequestNodeApiListResponse, Error>(
     [GET_REQUEST_NODE_API_LIST, input.path],
     (): Promise<QueryRequestNodeApiListResponse> => {
       return httpClient<QueryRequestNodeApiListResponse>(
-        `/api/v1/polyapi/raw/list/${input.path}`, input.body,
+        `/api/v1/polyapi/${input.type ?? 'raw'}/list/${input.path}`, input.body,
       );
     },
     options,

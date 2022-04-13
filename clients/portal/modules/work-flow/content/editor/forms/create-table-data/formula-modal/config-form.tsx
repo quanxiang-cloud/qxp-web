@@ -2,13 +2,13 @@ import React, { useState, useRef, useEffect, useCallback, useMemo, useContext } 
 import { mergeRight } from 'ramda';
 import { useQuery } from 'react-query';
 
-import FormularEditor, { RefProps, CustomRule } from '@c/formula-editor';
-import PolyNodePathTree, { RefType } from '@polyApi/components/poly-node-path-tree';
+import FormulaEditor, { RefProps, CustomRule } from '@c/formula-editor';
+import PathTree from '@c/logic/path-tree';
 import { getElementHeight } from '@polyApi/utils/dom';
 import { TreeNode } from '@c/headless-tree/types';
 import Operates from '@polyApi/components/operates';
 import { CONDITION_OPERATES_MAP, OPERATES_MAP } from '@polyApi/constants';
-import { webhookPathTreeSourceGetter } from '@flow/content/editor/forms/webhook/utils';
+import { getWebhookPathTreeValue } from '@flow/content/editor/forms/webhook/utils';
 import sourceTable from '@flow/content/editor/forms/flow-source-table';
 import store from '@flow/content/editor/store';
 import type { StoreValue } from '@flow/content/editor/type';
@@ -22,20 +22,11 @@ interface Props {
 }
 
 function ConfigForm({ value, onChange }: Props): JSX.Element {
-  const [customRules, setCustomRules] = useState<CustomRule[]>([]);
-  const nodePathTreeRef = useRef<RefType | null>(null);
-  const formularRef = useRef<RefProps | null>(null);
+  const [customRules, setCustomRules] = useState<CustomRule[]>();
+  const formulaRef = useRef<RefProps | null>(null);
   const ref = useRef<HTMLDivElement | null>(null);
   const { tableSchema } = useContext(sourceTable);
   const { id: flowId = '' } = useObservable<StoreValue>(store);
-
-  useEffect(() => {
-    if (customRules.length) {
-      return;
-    }
-    const rules = nodePathTreeRef.current?.getCustomRules();
-    setCustomRules(rules || []);
-  }, [customRules]);
 
   useEffect(() => {
     if (!ref.current) {
@@ -48,15 +39,15 @@ function ConfigForm({ value, onChange }: Props): JSX.Element {
     }
   });
 
-  function onSelect(node: TreeNode<POLY_API.PolyNodeInput & { descPath: string }>): void {
-    formularRef.current?.insertEntity({
+  function onSelectVariable(node: TreeNode<POLY_API.PolyNodeInput & { descPath: string }>): void {
+    formulaRef.current?.insertEntity({
       name: node.data?.descPath,
-      key: node.path,
+      key: `[${node.path}]`,
     });
   }
 
   const handleOperateChange = useCallback((operate: string) => {
-    formularRef.current?.insertText(operate);
+    formulaRef.current?.insertText(operate);
   }, []);
 
   const getVariables = useCallback(() => {
@@ -68,9 +59,7 @@ function ConfigForm({ value, onChange }: Props): JSX.Element {
     enabled: !!flowId,
   });
 
-  const sourceGetter = useMemo(() => {
-    return webhookPathTreeSourceGetter(tableSchema, data);
-  }, [data]);
+  const pathTreeValue = useMemo(() => getWebhookPathTreeValue(tableSchema, data), [tableSchema, data]);
 
   if (isLoading) {
     return <Loading desc="加载中..." />;
@@ -79,10 +68,10 @@ function ConfigForm({ value, onChange }: Props): JSX.Element {
   return (
     <div className="h-full flex overflow-hidden" ref={ref}>
       <div className="h-full flex-2">
-        {!!customRules?.length && (
-          <FormularEditor
+        {customRules && (
+          <FormulaEditor
             className="h-full node-formula-editor"
-            ref={formularRef}
+            ref={formulaRef}
             onChange={onChange}
             customRules={customRules}
             value={value}
@@ -96,12 +85,11 @@ function ConfigForm({ value, onChange }: Props): JSX.Element {
           onClick={handleOperateChange}
           className="bg-white"
         />
-        <PolyNodePathTree
-          hasSuffix
+        <PathTree
           className="h-full bg-white overflow-auto"
-          onSelect={onSelect}
-          ref={nodePathTreeRef}
-          sourceGetter={sourceGetter}
+          onChange={onSelectVariable}
+          onRulesChange={setCustomRules}
+          value={pathTreeValue}
         />
       </div>
     </div>

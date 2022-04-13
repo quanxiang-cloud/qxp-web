@@ -52,7 +52,7 @@ function DepartmentNode({ node, store }: NodeRenderProps<Department>): JSX.Eleme
   const [departmentToEdit, setDepartment] = useState(node.data);
 
   function onAdd() {
-    setDepartment({ id: '', departmentName: '', pid: node.data.id, superID: '', grade: 0 });
+    setDepartment({ id: '', name: '', pid: node.data.id, superID: '', grade: 0, attr: 2 });
     openModal('edit_modal');
   }
 
@@ -104,6 +104,7 @@ function DepartmentNode({ node, store }: NodeRenderProps<Department>): JSX.Eleme
             <EditDepartment
               department={departmentToEdit}
               closeModal={closeModal}
+              store={store}
             />
           </span>
         )

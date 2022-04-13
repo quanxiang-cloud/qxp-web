@@ -22,10 +22,10 @@ export default function Dashboard(): JSX.Element {
         </div>
         <ItemWithTitleDesc
           itemRender={(<Avatar
-            username={window.USER.userName}
+            username={window.USER.name}
             size={48}
           />)}
-          title={`${window.USER.userName}, 下午好!`}
+          title={`${window.USER.name}, 下午好!`}
           desc="万物皆有裂痕，那是光透过来的地方"
           titleClassName="text-h4"
         />

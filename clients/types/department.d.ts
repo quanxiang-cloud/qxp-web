@@ -1,12 +1,16 @@
 interface Department {
-  departmentName: string;
   id: string;
+  name: string;
+  useStatus?: number;
   pid: string;
   superID: string;
   grade: number;
   child?: Array<Department>;
+  leaderID?: string;
+  attr: string | number;
+  // deprecated
+  departmentName?: string;
   departmentLeaderId?: string;
-  useStatus?: number;
   superId?: string;
 }
 
@@ -16,20 +20,14 @@ interface DepartmentOfRole {
   departmentName: string;
   id: string;
   ownerID: string;
+  ownerName: string;
+  pid?: string;
   type: RoleBindType;
 }
 
 type DeptInfo = {
-  departmentName: string;
+  name: string;
   id: string;
   pid?: string;
-};
-
-type DeptTree = {
-  child: Array<DeptTree>;
-  departmentName: string;
-  grade: number;
-  id: string;
-  superID: string;
-  useStatus: number;
+  attr: string | number;
 };

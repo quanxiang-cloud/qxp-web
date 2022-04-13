@@ -6,7 +6,7 @@ import Icon from '@c/icon';
 import Modal from '@c/modal';
 import FileUploader from '@c/file-upload';
 import { getFormTemplate, getTaskDetail, importForm } from '@c/task-lists/api';
-import { multipledownloadFile } from '@c/task-lists/unread-task-box/task-item';
+import { multipleDownloadFile } from '@c/task-lists/unread-task-box/task-item';
 import { subscribeStatusChange } from '@c/task-lists/utils';
 
 import { StoreContext } from './context';
@@ -32,8 +32,11 @@ function ImportFormModal({ onClose }: Props): JSX.Element {
         title: `【${store.appName}-${store.pageName}】表单数据导入 `,
       });
 
-      const isFinish = await subscribeStatusChange(taskID, '导入');
-      isFinish && store.setParams({});
+      const [isFinish, isSuccess] = await subscribeStatusChange(taskID, '导入');
+      if (isFinish) {
+        isSuccess && store.setParams({});
+        !isSuccess && toast.error('导入失败请稍后再试！');
+      }
       setfFleDetail(undefined);
       onClose();
     } catch (err) {
@@ -52,7 +55,7 @@ function ImportFormModal({ onClose }: Props): JSX.Element {
           onClose();
           return;
         }
-        multipledownloadFile(res.result.path);
+        multipleDownloadFile(res.result.path);
       });
     });
   }
@@ -61,7 +64,7 @@ function ImportFormModal({ onClose }: Props): JSX.Element {
     return (
       <>
         <div className="my-4">点击或拖拽文件到此区域</div>
-        <div className="text-gray-400">支持 20MB 以内的 csv 文件</div>
+        <div className="text-gray-400">支持 20MB 以内的 xlsx 文件</div>
       </>
     );
   }
@@ -89,22 +92,17 @@ function ImportFormModal({ onClose }: Props): JSX.Element {
     >
       <>
         <div className='rounded-12 rounded-tl-4 mx-16 my-20 flex items-center bg-blue-100 text-blue-600 py-10 px-16'>
-          <Icon name='info' color='blue' className='w-16 h-16 fill-current' size={18}/>
+          <Icon name='info' color='blue' className='w-16 h-16 fill-current' size={18} />
           <span className='ml-10 text-12'>
             支持：单行文本、多行文本、多选框等基础字段，以及人员选择器、部门选择器字段，其他字段暂不支持
           </span>
         </div>
         <FileUploader
           className='px-40 form-upload'
-          uploaderDescription={<UploadDescription/>}
+          uploaderDescription={<UploadDescription />}
           maxFileSize={20}
           accept={[
-            'text/csv',
-            'text/x-csv',
-            'application/csv',
-            'application/x-csv',
-            'application/vnd.ms-excel',
-            'text/comma-separated-values',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
           ]}
           onFileDelete={setfFleDetail}
           onFileSuccess={(fileDetail: QXPUploadFileTask) => setfFleDetail(fileDetail)}

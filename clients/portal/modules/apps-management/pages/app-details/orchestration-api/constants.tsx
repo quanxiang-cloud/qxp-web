@@ -1,17 +1,11 @@
 import React, { CSSProperties } from 'react';
 
-import type { Placement } from '@popperjs/core';
 import Icon from '@c/icon';
 
 import createNamespaceSchema from './schema/create-namespace';
 import editNamespaceSchema from './schema/edit-namespace';
 import createPolySchema from './schema/create-poly';
 import createChildNamespaceSchema from './schema/create-child-namespace';
-
-export const POPPER_PARAMS = {
-  modifiers: [{ name: 'offset', options: { offset: [0, 0] } }],
-  placement: 'bottom-end' as Placement,
-};
 
 export enum ModalType {
   CREATE_NAMESPACE = 'createNamespace',

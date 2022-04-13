@@ -276,7 +276,7 @@ function FormulaEditor({
         text = text.replace(entityMap[key].data.name, entityMap[key].data.key);
       });
       return text;
-    }).join(' ').replace('\'', '"').replace('\'', '"');
+    }).join(' ');
   };
 
   return (

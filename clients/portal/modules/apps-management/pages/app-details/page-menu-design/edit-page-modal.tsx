@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Input } from 'antd';
+import { always, cond, T } from 'ramda';
 
 import Modal from '@c/modal';
 import { APP_ICON_LIST } from '@c/app-icon-select';
@@ -16,6 +17,7 @@ type Props = {
   onSubmit: (pageInfo: PageInfo) => void;
   appID: string;
   pageInfo?: PageInfo;
+  isCopy: boolean;
 };
 
 type GroupList = {
@@ -23,7 +25,7 @@ type GroupList = {
   name: string;
 }
 
-function EditPageModal({ pageInfo, onCancel, onSubmit, appID }: Props): JSX.Element {
+function EditPageModal({ pageInfo, onCancel, onSubmit, appID, isCopy }: Props): JSX.Element {
   const [groupList, setGroupList] = useState<LabelValue[]>([]);
   const { modalType } = store;
   const [form] = Form.useForm();
@@ -70,9 +72,15 @@ function EditPageModal({ pageInfo, onCancel, onSubmit, appID }: Props): JSX.Elem
 
   const { name, icon, describe, groupID, appID: curAppID } = pageInfo || { icon: APP_ICON_LIST[0] };
 
+  const getTitle = cond([
+    [() => isCopy, always('复制页面')],
+    [() => !!curAppID, always('修改名称与图标')],
+    [T, always('新建页面')],
+  ]);
+
   return (
     <Modal
-      title={curAppID ? '修改名称与图标' : '新建页面'}
+      title={getTitle()}
       onClose={onCancel}
       footerBtns={[{
         key: 'close',

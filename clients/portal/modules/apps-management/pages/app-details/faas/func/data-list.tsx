@@ -13,12 +13,12 @@ import Search from '@c/search';
 import PopConfirm from '@c/pop-confirm';
 import Pagination from '@c/pagination';
 import TableMoreFilterMenu from '@c/more-menu/table-filter';
-import { parseJSON } from '@lib/utils';
+import { copyContent } from '@lib/utils';
 
 import store from '../store';
 import BuildModal from './build-modal';
 import StatusDisplay from '../component/status';
-import { getFuncInfo } from '../api';
+import { getFuncInfo, getGitLabDomain } from '../api';
 
 import '../index.scss';
 
@@ -26,6 +26,12 @@ const { TextArea } = Input;
 
 function DataList(): JSX.Element {
   const { setModalType, updateFuncDesc } = store;
+
+  function getDomain(name: string): void {
+    getGitLabDomain().then((res) => {
+      copyContent(`git clone ${res.domain}${store.appDetails.appSign}/${name}.git`);
+    });
+  }
 
   const COLUMNS: UnionColumn<FuncField>[] = [
     {
@@ -76,7 +82,7 @@ function DataList(): JSX.Element {
             topic='project'
             dataID={id}
             callBack={async (data) => {
-              const { key }: FaasSoketData = parseJSON(data?.message, { key: '', topic: '' });
+              const { key }: FaasSoketData = data?.content || {};
               if (key !== id) {
                 return;
               }
@@ -107,7 +113,7 @@ function DataList(): JSX.Element {
                   <TextArea
                     name="name"
                     defaultValue={description}
-                    maxLength={30}
+                    maxLength={100}
                     className="description-input"
                     onChange={(e) => descriptionValue = e.target.value}
                   />
@@ -142,7 +148,7 @@ function DataList(): JSX.Element {
           <div className="flex gap-20">
             {info.state === 'True' && (
               <>
-                <span className="operate" onClick={() => defineFunc(info.id)}>定义</span>
+                <span className="operate" onClick={() => getDomain(info.name)}>复制clone地址</span>
                 <span className="operate" onClick={() => onClickTool(info, 'build')}>构建</span>
                 <span className="cursor-pointer text-red-600" onClick={() => onClickTool(info, 'deletefunc')}>
                   删除
@@ -151,10 +157,10 @@ function DataList(): JSX.Element {
             )}
             {info.state === 'False' && (
               <span className="cursor-pointer text-red-600" onClick={() => onClickTool(info, 'deletefunc')}>
-                  删除
+                删除
               </span>
             )}
-            {(info.state === 'Unknown' || !info.state) && <span>-</span> }
+            {(info.state === 'Unknown' || !info.state) && <span>-</span>}
           </div>
         );
       },
@@ -167,18 +173,11 @@ function DataList(): JSX.Element {
     store.modalType = type;
   }
 
-  function defineFunc(id: string): void {
-    store.checkHasCoder().then((hasCode) => {
-      if (hasCode) return store.defineFunc(id);
-      store.creatCoder();
-    });
-  }
-
   function handleInputKeydown(e: React.KeyboardEvent): void {
     if (e.key !== 'Enter') {
       return;
     }
-    store.fetchFuncList(store.searchAlias, 1, 10 );
+    store.fetchFuncList(store.searchAlias, 1, 10);
   }
 
   return (
@@ -196,7 +195,7 @@ function DataList(): JSX.Element {
           className="func-search text-12"
           placeholder="搜索函数名称"
           onChange={(v) => {
-            if (!v)store.fetchFuncList('', 1, 10);
+            if (!v) store.fetchFuncList('', 1, 10);
             setTimeout(() => {
               store.searchAlias = v;
             }, 500);

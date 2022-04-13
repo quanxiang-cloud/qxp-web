@@ -91,6 +91,7 @@ function SideNav(): JSX.Element | null {
         NodeRender={GroupNode}
         RootNodeRender={()=> null}
         onSelect={store.setActiveNs}
+        className='overflow-auto'
         itemClassName='tree-node-item hover:bg-white hover:text-gray-900 text-gray-900'
       />
     );

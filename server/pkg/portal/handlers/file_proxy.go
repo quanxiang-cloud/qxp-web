@@ -45,7 +45,7 @@ func FileProxyHandler(w http.ResponseWriter, r *http.Request) {
 
 	resp, body, errMsg := contexts.RetrieveResponse(req)
 	if errMsg != "" {
-		contexts.Logger.Errorf("do request proxy error: %s, request_id: %s", err.Error(), contexts.GetRequestID(r))
+		contexts.Logger.Errorf("do request proxy error: %s, request_id: %s", errMsg, contexts.GetRequestID(r))
 		w.WriteHeader(500)
 		w.Write([]byte("internal error"))
 		return

@@ -16,7 +16,7 @@ function DataEmpty(): JSX.Element {
         modifier="primary"
         className="mt-16"
         onClick={() => setModalType('editModel')}>
-          新建函数
+        新建函数
       </Button>
     </div>
   );

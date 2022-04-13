@@ -8,7 +8,7 @@ import { Progress } from 'antd';
 import Icon from '@c/icon';
 import { getQuery } from '@lib/utils';
 import httpClient from '@lib/http-client';
-import { FILE_DOWNLOAD_INFO_API } from '@c/file-upload/constants';
+import { FILE_DOWNLOAD_INFO_API, OSS_PRIVATE_BUCKET_NAME } from '@c/file-upload/constants';
 import toast from '@lib/toast';
 
 import store from '../store';
@@ -18,13 +18,15 @@ interface Props {
   deleteTaskItem: (id: string) => void;
 }
 
-const IMPORT_TYPE = ['formImport'];
-const EXPORT_TYPE = ['formExport', 'formTemplate'];
+const IMPORT_TYPE = ['formImport', 'appImport'];
+const EXPORT_TYPE = ['formExport', 'formTemplate', 'appExport'];
 
-export function multipledownloadFile(pathArr: { fileName: string, url: string }[]): void {
+export function multipleDownloadFile(pathArr: { fileName: string, url: string }[]): void {
   pathArr.forEach((path) => {
-    httpClient(FILE_DOWNLOAD_INFO_API, { path: path.url, fileName: path.fileName }).then((res: any) => {
-      const { url } = res;
+    httpClient<{ url: string }>(FILE_DOWNLOAD_INFO_API, {
+      path: `${OSS_PRIVATE_BUCKET_NAME}/${path.url}`,
+      fileName: path.fileName,
+    }).then(({ url }) => {
       if (!url) throw Error('无法下载该文件');
       downLoad(url);
     }).catch((reason) => {
@@ -52,9 +54,9 @@ function TaskItem({ task, deleteTaskItem }: Props): JSX.Element {
   const { appID } = useParams<{ appID: string }>();
 
   function getIcon(): string {
-    if (IMPORT_TYPE.includes(command)) return 'export-icon';
-    if (EXPORT_TYPE.includes(command)) return 'import-icon';
-    return 'download-ok';
+    if (IMPORT_TYPE.includes(command) && (status === 3 || status === 1)) return 'upload-apps';
+    if (EXPORT_TYPE.includes(command) && (status === 3 || status === 1)) return 'download-apps';
+    return 'download-success';
   }
 
   function onClickItem(command: string): void {
@@ -108,7 +110,7 @@ function TaskItem({ task, deleteTaskItem }: Props): JSX.Element {
                 size={16}
                 onClick={(e) => {
                   e.stopPropagation();
-                  multipledownloadFile(result.path);
+                  multipleDownloadFile(result.path);
                 }}
               />
             )}

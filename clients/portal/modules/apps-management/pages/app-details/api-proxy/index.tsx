@@ -9,6 +9,7 @@ import List from './api-list';
 import Add from './add-api';
 import AddSwagger from './add-swagger';
 import GuidePage from './guide-page';
+import InitApiFail from '../init-api-fail';
 import store from './store';
 import { useQueryString } from './hooks';
 
@@ -26,8 +27,19 @@ function ApiProxy(): JSX.Element | null {
     return store.reset;
   }, []);
 
-  if (!store.treeStore) {
-    return <Loading />;
+  if (!store.treeStore && store.isInitSuccessed) {
+    return <Loading className='bg-white'/>;
+  }
+
+  if (!store.isInitSuccessed) {
+    return (
+      <InitApiFail
+        onClick={() => {
+          store.isInitSuccessed = true;
+          store.fetchNamespaces(appID);
+        }}
+      />
+    );
   }
 
   if (!store.namespaces.length) {

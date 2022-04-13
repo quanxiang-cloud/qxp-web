@@ -11,7 +11,6 @@ import {
 export type FilterFunc = (currentSchema: ISchema) => boolean;
 export type FieldsFilterFunc = (currentSchema: SchemaFieldItem) => boolean;
 export type SchemaToOptionsOptions = SchemaToArrayOptions;
-export type SchemaToMapOptions = SchemaToArrayOptions;
 export interface SchemaToArrayOptions {
   keepLayout?: boolean;
   parseSubTable?: boolean;
@@ -88,8 +87,10 @@ export function schemaToFields(
   return sortSchemaArray(fields);
 }
 
-export function schemaToMap(schema?: ISchema, filter?: FieldsFilterFunc): Record<string, SchemaFieldItem> {
-  return schemaToFields(schema, filter).reduce(
+export function schemaToMap(
+  schema?: ISchema, filter?: FieldsFilterFunc | null, options?: SchemaToArrayOptions,
+): Record<string, SchemaFieldItem> {
+  return schemaToFields(schema, filter, options).reduce(
     (fieldsMap: Record<string, SchemaFieldItem>, field: SchemaFieldItem) => {
       const fieldId = field?.['x-internal']?.fieldId;
       if (fieldId) fieldsMap[fieldId] = field;

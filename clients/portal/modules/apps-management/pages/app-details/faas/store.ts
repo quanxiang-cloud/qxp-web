@@ -1,7 +1,6 @@
 import { action, observable, reaction } from 'mobx';
 
 import { SocketData } from '@lib/push';
-import { parseJSON } from '@lib/utils';
 
 import {
   checkHasGroup,
@@ -15,7 +14,6 @@ import {
   getFuncInfo,
   updateFuncDesc,
   getFuncVersionList,
-  hasCoder,
   defineFunc,
   buildFunc,
   deleteFunc,
@@ -23,11 +21,11 @@ import {
   offlineVer,
   servingVer,
   deleteVer,
-  creatCoder,
   registerAPI,
   getApiPath,
   getVersionInfo,
   getVersion,
+  getBuildProcessStatus,
 } from './api';
 import toast from '@lib/toast';
 import { getApiDoc } from '../api-documentation/api';
@@ -48,20 +46,15 @@ const INIT_CURRENT_FUNC = {
   versionNum: 0,
 };
 
-const INIT_VERSION: VersionField = {
-  id: '',
-  state: 'Unknown',
-  serverState: 'Unknown',
-  message: '',
-  creator: '',
-  createdAt: 0,
-  updatedAt: 0,
-  tag: '',
-  visibility: 'offline',
-  describe: '',
-  serverMsg: '',
-  updater: '',
-};
+function getBuildStatusMap(statusList: FaasBuildStatus[]): Record<string, FaasProcessStatus> {
+  return statusList.reduce<Record<string, FaasProcessStatus>>((acc, _status) => {
+    if (_status.children) {
+      return { ...acc, ...getBuildStatusMap(_status.children), [_status.name]: _status.status };
+    }
+
+    return { ...acc, [_status.name]: _status.status };
+  }, {});
+}
 
 class FaasStore {
   @observable appDetails: AppInfo = {
@@ -90,13 +83,15 @@ class FaasStore {
   @observable funcList: FuncField[] = [];
   @observable currentFunc: FuncField = INIT_CURRENT_FUNC;
   @observable versionList: VersionField[] = [];
-  @observable currentVersionFunc: VersionField = INIT_VERSION;
+  @observable currentVersionFunc: VersionField | null = null;
   @observable initErr = false;
   @observable APiContent: APiContent = INIT_API_CONTENT;
   @observable isAPILoadingErr = '';
   @observable isAPILoading = false;
   @observable searchAlias = '';
   @observable apiPath = '';
+  @observable buildSteps: string[] = [];
+  @observable buildStatusMap: Record<string, FaasProcessStatus> = {};
   @observable versionsParams: VersionListParams = {
     state: '',
     page: 1,
@@ -118,9 +113,10 @@ class FaasStore {
   };
 
   @action
-  isaDeveloper = (): Promise<void> => {
+  developerCheck = (): Promise<boolean | void> => {
     return checkIsDeveloper().then((res) => {
       this.isDeveloper = res.isDeveloper;
+      return res.isDeveloper;
     }).catch((err) => toast.error(err));
   };
 
@@ -166,7 +162,7 @@ class FaasStore {
   @action
   checkUserState = async (): Promise<void> => {
     this.checkUserLoading = true;
-    await this.isaDeveloper();
+    await this.developerCheck();
     await this.isGroup();
     if (this.hasGroup && this.isDeveloper) {
       await this.isDeveloperInGroup();
@@ -175,24 +171,21 @@ class FaasStore {
   };
 
   @action
-  createDeveloper = (email: string): Promise<void> => {
-    return new Promise((resolve, reject) => {
-      createDeveloper({
-        email,
-      }).then(() => {
-        const intervalBox = setInterval(async () => {
-          await this.isaDeveloper();
-          if (this.isDeveloper) {
-            clearInterval(intervalBox);
-            resolve();
-          }
-        }, 5000);
-      }).catch((err) => {
-        toast.error(err);
-        this.initLoading = false;
-        this.initErr = true;
-        reject(err);
-      });
+  createDeveloper = (email: string, publicKey: string): Promise<void> => {
+    return createDeveloper({
+      email,
+      publicKey,
+    }).then(() => {
+      const intervalBox = setInterval(async () => {
+        await this.developerCheck();
+        if (this.isDeveloper) {
+          clearInterval(intervalBox);
+        }
+      }, 5000);
+    }).catch((error) => {
+      toast.error(error);
+      this.initLoading = false;
+      this.initErr = true;
     });
   };
 
@@ -224,15 +217,12 @@ class FaasStore {
   };
 
   @action
-  initFaas = async (email: string): Promise<void> => {
+  initFaas = async (): Promise<void> => {
     if (this.initErr) {
       await this.checkUserState();
     }
     this.initLoading = true;
     this.initErr = false;
-    if (!this.isDeveloper) {
-      await this.createDeveloper(email);
-    }
     if (!this.hasGroup && this.isDeveloper) {
       await this.createGroup();
     }
@@ -261,30 +251,11 @@ class FaasStore {
   };
 
   @action
-  checkHasCoder = (): Promise<boolean | void> => {
-    return hasCoder().then((res) => {
-      return res.hasCoder;
-    }).catch((err) => toast.error(err));
-  };
-
-  @action
-  creatCoder = (): void => {
-    creatCoder().then(() => {
-      toast.success('创建成功');
-    }).catch((err) => {
-      toast.error(err);
-    });
-  };
-
-  @action
   createFunc = (data: creatFuncParams): void => {
-    createFaasFunc(this.groupID, data).then((res) => {
+    createFaasFunc(this.groupID, { ...data, tag: '1.16' }).then((res) => {
       this.currentFuncID = res.id;
       this.currentFunc = { ...res, ...data, state: 'Unknown' };
       this.funcList = [this.currentFunc, ...this.funcList];
-      this.checkHasCoder().then((res) => {
-        if (!res) this.creatCoder();
-      });
     }).catch((err) => {
       toast.error(err);
     });
@@ -452,27 +423,42 @@ class FaasStore {
   @action
   versionStateChangeListener = async (buildID: string, socket: SocketData, type: 'state' | 'serverState',
   ): Promise<void> => {
-    const { key, topic }: FaasSoketData = parseJSON(socket?.message, { key: '', topic: '' });
+    const { key, topic }: FaasSoketData = socket?.content || {};
     if (key !== buildID || topic !== 'builder') {
       return;
     }
 
     const versionInfo = await getVersionInfo(this.groupID, this.currentFuncID, buildID);
-    if (versionInfo.build.state !== 'Unknown') {
+    if (!['Unknown', ''].includes(versionInfo.build.state)) {
       this.versionList = this.versionList.map((version) => {
         if (version.id === buildID) {
-          return { ...version, [type]: versionInfo.build[type] };
+          return {
+            ...version,
+            [type]: versionInfo.build[type],
+            completionTime: versionInfo.build.completionTime,
+          };
         }
 
         return version;
       });
 
-      if (this.currentVersionFunc.id === buildID) {
-        this.currentVersionFunc = { ...this.currentVersionFunc, [type]: versionInfo.build[type] };
+      if (this.currentVersionFunc?.id === buildID) {
+        this.currentVersionFunc = {
+          ...this.currentVersionFunc,
+          [type]: versionInfo.build[type],
+          completionTime: versionInfo.build.completionTime,
+        };
       }
 
       toast.success('操作成功！');
     }
+  };
+
+  @action
+  updateBuildStatus = (): void => {
+    getBuildProcessStatus(this.groupID, this.currentFuncID, this.buildID).then((status) => {
+      this.buildStatusMap = getBuildStatusMap(status.events);
+    });
   };
 
   @action

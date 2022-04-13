@@ -9,10 +9,10 @@ import (
 // HomeHandler handle normal user side request
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	user := r.Context().Value(ctxUser).(*User)
-	if user.Status == 0 {
-		http.Redirect(w, r, "/resetPassword", http.StatusFound)
-		return
-	}
+	// if user.Status == 0 {
+	// 	http.Redirect(w, r, "/resetPassword", http.StatusFound)
+	// 	return
+	// }
 
 	if isMobile(r) {
 		http.Redirect(w, r, path.Join("/mobile", r.URL.Path), http.StatusFound)

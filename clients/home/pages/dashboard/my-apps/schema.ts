@@ -1,4 +1,4 @@
-import { NodePropType, NodeType, Schema } from '@ofa/render-engine';
+import { Schema } from '@one-for-all/schema-spec';
 
 const schema: Schema = {
   apiStateSpec: {
@@ -9,7 +9,7 @@ const schema: Schema = {
   sharedStatesSpec: {},
   node: {
     id: 'app-list',
-    type: NodeType.ReactComponentNode,
+    type: 'react-component',
     packageName: 'demoComponents',
     exportName: 'MyApps',
     packageVersion: 'whatever',
@@ -22,7 +22,7 @@ const schema: Schema = {
     },
     props: {
       apps: {
-        type: NodePropType.APIResultProperty,
+        type: 'api_result_property',
         stateID: 'my-apps',
         fallback: [],
         convertor: {
@@ -34,10 +34,10 @@ const schema: Schema = {
     children: [
       {
         id: 'app-loop-container',
-        type: NodeType.LoopContainerNode,
+        type: 'loop-container',
         loopKey: 'id',
         iterableState: {
-          type: NodePropType.APIResultProperty,
+          type: 'api_result_property',
           stateID: 'my-apps',
           fallback: [],
           convertor: {
@@ -47,18 +47,18 @@ const schema: Schema = {
         },
         toProps: {
           type: 'to_props_function_spec',
-          args: 'v',
-          body: 'return { appInfo: v }',
+          args: 'state',
+          body: 'return { appInfo: state }',
         },
         node: {
           id: 'app-info',
-          type: NodeType.ReactComponentNode,
+          type: 'react-component',
           packageName: 'demoComponents',
           exportName: 'AppInfoView',
           packageVersion: 'whatever',
           props: {
             className: {
-              type: NodePropType.ConstantProperty,
+              type: 'constant_property',
               value: 'rounded-12 bg-white user-app-item',
             },
           },

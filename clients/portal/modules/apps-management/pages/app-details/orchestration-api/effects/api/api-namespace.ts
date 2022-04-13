@@ -11,6 +11,7 @@ import {
 import httpClient from '@lib/http-client';
 
 import { NAMESPACES, ROOTPATH, NAMESPACES_SEARCH } from './names';
+import { initAppPath } from '@portal/modules/apps-management/pages/app-details/api';
 
 export interface NameSpace {
   id: string;
@@ -87,27 +88,20 @@ export function useUpdateNameSpace(
   return useNameSpace<UpdateInput, UpdateResponse>(options);
 }
 
-type ActiveInput = Input<{ active: number }>;
-interface ActiveResponse {
-  data?: {
-    fullPath: string;
-    active: number;
-  }
-}
-export function useActiveNameSpace(
-  options?: UseMutationOptions<ActiveResponse, Error, ActiveInput>,
-): UseMutationResult<ActiveResponse, Error, ActiveInput> {
-  return useNameSpace<ActiveInput, ActiveResponse>(options);
-}
-
 type QueryListInput = string;
 type QueryListResponse = CreateResponse;
 export function useQueryNameSpaceList(
-  path: QueryListInput, options?: UseQueryOptions<QueryListResponse, Error>,
-): UseQueryResult<QueryListResponse, Error> {
-  return useQuery<QueryListResponse, Error>(
+  path: QueryListInput, appID: string, options?: UseQueryOptions<QueryListResponse | void, Error>,
+): UseQueryResult<QueryListResponse | void, Error> {
+  return useQuery<QueryListResponse | void, Error>(
     [NAMESPACES, path],
-    () => getNameSpaceList(path),
+    () => {
+      try {
+        return getNameSpaceList(path);
+      } catch (error) {
+        return initAppPath(appID);
+      }
+    },
     options,
   );
 }
@@ -126,7 +120,7 @@ export function useSearchNameSpaceList(
     options,
   );
 }
-export function searchNamespaceList(path: string, title?: string): Promise<CreateResponse> {
+function searchNamespaceList(path: string, title?: string): Promise<CreateResponse> {
   return httpClient(`/api/v1/polyapi/namespace/search/${path}`, {
     active: -1, page: 1, pageSize: -1, withSub: true, title,
   });

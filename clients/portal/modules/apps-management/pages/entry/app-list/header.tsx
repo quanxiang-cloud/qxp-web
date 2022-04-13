@@ -52,7 +52,7 @@ function Header({ changeParams, params, setModalType, countMaps }: Props): JSX.E
         <Button onClick={() => setModalType('createdApp')} modifier='primary' iconName="add">
           新建应用
         </Button>
-        <Button onClick={() => setModalType('importApp')} className="ml-8" iconName="download">
+        <Button onClick={() => setModalType('importApp')} className="ml-8" iconName="import-application">
           导入应用
         </Button>
       </div>

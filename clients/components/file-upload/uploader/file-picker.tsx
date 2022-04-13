@@ -73,7 +73,7 @@ function FilePicker({
       role="button"
       onClick={handlePickerClick}
       className={cs(
-        'qxp-file-picker relative border-1 border-dashed border-gray-300 rounded-8',
+        'qxp-file-picker border-1 border-dashed border-gray-300 rounded-8 flex-shrink-0',
         'flex justify-center items-center flex-col bg-transparent text-gray-600 cursor-pointer',
         className, {
           'opacity-50': disabled,

@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 import { Form, Input } from 'antd';
 
+import TreeStore from '@c/headless-tree/store';
+import SelectableTreeStore from '@c/headless-tree/multiple-select-tree';
 import DepartmentPicker from '@c/form/input/tree-picker-field';
 import Modal from '@c/modal';
 import Loading from '@c/loading';
@@ -16,13 +18,15 @@ const HELP_TEXT_REG_ERROR = '只能包含汉字、英文、横线("-")以及下�
 interface Props {
   department: DeptInfo;
   closeModal(): void;
+  store: TreeStore<Department> | SelectableTreeStore<Department>;
 }
 
-function EditDepartment({ department, closeModal }: Props): JSX.Element {
+function EditDepartment({ department, closeModal, store }: Props): JSX.Element {
   const [form] = Form.useForm();
   const queryClient = useQueryClient();
   const title = department.id ? '修改部门' : '添加部门';
   const submitBtnText = department.id ? '确认修改' : '确认添加';
+  const [pid, setPid] = useState<string>('');
 
   let { data: depData, isLoading } = useQuery('getERPTree', getERPTree, {
     refetchOnWindowFocus: false,
@@ -53,6 +57,9 @@ function EditDepartment({ department, closeModal }: Props): JSX.Element {
     const params = { ...values };
     if (department.id) {
       params.id = department?.id;
+      params.attr = department?.attr;
+    } else {
+      params.attr = 2;
     }
 
     if (!params.pid && !department.id) {
@@ -99,12 +106,13 @@ function EditDepartment({ department, closeModal }: Props): JSX.Element {
           form={form}
           onFinish={handleFinish}
           initialValues={{
-            departmentName: department.departmentName,
+            name: department.name,
             pid: department.pid,
           }}
+          onValuesChange={(values) => setPid(values.pid)}
         >
           <Form.Item
-            name="departmentName"
+            name="name"
             label="部门名称"
             extra={HELP_TEXT_NORMAL}
             rules={[
@@ -115,6 +123,13 @@ function EditDepartment({ department, closeModal }: Props): JSX.Element {
                 const reg = /^[\u4e00-\u9fa5A-Za-z0-9-_]+$/g;
                 if (departmentName && !reg.test(departmentName)) {
                   return Promise.reject(new Error(HELP_TEXT_REG_ERROR));
+                }
+                const node = store.nodeList.find((node) => node.data.id === pid);
+                const invalidDepartmentNames = node?.children
+                  ?.filter(({ id }) => id !== node.id)
+                  .map((node) => node.data.departmentName) ?? [];
+                if (invalidDepartmentNames.includes(departmentName)) {
+                  return Promise.reject(new Error('同一部门下子部门名称不能重复，请修改！'));
                 }
                 return Promise.resolve();
               } },
@@ -133,7 +148,7 @@ function EditDepartment({ department, closeModal }: Props): JSX.Element {
               >
                 <DepartmentPicker
                   treeData={departmentToTreeNode(depData as Department)}
-                  labelKey="departmentName"
+                  labelKey="name"
                 />
               </Form.Item>
             )

@@ -7,7 +7,7 @@ import { DataNode } from 'rc-tree-select/lib/interface';
 import { labelValueRenderer } from '@c/form-data-value-renderer';
 import { getUserDepartment } from '@lib/utils';
 import { getNoLabelValues } from '@c/form-builder/utils';
-import { searchOrganization, Organization, getOrganizationDetail } from './messy/api';
+import { getERPTree, Organization, getOrganizationDetail } from './messy/api';
 
 import './index.scss';
 
@@ -42,7 +42,7 @@ function parseTree({
   const _fullPath = fullPath ? `${fullPath}/${depTreeData?.id}` : depTreeData?.id;
   initData.push({
     id: depTreeData?.id,
-    title: depTreeData?.departmentName,
+    title: depTreeData?.name,
     pId: depTreeData?.pid || rootPId,
     value: depTreeData?.id,
     fullPath: _fullPath,
@@ -66,13 +66,13 @@ const OrganizationPicker = ({
   ...otherProps
 }: Props): JSX.Element => {
   useEffect(() => {
-    const { id, departmentName } = getUserDepartment(window.USER);
+    const { id, name } = getUserDepartment(window.USER);
     if (value.length) {
       return;
     }
 
     if (defaultRange === 'currentUserDep' || optionalRange === 'currentUserDep') {
-      onChange?.([{ label: departmentName, value: id }]);
+      onChange?.([{ label: name, value: id }]);
       return;
     }
 
@@ -85,13 +85,12 @@ const OrganizationPicker = ({
     const noLabelValues = getNoLabelValues(value);
 
     if (noLabelValues.length) {
-      getOrganizationDetail<{ department: { id: string, departmentName: string }[] }>({
-        query: `{department(ids:${JSON.stringify(noLabelValues)}) {id, departmentName }}`,
-      }).then((res) => {
+      getOrganizationDetail<{ deps: { id: string, name: string }[] }>(noLabelValues).then((res) => {
         const newValue = (value as LabelValue[]).map(({ label, value }) => {
           if (value && !label) {
-            const curUser = res.department.find(({ id }) => id === value);
-            return { label: curUser?.departmentName || '', value };
+            const deps = res?.deps || [];
+            const curUser = deps.find(({ id }) => id === value);
+            return { label: curUser?.name || '', value };
           }
 
           return { label, value };
@@ -101,9 +100,9 @@ const OrganizationPicker = ({
     }
   }, []);
 
-  const { data } = useQuery(['query_user_picker', appID], () => searchOrganization(appID));
+  const { data } = useQuery(['query_dep_picker'], () => getERPTree());
   const treeData = React.useMemo(() => {
-    const treeDataTmp = parseTree({ depTreeData: data, rootPId: 0 });
+    const treeDataTmp = parseTree({ depTreeData: data, rootPId: data?.id });
     if (optionalRange === 'customize') {
       if (!rangeList || !rangeList.length) {
         return [];
@@ -132,12 +131,12 @@ const OrganizationPicker = ({
     }
 
     if (optionalRange === 'currentUserDep') {
-      const { id, departmentName } = getUserDepartment(window.USER);
+      const { id, name } = getUserDepartment(window.USER);
       const myDep = {
         id,
         fullPath: id,
         pId: 0,
-        title: departmentName,
+        title: name,
         value: id,
       };
       return [myDep] || [];
@@ -175,13 +174,14 @@ const OrganizationPicker = ({
       labelInValue
       showSearch
       value={selected}
+      getPopupContainer={(triggerNode) => triggerNode.parentNode as HTMLElement}
       className='flex-1 dep-selector'
       dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
       treeNodeFilterProp="title"
-      treeDataSimpleMode={{
-        id: 'id',
-        rootPId: 0,
-      }}
+      // treeDataSimpleMode={{
+      //   id: 'id',
+      //   rootPId: get(treeData, '0.id'),
+      // }}
       onChange={handleChange}
       treeData={treeData}
     />

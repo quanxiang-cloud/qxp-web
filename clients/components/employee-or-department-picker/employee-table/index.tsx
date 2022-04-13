@@ -7,17 +7,20 @@ import Table from '@c/table';
 import Pagination from '@c/pagination';
 import EmptyTips from '@c/empty-tips';
 // todo remove this
-import { adminSearchUserList } from '@portal/modules/access-control/role-management/api';
 import Loading from '@c/loading';
+import { getUserAdminInfo } from '@portal/modules/access-control/departments-employees/api';
+import { getTwoDimenArrayHead } from '@lib/utils';
+import { buildGraphQLQuery } from '@portal/modules/access-control/departments-employees/utils';
 
 import OwnerStore from '../store';
-
 interface IEmployeeTable {
   className?: string;
   userName?: string;
   depID: string | null;
   ownerStore: OwnerStore;
 }
+
+const userGraphQL = '{users{id,phone,useStatus,email,name,useStatus,departments{id,name},leaders{id,name}},total}';
 
 export default observer(function EmployeeTable({
   className,
@@ -31,11 +34,28 @@ export default observer(function EmployeeTable({
 
   const { data } = useQuery(
     [
-      'adminSearchUserList',
+      'GET_USER_ADMIN_INFO',
       { depID, userName, page: current, limit: pageSize },
     ],
-    (params) => {
-      return adminSearchUserList(params).then((res) => {
+    ({ queryKey }) => {
+      const {
+        depID,
+        userName,
+        limit,
+        page,
+      } = (queryKey[1] as { depID: string; userName: string; limit: number; page: number});
+      const queryGraphQL = buildGraphQLQuery({
+        departmentID: depID,
+        name: userName,
+        page,
+        size: limit,
+      });
+      return getUserAdminInfo<{
+        users: Employee[];
+        total: number
+      }>({
+        query: `{${queryGraphQL}${userGraphQL}}`,
+      }).then((res) => {
         setIsLoading(false);
         return res;
       });
@@ -51,6 +71,7 @@ export default observer(function EmployeeTable({
     store.setSelectedKeys([]);
     store.setTotal(0);
   }, [depID, userName]);
+
   useEffect(() => {
     if (data?.total) {
       store.setTotal(data.total);
@@ -74,16 +95,17 @@ export default observer(function EmployeeTable({
         if (!user) {
           return;
         }
+        const dep = getTwoDimenArrayHead(user.departments) as Department;
         ownerStore.addOwner({
           type: 1,
           ownerID: user.id,
-          ownerName: user.userName,
+          ownerName: user.name,
           phone: user.phone,
           email: user.email,
-          departmentName: user.dep.departmentName,
-          createdAt: user.createTime,
+          departmentName: dep.name,
+          createdAt: -1,
           id: user.id,
-          departmentID: user.dep.id,
+          departmentID: dep.id,
         });
       });
     } else if (keys.length < store.selectedKeys.length) {
@@ -105,12 +127,16 @@ export default observer(function EmployeeTable({
 
   return (
     <div
-      className={cs('h-full bg-white', className)}
+      className={cs('flex-1 overflow-hidden flex flex-col bg-white', className)}
     >
-      <div
-        className="flex w-full border-b"
-        style={{ height: 'calc(100% - 80px)' }}
-      >
+      {/* <div className='mb-6 flex flex-row-reverse'>
+        <CheckBox
+          defaultChecked
+          onChange={(e) => ownerStore.isIncludeSubDep = e.target.checked}
+          label='包含子部门成员'
+        />
+      </div> */}
+      <div className="flex w-full border-b flex-1 overflow-hidden">
         <Table
           // className="rounded-bl-none rounded-br-none h-full"
           showCheckbox
@@ -120,9 +146,9 @@ export default observer(function EmployeeTable({
           columns={[
             {
               Header: '员工姓名',
-              id: 'userName',
+              id: 'name',
               fixed: true,
-              accessor: 'userName',
+              accessor: 'name',
             },
             {
               Header: '手机号',
@@ -137,8 +163,9 @@ export default observer(function EmployeeTable({
             {
               Header: '部门',
               id: 'dep.departmentName',
-              accessor: ({ dep }: Employee) => {
-                return dep?.departmentName;
+              accessor: ({ departments }: Employee) => {
+                const dep = getTwoDimenArrayHead(departments);
+                return dep?.name;
               },
             },
           ]}

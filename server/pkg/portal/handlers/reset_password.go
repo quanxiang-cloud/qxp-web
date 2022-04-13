@@ -21,7 +21,6 @@ func HandleResetPasswordSubmit(w http.ResponseWriter, r *http.Request) {
 
 	resetPasswordParams, err := json.Marshal(map[string]string{
 		"newPassword": r.FormValue("newPassword"),
-		"oldPassword": r.FormValue("oldPassword"),
 	})
 	if err != nil {
 		contexts.Logger.Errorf("failed to marshal request body: %s, request_id: %s", err.Error(), requestID)
@@ -38,7 +37,7 @@ func HandleResetPasswordSubmit(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	respBody, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/nurturing/userResetPWD", resetPasswordParams, map[string]string{
+	respBody, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/org/h/account/user/first/reset", resetPasswordParams, map[string]string{
 		"Content-Type": "application/json",
 		"Access-Token": getToken(r),
 	})

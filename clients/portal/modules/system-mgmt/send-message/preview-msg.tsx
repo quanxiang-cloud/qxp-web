@@ -45,7 +45,7 @@ const PreviewMsg = ({
     txt = '未知消息类型';
   }
   const infoText = [
-    dayjs(createdAt).format('YYYY-MM-DD HH:mm:ss'), txt, creatorName || window.USER.userName,
+    dayjs(createdAt).format('YYYY-MM-DD HH:mm:ss'), txt, creatorName || window.USER.name,
   ].join(' · ');
 
   return (
@@ -55,8 +55,9 @@ const PreviewMsg = ({
         <div className={styles.info}>{infoText}</div>
         <div dangerouslySetInnerHTML={{ __html: content }} />
         <FileList
+          isPrivate={false}
           files={fileList}
-          canDownload = {true}
+          canDownload={true}
         />
       </div>
 

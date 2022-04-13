@@ -4,24 +4,25 @@ export function getRule(basicConfig: BasicNodeConfig): string {
   return `常规填写; ${basicConfig.multiplePersonWay === 'or' ? '任填' : '全填'}`;
 }
 
-export function getPerson(
-  approvePerson: ApprovePerson,
-): string {
-  const typePersonMap = {
-    field: '表单字段',
-    superior: '上级领导',
-    leadOfDepartment: '部门负责人',
-    processInitiator: '流程发起人',
-  };
-  const personTitle = typePersonMap[approvePerson.type as keyof typeof typePersonMap];
+const typePersonMap = {
+  field: '表单字段',
+  superior: '上级领导',
+  leadOfDepartment: '部门负责人',
+  processInitiator: '流程发起人',
+  processVariable: '流程变量',
+};
+
+export function getPerson({ type, users, departments }: ApprovePerson): string {
+  const personTitle = typePersonMap[type as keyof typeof typePersonMap];
+
   if (personTitle) {
     return personTitle;
   }
 
-  return [
-    ...approvePerson.users,
-    ...approvePerson.departments,
-  ].map((v) => v.ownerName || v.departmentName).join('; ');
+  return users
+    .concat(departments)
+    .map(({ ownerName, departmentName }) => ownerName || departmentName)
+    .join('; ');
 }
 
 export function approvePersonEncoder(businessData: BusinessData): ApprovePerson {
@@ -39,6 +40,7 @@ export function approvePersonEncoder(businessData: BusinessData): ApprovePerson 
     departments: [],
     positions: [],
     fields: [],
+    variablePath: '',
   };
   return approvePersons;
 }

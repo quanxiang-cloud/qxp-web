@@ -11,7 +11,7 @@ copyStatics:
 	@mkdir -p dist
 	@cp -r ./clients/assets/* dist
 	@echo "copy ofa/ui assets..."
-	@cp -r ./node_modules/@ofa/ui/dist/images/* dist/images
+	@cp -r ./node_modules/@one-for-all/ui/dist/images/* dist/images
 
 copyTemplates: clients/templates/*
 	@echo "copy clients/templates/* to dist/templates..."
@@ -44,6 +44,9 @@ rollup:
 bundleHome:
 	./node_modules/.bin/rollup -c rollup.config.js -w --input home
 
+bundleAppLand:
+	./node_modules/.bin/rollup -c rollup.config.js -w --input appLand
+
 bundlePortal:
 	./node_modules/.bin/rollup -c rollup.config.js -w --input portal
 
@@ -51,6 +54,8 @@ bundleMobile:
 	./node_modules/.bin/rollup -c rollup.config.js -w --input mobile
 
 home: buildAssets startHomeServer bundleHome
+
+appLand: buildAssets startHomeServer bundleAppLand
 
 portal: buildAssets startPortalServer bundlePortal
 

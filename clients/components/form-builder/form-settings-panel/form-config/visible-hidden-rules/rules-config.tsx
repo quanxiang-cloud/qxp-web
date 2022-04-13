@@ -23,7 +23,7 @@ import { JoinOperatorSelect, RulesList } from '@c/form-builder/customized-fields
 import { OperatorOptions, OPERATORS } from '@c/form-builder/constants';
 import schemaToFields, { schemaToMap } from '@lib/schema-convert';
 
-import { compareValueValidateMap } from './constants';
+import { compareValueValidateMap } from '../../utils';
 
 const COMPONENTS = {
   Input, AntdSelect, DatePicker, NumberPicker, Switch, RadioGroup: Radio.Group, RulesList, JoinOperatorSelect,

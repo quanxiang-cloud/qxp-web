@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useQuery } from 'react-query';
+import { useQuery, QueryFunctionContext } from 'react-query';
 import { useUpdateEffect } from 'react-use';
 import { groupBy, merge, first, isEqual } from 'lodash';
 import fp from 'lodash/fp';
@@ -48,9 +48,8 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
 
   const { data: { options: data, schema = {} } = { options: [] }, isLoading, isError } = useQuery(
     ['GET_WORK_FORM_FIELD_LIST', workFormValue, appID, { keepLayout: true, parseSubTable: true }],
-    getFormFieldOptions, {
-      enabled: !!workFormValue && !!appID,
-    },
+    (context: QueryFunctionContext) => getFormFieldOptions(context, true),
+    { enabled: !!workFormValue && !!appID },
   );
 
   useEffect(() => {

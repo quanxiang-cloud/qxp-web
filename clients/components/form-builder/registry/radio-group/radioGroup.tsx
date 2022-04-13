@@ -1,5 +1,6 @@
 import React, { SetStateAction, useEffect, useMemo, useState } from 'react';
-import { Radio, Input, RadioChangeEvent, Space } from 'antd';
+import cs from 'classnames';
+import { Radio, Input, RadioChangeEvent } from 'antd';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import useEnumOptions from '@lib/hooks/use-enum-options';
@@ -62,21 +63,23 @@ function RadioGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   return (
     <div className="flex items-center">
       <Radio.Group onChange={handleRadioChange} value={realValue}>
-        <Space direction={optionsLayout}>
+        <div className={cs('flex', optionsLayout === 'vertical' ? 'flex-col' : 'flex-row')}>
           {labels.map((label) => {
             return (<Radio key={label} value={label}>{label}</Radio>);
           })}
-          {isAllowCustom && (
-            <Radio value={CUSTOM_OTHER_VALUE}>
-              <Input
-                value={otherValue}
-                onChange={handleOtherValueChange}
-                placeholder="请输入"
-                maxLength={15}
-              />
-            </Radio>
-          )}
-        </Space>
+          {
+            isAllowCustom && (
+              <Radio value={CUSTOM_OTHER_VALUE}>
+                <Input
+                  value={otherValue}
+                  onChange={handleOtherValueChange}
+                  placeholder="请输入"
+                  maxLength={15}
+                />
+              </Radio>
+            )
+          }
+        </div>
       </Radio.Group>
     </div>
   );

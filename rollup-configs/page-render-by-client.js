@@ -1,5 +1,5 @@
 import commonjs from '@rollup/plugin-commonjs';
-import esbuild from 'rollup-plugin-esbuild';
+import esbuild from 'rollup-plugin-esbuild-ts';
 import json from '@rollup/plugin-json';
 import outputManifest from 'rollup-plugin-output-manifest';
 import progress from 'rollup-plugin-progress';
@@ -29,6 +29,7 @@ const output = {
 const input = {
   portal: 'clients/portal/index.tsx',
   home: 'clients/home/index.tsx',
+  appLand: 'clients/app-land/index.tsx',
 };
 
 const config = {
@@ -42,6 +43,7 @@ const config = {
     'react',
     'react-dom',
     'react-is',
+    'elkjs',
 
     '@formily/antd-components',
     '@formily/antd',
@@ -61,7 +63,7 @@ const config = {
     // 'react-use',
     // /react-use\/.*/,
 
-    // 'draft-js',
+    'draft-js',
     // 'html-to-draftjs',
     // 'react-draft-wysiwyg',
     'jszip',
@@ -71,7 +73,7 @@ const config = {
     'react-flow-renderer',
     'xlsx',
 
-    /@ofa\/.*/,
+    /@one-for-all\/.*/,
   ],
 
   plugins: [
