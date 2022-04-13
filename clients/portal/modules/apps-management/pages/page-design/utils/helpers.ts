@@ -68,5 +68,5 @@ export function svgPreviewImg(title: string): string {
 
 export function isSystemComponent({ exportName, packageName }: PageNode): boolean {
   const systemCmpNames = SYSTEM_COMPONENT_NAMES.map((name) => name.toLocaleLowerCase());
-  return packageName === 'ofa-ui' && systemCmpNames.includes(exportName);
+  return packageName === 'system-components' && systemCmpNames.includes(exportName);
 }

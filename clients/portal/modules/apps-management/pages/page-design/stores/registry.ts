@@ -3,6 +3,13 @@ import { mapValues } from 'lodash';
 
 import type { Category, SourceElement } from '../types';
 import * as builtInElems from '../registry/elements';
+import * as systemComponents from '../registry/system-components';
+
+const systemCompElements = mapValues({ systemComponents }, (group) => {
+  return Object.entries(group).map(([, conf]) => conf).sort((elemA, elemB) => {
+    return (elemA?.order || 0) - (elemB?.order || 0);
+  });
+});
 
 const defaultElements = mapValues(builtInElems, (group) => {
   return Object.entries(group).map(([, conf]) => conf).sort((elemA, elemB) => {
@@ -11,7 +18,7 @@ const defaultElements = mapValues(builtInElems, (group) => {
 });
 
 class RegistryStore {
-  @observable elements: Record<Category, Array<SourceElement<any>>> = { ...defaultElements };
+  @observable elements: Record<Category, Array<SourceElement<any>>> = { ...defaultElements, ...systemCompElements };
   @observable countRegisteredElem = 0;
 
   // constructor() {
@@ -62,8 +69,13 @@ class RegistryStore {
     return this.elementMap[this.normalizeType(elemType)].acceptChild;
   };
 
-  toComponentMap = (): Record<string, React.ComponentType>=> {
-    return Object.values({ ...defaultElements })
+  toComponentMap = (componentIn?: 'systemComponents'): Record<string, React.ComponentType>=> {
+    let _components = defaultElements;
+    if (componentIn === 'systemComponents') {
+      _components = systemCompElements as any;
+    }
+
+    return Object.values({ ..._components })
       .flat()
       .reduce((memo: Record<string, React.ComponentType>, elem: SourceElement<any>)=> {
         memo[this.normalizeType(elem.name)] = elem.component;
