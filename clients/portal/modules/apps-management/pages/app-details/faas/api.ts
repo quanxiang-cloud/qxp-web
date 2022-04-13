@@ -7,7 +7,7 @@ export function checkHasGroup(
 }
 
 export function checkIsDeveloper(): Promise<{ isDeveloper: boolean }> {
-  return httpClient('/api/v1/midfielder/check/developer');
+  return httpClient.post('/api/v1/midfielder/check/developer', {});
 }
 
 export function checkInGroup(data: { group: string }): Promise<{ isMember: boolean }> {
