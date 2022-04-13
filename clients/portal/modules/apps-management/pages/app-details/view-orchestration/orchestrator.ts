@@ -478,11 +478,11 @@ class Orchestrator {
 
   @action
   setHomeView(viewName?: string): Promise<unknown> {
-    if (!viewName) {
-      return this.saveAppHomeViewUrl('');
-    }
     const view = this.views.find((view) => view.name === viewName) as View;
-    console.log(view);
+
+    if (!view) {
+      throw new Error('view is not found');
+    }
 
     this.homeView = view;
     return this.saveAppHomeViewUrl(view.url);
