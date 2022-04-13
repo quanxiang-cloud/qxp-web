@@ -5,6 +5,7 @@ import ViewOption from './view-opiton';
 import { View } from '../types.d';
 
 import './index.scss';
+import { Icon } from '@one-for-all/ui';
 
 type Props = {
   view: View;
@@ -36,12 +37,17 @@ function ViewItem({ view, onViewClick, onOptionClick, currentView, homeView }: P
           'text-gray-900': isActive,
         })}>
           <span title={view.name} className='truncate view-item-title inline-block text-12'>
-            {view.name} {homeView?.id === view.id && '⭐️'}
+            {view.name}
           </span>
         </span>
-        {
-          isActive && (<ViewOption view={view} homeViewID={homeView?.id} onViewOptionClick={onOptionClick} />)
-        }
+        <div className='flex gap-5'>
+          { homeView?.id === view.id && <Icon name='home' size={18} /> }
+          <div className={cs({
+            invisible: !isActive,
+          })}>
+            <ViewOption view={view} homeViewID={homeView?.id} onViewOptionClick={onOptionClick} />
+          </div>
+        </div>
       </div>
     </li >
   );
