@@ -6,11 +6,7 @@ import ArteryPage from '../artery-page';
 function PagePreview(): JSX.Element {
   const { arteryID } = getQuery<{appID: string, pageId: string, arteryID: string}>();
 
-  return (
-    <div style={{ height: '100vh', overflow: 'auto' }}>
-      <ArteryPage arteryID={arteryID} draft />
-    </div>
-  );
+  return <ArteryPage arteryID={arteryID} draft />;
 }
 
 export default PagePreview;
