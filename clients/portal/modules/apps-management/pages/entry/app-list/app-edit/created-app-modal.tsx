@@ -23,6 +23,7 @@ function CreatedAppModal({ modalType, onCancel, templateID }: Props): JSX.Elemen
   const formRef: any = useRef(null);
   const [appZipInfo, setAppZipInfo] = useState<AppZipInfo | undefined>(undefined);
   const [defaultAppLayout, setDefaultAppLayout] = useState<SelectLayoutType>('free');
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = (): void => {
     const formDom = formRef.current;
@@ -36,6 +37,7 @@ function CreatedAppModal({ modalType, onCancel, templateID }: Props): JSX.Elemen
   function submitCallback(): void {
     const formDom = formRef.current;
     const data = formDom.getFieldsValue() as AppInfo;
+    setLoading(true);
 
     if (has('template', data)) {
       createdAppByTemplate(data).then(onCancel).catch(toastError);
@@ -48,10 +50,11 @@ function CreatedAppModal({ modalType, onCancel, templateID }: Props): JSX.Elemen
     }
 
     createdApp({ ...data, useStatus: -1 }).then((res: string) => {
-      toast.success('创建应用成功！');
-      onCancel();
-      history.push(`/apps/details/${res}/app_views`);
-      return initAppRootView(res, defaultAppLayout);
+      return initAppRootView(res, defaultAppLayout).then(() => {
+        toast.success('创建应用成功！');
+        history.push(`/apps/details/${res}/app_views`);
+        onCancel();
+      });
     }).catch(toastError);
   }
 
@@ -74,6 +77,7 @@ function CreatedAppModal({ modalType, onCancel, templateID }: Props): JSX.Elemen
           modifier: 'primary',
           onClick: handleSubmit,
           forbidden: modalType === 'importApp' && !appZipInfo,
+          loading,
         },
       ]}
     >

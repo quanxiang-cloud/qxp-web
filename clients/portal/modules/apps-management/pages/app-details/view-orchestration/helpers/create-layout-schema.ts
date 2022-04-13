@@ -1,4 +1,4 @@
-import { Node } from '@one-for-all/artery';
+import { Node, RouteNode } from '@one-for-all/artery';
 import {
   LAYOUT_CHILD_TYPE_FRAGMENT_CONTAINER,
   LAYOUT_CHILD_TYPE_ROUTES_CONTAINER,
@@ -12,6 +12,7 @@ export default function createLayoutSchema(
   name: string,
   layoutType: LayoutType,
   refSchemaKey: string,
+  defaultViewNode?: RouteNode,
   isRoot?: boolean,
 ): Node {
   return {
@@ -62,7 +63,7 @@ export default function createLayoutSchema(
             value: LAYOUT_CHILD_TYPE_ROUTES_CONTAINER,
           },
         },
-        children: [],
+        children: defaultViewNode ? [defaultViewNode] : [],
       },
     ],
   };
