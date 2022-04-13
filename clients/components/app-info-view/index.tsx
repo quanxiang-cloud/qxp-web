@@ -18,6 +18,8 @@ const STATUS_MAP: Record<string, string> = {
   '-1': '未发布',
   '-2': '导入中',
   '-3': '导入失败',
+  '-4': '应用初始化失败',
+  '-5': '应用初始化中',
 };
 
 function AppInfoView({ appInfo, onClick, className = '' }: Props): JSX.Element {

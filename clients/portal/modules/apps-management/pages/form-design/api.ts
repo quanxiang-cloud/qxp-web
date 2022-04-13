@@ -11,6 +11,6 @@ type createPageSchemaParam = {
 }
 
 export const createPageSchema = async <T>(appID: string, data: createPageSchemaParam): Promise<T> => {
-  return await httpClient<T>(`/api/v1/structor/${appID}/m/config/create`, data);
+  return await httpClient<T>(`/api/v1/form/${appID}/m/config/create`, data);
 };
 

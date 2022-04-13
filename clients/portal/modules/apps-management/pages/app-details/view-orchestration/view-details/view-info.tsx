@@ -1,16 +1,20 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
+import { observer } from 'mobx-react';
 
 import Tab from '@c/tab';
 import Icon from '@c/icon';
 import Button from '@c/button';
 
-import { ExternalView, SchemaView, TableSchemaView, View, ViewType } from '../types.d';
 import ArteryRenderer from '@c/artery-renderer';
 import { DefaultFormDescriptions, VERSION } from '../constants';
 import { getArteryPageInfo } from '@lib/http-client';
 import { mapToArteryPageDescription } from '../../utils';
 import { toast } from '@one-for-all/ui';
+
+import appStore from '../../store';
+
+import { ExternalView, SchemaView, TableSchemaView, View, ViewType } from '../types.d';
 
 type Props = {
   view: View;
@@ -183,6 +187,7 @@ function ViewInfo({ view, openModal }: Props): JSX.Element {
           className="mr-18"
           modifier='primary'
           textClassName='app-content--op_btn'
+          forbidden={appStore.appDetails.useStatus !== 1}
           onClick={() => {
             window.open(`/_jump_to_home?to=${view.url}`);
           }}
@@ -207,4 +212,4 @@ function ViewInfo({ view, openModal }: Props): JSX.Element {
   );
 }
 
-export default ViewInfo;
+export default observer(ViewInfo);

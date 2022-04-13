@@ -18,7 +18,7 @@ export function getSchemaAndRecord(
 
 export const getOperate = <T>(appID: string, formID: string) => {
   return httpClient<T>(
-    `/api/v1/structor/${appID}/home/permission/operatePer/getOperate`,
+    `/api/v1/form/${appID}/home/permission/operatePer/getOperate`,
     { formID },
   );
 };

@@ -7,7 +7,9 @@ function PagePreview(): JSX.Element {
   const { arteryID } = getQuery<{appID: string, pageId: string, arteryID: string}>();
 
   return (
-    <ArteryPage arteryID={arteryID} draft />
+    <div style={{ height: '100vh' }}>
+      <ArteryPage arteryID={arteryID} draft />
+    </div>
   );
 }
 

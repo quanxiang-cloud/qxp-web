@@ -45,7 +45,7 @@ function PageDesign(): JSX.Element | null {
     const initialArtery = artery ?? getInitArteryByPageType(PAGE_TYPE.PAGE_DESIGN_EDITOR);
     const layer = LAYERS[0];
     // to remove pageId params
-    layer.blocksCommunicationStateInitialValue = { activeNodeID: '', appID, pageId: '' };
+    layer.blocksCommunicationStateInitialValue = { activeNodeID: '', appID, arteryID: '' };
     return {
       layers: [...LAYERS],
       initialArtery,
