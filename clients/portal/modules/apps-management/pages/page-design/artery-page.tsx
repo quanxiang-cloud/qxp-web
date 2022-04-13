@@ -20,13 +20,11 @@ function ArteryPage({ arteryID, draft }: Props): JSX.Element {
   }, [arteryID, !!draft]);
 
   return (
-    <div style={{ height: '100vh', overflow: 'auto' }}>
-      <ArteryRenderer
-        key={arteryKey}
-        arteryID={arteryKey}
-        version={VERSION}
-      />
-    </div>
+    <ArteryRenderer
+      key={arteryKey}
+      arteryID={arteryKey}
+      version={VERSION}
+    />
   );
 }
 
