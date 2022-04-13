@@ -27,7 +27,7 @@ function AppViews(): JSX.Element {
   const { isLoading, store } = useAppStore();
 
   const handleModalSubmit = useCallback((viewInfo: CreateViewParams<View>): void => {
-    store?.handleViewInfoSubmit(viewInfo).then(()=> {
+    store?.handleViewInfoSubmit(viewInfo).then(() => {
       toast.success((store.modalType === 'createView' ? '添加' : '修改') + '成功');
       closeModal();
     });
