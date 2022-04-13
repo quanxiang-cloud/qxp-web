@@ -7,7 +7,7 @@ import { rootSchemaKey } from './utils';
 
 export default function AppLand(): JSX.Element {
   return (
-    <div style={{ height: '100vh' }}>
+    <div style={{ height: '100vh', overflow: 'auto' }}>
       <ArteryRender arteryID={rootSchemaKey} version={VERSION} />
     </div>
   );
