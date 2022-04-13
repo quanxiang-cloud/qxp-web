@@ -202,6 +202,7 @@ declare global {
   }
 
   type APIDetailAuth = RawApiDetail & {
-    auth?: APIAuth | null
+    auth?: APIAuth | null;
+    isChanging?: boolean;
   }
 }
