@@ -54,7 +54,7 @@ function request<TData>(path: string, method: METHOD, body?: unknown): Promise<T
 }
 
 function httpClient<TData>(path: string, body?: unknown): Promise<TData> {
-  return httpClient.post<TData>(path, body);
+  return httpClient.post<TData>(path, body || {});
 }
 
 httpClient.get = function<TData>(path: string, query?: Record<string, unknown>) {
