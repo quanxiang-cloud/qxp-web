@@ -122,6 +122,7 @@ function PageDesign(): JSX.Element | null {
       <div className='flex flex-col mb-24 relative -top-8'>
         <p className='text-12 text-gray-600'>选择API</p>
         <ApiSelector
+          appID={appID}
           simpleMode
           className='api-selector-wrap'
           initRawApiPath={apiPath}

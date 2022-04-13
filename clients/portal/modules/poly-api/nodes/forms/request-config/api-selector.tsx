@@ -2,18 +2,18 @@ import React, { useState } from 'react';
 import cs from 'classnames';
 import { clone } from 'ramda';
 import { Cascader } from 'antd';
-import { getQuery } from '@lib/utils';
 import { SingleValueType, DefaultOptionType } from 'rc-cascader/lib/Cascader';
 
 import { RawApiDocDetail } from '@polyApi/effects/api/raw';
 import ApiDocDetail from '@polyApi/components/api-doc-detail';
+import { PathType } from '@lib/api-collection';
 
 import { useGetOptionFromCollection } from './hooks/api-selector-hooks';
-import { PathType } from '@lib/api-collection';
 
 type Props = {
   initRawApiPath: string;
   setApiPath: (apiPath: string) => void;
+  appID: string,
   label?: string;
   error?: string;
   className?: string;
@@ -27,14 +27,14 @@ function ApiSelector({
   className,
   simpleMode,
   setApiPath,
+  appID,
   apiDocDetail,
   initRawApiPath,
   label = '全部API:',
   usePolyApiOption = false,
 }: Props): JSX.Element {
-  const { appID } = getQuery<{ appID: string; pageName: string; arteryID: string }>();
-  const [apiPathWithType, setApiPathWithType] = useState({ path: '', pathType: PathType.RAW_ROOT });
-  const options = useGetOptionFromCollection(appID, apiPathWithType, usePolyApiOption);
+  const [apiDirectoryWithPathType, setApiDirectoryWithPathType] = useState({ directory: '', pathType: PathType.RAW_ROOT });
+  const options = useGetOptionFromCollection({ appID, apiDirectoryWithPathType, usePolyApiOption });
 
   function onChange(
     value: SingleValueType | SingleValueType[],
@@ -50,7 +50,7 @@ function ApiSelector({
   function loadData(selectedOptions: DefaultOptionType[]): void {
     const targetOption = selectedOptions[selectedOptions.length - 1];
 
-    setApiPathWithType({ path: targetOption.path, pathType: targetOption.pathType });
+    setApiDirectoryWithPathType({ directory: targetOption.path, pathType: targetOption.pathType });
   }
 
   if (simpleMode) {

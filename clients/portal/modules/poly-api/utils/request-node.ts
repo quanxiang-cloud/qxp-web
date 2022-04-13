@@ -1,6 +1,8 @@
 import { isEmpty, isString, omit } from 'lodash';
 
-import { DirectoryChild, Directory, API } from '@lib/api-collection';
+import { DirectoryChild } from '@lib/api-collection';
+import { isApi } from '@lib/api-collection/utils';
+
 import { isObjectField } from './object-editor';
 import { RawApiDetail } from '../effects/api/raw';
 import { PLACEHOLDER_OPTION } from '../constants';
@@ -99,29 +101,35 @@ const Title_Map: Record<string, string> = {
 export function getChildrenOfCurrentSelectOption(
   currentChildren: DirectoryChild[],
   apiNamespacePath: string,
-): ApiCascaderOption[] | undefined {
-  if (!currentChildren) {
-    return;
-  }
-
-  return currentChildren.map(({ name, title, pathType, ...extra }: DirectoryChild) => {
-    const { children, parent } = (extra as Partial<Directory>);
-    const { method, fullPath } = (extra as Partial<API>);
-    let _children: ApiCascaderOption[] | undefined;
-    if (children && children.length) {
-      _children = getChildrenOfCurrentSelectOption(children, apiNamespacePath);
-    } else if (apiNamespacePath === `${parent}/${name}`) {
-      _children = PLACEHOLDER_OPTION;
+): ApiCascaderOption[] {
+  return currentChildren.map((currentChild) => {
+    if (isApi(currentChild)) {
+      const { name, title, pathType, fullPath } = currentChild;
+      return {
+        label: title ? title : (Title_Map[name] || name),
+        value: name,
+        children: undefined,
+        isLeaf: true,
+        path: fullPath,
+        pathType,
+      };
+    } else {
+      const { name, title, pathType, children, parent } = currentChild;
+      let _children: ApiCascaderOption[] | undefined;
+      if (children && children.length) {
+        _children = getChildrenOfCurrentSelectOption(children, apiNamespacePath);
+      } else if (apiNamespacePath === `${parent}/${name}`) {
+        _children = PLACEHOLDER_OPTION;
+      }
+      return {
+        label: title ? title : (Title_Map[name] || name),
+        value: name,
+        children: _children,
+        isLeaf: false,
+        path: `${parent}/${name}`,
+        pathType,
+      };
     }
-
-    return {
-      label: title ? title : (Title_Map[name] || name),
-      value: name,
-      children: _children,
-      isLeaf: !!method,
-      path: fullPath ? fullPath : `${parent}/${name}`,
-      pathType,
-    };
   });
 }
 

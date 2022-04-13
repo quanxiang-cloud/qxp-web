@@ -1,35 +1,46 @@
 import { useEffect, useMemo, useState } from 'react';
-import {
-  ApiCascaderOption, getChildrenOfCurrentSelectOption,
-} from '@polyApi/utils/request-node';
+
+import { ApiCascaderOption, getChildrenOfCurrentSelectOption } from '@polyApi/utils/request-node';
 import { createCollection, Collection, useCollection, PathType, DirectoryChild } from '@lib/api-collection';
 
-export function useGetOptionFromCollection(appID: string,
-  apiPathWithType: {path: string, pathType: PathType},
-  usePolyApiOption: boolean): ApiCascaderOption[] {
+type ApiDirectoryWithPathType = { directory: string, pathType: PathType }
+type GetOptionFromCollectionProps = {
+  appID: string,
+  apiDirectoryWithPathType: ApiDirectoryWithPathType,
+  usePolyApiOption: boolean
+ };
+
+export function useGetOptionFromCollection({
+  appID,
+  apiDirectoryWithPathType,
+  usePolyApiOption,
+}: GetOptionFromCollectionProps): ApiCascaderOption[] {
   const [options, setOptions] = useState<ApiCascaderOption[]>([]);
+
   const apiCollection: Collection = useMemo(() => {
     const pathTypes = [PathType.RAW_ROOT];
     usePolyApiOption && pathTypes.push(PathType.POLY);
     return createCollection({ appID, pathTypes, mode: 'directoryWithApi' });
-  }, [appID, usePolyApiOption]);
+  }, []);
 
   const collectionValue = useCollection(apiCollection);
 
   useEffect(() => {
-    if (!apiPathWithType.path) return;
-    apiCollection.onGetApiList(apiPathWithType.path, apiPathWithType.pathType);
-  }, [apiPathWithType]);
+    if (!apiDirectoryWithPathType.directory) return;
+    apiCollection.onGetApiList(apiDirectoryWithPathType.directory, apiDirectoryWithPathType.pathType);
+  }, [apiDirectoryWithPathType]);
 
   useEffect(() => {
     const directoryChildren = collectionValue.apiDataList.reduce(
       (directoryChildren: DirectoryChild[], list) => {
-        return list.directory.children ?
-          directoryChildren.concat(list.directory.children) :
-          directoryChildren;
+        if (!list.directory.children) {
+          return directoryChildren;
+        }
+        return directoryChildren.concat(list.directory.children);
       },
       []);
-    setOptions(getChildrenOfCurrentSelectOption(directoryChildren, apiPathWithType.path) || []);
+
+    setOptions(getChildrenOfCurrentSelectOption(directoryChildren, apiDirectoryWithPathType.directory));
   }, [collectionValue]);
 
   return options;
