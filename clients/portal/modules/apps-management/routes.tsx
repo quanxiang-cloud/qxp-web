@@ -8,7 +8,6 @@ const AppsIndex = React.lazy(() => import('./index'));
 const AppDetails = React.lazy(() => import('./pages/app-details'));
 const FormDesign = React.lazy(() => import('./pages/form-design'));
 const FlowDetail = React.lazy(() => import('../work-flow'));
-const PreviewCustomPage = React.lazy(() => import('./pages/preview-custom-page'));
 const PageDesign = React.lazy(()=> import('./pages/page-design'));
 const PagePreview = React.lazy(()=> import('./pages/page-design/page-preview'));
 
@@ -32,7 +31,6 @@ export default function Routes(): JSX.Element {
       <GlobalHeader />
       <Switch>
         <Route path="/apps/details/:appID" component={AppDetails} />
-        <Route exact path="/apps/preview/customPage/:appID/:pageID" component={PreviewCustomPage} />
         <Route
           exact
           path="/apps/formDesign/:pageType/:pageId/:appID/:navType?"

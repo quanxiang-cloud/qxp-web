@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { Form, Input } from 'antd';
 
 import Modal from '@c/modal';
@@ -64,10 +64,10 @@ function EditViewModal(
   const [viewType, setViewType] = useState<ViewType>(viewParams?.type || ViewType.TableSchemaView);
   const [form] = Form.useForm();
   const allViewNames = views.map((view) => (view as BaseView).name);
-  const layoutOptions = useMemo(() => layouts.map((layout) => ({
+  const layoutOptions = layouts.map((layout) => ({
     label: layout.id === 'root_node' ? '应用默认布局（默认）' : layout.name,
     value: layout.id,
-  })), [layouts]);
+  }));
 
   function handleSubmit(): void {
     form.submit();

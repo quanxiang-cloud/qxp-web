@@ -178,7 +178,7 @@ class RoleAssociateStore {
       .then((authList: Record<string, APIAuth>) => {
         const _apiAuthList = this.apiList.map((api) => {
           const auth = authList[api.accessPath] || null;
-          return { ...api, auth };
+          return { ...api, auth, isLoading: false };
         });
         this.setApiAndAuthList(_apiAuthList);
       })
@@ -189,11 +189,17 @@ class RoleAssociateStore {
 
   @action
   createAPIAuth = (auth: APIAuth): void => {
+    this.apiAndAuthList = this.apiAndAuthList.map((_api) => {
+      if (auth.path === _api.accessPath) {
+        return { ..._api, isChanging: true };
+      }
+      return _api;
+    });
     createAPIAuth(this.appID, auth)
       .then(() => {
         this.apiAndAuthList = this.apiAndAuthList.map((_api) => {
           if (auth.path === _api.accessPath) {
-            return { ..._api, auth };
+            return { ..._api, auth, isChanging: false };
           }
           return _api;
         });
@@ -211,11 +217,17 @@ class RoleAssociateStore {
 
   @action
   deleteAPIAuth = (path: string, uri: string): void => {
+    this.apiAndAuthList = this.apiAndAuthList.map((_api) => {
+      if (path === _api.accessPath) {
+        return { ..._api, isChanging: true };
+      }
+      return _api;
+    });
     deleteAPIAuth(this.appID, { roleID: this.currentRoleID, path, uri })
       .then(() => {
         this.apiAndAuthList = this.apiAndAuthList.map((_api) => {
           if (path === _api.accessPath) {
-            return { ..._api, auth: null };
+            return { ..._api, auth: null, isChanging: false };
           }
           return _api;
         });

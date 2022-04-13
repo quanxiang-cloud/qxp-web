@@ -1,5 +1,5 @@
 import { get, cloneDeep } from 'lodash';
-
+import type { SelectFormType } from '../type';
 const primitiveTypes = ['string', 'number', 'boolean', 'datetime'];
 const advancedCompTypes = [
   'SubTable',
@@ -214,4 +214,25 @@ export function getFieldValuePath(fieldSchema?: ISchema): string {
     return '';
   }
   return get(valuePathMap, fieldSchema['x-component'] || '', '');
+}
+
+export function getSelectFormType(
+  targetFormId: string,
+  currentFormId: string,
+  formType?: SelectFormType): SelectFormType {
+  if (!formType) {
+    return targetFormId === currentFormId ? 'work-form' : 'others';
+  }
+  return formType;
+}
+
+export function getSelectColumns(
+  properties: [string, any],
+  columns: string[],
+  excludeComps: string[]): boolean {
+  const [filedName, conf] = properties;
+  const isNoSystem = !get(conf, 'x-internal.isSystem');
+  const columnsField = columns.includes(filedName);
+  const isExcludeComps = excludeComps.includes((conf['x-component'] as string).toLocaleLowerCase());
+  return isNoSystem && columnsField && !isExcludeComps;
 }

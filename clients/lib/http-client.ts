@@ -130,11 +130,13 @@ export function fetchFormDataList(
   pageID: string,
   data: FormDataListRequestParams,
 ): Promise<FormDataListResponse> {
-  return httpClient(`/api/v1/form/${appID}/home/form/${pageID}/search`, {
+  return httpClient<Record<string, any>>(`/api/v1/form/${appID}/home/form/${pageID}/search`, {
     method: 'find',
     page: 1,
     size: 10,
     ...data,
+  }).then((res) => {
+    return { entities: res?.entities || [], total: res.total || 0 };
   });
 }
 

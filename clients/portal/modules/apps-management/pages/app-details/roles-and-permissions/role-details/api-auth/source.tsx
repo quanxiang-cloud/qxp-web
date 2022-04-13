@@ -23,7 +23,7 @@ function Source(): JSX.Element {
     {
       Header: 'API名称',
       id: 'title',
-      width: 80,
+      width: 120,
       accessor: 'title',
 
     },
@@ -34,10 +34,12 @@ function Source(): JSX.Element {
     },
     {
       Header: '是否可访问',
-      id: 'id',
+      id: 'auth',
+      width: '40',
       accessor: (api) => {
         return (
           <Checkbox
+            disabled={api?.isChanging || false}
             checked={!!api.auth || false}
             onChange={handleChange}
             value={`${api.accessPath}-${api.uri}`}
