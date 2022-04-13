@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import ArteryRenderer from '@c/artery-renderer';
 
 import { getArteryKeys } from './utils';
+import { VERSION } from '../app-details/view-orchestration/constants';
 
 interface Props {
   arteryID: string;
@@ -19,11 +20,13 @@ function ArteryPage({ arteryID, draft }: Props): JSX.Element {
   }, [arteryID, !!draft]);
 
   return (
-    <ArteryRenderer
-      key={arteryKey}
-      arteryID={arteryKey}
-      version="1.0.0"
-    />
+    <div style={{ height: '100vh', overflow: 'auto' }}>
+      <ArteryRenderer
+        key={arteryKey}
+        arteryID={arteryKey}
+        version={VERSION}
+      />
+    </div>
   );
 }
 

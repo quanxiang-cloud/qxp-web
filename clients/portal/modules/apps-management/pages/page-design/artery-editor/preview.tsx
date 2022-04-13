@@ -6,6 +6,7 @@ import ArteryRenderer from '@c/artery-renderer';
 import { setBatchGlobalConfig } from '@lib/api/user-config';
 
 import { getArteryKeys } from '../utils';
+import { VERSION } from '../../app-details/view-orchestration/constants';
 
 type Props = {
   draftArteryID: string;
@@ -19,7 +20,7 @@ function Preview({ draftArteryID, previewSchema }: Props): JSX.Element {
   useEffect(() => {
     setBatchGlobalConfig([{
       key: draftArteryKey,
-      version: '1.0.0',
+      version: VERSION,
       value: JSON.stringify(previewSchema),
     }]).then(() => {
       setSavingDraft(false);

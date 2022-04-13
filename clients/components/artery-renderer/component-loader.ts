@@ -1,8 +1,9 @@
-import { getBatchGlobalConfig } from '@lib/api/user-config';
 import { ComponentLoaderParam, DynamicComponent } from '@one-for-all/artery-renderer';
 
+import { getBatchGlobalConfig } from '@lib/api/user-config';
+import { VERSION } from '@portal/modules/apps-management/pages/app-details/view-orchestration/constants';
+
 const packageEntryCache: Record<string, string> = {};
-const CONFIG_VERSION = '1.0.0';
 
 function queryPackageMainSrc(packageName: string, packageVersion: string): Promise<string> {
   const cacheKey = `${packageName}:${packageVersion}`;
@@ -11,7 +12,7 @@ function queryPackageMainSrc(packageName: string, packageVersion: string): Promi
   }
 
   const configKey = `third_party_package_entry:${cacheKey}`;
-  return getBatchGlobalConfig([{ key: configKey, version: CONFIG_VERSION }]).then(({ result }) => {
+  return getBatchGlobalConfig([{ key: configKey, version: VERSION }]).then(({ result }) => {
     if (result[configKey]) {
       packageEntryCache[cacheKey] = result[configKey];
 
