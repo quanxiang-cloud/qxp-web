@@ -4,9 +4,11 @@ import cs from 'classnames';
 import { observer } from 'mobx-react';
 import { pickBy } from 'lodash';
 import { useUpdateEffect, useDebounce } from 'react-use';
+import { Search, Icon, Tooltip, Modal, toast } from '@one-for-all/ui';
 
 import ApiSelector from '@polyApi/nodes/forms/request-config/api-selector';
-import { Search, Icon, Tooltip, Modal, toast } from '@one-for-all/ui';
+import { getQuery } from '@lib/utils';
+
 import { useCtx } from '../../../../ctx';
 
 import VarItem from './var-item';
@@ -25,6 +27,8 @@ function ApiState(props: Props): JSX.Element {
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [curStates, setCurStates] = useState(dataSource.apiState);
+
+  const { appID } = getQuery<{ appID: string; pageName: string; arteryID: string }>();
 
   useEffect(()=> {
     if (!dataSource.modalOpen) {
@@ -155,6 +159,7 @@ function ApiState(props: Props): JSX.Element {
                 <ApiSelector
                   simpleMode
                   usePolyApiOption
+                  appID={appID}
                   className='api-selector-wrap'
                   initRawApiPath=""
                   setApiPath={ctx.dataSource.setCurApiId}
