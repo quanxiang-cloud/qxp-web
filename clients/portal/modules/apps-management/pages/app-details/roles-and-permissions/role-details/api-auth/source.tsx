@@ -13,6 +13,7 @@ import { useGetNamespaceFullPath } from '@portal/modules/poly-api/effects/api/na
 import store from '../store';
 import NsTreeStore from './store';
 import NodeRender from './group-node';
+import { Role } from '../../constants';
 
 const initialPage = { page: 1, pageSize: 10 };
 function Source(): JSX.Element {
@@ -37,10 +38,12 @@ function Source(): JSX.Element {
       id: 'auth',
       width: '40',
       accessor: (api) => {
+        const disabled = api?.isChanging || store.curRoleType === Role.DEFAULT;
+        const checked = !!api.auth || store.curRoleType === Role.DEFAULT;
         return (
           <Checkbox
-            disabled={api?.isChanging || false}
-            checked={!!api.auth || false}
+            disabled={disabled || false}
+            checked={checked || false}
             onChange={handleChange}
             value={`${api.accessPath}-${api.uri}`}
           />
@@ -58,12 +61,13 @@ function Source(): JSX.Element {
   }, { enabled: !!store.rootPath });
 
   const nsStore = useMemo(() => {
-    return namespaceTree?.root ? new NsTreeStore(namespaceTree.root) : undefined;
+    return namespaceTree?.root?.children ? new NsTreeStore(namespaceTree.root) : undefined;
   }, [namespaceTree?.root]);
 
   useEffect(() => {
     if (!nsStore) {
       store.setCurNamespace(null);
+      setCurNsPath('');
       return;
     }
     const firstNode = nsStore.nodeList?.[1] || undefined;

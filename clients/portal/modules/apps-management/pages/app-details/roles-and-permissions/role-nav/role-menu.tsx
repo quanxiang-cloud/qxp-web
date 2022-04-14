@@ -31,7 +31,7 @@ function RoleMenu({ role }: Props ): JSX.Element {
 
   return (
     <MoreMenu
-      menus={role.source?.types === Role.DEFAULT ? menus.slice(0, 1) : menus}
+      menus={role.source?.type === Role.DEFAULT ? menus.slice(0, 1) : menus}
       placement="bottom-end"
       onMenuClick={store.setModalType}
     >

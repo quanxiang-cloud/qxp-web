@@ -3,7 +3,7 @@ export const INIT_CURRENT_RIGHTS: RoleRight = {
   name: '',
   description: '',
   appID: '',
-  types: 2,
+  type: 2,
 };
 
 export const COMPONENT_NAME_TITLE_MAP: Record<string, string> = {

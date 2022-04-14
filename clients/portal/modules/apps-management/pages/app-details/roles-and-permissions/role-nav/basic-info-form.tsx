@@ -4,6 +4,8 @@ import cs from 'classnames';
 
 import formFieldWrap from '@c/form-field-wrap';
 
+import { Role } from '../constants';
+
 type Props = {
   type: string
   className?: string
@@ -25,12 +27,12 @@ function BasicInfoForm(
   return (
     <div className={className}>
       <Input
-        className={cs({ 'bg-gray-100 cursor-not-allowed': defaultValue?.types === 1 })}
+        className={cs({ 'bg-gray-100 cursor-not-allowed': defaultValue?.type === Role.DEFAULT })}
         label='角色名称'
         help='不超过 20 个字符，名称不可重复。建议以角色名称命名，例如：普通员工，以便于识别。'
         error={errors.name}
         defaultValue={type === 'edit' ? defaultValue?.name : ''}
-        readOnly={defaultValue?.types === 1 || false}
+        readOnly={defaultValue?.type === Role.DEFAULT || false}
         register={register('name', {
           required: '请输入角色名称',
           maxLength: { value: 20, message: '不能超过20个字符' },

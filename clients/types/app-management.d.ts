@@ -171,9 +171,9 @@ declare global {
   } & RoleCreate
 
   type RoleCreate = {
+    type?: number;
     name?: string;
     description?: string;
-    types?: number;
   }
 
   type UserOrDept = {
