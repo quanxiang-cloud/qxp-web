@@ -36,7 +36,16 @@ export function useGetOptionFromCollection({
         if (!list.directory.children) {
           return directoryChildren;
         }
-        return directoryChildren.concat(list.directory.children);
+        let willAppendChildren = list.directory.children;
+        if (list.pathType === 'poly') {
+          willAppendChildren = [{
+            ...list.directory,
+            active: 1,
+            subCount: list.directory.children.length,
+            title: '编排API',
+          }];
+        }
+        return directoryChildren.concat(willAppendChildren);
       },
       []);
 
