@@ -1,7 +1,7 @@
 import { get } from 'lodash';
 import { nanoid } from 'nanoid';
 import { findNodeByID, appendChild, getNodeParents } from '@one-for-all/artery-utils';
-import { Artery, RouteNode, Node, HTMLNode } from '@one-for-all/artery';
+import { Artery, RouteNode, Node, HTMLNode, RefNode } from '@one-for-all/artery';
 
 import { getBatchGlobalConfig, setBatchGlobalConfig } from '@lib/api/user-config';
 
@@ -114,4 +114,87 @@ export function addRouteNodeToRootNode(rootNode: Node, routeNode: RouteNode): No
   }
 
   return addRouteNodeToLayout(rootNode, _rootNode.id, routeNode);
+}
+
+export function createAppLandingPage(): Artery {
+  const nodeID = genNodeID();
+  const textNodeID = 'text-' + genNodeID();
+
+  const ARTERY_DEMO: Artery = {
+    node: {
+      id: nodeID,
+      type: 'react-component',
+      packageName: 'ofa-ui',
+      packageVersion: 'latest',
+      exportName: 'page',
+      label: '示例页面',
+      props: {
+        style: {
+          type: 'constant_property',
+          value: {
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontWeight: 400,
+            flexWrap: 'nowrap',
+          },
+        },
+      },
+      children: [{
+        exportName: 'text',
+        label: '文本',
+        id: textNodeID,
+        supportStateExposure: true,
+        type: 'react-component',
+        packageName: 'ofa-ui',
+        packageVersion: 'latest',
+        props: {
+          id: {
+            type: 'constant_property',
+            value: textNodeID,
+          },
+          content: {
+            type: 'constant_property',
+            value: '页面设计示例页面',
+          },
+          isAllowSelect: {
+            type: 'constant_property',
+            value: false,
+          },
+          style: {
+            type: 'constant_property',
+            value: {
+              display: 'block',
+              fontSize: '50px',
+              fontWeight: 600,
+              color: '#000000',
+              borderStyle: 'none',
+              borderWidth: 1,
+            },
+          },
+        },
+      }],
+    },
+    apiStateSpec: {},
+    sharedStatesSpec: {},
+  };
+
+  return ARTERY_DEMO;
+}
+
+export async function createAppLandingRouteNode(): Promise<RouteNode> {
+  const demoViewRefArteryKey = genDesktopArteryKey(genNodeID());
+  const refNode: RefNode = {
+    id: genNodeID(),
+    type: 'ref-node',
+    arteryID: demoViewRefArteryKey,
+    label: '示例页面',
+  };
+
+  const demoViewNode = attachToRouteNode(refNode, 'view');
+  return saveArtery(demoViewRefArteryKey, createAppLandingPage()).then(() => {
+    return demoViewNode;
+  });
 }

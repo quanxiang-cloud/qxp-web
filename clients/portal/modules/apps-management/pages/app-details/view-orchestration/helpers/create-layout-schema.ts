@@ -1,4 +1,4 @@
-import { Node } from '@one-for-all/artery';
+import { Node, RouteNode } from '@one-for-all/artery';
 import {
   LAYOUT_CHILD_TYPE_FRAGMENT_CONTAINER,
   LAYOUT_CHILD_TYPE_ROUTES_CONTAINER,
@@ -8,12 +8,21 @@ import {
 import { LayoutType } from '../types';
 import { genNodeID } from './utils';
 
-export default function createLayoutSchema(
+export type LayoutSchemaProps = {
   name: string,
   layoutType: LayoutType,
   refSchemaKey: string,
+  initialChild?: RouteNode,
   isRoot?: boolean,
-): Node {
+}
+
+export default function createLayoutSchema({
+  name,
+  layoutType,
+  refSchemaKey,
+  initialChild,
+  isRoot,
+}: LayoutSchemaProps ): Node {
   return {
     id: isRoot ? ROOT_NODE_ID : genNodeID(),
     label: name,
@@ -62,7 +71,7 @@ export default function createLayoutSchema(
             value: LAYOUT_CHILD_TYPE_ROUTES_CONTAINER,
           },
         },
-        children: [],
+        children: initialChild ? [initialChild] : [],
       },
     ],
   };
