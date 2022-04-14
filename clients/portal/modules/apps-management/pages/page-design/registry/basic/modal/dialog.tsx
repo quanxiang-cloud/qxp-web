@@ -2,10 +2,12 @@ import React, { ForwardedRef, forwardRef } from 'react';
 import { noop } from 'lodash';
 
 import { Modal } from '@one-for-all/ui';
+
 import { Props as ConfigProps } from './config-form';
 
-function Dialog(props: ConfigProps, ref: ForwardedRef<HTMLDivElement>): JSX.Element {
+function Dialog(props: ConfigProps, ref: ForwardedRef<HTMLDivElement>): JSX.Element | null {
   const { children, hideFooter, okIconName, okText, cancelIconName, cancelText, ...rest } = props;
+
   return (
     <Modal
       {...rest}

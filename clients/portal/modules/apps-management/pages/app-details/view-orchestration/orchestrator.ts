@@ -41,7 +41,7 @@ import { createBlank, fetchAppDetails, updateApp } from '../api';
 class Orchestrator {
   @observable loading = true;
   @observable rootNode: Node;
-  @observable currentView: View | ViewGroup;
+  @observable currentView?: View | ViewGroup;
   @observable homeView?: View;
   @observable modalType = '';
   appID: string;
@@ -62,8 +62,8 @@ class Orchestrator {
     const _rootNOde = findNodeByID(node, ROOT_NODE_ID);
     this.appLayout = get(_rootNOde, 'props.data-layout-type.value', undefined);
 
-    this.currentView = this.views[0];
     this.fetchAppHomeView(appID);
+    this.currentView = this.views[0];
   }
 
   @computed get layouts(): Array<Layout> {
@@ -446,9 +446,6 @@ class Orchestrator {
 
       return this.updateViewName(this.currentView as View, viewInfo.name!);
     }).then(() => {
-      if (this.modalType === 'createView' && this.views.length === 1) {
-        this.setHomeView(viewInfo.name);
-      }
       if (viewInfo.id) {
         this.setCurrentView(viewInfo);
         return;
@@ -491,6 +488,10 @@ class Orchestrator {
   @action
   fetchAppHomeView(id: string): void {
     fetchAppDetails(id).then(({ accessURL }) => {
+      if (!accessURL && this.views.length === 1) {
+        this.setHomeView(this.views[0].name);
+        return;
+      }
       const view = this.views.find((view) => (view as View).url === accessURL);
       this.homeView = view as View;
     });
