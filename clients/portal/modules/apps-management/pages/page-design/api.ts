@@ -42,7 +42,7 @@ export function getVersionKey(): string {
 }
 
 export function getRenderRepository(): any {
-  const comps = stores.registry.toComponentMap();
+  const comps = stores.registry.toComponentMap('ofa-ui');
   const systemComps = stores.registry.toComponentMap('systemComponents');
 
   return {

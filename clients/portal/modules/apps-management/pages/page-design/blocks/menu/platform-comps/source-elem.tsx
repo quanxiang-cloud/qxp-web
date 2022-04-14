@@ -19,7 +19,7 @@ function SourceElem(props: SourceElement<any>): JSX.Element {
   const compName = props.name.toLowerCase();
 
   function addNodeToCanvas(target?: any): void {
-    const { defaultStyle, defaultConfig } = props;
+    const { defaultStyle, defaultConfig, category } = props;
     page.appendNode({
       exportName: compName,
       label: registry.getLabelByElemType(compName),
@@ -28,6 +28,7 @@ function SourceElem(props: SourceElement<any>): JSX.Element {
         // ...InitStyles,
         ...defaultStyle,
       },
+      category,
     }, target, { from: 'source' });
     !designer.panelPinned && designer.setPanelOpen(false);
   }

@@ -66,7 +66,7 @@ export function svgPreviewImg(title: string): string {
   return `data:image/svg+xml;base64,${encode(svg)}`;
 }
 
-export function isSystemComponent({ exportName, packageName }: PageNode): boolean {
+export function isSystemComponent({ exportName, category }: PageNode): boolean {
   const systemCmpNames = SYSTEM_COMPONENT_NAMES.map((name) => name.toLocaleLowerCase());
-  return packageName === 'system-components' && systemCmpNames.includes(exportName);
+  return category === 'systemComponents' && systemCmpNames.includes(exportName);
 }

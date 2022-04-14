@@ -14,7 +14,7 @@ const elem: SourceElement<Props> = {
   name: 'UserMenuAvatar',
   icon: 'user_avatar',
   label: '头像',
-  category: 'inner',
+  category: 'systemComponents',
   component: UserAvatarMenu,
   configForm: ConfigForm,
   defaultConfig: DEFAULT_CONFIG,
