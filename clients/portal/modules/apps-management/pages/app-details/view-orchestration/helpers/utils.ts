@@ -116,12 +116,11 @@ export function addRouteNodeToRootNode(rootNode: Node, routeNode: RouteNode): No
   return addRouteNodeToLayout(rootNode, _rootNode.id, routeNode);
 }
 
-export function createDefaultView(): Artery {
+export function createAppLandingPage(): Artery {
   const nodeID = genNodeID();
   const textNodeID = 'text-' + genNodeID();
 
-  // if type Artery, ts error at line 150-151
-  const ARTERY_DEMO: any = {
+  const ARTERY_DEMO: Artery = {
     node: {
       id: nodeID,
       type: 'react-component',
@@ -146,15 +145,7 @@ export function createDefaultView(): Artery {
       children: [{
         exportName: 'text',
         label: '文本',
-        defaultConfig: {
-          content: '文本',
-          isAllowSelect: false,
-        },
-        defaultStyle: {
-          display: 'inline',
-        },
         id: textNodeID,
-        pid: nodeID,
         supportStateExposure: true,
         type: 'react-component',
         packageName: 'ofa-ui',
@@ -193,7 +184,7 @@ export function createDefaultView(): Artery {
   return ARTERY_DEMO;
 }
 
-export async function genDefaultArteryViewNode(): Promise<RouteNode> {
+export async function createAppLandingRouteNode(): Promise<RouteNode> {
   const demoViewRefArteryKey = genDesktopArteryKey(genNodeID());
   const refNode: RefNode = {
     id: genNodeID(),
@@ -203,7 +194,7 @@ export async function genDefaultArteryViewNode(): Promise<RouteNode> {
   };
 
   const demoViewNode = attachToRouteNode(refNode, 'view');
-  return saveArtery(demoViewRefArteryKey, createDefaultView()).then(() => {
+  return saveArtery(demoViewRefArteryKey, createAppLandingPage()).then(() => {
     return demoViewNode;
   });
 }

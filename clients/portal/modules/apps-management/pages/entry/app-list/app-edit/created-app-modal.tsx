@@ -37,6 +37,7 @@ function CreatedAppModal({ modalType, onCancel, templateID }: Props): JSX.Elemen
   function submitCallback(): void {
     const formDom = formRef.current;
     const data = formDom.getFieldsValue() as AppInfo;
+    let appID = '';
     setLoading(true);
 
     if (has('template', data)) {
@@ -50,11 +51,13 @@ function CreatedAppModal({ modalType, onCancel, templateID }: Props): JSX.Elemen
     }
 
     createdApp({ ...data, useStatus: -1 }).then((res: string) => {
-      return initAppRootView(res, defaultAppLayout).then(() => {
-        toast.success('创建应用成功！');
-        history.push(`/apps/details/${res}/app_views`);
-        onCancel();
-      });
+      appID = res;
+      return initAppRootView(res, defaultAppLayout);
+    }).then(() => {
+      if (!appID) throw new Error('App creation failed: invalid appID');
+      toast.success('创建应用成功！');
+      history.push(`/apps/details/${appID}/app_views`);
+      onCancel();
     }).catch(toastError);
   }
 
