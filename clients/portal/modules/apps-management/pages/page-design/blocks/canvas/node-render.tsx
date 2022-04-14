@@ -201,7 +201,7 @@ function NodeRender({ schema }: Props): JSX.Element | null {
     }
 
     // add 'data-in-canvas' props for system components to prevent default behavior
-    if (isSystemComponent(node)) {
+    if (isSystemComponent(node.category)) {
       Object.assign(props, { 'data-in-canvas': true });
     }
 

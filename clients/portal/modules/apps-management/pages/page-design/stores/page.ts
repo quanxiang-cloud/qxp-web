@@ -164,7 +164,7 @@ class PageStore {
       pid: this.dragPos === 'inner' ? targetRealNode.id : (targetRealNode.pid || pageId),
       supportStateExposure: true,
       type: 'react-component',
-      packageName: isSystemComponent(node as any) ? 'system-components' : 'ofa-ui', // todo refactor the condition
+      packageName: isSystemComponent(node.category ?? '') ? 'system-components' : 'ofa-ui',
       packageVersion: 'latest',
       props: mergeAsRenderEngineProps({}, {
         id: componentId, // Default mount ID

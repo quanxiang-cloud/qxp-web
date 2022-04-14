@@ -32,7 +32,7 @@ function SettingPanel(): JSX.Element {
       },
     ];
 
-    if (page.activeElem?.exportName === 'page' || isSystemComponent(page.activeElem)) {
+    if (page.activeElem?.exportName === 'page' || isSystemComponent(page.activeElem.category)) {
       return panels;
     }
 

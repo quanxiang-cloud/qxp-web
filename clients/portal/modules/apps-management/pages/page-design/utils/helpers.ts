@@ -8,7 +8,6 @@ import page from '../stores/page';
 import { PagePlaceholder, ContainerPlaceholder } from './common-comps';
 import { isDev } from '../utils';
 import { encode } from '../utils/base64';
-import { SYSTEM_COMPONENT_NAMES } from '../constants';
 
 export function transformType(artery: PageNode | LoopNode): string | React.ComponentType {
   const { type } = artery;
@@ -66,7 +65,6 @@ export function svgPreviewImg(title: string): string {
   return `data:image/svg+xml;base64,${encode(svg)}`;
 }
 
-export function isSystemComponent({ exportName, category }: PageNode): boolean {
-  const systemCmpNames = SYSTEM_COMPONENT_NAMES.map((name) => name.toLocaleLowerCase());
-  return category === 'systemComponents' && systemCmpNames.includes(exportName);
+export function isSystemComponent(category: string): boolean {
+  return category === 'systemComponents';
 }
