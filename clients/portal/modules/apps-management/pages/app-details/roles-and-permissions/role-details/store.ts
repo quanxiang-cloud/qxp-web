@@ -13,7 +13,7 @@ import {
   updateAPIAuth,
   updatePerUser,
 } from '../api';
-import { SCOPE } from '../constants';
+import { Role, SCOPE } from '../constants';
 import { getAddAndRemovePerson } from '../utils';
 
 class RoleAssociateStore {
@@ -21,6 +21,7 @@ class RoleAssociateStore {
   @observable appID = '';
   @observable currentScopes: DeptAndUser[] = [];
   @observable currentRoleID = '';
+  @observable curRoleType = Role.CUSTOMIZE;
   @observable isLoadingScope = false;
   @observable selectUser: string[] = [];
   @observable UserDetailList: UserDetail[] = [];
@@ -40,8 +41,9 @@ class RoleAssociateStore {
   };
 
   @action
-  setCurRoleID = (currentRoleID: string): void => {
-    this.currentRoleID = currentRoleID;
+  setRole = (role: RoleRight): void => {
+    this.currentRoleID = role.id;
+    this.curRoleType = role?.type || Role.CUSTOMIZE;
   };
 
   @action
@@ -115,8 +117,10 @@ class RoleAssociateStore {
 
   @action
   fetchRolePerson = (appID: string, roleID: string): void => {
-    this.setAppID(appID);
-    this.setCurrentRoleID(roleID);
+    if (!appID || !roleID) {
+      this.currentScopes = [];
+      return;
+    }
     fetchRolePerson(appID, roleID)
       .then((res) => this.setCurrentScopes(res.list))
       .catch((err) => toast.error(err));
@@ -178,7 +182,7 @@ class RoleAssociateStore {
       .then((authList: Record<string, APIAuth>) => {
         const _apiAuthList = this.apiList.map((api) => {
           const auth = authList[api.accessPath] || null;
-          return { ...api, auth };
+          return { ...api, auth, isLoading: false };
         });
         this.setApiAndAuthList(_apiAuthList);
       })
@@ -189,11 +193,17 @@ class RoleAssociateStore {
 
   @action
   createAPIAuth = (auth: APIAuth): void => {
+    this.apiAndAuthList = this.apiAndAuthList.map((_api) => {
+      if (auth.path === _api.accessPath) {
+        return { ..._api, isChanging: true };
+      }
+      return _api;
+    });
     createAPIAuth(this.appID, auth)
       .then(() => {
         this.apiAndAuthList = this.apiAndAuthList.map((_api) => {
           if (auth.path === _api.accessPath) {
-            return { ..._api, auth };
+            return { ..._api, auth, isChanging: false };
           }
           return _api;
         });
@@ -211,16 +221,39 @@ class RoleAssociateStore {
 
   @action
   deleteAPIAuth = (path: string, uri: string): void => {
+    this.apiAndAuthList = this.apiAndAuthList.map((_api) => {
+      if (path === _api.accessPath) {
+        return { ..._api, isChanging: true };
+      }
+      return _api;
+    });
     deleteAPIAuth(this.appID, { roleID: this.currentRoleID, path, uri })
       .then(() => {
         this.apiAndAuthList = this.apiAndAuthList.map((_api) => {
           if (path === _api.accessPath) {
-            return { ..._api, auth: null };
+            return { ..._api, auth: null, isChanging: false };
           }
           return _api;
         });
         toast.success('删除成功');
       }).catch((err) => toast.error(err));
+  };
+
+  @action
+  clear = (): void => {
+    this.appID = '';
+    this.currentScopes = [];
+    this.currentRoleID = '';
+    this.scopeType = SCOPE.STAFF;
+    this.curRoleType = Role.CUSTOMIZE;
+    this.UserDetailList = [];
+    this.scopeDeptList = [];
+    this.apiList = [];
+    this.apiAndAuthList = [];
+    this.apiCount = 0;
+    this.curNamespace = null;
+    this.rootPath = '';
+    this.modelType = 'inner.form';
   };
 }
 

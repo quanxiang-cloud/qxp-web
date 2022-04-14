@@ -171,9 +171,9 @@ declare global {
   } & RoleCreate
 
   type RoleCreate = {
+    type?: number;
     name?: string;
     description?: string;
-    types?: number;
   }
 
   type UserOrDept = {
@@ -202,6 +202,7 @@ declare global {
   }
 
   type APIDetailAuth = RawApiDetail & {
-    auth?: APIAuth | null
+    auth?: APIAuth | null;
+    isChanging?: boolean;
   }
 }

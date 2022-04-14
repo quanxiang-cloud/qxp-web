@@ -17,11 +17,11 @@ function EditRoleModal(): JSX.Element {
       }
 
       if (store.modalType === 'copy') {
-        store.copyRole({ id: store.curRole.id, ...roleDetails });
+        store.curRole && store.copyRole({ id: store.curRole?.id, ...roleDetails });
         return;
       }
 
-      store.updateRole({ id: store.curRole.id, ...roleDetails });
+      store.curRole && store.updateRole({ id: store.curRole.id, ...roleDetails });
     })();
   };
 

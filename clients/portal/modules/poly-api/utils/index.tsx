@@ -187,10 +187,14 @@ function removeCurrentRequestNodeFromRequestToRequestOrCondition(
 ): POLY_API.Element[] {
   const parentPreviousNextNodeIds = parent.data?.get<string[]>('nextNodes') || [];
   const isParentPreviousMultipleChild = parentPreviousNextNodeIds.length > 1;
-  const edges = isParentPreviousMultipleChild ? [] : [buildEdge(parent.id, next.id)];
+  const isNextEnd = next.type === 'output';
+  const shouldLinkNextNode = !isParentPreviousMultipleChild || !isNextEnd;
+
+  const edges = shouldLinkNextNode ? [buildEdge(parent.id, next.id)] : [];
+  const nextNodeIdsAfterFilter = parentPreviousNextNodeIds.filter((id) => id !== current.id);
   parent.data?.set(
     'nextNodes',
-    !isParentPreviousMultipleChild ? [next.id] : parentPreviousNextNodeIds.filter((id) => id !== current.id),
+    shouldLinkNextNode ? [...nextNodeIdsAfterFilter, next.id] : nextNodeIdsAfterFilter,
   );
   const newElements = removeElements([current], elements);
   return newElements.concat(edges);

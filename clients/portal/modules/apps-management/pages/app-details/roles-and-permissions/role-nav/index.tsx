@@ -23,7 +23,7 @@ const modifiers = [
 ];
 
 type Props = {
-  setRole: (role: RoleRight) => void
+  setRole: (role: RoleRight | undefined) => void
 }
 
 function RoleNav({ setRole }: Props): JSX.Element {
@@ -33,6 +33,9 @@ function RoleNav({ setRole }: Props): JSX.Element {
 
   useEffect(() => {
     appID && store.setAppID(appID);
+    return () => {
+      store.clear();
+    };
   }, []);
 
   useEffect(() => {
@@ -72,7 +75,7 @@ function RoleNav({ setRole }: Props): JSX.Element {
         </div>
         {store.roles.length !== 0 && (
           <TwoLevelMenu<RoleRight>
-            defaultSelected={store.curRole.id}
+            defaultSelected={store.curRole?.id}
             onSelect={(role) => {
               store.setCurRole(role.source as RoleRight);
             }}

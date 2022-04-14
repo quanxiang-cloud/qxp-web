@@ -4,7 +4,7 @@ import { getQuery } from '@lib/utils';
 import { action, computed, observable, reaction } from 'mobx';
 
 import { copyRole, createRole, deleteRole, fetchRoles, updateRole } from '../api';
-import { INIT_CURRENT_RIGHTS } from '../constants';
+import { Role } from '../constants';
 
 class RoleNavStore {
   @observable appID = '';
@@ -12,7 +12,7 @@ class RoleNavStore {
   @observable searchRoleWords = '';
   @observable editLoading = false;
   @observable rolesList: RoleRight[] = [];
-  @observable curRole: RoleRight = { id: '' };
+  @observable curRole: RoleRight | undefined = undefined;
   @observable fetchRoleLoading = false;
 
   constructor() {
@@ -67,14 +67,14 @@ class RoleNavStore {
     this.rolesList = rolesList;
     const { id } = getQuery<{ id: string }>();
     if (!id) {
-      this.curRole = this.rolesList?.[0] || INIT_CURRENT_RIGHTS;
+      this.curRole = this.rolesList?.[0] || undefined;
       return;
     }
-    this.curRole = this.rolesList.find((role) => role.id === id) || INIT_CURRENT_RIGHTS;
+    this.curRole = this.rolesList.find((role) => role.id === id) || undefined;
   };
 
   @action
-  setCurRole = (curRole: RoleRight): void => {
+  setCurRole = (curRole: RoleRight | undefined): void => {
     this.curRole = curRole;
   };
 
@@ -83,7 +83,7 @@ class RoleNavStore {
     this.editLoading = true;
     return createRole(this.appID, role)
       .then((res: { id: string }) => {
-        this.rolesList = [...this.rolesList, { ...role, ...res }];
+        this.rolesList = [...this.rolesList, { ...role, ...res, type: Role.CUSTOMIZE }];
         this.curRole = { ...role, ...res };
       })
       .catch((err) => toast.error(err))
@@ -140,7 +140,7 @@ class RoleNavStore {
       .then(() => {
         this.rolesList = delAfter;
         toast.success(
-          `${this.curRole.name}  角色删除成功`,
+          `${this.curRole?.name || ''}  角色删除成功`,
         );
         this.curRole = delAfter[0];
       })
@@ -148,6 +148,12 @@ class RoleNavStore {
       .finally(() => {
         this.modalType = '';
       });
+  };
+
+  @action
+  clear = (): void => {
+    this.appID = '';
+    this.curRole = undefined;
   };
 }
 
