@@ -1,7 +1,6 @@
 
 import {
   getBatchGlobalConfig,
-  setArteryEngineMenuType,
   setBatchGlobalConfig,
 } from '@lib/api/user-config';
 import toast from '@lib/toast';
@@ -9,7 +8,6 @@ import SimpleViewRenders from '@c/simple-view-render';
 
 import stores from './stores';
 import { getArteryKeys } from './utils';
-import store from '../app-details/store';
 import { VERSION } from '../app-details/view-orchestration/constants';
 
 export const PG_SAVED_PREFIX = 'pge-';
@@ -49,8 +47,3 @@ export function getRenderRepository(): any {
   };
 }
 
-export function updateArteryEngineMenuType(appID: string, id: string): void {
-  setArteryEngineMenuType(appID, id).then(() => {
-    store.setActiveMenu({ ...store.curPage, menuType: 3 });
-  }).catch((err: any) => toast.error(err));
-}

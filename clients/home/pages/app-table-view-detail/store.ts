@@ -11,13 +11,13 @@ class TableViewStore {
   @observable tableName = '';
   @observable curRowID = '';
   @observable fetchSchemeLoading = true;
-  @observable authority = 0;
+  @observable authority = 63;
   @observable operationType = '';
 
   constructor(props: TableViewsProps) {
     this.appID = props.appID;
     this.tableID = props.tableID;
-    this.getAuthority(props.appID, props.tableID);
+    // this.getAuthority(props.appID, props.tableID);
   }
 
   @action
