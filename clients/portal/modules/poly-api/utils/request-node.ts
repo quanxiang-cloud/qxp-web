@@ -113,23 +113,22 @@ export function getChildrenOfCurrentSelectOption(
         path: fullPath,
         pathType,
       };
-    } else {
-      const { name, title, pathType, children, parent } = currentChild;
-      let _children: ApiCascaderOption[] | undefined;
-      if (children && children.length) {
-        _children = getChildrenOfCurrentSelectOption(children, apiNamespacePath);
-      } else if (apiNamespacePath === `${parent}/${name}`) {
-        _children = PLACEHOLDER_OPTION;
-      }
-      return {
-        label: title ? title : (Title_Map[name] || name),
-        value: name,
-        children: _children,
-        isLeaf: false,
-        path: `${parent}/${name}`,
-        pathType,
-      };
     }
+    const { name, title, pathType, children, parent } = currentChild;
+    let _children: ApiCascaderOption[] | undefined;
+    if (children && children.length) {
+      _children = getChildrenOfCurrentSelectOption(children, apiNamespacePath);
+    } else if (apiNamespacePath === `${parent}/${name}`) {
+      _children = PLACEHOLDER_OPTION;
+    }
+    return {
+      label: title ? title : (Title_Map[name] || name),
+      value: name,
+      children: _children,
+      isLeaf: false,
+      path: `${parent}/${name}`,
+      pathType,
+    };
   });
 }
 
