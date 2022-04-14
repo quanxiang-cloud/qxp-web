@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { UseFormSetValue } from 'react-hook-form';
+import { useParams } from 'react-router-dom';
 
 import Loading from '@c/loading';
 import APISelector from '@polyApi/nodes/forms/request-config/api-selector';
@@ -22,6 +23,8 @@ interface Props {
 export default function API(
   { value, onChange, setFormValue, values, error: errorMessage }: Props,
 ): JSX.Element {
+  const { appID } = useParams<{ appID: string }>();
+
   const { data: apiDocDetail, isLoading, error } = useGetRequestNodeApi({
     path: value.value.slice(1),
     body: { docType: 'raw', titleFirst: true },
@@ -51,6 +54,7 @@ export default function API(
   return (
     <>
       <APISelector
+        appID={appID}
         initRawApiPath={value.value}
         setApiPath={(path) => onChange({ value: path })}
         className="webhook-api-select"

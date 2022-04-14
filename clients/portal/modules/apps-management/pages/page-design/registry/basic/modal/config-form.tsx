@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { defaults } from 'lodash';
+import { Toggle } from '@one-for-all/ui';
 
 import { useCtx } from '../../../ctx';
 import ConfigBind from '../../../utils/data-bind';
-import { Toggle } from '@one-for-all/ui';
 
 type Callback = (...args: any[]) => void;
 
 export interface Props {
   title: string;
   isOpen: boolean;
+  controlled: true;
   id?: string;
   onClose?: Callback;
   onCancel?: Callback;
@@ -29,6 +30,7 @@ export interface Props {
 export const defaultConfig: Props = {
   title: 'modal 标题',
   isOpen: true,
+  controlled: true,
   width: 'auto',
   height: 'auto',
   fullscreen: false,

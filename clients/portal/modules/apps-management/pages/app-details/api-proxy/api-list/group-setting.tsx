@@ -102,7 +102,6 @@ function GroupSetting(): JSX.Element {
           toast.success('修改成功');
         }
         await store.fetchSvc();
-        await store.setApiKey();
       } catch (err) {
         toast.error(err);
       }
