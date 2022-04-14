@@ -11,6 +11,7 @@ import dataSource from './data-source';
 import type { DragPos, PageNode, PageArtery, SchemaElements, SourceElement } from '../types';
 import { mapRawProps, mergeAsRenderEngineProps, transformLifecycleHooks } from '../utils/artery-adapter';
 import { initPageArtery, deepMergeNode, generateGridChildren } from './page-helpers';
+import { isSystemComponent } from '../utils/helpers';
 
 type Mode = 'design' | 'preview'
 
@@ -163,7 +164,7 @@ class PageStore {
       pid: this.dragPos === 'inner' ? targetRealNode.id : (targetRealNode.pid || pageId),
       supportStateExposure: true,
       type: 'react-component',
-      packageName: 'ofa-ui',
+      packageName: isSystemComponent(node.category ?? '') ? 'system-components' : 'ofa-ui',
       packageVersion: 'latest',
       props: mergeAsRenderEngineProps({}, {
         id: componentId, // Default mount ID

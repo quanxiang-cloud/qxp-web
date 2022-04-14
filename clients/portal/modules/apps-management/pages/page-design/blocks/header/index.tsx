@@ -22,7 +22,8 @@ function Toolbar({ blocksCommunicationState$ }: BlockItemProps<BlocksCommunicati
   const [historyList, setHistoryList] = useState<string[]>([]); // page schema history
   const [hisIdx, setHisIdx] = useState(0); // history queue index
   const repository = useMemo(()=> ({
-    'ofa-ui@latest': registry.toComponentMap(),
+    'ofa-ui@latest': registry.toComponentMap('ofa-ui'),
+    'system-components@latest': registry.toComponentMap('systemComponents'),
   }), []);
   const { docLink = '', hideTestPreview } = ArteryEngine.useObservable(
     blocksCommunicationState$, { activeNodeID: '' },

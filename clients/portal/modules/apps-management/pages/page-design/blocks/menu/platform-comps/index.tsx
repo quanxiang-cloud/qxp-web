@@ -13,6 +13,7 @@ const categories: Array<{ label: string, value: Category }> = [
   { label: '基础组件', value: 'basic' },
   { label: '表单组件', value: 'form' },
   { label: '高级组件', value: 'advanced' },
+  { label: '内部组件', value: 'systemComponents' },
   { label: '其它', value: 'others' },
 ];
 

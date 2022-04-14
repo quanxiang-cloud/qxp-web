@@ -40,11 +40,14 @@ export function getVersionKey(): string {
 }
 
 export function getRenderRepository(): any {
-  const comps = stores.registry.toComponentMap();
+  const comps = stores.registry.toComponentMap('ofa-ui');
+  const systemComps = stores.registry.toComponentMap('systemComponents');
+
   return {
     'ofa-ui@latest': comps,
-    'SimpleViewRenders@1.0.0': SimpleViewRenders,
     '@one-for-all/ui@latest': comps,
+    'SimpleViewRenders@1.0.0': SimpleViewRenders,
+    'system-components@latest': systemComps,
   };
 }
 
