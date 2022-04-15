@@ -1,7 +1,5 @@
 import { Spec } from '@one-for-all/api-spec-adapter/lib/src/swagger-schema-official';
 
-import { VERSION } from '@portal/modules/apps-management/pages/app-details/view-orchestration/constants';
-
 const spec: Spec = {
   swagger: 'some_version',
   info: {
@@ -15,7 +13,7 @@ const spec: Spec = {
     },
     termsOfService: 'https://todo.vacs.fr/terms/',
     title: 'Todo API',
-    version: VERSION,
+    version: '1.0.0',
   },
   paths: {
     '/api/v1/app-center/userList': {

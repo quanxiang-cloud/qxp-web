@@ -1,6 +1,5 @@
-import { ComponentLoaderParam, DynamicComponent } from '@one-for-all/artery-renderer';
-
 import { getBatchGlobalConfig } from '@lib/api/user-config';
+import { ComponentLoaderParam, DynamicComponent } from '@one-for-all/artery-renderer';
 
 const packageEntryCache: Record<string, string> = {};
 const CONFIG_VERSION = '1.0.0';
