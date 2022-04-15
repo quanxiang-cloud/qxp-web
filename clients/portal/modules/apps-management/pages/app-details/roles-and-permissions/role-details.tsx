@@ -1,42 +1,27 @@
-import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import React from 'react';
 import { observer } from 'mobx-react';
 
 import Icon from '@c/icon';
 import Tab from '@c/tab';
 
-import store from './store';
 import AssociatedPerson from './associated-personnel';
 import APIAuth from './api-auth';
 
 type Props = {
-  curRole: RoleRight | undefined
+  curRole: RoleRight
 }
 
 function RoleDetails({ curRole }: Props): JSX.Element {
-  const { appID } = useParams<AppParams>();
-
-  useEffect(() => {
-    store.setAppID(appID);
-    return () => {
-      store.clear();
-    };
-  }, []);
-
-  useEffect(() => {
-    curRole && store.setRole(curRole);
-  }, [curRole]);
-
   const tabItems = [
     {
       id: 'associate',
       name: '关联员工与部门',
-      content: <AssociatedPerson />,
+      content: <AssociatedPerson curRole={curRole}/>,
     },
     {
       id: 'datasource',
       name: '数据源权限',
-      content: <APIAuth />,
+      content: <APIAuth curRole={curRole}/>,
     },
   ];
 
@@ -53,9 +38,9 @@ function RoleDetails({ curRole }: Props): JSX.Element {
       <div className='rights-mes text-white'>
         <Icon name="people_alt" className='text-white mr-8' size={32} />
         <div>
-          <div className='text-12 font-semibold'>{curRole?.name || ''}</div>
-          <div className='rights-des text-12' title={curRole?.description || ''}>
-            {curRole?.description || ''}
+          <div className='text-12 font-semibold'>{curRole.name || '-'}</div>
+          <div className='rights-des text-12' title={curRole.description || '-'}>
+            {curRole.description || '-'}
           </div>
         </div>
       </div>

@@ -8,26 +8,15 @@ import {
   deleteAPIAuth,
   fetchAPIListAuth,
   fetchGroupApiList,
-  fetchRolePerson,
-  getUserDetail,
   updateAPIAuth,
-  updatePerUser,
 } from '../api';
-import { Role, SCOPE } from '../constants';
-import { getAddAndRemovePerson } from '../utils';
+import { Role } from '../constants';
 
-class RoleAssociateStore {
-  @observable scopeType = SCOPE.STAFF;
+class APIAuthStore {
   @observable appID = '';
-  @observable currentScopes: DeptAndUser[] = [];
   @observable currentRoleID = '';
   @observable curRoleType = Role.CUSTOMIZE;
-  @observable isLoadingScope = false;
-  @observable selectUser: string[] = [];
-  @observable UserDetailList: UserDetail[] = [];
-  @observable showPickerModal = false;
   @observable isLoadingAuth = false;
-  @observable scopeDeptList: UserOrDept[] = [];
   @observable apiList: APIDetailAuth[] = [];
   @observable apiAndAuthList: APIDetailAuth[] = [];
   @observable apiCount = 0;
@@ -74,83 +63,6 @@ class RoleAssociateStore {
   @action
   setCurrentRoleID = (currentRoleID: string): void => {
     this.currentRoleID = currentRoleID;
-  };
-
-  @action
-  setShowPickerModal = (showPickerModal: boolean): void => {
-    this.showPickerModal = showPickerModal;
-  };
-
-  @action
-  setScopeDeptList = (scopeDeptList: UserOrDept[]): void => {
-    this.scopeDeptList = scopeDeptList;
-  };
-
-  @action
-  setScopeType = (scopeType: number): void => {
-    this.scopeType = scopeType;
-  };
-
-  @action
-  setSelectUser = (selectUser: string[]): void => {
-    this.selectUser = selectUser;
-  };
-
-  @action
-  setCurrentScopes = (currentScopes: DeptAndUser[]): void => {
-    this.currentScopes = currentScopes;
-  };
-
-  @action
-  fetchUserDetailList = (users: UserOrDept[]): void => {
-    this.isLoadingScope = true;
-    const usersIDList = Array.from(users, ({ id }) => id);
-    const query = `
-    {query(ids:${JSON.stringify(usersIDList)}){users{id,email,phone,name,departments{id,name}}}}
-    `;
-    getUserDetail<{ users: UserDetail[] }>({ query }).then((res) => {
-      this.UserDetailList = res?.users;
-    }).catch((err: any) => {
-      toast.error(err);
-    }).finally(() => this.isLoadingScope = false);
-  };
-
-  @action
-  fetchRolePerson = (appID: string, roleID: string): void => {
-    if (!appID || !roleID) {
-      this.currentScopes = [];
-      return;
-    }
-    fetchRolePerson(appID, roleID)
-      .then((res) => this.setCurrentScopes(res.list))
-      .catch((err) => toast.error(err));
-  };
-
-  @action
-  deletePerGroupUser = (ids: string[]): void => {
-    const newScopes = this.currentScopes?.filter((scope) => !ids.includes(scope.id));
-    this.currentScopes = newScopes;
-    this.updatePerUser({ add: [], removes: ids });
-  };
-
-  @action
-  batchUpdatePerUser = (
-    deptList: EmployeeOrDepartmentOfRole[],
-    employees: EmployeeOrDepartmentOfRole[],
-  ): Promise<void> => {
-    const { newScopes, addAndRemoveScope } = getAddAndRemovePerson(this.currentScopes, deptList, employees);
-    this.setCurrentScopes(newScopes);
-    return this.updatePerUser(addAndRemoveScope);
-  };
-
-  @action
-  updatePerUser = (
-    addAndRemoveList: { add: DeptAndUser[], removes: string[] },
-  ): Promise<void> => {
-    return updatePerUser(this.appID, this.currentRoleID, addAndRemoveList)
-      .then(() => toast.success('修改成功'))
-      .catch(() => toast.error('修改失败'))
-      .finally(() => this.setShowPickerModal(false));
   };
 
   @action
@@ -242,12 +154,8 @@ class RoleAssociateStore {
   @action
   clear = (): void => {
     this.appID = '';
-    this.currentScopes = [];
     this.currentRoleID = '';
-    this.scopeType = SCOPE.STAFF;
     this.curRoleType = Role.CUSTOMIZE;
-    this.UserDetailList = [];
-    this.scopeDeptList = [];
     this.apiList = [];
     this.apiAndAuthList = [];
     this.apiCount = 0;
@@ -257,4 +165,4 @@ class RoleAssociateStore {
   };
 }
 
-export default new RoleAssociateStore();
+export default new APIAuthStore();

@@ -6,11 +6,11 @@ import Icon from '@c/icon';
 import Search from '@c/search';
 import Popper from '@c/popper';
 import TwoLevelMenu from '@c/two-level-menu';
+import Loading from '@c/loading';
 
 import EditRoleModal from './edit-role-modal';
 import DelRoleModal from './del-role-modal';
 import RoleMenu from './role-menu';
-
 import store from './store';
 
 const modifiers = [
@@ -41,6 +41,10 @@ function RoleNav({ setRole }: Props): JSX.Element {
   useEffect(() => {
     setRole(store.curRole);
   }, [store.curRole]);
+
+  if (store.fetchRoleLoading) {
+    return <Loading desc="加载中..." />;
+  }
 
   return (
     <>
@@ -73,7 +77,14 @@ function RoleNav({ setRole }: Props): JSX.Element {
             </div>
           </Popper>
         </div>
-        {store.roles.length !== 0 && (
+        {!store.roles.length && (
+          <div className='app-no-data mt-58'>
+            <img src='/dist/images/new_tips.svg' />
+            无角色列表，请
+            <span onClick={() => store.setModalType('add')} className='text-btn'>&nbsp;新建角色</span>
+          </div>
+        )}
+        {!!store.roles.length && (
           <TwoLevelMenu<RoleRight>
             defaultSelected={store.curRole?.id}
             onSelect={(role) => {

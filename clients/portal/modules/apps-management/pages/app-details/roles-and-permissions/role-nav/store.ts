@@ -57,9 +57,11 @@ class RoleNavStore {
 
   @action
   fetchRoleList = (): void => {
+    this.fetchRoleLoading = true;
     fetchRoles(this.appID)
       .then(this.setRoles)
-      .catch((err) => toast.error(err));
+      .catch((err) => toast.error(err))
+      .finally(() => this.fetchRoleLoading = false);
   };
 
   @action

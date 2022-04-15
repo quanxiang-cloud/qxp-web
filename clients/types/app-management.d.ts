@@ -192,7 +192,12 @@ declare global {
       id: string,
       name: string
     }
-}
+  }
+  type DepDetail = {
+    id: string;
+    name: string;
+    pid: string;
+  }
 
   type DeptAndUser = {
     type: number;

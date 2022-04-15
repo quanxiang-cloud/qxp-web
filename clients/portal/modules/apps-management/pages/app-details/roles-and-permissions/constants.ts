@@ -13,6 +13,7 @@ export const COMPONENT_NAME_TITLE_MAP: Record<string, string> = {
 };
 
 export const SCOPE = {
+  ALL: 0,
   STAFF: 1,
   DEP: 2,
 };

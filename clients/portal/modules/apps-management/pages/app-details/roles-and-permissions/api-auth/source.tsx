@@ -10,10 +10,10 @@ import EmptyTips from '@c/empty-tips';
 import Pagination from '@c/pagination';
 import { useGetNamespaceFullPath } from '@portal/modules/poly-api/effects/api/namespace';
 
-import store from '../store';
-import NsTreeStore from './store';
+import store from './store';
+import NsTreeStore from './ns-tree-store';
 import NodeRender from './group-node';
-import { Role } from '../../constants';
+import { Role } from '../constants';
 
 const initialPage = { page: 1, pageSize: 10 };
 function Source(): JSX.Element {
