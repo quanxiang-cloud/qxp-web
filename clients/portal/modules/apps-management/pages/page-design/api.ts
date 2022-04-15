@@ -34,10 +34,6 @@ export function getPage(arteryID: string, options?: Option): Promise<string | vo
   }).catch(toast.error);
 }
 
-export function getVersionKey(): string {
-  return VERSION;
-}
-
 export function getRenderRepository(): any {
   const comps = stores.registry.toComponentMap('ofa-ui');
   const systemComps = stores.registry.toComponentMap('systemComponents');

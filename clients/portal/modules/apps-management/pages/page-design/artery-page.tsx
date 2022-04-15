@@ -22,7 +22,7 @@ function ArteryPage({ arteryID, draft }: Props): JSX.Element {
     <ArteryRenderer
       key={arteryKey}
       arteryID={arteryKey}
-      version='1.0.0'
+      version="1.0.0"
     />
   );
 }

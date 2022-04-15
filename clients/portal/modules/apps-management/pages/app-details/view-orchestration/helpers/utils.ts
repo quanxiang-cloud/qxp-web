@@ -37,7 +37,7 @@ export function saveArtery(arteryID: string, schema: Artery): FutureErrorMessage
 
 export async function fetchSchema(appID: string): Promise<Artery> {
   const key = genDesktopRootArteryKey(appID);
-  const { result } = await getBatchGlobalConfig([{ key: key, version: VERSION }]);
+  const { result } = await getBatchGlobalConfig([{ key: key, version: '1.0.0' }]);
   return JSON.parse(result[key]);
 }
 
