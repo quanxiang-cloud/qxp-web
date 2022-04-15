@@ -1,15 +1,33 @@
 import React, { useEffect } from 'react';
 import { observer } from 'mobx-react';
+import { useParams } from 'react-router-dom';
 
 import Tab from '@c/tab';
+import ErrorTips from '@c/error-tips';
 import Loading from '@c/loading';
 import { PathType, useQueryNameSpaceRawRootPath } from '@portal/modules/poly-api/effects/api/namespace';
 
 import Source from './source';
-import store from '../store';
+import store from './store';
 
-function APIAuth(): JSX.Element {
-  const { appID, modelType } = store;
+type Props = {
+  curRole: RoleRight,
+}
+
+function APIAuth({ curRole }: Props): JSX.Element {
+  const { appID } = useParams<AppParams>();
+  const { modelType } = store;
+
+  useEffect(() => {
+    store.setAppID(appID);
+    return () => {
+      store.clear();
+    };
+  }, []);
+
+  useEffect(() => {
+    store.setRole(curRole);
+  }, [curRole]);
 
   const {
     data: namespace,
@@ -47,7 +65,7 @@ function APIAuth(): JSX.Element {
   ];
 
   if (fetchRootPathError) {
-    return <div>失败</div>;
+    return <ErrorTips desc='获取数据失败' />;
   }
 
   return (

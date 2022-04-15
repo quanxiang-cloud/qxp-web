@@ -4,8 +4,8 @@ import { observer } from 'mobx-react';
 import Button from '@c/button';
 import RadioButtonGroup from '@c/radio/radio-button-group';
 
-import store from '../store';
-import { SCOPE } from '../../constants';
+import store from './store';
+import { SCOPE } from '../constants';
 
 function AssociatedToolbar(): JSX.Element {
   return (
@@ -15,7 +15,7 @@ function AssociatedToolbar(): JSX.Element {
           modifier="primary"
           className="ml-2"
           iconName="link"
-          onClick={()=> store.setShowPickerModal(true)}
+          onClick={()=> store.fetchAllScope()}
         >
           关联员工与部门
         </Button>

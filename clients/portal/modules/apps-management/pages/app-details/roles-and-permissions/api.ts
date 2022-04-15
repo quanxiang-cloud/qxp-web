@@ -29,8 +29,18 @@ export function deleteRole(appID: string, roleID: string): Promise<void> {
   return httpClient(`/api/v1/form/${appID}/m/apiRole/delete/${roleID}`);
 }
 
-export function fetchRolePerson(appID: string, roleID: string): Promise<{ list: DeptAndUser[] }> {
-  return httpClient(`/api/v1/form/${appID}/m/apiRole/grant/list/${roleID}`, {});
+export function fetchRolePerson(
+  appID: string,
+  roleID: string,
+  data: { type: number },
+): Promise<{ list: DeptAndUser[], total: number }> {
+  return httpClient<{ list: DeptAndUser[], total: number }>(
+    `/api/v1/form/${appID}/m/apiRole/grant/list/${roleID}`, data,
+  ).then((res) => {
+    return { list: res.list || [], total: res.total || 0 };
+  }).catch(() => {
+    return { list: [], total: 0 };
+  });
 }
 
 export function updateRole(appID: string, data: RoleRight): Promise<void> {
@@ -47,6 +57,10 @@ export function updatePerUser(
 
 export function getUserDetail<T>(params: { query: string }): Promise<T> {
   return httpClientGraphQL<T>('/api/v1/search/users', params);
+}
+
+export function getDepDetail<T>(params: { query: string }): Promise<T> {
+  return httpClientGraphQL<T>('/api/v1/search/department', params);
 }
 
 export async function createAPIAuth(appID: string, data: APIAuth): Promise<void> {
