@@ -7,7 +7,7 @@ import Icon from '@c/icon';
 import Button from '@c/button';
 
 import ArteryRenderer from '@c/artery-renderer';
-import { DefaultFormDescriptions, VERSION } from '../constants';
+import { DefaultFormDescriptions } from '../constants';
 import { getArteryPageInfo } from '@lib/http-client';
 import { mapToArteryPageDescription } from '../../utils';
 import { toast } from '@one-for-all/ui';
@@ -15,6 +15,7 @@ import { toast } from '@one-for-all/ui';
 import appStore from '../../store';
 
 import { ExternalView, SchemaView, TableSchemaView, View, ViewType } from '../types.d';
+import { ARTERY_VERSION } from '@portal/constants';
 
 type Props = {
   view: View;
@@ -105,7 +106,7 @@ function ViewInfo({ view, openModal }: Props): JSX.Element {
         type === ViewType.SchemaView && (
           <ArteryRenderer
             arteryID={view.arteryID}
-            version={VERSION}
+            version={ARTERY_VERSION}
           />
         )
       }
