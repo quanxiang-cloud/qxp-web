@@ -1,9 +1,10 @@
 import React from 'react';
 
-import ArteryPage from '@portal/modules/apps-management/pages/page-design/artery-page';
+import ArteryRenderer from '@c/artery-renderer';
+import { VERSION } from '@portal/modules/apps-management/pages/app-details/view-orchestration/constants';
 
 import { rootSchemaKey } from './utils';
 
 export default function AppLand(): JSX.Element {
-  return <ArteryPage arteryID={rootSchemaKey} />;
+  return <ArteryRenderer arteryID={rootSchemaKey} version={VERSION} />;
 }

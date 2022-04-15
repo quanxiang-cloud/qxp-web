@@ -9,7 +9,6 @@ import SwaggerRPCSpecAdapter from '@lib/api-adapter';
 // import schema from './schema';
 import swagger from './swagger';
 import httpClient from '@lib/http-client';
-import { VERSION } from '../apps-management/pages/app-details/view-orchestration/constants';
 
 const CONFIG_CENTER_PAGE_SCHEMA_KEY = 'SCHEMA_CONFIG_CENTER';
 
@@ -18,7 +17,7 @@ const CONFIG_CENTER_PAGE_SCHEMA_KEY = 'SCHEMA_CONFIG_CENTER';
 function useSchema(): { schema?: Artery; loading: boolean; } {
   const { isLoading, data } = useQuery<string>('get_my_apps_schema', (): Promise<string> => {
     return httpClient<{ result: Record<string, string>; }>('/api/v1/persona/batchGetValue', {
-      keys: [{ key: CONFIG_CENTER_PAGE_SCHEMA_KEY, version: VERSION }],
+      keys: [{ key: CONFIG_CENTER_PAGE_SCHEMA_KEY, version: '1.0.0' }],
     }).then(({ result }) => result[CONFIG_CENTER_PAGE_SCHEMA_KEY]);
   });
 
