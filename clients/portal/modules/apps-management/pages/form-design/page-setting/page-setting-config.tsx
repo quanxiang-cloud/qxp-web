@@ -62,6 +62,8 @@ const PAGE_SIZE_OPTION = [
   { label: '20条/页', value: 20 },
   { label: '50条/页', value: 50 },
   { label: '100条/页', value: 100 },
+  { label: '500条/页', value: 500 },
+  { label: '1000条/页', value: 1000 },
 ];
 
 const FIXED_RULE_OPTION = [
