@@ -6,7 +6,6 @@ import MoreMenu from '@c/more-menu';
 
 import store from './store';
 import { NodeItem } from '@c/two-level-menu';
-import { Role } from '../constants';
 
 const ROLE_TOOlS: Record<string, {title: string, icon: string}> = {
   edit: { title: '修改信息', icon: 'create' },
@@ -31,7 +30,8 @@ function RoleMenu({ role }: Props ): JSX.Element {
 
   return (
     <MoreMenu
-      menus={role.source?.types === Role.DEFAULT ? menus.slice(0, 1) : menus}
+      // menus={role.source?.type === Role.DEFAULT ? menus.slice(0, 1) : menus}
+      menus={menus}
       placement="bottom-end"
       onMenuClick={store.setModalType}
     >

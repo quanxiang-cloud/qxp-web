@@ -4,7 +4,6 @@ import { observer } from 'mobx-react';
 
 import Icon from '@c/icon';
 import Tab from '@c/tab';
-import EmptyTips from '@c/empty-tips';
 
 import store from './store';
 import AssociatedPerson from './associated-personnel';
@@ -19,22 +18,25 @@ function RoleDetails({ curRole }: Props): JSX.Element {
 
   useEffect(() => {
     store.setAppID(appID);
+    return () => {
+      store.clear();
+    };
   }, []);
 
   useEffect(() => {
-    curRole && store.setCurrentRoleID(curRole.id);
+    curRole && store.setRole(curRole);
   }, [curRole]);
 
   const tabItems = [
     {
       id: 'associate',
       name: '关联员工与部门',
-      content: curRole ? <AssociatedPerson /> : <EmptyTips text='未存在Role'/>,
+      content: <AssociatedPerson />,
     },
     {
       id: 'datasource',
       name: '数据源权限',
-      content: curRole ? <APIAuth /> : <EmptyTips text='未存在Role'/>,
+      content: <APIAuth />,
     },
   ];
 

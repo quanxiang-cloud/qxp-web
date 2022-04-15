@@ -49,6 +49,7 @@ function FilterForm({ search, showMoreFilter }: Props, ref?: React.Ref<any>): JS
       className='app-page-filter-form'
       onSubmit={(e) => {
         e.preventDefault();
+        e.stopPropagation();
         search();
       }}
     >
@@ -69,7 +70,7 @@ function FilterForm({ search, showMoreFilter }: Props, ref?: React.Ref<any>): JS
                 <FieldSwitch
                   className='flex-1'
                   {...field}
-                  value={field.value ? field.value : undefined}
+                  value={field.value ? field.value : null}
                   field={fieldMaps[key]}
                 />
               );

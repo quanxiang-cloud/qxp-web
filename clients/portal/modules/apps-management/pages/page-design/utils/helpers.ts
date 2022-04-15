@@ -64,3 +64,7 @@ export function svgPreviewImg(title: string): string {
 
   return `data:image/svg+xml;base64,${encode(svg)}`;
 }
+
+export function isSystemComponent(category: string): boolean {
+  return category === 'systemComponents';
+}

@@ -13,7 +13,7 @@ import {
   updateAPIAuth,
   updatePerUser,
 } from '../api';
-import { SCOPE } from '../constants';
+import { Role, SCOPE } from '../constants';
 import { getAddAndRemovePerson } from '../utils';
 
 class RoleAssociateStore {
@@ -21,6 +21,7 @@ class RoleAssociateStore {
   @observable appID = '';
   @observable currentScopes: DeptAndUser[] = [];
   @observable currentRoleID = '';
+  @observable curRoleType = Role.CUSTOMIZE;
   @observable isLoadingScope = false;
   @observable selectUser: string[] = [];
   @observable UserDetailList: UserDetail[] = [];
@@ -40,8 +41,9 @@ class RoleAssociateStore {
   };
 
   @action
-  setCurRoleID = (currentRoleID: string): void => {
-    this.currentRoleID = currentRoleID;
+  setRole = (role: RoleRight): void => {
+    this.currentRoleID = role.id;
+    this.curRoleType = role?.type || Role.CUSTOMIZE;
   };
 
   @action
@@ -115,8 +117,10 @@ class RoleAssociateStore {
 
   @action
   fetchRolePerson = (appID: string, roleID: string): void => {
-    this.setAppID(appID);
-    this.setCurrentRoleID(roleID);
+    if (!appID || !roleID) {
+      this.currentScopes = [];
+      return;
+    }
     fetchRolePerson(appID, roleID)
       .then((res) => this.setCurrentScopes(res.list))
       .catch((err) => toast.error(err));
@@ -233,6 +237,23 @@ class RoleAssociateStore {
         });
         toast.success('删除成功');
       }).catch((err) => toast.error(err));
+  };
+
+  @action
+  clear = (): void => {
+    this.appID = '';
+    this.currentScopes = [];
+    this.currentRoleID = '';
+    this.scopeType = SCOPE.STAFF;
+    this.curRoleType = Role.CUSTOMIZE;
+    this.UserDetailList = [];
+    this.scopeDeptList = [];
+    this.apiList = [];
+    this.apiAndAuthList = [];
+    this.apiCount = 0;
+    this.curNamespace = null;
+    this.rootPath = '';
+    this.modelType = 'inner.form';
   };
 }
 

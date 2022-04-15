@@ -39,3 +39,5 @@ export const LAYERS: Layer<BlocksCommunicationType>[] = [{
   }],
   blocksCommunicationStateInitialValue: { activeNodeID: '' },
 }];
+
+export const SYSTEM_COMPONENT_NAMES = ['UserMenuAvatar', 'SystemTaskList'];

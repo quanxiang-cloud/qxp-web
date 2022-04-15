@@ -38,6 +38,7 @@ export interface PageNode extends BaseNode {
   defaultConfig?: any;
   defaultStyle?: React.CSSProperties;
   disableActions?: boolean;
+  category?: string;
 }
 
 export interface PageArtery {
@@ -49,7 +50,7 @@ export interface PageArtery {
 export type DragPos = 'up' | 'down' | 'left' | 'right' | 'inner';
 
 // registry types
-export type Category = 'basic' | 'layout' | 'form' | 'advanced' | string;
+export type Category = 'basic' | 'layout' | 'form' | 'advanced' | 'systemComponents' | string;
 
 export interface SourceElement<T> {
   name: string;

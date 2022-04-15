@@ -12,7 +12,7 @@ function AssociatedPerson(): JSX.Element {
   const { appID, currentRoleID } = store;
 
   useEffect(() => {
-    appID && currentRoleID && store.fetchRolePerson(appID, currentRoleID);
+    store.fetchRolePerson(appID, currentRoleID);
   }, [currentRoleID, appID]);
 
   const userAndDept = useMemo(() => {

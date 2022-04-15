@@ -64,10 +64,10 @@ function EditViewModal(
   const [viewType, setViewType] = useState<ViewType>(viewParams?.type || ViewType.TableSchemaView);
   const [form] = Form.useForm();
   const allViewNames = views.map((view) => (view as BaseView).name);
-  const layoutOptions = layouts.map((layout) => ({
-    label: layout.id === 'root_node' ? '应用默认布局（默认）' : layout.name,
+  const layoutOptions = [{ label: '无布局（默认）', value: '' }].concat( layouts.map((layout) => ({
+    label: layout.id === 'root_node' ? '应用默认布局' : layout.name,
     value: layout.id,
-  }));
+  })));
 
   function handleSubmit(): void {
     form.submit();
@@ -159,9 +159,9 @@ function EditViewModal(
               label="页面布局"
             >
               <Select
-                placeholder="请选择"
+                placeholder="无布局（默认）"
                 options={layoutOptions}
-                defaultValue={'root_node'}
+                defaultValue={''}
               />
             </Item>
             {/* <Item

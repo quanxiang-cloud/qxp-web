@@ -14,7 +14,7 @@ export default async function addLayoutToRoot(
   { appID, rootNode, layoutType, layoutName }: Params,
 ): Promise<Node | undefined> {
   const refSchemaKey = await createRefSchema(appID);
-  const layoutNode = createLayoutSchema(layoutName, layoutType, refSchemaKey);
+  const layoutNode = createLayoutSchema({ name: layoutName, layoutType, refSchemaKey });
   const routeNode = attachToRouteNode(layoutNode, 'layout');
 
   return addRouteNodeToRootNode(rootNode, routeNode);

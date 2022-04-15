@@ -12,7 +12,7 @@ import { useCtx } from '../../ctx';
 import { mapRawProps } from '../../utils/artery-adapter';
 import { elemId } from '../../utils';
 import { parseStyleString } from '../../utils/config';
-import { svgPreviewImg } from '../../utils/helpers';
+import { isSystemComponent, svgPreviewImg } from '../../utils/helpers';
 
 import styles from './index.m.scss';
 
@@ -198,6 +198,11 @@ function NodeRender({ schema }: Props): JSX.Element | null {
       Object.assign(props, {
         style: objectKeyToCamelCase(style),
       });
+    }
+
+    // add 'data-in-canvas' props for system components to prevent default behavior
+    if (isSystemComponent(node.category)) {
+      Object.assign(props, { 'data-in-canvas': true });
     }
 
     return Object.assign({}, props, {

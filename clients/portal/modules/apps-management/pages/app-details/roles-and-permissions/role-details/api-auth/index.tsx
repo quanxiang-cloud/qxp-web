@@ -15,7 +15,7 @@ function APIAuth(): JSX.Element {
     data: namespace,
     isLoading,
     error: fetchRootPathError,
-  } = useQueryNameSpaceRawRootPath(appID, modelType);
+  } = useQueryNameSpaceRawRootPath(appID, modelType, { enabled: !!appID });
 
   useEffect(() => {
     if (namespace) {
