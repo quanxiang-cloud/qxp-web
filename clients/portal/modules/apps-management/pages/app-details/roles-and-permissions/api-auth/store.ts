@@ -6,6 +6,7 @@ import { PathType } from '@portal/modules/poly-api/effects/api/namespace';
 import {
   createAPIAuth,
   deleteAPIAuth,
+  fetchApiAuthDetails,
   fetchAPIListAuth,
   fetchGroupApiList,
   updateAPIAuth,
@@ -15,18 +16,27 @@ import { Role } from '../constants';
 class APIAuthStore {
   @observable appID = '';
   @observable currentRoleID = '';
+  @observable rootPath = '';
+  @observable curAPI: APIDetailAuth | undefined = undefined;
+  @observable curAuth: APIAuth | undefined = undefined;
+  @observable modelType: PathType = 'inner.form';
   @observable curRoleType = Role.CUSTOMIZE;
   @observable isLoadingAuth = false;
   @observable apiList: APIDetailAuth[] = [];
   @observable apiAndAuthList: APIDetailAuth[] = [];
   @observable apiCount = 0;
   @observable curNamespace: PolyAPI.Namespace | null = null;
-  @observable rootPath = '';
-  @observable modelType: PathType = 'inner.form';
+  @observable showRoleDetailsModal = false;
+  @observable isLoadingAuthDetails = false;
 
   @action
   setAppID = (appID: string): void => {
     this.appID = appID;
+  };
+
+  @action
+  setCurAuth = (curAuth: APIAuth): void => {
+    this.curAuth = curAuth;
   };
 
   @action
@@ -38,6 +48,11 @@ class APIAuthStore {
   @action
   setModelType = (modelType: PathType): void => {
     this.modelType = modelType;
+  };
+
+  @action
+  setCurAPI = (api: APIDetailAuth): void => {
+    this.curAPI = api;
   };
 
   @action
@@ -125,10 +140,24 @@ class APIAuthStore {
   };
 
   @action
-  updateAPIAuth = (authId: string, auth: APIAuth): void => {
-    updateAPIAuth(authId, this.appID, auth)
+  fetchApiAuthDetails = (): void => {
+    this.isLoadingAuthDetails = true;
+    fetchApiAuthDetails(this.appID || '', {
+      roleID: this.currentRoleID,
+      path: this.curAPI?.accessPath || '',
+      uri: this.curAPI?.uri || '',
+    })
+      .then(this.setCurAuth)
+      .catch((err) => toast.error(err))
+      .finally(() => this.isLoadingAuthDetails = false);
+  };
+
+  @action
+  updateAPIAuth = (auth: APIAuth): void => {
+    updateAPIAuth(auth?.id || '', this.appID, auth)
       .then(() => toast.success('修改成功'))
-      .catch((err) => toast.error(err));
+      .catch((err) => toast.error(err))
+      .finally(() => this.curAuth = undefined);
   };
 
   @action
