@@ -157,10 +157,7 @@ class APIAuthStore {
     updateAPIAuth(auth?.id || '', this.appID, auth)
       .then(() => toast.success('修改成功'))
       .catch((err) => toast.error(err))
-      .finally(() => {
-        this.showRoleDetailsModal = false;
-        this.curAuth = undefined;
-      });
+      .finally(() => this.curAuth = undefined);
   };
 
   @action

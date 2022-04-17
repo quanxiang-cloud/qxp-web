@@ -19,9 +19,10 @@ function AuthDetailModal(): JSX.Element {
     {
       roleID: store.currentRoleID,
       path: store.curAPI?.accessPath || '',
-      uri: store.curAPI?.uri || '',
-    }, {
+      uri: store.curAPI?.uri || '' }
+    , {
       enabled: !!store.appID || !!store.currentRoleID,
+      refetchOnMount: 'always',
     },
   );
 
@@ -51,6 +52,7 @@ function AuthDetailModal(): JSX.Element {
 
   function onSubmit(): void {
     store.updateAPIAuth(store?.curAuth as APIAuth);
+    store.showRoleDetailsModal = false;
   }
 
   return (
