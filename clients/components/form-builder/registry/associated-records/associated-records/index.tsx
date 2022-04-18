@@ -87,6 +87,7 @@ function AssociatedRecords({
         columns={tableColumns}
         data={value}
         emptyTips="没有关联记录"
+        style={{ maxHeight: 300 }}
       />
       {!readOnly && (
         <Button type="button" onClick={() => setShowSelectModal(true)}>选择关联记录</Button>
