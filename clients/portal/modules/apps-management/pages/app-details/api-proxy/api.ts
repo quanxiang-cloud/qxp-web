@@ -101,7 +101,13 @@ export function uploadSwagger(body: any): Promise<PolyAPI.CreateApiResult> {
     body: body,
   }).then((response) => {
     return response.json();
-  }).then((res) => res.data);
+  }).then(({ code, msg, data }) => {
+    if (code !== 0) {
+      return Promise.reject(new Error(msg));
+    }
+
+    return data;
+  });
 }
 
 export const getNamespaceApiList = async (namespacePath: string, params: Paging): Promise<{
