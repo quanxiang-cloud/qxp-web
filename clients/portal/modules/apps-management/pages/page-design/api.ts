@@ -1,6 +1,3 @@
-
-import stores from './stores';
-
 import {
   getBatchGlobalConfig,
   setBatchGlobalConfig,
@@ -8,11 +5,12 @@ import {
 import toast from '@lib/toast';
 import SimpleViewRenders from '@c/simple-view-render';
 
+import stores from './stores';
 import { getArteryKeys } from './utils';
+import { ARTERY_KEY_VERSION } from '@portal/constants';
 
 export const PG_SAVED_PREFIX = 'pge-';
 export const PG_DRAFT_PREFIX = 'pge-draft-';
-export const PG_VERSION = '1.0.0';
 
 type Option={
   draft?: boolean;
@@ -23,20 +21,18 @@ export function savePage(arteryID: string, page_artery: any, options?: Option): 
   const arteryKeys = getArteryKeys(arteryID, !!options?.draft);
   return setBatchGlobalConfig(arteryKeys.map((key) => ({
     key,
-    version: PG_VERSION,
+    version: ARTERY_KEY_VERSION,
     value: typeof page_artery === 'object' ? JSON.stringify(page_artery) : page_artery,
   })));
 }
 
 export function getPage(arteryID: string, options?: Option): Promise<string | void> {
   const arteryKeys = getArteryKeys(arteryID, !!options?.draft);
-  return getBatchGlobalConfig(arteryKeys.map((key) => ({ key, version: PG_VERSION }))).then(({ result }) => {
+  return getBatchGlobalConfig(arteryKeys.map((key) => {
+    return { key, version: ARTERY_KEY_VERSION };
+  })).then(({ result }) => {
     return result[arteryKeys[0]];
   }).catch(toast.error);
-}
-
-export function getVersionKey(): string {
-  return PG_VERSION;
 }
 
 export function getRenderRepository(): any {

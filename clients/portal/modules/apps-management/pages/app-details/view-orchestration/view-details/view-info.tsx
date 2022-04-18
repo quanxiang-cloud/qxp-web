@@ -1,19 +1,18 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { observer } from 'mobx-react';
+import { toast } from '@one-for-all/ui';
 
 import Tab from '@c/tab';
 import Icon from '@c/icon';
 import Button from '@c/button';
-
 import ArteryRenderer from '@c/artery-renderer';
-import { DefaultFormDescriptions, VERSION } from '../constants';
 import { getArteryPageInfo } from '@lib/http-client';
-import { mapToArteryPageDescription } from '../../utils';
-import { toast } from '@one-for-all/ui';
+import { ARTERY_KEY_VERSION } from '@portal/constants';
 
 import appStore from '../../store';
-
+import { DefaultFormDescriptions } from '../constants';
+import { mapToArteryPageDescription } from '../../utils';
 import { ExternalView, SchemaView, TableSchemaView, View, ViewType } from '../types.d';
 
 type Props = {
@@ -105,7 +104,7 @@ function ViewInfo({ view, openModal }: Props): JSX.Element {
         type === ViewType.SchemaView && (
           <ArteryRenderer
             arteryID={view.arteryID}
-            version={VERSION}
+            version={ARTERY_KEY_VERSION}
           />
         )
       }
