@@ -7,7 +7,7 @@ import { setGlobalConfig } from '@lib/configuration-center';
 import { savePage } from './api';
 import { getInitArteryByPageType } from './utils';
 import { PAGE_TYPE } from './constants';
-import { ARTERY_VERSION } from '@portal/constants';
+import { ARTERY_KEY_VERSION } from '@portal/constants';
 
 type Props = {
   arteryID: string;
@@ -16,7 +16,7 @@ type Props = {
 
 function SelectCustomPageEditor({ arteryID, onSelect }: Props): JSX.Element {
   function handleSelect(pageType: string): void {
-    setGlobalConfig(arteryID, ARTERY_VERSION, pageType);
+    setGlobalConfig(arteryID, ARTERY_KEY_VERSION, pageType);
     savePage(arteryID, getInitArteryByPageType(pageType)).then(() => {
       onSelect(pageType);
     }).catch((err: Error) => {

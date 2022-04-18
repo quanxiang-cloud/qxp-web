@@ -3,10 +3,10 @@ import { nanoid } from 'nanoid';
 import { findNodeByID, appendChild, getNodeParents } from '@one-for-all/artery-utils';
 import { Artery, RouteNode, Node, HTMLNode, RefNode } from '@one-for-all/artery';
 
+import { ARTERY_KEY_VERSION } from '@portal/constants';
 import { getBatchGlobalConfig, setBatchGlobalConfig } from '@lib/api/user-config';
 
 import { LAYOUT_CHILD_TYPE_ROUTES_CONTAINER, ROOT_NODE_ID } from '../constants';
-import { ARTERY_VERSION } from '@portal/constants';
 
 export function genNodeID(): string {
   return nanoid(8);
@@ -29,7 +29,7 @@ export function saveArtery(arteryID: string, schema: Artery): FutureErrorMessage
   const params = {
     key: arteryID,
     value: JSON.stringify(schema),
-    version: ARTERY_VERSION,
+    version: ARTERY_KEY_VERSION,
   };
   return setBatchGlobalConfig([params]).catch(() => {
     return 'failed to save schema';
