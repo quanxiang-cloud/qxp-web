@@ -13,20 +13,6 @@ import httpClient from '@lib/http-client';
 import { NAMESPACES, ROOTPATH, NAMESPACES_SEARCH } from './names';
 import { initAppPath } from '@portal/modules/apps-management/pages/app-details/api';
 
-export interface NameSpace {
-  id: string;
-  owner: string;
-  ownerName: string;
-  parent: string;
-  name: string;
-  title: string;
-  desc: string;
-  active: number;
-  createAt: string;
-  updateAt: string;
-  subCount: number;
-}
-
 export interface Input<I> {
   path: string;
   body?: I;
@@ -37,7 +23,7 @@ function useNameSpace<I extends Input<any>, O>(
 ): UseMutationResult<O, Error, I> {
   const queryClient = useQueryClient();
   return useMutation<O, Error, I>(
-    ({ path, body }: I) => httpClient<O, I>(`/api/v1/polyapi/namespace/${path}`, body),
+    ({ path, body }: I) => httpClient<O>(`/api/v1/polyapi/namespace/${path}`, body),
     {
       ...options,
       onSuccess: (data, variables, context) => {
@@ -59,7 +45,7 @@ export type CreateInput = Input<CreateParams>;
 export interface CreateResponse {
   total: number;
   page: number;
-  list: NameSpace[];
+  list: PolyAPI.Namespace[];
 }
 export function useCreateNameSpace(
   options?: UseMutationOptions<CreateResponse, Error, CreateInput>,
@@ -105,8 +91,8 @@ export function useQueryNameSpaceList(
     options,
   );
 }
-export function getNameSpaceList(path: string): Promise<CreateResponse> {
-  return httpClient(`/api/v1/polyapi/namespace/list/${path}`, { pageSize: -1, active: -1 });
+export function getNameSpaceList(path: string, active?: number): Promise<CreateResponse> {
+  return httpClient(`/api/v1/polyapi/namespace/list/${path}`, { pageSize: -1, active: active || -1 });
 }
 
 type SearchListInput = Input<{ title: string }>;

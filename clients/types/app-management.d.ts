@@ -1,4 +1,7 @@
 import { Moment } from 'moment';
+
+import { RawApiDetail } from '@portal/modules/poly-api/effects/api/raw';
+
 declare global {
   type AppInfo = {
     id: string;
@@ -9,6 +12,8 @@ declare global {
     appZipInfo?: any;
     createdBy?: string;
     template?: string;
+    accessURL?: string;
+    extension?: Record<string, any>
   }
 
   type TemplateInfo = {
@@ -145,26 +150,64 @@ declare global {
     navType?: string;
   }
 
-  type Rights = {
-    id: string;
-    types?: number;
-    appID?: string;
-    add?: boolean;
-    formID?: string;
-    sequence?: number;
-    createdBy?: string;
-    scopes?: DeptAndUser[];
-  } & RightsCreate
+  type Property = {
+    type: string,
+    properties?: Record<string, Property>
+  }
 
-  type RightsCreate = {
+  type APIAuth = {
+    path?: string,
+    params?: Record<string, Property> | null,
+    response?: Record<string, Property> | null,
+    condition?: any,
+    roleID?: string,
+    id?: string
+    uri?: string
+  }
+
+  type RoleRight = {
+    id: string;
+    appID?: string;
+  } & RoleCreate
+
+  type RoleCreate = {
+    type?: number;
     name?: string;
     description?: string;
-    types?: number;
+  }
+
+  type UserOrDept = {
+    id: string,
+    ownerID: string,
+    type: number,
+    ownerName: string,
+  }
+
+  type UserDetail = {
+    id: string,
+    email: string,
+    phone: string,
+    name: string,
+    departments: {
+      id: string,
+      name: string
+    }
+  }
+  type DepDetail = {
+    id: string;
+    name: string;
+    pid: string;
   }
 
   type DeptAndUser = {
     type: number;
     id: string;
     name: string;
+    roleID?: string;
+  }
+
+  type APIDetailAuth = RawApiDetail & {
+    auth?: APIAuth | null;
+    isChanging?: boolean;
   }
 }

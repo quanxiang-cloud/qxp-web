@@ -1,4 +1,4 @@
-import { SchemaNode } from '@one-for-all/schema-spec';
+import { Node, RouteNode } from '@one-for-all/artery';
 import {
   LAYOUT_CHILD_TYPE_FRAGMENT_CONTAINER,
   LAYOUT_CHILD_TYPE_ROUTES_CONTAINER,
@@ -8,12 +8,21 @@ import {
 import { LayoutType } from '../types';
 import { genNodeID } from './utils';
 
-export default function createLayoutSchema(
+export type LayoutSchemaProps = {
   name: string,
   layoutType: LayoutType,
   refSchemaKey: string,
+  initialChild?: RouteNode,
   isRoot?: boolean,
-): SchemaNode {
+}
+
+export default function createLayoutSchema({
+  name,
+  layoutType,
+  refSchemaKey,
+  initialChild,
+  isRoot,
+}: LayoutSchemaProps ): Node {
   return {
     id: isRoot ? ROOT_NODE_ID : genNodeID(),
     label: name,
@@ -22,11 +31,11 @@ export default function createLayoutSchema(
     props: {
       'data-internal-node': {
         type: 'constant_property',
-        value: 'true',
+        value: true,
       },
       'data-layout': {
         type: 'constant_property',
-        value: 'true',
+        value: true,
       },
       'data-layout-type': {
         type: 'constant_property',
@@ -48,7 +57,7 @@ export default function createLayoutSchema(
           {
             id: genNodeID(),
             type: 'ref-node',
-            schemaID: refSchemaKey,
+            arteryID: refSchemaKey,
           },
         ],
       },
@@ -62,7 +71,7 @@ export default function createLayoutSchema(
             value: LAYOUT_CHILD_TYPE_ROUTES_CONTAINER,
           },
         },
-        children: [],
+        children: initialChild ? [initialChild] : [],
       },
     ],
   };

@@ -3,17 +3,15 @@ import {
   findNodeByID,
   getNodeParentIDs,
   travel,
-} from '@one-for-all/schema-utils';
+} from '@one-for-all/artery-utils';
 import {
   ReactComponentNode,
   RefNode,
   RouteNode,
-  SchemaNode,
-} from '@one-for-all/schema-spec';
+  Node,
+} from '@one-for-all/artery';
 
-import logger from '@lib/logger';
-
-import { ExternalView, View, ViewType, SchemaView, StaticView, TableSchemaView } from '../types';
+import { ExternalView, View, ViewType, SchemaView, StaticView, TableSchemaView } from '../types.d';
 import { isLayoutNode } from './utils';
 
 const VIEW_RENDER_MAP: Record<string, ViewType> = {
@@ -22,7 +20,7 @@ const VIEW_RENDER_MAP: Record<string, ViewType> = {
   ExternalViewRender: ViewType.ExternalView,
 };
 
-function getViewType(node: SchemaNode): ViewType | undefined {
+function getViewType(node: Node): ViewType | undefined {
   if (node.type === 'ref-node') {
     return ViewType.SchemaView;
   }
@@ -32,17 +30,17 @@ function getViewType(node: SchemaNode): ViewType | undefined {
   }
 }
 
-function convertRefNodeToView(node: RefNode): SchemaView {
+export function convertRefNodeToView(node: RefNode): SchemaView {
   return {
     id: node.id as string,
     name: node.label || '',
     type: ViewType.SchemaView,
-    schemaID: node.schemaID,
+    arteryID: node.arteryID,
     url: '',
   };
 }
 
-function convertNodeToTableView(node: ReactComponentNode): TableSchemaView {
+export function convertNodeToTableView(node: ReactComponentNode): TableSchemaView {
   return {
     id: node.id as string,
     name: node.label || '',
@@ -53,7 +51,7 @@ function convertNodeToTableView(node: ReactComponentNode): TableSchemaView {
   };
 }
 
-function convertNodeToStaticView(node: ReactComponentNode): StaticView {
+export function convertNodeToStaticView(node: ReactComponentNode): StaticView {
   return {
     id: node.id as string,
     name: node.label || '',
@@ -63,17 +61,18 @@ function convertNodeToStaticView(node: ReactComponentNode): StaticView {
   };
 }
 
-function convertNodeToExternalView(node: ReactComponentNode): ExternalView {
+export function convertNodeToExternalView(node: ReactComponentNode): ExternalView {
   return {
     id: node.id as string,
     name: node.label || '',
     type: ViewType.ExternalView,
-    link: get(node, 'props.fileUrl.link') || '',
+    link: get(node, 'props.link.value') || '',
+    appID: get(node, 'props.appID.value') || '',
     url: '',
   };
 }
 
-function convertNodeToView(node: SchemaNode): View | undefined {
+function convertNodeToView(node: Node): View | undefined {
   switch (getViewType(node)) {
   case ViewType.SchemaView:
     return convertRefNodeToView(node as RefNode);
@@ -84,12 +83,11 @@ function convertNodeToView(node: SchemaNode): View | undefined {
   case ViewType.StaticView:
     return convertNodeToStaticView(node as ReactComponentNode);
   default:
-    logger.error('todo some error message');
     break;
   }
 }
 
-function fullFillViewURL(view: View, rootNode: SchemaNode): View {
+function fullFillViewURL(view: View, rootNode: Node): View {
   const parentIDs = getNodeParentIDs(rootNode, view.id);
   if (!parentIDs) {
     return view;
@@ -98,14 +96,14 @@ function fullFillViewURL(view: View, rootNode: SchemaNode): View {
   // todo path need prefix
   const url = parentIDs
     .map((id) => findNodeByID(rootNode, id))
-    .filter<SchemaNode>((node): node is SchemaNode => !!node)
+    .filter<Node>((node): node is Node => !!node)
     .filter((node): node is RouteNode => node.type === 'route-node')
     .map(({ path }) => path).join('/');
 
   return { ...view, url };
 }
 
-export default function findViews(node: SchemaNode): Array<View> {
+export default function findViews(node: Node): Array<View> {
   const views: Array<View> = [];
 
   travel(node, {

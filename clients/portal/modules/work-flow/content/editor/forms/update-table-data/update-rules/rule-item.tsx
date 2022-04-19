@@ -6,7 +6,7 @@ import { FormRenderer } from '@c/form-builder';
 import Select from '@c/select';
 import IconBtn from '@c/icon-btn';
 import Button from '@c/button';
-import { getSchemaFields, isFieldTypeMatch, isAdvancedField } from '../../utils';
+import { getSchemaFields, isFieldTypeMatch, isAdvancedField, getSelectColumns } from '../../utils';
 import FlowSourceTableContext from '@flow/content/editor/forms/flow-source-table';
 import FlowContext from '@flow/flow-context';
 import { getFlowVariables, getFormFieldSchema } from '@flow/content/editor/forms/api';
@@ -24,6 +24,8 @@ interface Props {
   onRemove: () => void;
   onChange: (data: Partial<Rule>) => void;
 }
+
+const excludeComps = ['serial', 'aggregationrecords', 'associatedrecords', 'associateddata', 'subtable'];
 
 const valueFromOptions: Array<{ label: string, value: string }> = [
   { label: '字段值', value: 'currentFormValue' },
@@ -200,12 +202,13 @@ function RuleItem(props: Props): JSX.Element {
 
   function getTargetFieldList(): LabelValue[] {
     const selectField = targetSchemaMap[data.selectField || ''];
+
     if (selectField) {
-      const { componentName, fieldName } = selectField;
+      const { componentName } = selectField;
       if (componentName === 'associatedrecords') {
         const columns = get(selectField, 'x-component-props.columns', []);
         return Object.entries(get(selectField, 'x-component-props.associatedTable.properties', {}))
-          .filter(([filedName, conf]: [string, any]) => !get(conf, 'x-internal.isSystem') && columns.includes(filedName))
+          .filter((properties: [string, any]) => getSelectColumns(properties, columns, excludeComps) )
           .map(([field_id, conf]: [string, any]) => {
             return {
               label: conf.title || field_id,
@@ -213,12 +216,14 @@ function RuleItem(props: Props): JSX.Element {
             };
           });
       }
+
       if (componentName === 'associateddata') {
         return getSchemaFields(Object.values(schemaToMap(relatedTableSchema)), {
           noSystem: true,
-          excludeComps: ['serial', 'associatedrecords', 'associateddata', 'subtable'],
+          excludeComps,
         });
       }
+
       if (componentName === 'subtable') {
         const sub = get(selectField, 'x-component-props.subordination');
         const subItems = sub === 'foreign_table' ? get(relatedTableSchema, 'properties') :
@@ -238,7 +243,7 @@ function RuleItem(props: Props): JSX.Element {
     }
     return getSchemaFields(Object.values(targetSchemaMap), {
       noSystem: true,
-      excludeComps: ['serial', 'associatedrecords', 'associateddata', 'subtable'],
+      excludeComps,
     });
   }
 

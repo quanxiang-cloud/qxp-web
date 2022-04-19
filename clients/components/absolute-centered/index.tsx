@@ -12,7 +12,7 @@ const style: React.CSSProperties = {
   transform: 'translate(-50%, -50%)',
 };
 
-function AbsoluteCentered({ className = '', children }: Props) {
+function AbsoluteCentered({ className = '', children }: Props): JSX.Element {
   return (<div style={style} className={className}>{children}</div>);
 }
 

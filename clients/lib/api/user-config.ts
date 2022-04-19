@@ -35,6 +35,6 @@ export function setBatchGlobalConfig(params: SetParams[]): FutureErrorMessage {
   });
 }
 
-export function setPageEngineMenuType(appID: string, id: string): Promise<any> {
-  return httpClient(`/api/v1/structor/${appID}/m/menu/toPage`, { id });
+export function setArteryEngineMenuType(appID: string, id: string): Promise<any> {
+  return httpClient(`/api/v1/form/${appID}/m/menu/toPage`, { id });
 }

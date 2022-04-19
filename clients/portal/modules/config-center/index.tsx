@@ -1,10 +1,10 @@
 import React from 'react';
 import { useQuery } from 'react-query';
-import { SchemaRender } from '@one-for-all/render-engine';
-import type { Schema } from '@one-for-all/schema-spec';
+import { ArteryRenderer } from '@one-for-all/artery-renderer';
+import type { Artery } from '@one-for-all/artery';
 import logger from '@lib/logger';
 
-import ErrorBoundary from '@c/page-schema-render/error-boundary';
+import ErrorBoundary from '@c/artery-renderer/error-boundary';
 import SwaggerRPCSpecAdapter from '@lib/api-adapter';
 // import schema from './schema';
 import swagger from './swagger';
@@ -14,7 +14,7 @@ const CONFIG_CENTER_PAGE_SCHEMA_KEY = 'SCHEMA_CONFIG_CENTER';
 
 // window.__schema = schema;
 
-function useSchema(): { schema?: Schema; loading: boolean; } {
+function useSchema(): { schema?: Artery; loading: boolean; } {
   const { isLoading, data } = useQuery<string>('get_my_apps_schema', (): Promise<string> => {
     return httpClient<{ result: Record<string, string>; }>('/api/v1/persona/batchGetValue', {
       keys: [{ key: CONFIG_CENTER_PAGE_SCHEMA_KEY, version: '1.0.0' }],
@@ -48,7 +48,7 @@ export default function MyApps(): JSX.Element | null {
 
   return (
     <ErrorBoundary>
-      <SchemaRender schema={schema} plugins={{ apiSpecAdapter }} />
+      <ArteryRenderer artery={schema} plugins={{ apiSpecAdapter }} />
     </ErrorBoundary>
   );
 }

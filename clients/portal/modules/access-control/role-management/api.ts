@@ -53,7 +53,7 @@ interface GetRoleAssociationParams {
 export async function getRoleAssociations({ queryKey }: QueryFunctionContext<[
   string, GetRoleAssociationParams
 ]>) {
-  const data: any = await httpClient.get('/api/v1/goalie/role/owner/list', queryKey[1]);
+  const data: any = await httpClient.get('/api/v1/goalie/role/owner/list', queryKey[1] as any);
   return ({
     departments: data?.owners.filter(({ type }: { type: number }) => type === ROLE_BIND_TYPE.employee) || [],
     employees: data?.owners.filter(({ type }: { type: number }) => type === ROLE_BIND_TYPE.department) || [],

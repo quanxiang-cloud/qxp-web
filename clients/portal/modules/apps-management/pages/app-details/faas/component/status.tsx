@@ -60,16 +60,13 @@ function StatusDisplay({
           '--status-color': `var(--${STATUS_INFO[status].color}-600)`,
           '--status-shadow-color': `var(--${STATUS_INFO[status].color}-400)`,
           boxShadow: `0 0 12px var(--${STATUS_INFO[status].color}-400)`,
+          backgroundColor: `var(--${STATUS_INFO[status].color}-600)`,
         } as React.CSSProperties}
         className='relative w-8 h-8 rounded-full'
       >
-        <div className="faas-status-dot"></div>
         {
           status === 'Unknown' && (
-            <>
-              <div className="faas-status-pulse"></div>
-              <div className="faas-status-pulse1"></div>
-            </>
+            <div className="animate-ping h-full w-full rounded-full opacity-75 faas-status-pulse"></div>
           )
         }
       </div>

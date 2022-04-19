@@ -1,0 +1,16 @@
+.view-list {
+  .menu-item__active::after {
+    content: "";
+    width: 4px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-radius: 4px 0 0 4px;
+    background-color: var(--blue-600);
+  }
+
+  .view-item-title {
+    max-width: 120px;
+  }
+}

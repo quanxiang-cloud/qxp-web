@@ -16,6 +16,7 @@ import toast from '@lib/toast';
 import Pagination from '@c/pagination';
 import { copyToClipboard } from '@lib/utils';
 import ToolTip from '@c/tooltip';
+import OperationConfirm from '@portal/modules/apps-management/pages/app-details/api-key/operation-confirm';
 
 import { deleteNativeApi, activeApi } from '../api';
 import { useNamespace } from '../hooks';
@@ -277,19 +278,8 @@ function ApiList(): JSX.Element {
             },
           ]}
         >
-          <div className='px-40 py-24'>
-            <div className='flex items-center mb-8'>
-              <Icon name='info' className='text-yellow-600' type='primary' size={18}/>
-              <span className='ml-10 text-14 text-yellow-600'>
-                {modalType === 'disable' && '确认要关闭吗？'}
-                {modalType === 'delete' && '确认要删除吗？'}
-              </span>
-            </div>
-            <div className='pl-28'>
-              {modalType === 'disable' && '如果设置关闭状态后，会导致相关 API 请求失败。'}
-              {modalType === 'delete' && '如果该 API 被删除，将无法恢复。'}
-            </div>
-          </div>
+          {modalType === 'disable' && <OperationConfirm message='关闭' tips='如果设置关闭状态后，会导致相关 API 请求失败。'/>}
+          {modalType === 'delete' && <OperationConfirm message='删除' tips='如果该 API 被删除，将无法恢复。'/>}
         </Modal>
       )}
     </div>

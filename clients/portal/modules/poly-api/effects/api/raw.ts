@@ -23,9 +23,11 @@ export type RawApiDetail = {
   method: string,
   action: string,
   creatAt: string,
+  uri: string,
+  accessPath: string
 }
 
-type QueryRequestNodeApiListInputBody = {
+export type QueryRequestNodeApiListInputBody = {
   name?: string;
   title?: string;
   active?: number;
@@ -34,7 +36,7 @@ type QueryRequestNodeApiListInputBody = {
   withSub?: boolean;
 }
 type QueryRequestNodeApiListInput = Input<QueryRequestNodeApiListInputBody>;
-type QueryRequestNodeApiListResponse = {
+export type QueryRequestNodeApiListResponse = {
   list: RawApiDetail[];
   page: number;
   total: number;

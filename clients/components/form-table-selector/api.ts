@@ -8,11 +8,6 @@ export type MenuListItem = {
   child: MenuListItem[];
 }
 
-type MenuListPageItem = {
-  id: string;
-  name: string;
-}
-
 export type Option = {
   label: string;
   value: string;
@@ -21,8 +16,8 @@ export type Option = {
 };
 
 export async function getFormDataMenuList(appID: string): Promise<LabelValue[]> {
-  const { pages } = await httpClient(`/api/v1/structor/${appID}/m/menu/listPage`, { appID });
-  return pages ? pages.map(({ id, name }: MenuListPageItem) => ({ label: name, value: id })) : [];
+  const { list } = await httpClient(`/api/v1/form/${appID}/m/table/search`);
+  return list ? list.map(({ tableID, title }: DataModel) => ({ label: title, value: tableID })) : [];
 }
 
 function parseMenuListWithOptions(menuList: MenuListItem[]): Option[] {

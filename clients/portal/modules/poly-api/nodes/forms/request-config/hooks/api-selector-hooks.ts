@@ -1,98 +1,56 @@
 import { useEffect, useMemo, useState } from 'react';
-import { toast } from '@one-for-all/ui';
-import {
-  useGetNamespaceFullPath, useQueryNameSpaceRawRootPath,
-} from '@polyApi/effects/api/namespace';
-import {
-  ApiCascaderOption, ApiOptionData, getChildrenOfCurrentSelectOption, mergeApiListToOptions,
-} from '@polyApi/utils/request-node';
-import { useGetRequestNodeApiList } from '@polyApi/effects/api/raw';
-import { isEmpty } from 'lodash';
 
-export function useGetNamespaceTree(
-  appID: string, pathType: 'raw.root' | 'poly',
-): ApiOptionData[] {
-  const [state, setState] = useState<ApiOptionData[]>([]);
-  const { data: namespace, error: fetchRootPathError } = useQueryNameSpaceRawRootPath(appID, pathType);
-  const { data: namespaceTree, isLoading, error: fetchNameSpacePathError } = useGetNamespaceFullPath({
-    path: namespace?.appPath?.slice(1) || '',
-    body: { active: -1 },
-  }, { enabled: !!namespace?.appPath });
+import { ApiCascaderOption, getChildrenOfCurrentSelectOption } from '@polyApi/utils/request-node';
+import { createCollection, Collection, useCollection, PathType, DirectoryChild } from '@lib/api-collection';
 
-  useEffect(() => {
-    fetchNameSpacePathError && toast.error(fetchNameSpacePathError.message);
-    fetchRootPathError && toast.error(fetchRootPathError.message);
-  }, [fetchNameSpacePathError, fetchRootPathError]);
+type ApiDirectoryWithPathType = { directory: string, pathType: PathType }
+type GetOptionFromCollectionProps = {
+  appID: string,
+  apiDirectoryWithPathType: ApiDirectoryWithPathType,
+  usePolyApiOption: boolean
+ };
 
-  useEffect(() => {
-    if (!isLoading && !namespaceTree) {
-      return;
-    }
+export function useGetOptionFromCollection({
+  appID,
+  apiDirectoryWithPathType,
+  usePolyApiOption,
+}: GetOptionFromCollectionProps): ApiCascaderOption[] {
+  const [options, setOptions] = useState<ApiCascaderOption[]>([]);
 
-    if (pathType === 'poly') {
-      const polyNameSpaceTree = [{
-        name: 'poly_api',
-        title: '编排 API',
-        parent: '/',
-        children: namespaceTree?.root.children ?? [],
-      }] as ApiOptionData[];
-      setState(polyNameSpaceTree);
-      return;
-    }
+  const apiCollection: Collection = useMemo(() => {
+    const pathTypes = [PathType.RAW_ROOT];
+    usePolyApiOption && pathTypes.push(PathType.POLY);
+    return createCollection({ appID, pathTypes, mode: 'directoryWithApi' });
+  }, []);
 
-    setState(namespaceTree?.root.children ?? []);
-  }, [namespaceTree, isLoading]);
-
-  return state;
-}
-
-export function useGetOptions(
-  appID: string, apiNamespacePath: string, usePolyApiOption: boolean,
-): ApiCascaderOption[] {
-  const rawTree = useGetNamespaceTree(appID, 'raw.root');
-  const polyTree = useGetNamespaceTree(appID, 'poly');
-  const [options, setOptions] = useState<ApiCascaderOption[] | undefined>();
-  const apiNamespacePathTree = useMemo(() => {
-    if (usePolyApiOption) {
-      return rawTree.concat(polyTree);
-    }
-
-    return rawTree;
-  }, [polyTree, rawTree]);
-
-  // to prevent poly api root option fetch api list
-  let path = apiNamespacePath.slice(1) || '';
-  const type = path.split('/')[3];
-  if (!type) {
-    path = ''; // useGetRequestNodeApiList hook disabled when path is not exist
-  }
-
-  const { data: apiListDetails, isLoading, error } = useGetRequestNodeApiList({
-    path,
-    type,
-    body: { active: 1, page: 1, pageSize: -1 },
-  }, { enabled: !!path });
-
-  // api cascader load apiList options
-  useEffect(() => {
-    if ((isLoading && !apiListDetails) || !options) {
-      return;
-    }
-
-    setOptions(mergeApiListToOptions(options, apiNamespacePath, apiListDetails?.list || []));
-  }, [apiListDetails, isLoading]);
+  const collectionValue = useCollection(apiCollection);
 
   useEffect(() => {
-    error && toast.error(error.message);
-  }, [error]);
+    if (!apiDirectoryWithPathType.directory) return;
+    apiCollection.onGetApiList(apiDirectoryWithPathType.directory, apiDirectoryWithPathType.pathType);
+  }, [apiDirectoryWithPathType]);
 
   useEffect(() => {
-    if (isEmpty(apiNamespacePathTree)) {
-      return;
-    }
+    const directoryChildren = collectionValue.apiDataList.reduce(
+      (directoryChildren: DirectoryChild[], list) => {
+        if (!list.directory.children) {
+          return directoryChildren;
+        }
+        let willAppendChildren = list.directory.children;
+        if (list.pathType === 'poly') {
+          willAppendChildren = [{
+            ...list.directory,
+            active: 1,
+            subCount: list.directory.children.length,
+            title: '编排API',
+          }];
+        }
+        return directoryChildren.concat(willAppendChildren);
+      },
+      []);
 
-    setOptions(getChildrenOfCurrentSelectOption(apiNamespacePathTree));
-  }, [apiNamespacePathTree]);
+    setOptions(getChildrenOfCurrentSelectOption(directoryChildren, apiDirectoryWithPathType.directory));
+  }, [collectionValue]);
 
-  return options || [];
+  return options;
 }

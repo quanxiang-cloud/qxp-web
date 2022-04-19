@@ -27,8 +27,18 @@ function AllApprovals(): JSX.Element {
     <div>
       <div className="flex justify-between items-center mb-16">
         <div className="flex flex-1" />
-        <Search className="w-259 mr-16" placeholder="搜索流程、发起人、应用" value={store.keyword} onChange={store.changeKeyword} />
-        <Select multiple={false} options={sortOptions} onChange={store.changeOrderType} value={store.orderType}>
+        <Search
+          className="w-259 mr-16"
+          placeholder="搜索流程、发起人、应用"
+          value={store.keyword}
+          onChange={store.changeKeyword}
+        />
+        <Select
+          multiple={false}
+          options={sortOptions}
+          value={store.orderType}
+          onChange={store.changeOrderType}
+        >
           <IconBtn
             iconName="import_export"
             className="border-none hover:bg-gray-100"
@@ -40,7 +50,12 @@ function AllApprovals(): JSX.Element {
         </Select>
       </div>
       <TaskList tasks={store.approvals} store={store} taskType='all' type="ALL_PAGE" />
-      <Pagination current={store.pageNumber} total={store.total} pageSize={store.pageSize} onChange={store.paginate} />
+      <Pagination
+        current={store.pageNumber}
+        total={store.total}
+        pageSize={store.pageSize}
+        onChange={store.paginate}
+      />
     </div>
   );
 }

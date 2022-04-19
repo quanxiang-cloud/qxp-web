@@ -3,9 +3,10 @@ import ReactDOM from 'react-dom';
 
 import AppLand from './app-land';
 
-import '../portal/scss/index.scss';
-import '../styles/index.css';
-// import './index.scss';
+import '../styles/reset.css';
+import '../styles/variables/global.css';
+import './index.scss';
+
 import { registerValidationFormats, setValidationLocale } from '@formily/antd';
 
 registerValidationFormats({

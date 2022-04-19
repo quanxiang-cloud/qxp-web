@@ -7,6 +7,9 @@ import toast from '@lib/toast';
 
 import store from '../store';
 import CreatedEditApp from './created-edit-app';
+import AppLayoutType from '../app-layout-select';
+import { SelectLayoutType } from '../app-layout-select/layout-view';
+import { initAppRootView } from '../../../app-details/view-orchestration/init-app-root-view';
 
 type Props = {
   modalType: string;
@@ -19,6 +22,8 @@ function CreatedAppModal({ modalType, onCancel, templateID }: Props): JSX.Elemen
   const history = useHistory();
   const formRef: any = useRef(null);
   const [appZipInfo, setAppZipInfo] = useState<AppZipInfo | undefined>(undefined);
+  const [defaultAppLayout, setDefaultAppLayout] = useState<SelectLayoutType>('free');
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = (): void => {
     const formDom = formRef.current;
@@ -32,6 +37,8 @@ function CreatedAppModal({ modalType, onCancel, templateID }: Props): JSX.Elemen
   function submitCallback(): void {
     const formDom = formRef.current;
     const data = formDom.getFieldsValue() as AppInfo;
+    let appID = '';
+    setLoading(true);
 
     if (has('template', data)) {
       createdAppByTemplate(data).then(onCancel).catch(toastError);
@@ -44,9 +51,13 @@ function CreatedAppModal({ modalType, onCancel, templateID }: Props): JSX.Elemen
     }
 
     createdApp({ ...data, useStatus: -1 }).then((res: string) => {
+      appID = res;
+      return initAppRootView(res, defaultAppLayout);
+    }).then(() => {
+      if (!appID) throw new Error('App creation failed: invalid appID');
       toast.success('创建应用成功！');
+      history.push(`/apps/details/${appID}/app_views`);
       onCancel();
-      history.push(`/apps/details/${res}/page_setting`);
     }).catch(toastError);
   }
 
@@ -69,6 +80,7 @@ function CreatedAppModal({ modalType, onCancel, templateID }: Props): JSX.Elemen
           modifier: 'primary',
           onClick: handleSubmit,
           forbidden: modalType === 'importApp' && !appZipInfo,
+          loading,
         },
       ]}
     >
@@ -82,6 +94,7 @@ function CreatedAppModal({ modalType, onCancel, templateID }: Props): JSX.Elemen
           has('appZipInfo', value) && setAppZipInfo(formRef.current.getFieldValue('appZipInfo'));
         }}
       />
+      <AppLayoutType title='默认应用布局 (应用布局会应用在所有页面):' onSelect={setDefaultAppLayout} />
     </Modal>
   );
 }

@@ -19,7 +19,7 @@ export function useQueryPolyInfo(
       if (options?.enabled === false) {
         return Promise.resolve(undefined);
       }
-      return httpClient<QueryPolyInfoResponse>(`/api/v1/polyapi/poly/query/${input.path}`);
+      return httpClient<QueryPolyInfoResponse>(`/api/v1/polyapi/poly/query/${input.path}`, {});
     },
     options,
   );

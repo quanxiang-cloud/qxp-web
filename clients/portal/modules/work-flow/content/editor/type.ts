@@ -228,10 +228,13 @@ export interface TableDataCreateData {
     }
   }
 }
+
+export type SelectFormType = 'work-form' | 'others';
 export interface TableDataUpdateData {
   targetTableId: string;
   silent: boolean;
   selectField?: string;
+  formType?: SelectFormType;
   filterRule?: {
     tag: 'and' | 'or';
     conditions: Array<{
