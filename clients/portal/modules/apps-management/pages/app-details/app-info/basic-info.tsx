@@ -51,7 +51,6 @@ function BasicInfo(): JSX.Element {
       >
         <div className='flex flex-grow mx-20 mt-20 bg-white rounded-12'>
           <CreatedEditApp
-            basic
             ref={formRef}
             modalType="createdApp"
             appInfo={appDetailsStore.appDetails}
