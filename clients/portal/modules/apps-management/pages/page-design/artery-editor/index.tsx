@@ -64,7 +64,7 @@ function ArteryEditor({ appID, arteryID, initialArtery }: Props): JSX.Element {
   }
 
   function handleBack(): void {
-    history.push(`/apps/details/${appID}/app_views`);
+    history.push(`/apps/details/${appID}/views`);
   }
 
   function handleChangeMode(editorMode: EditorMode): void {

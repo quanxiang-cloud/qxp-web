@@ -9,3 +9,13 @@ export const DefaultFormDescriptions = [
   { id: 'updatedBy', title: '修改人', value: '' },
   { id: 'updatedAt', title: '修改时间', value: '' },
 ];
+
+export const URL_PARAM_LIST = [
+  '${user_id}',
+  '${user_name}',
+  '${user_email}',
+  '${user_phone}',
+  '${dep_id}',
+  '${dep_name}',
+  '${appid}',
+];

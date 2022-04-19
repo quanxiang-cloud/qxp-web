@@ -44,7 +44,9 @@ export default function findLayouts(node: Node): Array<Layout> {
         return;
       }
 
-      layouts.push(convertNodeToLayout(currentNode));
+      const layout = convertNodeToLayout(currentNode);
+      if (layout.id === 'root_node') return;
+      layouts.push(layout);
     },
   });
 
