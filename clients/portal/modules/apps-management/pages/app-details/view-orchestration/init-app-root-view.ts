@@ -41,8 +41,8 @@ export async function initAppRootView(appID: string, layoutType: LayoutType | 'f
   if (!refSchemaKey) throw new Error('get refSchemaKey failed');
 
   const rootNode = createLayoutSchema({
-    name: 'ROOT_LAYOUT',
-    layoutType, refSchemaKey,
+    layoutInfo: { name: 'ROOT_LAYOUT', type: layoutType },
+    refSchemaKey,
     initialChild,
     isRoot: true,
   });
