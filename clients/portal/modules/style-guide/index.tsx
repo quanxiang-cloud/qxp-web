@@ -4,6 +4,7 @@ import Button from '@c/button';
 import Tab from '@c/tab';
 
 import ComponentStyleCustomization from './component-style-customization';
+import DesignToken from './design-token';
 import store from './store';
 
 import './index.css';
@@ -11,6 +12,7 @@ import './index.css';
 export default function StyleGuide(): JSX.Element {
   useEffect(() => {
     store.fetchStyleConfig();
+    store.fetchDesignTokenConfig();
   }, []);
 
   return (
@@ -22,6 +24,11 @@ export default function StyleGuide(): JSX.Element {
       <Tab
         className='bg-white'
         items={[
+          {
+            id: 'designToken',
+            name: '通用样式配置',
+            content: <DesignToken />,
+          },
           {
             id: 'componentStyleCustomization',
             name: '组件样式配置',

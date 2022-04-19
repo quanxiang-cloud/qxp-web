@@ -10,12 +10,16 @@ import { parseJSON } from '@lib/utils';
 
 import colorVars from './css-variables.json';
 import { applyStyle } from './utils';
+import DesignTokenStore from './design-token/store';
 
 const COMPONENT_STYLE_CONFIG_KEY = 'GLOBAL_COMPONENT_STYLE_CONFIG';
+const BASE_STYLE_CONFIG_KEY = 'GLOBAL_BASE_STYLE_CONFIG';
 const PERSONALIZED_CONFIG_KEY = 'PERSONALIZED_CONFIG';
+const DESIGN_TOKEN_CONFIG_KEY = 'DESIGN_TOKEN_CONFIG';
 const VERSION = '0.1.0';
 class StyleGuideStore {
   destroySetShadowStyle: IReactionDisposer;
+  @observable designTokenStore: DesignTokenStore | null = null;
   @observable cssStore: CssASTStore | null = null;
   @observable currentCompStatus: null | ActiveConfigurationComponent = null;
   @observable currentComp: ComponentSpec | null = null;
@@ -58,6 +62,15 @@ class StyleGuideStore {
   };
 
   @action
+  fetchDesignTokenConfig = (): void => {
+    getBatchGlobalConfig([{ key: DESIGN_TOKEN_CONFIG_KEY, version: VERSION }]).then((res) => {
+      this.designTokenStore = new DesignTokenStore({
+        tokenData: res.result?.[DESIGN_TOKEN_CONFIG_KEY],
+      });
+    });
+  };
+
+  @action
   setCurrentComp = (comp: ComponentSpec): void => {
     this.currentComp = comp;
     if (comp.specs.length) {
@@ -79,6 +92,14 @@ class StyleGuideStore {
       version: VERSION,
       key: PERSONALIZED_CONFIG_KEY,
       value: JSON.stringify({ styleCssUrl }),
+    }, {
+      version: VERSION,
+      key: DESIGN_TOKEN_CONFIG_KEY,
+      value: JSON.stringify(JSON.parse(this.designTokenStore?.getAllStringTokens() || '')),
+    }, {
+      version: VERSION,
+      key: BASE_STYLE_CONFIG_KEY,
+      value: this.designTokenStore?.generateCssString() || '',
     }]);
 
     toast.success('保存成功');
