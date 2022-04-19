@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import cs from 'classnames';
 
-import LayoutView, { SelectLayoutType } from './layout-view';
-import { LayoutType } from '../../../app-details/view-orchestration/types.d';
+import LayoutView, { LayoutItemProps, SelectLayoutType } from './layout-view';
+import { LayoutType } from './layout-view';
 
 type Props = {
   title: string;
@@ -11,25 +11,44 @@ type Props = {
   onSelect?: (layoutType: SelectLayoutType) => void;
 }
 
-const LAYOUT_TYPES: Array<SelectLayoutType> = [...Object.values(LayoutType), 'free'];
-const NO_FREE_LAYOUT_TYPES: Array<LayoutType> = [...Object.values(LayoutType)];
+const LAYOUT_CONFIG: LayoutItemProps[] = [
+  {
+    img: 'top-nav.png',
+    type: LayoutType.HeaderContent,
+    title: '顶部导航',
+    description: '不使用任何形式的导航，从空白开始创建应用',
+  },
+  {
+    img: 'left-nav.png',
+    type: LayoutType.LeftSidebarContent,
+    title: '左侧导航',
+    description: '不使用任何形式的导航，从空白开始创建应用',
+  },
+];
 
 function AppLayoutSelector({ title, includeFree = true, className, onSelect }: Props): JSX.Element {
   const [currentLayoutType, setCurrentLayoutType] = useState<SelectLayoutType>('free');
+
+  const layoutConfig = includeFree ? ([{
+    img: 'no-nav.png',
+    type: 'free',
+    title: '无导航',
+    description: '不使用任何形式的导航，从空白开始创建应用',
+  }] as LayoutItemProps[]).concat(LAYOUT_CONFIG) : LAYOUT_CONFIG;
 
   return (
     <div className={cs('-mt-24 px-20', className)}>
       <span>{title}</span>
       <div className='w-full py-20 flex justify-between gap-20'>
         {
-          (includeFree ? LAYOUT_TYPES : NO_FREE_LAYOUT_TYPES).map((layoutType) => (
+          layoutConfig.map((layoutItem) => (
             <LayoutView
-              key={layoutType}
+              key={layoutItem.type}
               currentLayoutType={currentLayoutType}
-              layoutType={layoutType}
-              onClick={() => {
-                setCurrentLayoutType(layoutType);
-                onSelect?.(layoutType);
+              layout={layoutItem}
+              onClick={(type) => {
+                setCurrentLayoutType(type);
+                onSelect?.(type);
               }}
             />
           ))

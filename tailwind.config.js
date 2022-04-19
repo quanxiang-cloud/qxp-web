@@ -22,6 +22,7 @@ module.exports = {
       8: '8px',
       10: '10px',
       12: '12px',
+      14: '14px',
       16: '16px',
       18: '18px',
       20: '20px',
@@ -120,6 +121,7 @@ module.exports = {
       minWidth: {
         90: '90px',
         120: '120px',
+        740: '740px'
       },
       maxWidth: {
         '290': 290,

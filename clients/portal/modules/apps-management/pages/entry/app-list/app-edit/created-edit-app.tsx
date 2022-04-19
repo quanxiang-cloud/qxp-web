@@ -1,13 +1,10 @@
-import React, { KeyboardEvent, useCallback, useEffect, useState } from 'react';
+import React, { KeyboardEvent, useCallback } from 'react';
 import { toJS } from 'mobx';
-import { has } from 'ramda';
 import { Form, Input } from 'antd';
 
 import toast from '@lib/toast';
-import Select from '@c/select';
 
 import AppZipUpload from './app-zip-upload';
-import AppCreatedBy from './app-created-by';
 import AppIconPicker from './app-icon-picker';
 import { fetchTemplateList, TemplateListRes } from '../../app-templates/api';
 
@@ -19,8 +16,8 @@ type Props = {
   modalType: string;
   className?: string;
   appInfo?: AppInfo;
-  templateID?: string;
-  basic?: boolean;
+  // templateID?: string;
+  // basic?: boolean;
   onSubmitCallback?: () => void;
   onValuesChange?: (value: any) => void;
 }
@@ -37,13 +34,13 @@ async function getTemplateOptions(): Promise<LabelValue[]> {
 }
 
 function CreatedEditApp({
-  appInfo, modalType, className, onSubmitCallback, onValuesChange, templateID, basic = false,
+  appInfo, modalType, className, onSubmitCallback, onValuesChange,
 }: Props, ref?: any): JSX.Element {
   const [form] = Form.useForm();
   const initData = appInfo && toJS(appInfo);
-  const [options, setOptions] = useState<LabelValue[]>([]);
+  // const [options, setOptions] = useState<LabelValue[]>([]);
   const { appName, appIcon = '{}', appSign } = initData || {};
-  const [createdBy, setCreatedBy] = useState(templateID ? 'template' : 'base');
+  // const [createdBy, setCreatedBy] = useState(templateID ? 'template' : 'base');
 
   const handleEnterSubmit = useCallback((e: KeyboardEvent<HTMLInputElement>) => {
     e.key === 'Enter' && handleFinish();
@@ -54,17 +51,17 @@ function CreatedEditApp({
   }
 
   function handleValuesChange(value: Record<string, unknown>): void {
-    has('createdBy', value) && setCreatedBy(value.createdBy as string);
+    // has('createdBy', value) && setCreatedBy(value.createdBy as string);
     onValuesChange?.(value);
   }
 
-  useEffect(() => {
-    if (createdBy === 'base' || !!options.length) {
-      return;
-    }
+  // useEffect(() => {
+  //   if (createdBy === 'base' || !!options.length) {
+  //     return;
+  //   }
 
-    getTemplateOptions().then(setOptions);
-  }, [createdBy]);
+  //   getTemplateOptions().then(setOptions);
+  // }, [createdBy]);
 
   return (
     <Form
@@ -76,8 +73,8 @@ function CreatedEditApp({
         appName,
         appSign,
         appIcon,
-        createdBy,
-        template: templateID,
+        // createdBy,
+        // template: templateID,
       }}
       onFinish={handleFinish}
       onValuesChange={handleValuesChange}
@@ -150,7 +147,7 @@ function CreatedEditApp({
       >
         <AppIconPicker />
       </Form.Item>
-      {modalType === 'createdApp' && !basic && (
+      {/* {modalType === 'createdApp' && !basic && (
         <Form.Item
           name="createdBy"
           label="新建方式"
@@ -166,7 +163,7 @@ function CreatedEditApp({
         >
           <Select className='w-full' options={options}/>
         </Form.Item>
-      )}
+      )} */}
       {modalType === 'importApp' && (
         <Form.Item
           required

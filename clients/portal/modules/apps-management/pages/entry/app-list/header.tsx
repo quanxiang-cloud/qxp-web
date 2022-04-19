@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import cs from 'classnames';
 
 import RadioButtonGroup from '@c/radio/radio-button-group';
 import Button from '@c/button';
@@ -7,6 +8,7 @@ import Search from '@c/search';
 import { Params } from './store';
 
 import './index.scss';
+import { Icon } from '@one-for-all/ui';
 
 type AppCountMaps = {
   all: number,
@@ -33,7 +35,22 @@ const STATUS_LIST: Status[] = [
   { value: -1, key: 'unPublished', label: '未发布' },
 ];
 
+const CREATE_APP_TYPE = [
+  {
+    icon: 'add',
+    label: '从空白新建',
+    modalType: 'createdApp',
+  },
+  {
+    icon: 'view',
+    label: '从模板库新建',
+    modalType: 'createAppWithTemplate',
+  },
+];
+
 function Header({ changeParams, params, setModalType, countMaps }: Props): JSX.Element {
+  const [showMenu, setShowMenu] = useState<boolean>(false);
+
   const search = (e: React.KeyboardEvent): void => {
     if (e.key === 'Enter') {
       changeParams({ appName: (e.target as any).value });
@@ -48,10 +65,50 @@ function Header({ changeParams, params, setModalType, countMaps }: Props): JSX.E
 
   return (
     <div className='app-filter-column'>
-      <div>
-        <Button onClick={() => setModalType('createdApp')} modifier='primary' iconName="add">
-          新建应用
-        </Button>
+      <div className='flex items-center relative'>
+        <div
+          className='relative flex justify-between items-center border-1 border-gray-700 rounded-8 rounded-tr-2 h-32 bg-gray-700 text-white text-12 cursor-pointer'
+        >
+          <div
+            className='border-r-1 border-gray-600 px-16 h-full flex items-center select-none'
+            onClick={() => setModalType('createdApp')}
+          >
+            新建应用
+          </div>
+          <Icon
+            className='box-content w-full h-full p-7'
+            name='expand_more'
+            size={18}
+            onMouseEnter={() => setShowMenu(true)}
+            onMouseLeave={() => setShowMenu(false)}
+          />
+          <div
+            className={cs('absolute w-144 top-full left-0 z-10', {
+              hidden: !showMenu,
+            })}
+            onMouseEnter={() => setShowMenu(true)}
+            onMouseLeave={() => setShowMenu(false)}
+          >
+            <div
+              className='flex flex-col gap-4 w-full rounded-8 shadow-more-action p-4 mt-6 bg-white'
+            >
+              {
+                CREATE_APP_TYPE.map((option) => {
+                  return (
+                    <div
+                      className='flex items-center text-gray-600 gap-10 px-16 select-none rounded-4 py-7 hover:bg-blue-100 duration-300'
+                      key={option.label}
+                      onClick={() => setModalType(option.modalType)}
+                    >
+                      <Icon name={option.icon} size={16} />
+                      <span>{option.label}</span>
+                    </div>
+                  );
+                })
+              }
+            </div>
+          </div>
+        </div>
         <Button onClick={() => setModalType('importApp')} className="ml-8" iconName="import-application">
           导入应用
         </Button>
@@ -60,11 +117,11 @@ function Header({ changeParams, params, setModalType, countMaps }: Props): JSX.E
         <RadioButtonGroup
           radioBtnClass="min-w-120"
           listData={STATUS_LIST as []}
-          radioLabelRender={({ label })=>{
+          radioLabelRender={({ label }) => {
             const currentKey = STATUS_LIST.find((item) => item.label === label)?.key;
             return label + '·' + countMaps[currentKey || 'all'];
           }}
-          onChange={(value)=> {
+          onChange={(value) => {
             params.useStatus !== value && changeParams({ useStatus: value as number });
           }}
           currentValue={params.useStatus}

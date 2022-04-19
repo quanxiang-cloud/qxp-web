@@ -9,8 +9,10 @@ import store from './store';
 import Header from './header';
 import AppList from './app-list';
 import CreatedAppModal from './app-edit/created-app-modal';
+import templateStore from '../app-templates/store';
 
 import './index.scss';
+import { toast } from '@one-for-all/ui';
 
 function MyApp(): JSX.Element {
   const [modalType, setModalType] = useState('');
@@ -26,7 +28,9 @@ function MyApp(): JSX.Element {
 
   useEffect(() => {
     store.changeParams({});
-
+    templateStore.fetchList().catch(() => {
+      toast.error('获取模版列表失败');
+    });
     return () => {
       store.isListLoading = true;
     };
@@ -52,7 +56,7 @@ function MyApp(): JSX.Element {
         isLoading={isListLoading}
         openCreatedModal={() => setModalType('createdApp')}
       />
-      {['createdApp', 'importApp'].includes(modalType) && (
+      {['createdApp', 'importApp', 'createAppWithTemplate'].includes(modalType) && (
         <CreatedAppModal modalType={modalType} onCancel={() => setModalType('')} />
       )}
     </div>

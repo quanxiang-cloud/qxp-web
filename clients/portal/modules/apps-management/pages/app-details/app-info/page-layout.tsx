@@ -16,14 +16,12 @@ import Loading from '@c/loading';
 import { Layout } from '../view-orchestration/types';
 import useAppStore from '../view-orchestration/hooks';
 import AppLayoutType from '../../entry/app-list/app-layout-select';
-import LayoutView from '../../entry/app-list/app-layout-select/layout-view';
 
 import './index.scss';
 
 enum LayoutType {
   HeaderContent = 'header-content',
   LeftSidebarContent = 'left-sidebar-content',
-  RightSidebarContent = 'right-sidebar-content',
 }
 
 const initLayout: Layout = {
@@ -65,16 +63,16 @@ function PageLayout(): JSX.Element {
       width: 'auto',
       accessor: 'name',
     },
-    {
-      Header: '样式',
-      id: 'type',
-      width: '200',
-      accessor: ({ type }: Layout) => {
-        return (
-          <LayoutView currentLayoutType='free' layoutType={type} />
-        );
-      },
-    },
+    // {
+    //   Header: '样式',
+    //   id: 'type',
+    //   width: '200',
+    //   accessor: ({ type }: Layout) => {
+    //     return (
+    //       <LayoutView currentLayoutType='free' layoutType={type as LayoutType} />
+    //     );
+    //   },
+    // },
     {
       Header: '页面描述',
       id: 'description',
