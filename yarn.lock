@@ -1187,6 +1187,13 @@
     react-dom "^17.0.2"
     react-table "^7.7.0"
 
+"@one-for-all/icon@0.4.0":
+  version "0.4.0"
+  resolved "https://registry.npmmirror.com/@one-for-all/icon/-/icon-0.4.0.tgz#34eb53e5ffdefe89ce84d224871201451bc6bf5c"
+  integrity sha512-clNvOHhpqPiU0rGjkYEdRes1bjyOHkDPM5z/M9viAePVn+EL1nYUE18KQV+c+qMkTCibe+mrpH13wPSy43k/wQ==
+  dependencies:
+    react "^17.0.2"
+
 "@one-for-all/icon@^0.6.1":
   version "0.6.1"
   resolved "https://registry.npmmirror.com/@one-for-all/icon/-/icon-0.6.1.tgz#3b960f472a98d0c663091eb91ef4403ea937e13e"
@@ -4188,6 +4195,11 @@ expect@^27.5.1:
     jest-get-type "^27.5.1"
     jest-matcher-utils "^27.5.1"
     jest-message-util "^27.5.1"
+
+expr-eval@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.npmmirror.com/expr-eval/-/expr-eval-2.0.2.tgz#fa6f044a7b0c93fde830954eb9c5b0f7fbc7e201"
+  integrity sha512-4EMSHGOPSwAfBiibw3ndnP0AvjDWLsMvGOvWEZ2F96IGk0bIVdjQisOHxReSkE13mHcfbuCiXw+G4y0zv6N8Eg==
 
 extend-shallow@^2.0.1:
   version "2.0.1"
