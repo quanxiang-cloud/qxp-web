@@ -1,0 +1,60 @@
+name: Build for testing environment
+env:
+  IMAGE_REPO: qxcr.xyz/lowcode
+  DATE: $(date "+%Y%m%d")
+  IMAGE_TAG: enfi-1.1
+on:
+  push:
+    branches:
+      - 'private-deploy/enfi-4-20-release-1.1'
+jobs:
+  bundle-clients:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/client-boot-up
+      - uses: ./.github/actions/quality-check
+      - uses: ./.github/actions/build-static
+      - uses: ./.github/actions/fail-alert
+        if: ${{ failure() }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  build-qxp-web-nginx:
+    needs: [bundle-clients]
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download client statices
+        uses: actions/download-artifact@v3
+        with:
+          name: dist
+          path: dist
+      - run: docker build -t "$IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG" -f ./deploy/Dockerfile-nginx .
+      - run: docker push "$IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG"
+      - run: docker rmi "$IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG"
+      - uses: ./.github/actions/fail-alert
+        if: ${{ failure() }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  build-qxp-web-portal-and-home:
+    needs: [bundle-clients]
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download templates and manifest.json
+        uses: actions/download-artifact@v3
+        with:
+          name: templates
+          path: dist
+      - run: go mod tidy
+      - run: go mod vendor
+      - run: docker build -t "$IMAGE_REPO/qxp-web-portal:$IMAGE_TAG" -f ./deploy/Dockerfile-portal .
+      - run: docker build -t "$IMAGE_REPO/qxp-web-home:$IMAGE_TAG" -f ./deploy/Dockerfile-home .
+      - run: docker push "$IMAGE_REPO/qxp-web-portal:$IMAGE_TAG"
+      - run: docker push "$IMAGE_REPO/qxp-web-home:$IMAGE_TAG"
+      - run: docker rmi "$IMAGE_REPO/qxp-web-portal:$IMAGE_TAG"
+      - run: docker rmi "$IMAGE_REPO/qxp-web-home:$IMAGE_TAG"
+      - uses: ./.github/actions/fail-alert
+        if: ${{ failure() }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
