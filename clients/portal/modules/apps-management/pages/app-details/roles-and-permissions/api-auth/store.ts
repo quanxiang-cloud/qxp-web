@@ -16,6 +16,7 @@ import {
 import { Role } from '../constants';
 
 import FieldsStore, { apiFieldsToTreeNode } from './role-details/store';
+import { turnParamsAsBodyPrams } from '../utils';
 
 class APIAuthStore {
   @observable appID = '';
@@ -171,17 +172,15 @@ class APIAuthStore {
     ]).then(([docRes, apiAuthRes]) => {
       const { inputSchema, outputSchema } = docRes;
       this.setOutputTreeStore(new FieldsStore(outputSchema || {}, apiAuthRes?.response || {}));
+      this.setInputTreeStore(new FieldsStore(inputSchema || {}, apiAuthRes?.params || {}));
 
-      // console.log(inputSchema);
-      // console.log(outputSchema);
-      // console.log(apiAuthRes?.response);
       const bbb = apiFieldsToTreeNode(
         apiAuthRes?.response || {},
         outputSchema || {},
         outputSchema?.properties || {},
       );
 
-      console.log(bbb);
+      // console.log(bbb);
 
       // const _outputField = turnFieldsWithState( apiAuthRes?.response || {}, outputSchema?.properties || {});
       // this.setOutPutFields(_outputField);
@@ -213,12 +212,13 @@ class APIAuthStore {
 
   @action
   fetchApiSwagDocDetails = (): Promise<{
-    inputSchema: Schema|undefined,
+    inputSchema: Schema | undefined,
     outputSchema: Schema | undefined
   }> => {
     return fetchApiSwagDocDetails(this.curAPI?.fullPath || '').then((res) => {
       const path = Object.values(res.doc.paths)[0];
-      const inputSchema = Object.values(path)[0].parameters;
+      const _inputSchema = Object.values(path)[0].parameters;
+      const inputSchema = turnParamsAsBodyPrams(_inputSchema || []);
       const outputSchema = Object.values(path)[0].responses?.[200]?.schema;
       return {
         inputSchema,

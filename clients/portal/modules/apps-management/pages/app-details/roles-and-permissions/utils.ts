@@ -4,7 +4,8 @@ import { Spec } from '@one-for-all/api-spec-adapter';
 import httpClient from '@lib/http-client';
 
 import { fetchApiAuthDetails } from './api';
-import { SCOPE } from './constants';
+import { INIT_INPUT_SCHEMA, SCOPE } from './constants';
+import { BodyParameter, Parameter, QueryParameter, Schema } from '@lib/api-adapter/swagger-schema-official';
 
 type getAddAndRemovePersonResult = {
   newScopes: DeptAndUser[],
@@ -88,4 +89,17 @@ export function useQueryAPIDoc(
     },
     options,
   );
+}
+
+export function turnParamsAsBodyPrams(parameters: Array<Parameter>): any {
+  const found = parameters.find((param) => param.in === 'body') as BodyParameter;
+  const inputSchema: Schema = found?.schema ? found?.schema : INIT_INPUT_SCHEMA;
+  parameters.forEach((params) => {
+    if (params.in === 'query') {
+      const id = (params as QueryParameter).name;
+      const _properties = { type: params.type };
+      (inputSchema.properties || {})[id] = { ..._properties };
+    }
+  });
+  return inputSchema;
 }

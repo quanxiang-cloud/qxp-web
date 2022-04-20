@@ -5,6 +5,7 @@ import Tab from '@c/tab';
 
 import DataRange from './data-range';
 import OutPutRange from './output-range';
+import InPutRange from './input-range';
 import store from '../store';
 import Loading from '@c/loading';
 import { Schema } from '@lib/api-adapter/swagger-schema-official';
@@ -52,6 +53,11 @@ function AuthDetailModal(): JSX.Element {
       name: '出参范围',
       content: <OutPutRange/>,
     },
+    {
+      id: 'inputFields',
+      name: '入参范围',
+      content: <InPutRange/>,
+    },
   ];
 
   if (store.isLoadingAuthDetails) {
@@ -61,8 +67,10 @@ function AuthDetailModal(): JSX.Element {
   function onSubmit(): void {
     // console.log(toJS(store.outputTreeStore?.rootNode));
     const output = fieldsTreeToParams(store.outputTreeStore?.rootNode);
+    const input = fieldsTreeToParams(store.inputTreeStore?.rootNode);
     console.log(output);
-    const _curAuth = { ...store?.curAuth, response: output };
+    console.log(input);
+    const _curAuth = { ...store?.curAuth, response: output, params: input };
     store.updateAPIAuth(_curAuth);
   }
 

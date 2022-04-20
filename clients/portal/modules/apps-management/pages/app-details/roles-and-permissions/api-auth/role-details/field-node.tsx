@@ -48,7 +48,7 @@ function FieldRender({ node, store }: NodeRenderProps<Schema &{acceptable?: bool
         checked={node.data?.acceptable || false}
         onChange={onChange}
       />
-      <div>{nodeLabel}</div>
+      <div>{nodeLabel || node.id}</div>
       <div>{node.id || ''}</div>
       <div>{node.data.type}</div>
     </div>

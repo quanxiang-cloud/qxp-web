@@ -1,3 +1,5 @@
+import { Schema } from '@lib/api-adapter/swagger-schema-official';
+
 export const INIT_CURRENT_RIGHTS: RoleRight = {
   id: '',
   name: '',
@@ -65,4 +67,9 @@ export const DATA_RANGE: Record<string, string> = {
   ALL: JSON.stringify(ALL_ALLOWED, null, 4),
   SELF: JSON.stringify(ONLY_SELF, null, 4),
   SELF_WITH_SUB: JSON.stringify(SELF_AND_SUB, null, 4),
+};
+
+export const INIT_INPUT_SCHEMA: Schema = {
+  type: 'object',
+  properties: {},
 };

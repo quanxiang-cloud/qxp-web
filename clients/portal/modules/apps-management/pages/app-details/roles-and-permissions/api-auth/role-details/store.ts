@@ -100,7 +100,6 @@ export function turnFieldsWithState(
   fields: { [propertyName: string]: Schema },
 ): { [propertyName: string]: Schema & { checked?: boolean, id?: string } } {
   const fieldsWithState: { [propertyName: string]: Schema & { checked?: boolean, id?: string } } = fields;
-  // if (!Object.keys(params).length) return fields;
 
   Object.entries(fields).forEach(([key, value]) => {
     const checked = !!params[key];
