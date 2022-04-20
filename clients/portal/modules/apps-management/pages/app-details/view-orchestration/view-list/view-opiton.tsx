@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import cs from 'classnames';
 import Icon from '@c/icon';
 import MoreMenu, { MenuItem } from '@c/more-menu';
 
@@ -7,11 +8,12 @@ import { View } from '../types.d';
 
 type Props = {
   view: View;
+  className?: string;
   homeViewID?: string;
   onViewOptionClick?: (key: string, view: View) => void;
 }
 
-function ViewOption({ view, homeViewID, onViewOptionClick }: Props): JSX.Element {
+function ViewOption({ view, homeViewID, onViewOptionClick, className }: Props): JSX.Element {
   const menus: MenuItem<string>[] = useMemo(() => [
     {
       key: 'editView',
@@ -38,7 +40,7 @@ function ViewOption({ view, homeViewID, onViewOptionClick }: Props): JSX.Element
       disabled: homeViewID === view.id,
       label: (
         <div className="flex items-center">
-          <Icon name="restore_from_trash" size={16} className="mr-8" />
+          <Icon name="home" size={16} className="mr-8" />
           <span className="font-normal">设为应用主页</span>
         </div>
       ),
@@ -46,7 +48,7 @@ function ViewOption({ view, homeViewID, onViewOptionClick }: Props): JSX.Element
   ], [homeViewID, view]);
 
   return (
-    <span className='flex-shrink-0'>
+    <span className={cs('flex-shrink-0', className)}>
       <MoreMenu
         menus={menus}
         placement="bottom-end"

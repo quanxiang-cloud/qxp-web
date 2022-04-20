@@ -9,7 +9,7 @@ import Modal from '@c/modal';
 
 import ViewList from './view-list';
 import ViewDetails from './view-details';
-import EditViewModal from './edit-view-modal';
+import EditViewModal from './view-creation-modal';
 
 import EditStaticViewModal from './view-details/edit-static-view-modal';
 
@@ -111,6 +111,7 @@ function AppViews(): JSX.Element {
           onSubmit={handleModalSubmit}
         />
       )}
+      {/* <CreateViewModal onCancel={closeModal} onSubmit={handleModalSubmit} /> */}
     </div >
   );
 }

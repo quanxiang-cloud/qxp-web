@@ -5,9 +5,9 @@ import { useHistory } from 'react-router-dom';
 import Card from '@c/card';
 import Button from '@c/button';
 import Loading from '@c/loading';
-import useAppStore from '../view-orchestration/hooks';
+import useAppStore from '../hooks';
 
-function AppLayout(): JSX.Element {
+function AppNav(): JSX.Element {
   const { store, isLoading } = useAppStore();
   const history = useHistory();
   const rootLayout = store?.layouts.find((view) => view.id === 'root_node' );
@@ -43,4 +43,4 @@ function AppLayout(): JSX.Element {
   );
 }
 
-export default observer(AppLayout);
+export default observer(AppNav);

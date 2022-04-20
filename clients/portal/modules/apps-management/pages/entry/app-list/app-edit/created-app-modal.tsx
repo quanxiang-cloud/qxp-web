@@ -8,8 +8,8 @@ import toast from '@lib/toast';
 import store from '../store';
 import templateStore from '../../app-templates/store';
 import CreatedEditApp from './created-edit-app';
-import AppLayoutType from '../app-layout-select';
-import { SelectLayoutType } from '../app-layout-select/layout-view';
+import AppLayoutType from '../layout-select';
+import { SelectLayoutType } from '../layout-select/app-layout-item';
 import { initAppRootView } from '../../../app-details/view-orchestration/init-app-root-view';
 import AppTemplateSelector from '../../app-templates/app-template-seletor';
 
@@ -63,7 +63,7 @@ function CreatedAppModal({
       if (modalType === 'createdApp') {
         if (!appID) throw new Error('App creation failed: invalid appID');
         toast.success('创建应用成功！');
-        history.push(`/apps/details/${appID}/app_views`);
+        history.push(`/apps/details/${appID}/views`);
       }
     }).catch(toastError).finally(() => {
       setLoading(false);
@@ -126,7 +126,7 @@ function CreatedAppModal({
             !template && !['importApp', 'createAppWithTemplate'].includes(modalType) && (
               <AppLayoutType
                 title='默认应用布局 (应用布局会应用在所有页面):'
-                onSelect={setDefaultAppLayout}
+                onChange={setDefaultAppLayout}
               />)
           }
         </div>

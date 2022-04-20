@@ -13,47 +13,52 @@ import Modal, { FooterBtnProps } from '@c/modal';
 import toast from '@lib/toast';
 import Loading from '@c/loading';
 
-import { Layout } from '../view-orchestration/types';
-import useAppStore from '../view-orchestration/hooks';
-import AppLayoutType from '../../entry/app-list/app-layout-select';
+import { Layout, LayoutType } from '../types.d';
+import useAppStore from '../hooks';
+import ViewLayoutSelector from '../../../entry/app-list/layout-select/view-layout-selector';
 
 import './index.scss';
 
-enum LayoutType {
-  HeaderContent = 'header-content',
-  LeftSidebarContent = 'left-sidebar-content',
+type LayoutProps = {
+  name: string,
+  description: string,
+  layoutType: LayoutType
 }
 
 const initLayout: Layout = {
   id: '', name: '', type: LayoutType.HeaderContent, description: '', subViews: [], refSchemaID: '',
 };
 
-function PageLayout(): JSX.Element {
+function ViewLayout(): JSX.Element {
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [type, setType] = useState<LayoutType>();
+  const [pending, setPending] = useState<boolean>(false);
   const [curLayoutMsg, setCurLayoutMsg] = useState<Layout>();
   const [isEdit, setIsEdit] = useState<boolean>(false);
-  const [isTypeValidate, setIsTypeValidate] = useState<boolean>(true);
   const fromRef = useRef<FormInstance>(null);
   const { store, isLoading } = useAppStore();
   const history = useHistory();
 
   function handleSubmit(): void {
-    const values: { name: string, description: string} = fromRef.current?.getFieldsValue();
+    const values: LayoutProps = fromRef.current?.getFieldsValue();
+
     fromRef.current?.submit();
     if (!values.name) {
       return;
     }
-    if (!isEdit && !type) {
-      setIsTypeValidate(false);
-      return;
-    } else if (!isEdit && type) {
-      store?.addLayout(values.name, type).then(() => setShowModal(false)).catch((err) => toast.error(err));
-    }
 
-    isEdit && curLayoutMsg && store?.editLayout(curLayoutMsg?.id, values.name).then(
-      () => setShowModal(false),
-    ).catch((err) => toast.error(err));
+    Promise.resolve().then(() => {
+      setPending(true);
+      if (!isEdit) {
+        return store?.addLayout(values.name, values.layoutType);
+      }
+      if (curLayoutMsg) {
+        return store?.editLayout(curLayoutMsg?.id, values.name);
+      }
+    }).then(() => setShowModal(false)).catch((err) => {
+      toast.error(err);
+    }).finally(() => {
+      setPending(false);
+    });
   }
 
   const columns: UnionColumn<Layout>[] = [
@@ -63,16 +68,6 @@ function PageLayout(): JSX.Element {
       width: 'auto',
       accessor: 'name',
     },
-    // {
-    //   Header: '样式',
-    //   id: 'type',
-    //   width: '200',
-    //   accessor: ({ type }: Layout) => {
-    //     return (
-    //       <LayoutView currentLayoutType='free' layoutType={type as LayoutType} />
-    //     );
-    //   },
-    // },
     {
       Header: '页面描述',
       id: 'description',
@@ -83,7 +78,7 @@ function PageLayout(): JSX.Element {
       Header: '关联页面',
       id: 'subViews',
       width: 'auto',
-      accessor: ({ subViews } ) => subViews.length,
+      accessor: ({ subViews }) => subViews.length,
     },
     {
       Header: '操作',
@@ -110,7 +105,7 @@ function PageLayout(): JSX.Element {
             </span>
             <span
               className='text-btn mr-16'
-              onClick={() =>{
+              onClick={() => {
                 history.push(`/artery-engine?appID=${store?.appID}&pageName=${layout.name}&arteryID=${layout.refSchemaID}`);
               }}
             >
@@ -131,6 +126,7 @@ function PageLayout(): JSX.Element {
     {
       text: '提交',
       key: 'confirm',
+      loading: pending,
       iconName: 'check',
       modifier: 'primary',
       onClick: () => handleSubmit(),
@@ -181,26 +177,24 @@ function PageLayout(): JSX.Element {
                 initialValue={curLayoutMsg?.name}
                 rules={[{ required: true, message: '请输入布局名称' }]}
               >
-                <Input />
+                <Input placeholder='请输入布局名称' maxLength={20} />
               </Form.Item>
               {!isEdit && (
-                <AppLayoutType
-                  title='样式'
-                  includeFree={false}
-                  className='app-layout-type'
-                  onSelect={(layoutType) => {
-                    layoutType && setIsTypeValidate(true);
-                    setType(layoutType as LayoutType);
-                  }}
-                />
+                <Form.Item
+                  label='母版布局'
+                  name='layoutType'
+                  required
+                  initialValue={LayoutType.HeaderContent}
+                >
+                  <ViewLayoutSelector />
+                </Form.Item>
               )}
-              {!isTypeValidate && <span className='text-red-600'>请输入布局样式</span>}
               <Form.Item
                 label='描述'
                 name='description'
                 initialValue={curLayoutMsg?.description}
               >
-                <Input.TextArea />
+                <Input.TextArea maxLength={100} placeholder='选填（100个字符以内）' />
               </Form.Item>
             </Form>
           </div>
@@ -210,4 +204,4 @@ function PageLayout(): JSX.Element {
   );
 }
 
-export default observer(PageLayout);
+export default observer(ViewLayout);

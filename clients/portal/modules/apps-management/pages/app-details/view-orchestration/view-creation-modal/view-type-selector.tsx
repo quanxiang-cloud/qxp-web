@@ -3,6 +3,7 @@ import cs from 'classnames';
 import { ViewType } from '../types.d';
 
 type Props = {
+  defaultSelectType?: ViewType;
   onSelect?: (type: ViewType) => void;
 }
 
@@ -45,8 +46,10 @@ export const VIEW_TYPE_MAP: ViewTypeItemProps[] = [
   },
 ];
 
-function ViewTypeSelector({ onSelect }: Props): JSX.Element {
-  const [currentType, setCurrentType] = useState<ViewTypeItemProps>();
+function ViewTypeSelector({ onSelect, defaultSelectType }: Props): JSX.Element {
+  const [currentType, setCurrentType] = useState<ViewTypeItemProps | undefined>(
+    VIEW_TYPE_MAP.find((typeItem) => typeItem.type === defaultSelectType),
+  );
 
   return (
     <div className='flex gap-16 p-24'>
