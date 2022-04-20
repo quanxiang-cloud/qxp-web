@@ -1,10 +1,24 @@
 import React, { ChangeEvent } from 'react';
-import { NodeRenderProps } from '@c/headless-tree/types';
+import { NodeRenderProps, TreeNode } from '@c/headless-tree/types';
 
 import Checkbox from '@c/checkbox';
 import Icon from '@c/icon';
+import { toJS } from 'mobx';
 
 import { Schema } from '@lib/api-adapter/swagger-schema-official';
+import TreeStore from '@c/headless-tree/store';
+
+export function clearChildState(
+  node: TreeNode<Schema &{acceptable?: boolean}>,
+  store: TreeStore<Schema &{acceptable?: boolean}>,
+  acceptable: boolean): any {
+  const _children = node.children?.forEach((child) => {
+    const { data } = child;
+    data.acceptable = acceptable;
+    store.updateNode({ ...child, data });
+    clearChildState(child, store, false);
+  });
+}
 
 function FieldRender({ node, store }: NodeRenderProps<Schema &{acceptable?: boolean}>): JSX.Element {
   const nodeLabel = node.data.title || node.name;
@@ -14,6 +28,15 @@ function FieldRender({ node, store }: NodeRenderProps<Schema &{acceptable?: bool
     const { checked } = e.target;
     data.acceptable = checked;
     store.updateNode({ ...node, data });
+    if (checked) {
+      const parents = store.getNodeParents(node.id);
+      parents.forEach((parentNode) => {
+        store.updateNode({ ...parentNode, data });
+      });
+    } else {
+      clearChildState(node, store, false);
+    }
+    console.log(toJS(store.rootNode));
   }
 
   return (

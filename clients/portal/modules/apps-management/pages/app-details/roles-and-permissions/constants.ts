@@ -38,7 +38,7 @@ const SELF_AND_SUB =
   {
     query: {
       bool: {
-        must: [
+        should: [
           { $user: 'creator_id' },
           { $subordinate: 'creator_id' },
         ],
