@@ -99,3 +99,10 @@ export function fetchGroupApiList(
 ): Promise<QueryRequestNodeApiListResponse> {
   return httpClient(`/api/v1/polyapi/${path.split('/')[3]}/list/${path}`, data);
 }
+
+export function fetchApiAuthDetails(
+  appID: string,
+  data: {roleID: string, path: string, uri: string},
+): Promise<APIAuth> {
+  return httpClient(`/api/v1/form/${appID}/m/apiPermit/get`, data);
+}
