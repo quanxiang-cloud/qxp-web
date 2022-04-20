@@ -11,7 +11,7 @@ import Pagination from '@c/pagination';
 import { useGetNamespaceFullPath } from '@portal/modules/poly-api/effects/api/namespace';
 
 import store from './store';
-import AuthDetailModal from './role-details';
+import AuthDetailModal from './auth-details';
 import NsTreeStore from './ns-tree-store';
 import NodeRender from './group-node';
 import { Role } from '../constants';
@@ -126,6 +126,8 @@ function Source(): JSX.Element {
       condition: {},
       uri: _path[1],
       roleID: store.currentRoleID,
+      paramsAll: true,
+      responseAll: true,
     };
     e.target.checked && store.createAPIAuth(_auth);
     !e.target.checked && store.deleteAPIAuth(_path[0], _path[1]);
@@ -162,7 +164,7 @@ function Source(): JSX.Element {
         <div className='bg-white h-full flex-1 overflow-hidden flex flex-col'>
           <div className='conf-title text-12'>
             <div className='text-gray-400 font-semibold'>
-          配置权限：<span className='text-gray-900'>{store.curNamespace?.title || ''}</span>
+              配置权限：<span className='text-gray-900'>{store.curNamespace?.title || ''}</span>
             </div>
           </div>
           <div className='max-flex-1 overflow-hidden'>

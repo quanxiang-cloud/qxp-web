@@ -157,14 +157,20 @@ declare global {
     properties?: Record<string, Property>
   }
 
+  type SwagFieldSchema = Schema;
+
+  type TreeField = SwagFieldSchema & { acceptable?: boolean };
+
   type APIAuth = {
     path?: string,
-    params?: {[propertyName: string]: Schema},
-    response?: {[propertyName: string]: Schema},
+    params?: { [propertyName: string]: SwagFieldSchema },
+    response?: { [propertyName: string]: SwagFieldSchema },
     condition?: any,
     roleID?: string,
-    id?: string
-    uri?: string
+    id?: string,
+    uri?: string,
+    paramsAll?: boolean,
+    responseAll?: boolean,
   }
 
   type RoleRight = {
@@ -213,5 +219,5 @@ declare global {
     isChanging?: boolean;
   }
 
-  export type Fields = { [propertyName: string]: Schema & { checked?: boolean }};
+  export type Fields = { [propertyName: string]: Schema & { checked?: boolean } };
 }

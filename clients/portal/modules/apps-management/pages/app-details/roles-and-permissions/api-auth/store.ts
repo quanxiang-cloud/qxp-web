@@ -2,7 +2,6 @@ import { action, observable } from 'mobx';
 
 import toast from '@lib/toast';
 import { PathType } from '@portal/modules/poly-api/effects/api/namespace';
-import { Schema } from '@lib/api-adapter/swagger-schema-official';
 
 import {
   createAPIAuth,
@@ -14,8 +13,7 @@ import {
   updateAPIAuth,
 } from '../api';
 import { Role } from '../constants';
-
-import FieldsStore, { apiFieldsToTreeNode } from './role-details/store';
+import FieldsStore from './auth-details/store';
 import { turnParamsAsBodyPrams } from '../utils';
 
 class APIAuthStore {
@@ -37,6 +35,7 @@ class APIAuthStore {
   @observable inPutFields: Fields = {};
   @observable inputTreeStore: FieldsStore | null = null;
   @observable outputTreeStore: FieldsStore | null = null;
+  @observable curAuthDetailTabKey = 'viewableData';
 
   @action
   setAppID = (appID: string): void => {
@@ -51,6 +50,11 @@ class APIAuthStore {
   @action
   setOutPutFields = (outPutFields: Fields): void => {
     this.outPutFields = outPutFields;
+  };
+
+  @action
+  setCurAuthDetailTabKey = (key: string): void => {
+    this.curAuthDetailTabKey = key;
   };
 
   @action
@@ -173,20 +177,6 @@ class APIAuthStore {
       const { inputSchema, outputSchema } = docRes;
       this.setOutputTreeStore(new FieldsStore(outputSchema || {}, apiAuthRes?.response || {}));
       this.setInputTreeStore(new FieldsStore(inputSchema || {}, apiAuthRes?.params || {}));
-
-      const bbb = apiFieldsToTreeNode(
-        apiAuthRes?.response || {},
-        outputSchema || {},
-        outputSchema?.properties || {},
-      );
-
-      // console.log(bbb);
-
-      // const _outputField = turnFieldsWithState( apiAuthRes?.response || {}, outputSchema?.properties || {});
-      // this.setOutPutFields(_outputField);
-      // console.log(bbb);
-      // console.log(_outputField);
-
       this.setCurAuth(apiAuthRes);
     }).catch((err) => {
       toast.error(err);
@@ -212,8 +202,8 @@ class APIAuthStore {
 
   @action
   fetchApiSwagDocDetails = (): Promise<{
-    inputSchema: Schema | undefined,
-    outputSchema: Schema | undefined
+    inputSchema: SwagFieldSchema | undefined,
+    outputSchema: SwagFieldSchema | undefined
   }> => {
     return fetchApiSwagDocDetails(this.curAPI?.fullPath || '').then((res) => {
       const path = Object.values(res.doc.paths)[0];

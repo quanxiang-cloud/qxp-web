@@ -1,17 +1,15 @@
 import React, { ChangeEvent } from 'react';
-import { NodeRenderProps, TreeNode } from '@c/headless-tree/types';
+import cs from 'classnames';
 
 import Checkbox from '@c/checkbox';
-
-import { Schema } from '@lib/api-adapter/swagger-schema-official';
+import { NodeRenderProps, TreeNode } from '@c/headless-tree/types';
 import TreeStore from '@c/headless-tree/store';
-import { observer } from 'mobx-react';
 
 export function clearChildState(
-  node: TreeNode<Schema &{acceptable?: boolean}>,
-  store: TreeStore<Schema &{acceptable?: boolean}>,
+  node: TreeNode<TreeField>,
+  store: TreeStore<TreeField>,
   acceptable: boolean): any {
-  const _children = node.children?.forEach((child) => {
+  node.children?.forEach((child) => {
     const { data } = child;
     data.acceptable = acceptable;
     store.updateNode({ ...child, data });
@@ -19,7 +17,11 @@ export function clearChildState(
   });
 }
 
-function FieldRender({ node, store }: NodeRenderProps<Schema &{acceptable?: boolean}>): JSX.Element {
+type Props = NodeRenderProps<TreeField> & {
+  isAll: boolean;
+}
+
+function FieldRender({ node, store, isAll }: Props): JSX.Element {
   const nodeLabel = node.data.title || node.name;
   const { data } = node;
 
@@ -40,14 +42,17 @@ function FieldRender({ node, store }: NodeRenderProps<Schema &{acceptable?: bool
   }
 
   return (
-
-    <div className=' w-full grid gap-x-16 grid-flow-row-dense p-16 pr-0 grid-cols-4'>
-      <Checkbox
+    <div className={cs(
+      'w-full grid gap-x-16 grid-flow-row-dense p-16',
+      isAll ? 'grid-cols-3' : 'grid-cols-4',
+    )}>
+      {!isAll && (<Checkbox
         key={node.id}
         className="inline-flex"
         checked={node.data?.acceptable || false}
         onChange={onChange}
-      />
+      />)
+      }
       <div>{nodeLabel || node.id}</div>
       <div>{node.id || ''}</div>
       <div>{node.data.type}</div>
@@ -55,4 +60,4 @@ function FieldRender({ node, store }: NodeRenderProps<Schema &{acceptable?: bool
   );
 }
 
-export default observer(FieldRender);
+export default FieldRender;

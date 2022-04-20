@@ -2,24 +2,22 @@ import React, { useEffect } from 'react';
 
 import Modal from '@c/modal';
 import Tab from '@c/tab';
+import Loading from '@c/loading';
+import { TreeNode } from '@c/headless-tree/types';
 
 import DataRange from './data-range';
 import OutPutRange from './output-range';
 import InPutRange from './input-range';
 import store from '../store';
-import Loading from '@c/loading';
-import { Schema } from '@lib/api-adapter/swagger-schema-official';
-import { TreeNode } from '@c/headless-tree/types';
 
 export function fieldsTreeToParams(
-  // _condition: keyof Schema &{acceptable?: boolean},
-  rootNode?: TreeNode<Schema &{acceptable?: boolean}>,
-): { [propertyName: string]: Schema; } {
+  rootNode?: TreeNode<TreeField>,
+): { [propertyName: string]: SwagFieldSchema; } {
   if (!rootNode) {
     return {};
   }
 
-  const _params: { [propertyName: string]: Schema; } = {};
+  const _params: { [propertyName: string]: SwagFieldSchema; } = {};
   rootNode.children?.forEach((child) => {
     const { data, id } = child;
     const condition = data?.acceptable || false;
@@ -49,14 +47,14 @@ function AuthDetailModal(): JSX.Element {
       content: <DataRange />,
     },
     {
-      id: 'outputFields',
-      name: '出参范围',
-      content: <OutPutRange/>,
+      id: 'inputFields',
+      name: '入参字段范围',
+      content: <InPutRange/>,
     },
     {
-      id: 'inputFields',
-      name: '入参范围',
-      content: <InPutRange/>,
+      id: 'outputFields',
+      name: '出参字段范围',
+      content: <OutPutRange/>,
     },
   ];
 
@@ -65,11 +63,8 @@ function AuthDetailModal(): JSX.Element {
   }
 
   function onSubmit(): void {
-    // console.log(toJS(store.outputTreeStore?.rootNode));
-    const output = fieldsTreeToParams(store.outputTreeStore?.rootNode);
-    const input = fieldsTreeToParams(store.inputTreeStore?.rootNode);
-    console.log(output);
-    console.log(input);
+    const output = store?.curAuth?.responseAll ? {} : fieldsTreeToParams(store.outputTreeStore?.rootNode);
+    const input = store?.curAuth?.paramsAll ? {} : fieldsTreeToParams(store.inputTreeStore?.rootNode);
     const _curAuth = { ...store?.curAuth, response: output, params: input };
     store.updateAPIAuth(_curAuth);
   }
@@ -100,11 +95,9 @@ function AuthDetailModal(): JSX.Element {
       <Tab
         stretchNav={false}
         separator={false}
-        // navsClassName="overflow-auto"
-        navTitleClassName="text-12"
         className="auth-details p-24"
-        // contentClassName="control-content"
         items={items}
+        onChange={store.setCurAuthDetailTabKey }
       />
     </Modal>
   );
