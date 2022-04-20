@@ -2,11 +2,10 @@ import React, { ChangeEvent } from 'react';
 import { NodeRenderProps, TreeNode } from '@c/headless-tree/types';
 
 import Checkbox from '@c/checkbox';
-import Icon from '@c/icon';
-import { toJS } from 'mobx';
 
 import { Schema } from '@lib/api-adapter/swagger-schema-official';
 import TreeStore from '@c/headless-tree/store';
+import { observer } from 'mobx-react';
 
 export function clearChildState(
   node: TreeNode<Schema &{acceptable?: boolean}>,
@@ -31,12 +30,13 @@ function FieldRender({ node, store }: NodeRenderProps<Schema &{acceptable?: bool
     if (checked) {
       const parents = store.getNodeParents(node.id);
       parents.forEach((parentNode) => {
+        const { data } = parentNode;
+        data.acceptable = checked;
         store.updateNode({ ...parentNode, data });
       });
     } else {
       clearChildState(node, store, false);
     }
-    console.log(toJS(store.rootNode));
   }
 
   return (
@@ -46,17 +46,13 @@ function FieldRender({ node, store }: NodeRenderProps<Schema &{acceptable?: bool
         key={node.id}
         className="inline-flex"
         checked={node.data?.acceptable || false}
-        // Checked={node.data?.acceptable || false}
         onChange={onChange}
       />
-      <div className='inline-flex items-center'>
-        {!node.isLeaf && <Icon name={(node.expanded) ? 'folder_open' : 'folder_empty'} size={16} />}
-        <span className='ml-5 text-12 truncate w-142'>{nodeLabel}</span>
-      </div>
+      <div>{nodeLabel}</div>
       <div>{node.id || ''}</div>
       <div>{node.data.type}</div>
     </div>
   );
 }
 
-export default FieldRender;
+export default observer(FieldRender);
