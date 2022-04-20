@@ -37,7 +37,6 @@ function CSSEditor(): JSX.Element {
       return;
     }
 
-    store.updateComponentScssMap(`${key}.${spec.title}`, value);
     store.setComponentScss(`${key}.${spec.title}`, value);
     // store.cssStore?.setCss(`${key}.${spec.title}`, value, spec.rules, (msg) => toast.error(msg));
     // const css = store.cssStore?.getCssString();

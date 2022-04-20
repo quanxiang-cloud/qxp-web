@@ -17,12 +17,18 @@ import { parseJSON } from '@lib/utils';
 import colorVars from './css-variables.json';
 import { applyStyle } from './utils';
 import DesignTokenStore from './design-token/store';
+import { triggerScssCompile } from './api';
 
 const COMPONENT_STYLE_CONFIG_KEY = 'GLOBAL_COMPONENT_STYLE_CONFIG';
-const COMPONENT_STYLE_SCSS_KEY = 'GLOBAL_COMPONENT_STYLE_SCSS';
 const DESIGN_TOKEN_CONFIG_KEY = 'GLOBAL_DESIGN_TOKEN_CONFIG';
 const DESIGN_TOKEN_SCSS_KEY = 'GLOBAL_DESIGN_TOKEN_SCSS';
-const VERSION = '0.1.0';
+
+const COMPONET_STYLE_VERSION = '0.1.0';
+const DESIGN_TOKEN_VERSION = '0.1.0';
+
+const ALL_COMPONENTS_KEYS = componentSpecs.reduce<string[]>((acc, cur) => {
+  return [...acc, ...cur.specs.map((spec) => `${cur.key}.${spec.title}`)];
+}, []);
 class StyleGuideStore {
   destroySetShadowStyle: IReactionDisposer;
   @observable designTokenStore: DesignTokenStore | null = null;
@@ -70,18 +76,12 @@ class StyleGuideStore {
   @action
   fetchStyleConfig = (): void => {
     getBatchGlobalConfig([
-      { key: COMPONENT_STYLE_CONFIG_KEY, version: VERSION },
-      { key: COMPONENT_STYLE_SCSS_KEY, version: VERSION },
+      { key: COMPONENT_STYLE_CONFIG_KEY, version: COMPONET_STYLE_VERSION },
     ]).then((res) => {
       const customCompCssMap = parseJSON(
         res.result?.[COMPONENT_STYLE_CONFIG_KEY],
         {},
       );
-      const componentsScssMap = parseJSON(
-        res.result?.[COMPONENT_STYLE_SCSS_KEY],
-        {},
-      );
-      this.componentScssMap = componentsScssMap;
       this.cssStore = new CssASTStore({
         initCssMap: customCompCssMap,
         baseColorVariables: colorVars.baseColors,
@@ -93,7 +93,7 @@ class StyleGuideStore {
   @action
   fetchDesignTokenConfig = (): void => {
     getBatchGlobalConfig([
-      { key: DESIGN_TOKEN_CONFIG_KEY, version: VERSION },
+      { key: DESIGN_TOKEN_CONFIG_KEY, version: DESIGN_TOKEN_VERSION },
     ]).then((res) => {
       this.designTokenStore = new DesignTokenStore({
         tokenData: res.result?.[DESIGN_TOKEN_CONFIG_KEY],
@@ -115,7 +115,7 @@ class StyleGuideStore {
   @action
   fetchComponentScss = async (key: string): Promise<void> => {
     getBatchGlobalConfig([{
-      key: key, version: VERSION,
+      key: key, version: COMPONET_STYLE_VERSION,
     }]).then((res) => {
       this.updateComponentScssMap(key, res.result?.[key]);
     });
@@ -126,34 +126,51 @@ class StyleGuideStore {
     this.updateComponentScssMap(key, cssString);
     await setBatchGlobalConfig([
       {
-        version: VERSION,
+        version: COMPONET_STYLE_VERSION,
         key: key,
         value: cssString,
       },
     ]);
+
+    this.triggerCompile();
   };
 
   @action
   saveStyleConfig = async (): Promise<void> => {
     await setBatchGlobalConfig([
       {
-        version: VERSION,
+        version: COMPONET_STYLE_VERSION,
         key: COMPONENT_STYLE_CONFIG_KEY,
         value: JSON.stringify(this.cssStore?.cssASTMap),
       },
       {
-        version: VERSION,
+        version: DESIGN_TOKEN_VERSION,
         key: DESIGN_TOKEN_CONFIG_KEY,
         value: JSON.stringify(JSON.parse(this.designTokenStore?.getAllStringTokens() || '')),
       },
       {
-        version: VERSION,
+        version: DESIGN_TOKEN_VERSION,
         key: DESIGN_TOKEN_SCSS_KEY,
         value: this.designTokenStore?.generateCssString() || '',
       },
     ]);
 
+    this.triggerCompile();
+
     toast.success('保存成功');
+  };
+
+  triggerCompile = async (): Promise<any> => {
+    await triggerScssCompile({
+      design_token_key: {
+        key: DESIGN_TOKEN_SCSS_KEY,
+        version: DESIGN_TOKEN_VERSION,
+      },
+      components_scss_keys: {
+        key: ALL_COMPONENTS_KEYS,
+        version: COMPONET_STYLE_VERSION,
+      },
+    });
   };
 
   generateCssUrl = async (): Promise<string> => {
