@@ -7,20 +7,16 @@ import Radio from '@c/radio';
 import store from '../store';
 import { DATA_RANGE, DATA_RANGE_OPTIONS } from '../../constants';
 
-type Props = {
-  condition: Record<string, any> | undefined
-}
-
-function DataRange({ condition }: Props): JSX.Element {
+function DataRange(): JSX.Element {
   const [conditionValue, setConditionValue] = useState<string>('ALL');
 
   useEffect(() => {
-    condition && Object.keys(DATA_RANGE).forEach((label) => {
-      if (DATA_RANGE[label] === JSON.stringify(condition, null, 4)) {
+    store.curAuth?.condition && Object.keys(DATA_RANGE).forEach((label) => {
+      if (DATA_RANGE[label] === JSON.stringify(store.curAuth?.condition, null, 4)) {
         setConditionValue(label);
       }
     });
-  }, [condition]);
+  }, [store.curAuth?.condition]);
 
   function onChangeCondition(value: string): void {
     setConditionValue(value as string);

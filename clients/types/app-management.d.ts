@@ -1,6 +1,7 @@
 import { Moment } from 'moment';
 
 import { RawApiDetail } from '@portal/modules/poly-api/effects/api/raw';
+import { Schema } from '@lib/api-adapter/swagger-schema-official';
 
 declare global {
   type AppInfo = {
@@ -158,8 +159,8 @@ declare global {
 
   type APIAuth = {
     path?: string,
-    params?: Record<string, Property> | null,
-    response?: Record<string, Property> | null,
+    params?: {[propertyName: string]: Schema},
+    response?: {[propertyName: string]: Schema},
     condition?: any,
     roleID?: string,
     id?: string
@@ -211,4 +212,6 @@ declare global {
     auth?: APIAuth | null;
     isChanging?: boolean;
   }
+
+  export type Fields = { [propertyName: string]: Schema & { checked?: boolean }};
 }

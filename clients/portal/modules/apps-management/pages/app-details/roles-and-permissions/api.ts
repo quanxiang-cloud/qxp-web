@@ -1,4 +1,6 @@
 import httpClient, { httpClientGraphQL } from '@lib/http-client';
+import { Spec } from '@one-for-all/api-spec-adapter';
+
 import {
   QueryRequestNodeApiListInputBody,
   QueryRequestNodeApiListResponse,
@@ -105,4 +107,20 @@ export function fetchApiAuthDetails(
   data: {roleID: string, path: string, uri: string},
 ): Promise<APIAuth> {
   return httpClient(`/api/v1/form/${appID}/m/apiPermit/get`, data);
+}
+
+type APIDocResponse = {
+  apiPath: string,
+  doc: Spec,
+  docType: string,
+  title: string
+}
+
+export function fetchApiSwagDocDetails(
+  path: string,
+): Promise<APIDocResponse> {
+  return httpClient(`/api/v1/polyapi/doc/${path.slice(1)}`, {
+    docType: 'swag',
+    titleFirst: false,
+  });
 }

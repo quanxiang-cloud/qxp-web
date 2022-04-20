@@ -2,16 +2,20 @@ import { action, observable } from 'mobx';
 
 import toast from '@lib/toast';
 import { PathType } from '@portal/modules/poly-api/effects/api/namespace';
+import { Schema } from '@lib/api-adapter/swagger-schema-official';
 
 import {
   createAPIAuth,
   deleteAPIAuth,
   fetchApiAuthDetails,
   fetchAPIListAuth,
+  fetchApiSwagDocDetails,
   fetchGroupApiList,
   updateAPIAuth,
 } from '../api';
 import { Role } from '../constants';
+
+import FieldsStore, { apiFieldsToTreeNode } from './role-details/store';
 
 class APIAuthStore {
   @observable appID = '';
@@ -28,6 +32,10 @@ class APIAuthStore {
   @observable curNamespace: PolyAPI.Namespace | null = null;
   @observable showRoleDetailsModal = false;
   @observable isLoadingAuthDetails = false;
+  @observable outPutFields: Fields = {};
+  @observable inPutFields: Fields = {};
+  @observable inputTreeStore: FieldsStore | null = null;
+  @observable outputTreeStore: FieldsStore | null = null;
 
   @action
   setAppID = (appID: string): void => {
@@ -38,6 +46,21 @@ class APIAuthStore {
   setCurAuth = (curAuth: APIAuth): void => {
     this.curAuth = curAuth;
   };
+
+  @action
+  setOutPutFields = (outPutFields: Fields): void => {
+    this.outPutFields = outPutFields;
+  };
+
+  @action
+   setInputTreeStore = (_inputTree: FieldsStore | null): void => {
+     this.inputTreeStore = _inputTree;
+   };
+
+   @action
+   setOutputTreeStore = (_outputTree: FieldsStore | null): void => {
+     this.outputTreeStore = _outputTree;
+   };
 
   @action
   setRole = (role: RoleRight): void => {
@@ -140,16 +163,71 @@ class APIAuthStore {
   };
 
   @action
-  fetchApiAuthDetails = (): void => {
+  getAPIDocWithAuth = (): void=> {
     this.isLoadingAuthDetails = true;
-    fetchApiAuthDetails(this.appID || '', {
+    Promise.all([
+      this.fetchApiSwagDocDetails(),
+      this.fetchApiAuthDetails(),
+    ]).then(([docRes, apiAuthRes]) => {
+      const { inputSchema, outputSchema } = docRes;
+      this.setOutputTreeStore(new FieldsStore(outputSchema || {}, apiAuthRes?.response || {}));
+
+      // console.log(inputSchema);
+      // console.log(outputSchema);
+      // console.log(apiAuthRes?.response);
+      const bbb = apiFieldsToTreeNode(
+        apiAuthRes?.response || {},
+        outputSchema || {},
+        outputSchema?.properties || {},
+      );
+
+      console.log(bbb);
+
+      // const _outputField = turnFieldsWithState( apiAuthRes?.response || {}, outputSchema?.properties || {});
+      // this.setOutPutFields(_outputField);
+      // console.log(bbb);
+      // console.log(_outputField);
+
+      this.setCurAuth(apiAuthRes);
+    }).catch((err) => {
+      toast.error(err);
+    }).finally(() => this.isLoadingAuthDetails = false);
+    return;
+  };
+
+  @action
+  fetchApiAuthDetails = (): Promise<APIAuth> => {
+    return fetchApiAuthDetails(this.appID || '', {
       roleID: this.currentRoleID,
       path: this.curAPI?.accessPath || '',
       uri: this.curAPI?.uri || '',
     })
-      .then(this.setCurAuth)
-      .catch((err) => toast.error(err))
-      .finally(() => this.isLoadingAuthDetails = false);
+      .then((res) => {
+        return res;
+      })
+      .catch((err) => {
+        toast.error(err);
+        return {};
+      });
+  };
+
+  @action
+  fetchApiSwagDocDetails = (): Promise<{
+    inputSchema: Schema|undefined,
+    outputSchema: Schema | undefined
+  }> => {
+    return fetchApiSwagDocDetails(this.curAPI?.fullPath || '').then((res) => {
+      const path = Object.values(res.doc.paths)[0];
+      const inputSchema = Object.values(path)[0].parameters;
+      const outputSchema = Object.values(path)[0].responses?.[200]?.schema;
+      return {
+        inputSchema,
+        outputSchema,
+      };
+    }).catch((err) => {
+      toast.error(err);
+      return { inputSchema: undefined, outputSchema: undefined };
+    });
   };
 
   @action
@@ -157,7 +235,10 @@ class APIAuthStore {
     updateAPIAuth(auth?.id || '', this.appID, auth)
       .then(() => toast.success('修改成功'))
       .catch((err) => toast.error(err))
-      .finally(() => this.curAuth = undefined);
+      .finally(() => {
+        this.showRoleDetailsModal = false;
+        this.curAuth = undefined;
+      });
   };
 
   @action

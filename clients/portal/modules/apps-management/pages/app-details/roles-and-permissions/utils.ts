@@ -1,4 +1,7 @@
 import { useQuery, UseQueryOptions, UseQueryResult } from 'react-query';
+import { Spec } from '@one-for-all/api-spec-adapter';
+
+import httpClient from '@lib/http-client';
 
 import { fetchApiAuthDetails } from './api';
 import { SCOPE } from './constants';
@@ -52,6 +55,37 @@ export function useQueryFetchAPiAuth(
   return useQuery<APIAuth, Error>(
     'FETCH_API_DETAILS',
     () => fetchApiAuthDetails(appID, data),
+    options,
+  );
+}
+
+type QueryRequestNodeApiInputBody = {
+  docType: 'raw' | 'swag' | 'curl' | 'javascript' | 'python'
+  titleFirst?: boolean,
+  _hide?: any,
+  _signature?: any,
+}
+
+type QueryAPIDocResponse = undefined | {
+  apiPath: string,
+  doc: Spec,
+  docType: string,
+  title: string
+}
+
+export function useQueryAPIDoc(
+  input: {path: string, body: QueryRequestNodeApiInputBody},
+  options?: UseQueryOptions<QueryAPIDocResponse, Error>,
+): UseQueryResult<QueryAPIDocResponse, Error> {
+  return useQuery<QueryAPIDocResponse, Error>(
+    ['API_DOC', input.path],
+    (): Promise<QueryAPIDocResponse> => {
+      if (options?.enabled === false) {
+        return Promise.resolve(undefined);
+      }
+      return httpClient<QueryAPIDocResponse>(
+        `/api/v1/polyapi/doc/${input.path.slice(1)}`, input.body);
+    },
     options,
   );
 }

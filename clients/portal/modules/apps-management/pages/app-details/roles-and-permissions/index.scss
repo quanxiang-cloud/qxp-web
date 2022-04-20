@@ -467,3 +467,18 @@
     border-top-right-radius: 12px;
   }
 }
+
+.auth-detail-modal .auth-details {
+  .tab-content{
+    overflow: hidden;
+  }
+   .fields-item{
+    box-shadow: inset 0px -1px 0px #E2E8F0;
+   }
+   .fields-tree {
+    .tree-node{
+      height: 37px;
+      box-shadow: inset 0px -2px 0px #E2E8F0;
+    }
+   }
+}

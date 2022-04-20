@@ -121,8 +121,8 @@ function Source(): JSX.Element {
     const _path = e.target.value.split('-');
     const _auth = {
       path: _path[0],
-      params: null,
-      response: null,
+      params: {},
+      response: {},
       condition: {},
       uri: _path[1],
       roleID: store.currentRoleID,
