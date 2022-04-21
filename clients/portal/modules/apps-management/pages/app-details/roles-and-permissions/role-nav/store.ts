@@ -57,6 +57,9 @@ class RoleNavStore {
 
   @action
   fetchRoleList = (): void => {
+    if (!this.appID) {
+      return;
+    }
     this.fetchRoleLoading = true;
     fetchRoles(this.appID)
       .then(this.setRoles)
