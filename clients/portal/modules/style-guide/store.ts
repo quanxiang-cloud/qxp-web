@@ -23,12 +23,14 @@ const COMPONENT_STYLE_CONFIG_KEY = 'GLOBAL_COMPONENT_STYLE_CONFIG';
 const DESIGN_TOKEN_CONFIG_KEY = 'GLOBAL_DESIGN_TOKEN_CONFIG';
 const DESIGN_TOKEN_SCSS_KEY = 'GLOBAL_DESIGN_TOKEN_SCSS';
 
-const COMPONET_STYLE_VERSION = '0.1.0';
-const DESIGN_TOKEN_VERSION = '0.1.0';
+const COMPILED_CSS_URL_KEY = 'style_guide_css:draft';
+const PERSONALIZED_CONFIG_KEY = 'PERSONALIZED_CONFIG';
 
-const ALL_COMPONENTS_KEYS = componentSpecs.reduce<string[]>((acc, cur) => {
-  return [...acc, ...cur.specs.map((spec) => `${cur.key}.${spec.title}`)];
-}, []);
+const VERSION = '0.1.0';
+
+// const ALL_COMPONENTS_KEYS = componentSpecs.reduce<string[]>((acc, cur) => {
+//   return [...acc, ...cur.specs.map((spec) => `${cur.key}.${spec.title}`)];
+// }, []);
 class StyleGuideStore {
   destroySetShadowStyle: IReactionDisposer;
   @observable designTokenStore: DesignTokenStore | null = null;
@@ -38,6 +40,7 @@ class StyleGuideStore {
   @observable commonConfig: StyleGuideCommonConfig = { primaryColor: 'blue' };
   @observable shadowRoot: ShadowRoot | null = null;
   @observable componentScssMap: Record<string, string> = {};
+  @observable styleCssUrl = '';
 
   constructor() {
     this.destroySetShadowStyle = reaction(
@@ -50,13 +53,17 @@ class StyleGuideStore {
         applyStyle(this.cssStore?.getCssString() || '', shadowRoot);
       },
     );
+
+    this.fetchCssUrl().then((res) => {
+      this.styleCssUrl = res;
+    });
   }
 
   @action
-  updateComponentScssMap(key: string, css: string): void {
+  updateComponentScssMap(key: string, css?: string): void {
     this.componentScssMap = {
       ...this.componentScssMap,
-      [key]: css,
+      [key]: css || '',
     };
   }
 
@@ -76,7 +83,7 @@ class StyleGuideStore {
   @action
   fetchStyleConfig = (): void => {
     getBatchGlobalConfig([
-      { key: COMPONENT_STYLE_CONFIG_KEY, version: COMPONET_STYLE_VERSION },
+      { key: COMPONENT_STYLE_CONFIG_KEY, version: VERSION },
     ]).then((res) => {
       const customCompCssMap = parseJSON(
         res.result?.[COMPONENT_STYLE_CONFIG_KEY],
@@ -93,7 +100,7 @@ class StyleGuideStore {
   @action
   fetchDesignTokenConfig = (): void => {
     getBatchGlobalConfig([
-      { key: DESIGN_TOKEN_CONFIG_KEY, version: DESIGN_TOKEN_VERSION },
+      { key: DESIGN_TOKEN_CONFIG_KEY, version: VERSION },
     ]).then((res) => {
       this.designTokenStore = new DesignTokenStore({
         tokenData: res.result?.[DESIGN_TOKEN_CONFIG_KEY],
@@ -113,9 +120,9 @@ class StyleGuideStore {
   };
 
   @action
-  fetchComponentScss = async (key: string): Promise<void> => {
+  fetchComponentScss = (key: string): void => {
     getBatchGlobalConfig([{
-      key: key, version: COMPONET_STYLE_VERSION,
+      key: key, version: VERSION,
     }]).then((res) => {
       this.updateComponentScssMap(key, res.result?.[key]);
     });
@@ -124,53 +131,72 @@ class StyleGuideStore {
   @action
   setComponentScss = async (key: string, cssString: string): Promise<void> => {
     this.updateComponentScssMap(key, cssString);
-    await setBatchGlobalConfig([
-      {
-        version: COMPONET_STYLE_VERSION,
-        key: key,
-        value: cssString,
-      },
-    ]);
+    await setBatchGlobalConfig([{
+      version: VERSION,
+      key: key,
+      value: cssString,
+    }]);
 
     this.triggerCompile();
   };
 
   @action
   saveStyleConfig = async (): Promise<void> => {
-    await setBatchGlobalConfig([
-      {
-        version: COMPONET_STYLE_VERSION,
-        key: COMPONENT_STYLE_CONFIG_KEY,
-        value: JSON.stringify(this.cssStore?.cssASTMap),
-      },
-      {
-        version: DESIGN_TOKEN_VERSION,
-        key: DESIGN_TOKEN_CONFIG_KEY,
-        value: JSON.stringify(JSON.parse(this.designTokenStore?.getAllStringTokens() || '')),
-      },
-      {
-        version: DESIGN_TOKEN_VERSION,
-        key: DESIGN_TOKEN_SCSS_KEY,
-        value: this.designTokenStore?.generateCssString() || '',
-      },
-    ]);
+    await setBatchGlobalConfig([{
+      version: VERSION,
+      key: COMPONENT_STYLE_CONFIG_KEY,
+      value: JSON.stringify(this.cssStore?.cssASTMap),
+    }, {
+      version: VERSION,
+      key: DESIGN_TOKEN_CONFIG_KEY,
+      value: JSON.stringify(JSON.parse(this.designTokenStore?.getAllStringTokens() || '')),
+    }, {
+      version: VERSION,
+      key: DESIGN_TOKEN_SCSS_KEY,
+      value: this.designTokenStore?.generateCssString() || '',
+    }]);
 
-    this.triggerCompile();
+    await this.triggerCompile();
+
+    await setBatchGlobalConfig([{
+      version: VERSION,
+      key: PERSONALIZED_CONFIG_KEY,
+      value: JSON.stringify({ styleCssUrl: this.styleCssUrl }),
+    }]);
 
     toast.success('保存成功');
   };
 
   triggerCompile = async (): Promise<any> => {
-    await triggerScssCompile({
-      design_token_key: {
-        key: DESIGN_TOKEN_SCSS_KEY,
-        version: DESIGN_TOKEN_VERSION,
-      },
-      components_scss_keys: {
-        key: ALL_COMPONENTS_KEYS,
-        version: COMPONET_STYLE_VERSION,
-      },
-    });
+    try {
+      await triggerScssCompile({
+        appID: '',
+        element: JSON.stringify({
+          design_token_key: {
+            key: DESIGN_TOKEN_SCSS_KEY,
+            version: VERSION,
+          },
+          components_scss_keys: {
+            key: Object.keys(this.componentScssMap),
+            version: VERSION,
+          },
+        }),
+      });
+
+      this.styleCssUrl = await this.fetchCssUrl();
+    } catch (e) {
+      toast.error('编译错误');
+    }
+  };
+
+  @action
+  fetchCssUrl = async (): Promise<string> => {
+    const { domain, readable } = window.CONFIG.oss_config;
+    const res = await getBatchGlobalConfig([{
+      key: COMPILED_CSS_URL_KEY, version: VERSION,
+    }]);
+
+    return `//${readable}.${domain}/${res.result?.[COMPILED_CSS_URL_KEY]}`;
   };
 
   generateCssUrl = async (): Promise<string> => {
@@ -178,14 +204,11 @@ class StyleGuideStore {
     const { domain, readable } = window.CONFIG.oss_config;
 
     const cssUrl = `${nanoid()}/style-guide/personalized_style.css`;
-    const { url } = await httpClient<{ url: string }>(
-      '/api/v1/fileserver/sign/upload',
-      {
-        path: `${readable}/${cssUrl}`,
-        contentType: 'text/css',
-        contentLength: cssFile?.size,
-      },
-    );
+    const { url } = await httpClient<{ url: string }>('/api/v1/fileserver/sign/upload', {
+      path: `${readable}/${cssUrl}`,
+      contentType: 'text/css',
+      contentLength: cssFile?.size,
+    });
 
     fetch(url, {
       method: 'put',

@@ -6,8 +6,8 @@ type PersonaParam = {
 };
 
 export function triggerScssCompile(params: {
-  design_token_key: PersonaParam,
-  components_scss_keys: PersonaParam,
+  appID: string;
+  element: string;
 }): Promise<any> {
-  return httpClient('/api/v1/assign/exec', params);
+  return httpClient('/api/v1/web-processors/execute', params);
 }
