@@ -3,37 +3,12 @@ import React, { useEffect } from 'react';
 import Modal from '@c/modal';
 import Tab from '@c/tab';
 import Loading from '@c/loading';
-import { TreeNode } from '@c/headless-tree/types';
 
 import DataRange from './data-range';
 import OutPutRange from './output-range';
 import InPutRange from './input-range';
 import store from '../store';
-
-export function fieldsTreeToParams(
-  rootNode?: TreeNode<TreeField>,
-): { [propertyName: string]: SwagFieldSchema; } {
-  if (!rootNode) {
-    return {};
-  }
-
-  const _params: { [propertyName: string]: SwagFieldSchema; } = {};
-  rootNode.children?.forEach((child) => {
-    const { data, id } = child;
-    const condition = data?.acceptable || false;
-    if (condition) {
-      if (data.type !== 'object') {
-        _params[id] = { type: data.type };
-        return;
-      }
-      _params[id] = {
-        type: data.type,
-        properties: fieldsTreeToParams(child),
-      };
-    }
-  });
-  return _params;
-}
+import { fieldsTreeToParams } from '../../utils';
 
 function AuthDetailModal(): JSX.Element {
   useEffect(() => {

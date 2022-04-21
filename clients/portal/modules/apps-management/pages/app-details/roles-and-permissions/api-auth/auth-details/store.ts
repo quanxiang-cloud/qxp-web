@@ -59,7 +59,7 @@ export function apiFieldsToTreeNode(
     id,
     parentId: parentId || id || '',
     path: `${parentId}/${id}`,
-    isLeaf: fields.type !== 'object',
+    isLeaf: !fields.properties,
     visible: visible,
     childrenStatus: 'unknown',
     expanded,

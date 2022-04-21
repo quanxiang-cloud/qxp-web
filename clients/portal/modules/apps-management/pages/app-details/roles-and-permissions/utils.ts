@@ -2,6 +2,7 @@ import { useQuery, UseQueryOptions, UseQueryResult } from 'react-query';
 import { Spec } from '@one-for-all/api-spec-adapter';
 
 import httpClient from '@lib/http-client';
+import { TreeNode } from '@c/headless-tree/types';
 
 import { fetchApiAuthDetails } from './api';
 import { INIT_INPUT_SCHEMA, SCOPE } from './constants';
@@ -97,9 +98,34 @@ export function turnParamsAsBodyPrams(parameters: Array<Parameter>): any {
   parameters.forEach((params) => {
     if (params.in === 'query') {
       const id = (params as QueryParameter).name;
-      const _properties = { type: params.type };
+      const _properties = { type: params.type, in: params.in };
       (inputSchema.properties || {})[id] = { ..._properties };
     }
   });
   return inputSchema;
+}
+
+export function fieldsTreeToParams(
+  rootNode?: TreeNode<TreeField>,
+): { [propertyName: string]: SwagFieldSchema; } {
+  if (!rootNode) {
+    return {};
+  }
+
+  const _params: { [propertyName: string]: SwagFieldSchema; } = {};
+  rootNode.children?.forEach((child) => {
+    const { data, id } = child;
+    const condition = data?.acceptable || false;
+    if (condition) {
+      if (!data.properties) {
+        _params[id] = { type: data.type };
+        return;
+      }
+      _params[id] = {
+        type: data.type,
+        properties: fieldsTreeToParams(child),
+      };
+    }
+  });
+  return _params;
 }

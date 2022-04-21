@@ -159,7 +159,7 @@ declare global {
 
   type SwagFieldSchema = Schema;
 
-  type TreeField = SwagFieldSchema & { acceptable?: boolean };
+  type TreeField = SwagFieldSchema & { acceptable?: boolean, in?: string };
 
   type APIAuth = {
     path?: string,

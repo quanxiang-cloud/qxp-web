@@ -19,9 +19,10 @@ export function clearChildState(
 
 type Props = NodeRenderProps<TreeField> & {
   isAll: boolean;
+  type?: string;
 }
 
-function FieldRender({ node, store, isAll }: Props): JSX.Element {
+function FieldRender({ node, store, isAll, type = 'output' }: Props): JSX.Element {
   const nodeLabel = node.data.title || node.name;
   const { data } = node;
 
@@ -43,8 +44,11 @@ function FieldRender({ node, store, isAll }: Props): JSX.Element {
 
   return (
     <div className={cs(
-      'w-full grid gap-x-16 grid-flow-row-dense p-16',
-      isAll ? 'grid-cols-3' : 'grid-cols-4',
+      'w-full grid gap-x-16 grid-flow-row-dense p-16', {
+        'grid-cols-3': isAll && type === 'output',
+        'grid-cols-4': (!isAll && type === 'output') || (isAll && type === 'input'),
+        'grid-cols-5': !isAll && type === 'input',
+      },
     )}>
       {!isAll && (<Checkbox
         key={node.id}
@@ -56,6 +60,7 @@ function FieldRender({ node, store, isAll }: Props): JSX.Element {
       <div>{nodeLabel || node.id}</div>
       <div>{node.id || ''}</div>
       <div>{node.data.type}</div>
+      {type === 'input' && <div>{node.data?.in || 'body'}</div>}
     </div>
   );
 }

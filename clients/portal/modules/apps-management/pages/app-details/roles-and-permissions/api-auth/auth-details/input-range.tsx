@@ -46,16 +46,19 @@ function InPutRange(): JSX.Element {
       </div>
       <div className={cs(
         'grid gap-x-16 grid-flow-row-dense px-16 py-8 pr-0 fields-item',
-        isAll ? ' grid-cols-3' : ' grid-cols-4',
+        isAll ? ' grid-cols-4' : ' grid-cols-5',
       )}>
         {!isAll && <span>可访问</span>}
         <span>字段</span>
         <span>标识</span>
         <span>字段类型</span>
+        <span>in</span>
       </div>
       <Tree
         store={store.inputTreeStore}
-        NodeRender={({ node, store }) => <FieldRender store={store} node={node} isAll={isAll}/>}
+        NodeRender={({ node, store }) =>
+          <FieldRender store={store} node={node} isAll={isAll} type={'input'}/>
+        }
         className='fields-tree overflow-auto flex-1'
         itemClassName='hover:bg-white hover:text-gray-900 text-gray-900'
       />
