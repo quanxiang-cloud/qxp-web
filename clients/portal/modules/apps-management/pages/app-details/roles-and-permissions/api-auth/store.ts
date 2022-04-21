@@ -8,6 +8,7 @@ import {
   deleteAPIAuth,
   fetchApiAuthDetails,
   fetchAPIListAuth,
+  fetchAPIListAuthParams,
   fetchApiSwagDocDetails,
   fetchGroupApiList,
   updateAPIAuth,
@@ -115,14 +116,11 @@ class APIAuthStore {
       .then(async ({ list, total }) => {
         await this.setApiList(list || []);
         this.apiCount = total;
-        const path: string[] = [];
-        const uri: string[] = [];
         if (list.length) {
-          await list.forEach((api) => {
-            path.push(api.accessPath);
-            uri.push(api.uri);
+          const paths = await list.map(({ accessPath, uri, method }) => {
+            return { accessPath, uri, method };
           });
-          await this.fetchAPIListAuth(path, uri);
+          await this.fetchAPIListAuth(paths);
         } else {
           this.setApiAndAuthList([]);
         }
@@ -132,11 +130,11 @@ class APIAuthStore {
   };
 
   @action
-  fetchAPIListAuth = (paths: string[], uris: string[]): Promise<void> => {
-    return fetchAPIListAuth(this.appID, { roleID: this.currentRoleID, paths, uris })
+  fetchAPIListAuth = (paths: fetchAPIListAuthParams[]): Promise<void> => {
+    return fetchAPIListAuth(this.appID, { roleID: this.currentRoleID, paths })
       .then((authList: Record<string, APIAuth>) => {
         const _apiAuthList = this.apiList.map((api) => {
-          const auth = authList[api.accessPath] || null;
+          const auth = authList[`${api.accessPath}-${api.method}`] || null;
           return { ...api, auth, isLoading: false };
         });
         this.setApiAndAuthList(_apiAuthList);
@@ -190,6 +188,7 @@ class APIAuthStore {
       roleID: this.currentRoleID,
       path: this.curAPI?.accessPath || '',
       uri: this.curAPI?.uri || '',
+      method: this.curAPI?.method || '',
     })
       .then((res) => {
         return res;
@@ -232,14 +231,14 @@ class APIAuthStore {
   };
 
   @action
-  deleteAPIAuth = (path: string, uri: string): void => {
+  deleteAPIAuth = (path: string, uri: string, method: string): void => {
     this.apiAndAuthList = this.apiAndAuthList.map((_api) => {
       if (path === _api.accessPath) {
         return { ..._api, isChanging: true };
       }
       return _api;
     });
-    deleteAPIAuth(this.appID, { roleID: this.currentRoleID, path, uri })
+    deleteAPIAuth(this.appID, { roleID: this.currentRoleID, path, uri, method })
       .then(() => {
         this.apiAndAuthList = this.apiAndAuthList.map((_api) => {
           if (path === _api.accessPath) {

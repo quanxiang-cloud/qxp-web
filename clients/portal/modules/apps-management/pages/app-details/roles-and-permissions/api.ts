@@ -77,12 +77,17 @@ export async function updateAPIAuth(
   return await httpClient(`/api/v1/form/${appID}/m/apiPermit/update/${authID}`, data);
 }
 
+export type fetchAPIListAuthParams = {
+  method: string,
+  accessPath: string,
+  uri: string
+}
+
 export async function fetchAPIListAuth(
   appID: string,
   data: {
     roleID: string,
-    paths: string[],
-    uris: string[],
+    paths: fetchAPIListAuthParams[]
   },
 ): Promise<Record<string, APIAuth>> {
   return await httpClient(`/api/v1/form/${appID}/m/apiPermit/list`, data);
@@ -90,7 +95,7 @@ export async function fetchAPIListAuth(
 
 export async function deleteAPIAuth(
   appID: string,
-  data: { roleID: string, path: string, uri: string },
+  data: { roleID: string, path: string, uri: string, method: string },
 ): Promise<void> {
   return await httpClient(`/api/v1/form/${appID}/m/apiPermit/delete`, data);
 }
@@ -104,7 +109,7 @@ export function fetchGroupApiList(
 
 export function fetchApiAuthDetails(
   appID: string,
-  data: {roleID: string, path: string, uri: string},
+  data: { roleID: string, path: string, uri: string, method: string },
 ): Promise<APIAuth> {
   return httpClient(`/api/v1/form/${appID}/m/apiPermit/get`, data);
 }

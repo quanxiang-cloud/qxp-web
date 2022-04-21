@@ -163,6 +163,7 @@ declare global {
 
   type APIAuth = {
     path?: string,
+    method?: string,
     params?: { [propertyName: string]: SwagSchema },
     response?: { [propertyName: string]: SwagSchema },
     condition?: any,

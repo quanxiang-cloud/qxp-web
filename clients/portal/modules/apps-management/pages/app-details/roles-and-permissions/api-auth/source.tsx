@@ -51,7 +51,7 @@ function Source(): JSX.Element {
             disabled={disabled || false}
             checked={checked || false}
             onChange={handleChange}
-            value={`${api.accessPath}-${api.uri}`}
+            value={`${api.accessPath}-${api.uri}-${api.method}`}
           />
         );
       },
@@ -121,6 +121,7 @@ function Source(): JSX.Element {
     const _path = e.target.value.split('-');
     const _auth = {
       path: _path[0],
+      method: _path[2],
       params: {},
       response: {},
       condition: {},
@@ -130,7 +131,7 @@ function Source(): JSX.Element {
       responseAll: true,
     };
     e.target.checked && store.createAPIAuth(_auth);
-    !e.target.checked && store.deleteAPIAuth(_path[0], _path[1]);
+    !e.target.checked && store.deleteAPIAuth(_path[0], _path[1], _path[2]);
   }
 
   function handlePageChange(page: number, pageSize: number): void {
