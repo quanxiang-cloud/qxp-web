@@ -16,7 +16,7 @@ import useObservable from '@lib/hooks/use-observable';
 import type { StoreValue } from '@flow/content/editor/type';
 
 import Send from './send';
-
+import BodyEditor from './body-editor';
 import { getWebhookPathTreeValue } from './utils';
 
 interface Props {
@@ -65,26 +65,37 @@ function Inputs({ value, onChange, values, error }: Props): JSX.Element | null {
 
   const hasCustomRulesAnd = and(!!customRules);
 
+  function RenderInput() {
+    if (values.editWay === 'simple') {
+      return <BodyEditor value={JSON.stringify(value)} onChange={onChange} />;
+    }
+
+    return (
+      <div className='flex-1'>
+        {hasCustomRulesAnd(isRequest(values)) && (
+          <ApiParamsConfig
+            onChange={onChange}
+            ref={formulaEditorRef}
+            value={value}
+            url={values.url}
+            customRules={customRules!}
+            validating={!isUndefined(error)}
+          />
+        )}
+        {hasCustomRulesAnd(isSend(values)) && (
+          <Send
+            value={value}
+            onChange={onChange}
+            ref={formulaEditorRef}
+            customRules={customRules!}
+          />
+        )}
+      </div>
+    );
+  }
   return (
     <div className="webhook-request-inputs">
-      {hasCustomRulesAnd(isRequest(values)) && (
-        <ApiParamsConfig
-          onChange={onChange}
-          ref={formulaEditorRef}
-          value={value}
-          url={values.url}
-          customRules={customRules!}
-          validating={!isUndefined(error)}
-        />
-      )}
-      {hasCustomRulesAnd(isSend(values)) && (
-        <Send
-          value={value}
-          onChange={onChange}
-          ref={formulaEditorRef}
-          customRules={customRules!}
-        />
-      )}
+      <RenderInput />
       <PathTreeWithOperates
         currentFormulaEditorRef={formulaEditorRef}
         pathTreeValue={pathTreeValue}
