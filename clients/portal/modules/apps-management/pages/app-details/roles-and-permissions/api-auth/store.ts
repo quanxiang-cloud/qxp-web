@@ -31,8 +31,8 @@ class APIAuthStore {
   @observable curNamespace: PolyAPI.Namespace | null = null;
   @observable showRoleDetailsModal = false;
   @observable isLoadingAuthDetails = false;
-  @observable outPutFields: Fields = {};
-  @observable inPutFields: Fields = {};
+  @observable outPutFields: SwagField = {};
+  @observable inPutFields: SwagField = {};
   @observable inputTreeStore: FieldsStore | null = null;
   @observable outputTreeStore: FieldsStore | null = null;
   @observable curAuthDetailTabKey = 'viewableData';
@@ -48,7 +48,7 @@ class APIAuthStore {
   };
 
   @action
-  setOutPutFields = (outPutFields: Fields): void => {
+  setOutPutFields = (outPutFields: SwagField): void => {
     this.outPutFields = outPutFields;
   };
 
@@ -202,8 +202,8 @@ class APIAuthStore {
 
   @action
   fetchApiSwagDocDetails = (): Promise<{
-    inputSchema: SwagFieldSchema | undefined,
-    outputSchema: SwagFieldSchema | undefined
+    inputSchema: SwagSchema | undefined,
+    outputSchema: SwagSchema | undefined
   }> => {
     return fetchApiSwagDocDetails(this.curAPI?.fullPath || '').then((res) => {
       const path = Object.values(res.doc.paths)[0];

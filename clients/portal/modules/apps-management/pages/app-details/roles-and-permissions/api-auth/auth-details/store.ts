@@ -1,12 +1,12 @@
 import TreeStore from '@c/headless-tree/store';
 import { TreeNode } from '@c/headless-tree/types';
 
-export default class FieldsStore extends TreeStore<TreeField> {
+export default class FieldsStore extends TreeStore<SwagField> {
   treeNodeHeight = 36;
 
   constructor(
-    root: SwagFieldSchema,
-    params: { [propertyName: string]: SwagFieldSchema },
+    root: SwagSchema,
+    params: { [propertyName: string]: SwagSchema },
   ) {
     super({
       rootNode: apiFieldsToTreeNode(params || {}, root, root.properties || {}),
@@ -17,9 +17,9 @@ export default class FieldsStore extends TreeStore<TreeField> {
 }
 
 export function apiFieldsToTreeNode(
-  params: { [propertyName: string]: SwagFieldSchema },
-  fields: SwagFieldSchema,
-  properties: { [propertyName: string]: SwagFieldSchema },
+  params: { [propertyName: string]: SwagSchema },
+  fields: SwagSchema,
+  properties: { [propertyName: string]: SwagSchema },
   level = 0,
   visible = false,
   expanded = true,
@@ -27,7 +27,7 @@ export function apiFieldsToTreeNode(
   order = 0,
   sort = false,
   id = 'schema',
-): TreeNode<SwagFieldSchema> {
+): TreeNode<SwagSchema> {
   let children = Object.entries(properties || {}).map(
     ([fieldKey, fieldAttrs]) => {
       const _properties = properties?.[fieldKey]?.properties || {};

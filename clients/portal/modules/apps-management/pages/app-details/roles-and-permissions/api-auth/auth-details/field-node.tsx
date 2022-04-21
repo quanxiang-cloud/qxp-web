@@ -6,8 +6,8 @@ import { NodeRenderProps, TreeNode } from '@c/headless-tree/types';
 import TreeStore from '@c/headless-tree/store';
 
 export function clearChildState(
-  node: TreeNode<TreeField>,
-  store: TreeStore<TreeField>,
+  node: TreeNode<SwagField>,
+  store: TreeStore<SwagField>,
   acceptable: boolean): any {
   node.children?.forEach((child) => {
     const { data } = child;
@@ -17,7 +17,7 @@ export function clearChildState(
   });
 }
 
-type Props = NodeRenderProps<TreeField> & {
+type Props = NodeRenderProps<SwagField> & {
   isAll: boolean;
   type?: string;
 }

@@ -67,7 +67,7 @@ export const DATA_RANGE: Record<string, string> = {
   SELF_WITH_SUB: JSON.stringify(SELF_AND_SUB, null, 4),
 };
 
-export const INIT_INPUT_SCHEMA: SwagFieldSchema = {
+export const INIT_INPUT_SCHEMA: SwagSchema = {
   type: 'object',
   properties: {},
 };
