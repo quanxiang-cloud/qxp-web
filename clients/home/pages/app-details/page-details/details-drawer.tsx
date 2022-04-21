@@ -4,6 +4,7 @@ import cs from 'classnames';
 import useCss from 'react-use/lib/useCss';
 
 import Icon from '@c/icon';
+import toast from '@lib/toast';
 import PopConfirm from '@c/pop-confirm';
 import FormDataDetailsCard from '@c/form-data-details-card';
 
@@ -33,6 +34,8 @@ function DetailsDrawer({ onCancel, rowID, goEdit, delData }: Props): JSX.Element
   const handelDelete = (): void => {
     delData([rowID]).then(() => {
       handleCancel();
+    }).catch((err) => {
+      toast.error(err);
     });
   };
 

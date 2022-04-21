@@ -93,6 +93,8 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
       toast.success('删除成功!');
     }).finally(() => {
       formTableRef.current?.refresh();
+    }).catch((err) => {
+      toast.error(err);
     });
   }
 
