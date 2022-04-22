@@ -74,7 +74,8 @@ function EditViewModal(
   }
 
   function handleFinish(values: any): void {
-    onSubmit({ ...(viewParams || {}), ...values });
+    const _link = (values?.link || '').replace(/\s*/g, '');
+    onSubmit({ ...(viewParams || {}), ...values, link: _link });
   }
 
   function validateRepeat(value: string): boolean {
