@@ -26,9 +26,9 @@ type PersonalizedConfig struct {
 }
 
 func getPersonalizedConfig(r *http.Request, appID string) PersonalizedConfig {
-	params := []ConfigCenterParams{{Key: "PERSONALIZED_CONFIG", Version: "0.1.0"}}
+	params := []ConfigCenterParams{{Key: "style_guide_css", Version: "0.1.0"}}
 	if appID != "" {
-		params = []ConfigCenterParams{{Key: "PERSONALIZED_CONFIG", Version: "0.1.0"}, {Key: fmt.Sprintf("PERSONALIZED_CONFIG_FOR_APP_%s", appID), Version: "0.1.0"}}
+		params = []ConfigCenterParams{{Key: "style_guide_css", Version: "0.1.0"}, {Key: fmt.Sprintf("app_id:%s:style_guide_css", appID), Version: "0.1.0"}}
 	}
 
 	respBody, errMsg := sendRequest(r.Context(), "POST", "/api/v1/persona/batchGetValue", BatchGetValueReq{Keys: params})
@@ -37,8 +37,8 @@ func getPersonalizedConfig(r *http.Request, appID string) PersonalizedConfig {
 		return PersonalizedConfig{}
 	}
 
-	tenantConfig := gjson.Get(string(respBody), "data.result.PERSONALIZED_CONFIG").Str
-	applicationConfig := gjson.Get(string(respBody), fmt.Sprintf("PERSONALIZED_CONFIG_FOR_APP_%s", appID)).Str
+	tenantConfig := gjson.Get(string(respBody), "data.result.style_guide_css").Str
+	applicationConfig := gjson.Get(string(respBody), fmt.Sprintf("app_id:%s:style_guide_css", appID)).Str
 	config := PersonalizedConfig{
 		TitleIcon:    "/dist/images/quanxiangyun.svg",
 		Favicons:     "/dist/images/favicons/favicon-32x32.png",

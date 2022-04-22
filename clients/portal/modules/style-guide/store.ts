@@ -23,14 +23,14 @@ const COMPONENT_STYLE_CONFIG_KEY = 'GLOBAL_COMPONENT_STYLE_CONFIG';
 const DESIGN_TOKEN_CONFIG_KEY = 'GLOBAL_DESIGN_TOKEN_CONFIG';
 const DESIGN_TOKEN_SCSS_KEY = 'GLOBAL_DESIGN_TOKEN_SCSS';
 
-const COMPILED_CSS_URL_KEY = 'style_guide_css:draft';
-const PERSONALIZED_CONFIG_KEY = 'PERSONALIZED_CONFIG';
+const COMPILED_CSS_DRAFT_URL_KEY = 'style_guide_css:draft';
+const COMPILED_CSS_FINAL_URL_KEY = 'style_guide_css';
 
 const VERSION = '0.1.0';
 
-// const ALL_COMPONENTS_KEYS = componentSpecs.reduce<string[]>((acc, cur) => {
-//   return [...acc, ...cur.specs.map((spec) => `${cur.key}.${spec.title}`)];
-// }, []);
+const ALL_COMPONENTS_KEYS = componentSpecs.reduce<string[]>((acc, cur) => {
+  return [...acc, ...cur.specs.map((spec) => `${cur.key}.${spec.title}`)];
+}, []);
 class StyleGuideStore {
   destroySetShadowStyle: IReactionDisposer;
   @observable designTokenStore: DesignTokenStore | null = null;
@@ -44,13 +44,13 @@ class StyleGuideStore {
 
   constructor() {
     this.destroySetShadowStyle = reaction(
-      () => this.shadowRoot,
-      (shadowRoot) => {
-        if (!shadowRoot) {
+      () => [this.shadowRoot, this.styleCssUrl],
+      ([shadowRoot, styleCssUrl]) => {
+        if (!shadowRoot || !styleCssUrl) {
           return;
         }
 
-        applyStyle(this.cssStore?.getCssString() || '', shadowRoot);
+        applyStyle(styleCssUrl as string || '', shadowRoot as ShadowRoot);
       },
     );
 
@@ -160,7 +160,7 @@ class StyleGuideStore {
 
     await setBatchGlobalConfig([{
       version: VERSION,
-      key: PERSONALIZED_CONFIG_KEY,
+      key: COMPILED_CSS_FINAL_URL_KEY,
       value: JSON.stringify({ styleCssUrl: this.styleCssUrl }),
     }]);
 
@@ -177,7 +177,7 @@ class StyleGuideStore {
             version: VERSION,
           },
           components_scss_keys: {
-            key: Object.keys(this.componentScssMap),
+            key: ALL_COMPONENTS_KEYS,
             version: VERSION,
           },
         }),
@@ -193,10 +193,10 @@ class StyleGuideStore {
   fetchCssUrl = async (): Promise<string> => {
     const { domain, readable } = window.CONFIG.oss_config;
     const res = await getBatchGlobalConfig([{
-      key: COMPILED_CSS_URL_KEY, version: VERSION,
+      key: COMPILED_CSS_DRAFT_URL_KEY, version: '1.0.0',
     }]);
 
-    return `//${readable}.${domain}/${res.result?.[COMPILED_CSS_URL_KEY]}`;
+    return `//${readable}.${domain}/${res.result?.[COMPILED_CSS_DRAFT_URL_KEY]}`;
   };
 
   generateCssUrl = async (): Promise<string> => {

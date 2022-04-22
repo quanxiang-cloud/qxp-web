@@ -1,8 +1,14 @@
-export function applyStyle(css: string, shadowRoot: ShadowRoot): void {
+export function applyStyle(url: string, shadowRoot: ShadowRoot): void {
   const styleID = 'shadow-custom-css';
-  const style = shadowRoot.getElementById(styleID) || document.createElement('style');
-  style.innerHTML = '';
-  style.setAttribute('id', styleID);
-  style.appendChild(document.createTextNode(css));
-  shadowRoot.appendChild(style);
+  let link = shadowRoot.getElementById(styleID);
+  if (link) {
+    shadowRoot.removeChild(link);
+  }
+  link = document.createElement('link');
+  link.setAttribute('id', styleID);
+  link.setAttribute('type', 'text/css');
+  link.setAttribute('rel', 'stylesheet');
+  link.setAttribute('href', url);
+  link.onload = () => {};
+  shadowRoot.prepend(link);
 }

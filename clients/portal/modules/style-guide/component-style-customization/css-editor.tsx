@@ -14,14 +14,16 @@ function CSSEditor(): JSX.Element {
   const [isFocus, setFocus] = useState(false);
   const [isChanged, setIsChanged] = useState(false);
   const { spec, key } = store.currentCompStatus as ActiveConfigurationComponent;
+  const personalKey = `${key}.${spec.title}`;
   useEffect(() => {
-    store.fetchComponentScss(`${key}.${spec.title}`);
-  }, []);
+    store.fetchComponentScss(personalKey);
+  }, [store.currentCompStatus]);
+
   useEffect(() => {
-    if (store.componentScssMap[`${key}.${spec.title}`]) {
-      setValue(store.componentScssMap[`${key}.${spec.title}`]);
+    if (store.componentScssMap[personalKey]) {
+      setValue(store.componentScssMap[personalKey]);
     } else {
-      setValue(store.cssStore?.getInitCompCss(`${key}.${spec.title}`, spec.rules) || '');
+      setValue(store.cssStore?.getInitCompCss(personalKey, spec.rules) || '');
     }
   }, [store.currentCompStatus, store.componentScssMap]);
 
@@ -37,7 +39,7 @@ function CSSEditor(): JSX.Element {
       return;
     }
 
-    store.setComponentScss(`${key}.${spec.title}`, value);
+    store.setComponentScss(personalKey, value);
     // store.cssStore?.setCss(`${key}.${spec.title}`, value, spec.rules, (msg) => toast.error(msg));
     // const css = store.cssStore?.getCssString();
     // store.shadowRoot && applyStyle(css || '', store.shadowRoot);

@@ -151,7 +151,7 @@ function TokenButton({
 
   return (
     <div {...dragProps} className="mb-4 mr-4 border-1 border-gray-100 relative" style={style}>
-      <TokenTooltipWrapper token={token}>
+      {/* <TokenTooltipWrapper token={token}> */}
         <div
           onClick={handleClick()}
           ref={referenceRef}
@@ -169,7 +169,7 @@ function TokenButton({
             <i className="absolute right-2 top-2 w-4 h-4 bg-orange-600"></i>
           )}
         </div>
-      </TokenTooltipWrapper>
+      {/* </TokenTooltipWrapper> */}
       <Popper placement="bottom">
         <Menus
           items={menuItems}
