@@ -11,7 +11,7 @@ import {
 } from '@one-for-all/artery';
 import { deleteByID, findNodeByID, patchNode } from '@one-for-all/artery-utils';
 
-import addLayoutToRoot from './helpers/add-layout-to-root';
+import addLayoutToRoot, { copyLayoutToRoot, CreateLayoutInfo } from './helpers/add-layout-to-root';
 import addViewToRoot from './helpers/add-view-to-root';
 import addViewToLayout from './helpers/add-view-to-layout';
 import findLayouts from './helpers/find-layouts';
@@ -100,28 +100,39 @@ class Orchestrator {
   // }
 
   @action
-  async addLayout(name: string, layoutType: LayoutType): FutureErrorMessage {
+  async addLayout(layoutInfo: CreateLayoutInfo): FutureErrorMessage {
     const rootNode = await addLayoutToRoot({
       appID: this.appID,
       rootNode: toJS(this.rootNode),
-      layoutType,
-      layoutName: name,
+      layoutInfo,
     });
 
     return this.saveSchema(rootNode);
   }
 
   @action
-  async editLayout(layoutID: string, name: string): FutureErrorMessage {
+  async copyLayout(layout: Layout): FutureErrorMessage {
+    const rootNode = await copyLayoutToRoot({
+      appID: this.appID,
+      rootNode: toJS(this.rootNode),
+      layoutInfo: { ...layout, name: layout.name + '的副本' },
+      refSchemaID: layout.refSchemaID,
+    });
+
+    return this.saveSchema(rootNode);
+  }
+
+  @action
+  async editLayout(partialLayoutInfo: Pick<Layout, 'name' | 'description' | 'id'>): FutureErrorMessage {
     const layoutList = get(this.rootNode, 'node.children[1].children', []);
-    const index = findIndex(layoutList, (layoutItem: RouteNode) => layoutItem.node.id === layoutID);
-    const oldName = get(this.rootNode, `node.children[1].children[${index}].node.label`, '');
+    const index = findIndex(layoutList, (layoutItem: RouteNode) => layoutItem.node.id === partialLayoutInfo.id);
 
-    if (oldName === name) {
-      return 'No changes were made';
-    }
+    set(this.rootNode, `node.children[1].children[${index}].node.label`, partialLayoutInfo.name);
+    set(this.rootNode, `node.children[1].children[${index}].node.props.data-layout-description`, { // temp description ,should remove soon
+      type: 'constant_property',
+      value: partialLayoutInfo.description,
+    });
 
-    set(this.rootNode, `node.children[1].children[${index}].node.label`, name);
     return this.saveSchema(this.rootNode);
   }
 

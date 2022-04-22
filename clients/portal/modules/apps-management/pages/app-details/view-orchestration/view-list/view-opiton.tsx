@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import cs from 'classnames';
+
 import Icon from '@c/icon';
 import MoreMenu, { MenuItem } from '@c/more-menu';
 
@@ -20,18 +21,8 @@ function ViewOption({ view, homeViewID, onViewOptionClick, className }: Props): 
       disabled: false,
       label: (
         <div className="flex items-center">
-          <Icon name="create" size={16} className="mr-8" />
-          <span className="font-normal">编辑名称</span>
-        </div>
-      ),
-    },
-    {
-      key: 'delView',
-      disabled: homeViewID === view.id,
-      label: (
-        <div className="flex items-center">
-          <Icon name="restore_from_trash" size={16} className="mr-8" />
-          <span className="font-normal">删除</span>
+          <Icon name="create" size={18} className="mr-8" />
+          <span className="font-normal">修改名称</span>
         </div>
       ),
     },
@@ -40,11 +31,22 @@ function ViewOption({ view, homeViewID, onViewOptionClick, className }: Props): 
       disabled: homeViewID === view.id,
       label: (
         <div className="flex items-center">
-          <Icon name="home" size={16} className="mr-8" />
+          <Icon name="home" size={18} className="mr-8" />
           <span className="font-normal">设为应用主页</span>
         </div>
       ),
     },
+    {
+      key: 'delView',
+      disabled: homeViewID === view.id,
+      label: (
+        <div className="flex items-center">
+          <Icon name="restore_from_trash" size={18} className="mr-8" />
+          <span className="font-normal">删除</span>
+        </div>
+      ),
+    },
+
   ], [homeViewID, view]);
 
   return (

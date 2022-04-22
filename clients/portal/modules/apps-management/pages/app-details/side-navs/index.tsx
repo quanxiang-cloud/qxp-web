@@ -27,17 +27,17 @@ const TEMP_NAV: Menu[] = [
       {
         id: 'views',
         title: '页面管理',
-        icon: 'database',
+        icon: 'note_detail_duotone',
       },
       {
         id: 'view_layout',
         title: '母版管理',
-        icon: 'database',
+        icon: 'row_top_duotone',
       },
       {
         id: 'app_nav',
         title: '应用导航',
-        icon: 'database',
+        icon: 'tab_duotone',
       },
     ],
   },

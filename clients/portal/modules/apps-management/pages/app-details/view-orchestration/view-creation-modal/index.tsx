@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
 import { Form, Input } from 'antd';
-import { Modal, Select } from '@one-for-all/ui';
+
+import { Icon, Modal, Select } from '@one-for-all/ui';
 
 import ViewTypeSelector from './view-type-selector';
 import StaticViewUpload from '../static-view-upload';
@@ -25,17 +27,31 @@ function CreateViewModal(
 ): JSX.Element {
   const [_viewType, _setViewType] = useState<ViewType>();
   const [viewType, setViewType] = useState<ViewType | undefined>(viewParams?.type);
-  const [form] = Form.useForm();
+  const { appID } = useParams<{ appID: string }>();
+  const history = useHistory();
 
+  const [form] = Form.useForm();
   const isCreateView = modalType === 'createView';
-  const allViewNames = views.map((view) => (view as BaseView).name);
-  const layoutOptions = [{ label: '无布局（默认）', value: '' }].concat(layouts.map((layout) => ({
+
+  const allViewNames = useMemo(() => views.map((view) => (view as BaseView).name), [views]);
+
+  const excludeViewNames = useMemo(() => {
+    if (modalType === 'editView') {
+      return views.filter((view) => view.name !== viewParams?.name)
+        .map((view) => view.name);
+    }
+  }, [modalType, views]) || [];
+
+  const layoutOptions = useMemo(() => [{ label: '无布局（默认）', value: '' }].concat(layouts.map((layout) => ({
     label: layout.id === 'root_node' ? '应用默认布局' : layout.name,
     value: layout.id,
-  })));
+  }))), [layouts]);
 
-  function validateRepeat(value: string): boolean {
-    return allViewNames.includes(value) && isCreateView;
+  function validateRepeat(name: string): boolean {
+    if (!isCreateView && viewParams?.name) {
+      return excludeViewNames.includes(name);
+    }
+    return allViewNames.includes(name) && isCreateView;
   }
 
   function onViewTypeSubmit(): void {
@@ -98,7 +114,7 @@ function CreateViewModal(
     >
       {
         (!viewType && isCreateView) ?
-          (<ViewTypeSelector defaultSelectType={_viewType} onSelect={_setViewType} />) : (
+          (<ViewTypeSelector currentSelectType={_viewType} onSelect={_setViewType} />) : (
             <Form
               className="p-20"
               layout='vertical'
@@ -111,23 +127,21 @@ function CreateViewModal(
               <Item
                 name="name"
                 label="页面名称"
-                extra="不超过 30 个字符，页面名称不可重复。"
+                extra={(<span className='text-12 pt-4'>不超过 30 个字符，页面名称不可重复。</span>)}
+                required
                 rules={[
                   {
-                    required: true,
-                    message: '请输入页面名称',
-                  }, {
                     type: 'string',
                     message: '名称不超过 30 字符，请修改！ ',
                   }, {
                     validator: (_, value) => {
-                      if (!value) {
-                        return Promise.resolve();
-                      } else if (validateRepeat(value)) {
-                        return Promise.reject(new Error('页面名称重复'));
-                      } else {
-                        return Promise.resolve();
+                      if (!value.trim()) {
+                        return Promise.reject(new Error('页面名称不能为空'));
                       }
+                      if (validateRepeat(value)) {
+                        return Promise.reject(new Error('页面名称重复'));
+                      }
+                      return Promise.resolve();
                     },
                   },
                 ]}
@@ -138,7 +152,22 @@ function CreateViewModal(
                 isCreateView && (<>
                   <Item
                     name='layoutID'
-                    label="页面布局"
+                    tooltip='母版可自定义设计版式，为应用内其他页面共用，拥有一次设计多处复用的特性'
+                    label='页面母版'
+                    extra={(
+                      <div
+                        className='flex items-center text-blue-600 pt-4 cursor-pointer text-12'
+                        onClick={() => {
+                          history.push({
+                            pathname: `/apps/details/${appID}/view_layout`,
+                            state: { openCreateModal: true },
+                          });
+                        }}
+                      >
+                        没有母版？去创建母版
+                        <Icon name='keyboard_arrow_right' size={16} />
+                      </div>
+                    )}
                   >
                     <Select
                       placeholder="无布局（默认）"

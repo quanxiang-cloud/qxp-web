@@ -8,7 +8,6 @@ import toast from '@lib/toast';
 import store from '../store';
 import templateStore from '../../app-templates/store';
 import CreatedEditApp from './created-edit-app';
-import AppLayoutType from '../layout-select';
 import { SelectLayoutType } from '../layout-select/app-layout-item';
 import { initAppRootView } from '../../../app-details/view-orchestration/init-app-root-view';
 import AppTemplateSelector from '../../app-templates/app-template-seletor';
@@ -26,7 +25,6 @@ function CreatedAppModal({
   const history = useHistory();
   const formRef: any = useRef(null);
   const [appZipInfo, setAppZipInfo] = useState<AppZipInfo | undefined>(undefined);
-  const [defaultAppLayout, setDefaultAppLayout] = useState<SelectLayoutType>('free');
   const [template, setTemplate] = useState<string>(templateID || '');
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -41,7 +39,7 @@ function CreatedAppModal({
 
   function submitCallback(): void {
     const formDom = formRef.current;
-    const data = formDom.getFieldsValue() as AppInfo;
+    const data = formDom.getFieldsValue() as AppInfo & { layoutType: SelectLayoutType };
     let appID = '';
 
     Promise.resolve().then(() => {
@@ -57,7 +55,7 @@ function CreatedAppModal({
 
       return createdApp({ ...data, useStatus: -1 }).then((res: string) => {
         appID = res;
-        return initAppRootView(res, defaultAppLayout);
+        return initAppRootView(res, data.layoutType);
       });
     }).then(() => {
       if (modalType === 'createdApp') {
@@ -65,9 +63,9 @@ function CreatedAppModal({
         toast.success('创建应用成功！');
         history.push(`/apps/details/${appID}/views`);
       }
+      onCancel();
     }).catch(toastError).finally(() => {
       setLoading(false);
-      onCancel();
     });
   }
 
@@ -122,13 +120,7 @@ function CreatedAppModal({
               has('appZipInfo', value) && setAppZipInfo(formRef.current.getFieldValue('appZipInfo'));
             }}
           />
-          {
-            !template && !['importApp', 'createAppWithTemplate'].includes(modalType) && (
-              <AppLayoutType
-                title='默认应用布局 (应用布局会应用在所有页面):'
-                onChange={setDefaultAppLayout}
-              />)
-          }
+
         </div>
       </div>
 

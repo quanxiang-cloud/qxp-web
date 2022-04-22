@@ -7,6 +7,7 @@ import toast from '@lib/toast';
 import AppZipUpload from './app-zip-upload';
 import AppIconPicker from './app-icon-picker';
 import { fetchTemplateList, TemplateListRes } from '../../app-templates/api';
+import AppLayoutType from '../layout-select';
 
 import './style.scss';
 
@@ -38,9 +39,7 @@ function CreatedEditApp({
 }: Props, ref?: any): JSX.Element {
   const [form] = Form.useForm();
   const initData = appInfo && toJS(appInfo);
-  // const [options, setOptions] = useState<LabelValue[]>([]);
   const { appName, appIcon = '{}', appSign } = initData || {};
-  // const [createdBy, setCreatedBy] = useState(templateID ? 'template' : 'base');
 
   const handleEnterSubmit = useCallback((e: KeyboardEvent<HTMLInputElement>) => {
     e.key === 'Enter' && handleFinish();
@@ -54,14 +53,6 @@ function CreatedEditApp({
     // has('createdBy', value) && setCreatedBy(value.createdBy as string);
     onValuesChange?.(value);
   }
-
-  // useEffect(() => {
-  //   if (createdBy === 'base' || !!options.length) {
-  //     return;
-  //   }
-
-  //   getTemplateOptions().then(setOptions);
-  // }, [createdBy]);
 
   return (
     <Form
@@ -114,8 +105,8 @@ function CreatedEditApp({
       </Form.Item>
       <Form.Item
         name='appSign'
-        label='应用标识:'
-        // extra='必须以字母开头,由字母、数字、单下划线组成'
+        label='应用标识'
+        tooltip='应用标识用于标记开发者账号，即用户 id，便于在二次开发中使用'
         extra='必须以字母开头,由字母、数字组成'
         rules={[
           {
@@ -147,23 +138,15 @@ function CreatedEditApp({
       >
         <AppIconPicker />
       </Form.Item>
-      {/* {modalType === 'createdApp' && !basic && (
-        <Form.Item
-          name="createdBy"
-          label="新建方式"
-        >
-          <AppCreatedBy value={createdBy} />
-        </Form.Item>
-      )}
-      {createdBy === 'template' && (
-        <Form.Item
-          required
-          name="template"
-          label="选择模版"
-        >
-          <Select className='w-full' options={options}/>
-        </Form.Item>
-      )} */}
+      <Form.Item
+        name="layoutType"
+        label="应用导航"
+        tooltip='应用导航可将多张页面链接起来，使其可以方便地访问到所需的内容'
+        hidden={['importApp', 'createAppWithTemplate'].includes(modalType)}
+      >
+        <AppLayoutType includeFree />
+      </Form.Item>
+
       {modalType === 'importApp' && (
         <Form.Item
           required

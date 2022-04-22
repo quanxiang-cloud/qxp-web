@@ -14,7 +14,7 @@ import AppRoles from './roles-and-permissions';
 import ApiDocument from './api-documentation';
 import FaaS from './faas';
 import ApiKey from './api-key';
-import LayoutManagement from './view-orchestration/layout-management';
+import LayoutManagement from './view-orchestration/view-layouts';
 import NavManagement from './view-orchestration/nav-management';
 
 import './index.scss';
@@ -34,7 +34,7 @@ function AppDetailsContent(): JSX.Element {
           <React.Suspense fallback={<Loading className="w-screen h-screen" desc="加载中..." />}>
             <Switch>
               <Route exact path='/apps/details/:appID/views' component={AppViewOrchestration} />
-              <Route exact path='/apps/details/:appID/view_layout' component={LayoutManagement} />
+              <Route path='/apps/details/:appID/view_layout' component={LayoutManagement} />
               <Route exact path='/apps/details/:appID/app_nav' component={NavManagement} />
               <Route exact path='/apps/details/:appID/setting_flow' component={WorkFlows} />
               <Route exact path='/apps/details/:appID/data_models' component={DataModels} />

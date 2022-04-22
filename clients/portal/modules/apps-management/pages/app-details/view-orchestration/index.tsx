@@ -111,7 +111,6 @@ function AppViews(): JSX.Element {
           onSubmit={handleModalSubmit}
         />
       )}
-      {/* <CreateViewModal onCancel={closeModal} onSubmit={handleModalSubmit} /> */}
     </div >
   );
 }

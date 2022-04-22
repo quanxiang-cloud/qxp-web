@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import cs from 'classnames';
+
 import { ViewType } from '../types.d';
 
 type Props = {
-  defaultSelectType?: ViewType;
+  currentSelectType?: ViewType;
   onSelect?: (type: ViewType) => void;
 }
 
@@ -46,25 +47,22 @@ export const VIEW_TYPE_MAP: ViewTypeItemProps[] = [
   },
 ];
 
-function ViewTypeSelector({ onSelect, defaultSelectType }: Props): JSX.Element {
-  const [currentType, setCurrentType] = useState<ViewTypeItemProps | undefined>(
-    VIEW_TYPE_MAP.find((typeItem) => typeItem.type === defaultSelectType),
-  );
+function ViewTypeSelector({ onSelect, currentSelectType }: Props): JSX.Element {
+  // const [currentType, setCurrentType] = useState<ViewTypeItemProps | undefined>(
+  //   VIEW_TYPE_MAP.find((typeItem) => typeItem.type === currentSelectType),
+  // );
 
   return (
     <div className='flex gap-16 p-24'>
       {
         VIEW_TYPE_MAP.map((typeItem) => {
-          const active = currentType?.type === typeItem.type;
+          const active = currentSelectType === typeItem.type;
           return (
             <div
               className='w-230 h-270 border-1 border-gray-200 hover:shadow-more-action cursor-pointer rounded-8 duration-300'
               key={typeItem.type}
               onClick={() => {
-                setCurrentType(() => {
-                  onSelect?.(typeItem.type);
-                  return typeItem;
-                });
+                onSelect?.(typeItem.type);
               } }
             >
               <div className='relative w-full'>
