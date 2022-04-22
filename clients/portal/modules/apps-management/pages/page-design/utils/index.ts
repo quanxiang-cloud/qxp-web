@@ -68,7 +68,7 @@ export function isFuncSource(source: string) {
   return typeof source === 'string' && (/function/.test(source) || /\([^)]*\)\s*=>/.test(source));
 }
 
-export function elemId(elemType: string): string {
+export function generateNodeId(elemType: string): string {
   const type = elemType.replace(/elem\./, '').toLowerCase();
   return [type, nanoid(8)].join('-');
 }

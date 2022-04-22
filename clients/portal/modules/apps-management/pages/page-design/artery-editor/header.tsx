@@ -1,7 +1,7 @@
 import React from 'react';
 import cs from 'classnames';
+import Icon from '@one-for-all/icon';
 
-import Icon from '@c/icon';
 import { getQuery } from '@lib/utils';
 import Button from '@c/button';
 
@@ -17,11 +17,17 @@ type Props = {
 
 function Header({ editorMode, onGoBack, onChangeMode, onSave, onSaveAndExit }: Props): JSX.Element {
   const { pageName } = getQuery<{ pageName: string }>();
+  const className = cs(
+    'px-20 h-44 flex items-center justify-between text-gray-900',
+    'text-12 bg-white shadow-flow-header',
+  );
 
   return (
-    <div className="px-20 h-44 flex items-center justify-between text-gray-900 text-12 bg-white shadow-flow-header">
+    <div className={className}>
       <div className="font-bold flex items-center">
-        <Icon clickable name="keyboard_backspace" className='mr-8' onClick={onGoBack} />
+        <span onClick={onGoBack}>
+          <Icon name="keyboard_backspace" className='mr-8 cursor-pointer' />
+        </span>
         <span className='mr-4'>正在设计页面:</span>
         <span>{pageName}</span>
       </div>

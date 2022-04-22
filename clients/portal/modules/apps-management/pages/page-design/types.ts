@@ -15,6 +15,11 @@ export interface BlocksCommunicationType extends BaseBlocksCommunicationState {
   repository?: Repository;
   appID?: string;
   arteryID?: string;
+  menu?: {
+    currentGroupType?: string;
+    groupTypeContentPinned?: boolean;
+    pannelWith?: number;
+  }
 }
 
 export type ReactComp = React.ComponentType | React.JSXElementConstructor<any>;

@@ -1,4 +1,4 @@
-import React, { MutableRefObject, Ref } from 'react';
+import { MutableRefObject } from 'react';
 import { Edge, isEdge, removeElements } from 'react-flow-renderer';
 import { ifElse, flatten } from 'ramda';
 import { customAlphabet } from 'nanoid';
@@ -156,13 +156,14 @@ export function isSomeActionShow(el: HTMLElement | null): boolean {
   return actions.some((action) => (action as HTMLElement).style.opacity === '1');
 }
 
-export function mergeRefs<T>(...refs: Array<MutableRefObject<T> | Ref<T>>): React.Ref<T> {
+type Ref<T> = MutableRefObject<T | null> | ((instance: T) => void) | null;
+export function mergeRefs<T>(...refs: Ref<T>[]): Ref<T> {
   return (node: T) => {
     refs.forEach((ref) => {
       if (typeof ref === 'function') {
         ref(node);
-      } else {
-        (ref as MutableRefObject<T>).current = node;
+      } else if (ref) {
+        ref.current = node;
       }
     });
   };

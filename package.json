@@ -37,6 +37,7 @@
     "@one-for-all/artery-engine": "1.1.1",
     "@one-for-all/artery-renderer": "0.20.1",
     "@one-for-all/artery-utils": "0.10.0",
+    "@one-for-all/icon": "^0.6.1",
     "@one-for-all/page-engine": "0.10.0",
     "@one-for-all/page-engine-v2": "^1.1.0",
     "@one-for-all/render-engine": "0.19.0",

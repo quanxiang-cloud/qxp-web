@@ -2,7 +2,7 @@ import { action, computed, observable, runInAction, toJS } from 'mobx';
 import { cloneDeep, defaults, set } from 'lodash';
 
 import { LoopNode, LoopNodeConf, ComposedNodeConf } from '../types';
-import { elemId } from '../utils';
+import { generateNodeId } from '../utils';
 import { findNode, findParentId,
   removeNode as removeTreeNode, copyNode as copyTreeNode,
   replaceNode as replaceTreeNode } from '../utils/tree-utils';
@@ -158,7 +158,7 @@ class PageStore {
       }
     }
 
-    const componentId = origSrcId || elemId(node.exportName);
+    const componentId = origSrcId || generateNodeId(node.exportName);
     const params: Partial<PageNode> = {
       id: componentId,
       pid: this.dragPos === 'inner' ? targetRealNode.id : (targetRealNode.pid || pageId),
@@ -181,7 +181,7 @@ class PageStore {
       if (node.exportName === 'modal') {
         // fill modal body with container component, so it can accept other elements
         params.children = [{
-          id: elemId('container'),
+          id: generateNodeId('container'),
           pid: params.id,
           type: 'react-component',
           exportName: 'container',
@@ -462,7 +462,7 @@ class PageStore {
     }
     const nodeCopy = cloneDeep(target);
     const loopNodeConfig = {
-      id: elemId('loop-node'),
+      id: generateNodeId('loop-node'),
       type: 'loop-container',
       node: nodeCopy,
       loopKey: loopConfig.loopKey || 'id',
@@ -536,7 +536,7 @@ class PageStore {
     }
     // const nodeCopy = cloneDeep(target);
     const composedNodeConfig = {
-      id: elemId('loop-node'),
+      id: generateNodeId('loop-node'),
       props: {},
       type: 'loop-container',
       // node: nodeCopy,

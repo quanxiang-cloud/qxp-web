@@ -5,9 +5,9 @@ import cs from 'classnames';
 import { toJS } from 'mobx';
 
 import { Icon } from '@one-for-all/ui';
-import { svgPreviewImg } from '../../../utils/helpers';
-import { useCtx } from '../../../ctx';
-import type { PageNode, LoopNode } from '../../../types';
+import { svgPreviewImg } from '../../../../../utils/helpers';
+import { useCtx } from '../../../../../ctx';
+import type { PageNode, LoopNode } from '../../../../../types';
 
 export interface NodeItemProps {
   node: PageNode | LoopNode;

@@ -1173,6 +1173,13 @@
   resolved "https://registry.npmmirror.com/@one-for-all/artery/-/artery-0.15.0.tgz#495bdb35365a606a126ecfc8323a5dc086c6f1c5"
   integrity sha512-zZmnK09Zt33s335GBdQHMy5sG7+rSrWHaz1mqjIrdXLHWUvkkOISuEV739SWgnCamqEwUv58/QDTH9/VMIb32w==
 
+"@one-for-all/icon@^0.6.1":
+  version "0.6.1"
+  resolved "https://registry.npmmirror.com/@one-for-all/icon/-/icon-0.6.1.tgz#3b960f472a98d0c663091eb91ef4403ea937e13e"
+  integrity sha512-q5XVGJ0dtKIp2BtorFHP0IApbF6aGra+pB8BhHfyz893WBBzWGl64zQinYIJjboFFHd0J9VRBqb7Tet4J2DuOw==
+  dependencies:
+    react "^17.0.2"
+
 "@one-for-all/page-engine-v2@^1.1.0":
   version "1.1.1"
   resolved "https://registry.npmmirror.com/@one-for-all/page-engine-v2/-/page-engine-v2-1.1.1.tgz#d28aaa4c42492e134381b09c58f7ca1b3ea513c3"

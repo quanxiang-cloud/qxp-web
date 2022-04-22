@@ -1,13 +1,12 @@
-import Icon from '@c/icon';
-
 import type { SourceElement } from '../../../types';
 import ConfigForm, { DEFAULT_CONFIG } from './config-form';
 import type { ComponentProps } from './type';
+import Component from './component';
 
 const element: SourceElement<ComponentProps> = {
   name: 'icon',
   icon: 'stars',
-  component: Icon,
+  component: Component,
   configForm: ConfigForm,
   defaultConfig: DEFAULT_CONFIG,
   label: '图标',

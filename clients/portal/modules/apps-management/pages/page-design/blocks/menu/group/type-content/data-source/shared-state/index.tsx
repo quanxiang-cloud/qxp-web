@@ -4,7 +4,7 @@ import { pickBy } from 'lodash';
 import { useUpdateEffect, useDebounce } from 'react-use';
 import { Search, Icon, Tooltip } from '@one-for-all/ui';
 
-import { useCtx } from '../../../../ctx';
+import { useCtx } from '../../../../../../ctx';
 
 import VarItem from './var-item';
 import FormAddVal from './form-add-val';

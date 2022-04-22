@@ -9,7 +9,7 @@ import { Modal, Icon, Tooltip, toast } from '@one-for-all/ui';
 
 import { useCtx } from '../../../ctx';
 import { PageNode } from '../../../types';
-import { elemId } from '../../../utils';
+import { generateNodeId } from '../../../utils';
 import { mapRawProps } from '../../../utils/artery-adapter';
 
 type LabelValue = {
@@ -135,7 +135,7 @@ function ModalComponentNode(): JSX.Element {
     page.updateCurNodeAsComposedNode('iterableState', {
       iterableState,
       node: {
-        id: elemId('composed-node'),
+        id: generateNodeId('composed-node'),
         type: 'composed-node',
         outLayer: { ..._node },
         children: _nodeChildren,

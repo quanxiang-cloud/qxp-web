@@ -5,9 +5,6 @@ type SettingPanel = 'props' | 'style' | 'event' | 'renderer' | string;
 type VdomKey = 'title' | 'platformApis' | 'apiStateDetail' | string;
 
 class DesignerStore {
-  @observable activeGroup = '';
-  @observable panelOpen = false;
-  @observable panelPinned = false;
   @observable activePanel: SettingPanel = 'props';
   @observable vdoms: Record<VdomKey, React.ReactNode> = {};
   @observable modalBindStateOpen = false; // 状态绑定的modal
@@ -22,30 +19,6 @@ class DesignerStore {
   // constructor() {
   //   makeObservable(this);
   // }
-
-  @action
-  setActiveGroup = (group: string): void => {
-    this.activeGroup = group;
-  };
-
-  @action
-  setPanelOpen = (open: boolean): void => {
-    this.panelOpen = open;
-    if (!open) {
-      this.setPanelPinned(false);
-    }
-  };
-
-  @action
-  setPanelPinned = (pin: boolean): void => {
-    this.panelPinned = pin;
-  };
-
-  checkPanel = (): void => {
-    if (!this.panelPinned) {
-      this.setPanelOpen(false);
-    }
-  };
 
   @action
   setActivePanel = (panel: SettingPanel): void => {
@@ -77,9 +50,6 @@ class DesignerStore {
 
   @action
   reset = (): void => {
-    this.activeGroup = '';
-    this.panelOpen = false;
-    this.panelPinned = false;
     this.activePanel = 'props';
     this.vdoms = {};
     this.activeFieldName = '';
