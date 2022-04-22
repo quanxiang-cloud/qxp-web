@@ -6,6 +6,7 @@ import Loading from '@c/loading';
 import NotFoundError from '@c/404-error';
 // import { getNestedPropertyToArray } from '@lib/utils';
 
+import Test from './test';
 import AppsRoutes from './modules/apps-management/routes';
 import RedirectToApps from './modules/dashboard/redirect-to-apps';
 import PageDesign from './modules/apps-management/pages/page-design';
@@ -27,6 +28,7 @@ export default function Routes(): JSX.Element {
     <React.Suspense fallback={<Loading className="w-screen h-screen" desc="加载中..." />}>
       <Switch>
         <Route exact path="/" component={RedirectToApps} />
+        <Route path="/test" component={Test} />
         <Route path="/metadata" component={MetaData} />
         <Route path="/access-control" component={AccessControl} />
         <Route path="/system" component={SystemMgmt} />
