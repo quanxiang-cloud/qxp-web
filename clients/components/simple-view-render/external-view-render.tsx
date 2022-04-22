@@ -6,7 +6,7 @@ type Props = {
 }
 
 export default function ExternalViewRender({ name, link }: Props): JSX.Element {
-  const appID = location.href.replace('http://', '').split('/')[2];
+  const appID = window.location.pathname.split('/')[2];
   function realizeLink(link: string): string {
     const replacements: Record<string, string> = {
       user_id: window.USER.id,
