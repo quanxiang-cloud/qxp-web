@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import cs from 'classnames';
 
+import { Icon } from '@one-for-all/ui';
 import RadioButtonGroup from '@c/radio/radio-button-group';
 import Button from '@c/button';
 import Search from '@c/search';
@@ -8,7 +9,6 @@ import Search from '@c/search';
 import { Params } from './store';
 
 import './index.scss';
-import { Icon } from '@one-for-all/ui';
 
 type AppCountMaps = {
   all: number,

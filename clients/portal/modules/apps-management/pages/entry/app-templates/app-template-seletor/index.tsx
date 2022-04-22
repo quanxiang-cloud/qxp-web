@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { observer } from 'mobx-react';
 import cs from 'classnames';
 
 import SelectCard from '@c/select-card';
@@ -8,7 +9,6 @@ import { parseJSON } from '@lib/utils';
 import store from '../store';
 
 import './index.scss';
-import { observer } from 'mobx-react';
 
 export type Props = {
   defaultSelectTemplateID?: string;

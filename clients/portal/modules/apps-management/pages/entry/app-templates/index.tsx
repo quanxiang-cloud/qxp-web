@@ -2,17 +2,17 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { observer } from 'mobx-react';
 import { UnionColumn } from 'react-table';
 
+import { toast } from '@one-for-all/ui';
 import Icon from '@c/icon';
 import Table from '@c/table';
 import MoreMenu from '@c/more-menu';
 import TextHeader from '@c/text-header';
+import EmptyTips from '@c/empty-tips';
 
 import store from './store';
 import EditTemplateModal from './template-edit/edit-template-modal';
 import DelTemplateModal from './template-edit/del-template-modal';
 import CreatedAppModal from '../app-list/app-edit/created-app-modal';
-import EmptyTips from '@c/empty-tips';
-import { toast } from '@one-for-all/ui';
 
 function AppTemplates(): JSX.Element {
   const [modalType, setModalType] = useState('');

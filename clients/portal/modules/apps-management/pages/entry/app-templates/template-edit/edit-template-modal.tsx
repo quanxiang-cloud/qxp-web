@@ -32,9 +32,8 @@ function EditTemplateModal({ modalType, templateInfo, onCancel }: Props): JSX.El
     validateTemplateName(name).then(() => {
       return addTemplate({ ...templateInfo, name, appIcon: icon });
     }).then(() => {
-      store.fetchList();
       onCancel();
-    }).catch(() => toast.error('模版名称校验失败'));
+    }).catch(() => toast.error('模版名称校验失败')).finally(store.fetchList);
   }
 
   return (

@@ -62,8 +62,11 @@ class Orchestrator {
     const _rootNOde = findNodeByID(node, ROOT_NODE_ID);
     this.appLayout = get(_rootNOde, 'props.data-layout-type.value', undefined);
 
-    this.fetchAppHomeView(appID);
-    this.currentView = this.views[0];
+    this.fetchAppHomeView(appID).then(() => {
+      if (this.homeView) {
+        this.currentView = this.homeView;
+      }
+    });
   }
 
   @computed get layouts(): Array<Layout> {
@@ -497,8 +500,8 @@ class Orchestrator {
   }
 
   @action
-  fetchAppHomeView(id: string): void {
-    fetchAppDetails(id).then(({ accessURL }) => {
+  fetchAppHomeView(id: string): Promise<void> {
+    return fetchAppDetails(id).then(({ accessURL }) => {
       if (!accessURL && this.views.length === 1) {
         this.setHomeView(this.views[0].name);
         return;

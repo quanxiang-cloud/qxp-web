@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useTitle } from 'react-use';
 import { observer } from 'mobx-react';
 
+import { toast } from '@one-for-all/ui';
 import TextHeader from '@c/text-header';
 import { useTaskComplete } from '@c/task-lists/utils';
 
@@ -12,7 +13,6 @@ import CreatedAppModal from './app-edit/created-app-modal';
 import templateStore from '../app-templates/store';
 
 import './index.scss';
-import { toast } from '@one-for-all/ui';
 
 function MyApp(): JSX.Element {
   const [modalType, setModalType] = useState('');

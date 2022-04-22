@@ -17,8 +17,6 @@ type Props = {
   modalType: string;
   className?: string;
   appInfo?: AppInfo;
-  // templateID?: string;
-  // basic?: boolean;
   onSubmitCallback?: () => void;
   onValuesChange?: (value: any) => void;
 }
@@ -64,8 +62,6 @@ function CreatedEditApp({
         appName,
         appSign,
         appIcon,
-        // createdBy,
-        // template: templateID,
       }}
       onFinish={handleFinish}
       onValuesChange={handleValuesChange}

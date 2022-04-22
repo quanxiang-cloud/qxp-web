@@ -113,10 +113,11 @@ function ViewInfo({ view, openModal }: Props): JSX.Element {
   , [view]);
 
   useEffect(() => {
+    let isUnmounted = false;
     if (view.type === ViewType.TableSchemaView) {
-      setFormDescriptions(DefaultFormDescriptions),
+      setFormDescriptions(DefaultFormDescriptions);
       getArteryPageInfo(appID, view.tableID).then((res) => {
-        setFormDescriptions( (prevDescriptions) => prevDescriptions?.map((description) => {
+        !isUnmounted && setFormDescriptions( (prevDescriptions) => prevDescriptions?.map((description) => {
           return mapToArteryPageDescription(description, res);
         }));
       }).catch(() => {
@@ -125,6 +126,9 @@ function ViewInfo({ view, openModal }: Props): JSX.Element {
       return;
     }
     setFormDescriptions([{ id: 'type', title: '页面类型', value: VIEW_MAP[type].viewType }]);
+    return () => {
+      isUnmounted = true;
+    };
   }, [view.id]);
 
   function goPageDesign(): void {

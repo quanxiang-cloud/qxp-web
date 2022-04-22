@@ -120,7 +120,6 @@ function CreatedAppModal({
               has('appZipInfo', value) && setAppZipInfo(formRef.current.getFieldValue('appZipInfo'));
             }}
           />
-
         </div>
       </div>
 

@@ -42,8 +42,8 @@ function BasicInfo(): JSX.Element {
         action={(
           <div className="flex items-center">
             <span className="text-gray-400 text-12 mr-8">
-              { }
-              最近保存时间：{dayjs.unix(appDetailsStore.lastUpdateTime).format('YYYY-MM-DD HH:mm:ss')}
+              最近保存时间：
+              {dayjs.unix(Math.floor(appDetailsStore.lastUpdateTime / 1000) ).format('YYYY-MM-DD HH:mm:ss')}
             </span>
             <Button onClick={handleSubmit} modifier='primary' iconName='save'>更新修改</Button>
           </div>

@@ -2,9 +2,6 @@ import React from 'react';
 import cs from 'classnames';
 
 import SelectCard from '@c/select-card';
-
-// import { LayoutType } from '../../../app-details/view-orchestration/types.d';
-
 export type SelectLayoutType = LayoutType | 'free';
 
 export type LayoutItemProps = {
