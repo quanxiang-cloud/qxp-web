@@ -13,8 +13,6 @@ import FileUploader from '@c/file-upload';
 import ApiSelector from '@polyApi/nodes/forms/request-config/api-selector';
 
 import ApiSpec from '../app-details/api-proxy/add-api';
-import SelectCustomPageEditor from './select-custom-page-editor';
-import ArteryEditor from './artery-editor';
 import { useQueryArtery, usePageTypeKey } from './hooks';
 import { PAGE_TYPE, PAGE_DESIGN_ID, LAYERS } from './constants';
 import { getInitArteryByPageType } from './utils';
@@ -132,12 +130,6 @@ function PageDesign(): JSX.Element | null {
     ));
   }, [apiPath]);
 
-  // todo refactor this
-  if (pageType === PAGE_TYPE.ARTERY_EDITOR) {
-    const initialArtery = artery ?? getInitArteryByPageType(pageType);
-    return <ArteryEditor appID={appID} arteryID={arteryID} initialArtery={initialArtery} />;
-  }
-
   const handleSave = useCallback((page_artery: any, options?: Record<string, any>): void => {
     savePage(arteryID, page_artery, options).then(() => {
       if (!options?.silent) {
@@ -166,14 +158,6 @@ function PageDesign(): JSX.Element | null {
 
   if (isArteryLoading || isSavedPageTypeLoading) {
     return null;
-  }
-
-  if (!artery) {
-    return (<SelectCustomPageEditor arteryID={arteryID} onSelect={setPageType} />);
-  }
-
-  if (savedPageType === PAGE_TYPE.ARTERY_EDITOR) {
-    return (<ArteryEditor appID={appID} arteryID={arteryID} initialArtery={artery} />);
   }
 
   return ArteryEngineEntry;
