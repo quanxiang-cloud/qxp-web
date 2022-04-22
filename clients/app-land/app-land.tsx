@@ -6,5 +6,9 @@ import { ARTERY_KEY_VERSION } from '@portal/constants';
 import { rootSchemaKey } from './utils';
 
 export default function AppLand(): JSX.Element {
-  return <ArteryRenderer arteryID={rootSchemaKey} version={ARTERY_KEY_VERSION} />;
+  return (
+    <div style={{ height: '100vh', overflow: 'auto' }}>
+      <ArteryRenderer arteryID={rootSchemaKey} version={ARTERY_KEY_VERSION} />
+    </div>
+  );
 }
