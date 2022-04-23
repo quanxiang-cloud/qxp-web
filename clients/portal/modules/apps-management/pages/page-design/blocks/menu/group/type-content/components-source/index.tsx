@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import type { Package } from '@pageDesign/blocks/menu/type';
 
@@ -10,10 +10,11 @@ import styles from './index.m.scss';
 
 interface Props {
   onAddNode: () => void;
+  currentPackage?: Package;
+  onChangePackage: (pkg: Package) => void;
 }
 
-function ComponentSource({ onAddNode }: Props): JSX.Element {
-  const [currentPackage, setCurrentPackage] = useState<Package | undefined>();
+function ComponentSource({ onAddNode, currentPackage, onChangePackage }: Props): JSX.Element {
   const isAllPackage = currentPackage?.name === 'all';
   const currentComponents = components.filter(
     (component) => component.package.name === currentPackage?.name,
@@ -22,7 +23,7 @@ function ComponentSource({ onAddNode }: Props): JSX.Element {
 
   return (
     <div className={styles.comps}>
-      <PackageSelector current={currentPackage} onChange={setCurrentPackage} />
+      <PackageSelector current={currentPackage} onChange={onChangePackage} />
       <CategoriesRender
         onAddNode={onAddNode}
         components={distComponents}

@@ -16,8 +16,8 @@ const PackageSelector = ({ current, onChange }: Props): JSX.Element => {
   }
 
   useEffect(() => {
-    packages.length && onChange(getDefaultValue());
-  }, [packages]);
+    packages.length && !current && onChange(getDefaultValue());
+  }, [packages, current]);
 
   const options = packages.map(({ label, url }) => ({
     label,
