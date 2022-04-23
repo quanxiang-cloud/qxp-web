@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Panel } from '@one-for-all/ui';
+
+import type { Package } from '@pageDesign/blocks/menu/type';
 
 import ComponentsSource from './components-source';
 import PageTree from './page-tree';
@@ -18,6 +20,7 @@ interface Props {
 }
 
 const GroupTypeContent = (props: Props): JSX.Element => {
+  const [currentPackage, setCurrentPackage] = useState<Package | undefined>();
   const { current, onClose, pinned, togglePinned, onAddNode, width } = props;
 
   return (
@@ -33,7 +36,11 @@ const GroupTypeContent = (props: Props): JSX.Element => {
       pinnable
     >
       {current === 'comps' && (
-        <ComponentsSource onAddNode={onAddNode} />
+        <ComponentsSource
+          onAddNode={onAddNode}
+          currentPackage={currentPackage}
+          onChangePackage={setCurrentPackage}
+        />
       )}
       {current === 'page_tree' && (
         <PageTree />
