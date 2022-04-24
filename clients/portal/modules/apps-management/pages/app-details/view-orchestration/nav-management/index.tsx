@@ -10,18 +10,13 @@ import ArteryRenderer from '@c/artery-renderer';
 import { ARTERY_KEY_VERSION } from '@portal/constants';
 
 import { LayoutType } from '../types.d';
-
-export const DefaultNavDescriptions = [
-  { id: 'type', title: '导航结构', value: '顶部导航' },
-  { id: 'createdBy', title: '创建者', value: '' },
-  { id: 'createdAt', title: '创建时间', value: '' },
-  { id: 'updatedBy', title: '修改者', value: '' },
-  { id: 'updatedAt', title: '修改时间', value: '' },
-];
+import EmptyTips from '@c/empty-tips';
+import AbsoluteCentered from '@c/absolute-centered';
 
 export const LAYOUT_TYPE_MAP = {
   [LayoutType.HeaderContent]: '顶部导航',
-  [LayoutType.LeftSidebarContent]: '顶部导航',
+  [LayoutType.LeftSidebarContent]: '侧边导航',
+  [LayoutType.RightSidebarContent]: '侧边导航',
 };
 
 function AppNav(): JSX.Element {
@@ -34,7 +29,11 @@ function AppNav(): JSX.Element {
   }
 
   if (!store?.appLayout) {
-    return (<div>暂无应用布局</div>);
+    return (
+      <AbsoluteCentered>
+        <EmptyTips text="该没有应用导航" className="py-10" />
+      </AbsoluteCentered>
+    );
   }
 
   return (
@@ -56,17 +55,24 @@ function AppNav(): JSX.Element {
           />
         </div>
         <div className='flex-1 grid grid-cols-6 mr-48'>
-          {DefaultNavDescriptions?.map(({ title, value }) => {
-            return (
-              <div
-                key={title}
-                className='flex flex-col justify-between'
-              >
-                <p className={!value ? 'text-gray-400' : ''}>{value ? value : '-'}</p>
-                <p className='page-details-text'>{title}</p>
-              </div>
-            );
-          })}
+          {
+            [
+              {
+                id: 'type',
+                title: '导航结构',
+                value: LAYOUT_TYPE_MAP[rootLayout?.type || LayoutType.HeaderContent],
+              },
+            ]?.map(({ title, value }) => {
+              return (
+                <div
+                  key={title}
+                  className='flex flex-col justify-between'
+                >
+                  <p className={!value ? 'text-gray-400' : ''}>{value ? value : '-'}</p>
+                  <p className='page-details-text'>{title}</p>
+                </div>
+              );
+            })}
         </div>
         <Button
           modifier='primary'
