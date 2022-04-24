@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Artery, HTMLNode, Node } from '@one-for-all/artery';
+import { Artery, HTMLNode, Node, NodeProperty, NodeProperties } from '@one-for-all/artery';
 import { ArteryRenderer } from '@one-for-all/artery-renderer';
 
 import Toggle from '@c/toggle';
@@ -41,6 +41,30 @@ const WILL_COMPONENT_MAP: Record<string, string> = {
   boolean: 'Toggle',
 };
 
+function convertorWillProps(item: Props_Spec): NodeProperties {
+  const willProps = item.willProps;
+  if (!willProps) {
+    return {};
+  }
+
+  const propsMap = Object.entries(willProps).map(([key, value]: [string, any]): [string, NodeProperty] => {
+    let _value: NodeProperty = {} as NodeProperty;
+    if (!value?.type) {
+      _value = { type: 'constant_property', value: value };
+    }
+
+    return [key, _value];
+  });
+
+  const nodeProperties: NodeProperties = propsMap.reduce((acc: NodeProperties, [key, value]) => {
+    acc[key] = value;
+
+    return acc;
+  }, {} as NodeProperties);
+
+  return nodeProperties;
+}
+
 function buildTextItem(item: Props_Spec, style?: Record<string, string>): Node {
   return {
     id: genNodeID(),
@@ -61,6 +85,18 @@ function buildTextItem(item: Props_Spec, style?: Record<string, string>): Node {
 }
 
 function buildFieldItem(item: Props_Spec): Node {
+  const defaultProperties = {
+    path: {
+      type: 'constant_property',
+      value: `${item.name}`,
+    },
+    initValue: {
+      type: 'constant_property',
+      value: item.initialValue,
+    },
+  };
+  const willProperties = convertorWillProps(item);
+
   return {
     id: genNodeID(),
     type: 'react-component',
@@ -68,16 +104,7 @@ function buildFieldItem(item: Props_Spec): Node {
     packageVersion: '1.0.0',
     exportName: item.will || WILL_COMPONENT_MAP[item.type],
     label: item.label,
-    props: {
-      path: {
-        type: 'constant_property',
-        value: `${item.name}`,
-      },
-      initValue: {
-        type: 'constant_property',
-        value: `${item.initialValue}`,
-      },
-    },
+    props: Object.assign(defaultProperties, willProperties),
   };
 }
 
