@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"path"
 	"qxp-web/server/pkg/contexts"
-	
+
 	"github.com/gorilla/mux"
 )
 
@@ -32,6 +32,6 @@ func AppLandHandler(w http.ResponseWriter, r *http.Request) {
 		"userAdminRoles":    userAdminRoles,
 		"debugMode":         contexts.Config.DevMode,
 		"CONFIG":            contexts.Config.ClientConfig,
-		"appID":						 appID,
+		"appID":             appID,
 	})
 }
