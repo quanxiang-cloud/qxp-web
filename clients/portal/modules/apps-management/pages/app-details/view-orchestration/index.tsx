@@ -4,12 +4,13 @@ import { observer } from 'mobx-react';
 import PageLoading from '@c/page-loading';
 import Icon from '@c/icon';
 import Tooltip from '@c/tooltip';
-import toast from '@lib/toast';
 import Modal from '@c/modal';
+import { toast } from '@one-for-all/ui';
 
 import ViewList from './view-list';
 import ViewDetails from './view-details';
-import EditViewModal from './edit-view-modal';
+import EditViewModal from './view-creation-modal';
+import { deleteSchema } from '../data-models/api';
 
 import EditStaticViewModal from './view-details/edit-static-view-modal';
 
@@ -18,6 +19,7 @@ import useAppStore from './hooks';
 import {
   CreateViewParams,
   StaticView,
+  TableSchemaView,
   View,
 } from '../view-orchestration/types.d';
 
@@ -48,8 +50,12 @@ function AppViews(): JSX.Element {
         onConfirm: () => {
           store?.deleteViewOrLayout(view.id).then(() => {
             delViewModal.close();
-            toast.success('删除成功');
-            store?.setCurrentView(store?.views[0] as View);
+            toast.success(`已删除页面 ${view.name} `);
+            if ((view as TableSchemaView).tableID ) {
+              deleteSchema(store.appID, (view as TableSchemaView).tableID);
+            }
+          }).catch((err) => {
+            toast.error(err);
           });
         },
       });
@@ -76,7 +82,7 @@ function AppViews(): JSX.Element {
           <span className='font-semibold text-gray-400 mr-auto text-12'>页面</span>
           <div className="flex items-center">
             <div onClick={() => store.setModalType('createView')}>
-              <Tooltip label='新建页面' position='bottom' wrapperClassName="whitespace-nowrap">
+              <Tooltip label='新建页面' position='top' theme='dark' >
                 <Icon className='cursor-pointer mr-8 hover:text-blue-600' size={16} name='post_add' />
               </Tooltip>
             </div>
