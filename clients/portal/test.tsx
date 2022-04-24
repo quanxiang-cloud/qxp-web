@@ -7,6 +7,12 @@ import { genNodeID } from './modules/apps-management/pages/app-details/view-orch
 
 import { Props_Spec, props_spec } from './props-spec';
 
+const repository = {
+  'node-carve@1.0.0': {
+    Toggle,
+  },
+};
+
 const configWrapperNode: HTMLNode = {
   id: genNodeID(),
   type: 'html-element',
@@ -75,49 +81,36 @@ function buildFieldItem(item: Props_Spec): Node {
   };
 }
 
-const repository = {
-  'node-carve@1.0.0': {
-    Toggle,
-  },
-};
+function buildConfigNodes(): HTMLNode[] | undefined {
+  return props_spec.pop()?.spec?.map((item: Props_Spec) => {
+    const wrapperNode: HTMLNode = {
+      id: genNodeID(),
+      type: 'html-element',
+      name: 'div',
+      label: item.label,
+    };
+    const labelNode: Node = buildTextItem(item, { padding: '8px 0' });
+    const itemNode: Node = buildFieldItem(item);
+    const nodes: Node[] = [labelNode, itemNode];
+
+    if (item.desc) {
+      nodes.push(buildTextItem(item, { paddingTop: '8px', color: '#94A3B8', fontSize: '12px' }));
+    }
+
+    return {
+      ...wrapperNode,
+      children: nodes,
+    };
+  });
+}
 
 function Test(): JSX.Element {
   const [artery, setArtery] = useState(initConfigArtery);
 
   useEffect(() => {
-    const configSpec = props_spec.pop()?.spec;
-    const configNodes = configSpec?.map((item: Props_Spec) => {
-      const wrapperNode: HTMLNode = {
-        id: genNodeID(),
-        type: 'html-element',
-        name: 'div',
-        label: item.label,
-      };
-      const labelNode: Node = buildTextItem(item, { padding: '8px 0' });
-      const itemNode: Node = buildFieldItem(item);
-      const nodes: Node[] = [labelNode, itemNode];
-
-      if (item.desc) {
-        const descNode: Node = buildTextItem(item, { paddingTop: '8px', color: '#94A3B8', fontSize: '12px' });
-
-        return {
-          ...wrapperNode,
-          children: [
-            ...nodes,
-            descNode,
-          ],
-        };
-      }
-
-      return {
-        ...wrapperNode,
-        children: nodes,
-      };
-    });
-
     const node: HTMLNode = {
       ...configWrapperNode,
-      children: configNodes,
+      children: buildConfigNodes(),
     };
 
     setArtery({
