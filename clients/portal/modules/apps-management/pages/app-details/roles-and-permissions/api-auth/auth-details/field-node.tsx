@@ -43,29 +43,32 @@ function FieldRender({ node, store, isAll, type = 'output' }: Props): JSX.Elemen
     }
   }
 
-  const checkboxWidth = 142 - ((node.level - 1) * 16);
+  const INIT_WIDTH = 142;
+  const PLACEHODER_WIDTH = 16;
+  const level = node.isLeaf ? node.level - 1 : node.level;
+  const checkboxWidth = INIT_WIDTH - (level * PLACEHODER_WIDTH);
 
   return (
     <div className={cs('flex justify-end w-full',
-      // 'w-full grid gap-x-16 grid-flow-row-dense p-16', {
-      // 'grid-cols-3': isAll && type === 'output',
-      // 'grid-cols-4': (!isAll && type === 'output') || (isAll && type === 'input'),
-      // 'grid-cols-5': !isAll && type === 'input',
-      // },
     )}>
-      {!isAll && (
-        <div style={{ width: `${checkboxWidth}px` }}>
-          <Checkbox
-            key={node.id}
-            checked={node.data?.acceptable || false}
-            onChange={onChange}
-          />
-        </div>
-      )}
-      <div className='flex-1 overflow-auto truncate'>{node.level}{nodeLabel || node.id}</div>
-      <div className='w-208 truncate'>{node.id || ''}</div>
-      <div className='w-208 truncate'>{node.data.type}</div>
-      {type === 'input' && <div className='w-208 truncate'>{node.data?.in || 'body'}</div>}
+      <div className='pl-4' style={{ width: `${checkboxWidth}px` }}>
+        <Checkbox
+          key={node.id}
+          disabled={isAll}
+          checked={node.data?.acceptable || isAll || false}
+          onChange={onChange}
+        />
+      </div>
+      <div className={cs(
+        'flex-1 overflow-auto grid gap-x-16 grid-flow-row-dense',
+        type === 'output' ? 'grid-cols-3' : 'grid-cols-4',
+      )}>
+        <div className='truncate pl-4'>{nodeLabel || node.id}</div>
+        <div className='truncate'>{node.id || ''}</div>
+        <div className='truncate'>{node.data.type}</div>
+        {type === 'input' && <div>{node.data?.in || 'body'}</div>}
+      </div>
+
     </div>
   );
 }

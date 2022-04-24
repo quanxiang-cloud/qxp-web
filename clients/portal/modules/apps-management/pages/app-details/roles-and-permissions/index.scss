@@ -202,6 +202,12 @@
     .tree-node {
       height: 37px;
       box-shadow: inset 0px -2px 0px #e2e8f0;
+      .tree-node__indent-placeholder {
+        height: 36px;
+      }
+      .tree-node__toggle-icon{
+        margin-right: 0px;
+      }
     }
   }
 }

@@ -38,8 +38,8 @@ function AuthDetailModal(): JSX.Element {
   }
 
   function onSubmit(): void {
-    const output = store?.curAuth?.responseAll ? {} : fieldsTreeToParams(store.outputTreeStore?.rootNode);
-    const input = store?.curAuth?.paramsAll ? {} : fieldsTreeToParams(store.inputTreeStore?.rootNode);
+    const output = fieldsTreeToParams(store.outputTreeStore?.rootNode);
+    const input = fieldsTreeToParams(store.inputTreeStore?.rootNode);
     const _curAuth = { ...store?.curAuth, response: output, params: input };
     store.updateAPIAuth(_curAuth);
   }

@@ -1,5 +1,4 @@
 import React from 'react';
-import cs from 'classnames';
 import { observer } from 'mobx-react';
 
 import Icon from '@c/icon';
@@ -44,16 +43,14 @@ function InPutRange(): JSX.Element {
           />
         </div>
       </div>
-      <div className={cs(
-        'flex justify-end',
-        // 'grid gap-x-16 grid-flow-row-dense px-16 py-8 pr-0 fields-item',
-        // isAll ? ' grid-cols-4' : ' grid-cols-5',
-      )}>
-        {!isAll && <div className='w-142'>可访问</div>}
-        <div className='flex-1 overflow-auto'>字段</div>
-        <div className='w-208'>标识</div>
-        <div className='w-208'>字段类型</div>
-        <div className='w-208'>in</div>
+      <div className='flex px-16 py-8 fields-item'>
+        <div className='w-142'>可访问</div>
+        <div className='flex-1 overflow-auto grid gap-x-16 grid-flow-row-dense grid-cols-4'>
+          <div className='pl-4'>字段</div>
+          <div>标识</div>
+          <div>字段类型</div>
+          <div>in</div>
+        </div>
       </div>
       <Tree
         store={store.inputTreeStore}
@@ -61,7 +58,7 @@ function InPutRange(): JSX.Element {
           <FieldRender store={store} node={node} isAll={isAll} type={'input'}/>
         }
         className='fields-tree overflow-auto flex-1'
-        itemClassName='hover:bg-white hover:text-gray-900 text-gray-900'
+        itemClassName='px-16 py-8 hover:bg-white hover:text-gray-900 text-gray-900'
       />
     </div>
   );
