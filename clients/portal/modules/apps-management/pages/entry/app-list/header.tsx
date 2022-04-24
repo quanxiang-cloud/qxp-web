@@ -70,13 +70,13 @@ function Header({ changeParams, params, setModalType, countMaps }: Props): JSX.E
           className='relative flex justify-between items-center border-1 border-gray-700 rounded-8 rounded-tr-2 h-32 bg-gray-700 text-white text-12 cursor-pointer'
         >
           <div
-            className='border-r-1 border-gray-600 px-16 h-full flex items-center select-none'
+            className='border-r-1 border-gray-600 px-16 h-full flex items-center select-none hover:bg-gray-600 rounded-l-8'
             onClick={() => setModalType('createdApp')}
           >
             新建应用
           </div>
           <Icon
-            className='box-content w-full h-full p-7'
+            className='box-content w-full h-full p-7 hover:bg-gray-600 rounded-br-8'
             name='expand_more'
             size={18}
             onMouseEnter={() => setShowMenu(true)}

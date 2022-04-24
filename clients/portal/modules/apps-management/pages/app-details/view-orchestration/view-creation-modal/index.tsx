@@ -42,10 +42,11 @@ function CreateViewModal(
     }
   }, [modalType, views]) || [];
 
-  const layoutOptions = useMemo(() => [{ label: '无布局（默认）', value: '' }].concat(layouts.map((layout) => ({
-    label: layout.name,
-    value: layout.id,
-  }))), [layouts]);
+  const layoutOptions = useMemo(() => [{ label: '无布局（默认）', value: '' }]
+    .concat(layouts.filter((layout) => layout.id !== 'root_node').map((layout) => ({
+      label: layout.name,
+      value: layout.id,
+    }))), [layouts]);
 
   function validateRepeat(name: string): boolean {
     if (!isCreateView && viewParams?.name) {
