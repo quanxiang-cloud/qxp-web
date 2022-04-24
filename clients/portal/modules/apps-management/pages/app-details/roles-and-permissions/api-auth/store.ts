@@ -6,17 +6,17 @@ import { PathType } from '@portal/modules/poly-api/effects/api/namespace';
 import {
   createAPIAuth,
   deleteAPIAuth,
-  fetchApiAuthDetails,
+  fetchAPIAuthDetails,
   fetchAPIListAuth,
   fetchAPIListAuthParams,
-  fetchApiSwagDocDetails,
-  fetchGroupApiList,
+  fetchAPISwagDocDetails,
+  fetchGroupAPIList,
   updateAPIAuth,
 } from '../api';
 import { Role } from '../constants';
 import FieldsStore from './auth-details/store';
-import { turnParamsAsBodyPrams } from '../utils';
-
+import { getParamByMethod } from '../utils';
+// api 规范
 class APIAuthStore {
   @observable appID = '';
   @observable currentRoleID = '';
@@ -90,12 +90,12 @@ class APIAuthStore {
   };
 
   @action
-  setApiList = (_apiList: APIDetailAuth[]): void => {
+  setAPIList = (_apiList: APIDetailAuth[]): void => {
     this.apiList = _apiList;
   };
 
   @action
-  setApiAndAuthList = (apiAndAuthList: APIDetailAuth[]): void => {
+  setAPIAndAuthList = (apiAndAuthList: APIDetailAuth[]): void => {
     this.apiAndAuthList = apiAndAuthList;
   };
 
@@ -112,9 +112,9 @@ class APIAuthStore {
   @action
   fetchAPIFormList = (path: string, pagination: { page: number, pageSize: number }): void => {
     this.isLoadingAuth = true;
-    fetchGroupApiList(path, { ...pagination, active: 1 })
+    fetchGroupAPIList(path, { ...pagination, active: 1 })
       .then(async ({ list, total }) => {
-        await this.setApiList(list || []);
+        await this.setAPIList(list || []);
         this.apiCount = total;
         if (list.length) {
           const paths = await list.map(({ accessPath, uri, method }) => {
@@ -122,7 +122,7 @@ class APIAuthStore {
           });
           await this.fetchAPIListAuth(paths);
         } else {
-          this.setApiAndAuthList([]);
+          this.setAPIAndAuthList([]);
         }
       })
       .catch((err) => toast.error(err))
@@ -137,7 +137,7 @@ class APIAuthStore {
           const auth = authList[`${api.accessPath}-${api.method}`] || null;
           return { ...api, auth, isLoading: false };
         });
-        this.setApiAndAuthList(_apiAuthList);
+        this.setAPIAndAuthList(_apiAuthList);
       })
       .catch((err) => {
         toast.error(err);
@@ -169,8 +169,8 @@ class APIAuthStore {
   getAPIDocWithAuth = (): void=> {
     this.isLoadingAuthDetails = true;
     Promise.all([
-      this.fetchApiSwagDocDetails(),
-      this.fetchApiAuthDetails(),
+      this.fetchAPISwagDocDetails(),
+      this.fetchAPIAuthDetails(),
     ]).then(([docRes, apiAuthRes]) => {
       const { inputSchema, outputSchema } = docRes;
       this.setOutputTreeStore(new FieldsStore(outputSchema || {}, apiAuthRes?.response || {}));
@@ -183,8 +183,8 @@ class APIAuthStore {
   };
 
   @action
-  fetchApiAuthDetails = (): Promise<APIAuth> => {
-    return fetchApiAuthDetails(this.appID || '', {
+  fetchAPIAuthDetails = (): Promise<APIAuth> => {
+    return fetchAPIAuthDetails(this.appID || '', {
       roleID: this.currentRoleID,
       path: this.curAPI?.accessPath || '',
       uri: this.curAPI?.uri || '',
@@ -200,15 +200,20 @@ class APIAuthStore {
   };
 
   @action
-  fetchApiSwagDocDetails = (): Promise<{
+  fetchAPISwagDocDetails = (): Promise<{
     inputSchema: SwagSchema | undefined,
     outputSchema: SwagSchema | undefined
   }> => {
-    return fetchApiSwagDocDetails(this.curAPI?.fullPath || '').then((res) => {
+    // utils func
+    return fetchAPISwagDocDetails(this.curAPI?.fullPath || '').then((res) => {
+      // name apiPathOperation
       const path = Object.values(res.doc.paths)[0];
-      const _inputSchema = Object.values(path)[0].parameters;
-      const inputSchema = turnParamsAsBodyPrams(_inputSchema || []);
+      // const
+      const [method, operation] = Object.entries(path)[0];
+      // debugger;
+      const inputSchema = getParamByMethod(method, operation.parameters || []);
       const outputSchema = Object.values(path)[0].responses?.[200]?.schema;
+      console.log(inputSchema);
       return {
         inputSchema,
         outputSchema,

@@ -2,8 +2,8 @@ import httpClient, { httpClientGraphQL } from '@lib/http-client';
 import { Spec } from '@one-for-all/api-spec-adapter';
 
 import {
-  QueryRequestNodeApiListInputBody,
-  QueryRequestNodeApiListResponse,
+  QueryRequestNodeAPIListInputBody,
+  QueryRequestNodeAPIListResponse,
 } from '@portal/modules/poly-api/effects/api/raw';
 
 export function createRole(appID: string, data: RoleCreate): Promise<{ id: string }> {
@@ -100,14 +100,14 @@ export async function deleteAPIAuth(
   return await httpClient(`/api/v1/form/${appID}/m/apiPermit/delete`, data);
 }
 
-export function fetchGroupApiList(
+export function fetchGroupAPIList(
   path: string,
-  data: QueryRequestNodeApiListInputBody,
-): Promise<QueryRequestNodeApiListResponse> {
+  data: QueryRequestNodeAPIListInputBody,
+): Promise<QueryRequestNodeAPIListResponse> {
   return httpClient(`/api/v1/polyapi/${path.split('/')[3]}/list/${path}`, data);
 }
 
-export function fetchApiAuthDetails(
+export function fetchAPIAuthDetails(
   appID: string,
   data: { roleID: string, path: string, uri: string, method: string },
 ): Promise<APIAuth> {
@@ -121,7 +121,7 @@ type APIDocResponse = {
   title: string
 }
 
-export function fetchApiSwagDocDetails(
+export function fetchAPISwagDocDetails(
   path: string,
 ): Promise<APIDocResponse> {
   return httpClient(`/api/v1/polyapi/doc/${path.slice(1)}`, {

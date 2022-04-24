@@ -9,6 +9,7 @@ import FieldRender from './field-node';
 import { observer } from 'mobx-react';
 import store from '../store';
 
+// OutputRange
 function OutPutRange(): JSX.Element {
   const isAll = !!store.curAuth?.responseAll;
 
@@ -18,7 +19,8 @@ function OutPutRange(): JSX.Element {
   }
 
   if (!store.outputTreeStore) {
-    return <div>no outputTreeStore</div>;
+    // to fix
+    return (<div>no outputTreeStore</div>);
   }
 
   return (
@@ -45,18 +47,18 @@ function OutPutRange(): JSX.Element {
         </div>
       </div>
       <div className={cs(
-        'grid gap-x-16 grid-flow-row-dense px-16 py-8 pr-0 fields-item',
-        isAll ? ' grid-cols-3' : ' grid-cols-4',
+        'flex justify-end',
+        // 'grid gap-x-16 grid-flow-row-dense px-16 py-8 pr-0 fields-item',
+        // isAll ? ' grid-cols-3' : ' grid-cols-4',
       )}>
-        {!isAll && <span>可访问</span>}
-        <span>字段</span>
-        <span>标识</span>
-        <span>字段类型</span>
+        {!isAll && <div className='w-142'>可访问</div>}
+        <div className='flex-1 overflow-auto'>字段</div>
+        <div className='w-208'>标识</div>
+        <div className='w-208'>字段类型</div>
       </div>
       <Tree
         store={store.outputTreeStore}
-        NodeRender={({ node, store }) =>
-          <FieldRender store={store} node={node} isAll={isAll}/>}
+        NodeRender={({ node, store }) =>(<FieldRender store={store} node={node} isAll={isAll}/>)}
         className='fields-tree overflow-auto flex-1'
         itemClassName='hover:bg-white hover:text-gray-900 text-gray-900'
       />

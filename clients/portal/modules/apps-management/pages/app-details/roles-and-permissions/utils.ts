@@ -1,7 +1,7 @@
 
 import { TreeNode } from '@c/headless-tree/types';
 
-import { INIT_INPUT_SCHEMA, SCOPE } from './constants';
+import { INIT_INPUT_SCHEMA, PARAMS_IN_BODY_METHOD, SCOPE } from './constants';
 import { BodyParameter, Parameter, QueryParameter } from '@lib/api-adapter/swagger-schema-official';
 
 type getAddAndRemovePersonResult = {
@@ -45,17 +45,23 @@ export function getAddAndRemovePerson(
   return { newScopes, addAndRemoveScope };
 }
 
-export function turnParamsAsBodyPrams(parameters: Array<Parameter>): any {
-  const found = parameters.find((param) => param.in === 'body') as BodyParameter;
-  const inputSchema: SwagSchema = found?.schema ? found?.schema : INIT_INPUT_SCHEMA;
-  parameters.forEach((params) => {
-    if (params.in === 'query') {
-      const id = (params as QueryParameter).name;
+export function getParamByMethod(method: string, parameters: Array<Parameter>): SwagField {
+  if (PARAMS_IN_BODY_METHOD.includes(method)) {
+    const bodyParameter = parameters.find((param): param is BodyParameter => param.in === 'body');
+    return bodyParameter?.schema || INIT_INPUT_SCHEMA;
+  }
+
+  const _properties = parameters
+    .filter((param): param is QueryParameter => param.in === 'query')
+    .reduce((acc: { [propertyName: string]: SwagField }, params) => {
+      const id = params.name;
       const _properties = { type: params.type, in: params.in };
-      (inputSchema.properties || {})[id] = { ..._properties };
-    }
-  });
-  return inputSchema;
+
+      acc[id] = { type: params.type, in: params.in };
+      return acc;
+    }, {});
+
+  return { type: 'object', properties: _properties };
 }
 
 export function fieldsTreeToParams(
@@ -65,7 +71,7 @@ export function fieldsTreeToParams(
     return {};
   }
 
-  const _params: { [propertyName: string]: SwagSchema; } = {};
+  const _params: { [propertyName: string]: SwagSchema } = {};
   rootNode.children?.forEach((child) => {
     const { data, id } = child;
     const condition = data?.acceptable || false;

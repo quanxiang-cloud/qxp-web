@@ -63,12 +63,14 @@ function Source(): JSX.Element {
       accessor: (api) => {
         const disabled = !api?.auth || store.curRoleType === Role.DEFAULT;
         return (
-          <span
-            className={disabled ? 'cursor-not-allowed text-blue-400' : 'text-btn'}
-            onClick={() => onClickSetting(api)}
-          >
+          <div className={disabled ? 'cursor-not-allowed' : ''}>
+            <span
+              className={disabled ? 'pointer-events-none text-blue-400' : 'text-btn'}
+              onClick={() => onClickSetting(api)}
+            >
             设置访问权限
-          </span>
+            </span>
+          </div>
         );
       },
     },
@@ -102,8 +104,8 @@ function Source(): JSX.Element {
       store.fetchAPIFormList(curNsPath, pagination);
       return;
     }
-    store.setApiList([]);
-    store.setApiAndAuthList([]);
+    store.setAPIList([]);
+    store.setAPIAndAuthList([]);
   }, [curNsPath, pagination, store.currentRoleID]);
 
   function onSelect(group: PolyAPI.Namespace): void {

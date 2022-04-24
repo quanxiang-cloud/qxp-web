@@ -1,7 +1,7 @@
 import { Moment } from 'moment';
 
 import { RawApiDetail } from '@portal/modules/poly-api/effects/api/raw';
-import { Schema } from '@lib/api-adapter/swagger-schema-official';
+import type { Schema } from '@lib/api-adapter/swagger-schema-official';
 
 declare global {
   type AppInfo = {
@@ -158,7 +158,7 @@ declare global {
   }
 
   type SwagSchema = Schema;
-
+  // 分开 query body
   type SwagField = SwagSchema & { acceptable?: boolean, in?: string };
 
   type APIAuth = {

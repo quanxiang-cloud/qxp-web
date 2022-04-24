@@ -16,6 +16,7 @@ export default class FieldsStore extends TreeStore<SwagField> {
   }
 }
 
+// 参数 对象形式
 export function apiFieldsToTreeNode(
   params: { [propertyName: string]: SwagSchema },
   fields: SwagSchema,
@@ -27,7 +28,7 @@ export function apiFieldsToTreeNode(
   order = 0,
   sort = false,
   id = 'schema',
-): TreeNode<SwagSchema> {
+): TreeNode<SwagField> {
   let children = Object.entries(properties || {}).map(
     ([fieldKey, fieldAttrs]) => {
       const _properties = properties?.[fieldKey]?.properties || {};
@@ -47,14 +48,15 @@ export function apiFieldsToTreeNode(
     },
   );
 
+  // to fix
   if (sort) {
     children = children.sort(treeNodeSorter);
   }
 
-  const acceptable = !!params?.[id];
+  const acceptable = !!params?.[id] || false;
 
   return {
-    data: { ...fields, ...{ acceptable } },
+    data: { ...fields, acceptable },
     name: fields?.title || '',
     id,
     parentId: parentId || id || '',
@@ -69,6 +71,7 @@ export function apiFieldsToTreeNode(
   };
 }
 
+// import delete
 export function stringToAsciiNumber(value: string): number {
   return value.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
 }

@@ -27,7 +27,7 @@ export type RawApiDetail = {
   accessPath: string
 }
 
-export type QueryRequestNodeApiListInputBody = {
+export type QueryRequestNodeAPIListInputBody = {
   name?: string;
   title?: string;
   active?: number;
@@ -35,21 +35,21 @@ export type QueryRequestNodeApiListInputBody = {
   pageSize?: number;
   withSub?: boolean;
 }
-type QueryRequestNodeApiListInput = Input<QueryRequestNodeApiListInputBody>;
-export type QueryRequestNodeApiListResponse = {
+type QueryRequestNodeAPIListInput = Input<QueryRequestNodeAPIListInputBody>;
+export type QueryRequestNodeAPIListResponse = {
   list: RawApiDetail[];
   page: number;
   total: number;
 }
 
 export function useGetRequestNodeApiList(
-  input: QueryRequestNodeApiListInput,
-  options?: UseQueryOptions<QueryRequestNodeApiListResponse, Error>,
-): UseQueryResult<QueryRequestNodeApiListResponse, Error> {
-  return useQuery<QueryRequestNodeApiListResponse, Error>(
+  input: QueryRequestNodeAPIListInput,
+  options?: UseQueryOptions<QueryRequestNodeAPIListResponse, Error>,
+): UseQueryResult<QueryRequestNodeAPIListResponse, Error> {
+  return useQuery<QueryRequestNodeAPIListResponse, Error>(
     [GET_REQUEST_NODE_API_LIST, input.path],
-    (): Promise<QueryRequestNodeApiListResponse> => {
-      return httpClient<QueryRequestNodeApiListResponse>(
+    (): Promise<QueryRequestNodeAPIListResponse> => {
+      return httpClient<QueryRequestNodeAPIListResponse>(
         `/api/v1/polyapi/${input.type ?? 'raw'}/list/${input.path}`, input.body,
       );
     },

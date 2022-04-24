@@ -29,6 +29,7 @@ function FieldRender({ node, store, isAll, type = 'output' }: Props): JSX.Elemen
   function onChange(e: ChangeEvent<HTMLInputElement>): void {
     const { checked } = e.target;
     data.acceptable = checked;
+    // store fun
     store.updateNode({ ...node, data });
     if (checked) {
       const parents = store.getNodeParents(node.id);
@@ -42,25 +43,29 @@ function FieldRender({ node, store, isAll, type = 'output' }: Props): JSX.Elemen
     }
   }
 
+  const checkboxWidth = 142 - ((node.level - 1) * 16);
+
   return (
-    <div className={cs(
-      'w-full grid gap-x-16 grid-flow-row-dense p-16', {
-        'grid-cols-3': isAll && type === 'output',
-        'grid-cols-4': (!isAll && type === 'output') || (isAll && type === 'input'),
-        'grid-cols-5': !isAll && type === 'input',
-      },
+    <div className={cs('flex justify-end w-full',
+      // 'w-full grid gap-x-16 grid-flow-row-dense p-16', {
+      // 'grid-cols-3': isAll && type === 'output',
+      // 'grid-cols-4': (!isAll && type === 'output') || (isAll && type === 'input'),
+      // 'grid-cols-5': !isAll && type === 'input',
+      // },
     )}>
-      {!isAll && (<Checkbox
-        key={node.id}
-        className="inline-flex"
-        checked={node.data?.acceptable || false}
-        onChange={onChange}
-      />)
-      }
-      <div>{nodeLabel || node.id}</div>
-      <div>{node.id || ''}</div>
-      <div>{node.data.type}</div>
-      {type === 'input' && <div>{node.data?.in || 'body'}</div>}
+      {!isAll && (
+        <div style={{ width: `${checkboxWidth}px` }}>
+          <Checkbox
+            key={node.id}
+            checked={node.data?.acceptable || false}
+            onChange={onChange}
+          />
+        </div>
+      )}
+      <div className='flex-1 overflow-auto truncate'>{node.level}{nodeLabel || node.id}</div>
+      <div className='w-208 truncate'>{node.id || ''}</div>
+      <div className='w-208 truncate'>{node.data.type}</div>
+      {type === 'input' && <div className='w-208 truncate'>{node.data?.in || 'body'}</div>}
     </div>
   );
 }
