@@ -1160,7 +1160,25 @@
     react-jsx-parser "1.29.0"
     rxjs "^7.4.0"
 
-"@one-for-all/artery-utils@^0.12.0":
+"@one-for-all/artery-simulator@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.npmmirror.com/@one-for-all/artery-simulator/-/artery-simulator-0.2.0.tgz#6f1b4d2c8aa5da53336822cb6be046802529b092"
+  integrity sha512-KdSOGSG36KZHoiEbdpAZNEAf3kWrOmfIRWBquZV5thxmdV4MJ1cP1+SFDL6frijrc+DqfgplE16nUNJ1eMKRaA==
+  dependencies:
+    "@one-for-all/artery" "0.15.0"
+    "@one-for-all/artery-renderer" "0.20.2"
+    "@one-for-all/artery-utils" "0.12.0"
+    "@one-for-all/elements-radar" "0.1.2"
+    "@one-for-all/headless-ui" "^0.1.4"
+    "@one-for-all/icon" "^0.6.2"
+    "@one-for-all/utils" "0.3.0"
+    classnames "^2.3.1"
+    immutable "^4.0.0"
+    lodash "^4.17.21"
+    react "^17.0.2"
+    recoil "^0.7.2"
+
+"@one-for-all/artery-utils@0.12.0", "@one-for-all/artery-utils@^0.12.0":
   version "0.12.0"
   resolved "https://registry.npmmirror.com/@one-for-all/artery-utils/-/artery-utils-0.12.0.tgz#83f5eca95b69486d06797a193f187df123e2403a"
   integrity sha512-YQCT6iSrlj4pGo525J0sZf0WfWUTfRIjS0VjQTo6qZemPTt4GuLC70kfdPu7J35oxNbWSOCY+bM2A8rPLZrUuw==
@@ -1173,10 +1191,38 @@
   resolved "https://registry.npmmirror.com/@one-for-all/artery/-/artery-0.15.0.tgz#495bdb35365a606a126ecfc8323a5dc086c6f1c5"
   integrity sha512-zZmnK09Zt33s335GBdQHMy5sG7+rSrWHaz1mqjIrdXLHWUvkkOISuEV739SWgnCamqEwUv58/QDTH9/VMIb32w==
 
-"@one-for-all/icon@^0.6.1":
+"@one-for-all/elements-radar@0.1.2":
+  version "0.1.2"
+  resolved "https://registry.npmmirror.com/@one-for-all/elements-radar/-/elements-radar-0.1.2.tgz#ebab3983da8d7cd93fdae4b6046dea6dde383b93"
+  integrity sha512-LDtcMFpJjI9MLcFUIXJTFJ8mYMrOeVSPgUHkP+DS1u4awplemcG8EaQi/MwpWyYPM/0uPpIZhDAoMR0jTP5LIQ==
+  dependencies:
+    rxjs "^7.4.0"
+
+"@one-for-all/headless-ui@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.npmmirror.com/@one-for-all/headless-ui/-/headless-ui-0.1.4.tgz#31f1d53b409191dc208152fa5d065412c4e4e101"
+  integrity sha512-rE3HSQvAl9eiu2YcJV1NyzXkeDEUpHoUriMwJSU1wfwDvwmtB1zsTjdkx3VHbEhWC28SW4QdvM6d6XvbBayG7g==
+  dependencies:
+    "@one-for-all/icon" "0.6.1"
+    "@popperjs/core" "^2.11.0"
+    classnames "^2.3.1"
+    lodash "^4.17.21"
+    nanoid "^3.1.30"
+    react "^17.0.2"
+    react-dom "^17.0.2"
+    react-table "^7.7.0"
+
+"@one-for-all/icon@0.6.1", "@one-for-all/icon@^0.6.1":
   version "0.6.1"
   resolved "https://registry.npmmirror.com/@one-for-all/icon/-/icon-0.6.1.tgz#3b960f472a98d0c663091eb91ef4403ea937e13e"
   integrity sha512-q5XVGJ0dtKIp2BtorFHP0IApbF6aGra+pB8BhHfyz893WBBzWGl64zQinYIJjboFFHd0J9VRBqb7Tet4J2DuOw==
+  dependencies:
+    react "^17.0.2"
+
+"@one-for-all/icon@^0.6.2":
+  version "0.6.2"
+  resolved "https://registry.npmmirror.com/@one-for-all/icon/-/icon-0.6.2.tgz#0f733bb37b213dba7b4b5bd06a50749b603cd289"
+  integrity sha512-8n+NX3/865WjNj6Ag37JxofUlC9VkudGEHuHM56qfjXmdfW2LjA0UXZtIz2OBUvCcpPM6ljjbGHCg5gjL8ew0g==
   dependencies:
     react "^17.0.2"
 
@@ -4577,6 +4623,11 @@ growly@^1.3.0:
   version "1.3.0"
   resolved "https://registry.npmmirror.com/growly/-/growly-1.3.0.tgz#f10748cbe76af964b7c96c93c6bcc28af120c081"
   integrity sha512-+xGQY0YyAWCnqy7Cd++hc2JqMYzlm0dG30Jd0beaA64sROr8C4nt8Yc9V5Ro3avlSUDTN0ulqP/VBKi1/lLygw==
+
+hamt_plus@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.npmmirror.com/hamt_plus/-/hamt_plus-1.0.2.tgz#e21c252968c7e33b20f6a1b094cd85787a265601"
+  integrity sha512-t2JXKaehnMb9paaYA7J0BX8QQAY8lwfQ9Gjf4pg/mk4krt+cmwmU652HOoWonf+7+EQV97ARPMhhVgU1ra2GhA==
 
 hard-rejection@^2.1.0:
   version "2.1.0"
@@ -8191,7 +8242,7 @@ react-stikky@^0.1.15:
     classnames "^2.2.6"
     window-scroll "^1.0.0"
 
-react-table@^7.6.3:
+react-table@^7.6.3, react-table@^7.7.0:
   version "7.7.0"
   resolved "https://registry.npmmirror.com/react-table/-/react-table-7.7.0.tgz#e2ce14d7fe3a559f7444e9ecfe8231ea8373f912"
   integrity sha512-jBlj70iBwOTvvImsU9t01LjFjy4sXEtclBovl3mTiqjz23Reu0DKnRza4zlLtOPACx6j2/7MrQIthIK1Wi+LIA==
@@ -8309,6 +8360,13 @@ readdirp@~3.6.0:
   integrity sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA==
   dependencies:
     picomatch "^2.2.1"
+
+recoil@^0.7.2:
+  version "0.7.2"
+  resolved "https://registry.npmmirror.com/recoil/-/recoil-0.7.2.tgz#37aafc9e0674abae639263354a11c910e71bf78a"
+  integrity sha512-OT4pI7FOUHcIoRtjsL5Lqq+lFFzQfir4MIbUkqyJ3nqv3WfBP1pHepyurqTsK5gw+T+I2R8+uOD28yH+Lg5o4g==
+  dependencies:
+    hamt_plus "1.0.2"
 
 redent@^3.0.0:
   version "3.0.0"

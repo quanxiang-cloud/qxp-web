@@ -1,9 +1,6 @@
-/* eslint-disable */
 import React, { useState, useMemo, useEffect, useCallback, CSSProperties } from 'react';
 import cs from 'classnames';
-import { DndProvider } from 'react-dnd';
 import { useHistory } from 'react-router-dom';
-import { HTML5Backend } from 'react-dnd-html5-backend';
 import ArteryEngine from '@one-for-all/artery-engine';
 import Icon from '@one-for-all/icon';
 
@@ -25,10 +22,10 @@ import './index.scss';
 import styles from './index.m.scss';
 
 function PageDesign(): JSX.Element | null {
-  const { appID, pageName, arteryID } = getQuery<{ appID: string ,pageName: string, arteryID: string }>();
+  const { appID, pageName, arteryID } = getQuery<{ appID: string, pageName: string, arteryID: string }>();
   const history = useHistory();
 
-  const resetStyle: CSSProperties = useMemo(() => ({ overflow: 'hidden' }), [])
+  const resetStyle: CSSProperties = useMemo(() => ({ overflow: 'hidden' }), []);
   useStyle('body', resetStyle);
   useStyle('html', resetStyle);
 
@@ -44,7 +41,7 @@ function PageDesign(): JSX.Element | null {
       activeNodeID: '',
       appID,
       arteryID: '',
-      menu: { pannelWith: 280 }
+      menu: { pannelWith: 280 },
     };
     return {
       layers: [...LAYERS],
@@ -65,7 +62,7 @@ function PageDesign(): JSX.Element | null {
     history.push(`/apps/details/${appID}/views`);
   }
   useEffect(() => {
-    eventBus.on('clear:api-path', ()=> {
+    eventBus.on('clear:api-path', () => {
       setApiPath('');
     });
 
@@ -144,15 +141,13 @@ function PageDesign(): JSX.Element | null {
     });
   }, []);
   const ArteryEngineEntry = useMemo(() => (
-      <DndProvider backend={HTML5Backend}>
-        <Ctx.Provider value={Object.assign(stores, { onSave: handleSave })}>
-          <div className={cs(styles.designer)}>
-            <div id={PAGE_DESIGN_ID}>
-              <ArteryEngine schema={initialArtery} layers={layers} />
-            </div>
-          </div>
-        </Ctx.Provider>
-      </DndProvider>
+    <Ctx.Provider value={Object.assign(stores, { onSave: handleSave })}>
+      <div className={cs(styles.designer)}>
+        <div id={PAGE_DESIGN_ID}>
+          <ArteryEngine schema={initialArtery} layers={layers} />
+        </div>
+      </div>
+    </Ctx.Provider>
   ), [initialArtery, layers]);
 
   if (isArteryLoading) {
