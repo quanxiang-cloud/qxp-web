@@ -56,6 +56,8 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
     mes_attachment: defaultValue.mes_attachment,
   };
   const editorRef = useRef<any>(null);
+  const [editorVal, setEditorVal] = useState(defaultValueEncode.content);
+  const [editorSize, setEditorSize] = useState(0);
   const [errorText, setErrorText] = useState('');
   const [files, setFiles] = useState(setFileParams(defaultValueEncode?.mes_attachment));
   const { register, handleSubmit, control, reset, formState: { errors }, watch } = useForm();
@@ -110,19 +112,32 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
     }
   }, [allFields]);
 
+  const mesAttachment = useMemo(()=>{
+    const domain = `${window.location.protocol}//${OSS_PUBLIC_BUCKET_NAME}.${OSS_DOMAIN}`;
+    return files.map(({ name, uid })=>({ file_name: name, file_url: `${domain}/${uid}` }));
+  }, [files]);
+
   const handleSave = (data: any): void => {
     const content = editorRef.current.getInnerHTML();
-    const domain = `${window.location.protocol}//${OSS_PUBLIC_BUCKET_NAME}.${OSS_DOMAIN}`;
-    const mes_attachment = files.map(({ name, uid })=>({ file_name: name, file_url: `${domain}/${uid}` }));
-    const bol = handleValidate({ content, mes_attachment });
+    const bol = handleValidate();
     if (!bol) return;
-    onSubmit({ ...data, content, templateId: 'quanliang', formulaFields, fieldType, mes_attachment });
+    onSubmit({
+      ...data,
+      content,
+      templateId: 'quanliang',
+      formulaFields,
+      fieldType,
+      mes_attachment: mesAttachment });
   };
 
-  function handleValidate(obj: {content: string, mes_attachment: Attachment[]}): boolean {
+  const surplusEditor = useMemo(()=>{
+    const context = { content: editorVal, mes_attachment: mesAttachment };
+    const size = new Blob([JSON.stringify(context)]).size;
+    return size;
+  }, [editorVal, mesAttachment]);
+
+  function handleValidate(): boolean {
     const _content = editorRef.current.getContent();
-    const limit = 5 * 1024;
-    const size = new Blob([JSON.stringify(obj)]).size;
 
     if (_content === '<br>') {
       setErrorText('请输入内容');
@@ -134,8 +149,8 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
       return false;
     }
 
-    if (size > limit) {
-      setErrorText('消息内容不能超过5kb');
+    if (surplusEditor > 5000) {
+      setErrorText('消息内容不能超过5000B');
       return false;
     }
 
@@ -163,6 +178,10 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
   useEffect(() => {
     reset(defaultValueEncode);
   }, []);
+
+  useEffect(()=>{
+    setEditorSize(surplusEditor);
+  }, [surplusEditor]);
 
   const contentVariables = React.useMemo(() => {
     return tableSchema.filter(({ type, componentName }) => {
@@ -205,7 +224,10 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
           ref={editorRef}
           value={defaultValueEncode?.content || ''}
           contentVariables={contentVariables}
-        />
+          onChange={setEditorVal}
+        >
+          <span className='editor-size'>内容大小: <em>{editorSize}</em>/5000B</span>
+        </QuillEditor>
         {errorText && <div className="text-14 text-red-500">{errorText}</div>}
       </div>
       <div style={{ display: 'block' }} className='form-field-label'>附件</div>
