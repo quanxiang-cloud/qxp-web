@@ -3,23 +3,21 @@ import React from 'react';
 import Icon from '@c/icon';
 import Tree from '@c/headless-tree';
 import Toggle from '@c/toggle';
+import ErrorTips from '@c/error-tips';
 
 import FieldRender from './field-node';
 import { observer } from 'mobx-react';
 import store from '../store';
 
-// OutputRange
-function OutPutRange(): JSX.Element {
+function OutputRange(): JSX.Element {
   const isAll = !!store.curAuth?.responseAll;
 
   function OnChangeToggle(isOutputAll: boolean): void {
-    const _curAuth = { ...store.curAuth, responseAll: isOutputAll };
-    store.setCurAuth(_curAuth);
+    store.setCurAuth( { ...store.curAuth, responseAll: isOutputAll });
   }
 
   if (!store.outputTreeStore) {
-    // to fix
-    return (<div>no outputTreeStore</div>);
+    return (<ErrorTips desc='获取数据失败' />);
   }
 
   return (
@@ -48,7 +46,7 @@ function OutPutRange(): JSX.Element {
       <div className='flex px-16 py-8 fields-item'>
         <div className='w-142'>可访问</div>
         <div className='flex-1 overflow-auto grid gap-x-16 grid-flow-row-dense grid-cols-3'>
-          <div className='pl-4'>字段</div>
+          <div>字段</div>
           <div>标识</div>
           <div>字段类型</div>
         </div>
@@ -64,4 +62,4 @@ function OutPutRange(): JSX.Element {
   );
 }
 
-export default observer(OutPutRange);
+export default observer(OutputRange);

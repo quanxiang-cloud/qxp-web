@@ -5,7 +5,7 @@ import Tab from '@c/tab';
 import Loading from '@c/loading';
 
 import DataRange from './data-range';
-import OutPutRange from './output-range';
+import OutputRange from './output-range';
 import InPutRange from './input-range';
 import store from '../store';
 import { fieldsTreeToParams } from '../../utils';
@@ -29,7 +29,7 @@ function AuthDetailModal(): JSX.Element {
     {
       id: 'outputFields',
       name: '出参字段范围',
-      content: <OutPutRange/>,
+      content: <OutputRange/>,
     },
   ];
 

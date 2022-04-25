@@ -2,20 +2,9 @@ import React, { ChangeEvent } from 'react';
 import cs from 'classnames';
 
 import Checkbox from '@c/checkbox';
-import { NodeRenderProps, TreeNode } from '@c/headless-tree/types';
-import TreeStore from '@c/headless-tree/store';
+import { NodeRenderProps } from '@c/headless-tree/types';
 
-export function clearChildState(
-  node: TreeNode<SwagField>,
-  store: TreeStore<SwagField>,
-  acceptable: boolean): any {
-  node.children?.forEach((child) => {
-    const { data } = child;
-    data.acceptable = acceptable;
-    store.updateNode({ ...child, data });
-    clearChildState(child, store, false);
-  });
-}
+import { onChangeFieldState } from './store';
 
 type Props = NodeRenderProps<SwagField> & {
   isAll: boolean;
@@ -23,24 +12,10 @@ type Props = NodeRenderProps<SwagField> & {
 }
 
 function FieldRender({ node, store, isAll, type = 'output' }: Props): JSX.Element {
-  const nodeLabel = node.data.title || node.name;
-  const { data } = node;
+  const nodeLabel = node.data.title || node.name || node.id || '';
 
   function onChange(e: ChangeEvent<HTMLInputElement>): void {
-    const { checked } = e.target;
-    data.acceptable = checked;
-    // store fun
-    store.updateNode({ ...node, data });
-    if (checked) {
-      const parents = store.getNodeParents(node.id);
-      parents.forEach((parentNode) => {
-        const { data } = parentNode;
-        data.acceptable = checked;
-        store.updateNode({ ...parentNode, data });
-      });
-    } else {
-      clearChildState(node, store, false);
-    }
+    onChangeFieldState(node, store, e.target.checked);
   }
 
   const INIT_WIDTH = 142;
@@ -63,7 +38,7 @@ function FieldRender({ node, store, isAll, type = 'output' }: Props): JSX.Elemen
         'flex-1 overflow-auto grid gap-x-16 grid-flow-row-dense',
         type === 'output' ? 'grid-cols-3' : 'grid-cols-4',
       )}>
-        <div className='truncate pl-4'>{nodeLabel || node.id}</div>
+        <div className='truncate'>{nodeLabel}</div>
         <div className='truncate'>{node.id || ''}</div>
         <div className='truncate'>{node.data.type}</div>
         {type === 'input' && <div>{node.data?.in || 'body'}</div>}

@@ -61,10 +61,10 @@ export const DATA_RANGE_OPTIONS = [
   },
 ];
 
-export const DATA_RANGE: Record<string, string> = {
-  ALL: JSON.stringify(ALL_ALLOWED, null, 4),
-  SELF: JSON.stringify(ONLY_SELF, null, 4),
-  SELF_WITH_SUB: JSON.stringify(SELF_AND_SUB, null, 4),
+export const DATA_RANGE: Record<string, Record<string, any>> = {
+  ALL: ALL_ALLOWED,
+  SELF: ONLY_SELF,
+  SELF_WITH_SUB: SELF_AND_SUB,
 };
 
 export const INIT_INPUT_SCHEMA: SwagField = {

@@ -194,18 +194,23 @@
 .auth-detail-modal .auth-details {
   .tab-content {
     overflow: hidden;
+    .svg-icon--blue {
+      fill: var(--blue-600);
+    }
   }
   .fields-item {
     box-shadow: inset 0px -1px 0px #e2e8f0;
   }
   .fields-tree {
     .tree-node {
-      height: 37px;
+      height: 36px;
+      cursor: default;
       box-shadow: inset 0px -2px 0px #e2e8f0;
       .tree-node__indent-placeholder {
         height: 36px;
       }
       .tree-node__toggle-icon{
+        cursor: pointer;
         margin-right: 0px;
       }
     }

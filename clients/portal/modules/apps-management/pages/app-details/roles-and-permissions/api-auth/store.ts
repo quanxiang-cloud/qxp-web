@@ -1,4 +1,4 @@
-import { action, observable } from 'mobx';
+import { action, observable, reaction } from 'mobx';
 
 import toast from '@lib/toast';
 import { PathType } from '@portal/modules/poly-api/effects/api/namespace';
@@ -13,9 +13,10 @@ import {
   fetchGroupAPIList,
   updateAPIAuth,
 } from '../api';
-import { Role } from '../constants';
+import { DATA_RANGE, Role } from '../constants';
 import FieldsStore from './auth-details/store';
 import { getParamByMethod } from '../utils';
+import _ from 'lodash';
 // api 规范
 class APIAuthStore {
   @observable appID = '';
@@ -37,6 +38,11 @@ class APIAuthStore {
   @observable inputTreeStore: FieldsStore | null = null;
   @observable outputTreeStore: FieldsStore | null = null;
   @observable curAuthDetailTabKey = 'viewableData';
+  @observable conditionValue = 'ALL';
+
+  constructor() {
+    reaction(() => this.curAuth?.condition, this.findConditionValue);
+  }
 
   @action
   setAppID = (appID: string): void => {
@@ -51,6 +57,11 @@ class APIAuthStore {
   @action
   setOutPutFields = (outPutFields: SwagField): void => {
     this.outPutFields = outPutFields;
+  };
+
+  @action
+  setConditionValue = (conditionValue: string): void => {
+    this.conditionValue = conditionValue;
   };
 
   @action
@@ -107,6 +118,21 @@ class APIAuthStore {
   @action
   setCurrentRoleID = (currentRoleID: string): void => {
     this.currentRoleID = currentRoleID;
+  };
+
+  @action
+  onChangeCondition = (label: string ): void => {
+    this.setConditionValue(label as string);
+    this.setCurAuth({ ...this.curAuth, condition: DATA_RANGE[label] });
+  };
+
+  @action
+  findConditionValue = (): void => {
+    this.curAuth?.condition && Object.keys(DATA_RANGE).forEach((label) => {
+      if (_.isEqual(this.curAuth?.condition, DATA_RANGE[label])) {
+        this.setConditionValue(label);
+      }
+    });
   };
 
   @action
@@ -200,6 +226,11 @@ class APIAuthStore {
   };
 
   @action
+  onChangeFieldState = () => {
+
+  };
+
+  @action
   fetchAPISwagDocDetails = (): Promise<{
     inputSchema: SwagSchema | undefined,
     outputSchema: SwagSchema | undefined
@@ -213,7 +244,6 @@ class APIAuthStore {
       // debugger;
       const inputSchema = getParamByMethod(method, operation.parameters || []);
       const outputSchema = Object.values(path)[0].responses?.[200]?.schema;
-      console.log(inputSchema);
       return {
         inputSchema,
         outputSchema,
