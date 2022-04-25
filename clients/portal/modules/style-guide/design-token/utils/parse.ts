@@ -95,13 +95,13 @@ export function updateTokenInputToToken(data: UpdateTokenInput): Token {
   return {
     name: data.name,
     value: data.value,
-    unit: data.unit,
     type: data?.options?.type,
-    ...(data?.options?.description ?
-      {
-        description: data.options.description,
-      } :
-      {}),
+    ...data?.unit ? {
+      unit: data.unit,
+    } : {},
+    ...(data?.options?.description ? {
+      description: data.options.description,
+    } : {}),
   } as Token;
 }
 

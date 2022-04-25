@@ -8,7 +8,7 @@ import {
   OpacityToken,
   BorderWidthToken,
   BoxShadowToken,
-  FontFamiliesToken,
+  FontFamiliyToken,
   FontWeightsToken,
   LineHeightsToken,
   FontSizesToken,
@@ -50,8 +50,8 @@ export type UpdateTokenInput =
   | BaseTokenInput<TokenTypes.BORDER_WIDTH, BorderWidthToken['value']>
   | BaseTokenInput<TokenTypes.BOX_SHADOW, BoxShadowToken['value'], TypographyToken['unit']>
   | BaseTokenInput<
-      TokenTypes.FONT_FAMILIE,
-      FontFamiliesToken['value']
+      TokenTypes.FONT_FAMILY,
+      FontFamiliyToken['value']
     >
   | BaseTokenInput<TokenTypes.FONT_WEIGHT, FontWeightsToken['value']>
   | BaseTokenInput<TokenTypes.LINE_HEIGHT, LineHeightsToken['value']>

@@ -89,24 +89,25 @@ const tokenTypes: Record<TokenTypes, TokenTypeSchema> = {
     type: TokenTypes.TYPOGRAPHY,
     schema: {
       value: {
-        fontFamily: 'Inter',
-        fontWeight: 'Regular',
-        lineHeight: 'AUTO',
-        fontSize: '18',
+        fontFamily: 'sans-serif',
+        fontWeight: '500',
+        lineHeight: '100',
+        fontSize: '16',
+        textDecoration: 'none',
       },
       options: {
         description: '',
       },
       unit: {
         fontSize: 'px',
-        lineHeight: 'px',
+        lineHeight: '%',
       },
     },
   },
-  fontFamilie: {
+  fontFamily: {
     label: 'Font Family',
     property: 'Font Family',
-    type: TokenTypes.FONT_FAMILIE,
+    type: TokenTypes.FONT_FAMILY,
     schema: {
       options: {
         description: '',

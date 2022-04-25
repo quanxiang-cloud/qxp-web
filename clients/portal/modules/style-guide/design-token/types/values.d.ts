@@ -20,6 +20,7 @@ export type TokenTypograpyValue = {
   fontWeight: string;
   fontSize: string;
   lineHeight: string;
+  textDecoration: TokenTextDecorationValue;
 };
 
 export type TokenBoxshadowUnit = {

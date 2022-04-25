@@ -41,8 +41,8 @@ export type ColorToken = BaseToken<
   string
 >;
 
-export type FontFamiliesToken = BaseToken<
-  TokenTypes.FONT_FAMILIE,
+export type FontFamiliyToken = BaseToken<
+  TokenTypes.FONT_FAMILY,
   string
 >;
 
@@ -94,7 +94,7 @@ export type Token =
   | OpacityToken
   | BorderWidthToken
   | BoxShadowToken
-  | FontFamiliesToken
+  | FontFamiliyToken
   | FontWeightsToken
   | LineHeightsToken
   | FontSizesToken

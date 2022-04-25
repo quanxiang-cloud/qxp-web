@@ -81,7 +81,7 @@ export default class DesignTokenStore {
     const values = parseTokenValues(defaultTokens.values);
     this.tokens = {
       ...this.tokens,
-      [GLOBAL_SET]: values[GLOBAL_SET],
+      ...values,
     };
   };
 

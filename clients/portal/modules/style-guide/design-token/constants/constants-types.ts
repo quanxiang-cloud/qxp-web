@@ -7,7 +7,7 @@ export enum TokenTypes {
   OPACITY = 'opacity',
   BORDER_WIDTH = 'borderWidth',
   BOX_SHADOW = 'boxShadow',
-  FONT_FAMILIE = 'fontFamilie',
+  FONT_FAMILY = 'fontFamily',
   FONT_WEIGHT = 'fontWeight',
   LINE_HEIGHT = 'lineHeight',
   FONT_SIZE = 'fontSize',
