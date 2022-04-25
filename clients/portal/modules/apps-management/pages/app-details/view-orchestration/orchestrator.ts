@@ -115,14 +115,22 @@ class Orchestrator {
 
   @action
   async copyLayout(layout: Layout): FutureErrorMessage {
+    const copiedLayoutName = this.createCopyLayoutName(layout.name);
     const rootNode = await copyLayoutToRoot({
       appID: this.appID,
       rootNode: toJS(this.rootNode),
-      layoutInfo: { ...layout, name: layout.name + '的副本' },
+      layoutInfo: { ...layout, name: copiedLayoutName },
       refSchemaID: layout.refSchemaID,
     });
 
     return this.saveSchema(rootNode);
+  }
+
+  createCopyLayoutName(name: string): string {
+    const copyLayoutName = name + '的副本';
+    const extLayout = this.layouts.find((layout) => layout.name === copyLayoutName);
+    if (!extLayout) return copyLayoutName;
+    return this.createCopyLayoutName(extLayout.name);
   }
 
   @action
