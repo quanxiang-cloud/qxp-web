@@ -18,7 +18,7 @@ function RoleList(): JSX.Element {
   }, [window.APP_ID]);
 
   return (
-    <div className='pt-4 px-20 hidden role-list'>
+    <div className='role-list'>
       {roleOptions.map(({ label, value }) => {
         const isActive = value === currentRoleInfo.roleID;
 

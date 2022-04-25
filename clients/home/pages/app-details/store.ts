@@ -8,7 +8,7 @@ import { CustomPageInfo, MenuType } from '@portal/modules/apps-management/pages/
 
 import { getOperate } from './api';
 
-export type PerItem = {
+type PerItem = {
   roleID: string;
   roleName: string;
 }
@@ -162,12 +162,12 @@ class UserAppDetailsStore {
   @action
   handleRoleChange = (roleID: string, roleName: string): void => {
     if (!roleID || !window.APP_ID) return;
-    this.currentRoleInfo = { roleName, roleID };
 
     roleChange(window.APP_ID, roleID).then(() => {
+      this.currentRoleInfo = { roleName, roleID };
       toast.success(`当前角色：${roleName}`);
       this.clear();
-    }).catch(toast.error);
+    }).catch(() => toast.error('角色切换失败'));
   };
 }
 export default new UserAppDetailsStore();
