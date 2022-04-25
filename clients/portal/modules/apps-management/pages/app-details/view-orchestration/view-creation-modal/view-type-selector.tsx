@@ -59,12 +59,18 @@ function ViewTypeSelector({ onSelect, currentSelectType }: Props): JSX.Element {
           const active = currentSelectType === typeItem.type;
           return (
             <div
-              className='w-230 h-270 border-1 border-gray-200 hover:shadow-more-action cursor-pointer rounded-8 duration-300'
+              className='flex flex-col-reverse w-230 h-270 border-1 border-gray-200 hover:shadow-more-action cursor-pointer rounded-8 duration-300'
               key={typeItem.type}
               onClick={() => {
                 onSelect?.(typeItem.type);
               } }
             >
+              <div className='flex flex-col gap-6 text-12 p-16'>
+                <span
+                  style={active ? { color: 'var(--blue-600)' } : {}}
+                  className='text-gray-900 font-semibold'>{typeItem.name}</span>
+                <span className='text-gray-600'>{typeItem.description}</span>
+              </div>
               <div className='relative w-full'>
                 <img
                   className={cs('w-full')}
@@ -80,12 +86,6 @@ function ViewTypeSelector({ onSelect, currentSelectType }: Props): JSX.Element {
                   alt={typeItem.name}
                   draggable={false}
                 />
-              </div>
-              <div className='flex flex-col gap-6 text-12 p-16'>
-                <span
-                  style={active ? { color: 'var(--blue-600)' } : {}}
-                  className='text-gray-900 font-semibold'>{typeItem.name}</span>
-                <span className='text-gray-600'>{typeItem.description}</span>
               </div>
             </div>
           );
