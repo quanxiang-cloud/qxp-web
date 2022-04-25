@@ -29,17 +29,6 @@
   }
 }
 
-.change-role {
-  &:hover {
-    .expand {
-      transform: rotate(-180deg);
-    }
-    .role-list {
-      display: block;
-    }
-  }
-}
-
 .role-list  {
   @apply pt-4 px-20 hidden text-14;
 }

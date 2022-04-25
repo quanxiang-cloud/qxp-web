@@ -12,6 +12,10 @@ interface Props {
   onCancel: () => void;
 }
 
+function goLoin(): void {
+  window.location.pathname = '/login/password';
+}
+
 export default function ResetPasswordModal({ visible, onCancel }: Props): JSX.Element|null {
   const [values, setValues] = useState({
     old: '',
@@ -24,13 +28,10 @@ export default function ResetPasswordModal({ visible, onCancel }: Props): JSX.El
     formRef.current?.validateFields().then((isAllValid) => {
       if (values.new && values.old && isAllValid) {
         setLoading(true);
-        userResetPassword({ ...values }).then(() => {
-          window.location.pathname = '/login/password';
-          setLoading(false);
-        }).catch((err) => {
-          toast.error(err.message);
-          setLoading(false);
-        });
+        userResetPassword({ ...values })
+          .then(goLoin)
+          .catch(() => toast.error('密码重置失败'))
+          .finally(() => setLoading(false));
       }
     });
   }

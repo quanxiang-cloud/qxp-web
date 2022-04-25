@@ -5,7 +5,11 @@ import { observer } from 'mobx-react';
 import Icon from '@c/icon';
 import store from '@home/pages/app-details/store';
 
-function RoleList(): JSX.Element {
+type Props = {
+  visible: boolean;
+}
+
+function RoleList({ visible }: Props): JSX.Element {
   const { getRoleInfo, roleOptions, currentRoleInfo, handleRoleChange, setAppID } = store;
 
   useEffect(() => {
@@ -18,8 +22,9 @@ function RoleList(): JSX.Element {
   }, [window.APP_ID]);
 
   return (
-    <div className='role-list'>
-      {roleOptions.map(({ label, value }) => {
+    <div className={cs('role-list', { block: visible })}>
+      {!roleOptions.length && <span className='pt-4'>暂无角色</span>}
+      {!!roleOptions.length && roleOptions.map(({ label, value }) => {
         const isActive = value === currentRoleInfo.roleID;
 
         return (
