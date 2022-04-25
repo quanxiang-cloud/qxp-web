@@ -1,3 +1,5 @@
+import { LayoutType } from './types.d';
+
 export const ROOT_NODE_ID = 'root_node';
 export const LAYOUT_CHILD_TYPE_ROUTES_CONTAINER = 'routes-container';
 export const LAYOUT_CHILD_TYPE_FRAGMENT_CONTAINER = 'fragment-container';
@@ -19,3 +21,9 @@ export const URL_PARAM_LIST = [
   '${dep_name}',
   '${appid}',
 ];
+
+export const VIEW_TYPE_MAP: Record<LayoutType, string> = {
+  [LayoutType.HeaderContent]: '顶部',
+  [LayoutType.LeftSidebarContent]: '左侧',
+  [LayoutType.RightSidebarContent]: '右侧',
+};
