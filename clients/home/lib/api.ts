@@ -9,6 +9,5 @@ export function getPerOption<T>(appID: string) {
 }
 
 export function roleChange<T>(appID: string, roleID: string) {
-  return httpClient<T>(`/api/v1/form/${appID}/home/apiRole/create`, { roleID });
+  return httpClient<T>(`/api/v1/form/${appID}/home/apiRole/userRole/create`, { roleID });
 }
-

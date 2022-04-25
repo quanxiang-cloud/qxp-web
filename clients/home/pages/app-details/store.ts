@@ -8,9 +8,9 @@ import { CustomPageInfo, MenuType } from '@portal/modules/apps-management/pages/
 
 import { getOperate } from './api';
 
-type PerItem = {
-  id: string;
-  name: string;
+export type PerItem = {
+  roleID: string;
+  roleName: string;
 }
 
 type PerRes = {
@@ -33,7 +33,7 @@ class UserAppDetailsStore {
   @observable isMouseControl = false;
   @observable pageList: NodeItem<PageInfo>[] = [];
   @observable customPageInfo: CustomPageInfo | null = null;
-  @observable currentRoleInfo = { name: '', id: '' };
+  @observable currentRoleInfo: PerItem = { roleName: '', roleID: '' };
   @observable roleOptions: LabelValue[] = [];
   @observable appList: any = [];
 
@@ -70,6 +70,11 @@ class UserAppDetailsStore {
   @action
   setPageID = (pageID: string): void => {
     this.pageID = pageID;
+  };
+
+  @action
+  setAppID = (appID: string): void => {
+    this.appID = appID;
   };
 
   @action
@@ -144,9 +149,11 @@ class UserAppDetailsStore {
   @action
   getRoleInfo = (appID: string): void => {
     getPerOption<PerRes>(appID).then((res: any) => {
-      const { optionPer = [], selectPer = { id: '' } } = res;
-      this.currentRoleInfo = { name: selectPer.name, id: selectPer.id };
-      this.roleOptions = (optionPer.map((option: PerItem) => ({ value: option.id, label: option.name })));
+      const { optionPer = [], selectPer = { roleId: '', roleName: '' } } = res;
+      this.currentRoleInfo = { roleName: selectPer.roleName, roleID: selectPer.roleID };
+      this.roleOptions = (optionPer.map((option: PerItem) => ({
+        value: option.roleID, label: option.roleName,
+      })));
     }).catch((reason) => {
       toast.error(reason);
     });
@@ -154,12 +161,13 @@ class UserAppDetailsStore {
 
   @action
   handleRoleChange = (roleID: string, roleName: string): void => {
-    if (!roleID || !this.appID) return;
-    this.currentRoleInfo = { name: roleName, id: roleID };
-    roleChange(this.appID, roleID).then(() => {
+    if (!roleID || !window.APP_ID) return;
+    this.currentRoleInfo = { roleName, roleID };
+
+    roleChange(window.APP_ID, roleID).then(() => {
+      toast.success(`当前角色：${roleName}`);
       this.clear();
-      this.fetchPageList(this.appID);
-    });
+    }).catch(toast.error);
   };
 }
 export default new UserAppDetailsStore();

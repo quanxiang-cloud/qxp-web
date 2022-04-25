@@ -1,10 +1,13 @@
 import React, { ForwardedRef, useRef, useState } from 'react';
 import cs from 'classnames';
+import { observer } from 'mobx-react';
 
-import ResetPasswordModal from '@portal/global-header/reset-password-modal';
 import Avatar from '@c/avatar';
 import Icon from '@c/icon';
 import Popper from '@c/popper';
+import ResetPasswordModal from '@portal/global-header/reset-password-modal';
+
+import RoleList from './role-list';
 
 import './index.scss';
 
@@ -78,6 +81,18 @@ function UserAvatarMenu(
                 <Icon name='password' />
                 <span className='ml-4'>修改密码</span>
               </div>
+              {!!window.APP_ID && (
+                <div className='border-b-1 py-10 change-role'>
+                  <div className="flex justify-between">
+                    <div>
+                      <Icon name='group' />
+                      <span className='mx-4'>切换角色</span>
+                    </div>
+                    <Icon className="expand" name="expand_less" />
+                  </div>
+                  <RoleList />
+                </div>
+              )}
               <div className='user-avatar-menu-logout' onClick={handleLogOutClick}>
                 <Icon name='logout' />
                 <span className='ml-4'>退出登录</span>
@@ -96,4 +111,4 @@ function UserAvatarMenu(
   );
 }
 
-export default React.forwardRef<HTMLDivElement, Props>(UserAvatarMenu);
+export default observer(React.forwardRef<HTMLDivElement, Props>(UserAvatarMenu));
