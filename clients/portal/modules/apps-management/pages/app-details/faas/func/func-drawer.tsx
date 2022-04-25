@@ -13,6 +13,7 @@ import Pagination from '@c/pagination';
 import store from '../store';
 import TableMoreFilterMenu from '@c/more-menu/table-filter';
 import VersionStatus from '../component/version-status';
+import { FUNC_STATUS } from '../constants';
 
 function FuncDetailsDrawer(): JSX.Element {
   useEffect(() => {
@@ -27,13 +28,13 @@ function FuncDetailsDrawer(): JSX.Element {
     {
       Header: '版本号',
       id: 'tag',
-      accessor: ({ id, tag }: VersionField) => {
+      accessor: ({ id, version }: VersionField) => {
         return (
           <span
             className="text-blue-600 cursor-pointer"
             onClick={() => onClickTool(id, 'VersionDetail')}
           >
-            {tag}
+            {version}
           </span>
         );
       },
@@ -57,55 +58,55 @@ function FuncDetailsDrawer(): JSX.Element {
         </TableMoreFilterMenu>
       ),
       id: 'state',
-      accessor: ({ state, id, message, serverState, visibility }: VersionField) => (
+      // accessor: ({ status, id, message, serverState, visibility }: VersionField) => (
+      accessor: ({ status, id, message }: VersionField) => (
         <VersionStatus
-          visibility={visibility}
-          state={state}
+          // visibility={visibility}
+          state={status}
           versionID={id}
           message={message}
-          serverState={serverState}
+          // serverState={serverState}
         />
       ),
     },
     {
       Header: '构建时间',
       id: 'build',
-      accessor: ({ state, completionTime, createdAt }: VersionField) =>
-        state === 'True' ? `${completionTime - createdAt}s` : '-',
+      accessor: ({ status, updatedAt, createdAt }: VersionField) =>
+        status === FUNC_STATUS.StatusOK ? `${updatedAt - createdAt}s` : '-',
     },
-    {
-      Header: '创建人',
-      id: 'creator',
-      accessor: 'creator',
-    },
+    // {
+    //   Header: '创建人',
+    //   id: 'creator',
+    //   accessor: 'creator',
+    // },
     {
       Header: '创建时间',
       id: 'createAt',
       accessor: ({ createdAt }: VersionField) => {
-        return createdAt ? dayjs(parseInt(String(createdAt * 1000))).format('YYYY-MM-DD HH:mm:ss') : '—';
+        return createdAt ? dayjs(parseInt(String(createdAt))).format('YYYY-MM-DD HH:mm:ss') : '—';
       },
     },
     {
       Header: '操作',
       id: 'action',
-      accessor: ({ id, visibility, state }: VersionField) => {
-        const _visibility = visibility || 'offline';
+      accessor: ({ id, status }: VersionField) => {
         return (
           <div className="flex gap-20">
-            {state === 'True' && _visibility === 'online' && (
+            {status === FUNC_STATUS.StatusOffline && (
               <PopConfirm content='确认下线改版本？' onOk={() => store.offlineVer(id)} >
                 <span className="operate">下线</span>
               </PopConfirm>)}
-            {state === 'True' && _visibility === 'offline' && (
+            {status === FUNC_STATUS.StatusOnline && (
               <PopConfirm content='确认上线改版本？' onOk={() => store.servingVer(id)} >
                 <span className="operate">上线</span>
               </PopConfirm>)}
-            {state === 'True' && (
-              <PopConfirm content='确定生成API文档？' onOk={() => store.registerAPI(id)} >
-                <span className="operate">生成API文档</span>
-              </PopConfirm>
-            )}
-            { !!state && _visibility !== 'online' && (
+            {/* {status === FUNC_STATUS.StatusOK && ( */}
+            <PopConfirm content='确定生成API文档？' onOk={() => store.registerAPI(id)} >
+              <span className="operate">生成API文档</span>
+            </PopConfirm>
+            {/* )} */}
+            { status !== FUNC_STATUS.StatusOnline && (
               <PopConfirm content='确认删除改版本？' onOk={() => store.deleteVer(id)} >
                 <span className="cursor-pointer text-red-600">删除</span>
               </PopConfirm>

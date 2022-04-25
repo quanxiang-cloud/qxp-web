@@ -8,7 +8,7 @@ import { TIME_ZONE } from './utils';
 
 let alreadyAlertUnauthorizedError = false;
 
-type METHOD = 'POST' | 'GET' | 'PUT' | 'DELETE';
+type METHOD = 'POST' | 'GET' | 'PUT' | 'DELETE' | 'PATCH'
 
 const HEADERS: Record<string, any> = {
   'X-Proxy': 'API',
@@ -76,6 +76,10 @@ httpClient.put = function<TData>(path: string, body: unknown) {
 
 httpClient.delete = function<TData>(path: string, body?: Body) {
   return request<TData>(path, 'DELETE', body);
+};
+
+httpClient.patch = function<TData>(path: string, body?: unknown) {
+  return request<TData>(path, 'PATCH', body);
 };
 
 export type FormDataRequestCreateParams = {

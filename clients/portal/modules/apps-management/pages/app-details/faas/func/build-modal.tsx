@@ -18,7 +18,7 @@ function BuildModal({ onClose }: Props): JSX.Element {
         type: 'object',
         'x-component': 'mega-layout',
         properties: {
-          tag: {
+          version: {
             type: 'string',
             title: '版本号',
             // description: '最多10个字符，只能包含数字、字母、下划线、小数点、且不可重复',

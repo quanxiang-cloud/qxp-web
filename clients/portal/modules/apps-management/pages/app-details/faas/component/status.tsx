@@ -10,18 +10,19 @@ import { wsSubscribe } from '../api';
 import './index.scss';
 
 type Props = {
-  status: FaasProcessStatus;
+  status: number;
   topic: string;
   dataID: string;
   callBack: (data: SocketData) => any;
   errorMsg?: string;
-  customText?: Record<FaasProcessStatus, string>;
+  customText?: Record<number, string>;
 }
 
-const STATUS_INFO: Record<FaasProcessStatus, { color: string, name: string }> = {
-  True: { color: 'green', name: '成功' },
-  Unknown: { color: 'yellow', name: '进行中' },
-  False: { color: 'red', name: '失败' },
+const STATUS_INFO: Record<number, { color: string, name: string }> = {
+  0: { color: 'blue', name: '未开始' },
+  1: { color: 'yellow', name: '进行中' },
+  2: { color: 'red', name: '失败' },
+  3: { color: 'green', name: '成功' },
 };
 
 function StatusDisplay({
@@ -32,8 +33,10 @@ function StatusDisplay({
   customText,
   errorMsg = '暂时无法做到语意化',
 }: Props): JSX.Element {
+  // console.log(status, dataID);
   useEffect(() => {
-    if (status === 'Unknown') {
+    if (status < 2) {
+      console.log(status, dataID);
       wsSubscribe({
         topic,
         key: dataID,
@@ -48,7 +51,7 @@ function StatusDisplay({
   }, [status]);
 
   useUpdateEffect(() => {
-    if (status !== 'Unknown') {
+    if (status > 1) {
       ws.removeEventListener('faas', `status-${dataID}`);
     }
   }, [status]);
@@ -65,13 +68,13 @@ function StatusDisplay({
         className='relative w-8 h-8 rounded-full'
       >
         {
-          status === 'Unknown' && (
+          status === 0 && (
             <div className="animate-ping h-full w-full rounded-full opacity-75 faas-status-pulse"></div>
           )
         }
       </div>
       <span className="ml-10">{customText?.[status] || STATUS_INFO[status].name}</span>
-      {status === 'False' && !!errorMsg && (
+      {status === 2 && !!errorMsg && (
         <Tooltip label={errorMsg} position='top' >
           <Icon clickable className="ml-8" name="error" style={{ color: 'red' }} />
         </Tooltip>

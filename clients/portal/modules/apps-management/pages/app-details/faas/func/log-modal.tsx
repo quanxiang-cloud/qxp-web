@@ -25,9 +25,9 @@ function LoggerModal({ onClose, step, isChild, isOngoing }: Props): JSX.Element 
   function updateLogs(): Promise<void> {
     return getBuildLog(
       store.groupID,
-      store.currentFuncID,
-      store.buildID,
-      { index: startCount },
+      // store.currentFuncID,
+      store.currentVersionFunc?.resourceRef || '',
+      // { index: startCount },
     ).then((res) => {
       const _logs = res.logs.filter((log) => {
         if (isChild) {

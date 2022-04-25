@@ -17,8 +17,7 @@ import { copyContent } from '@lib/utils';
 
 import store from '../store';
 import BuildModal from './build-modal';
-import StatusDisplay from '../component/status';
-import { getFuncInfo, getGitLabDomain } from '../api';
+import { getGitLabDomain } from '../api';
 
 import '../index.scss';
 
@@ -76,22 +75,24 @@ function DataList(): JSX.Element {
       id: 'status',
       accessor: ({ state, id, message }: FuncField) => {
         return (
-          <StatusDisplay
-            errorMsg={message}
-            status={state || 'Unknown'}
-            topic='project'
-            dataID={id}
-            callBack={async (data) => {
-              const { key }: FaasSoketData = data?.content || {};
-              if (key !== id) {
-                return;
-              }
+          <div>{state}</div>
+          // <StatusDisplay
+          //   errorMsg={message}
+          //   status={state || 'Unknown'}
+          //   topic='project'
+          //   dataID={id}
+          //   callBack={async (data) => {
+          //     const { key }: FaasSoketData = data?.content || {};
+          //     if (key !== id) {
+          //       return;
+          //     }
 
-              const res = await getFuncInfo(store.groupID, id);
-              if (res.info.state !== 'Unknown') {
-                store.mutateFuncStatus(id, res.info.state);
-              }
-            }} />
+        //     const res = await getFuncInfo(store.groupID, id);
+        //     if (res.info.state !== 'Unknown') {
+        //       store.mutateFuncStatus(id, res.info.state);
+        //     }
+        //   }}
+        // />
         );
       },
     },
@@ -102,7 +103,7 @@ function DataList(): JSX.Element {
         let descriptionValue = description;
         return (
           <div className="flex items-center description">
-            <span className="truncate flex-1 max-w-min" title={description}>{description}</span>
+            <span className="truncate flex-1 max-w-min" title={description}>{description || '-' }</span>
             <PopConfirm
               content={(
                 <div
@@ -128,16 +129,16 @@ function DataList(): JSX.Element {
         );
       },
     },
-    {
-      Header: '创建人',
-      id: 'creator',
-      accessor: 'creator',
-    },
+    // {
+    //   Header: '创建人',
+    //   id: 'creator',
+    //   accessor: 'creator',
+    // },
     {
       Header: '创建时间',
       id: 'createdAt',
       accessor: ({ createdAt }: FuncField) => {
-        return createdAt ? dayjs(parseInt(String(createdAt * 1000))).format('YYYY-MM-DD HH:mm:ss') : '—';
+        return createdAt ? dayjs(parseInt(String(createdAt))).format('YYYY-MM-DD HH:mm:ss') : '—';
       },
     },
     {

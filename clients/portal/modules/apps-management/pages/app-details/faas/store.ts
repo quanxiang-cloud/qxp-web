@@ -1,4 +1,4 @@
-import { action, observable, reaction } from 'mobx';
+import { action, computed, observable, reaction } from 'mobx';
 
 import { SocketData } from '@lib/push';
 
@@ -26,10 +26,13 @@ import {
   getVersionInfo,
   getVersion,
   getBuildProcessStatus,
+  fetchGroupList,
+  bindGroup,
 } from './api';
 import toast from '@lib/toast';
 import { getApiDoc } from '../api-documentation/api';
 import { INIT_API_CONTENT } from '../api-documentation/constants';
+import { faasState, FUNC_STATUS } from './constants';
 
 const INIT_CURRENT_FUNC = {
   id: '',
@@ -46,6 +49,12 @@ const INIT_CURRENT_FUNC = {
   versionNum: 0,
 };
 
+const ENV = {
+  FUNC_CLEAR_SOURCE: 'true',
+  GOPROXY: 'https://goproxy.cn,direct',
+  FUNC_NAME: ' HelloWorld',
+};
+
 function getBuildStatusMap(statusList: FaasBuildStatus[]): Record<string, FaasProcessStatus> {
   return statusList.reduce<Record<string, FaasProcessStatus>>((acc, _status) => {
     if (_status.children) {
@@ -56,7 +65,16 @@ function getBuildStatusMap(statusList: FaasBuildStatus[]): Record<string, FaasPr
   }, {});
 }
 
+type GroupSchema = {
+  type: string;
+  gid: number;
+  name: string;
+  describe: string
+}
+
 class FaasStore {
+  @observable step = 0;
+  @observable appID = '';
   @observable appDetails: AppInfo = {
     id: '',
     appName: '',
@@ -68,9 +86,6 @@ class FaasStore {
     id: '',
     email: '',
   };
-  @observable hasGroup = false;
-  @observable isDeveloper = false;
-  @observable developerInGroup = false;
   @observable initLoading = false;
   @observable funcListLoading = true;
   @observable modalType = '';
@@ -97,10 +112,67 @@ class FaasStore {
     page: 1,
     size: 10,
   };
+  @observable showBindDevelopModal = false;
+  @observable showBindGroupModal = false;
+  @observable showJoinGroupModal = false;
+  @observable userAccount = '';
+  @observable optionalGroup: Group[] = [];
 
   constructor() {
+    reaction(() => this.showBindGroupModal, this.fetchGroupList);
     reaction(() => this.versionsParams, this.fetchVersionList);
   }
+
+  @computed get optionalGroupToSelectEnum(): {label: string, value: number}[] {
+    return this.optionalGroup.map((group) => {
+      return { label: group?.name || '', value: group.gid || 0 };
+    });
+  }
+
+  @action
+  setAppID = (appID: string): void => {
+    this.appID = appID;
+  };
+
+  @action
+  setGroupID = (groupID: string): void => {
+    this.groupID = groupID;
+  };
+
+  // @action
+  // setCurGroup = (curGroup: Group): void => {
+  //   this.curGroup = curGroup;
+  // };
+
+  @action
+  setOptionalGroup = (optionalGroup: Group[]): void => {
+    this.optionalGroup = optionalGroup;
+  };
+
+  @action
+  setUserAccount = (userAccount: string): void => {
+    this.userAccount = userAccount;
+  };
+
+  @action
+  setStep = (step: number): void => {
+    this.step = step;
+  };
+
+  @action
+  setShowBindDevelopModal = (showBindDevelopModal: boolean): void => {
+    this.showBindDevelopModal = showBindDevelopModal;
+  };
+
+  @action
+  setShowBindGroupModal = (showBindGroupModal: boolean): void => {
+    this.showBindGroupModal = showBindGroupModal;
+  };
+
+  @action
+  setShowJoinGroupModal = (showJoinGroupModal: boolean): void => {
+    this.showJoinGroupModal = showJoinGroupModal;
+  };
 
   @action
   setVersionParams = (newParam: Partial<VersionListParams>): void => {
@@ -113,11 +185,137 @@ class FaasStore {
   };
 
   @action
-  developerCheck = (): Promise<boolean | void> => {
-    return checkIsDeveloper().then((res) => {
-      this.isDeveloper = res.isDeveloper;
-      return res.isDeveloper;
+  checkUserState = async (): Promise<void> => {
+    this.checkUserLoading = true;
+    await this.developerCheck();
+    this.step === faasState.DEVELOP && await this.isGroup();
+    if (this.step === faasState.GROUP) {
+      await this.isDeveloperInGroup();
+    }
+    this.checkUserLoading = false;
+  };
+
+  @action
+  developerCheck = (): Promise<void> => {
+    return checkIsDeveloper().then(({ userAccount }) => {
+      if (userAccount) {
+        this.setUserAccount(userAccount);
+        this.setStep(faasState.DEVELOP);
+      }
     }).catch((err) => toast.error(err));
+  };
+
+  @action
+  isGroup = (): Promise<void> => {
+    return checkHasGroup({
+      appID: this.appID,
+    }).then((groupID) => {
+      if (groupID) this.setStep(faasState.GROUP);
+      this.setGroupID(groupID);
+    }).catch((err) => {
+      toast.error(err);
+    });
+  };
+
+  @action
+  isDeveloperInGroup = (): Promise<void> => {
+    return checkInGroup({
+      groupID: this.groupID,
+    }).then((isMember) => {
+      if (isMember) this.setStep(faasState.INGROUP);
+    }).catch((err) => {
+      toast.error(err);
+    });
+  };
+
+  @action
+  createDeveloper = (data: {account: string}): Promise<void> => {
+    return createDeveloper(data).then(() => {
+      this.step = faasState.DEVELOP;
+      this.userAccount = data.account;
+      toast.success('绑定开发者账号成功');
+    }).catch((error) => {
+      toast.error(error);
+    }).finally(() => this.setShowBindDevelopModal(false));
+  };
+
+  @action
+  fetchGroupList = (): void => {
+    if (this.showBindGroupModal) {
+      fetchGroupList().then((res) => {
+        this.setOptionalGroup(res);
+      });
+    }
+  };
+
+  @action
+  onSubmitGroupModal = (formData: GroupSchema): void => {
+    if (formData.type === 'custom') {
+      console.log('自定义', formData);
+      return;
+    }
+    this.bindGroup(formData.gid);
+  };
+
+  @action
+  createGroup = (): Promise<void> => {
+    return createGroup({
+      group: this.appDetails.appSign,
+      appID: this.appDetails.id,
+    }).then((res) => {
+      this.initLoading = false;
+      this.groupID = res.id;
+    }).catch((err) => {
+      this.initLoading = false;
+      this.initErr = true;
+      toast.error(err);
+    });
+  };
+
+  @action
+  bindGroup = (gid: number): void => {
+    bindGroup({ gid, appID: this.appID })
+      .then((groupID) => {
+        this.step = faasState.GROUP;
+        this.setShowBindGroupModal(false);
+        this.setGroupID(groupID);
+      });
+  };
+
+  @action
+  addUserToGroup = (): void => {
+    addToGroup(this.groupID).then(() => {
+      this.step = faasState.INGROUP;
+      this.setShowJoinGroupModal(false);
+    }).catch((err) => {
+      this.initLoading = false;
+      this.initErr = true;
+      toast.error(err);
+    });
+  };
+
+  @action
+  fetchFuncList = (searchAlias: string, page: number, size: number): void => {
+    fetchFuncList(this.groupID, {
+      alias: searchAlias,
+      page,
+      size,
+    }).then((res) => {
+      const { projects } = res;
+      this.funcList = projects;
+    }).catch((err) => {
+      toast.error(err);
+      this.funcList = [];
+    }).finally(() => {
+      this.funcListLoading = false;
+    });
+  };
+
+  @action
+  fetchFuncInfo = (): Promise<void> => {
+    return getFuncInfo(this.groupID, this.currentFuncID).then((res) => {
+      this.currentFunc = res;
+    });
   };
 
   @action
@@ -135,136 +333,13 @@ class FaasStore {
   };
 
   @action
-  isGroup = (): Promise<void> => {
-    return checkHasGroup({
-      group: this.appDetails.appSign,
-      appID: this.appDetails.id,
-    }).then((res) => {
-      this.hasGroup = Boolean(res.groupID);
-      this.groupID = res.groupID;
-    }).catch((err) => {
-      toast.error(err);
-    });
-  };
-
-  @action
-  isDeveloperInGroup = (): Promise<void> => {
-    return checkInGroup({
-      group: this.appDetails.appSign,
-    }).then((res) => {
-      this.developerInGroup = res.isMember;
-    },
-    ).catch((err) => {
-      toast.error(err);
-    });
-  };
-
-  @action
-  checkUserState = async (): Promise<void> => {
-    this.checkUserLoading = true;
-    await this.developerCheck();
-    await this.isGroup();
-    if (this.hasGroup && this.isDeveloper) {
-      await this.isDeveloperInGroup();
-    }
-    this.checkUserLoading = false;
-  };
-
-  @action
-  createDeveloper = (email: string, publicKey: string): Promise<void> => {
-    return createDeveloper({
-      email,
-      publicKey,
-    }).then(() => {
-      const intervalBox = setInterval(async () => {
-        await this.developerCheck();
-        if (this.isDeveloper) {
-          clearInterval(intervalBox);
-        }
-      }, 5000);
-    }).catch((error) => {
-      toast.error(error);
-      this.initLoading = false;
-      this.initErr = true;
-    });
-  };
-
-  @action
-  createGroup = (): Promise<void> => {
-    return createGroup({
-      group: this.appDetails.appSign,
-      appID: this.appDetails.id,
-    }).then((res) => {
-      this.initLoading = false;
-      this.hasGroup = true;
-      this.groupID = res.id;
-    }).catch((err) => {
-      this.initLoading = false;
-      this.initErr = true;
-      toast.error(err);
-    });
-  };
-
-  @action
-  addUserToGroup = (): void => {
-    addToGroup(this.groupID, { memberID: this.User.id }).then(() => {
-      this.developerInGroup = true;
-    }).catch((err) => {
-      this.initLoading = false;
-      this.initErr = true;
-      toast.error(err);
-    });
-  };
-
-  @action
-  initFaas = async (): Promise<void> => {
-    if (this.initErr) {
-      await this.checkUserState();
-    }
-    this.initLoading = true;
-    this.initErr = false;
-    if (!this.hasGroup && this.isDeveloper) {
-      await this.createGroup();
-    }
-    if (!this.developerInGroup && this.isDeveloper && this.hasGroup) {
-      await this.addUserToGroup();
-    }
-    this.initLoading = false;
-  };
-
-  @action
-  fetchFuncList = (searchAlias: string, page: number, size: number): void => {
-    fetchFuncList(this.groupID, {
-      alias: searchAlias,
-      appID: this.appDetails.id,
-      page,
-      size,
-    }).then((res) => {
-      const { projects } = res;
-      this.funcList = projects;
-    }).catch((err) => {
-      toast.error(err);
-      this.funcList = [];
-    }).finally(() => {
-      this.funcListLoading = false;
-    });
-  };
-
-  @action
   createFunc = (data: creatFuncParams): void => {
     createFaasFunc(this.groupID, { ...data, tag: '1.16' }).then((res) => {
       this.currentFuncID = res.id;
-      this.currentFunc = { ...res, ...data, state: 'Unknown' };
+      this.currentFunc = { ...res, ...data, state: 'True' };
       this.funcList = [this.currentFunc, ...this.funcList];
     }).catch((err) => {
       toast.error(err);
-    });
-  };
-
-  @action
-  fetchFuncInfo = (): Promise<void> => {
-    return getFuncInfo(this.groupID, this.currentFuncID).then((res) => {
-      this.currentFunc = res.info;
     });
   };
 
@@ -296,8 +371,8 @@ class FaasStore {
   };
 
   @action
-  buildFunc = (buildData: { tag: string, describe: string }): void => {
-    buildFunc(this.groupID, this.currentFuncID, buildData).then(() => {
+  buildFunc = (buildData: { version: string, describe: string }): void => {
+    buildFunc(this.groupID, { ...buildData, env: ENV, projectID: this.currentFuncID }).then(() => {
       this.modalType = '';
     }).catch((err) => {
       toast.error(err);
@@ -317,10 +392,10 @@ class FaasStore {
   };
 
   @action
-  fetchVersionList = (params: VersionListParams): void => {
-    getFuncVersionList(this.groupID, this.currentFuncID, params).then((res) => {
-      const { builds } = res;
-      this.versionList = builds;
+  fetchVersionList = (): void => {
+    getFuncVersionList(this.groupID, this.currentFuncID).then((res) => {
+      const { data = [] } = res;
+      this.versionList = data;
     }).catch((err) => {
       toast.error(err);
       this.funcList = [];
@@ -382,8 +457,8 @@ class FaasStore {
   };
 
   @action
-  registerAPI = (id: string): void => {
-    registerAPI(this.groupID, this.currentFunc?.id || '', id).then(() => {
+  registerAPI = (buildID: string): void => {
+    registerAPI(this.groupID, { buildID }).then(() => {
       toast.success('注册文档成功');
     }).catch((err) => {
       toast.error(err);
@@ -420,22 +495,33 @@ class FaasStore {
     });
   };
 
+  //   {
+  //     "content": {
+  //         "key": "dc61wj41",
+  //         "topic": "build"
+  //     },
+  //     "type": "faas"
+  // }
   @action
-  versionStateChangeListener = async (buildID: string, socket: SocketData, type: 'state' | 'serverState',
+  versionStateChangeListener = async (buildID: string, socket: SocketData, type: 'status',
   ): Promise<void> => {
     const { key, topic }: FaasSoketData = socket?.content || {};
+    console.log(buildID, key, topic );
+    // debugger;
     if (key !== buildID || topic !== 'builder') {
       return;
     }
 
     const versionInfo = await getVersionInfo(this.groupID, this.currentFuncID, buildID);
-    if (!['Unknown', ''].includes(versionInfo.build.state)) {
+    // if (!['Unknown', ''].includes(versionInfo.build.status)) {
+
+    if (versionInfo.status < FUNC_STATUS.StatusFailed) {
       this.versionList = this.versionList.map((version) => {
         if (version.id === buildID) {
           return {
             ...version,
-            [type]: versionInfo.build[type],
-            completionTime: versionInfo.build.completionTime,
+            [type]: versionInfo[type],
+            completionTime: versionInfo.updatedAt,
           };
         }
 
@@ -445,8 +531,8 @@ class FaasStore {
       if (this.currentVersionFunc?.id === buildID) {
         this.currentVersionFunc = {
           ...this.currentVersionFunc,
-          [type]: versionInfo.build[type],
-          completionTime: versionInfo.build.completionTime,
+          [type]: versionInfo[type],
+          completionTime: versionInfo.updatedAt,
         };
       }
 
@@ -466,6 +552,7 @@ class FaasStore {
     this.isAPILoading = false;
     this.isAPILoadingErr = '';
     this.initErr = false;
+    this.step = faasState.NOT_INITIAL;
   };
 }
 

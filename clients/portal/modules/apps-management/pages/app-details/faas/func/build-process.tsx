@@ -80,7 +80,7 @@ function BuildProcess(): JSX.Element {
       setLoading(false);
     });
 
-    if (store.currentVersionFunc?.state === 'Unknown' || !store.currentVersionFunc?.state) {
+    if (store.currentVersionFunc?.status && store.currentVersionFunc?.status < 2 ) {
       wsSubscribe({
         topic: 'builder',
         key: store.buildID,

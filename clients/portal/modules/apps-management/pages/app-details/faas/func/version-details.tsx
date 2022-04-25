@@ -52,16 +52,16 @@ function VersionDetails(): JSX.Element {
   }
 
   const {
-    tag,
+    version,
     creator,
     createdAt,
     updatedAt,
     describe,
-    serverState,
+    // serverState,
     message,
-    visibility,
+    // visibility,
     updater,
-    state,
+    status,
     completionTime,
   } = store.currentVersionFunc;
 
@@ -81,13 +81,13 @@ function VersionDetails(): JSX.Element {
             <span className="">返回</span>
           </div>
           <div className='mx-8'>/</div>
-          <div className='text-gray-900 font-semibold mr-16'>版本号：{tag}</div>
+          <div className='text-gray-900 font-semibold mr-16'>版本号：{version}</div>
           <VersionStatus
-            state={store.currentVersionFunc?.state || 'Unknown'}
+            state={store.currentVersionFunc?.status || 0}
             versionID={store.buildID}
             message={message}
-            visibility={visibility}
-            serverState={serverState}
+            // visibility={visibility}
+            // serverState={serverState}
           />
         </div>
         <a
@@ -102,12 +102,12 @@ function VersionDetails(): JSX.Element {
       <div className='grid gap-x-16 grid-flow-row-dense grid-cols-4'>
         <div className='flex text-12 p-8 items-center '>
           <div className='text-gray-600'>版本号：</div>
-          <div className='text-gray-900 flex-1  '>{tag}</div>
+          <div className='text-gray-900 flex-1  '>{version}</div>
         </div>
         <div className='flex text-12 p-8 items-center '>
           <div className='text-gray-600'>构建时间：</div>
           <div className='text-gray-900 flex-1 card-value'>
-            {state === 'True' ? `${completionTime - createdAt}s` : '-'}
+            {status === 3 ? `${completionTime - createdAt}s` : '-'}
           </div>
         </div>
         <div className='flex text-12 p-8 items-center '>
