@@ -52,7 +52,7 @@ function AppTemplateSelector({ onSelect, defaultSelectTemplateID }: Props): JSX.
                 />
                 <span className='text-gray-900'>{template.name}</span>
               </div>
-              <span className='text-gray-600 two-line-limitation'>应用描述占位应用描述占位应用描述占位应用描述占位应用描述占位应用描述占位</span>
+              <span className='text-gray-600 two-line-limitation'>{template?.description}</span>
               <span className='text-gray-400'>来源：{template.appName}</span>
             </SelectCard>
           );
