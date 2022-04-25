@@ -24,6 +24,7 @@ declare global {
     appName?: string;
     version?: string;
     groupID?: string;
+    description?: string;
   }
 
   type AppZipInfo = {

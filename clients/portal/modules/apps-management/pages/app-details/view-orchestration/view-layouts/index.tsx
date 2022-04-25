@@ -19,6 +19,7 @@ import { Layout, LayoutType } from '../types.d';
 import { CreateLayoutInfo } from '../helpers/add-layout-to-root';
 import useAppStore from '../hooks';
 import ViewLayoutSelector from '../../../entry/app-list/layout-select/view-layout-selector';
+import { VIEW_TYPE_MAP } from '../constants';
 
 const initLayout: Layout = {
   id: '', name: '', type: LayoutType.HeaderContent, description: '', subViews: [], refSchemaID: '',
@@ -100,6 +101,14 @@ function ViewLayout(): JSX.Element {
       id: 'name',
       width: 'auto',
       accessor: 'name',
+    },
+    {
+      Header: '布局类型',
+      id: 'type',
+      width: '80px',
+      accessor: ({ type }) => {
+        return VIEW_TYPE_MAP[type];
+      },
     },
     {
       Header: '关联页面',
@@ -229,12 +238,14 @@ function ViewLayout(): JSX.Element {
             }}>
             新增母版
           </Button>
-          <Table
-            emptyTips={<EmptyTips text='暂无页面布局' className="pt-40" />}
-            rowKey='id'
-            columns={columns}
-            data={store?.layouts.filter((layout) => layout.id !== 'root_node') || []}
-          />
+          <div style={{ height: 'calc(100vh - 200px)' }} >
+            <Table
+              emptyTips={<EmptyTips text='暂无页面布局' className="pt-40" />}
+              rowKey='id'
+              columns={columns}
+              data={store?.layouts.filter((layout) => layout.id !== 'root_node') || []}
+            />
+          </div>
         </div>
       </Card>
       {showModal && (
@@ -290,6 +301,13 @@ function ViewLayout(): JSX.Element {
                 label='描述'
                 name='description'
                 initialValue={curLayout?.description}
+                rules={[
+                  {
+                    type: 'string',
+                    max: 100,
+                    message: '描述不可超过 100 字符',
+                  },
+                ]}
               >
                 <Input.TextArea maxLength={100} placeholder='选填（100个字符以内）' />
               </Form.Item>
