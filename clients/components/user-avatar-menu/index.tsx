@@ -83,7 +83,7 @@ function UserAvatarMenu(
               </div>
               {!!window.APP_ID && (
                 <div className='border-b-1 py-10 change-role'>
-                  <div className="flex justify-between">
+                  <div className="flex justify-between items-center transition-all duration-100">
                     <div>
                       <Icon name='group' />
                       <span className='mx-4'>切换角色</span>

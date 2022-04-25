@@ -31,8 +31,6 @@
 
 .change-role {
   &:hover {
-    transition: transform 200ms ease-in-out;
-
     .expand {
       transform: rotate(-180deg);
     }
