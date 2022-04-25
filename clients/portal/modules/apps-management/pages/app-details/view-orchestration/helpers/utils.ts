@@ -1,5 +1,6 @@
 import { get } from 'lodash';
 import { nanoid } from 'nanoid';
+
 import { findNodeByID, appendChild, getNodeParents } from '@one-for-all/artery-utils';
 import { Artery, RouteNode, Node, HTMLNode, RefNode } from '@one-for-all/artery';
 
@@ -49,6 +50,15 @@ export async function createRefSchema(appID: string): Promise<string> {
   };
 
   await saveArtery(refSchemaKey, refedSchema);
+
+  return Promise.resolve(refSchemaKey);
+}
+
+export async function copyRefSchema(appID: string, arteryRefKey: string): Promise<string> {
+  const refSchemaKey = genDesktopArteryKey(appID);
+  await getBatchGlobalConfig([{ key: arteryRefKey, version: '1.0.0' }]).then(({ result }) => {
+    saveArtery(refSchemaKey, JSON.parse(result[arteryRefKey]));
+  });
 
   return Promise.resolve(refSchemaKey);
 }

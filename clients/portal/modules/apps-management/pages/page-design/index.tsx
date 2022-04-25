@@ -13,9 +13,7 @@ import FileUploader from '@c/file-upload';
 import ApiSelector from '@polyApi/nodes/forms/request-config/api-selector';
 
 import ApiSpec from '../app-details/api-proxy/add-api';
-import SelectCustomPageEditor from './select-custom-page-editor';
-import ArteryEditor from './artery-editor';
-import { useQueryArtery, usePageTypeKey } from './hooks';
+import { useQueryArtery } from './hooks';
 import { PAGE_TYPE, PAGE_DESIGN_ID, LAYERS } from './constants';
 import { getInitArteryByPageType } from './utils';
 import Ctx from './ctx';
@@ -28,14 +26,12 @@ import styles from './index.m.scss';
 
 function PageDesign(): JSX.Element | null {
   const { appID, pageName, arteryID } = getQuery<{ appID: string ,pageName: string, arteryID: string }>();
-  const [pageType, setPageType] = useState('');
   const history = useHistory();
 
   const resetStyle: CSSProperties = useMemo(() => ({ overflow: 'hidden' }), [])
   useStyle('body', resetStyle);
   useStyle('html', resetStyle);
 
-  const { pageType: savedPageType, isLoading: isSavedPageTypeLoading } = usePageTypeKey(arteryID);
   const { data: artery, isLoading: isArteryLoading } = useQueryArtery(
     { arteryID },
     { enabled: !!arteryID },
@@ -66,7 +62,7 @@ function PageDesign(): JSX.Element | null {
     }
   }
   function handleGoBack(): void {
-    history.push(`/apps/details/${appID}/app_views?pageName=${pageName}`);
+    history.push(`/apps/details/${appID}/views`);
   }
   useEffect(() => {
     eventBus.on('clear:api-path', ()=> {
@@ -138,12 +134,6 @@ function PageDesign(): JSX.Element | null {
     ));
   }, [apiPath]);
 
-  // todo refactor this
-  if (pageType === PAGE_TYPE.ARTERY_EDITOR) {
-    const initialArtery = artery ?? getInitArteryByPageType(pageType);
-    return <ArteryEditor appID={appID} arteryID={arteryID} initialArtery={initialArtery} />;
-  }
-
   const handleSave = useCallback((page_artery: any, options?: Record<string, any>): void => {
     savePage(arteryID, page_artery, options).then(() => {
       if (!options?.silent) {
@@ -165,21 +155,8 @@ function PageDesign(): JSX.Element | null {
       </DndProvider>
   ), [initialArtery, layers]);
 
-  // todo refactor this
-  if (pageType === PAGE_TYPE.PAGE_DESIGN_EDITOR) {
-    return ArteryEngineEntry;
-  }
-
-  if (isArteryLoading || isSavedPageTypeLoading) {
+  if (isArteryLoading) {
     return null;
-  }
-
-  if (!artery) {
-    return (<SelectCustomPageEditor arteryID={arteryID} onSelect={setPageType} />);
-  }
-
-  if (savedPageType === PAGE_TYPE.ARTERY_EDITOR) {
-    return (<ArteryEditor appID={appID} arteryID={arteryID} initialArtery={artery} />);
   }
 
   return ArteryEngineEntry;

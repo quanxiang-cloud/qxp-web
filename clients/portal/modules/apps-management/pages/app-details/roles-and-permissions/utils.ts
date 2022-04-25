@@ -1,3 +1,6 @@
+import { useQuery, UseQueryOptions, UseQueryResult } from 'react-query';
+
+import { fetchApiAuthDetails } from './api';
 import { SCOPE } from './constants';
 
 type getAddAndRemovePersonResult = {
@@ -39,4 +42,16 @@ export function getAddAndRemovePerson(
   };
 
   return { newScopes, addAndRemoveScope };
+}
+
+export function useQueryFetchAPiAuth(
+  appID: string,
+  data: {roleID: string, path: string, uri: string},
+  options?: UseQueryOptions<APIAuth, Error>,
+): UseQueryResult<APIAuth, Error> {
+  return useQuery<APIAuth, Error>(
+    'FETCH_API_DETAILS',
+    () => fetchApiAuthDetails(appID, data),
+    options,
+  );
 }

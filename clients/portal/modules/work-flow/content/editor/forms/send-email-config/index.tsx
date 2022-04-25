@@ -3,6 +3,7 @@ import { usePrevious, useUpdateEffect } from 'react-use';
 import { get, isEqual } from 'lodash';
 import { useForm, Controller } from 'react-hook-form';
 import formFieldWrap from '@c/form-field-wrap';
+import { OSS_PUBLIC_BUCKET_NAME, OSS_DOMAIN } from '@c/file-upload/constants';
 import SaveButtonGroup from '@flow/content/editor/components/_common/action-save-button-group';
 import type {
   SendEmailData,
@@ -110,15 +111,18 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
   }, [allFields]);
 
   const handleSave = (data: any): void => {
-    const bol = handleValidate();
-    if (!bol) return;
     const content = editorRef.current.getInnerHTML();
-    const mes_attachment = files.map((item)=>({ file_name: item.name, file_url: item.uid }));
+    const domain = `${window.location.protocol}//${OSS_PUBLIC_BUCKET_NAME}.${OSS_DOMAIN}`;
+    const mes_attachment = files.map(({ name, uid })=>({ file_name: name, file_url: `${domain}/${uid}` }));
+    const bol = handleValidate({ content, mes_attachment });
+    if (!bol) return;
     onSubmit({ ...data, content, templateId: 'quanliang', formulaFields, fieldType, mes_attachment });
   };
 
-  function handleValidate(): boolean {
+  function handleValidate(obj: {content: string, mes_attachment: Attachment[]}): boolean {
     const _content = editorRef.current.getContent();
+    const limit = 5 * 1024;
+    const size = new Blob([JSON.stringify(obj)]).size;
 
     if (_content === '<br>') {
       setErrorText('请输入内容');
@@ -130,18 +134,26 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
       return false;
     }
 
+    if (size > limit) {
+      setErrorText('消息内容不能超过5kb');
+      return false;
+    }
+
     setErrorText('');
     return true;
   }
 
   function setFileParams(files?: Attachment[]): QXPUploadFileTask[] {
-    if (!files) return [];
-    return files.map((item)=>({
-      type: '',
-      size: 0,
-      name: item.file_name,
-      uid: item.file_url,
-    }));
+    if (!files || !files.length) return [];
+    return files.map(({ file_name, file_url })=>{
+      const isProtocol = file_url.startsWith('http');
+      return {
+        type: '',
+        size: 0,
+        name: file_name,
+        uid: (isProtocol ? file_url.split('/').slice(-2).join('/') : file_url) as string,
+      };
+    });
   }
 
   const handleCancel = (): void => {
@@ -203,6 +215,7 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
         render={() => {
           return (
             <FileUploader
+              isPrivate={false}
               multiple={true}
               fileData={files}
               className='px-40 form-upload'

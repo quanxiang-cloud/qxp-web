@@ -7,6 +7,7 @@ import { useTaskComplete } from '@c/task-lists/utils';
 import { Ref, TableHeaderBtn } from '@c/form-app-data-table/type';
 import PopConfirm from '@c/pop-confirm';
 import PageLoading from '@c/page-loading';
+import toast from '@lib/toast';
 import { MenuType } from '@portal/modules/apps-management/pages/app-details/type';
 import ArteryPage from '@portal/modules/apps-management/pages/page-design/artery-page';
 
@@ -77,7 +78,9 @@ function PageDetails(): JSX.Element | null {
   }
 
   async function delFormData(ids: string[]): Promise<any> {
-    await store.delFormData(ids);
+    await store.delFormData(ids)
+      .then(() =>toast.success('删除成功'))
+      .catch((err) => toast.error(err));
     formTableRef.current?.refresh();
   }
 

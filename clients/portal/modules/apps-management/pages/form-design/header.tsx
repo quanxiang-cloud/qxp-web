@@ -59,7 +59,7 @@ function FormDesignHeader(): JSX.Element {
   };
 
   const goPageDetails = (): void => {
-    history.push(`/apps/details/${appID}/app_views`);
+    history.push(`/apps/details/${appID}/views`);
   };
 
   return (

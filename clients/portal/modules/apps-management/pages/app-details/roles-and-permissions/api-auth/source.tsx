@@ -11,6 +11,7 @@ import Pagination from '@c/pagination';
 import { useGetNamespaceFullPath } from '@portal/modules/poly-api/effects/api/namespace';
 
 import store from './store';
+import AuthDetailModal from './role-details';
 import NsTreeStore from './ns-tree-store';
 import NodeRender from './group-node';
 import { Role } from '../constants';
@@ -19,6 +20,11 @@ const initialPage = { page: 1, pageSize: 10 };
 function Source(): JSX.Element {
   const [curNsPath, setCurNsPath] = useState('');
   const [pagination, setPagination] = useState(initialPage);
+
+  function onClickSetting(api: APIDetailAuth): void {
+    store.setCurAPI(api);
+    store.showRoleDetailsModal = true;
+  }
 
   const apicol: UnionColumn<APIDetailAuth>[] = [
     {
@@ -47,6 +53,22 @@ function Source(): JSX.Element {
             onChange={handleChange}
             value={`${api.accessPath}-${api.uri}`}
           />
+        );
+      },
+    },
+    {
+      Header: '操作',
+      id: 'id',
+      width: '80',
+      accessor: (api) => {
+        const disabled = !api?.auth || store.curRoleType === Role.DEFAULT;
+        return (
+          <span
+            className={disabled ? 'cursor-not-allowed text-blue-400' : 'text-btn'}
+            onClick={() => onClickSetting(api)}
+          >
+            设置访问权限
+          </span>
         );
       },
     },
@@ -114,51 +136,56 @@ function Source(): JSX.Element {
   }
 
   return (
-    <div className='bg-white data-source h-full'>
-      <div className='flex flex-col data-source--sider max-h-full overflow-auto'>
-        <div className='py-10 px-16 flex justify-between items-center'>
-          <span className='text-h6-bold text-gray-400 mr-auto'>API 分组</span>
-        </div>
-        {!nsStore && (
-          <div className='app-no-data mt-58'>
-            <img src='/dist/images/new_tips.svg' />
-            <span>无API分组。</span>
+    <>
+      <div className='bg-white data-source h-full'>
+        <div className='flex flex-col data-source--sider max-h-full overflow-auto'>
+          <div className='py-10 px-16 flex justify-between items-center'>
+            <span className='text-h6-bold text-gray-400 mr-auto'>API 分组</span>
           </div>
-        )}
-        {nsStore && (
-          <Tree
-            store={nsStore}
-            NodeRender={NodeRender}
-            RootNodeRender={NodeRender}
-            onSelect={onSelect}
-            className='overflow-auto'
-            itemClassName='tree-node-item hover:bg-white hover:text-gray-900 text-gray-900'
-          />
-        )}
-      </div>
-      <div className='bg-white h-full flex-1 overflow-hidden flex flex-col'>
-        <div className='conf-title text-12'>
-          <div className='text-gray-400 font-semibold'>
+          {!nsStore && (
+            <div className='app-no-data mt-58'>
+              <img src='/dist/images/new_tips.svg' />
+              <span>无API分组。</span>
+            </div>
+          )}
+          {nsStore && (
+            <Tree
+              store={nsStore}
+              NodeRender={NodeRender}
+              RootNodeRender={NodeRender}
+              onSelect={onSelect}
+              className='overflow-auto'
+              itemClassName='tree-node-item hover:bg-white hover:text-gray-900 text-gray-900'
+            />
+          )}
+        </div>
+        <div className='bg-white h-full flex-1 overflow-hidden flex flex-col'>
+          <div className='conf-title text-12'>
+            <div className='text-gray-400 font-semibold'>
           配置权限：<span className='text-gray-900'>{store.curNamespace?.title || ''}</span>
+            </div>
           </div>
-        </div>
-        <div className='max-flex-1 overflow-hidden'>
-          <Table
-            rowKey="id"
-            loading={store.isLoadingAuth}
-            data={store.apiAndAuthList || []}
-            emptyTips={<EmptyTips text="无API数据" className="py-10" />}
-            columns={apicol}
+          <div className='max-flex-1 overflow-hidden'>
+            <Table
+              rowKey="id"
+              loading={store.isLoadingAuth}
+              data={store.apiAndAuthList || []}
+              emptyTips={<EmptyTips text="无API数据" className="py-10" />}
+              columns={apicol}
+            />
+          </div>
+          <Pagination
+            current={pagination.page}
+            pageSize={pagination.pageSize}
+            total={store.apiCount}
+            onChange={handlePageChange}
           />
         </div>
-        <Pagination
-          current={pagination.page}
-          pageSize={pagination.pageSize}
-          total={store.apiCount}
-          onChange={handlePageChange}
-        />
       </div>
-    </div>
+      {store.showRoleDetailsModal && (
+        <AuthDetailModal/>
+      )}
+    </>
   );
 }
 export default observer(Source);

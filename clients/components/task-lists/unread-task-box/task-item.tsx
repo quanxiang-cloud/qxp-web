@@ -2,8 +2,8 @@ import React, { useRef } from 'react';
 import cs from 'classnames';
 import dayjs from 'dayjs';
 import { observer } from 'mobx-react';
-import { useParams } from 'react-router-dom';
 import { Progress } from 'antd';
+import { useParams } from 'react-router-dom';
 
 import Icon from '@c/icon';
 import { getQuery } from '@lib/utils';
@@ -51,7 +51,7 @@ function TaskItem({ task, deleteTaskItem }: Props): JSX.Element {
   const refItem = useRef(null);
 
   const { pageID } = getQuery<{ pageID: string }>();
-  const { appID } = useParams<{ appID: string }>();
+  const appID = window.APP_ID ?? useParams<{appID: string}>().appID;
 
   function getIcon(): string {
     if (IMPORT_TYPE.includes(command) && (status === 3 || status === 1)) return 'upload-apps';

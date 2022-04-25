@@ -40,13 +40,14 @@ function ViewItem({ view, onViewClick, onOptionClick, currentView, homeView }: P
             {view.name}
           </span>
         </span>
-        <div className='flex gap-5'>
+        <div className='flex items-center gap-5'>
           { homeView?.id === view.id && <Icon name='home' size={18} /> }
-          <div className={cs({
-            invisible: !isActive,
-          })}>
-            <ViewOption view={view} homeViewID={homeView?.id} onViewOptionClick={onOptionClick} />
-          </div>
+          <ViewOption
+            className={cs({ invisible: !isActive })}
+            view={view}
+            homeViewID={homeView?.id}
+            onViewOptionClick={onOptionClick}
+          />
         </div>
       </div>
     </li >
