@@ -13,7 +13,7 @@ function OutputRange(): JSX.Element {
   const isAll = !!store.curAuth?.responseAll;
 
   function OnChangeToggle(isOutputAll: boolean): void {
-    store.setCurAuth( { ...store.curAuth, responseAll: isOutputAll });
+    store.setCurAuth({ ...store.curAuth, responseAll: isOutputAll });
   }
 
   if (!store.outputTreeStore) {
@@ -54,7 +54,7 @@ function OutputRange(): JSX.Element {
       </div>
       <Tree
         store={store.outputTreeStore}
-        NodeRender={({ node, store }) =>(<FieldRender store={store} node={node} isAll={isAll}/>)}
+        NodeRender={({ node, store }) => (<FieldRender store={store} node={node} isAll={isAll} />)}
         className='fields-tree overflow-auto flex-1'
         itemClassName='px-16 py-8 hover:bg-white hover:text-gray-900 text-gray-900'
       />

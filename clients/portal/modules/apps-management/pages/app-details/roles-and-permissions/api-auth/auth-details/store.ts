@@ -29,7 +29,6 @@ type FieldNode = {
   id?: string,
 }
 
-// 参数 对象形式
 export function apiFieldsToTreeNode(
   {
     params = {},
@@ -44,8 +43,8 @@ export function apiFieldsToTreeNode(
     id = 'schema',
   }: FieldNode,
 ): TreeNode<SwagField> {
-  let children = Object.entries(properties || {}).map(
-    ([fieldKey, fieldAttrs]) => {
+  const children = Object.entries(properties || {}).map(
+    ([fieldKey, fieldAttrs], index) => {
       const _properties = properties?.[fieldKey]?.properties || {};
       const _params = level === 0 ? params : params?.[id]?.properties || {};
       const _fieldNode = {
@@ -56,7 +55,7 @@ export function apiFieldsToTreeNode(
         visible: true,
         expanded: false,
         parentId: id,
-        order: stringToAsciiNumber(fieldKey || ''),
+        order: index,
         sort,
         id: fieldKey,
 
@@ -64,11 +63,6 @@ export function apiFieldsToTreeNode(
       return apiFieldsToTreeNode(_fieldNode);
     },
   );
-
-  // to fix
-  if (sort) {
-    children = children.sort(treeNodeSorter);
-  }
 
   const acceptable = !!params?.[id] || false;
 
@@ -88,28 +82,27 @@ export function apiFieldsToTreeNode(
   };
 }
 
-// import delete
-export function stringToAsciiNumber(value: string): number {
-  return value.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-}
-
-export function treeNodeSorter(nodeA: TreeNode<any>, nodeB: TreeNode<any>): 1 | -1 {
-  if (nodeA.isLeaf === nodeB.isLeaf) {
-    return nodeA.order < nodeB.order ? -1 : 1;
-  }
-
-  return nodeA.isLeaf ? 1 : -1;
-}
-
 export function clearChildState(
   node: TreeNode<SwagField>,
   store: TreeStore<SwagField>,
-  acceptable: boolean): any {
+): void {
   node.children?.forEach((child) => {
     const { data } = child;
-    data.acceptable = acceptable;
+    data.acceptable = false;
     store.updateNode({ ...child, data });
-    clearChildState(child, store, false);
+    clearChildState(child, store);
+  });
+}
+
+export function addParentState(
+  node: TreeNode<SwagField>,
+  store: TreeStore<SwagField>,
+): void {
+  const parents = store.getNodeParents(node.id);
+  parents.forEach((parentNode) => {
+    const { data } = parentNode;
+    data.acceptable = true;
+    store.updateNode({ ...parentNode, data });
   });
 }
 
@@ -122,13 +115,8 @@ export function onChangeFieldState(
   data.acceptable = acceptable;
   store.updateNode({ ...node, data });
   if (acceptable) {
-    const parents = store.getNodeParents(node.id);
-    parents.forEach((parentNode) => {
-      const { data } = parentNode;
-      data.acceptable = acceptable;
-      store.updateNode({ ...parentNode, data });
-    });
+    addParentState(node, store);
   } else {
-    clearChildState(node, store, false);
+    clearChildState(node, store);
   }
 }

@@ -20,7 +20,7 @@ function DataRange(): JSX.Element {
                 key={option.value}
                 value={option.value}
                 label={option.label}
-                defaultChecked = {store.conditionValue === option.value}
+                defaultChecked={store.conditionValue === option.value}
               />
             );
           })}

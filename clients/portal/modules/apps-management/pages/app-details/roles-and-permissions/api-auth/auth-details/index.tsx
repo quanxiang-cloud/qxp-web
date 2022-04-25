@@ -8,7 +8,6 @@ import DataRange from './data-range';
 import OutputRange from './output-range';
 import InPutRange from './input-range';
 import store from '../store';
-import { fieldsTreeToParams } from '../../utils';
 
 function AuthDetailModal(): JSX.Element {
   useEffect(() => {
@@ -24,24 +23,17 @@ function AuthDetailModal(): JSX.Element {
     {
       id: 'inputFields',
       name: '入参字段范围',
-      content: <InPutRange/>,
+      content: <InPutRange />,
     },
     {
       id: 'outputFields',
       name: '出参字段范围',
-      content: <OutputRange/>,
+      content: <OutputRange />,
     },
   ];
 
   if (store.isLoadingAuthDetails) {
-    return <Loading/>;
-  }
-
-  function onSubmit(): void {
-    const output = fieldsTreeToParams(store.outputTreeStore?.rootNode);
-    const input = fieldsTreeToParams(store.inputTreeStore?.rootNode);
-    const _curAuth = { ...store?.curAuth, response: output, params: input };
-    store.updateAPIAuth(_curAuth);
+    return (<Loading />);
   }
 
   return (
@@ -63,7 +55,7 @@ function AuthDetailModal(): JSX.Element {
           key: 'confirm',
           iconName: 'check',
           modifier: 'primary',
-          onClick: onSubmit,
+          onClick: store.onSubmitSaveAuthDetail,
         },
       ]}
     >
@@ -72,7 +64,7 @@ function AuthDetailModal(): JSX.Element {
         separator={false}
         className="auth-details p-24"
         items={items}
-        onChange={store.setCurAuthDetailTabKey }
+        onChange={store.setCurAuthDetailTabKey}
       />
     </Modal>
   );

@@ -1,4 +1,5 @@
 import { action, observable, reaction } from 'mobx';
+import _ from 'lodash';
 
 import toast from '@lib/toast';
 import { PathType } from '@portal/modules/poly-api/effects/api/namespace';
@@ -15,9 +16,7 @@ import {
 } from '../api';
 import { DATA_RANGE, Role } from '../constants';
 import FieldsStore from './auth-details/store';
-import { getParamByMethod } from '../utils';
-import _ from 'lodash';
-// api 规范
+import { fieldsTreeToParams, findSchema } from '../utils';
 class APIAuthStore {
   @observable appID = '';
   @observable currentRoleID = '';
@@ -70,14 +69,14 @@ class APIAuthStore {
   };
 
   @action
-   setInputTreeStore = (_inputTree: FieldsStore | null): void => {
-     this.inputTreeStore = _inputTree;
-   };
+  setInputTreeStore = (_inputTree: FieldsStore | null): void => {
+    this.inputTreeStore = _inputTree;
+  };
 
-   @action
-   setOutputTreeStore = (_outputTree: FieldsStore | null): void => {
-     this.outputTreeStore = _outputTree;
-   };
+  @action
+  setOutputTreeStore = (_outputTree: FieldsStore | null): void => {
+    this.outputTreeStore = _outputTree;
+  };
 
   @action
   setRole = (role: RoleRight): void => {
@@ -121,7 +120,7 @@ class APIAuthStore {
   };
 
   @action
-  onChangeCondition = (label: string ): void => {
+  onChangeCondition = (label: string): void => {
     this.setConditionValue(label as string);
     this.setCurAuth({ ...this.curAuth, condition: DATA_RANGE[label] });
   };
@@ -192,7 +191,7 @@ class APIAuthStore {
   };
 
   @action
-  getAPIDocWithAuth = (): void=> {
+  getAPIDocWithAuth = (): void => {
     this.isLoadingAuthDetails = true;
     Promise.all([
       this.fetchAPISwagDocDetails(),
@@ -226,32 +225,24 @@ class APIAuthStore {
   };
 
   @action
-  onChangeFieldState = () => {
-
-  };
-
-  @action
   fetchAPISwagDocDetails = (): Promise<{
     inputSchema: SwagSchema | undefined,
     outputSchema: SwagSchema | undefined
   }> => {
-    // utils func
     return fetchAPISwagDocDetails(this.curAPI?.fullPath || '').then((res) => {
-      // name apiPathOperation
-      const path = Object.values(res.doc.paths)[0];
-      // const
-      const [method, operation] = Object.entries(path)[0];
-      // debugger;
-      const inputSchema = getParamByMethod(method, operation.parameters || []);
-      const outputSchema = Object.values(path)[0].responses?.[200]?.schema;
-      return {
-        inputSchema,
-        outputSchema,
-      };
+      return findSchema(res);
     }).catch((err) => {
       toast.error(err);
       return { inputSchema: undefined, outputSchema: undefined };
     });
+  };
+
+  @action
+  onSubmitSaveAuthDetail = (): void => {
+    const output = fieldsTreeToParams(this.outputTreeStore?.rootNode);
+    const input = fieldsTreeToParams(this.inputTreeStore?.rootNode);
+    const _curAuth = { ...this?.curAuth, response: output, params: input };
+    this.updateAPIAuth(_curAuth);
   };
 
   @action

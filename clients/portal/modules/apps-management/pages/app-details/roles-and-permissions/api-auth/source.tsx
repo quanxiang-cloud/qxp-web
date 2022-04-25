@@ -68,7 +68,7 @@ function Source(): JSX.Element {
               className={disabled ? 'pointer-events-none text-blue-400' : 'text-btn'}
               onClick={() => onClickSetting(api)}
             >
-            设置访问权限
+              设置访问权限
             </span>
           </div>
         );
@@ -188,7 +188,7 @@ function Source(): JSX.Element {
         </div>
       </div>
       {store.showRoleDetailsModal && (
-        <AuthDetailModal/>
+        <AuthDetailModal />
       )}
     </>
   );

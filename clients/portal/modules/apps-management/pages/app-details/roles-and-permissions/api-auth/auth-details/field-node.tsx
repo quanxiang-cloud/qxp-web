@@ -24,8 +24,7 @@ function FieldRender({ node, store, isAll, type = 'output' }: Props): JSX.Elemen
   const checkboxWidth = INIT_WIDTH - (level * PLACEHODER_WIDTH);
 
   return (
-    <div className={cs('flex justify-end w-full',
-    )}>
+    <div className='flex justify-end w-full'>
       <div className='pl-4' style={{ width: `${checkboxWidth}px` }}>
         <Checkbox
           key={node.id}
@@ -41,9 +40,8 @@ function FieldRender({ node, store, isAll, type = 'output' }: Props): JSX.Elemen
         <div className='truncate'>{nodeLabel}</div>
         <div className='truncate'>{node.id || ''}</div>
         <div className='truncate'>{node.data.type}</div>
-        {type === 'input' && <div>{node.data?.in || 'body'}</div>}
+        {type === 'input' && (<div>{node.data?.in || 'body'}</div>)}
       </div>
-
     </div>
   );
 }

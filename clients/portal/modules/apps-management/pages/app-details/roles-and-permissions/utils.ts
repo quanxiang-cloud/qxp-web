@@ -1,6 +1,8 @@
 
 import { TreeNode } from '@c/headless-tree/types';
 
+import { APIDocResponse } from './api';
+
 import { INIT_INPUT_SCHEMA, PARAMS_IN_BODY_METHOD, SCOPE } from './constants';
 import { BodyParameter, Parameter, QueryParameter } from '@lib/api-adapter/swagger-schema-official';
 
@@ -87,5 +89,18 @@ export function fieldsTreeToParams(
     }
   });
   return _params;
+}
+
+export function findSchema(apiDoc: APIDocResponse): {
+  inputSchema: SwagSchema | undefined,
+  outputSchema: SwagSchema | undefined
+} {
+  const [method, operation] = Object.entries(Object.values(apiDoc.doc.paths)[0])[0];
+  const inputSchema = getParamByMethod(method, operation.parameters || []);
+  const outputSchema = Object.values(Object.values(apiDoc.doc.paths)[0])[0].responses?.[200]?.schema;
+  return {
+    inputSchema,
+    outputSchema,
+  };
 }
 

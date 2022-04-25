@@ -13,7 +13,7 @@ function InPutRange(): JSX.Element {
   const isAll = !!store.curAuth?.paramsAll;
 
   function OnChangeToggle(isInputAll: boolean): void {
-    store.setCurAuth( { ...store.curAuth, paramsAll: isInputAll });
+    store.setCurAuth({ ...store.curAuth, paramsAll: isInputAll });
   }
 
   if (!store.inputTreeStore) {

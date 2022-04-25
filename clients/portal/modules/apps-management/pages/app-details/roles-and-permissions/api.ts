@@ -114,7 +114,7 @@ export function fetchAPIAuthDetails(
   return httpClient(`/api/v1/form/${appID}/m/apiPermit/get`, data);
 }
 
-type APIDocResponse = {
+export type APIDocResponse = {
   apiPath: string,
   doc: Spec,
   docType: string,
