@@ -7,6 +7,7 @@ import replace from '@rollup/plugin-replace';
 import resolve from '@rollup/plugin-node-resolve';
 import styles from 'rollup-plugin-styles';
 import webWorkerLoader from 'rollup-plugin-web-worker-loader';
+import { visualizer } from 'rollup-plugin-visualizer';
 // import tsChecker from 'rollup-plugin-fork-ts-checker';
 
 import typescriptPaths from './plugins/rollup-plugin-typescript-paths';
@@ -109,6 +110,7 @@ const config = {
     outputManifest(),
     esbuild(esbuildConfig),
     // tsChecker(),
+    visualizer({ brotliSize: true }),
   ],
 };
 
@@ -141,5 +143,5 @@ const mobileConfig = Object.assign(
 
 export default [
   config,
-  mobileConfig,
+  // mobileConfig,
 ];
