@@ -3,7 +3,7 @@ import cs from 'classnames';
 import { observer } from 'mobx-react';
 import { Icon } from '@one-for-all/ui';
 
-import { useCtx } from '../../../../../../ctx';
+import { useCtx } from '@pageDesign/ctx';
 
 import styles from '../index.m.scss';
 

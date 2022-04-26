@@ -58,8 +58,12 @@ class RegistryStore {
     return this.elementMap[this.normalizeType(type)];
   };
 
-  acceptChild = (elemType: string) => {
-    return this.elementMap[this.normalizeType(elemType)].acceptChild;
+  acceptChild = (elemType: string, packageName?: string): boolean | undefined => {
+    let elementType = elemType;
+    if (packageName === '@one-for-all/icon') {
+      elementType = 'icon';
+    }
+    return this.elementMap[this.normalizeType(elementType)].acceptChild;
   };
 
   toComponentMap = (category?: 'systemComponents' | 'ofa-ui'): Record<string, React.ComponentType>=> {

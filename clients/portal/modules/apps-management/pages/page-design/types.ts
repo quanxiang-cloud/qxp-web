@@ -1,5 +1,3 @@
-import { BaseBlocksCommunicationState } from '@one-for-all/artery-engine';
-import { Repository } from '@one-for-all/render-engine';
 import {
   BaseNode,
   APIStatesSpec,
@@ -8,13 +6,11 @@ import {
   LoopContainerNode,
 } from '@one-for-all/artery';
 
-export interface BlocksCommunicationType extends BaseBlocksCommunicationState {
-  componentToAdd?: any;
-  docLink?: string;
-  hideTestPreview?: boolean;
-  repository?: Repository;
+export interface BlocksCommunicationType {
   appID?: string;
   arteryID?: string;
+  docLink?: string;
+  hideTestPreview?: boolean;
   menu?: {
     currentGroupType?: string;
     groupTypeContentPinned?: boolean;

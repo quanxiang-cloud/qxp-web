@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import { Icon, Popper } from '@one-for-all/ui';
 import cs from 'classnames';
 
-import { useCtx } from '../../ctx';
+import { useCtx } from '@pageDesign/ctx';
 
 interface Props {
   className?: string;

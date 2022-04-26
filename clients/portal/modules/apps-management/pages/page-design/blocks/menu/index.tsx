@@ -9,11 +9,8 @@ import { MenuContext } from './context';
 import './index.scss';
 
 function Menu(props: BlockItemProps<BlocksCommunicationType>): JSX.Element {
-  const { schema, onChange } = props;
-  const value = {
-    artery: schema,
-    onArteryChange: onChange,
-  };
+  const { artery, onChange } = props;
+  const value = { artery, onArteryChange: onChange };
 
   return (
     <MenuContext.Provider value={value}>

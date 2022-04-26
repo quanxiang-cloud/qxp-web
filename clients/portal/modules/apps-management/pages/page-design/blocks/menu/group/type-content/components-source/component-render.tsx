@@ -4,7 +4,6 @@ import { useDrag } from 'react-dnd';
 
 import type { PackageComponent } from '@pageDesign/blocks/menu/type';
 import { useCtx } from '@pageDesign/ctx';
-import { useMenuContext } from '@pageDesign/blocks/menu/context';
 
 import styles from './index.m.scss';
 
@@ -16,7 +15,6 @@ interface Props extends PackageComponent {
 
 const ComponentRender = (props: Props): JSX.Element => {
   const { onAddNode, name, Icon, desc, package: pkg, label, initialProps, style, className } = props;
-  const { artery, onArteryChange } = useMenuContext() ?? {};
   const { page } = useCtx();
 
   function addNodeToCanvas(target?: any): void {
@@ -24,6 +22,8 @@ const ComponentRender = (props: Props): JSX.Element => {
       exportName: name,
       label,
       defaultConfig: initialProps,
+      packageName: pkg.name,
+      packageVersion: pkg.version,
     };
     page.appendNode(prepareNode, target, { from: 'source' });
     onAddNode();

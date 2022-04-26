@@ -2,7 +2,9 @@ import React, { useCallback, useEffect, useMemo } from 'react';
 import { observer } from 'mobx-react';
 import { Tab } from '@one-for-all/ui';
 
-import { useCtx } from '../../ctx';
+import { useCtx } from '@pageDesign/ctx';
+import { isSystemComponent } from '@pageDesign/utils/helpers';
+
 import StylePanel from './style-panel';
 import EventPanel from './event-panel';
 import RendererPanel from './renderer-panel';
@@ -11,7 +13,6 @@ import ModalComponentNode from './modal-component-node';
 
 import styles from './index.m.scss';
 import './style.scss';
-import { isSystemComponent } from '../../utils/helpers';
 
 function SettingPanel(): JSX.Element {
   const { page, designer, registry } = useCtx();

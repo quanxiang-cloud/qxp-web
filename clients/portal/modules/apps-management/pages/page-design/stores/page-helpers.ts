@@ -1,7 +1,7 @@
 import { toJS } from 'mobx';
+import { generateNodeId } from '@one-for-all/artery-engine';
 
 import { PageNode, PageArtery } from '../types';
-import { generateNodeId } from '../utils';
 
 export function deepMergeNode(node: PageNode): PageNode {
   const target = toJS(node);
@@ -65,7 +65,7 @@ export function generateGridChildren(
         pid: parentId,
         type: 'react-component',
         exportName: 'container',
-        packageName: 'ofa-ui',
+        packageName: '@one-for-all/ui',
         packageVersion: 'latest',
         label: '容器',
         props: {
@@ -112,7 +112,7 @@ export function initPageArtery(): PageArtery {
       id: generateNodeId('page'),
       pid: '',
       type: 'react-component',
-      packageName: 'ofa-ui',
+      packageName: '@one-for-all/ui',
       packageVersion: 'latest',
       exportName: 'page',
       label: '页面',

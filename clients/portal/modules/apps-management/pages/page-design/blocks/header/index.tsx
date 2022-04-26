@@ -4,10 +4,10 @@ import { observer } from 'mobx-react';
 import { toJS, reaction } from 'mobx';
 import { Icon, Button, Tooltip, Modal } from '@one-for-all/ui';
 import { ArteryRenderer } from '@one-for-all/artery-renderer';
-import ArteryEngine, { BlockItemProps } from '@one-for-all/artery-engine';
+import { BlockItemProps } from '@one-for-all/artery-engine';
 
-import { useCtx } from '../../ctx';
-import { BlocksCommunicationType } from '../../types';
+import { useCtx } from '@pageDesign/ctx';
+import { BlocksCommunicationType } from '@pageDesign/types';
 
 import styles from './style.m.scss';
 import './style.scss';
@@ -15,7 +15,7 @@ import './style.scss';
 const Divider = (): JSX.Element => <div className='w-1 h-20 bg-gray-200 mx-16' />;
 const historySizeLimit = 50;
 
-function Toolbar({ blocksCommunicationState$ }: BlockItemProps<BlocksCommunicationType>): JSX.Element {
+function Toolbar({ sharedState }: BlockItemProps<BlocksCommunicationType>): JSX.Element {
   const ctx = useCtx();
   const { page, designer, registry } = ctx;
   const [openTestPreview, setOpenPreview] = useState(false);
@@ -25,9 +25,7 @@ function Toolbar({ blocksCommunicationState$ }: BlockItemProps<BlocksCommunicati
     'ofa-ui@latest': registry.toComponentMap('ofa-ui'),
     'system-components@latest': registry.toComponentMap('systemComponents'),
   }), []);
-  const { docLink = '', hideTestPreview } = ArteryEngine.useObservable(
-    blocksCommunicationState$, { activeNodeID: '' },
-  );
+  const { docLink = '', hideTestPreview } = sharedState;
 
   useEffect(()=> {
     const dispose = reaction(()=> JSON.stringify(toJS(page.schema)), (schema)=> {

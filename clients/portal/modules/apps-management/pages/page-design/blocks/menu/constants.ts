@@ -1,25 +1,27 @@
 import { Package } from './type';
-import pkg from '../../../../../../../../package.json';
 
 export const defaultPackages: Package[] = [
   {
-    name: 'internal',
-    label: '内置',
-    url: 'internal',
-    version: pkg.version,
-    categories: ['布局组件', '基础组件', '表单组件', '高级组件'],
+    name: '@one-for-all/ui',
+    label: 'ui(不推荐)',
+    version: 'latest',
+    categories: ['布局组件', '基础组件', '表单组件'],
   },
   {
-    name: 'system',
-    label: '系统',
-    url: 'system',
-    version: pkg.version,
+    name: 'system-components',
+    label: '系统组件',
+    version: 'latest',
+  },
+  {
+    name: 'ofa-ui',
+    label: 'legacy',
+    version: 'latest',
+    categories: ['布局组件', '基础组件', '表单组件', '高级组件'],
   },
   {
     name: 'all',
     label: '所有组件',
-    url: 'all',
-    version: pkg.version,
+    version: 'latest',
   },
 ];
 

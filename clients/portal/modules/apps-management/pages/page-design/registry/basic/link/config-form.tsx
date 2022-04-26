@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { defaults } from 'lodash';
 import { Radio, RadioGroup } from '@one-for-all/ui';
 
-import { useCtx } from '../../../ctx';
-import ConfigBind from '../../../utils/data-bind';
+import { useCtx } from '@pageDesign/ctx';
+import ConfigBind from '@pageDesign/utils/data-bind';
+
 import { INNER_LINK_FUNC_SPEC } from './constants';
 
 export interface Props {

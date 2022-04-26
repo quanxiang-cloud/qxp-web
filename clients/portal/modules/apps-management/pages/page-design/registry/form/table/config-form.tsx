@@ -6,8 +6,8 @@ import { javascript } from '@codemirror/lang-javascript';
 import { nanoid } from 'nanoid';
 import { Icon, Button, Modal, toast } from '@one-for-all/ui';
 
-import { useCtx } from '../../../ctx';
-import ConfigBind from '../../../utils/data-bind';
+import { useCtx } from '@pageDesign/ctx';
+import ConfigBind from '@pageDesign/utils/data-bind';
 
 export type ColData = {
   id: string;
