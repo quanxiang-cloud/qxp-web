@@ -27,7 +27,7 @@ function OutputRange(): JSX.Element {
         bg-blue-100 text-blue-600 py-10 px-16'
       >
         <div>
-          <Icon name='info' color='blue' className='w-16 h-16 fill-current' size={18} />
+          <Icon name='info' size={18} />
           <span className='ml-10 text-12'>
             用户在访问时只能看到在这里定义允许接收的所有参数。如果传递多余的参数，系统会自动过滤。
           </span>

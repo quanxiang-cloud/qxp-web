@@ -1,10 +1,9 @@
 
 import { TreeNode } from '@c/headless-tree/types';
+import { BodyParameter, Parameter, QueryParameter } from '@lib/api-adapter/swagger-schema-official';
 
 import { APIDocResponse } from './api';
-
 import { INIT_INPUT_SCHEMA, PARAMS_IN_BODY_METHOD, SCOPE } from './constants';
-import { BodyParameter, Parameter, QueryParameter } from '@lib/api-adapter/swagger-schema-official';
 
 type getAddAndRemovePersonResult = {
   newScopes: DeptAndUser[],

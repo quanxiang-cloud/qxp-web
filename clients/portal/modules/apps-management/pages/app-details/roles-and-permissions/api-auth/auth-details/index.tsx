@@ -6,7 +6,7 @@ import Loading from '@c/loading';
 
 import DataRange from './data-range';
 import OutputRange from './output-range';
-import InPutRange from './input-range';
+import InputRange from './input-range';
 import store from '../store';
 
 function AuthDetailModal(): JSX.Element {
@@ -23,7 +23,7 @@ function AuthDetailModal(): JSX.Element {
     {
       id: 'inputFields',
       name: '入参字段范围',
-      content: <InPutRange />,
+      content: <InputRange />,
     },
     {
       id: 'outputFields',

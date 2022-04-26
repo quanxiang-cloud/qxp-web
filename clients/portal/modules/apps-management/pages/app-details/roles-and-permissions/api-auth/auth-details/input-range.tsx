@@ -9,7 +9,7 @@ import Toggle from '@c/toggle';
 import FieldRender from './field-node';
 import store from '../store';
 
-function InPutRange(): JSX.Element {
+function InputRange(): JSX.Element {
   const isAll = !!store.curAuth?.paramsAll;
 
   function OnChangeToggle(isInputAll: boolean): void {
@@ -27,7 +27,7 @@ function InPutRange(): JSX.Element {
         bg-blue-100 text-blue-600 py-10 px-16 my-8'
       >
         <div>
-          <Icon name='info' color='blue' className='w-16 h-16 fill-current' size={18} />
+          <Icon name='info' size={18} />
           <span className='ml-10 text-12'>
             用户可访问的字段范围。
           </span>
@@ -64,4 +64,4 @@ function InPutRange(): JSX.Element {
   );
 }
 
-export default observer(InPutRange);
+export default observer(InputRange);
