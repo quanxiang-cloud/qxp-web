@@ -1,4 +1,5 @@
-import type { SourceElement } from '../../../types';
+import type { SourceElement } from '@pageDesign/types';
+
 import ConfigForm, { DEFAULT_CONFIG } from './config-form';
 import type { ComponentProps } from './type';
 import Component from './component';

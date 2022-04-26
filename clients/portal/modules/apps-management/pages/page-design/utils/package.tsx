@@ -1,16 +1,10 @@
 import React, { CSSProperties } from 'react';
-import { cond, equals, T, flatten, mergeAll, pipe, uniq, values, isEmpty } from 'ramda';
+import { equals, flatten, ifElse, isEmpty } from 'ramda';
 import Icon from '@one-for-all/icon';
-// @ts-ignore
-import iconGroupedNames from '@one-for-all/icon/groupedNames';
 
-import { basic, form, layout, advanced, systemComponents } from '@pageDesign/registry/elements';
-import LocalIcon from '@c/icon';
-import type { SourceElement } from '@pageDesign/types';
+import { getBatchGlobalConfig } from '@lib/api/user-config';
 
-import {
-  getPackageComponentToCategoryVariantMapDynamic,
-} from './mock';
+import { defaultPackages } from '../blocks/menu/constants';
 import type {
   BasePackageComponent,
   CategoryVariants,
@@ -37,11 +31,9 @@ const iconSizeMap: Record<string, number | undefined> = {
 };
 function platformIconBuilder(icon: VariantPlatFormIcon): ReactComponent {
   const { name, initialProps = {} } = icon;
-  const iconNames = getIconNames();
-  const DistIcon = iconNames.includes(name) ? Icon : LocalIcon;
   const size = iconSizeMap[name];
   size && Object.assign(initialProps, { size });
-  return () => <DistIcon name={name} {...initialProps} />;
+  return () => <Icon name={name} {...initialProps} />;
 }
 
 function isImageIcon(icon: VariantIcon): icon is VariantImageIcon {
@@ -68,7 +60,7 @@ async function getPackageComponentIcon(
   };
 }
 
-export function getFullComponent(categoryVariantsMap: Record<string, CategoryVariants | undefined>) {
+function getFullComponent(categoryVariantsMap: Record<string, CategoryVariants | undefined>) {
   return async (basePackageComponent: BasePackageComponent): Promise<PackageComponent[]> => {
     const { name } = basePackageComponent;
     const categoryVariantsFallback = { variants: [], category: undefined };
@@ -82,57 +74,57 @@ export function getFullComponent(categoryVariantsMap: Record<string, CategoryVar
   };
 }
 
-function getBaseComponentsFromModules(
-  pkg: Package, modules: System.Module,
+function getBaseComponentsFromComponentNames(
+  pkg: Package, componentNames: string[],
 ): BasePackageComponent[] {
-  return Object.keys(modules).map((name) => ({
+  return componentNames.map((name) => ({
     package: pkg,
     name: name.toLocaleLowerCase(),
   }));
 }
 
-function registryElementsToModules(elements: Record<string, SourceElement<unknown>>): System.Module {
-  return Object.entries(elements).reduce((acc: System.Module, [name, element]) => {
-    acc[name] = element.component;
-    return acc;
-  }, {});
-}
-
-async function internalPackageInterceptor(): Promise<System.Module> {
-  return pipe(mergeAll, registryElementsToModules)([basic, form, layout, advanced]);
-}
-
-async function systemPackageInterceptor(): Promise<System.Module> {
-  return registryElementsToModules(systemComponents);
-}
-
-async function importPackage(url: string): Promise<System.Module> {
-  const loadFlow = cond([
-    [() => equals('system', url), systemPackageInterceptor],
-    [() => equals('internal', url), internalPackageInterceptor],
-    [() => equals('all', url), async () => ({})],
-    [T, () => System.import(url)],
-  ]);
-  return await loadFlow();
-}
-
 export async function getComponentsFromPackage(pkg: Package): Promise<PackageComponent[]> {
-  const modules = await importPackage(pkg.url);
-  if (isEmpty(modules)) {
-    return [];
-  }
   const categoryVariantsMap = await getPackageComponentToCategoryVariantMapDynamic(pkg);
-
-  const baseComponents = getBaseComponentsFromModules(pkg, modules);
+  const componentNames = Object.keys(categoryVariantsMap);
+  const baseComponents = getBaseComponentsFromComponentNames(pkg, componentNames);
   const componentsArrayPromise = baseComponents.map(getFullComponent(categoryVariantsMap));
   const componentsArray = await Promise.all(componentsArrayPromise);
   const componentsArrayWithoutNull = componentsArray.filter(
     (components): components is PackageComponent[] => components !== null,
   );
-
   return flatten(componentsArrayWithoutNull);
 }
 
-export function getIconNames(): string[] {
-  return pipe(values, flatten, uniq)(iconGroupedNames);
+export async function getPackagesSourceDynamic(): Promise<Package[]> {
+  try {
+    const key = 'artery-design-package-list';
+    const { result } = await getBatchGlobalConfig([{ key, version: '0.0.1' }]);
+    const packages: Package[] = JSON.parse(result[key]);
+    const defaultNames = defaultPackages.map((pkg) => pkg.name);
+    return [...defaultPackages, ...packages.filter((pkg) => !defaultNames.includes(pkg.name))];
+  } catch (e) {
+    console.error(e);
+    return [];
+  }
+}
+
+async function getPackageComponentToCategoryVariantMapDynamic(
+  { name, version }: Package,
+): Promise<Record<string, CategoryVariants | undefined>> {
+  try {
+    if (name === 'all') {
+      return {};
+    }
+    const key = `artery-design-package-category-variants:${name}:${version}`;
+    const { result } = await getBatchGlobalConfig([{ key, version: '0.0.1' }]);
+    const getter = ifElse(
+      () => !isEmpty(result),
+      () => JSON.parse(result[key]),
+      () => ({}),
+    );
+    return getter();
+  } catch (e) {
+    console.error(e);
+    return {};
+  }
 }

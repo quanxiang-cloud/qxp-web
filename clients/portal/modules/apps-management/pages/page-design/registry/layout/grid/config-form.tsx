@@ -3,7 +3,7 @@ import cs from 'classnames';
 import { defaults } from 'lodash';
 import { Select, GridProps, Icon } from '@one-for-all/ui';
 
-import { useCtx } from '../../../ctx';
+import { useCtx } from '@pageDesign/ctx';
 
 export const DEFAULT_CONFIG: GridProps = {
   colRatio: '12:9:3',

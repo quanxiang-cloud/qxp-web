@@ -1,5 +1,5 @@
 import UserAvatarMenu from '@c/user-avatar-menu';
-import type { SourceElement } from '../../../types';
+import type { SourceElement } from '@pageDesign/types';
 
 import ConfigForm, { DEFAULT_CONFIG } from './config-form';
 

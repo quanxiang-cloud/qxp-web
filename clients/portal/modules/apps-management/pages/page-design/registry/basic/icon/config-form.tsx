@@ -1,7 +1,8 @@
 import { defaults } from 'lodash';
 import React, { useEffect, useState } from 'react';
 
-import { useCtx } from '../../../ctx';
+import { useCtx } from '@pageDesign/ctx';
+
 import type { ComponentProps } from './type';
 
 export const DEFAULT_CONFIG: ComponentProps = {

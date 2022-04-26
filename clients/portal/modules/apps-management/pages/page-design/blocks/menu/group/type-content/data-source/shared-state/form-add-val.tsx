@@ -7,7 +7,7 @@ import { observer } from 'mobx-react';
 import { toJS } from 'mobx';
 import { Modal, toast } from '@one-for-all/ui';
 
-import { useCtx } from '../../../../../../ctx';
+import { useCtx } from '@pageDesign/ctx';
 
 import styles from '../index.m.scss';
 

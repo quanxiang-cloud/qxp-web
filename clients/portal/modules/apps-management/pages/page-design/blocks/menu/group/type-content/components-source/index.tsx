@@ -28,7 +28,7 @@ function ComponentSource({ onAddNode, currentPackage, onChangePackage }: Props):
         onAddNode={onAddNode}
         components={distComponents}
         categories={currentPackage?.categories}
-        isIconPackage={currentPackage?.name === 'icon'}
+        isIconPackage={currentPackage?.name === '@one-for-all/icon'}
         isAllPackage={isAllPackage}
       />
     </div>

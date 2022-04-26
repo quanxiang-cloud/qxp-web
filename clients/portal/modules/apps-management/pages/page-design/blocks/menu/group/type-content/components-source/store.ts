@@ -1,6 +1,6 @@
 import { flatten } from 'ramda';
 
-import { getPackagesSourceDynamic } from '@pageDesign/utils/mock';
+import { getPackagesSourceDynamic } from '@pageDesign/utils/package';
 import type { Package, PackageComponent } from '@pageDesign/blocks/menu/type';
 import { getComponentsFromPackage } from '@pageDesign/utils/package';
 

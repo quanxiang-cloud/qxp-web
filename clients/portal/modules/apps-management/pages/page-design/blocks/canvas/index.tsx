@@ -2,40 +2,32 @@ import React, { useEffect, useRef, useLayoutEffect, useMemo } from 'react';
 import cs from 'classnames';
 import { observer } from 'mobx-react';
 import { useDrop } from 'react-dnd';
-import { toJS } from 'mobx';
 import { BlockItemProps } from '@one-for-all/artery-engine';
 
-import useObservable from '@lib/hooks/use-observable';
+import { useCtx } from '@pageDesign/ctx';
+import { ElementInfo, BlocksCommunicationType } from '@pageDesign/types';
+import { loadDevEnvPageArtery } from '@pageDesign/utils/helpers';
+import { useStyle } from '@pageDesign/hooks/use-style';
+import { initPageArtery } from '@pageDesign/stores/page-helpers';
 
-import { useCtx } from '../../ctx';
-import { ElementInfo, BlocksCommunicationType } from '../../types';
 import NodeRender from './node-render';
 import NodeToolbox from './node-toolbox';
-import { loadDevEnvPageArtery } from '../../utils/helpers';
-import { useStyle } from '../../hooks/use-style';
-import { updateBlocksCommunicationState } from '../../utils/state';
 
 import styles from './index.m.scss';
 import './style.scss';
-import { initPageArtery } from '../../stores/page-helpers';
 
-function Canvas({ schema, blocksCommunicationState$ }: BlockItemProps<BlocksCommunicationType>): JSX.Element {
+function Canvas(props: BlockItemProps<BlocksCommunicationType>): JSX.Element {
+  const { artery, sharedState, onSharedStateChange } = props;
   const { page } = useCtx();
-  const state = useObservable<BlocksCommunicationType>(
-    // @ts-ignore
-    blocksCommunicationState$,
-    { activeNodeID: '', menu: { currentGroupType: '', groupTypeContentPinned: false } },
-  );
-  const { currentGroupType = '', groupTypeContentPinned = false, pannelWith } = state.menu || {};
+  const { currentGroupType = '', groupTypeContentPinned = false, pannelWith } = sharedState.menu ?? {};
   const toolRef = useRef<any>();
 
-  const [{ isOver }, drop] = useDrop(() => ({
+  const [, drop] = useDrop(() => ({
     accept: ['elem', 'source_elem'],
     drop: (item: any, monitor) => {
       if (monitor.didDrop()) {
         return;
       }
-      console.log('dropped %o onto canvas: ', item);
       page.appendNode(item, null);
     },
     collect: (monitor) => ({
@@ -46,8 +38,7 @@ function Canvas({ schema, blocksCommunicationState$ }: BlockItemProps<BlocksComm
   useEffect(() => {
     loadDevEnvPageArtery();
     // sync schema prop with store state
-    schema && page.setSchema(schema as any);
-
+    artery && page.setSchema(artery as any);
     return () => page.setSchema(initPageArtery());
   }, []);
 
@@ -73,7 +64,7 @@ function Canvas({ schema, blocksCommunicationState$ }: BlockItemProps<BlocksComm
     page.setSchemaElements(elementMap);
 
     toolRef.current.computedPlace();
-  }, [toJS(page.schema.node)]);
+  }, [page.schema.node]);
 
   function handleEle(elements: Element[], newElements: Record<string, ElementInfo>): void {
     elements.map((element: Element) => {
@@ -99,11 +90,7 @@ function Canvas({ schema, blocksCommunicationState$ }: BlockItemProps<BlocksComm
     // because some elem may has children, like container
     const nodeKey = (e.target as Element)?.closest('[data-node-key]')?.getAttribute('data-node-key') || '';
     nodeKey && page.setActiveElemId(nodeKey);
-    !groupTypeContentPinned && updateBlocksCommunicationState<string>({
-      state: blocksCommunicationState$,
-      path: 'menu.currentGroupType',
-      value: '',
-    });
+    !groupTypeContentPinned && onSharedStateChange('menu.currentGroupType', '');
   }
 
   return (

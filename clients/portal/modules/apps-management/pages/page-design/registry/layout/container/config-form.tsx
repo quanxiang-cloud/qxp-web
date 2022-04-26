@@ -3,8 +3,8 @@ import { defaults } from 'lodash';
 import { useForm } from 'react-hook-form';
 import { observer } from 'mobx-react';
 
-import { useCtx } from '../../../ctx';
-import ConfigBind from '../../../utils/data-bind';
+import { useCtx } from '@pageDesign/ctx';
+import ConfigBind from '@pageDesign/utils/data-bind';
 
 export const DEFAULT_CONFIG: Props = {
 

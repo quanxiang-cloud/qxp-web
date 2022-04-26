@@ -1,6 +1,7 @@
+import type { SourceElement } from '@pageDesign/types';
+
 import Card from './card';
 import ConfigForm from './config-form';
-import type { SourceElement } from '../../../types';
 
 type Props = {
   name?: string

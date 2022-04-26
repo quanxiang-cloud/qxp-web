@@ -1,11 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { defaults } from 'lodash';
 import { observer } from 'mobx-react';
-
 import { Select, Icon, Button, Popper } from '@one-for-all/ui';
 
-import { useCtx } from '../../../ctx';
-import ConfigBind from '../../../utils/data-bind';
+import { useCtx } from '@pageDesign/ctx';
+import ConfigBind from '@pageDesign/utils/data-bind';
 
 import './style.scss';
 

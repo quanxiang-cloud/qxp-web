@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { defaults, noop } from 'lodash';
 
-import { useCtx } from '../../../ctx';
-import ConfigBind from '../../../utils/data-bind';
+import { useCtx } from '@pageDesign/ctx';
+import ConfigBind from '@pageDesign/utils/data-bind';
 
 import type { Props } from './radio';
 

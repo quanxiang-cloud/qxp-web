@@ -4,10 +4,11 @@ import { observer } from 'mobx-react';
 import { get } from 'lodash';
 import Editor from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
-
 import { Select, RadioGroup, Radio, Modal, Icon, Button, toast } from '@one-for-all/ui';
-import { useCtx } from '../../../ctx';
-import { PageNode } from '../../../types';
+
+import { useCtx } from '@pageDesign/ctx';
+import { PageNode } from '@pageDesign/types';
+
 import BindItem from './bind-item';
 
 import styles from './index.m.scss';

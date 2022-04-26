@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { defaults } from 'lodash';
 import { Icon, Select, Tooltip } from '@one-for-all/ui';
-
-import { useCtx } from '../../../ctx';
-import ConfigBind from '../../../utils/data-bind';
-
 import type { InputProps } from '@one-for-all/ui';
+
+import { useCtx } from '@pageDesign/ctx';
+import ConfigBind from '@pageDesign/utils/data-bind';
 
 export const DEFAULT_CONFIG: InputProps = {
   defaultValue: undefined,
