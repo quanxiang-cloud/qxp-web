@@ -2,41 +2,44 @@ import React, { useState } from 'react';
 import cs from 'classnames';
 import { clone } from 'ramda';
 import { Cascader } from 'antd';
-import { useParams } from 'react-router-dom';
 import { SingleValueType, DefaultOptionType } from 'rc-cascader/lib/Cascader';
 
 import { RawApiDocDetail } from '@polyApi/effects/api/raw';
 import ApiDocDetail from '@polyApi/components/api-doc-detail';
-import { getChildrenOfCurrentSelectOption } from '@polyApi/utils/request-node';
+import { PathType } from '@lib/api-collection';
 
-import { useGetOptions } from './hooks/api-selector-hooks';
+import { useGetOptionFromCollection } from './hooks/api-selector-hooks';
 
 type Props = {
   initRawApiPath: string;
   setApiPath: (apiPath: string) => void;
+  appID: string,
   label?: string;
   error?: string;
   className?: string;
   usePolyApiOption?: boolean;
   simpleMode?: boolean;
   apiDocDetail?: RawApiDocDetail;
-}
+};
 
 function ApiSelector({
   error,
   className,
   simpleMode,
   setApiPath,
+  appID,
   apiDocDetail,
   initRawApiPath,
   label = '全部API:',
   usePolyApiOption = false,
 }: Props): JSX.Element {
-  const { appID } = useParams<{ appID: string }>();
-  const [apiNamespacePath, setApiNamespacePath] = useState('');
-  const options = useGetOptions(appID, apiNamespacePath, usePolyApiOption);
+  const [apiDirectoryWithPathType, setApiDirectoryWithPathType] = useState({ directory: '', pathType: PathType.RAW_ROOT });
+  const options = useGetOptionFromCollection({ appID, apiDirectoryWithPathType, usePolyApiOption });
 
-  function onChange(value: SingleValueType | SingleValueType[], selectedOptions: DefaultOptionType[]): void {
+  function onChange(
+    value: SingleValueType | SingleValueType[],
+    selectedOptions: DefaultOptionType[],
+  ): void {
     const leafOption = clone(selectedOptions).pop();
     if (leafOption?.isLeaf) {
       setApiPath(leafOption.path);
@@ -47,8 +50,7 @@ function ApiSelector({
   function loadData(selectedOptions: DefaultOptionType[]): void {
     const targetOption = selectedOptions[selectedOptions.length - 1];
 
-    setApiNamespacePath(targetOption.path);
-    targetOption.children = getChildrenOfCurrentSelectOption(targetOption.childrenData);
+    setApiDirectoryWithPathType({ directory: targetOption.path, pathType: targetOption.pathType });
   }
 
   if (simpleMode) {

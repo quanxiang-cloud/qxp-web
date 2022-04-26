@@ -54,7 +54,7 @@ function request<TData>(path: string, method: METHOD, body?: unknown): Promise<T
 }
 
 function httpClient<TData>(path: string, body?: unknown): Promise<TData> {
-  return httpClient.post<TData>(path, body);
+  return httpClient.post<TData>(path, body || {});
 }
 
 httpClient.get = function<TData>(path: string, query?: Record<string, unknown>) {
@@ -130,11 +130,13 @@ export function fetchFormDataList(
   pageID: string,
   data: FormDataListRequestParams,
 ): Promise<FormDataListResponse> {
-  return httpClient(`/api/v1/form/${appID}/home/form/${pageID}/search`, {
+  return httpClient<Record<string, any>>(`/api/v1/form/${appID}/home/form/${pageID}/search`, {
     method: 'find',
     page: 1,
     size: 10,
     ...data,
+  }).then((res) => {
+    return { entities: res?.entities || [], total: res.total || 0 };
   });
 }
 
@@ -298,12 +300,12 @@ export function getTableSchema(appID: string, tableID: string): Promise<GetTable
 
 export function getCustomPageInfo(appID: string, menuId: string): Promise<CustomPageInfo> {
   const side = window.SIDE === 'portal' ? 'm' : 'home';
-  return httpClient(`/api/v1/structor/${appID}/${side}/page/getByMenu`, { menuId });
+  return httpClient(`/api/v1/form/${appID}/${side}/page/getByMenu`, { menuId });
 }
 
 export const fetchPageList = async (appID: string): Promise<fetchPageListRes> => {
   const side = window.SIDE === 'portal' ? 'm' : 'home';
-  return await httpClient(`/api/v1/structor/${appID}/${side}/menu/list`, { appID });
+  return await httpClient(`/api/v1/form/${appID}/${side}/menu/list`, { appID });
 };
 
 export function getArteryPageInfo(appID: string, tableID: string): Promise<ArteryPageInfo> {

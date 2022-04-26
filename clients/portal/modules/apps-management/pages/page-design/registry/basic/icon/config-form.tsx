@@ -10,12 +10,13 @@ export const DEFAULT_CONFIG: ComponentProps = {
 
 interface FieldProps {
   title: string;
-  value: string;
-  onChange: (value: string) => void;
+  value?: string | number;
+  onChange: (value: string | number) => void;
   type: 'text' | 'number';
+  defaultValue?: string | number;
 }
 function Field(
-  { title, value, onChange, type }: FieldProps,
+  { title, value, defaultValue, onChange, type }: FieldProps,
 ): JSX.Element {
   return (
     <>
@@ -25,6 +26,7 @@ function Field(
           className="px-8 py-4 flex-1 border corner-2-8-8-8 border-gray-300 focus:border-blue-600"
           placeholder="请填写"
           value={value}
+          defaultValue={defaultValue}
           type={type}
           onChange={(e) => onChange(e.target.value)}
         />
@@ -46,15 +48,27 @@ const ConfigForm = (): JSX.Element => {
   }, [page.activeElemId]);
 
   function handleChange(type: string) {
-    return (value: string) => {
+    return (value: string | number) => {
       setValues((v) => ({ ...v, [type]: value }));
     };
   }
 
   return (
     <div className="flex flex-col gap-8">
-      <Field type="text" title="图标名称" value={values.name} onChange={handleChange('name')} />
-      <Field type="number" title="图标大小" value={`${values.size || ''}`} onChange={handleChange('size')} />
+      <Field
+        type="text"
+        title="图标名称"
+        defaultValue="close"
+        value={values.name}
+        onChange={handleChange('name')}
+      />
+      <Field
+        type="number"
+        title="图标大小"
+        defaultValue={16}
+        value={values.size}
+        onChange={handleChange('size')}
+      />
     </div>
   );
 };

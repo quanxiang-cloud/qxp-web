@@ -1,22 +1,30 @@
-import { Node } from '@one-for-all/artery';
+import { Node, RouteNode } from '@one-for-all/artery';
+
 import {
   LAYOUT_CHILD_TYPE_FRAGMENT_CONTAINER,
   LAYOUT_CHILD_TYPE_ROUTES_CONTAINER,
   ROOT_NODE_ID,
 } from '../constants';
 
-import { LayoutType } from '../types';
+import { CreateLayoutInfo } from './add-layout-to-root';
 import { genNodeID } from './utils';
 
-export default function createLayoutSchema(
-  name: string,
-  layoutType: LayoutType,
+export type LayoutSchemaProps = {
+  layoutInfo: CreateLayoutInfo;
   refSchemaKey: string,
+  initialChild?: RouteNode,
   isRoot?: boolean,
-): Node {
+}
+
+export default function createLayoutSchema({
+  layoutInfo,
+  refSchemaKey,
+  initialChild,
+  isRoot,
+}: LayoutSchemaProps ): Node {
   return {
     id: isRoot ? ROOT_NODE_ID : genNodeID(),
-    label: name,
+    label: layoutInfo.name,
     type: 'html-element',
     name: 'div',
     props: {
@@ -30,7 +38,11 @@ export default function createLayoutSchema(
       },
       'data-layout-type': {
         type: 'constant_property',
-        value: layoutType,
+        value: layoutInfo.type,
+      },
+      'data-layout-description': {
+        type: 'constant_property',
+        value: layoutInfo.description || '',
       },
     },
     children: [
@@ -62,7 +74,7 @@ export default function createLayoutSchema(
             value: LAYOUT_CHILD_TYPE_ROUTES_CONTAINER,
           },
         },
-        children: [],
+        children: initialChild ? [initialChild] : [],
       },
     ],
   };

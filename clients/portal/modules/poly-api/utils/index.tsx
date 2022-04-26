@@ -1,4 +1,4 @@
-import React, { MutableRefObject, Ref } from 'react';
+import { MutableRefObject } from 'react';
 import { Edge, isEdge, removeElements } from 'react-flow-renderer';
 import { ifElse, flatten } from 'ramda';
 import { customAlphabet } from 'nanoid';
@@ -156,13 +156,14 @@ export function isSomeActionShow(el: HTMLElement | null): boolean {
   return actions.some((action) => (action as HTMLElement).style.opacity === '1');
 }
 
-export function mergeRefs<T>(...refs: Array<MutableRefObject<T> | Ref<T>>): React.Ref<T> {
+type Ref<T> = MutableRefObject<T | null> | ((instance: T) => void) | null;
+export function mergeRefs<T>(...refs: Ref<T>[]): Ref<T> {
   return (node: T) => {
     refs.forEach((ref) => {
       if (typeof ref === 'function') {
         ref(node);
-      } else {
-        (ref as MutableRefObject<T>).current = node;
+      } else if (ref) {
+        ref.current = node;
       }
     });
   };
@@ -187,10 +188,14 @@ function removeCurrentRequestNodeFromRequestToRequestOrCondition(
 ): POLY_API.Element[] {
   const parentPreviousNextNodeIds = parent.data?.get<string[]>('nextNodes') || [];
   const isParentPreviousMultipleChild = parentPreviousNextNodeIds.length > 1;
-  const edges = isParentPreviousMultipleChild ? [] : [buildEdge(parent.id, next.id)];
+  const isNextEnd = next.type === 'output';
+  const shouldLinkNextNode = !isParentPreviousMultipleChild || !isNextEnd;
+
+  const edges = shouldLinkNextNode ? [buildEdge(parent.id, next.id)] : [];
+  const nextNodeIdsAfterFilter = parentPreviousNextNodeIds.filter((id) => id !== current.id);
   parent.data?.set(
     'nextNodes',
-    !isParentPreviousMultipleChild ? [next.id] : parentPreviousNextNodeIds.filter((id) => id !== current.id),
+    shouldLinkNextNode ? [...nextNodeIdsAfterFilter, next.id] : nextNodeIdsAfterFilter,
   );
   const newElements = removeElements([current], elements);
   return newElements.concat(edges);

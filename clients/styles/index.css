@@ -34,3 +34,6 @@ html {
   border-radius: 12px;
   background: rgba(71, 85, 105, 0.45);
 }
+.ql-snow .ql-tooltip {
+  left: -85px !important;
+}

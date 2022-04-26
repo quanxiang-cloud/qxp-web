@@ -5,7 +5,6 @@ import { Ref, TableHeaderBtn } from '@c/form-app-data-table/type';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { getOperateButtonPer } from './utils';
 import PopConfirm from '@c/pop-confirm';
-import PageLoading from '@c/page-loading';
 import CreateDataForm from './create-data-form';
 import FormAppDataTable from '@c/form-app-data-table';
 import Header from './header';
@@ -32,7 +31,6 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
   const store = useTableViewStore({ appID, tableID, name });
 
   const { fetchSchemeLoading, setCurRowID } = store;
-
   const [modalType, setModalType] = useState('');
 
   const formTableRef = useRef<Ref>(null);
@@ -95,6 +93,8 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
       toast.success('删除成功!');
     }).finally(() => {
       formTableRef.current?.refresh();
+    }).catch((err) => {
+      toast.error(err);
     });
   }
 
@@ -156,9 +156,9 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
   };
 
   const renderPageBody = (): JSX.Element => {
-    if (fetchSchemeLoading) {
-      return <PageLoading />;
-    }
+    // if (fetchSchemeLoading) {
+    //   return <PageLoading />;
+    // }
 
     return (
       <FormAppDataTable

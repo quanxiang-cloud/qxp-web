@@ -17,6 +17,7 @@ import EmptyTips from '@c/empty-tips';
 
 import { createApiKey, getApiKeyList, updateApiKey, deleteApiKey, activeApiKey, getOneApiKey } from './api';
 import FormKeyMsg from './form-key-message';
+import OperationConfirm from './operation-confirm';
 
 import './index.scss';
 
@@ -307,17 +308,7 @@ function ApiKey(): JSX.Element {
             },
           ]}
         >
-          <div className='px-40 py-24'>
-            <div className='flex items-center mb-8'>
-              <Icon name='info' className='text-yellow-600' type='primary' size={18}/>
-              <span className='ml-10 text-14 text-yellow-600'>
-                确认要关闭吗？
-              </span>
-            </div>
-            <div className='pl-28'>
-              如果设置关闭状态后，会导致相关 API 请求失败。
-            </div>
-          </div>
+          <OperationConfirm message='关闭' tips='如果设置关闭状态后，会导致相关 API 请求失败。'/>
         </Modal>
       )}
       {showDelModal && (
@@ -340,17 +331,7 @@ function ApiKey(): JSX.Element {
             },
           ]}
         >
-          <div className='px-40 py-24'>
-            <div className='flex items-center mb-8'>
-              <Icon name='info' className='text-yellow-600' type='primary' size={18}/>
-              <span className='ml-10 text-14 text-yellow-600'>
-                确认要删除吗？
-              </span>
-            </div>
-            <div className='pl-28'>
-              如果该密钥被删除，将无法恢复。
-            </div>
-          </div>
+          <OperationConfirm message='删除' tips='如果该密钥被删除，将无法恢复。'/>
         </Modal>
       )}
       {showFormModal && (
@@ -364,7 +345,7 @@ function ApiKey(): JSX.Element {
               <div
                 className='flex items-center creat-api-key-tips bg-blue-100 text-blue-600 py-12 pl-18 mb-24'
               >
-                <Icon name='info' color='blue' className='w-16 h-16 fill-current' size={18}/>
+                <Icon name='info' className='w-16 h-16 fill-current' size={18}/>
                 <span className='ml-10 text-14'>
                   密钥新建成功，请务必妥善保存。该页面只存在一次，如有丢失请重新创建
                 </span>

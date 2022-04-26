@@ -11,6 +11,7 @@ import ModalComponentNode from './modal-component-node';
 
 import styles from './index.m.scss';
 import './style.scss';
+import { isSystemComponent } from '../../utils/helpers';
 
 function SettingPanel(): JSX.Element {
   const { page, designer, registry } = useCtx();
@@ -31,7 +32,7 @@ function SettingPanel(): JSX.Element {
       },
     ];
 
-    if (page.activeElem?.exportName === 'page') {
+    if (page.activeElem?.exportName === 'page' || isSystemComponent(page.activeElem.category)) {
       return panels;
     }
 

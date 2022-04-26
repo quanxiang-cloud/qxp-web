@@ -49,14 +49,19 @@ export function generateBoxShadowStyle(
   unit: TokenBoxshadowUnit,
 ): string {
   const { color, type } = boxShadow;
-  const shadowType = type === BoxShadowTypes.OUTSET ? '' : 'inset';
+  const shadowType = type === BoxShadowTypes.OUTSET ? '' : ' inset';
   const partialValue = Object.keys(unit).reduce<string>(
-    (acc, cur) => acc + cur in boxShadow ?
-      `${boxShadow[cur as keyof TokenBoxshadowValue]}${unit[cur as keyof TokenBoxshadowUnit]}` : '',
+    (acc, cur) =>
+      acc +
+      (cur in boxShadow ?
+        `${boxShadow[cur as keyof TokenBoxshadowValue]}${
+          unit[cur as keyof TokenBoxshadowUnit]
+        } ` :
+        ''),
     '',
   );
 
-  return `${partialValue}${color} ${shadowType}`;
+  return `${partialValue}${color}${shadowType}`;
 }
 
 export function generateTypoGraphyStyle(

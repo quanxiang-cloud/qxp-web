@@ -2,7 +2,7 @@ import { action, computed, observable, runInAction, toJS } from 'mobx';
 import { cloneDeep, defaults, set } from 'lodash';
 
 import { LoopNode, LoopNodeConf, ComposedNodeConf } from '../types';
-import { elemId } from '../utils';
+import { generateNodeId } from '../utils';
 import { findNode, findParentId,
   removeNode as removeTreeNode, copyNode as copyTreeNode,
   replaceNode as replaceTreeNode } from '../utils/tree-utils';
@@ -11,6 +11,7 @@ import dataSource from './data-source';
 import type { DragPos, PageNode, PageArtery, SchemaElements, SourceElement } from '../types';
 import { mapRawProps, mergeAsRenderEngineProps, transformLifecycleHooks } from '../utils/artery-adapter';
 import { initPageArtery, deepMergeNode, generateGridChildren } from './page-helpers';
+import { isSystemComponent } from '../utils/helpers';
 
 type Mode = 'design' | 'preview'
 
@@ -157,13 +158,13 @@ class PageStore {
       }
     }
 
-    const componentId = origSrcId || elemId(node.exportName);
+    const componentId = origSrcId || generateNodeId(node.exportName);
     const params: Partial<PageNode> = {
       id: componentId,
       pid: this.dragPos === 'inner' ? targetRealNode.id : (targetRealNode.pid || pageId),
       supportStateExposure: true,
       type: 'react-component',
-      packageName: 'ofa-ui',
+      packageName: isSystemComponent(node.category ?? '') ? 'system-components' : 'ofa-ui',
       packageVersion: 'latest',
       props: mergeAsRenderEngineProps({}, {
         id: componentId, // Default mount ID
@@ -180,7 +181,7 @@ class PageStore {
       if (node.exportName === 'modal') {
         // fill modal body with container component, so it can accept other elements
         params.children = [{
-          id: elemId('container'),
+          id: generateNodeId('container'),
           pid: params.id,
           type: 'react-component',
           exportName: 'container',
@@ -461,7 +462,7 @@ class PageStore {
     }
     const nodeCopy = cloneDeep(target);
     const loopNodeConfig = {
-      id: elemId('loop-node'),
+      id: generateNodeId('loop-node'),
       type: 'loop-container',
       node: nodeCopy,
       loopKey: loopConfig.loopKey || 'id',
@@ -535,7 +536,7 @@ class PageStore {
     }
     // const nodeCopy = cloneDeep(target);
     const composedNodeConfig = {
-      id: elemId('loop-node'),
+      id: generateNodeId('loop-node'),
       props: {},
       type: 'loop-container',
       // node: nodeCopy,

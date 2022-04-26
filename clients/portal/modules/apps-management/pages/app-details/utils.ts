@@ -1,12 +1,10 @@
 import moment from 'moment';
 import { UnionColumn } from 'react-table';
-import { flattenDeep, isEmpty } from 'lodash';
 
 import toast from '@lib/toast';
 
 import { fetchCorrelationFlows, fetchCorrelationRoles } from './api';
 import { CardListInfo, CardList, CustomPageInfo, Description, ArteryPageInfo } from './type';
-import { Menu } from './page-menu-design/menu-tree/type';
 import { ViewType } from './view-orchestration/types.d';
 
 export const SYSTEM_FIELDS: Record<string, ModelFieldSchema> = {
@@ -142,9 +140,11 @@ export function getValueOfPageDescription(key: string, data: CustomPageInfo & Ar
   case 'updatedBy':
     return data.updatedBy;
   case 'updatedAt':
-    return !data.updatedAt ? '-' : moment(data.updatedAt, 'X').format('YYYY-MM-DD');
+    return !data.updatedAt ? '-' :
+      moment(Math.floor(Number(data.updatedAt) / 1000), 'X').format('YYYY-MM-DD HH:mm:ss');
   case 'createdAt':
-    return !data.createdAt ? '-' : moment(data.createdAt, 'X').format('YYYY-MM-DD');
+    return !data.createdAt ? '-' :
+      moment(Math.floor(Number(data.createdAt) / 1000), 'X').format('YYYY-MM-DD HH:mm:ss');
   case 'fileSize':
     return data.fileSize;
   case 'fieldLen':
@@ -240,32 +240,4 @@ export function formatFileSize(fileSize: number): string {
   const i = Math.floor(Math.log(fileSize) / Math.log(1024));
 
   return parseFloat((fileSize / Math.pow(1024, i)).toFixed(2)) + ' ' + units[i];
-}
-
-function getFlatMenu(menus: Menu[] = []): Menu[] {
-  return flattenDeep(menus.map((menu: Menu) => menu.child?.length ? [menu, menu.child] : menu));
-}
-
-type MenuMap = Record<string, Menu>;
-function getReduceMap(menus: Menu[]): MenuMap {
-  const reducerFn = (acc: MenuMap, menu: Menu): MenuMap => {
-    acc[menu.id] = menu;
-    return acc;
-  };
-  return getFlatMenu(menus).reduce(reducerFn, {});
-}
-
-export function hasActiveMenu(list: Menu[], { id }: Menu): boolean {
-  return !!id && !isEmpty(getReduceMap(list)?.[id]);
-}
-
-export function updateNode(nodeList: Menu[], node: Menu): Menu[] {
-  return nodeList.map((currentNode) => {
-    if (currentNode.id === node.id) {
-      return node;
-    } else if (currentNode.child?.length) {
-      currentNode.child = updateNode(currentNode.child, node);
-    }
-    return currentNode;
-  });
 }

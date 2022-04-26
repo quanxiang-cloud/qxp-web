@@ -1,4 +1,5 @@
 import { diff } from 'just-diff';
+import { useParams } from 'react-router-dom';
 import { groupBy, lensPath, set, dissocPath, last, view, and, or } from 'ramda';
 import React, {
   useEffect, useRef, useCallback, useState, forwardRef, ForwardedRef, useImperativeHandle,
@@ -59,6 +60,8 @@ function RequestConfigForm(
   const formulaEditorRef = useRef<RefType>();
   const [customRules, setCustomRules] = useState<CustomRule[]>();
 
+  const { appID } = useParams<{ appID: string }>();
+
   useImperativeHandle(ref, () => ({
     validate: () => formulaEditorRef.current?.validate(),
   }));
@@ -109,6 +112,7 @@ function RequestConfigForm(
         setApiPath={handleApiPathChange}
         initRawApiPath={value.rawPath}
         apiDocDetail={apiDocDetail}
+        appID={appID}
       />
       <div className="flex flex-1 border-t-1" style={{ height: 'calc(100% - 56px)' }}>
         {isLoading && <PageLoading />}

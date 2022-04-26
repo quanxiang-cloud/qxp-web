@@ -810,7 +810,7 @@
             "fontWeight": "{fontWeight.regular}",
             "lineHeight": "{lineHeight.xl}",
             "fontSize": "{fontSize.sm}",
-            "textDecoration": ""
+            "textDecoration": "{textDecoration.none}"
           },
           "unit" : {
             "lineHeight": "%",
@@ -824,7 +824,7 @@
             "fontWeight": "{fontWeight.regular}",
             "lineHeight": "{lineHeight.xl}",
             "fontSize": "{fontSize.xs}",
-            "textDecoration": ""
+            "textDecoration": "{textDecoration.none}"
           },
           "unit" : {
             "lineHeight": "%",
@@ -858,10 +858,6 @@
       },
       "line-through": {
         "value": "line-through",
-        "type": "textDecoration"
-      },
-      "strikethrough": {
-        "value": "strikethrough",
         "type": "textDecoration"
       }
     }
@@ -962,6 +958,42 @@
         "info": {
           "value": "{blue.100}",
           "type": "color"
+        }
+      }
+    },
+    "boxshadow": {
+      "y8": {
+        "value": {
+          "x": "0",
+          "y": "8",
+          "blur": "24",
+          "spread": "4",
+          "color": "rgba(203,213,225,0.25)",
+          "type": "outset"
+        },
+        "type": "boxShadow",
+        "unit": {
+          "x": "px",
+          "y": "px",
+          "blur": "px",
+          "spread": "px"
+        }
+      },
+      "x8": {
+        "value": {
+          "x": "8",
+          "y": "0",
+          "blur": "24",
+          "spread": "4",
+          "color": "rgba(203,213,225,0.25)",
+          "type": "outset"
+        },
+        "type": "boxShadow",
+        "unit": {
+          "x": "px",
+          "y": "px",
+          "blur": "px",
+          "spread": "px"
         }
       }
     }

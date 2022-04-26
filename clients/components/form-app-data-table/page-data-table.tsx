@@ -120,6 +120,7 @@ function PageDataTable(): JSX.Element {
           />
         </div>
         <Pagination
+          pageSizeOptions={[10, 20, 50, 100, 500, 1000]}
           current={store.params.page as number}
           total={store.total}
           pageSize={store.params.size as number}

@@ -5,17 +5,15 @@ import { DndProvider } from 'react-dnd';
 import { useHistory } from 'react-router-dom';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import ArteryEngine from '@one-for-all/artery-engine';
+import Icon from '@one-for-all/icon';
 
-import Icon from '@c/icon';
 import toast from '@lib/toast';
 import { getQuery } from '@lib/utils';
 import FileUploader from '@c/file-upload';
 import ApiSelector from '@polyApi/nodes/forms/request-config/api-selector';
 
 import ApiSpec from '../app-details/api-proxy/add-api';
-import SelectCustomPageEditor from './select-custom-page-editor';
-import ArteryEditor from './artery-editor';
-import { useQueryArtery, usePageTypeKey } from './hooks';
+import { useQueryArtery } from './hooks';
 import { PAGE_TYPE, PAGE_DESIGN_ID, LAYERS } from './constants';
 import { getInitArteryByPageType } from './utils';
 import Ctx from './ctx';
@@ -28,14 +26,12 @@ import styles from './index.m.scss';
 
 function PageDesign(): JSX.Element | null {
   const { appID, pageName, arteryID } = getQuery<{ appID: string ,pageName: string, arteryID: string }>();
-  const [pageType, setPageType] = useState('');
   const history = useHistory();
 
   const resetStyle: CSSProperties = useMemo(() => ({ overflow: 'hidden' }), [])
   useStyle('body', resetStyle);
   useStyle('html', resetStyle);
 
-  const { pageType: savedPageType, isLoading: isSavedPageTypeLoading } = usePageTypeKey(arteryID);
   const { data: artery, isLoading: isArteryLoading } = useQueryArtery(
     { arteryID },
     { enabled: !!arteryID },
@@ -44,8 +40,12 @@ function PageDesign(): JSX.Element | null {
   const { layers, initialArtery } = useMemo(() => {
     const initialArtery = artery ?? getInitArteryByPageType(PAGE_TYPE.PAGE_DESIGN_EDITOR);
     const layer = LAYERS[0];
-    // to remove pageId params
-    layer.blocksCommunicationStateInitialValue = { activeNodeID: '', appID, pageId: '' };
+    layer.blocksCommunicationStateInitialValue = {
+      activeNodeID: '',
+      appID,
+      arteryID: '',
+      menu: { pannelWith: 280 }
+    };
     return {
       layers: [...LAYERS],
       initialArtery,
@@ -62,7 +62,7 @@ function PageDesign(): JSX.Element | null {
     }
   }
   function handleGoBack(): void {
-    history.push(`/apps/details/${appID}/app_views?pageName=${pageName}`);
+    history.push(`/apps/details/${appID}/views`);
   }
   useEffect(() => {
     eventBus.on('clear:api-path', ()=> {
@@ -72,7 +72,9 @@ function PageDesign(): JSX.Element | null {
     // set page title
     designer.setVdom('title', (
       <div className='inline-flex items-center text-gray-900 text-12'>
-        <Icon name='keyboard_backspace' className='mr-8' onClick={handleGoBack} clickable />
+        <span onClick={handleGoBack}>
+          <Icon name='keyboard_backspace' className='mr-8 cursor-pointer' />
+        </span>
         <span className='mr-4'>正在设计页面:</span>
         <span>{pageName}</span>
       </div>
@@ -122,6 +124,7 @@ function PageDesign(): JSX.Element | null {
       <div className='flex flex-col mb-24 relative -top-8'>
         <p className='text-12 text-gray-600'>选择API</p>
         <ApiSelector
+          appID={appID}
           simpleMode
           className='api-selector-wrap'
           initRawApiPath={apiPath}
@@ -130,12 +133,6 @@ function PageDesign(): JSX.Element | null {
       </div>
     ));
   }, [apiPath]);
-
-  // todo refactor this
-  if (pageType === PAGE_TYPE.ARTERY_EDITOR) {
-    const initialArtery = artery ?? getInitArteryByPageType(pageType);
-    return <ArteryEditor appID={appID} arteryID={arteryID} initialArtery={initialArtery} />;
-  }
 
   const handleSave = useCallback((page_artery: any, options?: Record<string, any>): void => {
     savePage(arteryID, page_artery, options).then(() => {
@@ -158,21 +155,8 @@ function PageDesign(): JSX.Element | null {
       </DndProvider>
   ), [initialArtery, layers]);
 
-  // todo refactor this
-  if (pageType === PAGE_TYPE.PAGE_DESIGN_EDITOR) {
-    return ArteryEngineEntry;
-  }
-
-  if (isArteryLoading || isSavedPageTypeLoading) {
+  if (isArteryLoading) {
     return null;
-  }
-
-  if (!artery) {
-    return (<SelectCustomPageEditor arteryID={arteryID} onSelect={setPageType} />);
-  }
-
-  if (savedPageType === PAGE_TYPE.ARTERY_EDITOR) {
-    return (<ArteryEditor appID={appID} arteryID={arteryID} initialArtery={artery} />);
   }
 
   return ArteryEngineEntry;

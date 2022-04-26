@@ -4,7 +4,6 @@ import { first } from 'lodash';
 
 import { OrchestrationAPIStore } from './store';
 import APINamespaceTreeStore from './store/namespace';
-import type { NameSpace } from './effects/api/api-namespace';
 import { getNamespaceNodeSiblingNodes } from './utils';
 
 type Props = PropsWithChildren<{ orchestrationApiStore: OrchestrationAPIStore }>;
@@ -20,7 +19,7 @@ export const useOrchestrationAPIStore = (): OrchestrationAPIStore | null => useC
   OrchestrationAPIStoreContext,
 );
 
-function useStore(
+export function useStore(
   { root, child }: APINamespaceStoreProviderProps, update?: boolean,
 ): APINamespaceTreeStore | undefined {
   const apiNamespaceStore = useMemo(
@@ -47,7 +46,7 @@ function useStore(
   return apiNamespaceStore;
 }
 
-type APINamespaceStoreProviderProps = PropsWithChildren<{ root?: NameSpace; child: NameSpace[] }>;
+type APINamespaceStoreProviderProps = PropsWithChildren<{ root?: PolyAPI.Namespace; child: PolyAPI.Namespace[] }>;
 const ApiNamespaceStoreContext = createContext<APINamespaceTreeStore | null | undefined>(null);
 export function ApiNamespaceStoreProvider(
   { children, root, child }: APINamespaceStoreProviderProps,
