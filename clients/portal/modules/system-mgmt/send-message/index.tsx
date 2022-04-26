@@ -5,7 +5,7 @@ import { debounce } from 'lodash';
 import { useMutation, useQueryClient } from 'react-query';
 import { Form, Input } from 'antd';
 
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import Modal from '@c/modal';
 import toast from '@lib/toast';
 import { createMsg } from '@portal/modules/system-mgmt/api';

@@ -5,15 +5,13 @@ import { observer } from 'mobx-react';
 import { FormInstance } from 'antd/es/form';
 import { Switch } from 'antd';
 
-import Button from '@c/button';
-import Table from '@c/table';
+import { Button, Table, Pagination } from '@one-for-all/headless-ui';
 import Modal, { FooterBtnProps } from '@c/modal';
 import Icon from '@c/icon';
 import { copyToClipboard } from '@lib/utils';
 import toast from '@lib/toast';
 import ToolTip from '@c/tooltip';
 import EmptyTips from '@c/empty-tips';
-import Pagination from '@c/pagination';
 import OperationConfirm from '@portal/modules/apps-management/pages/app-details/api-key/operation-confirm';
 
 import CreatApiKeyTable from './creat-api-key-table';

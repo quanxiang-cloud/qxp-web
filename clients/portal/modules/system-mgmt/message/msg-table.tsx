@@ -13,15 +13,13 @@ import ErrorTips from '@c/error-tips';
 import MoreMenu, { MenuItem } from '@c/more-menu';
 import Authorized from '@c/authorized';
 import SvgIcon from '@c/icon';
-import Pagination from '@c/pagination';
+import { Pagination, Select, Table } from '@one-for-all/headless-ui';
 import Modal from '@c/modal';
 import { createMsg, deleteMsgById } from '@portal/modules/system-mgmt/api';
 import PreviewModal from './preview-modal';
 import { getMsgById } from '@portal/modules/system-mgmt/api';
 import { useQueryClient } from 'react-query';
 import EmptyTips from '@c/empty-tips';
-import Select from '@c/select';
-import Table from '@c/table';
 import toast from '@lib/toast';
 
 import Status from './status';

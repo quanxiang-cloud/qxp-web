@@ -7,8 +7,7 @@ import { useMutation } from 'react-query';
 import { Progress } from 'antd';
 import { isString } from 'lodash';
 
-import Table from '@c/table';
-import Button from '@c/button';
+import { Table, Button } from '@one-for-all/headless-ui';
 import toast from '@lib/toast';
 import { FilePicker } from '@c/file-upload';
 import Icon from '@c/icon';

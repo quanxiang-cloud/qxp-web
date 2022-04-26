@@ -5,8 +5,7 @@ import { useParams } from 'react-router-dom';
 import toast from '@lib/toast';
 import TextHeader from '@c/text-header';
 import PopConfirm from '@c/pop-confirm';
-import Button from '@c/button';
-import Table from '@c/table';
+import { Table, Button } from '@one-for-all/headless-ui';
 import EmployeeOrDepartmentPickerModal from '@c/employee-or-department-picker';
 import Modal from '@c/modal';
 

@@ -7,7 +7,7 @@ import MoreMenu from '@c/more-menu';
 import PopConfirm from '@c/pop-confirm';
 import toast from '@lib/toast';
 import Icon from '@c/icon';
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 
 import { handleReadTask } from '../api';
 import { validateTaskFrom } from './utils';

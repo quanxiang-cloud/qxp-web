@@ -6,7 +6,7 @@ import { noop } from 'lodash';
 
 import Icon from '@c/icon';
 import ToolTip from '@c/tooltip';
-import Select from '@c/select';
+import { Select } from '@one-for-all/headless-ui';
 import toast from '@lib/toast';
 
 import { getFormDataMenuList } from './api';
@@ -67,7 +67,6 @@ ref?: Ref<any>): JSX.Element {
         </div>
         {changeable && (
           <Select
-            ref={ref}
             options={_optionsData}
             placeholder="请选择"
             value={value.value}
@@ -92,7 +91,6 @@ ref?: Ref<any>): JSX.Element {
             <div className="flex-1">
               <Select
                 disabled
-                ref={ref}
                 options={_optionsData}
                 placeholder="请选择"
                 value={value.value}

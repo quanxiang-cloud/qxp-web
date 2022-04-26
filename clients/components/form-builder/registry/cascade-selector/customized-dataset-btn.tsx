@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import Modal from '@c/modal';
 import EditableTree, { RefType } from '@c/editable-tree';
 

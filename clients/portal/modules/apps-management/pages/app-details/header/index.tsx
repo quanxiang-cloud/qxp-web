@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 
 import Icon from '@c/icon';
 import PopConfirm from '@c/pop-confirm';
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 
 import AppsSwitcher from '@c/apps-switcher';
 import MoreMenu from '@c/more-menu';

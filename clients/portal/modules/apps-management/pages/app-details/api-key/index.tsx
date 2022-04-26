@@ -5,8 +5,7 @@ import { Switch } from 'antd';
 import { FormInstance } from 'antd/es/form';
 import { saveAs } from 'file-saver';
 
-import Button from '@c/button';
-import Table from '@c/table';
+import { Table, Button } from '@one-for-all/headless-ui';
 import Modal, { FooterBtnProps } from '@c/modal';
 import Icon from '@c/icon';
 import Card from '@c/card';

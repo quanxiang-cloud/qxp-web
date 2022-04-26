@@ -27,7 +27,7 @@ function ShadowContent({
 
     const style = document.createElement('style');
     const compStyle = document.createElement('link');
-    compStyle.href = 'https://ofapkg.pek3b.qingstor.com/@one-for-all/headless-ui@0.1.1/ofa-headless-ui-web.css';
+    compStyle.href = 'http://localhost:8081/ui/@one-for-all/headless-ui@latest/ofa-headless-ui-web.css';
     compStyle.rel = 'stylesheet';
     style.textContent = `
     .style-guide-comp-item {
@@ -39,11 +39,7 @@ function ShadowContent({
      align-items: center;
     }
 
-    .style-guide-comp-item-active {
-      background-color: var(--blue-50);
-    }
-
-    .style-guide-comp-item:hover {
+    .style-guide-comp-item:hover, .style-guide-comp-item-active {
       border: 1px solid var(--blue-500);
     }`;
     store.shadowRoot.appendChild(compStyle);

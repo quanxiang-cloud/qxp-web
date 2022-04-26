@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import SchemaForm, { useForm, FormEffectHooks, createFormActions } from '@formily/antd';
 import { Radio, Input } from '@formily/antd-components';
 
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import Modal from '@c/modal';
 import getRsaKeys from '@lib/generate-ssh-key';
 import toast from '@lib/toast';

@@ -11,9 +11,9 @@ import { ArrayList } from '@formily/react-shared-components';
 
 // todo refactor this
 import { OPERATORS } from '@c/form-builder/constants';
-import Select from '@c/select';
+import { Select } from '@one-for-all/headless-ui';
 import Icon from '@c/icon';
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 
 export const RowStyleLayout = styled((props) => <div {...props} />)`
   .ant-btn {

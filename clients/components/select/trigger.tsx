@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import Tag from '@c/tag';
+import { Tag } from '@one-for-all/headless-ui';
 import { SelectOption } from './index';
 
 type SingleSelectTriggerProps<T> = {
@@ -42,7 +42,8 @@ export function MultipleSelectTrigger<T extends React.Key>(
               className="mr-5"
               key={value}
               id={value}
-              value={label}
+              value={value}
+              label={label}
               onDelete={(id, e): void => {
                 e.stopPropagation();
                 onUnselect(id);

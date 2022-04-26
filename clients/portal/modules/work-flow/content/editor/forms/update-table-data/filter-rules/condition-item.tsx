@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 
-import Select from '@c/select';
+import { Select } from '@one-for-all/headless-ui';
 import IconBtn from '@c/icon-btn';
 import { getSchemaFields, isFieldTypeMatch, getFieldValuePath } from '../../utils';
 import { Condition } from './index';

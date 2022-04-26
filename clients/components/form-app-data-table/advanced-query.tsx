@@ -3,7 +3,7 @@ import { Popover } from 'antd';
 
 import DataFilter, { RefProps } from '@c/data-filter';
 import Icon from '@c/icon';
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import { Params } from './store';
 
 type Props = {

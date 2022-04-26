@@ -3,8 +3,9 @@ import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import { StoreContext } from '@c/form-builder/context';
 
-import Select from '@c/select';
 import { getFormDataMenuList } from '@c/form-table-selector/api';
+import { Select } from '@one-for-all/headless-ui';
+
 import { getTableSchema } from '@lib/http-client';
 
 type Option = {

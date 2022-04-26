@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/antd';
 import cs from 'classnames';
 
-import Select from '@c/select';
+import { Select } from '@one-for-all/headless-ui';
 
 import { useOrchestrationAPIStore } from '../context';
 import { useQueryPolyList } from '../effects/api/poly';

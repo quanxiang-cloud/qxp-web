@@ -1,9 +1,9 @@
 import React, { ChangeEvent } from 'react';
 import cs from 'classnames';
+import { Switch } from '@one-for-all/headless-ui';
 
 import Radio from '@c/radio';
 import Checkbox from '@c/checkbox';
-import Toggle from '@c/toggle';
 import RadioGroup from '@c/radio/group';
 import { toggleArray } from '@lib/utils';
 import { mergeDataAdapter } from '@flow/content/editor/utils';
@@ -143,7 +143,7 @@ export default function BasicConfig({ type, value, onChange: _onChange }: Props)
               '限制该节点填写所需要的时间，满足条件后可进行催办、按需处理等'
           }</span>
         </div>
-        <Toggle
+        <Switch
           onChange={onTimeRuleUpdate('enabled')}
           defaultChecked={timeRule?.enabled}
         />

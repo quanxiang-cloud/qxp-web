@@ -2,7 +2,7 @@ import React, { ReactChild } from 'react';
 import { observer } from 'mobx-react';
 
 import Icon from '@c/icon';
-import Select from '@c/select';
+import { Select } from '@one-for-all/headless-ui';
 import Checkbox from '@c/checkbox';
 
 import FilterSetting from './filter-setting';

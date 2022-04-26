@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { useFormEffects, FormEffectHooks } from '@formily/antd';
 
-import Toggle from '@c/toggle';
+import { Switch } from '@one-for-all/headless-ui';
 import schemaToFields from '@lib/schema-convert';
 import { SHOW_FIELD } from '@c/form-app-data-table/utils';
 
@@ -77,7 +77,7 @@ function ColumnsPicker({ columns, selected, onChange }: ColumnsPickerProps): JSX
         return (
           <span className="flex justify-between" key={fieldKey}>
             {fieldName}
-            <Toggle
+            <Switch
               onChange={(checked) => toggleCheck(fieldKey, checked)}
               defaultChecked={selected.includes(fieldKey)}
             />

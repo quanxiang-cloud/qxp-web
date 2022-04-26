@@ -3,8 +3,7 @@ import { useQuery } from 'react-query';
 import { useUpdateEffect } from 'react-use';
 import { get } from 'lodash';
 
-import Select from '@c/select';
-import Toggle from '@c/toggle';
+import { Select, Switch } from '@one-for-all/headless-ui';
 import SaveButtonGroup from '@flow/content/editor/components/_common/action-save-button-group';
 import { getFormDataMenuList } from '@c/form-table-selector/api';
 import FlowContext from '@flow/flow-context';
@@ -132,7 +131,7 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel, onChange: _onCh
         {value.targetTableId && (
           <div className="inline-flex items-center mt-10">
             <span className="text-body mr-10">表单数据是否触发工作流执行:</span>
-            <Toggle
+            <Switch
               onChange={(silent) => {
                 onChange({ silent });
               }}
@@ -150,7 +149,7 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel, onChange: _onCh
         {switchTableModal && (
           <Modal
             title='切换目标数据表'
-            onClose={()=> setSwitchTableModal(false)}
+            onClose={() => setSwitchTableModal(false)}
             footerBtns={[
               {
                 key: 'cancel',

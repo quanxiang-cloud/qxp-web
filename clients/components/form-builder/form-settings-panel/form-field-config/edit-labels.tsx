@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { uniq } from 'lodash';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 
 import OptionLabels from './input-for-labels';
 

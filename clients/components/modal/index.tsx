@@ -4,7 +4,7 @@ import styled, { createGlobalStyle, keyframes, css } from 'styled-components';
 import cs from 'classnames';
 
 import Icon from '@c/icon';
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 
 import creatModal from './dialog-modal';
 

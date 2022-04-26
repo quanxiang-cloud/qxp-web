@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import { createFormActions, SchemaForm } from '@formily/antd';
 
 import toast from '@lib/toast';
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import { StoreContext } from '@c/form-builder/context';
 import { validateFieldConfig } from '@c/form-builder/utils';
 import { FieldConfigContext } from '@c/form-builder/form-settings-panel/form-field-config/context';

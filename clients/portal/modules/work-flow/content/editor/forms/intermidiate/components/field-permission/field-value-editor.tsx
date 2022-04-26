@@ -8,7 +8,7 @@ import { isArray, isObject } from 'lodash';
 import Icon from '@c/icon';
 import RadioGroup from '@c/radio/group';
 import Radio from '@c/radio';
-import Select from '@c/select';
+import { Select } from '@one-for-all/headless-ui';
 import ActionButtonGroup from '@flow/content/editor/components/_common/action-button-group';
 import type { FieldValue } from '@flow/content/editor/type';
 import FormRenderer from '@c/form-builder/form-renderer';

@@ -3,7 +3,7 @@ import cs from 'classnames';
 
 import { Icon } from '@one-for-all/ui';
 import RadioButtonGroup from '@c/radio/radio-button-group';
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import Search from '@c/search';
 
 import { Params } from './store';

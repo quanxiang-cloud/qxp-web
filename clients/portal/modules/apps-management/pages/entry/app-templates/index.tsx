@@ -4,7 +4,7 @@ import { UnionColumn } from 'react-table';
 
 import { toast } from '@one-for-all/ui';
 import Icon from '@c/icon';
-import Table from '@c/table';
+import { Table } from '@one-for-all/headless-ui';
 import MoreMenu from '@c/more-menu';
 import TextHeader from '@c/text-header';
 import EmptyTips from '@c/empty-tips';

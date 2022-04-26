@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { useFormEffects, FormEffectHooks, IFieldState } from '@formily/antd';
-
-import Toggle from '@c/toggle';
+import { Switch } from '@one-for-all/headless-ui';
 
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 import schemaToFields from '@lib/schema-convert';
@@ -76,7 +75,7 @@ function SubTableColumns({ value, mutators }: ISchemaFieldComponentProps): JSX.E
             return (
               <li key={val} className="flex justify-between items-center my-5">
                 <span className="mr-7">{label}</span>
-                <Toggle
+                <Switch
                   defaultChecked={value.includes(val)}
                   onChange={(isOpen) => onToggleColumn(val, isOpen)}
                 />

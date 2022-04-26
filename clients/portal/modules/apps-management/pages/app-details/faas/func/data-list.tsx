@@ -6,12 +6,10 @@ import { observer } from 'mobx-react';
 import dayjs from 'dayjs';
 
 import Icon from '@c/icon';
-import Table from '@c/table';
+import { Table, Button, Pagination } from '@one-for-all/headless-ui';
 import Modal from '@c/modal';
-import Button from '@c/button';
 import Search from '@c/search';
 import PopConfirm from '@c/pop-confirm';
-import Pagination from '@c/pagination';
 import TableMoreFilterMenu from '@c/more-menu/table-filter';
 import { copyContent } from '@lib/utils';
 

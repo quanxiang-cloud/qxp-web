@@ -2,7 +2,7 @@ import React, { useState, forwardRef, useImperativeHandle, useRef } from 'react'
 import { toJS } from 'mobx';
 import { get, set, cloneDeep } from 'lodash';
 
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import Icon from '@c/icon';
 import toast from '@lib/toast';
 import { generateRandomFormFieldID as genId } from '@c/form-builder/utils';

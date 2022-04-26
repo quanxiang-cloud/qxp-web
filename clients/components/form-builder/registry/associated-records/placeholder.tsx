@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { UnionColumn } from 'react-table';
 
-import Table from '@c/table';
+import { Table } from '@one-for-all/headless-ui';
 import schemaToFields from '@lib/schema-convert';
 
 import { getTableSchema } from '@lib/http-client';

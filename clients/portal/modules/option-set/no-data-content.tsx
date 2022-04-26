@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import ShowModal from './show-modal';
 
 import './index.scss';

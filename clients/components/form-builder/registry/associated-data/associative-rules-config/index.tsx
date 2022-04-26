@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/antd';
 
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 
 import RulesConfig from './rules-config';
 import AssociativeRuleList from './rule-list';

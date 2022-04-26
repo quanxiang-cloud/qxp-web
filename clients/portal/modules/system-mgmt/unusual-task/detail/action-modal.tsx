@@ -5,7 +5,7 @@ import { Input } from 'antd';
 
 import Icon from '@c/icon';
 import Modal from '@c/modal';
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import Toast from '@lib/toast';
 import ReceiverPicker from '@c/employee-or-department-picker';
 import ReceiverList from '@c/employee-receiver-list';

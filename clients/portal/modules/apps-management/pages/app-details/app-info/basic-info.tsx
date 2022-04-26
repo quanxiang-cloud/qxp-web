@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import dayjs from 'dayjs';
 
 import Card from '@c/card';
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import PageLoading from '@c/page-loading';
 
 import CreatedEditApp from '../../entry/app-list/app-edit/created-edit-app';

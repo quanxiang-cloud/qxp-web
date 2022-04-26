@@ -2,7 +2,7 @@ import React, { forwardRef, Ref, MouseEvent } from 'react';
 import cs from 'classnames';
 import { isNode } from 'react-flow-renderer';
 
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import useObservable from '@lib/hooks/use-observable';
 import toast from '@lib/toast';
 

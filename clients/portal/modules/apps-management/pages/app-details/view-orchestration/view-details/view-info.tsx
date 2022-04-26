@@ -5,7 +5,8 @@ import { toast } from '@one-for-all/ui';
 
 import Tab from '@c/tab';
 import Icon from '@c/icon';
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
+
 import ArteryRenderer from '@c/artery-renderer';
 import { getArteryPageInfo } from '@lib/http-client';
 import { ARTERY_KEY_VERSION } from '@portal/constants';

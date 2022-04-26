@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import schemaToFields from '@lib/schema-convert';
 import { StoreContext } from '@c/form-builder/context';
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';

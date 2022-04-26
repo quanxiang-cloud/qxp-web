@@ -1,7 +1,7 @@
 import React, { useState, forwardRef, useImperativeHandle } from 'react';
 
 import Checkbox from '@c/checkbox';
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 
 interface Props {
   canIUseReadBtn: boolean;

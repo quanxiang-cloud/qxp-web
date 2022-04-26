@@ -5,7 +5,7 @@ import { observer } from 'mobx-react';
 import TextHeader from '@c/text-header';
 import ErrorTips from '@c/error-tips';
 import Search from '@c/search';
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import Container from '../container';
 import MsgTable from './msg-table';
 import Authorized from '@c/authorized';

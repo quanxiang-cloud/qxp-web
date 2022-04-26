@@ -2,16 +2,15 @@ import React, { useRef, useContext, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { Radio, RadioChangeEvent } from 'antd';
+import { Switch } from '@one-for-all/headless-ui';
 
-import Toggle from '@c/toggle';
 import Icon from '@c/icon';
 import ToolTip from '@c/tooltip';
 import Loading from '@c/loading';
-import Select from '@c/select';
+import { Select, Button } from '@one-for-all/headless-ui';
 import TextHeader from '@c/text-header';
 import useObservable from '@lib/hooks/use-observable';
 import CheckBoxGroup from '@c/checkbox/checkbox-group';
-import Button from '@c/button';
 import FormulaEditor, { RefProps } from '@c/formula-editor';
 import { getFormFieldSchema } from '@flow/content/editor/forms/api';
 import schemaToFields from '@lib/schema-convert';
@@ -231,7 +230,7 @@ export default function GlobalConfig(): JSX.Element | null {
                   control={control}
                   defaultValue={option.checked}
                   render={({ field }) => (
-                    <Toggle
+                    <Switch
                       defaultChecked={option.checked}
                       className="mr-16"
                       onChange={(type) => {

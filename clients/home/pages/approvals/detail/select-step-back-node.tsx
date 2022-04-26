@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import Select from '@c/select';
+import { Select } from '@one-for-all/headless-ui';
 
 import { getStepbackActivityList } from '../api';
 

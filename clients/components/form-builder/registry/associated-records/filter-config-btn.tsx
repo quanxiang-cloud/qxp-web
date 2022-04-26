@@ -2,7 +2,7 @@ import React, { useContext, useRef, useState } from 'react';
 import { toJS } from 'mobx';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import { StoreContext } from '@c/form-builder/context';
 import { getTableSchema } from '@lib/http-client';
 

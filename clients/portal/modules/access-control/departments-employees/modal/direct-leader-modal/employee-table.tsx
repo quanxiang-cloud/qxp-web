@@ -3,8 +3,7 @@ import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
 import cs from 'classnames';
 
-import Table from '@c/table';
-import Pagination from '@c/pagination';
+import { Table, Pagination } from '@one-for-all/headless-ui';
 import EmptyTips from '@c/empty-tips';
 import Loading from '@c/loading';
 import OwnerStore from '@c/employee-or-department-picker/store';

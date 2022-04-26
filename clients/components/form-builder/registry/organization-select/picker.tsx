@@ -3,7 +3,7 @@ import React, { useState, useRef, useMemo } from 'react';
 import Modal from '@c/modal';
 import DepartmentPicker from '@c/employee-or-department-picker/department-picker';
 
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import './index.scss';
 
 interface Props {

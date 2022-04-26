@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import FormulaModal from '../create-table-data/formula-modal';
 
 interface Props {

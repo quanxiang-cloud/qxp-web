@@ -3,9 +3,8 @@ import { useQuery } from 'react-query';
 import { get, isEmpty } from 'lodash';
 
 import { FormRenderer } from '@c/form-builder';
-import Select from '@c/select';
+import { Select, Button } from '@one-for-all/headless-ui';
 import IconBtn from '@c/icon-btn';
-import Button from '@c/button';
 import { getSchemaFields, isFieldTypeMatch, isAdvancedField, getSelectColumns } from '../../utils';
 import FlowSourceTableContext from '@flow/content/editor/forms/flow-source-table';
 import FlowContext from '@flow/flow-context';

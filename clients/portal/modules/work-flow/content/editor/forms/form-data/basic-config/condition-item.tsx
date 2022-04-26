@@ -5,7 +5,7 @@ import { useCss } from 'react-use';
 import { DatePicker } from 'antd';
 import moment, { Moment } from 'moment';
 
-import Select from '@c/select';
+import { Select } from '@one-for-all/headless-ui';
 import { FormFieldOption } from '@flow/content/editor/forms/api';
 import type {
   Operator,

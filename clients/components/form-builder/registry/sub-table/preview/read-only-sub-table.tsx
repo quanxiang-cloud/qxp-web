@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { UnionColumn } from 'react-table';
 import cs from 'classnames';
 
-import Table from '@c/table';
+import { Table } from '@one-for-all/headless-ui';
 import { DEFAULT_WIDTH } from '@c/table/utils';
 import schemaToFields from '@lib/schema-convert';
 import { FormDataSubTableValueRenderer } from '@c/form-data-value-renderer';

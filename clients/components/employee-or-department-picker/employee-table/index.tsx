@@ -3,7 +3,7 @@ import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
 import cs from 'classnames';
 
-import Table from '@c/table';
+import { Table } from '@one-for-all/headless-ui';
 import Pagination from '@c/pagination';
 import EmptyTips from '@c/empty-tips';
 // todo remove this

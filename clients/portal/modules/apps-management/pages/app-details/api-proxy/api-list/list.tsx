@@ -6,14 +6,12 @@ import { Switch } from 'antd';
 import { useDebounce, useUpdateEffect } from 'react-use';
 import { orderBy } from 'lodash';
 
-import Button from '@c/button';
+import { Button, Pagination, Table } from '@one-for-all/headless-ui';
 import Search from '@c/search';
-import Table from '@c/table';
 import EmptyTips from '@c/empty-tips';
 import Modal from '@c/modal';
 import Icon from '@c/icon';
 import toast from '@lib/toast';
-import Pagination from '@c/pagination';
 import { copyToClipboard } from '@lib/utils';
 import ToolTip from '@c/tooltip';
 import OperationConfirm from '@portal/modules/apps-management/pages/app-details/api-key/operation-confirm';

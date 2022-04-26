@@ -4,7 +4,7 @@ import { without } from 'ramda';
 import { UnionColumn } from 'react-table';
 
 import Icon from '@c/icon';
-import Table from '@c/table';
+import { Table } from '@one-for-all/headless-ui';
 import Radio from '@c/radio';
 import ToolTip from '@c/tooltip';
 import Checkbox from '@c/checkbox';

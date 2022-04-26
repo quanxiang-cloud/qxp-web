@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import Prism from 'prismjs';
+import { Switch } from '@one-for-all/headless-ui';
 import 'prismjs/plugins/custom-class/prism-custom-class.js';
 import 'prismjs/components/prism-python.js';
 
 import Icon from '@c/icon';
-import Toggle from '@c/toggle';
 import Tooltip from '@c/tooltip';
 import toast from '@lib/toast';
 import Loading from '@c/loading';
@@ -80,7 +80,7 @@ function ApiDetails({ apiPath }: Props ): JSX.Element {
             />
             <div className='flex items-center'>
           使用字段名称:
-              <Toggle
+              <Switch
                 className='ml-8'
                 defaultChecked={useFieldsID}
                 onChange={() => setUseFieldsID(!useFieldsID)}

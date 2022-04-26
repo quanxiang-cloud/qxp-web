@@ -3,7 +3,7 @@ import { Input } from 'antd';
 import { SchemaForm, FormButtonGroup, IForm, createFormActions } from '@formily/antd';
 
 import Modal from '@c/modal';
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 
 const TextArea = Input.TextArea;
 

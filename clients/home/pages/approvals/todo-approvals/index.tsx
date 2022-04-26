@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import { useQuery } from 'react-query';
 import { useHistory, useLocation } from 'react-router-dom';
 
-import Select from '@c/select';
+import { Select } from '@one-for-all/headless-ui';
 import Search from '@c/search';
 import Pagination from '@c/pagination';
 import IconBtn from '@c/icon-btn';

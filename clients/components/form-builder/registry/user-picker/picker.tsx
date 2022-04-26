@@ -2,7 +2,7 @@ import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react'
 
 import Modal from '@c/modal';
 import EmployeePicker from '@c/employee-or-department-picker/employee-picker';
-import Button from '@c/button';
+import { Button } from '@one-for-all/headless-ui';
 import './index.scss';
 import classNames from 'classnames';
 

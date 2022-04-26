@@ -2,9 +2,8 @@ import React, { useContext, useState } from 'react';
 import { useQuery } from 'react-query';
 
 import TextHeader from '@c/text-header';
-import Button from '@c/button';
+import { Button, Table } from '@one-for-all/headless-ui';
 import Modal from '@c/modal';
-import Table from '@c/table';
 import toast from '@lib/toast';
 import flowContext from '@flow/flow-context';
 import { deleteFlowVariable, getVariableList } from '@flow/api';

@@ -2,7 +2,7 @@ import React, { useContext, Fragment } from 'react';
 import cs from 'classnames';
 
 import FlowTableContext from '@flow/content/editor/forms/flow-source-table';
-import Select from '@c/select';
+import { Select } from '@one-for-all/headless-ui';
 
 import ValidatingTips from '../validating-tips';
 import { ApprovePerson } from '@flow/content/editor/type';

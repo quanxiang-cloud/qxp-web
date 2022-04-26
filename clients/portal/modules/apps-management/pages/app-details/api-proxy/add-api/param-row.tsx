@@ -4,7 +4,7 @@ import cs from 'classnames';
 import { get, set } from 'lodash';
 import { useUpdateEffect } from 'react-use';
 
-import Select from '@c/select';
+import { Select } from '@one-for-all/headless-ui';
 import Checkbox from '@c/checkbox';
 import Icon from '@c/icon';
 import ToolTip from '@c/tooltip';
