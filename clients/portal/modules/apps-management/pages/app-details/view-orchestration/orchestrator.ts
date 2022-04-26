@@ -11,6 +11,8 @@ import {
 } from '@one-for-all/artery';
 import { deleteByID, findNodeByID, patchNode } from '@one-for-all/artery-utils';
 
+import { getTableSchema, saveTableSchema } from '@lib/http-client';
+
 import addLayoutToRoot, { copyLayoutToRoot, CreateLayoutInfo } from './helpers/add-layout-to-root';
 import addViewToRoot from './helpers/add-view-to-root';
 import addViewToLayout from './helpers/add-view-to-layout';
@@ -466,7 +468,17 @@ class Orchestrator {
       }
 
       if (viewInfo.type === ViewType.TableSchemaView && this.modalType === 'editView') {
-        return this.editTableSchemaView(viewInfo as TableSchemaView);
+        const { tableID } = viewInfo;
+        // here modify table name first ,
+        // because there is a condition:
+        //  when schema label modified success and table name failed
+        //  edit modal will not close, and if submit again the edited name will be duplicated
+        return getTableSchema(this.appID, tableID).then((res) => {
+          if (!res) return;
+          const { schema, tableID } = res;
+          const updatedNameSchema = { title: viewInfo.name, ...schema };
+          return saveTableSchema(this.appID, tableID, updatedNameSchema);
+        }).then(() => this.editTableSchemaView(viewInfo as TableSchemaView));
       }
 
       return this.updateViewName(this.currentView as View, viewInfo.name!);
