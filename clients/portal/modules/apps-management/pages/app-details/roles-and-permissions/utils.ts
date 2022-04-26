@@ -1,7 +1,9 @@
-import { useQuery, UseQueryOptions, UseQueryResult } from 'react-query';
 
-import { fetchApiAuthDetails } from './api';
-import { SCOPE } from './constants';
+import { TreeNode } from '@c/headless-tree/types';
+import { BodyParameter, Parameter, QueryParameter } from '@lib/api-adapter/swagger-schema-official';
+
+import { APIDocResponse } from './api';
+import { INIT_INPUT_SCHEMA, PARAMS_IN_BODY_METHOD, SCOPE } from './constants';
 
 type getAddAndRemovePersonResult = {
   newScopes: DeptAndUser[],
@@ -44,14 +46,60 @@ export function getAddAndRemovePerson(
   return { newScopes, addAndRemoveScope };
 }
 
-export function useQueryFetchAPiAuth(
-  appID: string,
-  data: {roleID: string, path: string, uri: string},
-  options?: UseQueryOptions<APIAuth, Error>,
-): UseQueryResult<APIAuth, Error> {
-  return useQuery<APIAuth, Error>(
-    'FETCH_API_DETAILS',
-    () => fetchApiAuthDetails(appID, data),
-    options,
-  );
+export function getParamByMethod(method: string, parameters: Array<Parameter>): SwagField {
+  if (PARAMS_IN_BODY_METHOD.includes(method)) {
+    const bodyParameter = parameters.find((param): param is BodyParameter => param.in === 'body');
+    return bodyParameter?.schema || INIT_INPUT_SCHEMA;
+  }
+
+  const _properties = parameters
+    .filter((param): param is QueryParameter => param.in === 'query')
+    .reduce((acc: { [propertyName: string]: SwagField }, params) => {
+      const id = params.name;
+      const _properties = { type: params.type, in: params.in };
+
+      acc[id] = { type: params.type, in: params.in };
+      return acc;
+    }, {});
+
+  return { type: 'object', properties: _properties };
 }
+
+export function fieldsTreeToParams(
+  rootNode?: TreeNode<SwagField>,
+): { [propertyName: string]: SwagSchema; } {
+  if (!rootNode) {
+    return {};
+  }
+
+  const _params: { [propertyName: string]: SwagSchema } = {};
+  rootNode.children?.forEach((child) => {
+    const { data, id } = child;
+    const condition = data?.acceptable || false;
+    if (condition) {
+      if (!data.properties) {
+        _params[id] = { type: data.type };
+        return;
+      }
+      _params[id] = {
+        type: data.type,
+        properties: fieldsTreeToParams(child),
+      };
+    }
+  });
+  return _params;
+}
+
+export function findSchema(apiDoc: APIDocResponse): {
+  inputSchema: SwagSchema | undefined,
+  outputSchema: SwagSchema | undefined
+} {
+  const [method, operation] = Object.entries(Object.values(apiDoc.doc.paths)[0])[0];
+  const inputSchema = getParamByMethod(method, operation.parameters || []);
+  const outputSchema = Object.values(Object.values(apiDoc.doc.paths)[0])[0].responses?.[200]?.schema;
+  return {
+    inputSchema,
+    outputSchema,
+  };
+}
+

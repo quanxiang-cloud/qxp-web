@@ -35,8 +35,8 @@ function AssociatedPerson({ curRole }: Props): JSX.Element {
   return (
     <>
       <div className='h-full flex flex-col'>
-        <AssociatedToolbar/>
-        <ScopeTable/>
+        <AssociatedToolbar />
+        <ScopeTable />
       </div>
       {store.showPickerModal && (
         <EmployeeOrDepartmentPickerModal

@@ -15,7 +15,7 @@ function AssociatedToolbar(): JSX.Element {
           modifier="primary"
           className="ml-2"
           iconName="link"
-          onClick={()=> store.fetchAllScope()}
+          onClick={() => store.fetchAllScope()}
         >
           关联员工与部门
         </Button>
