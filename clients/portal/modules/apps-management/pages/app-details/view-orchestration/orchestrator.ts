@@ -476,7 +476,7 @@ class Orchestrator {
         return getTableSchema(this.appID, tableID).then((res) => {
           if (!res) return;
           const { schema, tableID } = res;
-          const updatedNameSchema = { title: viewInfo.name, ...schema };
+          const updatedNameSchema = { ...schema, title: viewInfo.name };
           return saveTableSchema(this.appID, tableID, updatedNameSchema);
         }).then(() => this.editTableSchemaView(viewInfo as TableSchemaView));
       }
