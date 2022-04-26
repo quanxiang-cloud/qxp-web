@@ -16,21 +16,21 @@ export function getPicker(format: string): 'year' | 'month' | undefined {
   }
 }
 
-function getDateStr(dateString: string, formatStr: string): string {
-  if (!dateString) {
-    return '';
+function getDateStr(dateString: string, formatStr: string, fromNow?: boolean): string {
+  if (fromNow) {
+    return moment(moment().format(formatStr)).toISOString();
   }
 
-  return moment(dateString).format(formatStr);
+  return !dateString ? moment(dateString).format(formatStr) : '';
 }
 
 function DatePicker(props: ISchemaFieldComponentProps): JSX.Element {
   const componentProps = props.props?.['x-component-props'];
-  const { defaultValue, format } = componentProps;
+  const { defaultValue, format, isNow, ...restComponentProps } = componentProps;
 
   useEffect(() => {
-    if (componentProps.isNow) {
-      props.mutators.change(moment(moment().format(format as string)).toISOString());
+    if (isNow) {
+      props.mutators.change(getDateStr('', format, isNow ));
     }
 
     defaultValue && props.mutators.change(getDateStr(defaultValue, format));
@@ -46,7 +46,7 @@ function DatePicker(props: ISchemaFieldComponentProps): JSX.Element {
 
   return (
     <DatePickerAnt
-      {...componentProps}
+      {...restComponentProps}
       picker={getPicker(format as string || 'YYYY-MM-DD HH:mm:ss')}
       onChange={handleChange}
       getPopupContainer={(triggerNode) => triggerNode.parentNode as HTMLElement}
