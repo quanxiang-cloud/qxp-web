@@ -1,4 +1,4 @@
-import React, { forwardRef, useImperativeHandle, useRef } from 'react';
+import React, { forwardRef, ReactNode, useImperativeHandle, useRef } from 'react';
 
 import MoreMenu from '@c/more-menu';
 import QuillEditor, { Quill } from '@c/quill';
@@ -34,9 +34,12 @@ export type QuillEditorRef = {
 interface Props {
   value?: string;
   contentVariables: { label: string; key: string }[];
+  onChange?: (val: string) => void;
+  children?: ReactNode
 }
 
-function QuillEditorWrapper({ value, contentVariables }: Props, ref: React.Ref<QuillEditorRef>): JSX.Element {
+function QuillEditorWrapper(props: Props, ref: React.Ref<QuillEditorRef>): JSX.Element {
+  const { value, contentVariables, onChange, children } = props;
   const quillRef = useRef<Quill>(null);
 
   useImperativeHandle(ref, () => {
@@ -45,20 +48,21 @@ function QuillEditorWrapper({ value, contentVariables }: Props, ref: React.Ref<Q
         return quillRef.current?.getText() || '';
       },
       getInnerHTML: ()=>{
-        return (quillRef.current?.root as HTMLDivElement).outerHTML ?? '';
+        return (quillRef.current?.root as HTMLDivElement)?.outerHTML ?? '';
       },
     };
   });
 
   return (
     <div className="relative">
-      <QuillEditor initialValue={value || ''} ref={quillRef} />
+      <QuillEditor initialValue={value || ''} ref={quillRef} onChange={onChange}/>
       <FieldOption
         options={contentVariables}
         onInsert={(text: string): void => {
           quillRef.current?.insertText(quillRef.current?.getLength(), text);
         }}
       />
+      {children}
     </div>
   );
 }
