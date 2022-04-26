@@ -16,17 +16,28 @@ export function getPicker(format: string): 'year' | 'month' | undefined {
   }
 }
 
+function getDateStr(dateString: string, formatStr: string): string {
+  if (!dateString) {
+    return '';
+  }
+
+  return moment(dateString).format(formatStr);
+}
+
 function DatePicker(props: ISchemaFieldComponentProps): JSX.Element {
   const componentProps = props.props?.['x-component-props'];
+  const { defaultValue, format } = componentProps;
 
   useEffect(() => {
     if (componentProps.isNow) {
-      props.mutators.change(moment(moment().format(componentProps.format as string)).toISOString());
+      props.mutators.change(moment(moment().format(format as string)).toISOString());
     }
+
+    defaultValue && props.mutators.change(getDateStr(defaultValue, format));
   }, []);
 
   const handleChange = (_: Moment | null, dateString: string): void => {
-    props.mutators.change(dateString ? moment(dateString).toISOString() : '');
+    props.mutators.change(getDateStr(dateString, format));
   };
 
   if (props.props.readOnly) {
@@ -36,11 +47,11 @@ function DatePicker(props: ISchemaFieldComponentProps): JSX.Element {
   return (
     <DatePickerAnt
       {...componentProps}
-      picker={getPicker(componentProps.format as string || 'YYYY-MM-DD HH:mm:ss')}
+      picker={getPicker(format as string || 'YYYY-MM-DD HH:mm:ss')}
       onChange={handleChange}
       getPopupContainer={(triggerNode) => triggerNode.parentNode as HTMLElement}
       value={props.value && moment(props.value)}
-      defaultValue={componentProps.defaultValue && moment(componentProps.defaultValue)}
+      defaultValue={defaultValue && moment(defaultValue)}
     />
   );
 }
