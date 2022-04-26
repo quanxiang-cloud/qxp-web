@@ -1146,10 +1146,10 @@
     react-jsx-parser "1.29.0"
     rxjs "^7.4.0"
 
-"@one-for-all/artery-renderer@0.20.1":
-  version "0.20.1"
-  resolved "https://registry.npmmirror.com/@one-for-all/artery-renderer/-/artery-renderer-0.20.1.tgz#58552c1731eca90039abc3c457f8d5a06c2f3b12"
-  integrity sha512-9jz+94yne5H0MGCb2lg2xeTdIryTlYv4mSDrFKWG1Fwp6azf+ED7xSak0cPKa52NdTNof9lei0pXgYrXtGKF8Q==
+"@one-for-all/artery-renderer@0.20.2":
+  version "0.20.2"
+  resolved "https://registry.npmmirror.com/@one-for-all/artery-renderer/-/artery-renderer-0.20.2.tgz#9c9b57d82106efab68c222b9fd37d873a155f0dd"
+  integrity sha512-FwxXbloYFMTd/CckkRqk7v0jvWdqkCOaxJ6Knx+O3RPEUVjREGrnD6g5c55jY20ljoDLfL1+9yxZTjR+JHimXQ==
   dependencies:
     "@one-for-all/api-spec-adapter" "0.4.0"
     "@one-for-all/artery" "0.15.0"
@@ -1160,10 +1160,10 @@
     react-jsx-parser "1.29.0"
     rxjs "^7.4.0"
 
-"@one-for-all/artery-utils@0.10.0":
-  version "0.10.0"
-  resolved "https://registry.npmmirror.com/@one-for-all/artery-utils/-/artery-utils-0.10.0.tgz#cff4b29e6616b084a5ca75aa45ec3cb682dc8987"
-  integrity sha512-M3qWmYAWysuEDJRNmp4rQC/Owc+bQQ1FAY2LwRj8/xif115q8Y6ZYgXBih5AN+IRpb2eugzE3/vO9H3v2IPPTQ==
+"@one-for-all/artery-utils@^0.12.0":
+  version "0.12.0"
+  resolved "https://registry.npmmirror.com/@one-for-all/artery-utils/-/artery-utils-0.12.0.tgz#83f5eca95b69486d06797a193f187df123e2403a"
+  integrity sha512-YQCT6iSrlj4pGo525J0sZf0WfWUTfRIjS0VjQTo6qZemPTt4GuLC70kfdPu7J35oxNbWSOCY+bM2A8rPLZrUuw==
   dependencies:
     "@one-for-all/artery" "0.15.0"
     immutable "4.0.0"
