@@ -1,4 +1,4 @@
-import React, { useMemo, DragEvent } from 'react';
+import React, { useMemo, DragEvent, CSSProperties } from 'react';
 import cs from 'classnames';
 import { observer } from 'mobx-react';
 
@@ -6,6 +6,7 @@ import { Menus } from '@c/more-menu';
 import { Token } from './types/token';
 import { getAliasValue } from './utils/aliases';
 import store from '../store';
+import TokenTooltipWrapper from './components/token-tooltip';
 import usePopper from '@c/popper2';
 import DesignTokenStore from './store';
 import { ShowFormProps } from './token-list';
@@ -40,13 +41,13 @@ function TokenButton({
 
   const visibleName = token.name.split('.').slice(-1).join('.');
   const isColorType = type === 'color';
-  let style = {};
+  let style: CSSProperties = {};
   let showValue = true;
 
   if (type === 'borderRadius') {
     style = { ...style, borderRadius: `${displayValue}${token.unit}` };
   }
-  if (type === 'color') {
+  if (type === 'color' && displayValue) {
     showValue = false;
     style = { backgroundColor: displayValue };
   }
@@ -151,23 +152,23 @@ function TokenButton({
   return (
     <div {...dragProps} className="mb-4 mr-4 border-1 border-gray-100 relative" style={style}>
       {/* <TokenTooltipWrapper token={token}> */}
-      <div
-        onClick={handleClick()}
-        ref={referenceRef}
-        style={style}
-        className={cs('p-4', {
-          'bg-gray-200': !isColorType,
-          'w-20': isColorType,
-          'h-20': isColorType,
-        })}
-      >
-        <p className="button-text">
-          {showValue && <span>{visibleName}</span>}
-        </p>
-        {resolveFailed && (
-          <i className="absolute right-2 top-2 w-4 h-4 bg-orange-600"></i>
-        )}
-      </div>
+        <div
+          onClick={handleClick()}
+          ref={referenceRef}
+          style={style}
+          className={cs('p-4', {
+            'bg-gray-200': !isColorType,
+            'w-20': isColorType,
+            'h-20': isColorType,
+          })}
+        >
+          <p className="button-text">
+            {showValue && <span>{visibleName}</span>}
+          </p>
+          {resolveFailed && (
+            <i className="absolute right-2 top-2 w-4 h-4 bg-orange-600"></i>
+          )}
+        </div>
       {/* </TokenTooltipWrapper> */}
       <Popper placement="bottom">
         <Menus

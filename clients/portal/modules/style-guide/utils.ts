@@ -9,6 +9,5 @@ export function applyStyle(url: string, shadowRoot: ShadowRoot): void {
   link.setAttribute('type', 'text/css');
   link.setAttribute('rel', 'stylesheet');
   link.setAttribute('href', url);
-  link.onload = () => {};
-  shadowRoot.prepend(link);
+  shadowRoot.append(link);
 }

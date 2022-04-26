@@ -15,9 +15,6 @@ function CSSEditor(): JSX.Element {
   const [isChanged, setIsChanged] = useState(false);
   const { spec, key } = store.currentCompStatus as ActiveConfigurationComponent;
   const personalKey = `${key}.${spec.title}`;
-  useEffect(() => {
-    store.fetchComponentScss(personalKey);
-  }, [store.currentCompStatus]);
 
   useEffect(() => {
     if (store.componentScssMap[personalKey]) {
