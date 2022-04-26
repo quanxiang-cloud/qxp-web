@@ -293,6 +293,7 @@ class ApiProxyStore {
     this.loadingNs = false;
     this.isLoading = false;
     this.svcApis = null;
+    this.svc = null;
   };
 }
 
