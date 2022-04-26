@@ -23,17 +23,13 @@ export function apiNamespaceToTreeNode(
   order = 0,
   sort = false,
 ): TreeNode<PolyAPI.Namespace> {
-  let children = child?.map(
-    (dir) => {
+  const children = child?.map(
+    (dir, index) => {
       return apiNamespaceToTreeNode(
-        dir, dir.children, level + 1, true, false, namespace.id, stringToAsciiNumber(dir.name), sort,
+        dir, dir.children, level + 1, true, false, namespace.id, index, sort,
       );
     },
   );
-
-  if (sort) {
-    children = children.sort(treeNodeSorter);
-  }
 
   return {
     data: namespace,
@@ -49,16 +45,4 @@ export function apiNamespaceToTreeNode(
     level,
     children,
   };
-}
-
-export function stringToAsciiNumber(value: string): number {
-  return value.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-}
-
-export function treeNodeSorter(nodeA: TreeNode<any>, nodeB: TreeNode<any>): 1 | -1 {
-  if (nodeA.isLeaf === nodeB.isLeaf) {
-    return nodeA.order < nodeB.order ? -1 : 1;
-  }
-
-  return nodeA.isLeaf ? 1 : -1;
 }
