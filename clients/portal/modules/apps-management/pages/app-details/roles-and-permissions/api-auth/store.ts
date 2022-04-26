@@ -241,7 +241,8 @@ class APIAuthStore {
   onSubmitSaveAuthDetail = (): void => {
     const output = fieldsTreeToParams(this.outputTreeStore?.rootNode);
     const input = fieldsTreeToParams(this.inputTreeStore?.rootNode);
-    const _curAuth = { ...this?.curAuth, response: output, params: input };
+    const apiInfo = _.pick(this.curAPI, ['accessPath', 'uri', 'method']);
+    const _curAuth = { ...this?.curAuth, response: output, params: input, ...apiInfo };
     this.updateAPIAuth(_curAuth);
   };
 
