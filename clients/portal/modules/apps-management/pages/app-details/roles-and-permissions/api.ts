@@ -11,11 +11,11 @@ export function createRole(appID: string, data: RoleCreate): Promise<{ id: strin
 }
 
 export function copyRole(appID: string, data: {
-  groupID?: string;
+  roleID?: string;
   name?: string;
   description?: string;
 }): Promise<{ id: string }> {
-  return httpClient(`/api/v1/form/${appID}/m/permission/duplicatePer`, data);
+  return httpClient(`/api/v1/form/${appID}/m/apiRole/copy`, data);
 }
 
 export function fetchRoles(appID: string): Promise<RoleRight[]> {
