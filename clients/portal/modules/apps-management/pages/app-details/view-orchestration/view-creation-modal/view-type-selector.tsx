@@ -25,6 +25,13 @@ export const VIEW_TYPE_MAP: ViewTypeItemProps[] = [
     imgSrcActive: '/dist/images/form-light.svg',
   },
   {
+    name: '新建自定义页面',
+    type: ViewType.SchemaView,
+    description: '自定义页通常用做信息展示、门户管理或业务深度定制。',
+    imgSrc: '/dist/images/page-dark.svg',
+    imgSrcActive: '/dist/images/page-light.svg',
+  },
+  {
     name: '上传静态页面',
     type: ViewType.StaticView,
     description: '可以上传静态的页面代码，包含html、javascript、css、图片等。',
@@ -38,13 +45,7 @@ export const VIEW_TYPE_MAP: ViewTypeItemProps[] = [
     imgSrc: '/dist/images/external-view.svg',
     imgSrcActive: '/dist/images/external-view-active.svg',
   },
-  {
-    name: '新建自定义页面',
-    type: ViewType.SchemaView,
-    description: '自定义页通常用做信息展示、门户管理或业务深度定制。',
-    imgSrc: '/dist/images/page-dark.svg',
-    imgSrcActive: '/dist/images/page-light.svg',
-  },
+
 ];
 
 function ViewTypeSelector({ onSelect, currentSelectType }: Props): JSX.Element {
@@ -59,7 +60,9 @@ function ViewTypeSelector({ onSelect, currentSelectType }: Props): JSX.Element {
           const active = currentSelectType === typeItem.type;
           return (
             <div
-              className='flex flex-col-reverse w-230 h-270 border-1 border-gray-200 hover:shadow-more-action cursor-pointer rounded-8 duration-300'
+              className={cs('flex flex-col-reverse w-230 h-270 border-1 border-gray-300 cursor-pointer rounded-8 duration-300 hover:shadow-xl', {
+                'shadow-xl view-type-card-selected': active,
+              })}
               key={typeItem.type}
               onClick={() => {
                 onSelect?.(typeItem.type);
@@ -68,8 +71,14 @@ function ViewTypeSelector({ onSelect, currentSelectType }: Props): JSX.Element {
               <div className='flex flex-col gap-6 text-12 p-16'>
                 <span
                   style={active ? { color: 'var(--blue-600)' } : {}}
-                  className='text-gray-900 font-semibold'>{typeItem.name}</span>
-                <span className='text-gray-600'>{typeItem.description}</span>
+                  className='text-gray-900 font-semibold'>
+                  {typeItem.name}
+                </span>
+                <span
+                  style={active ? { color: 'var(--blue-600)' } : {}}
+                  className='text-gray-600'>
+                  {typeItem.description}
+                </span>
               </div>
               <div className='relative w-full'>
                 <img

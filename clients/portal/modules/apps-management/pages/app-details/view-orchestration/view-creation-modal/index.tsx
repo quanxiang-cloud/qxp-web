@@ -11,6 +11,8 @@ import { URL_PARAM_LIST } from '../constants';
 import { BaseView, CreateViewParams, ExternalView, Layout, View, ViewGroup, ViewType } from '../types.d';
 import toast from '@lib/toast';
 
+import './index.scss';
+
 export type Props = {
   onCancel: () => void;
   onSubmit: (viewInfo: CreateViewParams<View>) => void;
