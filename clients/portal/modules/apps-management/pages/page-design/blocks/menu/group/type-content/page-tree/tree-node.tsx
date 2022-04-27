@@ -3,11 +3,11 @@ import { useDrop, useDrag, XYCoord, DragPreviewImage } from 'react-dnd';
 import { observer } from 'mobx-react';
 import cs from 'classnames';
 import { toJS } from 'mobx';
-
 import { Icon } from '@one-for-all/ui';
-import { svgPreviewImg } from '../../../../../utils/helpers';
-import { useCtx } from '../../../../../ctx';
-import type { PageNode, LoopNode } from '../../../../../types';
+
+import { svgPreviewImg } from '@pageDesign/utils/helpers';
+import { useCtx } from '@pageDesign/ctx';
+import type { PageNode, LoopNode } from '@pageDesign/types';
 
 export interface NodeItemProps {
   node: PageNode | LoopNode;

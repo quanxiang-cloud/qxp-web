@@ -4,15 +4,14 @@ import { useDrag, useDrop, DragPreviewImage } from 'react-dnd';
 import { defaults, flow, get, identity } from 'lodash';
 import { toJS } from 'mobx';
 import { observer } from 'mobx-react';
-
+import { generateNodeId } from '@one-for-all/artery-engine';
 import { Icon } from '@one-for-all/ui';
 
-import { PageNode, DragPos, LoopNode } from '../../types';
-import { useCtx } from '../../ctx';
-import { mapRawProps } from '../../utils/artery-adapter';
-import { generateNodeId } from '../../utils';
-import { parseStyleString } from '../../utils/config';
-import { isSystemComponent, svgPreviewImg } from '../../utils/helpers';
+import { PageNode, DragPos, LoopNode } from '@pageDesign/types';
+import { useCtx } from '@pageDesign/ctx';
+import { mapRawProps } from '@pageDesign/utils/artery-adapter';
+import { parseStyleString } from '@pageDesign/utils/config';
+import { isSystemComponent, svgPreviewImg } from '@pageDesign/utils/helpers';
 
 import styles from './index.m.scss';
 

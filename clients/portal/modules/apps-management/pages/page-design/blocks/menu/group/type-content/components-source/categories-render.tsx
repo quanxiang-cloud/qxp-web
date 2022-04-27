@@ -15,7 +15,7 @@ interface Props {
 
 const CategoriesRender = (props: Props): JSX.Element => {
   const { onAddNode, components, categories = [], isIconPackage, isAllPackage } = props;
-  let groupedComponents = useMemo(() => {
+  let groupedComponents: Record<string, PackageComponent[] | undefined> = useMemo(() => {
     return groupBy((component: PackageComponent) => component?.category ?? '', components);
   }, [components]);
 
@@ -35,7 +35,7 @@ const CategoriesRender = (props: Props): JSX.Element => {
           isAllPackage={isAllPackage}
           key={category}
           name={category}
-          components={groupedComponents[category]}
+          components={groupedComponents[category] ?? []}
           onAddNode={onAddNode}
         />
       ))}

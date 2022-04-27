@@ -3,11 +3,10 @@ import cs from 'classnames';
 
 import type { PackageComponent } from '@pageDesign/blocks/menu/type';
 import { useCtx } from '@pageDesign/ctx';
-import { useMenuContext } from '@pageDesign/blocks/menu/context';
+import { buildReactComponentNode } from '@one-for-all/artery-engine';
 
 import styles from './index.m.scss';
 import { Node } from '@one-for-all/artery';
-import { generateNodeId } from '@portal/modules/apps-management/pages/page-design/utils';
 
 interface Props extends PackageComponent {
   onAddNode: () => void;
@@ -17,20 +16,17 @@ interface Props extends PackageComponent {
 
 // todo refactor this
 function genNode(props: Props): Node {
-  return {
-    id: generateNodeId('c'),
-    type: 'react-component',
-    packageName: 'ofa-ui',
-    packageVersion: 'latest',
-    exportName: 'container',
+  return buildReactComponentNode({
+    packageName: props.package.name,
+    packageVersion: props.package.version,
+    exportName: props.name,
     label: props.label,
     // todo add default props
-  };
+  });
 }
 
 const ComponentRender = (props: Props): JSX.Element => {
   const { onAddNode, name, Icon, desc, package: pkg, label, initialProps, style, className } = props;
-  const { artery, onArteryChange } = useMenuContext() ?? {};
   const { page } = useCtx();
   const [isDragging, setIsDragging] = useState(false);
 

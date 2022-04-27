@@ -18,9 +18,15 @@ interface Props {
   className?: string;
 }
 
-const Category = (props: Props): JSX.Element => {
+const Category = (props: Props): JSX.Element | null => {
   const { name, components, onAddNode, className, style, isIconPackage, isAllPackage } = props;
   const addonClassName = isIconPackage || isAllPackage ? 'h-full overflow-hidden' : '';
+
+  const hide = !isIconPackage && !isAllPackage && !components.length;
+
+  if (hide) {
+    return null;
+  }
 
   return (
     <div className={cs(styles.cate, className, addonClassName)} style={style}>

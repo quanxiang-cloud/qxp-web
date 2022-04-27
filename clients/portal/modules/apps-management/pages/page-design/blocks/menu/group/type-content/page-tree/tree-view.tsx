@@ -1,14 +1,16 @@
 import React, { useRef } from 'react';
 import { observer } from 'mobx-react';
 import { DropTargetMonitor, useDrop } from 'react-dnd';
-import { traverseSchema } from '@one-for-all/artery-engine';
+import { travel } from '@one-for-all/artery-utils';
+import { ReactComponentNode } from '@one-for-all/artery';
 
-import { useCtx } from '../../../../../ctx';
-import type { PageNode } from '../../../../../types';
+import { findNode } from '@pageDesign/utils/tree-utils';
+import { useCtx } from '@pageDesign/ctx';
+import type { PageNode } from '@pageDesign/types';
+
 import DropIndicator, { DropIndicatorHandles } from './drop-indicator';
 import type { DropResult, DragMoveProps } from './tree-node';
 import TreeNode from './tree-node';
-import { findNode } from '../../../../../utils/tree-utils';
 import { nodeContentRender } from './node-content-render';
 
 export const COMPONENT_ICON_MAP: Record<string, string> = {
@@ -146,11 +148,14 @@ function TreeView(): JSX.Element {
     drop: onDrop,
   });
 
-  const modalNodes: Array<SchemaSpec.LoopContainerNode | PageNode> = [];
-  traverseSchema(page.schema as any, (node: any) => {
-    if (node.type === 'react-component' && node.exportName === 'modal') {
-      modalNodes.push(node);
-    }
+  const modalNodes: Array<ReactComponentNode> = [];
+  travel(page.schema as any, {
+    reactComponentNode: (node) => {
+      if (node.type === 'react-component' && node.exportName === 'modal') {
+        modalNodes.push(node);
+      }
+      return node;
+    },
   });
 
   return (

@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { Panel } from '@one-for-all/ui';
 
 import type { Package } from '@pageDesign/blocks/menu/type';
+import { GROUP_TITLE_MAP } from '@pageDesign/blocks/menu/constants';
 
 import ComponentsSource from './components-source';
 import PageTree from './page-tree';
 import DataSource from './data-source';
-import { GROUP_TITLE_MAP } from '../../constants';
 
 import './components-source/store';
 

@@ -1,8 +1,8 @@
 import { action, computed, observable, runInAction, toJS } from 'mobx';
 import { cloneDeep, defaults, set } from 'lodash';
+import { generateNodeId } from '@one-for-all/artery-engine';
 
 import { LoopNode, LoopNodeConf, ComposedNodeConf } from '../types';
-import { generateNodeId } from '../utils';
 import { findNode, findParentId,
   removeNode as removeTreeNode, copyNode as copyTreeNode,
   replaceNode as replaceTreeNode } from '../utils/tree-utils';
@@ -11,7 +11,6 @@ import dataSource from './data-source';
 import type { DragPos, PageNode, PageArtery, SchemaElements, SourceElement } from '../types';
 import { mapRawProps, mergeAsRenderEngineProps, transformLifecycleHooks } from '../utils/artery-adapter';
 import { initPageArtery, deepMergeNode, generateGridChildren } from './page-helpers';
-import { isSystemComponent } from '../utils/helpers';
 
 type Mode = 'design' | 'preview'
 
@@ -158,21 +157,21 @@ class PageStore {
       }
     }
 
-    const componentId = origSrcId || generateNodeId(node.exportName);
+    const componentId = origSrcId || generateNodeId(`${node.exportName}-`);
     const params: Partial<PageNode> = {
       id: componentId,
       pid: this.dragPos === 'inner' ? targetRealNode.id : (targetRealNode.pid || pageId),
       supportStateExposure: true,
       type: 'react-component',
-      packageName: isSystemComponent(node.category ?? '') ? 'system-components' : 'ofa-ui',
-      packageVersion: 'latest',
+      packageName: node.packageName,
+      packageVersion: node.packageVersion,
       props: mergeAsRenderEngineProps({}, {
         id: componentId, // Default mount ID
         ...(node.defaultConfig || {}),
       }),
     };
 
-    if (registry.acceptChild(node.exportName)) {
+    if (registry.acceptChild(node.exportName, node.packageName)) {
       Object.assign(params, { children: [] });
       // check layout comps
       if (node.exportName === 'grid') {
@@ -185,8 +184,8 @@ class PageStore {
           pid: params.id,
           type: 'react-component',
           exportName: 'container',
-          packageName: 'ofa-ui',
-          packageVersion: 'latest',
+          packageName: node.exportName,
+          packageVersion: node.packageVersion,
           label: '容器',
           props: {},
           disableActions: true,
@@ -220,11 +219,11 @@ class PageStore {
     window.__isDev__ && console.log('append node: ', toJS(srcNode), toJS(targetRealNode), this.dragPos);
 
     if (this.dragPos === 'up') {
-      this.insertBefore(srcNode as PageNode, targetRealNode, options);
+      this.insertBefore(srcNode as PageNode, targetRealNode);
     } else if (this.dragPos === 'inner') {
       this.appendChild(srcNode as PageNode, targetNode, targetRealNode, options);
     } else if (this.dragPos === 'down') {
-      this.insertAfter(srcNode as PageNode, targetRealNode, options);
+      this.insertAfter(srcNode as PageNode, targetRealNode);
     }
     this.loopType = '';
   };
@@ -268,7 +267,7 @@ class PageStore {
   };
 
   @action
-  insertBefore = (rawNode: PageNode, target: PageNode, options?: AppendNodeOptions): void => {
+  insertBefore = (rawNode: PageNode, target: PageNode): void => {
     const node = this.getRealNode(rawNode);
     const srcParent = findNode(this.schema.node, node.pid);
     const targetParent = findNode(this.schema.node, target.pid);
@@ -300,7 +299,7 @@ class PageStore {
   };
 
   @action
-  insertAfter = (rawNode: PageNode, target: PageNode, options?: AppendNodeOptions): void => {
+  insertAfter = (rawNode: PageNode, target: PageNode): void => {
     const node = this.getRealNode(rawNode);
     const srcParent = findNode(this.schema.node, node.pid);
     const targetParent = findNode(this.schema.node, target.pid);
@@ -594,7 +593,7 @@ class PageStore {
   };
 
   @action
-  setHoverNode = (nodeId: string)=> {
+  setHoverNode = (nodeId: string): void=> {
     this.hoverElemId = nodeId;
   };
 }

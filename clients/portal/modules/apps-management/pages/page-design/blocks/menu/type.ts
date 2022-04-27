@@ -7,7 +7,6 @@ export type ReactComponent = ReactComp;
 export interface Package {
   label: string;
   name: string;
-  url: string;
   version: string;
   categories?: string[];
 }

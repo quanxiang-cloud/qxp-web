@@ -5,8 +5,9 @@ import { javascript } from '@codemirror/lang-javascript';
 import { get } from 'lodash';
 import { Icon, Modal, toast } from '@one-for-all/ui';
 
-import { useCtx } from '../../../ctx';
-import Section from '../../../utils/section';
+import { useCtx } from '@pageDesign/ctx';
+import Section from '@pageDesign/utils/section';
+
 import BindItem from './bind-item';
 
 import styles from './index.m.scss';

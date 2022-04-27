@@ -8,15 +8,15 @@ import toast from '@lib/toast';
 import { getQuery } from '@lib/utils';
 import FileUploader from '@c/file-upload';
 import ApiSelector from '@polyApi/nodes/forms/request-config/api-selector';
+import Loading from '@c/loading';
 
 import ApiSpec from '../app-details/api-proxy/add-api';
-import { useQueryArtery } from './hooks';
-import { PAGE_TYPE, PAGE_DESIGN_ID, LAYERS } from './constants';
-import { getInitArteryByPageType } from './utils';
+import { useQueryArtery, useStyle } from './hooks';
+import { PAGE_DESIGN_ID, LAYERS } from './constants';
 import Ctx from './ctx';
 import stores from './stores';
-import { useStyle } from './hooks/use-style';
 import { savePage } from './api';
+import { getInitArtery } from './utils';
 
 import './index.scss';
 import styles from './index.m.scss';
@@ -35,10 +35,9 @@ function PageDesign(): JSX.Element | null {
   );
 
   const { layers, initialArtery } = useMemo(() => {
-    const initialArtery = artery ?? getInitArteryByPageType(PAGE_TYPE.PAGE_DESIGN_EDITOR);
+    const initialArtery = artery ?? getInitArtery();
     const layer = LAYERS[0];
     layer.blocksCommunicationStateInitialValue = {
-      activeNodeID: '',
       appID,
       arteryID: '',
       menu: { pannelWith: 280 },
@@ -49,23 +48,15 @@ function PageDesign(): JSX.Element | null {
     };
   }, [artery]);
 
-  const { designer, page, eventBus } = stores;
+  const { designer, eventBus } = stores;
   const [apiPath, setApiPath] = useState('');
-  function handleFileSuccess(file: QXPUploadFileTask): void {
-    const { readable: readableBucket, domain }: OSSConfig = window.CONFIG.oss_config;
-    if (file.state === 'success' || !file.state) {
-      const url = `${window.location.protocol}//${readableBucket}.${domain}/${file.uid}`;
-      designer.setUploadImage(url);
-    }
-  }
-  function handleGoBack(): void {
-    history.push(`/apps/details/${appID}/views`);
-  }
   useEffect(() => {
     eventBus.on('clear:api-path', () => {
       setApiPath('');
     });
-
+    function handleGoBack(): void {
+      history.push(`/apps/details/${appID}/views`);
+    }
     // set page title
     designer.setVdom('title', (
       <div className='inline-flex items-center text-gray-900 text-12'>
@@ -77,6 +68,13 @@ function PageDesign(): JSX.Element | null {
       </div>
     ));
 
+    function handleFileSuccess(file: QXPUploadFileTask): void {
+      const { readable: readableBucket, domain }: OSSConfig = window.CONFIG.oss_config;
+      if (file.state === 'success' || !file.state) {
+        const url = `${window.location.protocol}//${readableBucket}.${domain}/${file.uid}`;
+        designer.setUploadImage(url);
+      }
+    }
     // set img upload
     designer.setVdom('uploadImage', (
       <div>
@@ -99,22 +97,22 @@ function PageDesign(): JSX.Element | null {
       </div>
     ));
   }, []);
-  function renderApiStateDetail(): JSX.Element {
-    if (!apiPath) {
+
+  useEffect(() => {
+    function renderApiStateDetail(): JSX.Element {
+      if (!apiPath) {
+        return (
+          <div className='flex flex-col justify-center items-center h-full'>
+            <img src="/dist/images/table-empty.svg" className="w-96 h-72 mb-8" />
+            <span className="text-caption-no-color-weight text-gray-400">请先选择一个要加入数据源的API数据</span>
+          </div>
+        );
+      }
       return (
-        <div className='flex flex-col justify-center items-center h-full'>
-          <img src="/dist/images/table-empty.svg" className="w-96 h-72 mb-8" />
-          <span className="text-caption-no-color-weight text-gray-400">请先选择一个要加入数据源的API数据</span>
-        </div>
+        <ApiSpec apiPath={apiPath} editMode tinyMode />
       );
     }
-    return (
-      <ApiSpec apiPath={apiPath} editMode tinyMode />
-    );
-  }
-  useEffect(() => {
     designer.setVdom('apiStateDetail', renderApiStateDetail());
-
     // setApiPath from another mobx store will not trigger update
     // because mobx instance is isolated
     designer.setVdom('platformApis', (
@@ -132,26 +130,23 @@ function PageDesign(): JSX.Element | null {
   }, [apiPath]);
 
   const handleSave = useCallback((page_artery: any, options?: Record<string, any>): void => {
-    savePage(arteryID, page_artery, options).then(() => {
-      if (!options?.silent) {
-        toast.success('页面已保存');
-      }
-    }).catch((err: Error) => {
-      toast.error(err.message);
-    });
+    savePage(arteryID, page_artery, options)
+      .then(() => !options?.silent && toast.success('页面已保存'))
+      .catch((err: Error) => toast.error(err.message));
   }, []);
+
   const ArteryEngineEntry = useMemo(() => (
     <Ctx.Provider value={Object.assign(stores, { onSave: handleSave })}>
       <div className={cs(styles.designer)}>
         <div id={PAGE_DESIGN_ID}>
-          <ArteryEngine schema={initialArtery} layers={layers} />
+          <ArteryEngine artery={initialArtery} layers={layers} />
         </div>
       </div>
     </Ctx.Provider>
   ), [initialArtery, layers]);
 
   if (isArteryLoading) {
-    return null;
+    return <Loading desc="加载中..." />;
   }
 
   return ArteryEngineEntry;

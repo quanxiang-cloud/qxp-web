@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { defaults } from 'lodash';
 import { TextareaProps } from '@one-for-all/ui';
 
-import { useCtx } from '../../../ctx';
-import ConfigBind from '../../../utils/data-bind';
+import { useCtx } from '@pageDesign/ctx';
+import ConfigBind from '@pageDesign/utils/data-bind';
 
 interface configProps {
   name: string;

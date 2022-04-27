@@ -19,13 +19,13 @@ const PackageSelector = ({ current, onChange }: Props): JSX.Element => {
     packages.length && !current && onChange(getDefaultValue());
   }, [packages, current]);
 
-  const options = packages.map(({ label, url }) => ({
+  const options = packages.map(({ label, name }) => ({
     label,
-    value: url,
+    value: name,
   }));
 
   const packageMap = packages.reduce((acc: Record<string, Package>, cur) => {
-    acc[cur.url] = cur;
+    acc[cur.name] = cur;
     return acc;
   }, {});
 
@@ -33,7 +33,7 @@ const PackageSelector = ({ current, onChange }: Props): JSX.Element => {
     <div onClick={(e) => e.stopPropagation()} className="mb-10 flex-shrink-0">
       <Select
         options={options}
-        value={current?.url}
+        value={current?.name}
         onChange={(url) => onChange(packageMap[url])}
       />
     </div>
