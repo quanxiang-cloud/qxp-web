@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { observer } from 'mobx-react';
 
 import PageLoading from '@c/page-loading';
@@ -27,11 +27,17 @@ import './index.scss';
 
 function AppViews(): JSX.Element {
   const { isLoading, store } = useAppStore();
+  const [btnLoading, setBtnLoading] = useState<boolean>(false);
 
   const handleModalSubmit = useCallback((viewInfo: CreateViewParams<View>): void => {
+    setBtnLoading(true);
     store?.handleViewInfoSubmit(viewInfo).then(() => {
       toast.success((store.modalType === 'createView' ? '添加' : '修改') + '成功');
       closeModal();
+    }).catch(() => {
+      toast.error('修改失败，请重试');
+    }).finally(() => {
+      setBtnLoading(false);
     });
   }, [store?.modalType]);
 
@@ -108,6 +114,7 @@ function AppViews(): JSX.Element {
           onCancel={closeModal}
           viewParams={store.modalType === 'editView' ? store.currentView as View : undefined}
           onSubmit={handleModalSubmit}
+          isPending={btnLoading}
         />
       )}
       {store.modalType === 'editStaticView' && (
