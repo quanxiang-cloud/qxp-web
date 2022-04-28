@@ -43,7 +43,7 @@ function Canvas(props: BlockItemProps<BlocksCommunicationType>): JSX.Element {
   }, []);
 
   useStyle(
-    '.page-engine-layer-block:nth-child(3)',
+    '.artery-engine-layer-block:nth-child(3)',
     useMemo(
       () => ({
         overflow: 'hidden',

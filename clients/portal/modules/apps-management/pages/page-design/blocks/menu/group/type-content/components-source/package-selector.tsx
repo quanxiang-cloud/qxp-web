@@ -3,7 +3,8 @@ import { Select } from '@one-for-all/ui';
 
 import { Package } from '@pageDesign/blocks/menu/type';
 
-import { packages } from './store';
+import { usePackages } from './store';
+import Loading from '@c/loading';
 
 interface Props {
   current?: Package;
@@ -11,23 +12,30 @@ interface Props {
 }
 
 const PackageSelector = ({ current, onChange }: Props): JSX.Element => {
-  function getDefaultValue(): Package {
-    return packages[0];
+  const packages = usePackages();
+
+  function getDefaultValue(): Package | undefined {
+    return packages?.[0];
   }
 
   useEffect(() => {
-    packages.length && !current && onChange(getDefaultValue());
+    const defaultValue = getDefaultValue();
+    defaultValue && !current && onChange(defaultValue);
   }, [packages, current]);
 
-  const options = packages.map(({ label, name }) => ({
+  const options = packages?.map(({ label, name }) => ({
     label,
     value: name,
   }));
 
-  const packageMap = packages.reduce((acc: Record<string, Package>, cur) => {
+  const packageMap = packages?.reduce((acc: Record<string, Package>, cur) => {
     acc[cur.name] = cur;
     return acc;
   }, {});
+
+  if (!packageMap || !options) {
+    return <Loading desc="loading..." />;
+  }
 
   return (
     <div onClick={(e) => e.stopPropagation()} className="mb-10 flex-shrink-0">
