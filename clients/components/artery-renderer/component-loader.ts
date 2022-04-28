@@ -19,7 +19,12 @@ function queryPackageMainSrc(packageName: string, packageVersion: string): Promi
     }
 
     return Promise.reject(
-      new Error('no package entry found in config-center, please make sure you have the correct config'),
+      new Error(
+        [
+          `no package entry found for package: [${packageName}]`,
+          `, version: [${packageVersion}] in config-center, please make sure you have the correct config`,
+        ].join(''),
+      ),
     );
   });
 }
