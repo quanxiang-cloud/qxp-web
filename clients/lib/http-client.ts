@@ -238,13 +238,7 @@ export function findOneFormDataRequest(
     {
       ref: buildQueryRef(schema),
       query: {
-        bool: {
-          must: [
-            {
-              term: { _id: rowID },
-            },
-          ],
-        },
+        term: { _id: rowID },
       },
     },
   ).then(({ entity }) => {
