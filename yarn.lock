@@ -1169,10 +1169,18 @@
     react "^17.0.2"
     recoil "^0.7.2"
 
-"@one-for-all/artery-utils@0.12.0", "@one-for-all/artery-utils@^0.12.0":
+"@one-for-all/artery-utils@0.12.0":
   version "0.12.0"
   resolved "https://registry.npmmirror.com/@one-for-all/artery-utils/-/artery-utils-0.12.0.tgz#83f5eca95b69486d06797a193f187df123e2403a"
   integrity sha512-YQCT6iSrlj4pGo525J0sZf0WfWUTfRIjS0VjQTo6qZemPTt4GuLC70kfdPu7J35oxNbWSOCY+bM2A8rPLZrUuw==
+  dependencies:
+    "@one-for-all/artery" "0.15.0"
+    immutable "4.0.0"
+
+"@one-for-all/artery-utils@^0.13.0":
+  version "0.13.0"
+  resolved "https://registry.npmmirror.com/@one-for-all/artery-utils/-/artery-utils-0.13.0.tgz#a8b85ebee607880548e7af7c4a94ed762b701ec3"
+  integrity sha512-UkUE/I7esWB8SFUQDx2B+Qk+usVLQ0a4UTusEWdPfUN5hxK0jdiJ+Gy8Xh0WNgvjQC73xIRd2nlcavTxSO8GFw==
   dependencies:
     "@one-for-all/artery" "0.15.0"
     immutable "4.0.0"
