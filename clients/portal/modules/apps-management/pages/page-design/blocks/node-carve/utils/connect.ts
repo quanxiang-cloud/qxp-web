@@ -39,8 +39,7 @@ export function connect(
       const { artery, activeNode, onArteryChange } = useContext(ConfigContext) ?? {};
       const { valueKey, eventKey, getValue, defaultProps } = _options;
       const componentProps: Record<string, any> = { ...defaultProps, ...restProps };
-      const _path = `props.${path}`;
-      const property = get(activeNode, _path, { type: 'constant_property' });
+      const property = get(activeNode, path, { type: 'constant_property' });
       if (isConstantProperty(property)) {
         componentProps[valueKey] = property.value;
       }
@@ -51,7 +50,7 @@ export function connect(
         }
 
         const val = getValue ? getValue(...args) : args[0];
-        const newArtery = updateNodeProperty(activeNode, _path, {
+        const newArtery = updateNodeProperty(activeNode, path, {
           type: 'constant_property',
           value: val,
         }, artery);
