@@ -20,12 +20,13 @@ export type Props = {
   views: Array<View | ViewGroup>;
   modalType: string;
   viewParams?: View;
+  isPending?: boolean;
 }
 
 const { Item } = Form;
 
 function CreateViewModal(
-  { viewParams, onCancel, onSubmit, views, layouts, modalType }: Props,
+  { viewParams, onCancel, onSubmit, views, layouts, modalType, isPending }: Props,
 ): JSX.Element {
   const [_viewType, _setViewType] = useState<ViewType>();
   const [viewType, setViewType] = useState<ViewType | undefined>(viewParams?.type);
@@ -111,6 +112,7 @@ function CreateViewModal(
       }, {
         key: 'check',
         modifier: 'primary',
+        loading: isPending,
         onClick: handleSubmit,
         text: submitBtnTextRender(),
       }]}
