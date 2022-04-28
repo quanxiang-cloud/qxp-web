@@ -6,6 +6,7 @@ import AppLand from './app-land';
 import '../styles/reset.css';
 import '../styles/variables/global.css';
 import './index.scss';
+import '../portal/scss/index.scss';
 
 import { registerValidationFormats, setValidationLocale } from '@formily/antd';
 

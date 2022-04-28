@@ -1176,10 +1176,18 @@
     react "^17.0.2"
     recoil "^0.7.2"
 
-"@one-for-all/artery-utils@0.12.0", "@one-for-all/artery-utils@^0.12.0":
+"@one-for-all/artery-utils@0.12.0":
   version "0.12.0"
   resolved "https://registry.npmmirror.com/@one-for-all/artery-utils/-/artery-utils-0.12.0.tgz#83f5eca95b69486d06797a193f187df123e2403a"
   integrity sha512-YQCT6iSrlj4pGo525J0sZf0WfWUTfRIjS0VjQTo6qZemPTt4GuLC70kfdPu7J35oxNbWSOCY+bM2A8rPLZrUuw==
+  dependencies:
+    "@one-for-all/artery" "0.15.0"
+    immutable "4.0.0"
+
+"@one-for-all/artery-utils@^0.13.0":
+  version "0.13.0"
+  resolved "https://registry.npmmirror.com/@one-for-all/artery-utils/-/artery-utils-0.13.0.tgz#a8b85ebee607880548e7af7c4a94ed762b701ec3"
+  integrity sha512-UkUE/I7esWB8SFUQDx2B+Qk+usVLQ0a4UTusEWdPfUN5hxK0jdiJ+Gy8Xh0WNgvjQC73xIRd2nlcavTxSO8GFw==
   dependencies:
     "@one-for-all/artery" "0.15.0"
     immutable "4.0.0"
@@ -5743,6 +5751,11 @@ joycon@^3.0.1:
   version "3.1.1"
   resolved "https://registry.npmmirror.com/joycon/-/joycon-3.1.1.tgz#bce8596d6ae808f8b68168f5fc69280996894f03"
   integrity sha512-34wB/Y7MW7bzjKRjUKTa46I2Z7eV62Rkhva+KkopW7Qvv/OSWBqvkSY7vusOPrNuZcUG3tApvdVgNB8POj3SPw==
+
+js-base64@^3.7.2:
+  version "3.7.2"
+  resolved "https://registry.npmmirror.com/js-base64/-/js-base64-3.7.2.tgz#816d11d81a8aff241603d19ce5761e13e41d7745"
+  integrity sha512-NnRs6dsyqUXejqk/yv2aiXlAvOs56sLkX6nUdeaNezI5LFFLlsZjOThmwnrcwh5ZZRwZlCMnVAY3CvhIhoVEKQ==
 
 js-beautify@^1.6.12:
   version "1.14.3"

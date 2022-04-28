@@ -207,6 +207,7 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
                 tableID={tableID}
                 tableName={name}
                 authority={store.authority}
+                setOperationType={store.setOperationType}
               />
             )}
           </div>
