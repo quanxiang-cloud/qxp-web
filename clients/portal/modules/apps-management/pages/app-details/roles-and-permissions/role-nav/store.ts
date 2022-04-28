@@ -57,9 +57,14 @@ class RoleNavStore {
 
   @action
   fetchRoleList = (): void => {
+    if (!this.appID) {
+      return;
+    }
+    this.fetchRoleLoading = true;
     fetchRoles(this.appID)
       .then(this.setRoles)
-      .catch((err) => toast.error(err));
+      .catch((err) => toast.error(err))
+      .finally(() => this.fetchRoleLoading = false);
   };
 
   @action
@@ -94,15 +99,15 @@ class RoleNavStore {
   };
 
   @action
-  copyRole = (rights: RoleRight): void => {
+  copyRole = (role: RoleRight): void => {
     copyRole(this.appID, {
-      groupID: rights.id,
-      name: rights.name,
-      description: rights.description,
+      roleID: role.id,
+      name: role.name,
+      description: role.description,
     })
       .then((res: { id: string }) => {
-        this.rolesList = [...this.rolesList, { ...this.curRole, ...rights, ...res }];
-        this.curRole = { ...this.curRole, ...rights, ...res };
+        this.rolesList = [...this.rolesList, { ...role, ...res, type: Role.CUSTOMIZE }];
+        this.curRole = { ...role, ...res };
         toast.success('复制成功！');
       })
       .catch((err) => toast.error(err))

@@ -11,7 +11,9 @@ import {
 } from '@one-for-all/artery';
 import { deleteByID, findNodeByID, patchNode } from '@one-for-all/artery-utils';
 
-import addLayoutToRoot from './helpers/add-layout-to-root';
+import { getTableSchema, saveTableSchema } from '@lib/http-client';
+
+import addLayoutToRoot, { copyLayoutToRoot, CreateLayoutInfo } from './helpers/add-layout-to-root';
 import addViewToRoot from './helpers/add-view-to-root';
 import addViewToLayout from './helpers/add-view-to-layout';
 import findLayouts from './helpers/find-layouts';
@@ -62,8 +64,11 @@ class Orchestrator {
     const _rootNOde = findNodeByID(node, ROOT_NODE_ID);
     this.appLayout = get(_rootNOde, 'props.data-layout-type.value', undefined);
 
-    this.fetchAppHomeView(appID);
-    this.currentView = this.views[0];
+    this.fetchAppHomeView(appID).then(() => {
+      if (this.homeView) {
+        this.currentView = this.homeView;
+      }
+    });
   }
 
   @computed get layouts(): Array<Layout> {
@@ -100,28 +105,47 @@ class Orchestrator {
   // }
 
   @action
-  async addLayout(name: string, layoutType: LayoutType): FutureErrorMessage {
+  async addLayout(layoutInfo: CreateLayoutInfo): FutureErrorMessage {
     const rootNode = await addLayoutToRoot({
       appID: this.appID,
       rootNode: toJS(this.rootNode),
-      layoutType,
-      layoutName: name,
+      layoutInfo,
     });
 
     return this.saveSchema(rootNode);
   }
 
   @action
-  async editLayout(layoutID: string, name: string): FutureErrorMessage {
+  async copyLayout(layout: Layout): FutureErrorMessage {
+    const copiedLayoutName = this.createCopyLayoutName(layout.name);
+    const rootNode = await copyLayoutToRoot({
+      appID: this.appID,
+      rootNode: toJS(this.rootNode),
+      layoutInfo: { ...layout, name: copiedLayoutName },
+      refSchemaID: layout.refSchemaID,
+    });
+
+    return this.saveSchema(rootNode);
+  }
+
+  createCopyLayoutName(name: string): string {
+    const copyLayoutName = name + '的副本';
+    const extLayout = this.layouts.find((layout) => layout.name === copyLayoutName);
+    if (!extLayout) return copyLayoutName;
+    return this.createCopyLayoutName(extLayout.name);
+  }
+
+  @action
+  async editLayout(partialLayoutInfo: Pick<Layout, 'name' | 'description' | 'id'>): FutureErrorMessage {
     const layoutList = get(this.rootNode, 'node.children[1].children', []);
-    const index = findIndex(layoutList, (layoutItem: RouteNode) => layoutItem.node.id === layoutID);
-    const oldName = get(this.rootNode, `node.children[1].children[${index}].node.label`, '');
+    const index = findIndex(layoutList, (layoutItem: RouteNode) => layoutItem.node.id === partialLayoutInfo.id);
 
-    if (oldName === name) {
-      return 'No changes were made';
-    }
+    set(this.rootNode, `node.children[1].children[${index}].node.label`, partialLayoutInfo.name);
+    set(this.rootNode, `node.children[1].children[${index}].node.props.data-layout-description`, { // temp description ,should remove soon
+      type: 'constant_property',
+      value: partialLayoutInfo.description,
+    });
 
-    set(this.rootNode, `node.children[1].children[${index}].node.label`, name);
     return this.saveSchema(this.rootNode);
   }
 
@@ -374,7 +398,10 @@ class Orchestrator {
       return '';
     }
 
-    return this.saveSchema(deleteByID(this.rootNode, routeNodeID));
+    return this.saveSchema(deleteByID(this.rootNode, routeNodeID)).then((errorMsg) => {
+      this.setCurrentView(this.views[0]);
+      return errorMsg;
+    });
   }
 
   @action
@@ -427,7 +454,17 @@ class Orchestrator {
       }
 
       if (viewInfo.type === ViewType.TableSchemaView && this.modalType === 'editView') {
-        return this.editTableSchemaView(viewInfo as TableSchemaView);
+        const { tableID } = viewInfo;
+        // here modify table name first ,
+        // because there is a condition:
+        //  when schema label modified success and table name failed
+        //  edit modal will not close, and if submit again the edited name will be duplicated
+        return getTableSchema(this.appID, tableID).then((res) => {
+          if (!res) return;
+          const { schema, tableID } = res;
+          const updatedNameSchema = { ...schema, title: viewInfo.name };
+          return saveTableSchema(this.appID, tableID, updatedNameSchema);
+        }).then(() => this.editTableSchemaView(viewInfo as TableSchemaView));
       }
 
       return this.updateViewName(this.currentView as View, viewInfo.name!);
@@ -472,8 +509,8 @@ class Orchestrator {
   }
 
   @action
-  fetchAppHomeView(id: string): void {
-    fetchAppDetails(id).then(({ accessURL }) => {
+  fetchAppHomeView(id: string): Promise<void> {
+    return fetchAppDetails(id).then(({ accessURL }) => {
       if (!accessURL && this.views.length === 1) {
         this.setHomeView(this.views[0].name);
         return;

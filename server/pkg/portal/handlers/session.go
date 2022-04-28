@@ -56,26 +56,26 @@ type RefreshTokenData struct {
 
 // Department represents department fields
 type Department struct {
-	ID         string  `json:"id"`
-	Grade      int     `json:"grade"`
-	Pid        string  `json:"pid"`
-	SuperID    string  `json:"superID"`
-	LeaderID   string  `json:"leaderID"`
-	Name       string  `json:"name"`
-	Attr       int     `json:"attr"`
+	ID       string `json:"id"`
+	Grade    int    `json:"grade"`
+	Pid      string `json:"pid"`
+	SuperID  string `json:"superID"`
+	LeaderID string `json:"leaderID"`
+	Name     string `json:"name"`
+	Attr     int    `json:"attr"`
 }
 
 // User represents user fields
 type User struct {
-	ID        string            `json:"id"`
-	Name      string            `json:"name"`
-	Email     string            `json:"email"`
-	SelfEmail string            `json:"selfEmail"`
-	Avatar    string            `json:"avatar"`
-	Phone     string            `json:"phone"`
-	UseStatus int               `json:"useStatus"`
-	Status    int               `json:"status"`
-	Deps      []([]Department)  `json:"deps"`
+	ID        string           `json:"id"`
+	Name      string           `json:"name"`
+	Email     string           `json:"email"`
+	SelfEmail string           `json:"selfEmail"`
+	Avatar    string           `json:"avatar"`
+	Phone     string           `json:"phone"`
+	UseStatus int              `json:"useStatus"`
+	Status    int              `json:"status"`
+	Deps      []([]Department) `json:"deps"`
 }
 
 func getTokenKey(r *http.Request) string {
@@ -220,13 +220,14 @@ func HasToken(r *http.Request) bool {
 }
 
 // RedirectToLoginPage redirect to login page
-func RedirectToLoginPage(w http.ResponseWriter, r *http.Request, path string) {
+func RedirectToLoginPage(w http.ResponseWriter, r *http.Request) {
 	session := contexts.GetCurrentRequestSession(r)
-	if path != "" {
-		session.Values["redirect_url"] = path
-	} else {
-		session.Values["redirect_url"] = r.URL.Path
+	redirectURL := r.URL.Path
+	if r.URL.RawQuery != "" {
+		redirectURL = fmt.Sprintf("%s?%s", redirectURL, r.URL.RawQuery)
 	}
+	session.Values["redirect_url"] = redirectURL
+
 	if err := session.Save(r, w); err != nil {
 		renderErrorPage(w, r, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
 		return

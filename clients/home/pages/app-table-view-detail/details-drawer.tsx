@@ -4,6 +4,7 @@ import cs from 'classnames';
 import useCss from 'react-use/lib/useCss';
 
 import Icon from '@c/icon';
+import toast from '@lib/toast';
 import PopConfirm from '@c/pop-confirm';
 import FormDataDetailsCard from '@c/form-data-details-card';
 
@@ -15,6 +16,7 @@ type Props = {
   onCancel: () => void;
   goEdit: (rowID: string) => void;
   delData: (rowIDs: string[]) => Promise<unknown>;
+  setOperationType: ( type: string ) => void;
   rowID: string;
   tableName: string;
   tableID: string;
@@ -23,7 +25,7 @@ type Props = {
 }
 
 function DetailsDrawer(
-  { onCancel, rowID, goEdit, delData, tableName, tableID, authority, appID }: Props,
+  { onCancel, rowID, goEdit, delData, tableName, tableID, authority, appID, setOperationType }: Props,
 ): JSX.Element {
   const [beganClose, setBeganClose] = useState<boolean>(false);
   const [visible, setVisible] = useState<boolean>(false);
@@ -40,6 +42,8 @@ function DetailsDrawer(
   const handelDelete = (): void => {
     delData([rowID]).then(() => {
       handleCancel();
+    }).catch((err) => {
+      toast.error(err);
     });
   };
 
@@ -65,7 +69,10 @@ function DetailsDrawer(
               {fullScreen ? '非' : ''}全屏
             </span>
             {getOperateButtonPer(3, authority) && (
-              <span onClick={() => goEdit(rowID)} className='icon-text-btn'>
+              <span onClick={() => {
+                setOperationType('修改');
+                goEdit(rowID);
+              }} className='icon-text-btn'>
                 <Icon size={20} name='edit' />
                 修改
               </span>

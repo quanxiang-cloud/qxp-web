@@ -473,3 +473,19 @@ export function toFilterConfig(esObj: ESParameter): FilterConfig {
     condition,
   };
 }
+
+export interface QueryParamsType{
+  [key: string]: Rule[]
+}
+
+export function setESQueryParams(obj: QueryParamsType): QueryParamsType|{bool: QueryParamsType} {
+  Object.entries(obj).forEach(([key, val])=>{
+    if (!val.length) {
+      delete obj[key];
+    }
+  });
+  if (!Object.keys(obj).length) {
+    return {};
+  }
+  return { bool: obj };
+}

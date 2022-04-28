@@ -75,7 +75,7 @@ function SchemaForm<T extends Record<string, any>>({
     hideFields.forEach(({ name, defaultValue })=> {
       (watchValues[name] !== defaultValue) && setValue(name, defaultValue);
     });
-  }, [hideFields]);
+  }, []);
 
   useImperativeHandle(ref, () => ({
     submit: () => {

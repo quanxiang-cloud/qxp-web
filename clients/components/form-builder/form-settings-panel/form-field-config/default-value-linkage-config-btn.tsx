@@ -8,7 +8,7 @@ import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 import { FieldConfigContext } from '@c/form-builder/form-settings-panel/form-field-config/context';
 
 import LinkageConfig from './default-value-linkage-config';
-
+import './index.scss';
 function DefaultValueLinkageConfigBtn(props: ISchemaFieldComponentProps): JSX.Element {
   const store = useContext(StoreContext);
   const { actions } = useContext(FieldConfigContext);
@@ -32,6 +32,7 @@ function DefaultValueLinkageConfigBtn(props: ISchemaFieldComponentProps): JSX.El
   return (
     <>
       <Button onClick={() => setShowModal(true)}>设置联动规则</Button>
+      <span className='linkage-config-tips'>最多支持999条</span>
       {
         showModal && (
           <LinkageConfig

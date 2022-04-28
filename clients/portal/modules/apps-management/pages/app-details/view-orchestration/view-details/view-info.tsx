@@ -1,19 +1,18 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { observer } from 'mobx-react';
+import { toast } from '@one-for-all/ui';
 
 import Tab from '@c/tab';
 import Icon from '@c/icon';
 import Button from '@c/button';
-
 import ArteryRenderer from '@c/artery-renderer';
-import { DefaultFormDescriptions, VERSION } from '../constants';
 import { getArteryPageInfo } from '@lib/http-client';
-import { mapToArteryPageDescription } from '../../utils';
-import { toast } from '@one-for-all/ui';
+import { ARTERY_KEY_VERSION } from '@portal/constants';
 
 import appStore from '../../store';
-
+import { DefaultFormDescriptions } from '../constants';
+import { mapToArteryPageDescription } from '../../utils';
 import { ExternalView, SchemaView, TableSchemaView, View, ViewType } from '../types.d';
 
 type Props = {
@@ -105,7 +104,7 @@ function ViewInfo({ view, openModal }: Props): JSX.Element {
         type === ViewType.SchemaView && (
           <ArteryRenderer
             arteryID={view.arteryID}
-            version={VERSION}
+            version={ARTERY_KEY_VERSION}
           />
         )
       }
@@ -114,10 +113,11 @@ function ViewInfo({ view, openModal }: Props): JSX.Element {
   , [view]);
 
   useEffect(() => {
+    let isUnmounted = false;
     if (view.type === ViewType.TableSchemaView) {
-      setFormDescriptions(DefaultFormDescriptions),
+      setFormDescriptions(DefaultFormDescriptions);
       getArteryPageInfo(appID, view.tableID).then((res) => {
-        setFormDescriptions( (prevDescriptions) => prevDescriptions?.map((description) => {
+        !isUnmounted && setFormDescriptions( (prevDescriptions) => prevDescriptions?.map((description) => {
           return mapToArteryPageDescription(description, res);
         }));
       }).catch(() => {
@@ -126,6 +126,9 @@ function ViewInfo({ view, openModal }: Props): JSX.Element {
       return;
     }
     setFormDescriptions([{ id: 'type', title: '页面类型', value: VIEW_MAP[type].viewType }]);
+    return () => {
+      isUnmounted = true;
+    };
   }, [view.id]);
 
   function goPageDesign(): void {
@@ -166,7 +169,10 @@ function ViewInfo({ view, openModal }: Props): JSX.Element {
         <div className='flex-1 grid grid-cols-6 mr-48'>
           {formDescriptions?.map(({ title, value }) => {
             return (
-              <div key={title}>
+              <div
+                key={title}
+                className='flex flex-col justify-between'
+              >
                 <p className={!value ? 'text-gray-400' : ''}>{value ? value : '-'}</p>
                 <p className='page-details-text'>{title}</p>
               </div>

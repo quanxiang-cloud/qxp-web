@@ -252,7 +252,7 @@ const schema: Artery = {
                     const version = this.states.version;
 
                     const body = {
-                      params: [{ key, version, value: schema }]
+                      keys: [{ key, version, value: schema }]
                     };
 
                     this.apiStates.setSchema.fetch({ body }, ({ error }) => {

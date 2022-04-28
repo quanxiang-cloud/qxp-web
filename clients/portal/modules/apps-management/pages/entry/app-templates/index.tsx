@@ -2,16 +2,17 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { observer } from 'mobx-react';
 import { UnionColumn } from 'react-table';
 
+import { toast } from '@one-for-all/ui';
 import Icon from '@c/icon';
 import Table from '@c/table';
 import MoreMenu from '@c/more-menu';
 import TextHeader from '@c/text-header';
+import EmptyTips from '@c/empty-tips';
 
 import store from './store';
 import EditTemplateModal from './template-edit/edit-template-modal';
 import DelTemplateModal from './template-edit/del-template-modal';
 import CreatedAppModal from '../app-list/app-edit/created-app-modal';
-import EmptyTips from '@c/empty-tips';
 
 function AppTemplates(): JSX.Element {
   const [modalType, setModalType] = useState('');
@@ -54,7 +55,7 @@ function AppTemplates(): JSX.Element {
           <>
             <span
               className="text-blue-600 cursor-pointer mr-20"
-              onClick={() => handelMenuClick('createdApp', row)}
+              onClick={() => handelMenuClick('createAppWithTemplate', row)}
             >
               使用
             </span>
@@ -71,7 +72,12 @@ function AppTemplates(): JSX.Element {
   ];
 
   useEffect(() => {
-    fetchList();
+    fetchList().catch(() => {
+      toast.error('获取模版列表失败');
+    });
+    return () => {
+      setCurTemplate(store.templateList?.[0]);
+    };
   }, []);
 
   function handelMenuClick(_modalType: string, rowData: TemplateInfo): void {
@@ -96,7 +102,7 @@ function AppTemplates(): JSX.Element {
         {modalType === 'delTemplate' &&
           <DelTemplateModal templateInfo={curTemplate} onCancel={() => setModalType('')} />
         }
-        {modalType === 'createdApp' && (
+        {modalType === 'createAppWithTemplate' && (
           <CreatedAppModal
             modalType={modalType}
             templateID={curTemplate.id}

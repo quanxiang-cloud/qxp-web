@@ -12,7 +12,7 @@ function AppRoles(): JSX.Element {
     <div className="flex flex-col h-full flex-1 bg-white rounded-t-12 overflow-hidden">
       <div className='flex flex-1 w-full overflow-hidden'>
         <RoleNav setRole={setCurrentRole}/>
-        <RoleDetails curRole={currentRole}/>
+        {currentRole && <RoleDetails curRole={currentRole}/>}
       </div>
     </div>
   );

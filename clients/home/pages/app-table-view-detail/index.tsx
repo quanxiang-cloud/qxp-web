@@ -27,6 +27,10 @@ const queryClient = new QueryClient({
   },
 });
 
+export const TableContext = React.createContext<Props>(
+  { appID: 'noAppID', tableID: 'noTableID', name: 'noName' },
+);
+
 function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
   const store = useTableViewStore({ appID, tableID, name });
 
@@ -56,13 +60,13 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
     },
     5: {
       key: 'import',
-      action: () => {},
+      action: () => { },
       text: '导入',
       iconName: 'file_download',
     },
     6: {
       key: 'export',
-      action: () => {},
+      action: () => { },
       text: '导出',
       iconName: 'file_upload',
     },
@@ -93,16 +97,18 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
       toast.success('删除成功!');
     }).finally(() => {
       formTableRef.current?.refresh();
+    }).catch((err) => {
+      toast.error(err);
     });
   }
 
   const tableHeaderBtnList: TableHeaderBtn[] =
-  Object.entries(BUTTON_GROUP).reduce((acc: TableHeaderBtn[], [key, buttonValue]) => {
-    if (getOperateButtonPer(Number(key), store.authority)) {
-      return [...acc, buttonValue];
-    }
-    return acc;
-  }, []);
+    Object.entries(BUTTON_GROUP).reduce((acc: TableHeaderBtn[], [key, buttonValue]) => {
+      if (getOperateButtonPer(Number(key), store.authority)) {
+        return [...acc, buttonValue];
+      }
+      return acc;
+    }, []);
 
   const customColumns = [{
     id: 'action',
@@ -177,33 +183,36 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className='h-full'>
-        <Header tableName={name} operationType={store.operationType} onCancel={() => handleCancel(true)} />
-        <div style={{ maxHeight: 'calc(100% - 62px)' }} className='h-full relative overflow-hidden'>
-          {renderPageBody()}
-          {modalType === 'dataForm' && (
-            <CreateDataForm
-              appID={store.appID}
-              pageID={store.tableID}
-              title={store.tableName}
-              rowID={store.curRowID}
-              onCancel={() => handleCancel(true)}
-            />
-          )}
-          {modalType === 'details' && (
-            <DetailsDrawer
-              delData={delFormData}
-              goEdit={goEdit}
-              rowID={store.curRowID}
-              appID={appID}
-              onCancel={handleCancel}
-              tableID={tableID}
-              tableName={name}
-              authority={store.authority}
-            />
-          )}
+      <TableContext.Provider value={{ appID, tableID, name }}>
+        <div className='h-full'>
+          <Header tableName={name} operationType={store.operationType} onCancel={() => handleCancel(true)} />
+          <div style={{ maxHeight: 'calc(100% - 62px)' }} className='h-full relative overflow-hidden'>
+            {renderPageBody()}
+            {modalType === 'dataForm' && (
+              <CreateDataForm
+                appID={store.appID}
+                pageID={store.tableID}
+                title={store.tableName}
+                rowID={store.curRowID}
+                onCancel={() => handleCancel(true)}
+              />
+            )}
+            {modalType === 'details' && (
+              <DetailsDrawer
+                delData={delFormData}
+                goEdit={goEdit}
+                rowID={store.curRowID}
+                appID={appID}
+                onCancel={handleCancel}
+                tableID={tableID}
+                tableName={name}
+                authority={store.authority}
+                setOperationType={store.setOperationType}
+              />
+            )}
+          </div>
         </div>
-      </div>
+      </TableContext.Provider>
     </QueryClientProvider>
   );
 }
