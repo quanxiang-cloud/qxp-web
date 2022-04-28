@@ -1165,7 +1165,21 @@
   resolved "https://registry.npmmirror.com/@one-for-all/artery/-/artery-0.15.0.tgz#495bdb35365a606a126ecfc8323a5dc086c6f1c5"
   integrity sha512-zZmnK09Zt33s335GBdQHMy5sG7+rSrWHaz1mqjIrdXLHWUvkkOISuEV739SWgnCamqEwUv58/QDTH9/VMIb32w==
 
-"@one-for-all/icon@^0.6.1":
+"@one-for-all/headless-ui@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.npmmirror.com/@one-for-all/headless-ui/-/headless-ui-0.1.4.tgz#31f1d53b409191dc208152fa5d065412c4e4e101"
+  integrity sha512-rE3HSQvAl9eiu2YcJV1NyzXkeDEUpHoUriMwJSU1wfwDvwmtB1zsTjdkx3VHbEhWC28SW4QdvM6d6XvbBayG7g==
+  dependencies:
+    "@one-for-all/icon" "0.6.1"
+    "@popperjs/core" "^2.11.0"
+    classnames "^2.3.1"
+    lodash "^4.17.21"
+    nanoid "^3.1.30"
+    react "^17.0.2"
+    react-dom "^17.0.2"
+    react-table "^7.7.0"
+
+"@one-for-all/icon@0.6.1", "@one-for-all/icon@^0.6.1":
   version "0.6.1"
   resolved "https://registry.npmmirror.com/@one-for-all/icon/-/icon-0.6.1.tgz#3b960f472a98d0c663091eb91ef4403ea937e13e"
   integrity sha512-q5XVGJ0dtKIp2BtorFHP0IApbF6aGra+pB8BhHfyz893WBBzWGl64zQinYIJjboFFHd0J9VRBqb7Tet4J2DuOw==
@@ -8183,7 +8197,7 @@ react-stikky@^0.1.15:
     classnames "^2.2.6"
     window-scroll "^1.0.0"
 
-react-table@^7.6.3:
+react-table@^7.6.3, react-table@^7.7.0:
   version "7.7.0"
   resolved "https://registry.npmmirror.com/react-table/-/react-table-7.7.0.tgz#e2ce14d7fe3a559f7444e9ecfe8231ea8373f912"
   integrity sha512-jBlj70iBwOTvvImsU9t01LjFjy4sXEtclBovl3mTiqjz23Reu0DKnRza4zlLtOPACx6j2/7MrQIthIK1Wi+LIA==

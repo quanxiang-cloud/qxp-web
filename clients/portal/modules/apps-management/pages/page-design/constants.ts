@@ -3,7 +3,7 @@ import { Layer } from '@one-for-all/artery-engine';
 import Header from './blocks/header';
 import Menu from './blocks/menu';
 import Canvas from './blocks/canvas';
-import Config from './blocks/config';
+import Config from './blocks/node-carve';
 import { BlocksCommunicationType } from './types';
 
 export const QUERY_KEY = {
