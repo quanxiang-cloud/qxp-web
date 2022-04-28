@@ -1,13 +1,13 @@
 import React from 'react';
 
 import type { Package } from '@pageDesign/blocks/menu/type';
+import Loading from '@c/loading';
 
 import PackageSelector from './package-selector';
 import CategoriesRender from './categories-render';
 import { useComponents } from './store';
 
 import styles from './index.m.scss';
-import Loading from '@c/loading';
 
 interface Props {
   onAddNode: () => void;

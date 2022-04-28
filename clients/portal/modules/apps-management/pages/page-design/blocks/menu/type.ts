@@ -9,6 +9,7 @@ export interface Package {
   name: string;
   version: string;
   categories?: string[];
+  hide?: boolean;
 }
 
 export interface InitialProps {
