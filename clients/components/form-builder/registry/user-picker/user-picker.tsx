@@ -129,6 +129,9 @@ const UserPicker = ({
       options={undefined}
       disabled={!editable}
       onChange={handleChange}
+      filterOption={(input, option) => {
+        return !!(option?.children && option.children.join('').toLowerCase().indexOf(input.toLowerCase()) >= 0);
+      }}
       className={cs('user-selector', componentsProps.className || '')}
     >
       {
