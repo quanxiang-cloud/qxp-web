@@ -37,6 +37,7 @@ function fetchLinkedTableData$(
   return from(
     fetchFormDataList(linkage.linkedAppID, linkage.linkedTable.id, {
       sort: (linkage.linkedTableSortRules || []).filter(Boolean),
+      size: 999,
       query,
     }),
   ).pipe(
