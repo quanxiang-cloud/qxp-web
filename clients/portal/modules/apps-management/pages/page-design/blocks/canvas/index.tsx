@@ -16,10 +16,8 @@ import NodeToolbox from './node-toolbox';
 import styles from './index.m.scss';
 import './style.scss';
 
-import { findNodeByID } from '@one-for-all/artery-utils';
-
 function Canvas(props: BlockItemProps<BlocksCommunicationType>): JSX.Element {
-  const { artery, sharedState, onSharedStateChange, setActiveNode } = props;
+  const { artery, sharedState, onSharedStateChange } = props;
   const { page } = useCtx();
   const { currentGroupType = '', groupTypeContentPinned = false, pannelWith } = sharedState.menu ?? {};
   const toolRef = useRef<any>();
@@ -93,7 +91,6 @@ function Canvas(props: BlockItemProps<BlocksCommunicationType>): JSX.Element {
     const nodeKey = (e.target as Element)?.closest('[data-node-key]')?.getAttribute('data-node-key') || '';
     nodeKey && page.setActiveElemId(nodeKey);
     !groupTypeContentPinned && onSharedStateChange('menu.currentGroupType', '');
-    setActiveNode(findNodeByID(artery.node, nodeKey));
   }
 
   return (

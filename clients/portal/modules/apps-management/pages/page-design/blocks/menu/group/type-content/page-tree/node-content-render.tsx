@@ -25,15 +25,19 @@ export function nodeContentRender(node: PageNode): React.ReactNode {
     renameInputRef.current?.focus();
   }, [isModdingName]);
 
-  function onInputChange(e: ChangeEvent<HTMLInputElement>) {
+  function onInputChange(e: ChangeEvent<HTMLInputElement>): void {
     e.preventDefault();
     setNodeName(e.target.value.trim());
   }
 
-  function onModifiedNodeName() {
+  function onModifiedNodeName(): void {
     setIsModdingName(false);
     if (!nodeName) return;
     page.updateElemProperty(node.id, 'label', nodeName);
+  }
+
+  function onKeyDown({ code }: any): void {
+    code === 'Enter' && onModifiedNodeName();
   }
 
   return (
@@ -55,6 +59,7 @@ export function nodeContentRender(node: PageNode): React.ReactNode {
               value={nodeName}
               onBlur={onModifiedNodeName}
               onChange={onInputChange}
+              onKeyDown={onKeyDown}
             />
           ) : (
             <>

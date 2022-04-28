@@ -9,9 +9,6 @@ import stores from './stores';
 import { getArteryKeys } from './utils';
 import { ARTERY_KEY_VERSION } from '@portal/constants';
 
-export const PG_SAVED_PREFIX = 'pge-';
-export const PG_DRAFT_PREFIX = 'pge-draft-';
-
 type Option={
   draft?: boolean;
   [key: string]: any
@@ -38,7 +35,8 @@ export function getPage(arteryID: string, options?: Option): Promise<string | vo
 export function getRenderRepository(): any {
   const comps = stores.registry.toComponentMap('ofa-ui');
   const systemComps = stores.registry.toComponentMap('systemComponents');
-
+  console.log(Object.keys(comps));
+  console.log(Object.keys(systemComps));
   return {
     'ofa-ui@latest': comps,
     '@one-for-all/ui@latest': comps,
@@ -46,4 +44,3 @@ export function getRenderRepository(): any {
     'system-components@latest': systemComps,
   };
 }
-

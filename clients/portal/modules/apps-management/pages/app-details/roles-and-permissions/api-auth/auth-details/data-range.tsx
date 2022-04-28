@@ -5,7 +5,7 @@ import RadioGroup from '@c/radio/group';
 import Radio from '@c/radio';
 
 import store from '../store';
-import { DATA_RANGE, DATA_RANGE_OPTIONS } from '../../constants';
+import { DATA_RANGE_OPTIONS } from '../../constants';
 
 function DataRange(): JSX.Element {
   return (
@@ -25,11 +25,6 @@ function DataRange(): JSX.Element {
             );
           })}
         </RadioGroup>
-      </div>
-      <div className='mt-16'>
-        <pre>
-          {JSON.stringify(DATA_RANGE[store.conditionValue], null, 4)}
-        </pre>
       </div>
     </>
   );

@@ -15,7 +15,7 @@ import './style.scss';
 const Divider = (): JSX.Element => <div className='w-1 h-20 bg-gray-200 mx-16' />;
 const historySizeLimit = 50;
 
-function Toolbar({ sharedState }: BlockItemProps<BlocksCommunicationType>): JSX.Element {
+function Toolbar({ sharedState, artery }: BlockItemProps<BlocksCommunicationType>): JSX.Element {
   const ctx = useCtx();
   const { page, designer, registry } = ctx;
   const [openTestPreview, setOpenPreview] = useState(false);
@@ -46,9 +46,7 @@ function Toolbar({ sharedState }: BlockItemProps<BlocksCommunicationType>): JSX.
   }, []);
 
   function handleSave(): void {
-    const pageSchema = toJS(page.schema);
-    window.__isDev__ && console.log('save page schema: ', pageSchema);
-    ctx.onSave?.(pageSchema);
+    ctx.onSave?.(artery);
   }
 
   function saveAndExit(): void {

@@ -1,8 +1,6 @@
 import React, { useState, useMemo, useEffect, useCallback, CSSProperties } from 'react';
 import cs from 'classnames';
-import { DndProvider } from 'react-dnd';
 import { useHistory } from 'react-router-dom';
-import { HTML5Backend } from 'react-dnd-html5-backend';
 import ArteryEngine from '@one-for-all/artery-engine';
 import Icon from '@one-for-all/icon';
 
@@ -53,7 +51,7 @@ function PageDesign(): JSX.Element | null {
   const { designer, eventBus } = stores;
   const [apiPath, setApiPath] = useState('');
   useEffect(() => {
-    eventBus.on('clear:api-path', ()=> {
+    eventBus.on('clear:api-path', () => {
       setApiPath('');
     });
     function handleGoBack(): void {
@@ -138,15 +136,13 @@ function PageDesign(): JSX.Element | null {
   }, []);
 
   const ArteryEngineEntry = useMemo(() => (
-    <DndProvider backend={HTML5Backend}>
-      <Ctx.Provider value={Object.assign(stores, { onSave: handleSave })}>
-        <div className={cs(styles.designer)}>
-          <div id={PAGE_DESIGN_ID}>
-            <ArteryEngine artery={initialArtery} layers={layers} />
-          </div>
+    <Ctx.Provider value={Object.assign(stores, { onSave: handleSave })}>
+      <div className={cs(styles.designer)}>
+        <div id={PAGE_DESIGN_ID}>
+          <ArteryEngine artery={initialArtery} layers={layers} />
         </div>
-      </Ctx.Provider>
-    </DndProvider>
+      </div>
+    </Ctx.Provider>
   ), [initialArtery, layers]);
 
   if (isArteryLoading) {

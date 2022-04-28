@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Panel } from '@one-for-all/ui';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import type { Package } from '@pageDesign/blocks/menu/type';
 import { GROUP_TITLE_MAP } from '@pageDesign/blocks/menu/constants';
@@ -43,7 +45,9 @@ const GroupTypeContent = (props: Props): JSX.Element => {
         />
       )}
       {current === 'page_tree' && (
-        <PageTree />
+        <DndProvider backend={HTML5Backend}>
+          <PageTree />
+        </DndProvider>
       )}
       {current === 'data_source' && (
         <DataSource />
