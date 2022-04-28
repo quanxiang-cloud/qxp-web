@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { Select } from '@one-for-all/ui';
 
-import { Package } from '@pageDesign/blocks/menu/type';
+import type { Package } from '@pageDesign/blocks/menu/type';
+import Loading from '@c/loading';
 
 import { usePackages } from './store';
-import Loading from '@c/loading';
 
 interface Props {
   current?: Package;
@@ -23,10 +23,7 @@ const PackageSelector = ({ current, onChange }: Props): JSX.Element => {
     defaultValue && !current && onChange(defaultValue);
   }, [packages, current]);
 
-  const options = packages?.map(({ label, name }) => ({
-    label,
-    value: name,
-  }));
+  const options = packages?.filter(({ hide }) => !hide)?.map(({ label, name }) => ({ label, value: name }));
 
   const packageMap = packages?.reduce((acc: Record<string, Package>, cur) => {
     acc[cur.name] = cur;
