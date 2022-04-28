@@ -54,7 +54,7 @@ export function connect(
           type: 'constant_property',
           value: val,
         }, artery);
-        onArteryChange?.(newArtery);
+        onArteryChange?.({ ...newArtery });
       };
       return createElement(Component, componentProps);
     } catch (e) {
