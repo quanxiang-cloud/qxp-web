@@ -1151,10 +1151,10 @@
     react-jsx-parser "1.29.0"
     rxjs "^7.4.0"
 
-"@one-for-all/artery-simulator@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.npmmirror.com/@one-for-all/artery-simulator/-/artery-simulator-0.2.0.tgz#6f1b4d2c8aa5da53336822cb6be046802529b092"
-  integrity sha512-KdSOGSG36KZHoiEbdpAZNEAf3kWrOmfIRWBquZV5thxmdV4MJ1cP1+SFDL6frijrc+DqfgplE16nUNJ1eMKRaA==
+"@one-for-all/artery-simulator@^0.2.1":
+  version "0.2.1"
+  resolved "https://registry.npmmirror.com/@one-for-all/artery-simulator/-/artery-simulator-0.2.1.tgz#9804d76db84bc07235ce5ed94567a49641c24357"
+  integrity sha512-Dj5n5S7FNeG5XoeLnTnLUY4aW/NmqhG2Uh5runwIoTsD0Xd3/eoQCN/GY2DcxrMi5otrr/zTyIeVTH2/rEloTQ==
   dependencies:
     "@one-for-all/artery" "0.15.0"
     "@one-for-all/artery-renderer" "0.20.2"
@@ -1162,7 +1162,7 @@
     "@one-for-all/elements-radar" "0.1.2"
     "@one-for-all/headless-ui" "^0.1.4"
     "@one-for-all/icon" "^0.6.2"
-    "@one-for-all/utils" "0.3.0"
+    "@one-for-all/utils" "^0.3.0"
     classnames "^2.3.1"
     immutable "^4.0.0"
     lodash "^4.17.21"
@@ -1327,7 +1327,7 @@
   resolved "https://registry.npmmirror.com/@one-for-all/utils/-/utils-0.1.0.tgz#fe0e8023c7e30b461756f349454b65a6932cc56b"
   integrity sha512-u0DJ6Z6T3FwnXPxaDnYjJF3AFoQC9VyqRz8a1+1cjb51PP9jgzJrTrVVdtdmx+uWdLJJsoKFZQBMJ9S0D++GGw==
 
-"@one-for-all/utils@0.3.0":
+"@one-for-all/utils@0.3.0", "@one-for-all/utils@^0.3.0":
   version "0.3.0"
   resolved "https://registry.npmmirror.com/@one-for-all/utils/-/utils-0.3.0.tgz#853a78ee8b25a82a66f07c4a85bd1c8134627e8f"
   integrity sha512-8wfgOTt36wcilOlfLgiHL3/Uv5HlTs6aiO71WJrKOPvbvhBKoDYzRghxoG2BjYy+PSaeGVcD4TulgUsw8b/tEg==
