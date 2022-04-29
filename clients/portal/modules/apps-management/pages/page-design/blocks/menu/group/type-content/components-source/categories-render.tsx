@@ -21,7 +21,7 @@ const CategoriesRender = (props: Props): JSX.Element => {
 
   pipe(keys, forEach((key) => !categories.includes(key) && categories.push(key)))(groupedComponents);
 
-  if (isAllPackage) {
+  if (isAllPackage || isIconPackage) {
     categories.splice(0);
     categories.push('');
     groupedComponents = { '': components };

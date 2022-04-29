@@ -1,12 +1,12 @@
 import React, { CSSProperties, useState } from 'react';
 import cs from 'classnames';
-
-import type { PackageComponent } from '@pageDesign/blocks/menu/type';
-import { useCtx } from '@pageDesign/ctx';
+import type { Node } from '@one-for-all/artery';
 import { buildReactComponentNode } from '@one-for-all/artery-engine';
 
+import type { PackageComponent } from '@pageDesign/blocks/menu/type';
+import { initialPropsToNodeProperties } from '@pageDesign/utils/package';
+
 import styles from './index.m.scss';
-import { Node } from '@one-for-all/artery';
 
 interface Props extends PackageComponent {
   onAddNode: () => void;
@@ -16,18 +16,19 @@ interface Props extends PackageComponent {
 
 // todo refactor this
 function genNode(props: Props): Node {
+  const { package: pkg, name, label, initialProps } = props;
+
   return buildReactComponentNode({
-    packageName: props.package.name,
-    packageVersion: props.package.version,
-    exportName: props.name,
-    label: props.label,
-    // todo add default props
+    packageName: pkg.name,
+    packageVersion: pkg.version,
+    exportName: name,
+    label: label,
+    props: initialPropsToNodeProperties(initialProps),
   });
 }
 
 const ComponentRender = (props: Props): JSX.Element => {
-  const { onAddNode, name, Icon, desc, package: pkg, label, initialProps, style, className } = props;
-  const { page } = useCtx();
+  const { Icon, desc, package: pkg, label, style, className } = props;
   const [isDragging, setIsDragging] = useState(false);
 
   // function addNodeToCanvas(target?: any): void {
