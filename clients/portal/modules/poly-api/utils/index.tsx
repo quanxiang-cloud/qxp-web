@@ -157,7 +157,7 @@ export function isSomeActionShow(el: HTMLElement | null): boolean {
 }
 
 type Ref<T> = MutableRefObject<T | null> | ((instance: T) => void) | null;
-export function mergeRefs<T>(...refs: Ref<T>[]): Ref<T> {
+export function mergeRefs<T>(...refs: Ref<T>[]): any {
   return (node: T) => {
     refs.forEach((ref) => {
       if (typeof ref === 'function') {
