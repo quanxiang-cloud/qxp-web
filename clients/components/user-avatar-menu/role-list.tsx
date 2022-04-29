@@ -9,7 +9,7 @@ type Props = {
   visible: boolean;
 }
 
-function RoleList({ visible }: Props): JSX.Element {
+function RoleList({ visible }: Props): JSX.Element | null {
   const { getRoleInfo, roleOptions, currentRoleInfo, handleRoleChange, setAppID } = store;
 
   useEffect(() => {
@@ -21,8 +21,12 @@ function RoleList({ visible }: Props): JSX.Element {
     getRoleInfo(window.APP_ID);
   }, [window.APP_ID]);
 
+  if (!visible) {
+    return null;
+  }
+
   return (
-    <div className={cs('role-list', { block: visible })}>
+    <div className={cs('role-list')}>
       {!roleOptions.length && <span className='pt-4'>暂无角色</span>}
       {!!roleOptions.length && roleOptions.map(({ label, value }) => {
         const isActive = value === currentRoleInfo.roleID;
