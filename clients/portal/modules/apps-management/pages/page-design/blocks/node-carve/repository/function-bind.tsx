@@ -44,7 +44,7 @@ function FunctionBind({ __path, notes }: ConnectedProps<{
   const fullPath = `${__path}.${bodyPath}`;
   useEffect(() => {
     setHasBound(!!get(activeNode, fullPath));
-  }, [get(activeNode, __path)]);
+  }, [activeNode]);
 
   function onEdit(): void {
     if (!activeNode || !artery) {
@@ -60,6 +60,7 @@ function FunctionBind({ __path, notes }: ConnectedProps<{
     }
     set(functionSpec, bodyPath, '');
     onArteryChange?.(updateNodeProperty(activeNode, __path, functionSpec, artery));
+    setHasBound(false);
   }
 
   function onBind(): void {
@@ -70,6 +71,7 @@ function FunctionBind({ __path, notes }: ConnectedProps<{
     if (fnString && activeNode && artery) {
       set(functionSpec, bodyPath, fnString);
       onArteryChange?.(updateNodeProperty(activeNode, __path, functionSpec, artery));
+      setHasBound(true);
       setModalOpen(false);
     } else {
       toast.error('非法的函数定义');
