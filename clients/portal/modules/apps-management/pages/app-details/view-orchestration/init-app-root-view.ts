@@ -30,9 +30,9 @@ export async function initAppRootView(appID: string, layoutType: LayoutType | 'f
             type: 'html-element',
             name: 'div',
             children: [initialChild],
-          },
-          props: {
-            style: ROOT_NODE_STYLE.style,
+            props: {
+              style: ROOT_NODE_STYLE.style,
+            },
           },
         },
       },
