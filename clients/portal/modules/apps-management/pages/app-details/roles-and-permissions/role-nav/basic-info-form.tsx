@@ -19,6 +19,7 @@ function BasicInfoForm(
   { type, defaultValue, className }: Props,
   ref?: React.Ref<any>,
 ): JSX.Element {
+  const notAllowEdit = (defaultValue?.type === Role.DEFAULT) && (type === 'edit' );
   const { register, handleSubmit, formState: { errors } } = useForm();
   useImperativeHandle(ref, () => ({
     handleSubmit: handleSubmit,
@@ -27,12 +28,12 @@ function BasicInfoForm(
   return (
     <div className={className}>
       <Input
-        className={cs({ 'bg-gray-100 cursor-not-allowed': defaultValue?.type === Role.DEFAULT })}
+        className={cs({ 'bg-gray-100 cursor-not-allowed': notAllowEdit })}
         label='角色名称'
         help='不超过 20 个字符，名称不可重复。建议以角色名称命名，例如：普通员工，以便于识别。'
         error={errors.name}
         defaultValue={type === 'edit' ? defaultValue?.name : ''}
-        readOnly={defaultValue?.type === Role.DEFAULT || false}
+        readOnly={notAllowEdit || false}
         register={register('name', {
           required: '请输入角色名称',
           maxLength: { value: 20, message: '不能超过20个字符' },

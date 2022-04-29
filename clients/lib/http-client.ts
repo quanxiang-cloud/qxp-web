@@ -238,13 +238,7 @@ export function findOneFormDataRequest(
     {
       ref: buildQueryRef(schema),
       query: {
-        bool: {
-          must: [
-            {
-              term: { _id: rowID },
-            },
-          ],
-        },
+        term: { _id: rowID },
       },
     },
   ).then(({ entity }) => {
@@ -288,7 +282,7 @@ export async function fetchOneFormDataWithSchema(
 
 // new end
 
-type GetTableSchemaResponse = null | { config: any; schema: ISchema; };
+type GetTableSchemaResponse = null | { config: any; schema: ISchema; id: string, tableID: string };
 
 export function getTableSchema(appID: string, tableID: string): Promise<GetTableSchemaResponse> {
   const path = window.SIDE === 'home' ?
@@ -314,7 +308,7 @@ export function getArteryPageInfo(appID: string, tableID: string): Promise<Arter
 
 export function saveTableSchema(
   appID: string, tableID: string, schema: ISchema, source?: SchemaSource,
-): Promise<{ tableID: string; }> {
+): Promise<unknown> {
   return httpClient(
     `/api/v1/form/${appID}/m/table/create`,
     { tableID, schema, source },

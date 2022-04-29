@@ -1,6 +1,7 @@
 import { Moment } from 'moment';
 
 import { RawApiDetail } from '@portal/modules/poly-api/effects/api/raw';
+import type { Schema } from '@lib/api-adapter/swagger-schema-official';
 
 declare global {
   type AppInfo = {
@@ -24,6 +25,7 @@ declare global {
     appName?: string;
     version?: string;
     groupID?: string;
+    description?: string;
   }
 
   type AppZipInfo = {
@@ -155,14 +157,21 @@ declare global {
     properties?: Record<string, Property>
   }
 
+  type SwagSchema = Schema;
+  // 分开 query body
+  type SwagField = SwagSchema & { acceptable?: boolean, in?: string };
+
   type APIAuth = {
     path?: string,
-    params?: Record<string, Property> | null,
-    response?: Record<string, Property> | null,
+    method?: string,
+    params?: { [propertyName: string]: SwagSchema },
+    response?: { [propertyName: string]: SwagSchema },
     condition?: any,
     roleID?: string,
-    id?: string
-    uri?: string
+    id?: string,
+    uri?: string,
+    paramsAll?: boolean,
+    responseAll?: boolean,
   }
 
   type RoleRight = {
@@ -210,4 +219,5 @@ declare global {
     auth?: APIAuth | null;
     isChanging?: boolean;
   }
+
 }

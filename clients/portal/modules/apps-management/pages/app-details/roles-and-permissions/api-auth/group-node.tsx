@@ -14,7 +14,7 @@ function NodeRender({ node }: NodeRenderProps<PolyAPI.Namespace>): JSX.Element {
       >
         <span className='inline-flex items-center'>
           {!node.isLeaf &&
-          <Icon name={(node.expanded) ? 'folder_open' : 'folder_empty'} size={16} />
+            <Icon name={(node.expanded) ? 'folder_open' : 'folder_empty'} size={16} />
           }
           <span className='ml-5 text-12 truncate w-142'>{nodeLabel}</span>
         </span>

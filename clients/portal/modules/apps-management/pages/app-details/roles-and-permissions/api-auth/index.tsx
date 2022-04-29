@@ -45,22 +45,22 @@ function APIAuth({ curRole }: Props): JSX.Element {
     {
       id: 'inner.form',
       name: '数据模型',
-      content: isLoading ? <Loading /> : <Source/>,
+      content: isLoading ? <Loading /> : <Source />,
     },
     {
       id: 'raw.3party',
       name: '第三方API代理',
-      content: isLoading ? <Loading /> : <Source/>,
+      content: isLoading ? <Loading /> : <Source />,
     },
     {
       id: 'poly',
       name: 'API编排',
-      content: isLoading ? <Loading /> : <Source/>,
+      content: isLoading ? <Loading /> : <Source />,
     },
     {
       id: 'faas',
       name: 'FaaS函数',
-      content: isLoading ? <Loading /> : <Source/>,
+      content: isLoading ? <Loading /> : <Source />,
     },
   ];
 

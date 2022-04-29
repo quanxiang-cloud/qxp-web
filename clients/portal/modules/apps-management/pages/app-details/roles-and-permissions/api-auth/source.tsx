@@ -11,7 +11,7 @@ import Pagination from '@c/pagination';
 import { useGetNamespaceFullPath } from '@portal/modules/poly-api/effects/api/namespace';
 
 import store from './store';
-import AuthDetailModal from './role-details';
+import AuthDetailModal from './auth-details';
 import NsTreeStore from './ns-tree-store';
 import NodeRender from './group-node';
 import { Role } from '../constants';
@@ -51,7 +51,7 @@ function Source(): JSX.Element {
             disabled={disabled || false}
             checked={checked || false}
             onChange={handleChange}
-            value={`${api.accessPath}-${api.uri}`}
+            value={`${api.accessPath}-${api.uri}-${api.method}`}
           />
         );
       },
@@ -63,12 +63,14 @@ function Source(): JSX.Element {
       accessor: (api) => {
         const disabled = !api?.auth || store.curRoleType === Role.DEFAULT;
         return (
-          <span
-            className={disabled ? 'cursor-not-allowed text-blue-400' : 'text-btn'}
-            onClick={() => onClickSetting(api)}
-          >
-            设置访问权限
-          </span>
+          <div className={disabled ? 'cursor-not-allowed' : ''}>
+            <span
+              className={disabled ? 'pointer-events-none text-blue-400' : 'text-btn'}
+              onClick={() => onClickSetting(api)}
+            >
+              设置访问权限
+            </span>
+          </div>
         );
       },
     },
@@ -102,8 +104,8 @@ function Source(): JSX.Element {
       store.fetchAPIFormList(curNsPath, pagination);
       return;
     }
-    store.setApiList([]);
-    store.setApiAndAuthList([]);
+    store.setAPIList([]);
+    store.setAPIAndAuthList([]);
   }, [curNsPath, pagination, store.currentRoleID]);
 
   function onSelect(group: PolyAPI.Namespace): void {
@@ -121,14 +123,17 @@ function Source(): JSX.Element {
     const _path = e.target.value.split('-');
     const _auth = {
       path: _path[0],
-      params: null,
-      response: null,
+      method: _path[2],
+      params: {},
+      response: {},
       condition: {},
       uri: _path[1],
       roleID: store.currentRoleID,
+      paramsAll: true,
+      responseAll: true,
     };
     e.target.checked && store.createAPIAuth(_auth);
-    !e.target.checked && store.deleteAPIAuth(_path[0], _path[1]);
+    !e.target.checked && store.deleteAPIAuth(_path[0], _path[1], _path[2]);
   }
 
   function handlePageChange(page: number, pageSize: number): void {
@@ -162,7 +167,7 @@ function Source(): JSX.Element {
         <div className='bg-white h-full flex-1 overflow-hidden flex flex-col'>
           <div className='conf-title text-12'>
             <div className='text-gray-400 font-semibold'>
-          配置权限：<span className='text-gray-900'>{store.curNamespace?.title || ''}</span>
+              配置权限：<span className='text-gray-900'>{store.curNamespace?.title || ''}</span>
             </div>
           </div>
           <div className='max-flex-1 overflow-hidden'>
@@ -183,7 +188,7 @@ function Source(): JSX.Element {
         </div>
       </div>
       {store.showRoleDetailsModal && (
-        <AuthDetailModal/>
+        <AuthDetailModal />
       )}
     </>
   );

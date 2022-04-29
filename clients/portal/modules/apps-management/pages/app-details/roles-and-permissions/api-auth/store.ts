@@ -1,4 +1,5 @@
-import { action, observable } from 'mobx';
+import { action, observable, reaction } from 'mobx';
+import _ from 'lodash';
 
 import toast from '@lib/toast';
 import { PathType } from '@portal/modules/poly-api/effects/api/namespace';
@@ -6,13 +7,16 @@ import { PathType } from '@portal/modules/poly-api/effects/api/namespace';
 import {
   createAPIAuth,
   deleteAPIAuth,
-  fetchApiAuthDetails,
+  fetchAPIAuthDetails,
   fetchAPIListAuth,
-  fetchGroupApiList,
+  fetchAPIListAuthParams,
+  fetchAPISwagDocDetails,
+  fetchGroupAPIList,
   updateAPIAuth,
 } from '../api';
-import { Role } from '../constants';
-
+import { DATA_RANGE, Role } from '../constants';
+import FieldsStore from './auth-details/store';
+import { fieldsTreeToParams, findSchema } from '../utils';
 class APIAuthStore {
   @observable appID = '';
   @observable currentRoleID = '';
@@ -28,6 +32,16 @@ class APIAuthStore {
   @observable curNamespace: PolyAPI.Namespace | null = null;
   @observable showRoleDetailsModal = false;
   @observable isLoadingAuthDetails = false;
+  @observable outPutFields: SwagField = {};
+  @observable inPutFields: SwagField = {};
+  @observable inputTreeStore: FieldsStore | null = null;
+  @observable outputTreeStore: FieldsStore | null = null;
+  @observable curAuthDetailTabKey = 'viewableData';
+  @observable conditionValue = 'ALL';
+
+  constructor() {
+    reaction(() => this.curAuth?.condition, this.findConditionValue);
+  }
 
   @action
   setAppID = (appID: string): void => {
@@ -37,6 +51,31 @@ class APIAuthStore {
   @action
   setCurAuth = (curAuth: APIAuth): void => {
     this.curAuth = curAuth;
+  };
+
+  @action
+  setOutPutFields = (outPutFields: SwagField): void => {
+    this.outPutFields = outPutFields;
+  };
+
+  @action
+  setConditionValue = (conditionValue: string): void => {
+    this.conditionValue = conditionValue;
+  };
+
+  @action
+  setCurAuthDetailTabKey = (key: string): void => {
+    this.curAuthDetailTabKey = key;
+  };
+
+  @action
+  setInputTreeStore = (_inputTree: FieldsStore | null): void => {
+    this.inputTreeStore = _inputTree;
+  };
+
+  @action
+  setOutputTreeStore = (_outputTree: FieldsStore | null): void => {
+    this.outputTreeStore = _outputTree;
   };
 
   @action
@@ -61,12 +100,12 @@ class APIAuthStore {
   };
 
   @action
-  setApiList = (_apiList: APIDetailAuth[]): void => {
+  setAPIList = (_apiList: APIDetailAuth[]): void => {
     this.apiList = _apiList;
   };
 
   @action
-  setApiAndAuthList = (apiAndAuthList: APIDetailAuth[]): void => {
+  setAPIAndAuthList = (apiAndAuthList: APIDetailAuth[]): void => {
     this.apiAndAuthList = apiAndAuthList;
   };
 
@@ -81,22 +120,34 @@ class APIAuthStore {
   };
 
   @action
+  onChangeCondition = (label: string): void => {
+    this.setConditionValue(label as string);
+    this.setCurAuth({ ...this.curAuth, condition: DATA_RANGE[label] });
+  };
+
+  @action
+  findConditionValue = (): void => {
+    this.curAuth?.condition && Object.keys(DATA_RANGE).forEach((label) => {
+      if (_.isEqual(this.curAuth?.condition, DATA_RANGE[label])) {
+        this.setConditionValue(label);
+      }
+    });
+  };
+
+  @action
   fetchAPIFormList = (path: string, pagination: { page: number, pageSize: number }): void => {
     this.isLoadingAuth = true;
-    fetchGroupApiList(path, { ...pagination, active: 1 })
+    fetchGroupAPIList(path, { ...pagination, active: 1 })
       .then(async ({ list, total }) => {
-        await this.setApiList(list || []);
+        await this.setAPIList(list || []);
         this.apiCount = total;
-        const path: string[] = [];
-        const uri: string[] = [];
         if (list.length) {
-          await list.forEach((api) => {
-            path.push(api.accessPath);
-            uri.push(api.uri);
+          const paths = await list.map(({ accessPath, uri, method }) => {
+            return { accessPath, uri, method };
           });
-          await this.fetchAPIListAuth(path, uri);
+          await this.fetchAPIListAuth(paths);
         } else {
-          this.setApiAndAuthList([]);
+          this.setAPIAndAuthList([]);
         }
       })
       .catch((err) => toast.error(err))
@@ -104,14 +155,14 @@ class APIAuthStore {
   };
 
   @action
-  fetchAPIListAuth = (paths: string[], uris: string[]): Promise<void> => {
-    return fetchAPIListAuth(this.appID, { roleID: this.currentRoleID, paths, uris })
+  fetchAPIListAuth = (paths: fetchAPIListAuthParams[]): Promise<void> => {
+    return fetchAPIListAuth(this.appID, { roleID: this.currentRoleID, paths })
       .then((authList: Record<string, APIAuth>) => {
         const _apiAuthList = this.apiList.map((api) => {
-          const auth = authList[api.accessPath] || null;
+          const auth = authList[`${api.accessPath}-${api.method}`] || null;
           return { ...api, auth, isLoading: false };
         });
-        this.setApiAndAuthList(_apiAuthList);
+        this.setAPIAndAuthList(_apiAuthList);
       })
       .catch((err) => {
         toast.error(err);
@@ -140,16 +191,59 @@ class APIAuthStore {
   };
 
   @action
-  fetchApiAuthDetails = (): void => {
+  getAPIDocWithAuth = (): void => {
     this.isLoadingAuthDetails = true;
-    fetchApiAuthDetails(this.appID || '', {
+    Promise.all([
+      this.fetchAPISwagDocDetails(),
+      this.fetchAPIAuthDetails(),
+    ]).then(([docRes, apiAuthRes]) => {
+      const { inputSchema, outputSchema } = docRes;
+      this.setOutputTreeStore(new FieldsStore(outputSchema || {}, apiAuthRes?.response || {}));
+      this.setInputTreeStore(new FieldsStore(inputSchema || {}, apiAuthRes?.params || {}));
+      this.setCurAuth(apiAuthRes);
+    }).catch((err) => {
+      toast.error(err);
+    }).finally(() => this.isLoadingAuthDetails = false);
+    return;
+  };
+
+  @action
+  fetchAPIAuthDetails = (): Promise<APIAuth> => {
+    return fetchAPIAuthDetails(this.appID || '', {
       roleID: this.currentRoleID,
       path: this.curAPI?.accessPath || '',
       uri: this.curAPI?.uri || '',
+      method: this.curAPI?.method || '',
     })
-      .then(this.setCurAuth)
-      .catch((err) => toast.error(err))
-      .finally(() => this.isLoadingAuthDetails = false);
+      .then((res) => {
+        return res;
+      })
+      .catch((err) => {
+        toast.error(err);
+        return {};
+      });
+  };
+
+  @action
+  fetchAPISwagDocDetails = (): Promise<{
+    inputSchema: SwagSchema | undefined,
+    outputSchema: SwagSchema | undefined
+  }> => {
+    return fetchAPISwagDocDetails(this.curAPI?.fullPath || '').then((res) => {
+      return findSchema(res);
+    }).catch((err) => {
+      toast.error(err);
+      return { inputSchema: undefined, outputSchema: undefined };
+    });
+  };
+
+  @action
+  onSubmitSaveAuthDetail = (): void => {
+    const output = fieldsTreeToParams(this.outputTreeStore?.rootNode);
+    const input = fieldsTreeToParams(this.inputTreeStore?.rootNode);
+    const apiInfo = _.pick(this.curAPI, ['accessPath', 'uri', 'method']);
+    const _curAuth = { ...this?.curAuth, response: output, params: input, ...apiInfo };
+    this.updateAPIAuth(_curAuth);
   };
 
   @action
@@ -164,14 +258,14 @@ class APIAuthStore {
   };
 
   @action
-  deleteAPIAuth = (path: string, uri: string): void => {
+  deleteAPIAuth = (path: string, uri: string, method: string): void => {
     this.apiAndAuthList = this.apiAndAuthList.map((_api) => {
       if (path === _api.accessPath) {
         return { ..._api, isChanging: true };
       }
       return _api;
     });
-    deleteAPIAuth(this.appID, { roleID: this.currentRoleID, path, uri })
+    deleteAPIAuth(this.appID, { roleID: this.currentRoleID, path, uri, method })
       .then(() => {
         this.apiAndAuthList = this.apiAndAuthList.map((_api) => {
           if (path === _api.accessPath) {

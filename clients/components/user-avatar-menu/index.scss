@@ -1,6 +1,7 @@
 .user-avatar-menu {
   min-width: 216px;
   max-width: 284px;
+  background-color: white;
   box-shadow: 0px 8px 24px 4px rgba(148, 163, 184, 0.25);
   border: 1px solid var(--gray-200);
 
@@ -27,4 +28,8 @@
     padding-top: 15px;
     padding-bottom: 15px;
   }
+}
+
+.role-list  {
+  @apply pt-4 px-20 hidden text-14;
 }

@@ -1,7 +1,7 @@
 import ArterySpec from '@one-for-all/artery';
 
 import { LayoutType } from './types';
-import createLayoutSchema from './helpers/create-layout-schema';
+import createLayoutSchema, { ROOT_NODE_STYLE } from './helpers/create-layout-schema';
 import {
   createRefSchema,
   createAppLandingRouteNode,
@@ -31,6 +31,9 @@ export async function initAppRootView(appID: string, layoutType: LayoutType | 'f
             name: 'div',
             children: [initialChild],
           },
+          props: {
+            style: ROOT_NODE_STYLE.style,
+          },
         },
       },
     );
@@ -41,8 +44,8 @@ export async function initAppRootView(appID: string, layoutType: LayoutType | 'f
   if (!refSchemaKey) throw new Error('get refSchemaKey failed');
 
   const rootNode = createLayoutSchema({
-    name: 'ROOT_LAYOUT',
-    layoutType, refSchemaKey,
+    layoutInfo: { name: 'ROOT_LAYOUT', type: layoutType },
+    refSchemaKey,
     initialChild,
     isRoot: true,
   });

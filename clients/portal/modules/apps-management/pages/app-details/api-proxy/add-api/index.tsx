@@ -6,6 +6,7 @@ import cs from 'classnames';
 import { useMutation } from 'react-query';
 import { get, values, keys } from 'lodash';
 import { toJS } from 'mobx';
+import { encode } from 'js-base64';
 
 import Select from '@c/select';
 import Button from '@c/button';
@@ -111,7 +112,7 @@ function AddApi(props: Props): JSX.Element {
         }
 
         const {
-          parameters = [], responses = {}, ['x-consts']: constants = [],
+          parameters = [], responses = {}, ['x-consts']: constants = [], description,
         } = values(values(get(doc, 'doc.paths'))[0])[0] || {};
         paramsStore.setAllParameters(parameters);
         paramsStore.setConstants(constants);
@@ -123,7 +124,7 @@ function AddApi(props: Props): JSX.Element {
           title: detail.title,
           apiPath: keys(get(doc, 'doc.paths'))[0],
           apiName: detail.name.split('.')[0],
-          description: detail.desc,
+          description: detail.desc || description,
         });
       });
     }
@@ -224,7 +225,7 @@ function AddApi(props: Props): JSX.Element {
       const params = {
         version: 'v1',
         // namespace: '',
-        swagger: JSON.stringify(swagger),
+        swagger: encode(JSON.stringify(swagger)),
       };
 
       createApiMutation.mutate(params);

@@ -69,7 +69,7 @@ function ScopeTable(): JSX.Element {
   return (
     <div className='flex overflow-hidden flex-col justify-between'>
       <div className="flex overflow-y-scroll">
-        <Table<DepDetail|UserDetail>
+        <Table<DepDetail | UserDetail>
           onSelectChange={(selectedKeys: string[]) => store.setSelectUser(selectedKeys)}
           showCheckbox
           rowKey="id"
