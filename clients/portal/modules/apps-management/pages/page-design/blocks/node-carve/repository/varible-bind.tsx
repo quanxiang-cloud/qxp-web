@@ -10,17 +10,22 @@ import { updateNodeProperty } from '../utils';
 import { useConfigContext } from '../context';
 import { get, isObject } from 'lodash';
 
+interface VaribleBindProps {
+  type: 'array' | 'object',
+  text?: string;
+}
+
 function VaribleBind({
-  path,
+  __path,
   type,
   text = '输入变量',
-}: ConnectedProps<Record<any, any> | any[]>): JSX.Element {
+}: ConnectedProps<VaribleBindProps>): JSX.Element {
   const { activeNode, onArteryChange, artery } = useConfigContext() ?? {};
   const [modalVisible, setModalVisible] = useState(false);
   const [varibleString, setVaribleString] = useState<string>();
 
   useEffect(() => {
-    const value = get(activeNode, `${path}.value`, '');
+    const value = get(activeNode, `${__path}.value`, '');
     const valueString = JSON.stringify(value, null, 2);
     setVaribleString(valueString);
   }, []);
@@ -47,7 +52,7 @@ function VaribleBind({
         return;
       }
 
-      onArteryChange?.(updateNodeProperty(activeNode, path, varible, artery));
+      onArteryChange?.(updateNodeProperty(activeNode, __path, varible, artery));
       setModalVisible(false);
     } catch (err: any) {
       toast.error(err.message);

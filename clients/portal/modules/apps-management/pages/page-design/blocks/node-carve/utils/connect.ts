@@ -5,23 +5,21 @@ import { ConfigContext } from '../context';
 import { isConstantProperty, updateNodeProperty } from './';
 import logger from '@lib/logger';
 
-export interface ConnectedProps<T> {
-  path: string;
-  initValue?: T;
-  [key: string]: any
-}
+export type ConnectedProps<T extends Record<string, any>> = T & {
+  __path: string;
+};
 
-interface OptionsType {
-  valueKey?: string;
-  eventKey?: string;
-  defaultProps?: any;
+interface OptionsType<T> {
+  valueKey?: keyof T;
+  eventKey?: keyof T;
+  defaultProps?: Partial<T>;
   getValue?: (...args: any[]) => any;
 }
 
-export function connect(
-  Component: JSXElementConstructor<any>,
-  options?: OptionsType,
-): JSXElementConstructor<any> {
+export function connect<T extends Record<string, any> = Record<string, any>>(
+  Component: JSXElementConstructor<T>,
+  options?: OptionsType<T>,
+): JSXElementConstructor<ConnectedProps<T>> {
   const _options = Object.assign(
     {
       valueKey: 'value',
@@ -30,31 +28,33 @@ export function connect(
     options,
   );
 
-  const ConnectedComponent: JSXElementConstructor<any> = function({
-    path,
-    ...restProps
-  }: ConnectedProps<any>) {
+  const ConnectedComponent: JSXElementConstructor<ConnectedProps<T>> = function(props: ConnectedProps<T>) {
     try {
       const { artery, activeNode, onArteryChange } = useContext(ConfigContext) ?? {};
-      const { valueKey, eventKey, getValue, defaultProps } = _options;
-      const componentProps: Record<string, any> = { ...defaultProps, ...restProps };
-      const property = get(activeNode, path, { type: 'constant_property' });
+      const { valueKey, eventKey, getValue, defaultProps = {} } = _options;
+      const componentProps = { ...defaultProps, ...props } as T;
+      const property = get(activeNode, props.__path, { type: 'constant_property' });
       if (isConstantProperty(property)) {
         componentProps[valueKey] = property.value;
       }
       componentProps[eventKey] = function(...args: any[]) {
-        restProps[eventKey] && restProps[eventKey](...args);
+        props[eventKey] && props[eventKey](...args);
         if (!activeNode || !artery || !isConstantProperty(property)) {
           return;
         }
 
         const val = getValue ? getValue(...args) : args[0];
-        const newArtery = updateNodeProperty(activeNode, path, {
-          type: 'constant_property',
-          value: val,
-        }, artery);
+        const newArtery = updateNodeProperty(
+          activeNode,
+          props.__path,
+          {
+            type: 'constant_property',
+            value: val,
+          },
+          artery,
+        );
         onArteryChange?.(newArtery);
-      };
+      } as any;
       return createElement(Component, componentProps);
     } catch (e) {
       logger.error('error spec');
@@ -63,4 +63,3 @@ export function connect(
   };
   return ConnectedComponent;
 }
-

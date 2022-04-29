@@ -1,3 +1,6 @@
+import { set } from 'lodash';
+import { CSSProperties } from 'react';
+
 import {
   Artery,
   HTMLNode,
@@ -5,15 +8,12 @@ import {
   NodeProperty,
   NodeProperties,
 } from '@one-for-all/artery';
-import { set } from 'lodash';
-import { CSSProperties } from 'react';
-import { genNodeID } from '../../../../app-details/view-orchestration/helpers/utils';
-import { PropsSpec } from './props-spec';
+import { generateNodeId } from '@one-for-all/artery-engine';
+
+import { PropsSpec } from '../type';
 
 export const initConfigArtery: Artery = {
-  node: createWrapperNode({
-    width: '100%',
-  }),
+  node: createWrapperNode({ width: '100%' }),
   apiStateSpec: {},
   sharedStatesSpec: {},
 };
@@ -28,7 +28,7 @@ const WILL_COMPONENT_MAP: Record<string, string> = {
 
 function createWrapperNode(style?: CSSProperties, children?: Node[]): HTMLNode {
   const baseNode: HTMLNode = {
-    id: genNodeID(),
+    id: generateNodeId(),
     type: 'html-element',
     name: 'div',
   };
@@ -75,7 +75,7 @@ function convertorWillProps(item: PropsSpec): NodeProperties {
 function buildTextItem(item: PropsSpec, style?: Record<string, string>): Node {
   const textNode: Node[] = [
     {
-      id: genNodeID(),
+      id: generateNodeId(),
       type: 'html-element',
       name: 'label',
       props: {
@@ -89,7 +89,7 @@ function buildTextItem(item: PropsSpec, style?: Record<string, string>): Node {
 
   if (item.desc) {
     textNode.push({
-      id: genNodeID(),
+      id: generateNodeId(),
       type: 'react-component',
       packageName: 'node-carve',
       packageVersion: '1.0.0',
@@ -106,7 +106,7 @@ function buildTextItem(item: PropsSpec, style?: Record<string, string>): Node {
   return createWrapperNode(style, textNode);
 }
 
-function buildFieldItem(item: PropsSpec, pathPrefix?: string): Node {
+function buildFieldItem(item: PropsSpec, prefix?: string): Node {
   const wrapperNode = createWrapperNode({
     display: 'flex',
     alignItems: 'center',
@@ -114,13 +114,9 @@ function buildFieldItem(item: PropsSpec, pathPrefix?: string): Node {
   });
 
   const defaultProperties = {
-    path: {
+    __path: {
       type: 'constant_property',
-      value: `${pathPrefix}${item.name}`,
-    },
-    initValue: {
-      type: 'constant_property',
-      value: item.initialValue,
+      value: `${prefix}${item.name}`,
     },
   };
 
@@ -133,7 +129,7 @@ function buildFieldItem(item: PropsSpec, pathPrefix?: string): Node {
       },
       [
         {
-          id: genNodeID(),
+          id: generateNodeId(),
           type: 'react-component',
           packageName: 'node-carve',
           packageVersion: '1.0.0',
@@ -152,7 +148,7 @@ function buildFieldItem(item: PropsSpec, pathPrefix?: string): Node {
         },
         [
           {
-            id: genNodeID(),
+            id: generateNodeId(),
             type: 'react-component',
             packageName: 'node-carve',
             packageVersion: '1.0.0',
@@ -172,7 +168,7 @@ function buildFieldItem(item: PropsSpec, pathPrefix?: string): Node {
 
 export function buildConfigArtery(
   spec: PropsSpec[],
-  pathPrefix?: string,
+  prefix?: string,
 ): Artery {
   const rootNode = createWrapperNode({
     width: '100%',
@@ -181,7 +177,7 @@ export function buildConfigArtery(
     .filter((item) => !(item.name === 'children' && item.type === 'react-node'))
     .map((item: PropsSpec) => {
       const wrapperNode: HTMLNode = {
-        id: genNodeID(),
+        id: generateNodeId(),
         type: 'html-element',
         name: 'div',
       };
@@ -189,7 +185,7 @@ export function buildConfigArtery(
         display: 'flex',
         padding: '8px 0',
       });
-      const itemNode: Node = buildFieldItem(item, pathPrefix);
+      const itemNode: Node = buildFieldItem(item, prefix);
       const nodes: Node[] = [labelNode, itemNode];
 
       return {

@@ -1,4 +1,4 @@
-import { PropsSpec } from '../utils/props-spec';
+import { PropsSpec } from '../type';
 
 const lifeCyclesSpec: PropsSpec[] = [{
   label: 'didMount',

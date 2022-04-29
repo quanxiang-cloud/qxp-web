@@ -199,7 +199,7 @@ function RendererPanel(): JSX.Element {
           <div className="flex items-center justify-between">
             <label>绑定变量</label>
             <DataBind
-              path="shouldRender"
+              __path="shouldRender"
             />
           </div>
         </Section>
@@ -215,7 +215,7 @@ function RendererPanel(): JSX.Element {
                   {hasBindConst() ? '已绑定常量数据' : '绑定常量数据'}
                 </Button>
                 <DataBind
-                  path="loop-node"
+                  __path="loop-node"
                   isSetLoopNode
                 />
               </div>

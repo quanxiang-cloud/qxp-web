@@ -31,10 +31,10 @@ function SettingPanel({
     artery,
     activeNode,
     rawActiveNode: activeNode ? findNode(artery.node, activeNode?.id, true) : null,
-    onArteryChange: onChange,
     setNodeAttr,
     setModalBindStateOpen,
     setModalComponentNodeOpen,
+    onArteryChange: onChange,
   };
 
   const [activePanel, setActivePanel] = useState<string>('props');

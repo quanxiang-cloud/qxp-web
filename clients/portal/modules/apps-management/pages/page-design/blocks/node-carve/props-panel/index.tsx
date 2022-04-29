@@ -1,49 +1,37 @@
 import React, { useEffect, useState } from 'react';
 
-import { useQuery } from 'react-query';
-import { getBatchGlobalConfig } from '@lib/api/user-config';
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
 import { ArteryRenderer } from '@one-for-all/artery-renderer';
 import repository from '../repository';
 import { useConfigContext } from '../context';
-import { base_props_spec, getConfigSpecKey, PropsSpec } from '../utils/props-spec';
 import buildConfigArtery from '../utils/buildConfigNodes';
-import { Artery } from '@one-for-all/artery';
+import { Artery, ReactComponentNode } from '@one-for-all/artery';
 import Section from '../../../utils/section';
+import usePropsSpec from '../mock';
+import { PropsSpec } from '../type';
 
-const VERSION = '1.0.0';
+function getArteryBySpec(specs: PropsSpec[]): Artery | null {
+  if (specs.length) {
+    return buildConfigArtery(specs, 'props.');
+  }
+  return null;
+}
 
 function NodeCarve(): JSX.Element {
   const [attrArtery, setAttrArtery] = useState<Artery | null>(null);
   const [functionArtery, setFunctionArtery] = useState<Artery | null>(null);
   const { activeNode } = useConfigContext() ?? {};
+  const getSpecByPkg = usePropsSpec(activeNode);
+  const { packageName, packageVersion, exportName } = activeNode as ReactComponentNode;
 
-  const { isLoading, data, isError } = useQuery(
-    [activeNode?.id],
-    () => {
-      if (activeNode && activeNode?.type === 'react-component') {
-        return getBatchGlobalConfig([{
-          key: getConfigSpecKey(activeNode),
-          version: VERSION,
-        }]);
-      }
-      return null;
-    },
-  );
-
-  function getArteryBySpec(specs: PropsSpec[]): Artery | null {
-    if (specs.length) {
-      return buildConfigArtery(specs, 'props.');
-    }
-    return null;
-  }
+  const [isLoading, data, isError] = getSpecByPkg(packageName, packageVersion);
 
   useEffect(() => {
-    if (!activeNode || !('exportName' in activeNode)) {
+    if (!activeNode || !data) {
       return;
     }
-    const specs = base_props_spec[activeNode.exportName];
+    const specs = data[exportName];
     if (!specs || !specs.length) {
       setAttrArtery(null);
       setFunctionArtery(null);
@@ -54,7 +42,7 @@ function NodeCarve(): JSX.Element {
     const funcSpecs = getArteryBySpec(specs.filter((s) => s.type === 'function'));
     setAttrArtery(attrSpecs);
     setFunctionArtery(funcSpecs);
-  }, [activeNode?.id]);
+  }, [activeNode?.id, data]);
 
   if (!activeNode) {
     return <ErrorTips desc='当前层级没有内容, 请在左侧画布选中其他元素' />;

@@ -19,13 +19,15 @@ import { FunctionalProperty, LifecycleHookFuncSpec } from '@one-for-all/artery';
 
 export const HOOKS_PREFIX = 'lifecycleHooks.';
 
-function FunctionBind({ path, notes }: ConnectedProps<any>): JSX.Element {
+function FunctionBind({ __path, notes }: ConnectedProps<{
+  notes?: string;
+}>): JSX.Element {
   const { activeNode, artery, onArteryChange } = useConfigContext() ?? {};
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [hasBound, setHasBound] = useState<boolean>(false);
   const [eventType, setEventType] = useState<string>('custom');
   const [fnString, setFnString] = useState<string>(notes ? `// ${notes}` : '');
-  const isLifecycleHooks = path.startsWith(HOOKS_PREFIX);
+  const isLifecycleHooks = __path.startsWith(HOOKS_PREFIX);
   const functionSpec: FunctionalProperty | LifecycleHookFuncSpec = isLifecycleHooks ? {
     type: 'lifecycle_hook_func_spec',
     args: '',
@@ -39,10 +41,10 @@ function FunctionBind({ path, notes }: ConnectedProps<any>): JSX.Element {
     },
   };
   const bodyPath = isLifecycleHooks ? 'body' : 'func.body';
-  const fullPath = `${path}.${bodyPath}`;
+  const fullPath = `${__path}.${bodyPath}`;
   useEffect(() => {
     setHasBound(!!get(activeNode, fullPath));
-  }, [get(activeNode, path)]);
+  }, [get(activeNode, __path)]);
 
   function onEdit(): void {
     if (!activeNode || !artery) {
@@ -57,7 +59,7 @@ function FunctionBind({ path, notes }: ConnectedProps<any>): JSX.Element {
       return;
     }
     set(functionSpec, bodyPath, '');
-    onArteryChange?.(updateNodeProperty(activeNode, path, functionSpec, artery));
+    onArteryChange?.(updateNodeProperty(activeNode, __path, functionSpec, artery));
   }
 
   function onBind(): void {
@@ -67,7 +69,7 @@ function FunctionBind({ path, notes }: ConnectedProps<any>): JSX.Element {
   function addAction(fnString: string): void {
     if (fnString && activeNode && artery) {
       set(functionSpec, bodyPath, fnString);
-      onArteryChange?.(updateNodeProperty(activeNode, path, functionSpec, artery));
+      onArteryChange?.(updateNodeProperty(activeNode, __path, functionSpec, artery));
       setModalOpen(false);
     } else {
       toast.error('非法的函数定义');

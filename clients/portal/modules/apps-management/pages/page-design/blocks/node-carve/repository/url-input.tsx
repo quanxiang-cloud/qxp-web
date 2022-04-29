@@ -8,7 +8,7 @@ import { ConnectedProps } from '../utils/connect';
 import { useConfigContext } from '../context';
 import { updateNodeProperty } from '../utils';
 
-function UrlInput({ path }: ConnectedProps<string>): JSX.Element {
+function UrlInput({ __path }: ConnectedProps<Record<string, never>>): JSX.Element {
   const { artery, onArteryChange, activeNode } = useConfigContext() ?? {};
   const [urlString, setUrlString] = useState<string>();
   const { Popper, handleClick, referenceRef } = usePopper<HTMLDivElement>();
@@ -17,7 +17,7 @@ function UrlInput({ path }: ConnectedProps<string>): JSX.Element {
     if (!artery || !activeNode) {
       return;
     }
-    onArteryChange?.(updateNodeProperty(activeNode, path, {
+    onArteryChange?.(updateNodeProperty(activeNode, __path, {
       type: 'constant_property',
       value: urlString,
     }, artery));

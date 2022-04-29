@@ -20,9 +20,11 @@ const normalStateTypes: NodePropType[] = [
 ];
 
 function ConfigItemBind({
-  path,
+  __path,
   isSetLoopNode = false,
-}: ConnectedProps<any>): JSX.Element {
+}: ConnectedProps<{
+  isSetLoopNode?: boolean,
+}>): JSX.Element {
   const {
     rawActiveNode,
     activeNode,
@@ -42,7 +44,7 @@ function ConfigItemBind({
     const iterType = get(rawActiveNode, 'iterableState.type');
     bound = iterableStateTypes.includes(iterType);
   } else {
-    const typePath = `${path}.type`;
+    const typePath = `${__path}.type`;
     const propType = get(activeNode, typePath);
     bound = normalStateTypes.includes(propType);
   }
@@ -57,11 +59,11 @@ function ConfigItemBind({
     } else if (isComposedNode) {
       onArteryChange(unsetComposedNode(activeNode, artery));
     } else {
-      const { fallback } = get(activeNode, path, {});
+      const { fallback } = get(activeNode, __path, {});
       onArteryChange(
         updateNodeProperty(
           activeNode,
-          path,
+          __path,
           {
             type: 'constant_property',
             value: fallback,
@@ -74,7 +76,7 @@ function ConfigItemBind({
 
   function handleClick(): void {
     const { exportName } = activeNode as ReactComponentNode;
-    setNodeAttr({ path, type: isSetLoopNode ? 'loopNode' : 'normal' });
+    setNodeAttr({ path: __path, type: isSetLoopNode ? 'loopNode' : 'normal' });
     if (exportName === 'container' && isSetLoopNode) {
       setModalComponentNodeOpen(true);
     } else {
