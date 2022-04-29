@@ -31,7 +31,6 @@ export function connect(
   );
 
   const ConnectedComponent: JSXElementConstructor<any> = function({
-    initValue, // ？
     path,
     ...restProps
   }: ConnectedProps<any>) {
@@ -54,7 +53,7 @@ export function connect(
           type: 'constant_property',
           value: val,
         }, artery);
-        onArteryChange?.({ ...newArtery });
+        onArteryChange?.(newArtery);
       };
       return createElement(Component, componentProps);
     } catch (e) {

@@ -20,6 +20,7 @@ import {
   setNodeAsComposedNode,
 } from '../utils';
 import { generateNodeId } from '@one-for-all/artery-engine';
+import Tab from '@c/tab';
 
 type LabelValue = {
   label: string;
@@ -231,62 +232,65 @@ function ModalComponentNode(): JSX.Element {
     >
       <div className="grid h-full" style={{ gridTemplateColumns: '212px 1fr' }}>
         <div className="bg-gray-50 border">
-          {Object.entries(mapSharedStateSpec(artery)).map(([name, conf]) => {
-            const checked =
-              selected?.name === name || stateExpr.includes(`['${name}']`);
-            return (
-              <div
-                key={name}
-                className={cs(
-                  'flex justify-between items-center',
-                  'cursor-pointer px-16 py-4 hover:bg-gray-200',
-                  {
-                    'bg-gray-200': checked,
-                  },
-                )}
-                onClick={() => {
-                  setSelected({ name, conf });
-                  setStateExpr(`states['${name}']`);
-                }}
-              >
-                <span className="flex-1 flex flex-wrap items-center">
-                  {name}
-                  <span className="ml-8 border border-gray-100 text-12 text-gray-400">
-                    普通变量
-                  </span>
-                </span>
-                {checked && <Icon name="check" />}
-              </div>
-            );
-          })}
-          {Object.entries(mapApiStateSpec(artery)).map(([name, conf]) => {
-            const checked =
-              selected?.name === name || stateExpr.includes(`['${name}']`);
-            return (
-              <div
-                key={name}
-                className={cs(
-                  'flex justify-between items-center',
-                  'cursor-pointer px-16 py-4 hover:bg-gray-200',
-                  {
-                    'bg-gray-200': checked,
-                  },
-                )}
-                onClick={() => {
-                  setSelected({ name, conf });
-                  setStateExpr(`apiStates['${name}']`);
-                }}
-              >
-                <span className="flex-1 flex flex-wrap items-center">
-                  {name}
-                  <span className="ml-8 border border-gray-100 text-12 text-gray-400">
-                    API 变量
-                  </span>
-                </span>
-                {checked && <Icon name="check" />}
-              </div>
-            );
-          })}
+          <Tab items={[
+            {
+              id: 'sharedState',
+              name: '自定义变量',
+              content: Object.entries(mapSharedStateSpec(artery)).map(([name, conf]) => {
+                const checked =
+                  selected?.name === name || stateExpr.includes(`['${name}']`);
+                return (
+                  <div
+                    key={name}
+                    className={cs(
+                      'flex justify-between items-center',
+                      'cursor-pointer px-16 py-4 hover:bg-gray-200',
+                      {
+                        'bg-gray-200': checked,
+                      },
+                    )}
+                    onClick={() => {
+                      setSelected({ name, conf });
+                      setStateExpr(`states['${name}']`);
+                    }}
+                  >
+                    <span className="flex-1 flex flex-wrap items-center">
+                      {name}
+                    </span>
+                    {checked && <Icon name="check" />}
+                  </div>
+                );
+              }),
+            },
+            {
+              id: 'apiState',
+              name: 'API 变量',
+              content: Object.entries(mapApiStateSpec(artery)).map(([name, conf]) => {
+                const checked =
+                  selected?.name === name || stateExpr.includes(`['${name}']`);
+                return (
+                  <div
+                    key={name}
+                    className={cs(
+                      'flex justify-between items-center',
+                      'cursor-pointer px-16 py-4 hover:bg-gray-200',
+                      {
+                        'bg-gray-200': checked,
+                      },
+                    )}
+                    onClick={() => {
+                      setSelected({ name, conf });
+                      setStateExpr(`apiStates['${name}']`);
+                    }}
+                  >
+                    <span className="flex-1 flex flex-wrap items-center">
+                      {name}
+                    </span>
+                    {checked && <Icon name="check" />}
+                  </div>
+                );
+              }),
+            }]} />
         </div>
         <div className="px-8">
           <div className="mb-8">

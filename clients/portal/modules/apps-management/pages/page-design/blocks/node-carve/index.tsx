@@ -57,7 +57,7 @@ function SettingPanel({
 
     if (
       (activeNode?.type === 'react-component' && activeNode?.exportName === 'page') ||
-      isSystemComponent((activeNode)?.category)
+      isSystemComponent((activeNode as any)?.category)
     ) {
       return panels;
     }

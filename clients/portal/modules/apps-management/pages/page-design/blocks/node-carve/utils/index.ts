@@ -40,7 +40,7 @@ export function getActualNode(node: Node, currentNode: Node): Node {
       actualNode = node.node;
     }
   }
-  return actualNode;
+  return { ...actualNode };
 }
 
 export function updateNodeProperty(
@@ -52,8 +52,8 @@ export function updateNodeProperty(
   const rawNode = findNode(artery.node, node.id, true);
   const actualNode = getActualNode(rawNode, node);
   set(actualNode, path, value);
-  patchNode(artery.node, rawNode);
-  return artery;
+  patchNode(artery.node, { ...rawNode });
+  return { ...artery };
 }
 
 export function setNodeAsComposedNode(
@@ -70,7 +70,7 @@ export function setNodeAsComposedNode(
     node: composedConfig.node || {},
   } as LoopContainerNode;
 
-  return replaceNode(target, composedNodeConfig, artery);
+  return { ...replaceNode(target, composedNodeConfig, artery) };
 }
 
 export function replaceNode(
@@ -99,7 +99,7 @@ export function replaceNode(
 
   replaceTreeNode(artery.node, node.id, replaced);
 
-  return artery;
+  return { ...artery };
 }
 
 export function setNodeAsLoopContainer(
@@ -126,7 +126,7 @@ export function setNodeAsLoopContainer(
   };
 
   replaceNode(target, loopNodeConfig as any, artery);
-  return artery;
+  return { ...artery };
 }
 
 export function updateCurNodeAsLoopContainer(
@@ -153,7 +153,7 @@ export function updateCurNodeAsLoopContainer(
       artery,
     );
   }
-  return artery;
+  return { ...artery };
 }
 
 export function unsetLoopNode(node: Node, artery: Artery): Artery {
@@ -165,7 +165,7 @@ export function unsetLoopNode(node: Node, artery: Artery): Artery {
     const innerNode = loopNode.node;
     replaceNode(node, innerNode, artery);
   }
-  return artery;
+  return { ...artery };
 }
 
 export function unsetComposedNode(node: Node, artery: Artery): Artery {
@@ -184,7 +184,7 @@ export function unsetComposedNode(node: Node, artery: Artery): Artery {
       }
     }
   }
-  return artery;
+  return { ...artery };
 }
 
 export function mapSharedStateSpec(artery: Artery) {
