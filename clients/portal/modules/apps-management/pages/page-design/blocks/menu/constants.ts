@@ -2,10 +2,9 @@ import { Package } from './type';
 
 export const defaultPackages: Package[] = [
   {
-    name: '@one-for-all/ui',
-    label: 'ui(不推荐)',
+    name: 'all',
+    label: '所有组件',
     version: 'latest',
-    categories: ['布局组件', '基础组件', '表单组件'],
   },
   {
     name: 'system-components',
@@ -13,15 +12,17 @@ export const defaultPackages: Package[] = [
     version: 'latest',
   },
   {
+    name: '@one-for-all/ui',
+    label: 'UI (不推荐)',
+    version: 'latest',
+    categories: ['布局组件', '基础组件', '表单组件'],
+  },
+  {
     name: 'ofa-ui',
     label: 'legacy',
     version: 'latest',
     categories: ['布局组件', '基础组件', '表单组件', '高级组件'],
-  },
-  {
-    name: 'all',
-    label: '所有组件',
-    version: 'latest',
+    hide: true,
   },
 ];
 

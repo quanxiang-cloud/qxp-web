@@ -118,7 +118,7 @@ function mapRawBodyParams(params: ApiParam[], mergeOptions?: Record<string, any>
     id: '',
     name: 'temporaryname',
     required: false,
-    type: 'object',
+    type: '' as ParamType,
     _object_nodes_: params,
   }];
   const item = mapRawParams(bodyParams, mergeOptions)[0];
@@ -143,7 +143,7 @@ function getDefaultParameters(): Record<ParamGroup, ApiParam[]> {
 
 // map object/array node schema to _object_nodes_, _array_nodes_ structure recursively
 function mapObjectNode(node: Record<string, any>, isRoot?: boolean): Record<string, any> {
-  const { required: requiredKeys = [], properties = {}, items = {} } = isRoot ? node.schema : node;
+  const { required: requiredKeys = [], properties = {}, items = {}, type } = isRoot ? node.schema : node;
   delete node.schema;
   delete node.required;
   delete node.properties;
@@ -166,10 +166,10 @@ function mapObjectNode(node: Record<string, any>, isRoot?: boolean): Record<stri
     return [{ ...preload, ...arrayItems }];
   }
 
-  if (node.type === 'object') {
+  if (type === 'object') {
     node._object_nodes_ = applyObjectProperties(properties);
   }
-  if (node.type === 'array') {
+  if (type === 'array') {
     node._array_nodes_ = applyArrayProperties(items);
   }
   return node;

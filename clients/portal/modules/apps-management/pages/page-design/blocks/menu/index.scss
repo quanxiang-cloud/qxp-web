@@ -1,6 +1,6 @@
 $ibc: #dcdfe6;
 
-.page-engine-layer-block__menu {
+.artery-engine-layer-block__menu {
   background-color: white;
   border-right: solid 1px $ibc;
   height: 100%;
@@ -8,11 +8,11 @@ $ibc: #dcdfe6;
   display: flex;
   flex-flow: row nowrap;
 
-  .page-engine-layer-block__menu-outline {
+  .artery-engine-layer-block__menu-outline {
     margin-left: 10px;
   }
 
-  .page-engine-layer-block__menu-components-item {
+  .artery-engine-layer-block__menu-components-item {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -39,7 +39,7 @@ $ibc: #dcdfe6;
       content: '';
     }
 
-    .page-engine-layer-block__menu-components-item__name {
+    .artery-engine-layer-block__menu-components-item__name {
       white-space: nowrap;
       position: absolute;
       top: -1px;

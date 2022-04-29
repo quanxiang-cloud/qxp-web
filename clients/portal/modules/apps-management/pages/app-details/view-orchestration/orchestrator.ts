@@ -220,25 +220,11 @@ class Orchestrator {
     const customPageSchema: Artery = {
       node: {
         id: genNodeID(),
-        type: 'react-component',
-        packageName: 'ofa-ui',
-        packageVersion: 'latest',
-        exportName: 'page',
-        label: params.name,
-        props: {
-          style: {
-            type: 'constant_property',
-            value: {
-              width: '100%',
-              height: '100%',
-            },
-          },
-        },
-        children: [],
+        type: 'html-element',
+        name: 'div',
       },
-      apiStateSpec: {},
-      sharedStatesSpec: {},
     };
+
     return saveArtery(pageSchemaKey, customPageSchema).then(() => {
       renderSchemaView = {
         id: genNodeID(),

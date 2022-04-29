@@ -1,10 +1,11 @@
 import React from 'react';
 
 import type { Package } from '@pageDesign/blocks/menu/type';
+import Loading from '@c/loading';
 
 import PackageSelector from './package-selector';
 import CategoriesRender from './categories-render';
-import { components } from './store';
+import { useComponents } from './store';
 
 import styles from './index.m.scss';
 
@@ -16,10 +17,15 @@ interface Props {
 
 function ComponentSource({ onAddNode, currentPackage, onChangePackage }: Props): JSX.Element {
   const isAllPackage = currentPackage?.name === 'all';
-  const currentComponents = components.filter(
+  const components = useComponents();
+  const currentComponents = components?.filter(
     (component) => component.package.name === currentPackage?.name,
   );
   const distComponents = isAllPackage ? components : currentComponents;
+
+  if (!distComponents) {
+    return <Loading desc="loading..." />;
+  }
 
   return (
     <div className={styles.comps}>
