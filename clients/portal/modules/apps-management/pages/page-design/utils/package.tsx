@@ -3,6 +3,7 @@ import { equals, flatten, ifElse, isEmpty } from 'ramda';
 import Icon from '@one-for-all/icon';
 
 import { getBatchGlobalConfig } from '@lib/api/user-config';
+import { parseJSON } from '@lib/utils';
 
 import { defaultPackages } from '../blocks/menu/constants';
 import type {
@@ -96,35 +97,34 @@ export async function getComponentsFromPackage(pkg: Package): Promise<PackageCom
 }
 
 export async function getPackagesSourceDynamic(): Promise<Package[]> {
-  try {
-    const key = 'artery-design-package-list';
-    const { result } = await getBatchGlobalConfig([{ key, version: '0.0.1' }]);
-    const packages: Package[] = JSON.parse(result[key]);
-    const defaultNames = defaultPackages.map((pkg) => pkg.name);
-    return [...defaultPackages, ...packages.filter((pkg) => !defaultNames.includes(pkg.name))];
-  } catch (e) {
-    console.error(e);
-    return [];
-  }
+  const key = 'PACKAGES';
+  const { result } = await getBatchGlobalConfig([{ key, version: '1.0.0' }]);
+  const packages: Package[] = parseJSON(result[key], []);
+  const defaultNames = defaultPackages.map((pkg) => pkg.name);
+  return [...defaultPackages, ...packages.filter((pkg) => !defaultNames.includes(pkg.name))];
 }
 
 async function getPackageComponentToCategoryVariantMapDynamic(
   { name, version }: Package,
 ): Promise<Record<string, CategoryVariants | undefined>> {
-  try {
-    if (name === 'all') {
-      return {};
-    }
-    const key = `artery-design-package-category-variants:${name}:${version}`;
-    const { result } = await getBatchGlobalConfig([{ key, version: '0.0.1' }]);
-    const getter = ifElse(
-      () => !isEmpty(result),
-      () => JSON.parse(result[key]),
-      () => ({}),
-    );
-    return getter();
-  } catch (e) {
-    console.error(e);
+  if (name === 'all') {
     return {};
   }
+  const key = `PACKAGE_MANIFEST:${name}`;
+  const { result } = await getBatchGlobalConfig([{ key, version }]);
+  const getter = ifElse(
+    () => !isEmpty(result),
+    () => parseJSON(result[key], {}),
+    () => ({}),
+  );
+  return getter();
+}
+
+// TODO define props spec type
+export type PropsSpec = Record<string, any>;
+export type GetPackagePropsSpecResult = Pick<Package, 'name' | 'version'> & { result: PropsSpec; };
+export async function getPackagePropsSpec({ name, version }: Package): Promise<GetPackagePropsSpecResult> {
+  const key = `PACKAGE_PROPS_SPEC:${name}`;
+  const { result } = await getBatchGlobalConfig([{ key, version }]);
+  return { name, version, result: parseJSON(result[key], {}) };
 }
