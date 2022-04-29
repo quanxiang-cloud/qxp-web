@@ -6,7 +6,8 @@ import { treeFind, pageListToTree, NodeItem } from '@c/two-level-menu';
 import { getCustomPageInfo, delFormDataRequest, fetchPageList } from '@lib/http-client';
 import { CustomPageInfo, MenuType } from '@portal/modules/apps-management/pages/app-details/type';
 
-import { getOperate } from './api';
+import { getButtonAPIList } from './utils';
+import { getOperate } from '../app-table-view-detail/api';
 
 type PerItem = {
   roleID: string;
@@ -27,7 +28,7 @@ class UserAppDetailsStore {
   @observable pageListLoading = true;
   @observable curPage: PageInfo = { id: '' };
   @observable fetchSchemeLoading = true;
-  @observable authority = 0;
+  @observable authority: Record<string, boolean> = {};
   @observable showPageNav = true;
   @observable operationType = '';
   @observable isMouseControl = false;
@@ -47,6 +48,11 @@ class UserAppDetailsStore {
 
       return _page?.source;
     }, this.setCurPage);
+    if (window.APP_ID) {
+      this.appID = window.APP_ID;
+      this.getRoleInfo(this.appID);
+    }
+    reaction(() => this.appID, () => this.getRoleInfo(this.appID));
   }
 
   @action
@@ -78,6 +84,11 @@ class UserAppDetailsStore {
   };
 
   @action
+  setCurrentRoleInfo = (currentRoleInfo: PerItem): void => {
+    this.currentRoleInfo = currentRoleInfo;
+  };
+
+  @action
   setCurPage = (pageInfo: PageInfo | undefined): void => {
     if (!pageInfo) {
       return;
@@ -91,8 +102,9 @@ class UserAppDetailsStore {
       });
     } else {
       this.fetchSchemeLoading = true;
-      getOperate<{ authority: number | null }>(this.appID, this.pageID).then((authorityRef) => {
-        this.authority = authorityRef?.authority || 0;
+      const toolList = getButtonAPIList(this.appID, this.pageID);
+      getOperate(this.appID, { paths: toolList }).then((authorityRef) => {
+        this.authority = authorityRef || {};
         this.pageName = pageInfo.name || '';
         this.fetchSchemeLoading = false;
       }).catch(() => {
@@ -148,6 +160,10 @@ class UserAppDetailsStore {
 
   @action
   getRoleInfo = (appID: string): void => {
+    console.log(appID);
+    if (!appID) {
+      return;
+    }
     getPerOption<PerRes>(appID).then((res: any) => {
       const { optionPer = [], selectPer = { roleId: '', roleName: '' } } = res;
       this.currentRoleInfo = { roleName: selectPer.roleName, roleID: selectPer.roleID };
@@ -164,7 +180,9 @@ class UserAppDetailsStore {
     if (!roleID || !window.APP_ID) return;
 
     roleChange(window.APP_ID, roleID).then(() => {
-      this.currentRoleInfo = { roleName, roleID };
+      // this.currentRoleInfo = { roleName, roleID };
+      this.setCurrentRoleInfo({ roleName, roleID });
+
       toast.success(`当前角色：${roleName}`);
       this.clear();
     }).catch(() => toast.error('角色切换失败'));

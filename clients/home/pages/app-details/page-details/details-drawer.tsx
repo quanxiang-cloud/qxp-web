@@ -22,6 +22,11 @@ function DetailsDrawer({ onCancel, rowID, goEdit, delData }: Props): JSX.Element
   const [beganClose, setBeganClose] = useState<boolean>(false);
   const [visible, setVisible] = useState<boolean>(false);
   const [fullScreen, setFullScreen] = useState<boolean>(false);
+  const getOperateParam = {
+    appID: store.appID,
+    tableID: store.pageID,
+    authority: store.authority,
+  };
 
   const handleCancel = (): void => {
     setBeganClose(true);
@@ -60,13 +65,13 @@ function DetailsDrawer({ onCancel, rowID, goEdit, delData }: Props): JSX.Element
               <Icon size={20} name={fullScreen ? 'unfull_screen' : 'full_screen'} />
               {fullScreen ? '非' : ''}全屏
             </span>
-            {getOperateButtonPer(3, store.authority) && (
+            {getOperateButtonPer('update', getOperateParam) && (
               <span onClick={() => goEdit(rowID)} className='icon-text-btn'>
                 <Icon size={20} name='edit' />
                 修改
               </span>
             )}
-            {getOperateButtonPer(4, store.authority) && (
+            {getOperateButtonPer('delete', getOperateParam) && (
               <PopConfirm content='确认删除该数据？' onOk={handelDelete} >
                 <span className='icon-text-btn'><Icon size={20} name='delete' />删除</span>
               </PopConfirm>

@@ -20,7 +20,7 @@ type Props = {
   rowID: string;
   tableName: string;
   tableID: string;
-  authority: number;
+  authority: Record<string, boolean>;
   appID: string;
 }
 
@@ -68,16 +68,19 @@ function DetailsDrawer(
               <Icon size={20} name={fullScreen ? 'unfull_screen' : 'full_screen'} />
               {fullScreen ? '非' : ''}全屏
             </span>
-            {getOperateButtonPer(3, authority) && (
-              <span onClick={() => {
-                setOperationType('修改');
-                goEdit(rowID);
-              }} className='icon-text-btn'>
+            {getOperateButtonPer('update', { appID, tableID, authority }) && (
+              <span
+                className='icon-text-btn'
+                onClick={() => {
+                  setOperationType('修改');
+                  goEdit(rowID);
+                }}
+              >
                 <Icon size={20} name='edit' />
                 修改
               </span>
             )}
-            {getOperateButtonPer(4, authority) && (
+            {getOperateButtonPer('delete', { appID, tableID, authority }) && (
               <PopConfirm content='确认删除该数据？' onOk={handelDelete} >
                 <span className='icon-text-btn'><Icon size={20} name='delete' />删除</span>
               </PopConfirm>
