@@ -40,7 +40,7 @@ export function getActualNode(node: Node, currentNode: Node): Node {
       actualNode = node.node;
     }
   }
-  return { ...actualNode };
+  return actualNode;
 }
 
 export function updateNodeProperty(
@@ -52,7 +52,7 @@ export function updateNodeProperty(
   const rawNode = findNode(artery.node, node.id, true);
   const actualNode = getActualNode(rawNode, node);
   set(actualNode, path, value);
-  patchNode(artery.node, { ...rawNode });
+  patchNode(artery.node, rawNode);
   return { ...artery };
 }
 
@@ -70,7 +70,7 @@ export function setNodeAsComposedNode(
     node: composedConfig.node || {},
   } as LoopContainerNode;
 
-  return { ...replaceNode(target, composedNodeConfig, artery) };
+  return replaceNode(target, composedNodeConfig, artery);
 }
 
 export function replaceNode(
@@ -125,8 +125,7 @@ export function setNodeAsLoopContainer(
     iterableState: loopConfig.iterableState || {},
   };
 
-  replaceNode(target, loopNodeConfig as any, artery);
-  return { ...artery };
+  return replaceNode(target, loopNodeConfig as any, artery);
 }
 
 export function updateCurNodeAsLoopContainer(
@@ -135,12 +134,13 @@ export function updateCurNodeAsLoopContainer(
   confItem: any,
   artery: Artery,
 ): Artery {
+  let newArtery;
   const rawNode = findNode(artery.node, node.id, true);
   if (!rawNode?.iterableState) {
     // replace current normal node to loop node
-    setNodeAsLoopContainer(node, { [propKey]: confItem }, artery);
+    newArtery = setNodeAsLoopContainer(node, { [propKey]: confItem }, artery);
   } else {
-    updateNodeProperty(
+    newArtery = updateNodeProperty(
       rawNode,
       propKey,
       propKey === 'toProps' ?
@@ -153,7 +153,7 @@ export function updateCurNodeAsLoopContainer(
       artery,
     );
   }
-  return { ...artery };
+  return newArtery;
 }
 
 export function unsetLoopNode(node: Node, artery: Artery): Artery {
