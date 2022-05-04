@@ -7,16 +7,26 @@ import ComponentSearch from './component-search';
 
 interface Props {
   show: boolean;
-  components: PackageComponent[];
+  components: PackageComponentWithDistance[];
   onAddNode: () => void;
   placeholder: string;
+}
+
+interface PackageComponentWithDistance extends PackageComponent {
+  distance?: number;
 }
 
 const Search = ({ show, components, onAddNode, placeholder }: Props): JSX.Element | null => {
   const [keyword, setKeyword] = useState<string>('');
   const pathesList = [['label'], ['desc'], ['category'], ['name']];
   const highLightPathesList = [['label']];
-  const fuzzyFindParams = { list: components, search: keyword, pathesList, highLightPathesList };
+  const fuzzyFindParams = {
+    list: components,
+    search: keyword,
+    pathesList,
+    highLightPathesList,
+    distancePathes: ['label'],
+  };
   const componentsFilted = keyword ? fuzzyFind(fuzzyFindParams) : components;
 
   const viewportHeight = window.innerHeight - 200;
@@ -28,6 +38,11 @@ const Search = ({ show, components, onAddNode, placeholder }: Props): JSX.Elemen
     return null;
   }
 
+  function componentsSorter(cur: PackageComponentWithDistance, next: PackageComponentWithDistance): number {
+    const diff = (cur.distance ?? Infinity) - (next.distance ?? Infinity);
+    return isNaN(diff) ? 0 : diff;
+  }
+
   return (
     <ComponentSearch
       placeholder={placeholder}
@@ -37,7 +52,7 @@ const Search = ({ show, components, onAddNode, placeholder }: Props): JSX.Elemen
       tupleNumber={tupleNumber}
       gap={gap}
       componentWidth={componentWidth}
-      components={componentsFilted}
+      components={componentsFilted.sort(componentsSorter)}
       onAddNode={onAddNode}
     />
   );
