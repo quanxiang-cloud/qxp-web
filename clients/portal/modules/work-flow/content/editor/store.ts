@@ -1,4 +1,4 @@
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs6';
 import { FlowElement } from 'react-flow-renderer';
 import { uuid } from '@lib/utils';
 import { update, omit } from 'lodash';

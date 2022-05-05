@@ -1,7 +1,7 @@
 import ArterySpec from '@one-for-all/artery';
 
 import { LayoutType } from './types';
-import createLayoutSchema from './helpers/create-layout-schema';
+import createLayoutSchema, { ROOT_NODE_STYLE } from './helpers/create-layout-schema';
 import {
   createRefSchema,
   createAppLandingRouteNode,
@@ -30,6 +30,9 @@ export async function initAppRootView(appID: string, layoutType: LayoutType | 'f
             type: 'html-element',
             name: 'div',
             children: [initialChild],
+            props: {
+              style: ROOT_NODE_STYLE.style,
+            },
           },
         },
       },

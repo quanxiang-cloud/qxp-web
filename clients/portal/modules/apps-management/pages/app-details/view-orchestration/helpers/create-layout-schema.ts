@@ -16,7 +16,7 @@ export type LayoutSchemaProps = {
   isRoot?: boolean,
 }
 
-const ROOT_NODE_STYLE: NodeProperties = {
+export const ROOT_NODE_STYLE: NodeProperties = {
   style: {
     type: 'constant_property',
     value: { height: '100vh', overflow: 'auto' },

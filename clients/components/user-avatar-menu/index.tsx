@@ -22,7 +22,7 @@ function UserAvatarMenu(
 ): JSX.Element {
   const [expand, setExpand] = useState<boolean>(false);
   const [openResetPasswordModal, setOpenResetPasswordModal] = useState<boolean>(false);
-  const { close, handleMouseEnter, handleMouseLeave, referenceRef, Popper } = usePopper<HTMLDivElement>();
+  const { close, handleClick, referenceRef, Popper } = usePopper<HTMLDivElement>();
   const [popperShow, setPopperShow] = useState(false);
   const dataInCanvas = !!rest['data-in-canvas'];
 
@@ -40,8 +40,7 @@ function UserAvatarMenu(
     <div ref={ref} {...rest}>
       <div
         ref={referenceRef}
-        onMouseEnter={handleMouseEnter()}
-        onMouseLeave={handleMouseLeave()}
+        onClick={handleClick()}
         className={cs('cursor-pointer flex items-center h-36 transition pl-6', className)}
       >
         <Avatar username={window.USER?.name || ''} />

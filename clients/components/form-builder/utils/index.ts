@@ -1,6 +1,6 @@
 import { get, has, merge } from 'lodash';
 import { customAlphabet } from 'nanoid';
-import { Curry } from 'ts-toolbelt/out/Function/Curry';
+import type { Curry } from 'ts-toolbelt/out/Function/Curry';
 import { IFormExtendedValidateFieldOptions, ValidateNodeResult } from '@formily/antd';
 import fp, {
   pipe, entries, filter, fromPairs, every, equals, property, curry, map, cond, values, stubTrue,

@@ -1,6 +1,6 @@
 import { flatten } from 'ramda';
-import { from } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { from } from 'rxjs6';
+import { switchMap } from 'rxjs6/operators';
 import { isEmpty, is } from 'ramda';
 
 import { getPackagesSourceDynamic } from '@pageDesign/utils/package';
