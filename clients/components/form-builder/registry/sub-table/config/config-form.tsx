@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect, useRef } from 'react';
 import { update, isUndefined } from 'lodash';
-import type { Subscription } from 'rxjs';
+import type { Subscription } from 'rxjs6';
 import {
   SchemaForm, FormEffectHooks,
 } from '@formily/antd';

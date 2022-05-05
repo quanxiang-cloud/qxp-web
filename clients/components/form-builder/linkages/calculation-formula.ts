@@ -1,6 +1,6 @@
 import { get, isNull } from 'lodash';
-import { of, Observable } from 'rxjs';
-import { switchMap, debounceTime, filter, reduce, map as mapOp } from 'rxjs/operators';
+import { of, Observable } from 'rxjs6';
+import { switchMap, debounceTime, filter, reduce, map as mapOp } from 'rxjs6/operators';
 import { FormEffectHooks, ISchemaFormActions, IFieldState } from '@formily/antd';
 import { flattenDeep, isArray, isEmpty, isUndefined } from 'lodash';
 import { findVariables, parse, resolve } from 'qxp-formula';

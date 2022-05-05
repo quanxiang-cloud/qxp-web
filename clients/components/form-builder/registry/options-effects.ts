@@ -1,4 +1,4 @@
-import { filter, tap, skip } from 'rxjs/operators';
+import { filter, tap, skip } from 'rxjs6/operators';
 import { FormEffectHooks, ISchemaFormActions } from '@formily/antd';
 
 import { parseJSON } from '@lib/utils';

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { omit } from 'lodash';
-import { from } from 'rxjs';
-import { switchMap, filter, tap, skip } from 'rxjs/operators';
+import { from } from 'rxjs6';
+import { switchMap, filter, tap, skip } from 'rxjs6/operators';
 import {
   SchemaForm,
   FormButtonGroup,

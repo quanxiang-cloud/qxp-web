@@ -1,4 +1,4 @@
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs6';
 import { isEdge, isNode } from 'react-flow-renderer';
 
 import { savePolyApiResult } from '@polyApi/utils/build';
