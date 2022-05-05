@@ -6,7 +6,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import type { Package } from '@pageDesign/blocks/menu/type';
 import { GROUP_TITLE_MAP } from '@pageDesign/blocks/menu/constants';
 
-import ComponentsSource from './components-source';
+import Fountainhead from './fountainhead';
 import PageTree from './page-tree';
 import DataSource from './data-source';
 
@@ -36,7 +36,7 @@ const GroupTypeContent = (props: Props): JSX.Element => {
       pinnable
     >
       {current === 'comps' && (
-        <ComponentsSource
+        <Fountainhead
           onAddNode={onAddNode}
           currentPackage={currentPackage}
           onChangePackage={setCurrentPackage}
