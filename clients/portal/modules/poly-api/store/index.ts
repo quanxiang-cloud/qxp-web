@@ -1,4 +1,4 @@
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs6';
 import { lensPath, set, dissocPath, path } from 'ramda';
 
 import { PolyCanvasStore } from './canvas';

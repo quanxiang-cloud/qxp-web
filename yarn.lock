@@ -1151,36 +1151,29 @@
     react-jsx-parser "1.29.0"
     rxjs "^7.4.0"
 
-"@one-for-all/artery-simulator@^0.2.1":
-  version "0.2.1"
-  resolved "https://registry.npmmirror.com/@one-for-all/artery-simulator/-/artery-simulator-0.2.1.tgz#9804d76db84bc07235ce5ed94567a49641c24357"
-  integrity sha512-Dj5n5S7FNeG5XoeLnTnLUY4aW/NmqhG2Uh5runwIoTsD0Xd3/eoQCN/GY2DcxrMi5otrr/zTyIeVTH2/rEloTQ==
+"@one-for-all/artery-simulator@0.3.0":
+  version "0.3.0"
+  resolved "https://registry.npmmirror.com/@one-for-all/artery-simulator/-/artery-simulator-0.3.0.tgz#c11d682da4785372af2c0d8405f88697ee16d54d"
+  integrity sha512-ZOMPSBh/ZARz8mAsoMGPE9WcMJn6gwWfmTv8rBP62Pok/CXkxS+qzxxWU/c9grTiyeRzefhEnCeALs95e3R8pA==
   dependencies:
     "@one-for-all/artery" "0.15.0"
     "@one-for-all/artery-renderer" "0.20.2"
-    "@one-for-all/artery-utils" "0.12.0"
-    "@one-for-all/elements-radar" "0.1.2"
-    "@one-for-all/headless-ui" "^0.1.4"
-    "@one-for-all/icon" "^0.6.2"
-    "@one-for-all/utils" "^0.3.0"
+    "@one-for-all/artery-utils" "0.17.0"
+    "@one-for-all/elements-radar" "0.2.1"
+    "@one-for-all/headless-ui" "0.1.4"
+    "@one-for-all/icon" "0.6.2"
+    "@one-for-all/utils" "0.3.0"
     classnames "^2.3.1"
-    immutable "^4.0.0"
+    immutable "4.0.0"
     lodash "^4.17.21"
     react "^17.0.2"
-    recoil "^0.7.2"
+    recoil "0.7.2"
+    rxjs "^7.4.0"
 
-"@one-for-all/artery-utils@0.12.0":
-  version "0.12.0"
-  resolved "https://registry.npmmirror.com/@one-for-all/artery-utils/-/artery-utils-0.12.0.tgz#83f5eca95b69486d06797a193f187df123e2403a"
-  integrity sha512-YQCT6iSrlj4pGo525J0sZf0WfWUTfRIjS0VjQTo6qZemPTt4GuLC70kfdPu7J35oxNbWSOCY+bM2A8rPLZrUuw==
-  dependencies:
-    "@one-for-all/artery" "0.15.0"
-    immutable "4.0.0"
-
-"@one-for-all/artery-utils@^0.13.0":
-  version "0.13.0"
-  resolved "https://registry.npmmirror.com/@one-for-all/artery-utils/-/artery-utils-0.13.0.tgz#a8b85ebee607880548e7af7c4a94ed762b701ec3"
-  integrity sha512-UkUE/I7esWB8SFUQDx2B+Qk+usVLQ0a4UTusEWdPfUN5hxK0jdiJ+Gy8Xh0WNgvjQC73xIRd2nlcavTxSO8GFw==
+"@one-for-all/artery-utils@0.17.0":
+  version "0.17.0"
+  resolved "https://registry.npmmirror.com/@one-for-all/artery-utils/-/artery-utils-0.17.0.tgz#0df41a64aefc7cc217a563cdc9c140839c3e969c"
+  integrity sha512-AFKBZLWR/ubMFRyGIRdexq4VhBJW2U0H7H3lTFJ1C6q0RKmILGaQrZD9Y6dO0tKmmzXD/7VNz4zjDbNH++PHrw==
   dependencies:
     "@one-for-all/artery" "0.15.0"
     immutable "4.0.0"
@@ -1190,14 +1183,14 @@
   resolved "https://registry.npmmirror.com/@one-for-all/artery/-/artery-0.15.0.tgz#495bdb35365a606a126ecfc8323a5dc086c6f1c5"
   integrity sha512-zZmnK09Zt33s335GBdQHMy5sG7+rSrWHaz1mqjIrdXLHWUvkkOISuEV739SWgnCamqEwUv58/QDTH9/VMIb32w==
 
-"@one-for-all/elements-radar@0.1.2":
-  version "0.1.2"
-  resolved "https://registry.npmmirror.com/@one-for-all/elements-radar/-/elements-radar-0.1.2.tgz#ebab3983da8d7cd93fdae4b6046dea6dde383b93"
-  integrity sha512-LDtcMFpJjI9MLcFUIXJTFJ8mYMrOeVSPgUHkP+DS1u4awplemcG8EaQi/MwpWyYPM/0uPpIZhDAoMR0jTP5LIQ==
+"@one-for-all/elements-radar@0.2.1":
+  version "0.2.1"
+  resolved "https://registry.npmmirror.com/@one-for-all/elements-radar/-/elements-radar-0.2.1.tgz#2739b775045a0ed80fb87005ab182273756efdba"
+  integrity sha512-pBw9gBbTNdvwmXk+RhGiFJXVs3DuLfT+npEG9aPEiHgkLC1IaOleGVG2cYRxjJbxIn+op3BdGN2TTwImrLQqjw==
   dependencies:
     rxjs "^7.4.0"
 
-"@one-for-all/headless-ui@^0.1.4":
+"@one-for-all/headless-ui@0.1.4":
   version "0.1.4"
   resolved "https://registry.npmmirror.com/@one-for-all/headless-ui/-/headless-ui-0.1.4.tgz#31f1d53b409191dc208152fa5d065412c4e4e101"
   integrity sha512-rE3HSQvAl9eiu2YcJV1NyzXkeDEUpHoUriMwJSU1wfwDvwmtB1zsTjdkx3VHbEhWC28SW4QdvM6d6XvbBayG7g==
@@ -1218,7 +1211,7 @@
   dependencies:
     react "^17.0.2"
 
-"@one-for-all/icon@^0.6.1", "@one-for-all/icon@^0.6.2":
+"@one-for-all/icon@0.6.2", "@one-for-all/icon@^0.6.1":
   version "0.6.2"
   resolved "https://registry.npmmirror.com/@one-for-all/icon/-/icon-0.6.2.tgz#0f733bb37b213dba7b4b5bd06a50749b603cd289"
   integrity sha512-8n+NX3/865WjNj6Ag37JxofUlC9VkudGEHuHM56qfjXmdfW2LjA0UXZtIz2OBUvCcpPM6ljjbGHCg5gjL8ew0g==
@@ -1335,7 +1328,7 @@
   resolved "https://registry.npmmirror.com/@one-for-all/utils/-/utils-0.1.0.tgz#fe0e8023c7e30b461756f349454b65a6932cc56b"
   integrity sha512-u0DJ6Z6T3FwnXPxaDnYjJF3AFoQC9VyqRz8a1+1cjb51PP9jgzJrTrVVdtdmx+uWdLJJsoKFZQBMJ9S0D++GGw==
 
-"@one-for-all/utils@0.3.0", "@one-for-all/utils@^0.3.0":
+"@one-for-all/utils@0.3.0":
   version "0.3.0"
   resolved "https://registry.npmmirror.com/@one-for-all/utils/-/utils-0.3.0.tgz#853a78ee8b25a82a66f07c4a85bd1c8134627e8f"
   integrity sha512-8wfgOTt36wcilOlfLgiHL3/Uv5HlTs6aiO71WJrKOPvbvhBKoDYzRghxoG2BjYy+PSaeGVcD4TulgUsw8b/tEg==
@@ -8367,7 +8360,7 @@ readdirp@~3.6.0:
   dependencies:
     picomatch "^2.2.1"
 
-recoil@^0.7.2:
+recoil@0.7.2:
   version "0.7.2"
   resolved "https://registry.npmmirror.com/recoil/-/recoil-0.7.2.tgz#37aafc9e0674abae639263354a11c910e71bf78a"
   integrity sha512-OT4pI7FOUHcIoRtjsL5Lqq+lFFzQfir4MIbUkqyJ3nqv3WfBP1pHepyurqTsK5gw+T+I2R8+uOD28yH+Lg5o4g==
@@ -8664,14 +8657,14 @@ rxjs-compat@^6.6.3:
   resolved "https://registry.npmmirror.com/rxjs-compat/-/rxjs-compat-6.6.7.tgz#6eb4ef75c0a58ea672854a701ccc8d49f41e69cb"
   integrity sha512-szN4fK+TqBPOFBcBcsR0g2cmTTUF/vaFEOZNuSdfU8/pGFnNmmn2u8SystYXG1QMrjOPBc6XTKHMVfENDf6hHw==
 
-rxjs@^6.3.3, rxjs@^6.5.1, rxjs@^6.6.7:
+"rxjs6@npm:rxjs@6.6.7", rxjs@^6.3.3, rxjs@^6.5.1:
   version "6.6.7"
   resolved "https://registry.npmmirror.com/rxjs/-/rxjs-6.6.7.tgz#90ac018acabf491bf65044235d5863c4dab804c9"
   integrity sha512-hTdwr+7yYNIT5n4AMYp85KA6yw2Va0FLa3Rguvbpa4W3I5xynaBZo41cM3XM+4Q6fRMj3sBYIR1VAmZMXYJvRQ==
   dependencies:
     tslib "^1.9.0"
 
-rxjs@^7.4.0, rxjs@^7.5.1:
+rxjs@^7.4.0, rxjs@^7.5.1, rxjs@^7.5.5:
   version "7.5.5"
   resolved "https://registry.npmmirror.com/rxjs/-/rxjs-7.5.5.tgz#2ebad89af0f560f460ad5cc4213219e1f7dd4e9f"
   integrity sha512-sy+H0pQofO95VDmFLzyaw9xNJU4KTRSwQIGM6+iG3SypAtCiLDzpeG8sJrNCWn2Up9km+KhkvTdbkrdy+yzZdw==

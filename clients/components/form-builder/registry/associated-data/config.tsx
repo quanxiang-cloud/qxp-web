@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { toJS } from 'mobx';
-import { filter } from 'rxjs/operators';
+import { filter } from 'rxjs6/operators';
 import { Input, Switch, Select, Radio } from '@formily/antd-components';
 import {
   useForm,

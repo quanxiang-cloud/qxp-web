@@ -1,6 +1,6 @@
-import { Observable, of, combineLatest } from 'rxjs';
-import { switchMap, debounceTime, filter, map, catchError } from 'rxjs/operators';
-import { from } from 'rxjs';
+import { Observable, of, combineLatest } from 'rxjs6';
+import { switchMap, debounceTime, filter, map, catchError } from 'rxjs6/operators';
+import { from } from 'rxjs6';
 import { mergeDeepRight } from 'ramda';
 import { FormEffectHooks, ISchemaFormActions } from '@formily/antd';
 
