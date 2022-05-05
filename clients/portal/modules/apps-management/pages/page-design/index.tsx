@@ -13,13 +13,13 @@ import FileUploader from '@c/file-upload';
 import ApiSelector from '@polyApi/nodes/forms/request-config/api-selector';
 
 import ApiSpec from '../app-details/api-proxy/add-api';
-import { useQueryArtery } from './hooks';
+import { useGetArtery, useQueryArtery } from './hooks';
 import { PAGE_TYPE, PAGE_DESIGN_ID, LAYERS } from './constants';
 import { getInitArteryByPageType } from './utils';
 import Ctx from './ctx';
 import stores from './stores';
 import { useStyle } from './hooks/use-style';
-import { savePage } from './api';
+import { getPage, savePage } from './api';
 
 import './index.scss';
 import styles from './index.m.scss';
@@ -27,15 +27,11 @@ import styles from './index.m.scss';
 function PageDesign(): JSX.Element | null {
   const { appID, pageName, arteryID } = getQuery<{ appID: string ,pageName: string, arteryID: string }>();
   const history = useHistory();
+  const {artery, loading} = useGetArtery(arteryID);
 
   const resetStyle: CSSProperties = useMemo(() => ({ overflow: 'hidden' }), [])
   useStyle('body', resetStyle);
   useStyle('html', resetStyle);
-
-  const { data: artery, isLoading: isArteryLoading } = useQueryArtery(
-    { arteryID },
-    { enabled: !!arteryID },
-  );
 
   const { layers, initialArtery } = useMemo(() => {
     const initialArtery = artery ?? getInitArteryByPageType(PAGE_TYPE.PAGE_DESIGN_EDITOR);
@@ -109,6 +105,7 @@ function PageDesign(): JSX.Element | null {
       <ApiSpec apiPath={apiPath} editMode tinyMode />
     );
   }
+
   useEffect(() => {
     designer.setVdom('apiStateDetail', renderApiStateDetail());
 
@@ -149,7 +146,7 @@ function PageDesign(): JSX.Element | null {
       </DndProvider>
   ), [initialArtery, layers]);
 
-  if (isArteryLoading) {
+  if (loading) {
     return null;
   }
 
