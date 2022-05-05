@@ -62,6 +62,7 @@ function CreatedEditApp({
         appName,
         appSign,
         appIcon,
+        layoutType: 'free',
       }}
       onFinish={handleFinish}
       onValuesChange={handleValuesChange}
