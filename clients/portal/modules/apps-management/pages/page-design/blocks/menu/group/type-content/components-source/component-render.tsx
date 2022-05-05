@@ -49,7 +49,7 @@ const ComponentRender = (props: Props): JSX.Element => {
         e.stopPropagation();
 
         setIsDragging(true);
-        e.dataTransfer.setData('__artery-node', JSON.stringify(genNode(props)));
+        e.dataTransfer.setData('artery_node', JSON.stringify(genNode(props)));
 
         return false;
       }}
