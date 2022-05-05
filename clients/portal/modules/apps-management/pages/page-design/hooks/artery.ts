@@ -44,13 +44,9 @@ export function useGetArtery(arteryID: string): GetArteryResponse {
     if (!arteryID) return;
     setLoading(true);
     getPage(arteryID)
-      .then((artery) => {
-        setArtery(parseJSON<Artery | undefined>(artery ?? '', undefined));
-      })
+      .then((artery) => !!artery && setArtery(parseJSON<Artery | undefined>(artery, undefined)))
       .catch(toast.error)
-      .finally(() => {
-        setLoading(false);
-      });
+      .finally(() => setLoading(false));
   }, []);
 
   return useMemo(() => {

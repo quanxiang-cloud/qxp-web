@@ -12,14 +12,14 @@ import { getQuery } from '@lib/utils';
 import FileUploader from '@c/file-upload';
 import ApiSelector from '@polyApi/nodes/forms/request-config/api-selector';
 
-import ApiSpec from '../app-details/api-proxy/add-api';
-import { useGetArtery, useQueryArtery } from './hooks';
-import { PAGE_TYPE, PAGE_DESIGN_ID, LAYERS } from './constants';
-import { getInitArteryByPageType } from './utils';
 import Ctx from './ctx';
 import stores from './stores';
+import { savePage } from './api';
+import { useGetArtery } from './hooks';
 import { useStyle } from './hooks/use-style';
-import { getPage, savePage } from './api';
+import { getInitArteryByPageType } from './utils';
+import ApiSpec from '../app-details/api-proxy/add-api';
+import { PAGE_TYPE, PAGE_DESIGN_ID, LAYERS } from './constants';
 
 import './index.scss';
 import styles from './index.m.scss';
@@ -27,7 +27,7 @@ import styles from './index.m.scss';
 function PageDesign(): JSX.Element | null {
   const { appID, pageName, arteryID } = getQuery<{ appID: string ,pageName: string, arteryID: string }>();
   const history = useHistory();
-  const {artery, loading} = useGetArtery(arteryID);
+  const {artery, loading: isArteryLoading} = useGetArtery(arteryID);
 
   const resetStyle: CSSProperties = useMemo(() => ({ overflow: 'hidden' }), [])
   useStyle('body', resetStyle);
@@ -146,7 +146,7 @@ function PageDesign(): JSX.Element | null {
       </DndProvider>
   ), [initialArtery, layers]);
 
-  if (loading) {
+  if (isArteryLoading) {
     return null;
   }
 
