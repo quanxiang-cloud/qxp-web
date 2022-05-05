@@ -251,24 +251,23 @@ class FaasStore {
   @action
   onSubmitGroupModal = (formData: GroupSchema): void => {
     if (formData.type === 'custom') {
-      console.log('自定义', formData);
+      this.createGroup(formData.name, formData.describe);
       return;
     }
     this.bindGroup(formData.gid);
   };
 
   @action
-  createGroup = (): Promise<void> => {
+  createGroup = (name: string, describe: string): Promise<void> => {
     return createGroup({
-      group: this.appDetails.appSign,
-      appID: this.appDetails.id,
-    }).then((res) => {
-      this.initLoading = false;
-      this.groupID = res.id;
-    }).catch((err) => {
-      this.initLoading = false;
-      this.initErr = true;
-      toast.error(err);
+      name,
+      describe,
+      appID: this.appID,
+    }).then((groupID) => {
+      this.step = faasState.GROUP;
+      this.setGroupID(groupID);
+      this.setShowBindGroupModal(false);
+      toast.success('绑定成功');
     });
   };
 
@@ -279,6 +278,7 @@ class FaasStore {
         this.step = faasState.GROUP;
         this.setShowBindGroupModal(false);
         this.setGroupID(groupID);
+        toast.success('绑定成功');
       });
   };
 

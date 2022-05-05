@@ -29,8 +29,15 @@ export function createDeveloper(data: { account: string }): Promise<void> {
   return httpClient('/api/v1/faas/user', data);
 }
 
-export function createGroup(data: { group: string, appID: string }): Promise<{ id: string }> {
-  return httpClient('/api/v1/faas/group', data);
+export function createGroup(
+  data: { name: string, describe: string, appID: string },
+): Promise<string> {
+  return httpClient<{groupID: string}>('/api/v1/faas/group', data)
+    .then(({ groupID }) => groupID)
+    .catch((err) => {
+      toast.error(err);
+      return '';
+    });
 }
 
 export function bindGroup(data: BindGroupParams): Promise<string> {
