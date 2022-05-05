@@ -26,27 +26,80 @@ interface FuzzyFindParams<T> {
   list: T[];
   search: string;
   pathesList: string[][];
+  distancePathes: string[];
   highLightPathesList: string[][];
 }
-export function fuzzyFind<T>({ list, search, pathesList, highLightPathesList }: FuzzyFindParams<T>): T[] {
+
+type WithDistance<T> = T & { distance: number };
+export function fuzzyFind<T>(params: FuzzyFindParams<T>): Array<WithDistance<T>> {
+  const { list, search, pathesList, highLightPathesList, distancePathes } = params;
   const highLightPath = highLightPathesList.map((pathes) => pathes.join(''));
-  return list.map((item) => {
-    let hasMatched = false;
-    const result = pathesList.reduce((listItem, pathes) => {
+  const distancePath = distancePathes.join('.');
+
+  const getPathesListReducer = (callback: () => void) =>
+    (listItem: WithDistance<T>, pathes: string[]): WithDistance<T> => {
       const pathLens = lensPath(pathes);
+      const isDistance = distancePath === pathes.join('.');
       const pathValue = view(pathLens, listItem);
       const shouldHighLight = highLightPath.includes(pathes.join(''));
       const matchedPathValue = pathValue ? fuzzyMatch(pathValue, search, shouldHighLight) : '';
-      if (matchedPathValue !== '') {
-        hasMatched = true;
-        return set(pathLens, matchedPathValue, listItem);
+      if (matchedPathValue === '') {
+        return listItem;
       }
-      return listItem;
-    }, item);
+      callback();
+      const { distance } = listItem;
+      return {
+        ...set(pathLens, matchedPathValue, listItem),
+        distance: isDistance ? getLevenshteinDistance(search, pathValue) : distance ?? Infinity,
+      };
+    };
+
+  const listMapper = (item: T): WithDistance<T> | null => {
+    let hasMatched = false;
+    const result = pathesList.reduce(
+      getPathesListReducer(() => hasMatched = true),
+      { ...item, distance: Infinity },
+    );
     return hasMatched ? result : null;
-  }).filter((item): item is T => item !== null);
+  };
+
+  return list.map(listMapper).filter((item): item is WithDistance<T> => item !== null);
 }
 
-export function removeHTMLTag(str: string): string {
-  return str.replace(/<[^>]+>/g, '');
+export function getLevenshteinDistance(word1: string, word2: string): number {
+  const word1Length = word1.length;
+  const word2Length = word2.length;
+
+  // construct initial state
+  const op: number[][] = [];
+  for (let i = 0; i <= word1Length; i += 1) {
+    const row: number[] = [];
+    for (let j = 0; j <= word2Length; j += 1) {
+      if (i === 0) {
+        row.push(j);
+      } else if (j === 0) {
+        row.push(i);
+      } else {
+        row.push(0);
+      }
+    }
+    op.push(row);
+  }
+
+  // dynamic programming
+  for (let i = 0; i < word1Length; i += 1) {
+    for (let j = 0; j < word2Length; j += 1) {
+      if (word1[i] === word2[j]) {
+        op[i + 1][j + 1] = op[i][j];
+      } else {
+        op[i + 1][j + 1] = 1 + Math.min(
+          op[i + 1][j],
+          op[i][j + 1],
+          op[i][j],
+        );
+      }
+    }
+  }
+
+  return op[word1Length][word2Length];
 }
