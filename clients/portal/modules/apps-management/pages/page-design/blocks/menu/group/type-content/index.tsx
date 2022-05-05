@@ -10,8 +10,6 @@ import ComponentsSource from './components-source';
 import PageTree from './page-tree';
 import DataSource from './data-source';
 
-import './components-source/store';
-
 interface Props {
   current: string;
   pinned: boolean;

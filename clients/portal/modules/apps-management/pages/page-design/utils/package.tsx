@@ -1,14 +1,15 @@
 import React, { CSSProperties } from 'react';
-import { equals, flatten, ifElse, isEmpty } from 'ramda';
+import { equals, flatten, ifElse, isEmpty, pipe, toPairs, reduce, merge } from 'ramda';
 import Icon from '@one-for-all/icon';
+import type { NodeProperties } from '@one-for-all/artery';
 
 import { getBatchGlobalConfig } from '@lib/api/user-config';
 import { parseJSON } from '@lib/utils';
 
-import { defaultPackages } from '../blocks/menu/constants';
 import type {
   BasePackageComponent,
   CategoryVariants,
+  InitialProps,
   Package,
   PackageComponent,
   ReactComponent,
@@ -78,10 +79,7 @@ function getFullComponent(categoryVariantsMap: Record<string, CategoryVariants |
 function getBaseComponentsFromComponentNames(
   pkg: Package, componentNames: string[],
 ): BasePackageComponent[] {
-  return componentNames.map((name) => ({
-    package: pkg,
-    name: name.toLocaleLowerCase(),
-  }));
+  return componentNames.map((name) => ({ package: pkg, name }));
 }
 
 export async function getComponentsFromPackage(pkg: Package): Promise<PackageComponent[]> {
@@ -99,9 +97,7 @@ export async function getComponentsFromPackage(pkg: Package): Promise<PackageCom
 export async function getPackagesSourceDynamic(): Promise<Package[]> {
   const key = 'PACKAGES';
   const { result } = await getBatchGlobalConfig([{ key, version: '1.0.0' }]);
-  const packages: Package[] = parseJSON(result[key], []);
-  const defaultNames = defaultPackages.map((pkg) => pkg.name);
-  return [...defaultPackages, ...packages.filter((pkg) => !defaultNames.includes(pkg.name))];
+  return parseJSON(result[key], []);
 }
 
 async function getPackageComponentToCategoryVariantMapDynamic(
@@ -127,4 +123,14 @@ export async function getPackagePropsSpec({ name, version }: Package): Promise<G
   const key = `PACKAGE_PROPS_SPEC:${name}`;
   const { result } = await getBatchGlobalConfig([{ key, version }]);
   return { name, version, result: parseJSON(result[key], {}) };
+}
+
+export function initialPropsToNodeProperties(initialProps: InitialProps = {}): NodeProperties {
+  const nodePropertiesReducer = (
+    acc: NodeProperties, [propertyName, value]: [string, unknown],
+  ): NodeProperties => {
+    return merge(acc, { [propertyName]: { type: 'constant_property', value } });
+  };
+
+  return pipe(toPairs, reduce(nodePropertiesReducer, {}))(initialProps);
 }
