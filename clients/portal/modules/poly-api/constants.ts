@@ -8,6 +8,7 @@ export const PLACEHOLDER_OPTION = [
     children: undefined,
     isLeaf: true,
     disabled: true,
+    method: '',
   },
 ];
 

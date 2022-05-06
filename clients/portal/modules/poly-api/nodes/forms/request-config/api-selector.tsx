@@ -12,7 +12,7 @@ import { useGetOptionFromCollection } from './hooks/api-selector-hooks';
 
 type Props = {
   initRawApiPath: string;
-  setApiPath: (apiPath: string) => void;
+  setApiPath: (apiPath: string, method?: string) => void;
   appID: string,
   label?: string;
   error?: string;
@@ -42,7 +42,7 @@ function ApiSelector({
   ): void {
     const leafOption = clone(selectedOptions).pop();
     if (leafOption?.isLeaf) {
-      setApiPath(leafOption.path);
+      setApiPath(leafOption.path, leafOption.method);
       return;
     }
   }
