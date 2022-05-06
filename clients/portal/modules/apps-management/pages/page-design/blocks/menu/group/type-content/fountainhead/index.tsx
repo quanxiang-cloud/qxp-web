@@ -15,7 +15,7 @@ interface Props {
   onChangePackage: (pkg: Package) => void;
 }
 
-function ComponentSource({ onAddNode, currentPackage, onChangePackage }: Props): JSX.Element {
+function Fountainhead({ onAddNode, currentPackage, onChangePackage }: Props): JSX.Element {
   const isAllPackage = currentPackage?.name === 'all';
   const components = useComponents();
   const currentComponents = components?.filter(
@@ -41,4 +41,4 @@ function ComponentSource({ onAddNode, currentPackage, onChangePackage }: Props):
   );
 }
 
-export default ComponentSource;
+export default Fountainhead;
