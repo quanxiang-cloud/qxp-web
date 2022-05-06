@@ -36,6 +36,7 @@ export interface Variant {
   desc?: string;
   label: string;
   initialProps?: InitialProps;
+  category?: string;
 }
 
 export interface BasePackageComponent {
