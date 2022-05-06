@@ -160,7 +160,6 @@ class UserAppDetailsStore {
 
   @action
   getRoleInfo = (appID: string): void => {
-    console.log(appID);
     if (!appID) {
       return;
     }
@@ -180,7 +179,6 @@ class UserAppDetailsStore {
     if (!roleID || !window.APP_ID) return;
 
     roleChange(window.APP_ID, roleID).then(() => {
-      // this.currentRoleInfo = { roleName, roleID };
       this.setCurrentRoleInfo({ roleName, roleID });
 
       toast.success(`当前角色：${roleName}`);

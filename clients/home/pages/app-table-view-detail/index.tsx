@@ -4,13 +4,13 @@ import { Ref, TableHeaderBtn } from '@c/form-app-data-table/type';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 import PopConfirm from '@c/pop-confirm';
-import CreateDataForm from './create-data-form';
 import FormAppDataTable from '@c/form-app-data-table';
 import { toast } from '@one-for-all/ui';
 import PageLoading from '@c/page-loading';
 import userAppDetailsStore from '@home/pages/app-details/store';
 
 import Header from './header';
+import CreateDataForm from './create-data-form';
 import DetailsDrawer from './details-drawer';
 import useTableViewStore from './use-table-view-store';
 import { getAPIPath, getOperateButtonPer } from './utils';
@@ -35,8 +35,6 @@ export const TableContext = React.createContext<Props>(
 );
 
 function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
-  // console.log(appID, tableID, name);
-  // console.log(toJS(userAppDetailsStore.currentRoleInfo));
   const store = useTableViewStore({ appID, tableID, name });
 
   const { fetchSchemeLoading, setCurRowID } = store;

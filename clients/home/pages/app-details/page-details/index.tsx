@@ -61,16 +61,6 @@ function PageDetails(): JSX.Element | null {
     handleCancel();
   }, [curPage]);
 
-  useEffect(() => {
-    console.log(store.currentRoleInfo);
-  }, [store.currentRoleInfo]);
-
-  console.log(11);
-
-  // useMemo(() => {
-  //   console.log(store.currentRoleInfo);
-  // }, [store.currentRoleInfo]);
-
   useTaskComplete('refresh-form-data-list', (socketData) => {
     if (socketData.content.command === 'formImport') {
       formTableRef.current?.refresh();
