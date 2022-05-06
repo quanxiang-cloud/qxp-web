@@ -10,7 +10,7 @@ function EventPanel(): JSX.Element {
   return (
     <>
       <ArteryRenderer
-        artery={buildConfigArtery(lifeCyclesSpec, HOOKS_PREFIX)}
+        artery={buildConfigArtery(lifeCyclesSpec, { prefix: HOOKS_PREFIX })}
         plugins={{ repository }}
       />
     </>

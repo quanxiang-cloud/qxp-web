@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Editor from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
+import { parse, Node } from 'acorn';
 
 import Icon from '@one-for-all/icon';
 import { RadioGroup, Radio } from '@one-for-all/headless-ui';
@@ -16,30 +17,87 @@ import styles from './index.m.scss';
 import { updateNodeProperty } from '../utils';
 import { get, set } from 'lodash';
 import { FunctionalProperty, LifecycleHookFuncSpec } from '@one-for-all/artery';
+import { findNode } from '../utils/tree';
 
-export const HOOKS_PREFIX = 'lifecycleHooks.';
+export const HOOKS_PREFIX = 'lifecycleHooks';
 
-function FunctionBind({ __path, notes }: ConnectedProps<{
+type AstNode = Node & { body: Node[] }
+
+function generateInitFunString({ name = '', args = '', notes = '', body = '' }): string {
+  let defaultNotes = '';
+  const userNotes = notes ? `// ${notes}` : '';
+  if (args === '...args') {
+    defaultNotes =
+`/** 
+  * if specs does not have \`args\` props 
+  * it will use \`...args\` as default arguments
+  * to avoid missing arguments you need
+  * but \`args\` is not always exited 
+*/`;
+  }
+  return `${defaultNotes}
+${userNotes}
+function ${name}(${args}) {${body}}`;
+}
+
+function isFunctionValid(ast: AstNode): boolean {
+  if (!ast.body.length) {
+    throw new Error('不存在处理函数');
+  }
+
+  if (ast.body.length > 1) {
+    throw new Error('所有内容都应该定义在函数体内');
+  }
+  const [firstNode] = ast.body;
+  if (firstNode.type !== 'FunctionDeclaration') {
+    throw new Error('不存在处理函数');
+  }
+
+  return true;
+}
+
+function getFnBody(ast: AstNode, fnString: string): string {
+  const [firstNode] = ast.body;
+  const { body } = firstNode as any;
+  return fnString.slice(body.start + 1, body.end - 1);
+}
+
+function FunctionBind({
+  __path,
+  args = '...args',
+  name,
+  notes,
+}: ConnectedProps<{
+  args?: string;
   notes?: string;
+  name?: string;
 }>): JSX.Element {
   const { activeNode, artery, onArteryChange } = useConfigContext() ?? {};
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [hasBound, setHasBound] = useState<boolean>(false);
   const [eventType, setEventType] = useState<string>('custom');
-  const [fnString, setFnString] = useState<string>(notes ? `// ${notes}` : '');
+  const [fnString, setFnString] = useState<string>(
+    generateInitFunString({
+      name: name || __path.split('.').pop() || 'func',
+      args,
+      notes,
+    }),
+  );
   const isLifecycleHooks = __path.startsWith(HOOKS_PREFIX);
-  const functionSpec: FunctionalProperty | LifecycleHookFuncSpec = isLifecycleHooks ? {
-    type: 'lifecycle_hook_func_spec',
-    args: '',
-    body: '',
-  } : {
-    type: 'functional_property',
-    func: {
-      type: '',
-      args: '...args',
+  const functionSpec: FunctionalProperty | LifecycleHookFuncSpec = isLifecycleHooks ?
+    {
+      type: 'lifecycle_hook_func_spec',
+      args: '',
       body: '',
-    },
-  };
+    } :
+    {
+      type: 'functional_property',
+      func: {
+        type: '',
+        args: args,
+        body: '',
+      },
+    };
   const bodyPath = isLifecycleHooks ? 'body' : 'func.body';
   const fullPath = `${__path}.${bodyPath}`;
   useEffect(() => {
@@ -50,7 +108,13 @@ function FunctionBind({ __path, notes }: ConnectedProps<{
     if (!activeNode || !artery) {
       return;
     }
-    setFnString(get(activeNode, fullPath, ''));
+    const node = findNode(artery.node, activeNode.id);
+    setFnString(generateInitFunString({
+      name: name || __path.split('.').pop() || 'func',
+      args,
+      notes,
+      body: get(node, fullPath, ''),
+    }));
     setModalOpen(true);
   }
 
@@ -68,13 +132,21 @@ function FunctionBind({ __path, notes }: ConnectedProps<{
   }
 
   function addAction(fnString: string): void {
-    if (fnString && activeNode && artery) {
-      set(functionSpec, bodyPath, fnString);
-      onArteryChange?.(updateNodeProperty(activeNode, __path, functionSpec, artery));
-      setHasBound(true);
-      setModalOpen(false);
-    } else {
-      toast.error('非法的函数定义');
+    try {
+      const parseAst = parse(fnString, {
+        ecmaVersion: 'latest',
+        sourceType: 'script',
+      });
+      const isValid = isFunctionValid(parseAst as AstNode);
+      if (isValid && activeNode && artery) {
+        const bodyString = getFnBody(parseAst as AstNode, fnString);
+        set(functionSpec, bodyPath, bodyString);
+        onArteryChange?.(updateNodeProperty(activeNode, __path, functionSpec, artery));
+        setHasBound(true);
+        setModalOpen(false);
+      }
+    } catch (e) {
+      toast.error(e || '非法的函数定义');
     }
   }
 
@@ -82,9 +154,7 @@ function FunctionBind({ __path, notes }: ConnectedProps<{
     <>
       {hasBound ? (
         <div className="inline-flex items-center w-full">
-          <span className="border border-gray-100 flex-1 w-100 mr-8 px-8 py-4">
-            已绑定
-          </span>
+          <span className="border border-gray-100 flex-1 w-100 mr-8 px-8 py-4">已绑定</span>
           <Tooltip position="top" label="编辑绑定函数">
             <div className="mr-16" onClick={onEdit}>
               <Icon name="code" />
@@ -130,22 +200,21 @@ function FunctionBind({ __path, notes }: ConnectedProps<{
           <div className={styles.modal}>
             <div className={styles.eventType}>
               <p className="text-12 text-gray-600">动作类型</p>
-              <RadioGroup
-                onChange={(val: any) => setEventType(val)}
-                value={eventType}
-              >
+              <RadioGroup onChange={(val: any) => setEventType(val)} value={eventType}>
                 {/* <Radio key='platform' label='平台方法' value='platform' defaultChecked={eventType === 'platform'} />*/}
                 <Radio key="custom" label="自定义方法" value="custom" />
               </RadioGroup>
             </div>
             <div className={styles.side}>
-              <div className="flex justify-between items-center cursor-pointer
-                px-16 py-4 hover:bg-gray-200 bg-gray-200">
+              <div
+                className="flex justify-between items-center cursor-pointer
+                px-16 py-4 hover:bg-gray-200 bg-gray-200"
+              >
                 <span>添加新动作</span>
                 <Icon name="check" />
               </div>
             </div>
-            <div className='h-full'>
+            <div className="h-full">
               <Editor
                 value={fnString}
                 height="400px"

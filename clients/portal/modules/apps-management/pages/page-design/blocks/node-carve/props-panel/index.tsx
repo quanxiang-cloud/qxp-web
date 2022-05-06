@@ -11,9 +11,12 @@ import Section from '../../../utils/section';
 import usePropsSpec from '../mock';
 import { PropsSpec } from '../type';
 
-function getArteryBySpec(specs: PropsSpec[]): Artery | null {
+function getArteryBySpec(specs: PropsSpec[], options: {
+  prefix?: string;
+  bindVarible?: boolean;
+}): Artery | null {
   if (specs.length) {
-    return buildConfigArtery(specs, 'props.');
+    return buildConfigArtery(specs, options);
   }
   return null;
 }
@@ -38,8 +41,13 @@ function NodeCarve(): JSX.Element {
       return;
     }
 
-    const attrSpecs = getArteryBySpec(specs.filter((s) => s.type !== 'function'));
-    const funcSpecs = getArteryBySpec(specs.filter((s) => s.type === 'function'));
+    const attrSpecs = getArteryBySpec(specs.filter((s) => s.type !== 'function'), {
+      prefix: 'props',
+      bindVarible: true,
+    });
+    const funcSpecs = getArteryBySpec(specs.filter((s) => s.type === 'function'), {
+      prefix: 'props',
+    });
     setAttrArtery(attrSpecs);
     setFunctionArtery(funcSpecs);
   }, [activeNode?.id, data]);

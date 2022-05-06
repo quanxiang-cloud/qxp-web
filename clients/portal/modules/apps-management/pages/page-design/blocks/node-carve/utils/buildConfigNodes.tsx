@@ -1,13 +1,7 @@
 import { set } from 'lodash';
 import { CSSProperties } from 'react';
 
-import {
-  Artery,
-  HTMLNode,
-  Node,
-  NodeProperty,
-  NodeProperties,
-} from '@one-for-all/artery';
+import { Artery, HTMLNode, Node, NodeProperty, NodeProperties } from '@one-for-all/artery';
 import { generateNodeId } from '@one-for-all/artery-engine';
 
 import { PropsSpec } from '../type';
@@ -49,31 +43,42 @@ function convertorWillProps(item: PropsSpec): NodeProperties {
     return {};
   }
 
-  const propsMap = Object.entries(willProps).map(
-    ([key, value]: [string, any]): [string, NodeProperty] => {
-      let _value: NodeProperty = {} as NodeProperty;
-      if (!value?.type) {
-        _value = { type: 'constant_property', value: value };
-      }
+  const propsMap = Object.entries(willProps).map(([key, value]: [string, any]): [string, NodeProperty] => {
+    let _value: NodeProperty = {} as NodeProperty;
+    if (!value?.type) {
+      _value = { type: 'constant_property', value: value };
+    }
 
-      return [key, _value];
-    },
-  );
+    return [key, _value];
+  });
 
-  const nodeProperties: NodeProperties = propsMap.reduce(
-    (acc: NodeProperties, [key, value]) => {
-      acc[key] = value;
+  const nodeProperties: NodeProperties = propsMap.reduce((acc: NodeProperties, [key, value]) => {
+    acc[key] = value;
 
-      return acc;
-    },
-    {} as NodeProperties,
-  );
+    return acc;
+  }, {} as NodeProperties);
 
   return nodeProperties;
 }
 
-function buildTextItem(item: PropsSpec, style?: Record<string, string>): Node {
-  const textNode: Node[] = [
+function buildTextItem(
+  item: PropsSpec,
+  options: {
+    style?: Record<string, string>;
+    prefix?: string;
+    bindVarible?: boolean;
+  },
+): Node {
+  const defaultProperties = {
+    __path: {
+      type: 'constant_property',
+      value: `${options.prefix}.${item.name}`,
+    },
+  };
+
+  const willProperties = convertorWillProps(item);
+  const will = item.will || WILL_COMPONENT_MAP[item.type] || 'Unavaliable';
+  const labelNode: Node[] = [
     {
       id: generateNodeId(),
       type: 'html-element',
@@ -86,9 +91,8 @@ function buildTextItem(item: PropsSpec, style?: Record<string, string>): Node {
       },
     },
   ];
-
   if (item.desc) {
-    textNode.push({
+    labelNode.push({
       id: generateNodeId(),
       type: 'react-component',
       packageName: 'node-carve',
@@ -102,11 +106,39 @@ function buildTextItem(item: PropsSpec, style?: Record<string, string>): Node {
       },
     });
   }
+  const textNode = [createWrapperNode({}, labelNode)];
 
-  return createWrapperNode(style, textNode);
+  if (will !== 'Unavaliable' && options.bindVarible) {
+    textNode.push(
+      createWrapperNode(
+        {
+          display: 'flex',
+          marginLeft: '8px',
+        },
+        [
+          {
+            id: generateNodeId(),
+            type: 'react-component',
+            packageName: 'node-carve',
+            packageVersion: '1.0.0',
+            exportName: 'StateBind',
+            props: Object.assign(defaultProperties, willProperties),
+          },
+        ],
+      ),
+    );
+  }
+
+  return createWrapperNode(options.style, textNode);
 }
 
-function buildFieldItem(item: PropsSpec, prefix?: string): Node {
+function buildFieldItem(
+  item: PropsSpec,
+  options: {
+    prefix?: string;
+    bindVarible?: boolean;
+  },
+): Node {
   const wrapperNode = createWrapperNode({
     display: 'flex',
     alignItems: 'center',
@@ -116,7 +148,7 @@ function buildFieldItem(item: PropsSpec, prefix?: string): Node {
   const defaultProperties = {
     __path: {
       type: 'constant_property',
-      value: `${prefix}${item.name}`,
+      value: `${options.prefix}.${item.name}`,
     },
   };
 
@@ -140,26 +172,6 @@ function buildFieldItem(item: PropsSpec, prefix?: string): Node {
     ),
   ];
 
-  if (will !== 'FunctionBind' && will !== 'Unavaliable') {
-    children.push(
-      createWrapperNode(
-        {
-          marginLeft: '8px',
-        },
-        [
-          {
-            id: generateNodeId(),
-            type: 'react-component',
-            packageName: 'node-carve',
-            packageVersion: '1.0.0',
-            exportName: 'StateBind',
-            props: Object.assign(defaultProperties, willProperties),
-          },
-        ],
-      ),
-    );
-  }
-
   return {
     ...wrapperNode,
     children,
@@ -168,7 +180,10 @@ function buildFieldItem(item: PropsSpec, prefix?: string): Node {
 
 export function buildConfigArtery(
   spec: PropsSpec[],
-  prefix?: string,
+  options: {
+    prefix?: string;
+    bindVarible?: boolean;
+  },
 ): Artery {
   const rootNode = createWrapperNode({
     width: '100%',
@@ -182,10 +197,15 @@ export function buildConfigArtery(
         name: 'div',
       };
       const labelNode: Node = buildTextItem(item, {
-        display: 'flex',
-        padding: '8px 0',
+        ...options,
+        style: {
+          display: 'flex',
+          justifyContent: 'space-between',
+          padding: '8px 0',
+          alignItems: 'center',
+        },
       });
-      const itemNode: Node = buildFieldItem(item, prefix);
+      const itemNode: Node = buildFieldItem(item, options);
       const nodes: Node[] = [labelNode, itemNode];
 
       return {

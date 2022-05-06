@@ -4,7 +4,7 @@ import { connect } from '../utils/connect';
 import FunctionBind from './function-bind';
 import StateBind from './state-bind';
 import Tips from './tips';
-import UrlInput from './url-input';
+import UrlInput, { UrlInputProps } from './url-input';
 import VaribleBind from './varible-bind';
 import Unavaliable from './unavaliable';
 
@@ -18,7 +18,7 @@ const repo: Repository = {
     Checkbox: connect<any>(Checkbox, { valueKey: 'checked', getValue(...args) {
       return args[1]?.target?.checked;
     } }),
-    ImageUrl: UrlInput,
+    ImageUrl: connect<UrlInputProps>(UrlInput),
     FunctionBind,
     VaribleBind,
     StateBind,

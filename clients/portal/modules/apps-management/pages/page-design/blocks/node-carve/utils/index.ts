@@ -7,32 +7,73 @@ import {
   Node,
   NodeProperty,
   ComposedNode,
+  LifecycleHookFuncSpec,
 } from '@one-for-all/artery';
 import { patchNode } from '@one-for-all/artery-utils';
 import { findNode, replaceNode as replaceTreeNode } from './tree';
 import { generateNodeId } from '@one-for-all/artery-engine';
 
 export function isConstantProperty(
-  property: NodeProperty | undefined,
+  property: unknown,
 ): boolean {
   return (
     !!property &&
     typeof property === 'object' &&
-    property.type === 'constant_property'
+    (property as NodeProperty).type === 'constant_property'
   );
+}
+
+export function isFunctionalProperty(property: unknown): boolean {
+  return (
+    !!property &&
+    typeof property === 'object' &&
+    (property as NodeProperty).type === 'functional_property'
+  );
+}
+
+export function isShareStateProperty(property: unknown): boolean {
+  return (
+    !!property &&
+    typeof property === 'object' &&
+    (property as NodeProperty).type === 'shared_state_property'
+  );
+}
+
+export function isApiStateProperty(property: unknown): boolean {
+  return (
+    !!property &&
+    typeof property === 'object' &&
+    (property as NodeProperty).type === 'api_result_property'
+  );
+}
+
+export function isLifecycleHooks(hooks: unknown): boolean {
+  return (
+    !!hooks &&
+    typeof hooks === 'object' &&
+    (hooks as LifecycleHookFuncSpec).type === 'lifecycle_hook_func_spec'
+  );
+}
+
+export function isBaseProperty(property: unknown): boolean {
+  return isConstantProperty(property) || isLifecycleHooks(property) || isFunctionalProperty(property);
+}
+
+export function isStateProperty(property: unknown): boolean {
+  return isShareStateProperty(property) || isApiStateProperty(property);
 }
 
 export function getActualNode(node: Node, currentNode: Node): Node {
   let actualNode = node;
   if (node.type === 'loop-container') {
     if (node.node.type === 'composed-node') {
-      const { outLayer, children } = node.node;
+      const { outLayer, children, nodes } = node.node;
       if (outLayer && outLayer.id === currentNode.id) {
         actualNode = outLayer;
       }
 
-      if (children && outLayer?.id !== currentNode.id) {
-        actualNode = children.find(
+      if ((nodes || children) && outLayer?.id !== currentNode.id) {
+        actualNode = (nodes || children).find(
           (item: Node) => item.id === currentNode.id,
         ) as Node;
       }
@@ -81,10 +122,10 @@ export function replaceNode(
   const srcNode = findNode(artery.node, node.id, true);
   if (srcNode.type === 'loop-container') {
     if (srcNode.node && srcNode.node.type === 'composed-node') {
-      const { children, outLayer } = srcNode.node;
+      const { children, outLayer, nodes } = srcNode.node;
       if (outLayer.id !== node.id) {
         let _oldNode = {} as Node;
-        (children || []).map((child: Node) => {
+        (nodes || children || []).forEach((child: Node) => {
           if (child.id === node.id) {
             _oldNode = child;
           }
@@ -176,10 +217,10 @@ export function unsetComposedNode(node: Node, artery: Artery): Artery {
   if (composedNode.type === 'loop-container') {
     const { node } = composedNode;
     if (node) {
-      const { outLayer, children } = node as ComposedNode;
+      const { outLayer, children, nodes } = node as ComposedNode;
       if (outLayer) {
         const newNode: Node = { ...outLayer };
-        newNode.children = children;
+        newNode.children = children || nodes;
         replaceNode(node, newNode, artery);
       }
     }

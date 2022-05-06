@@ -4,23 +4,17 @@ import { Input } from '@one-for-all/headless-ui';
 import usePopper from '@c/popper2';
 
 import FileUploader from '@c/file-upload';
-import { ConnectedProps } from '../utils/connect';
-import { useConfigContext } from '../context';
-import { updateNodeProperty } from '../utils';
+export interface UrlInputProps{
+  value: string;
+  onChange: (val: string) => void;
+}
 
-function UrlInput({ __path }: ConnectedProps<Record<string, never>>): JSX.Element {
-  const { artery, onArteryChange, activeNode } = useConfigContext() ?? {};
-  const [urlString, setUrlString] = useState<string>();
+function UrlInput({ value, onChange }: UrlInputProps): JSX.Element {
+  const [urlString, setUrlString] = useState<string>(value);
   const { Popper, handleClick, referenceRef } = usePopper<HTMLDivElement>();
 
   useEffect(() => {
-    if (!artery || !activeNode) {
-      return;
-    }
-    onArteryChange?.(updateNodeProperty(activeNode, __path, {
-      type: 'constant_property',
-      value: urlString,
-    }, artery));
+    onChange(urlString);
   }, [urlString]);
 
   function handleFileSuccess(file: QXPUploadFileTask): void {
@@ -28,6 +22,7 @@ function UrlInput({ __path }: ConnectedProps<Record<string, never>>): JSX.Elemen
     if (file.state === 'success' || !file.state) {
       const url = `${window.location.protocol}//${readableBucket}.${domain}/${file.uid}`;
       setUrlString(url);
+      onChange(urlString);
     }
   }
 
