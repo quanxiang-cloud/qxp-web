@@ -1,16 +1,19 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { observer } from 'mobx-react';
 import { Ref, TableHeaderBtn } from '@c/form-app-data-table/type';
-
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { getOperateButtonPer } from './utils';
+
 import PopConfirm from '@c/pop-confirm';
-import CreateDataForm from './create-data-form';
 import FormAppDataTable from '@c/form-app-data-table';
+import { toast } from '@one-for-all/ui';
+import PageLoading from '@c/page-loading';
+import userAppDetailsStore from '@home/pages/app-details/store';
+
 import Header from './header';
+import CreateDataForm from './create-data-form';
 import DetailsDrawer from './details-drawer';
 import useTableViewStore from './use-table-view-store';
-import { toast } from '@one-for-all/ui';
+import { getAPIPath, getOperateButtonPer } from './utils';
 
 export type Props = {
   appID: string;
@@ -39,9 +42,9 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
 
   const formTableRef = useRef<Ref>(null);
 
-  const BUTTON_GROUP: Record<number, TableHeaderBtn> = useMemo(() => ({
-    2: {
-      key: 'add',
+  const BUTTON_GROUP: Record<string, TableHeaderBtn> = {
+    create: {
+      key: 'create',
       action: () => {
         store.operationType = '新建';
         goEdit('');
@@ -49,7 +52,7 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
       text: '新建',
       iconName: 'add',
     },
-    4: {
+    batchRemove: {
       key: 'batchRemove',
       action: delFormData,
       text: '批量删除',
@@ -58,19 +61,34 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
       isBatch: true,
       popText: '确认删除选择数据？',
     },
-    5: {
+    import: {
       key: 'import',
       action: () => { },
       text: '导入',
       iconName: 'file_download',
     },
-    6: {
+    export: {
       key: 'export',
       action: () => { },
       text: '导出',
       iconName: 'file_upload',
     },
-  }), [store.operationType]);
+  };
+
+  useEffect(() => {
+    userAppDetailsStore.currentRoleInfo.roleID &&
+    store.setCurRoleID(userAppDetailsStore.currentRoleInfo.roleID);
+  }, [userAppDetailsStore.currentRoleInfo]);
+
+  const tableHeaderBtnList = useMemo(() => {
+    return Object.entries(BUTTON_GROUP).reduce((acc: TableHeaderBtn[], [key, buttonValue]) => {
+      const _apiPath = getAPIPath(appID, tableID, key, 'POST');
+      if (store.authority[_apiPath]) {
+        return [...acc, buttonValue];
+      }
+      return acc;
+    }, []);
+  }, [store.authority]);
 
   function goEdit(rowID: string): void {
     setCurRowID(rowID);
@@ -102,22 +120,15 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
     });
   }
 
-  const tableHeaderBtnList: TableHeaderBtn[] =
-    Object.entries(BUTTON_GROUP).reduce((acc: TableHeaderBtn[], [key, buttonValue]) => {
-      if (getOperateButtonPer(Number(key), store.authority)) {
-        return [...acc, buttonValue];
-      }
-      return acc;
-    }, []);
-
   const customColumns = [{
     id: 'action',
     Header: '操作',
     fixed: true,
     accessor: (rowData: any) => {
+      const perParams = { appID, tableID, authority: store.authority };
       return (
         <div>
-          {getOperateButtonPer(1, store.authority) && (
+          {getOperateButtonPer('get', perParams) && (
             <span
               onClick={() => {
                 store.operationType = '查看';
@@ -128,7 +139,7 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
               查看
             </span>
           )}
-          {getOperateButtonPer(3, store.authority) && (
+          {getOperateButtonPer('update', perParams) && (
             <span
               onClick={() => {
                 store.operationType = '修改';
@@ -139,7 +150,7 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
               修改
             </span>
           )}
-          {getOperateButtonPer(4, store.authority) && (
+          {getOperateButtonPer('delete', perParams) && (
             <PopConfirm content='确认删除该数据？' onOk={() => delFormData([rowData._id])}>
               <span className='text-red-600 cursor-pointer'>删除</span>
             </PopConfirm>
@@ -160,13 +171,13 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
   };
 
   const renderPageBody = (): JSX.Element => {
-    // if (fetchSchemeLoading) {
-    //   return <PageLoading />;
-    // }
+    if (fetchSchemeLoading) {
+      return <PageLoading />;
+    }
 
     return (
       <FormAppDataTable
-        showCheckbox={getOperateButtonPer(4, store.authority)}
+        showCheckbox={getOperateButtonPer('batchRemove', { appID, tableID, authority: store.authority })}
         ref={formTableRef}
         tableHeaderBtnList={tableHeaderBtnList}
         customColumns={customColumns}
