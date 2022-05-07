@@ -1,7 +1,13 @@
-$ibc: #dcdfe6;
-
-.page-engine-layer-block__config {
-  background-color: white;
-  border-left: solid 1px $ibc;
-  height: 100%;
+.tab-wrapper .tab-navs .node-crave-tab-nav-title{
+  padding: 12px 8px;
+  width: 36px;
+  white-space: normal;
+  &::after{
+    width: 4px;
+    height: 100%;
+    left: 0;
+    right: auto;
+    top: 0;
+    bottom: 0;
+  }
 }

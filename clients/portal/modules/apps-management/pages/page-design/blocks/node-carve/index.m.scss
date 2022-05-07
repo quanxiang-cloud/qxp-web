@@ -15,9 +15,19 @@
   .tabs {
     height: calc(100vh - 60px);
     overflow: auto;
+    display: flex;
+    flex-direction: row;
+  }
+
+  .tabNav{
+    height: 100%;
+    box-shadow: inset -1px 0px 0px 0px #e2e8f0;
+    flex-direction: column;
+    border-bottom: none;
+    background: var(--pg-panel-bg-color);
   }
 
   .tabCont {
-    padding: 8px
+    padding: 0;
   }
 }

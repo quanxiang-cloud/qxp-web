@@ -13,11 +13,11 @@ export const initConfigArtery: Artery = {
 };
 
 const WILL_COMPONENT_MAP: Record<string, string> = {
-  string: 'Input',
-  number: 'NumberPicker',
-  boolean: 'Switch',
-  function: 'FunctionBind',
-  object: 'VaribleBind',
+  string: 'input',
+  number: 'numberpicker',
+  boolean: 'switch',
+  function: 'functionbind',
+  object: 'variblebind',
 };
 
 function createWrapperNode(style?: CSSProperties, children?: Node[]): HTMLNode {
@@ -97,7 +97,7 @@ function buildTextItem(
       type: 'react-component',
       packageName: 'node-carve',
       packageVersion: '1.0.0',
-      exportName: 'Tips',
+      exportName: 'tips',
       props: {
         label: {
           type: 'constant_property',
@@ -106,7 +106,9 @@ function buildTextItem(
       },
     });
   }
-  const textNode = [createWrapperNode({}, labelNode)];
+  const textNode = [createWrapperNode({
+    display: 'flex',
+  }, labelNode)];
 
   if (will !== 'Unavaliable' && options.bindVarible) {
     textNode.push(
@@ -121,7 +123,7 @@ function buildTextItem(
             type: 'react-component',
             packageName: 'node-carve',
             packageVersion: '1.0.0',
-            exportName: 'StateBind',
+            exportName: 'statebind',
             props: Object.assign(defaultProperties, willProperties),
           },
         ],
@@ -165,7 +167,7 @@ function buildFieldItem(
           type: 'react-component',
           packageName: 'node-carve',
           packageVersion: '1.0.0',
-          exportName: will,
+          exportName: will.toLowerCase(),
           props: Object.assign(defaultProperties, willProperties),
         },
       ],

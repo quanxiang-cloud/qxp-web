@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
 
-import Loading from '@c/loading';
-import ErrorTips from '@c/error-tips';
+import { Artery, ReactComponentNode } from '@one-for-all/artery';
 import { ArteryRenderer } from '@one-for-all/artery-renderer';
+
+import Loading from '@c/loading';
+
 import repository from '../repository';
 import { useConfigContext } from '../context';
 import buildConfigArtery from '../utils/buildConfigNodes';
-import { Artery, ReactComponentNode } from '@one-for-all/artery';
 import Section from '../../../utils/section';
-import usePropsSpec from '../mock';
+import usePropsSpec from '../hooks/usePropsSpec';
 import { PropsSpec } from '../type';
 
 function getArteryBySpec(specs: PropsSpec[], options: {
@@ -34,7 +35,7 @@ function NodeCarve(): JSX.Element {
     if (!activeNode || !data) {
       return;
     }
-    const specs = data[exportName];
+    const specs = data[exportName.toLowerCase()];
     if (!specs || !specs.length) {
       setAttrArtery(null);
       setFunctionArtery(null);
@@ -52,20 +53,24 @@ function NodeCarve(): JSX.Element {
     setFunctionArtery(funcSpecs);
   }, [activeNode?.id, data]);
 
-  if (!activeNode) {
-    return <ErrorTips desc='当前层级没有内容, 请在左侧画布选中其他元素' />;
-  }
-
   if (isLoading) {
     return <Loading desc="加载中..." />;
   }
 
   if (isError) {
-    return <ErrorTips desc="访问异常..." />;
+    return (
+      <div className="flex justify-center items-center flex-col h-full">
+        <p>获取配置表单失败</p>
+      </div>
+    );
   }
 
   if (!data || (!attrArtery && !functionArtery)) {
-    return <ErrorTips desc="没有对应的配置表单" />;
+    return (
+      <div className="flex justify-center items-center flex-col h-full">
+        <p>没有对应的配置表单</p>
+      </div>
+    );
   }
 
   return (

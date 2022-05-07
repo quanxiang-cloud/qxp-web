@@ -10,20 +10,20 @@ import Unavaliable from './unavaliable';
 
 const repo: Repository = {
   'node-carve@1.0.0': {
-    Input: connect(Input, { defaultProps: { className: 'w-full' } }),
-    Switch: connect<any>(Switch, { valueKey: 'checked' }),
-    Select: connect<any>(Select),
-    NumberPicker: connect(Input, { defaultProps: { className: 'w-full', type: 'number' } }),
-    Textarea: connect(Input, { defaultProps: { className: 'w-full', type: 'textarea' } } ),
-    Checkbox: connect<any>(Checkbox, { valueKey: 'checked', getValue(...args) {
+    input: connect(Input, { defaultProps: { className: 'w-full' } }),
+    switch: connect<any>(Switch, { valueKey: 'checked' }),
+    select: connect<any>(Select),
+    numberpicker: connect(Input, { defaultProps: { className: 'w-full', type: 'number' } }),
+    textarea: connect(Input, { defaultProps: { className: 'w-full', type: 'textarea' } } ),
+    checkbox: connect<any>(Checkbox, { valueKey: 'checked', getValue(...args) {
       return args[1]?.target?.checked;
     } }),
-    ImageUrl: connect<UrlInputProps>(UrlInput),
-    FunctionBind,
-    VaribleBind,
-    StateBind,
-    Tips,
-    Unavaliable,
+    imageurl: connect<UrlInputProps>(UrlInput),
+    functionbind: FunctionBind,
+    variblebind: VaribleBind,
+    statebind: StateBind,
+    tips: Tips,
+    unavaliable: Unavaliable,
   },
 };
 

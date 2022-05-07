@@ -20,7 +20,6 @@ import styles from './index.m.scss';
 import { useConfigContext } from '../context';
 import { updateNodeProperty } from '../utils';
 import { get } from 'lodash';
-
 interface Props {
   className?: string;
 }
@@ -119,7 +118,7 @@ function StylePanel({ className }: Props): JSX.Element {
 
   return (
     <div className={cs(styles.stylePanel, className)}>
-      <div className='mb-8'>
+      <div className='mt-8 ml-8 mb-8'>
         <Button className='flex items-center' onClick={() => setModalOpen(true)}>
           <Icon name='code' />源码编辑
         </Button>

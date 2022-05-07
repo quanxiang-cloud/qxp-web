@@ -3,6 +3,7 @@ import type { BlockItemProps } from '@one-for-all/artery-engine';
 import type { BlocksCommunicationType } from '@pageDesign/types';
 
 import { Tab } from '@one-for-all/ui';
+import { findNodeByID, getNodeParents } from '@one-for-all/artery-utils';
 
 import { ConfigContext, NodeAttrType } from './context';
 import PropsPanel from './props-panel';
@@ -55,10 +56,7 @@ function SettingPanel({
       },
     ];
 
-    if (
-      (activeNode?.type === 'react-component' && activeNode?.exportName === 'page') ||
-      isSystemComponent((activeNode as any)?.category)
-    ) {
+    if (isSystemComponent((activeNode as any).category)) {
       return panels;
     }
 
@@ -74,16 +72,20 @@ function SettingPanel({
         content: rendererPanelContent,
       },
     ]);
-  }, [activeNode?.id]);
+  }, [activeNode]);
 
   useEffect(() => {
-    if (
-      (activeNode?.type === 'react-component' &&
-        activeNode?.exportName === 'page') &&
-      !['props', 'style'].includes(activePanel)
-    ) {
-      setActivePanel('props');
+    setActivePanel('props');
+  }, [activeNode]);
+
+  const segments = useMemo(() => {
+    if (!activeNode) {
+      return [];
     }
+    const node = findNodeByID(artery.node, activeNode.id);
+    console.log(node);
+    const parents = getNodeParents(artery.node, activeNode.id);
+    console.log(parents);
   }, [activeNode]);
 
   function renderCont(): JSX.Element {
@@ -105,6 +107,8 @@ function SettingPanel({
         <Tab
           className={styles.tabs}
           contentClassName={styles.tabCont}
+          navsClassName={styles.tabNav}
+          navTitleClassName='node-crave-tab-nav-title'
           items={getAvailablePanels()}
           currentKey={activePanel}
           onChange={setActivePanel}

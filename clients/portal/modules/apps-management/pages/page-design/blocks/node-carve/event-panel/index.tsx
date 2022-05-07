@@ -5,14 +5,17 @@ import repository from '../repository';
 import buildConfigArtery from '../utils/buildConfigNodes';
 import lifeCyclesSpec from './default-spec';
 import { HOOKS_PREFIX } from '../repository/function-bind';
+import Section from '../../../utils/section';
 
 function EventPanel(): JSX.Element {
   return (
     <>
-      <ArteryRenderer
-        artery={buildConfigArtery(lifeCyclesSpec, { prefix: HOOKS_PREFIX })}
-        plugins={{ repository }}
-      />
+      <Section title='生命周期' defaultExpand>
+        <ArteryRenderer
+          artery={buildConfigArtery(lifeCyclesSpec, { prefix: HOOKS_PREFIX })}
+          plugins={{ repository }}
+        />
+      </Section>
     </>
 
   );
