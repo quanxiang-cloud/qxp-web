@@ -122,6 +122,7 @@ function FunctionBind({
     if (!activeNode || !artery) {
       return;
     }
+    setFnString('');
     set(functionSpec, bodyPath, '');
     onArteryChange?.(updateNodeProperty(activeNode, __path, functionSpec, artery));
     setHasBound(false);

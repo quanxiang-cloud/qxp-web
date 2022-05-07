@@ -1,38 +1,41 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
-import type { BlockItemProps } from '@one-for-all/artery-engine';
-import type { BlocksCommunicationType } from '@pageDesign/types';
 
 import { Tab } from '@one-for-all/ui';
-import { findNodeByID, getNodeParents } from '@one-for-all/artery-utils';
+import { getNodeParents } from '@one-for-all/artery-utils';
+import type { BlockItemProps } from '@one-for-all/artery-engine';
 
-import { ConfigContext, NodeAttrType } from './context';
+import Breadcrumb from '@c/breadcrumb';
+import type { BlocksCommunicationType } from '@pageDesign/types';
+
+import { ConfigContext, UpdateAttrPayloadType } from './context';
 import PropsPanel from './props-panel';
 import StylePanel from './style-panel';
 import EventPanel from './event-panel';
 import RendererPanel from './renderer-panel';
 import ModalBindState from './modal-bind-state';
 import ModalComponentNode from './modal-component-node';
+import { isSystemComponent } from '../../utils/helpers';
+import { findNode } from './utils/tree';
 
 import styles from './index.m.scss';
 import './style.scss';
-import { isSystemComponent } from '../../utils/helpers';
-import { findNode } from './utils/tree';
 
 function SettingPanel({
   artery,
   onChange,
+  setActiveNode,
   activeNode,
 }: BlockItemProps<BlocksCommunicationType>): JSX.Element {
   const [modalBindStateOpen, setModalBindStateOpen] = useState<boolean>(false);
   const [modalComponentNodeOpen, setModalComponentNodeOpen] = useState<boolean>(false);
-  const [nodeAttr, setNodeAttr] = useState<NodeAttrType | null>(null);
+  const [updateAttrPayload, setUpdateAttrPayload] = useState<UpdateAttrPayloadType | null>(null);
 
   const value = {
-    nodeAttr,
     artery,
     activeNode,
     rawActiveNode: activeNode ? findNode(artery.node, activeNode?.id, true) : null,
-    setNodeAttr,
+    updateAttrPayload,
+    setUpdateAttrPayload,
     setModalBindStateOpen,
     setModalComponentNodeOpen,
     onArteryChange: onChange,
@@ -82,16 +85,20 @@ function SettingPanel({
     if (!activeNode) {
       return [];
     }
-    const node = findNodeByID(artery.node, activeNode.id);
-    console.log(node);
-    const parents = getNodeParents(artery.node, activeNode.id);
-    console.log(parents);
+    const rawNode = findNode(artery.node, activeNode.id, true);
+    const parents = getNodeParents(artery.node, rawNode.id);
+    return [...(parents || []), activeNode].slice(-3).map((node) => {
+      return {
+        key: node.id,
+        text: node.label || '',
+      };
+    });
   }, [activeNode]);
 
   function renderCont(): JSX.Element {
     if (!activeNode) {
       return (
-        <div className="flex justify-center items-center flex-col h-full">
+        <div className='flex justify-center items-center flex-col h-full'>
           <p>当前层级没有内容</p>
           <p>请在左侧画布选中其他元素</p>
         </div>
@@ -100,8 +107,25 @@ function SettingPanel({
 
     return (
       <>
+        <div className='px-4'>
+          <Breadcrumb
+            segments={segments}
+            separator='>'
+            segmentRender={(segment) => (
+              <span
+                className='text-12'
+                onClick={() => {
+                  const node = findNode(artery.node, segment.key);
+                  node && setActiveNode(node);
+                }}
+              >
+                {segment.text}
+              </span>
+            )}
+          />
+        </div>
         <div className={styles.curElem}>
-          <span className="mr-8">{activeNode?.label} ID: </span>
+          <span className='mr-8'>{activeNode?.label} ID: </span>
           <span>{activeNode?.id}</span>
         </div>
         <Tab

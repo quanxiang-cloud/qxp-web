@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import { get, isObject } from 'lodash';
 import Editor from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 
 import Button from '@c/button';
 import Modal from '@c/modal';
 import toast from '@lib/toast';
+
 import { ConnectedProps } from '../utils/connect';
 import { updateNodeProperty } from '../utils';
 import { useConfigContext } from '../context';
-import { get, isObject } from 'lodash';
 
 interface VaribleBindProps {
   type: 'array' | 'object',

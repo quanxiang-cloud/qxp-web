@@ -1,5 +1,6 @@
-import { ComposedNode, ComposedNodeChild, Node } from '@one-for-all/artery';
 import { get } from 'lodash';
+
+import { ComposedNode, ComposedNodeChild, Node } from '@one-for-all/artery';
 
 export function findNode(tree: Node | ComposedNode, node_id?: string, loopNode?: boolean): any {
   if (!tree || typeof tree !== 'object') {

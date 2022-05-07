@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import cs from 'classnames';
+import { get } from 'lodash';
 import Editor from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
-import { get } from 'lodash';
 
 import { Icon, Modal, toast, Tooltip } from '@one-for-all/ui';
+import { NodeProperty } from '@one-for-all/artery';
 
-import styles from './index.m.scss';
+import Tab from '@c/tab';
 import { ConfigContextState, useConfigContext } from '../context';
 import {
   mapApiStateSpec,
@@ -14,8 +15,8 @@ import {
   updateCurNodeAsLoopContainer,
   updateNodeProperty,
 } from '../utils';
-import { NodeProperty } from '@one-for-all/artery';
-import Tab from '@c/tab';
+
+import styles from './index.m.scss';
 
 function ModalBindState(): JSX.Element | null {
   const {
@@ -24,7 +25,7 @@ function ModalBindState(): JSX.Element | null {
     artery,
     onArteryChange,
     setModalBindStateOpen,
-    nodeAttr,
+    updateAttrPayload,
   } = useConfigContext() as ConfigContextState;
   const [selected, setSelected] = useState<{
     name: string;
@@ -35,7 +36,7 @@ function ModalBindState(): JSX.Element | null {
   const isLoopNode = rawActiveNode?.type === 'loop-container';
 
   useEffect(() => {
-    if (!nodeAttr) {
+    if (!updateAttrPayload) {
       return;
     }
     let bindConf;
@@ -43,7 +44,7 @@ function ModalBindState(): JSX.Element | null {
       // todo: get loop node iterableState bind value
       bindConf = get(rawActiveNode, 'iterableState', {});
     } else {
-      bindConf = get(activeNode, nodeAttr.path, {});
+      bindConf = get(activeNode, updateAttrPayload.path, {});
     }
 
     if (bindConf.type === 'shared_state_property') {
@@ -63,7 +64,7 @@ function ModalBindState(): JSX.Element | null {
   }, [activeNode?.id]);
 
   function handleBind(): void {
-    if (!nodeAttr) {
+    if (!updateAttrPayload) {
       return;
     }
     if (!stateExpr) {
@@ -89,7 +90,7 @@ function ModalBindState(): JSX.Element | null {
       'api_result_property' :
       'shared_state_property';
 
-    if (nodeAttr.type === 'loopNode') {
+    if (updateAttrPayload.type === 'loopNode') {
       const iterableState = {
         type: nodeType,
         stateID: match[1],
@@ -109,12 +110,12 @@ function ModalBindState(): JSX.Element | null {
           ),
         );
     } else {
-      const fallbackVal = get(activeNode, nodeAttr.path + '.value');
+      const fallbackVal = get(activeNode, updateAttrPayload.path + '.value');
       activeNode &&
         onArteryChange(
           updateNodeProperty(
             activeNode,
-            nodeAttr.path,
+            updateAttrPayload.path,
             {
               type: nodeType,
               stateID: match[1],

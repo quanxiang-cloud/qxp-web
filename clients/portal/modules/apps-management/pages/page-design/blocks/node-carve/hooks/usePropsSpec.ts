@@ -17,18 +17,18 @@ export default function usePropsSpec(activeNode?: Node) {
       return [false, null, true];
     }
     const specKey = `${pkg}@${version}`;
-    const personalKey = `${PAGE_PROPS_SPEC_KEY}:${pkg}`;
+    const personaKey = `${PAGE_PROPS_SPEC_KEY}:${pkg}`;
     const { isLoading, data, isError } = useQuery([activeNode?.id], async () => {
       if (propsSpecMap[specKey]) {
         return propsSpecMap[specKey];
       }
       const res = await getBatchGlobalConfig([
         {
-          key: personalKey,
+          key: personaKey,
           version: version,
         },
       ]);
-      const result = parseJSON(res.result?.[personalKey], {});
+      const result = parseJSON(res.result?.[personaKey], {});
       const spec = Object.entries(result).reduce((acc, [key, value]) => {
         return {
           ...acc,

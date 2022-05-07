@@ -30,7 +30,7 @@ function ConfigItemBind({
     activeNode,
     artery,
     onArteryChange,
-    setNodeAttr,
+    setUpdateAttrPayload,
     setModalBindStateOpen,
     setModalComponentNodeOpen,
   } = useConfigContext() as ConfigContextState;
@@ -76,7 +76,7 @@ function ConfigItemBind({
 
   function handleClick(): void {
     const { exportName } = activeNode as ReactComponentNode;
-    setNodeAttr({ path: __path, type: isSetLoopNode ? 'loopNode' : 'normal' });
+    setUpdateAttrPayload({ path: __path, type: isSetLoopNode ? 'loopNode' : 'normal' });
     if (exportName === 'container' && isSetLoopNode) {
       setModalComponentNodeOpen(true);
     } else {

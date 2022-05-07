@@ -1,4 +1,5 @@
 import { cloneDeep, set } from 'lodash';
+
 import {
   Artery,
   BaseFunctionSpec,
@@ -10,8 +11,9 @@ import {
   LifecycleHookFuncSpec,
 } from '@one-for-all/artery';
 import { patchNode } from '@one-for-all/artery-utils';
-import { findNode, replaceNode as replaceTreeNode } from './tree';
 import { generateNodeId } from '@one-for-all/artery-engine';
+
+import { findNode, replaceNode as replaceTreeNode } from './tree';
 
 export function isConstantProperty(
   property: unknown,

@@ -34,7 +34,7 @@ function ModalComponentNode(): JSX.Element {
     artery,
     onArteryChange,
     setModalComponentNodeOpen,
-    nodeAttr,
+    updateAttrPayload,
   } = useConfigContext() as ConfigContextState;
   const [selected, setSelected] = useState<{
     name: string;
@@ -67,14 +67,14 @@ function ModalComponentNode(): JSX.Element {
 
   useEffect(() => {
     let bindConf;
-    if (!nodeAttr) {
+    if (!updateAttrPayload) {
       return;
     }
     if (isComponentNode) {
       // todo: get loop node iterableState bind value
       bindConf = get(rawActiveNode, 'iterableState', {});
     } else {
-      bindConf = get(activeNode, nodeAttr.path, {});
+      bindConf = get(activeNode, updateAttrPayload.path, {});
     }
 
     if (bindConf.type === 'shared_state_property') {
