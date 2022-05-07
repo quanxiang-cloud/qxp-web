@@ -1,4 +1,4 @@
-import { action, computed, observable, reaction } from 'mobx';
+import { action, computed, observable, reaction, toJS } from 'mobx';
 
 import { SocketData } from '@lib/push';
 
@@ -24,10 +24,9 @@ import {
   registerAPI,
   getApiPath,
   getVersionInfo,
-  getVersion,
-  getBuildProcessStatus,
   fetchGroupList,
   bindGroup,
+  // wsSubscribe,
 } from './api';
 import toast from '@lib/toast';
 import { getApiDoc } from '../api-documentation/api';
@@ -448,8 +447,7 @@ class FaasStore {
   };
 
   getVersion = (): void => {
-    getVersion(this.groupID, this.currentFuncID, this.buildID).then((res) => {
-      const { build } = res;
+    getVersionInfo(this.groupID, this.currentFuncID, this.buildID).then((build) => {
       this.currentVersionFunc = build;
     }).catch((err) => {
       toast.error(err);
@@ -457,9 +455,59 @@ class FaasStore {
   };
 
   @action
+  apiDocStateListener = async (buildID: string, socket: SocketData, type: 'status',
+  ): Promise<void> => {
+    console.log('socket', socket);
+    const { key, topic }: FaasSoketData = socket?.content || {};
+    console.log(buildID, key, topic );
+    // debugger;
+    if (key !== buildID || topic !== 'builder') {
+      return;
+    }
+
+    const versionInfo = await getVersionInfo(this.groupID, this.currentFuncID, buildID);
+    // if (!['Unknown', ''].includes(versionInfo.build.status)) {
+    console.log('versionInfo', versionInfo);
+    // debugger;/
+    if (versionInfo.status > FUNC_STATUS.StatusBuilding) {
+      // debugger;
+      this.versionList = this.versionList.map((version) => {
+        if (version.id === buildID) {
+          return {
+            ...version,
+            [type]: versionInfo[type],
+            completionTime: versionInfo.updatedAt,
+          };
+        }
+
+        return version;
+      });
+      console.log(toJS(this.versionList));
+
+      if (this.currentVersionFunc?.id === buildID) {
+        // debugger;
+        this.currentVersionFunc = {
+          ...this.currentVersionFunc,
+          [type]: versionInfo[type],
+          completionTime: versionInfo.updatedAt,
+        };
+      }
+
+      toast.success('操作成功！');
+    }
+  };
+
+  @action
   registerAPI = (buildID: string): void => {
     registerAPI(this.groupID, { buildID }).then(() => {
-      toast.success('注册文档成功');
+      // wsSubscribe({
+      //   topic: 'builder',
+      //   key: buildID,
+      //   uuid: ws.uuid,
+      // });
+      // ws.addEventListener('faas', `status-${buildID}`,
+      //   (data) => this.apiDocStateListener(buildID, data, 'status'));
+      // toast.success('注册文档成功');
     }).catch((err) => {
       toast.error(err);
     });
@@ -506,7 +554,7 @@ class FaasStore {
   versionStateChangeListener = async (buildID: string, socket: SocketData, type: 'status',
   ): Promise<void> => {
     const { key, topic }: FaasSoketData = socket?.content || {};
-    console.log(buildID, key, topic );
+    // console.log(buildID, key, topic );
     // debugger;
     if (key !== buildID || topic !== 'builder') {
       return;
@@ -514,8 +562,10 @@ class FaasStore {
 
     const versionInfo = await getVersionInfo(this.groupID, this.currentFuncID, buildID);
     // if (!['Unknown', ''].includes(versionInfo.build.status)) {
-
-    if (versionInfo.status < FUNC_STATUS.StatusFailed) {
+    // console.log('versionInfo', versionInfo);
+    // debugger;/
+    if (versionInfo.status > FUNC_STATUS.StatusBuilding) {
+      // debugger;
       this.versionList = this.versionList.map((version) => {
         if (version.id === buildID) {
           return {
@@ -527,8 +577,10 @@ class FaasStore {
 
         return version;
       });
+      console.log(toJS(this.versionList));
 
       if (this.currentVersionFunc?.id === buildID) {
+        // debugger;
         this.currentVersionFunc = {
           ...this.currentVersionFunc,
           [type]: versionInfo[type],
@@ -542,9 +594,10 @@ class FaasStore {
 
   @action
   updateBuildStatus = (): void => {
-    getBuildProcessStatus(this.groupID, this.currentFuncID, this.buildID).then((status) => {
-      this.buildStatusMap = getBuildStatusMap(status.events);
-    });
+
+    // getBuildProcessStatus(this.groupID, this.currentFuncID, this.buildID).then((status) => {
+    //   this.buildStatusMap = getBuildStatusMap(status.events);
+    // });
   };
 
   @action

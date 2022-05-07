@@ -4,6 +4,7 @@ import { Handle, NodeProps, Position } from 'react-flow-renderer';
 
 import LoggerModal from './log-modal';
 import store from '../store';
+import { FUNC_STATUS } from '../constants';
 
 type NodeStatus = FaasProcessStatus | 'Disable';
 
@@ -16,15 +17,13 @@ const COLOR = {
 
 function ProcessSpan({ data, id }: NodeProps<FaasProcessSpanProps>): JSX.Element {
   const [logVisible, setLogVisible] = useState(false);
-  let status: NodeStatus = id === 'start' ? 'True' : (store.buildStatusMap[id] || 'Disable');
-
-  // 由于接口拿不到末尾节点的状态，因此需要更具上一个节点状态来做判断
-  if (data.isEnd && !data.isChildNode) {
-    const preNodeKey = store.buildSteps[store.buildSteps.length - 2];
-    status = preNodeKey && store.buildStatusMap[preNodeKey] === 'True' ? 'True' : 'Disable';
+  const status = getState();
+  function getState(): NodeStatus {
+    if (!store.currentVersionFunc?.status) return 'Disable';
+    if (store.currentVersionFunc?.status < FUNC_STATUS.StatusFailed) return 'Disable';
+    if (store.currentVersionFunc?.status === FUNC_STATUS.StatusFailed) return 'False';
+    return 'True';
   }
-
-  const noLog = id === 'start' || id === 'push' || status === 'Disable';
 
   return (
     <>
@@ -43,7 +42,7 @@ function ProcessSpan({ data, id }: NodeProps<FaasProcessSpanProps>): JSX.Element
           '--theme-color': `var(--${COLOR[status]}-600)`,
         } as React.CSSProperties}
         className='bg-white faas-build-process-span overflow-hidden px-12 py-6 flex items-center'
-        onClick={() => !noLog && setLogVisible(true)}
+        onClick={() => setLogVisible(true)}
       >
         {data.title}
         {status === 'Unknown' && (

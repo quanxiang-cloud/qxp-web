@@ -32,7 +32,10 @@ function FuncDetailsDrawer(): JSX.Element {
         return (
           <span
             className="text-blue-600 cursor-pointer"
-            onClick={() => onClickTool(id, 'VersionDetail')}
+            onClick={() => {
+              onClickTool(id, 'VersionDetail');
+              // history.push(`/apps/details/${store.appID}/build_details`);
+            }}
           >
             {version}
           </span>

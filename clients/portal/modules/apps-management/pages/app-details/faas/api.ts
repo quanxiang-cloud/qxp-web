@@ -136,13 +136,6 @@ export function defineFunc(groupID: string, projectID: string): Promise<{ url: s
   return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/define`);
 }
 
-export function getVersion(
-  groupID: string,
-  projectID: string,
-  buildID: string): Promise<{ build: VersionField }> {
-  return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/build/${buildID}/get`);
-}
-
 export function offlineVer(
   groupID: string,
   projectID: string,
@@ -156,8 +149,6 @@ export function servingVer(
   buildID: string): Promise<void> {
   return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/release/${buildID}/serving`);
 }
-
-// /api/v1/faas/group/:groupID/project/serve/
 
 export function deleteVer(
   groupID: string,
@@ -182,13 +173,20 @@ export function getVersionInfo(
 ): Promise<VersionField> {
   return httpClient.get(`/api/v1/faas/group/${groupID}/project/${projectID}/${buildID}`);
 }
+// export function getVersion(
+//   groupID: string,
+//   projectID: string,
+//   buildID: string): Promise<{ build: VersionField }> {
+//   return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/build/${buildID}/get`);
+// }
 
-export function getBuildProcess(
-  groupID: string,
-  projectID: string,
-  buildID: string,
-): Promise<FaasBuildProcess> {
-  return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/build/${buildID}/graph`);
+export function getBuildProcess(): Promise<FaasBuildProcess> {
+  return httpClient.get<{data: {runs: string[], steps: string[][]}}>('/api/v1/faas/graph')
+    .then((res) => res.data)
+    .catch((err) => {
+      toast.error(err);
+      return { runs: [], steps: [] };
+    });
 }
 
 export function getBuildProcessStatus(
@@ -202,8 +200,9 @@ export function getBuildProcessStatus(
 export function getBuildLog(
   groupID: string,
   resourceRef: string,
+  params: {step: string},
 ): Promise<{ logs: BuildLog[] }> {
-  return httpClient.get(`/api/v1/faas/group/${groupID}/project/logger/${resourceRef}`);
+  return httpClient.get(`/api/v1/faas/group/${groupID}/project/logger/${resourceRef}`, params);
 }
 
 type SubscribeParams = {

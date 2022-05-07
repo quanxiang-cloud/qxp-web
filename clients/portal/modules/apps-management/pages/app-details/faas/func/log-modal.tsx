@@ -20,26 +20,17 @@ function LoggerModal({ onClose, step, isChild, isOngoing }: Props): JSX.Element 
   const [loading, setLoading] = useState(true);
   const timer = useRef<number | null>(null);
   const logsRef = useRef<BuildLog[]>([]);
-  let startCount = 1;
 
   function updateLogs(): Promise<void> {
     return getBuildLog(
       store.groupID,
-      // store.currentFuncID,
       store.currentVersionFunc?.resourceRef || '',
-      // { index: startCount },
+      { step },
     ).then((res) => {
-      const _logs = res.logs.filter((log) => {
-        if (isChild) {
-          return log.step === step;
-        }
-
-        return log.run === step;
-      });
+      const _logs = res.logs.filter((log) => log.step === step);
       const newLogs = [...logsRef.current, ..._logs];
       setLogs(newLogs);
       logsRef.current = newLogs;
-      startCount += res.logs.length;
     });
   }
 
