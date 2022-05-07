@@ -20,8 +20,8 @@ const legacyUIComponents = {
   table: Table,
   grid: Grid,
   container: Container,
-  systemtasklist: TaskList,
-  usermenuavatar: UserAvatarMenu,
+  SystemTaskList: TaskList,
+  UserMenuAvatar: UserAvatarMenu,
 };
 
 export default legacyUIComponents;
