@@ -134,7 +134,7 @@ function ApiState(props: Props): JSX.Element {
                 type="text"
                 style={{ width: '259px' }}
                 className={cs('input', styles.input, { [styles.error]: errors.name })}
-                maxLength={20}
+                maxLength={120}
                 defaultValue={curApiState ? curApiState.name : ''}
                 {...register('name', {
                   shouldUnregister: true,
@@ -151,7 +151,7 @@ function ApiState(props: Props): JSX.Element {
                   },
                 })}
               />
-              <p className='text-12 text-gray-600'>不超过 20 字符，支持字母、数字、下划线、中文，名称不可重复。</p>
+              <p className='text-12 text-gray-600'>不超过 120 字符，支持字母、数字、下划线、中文，名称不可重复。</p>
             </div>
             <div>
               <div className='flex flex-col mb-24 relative -top-8'>
