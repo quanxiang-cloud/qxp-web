@@ -1,4 +1,5 @@
 import type { Artery, Node } from '@one-for-all/artery';
+import { PropsSpec } from '@one-for-all/node-carve';
 import { createContext, useContext } from 'react';
 
 export interface UpdateAttrPayloadType {
@@ -10,6 +11,7 @@ export interface ConfigContextState {
   activeNode: Node | undefined;
   rawActiveNode: Node | null;
   updateAttrPayload: UpdateAttrPayloadType | null;
+  packagePropsSpec: PropsSpec | undefined;
   onArteryChange: (artery: Artery) => void;
   setUpdateAttrPayload: (val: UpdateAttrPayloadType) => void;
   setModalBindStateOpen: (visible: boolean) => void;

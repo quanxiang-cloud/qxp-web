@@ -3,6 +3,8 @@ import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { Tab } from '@one-for-all/ui';
 import { getNodeParents } from '@one-for-all/artery-utils';
 import type { BlockItemProps } from '@one-for-all/artery-engine';
+import { ReactComponentNode } from '@one-for-all/artery';
+import Icon from '@one-for-all/icon';
 
 import Breadcrumb from '@c/breadcrumb';
 import type { BlocksCommunicationType } from '@pageDesign/types';
@@ -15,12 +17,14 @@ import RendererPanel from './renderer-panel';
 import ModalBindState from './modal-bind-state';
 import ModalComponentNode from './modal-component-node';
 import { isSystemComponent } from '../../utils/helpers';
-import { findNode } from './utils/tree';
+import { findNode } from './utils';
 
 import styles from './index.m.scss';
 import './style.scss';
+import { usePackagePropsSpec } from '../menu/group/type-content/fountainhead/store';
+import ToolTip from '@c/tooltip';
 
-function SettingPanel({
+function NodeCarve({
   artery,
   onChange,
   setActiveNode,
@@ -29,11 +33,14 @@ function SettingPanel({
   const [modalBindStateOpen, setModalBindStateOpen] = useState<boolean>(false);
   const [modalComponentNodeOpen, setModalComponentNodeOpen] = useState<boolean>(false);
   const [updateAttrPayload, setUpdateAttrPayload] = useState<UpdateAttrPayloadType | null>(null);
+  const { packageName, packageVersion } = activeNode as ReactComponentNode || {};
+  const packagePropsSpec = usePackagePropsSpec({ name: packageName, version: packageVersion });
 
   const value = {
     artery,
     activeNode,
     rawActiveNode: activeNode ? findNode(artery.node, activeNode?.id, true) : null,
+    packagePropsSpec,
     updateAttrPayload,
     setUpdateAttrPayload,
     setModalBindStateOpen,
@@ -49,12 +56,16 @@ function SettingPanel({
     const panels = [
       {
         id: 'props',
-        name: '属性',
+        name: <ToolTip label='属性配置' position='left'>
+          <Icon name='list' size={18}></Icon>
+        </ToolTip>,
         content: renderPropsPanel,
       },
       {
         id: 'style',
-        name: '样式',
+        name: <ToolTip label='样式配置' position='left'>
+          <Icon name='featured_video' size={18}></Icon>
+        </ToolTip>,
         content: <StylePanel />,
       },
     ];
@@ -65,13 +76,17 @@ function SettingPanel({
 
     return panels.concat([
       {
-        id: 'event',
-        name: '生命周期',
+        id: 'lifecycle',
+        name: <ToolTip label='生命周期' position='left'>
+          <Icon name='timeline' size={18}></Icon>
+        </ToolTip>,
         content: eventPanelContent,
       },
       {
         id: 'renderer',
-        name: '动态渲染',
+        name: <ToolTip label='动态渲染' position='left'>
+          <Icon name='dynamic_feed' size={18}></Icon>
+        </ToolTip>,
         content: rendererPanelContent,
       },
     ]);
@@ -152,4 +167,4 @@ function SettingPanel({
   );
 }
 
-export default SettingPanel;
+export default NodeCarve;

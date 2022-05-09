@@ -3,10 +3,12 @@ import { from } from 'rxjs6';
 import { switchMap } from 'rxjs6/operators';
 import { isEmpty, is } from 'ramda';
 
+import { PropsSpec } from '@one-for-all/node-carve';
+
 import type { Package, PackageComponent } from '@pageDesign/blocks/menu/type';
 import useObservable from '@lib/hooks/use-observable';
 import {
-  getPackagesSourceDynamic, getPackagePropsSpec, PropsSpec, getComponentsFromPackage,
+  getPackagesSourceDynamic, getPackagePropsSpec, getComponentsFromPackage,
 } from '@pageDesign/utils/package';
 
 const packages$ = from(getPackagesSourceDynamic());
@@ -24,7 +26,7 @@ export function useComponents(): PackageComponent[] | undefined {
   return isInvalid(components) ? undefined : components;
 }
 
-export function usePackagePropsSpec({ name, version }: Package): PropsSpec | undefined {
+export function usePackagePropsSpec({ name, version }: Pick<Package, 'name' | 'version'>): PropsSpec | undefined {
   const key = `${name}@${version}`;
   const propsSpecs = useObservable(propsSpecs$);
   return propsSpecs[key];
@@ -39,7 +41,7 @@ async function loadAllPropsSpecs(packages: Package[]): Promise<Record<string, Pr
   const propsSpecs = await Promise.all(propsSpecsPromise);
   return propsSpecs.reduce((acc, propsSpec) => {
     const { name, version, result } = propsSpec;
-    return { [`${name}@${version}`]: result };
+    return { ...acc, [`${name}@${version}`]: result };
   }, {});
 }
 

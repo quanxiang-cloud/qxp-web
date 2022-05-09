@@ -1218,6 +1218,11 @@
   dependencies:
     react "^17.0.2"
 
+"@one-for-all/node-carve@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.npmmirror.com/@one-for-all/node-carve/-/node-carve-0.1.0.tgz#dcdafbad0398aae83b26bbcdbf9c1260bdaa119c"
+  integrity sha512-hS367fgNJO4B7gxKsjAeQn9KVWPbssbPteqOJgF0m3PLBlYwavQFsfzX/PHmVamNiLvOeMAvR360OvQ+44ttfw==
+
 "@one-for-all/page-engine@0.10.0":
   version "0.10.0"
   resolved "https://registry.npmmirror.com/@one-for-all/page-engine/-/page-engine-0.10.0.tgz#36f54ce301587c50dcde633dd52b01286094a2ec"

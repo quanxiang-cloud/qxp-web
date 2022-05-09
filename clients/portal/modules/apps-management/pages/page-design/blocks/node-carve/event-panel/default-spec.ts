@@ -1,6 +1,6 @@
-import { PropsSpec } from '../type';
+import { BasePropSpec } from '@one-for-all/node-carve';
 
-const lifeCyclesSpec: PropsSpec[] = [{
+const lifeCyclesSpec: BasePropSpec[] = [{
   label: 'didMount',
   name: 'didMount',
   type: 'function',

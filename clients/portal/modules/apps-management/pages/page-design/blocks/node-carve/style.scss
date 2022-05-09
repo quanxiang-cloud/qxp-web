@@ -1,13 +1,9 @@
 .tab-wrapper .tab-navs .node-crave-tab-nav-title{
   padding: 12px 8px;
-  width: 36px;
-  white-space: normal;
+  &.active{
+    background: var(--gray-100);
+  }
   &::after{
-    width: 4px;
-    height: 100%;
-    left: 0;
-    right: auto;
-    top: 0;
-    bottom: 0;
+    display: none;
   }
 }

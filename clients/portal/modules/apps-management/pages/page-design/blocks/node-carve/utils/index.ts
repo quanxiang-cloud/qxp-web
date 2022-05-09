@@ -1,4 +1,4 @@
-import { cloneDeep, set } from 'lodash';
+import { cloneDeep, set, get } from 'lodash';
 
 import {
   Artery,
@@ -8,12 +8,11 @@ import {
   Node,
   NodeProperty,
   ComposedNode,
+  ComposedNodeChild,
   LifecycleHookFuncSpec,
 } from '@one-for-all/artery';
 import { patchNode } from '@one-for-all/artery-utils';
 import { generateNodeId } from '@one-for-all/artery-engine';
-
-import { findNode, replaceNode as replaceTreeNode } from './tree';
 
 export function isConstantProperty(
   property: unknown,
@@ -49,20 +48,20 @@ export function isApiStateProperty(property: unknown): boolean {
   );
 }
 
-export function isLifecycleHooks(hooks: unknown): boolean {
-  return (
-    !!hooks &&
-    typeof hooks === 'object' &&
-    (hooks as LifecycleHookFuncSpec).type === 'lifecycle_hook_func_spec'
-  );
-}
-
 export function isBaseProperty(property: unknown): boolean {
   return isConstantProperty(property) || isLifecycleHooks(property) || isFunctionalProperty(property);
 }
 
 export function isStateProperty(property: unknown): boolean {
   return isShareStateProperty(property) || isApiStateProperty(property);
+}
+
+export function isLifecycleHooks(hooks: unknown): boolean {
+  return (
+    !!hooks &&
+    typeof hooks === 'object' &&
+    (hooks as LifecycleHookFuncSpec).type === 'lifecycle_hook_func_spec'
+  );
 }
 
 export function getActualNode(node: Node, currentNode: Node): Node {
@@ -228,6 +227,123 @@ export function unsetComposedNode(node: Node, artery: Artery): Artery {
     }
   }
   return { ...artery };
+}
+
+export function findNode(tree: Node | ComposedNode, node_id?: string, loopNode?: boolean): any {
+  if (!tree || typeof tree !== 'object') {
+    return;
+  }
+  if (!node_id || tree.id === node_id) {
+    return tree;
+  }
+  if (tree.type === 'composed-node') {
+    const { outLayer, children, nodes } = tree || {};
+    if (outLayer && outLayer.id === node_id) {
+      return loopNode ? tree : outLayer;
+    }
+    if (nodes || children) {
+      for (const child of nodes || children) {
+        const found = findNode(child as Node, node_id, loopNode);
+        if (found) {
+          return loopNode ? tree : found;
+        }
+      }
+    }
+  }
+  // if loop node, return wrapper node
+  if (tree.type === 'loop-container') {
+    if (tree.node?.type === 'composed-node') {
+      const { outLayer, children, nodes } = tree.node || {};
+      if (outLayer && outLayer.id === node_id) {
+        return loopNode ? tree : outLayer;
+      }
+      if (nodes || children) {
+        for (const child of nodes || children) {
+          const found = findNode(child as Node, node_id, loopNode);
+          if (found) {
+            return loopNode ? tree : found;
+          }
+        }
+      }
+    } else if (get(tree, 'node.id') === node_id) {
+      return loopNode ? tree : tree.node;
+    } else if ('children' in tree.node && tree.node.children) {
+      for (const child of tree.node.children) {
+        const found = findNode(child as Node, node_id, loopNode);
+        if (found) {
+          return found;
+        }
+      }
+    }
+  }
+
+  if ('children' in tree && tree.children) {
+    for (const child of tree.children) {
+      const found = findNode(child as Node, node_id, loopNode);
+      if (found) {
+        return found;
+      }
+    }
+  }
+}
+
+export function replaceTreeNode(tree: Node, node_id: string, newNode: Node): void {
+  if (!tree || typeof tree !== 'object') {
+    return;
+  }
+  let newIndex = 0;
+  let outAdd = false;
+  if ('children' in tree && tree.children) {
+    tree.children.map((child, index) => {
+      if (child.id === node_id) {
+        newIndex = index;
+        outAdd = true;
+        return;
+      }
+
+      if (child.type === 'loop-container') {
+        const { node } = child;
+        if (node) {
+          if (node.id === node_id) {
+            outAdd = true;
+            newIndex = index;
+            return;
+          }
+
+          if (node.type === 'composed-node') {
+            const { children, outLayer, nodes } = node;
+            if (outLayer && outLayer.id === node_id) {
+              outAdd = true;
+              newIndex = index;
+              return;
+            }
+            let inAdd = false;
+            (nodes || children || []).map((item, _index) => {
+              if (item.id === node_id) {
+                inAdd = true;
+                newIndex = _index;
+                return;
+              }
+              return item;
+            });
+
+            inAdd && (nodes || children)?.splice(newIndex, 1, newNode as ComposedNodeChild);
+            return;
+          }
+        }
+        return;
+      }
+
+      if ('children' in child && child.children) {
+        replaceTreeNode(child, node_id, newNode);
+        return;
+      }
+    });
+
+    outAdd && tree.children.splice(newIndex, 1, newNode);
+  }
+
+  return;
 }
 
 export function mapSharedStateSpec(artery: Artery) {
