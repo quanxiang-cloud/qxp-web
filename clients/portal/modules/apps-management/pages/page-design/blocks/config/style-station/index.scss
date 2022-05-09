@@ -1,0 +1,9 @@
+.style-station{
+  height: calc(100vh - 106px);
+
+  .style-content{
+    padding: 0;
+    height: 100%;
+    overflow: auto;
+  }
+}

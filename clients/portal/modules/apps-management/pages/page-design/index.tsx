@@ -17,6 +17,7 @@ import Ctx from './ctx';
 import stores from './stores';
 import { savePage } from './api';
 import { getInitArtery } from './utils';
+import { useMonaco } from '@monaco-editor/react';
 
 import './index.scss';
 import styles from './index.m.scss';
@@ -24,6 +25,7 @@ import styles from './index.m.scss';
 function PageDesign(): JSX.Element | null {
   const { appID, pageName, arteryID } = getQuery<{ appID: string, pageName: string, arteryID: string }>();
   const history = useHistory();
+  const monaco = useMonaco();
 
   const resetStyle: CSSProperties = useMemo(() => ({ overflow: 'hidden' }), []);
   useStyle('body', resetStyle);
@@ -97,6 +99,12 @@ function PageDesign(): JSX.Element | null {
       </div>
     ));
   }, []);
+
+  useEffect(() => {
+    if (monaco) {
+      console.log('monaco editor initiated');
+    }
+  }, [monaco]);
 
   useEffect(() => {
     function renderApiStateDetail(): JSX.Element {

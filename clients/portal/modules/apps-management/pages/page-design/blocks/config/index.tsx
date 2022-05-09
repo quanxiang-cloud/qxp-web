@@ -5,6 +5,7 @@ import { Tab } from '@one-for-all/ui';
 import { useCtx } from '@pageDesign/ctx';
 import { isSystemComponent } from '@pageDesign/utils/helpers';
 
+import StyleStation from './style-station';
 import StylePanel from './style-panel';
 import EventPanel from './event-panel';
 import RendererPanel from './renderer-panel';
@@ -30,6 +31,11 @@ function SettingPanel(): JSX.Element {
         id: 'style',
         name: '样式',
         content: <StylePanel />,
+      },
+      {
+        id: 'styleStation',
+        name: '样式配置',
+        content: <StyleStation />,
       },
     ];
 
