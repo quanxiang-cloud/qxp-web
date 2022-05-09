@@ -135,7 +135,6 @@ class PushServer {
     const listenerMap = this.listenersMap.get(data.type || '') || {};
     // console.log(listenerMap);
     Object.entries(listenerMap).map(([key, listener]) => {
-      // console.log(key);
       listener(data);
     });
   };

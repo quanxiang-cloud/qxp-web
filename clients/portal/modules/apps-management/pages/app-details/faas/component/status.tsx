@@ -8,6 +8,7 @@ import ws, { SocketData } from '@lib/push';
 import { wsSubscribe } from '../api';
 
 import './index.scss';
+import { FUNC_STATUS } from '../constants';
 
 type Props = {
   status: number;
@@ -19,11 +20,14 @@ type Props = {
 }
 
 const STATUS_INFO: Record<number, { color: string, name: string }> = {
-  0: { color: 'blue', name: '未开始' },
-  1: { color: 'yellow', name: '构建中' },
-  2: { color: 'red', name: '失败' },
-  3: { color: 'green', name: '成功' },
-  7: { color: 'yellow', name: '上线中' },
+  [FUNC_STATUS.StatusNull]: { color: 'blue', name: '未开始' },
+  [FUNC_STATUS.StatusBuilding]: { color: 'yellow', name: '构建中' },
+  [FUNC_STATUS.StatusFailed]: { color: 'red', name: '构建失败' },
+  [FUNC_STATUS.StatusOK]: { color: 'green', name: '构建成功' },
+  [FUNC_STATUS.StatusOnline]: { color: 'green', name: '上线' },
+  [FUNC_STATUS.StatusOffline]: { color: 'green', name: '下限' },
+  [FUNC_STATUS.OnlineBuilding]: { color: 'yellow', name: '上线中' },
+  [FUNC_STATUS.OnlineFailed]: { color: 'red', name: '上线失败' },
 };
 
 function StatusDisplay({

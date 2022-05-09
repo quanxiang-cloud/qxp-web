@@ -30,7 +30,7 @@ import {
 import toast from '@lib/toast';
 import { getApiDoc } from '../api-documentation/api';
 import { INIT_API_CONTENT } from '../api-documentation/constants';
-import { faasState, FUNC_STATUS } from './constants';
+import { API_DOC_STATE, faasState, FUNC_STATUS } from './constants';
 import { getDirectoryPath } from '@lib/api-collection/utils';
 
 const INIT_CURRENT_FUNC = {
@@ -467,6 +467,7 @@ class FaasStore {
   getVersion = (): void => {
     getVersionInfo(this.groupID, this.currentFuncID, this.buildID).then((build) => {
       this.currentVersionFunc = build;
+      console.log(toJS(this.currentVersionFunc));
     }).catch((err) => {
       toast.error(err);
     });
@@ -475,20 +476,14 @@ class FaasStore {
   @action
   apiDocStateListener = async (buildID: string, socket: SocketData, type: 'status',
   ): Promise<void> => {
-    console.log('socket', socket);
     const { key, topic }: FaasSoketData = socket?.content || {};
-    console.log(buildID, key, topic );
-    // debugger;
-    if (key !== buildID || topic !== 'builder') {
+    if (key !== buildID || topic !== 'regist') {
       return;
     }
 
     const versionInfo = await getVersionInfo(this.groupID, this.currentFuncID, buildID);
-    // if (!['Unknown', ''].includes(versionInfo.build.status)) {
     console.log('versionInfo', versionInfo);
-    // debugger;/
     if (versionInfo.status > FUNC_STATUS.StatusBuilding) {
-      // debugger;
       this.versionList = this.versionList.map((version) => {
         if (version.id === buildID) {
           return {
@@ -518,14 +513,16 @@ class FaasStore {
   @action
   registerAPI = (buildID: string): void => {
     registerAPI(this.groupID, { buildID }).then(() => {
-      // wsSubscribe({
-      //   topic: 'builder',
-      //   key: buildID,
-      //   uuid: ws.uuid,
-      // });
-      // ws.addEventListener('faas', `status-${buildID}`,
-      //   (data) => this.apiDocStateListener(buildID, data, 'status'));
-      // toast.success('注册文档成功');
+      this.versionList = this.versionList.map((version) => {
+        if (version.id === buildID) {
+          this.currentVersionFunc = { ...version, docStatus: API_DOC_STATE.REGISTERING };
+          return { ...version, docStatus: API_DOC_STATE.REGISTERING };
+        }
+
+        return version;
+      });
+      console.log(toJS(this.versionList));
+      this.setVersionParams({});
     }).catch((err) => {
       toast.error(err);
     });
@@ -563,32 +560,20 @@ class FaasStore {
     });
   };
 
-  //   {
-  //     "content": {
-  //         "key": "dc61wj41",
-  //         "topic": "build"
-  //     },
-  //     "type": "faas"
-  // }
   @action
   versionStateChangeListener = async (buildID: string, socket: SocketData, type: 'status',
   ): Promise<void> => {
     const { key, topic }: FaasSoketData = socket?.content || {};
-    // console.log(buildID, key, topic );
-    // debugger;
-    if (key !== buildID) {
+    if (key !== buildID || topic !== 'builder') {
       return;
     }
+    console.log('versionStateChangeListener');
 
     const versionInfo = await getVersionInfo(this.groupID, this.currentFuncID, buildID);
-    // if (!['Unknown', ''].includes(versionInfo.build.status)) {
-    // console.log('versionInfo', versionInfo);
-    // debugger;/
     if (
       versionInfo.status > FUNC_STATUS.StatusBuilding &&
       versionInfo.status !== FUNC_STATUS.OnlineBuilding
     ) {
-      // debugger;
       this.versionList = this.versionList.map((version) => {
         if (version.id === buildID) {
           return {
@@ -608,59 +593,43 @@ class FaasStore {
           completionTime: versionInfo.updatedAt,
         };
       }
-
-      toast.success('操作成功！');
     }
   };
 
   @action
-  versionAPIStateChangeListener = async (buildID: string, socket: SocketData, type: 'status',
+  apiStateChangeListener = async (socket: SocketData, type: 'status', buildID?: string,
   ): Promise<void> => {
+    if (!buildID) {
+      return;
+    }
+
     const { key, topic }: FaasSoketData = socket?.content || {};
-    console.log(buildID, key, topic );
-    // debugger;
-    if (key !== buildID || topic !== 'builder') {
+    if (key !== buildID || topic !== 'register') {
       return;
     }
 
     const versionInfo = await getVersionInfo(this.groupID, this.currentFuncID, buildID);
-    // if (!['Unknown', ''].includes(versionInfo.build.status)) {
-    // console.log('versionInfo', versionInfo);
-    // debugger;/
-    // if (versionInfo.status > FUNC_STATUS.StatusBuilding) {
-    //   // debugger;
-    //   this.versionList = this.versionList.map((version) => {
-    //     if (version.id === buildID) {
-    //       return {
-    //         ...version,
-    //         [type]: versionInfo[type],
-    //         completionTime: versionInfo.updatedAt,
-    //       };
-    //     }
+    if (
+      versionInfo.docStatus !== API_DOC_STATE.REGISTERING
+    ) {
+      this.versionList = this.versionList.map((version) => {
+        if (version.id === buildID) {
+          return {
+            ...version,
+            docStatus: versionInfo.docStatus,
+          };
+        }
 
-    //     return version;
-    //   });
-    //   console.log(toJS(this.versionList));
+        return version;
+      });
 
-    //   if (this.currentVersionFunc?.id === buildID) {
-    //     // debugger;
-    //     this.currentVersionFunc = {
-    //       ...this.currentVersionFunc,
-    //       [type]: versionInfo[type],
-    //       completionTime: versionInfo.updatedAt,
-    //     };
-    //   }
-
-    //   toast.success('操作成功！');
-    // }
-  };
-
-  @action
-  updateBuildStatus = (): void => {
-
-    // getBuildProcessStatus(this.groupID, this.currentFuncID, this.buildID).then((status) => {
-    //   this.buildStatusMap = getBuildStatusMap(status.events);
-    // });
+      if (this.currentVersionFunc?.id === buildID) {
+        this.currentVersionFunc = {
+          ...this.currentVersionFunc,
+          docStatus: versionInfo.docStatus,
+        };
+      }
+    }
   };
 
   @action

@@ -41,16 +41,20 @@ function VersionDetails(): JSX.Element {
   useEffect(() => {
     if (store.currentVersionFunc?.docStatus === API_DOC_STATE.REGISTERING) {
       wsSubscribe({
-        topic: 'builder',
+        topic: 'register',
         key: store.currentVersionFunc.id,
         uuid: ws.uuid,
       });
       ws.addEventListener(
         'faas',
-        `status-${ store.currentVersionFunc.id}`,
-        () => store.versionAPIStateChangeListener);
+        'doc-build',
+        (data) => store.apiStateChangeListener( data, 'status', store.currentVersionFunc?.id));
     }
+    return () => {
+      ws.removeEventListener('faas', 'doc-build');
+    };
   }, [store.currentVersionFunc?.docStatus]);
+
   const tabItems = [
     {
       id: 'build',
