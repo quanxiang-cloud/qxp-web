@@ -15,3 +15,10 @@ export const FUNC_STATUS = {
   StatusOnline: 5,
   StatusOffline: 6,
 };
+
+export const API_DOC_STATE = {
+  NULL: 0,
+  REGISTERING: 1,
+  SUCCESS: 2,
+  FAILED: 3,
+};

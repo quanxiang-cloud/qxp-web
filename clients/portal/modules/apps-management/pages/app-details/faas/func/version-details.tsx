@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { observer } from 'mobx-react';
 import { Input } from 'antd';
 import dayjs from 'dayjs';
@@ -8,6 +8,7 @@ import Tab from '@c/tab';
 import Icon from '@c/icon';
 import PopConfirm from '@c/pop-confirm';
 import Loading from '@c/loading';
+import ws from '@lib/push';
 
 import VersionStatus from '../component/version-status';
 import ApiDetails from '../../api-documentation/api-details';
@@ -16,11 +17,40 @@ import store from '../store';
 
 import '../index.scss';
 import '../../api-documentation/prism.css';
+import { API_DOC_STATE } from '../constants';
+import { wsSubscribe } from '../api';
 
 const { TextArea } = Input;
 
 function VersionDetails(): JSX.Element {
   const [des, setDes] = useState(store.currentVersionFunc?.describe || '');
+
+  const apiDoc = useMemo(() => {
+    if (store.currentVersionFunc?.docStatus === API_DOC_STATE.NULL) {
+      return (<div>未注册API文档</div>);
+    }
+    if (store.currentVersionFunc?.docStatus === API_DOC_STATE.REGISTERING) {
+      return <div>文档生成中...</div>;
+    }
+    if (store.isAPILoading) {
+      return (<Loading />);
+    }
+    return (<ApiDetails apiPath={store.apiPath} />);
+  }, [store.isAPILoading, store.currentVersionFunc?.docStatus]);
+
+  useEffect(() => {
+    if (store.currentVersionFunc?.docStatus === API_DOC_STATE.REGISTERING) {
+      wsSubscribe({
+        topic: 'builder',
+        key: store.currentVersionFunc.id,
+        uuid: ws.uuid,
+      });
+      ws.addEventListener(
+        'faas',
+        `status-${ store.currentVersionFunc.id}`,
+        () => store.versionAPIStateChangeListener);
+    }
+  }, [store.currentVersionFunc?.docStatus]);
   const tabItems = [
     {
       id: 'build',
@@ -36,7 +66,7 @@ function VersionDetails(): JSX.Element {
     {
       id: 'apidoc',
       name: 'API文档',
-      content: store.isAPILoading ? <Loading /> : <ApiDetails apiPath={store.apiPath} />,
+      content: apiDoc,
     },
   ];
 

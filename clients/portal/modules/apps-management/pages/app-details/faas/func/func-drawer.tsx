@@ -94,13 +94,14 @@ function FuncDetailsDrawer(): JSX.Element {
       Header: '操作',
       id: 'action',
       accessor: ({ id, status }: VersionField) => {
+        const isBuildOk = status > FUNC_STATUS.StatusFailed;
         return (
           <div className="flex gap-20">
-            {status === FUNC_STATUS.StatusOffline && (
+            {isBuildOk && status === FUNC_STATUS.StatusOnline && (
               <PopConfirm content='确认下线改版本？' onOk={() => store.offlineVer(id)} >
                 <span className="operate">下线</span>
               </PopConfirm>)}
-            {status === FUNC_STATUS.StatusOnline && (
+            {isBuildOk && (
               <PopConfirm content='确认上线改版本？' onOk={() => store.servingVer(id)} >
                 <span className="operate">上线</span>
               </PopConfirm>)}

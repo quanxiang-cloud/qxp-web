@@ -52,6 +52,7 @@ type VersionField = {
   creator: string,
   updater: string,
   completionTime: number,
+  docStatus: number,
 }
 
 type FuncListParams = {

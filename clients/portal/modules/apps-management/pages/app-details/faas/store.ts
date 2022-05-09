@@ -22,7 +22,6 @@ import {
   servingVer,
   deleteVer,
   registerAPI,
-  getApiPath,
   getVersionInfo,
   fetchGroupList,
   bindGroup,
@@ -32,6 +31,7 @@ import toast from '@lib/toast';
 import { getApiDoc } from '../api-documentation/api';
 import { INIT_API_CONTENT } from '../api-documentation/constants';
 import { faasState, FUNC_STATUS } from './constants';
+import { getDirectoryPath } from '@lib/api-collection/utils';
 
 const INIT_CURRENT_FUNC = {
   id: '',
@@ -51,7 +51,7 @@ const INIT_CURRENT_FUNC = {
 const ENV = {
   FUNC_CLEAR_SOURCE: 'true',
   GOPROXY: 'https://goproxy.cn,direct',
-  FUNC_NAME: ' HelloWorld',
+  FUNC_NAME: 'HelloWorld',
 };
 
 function getBuildStatusMap(statusList: FaasBuildStatus[]): Record<string, FaasProcessStatus> {
@@ -517,8 +517,10 @@ class FaasStore {
   getApiPath = (): void => {
     this.isAPILoading = true;
     this.isAPILoadingErr = '';
-    getApiPath(this.groupID, this.currentFuncID, this.buildID).then((res) => {
-      this.apiPath = res.path;
+    getDirectoryPath(this.appID, 'faas').then((apiPath) => {
+      console.log(apiPath);
+      this.apiPath = `${apiPath}/${this.currentVersionFunc?.name}.r`;
+      // this.apiPath = apiPath;
     }).catch((err) => {
       toast.error(err);
       this.isAPILoadingErr = err;
@@ -590,6 +592,48 @@ class FaasStore {
 
       toast.success('操作成功！');
     }
+  };
+
+  @action
+  versionAPIStateChangeListener = async (buildID: string, socket: SocketData, type: 'status',
+  ): Promise<void> => {
+    const { key, topic }: FaasSoketData = socket?.content || {};
+    console.log(buildID, key, topic );
+    // debugger;
+    if (key !== buildID || topic !== 'builder') {
+      return;
+    }
+
+    const versionInfo = await getVersionInfo(this.groupID, this.currentFuncID, buildID);
+    // if (!['Unknown', ''].includes(versionInfo.build.status)) {
+    // console.log('versionInfo', versionInfo);
+    // debugger;/
+    // if (versionInfo.status > FUNC_STATUS.StatusBuilding) {
+    //   // debugger;
+    //   this.versionList = this.versionList.map((version) => {
+    //     if (version.id === buildID) {
+    //       return {
+    //         ...version,
+    //         [type]: versionInfo[type],
+    //         completionTime: versionInfo.updatedAt,
+    //       };
+    //     }
+
+    //     return version;
+    //   });
+    //   console.log(toJS(this.versionList));
+
+    //   if (this.currentVersionFunc?.id === buildID) {
+    //     // debugger;
+    //     this.currentVersionFunc = {
+    //       ...this.currentVersionFunc,
+    //       [type]: versionInfo[type],
+    //       completionTime: versionInfo.updatedAt,
+    //     };
+    //   }
+
+    //   toast.success('操作成功！');
+    // }
   };
 
   @action
