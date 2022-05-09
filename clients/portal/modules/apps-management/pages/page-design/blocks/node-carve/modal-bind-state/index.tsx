@@ -1,4 +1,5 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { get } from 'lodash';
 import { Modal, toast } from '@one-for-all/ui';
 import { ComputedProperty, ComputedDependency } from '@one-for-all/artery';
 
@@ -12,6 +13,7 @@ import { ConfigContextState, useConfigContext } from '../context';
 
 import styles from './index.m.scss';
 import { updateNodeProperty } from '../utils';
+import { findNode } from '../utils/tree';
 
 const LOGIC_OPERATOR = ['&&', '||', '()', '!', '===', '!=='];
 
@@ -26,14 +28,15 @@ function ModalBindState(): JSX.Element | null {
     updateAttrPayload,
   } = useConfigContext() as ConfigContextState;
   const [bindVariables, setBindVariables] = useState<ComputedDependency[]>([]); // 已绑定的变量
-  const [stateExpr, setStateExpr] = useState(''); // 绑定变量的表达式
+  const [expressionStr, setExpressionStr] = useState('');
+  const [convertorStr, setConvertorStr] = useState('');
+  const [editorType, setEditorType] = useState<'expression' | 'convertor'>('expression');
+  const expressionEditorRef = useRef<EditorRefType>();
+  const convertorEditorRef = useRef<EditorRefType>();
   const [fallback, setFallBack] = useState<boolean>();
-  // const [convertorExpr, setConvertorExpr] = useState('state'); // 绑定变量的convertor表达式
-  // const isLoopNode = rawActiveNode?.type === 'loop-container';
   const sharedStates = Object.entries(dataSource.sharedState).map(([_, value]) => JSON.parse(value));
   const apiStates = Object.entries(dataSource.apiState).map(([_, value]) => JSON.parse(value));
   const names = useMemo(() => bindVariables.map(({ depID }) => depID), [bindVariables]);
-  const editorRef = useRef<EditorRefType>();
 
   function onCancel(): void {
     setModalBindStateOpen(false);
@@ -44,37 +47,68 @@ function ModalBindState(): JSX.Element | null {
       return;
     }
 
-    if (!stateExpr) {
-      toast.error('变量表达式不能为空');
-      return;
-    }
-
-    // if (!convertorExpr) {
-    //   toast.error('变量转换函数不能为空');
-    //   return;
-    // }
-
-    const finalStateExpr = stateExpr.split(' ').map((value) => {
-      const _value = names.includes(value) ? `states['${value}']` : value;
-      return _value;
-    }).join(' ');
-
-    // need to confirm the stateExpr with variable join and operator
-    const match = finalStateExpr.match(/states\['(.+)'\]/i);
-    if (!match || !match[1]) {
-      toast.error(`无效的 stateID: ${stateExpr}`);
-      return;
-    }
-
-    const computedProperty: ComputedProperty = {
+    let computedProperty: ComputedProperty = {
       type: 'computed_property',
       deps: bindVariables,
       fallback: fallback,
       convertor: {
         type: 'state_convert_expression',
-        expression: finalStateExpr,
+        expression: '',
       },
     };
+
+    if (editorType === 'expression') {
+      if (!expressionStr) {
+        toast.error('变量表达式不能为空');
+        return;
+      }
+
+      const finalStateExpr = expressionStr.split(' ').map((value) => {
+        // value maybe has symbol of '.' or '[]'
+        const variable = value.split('.')[0]?.split('[')[0] || '';
+        const _value = names.includes(variable) ? value.replace(variable, `states['${variable}']`) : value;
+
+        return _value;
+      }).join(' ');
+
+      // need to confirm the stateExpr with variable join and operator
+      const match = finalStateExpr.match(/states\['(.+)'\]/i);
+      if (!match || !match[1]) {
+        toast.error(`无效的表达式: ${expressionStr}`);
+        return;
+      }
+
+      computedProperty = {
+        ...computedProperty,
+        convertor: {
+          type: 'state_convert_expression',
+          expression: finalStateExpr,
+        },
+      };
+    }
+
+    if (editorType === 'convertor') {
+      if (!convertorStr) {
+        toast.error('自定义 convertor 函数内容不能为空');
+        return;
+      }
+
+      // need to confirm the body
+      // const match = convertorStr.match(/return \['( +)'\]/i);
+      // if (!match || !match[1]) {
+      //   toast.error('无效的自定义 convertor 函数');
+      //   return;
+      // }
+
+      computedProperty = {
+        ...computedProperty,
+        convertor: {
+          type: 'state_convertor_func_spec',
+          args: 'state',
+          body: convertorStr,
+        },
+      };
+    }
 
     if (updateAttrPayload.type === 'loopNode') {
       // to get looNode property
@@ -91,6 +125,65 @@ function ModalBindState(): JSX.Element | null {
     }
     setModalBindStateOpen(false);
   }
+
+  useEffect(() => {
+    if (!updateAttrPayload) {
+      return;
+    }
+
+    const node = findNode(artery.node, activeNode?.id);
+    const bindConf = get(node, updateAttrPayload.path);
+
+    if (!bindConf) return;
+
+    setFallBack(bindConf.fallback);
+    setBindVariables(bindConf.deps);
+
+    if (bindConf.convertor.type === 'state_convert_expression') {
+      const expr = bindConf.convertor?.expression;
+      const _expr = expr.split(' ').map((value: string) => {
+        if (!LOGIC_OPERATOR.includes(value)) {
+          if (!value) {
+            return;
+          }
+          // to get variable
+          const variableExp = value.split('.')[0].split(']')[0] + ']';
+
+          return value.replace(variableExp, variableExp.split('\'')[1]);
+        }
+
+        return value;
+      }).join(' ');
+
+      setEditorType('expression');
+      expressionEditorRef.current?.onInsertText(expr);
+      setExpressionStr(_expr);
+      setConvertorStr('');
+    }
+
+    if (bindConf.convertor.type === 'state_convertor_func_spec') {
+      const body = bindConf.convertor?.body;
+
+      setEditorType('convertor');
+      convertorEditorRef.current?.onInsertText(body);
+      setConvertorStr(body);
+      setExpressionStr('');
+    }
+  }, [activeNode?.id]);
+
+  useEffect(() => {
+    const sharedStatesSpec = {
+      a: { initial: '{"name":"a","val":"{\\"key1\\":\\"val1\\"}","desc":""}' },
+      b: { initial: '{"name":"b","val":"{\\"key1\\":\\"val1\\"}","desc":""}' },
+      c: { initial: '{"name":"c","val":"{\\"key1\\":\\"val1\\"}","desc":""}' },
+      d: { initial: '{"name":"d","val":"{\\"key1\\":\\"val1\\"}","desc":""}' },
+      e: { initial: '{"name":"e","val":"{\\"key1\\":\\"val1\\"}","desc":""}' },
+      f: { initial: '{"name":"f","val":"{\\"key1\\":\\"val1\\"}","desc":""}' },
+      g: { initial: '{"name":"g","val":"{\\"key1\\":\\"val1\\"}","desc":""}' },
+    };
+
+    onArteryChange({ ...artery, sharedStatesSpec });
+  }, []);
 
   return (
     <Modal
@@ -121,7 +214,7 @@ function ModalBindState(): JSX.Element | null {
                 <div
                   key={name}
                   onClick={() => {
-                    editorRef.current?.onInsertText(`${name} `);
+                    expressionEditorRef.current?.onInsertText(`${name} `);
 
                     if (names.includes(name)) return;
                     setBindVariables([...bindVariables, { depID: name, type: 'shared_state' }]);
@@ -133,23 +226,25 @@ function ModalBindState(): JSX.Element | null {
               );
             })}
           </Section>
-          <Section title="API变量" defaultExpand>
-            {apiStates.map(({ name, val, desc }) => {
-              return (
-                <div
-                  key={name}
-                  onClick={() => console.log('bind: ', name, 'api_state')}
-                  className='cursor-pointer hover:bg-blue-400'
-                >
-                  {name}
-                </div>
-              );
-            })}
-          </Section>
+          {!!apiStates.length && (
+            <Section title="API变量" defaultExpand>
+              {apiStates.map(({ name }) => {
+                return (
+                  <div
+                    key={name}
+                    onClick={() => console.log('bind: ', name, 'api_state')}
+                    className='cursor-pointer hover:bg-blue-400'
+                  >
+                    {name}
+                  </div>
+                );
+              })}
+            </Section>
+          )}
         </div>
         <div className={styles.body}>
-          <div>已绑定变量：</div>
-          {!bindVariables.length && <div className='px-8 py-4 border-1 text-center'>请点击左侧可用变量列表进行变量绑定操作</div>}
+          <div className='py-4'>已绑定变量：</div>
+          {!bindVariables.length && <div className='px-8 py-4 border-1 text-center'>请先点击左侧可用变量列表进行变量绑定操作</div>}
           {!!bindVariables.length && (
             <div className='grid gap-4 grid-cols-4'>
               {bindVariables.map(({ depID, type }) => {
@@ -165,13 +260,13 @@ function ModalBindState(): JSX.Element | null {
             </div>
           )}
           {updateAttrPayload?.path === 'shouldRender' && (<>
-            <div>逻辑运算符：</div>
+            <div className='py-4'>逻辑运算符：</div>
             <div className='grid gap-4 grid-cols-4'>
               {LOGIC_OPERATOR.map((op) => {
                 return (
                   <div
                     key={op}
-                    onClick={() => editorRef.current?.onInsertText(`${op} `)}
+                    onClick={() => expressionEditorRef.current?.onInsertText(`${op} `)}
                     className='px-8 py-4 border-1 inline-block text-center cursor-pointer hover:bg-blue-400'
                   >
                     {op}
@@ -182,31 +277,43 @@ function ModalBindState(): JSX.Element | null {
           </>)}
           <Tab
             style={{ height: 'auto' }}
+            currentKey={editorType}
+            onChange={(id) => id === 'convertor' ? setEditorType('convertor') : setEditorType('expression')}
             items={[
               {
                 id: 'expression',
-                name: '变量表达式',
-                content: <CodeEditor
-                  ref={editorRef}
-                  value={stateExpr}
-                  onChange={setStateExpr}
-                />,
+                name: updateAttrPayload?.path === 'shouldRender' ? '条件表达式' : '变量表达式',
+                content:
+                <>
+                  <div>表达式如果书写错误，保存后控制台会报错</div>
+                  <CodeEditor
+                    ref={expressionEditorRef}
+                    value={expressionStr}
+                    onChange={setExpressionStr}
+                  />
+                </>,
               },
-              // {
-              //   id: 'convertor',
-              //   name: '自定义函数',
-              //   content: <CodeEditor
-              //     ref={editorRef}
-              //     value={convertorExpr}
-              //     onChange={(value) => console.log(value)}
-              //   />,
-              // },
+              {
+                id: 'convertor',
+                name: '自定义函数',
+                content:
+                <>
+                  <div>应该保证函数有返回值</div>
+                  <CodeEditor
+                    ref={convertorEditorRef}
+                    value={convertorStr}
+                    onChange={setConvertorStr}
+                  />
+                </>,
+              },
             ]}
           />
-          <div className='flex items-center'>
-            <span>默认渲染：</span>
-            <Toggle onChange={setFallBack} />
-          </div>
+          {updateAttrPayload?.path === 'shouldRender' && (
+            <div className='flex items-center'>
+              <span>默认渲染：</span>
+              <Toggle defaultChecked={fallback} onChange={setFallBack} />
+            </div>
+          )}
         </div>
       </div>
     </Modal>

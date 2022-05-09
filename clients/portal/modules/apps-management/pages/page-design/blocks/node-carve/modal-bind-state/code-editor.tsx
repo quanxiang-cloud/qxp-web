@@ -24,13 +24,10 @@ function CodeEditor({ value, onChange }: Props, ref: ForwardedRef<EditorRefType 
   return (
     <Editor
       ref={refEditor}
-      defaultValue={value}
+      value={value}
       height="200px"
       extensions={[javascript()]}
-      onChange={(val) => {
-        if (!val) return;
-        onChange(val);
-      }}
+      onChange={onChange}
     />
   );
 }
