@@ -138,16 +138,15 @@ export function defineFunc(groupID: string, projectID: string): Promise<{ url: s
 
 export function offlineVer(
   groupID: string,
-  projectID: string,
-  buildID: string): Promise<void> {
-  return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/release/${buildID}/offline`);
+  data: {id: string},
+): Promise<void> {
+  return httpClient.delete(`/api/v1/faas/group/${groupID}/project/offline`, data);
 }
 
 export function servingVer(
   groupID: string,
-  projectID: string,
-  buildID: string): Promise<void> {
-  return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/release/${buildID}/serving`);
+  data: {id: string}): Promise<void> {
+  return httpClient(`/api/v1/faas/group/${groupID}/project/serve`, data);
 }
 
 export function deleteVer(

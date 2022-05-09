@@ -20,9 +20,10 @@ type Props = {
 
 const STATUS_INFO: Record<number, { color: string, name: string }> = {
   0: { color: 'blue', name: '未开始' },
-  1: { color: 'yellow', name: '进行中' },
+  1: { color: 'yellow', name: '构建中' },
   2: { color: 'red', name: '失败' },
   3: { color: 'green', name: '成功' },
+  7: { color: 'yellow', name: '上线中' },
 };
 
 function StatusDisplay({
@@ -38,13 +39,20 @@ function StatusDisplay({
     if (status < 2) {
       console.log(status, dataID);
       wsSubscribe({
-        topic,
+        topic: 'builder',
         key: dataID,
         uuid: ws.uuid,
       });
-      ws.addEventListener('faas', `status-${dataID}`, callBack);
     }
 
+    if (status === 7) {
+      wsSubscribe({
+        topic: 'serving',
+        key: dataID,
+        uuid: ws.uuid,
+      });
+    }
+    ws.addEventListener('faas', `status-${dataID}`, callBack);
     return () => {
       ws.removeEventListener('faas', `status-${dataID}`);
     };

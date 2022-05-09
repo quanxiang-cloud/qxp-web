@@ -420,7 +420,16 @@ class FaasStore {
 
   @action
   offlineVer = (id: string): void => {
-    offlineVer(this.groupID, this.currentFuncID, id).then(() => {
+    offlineVer(this.groupID, { id }).then(() => {
+      this.versionList = this.versionList.map((version) => {
+        if (version.id === id) {
+          this.currentVersionFunc = { ...version, status: 7 };
+          return { ...version, status: 6 };
+        }
+
+        return version;
+      });
+      console.log(toJS(this.versionList));
       this.setVersionParams({});
     }).catch((err) => {
       toast.error(err);
@@ -429,7 +438,16 @@ class FaasStore {
 
   @action
   servingVer = (id: string): void => {
-    servingVer(this.groupID, this.currentFuncID, id).then(() => {
+    servingVer(this.groupID, { id }).then(() => {
+      this.versionList = this.versionList.map((version) => {
+        if (version.id === id) {
+          this.currentVersionFunc = { ...version, status: 7 };
+          return { ...version, status: 7 };
+        }
+
+        return version;
+      });
+      console.log(toJS(this.versionList));
       this.setVersionParams({});
     }).catch((err) => {
       toast.error(err);
@@ -558,7 +576,7 @@ class FaasStore {
     const { key, topic }: FaasSoketData = socket?.content || {};
     // console.log(buildID, key, topic );
     // debugger;
-    if (key !== buildID || topic !== 'builder') {
+    if (key !== buildID) {
       return;
     }
 
@@ -566,7 +584,10 @@ class FaasStore {
     // if (!['Unknown', ''].includes(versionInfo.build.status)) {
     // console.log('versionInfo', versionInfo);
     // debugger;/
-    if (versionInfo.status > FUNC_STATUS.StatusBuilding) {
+    if (
+      versionInfo.status > FUNC_STATUS.StatusBuilding &&
+      versionInfo.status !== FUNC_STATUS.OnlineBuilding
+    ) {
       // debugger;
       this.versionList = this.versionList.map((version) => {
         if (version.id === buildID) {
@@ -579,10 +600,8 @@ class FaasStore {
 
         return version;
       });
-      console.log(toJS(this.versionList));
 
       if (this.currentVersionFunc?.id === buildID) {
-        // debugger;
         this.currentVersionFunc = {
           ...this.currentVersionFunc,
           [type]: versionInfo[type],

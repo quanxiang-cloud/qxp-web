@@ -14,6 +14,7 @@ export const FUNC_STATUS = {
   StatusCancelled: 4,
   StatusOnline: 5,
   StatusOffline: 6,
+  OnlineBuilding: 7,
 };
 
 export const API_DOC_STATE = {
