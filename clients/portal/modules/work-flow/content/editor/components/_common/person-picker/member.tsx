@@ -7,7 +7,7 @@ import Tag from '@c/tag';
 import { tagBackgroundColorMap, tagIconNameMap } from './constants';
 
 export interface Member {
-  type: 1 | 2;
+  type: 1 | 2 | 3;
   id: string;
   ownerName: string;
 }

@@ -15,3 +15,16 @@ export enum FileUploadStatus {
   depSuccess = 2,
   fail = 3
 }
+
+export type UserInfo = {
+  name?: string;
+  useStatus?: number;
+  phone?: string,
+  email?: string,
+  position?: string,
+}
+
+export type EmployeesList = {
+  users: Employee[];
+  total: number;
+};

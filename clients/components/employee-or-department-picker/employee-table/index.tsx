@@ -106,6 +106,7 @@ export default observer(function EmployeeTable({
           createdAt: -1,
           id: user.id,
           departmentID: dep.id,
+          groupName: '',
         });
       });
     } else if (keys.length < store.selectedKeys.length) {

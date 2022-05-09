@@ -6,6 +6,7 @@ import Search from '@c/search';
 import toast from '@lib/toast';
 
 import DepartmentsTree from './departments-tree';
+import SearchOrganize from './search-organize';
 import Employees from './employees';
 import { SpecialSymbolsReg } from './utils';
 
@@ -31,12 +32,6 @@ export default function DepartmentsEmployees(): JSX.Element {
 
   function handleSelectDep(dep: Department): void {
     setCurrentDepartment(dep);
-    handleClear();
-  }
-
-  function handleClear(): void {
-    setInputValue('');
-    setSearchWord('');
   }
 
   function handleOnBlur(val: string): void {
@@ -69,7 +64,7 @@ export default function DepartmentsEmployees(): JSX.Element {
       <div className=" flex flex-col flex-grow" style={{
         height: 'calc(100% - 62px)',
       }}>
-        <div className='w-208 ml-20 mt-20'>
+        <div className='w-208 ml-20 mt-20 flex items-center'>
           <Search
             className="bg-gray-100"
             placeholder="搜索员工名称"
@@ -82,15 +77,15 @@ export default function DepartmentsEmployees(): JSX.Element {
         <div className="mt-20 flex overflow-hidden"
           style={{ height: 'calc(100% - 73px)' }} >
           <div className=" flex flex-col border-r min-w-259 overflow-auto">
-            <div className="text-h6 ml-20 mb-8">组织架构</div>
-            <DepartmentsTree onSelect={handleSelectDep}/>
+            {
+              searchWord ?
+                <SearchOrganize searchWord={searchWord} onChange={handleSelectDep} /> :
+                <DepartmentsTree onSelect={handleSelectDep}/>
+            }
           </div>
           {
             currentDepartment && (
-              <Employees
-                searchWord={searchWord}
-                department={currentDepartment}
-              />
+              <Employees department={currentDepartment} />
             )
           }
         </div>

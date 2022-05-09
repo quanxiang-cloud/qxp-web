@@ -16,17 +16,20 @@ import EmployeeTable from './employee-table';
 import SelectedList from './selected-list';
 import EmployeeSelectTree from './employee-select-tree';
 import DepartmentSelectTree from './department-select-tree';
+import GroupSelect from './group-select';
 import OwnerStore from './store';
 
 interface Props {
   departments?: EmployeeOrDepartmentOfRole[];
   employees?: EmployeeOrDepartmentOfRole[];
+  groups?: EmployeeOrDepartmentOfRole[];
   onChange: (departmentsOrEmployees: EmployeeOrDepartmentOfRole[]) => void;
-  onlyEmployees?: boolean;
+  excludeDepartments?: boolean;
+  pickGroups?: boolean;
 }
 
 export default observer(function EmployeeOrDepartmentPicker({
-  departments = [], employees = [], onChange, onlyEmployees,
+  departments, employees, groups, onChange, excludeDepartments, pickGroups,
 }: Props) {
   const [store, setStore] = useState<OwnerStore>();
 
@@ -60,6 +63,7 @@ export default observer(function EmployeeOrDepartmentPicker({
         departmentID: parent?.id,
         createdAt: -1,
         id: node.id,
+        groupName: '',
       });
     });
     prevNodes.filter((node) => !currentNodes.find((n) => n.id === node.id)).forEach((node) => {
@@ -70,10 +74,16 @@ export default observer(function EmployeeOrDepartmentPicker({
   };
 
   useEffect(() => {
+    const owners: EmployeeOrDepartmentOfRole[] = [];
+
+    departments && owners.push(...departments);
+    employees && owners.push(...employees);
+    groups && owners.push(...groups);
+
     if (department) {
-      setStore(new OwnerStore(department, [...departments, ...employees]));
+      setStore(new OwnerStore(department, owners));
     }
-  }, [department, departments, employees]);
+  }, [department, departments, employees, groups]);
 
   if (!store || isLoading) {
     return <Loading desc="加载中..." />;
@@ -157,6 +167,24 @@ export default observer(function EmployeeOrDepartmentPicker({
     );
   };
 
+  const renderGroupPanel = () => {
+    return (
+      <div
+        className="h-full flex flex-col overflow-hidden"
+        style={{ height: 'calc(100% - 48px)' }}
+      >
+        <TextHeader
+          className="pb-0"
+          title="选择分组"
+          itemTitleClassName="text-h6-no-color-weight font-semibold"
+          itemClassName="flex flex-col items-start"
+          textClassName="ml-0 mt-4"
+        />
+        <GroupSelect ownerStore={store} />
+      </div>
+    );
+  };
+
   const items = [
     {
       id: '1',
@@ -165,11 +193,19 @@ export default observer(function EmployeeOrDepartmentPicker({
     },
   ];
 
-  if (!onlyEmployees) {
+  if (!excludeDepartments) {
     items.push({
       id: '2',
       name: '按部门',
       content: renderDepartmentPanel(),
+    });
+  }
+
+  if (pickGroups) {
+    items.push({
+      id: '3',
+      name: '按分组',
+      content: renderGroupPanel(),
     });
   }
 

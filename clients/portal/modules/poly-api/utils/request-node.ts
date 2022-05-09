@@ -102,7 +102,7 @@ export function getChildrenOfCurrentSelectOption(
   currentChildren: DirectoryChild[],
   apiNamespacePath: string,
 ): ApiCascaderOption[] {
-  return currentChildren.map((currentChild) => {
+  return currentChildren.filter((currentChild) => currentChild.active !== 0).map((currentChild) => {
     if (isApi(currentChild)) {
       const { name, title, pathType, fullPath } = currentChild;
       return {

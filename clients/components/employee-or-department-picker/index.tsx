@@ -10,22 +10,27 @@ interface Props {
   submitText: string;
   onSubmit: (
     departments: EmployeeOrDepartmentOfRole[],
-    employees: EmployeeOrDepartmentOfRole[]
+    employees: EmployeeOrDepartmentOfRole[],
+    groups: EmployeeOrDepartmentOfRole[]
   ) => Promise<boolean | void>;
   onCancel: () => void;
   employees?: EmployeeOrDepartmentOfRole[];
   departments?: EmployeeOrDepartmentOfRole[];
-  onlyEmployees?: boolean;
+  groups?: EmployeeOrDepartmentOfRole[];
+  excludeDepartments?: boolean;
+  pickGroups?: boolean;
 }
 
 export default function EmployeeOrDepartmentPickerModal({
   departments,
   employees,
+  groups,
   onSubmit,
   onCancel,
   title,
   submitText,
-  onlyEmployees,
+  excludeDepartments,
+  pickGroups,
 }: Props): JSX.Element {
   const [departmentsOrEmployees, setDepartmentsOrEmployees] = useState<
     EmployeeOrDepartmentOfRole[]
@@ -35,19 +40,22 @@ export default function EmployeeOrDepartmentPickerModal({
   function onGetSelected(): void {
     const employees: EmployeeOrDepartmentOfRole[] = [];
     const departments: EmployeeOrDepartmentOfRole[] = [];
+    const groups: EmployeeOrDepartmentOfRole[] = [];
     departmentsOrEmployees.forEach((departmentOrEmployees) => {
       if (departmentOrEmployees.type === 1) {
         employees.push(departmentOrEmployees);
       } else if (departmentOrEmployees.type === 2) {
         departments.push(departmentOrEmployees);
+      } else if (departmentOrEmployees.type === 3) {
+        groups.push(departmentOrEmployees);
       }
     });
-    if (employees.length === 0 && departments.length === 0) {
-      toast.error('请选择人员或部门');
+    if (employees.length === 0 && departments.length === 0 && groups.length === 0) {
+      toast.error('请选择人员、部门或分组');
       return;
     }
     setIsOnGetSelected(true);
-    onSubmit(departments, employees).then((isOk) => {
+    onSubmit(departments, employees, groups).then((isOk) => {
       if (isOk) {
         onCancel();
       } else {
@@ -85,8 +93,10 @@ export default function EmployeeOrDepartmentPickerModal({
       <EmployeeOrDepartmentPicker
         departments={departments}
         employees={employees}
+        groups={groups}
         onChange={setDepartmentsOrEmployees}
-        onlyEmployees={onlyEmployees}
+        excludeDepartments={excludeDepartments}
+        pickGroups={pickGroups}
       />
     </Modal>
   );

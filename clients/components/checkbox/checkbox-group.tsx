@@ -1,10 +1,11 @@
 import React from 'react';
+import cs from 'classnames';
 
 import Checkbox from './index';
 
-type CheckboxValueType = string | number;
+export type CheckboxValueType = string | number;
 
-interface CheckboxOptionType {
+export interface CheckboxOptionType {
   label: React.ReactNode;
   value: CheckboxValueType;
   disabled?: boolean;
@@ -16,6 +17,8 @@ interface Props {
   disabled?: boolean;
   onChange?: (checkedValue: Array<CheckboxValueType>) => void;
   options?: Array<CheckboxOptionType> | Array<string>;
+  className?: string;
+  style?: React.CSSProperties;
 }
 
 function CheckboxGroup({
@@ -23,6 +26,8 @@ function CheckboxGroup({
   value,
   disabled,
   options = [],
+  className,
+  style,
   onChange,
 }: Props): JSX.Element {
   const _options = options.map((option: CheckboxOptionType | string) => {
@@ -78,7 +83,7 @@ function CheckboxGroup({
   }
 
   return (
-    <div className="flex items-center flex-wrap">
+    <div className={cs('flex items-center flex-wrap', className)} style={style}>
       {children}
     </div>
   );

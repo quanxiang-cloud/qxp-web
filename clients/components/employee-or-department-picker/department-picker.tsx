@@ -56,6 +56,7 @@ function EmployeeOrDepartmentPicker({
         departmentID: parent?.id,
         createdAt: -1,
         id: node.id,
+        groupName: '',
       });
     });
     prevNodes.filter((node) => !currentNodes.find((n) => n.id === node.id)).forEach((node) => {

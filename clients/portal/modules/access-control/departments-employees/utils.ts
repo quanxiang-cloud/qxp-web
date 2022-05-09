@@ -1,3 +1,4 @@
+import { UnionColumn } from 'react-table';
 // todo refactor
 
 // /[`~!@#$%^&*()_\-+=<>?:"{}|,.\/;'\\[\]·~！@#￥%……&*（）——\-+={}|《》？：“”【】、；‘'，。、]/im  (except - and _)
@@ -6,98 +7,39 @@ export const SpecialSymbolsReg = /[`~!@#$%^&*()\+=<>?:"{}|,.\/;'\\[\]·~！@#￥
 
 export const PhoneReg = /^[1](([3][0-9])|([4][5-9])|([5][0-3,5-9])|([6][5,6])|([7][0-8])|([8][0-9])|([9][1,8,9]))[0-9]{8}$/;
 
-export const excelHeader: any[] = [
+export const excelHeader: UnionColumn<any>[] = [
   {
     Header: '员工姓名',
-    id: 'userName',
-    accessor: 'userName',
+    id: 'name',
   },
   {
     Header: '所属部门',
     id: 'depName',
-    accessor: 'depName',
   },
   {
     Header: '手机号码',
     id: 'phone',
-    accessor: 'phone',
   },
   {
     Header: '邮箱',
     id: 'email',
-    accessor: 'email',
   },
   {
     Header: '职位',
     id: 'position',
-    accessor: 'position',
   },
   {
     Header: '上级领导',
     id: 'leaderName',
-    accessor: 'leaderName',
   },
 ];
 
 export const exportEmployees = (data: Employee[]): void => {
-  const headers = excelHeader;
-  const fileName = '人员列表.xlsx';
-  const _headers = headers
-    .map((item, i: number) =>
-      Object.assign(
-        {},
-        {
-          key: item.id,
-          title: item.Header,
-          position: String.fromCharCode(65 + i) + 1,
-        },
-      ),
-    )
-    .reduce(
-      (prev: any, next: any) =>
-        Object.assign({}, prev, {
-          [next.position]: { key: next.key, v: next.title },
-        }),
-      {},
-    );
-
-  const _data = data
-    .map((item: any, i: any) =>
-      headers.map((key: any, j: any) =>
-        Object.assign(
-          {},
-          {
-            content: item[key.id],
-            position: String.fromCharCode(65 + j) + (i + 2),
-          },
-        ),
-      ),
-    )
-    .reduce((prev: any, next: any) => prev.concat(next))
-    .reduce(
-      (prev: any, next: any) => Object.assign({}, prev, { [next.position]: { v: next.content } }),
-      {},
-    );
-
-  const output = Object.assign({}, _headers, _data);
-  const outputPos = Object.keys(output);
-  const ref = `${outputPos[0]}:${outputPos[outputPos.length - 1]}`;
-  const wb = {
-    SheetNames: ['mySheet'],
-    Sheets: {
-      mySheet: Object.assign({}, output, {
-        '!ref': ref,
-        '!cols': [{ wpx: 100 }, { wpx: 100 }, { wpx: 100 }, { wpx: 100 }, { wpx: 100 }, { wpx: 100 }],
-      }),
-    },
-  };
-  import('xlsx').then(({ default: XLSX }) => {
-    XLSX.writeFile(wb, fileName);
-  });
+  exportExcel(excelHeader, data, '人员列表.xlsx');
 };
 
-export function exportEmployeesFail(
-  headers: any[],
+export function exportExcel(
+  headers: UnionColumn<any>[],
   data: Employee[],
   fileName: string,
 ): void {

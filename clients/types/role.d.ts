@@ -1,9 +1,20 @@
 declare enum RoleBindType {
   department = 1,
-  employee = 2
+  employee = 2,
+  group = 3
 }
 
-type EmployeeOrDepartmentOfRole = EmployeeOfRole & DepartmentOfRole;
+type EmployeeOrDepartmentOfRole = EmployeeOfRole & DepartmentOfRole & GroupOfRole;
+
+interface GroupOfRole {
+  createdAt: number;
+  departmentID: string;
+  departmentName: string;
+  id: string;
+  ownerID: string;
+  groupName: string;
+  type: RoleBindType;
+}
 
 interface DepartmentOfRole {
   createdAt: number;

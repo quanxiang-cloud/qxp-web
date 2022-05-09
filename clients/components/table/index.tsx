@@ -5,6 +5,7 @@ import {
   UnionColumn,
   TableOptions,
   useRowSelect,
+  useFilters,
 } from 'react-table';
 
 import PageLoading from '@c/page-loading';
@@ -59,6 +60,14 @@ function Table<T extends Record<string, any>>({
   const [widthMap, setWidthMap] = useState<WidthMap>(initWidthMap || {});
   widthMapRef.current = widthMap;
 
+  const defaultColumn = React.useMemo(
+    () => ({
+      Filter: () => null,
+      defaultCanFilter: false,
+    }),
+    [],
+  );
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -70,9 +79,10 @@ function Table<T extends Record<string, any>>({
   } = useTable(({
     data,
     columns: _columns,
+    defaultColumn,
     getRowId: (row) => row[rowKey],
     initialState: { selectedRowIds: getDefaultSelectMap(initialSelectedRowKeys || []) },
-  }) as TableOptions<T>, useRowSelect, useSticky);
+  }) as TableOptions<T>, useFilters, useRowSelect, useSticky);
 
   const handleWidthChange = (x: number, columnID: string): void => {
     if (x < MINIMUM_WIDTH) {
@@ -146,7 +156,10 @@ function Table<T extends Record<string, any>>({
                     {...header.getHeaderProps()}
                     key={header.id}
                   >
-                    {header.render('Header')}
+                    <div className='flex items-center'>
+                      {header.render('Header')}
+                      {header.canFilter ? header.render('Filter') : null}
+                    </div>
                     {canSetColumnWidth && header.id !== '_selector' && index !== _columns.length - 1 && (
                       <AdjustHandle
                         onMouseUp={() => widthMapChange?.(widthMapRef.current)}

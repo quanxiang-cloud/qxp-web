@@ -35,8 +35,23 @@ export async function getUserAdminInfo<T>(params: { query: string }) {
   return await httpClientGraphQL<T>('/api/v1/search/user', params);
 }
 
+export function getDepartmentInfo<T>(params: { query: string }): Promise<T> {
+  return httpClientGraphQL<T>('/api/v1/search/department', params);
+}
+
+export type EmployeeColumnInfo = {
+  id: string,
+  attr: number,
+  columnName: string,
+  name: string,
+  status: number,
+}
+export async function fetchEmployeeColumn(): Promise<{ all: EmployeeColumnInfo[] }> {
+  return await httpClient.get('/api/v1/org/m/column/all');
+}
+
 export async function getUserTemplate() {
-  return await httpClient<{ fileURL: string }>('/api/v1/org/getUserTemplate');
+  return await httpClient.get<{ fileURL: string }>('/api/v1/org/m/user/template');
 }
 
 export async function importTempFile({ depID, file }: FileParams) {

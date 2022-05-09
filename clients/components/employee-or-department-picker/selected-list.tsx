@@ -15,6 +15,7 @@ export interface ISelectedList {
 export default observer( function SelectedList({ className, ownerStore }: ISelectedList) {
   const users = ownerStore.owners.filter(({ type }) => type === 1);
   const departments = ownerStore.owners.filter(({ type }) => type === 2);
+  const groups = ownerStore.owners.filter((owner) => owner.type === 3);
   const isFirstLoad = useRef<boolean>(true);
 
   useEffect(() => {
@@ -41,6 +42,7 @@ export default observer( function SelectedList({ className, ownerStore }: ISelec
   const tagRender = ({
     ownerName,
     departmentName,
+    groupName,
     ownerID,
     ...others
   }: EmployeeOrDepartmentOfRole): JSX.Element => {
@@ -51,9 +53,9 @@ export default observer( function SelectedList({ className, ownerStore }: ISelec
         className={cs('mr-8 mb-8 tag-border-radius relative bind-role-selector-tag', {
           'bg-blue-100': others.type === 1,
           'bg-amber-50': others.type === 2,
+          'bg-yellow-50': others.type === 3,
         })}
         style={{
-          backgroundColor: others.type === 1 ? 'var(--blue-100)' : '#FFFBEB',
           transition: 'all .1s linear',
           lineHeight: '24px',
           maxWidth: '356px',
@@ -62,6 +64,7 @@ export default observer( function SelectedList({ className, ownerStore }: ISelec
           onRemove({
             ownerName,
             departmentName,
+            groupName,
             ownerID,
             ...others,
           })
@@ -79,7 +82,8 @@ export default observer( function SelectedList({ className, ownerStore }: ISelec
                   ownerName ? `(${departmentName})` : departmentName
                 }`}</span>
             )}
-            {!ownerName && !departmentName && (
+            {groupName && (<span className="mr-2">{groupName}</span>)}
+            {!ownerName && !departmentName && !groupName && (
               <span className="text-blue-600 mr-2">{ownerID}</span>
             )}
           </div>)
@@ -94,7 +98,9 @@ export default observer( function SelectedList({ className, ownerStore }: ISelec
         title="已选"
         itemTitleClassName="text-h6"
         descClassName="text-caption-no-color text-gray-400"
-        desc={`(${users.length}个员工${departments.length ? `, ${departments.length}个部门` : ''})`}
+        desc={`(${users.length}个员工
+          ${departments.length ? `, ${departments.length}个部门` : ''}
+          ${groups.length ? `${groups.length}个分组` : ''})`}
         action={
           (<span
             className="cursor-pointer text-body2-no-color text-blue-600 flex
@@ -111,6 +117,7 @@ export default observer( function SelectedList({ className, ownerStore }: ISelec
       >
         {users.map(tagRender)}
         {departments.map(tagRender)}
+        {groups.map(tagRender)}
       </div>
     </div>
   );

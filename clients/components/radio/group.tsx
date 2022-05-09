@@ -1,24 +1,32 @@
-import React, { Children, isValidElement, useState, ReactElement } from 'react';
+import React, { Children, isValidElement, useState, ReactElement, useEffect } from 'react';
+
+import { RadioValueType } from './index';
 
 interface Props {
   children: (boolean | ReactElement)[];
-  onChange: (value: string | number | boolean) => void;
+  value?: RadioValueType
+  onChange?: (value: RadioValueType) => void;
 }
 
-function RadioGroup({ children, onChange }: Props): JSX.Element {
-  const [checkedIndex, setCheckedIndex] = useState(-1);
+function RadioGroup({ children, value, onChange }: Props): JSX.Element {
+  const [checkedValue, setCheckedValue] = useState<RadioValueType>(value || '');
+
+  useEffect(() => {
+    if (value === undefined) return;
+    setCheckedValue(value);
+  }, [value]);
 
   return (
     <>
       {
-        Children.map(children, (child, index) => {
+        Children.map(children, (child) => {
           if (isValidElement(child) && child.props.value !== null) {
             return React.cloneElement(child as ReactElement, {
-              onChange: (value: string | number | boolean) => {
-                setCheckedIndex(index);
-                onChange(value);
+              onChange: (value: RadioValueType) => {
+                setCheckedValue(value);
+                onChange?.(value);
               },
-              checked: checkedIndex === index,
+              checked: checkedValue === child.props.value,
             });
           }
           return child;

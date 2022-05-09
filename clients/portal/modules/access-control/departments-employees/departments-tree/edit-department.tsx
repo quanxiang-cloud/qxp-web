@@ -1,75 +1,107 @@
-import React, { useState } from 'react';
-import { useQuery, useQueryClient } from 'react-query';
+import React, { useEffect, useState } from 'react';
 import { Form, Input } from 'antd';
 
-import TreeStore from '@c/headless-tree/store';
-import SelectableTreeStore from '@c/headless-tree/multiple-select-tree';
 import DepartmentPicker from '@c/form/input/tree-picker-field';
 import Modal from '@c/modal';
 import Loading from '@c/loading';
 import toast from '@lib/toast';
-import { departmentToTreeNode } from '@lib/utils';
+import { TreeNode } from '@c/headless-tree/types';
 
-import { getERPTree, createDepartment, editDepartment } from '../api';
+import { createDepartment, editDepartment } from '../api';
+import store from '../store';
 
-const HELP_TEXT_NORMAL = '部门名称不超过 30 个字符';
+const HELP_TEXT_NORMAL = '名称不超过 30 个字符';
 const HELP_TEXT_REG_ERROR = '只能包含汉字、英文、横线("-")以及下划线("_")，请修改！';
 
 interface Props {
   department: DeptInfo;
   closeModal(): void;
-  store: TreeStore<Department> | SelectableTreeStore<Department>;
 }
 
-function EditDepartment({ department, closeModal, store }: Props): JSX.Element {
+function EditDepartment({ department, closeModal }: Props): JSX.Element {
   const [form] = Form.useForm();
-  const queryClient = useQueryClient();
-  const title = department.id ? '修改部门' : '添加部门';
-  const submitBtnText = department.id ? '确认修改' : '确认添加';
-  const [pid, setPid] = useState<string>('');
 
-  let { data: depData, isLoading } = useQuery('getERPTree', getERPTree, {
-    refetchOnWindowFocus: false,
-  });
+  const [depTreeNode, setDepTreeNode] = useState<TreeNode<Department>>();
+  const [loading, setLoading] = useState(true);
+  const [pid, setPid] = useState(department.pid || '');
+  const [actionText, setActionName] = useState('修改');
+  const [organize, setOrganize] = useState('部门');
 
-  if (depData && (depData.id === department.id)) {
-    depData = undefined;
+  useEffect(() => {
+    if (!store.depTreeNode) return;
+    setLoading(false);
+
+    let curDepTreeNode = store.filterSelf(store.depTreeNode, department);
+    if (department.attr === 1) {
+      curDepTreeNode = store.filterDepartment(store.depTreeNode);
+    }
+
+    setDepTreeNode(curDepTreeNode);
+  }, [store.depTreeNode]);
+
+  useEffect(() => {
+    if (isCreate()) setActionName('添加');
+
+    if (isCompany()) setOrganize('公司');
+  }, []);
+
+  function isCompany(): boolean {
+    return department.attr === 1;
   }
 
-  const removeSelf = (dep: Department | undefined): Department | undefined => {
-    if (!dep || dep.id === department.id) {
-      return;
-    }
-    return {
-      ...dep,
-      child: dep.child?.map((dp) => removeSelf(dp)).filter(Boolean) as Department[],
-    };
-  };
+  function isCreate(): boolean {
+    return !department.id;
+  }
 
-  depData = removeSelf(depData);
+  function isTopCompany(): boolean {
+    return !department.pid && isCompany();
+  }
 
   function handleSubmit(): void {
     form.submit();
+  }
+
+  function handleChangeParent(value: string): void {
+    if (value === pid) return;
+
+    setPid(value);
+    form.validateFields();
+  }
+
+  function validateSameName(name: string): Promise<void> {
+    const departmentName = name && name.trim();
+    const reg = /^[\u4e00-\u9fa5A-Za-z0-9-_]+$/g;
+    if (departmentName && !reg.test(departmentName)) {
+      return Promise.reject(new Error(HELP_TEXT_REG_ERROR));
+    }
+
+    const parentNode = store.depTreeNode && store.findNodeById(store.depTreeNode, pid);
+    const invalidDepartmentNames = parentNode?.children
+      ?.filter(({ id }) => id !== parentNode.id)
+      .map((node) => node.data.name) ?? [];
+
+    if (invalidDepartmentNames.includes(departmentName)) {
+      return Promise.reject(new Error(`同一${organize}下子部门名称不能重复，请修改！`));
+    }
+    return Promise.resolve();
   }
 
   function handleFinish(values: any): void {
     const requestAPI = department.id ? editDepartment : createDepartment;
     const params = { ...values };
     if (department.id) {
-      params.id = department?.id;
-      params.attr = department?.attr;
-    } else {
-      params.attr = 2;
+      params.id = department.id;
     }
+    params.attr = department.attr;
 
-    if (!params.pid && !department.id) {
-      toast.error('请选择父级部门');
+    if (!params.pid && !isTopCompany()) {
+      toast.error(`请选择父级${organize}`);
       return;
     }
 
     requestAPI(params).then(() => {
       toast.success('操作成功！');
-      queryClient.invalidateQueries('GET_ERP_TREE');
+      store.fetchTree();
       closeModal();
     }).catch((error) => {
       toast.error('发生未知错误:' + error);
@@ -78,7 +110,7 @@ function EditDepartment({ department, closeModal, store }: Props): JSX.Element {
 
   return (
     <Modal
-      title={title}
+      title={`${actionText}${organize}`}
       className="static-modal"
       onClose={closeModal}
       footerBtns={[
@@ -89,7 +121,7 @@ function EditDepartment({ department, closeModal, store }: Props): JSX.Element {
           onClick: closeModal,
         },
         {
-          text: submitBtnText,
+          text: `确认${actionText}`,
           key: 'confirm',
           iconName: 'check',
           modifier: 'primary',
@@ -97,7 +129,7 @@ function EditDepartment({ department, closeModal, store }: Props): JSX.Element {
         },
       ]}
     >
-      {isLoading ? (
+      {loading ? (
         <Loading desc="加载中..." />
       ) : (
         <Form
@@ -109,46 +141,32 @@ function EditDepartment({ department, closeModal, store }: Props): JSX.Element {
             name: department.name,
             pid: department.pid,
           }}
-          onValuesChange={(values) => setPid(values.pid)}
         >
           <Form.Item
             name="name"
-            label="部门名称"
-            extra={HELP_TEXT_NORMAL}
+            label={`${organize}名称`}
+            extra={`${organize}${HELP_TEXT_NORMAL}`}
             rules={[
-              { required: true, message: '请输入部门名称' },
-              { type: 'string', max: 30, message: HELP_TEXT_NORMAL },
-              { validator: (_, value) => {
-                const departmentName = value && value.trim();
-                const reg = /^[\u4e00-\u9fa5A-Za-z0-9-_]+$/g;
-                if (departmentName && !reg.test(departmentName)) {
-                  return Promise.reject(new Error(HELP_TEXT_REG_ERROR));
-                }
-                const node = store.nodeList.find((node) => node.data.id === pid);
-                const invalidDepartmentNames = node?.children
-                  ?.filter(({ id }) => id !== node.id)
-                  .map((node) => node.data.departmentName) ?? [];
-                if (invalidDepartmentNames.includes(departmentName)) {
-                  return Promise.reject(new Error('同一部门下子部门名称不能重复，请修改！'));
-                }
-                return Promise.resolve();
-              } },
+              { required: true, message: `请输入${organize}名称` },
+              { type: 'string', max: 30, message: `${organize}${HELP_TEXT_NORMAL}` },
+              { validator: (_, value) => validateSameName(value) },
             ]}
           >
-            <Input maxLength={30} placeholder="请输入部门名称" />
+            <Input maxLength={30} placeholder={`请输入${organize}名称`} />
           </Form.Item>
           {
-            depData && (
+            !isTopCompany() && depTreeNode && (
               <Form.Item
                 name="pid"
-                label="部门"
+                label="组织"
                 rules={[
-                  { required: true, message: '请选择部门' },
+                  { required: true, message: '请选择组织' },
                 ]}
               >
                 <DepartmentPicker
-                  treeData={departmentToTreeNode(depData as Department)}
+                  treeData={depTreeNode}
                   labelKey="name"
+                  onChange={handleChangeParent}
                 />
               </Form.Item>
             )

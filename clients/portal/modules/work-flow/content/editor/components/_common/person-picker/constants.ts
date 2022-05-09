@@ -21,9 +21,11 @@ export const positionOptions = [
 export const tagBackgroundColorMap = {
   1: 'var(--blue-100)',
   2: 'var(--yellow-100)',
+  3: 'var(--yellow-100)',
 };
 
 export const tagIconNameMap = {
   1: 'person-filled',
   2: 'device_hub',
+  3: 'device_hub',
 };

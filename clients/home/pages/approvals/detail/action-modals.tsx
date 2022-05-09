@@ -481,7 +481,7 @@ function ActionModals({
 
       {showReceiverPicker && (
         <ReceiverPicker
-          onlyEmployees
+          excludeDepartments
           onSubmit={(_, employees) => {
             const receivers = employees.map((v) => toJS(v));
             setShowPicker(false);

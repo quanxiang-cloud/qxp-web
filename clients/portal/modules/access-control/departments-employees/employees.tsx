@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useQuery } from 'react-query';
-// import { omit } from 'ramda';
+import { UnionColumn } from 'react-table';
 
 import Table from '@c/table';
 import EmptyTips from '@c/empty-tips';
@@ -9,78 +8,43 @@ import Authorized from '@c/authorized';
 import Button from '@c/button';
 import MoreMenu from '@c/more-menu';
 import { getTwoDimenArrayHead } from '@lib/utils';
-// import toast from '@lib/toast';
 
-// import { getUserAdminInfo } from './api';
-import EditEmployeesModal from './modal/edit-employees-modal';
-import ImportEmployeesModal from './modal/import-employees-modal';
-import ResetPasswordModal from './modal/reset-password-modal';
-import AlterUserStateModal from './modal/alert-user-state-modal';
-import AdjustDepModal from './modal/adjust-dep-modal';
-import LeaderHandleModal from './modal/leader-handle-modal';
-import ExportEmployees from './export-employees';
-
-// import { exportEmployees } from './utils';
+import EmployeeModal, { ModalType } from './modal';
 import { UserStatus } from './type';
-import { EmployeesColumns, EmployeesActions } from './constant';
-import { getUserAdminInfo } from './api';
-import { buildGraphQLQuery } from './utils';
-
-type ModalType = '' | 'edit_employees' | 'import_employees' | 'reset_password' |
-  'alert_user_state' | 'adjust_dep' | 'leader_handle' | 'export_employees';
+import { EmployeesActions } from './constant';
+import useSearchEmployees from './hooks/useSearchEmployees';
+import useEmployeesColumns from './hooks/useEmployeeColumn';
 
 const initUserInfo = { id: '', name: '', email: '', phone: '', selfEamil: '' };
-const initSearch = { page: 1, limit: 10, userName: '' };
+const initSearch = { page: 1, limit: 10 };
 
-const userGraphQL = '{users{id,phone,position,email,name,useStatus,departments{id,name,attr},leaders{id,name,attr}},total}';
 interface Props {
   department: Department;
-  searchWord: string;
 }
 
 export default function Employees({
   department,
-  searchWord,
 }: Props): JSX.Element {
   const [modalType, setModalType] = useState<ModalType>('');
-  const [userState, setUserState] = useState<UserStatus>(UserStatus.normal);
+  const [modifyState, setModifyState] = useState<UserStatus>(UserStatus.normal);
   const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<Employee[]>([]);
   const [currUser, setCurrUser] = useState<Employee>(initUserInfo);
-  const [pageParams, setPageParams] = React.useState(initSearch);
+  const [pageParams, setPageParams] = useState(initSearch);
 
-  const { data: employeesList, isLoading, refetch } = useQuery(
-    ['GET_USER_ADMIN_INFO', pageParams, department.id],
-    () => {
-      const queryGraphQL = buildGraphQLQuery({
-        departmentID: department.id,
-        name: searchWord,
-        page: pageParams.page,
-        size: pageParams.limit,
-      });
-      return getUserAdminInfo<{
-        users: Employee[];
-        total: number
-      }>({
-        query: `{${queryGraphQL}${userGraphQL}}`,
-      });
-    },
-    {
-      refetchOnWindowFocus: false,
-    },
-  );
+  const { EmployeesColumns, filterUserInfo } = useEmployeesColumns();
 
-  useEffect(() => {
-    setPageParams({
-      ...pageParams, page: 1, userName: searchWord,
-    });
-  }, [searchWord]);
+  const { employeesList, isLoading, refetch } = useSearchEmployees({
+    departmentID: department.id,
+    ...filterUserInfo,
+    page: pageParams.page,
+    size: pageParams.limit,
+  });
 
   useEffect(() => {
     setPageParams({
       page: 1,
       limit: 10,
-      userName: searchWord,
     });
     setSelectedUserIds([]);
   }, [department.id]);
@@ -88,6 +52,11 @@ export default function Employees({
   function handleDepLeader(params: Employee): void {
     setCurrUser(params);
     openModal('leader_handle');
+  }
+
+  function showUserInfo(user: Employee): void {
+    setCurrUser(user);
+    openModal('show_employees');
   }
 
   function handleUserInfo(user: Employee): void {
@@ -100,56 +69,27 @@ export default function Employees({
     openModal('reset_password');
   }
 
-  function handleCleanChecked(): void {
-    setSelectedUserIds([]);
-    setSelectedUsers([]);
-  }
-
-  function renderTotalTip(): JSX.Element {
-    return (
-      <div className="text-12 text-gray-600">
-        共<span className="mx-4">{employeesList?.total || 0}</span>条数据
-      </div>
-    );
-  }
-
   function handleUserState(status: UserStatus, user: Employee): void {
     setCurrUser(user);
-    setUserState(status);
+    setModifyState(status);
     openModal('alert_user_state');
-  }
-
-  function handlePageChange(current: number, pageSize: number): void {
-    setPageParams({ ...pageParams, page: current, limit: pageSize });
   }
 
   function openExportModal(): void {
     openModal('export_employees');
   }
 
-  // 导出数据
-  function handleEmployeesExport(ids: string[]): void {
-    // TODO: wait export service
-    // getUserAdminInfo('', {
-    //   useStatus: 1,
-    //   page: 1,
-    //   depIDs: ids,
-    //   limit: 10000,
-    // }).then((res) => {
-    //   const { data } = res;
-    //   const newData: Employee[] = data.map((user) => {
-    //     user.depName = user.dep && user.dep.name;
-    //     return user;
-    //   });
-    //   exportEmployees(newData);
-    //   closeModal();
-    // }).catch((error) => {
-    //   toast.error(error);
-    // });
-  }
-
   function openModal(type: ModalType): void {
     setModalType(type);
+  }
+
+  function handleCleanChecked(): void {
+    setSelectedUserIds([]);
+    setSelectedUsers([]);
+  }
+
+  function handlePageChange(current: number, pageSize: number): void {
+    setPageParams({ ...pageParams, page: current, limit: pageSize });
   }
 
   function closeModal(): void {
@@ -159,22 +99,12 @@ export default function Employees({
     setModalType('');
   }
 
-  // Because the data will be imported in the middle, it needs to be refreshed
-  function closeFileModal(): void {
-    closeModal();
-    refetch();
-  }
-
-  // function handleChange(e: React.ChangeEvent<HTMLInputElement & HTMLTextAreaElement>): void {
-  //   setIsIncludeSubDep(e.target.checked);
-  // }
-
   function handleSelectChange(selectedRowKeys: string[], selectedRows: Employee[]): void {
     setSelectedUserIds(selectedRowKeys);
     setSelectedUsers(selectedRows);
   }
 
-  const columns: any[] = [...EmployeesColumns];
+  const columns: UnionColumn<Employee>[] = [...EmployeesColumns];
 
   if (window.ADMIN_USER_FUNC_TAGS.includes('accessControl/mailList/manage')) {
     columns.push({
@@ -195,6 +125,10 @@ export default function Employees({
             placement="bottom-end"
             className="opacity-1"
             onMenuClick={(key): void => {
+              if (key === 'show-info') {
+                showUserInfo(record);
+                return;
+              }
               if (key === 'edit') {
                 handleUserInfo(record);
                 return;
@@ -225,32 +159,6 @@ export default function Employees({
 
   return (
     <>
-      {modalType === 'export_employees' && (
-        <ExportEmployees closeModal={closeModal} onSubmit={handleEmployeesExport} />
-      )}
-      { modalType === 'leader_handle' &&
-        (<LeaderHandleModal user={currUser} closeModal={closeModal} />)}
-      { modalType === 'adjust_dep' &&
-        (<AdjustDepModal users={selectedUsers} closeModal={closeModal} />)}
-      { modalType === 'edit_employees' &&
-        (<EditEmployeesModal user={currUser} closeModal={closeModal} />)}
-      { modalType === 'import_employees' &&
-        (<ImportEmployeesModal currDepId={department.id} closeModal={closeFileModal} />)}
-      {
-        modalType === 'alert_user_state' && (<AlterUserStateModal
-          status={userState}
-          user={currUser}
-          closeModal={closeModal}
-        />)
-      }
-      {
-        modalType === 'reset_password' && (<ResetPasswordModal
-          selectedUsers={selectedUsers}
-          closeModal={closeModal}
-          clearSelectRows={(): void => setSelectedUserIds([])}
-        />)
-      }
-
       <div className="h-full flex flex-col flex-1 overflow-hidden">
         <div className="flex items-center ml-20 mb-20">
           <div className="text-h6">{department.name}</div>
@@ -278,40 +186,22 @@ export default function Employees({
             ) : (
               <>
                 <div className="flex">
-                  {/* <Button
+                  <Button
                     modifier="primary"
                     iconName="create_new_folder"
-                    onClick={(): void => openModal('import_employees')}
+                    onClick={(): void => openModal('import_export_employees')}
                     className="mr-16"
                   >
-                  excel 批量导入
-                  </Button> */}
+                    excel导入/导出
+                  </Button>
                   <Button
                     iconName="add"
                     onClick={(): void => handleUserInfo(initUserInfo)}
                     className="mr-16"
                   >
-                  添加员工
+                    添加员工
                   </Button>
-                  {/* <MoreMenu
-                    menus={ExpandActions}
-                    placement="bottom-end"
-                    className="opacity-1"
-                    onMenuClick={(key): void => {
-                      if (key === 'export') {
-                        openExportModal();
-                        return;
-                      }
-                    }}
-                  >
-                    <IconButton iconName="more_horiz" />
-                  </MoreMenu> */}
                 </div>
-                {/* <CheckBox
-                  defaultChecked
-                  onChange={handleChange}
-                  label='包含子部门成员'
-                /> */}
               </>
             )}
           </Authorized>
@@ -342,11 +232,23 @@ export default function Employees({
               total={employeesList?.total || 0}
               pageSize={pageParams.limit}
               onChange={handlePageChange}
-              renderTotalTip={renderTotalTip}
+              renderTotalTip={() => (
+                <div className="text-12 text-gray-600">
+                  共<span className="mx-4">{employeesList?.total || 0}</span>条数据
+                </div>
+              )}
             />
           )
         }
       </div>
+      <EmployeeModal
+        modalType={modalType}
+        selectedUsers={selectedUsers}
+        currUser={currUser}
+        modifyState={modifyState}
+        department={department}
+        closeModal={closeModal}
+      />
     </>
   );
 }

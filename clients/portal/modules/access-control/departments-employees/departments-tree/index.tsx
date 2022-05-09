@@ -1,40 +1,31 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 import { observer } from 'mobx-react';
-import { useQuery } from 'react-query';
 
 import Tree from '@c/headless-tree';
+import TreeStore from '@c/headless-tree/store';
 import Loading from '@c/loading';
 
-import Store from './store';
 import DepartmentNode from './department-node';
-import { getERPTree } from '../api';
+import store from '../store';
 
 interface Props {
   onSelect?: (department: Department) => void;
 }
 
 function DepartmentsTree({ onSelect }: Props): JSX.Element {
-  const [store, setStore] = useState<Store | null>(null);
-  const { data: rootDep, isLoading, isError } = useQuery('GET_ERP_TREE', () => {
-    return getERPTree().then((_treeData: any) => {
-      return _treeData;
-    });
-  });
+  const departmentTree = useMemo(() => {
+    if (!store.depTreeNode) return;
+    return new TreeStore({ rootNode: store.depTreeNode });
+  }, [store.depTreeNode]);
 
-  useEffect(() => {
-    if (rootDep && !isLoading && !isError) {
-      setStore(new Store(rootDep));
-    }
-  }, [rootDep]);
-
-  if (!store) {
+  if (!departmentTree) {
     return (<Loading className="h-full" desc="加载中..." />);
   }
 
   return (
     <div className="tree-wrapper">
       <Tree
-        store={store}
+        store={departmentTree}
         NodeRender={DepartmentNode}
         RootNodeRender={DepartmentNode}
         onSelect={onSelect}

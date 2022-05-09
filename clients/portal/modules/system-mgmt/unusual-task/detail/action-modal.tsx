@@ -205,7 +205,7 @@ function ActionModal({ closeModal, action }: Props): JSX.Element {
       </Modal>
       {showReceiverPicker && (
         <ReceiverPicker
-          onlyEmployees
+          excludeDepartments
           onSubmit={(departments, employees) => {
             const receivers = employees.map((v) => toJS(v));
             setShowPicker(false);

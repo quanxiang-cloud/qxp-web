@@ -3,50 +3,9 @@ import React from 'react';
 import Icon from '@c/icon';
 import { MenuItem } from '@c/more-menu';
 
-import UserCell from './table-column/user-cell';
 import { UserStatus, LeaderStatus } from './type';
-import { getTwoDimenArrayHead } from '@lib/utils';
 
-export const EmployeesColumns = [
-  {
-    Header: '姓名',
-    id: 'name',
-    fixed: true,
-    width: 120,
-    accessor: (record: Employee) => {
-      return (<UserCell user={record} />);
-    },
-  },
-  {
-    Header: '手机号',
-    id: 'phone',
-    accessor: 'phone',
-  },
-  {
-    Header: '邮箱',
-    id: 'email',
-    accessor: 'email',
-  },
-  {
-    Header: '部门',
-    id: 'dep',
-    accessor: ({ departments }: Employee) => {
-      return getTwoDimenArrayHead(departments)?.name;
-    },
-  },
-  {
-    Header: '岗位',
-    id: 'position',
-    accessor: 'position',
-  },
-  {
-    Header: '直属上级',
-    id: 'leaderName',
-    accessor: ({ leaders }: Employee) => {
-      return getTwoDimenArrayHead(leaders)?.name;
-    },
-  },
-];
+export const userGraphQL = '{users{id,phone,position,email,name,useStatus,departments{id,name,attr},leaders{id,name,attr}},total}';
 
 export type AuthorMenuItem = {
   authority: number[];
@@ -54,6 +13,17 @@ export type AuthorMenuItem = {
 } & MenuItem;
 
 export const EmployeesActions: AuthorMenuItem[] = [
+  {
+    key: 'show-info',
+    label: (
+      <div className="flex items-center">
+        <Icon name="remove_red_eye" size={16} className="mr-8" />
+        <span className="font-normal">查看员工详情</span>
+      </div>
+    ),
+    authority: [UserStatus.normal, UserStatus.disable],
+    leader: [LeaderStatus.true, LeaderStatus.false],
+  },
   {
     key: 'edit',
     label: (

@@ -5,6 +5,7 @@ import TreeStore from '@c/headless-tree/store';
 import EmployeeStore from './employee-table/store';
 import DepartmentTreeStore from './department-select-tree/store';
 import EmployeeTreeStore from './employee-select-tree/store';
+import GroupStore from './group-select/store';
 
 class OwnerStore {
   @observable
@@ -15,6 +16,9 @@ class OwnerStore {
 
   @observable
   employeeStore: EmployeeStore;
+
+  @observable
+  groupStore: GroupStore;
 
   @observable
   owners: EmployeeOrDepartmentOfRole[];
@@ -41,6 +45,7 @@ class OwnerStore {
     this.employeeTreeStore = new EmployeeTreeStore(department);
     this.employeeStore = new EmployeeStore();
     this.departmentTreeStore = new DepartmentTreeStore(department);
+    this.groupStore = new GroupStore();
     this.owners = members;
   }
 

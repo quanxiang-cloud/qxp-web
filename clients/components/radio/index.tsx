@@ -11,10 +11,12 @@ import cs from 'classnames';
 
 import { uuid } from '@lib/utils';
 
+export type RadioValueType = string | number | boolean;
+
 export type Props = DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> & {
-  onChange?: (value: string | number | boolean) => void;
+  onChange?: (value: RadioValueType) => void;
   label?: string;
-  value: string | number | boolean;
+  value: RadioValueType;
   error?: boolean;
   disabled?: boolean;
   radioClass?: string;
@@ -31,10 +33,6 @@ function InternalRadio(props: Props, ref?: Ref<HTMLInputElement>): JSX.Element {
   useEffect(() => {
     setChecked(!!isChecked);
   }, [isChecked]);
-
-  useEffect(() => {
-    setChecked(!!defaultChecked);
-  }, [defaultChecked]);
 
   function handleChange(checked: boolean): void {
     if (disabled) {

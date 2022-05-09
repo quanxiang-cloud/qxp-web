@@ -13,8 +13,7 @@ interface Props {
   closeModal(): void;
 }
 
-export default function AccountHandleModal(
-  { status, user, closeModal }: Props) {
+export default function AccountHandleModal({ status, user, closeModal }: Props): JSX.Element {
   const queryClient = useQueryClient();
 
   const handleMutation = useMutation(updateUserStatus, {

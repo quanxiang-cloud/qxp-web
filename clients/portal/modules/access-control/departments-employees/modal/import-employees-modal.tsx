@@ -12,7 +12,7 @@ import RadioGroup from '@c/radio/group';
 import Radio from '@c/radio';
 
 import { FileUploadStatus } from '../type';
-import { exportEmployeesFail } from '../utils';
+import { exportExcel } from '../utils';
 import { getUserTemplate, importTempFile, resetUserPWD } from '../api';
 import { SendMessage, sendMsgOption } from './reset-password-modal';
 import { SEND_MAP } from './edit-employees-modal';
@@ -174,7 +174,7 @@ function ImportEmployeesModal({ currDepId, closeModal }: Props): JSX.Element {
   }
 
   function exportEmployees(): void {
-    exportEmployeesFail(columns, failUsers, '失败人员列表.xlsx');
+    exportExcel(columns, failUsers, '失败人员列表.xlsx');
   }
 
   function changeCheckbox(val: any): void {

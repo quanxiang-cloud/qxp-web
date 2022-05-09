@@ -1,0 +1,13 @@
+.search-title {
+  @apply px-10 py-5 font-bold text-gray-600 bg-blue-200 block mb-10;
+}
+
+.search-item {
+  @apply px-10 py-5 font-bold text-gray-600 cursor-pointer truncate;
+  &:hover {
+    background-color: var(--gray-100);
+  }
+  &.is-selected {
+    background-color: var(--gray-100);
+  }
+}

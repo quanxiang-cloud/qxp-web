@@ -19,7 +19,6 @@ export type SendMessage = {
 interface Props {
   selectedUsers: Employee[];
   closeModal(): void;
-  clearSelectRows(): void;
 }
 
 export const sendMsgOption = [
@@ -36,7 +35,6 @@ export const sendMsgOption = [
 export default function ResetPasswordModal({
   selectedUsers,
   closeModal,
-  clearSelectRows,
 }: Props): JSX.Element {
   const [form] = Form.useForm();
 
@@ -44,12 +42,10 @@ export default function ResetPasswordModal({
     onSuccess: () => {
       toast.success('操作成功！');
       closeModal();
-      clearSelectRows();
     },
     onError: () => {
       toast.error('操作失败！');
       closeModal();
-      clearSelectRows();
     },
   });
 
