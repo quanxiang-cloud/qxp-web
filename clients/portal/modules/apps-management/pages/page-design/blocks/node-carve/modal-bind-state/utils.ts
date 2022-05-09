@@ -5,19 +5,8 @@ import { LOGIC_OPERATOR } from './constants';
 export function parseToExpression(expr: string, variables: string[]): string {
   return expr.split(' ').map((value) => {
     const variableMatch = value.split(/\s*[|&(!)=]+\s*/).find((val) => !!val);
-    variableMatch && console.log(variableMatch);
     // value maybe has symbol of '.' or '[]'
-    let variable = value.split('.')[0]?.split('[')[0] || '';
-
-    if (variable.split('(')[1]?.split('!')[1]) {
-      variable = variable.split('(')[1]?.split('!')[1];
-    } else if (variable.split('(')[1]) {
-      variable = variable.split('(')[1];
-    } else if (variable.split('!')[1]) {
-      variable = variable.split('!')[1];
-    } else if (variable.split(')')[1]) {
-      variable = variable.split(')')[1];
-    }
+    const variable = variableMatch?.split('.')[0]?.split('[')[0] || '';
 
     const _value = variables.includes(variable) ? value.replace(variable, `states['${variable}']`) : value;
 
@@ -32,7 +21,8 @@ export function parseToExpressionStr(expr: string): string {
         return;
       }
       // to get variable
-      const variableExp = value.split('.')[0].split(']')[0] + ']';
+      const variableMatch = value.split(/\s*[|&(!)=]+\s*/).find((val) => !!val);
+      const variableExp = variableMatch?.split('.')[0].split(']')[0] + ']';
 
       return value.replace(variableExp, variableExp.split('\'')[1]);
     }
