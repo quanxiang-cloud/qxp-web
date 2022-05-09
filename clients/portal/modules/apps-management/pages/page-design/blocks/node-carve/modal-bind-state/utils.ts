@@ -4,6 +4,8 @@ import { LOGIC_OPERATOR } from './constants';
 
 export function parseToExpression(expr: string, variables: string[]): string {
   return expr.split(' ').map((value) => {
+    const variableMatch = value.split(/\s*[|&(!)=]+\s*/).find((val) => !!val);
+    variableMatch && console.log(variableMatch);
     // value maybe has symbol of '.' or '[]'
     let variable = value.split('.')[0]?.split('[')[0] || '';
 
