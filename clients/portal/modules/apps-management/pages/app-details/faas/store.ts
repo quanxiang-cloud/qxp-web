@@ -447,7 +447,6 @@ class FaasStore {
 
         return version;
       });
-      console.log(toJS(this.versionList));
       this.setVersionParams({});
     }).catch((err) => {
       toast.error(err);
@@ -564,34 +563,34 @@ class FaasStore {
   versionStateChangeListener = async (buildID: string, socket: SocketData, type: 'status',
   ): Promise<void> => {
     const { key, topic }: FaasSoketData = socket?.content || {};
-    if (key !== buildID || topic !== 'builder') {
+    if (key !== buildID) {
       return;
     }
-    console.log('versionStateChangeListener');
-
     const versionInfo = await getVersionInfo(this.groupID, this.currentFuncID, buildID);
-    if (
-      versionInfo.status > FUNC_STATUS.StatusBuilding &&
-      versionInfo.status !== FUNC_STATUS.OnlineBuilding
-    ) {
-      this.versionList = this.versionList.map((version) => {
-        if (version.id === buildID) {
-          return {
-            ...version,
+    if ( topic === 'builder' || topic === 'serving') {
+      if (
+        versionInfo.status > FUNC_STATUS.StatusBuilding &&
+        versionInfo.status !== FUNC_STATUS.OnlineBuilding
+      ) {
+        this.versionList = this.versionList.map((version) => {
+          if (version.id === buildID) {
+            return {
+              ...version,
+              [type]: versionInfo[type],
+              completionTime: versionInfo.updatedAt,
+            };
+          }
+
+          return version;
+        });
+
+        if (this.currentVersionFunc?.id === buildID) {
+          this.currentVersionFunc = {
+            ...this.currentVersionFunc,
             [type]: versionInfo[type],
             completionTime: versionInfo.updatedAt,
           };
         }
-
-        return version;
-      });
-
-      if (this.currentVersionFunc?.id === buildID) {
-        this.currentVersionFunc = {
-          ...this.currentVersionFunc,
-          [type]: versionInfo[type],
-          completionTime: versionInfo.updatedAt,
-        };
       }
     }
   };
