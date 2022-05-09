@@ -28,8 +28,8 @@ function ModalBindState(): JSX.Element | null {
     updateAttrPayload,
   } = useConfigContext() as ConfigContextState;
   const [bindVariables, setBindVariables] = useState<ComputedDependency[]>([]); // 已绑定的变量
-  const [expressionStr, setExpressionStr] = useState('');
-  const [convertorStr, setConvertorStr] = useState('');
+  const [expressionStr, setExpressionStr] = useState(''); //
+  const [convertorStr, setConvertorStr] = useState(''); //
   const [editorType, setEditorType] = useState<'expression' | 'convertor'>('expression');
   const expressionEditorRef = useRef<EditorRefType>();
   const convertorEditorRef = useRef<EditorRefType>();
@@ -285,11 +285,15 @@ function ModalBindState(): JSX.Element | null {
                 name: updateAttrPayload?.path === 'shouldRender' ? '条件表达式' : '变量表达式',
                 content:
                 <>
-                  <div>表达式如果书写错误，保存后控制台会报错</div>
+                  <div className='pb-4'>表达式如果书写错误，保存后控制台会报错</div>
                   <CodeEditor
                     ref={expressionEditorRef}
                     value={expressionStr}
-                    onChange={setExpressionStr}
+                    type="expression"
+                    onChange={(value) => {
+                      console.log('expressionValue', value);
+                      setExpressionStr(value);
+                    }}
                   />
                 </>,
               },
@@ -298,11 +302,15 @@ function ModalBindState(): JSX.Element | null {
                 name: '自定义函数',
                 content:
                 <>
-                  <div>应该保证函数有返回值</div>
+                  <div className='pb-4'>应该保证函数有返回值</div>
                   <CodeEditor
                     ref={convertorEditorRef}
                     value={convertorStr}
-                    onChange={setConvertorStr}
+                    type="convertor"
+                    onChange={(value) => {
+                      console.log('convertorValue', value);
+                      setConvertorStr(value);
+                    }}
                   />
                 </>,
               },

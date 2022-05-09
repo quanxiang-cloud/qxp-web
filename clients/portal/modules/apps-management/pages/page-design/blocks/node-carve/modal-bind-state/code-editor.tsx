@@ -4,6 +4,7 @@ import { javascript } from '@codemirror/lang-javascript';
 
 type Props = {
   value: string;
+  type: 'expression' | 'convertor';
   onChange: (value: any) => void;
 }
 
@@ -11,7 +12,7 @@ export type EditorRefType = {
   onInsertText: (val: string) => void;
 }
 
-function CodeEditor({ value, onChange }: Props, ref: ForwardedRef<EditorRefType | undefined>): JSX.Element {
+function CodeEditor({ value, onChange, type }: Props, ref: ForwardedRef<EditorRefType | undefined>): JSX.Element {
   const refEditor = useRef<ReactCodeMirrorRef>(null);
 
   const onInsertText = (val: string): void => {
@@ -24,10 +25,14 @@ function CodeEditor({ value, onChange }: Props, ref: ForwardedRef<EditorRefType 
   return (
     <Editor
       ref={refEditor}
+      key={type}
       value={value}
       height="200px"
       extensions={[javascript()]}
-      onChange={onChange}
+      onChange={(val) => {
+        if (!val) return;
+        onChange(val);
+      }}
     />
   );
 }
