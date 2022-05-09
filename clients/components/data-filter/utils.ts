@@ -319,6 +319,9 @@ export function operatorESParameter(key: string, op: string, value: FormValue): 
       _key = `${key}.value`;
     } else if (!Array.isArray(_value)) {
       _value = (_value as LabelValue).value;
+      if (!_value) {
+        return;
+      }
       _key = `${key}.value`;
     }
   }
@@ -415,7 +418,10 @@ export function toEs(filterConfig: FilterConfig): ESParameter {
       return;
     }
 
-    rule.push(operatorESParameter(key, op, value));
+    const searchItem = operatorESParameter(key, op, value);
+    if (searchItem) {
+      rule.push(operatorESParameter(key, op, value));
+    }
   });
 
   return rule.length ? { bool: { [filterConfig.tag]: rule } } : {};
