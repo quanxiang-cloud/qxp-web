@@ -1,24 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import cs from 'classnames';
-import { get } from 'lodash';
-import Editor from '@uiw/react-codemirror';
-import { javascript } from '@codemirror/lang-javascript';
-
-import { Icon, Modal, toast, Tooltip } from '@one-for-all/ui';
-import { NodeProperty } from '@one-for-all/artery';
+import React, { useMemo, useRef, useState } from 'react';
+import { Modal, toast } from '@one-for-all/ui';
+import { ComputedProperty, ComputedDependency } from '@one-for-all/artery';
 
 import Tab from '@c/tab';
+import Toggle from '@c/toggle';
+import { useCtx } from '@pageDesign/ctx';
+
+import Section from '../../../utils/section';
+import CodeEditor, { EditorRefType } from './code-editor';
 import { ConfigContextState, useConfigContext } from '../context';
-import {
-  mapApiStateSpec,
-  mapSharedStateSpec,
-  updateCurNodeAsLoopContainer,
-  updateNodeProperty,
-} from '../utils';
 
 import styles from './index.m.scss';
+import { updateNodeProperty } from '../utils';
+
+const LOGIC_OPERATOR = ['&&', '||', '()', '!', '===', '!=='];
 
 function ModalBindState(): JSX.Element | null {
+  const { dataSource } = useCtx();
   const {
     activeNode,
     rawActiveNode,
@@ -27,121 +25,83 @@ function ModalBindState(): JSX.Element | null {
     setModalBindStateOpen,
     updateAttrPayload,
   } = useConfigContext() as ConfigContextState;
-  const [selected, setSelected] = useState<{
-    name: string;
-    conf: string;
-  } | null>(null);
+  const [bindVariables, setBindVariables] = useState<ComputedDependency[]>([]); // 已绑定的变量
   const [stateExpr, setStateExpr] = useState(''); // 绑定变量的表达式
-  const [convertorExpr, setConvertorExpr] = useState('state'); // 绑定变量的convertor表达式
-  const isLoopNode = rawActiveNode?.type === 'loop-container';
+  const [fallback, setFallBack] = useState<boolean>();
+  // const [convertorExpr, setConvertorExpr] = useState('state'); // 绑定变量的convertor表达式
+  // const isLoopNode = rawActiveNode?.type === 'loop-container';
+  const sharedStates = Object.entries(dataSource.sharedState).map(([_, value]) => JSON.parse(value));
+  const apiStates = Object.entries(dataSource.apiState).map(([_, value]) => JSON.parse(value));
+  const names = useMemo(() => bindVariables.map(({ depID }) => depID), [bindVariables]);
+  const editorRef = useRef<EditorRefType>();
 
-  useEffect(() => {
-    if (!updateAttrPayload) {
-      return;
-    }
-    let bindConf;
-    if (isLoopNode) {
-      // todo: get loop node iterableState bind value
-      bindConf = get(rawActiveNode, 'iterableState', {});
-    } else {
-      bindConf = get(activeNode, updateAttrPayload.path, {});
-    }
-
-    if (bindConf.type === 'shared_state_property') {
-      const expr = `states['${bindConf.stateID}']`;
-      setStateExpr(expr);
-      setConvertorExpr(get(bindConf, 'convertor.expression', ''));
-    }
-
-    if (bindConf.type === 'api_result_property') {
-      const expr = `apiStates['${bindConf.stateID}']`;
-      setStateExpr(expr);
-      setConvertorExpr(get(bindConf, 'convertor.expression', ''));
-    }
-    if (bindConf.type === 'shared_state_mutation_property') {
-      // todo
-    }
-  }, [activeNode?.id]);
+  function onCancel(): void {
+    setModalBindStateOpen(false);
+  }
 
   function handleBind(): void {
     if (!updateAttrPayload) {
       return;
     }
+
     if (!stateExpr) {
       toast.error('变量表达式不能为空');
       return;
     }
-    if (!convertorExpr) {
-      toast.error('变量转换函数不能为空');
-      return;
-    }
-    if (convertorExpr.indexOf('state') < 0) {
-      toast.error('变量转换函数必须包含 state 来引用当前变量值');
-      return;
-    }
 
-    const match = stateExpr.match(/states\['(.+)'\]/i);
+    // if (!convertorExpr) {
+    //   toast.error('变量转换函数不能为空');
+    //   return;
+    // }
+
+    const finalStateExpr = stateExpr.split(' ').map((value) => {
+      const _value = names.includes(value) ? `states['${value}']` : value;
+      return _value;
+    }).join(' ');
+
+    // need to confirm the stateExpr with variable join and operator
+    const match = finalStateExpr.match(/states\['(.+)'\]/i);
     if (!match || !match[1]) {
       toast.error(`无效的 stateID: ${stateExpr}`);
       return;
     }
 
-    const nodeType = stateExpr.includes('apiStates[') ?
-      'api_result_property' :
-      'shared_state_property';
+    const computedProperty: ComputedProperty = {
+      type: 'computed_property',
+      deps: bindVariables,
+      fallback: fallback,
+      convertor: {
+        type: 'state_convert_expression',
+        expression: finalStateExpr,
+      },
+    };
 
     if (updateAttrPayload.type === 'loopNode') {
-      const iterableState = {
-        type: nodeType,
-        stateID: match[1],
-        fallback: [],
-        convertor: {
-          type: 'state_convert_expression',
-          expression: convertorExpr,
-        },
-      };
-      activeNode &&
-        onArteryChange(
-          updateCurNodeAsLoopContainer(
-            activeNode,
-            'iterableState',
-            iterableState,
-            artery,
-          ),
-        );
+      // to get looNode property
     } else {
-      const fallbackVal = get(activeNode, updateAttrPayload.path + '.value');
       activeNode &&
         onArteryChange(
           updateNodeProperty(
             activeNode,
             updateAttrPayload.path,
-            {
-              type: nodeType,
-              stateID: match[1],
-              fallback: fallbackVal,
-              convertor: {
-                type: 'state_convert_expression',
-                expression: convertorExpr,
-              },
-            } as NodeProperty,
+            computedProperty,
             artery,
           ),
         );
     }
-
     setModalBindStateOpen(false);
   }
 
   return (
     <Modal
-      title="变量绑定"
-      onClose={() => setModalBindStateOpen(false)}
+      title={updateAttrPayload?.path === 'shouldRender' ? '条件渲染配置' : '变量绑定'}
+      className='py-8'
+      onClose={onCancel}
       footerBtns={[
         {
           key: 'close',
           iconName: 'close',
-          onClick: () => setModalBindStateOpen(false),
+          onClick: onCancel,
           text: '取消',
         },
         {
@@ -155,108 +115,97 @@ function ModalBindState(): JSX.Element | null {
     >
       <div className={styles.modal}>
         <div className={styles.side}>
-          <Tab items={[
-            {
-              id: 'sharedState',
-              name: '自定义变量',
-              content: Object.entries(mapSharedStateSpec(artery)).map(([name, conf]) => {
-                const checked =
-                  selected?.name === name || stateExpr.includes(`['${name}']`);
-                return (
-                  <div
-                    key={name}
-                    className={cs(
-                      'flex justify-between items-center cursor-pointer px-16 py-4 hover:bg-gray-200',
-                      {
-                        [styles.active]: checked,
-                      },
-                    )}
-                    onClick={() => {
-                      setSelected({ name, conf });
-                      setStateExpr(`states['${name}']`);
-                    }}
-                  >
-                    <span className="flex-1 flex flex-wrap items-center">
-                      {name}
-                    </span>
-                    {checked && <Icon name="check" />}
-                  </div>
-                );
-              }),
-            },
-            {
-              id: 'apiState',
-              name: 'API 变量',
-              content: Object.entries(mapApiStateSpec(artery)).map(([name, conf]) => {
-                const checked =
-                selected?.name === name || stateExpr.includes(`['${name}']`);
-                return (
-                  <div
-                    key={name}
-                    className={cs(
-                      'flex justify-between items-center cursor-pointer px-16 py-4 hover:bg-gray-200',
-                      {
-                        [styles.active]: checked,
-                      },
-                    )}
-                    onClick={() => {
-                      setSelected({ name, conf });
-                      setStateExpr(`apiStates['${name}']`);
-                    }}
-                  >
-                    <span className="flex-1 flex flex-wrap items-center">
-                      {name}
-                    </span>
-                    {checked && <Icon name="check" />}
-                  </div>
-                );
-              }),
-            }]} />
+          <Section title="自定义变量" defaultExpand>
+            {sharedStates.map(({ name }) => {
+              return (
+                <div
+                  key={name}
+                  onClick={() => {
+                    editorRef.current?.onInsertText(`${name} `);
+
+                    if (names.includes(name)) return;
+                    setBindVariables([...bindVariables, { depID: name, type: 'shared_state' }]);
+                  }}
+                  className='cursor-pointer hover:bg-blue-400'
+                >
+                  {name}
+                </div>
+              );
+            })}
+          </Section>
+          <Section title="API变量" defaultExpand>
+            {apiStates.map(({ name, val, desc }) => {
+              return (
+                <div
+                  key={name}
+                  onClick={() => console.log('bind: ', name, 'api_state')}
+                  className='cursor-pointer hover:bg-blue-400'
+                >
+                  {name}
+                </div>
+              );
+            })}
+          </Section>
         </div>
         <div className={styles.body}>
-          <div className="mb-8">
-            <p className="flex items-center">
-              <span className="mr-8">变量表达式</span>
-              <Tooltip position="top" label="请选择普通变量 或 api变量">
-                <Icon name="info" />
-              </Tooltip>
-            </p>
-            <Editor
-              value={stateExpr}
-              height="200px"
-              extensions={[javascript()]}
-              onChange={setStateExpr}
-            />
-          </div>
-          <div className="mb-8">
-            <p className="flex items-center">
-              <span className="mr-8">变量转换函数(state convertor)</span>
-              <Tooltip
-                position="top"
-                label="将初始变量进行一次转换，一般用于 api 变量"
-              >
-                <Icon name="info" />
-              </Tooltip>
-            </p>
-            <div className="text-12">
-              <p>示例:</p>
-              <pre className="text-12 text-blue-400 bg-gray-100">
-                {'state.user_name'}
-              </pre>
-              <div className="text-gray-400">
-                <p>
-                  state
-                  为页面引擎传入的当前变量(请勿修改名称)，您只需修改state的表达式即可。
-                </p>
-                <p>代码编辑器只接收函数体的表达式，不需要填写完整的函数定义</p>
-              </div>
+          <div>已绑定变量：</div>
+          {!bindVariables.length && <div className='px-8 py-4 border-1 text-center'>请点击左侧可用变量列表进行变量绑定操作</div>}
+          {!!bindVariables.length && (
+            <div className='grid gap-4 grid-cols-4'>
+              {bindVariables.map(({ depID, type }) => {
+                return (
+                  <div
+                    key={`${depID}_${type}`}
+                    className='px-8 py-4 border-1 inline-block text-center cursor-pointer hover:bg-blue-400'
+                  >
+                    {depID}
+                  </div>
+                );
+              })}
             </div>
-            <Editor
-              value={convertorExpr}
-              height="120px"
-              extensions={[javascript()]}
-              onChange={setConvertorExpr}
-            />
+          )}
+          {updateAttrPayload?.path === 'shouldRender' && (<>
+            <div>逻辑运算符：</div>
+            <div className='grid gap-4 grid-cols-4'>
+              {LOGIC_OPERATOR.map((op) => {
+                return (
+                  <div
+                    key={op}
+                    onClick={() => editorRef.current?.onInsertText(`${op} `)}
+                    className='px-8 py-4 border-1 inline-block text-center cursor-pointer hover:bg-blue-400'
+                  >
+                    {op}
+                  </div>
+                );
+              })}
+            </div>
+          </>)}
+          <Tab
+            style={{ height: 'auto' }}
+            items={[
+              {
+                id: 'expression',
+                name: '变量表达式',
+                content: <CodeEditor
+                  ref={editorRef}
+                  value={stateExpr}
+                  onChange={setStateExpr}
+                />,
+              },
+              // {
+              //   id: 'convertor',
+              //   name: '自定义函数',
+              //   content: <CodeEditor
+              //     ref={editorRef}
+              //     value={convertorExpr}
+              //     onChange={(value) => console.log(value)}
+              //   />,
+              // },
+            ]}
+          />
+          <div className='flex items-center'>
+            <span>默认渲染：</span>
+            <Toggle onChange={setFallBack} />
           </div>
         </div>
       </div>

@@ -14,7 +14,7 @@ import { PropsSpec } from '../type';
 
 function getArteryBySpec(specs: PropsSpec[], options: {
   prefix?: string;
-  bindVarible?: boolean;
+  bindVariable?: boolean;
 }): Artery | null {
   if (specs.length) {
     return buildConfigArtery(specs, options);
@@ -35,7 +35,7 @@ function NodeCarve(): JSX.Element {
     if (!activeNode || !data) {
       return;
     }
-    const specs = data[exportName.toLowerCase()];
+    const specs = data[exportName?.toLowerCase()];
     if (!specs || !specs.length) {
       setAttrArtery(null);
       setFunctionArtery(null);
@@ -44,7 +44,7 @@ function NodeCarve(): JSX.Element {
 
     const attrSpecs = getArteryBySpec(specs.filter((s) => s.type !== 'function'), {
       prefix: 'props',
-      bindVarible: true,
+      bindVariable: true,
     });
     const funcSpecs = getArteryBySpec(specs.filter((s) => s.type === 'function'), {
       prefix: 'props',

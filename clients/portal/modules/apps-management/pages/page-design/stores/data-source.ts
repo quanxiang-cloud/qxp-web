@@ -21,7 +21,15 @@ const defaultSharedVal: SharedVal = {
 
 class DataSource {
   // 普通变量, 命名兼容render-engine
-  @observable sharedState: Record<string, any> = {};
+  @observable sharedState: Record<string, any> = {
+    a: '{"name":"a","val":"{\\"key1\\":\\"val1\\"}","desc":""}',
+    b: '{"name":"b","val":"{\\"key1\\":\\"val1\\"}","desc":""}',
+    c: '{"name":"c","val":"{\\"key1\\":\\"val1\\"}","desc":""}',
+    d: '{"name":"d","val":"{\\"key1\\":\\"val1\\"}","desc":""}',
+    e: '{"name":"e","val":"{\\"key1\\":\\"val1\\"}","desc":""}',
+    f: '{"name":"f","val":"{\\"key1\\":\\"val1\\"}","desc":""}',
+    g: '{"name":"g","val":"{\\"key1\\":\\"val1\\"}","desc":""}',
+  };
 
   // api变量
   @observable apiState: Record<string, any> = {};

@@ -184,7 +184,7 @@ export function buildConfigArtery(
   spec: PropsSpec[],
   options: {
     prefix?: string;
-    bindVarible?: boolean;
+    bindVariable?: boolean;
   },
 ): Artery {
   const rootNode = createWrapperNode({
