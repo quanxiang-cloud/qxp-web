@@ -36,4 +36,4 @@ export const LAYERS: Layer<BlocksCommunicationType>[] = [
   },
 ];
 
-export const SYSTEM_COMPONENT_NAMES = ['UserMenuAvatar', 'SystemTaskList'];
+export const SYSTEM_COMPONENT_NAMES = ['UserMenuAvatar', 'SystemTaskList', 'FileUpload'];

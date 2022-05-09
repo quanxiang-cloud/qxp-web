@@ -30,5 +30,21 @@
         }
       }
     ]
+  },
+  "FileUpload": {
+    "variants": [
+      {
+        "icon": {
+          "type": "platform",
+          "name": "file_upload",
+          "initialProps": {}
+        },
+        "desc": "上传文件",
+        "label": "上传文件",
+        "initialProps": {
+          "className": ""
+        }
+      }
+    ]
   }
 }

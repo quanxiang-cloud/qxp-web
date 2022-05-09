@@ -3,6 +3,7 @@ import Form from '../../portal/modules/apps-management/pages/page-design/registr
 import Table from '../../portal/modules/apps-management/pages/page-design/registry/form/table/table';
 import TaskList from '@c/task-lists';
 import UserAvatarMenu from '@c/user-avatar-menu';
+import FileUpload from '@portal/modules/apps-management/pages/page-design/registry/system-components/file-upload/file-upload';
 
 const legacyUIComponents = {
   page: Page,
@@ -22,6 +23,7 @@ const legacyUIComponents = {
   container: Container,
   SystemTaskList: TaskList,
   UserMenuAvatar: UserAvatarMenu,
+  FileUpload: FileUpload,
 };
 
 export default legacyUIComponents;
