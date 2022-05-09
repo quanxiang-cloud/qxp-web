@@ -1,10 +1,11 @@
-import Radio from '@c/radio';
-import RadioGroup from '@c/radio/group';
 import React from 'react';
 
+import Radio from '@c/radio';
+import RadioGroup from '@c/radio/group';
+
 type Props = {
-  value: string;
-  onChange: () => null;
+  value: 'simple'|'multiple';
+  onChange: () => void;
 }
 
 function EditWay({ value, onChange }: Props): JSX.Element {
