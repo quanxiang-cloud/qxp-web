@@ -90,9 +90,10 @@ function ModalBindState(): JSX.Element | null {
                 <div
                   key={`${depID}_${type}`}
                   onClick={() => expressionEditorRef.current?.onInsertText(depID)}
-                  className="px-8 py-4 border-1 inline-block text-center cursor-pointer hover:bg-blue-400"
+                  className="px-8 py-4 border-1 inline-block text-center cursor-pointer hover:bg-blue-400 relative"
                 >
                   {depID}
+                  {/* <Icon className="absolute r-0 t-0" name="close" /> */}
                 </div>
               );
             })}
@@ -268,10 +269,7 @@ function ModalBindState(): JSX.Element | null {
                     type="expression"
                     ref={expressionEditorRef}
                     value={expressionStr}
-                    onChange={(value) => {
-                      console.log(value);
-                      setExpressionStr(value);
-                    }}
+                    onChange={setExpressionStr}
                   />
                 </>,
               },
@@ -285,10 +283,7 @@ function ModalBindState(): JSX.Element | null {
                     type="convertor"
                     ref={convertorEditorRef}
                     value={convertorStr}
-                    onChange={(value) => {
-                      console.log(value);
-                      setConvertorStr(value);
-                    }}
+                    onChange={setConvertorStr}
                   />
                 </>,
               },

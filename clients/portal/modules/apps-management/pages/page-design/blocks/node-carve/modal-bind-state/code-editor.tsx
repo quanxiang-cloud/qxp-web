@@ -29,14 +29,11 @@ function CodeEditor(
   return (
     <Editor
       ref={refEditor}
-      // key={type}
+      key={type}
       value={value}
       height="200px"
       extensions={[javascript()]}
-      onChange={debounce((val) => {
-        // if (!val) return;
-        onChange;
-      }, 500)}
+      onChange={debounce(onChange, 500)}
     />
   );
 }
