@@ -18,11 +18,6 @@ import { ConfigContextState, UpdateAttrPayloadType, useConfigContext } from '../
 
 import styles from './index.m.scss';
 
-type VariableListProps = {
-  sharedStates?: any[],
-  apiStates?: any[],
-}
-
 export type VariableBindConf = {
   type: 'convertor' | 'expression';
   contentStr: string;
@@ -46,6 +41,8 @@ function ModalBindState(): JSX.Element | null {
   const [editorType, setEditorType] = useState<'expression' | 'convertor'>('expression'); // 最终保存的配置内容的类型 '表达式' | '自定义函数'
   const editorRef = useRef<EditorRefType>();
   const [fallback, setFallBack] = useState<boolean>();
+  const sharedStates = Object.entries(dataSource.sharedState).map(([_, value]) => JSON.parse(value));
+  const apiStates = Object.entries(dataSource.apiState).map(([_, value]) => JSON.parse(value));
   const names = useMemo(() => bindVariables.map(({ depID }) => depID), [bindVariables]);
   const finalConfig: VariableBindConf = useMemo(() => {
     if (convertorStr) {
@@ -55,54 +52,11 @@ function ModalBindState(): JSX.Element | null {
     return { type: 'expression', contentStr: expressionStr };
   }, [expressionStr, convertorStr]);
 
-  function VariableList({ sharedStates, apiStates }: VariableListProps) {
-    const _sharedStates = Object.entries(dataSource.sharedState).map(([_, value]) => JSON.parse(value));
-    const _apiStates = Object.entries(dataSource.apiState).map(([_, value]) => JSON.parse(value));
-
-    return (
-      <>
-        <Section title="自定义变量" defaultExpand>
-          {_sharedStates.map(({ name }) => {
-            return (
-              <div
-                key={name}
-                onClick={() => {
-                  editorType === 'expression' && editorRef.current?.onInsertText(`${name} `);
-
-                  if (names.includes(name)) return;
-                  setBindVariables([...bindVariables, { depID: name, type: 'shared_state' }]);
-                }}
-                className='cursor-pointer hover:bg-blue-400'
-              >
-                {name}
-              </div>
-            );
-          })}
-        </Section>
-        {!!_apiStates.length && (
-          <Section title="API变量" defaultExpand>
-            {_apiStates.map(({ name }) => {
-              return (
-                <div
-                  key={name}
-                  onClick={() => console.log('bind: ', name, 'api_state')}
-                  className='cursor-pointer hover:bg-blue-400'
-                >
-                  {name}
-                </div>
-              );
-            })}
-          </Section>
-        )}
-      </>
-    );
-  }
-
   function SupportedVariablesAndOperators() {
     return (
       <>
         <div className="py-4">已绑定变量：</div>
-        {!bindVariables.length && <div className="px-8 py-4 border-1 text-center">请先点击左侧可用变量列表进行变量绑定操作</div>}
+        {!bindVariables.length && <div className="px-8 py-4 border-1 text-red-400 text-center">请先点击左侧可用变量列表进行变量绑定操作</div>}
         {!!bindVariables.length && (
           <div className="grid gap-4 grid-cols-5 max-h-120 overflow-auto">
             {bindVariables.map(({ depID, type }) => {
@@ -247,7 +201,39 @@ function ModalBindState(): JSX.Element | null {
     >
       <div className={styles.modal}>
         <div className={styles.side}>
-          <VariableList />
+          <Section title="自定义变量" defaultExpand>
+            {sharedStates.map(({ name }) => {
+              return (
+                <div
+                  key={name}
+                  onClick={() => {
+                    editorType === 'expression' && editorRef.current?.onInsertText(`${name} `);
+
+                    if (names.includes(name)) return;
+                    setBindVariables([...bindVariables, { depID: name, type: 'shared_state' }]);
+                  }}
+                  className='cursor-pointer hover:bg-blue-400'
+                >
+                  {name}
+                </div>
+              );
+            })}
+          </Section>
+          {!!apiStates.length && (
+            <Section title="API变量" defaultExpand>
+              {apiStates.map(({ name }) => {
+                return (
+                  <div
+                    key={name}
+                    onClick={() => console.log('bind: ', name, 'api_state')}
+                    className='cursor-pointer hover:bg-blue-400'
+                  >
+                    {name}
+                  </div>
+                );
+              })}
+            </Section>
+          )}
         </div>
         <div className={styles.body}>
           <SupportedVariablesAndOperators />
@@ -276,7 +262,7 @@ function ModalBindState(): JSX.Element | null {
           />
           {updateAttrPayload?.path === 'shouldRender' && (
             <div className="flex items-center pt-12">
-              <span>默认渲染：</span>
+              <span>默认值：</span>
               <Toggle defaultChecked={fallback} onChange={setFallBack} />
             </div>
           )}
