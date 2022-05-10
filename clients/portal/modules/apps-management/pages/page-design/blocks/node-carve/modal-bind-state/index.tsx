@@ -114,8 +114,6 @@ function ModalBindState(): JSX.Element | null {
 
   function handleUnbind(depID: string): void {
     setBindVariables(bindVariables.filter(({ depID: id }) => id !== depID));
-    // todo dispatch expressionStr
-    console.log(expressionStr);
   }
 
   function bindSubmit(node: UpdateAttrPayloadType, property: ComputedProperty): void {
@@ -131,7 +129,6 @@ function ModalBindState(): JSX.Element | null {
   function handleEditorChange(val: string): void {
     if (editorType === 'convertor') {
       const bodyString = getFnBody(parseAst(val), val);
-      console.log(bodyString);
 
       return setConvertorStr(bodyString);
     }
