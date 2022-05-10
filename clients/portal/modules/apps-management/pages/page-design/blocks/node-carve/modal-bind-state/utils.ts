@@ -44,7 +44,7 @@ export function confirmExpressionStr(expr: string): boolean {
   return true;
 }
 
-function getFnBody(ast: AstNode, fnString: string): string {
+export function getFnBody(ast: AstNode, fnString: string): string {
   const [firstNode] = ast.body;
   const { body } = firstNode as any;
   return fnString.slice(body.start + 1, body.end - 1);
@@ -52,12 +52,10 @@ function getFnBody(ast: AstNode, fnString: string): string {
 
 export function toConvertorProp({ type, contentStr }: VariableBindConf): any {
   if (type === 'convertor') {
-    const bodyString = getFnBody(parseAst(contentStr), contentStr);
-
     return {
       type: 'state_convertor_func_spec',
       args: 'state',
-      body: bodyString,
+      body: contentStr,
     };
   }
 

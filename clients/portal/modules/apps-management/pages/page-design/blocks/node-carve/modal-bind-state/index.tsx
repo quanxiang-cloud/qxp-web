@@ -13,7 +13,7 @@ import Section from '../../../utils/section';
 import { updateNodeProperty } from '../utils';
 import CodeEditor, { EditorRefType } from './code-editor';
 import { LOGIC_OPERATOR, SHARED_STATES_SPEC } from './constants';
-import { generateInitFunString, parseToExpressionStr, toConvertorProp } from './utils';
+import { generateInitFunString, getFnBody, parseAst, parseToExpressionStr, toConvertorProp } from './utils';
 import { ConfigContextState, UpdateAttrPayloadType, useConfigContext } from '../context';
 
 import styles from './index.m.scss';
@@ -35,9 +35,7 @@ function ModalBindState(): JSX.Element | null {
   } = useConfigContext() as ConfigContextState;
   const [bindVariables, setBindVariables] = useState<ComputedDependency[]>([]); // 已绑定的变量
   const [expressionStr, setExpressionStr] = useState(''); // 表达式
-  const [convertorStr, setConvertorStr] = useState(
-    generateInitFunString({ name: 'shouldRender', args: 'states' }),
-  ); // convertor函数内容
+  const [convertorStr, setConvertorStr] = useState(''); // convertor函数内容
   const [editorType, setEditorType] = useState<'expression' | 'convertor'>('expression'); // 最终保存的配置内容的类型 '表达式' | '自定义函数'
   const editorRef = useRef<EditorRefType>();
   const [fallback, setFallBack] = useState<boolean>();
@@ -56,7 +54,11 @@ function ModalBindState(): JSX.Element | null {
     return (
       <>
         <div className="py-4">已绑定变量：</div>
-        {!bindVariables.length && <div className="px-8 py-4 border-1 text-red-400 text-center">请先点击左侧可用变量列表进行变量绑定操作</div>}
+        {!bindVariables.length && (
+          <div className="px-8 py-4 border-1 text-red-400 text-center">
+          请先点击左侧可用变量列表进行变量绑定操作
+          </div>
+        )}
         {!!bindVariables.length && (
           <div className="grid gap-4 grid-cols-5 max-h-120 overflow-auto">
             {bindVariables.map(({ depID, type }) => {
@@ -111,7 +113,9 @@ function ModalBindState(): JSX.Element | null {
 
   function handleEditorChange(val: string): void {
     if (editorType === 'convertor') {
-      return setConvertorStr(val);
+      const bodyString = getFnBody(parseAst(val), val);
+
+      return setConvertorStr(bodyString);
     }
 
     setExpressionStr(val);
@@ -123,7 +127,7 @@ function ModalBindState(): JSX.Element | null {
     }
 
     if (!expressionStr && !convertorStr) {
-      return toast.error('表达式和 convertor 自定义函数，不能都为空！');
+      return toast.error('表达式和 convertor 自定义函数的body内容，不能都为空！');
     }
 
     const computedProperty: ComputedProperty = {

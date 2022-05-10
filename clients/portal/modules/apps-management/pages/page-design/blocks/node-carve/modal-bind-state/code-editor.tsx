@@ -1,6 +1,7 @@
 import React, { useRef, forwardRef, useImperativeHandle, ForwardedRef, useState, useEffect } from 'react';
 import Editor, { ReactCodeMirrorRef, TransactionSpec } from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
+import { generateInitFunString } from './utils';
 
 type Props = {
   initValue: string;
@@ -13,7 +14,7 @@ export type EditorRefType = {
 }
 
 function CodeEditor(
-  { initValue, onChange }: Props,
+  { initValue, onChange, type }: Props,
   ref: ForwardedRef<EditorRefType | undefined>,
 ): JSX.Element {
   const [value, setValue] = useState(initValue);
@@ -32,13 +33,20 @@ function CodeEditor(
 
   useImperativeHandle(ref, () => ({ onInsertText }));
 
-  useEffect(() => setValue(initValue), [initValue]);
+  useEffect(() => {
+    let _initValue = initValue;
+    if (type === 'convertor') {
+      _initValue = generateInitFunString({ name: 'shouldRender', args: 'states', body: initValue });
+    }
+
+    setValue(_initValue);
+  }, [initValue]);
 
   return (
     <Editor
       ref={refEditor}
       width='500px'
-      height="300px"
+      height="250px"
       value={value}
       extensions={[javascript()]}
       onChange={handleChange}
