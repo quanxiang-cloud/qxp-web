@@ -1,6 +1,6 @@
 import { flatten } from 'ramda';
 import { from } from 'rxjs6';
-import { switchMap } from 'rxjs6/operators';
+import { switchMap, catchError, shareReplay } from 'rxjs6/operators';
 import { isEmpty, is } from 'ramda';
 
 import { PropsSpec } from '@one-for-all/node-carve';
@@ -12,8 +12,16 @@ import {
 } from '@pageDesign/utils/package';
 
 const packages$ = from(getPackagesSourceDynamic());
-const components$ = packages$.pipe(switchMap(loadAllComponents));
-const propsSpecs$ = packages$.pipe(switchMap(loadAllPropsSpecs));
+const components$ = packages$.pipe(
+  switchMap(loadAllComponents),
+  catchError(() => []),
+  shareReplay(Infinity),
+);
+const propsSpecs$ = packages$.pipe(
+  switchMap(loadAllPropsSpecs),
+  catchError(async () => ({}) as Record<string, PropsSpec>),
+  shareReplay(Infinity),
+);
 const isObject = is(Object);
 
 export function usePackages(): Package[] | undefined {
