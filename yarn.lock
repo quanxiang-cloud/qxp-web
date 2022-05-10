@@ -1151,10 +1151,10 @@
     react-jsx-parser "1.29.0"
     rxjs "^7.4.0"
 
-"@one-for-all/artery-simulator@0.3.0":
-  version "0.3.0"
-  resolved "https://registry.npmmirror.com/@one-for-all/artery-simulator/-/artery-simulator-0.3.0.tgz#c11d682da4785372af2c0d8405f88697ee16d54d"
-  integrity sha512-ZOMPSBh/ZARz8mAsoMGPE9WcMJn6gwWfmTv8rBP62Pok/CXkxS+qzxxWU/c9grTiyeRzefhEnCeALs95e3R8pA==
+"@one-for-all/artery-simulator@^0.3.1":
+  version "0.3.1"
+  resolved "https://registry.npmjs.org/@one-for-all/artery-simulator/-/artery-simulator-0.3.1.tgz#50e52362ab5ee13e578db1e51278756931eaa2cf"
+  integrity sha512-2hVOx0wT0JMqEzgPFPXu2BaMTmcRXarhZc/IL+wJkuHUp/uYMmezZnht8ZcDiEQSHrH4IKzddy247sQiQWnYjg==
   dependencies:
     "@one-for-all/artery" "0.15.0"
     "@one-for-all/artery-renderer" "0.20.2"
@@ -1190,7 +1190,7 @@
   dependencies:
     rxjs "^7.4.0"
 
-"@one-for-all/headless-ui@0.1.4":
+"@one-for-all/headless-ui@0.1.4", "@one-for-all/headless-ui@^0.1.4":
   version "0.1.4"
   resolved "https://registry.npmmirror.com/@one-for-all/headless-ui/-/headless-ui-0.1.4.tgz#31f1d53b409191dc208152fa5d065412c4e4e101"
   integrity sha512-rE3HSQvAl9eiu2YcJV1NyzXkeDEUpHoUriMwJSU1wfwDvwmtB1zsTjdkx3VHbEhWC28SW4QdvM6d6XvbBayG7g==
@@ -1217,6 +1217,11 @@
   integrity sha512-8n+NX3/865WjNj6Ag37JxofUlC9VkudGEHuHM56qfjXmdfW2LjA0UXZtIz2OBUvCcpPM6ljjbGHCg5gjL8ew0g==
   dependencies:
     react "^17.0.2"
+
+"@one-for-all/node-carve@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.npmmirror.com/@one-for-all/node-carve/-/node-carve-0.1.0.tgz#dcdafbad0398aae83b26bbcdbf9c1260bdaa119c"
+  integrity sha512-hS367fgNJO4B7gxKsjAeQn9KVWPbssbPteqOJgF0m3PLBlYwavQFsfzX/PHmVamNiLvOeMAvR360OvQ+44ttfw==
 
 "@one-for-all/page-engine@0.10.0":
   version "0.10.0"
@@ -2050,7 +2055,7 @@ acorn@^7.0.0, acorn@^7.1.1:
   resolved "https://registry.npmmirror.com/acorn/-/acorn-7.4.1.tgz#feaed255973d2e77555b83dbc08851a6c63520fa"
   integrity sha512-nQyp0o1/mNdbTO1PO6kHkwSrmgZ0MT/jCCpNiwbUjGoRN4dlBhqJtoQuCnEOKzgTVwg0ZWiCoQy6SxMebQVh8A==
 
-acorn@^8.0.5, acorn@^8.2.4, acorn@^8.7.0:
+acorn@^8.0.5, acorn@^8.2.4, acorn@^8.7.0, acorn@^8.7.1:
   version "8.7.1"
   resolved "https://registry.npmmirror.com/acorn/-/acorn-8.7.1.tgz#0197122c843d1bf6d0a5e83220a788f278f63c30"
   integrity sha512-Xx54uLJQZ19lKygFXOWsscKUbsBZW0CPykPhVQdhIeIwrbPmJzqeASDInc8nKBnp/JT6igTs82qPXz069H8I/A==

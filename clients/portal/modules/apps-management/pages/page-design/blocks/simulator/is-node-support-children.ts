@@ -1,4 +1,4 @@
-import type { NodeWithoutChild } from '@one-for-all/artery-simulator';
+import type { NodePrimary } from '@one-for-all/artery-simulator';
 
 const COMPONENTS_SUPPORT_CHILDREN = [
   'page',
@@ -20,7 +20,7 @@ LEGACY_PACKAGES.forEach((packageName) => {
 const MOCK = new Set<string>(pairs);
 
 // todo implement this
-function isNodeSupportChildren(node: NodeWithoutChild): Promise<boolean> {
+function isNodeSupportChildren(node: NodePrimary): Promise<boolean> {
   if (node.type === 'react-component') {
     const identifier = [node.packageName, node.packageVersion, node.exportName].join('/');
     if (MOCK.has(identifier)) {
