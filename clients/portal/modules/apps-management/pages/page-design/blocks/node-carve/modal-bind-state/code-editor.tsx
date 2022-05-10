@@ -37,7 +37,8 @@ function CodeEditor(
   return (
     <Editor
       ref={refEditor}
-      height="200px"
+      width='500px'
+      height="300px"
       value={value}
       extensions={[javascript()]}
       onChange={handleChange}

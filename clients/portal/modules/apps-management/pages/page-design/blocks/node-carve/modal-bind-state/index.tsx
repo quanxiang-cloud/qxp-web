@@ -5,6 +5,7 @@ import { ComputedProperty, ComputedDependency } from '@one-for-all/artery';
 
 import Tab from '@c/tab';
 import Toggle from '@c/toggle';
+import toast from '@lib/toast';
 import { useCtx } from '@pageDesign/ctx';
 
 import { findNode } from '../utils/tree';
@@ -16,7 +17,6 @@ import { generateInitFunString, parseToExpressionStr, toConvertorProp } from './
 import { ConfigContextState, UpdateAttrPayloadType, useConfigContext } from '../context';
 
 import styles from './index.m.scss';
-import toast from '@lib/toast';
 
 type VariableListProps = {
   sharedStates?: any[],
@@ -104,13 +104,13 @@ function ModalBindState(): JSX.Element | null {
         <div className="py-4">已绑定变量：</div>
         {!bindVariables.length && <div className="px-8 py-4 border-1 text-center">请先点击左侧可用变量列表进行变量绑定操作</div>}
         {!!bindVariables.length && (
-          <div className="grid gap-4 grid-cols-4">
+          <div className="grid gap-4 grid-cols-5 max-h-120 overflow-auto">
             {bindVariables.map(({ depID, type }) => {
               return (
                 <div
                   key={`${depID}_${type}`}
                   onClick={() => editorType === 'expression' && editorRef.current?.onInsertText(depID)}
-                  className="px-8 py-4 border-1 inline-block text-center cursor-pointer hover:bg-blue-400 relative"
+                  className="px-8 py-4 border-1 inline-block text-center hover:bg-blue-400 relative"
                 >
                   {depID}
                   {/* <Icon className="absolute r-0 t-0" name="close" /> */}
@@ -122,13 +122,13 @@ function ModalBindState(): JSX.Element | null {
         {updateAttrPayload?.path === 'shouldRender' && (
           <>
             <div className="py-4">逻辑运算符：</div>
-            <div className="grid gap-4 grid-cols-4">
+            <div className="grid gap-4 grid-cols-5 max-h-120 overflow-auto">
               {LOGIC_OPERATOR.map((op) => {
                 return (
                   <div
                     key={op}
                     onClick={() => editorType === 'expression' && editorRef.current?.onInsertText(`${op} `)}
-                    className="px-8 py-4 border-1 inline-block text-center cursor-pointer hover:bg-blue-400"
+                    className="px-8 py-4 border-1 inline-block text-center hover:bg-blue-400"
                   >
                     {op}
                   </div>
