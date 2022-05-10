@@ -263,12 +263,15 @@ function ModalBindState(): JSX.Element | null {
                 name: updateAttrPayload?.path === 'shouldRender' ? '条件表达式' : '变量表达式',
                 content:
                 <>
-                  <div className="pb-12 text-blue-600">配置表达式时，应清空自定义函数，表达式才能生效</div>
+                  <div className="pb-12 text-blue-400 text-12">配置表达式前，应清空自定义函数，保存的表达式才能生效</div>
                   <CodeEditor
                     type="expression"
                     ref={expressionEditorRef}
                     value={expressionStr}
-                    onChange={setExpressionStr}
+                    onChange={(value) => {
+                      console.log(value);
+                      setExpressionStr(value);
+                    }}
                   />
                 </>,
               },
@@ -277,12 +280,15 @@ function ModalBindState(): JSX.Element | null {
                 name: '自定义函数',
                 content:
                 <>
-                  <div className="pb-4">应保证函数有返回值 <span className="text-blue-600">配置表达式前，应清空自定义函数</span></div>
+                  <div className="pb-12 text-blue-400 text-12">配置表达式前，应先清空自定义函数，保存的表达式才能生效</div>
                   <CodeEditor
                     type="convertor"
                     ref={convertorEditorRef}
                     value={convertorStr}
-                    onChange={setConvertorStr}
+                    onChange={(value) => {
+                      console.log(value);
+                      setConvertorStr(value);
+                    }}
                   />
                 </>,
               },
