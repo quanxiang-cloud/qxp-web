@@ -14,4 +14,20 @@
     padding-left: 8px;
     padding-right: 8px;
   }
+
+  .tip {
+    @apply text-blue-400 text-12;
+  }
+  
+  .desc {
+    @apply text-12 text-gray-400 pt-4;
+  }
+  
+  .list-item {
+    @apply cursor-pointer hover:bg-blue-400;
+  }
+
+  .bind-item {
+    @apply px-8 py-4 border-1 inline-block text-center hover:bg-blue-400 relative select-none;
+  }
 }

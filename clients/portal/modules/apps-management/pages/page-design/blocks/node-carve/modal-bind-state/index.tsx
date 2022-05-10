@@ -4,6 +4,7 @@ import { Modal } from '@one-for-all/ui';
 import { ComputedProperty, ComputedDependency } from '@one-for-all/artery';
 
 import Tab from '@c/tab';
+import Icon from '@c/icon';
 import Toggle from '@c/toggle';
 import toast from '@lib/toast';
 import { useCtx } from '@pageDesign/ctx';
@@ -56,7 +57,7 @@ function ModalBindState(): JSX.Element | null {
         <div className="py-4">已绑定变量：</div>
         {!bindVariables.length && (
           <div className="px-8 py-4 border-1 text-red-400 text-center">
-          请先点击左侧可用变量列表进行变量绑定操作
+            请先点击左侧可用变量列表进行变量绑定操作
           </div>
         )}
         {!!bindVariables.length && (
@@ -65,11 +66,11 @@ function ModalBindState(): JSX.Element | null {
               return (
                 <div
                   key={`${depID}_${type}`}
+                  className={styles['bind-item']}
                   onClick={() => editorType === 'expression' && editorRef.current?.onInsertText(depID)}
-                  className="px-8 py-4 border-1 inline-block text-center hover:bg-blue-400 relative"
                 >
                   {depID}
-                  {/* <Icon className="absolute r-0 t-0" name="close" /> */}
+                  <Icon className="absolute r-0 t-0 hidden" name="close" />
                 </div>
               );
             })}
@@ -210,13 +211,13 @@ function ModalBindState(): JSX.Element | null {
               return (
                 <div
                   key={name}
+                  className={styles['list-item']}
                   onClick={() => {
                     editorType === 'expression' && editorRef.current?.onInsertText(`${name} `);
 
                     if (names.includes(name)) return;
                     setBindVariables([...bindVariables, { depID: name, type: 'shared_state' }]);
                   }}
-                  className='cursor-pointer hover:bg-blue-400'
                 >
                   {name}
                 </div>
@@ -229,8 +230,8 @@ function ModalBindState(): JSX.Element | null {
                 return (
                   <div
                     key={name}
+                    className={styles['list-item']}
                     onClick={() => console.log('bind: ', name, 'api_state')}
-                    className='cursor-pointer hover:bg-blue-400'
                   >
                     {name}
                   </div>
@@ -249,12 +250,12 @@ function ModalBindState(): JSX.Element | null {
               {
                 id: 'expression',
                 name: updateAttrPayload?.path === 'shouldRender' ? '条件表达式' : '变量表达式',
-                content: <div className="text-blue-400 text-12">配置前，应清空自定义函数，保存的表达式才能生效</div>,
+                content: <div className={styles.tip}>配置前，应清空自定义函数，保存的表达式才能生效</div>,
               },
               {
                 id: 'convertor',
                 name: '自定义函数',
-                content: <div className="text-blue-400 text-12">配置自定义函数</div>,
+                content: <div className={styles.tip}>配置自定义函数</div>,
               },
             ]}
           />
@@ -270,7 +271,7 @@ function ModalBindState(): JSX.Element | null {
               <Toggle defaultChecked={fallback} onChange={setFallBack} />
             </div>
           )}
-          <div className="text-12 text-gray-400 pt-4">表达式或自定义 convertor 函数因某种原因执行失败或者出现异常的时候，作为执行结果的默认值</div>
+          <div className={styles.desc}>表达式或自定义 convertor 函数因某种原因执行失败或者出现异常的时候，作为执行结果的默认值</div>
         </div>
       </div>
     </Modal>
