@@ -196,9 +196,6 @@ function ModalBindState(): JSX.Element | null {
     initValueByBindConf(bindConf);
   }, [activeNode?.id]);
 
-  // to mock shareStatesSpec
-  // useEffect(() => onArteryChange({ ...artery, sharedStatesSpec: SHARED_STATES_SPEC }), []);
-
   return (
     <Modal
       title={updateAttrPayload?.path === 'shouldRender' ? '条件渲染配置' : '变量绑定'}
@@ -287,7 +284,7 @@ function ModalBindState(): JSX.Element | null {
               <Toggle defaultChecked={fallback} onChange={setFallBack} />
             </div>
           )}
-          <div className={styles.desc}>表达式或自定义 convertor 函数因某种原因执行失败或者出现异常的时候，作为执行结果的默认值</div>
+          <div className={styles.desc}>表达式或自定义函数因某种原因执行失败或者出现异常的时候，作为执行结果的默认值</div>
         </div>
       </div>
     </Modal>

@@ -195,13 +195,15 @@ function RendererPanel(): JSX.Element {
   return (
     <>
       <div className={styles.renderPanel}>
-        <Section title="条件展示" defaultExpand>
-          <div className="flex items-center justify-between">
-            <label>绑定变量</label>
-            <DataBind
-              __path="shouldRender"
-            />
+        <Section title='条件渲染' defaultExpand>
+          <div className='flex items-center justify-between mb-4'>
+            <label>配置组件渲染条件</label>
+            <DataBind __path="shouldRender" />
           </div>
+          <pre className="p-4 text-12 text-blue-400 bg-gray-100">
+            <p>本质是配置JS中if流程语句中的条件表达式</p>
+            <p>当且仅当配置最终结果为真值时渲染展示此节点</p>
+          </pre>
         </Section>
         <Section title="循环展示" defaultExpand>
           <form className="flex flex-col">
