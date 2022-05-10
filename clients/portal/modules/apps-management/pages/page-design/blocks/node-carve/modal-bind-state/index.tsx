@@ -13,7 +13,7 @@ import { findNode } from '../utils/tree';
 import Section from '../../../utils/section';
 import { updateNodeProperty } from '../utils';
 import CodeEditor, { EditorRefType } from './code-editor';
-import { LOGIC_OPERATOR, SHARED_STATES_SPEC } from './constants';
+import { LOGIC_OPERATOR } from './constants';
 import { generateInitFunString, getFnBody, parseAst, parseToExpressionStr, toConvertorProp } from './utils';
 import { ConfigContextState, UpdateAttrPayloadType, useConfigContext } from '../context';
 
@@ -195,7 +195,7 @@ function ModalBindState(): JSX.Element | null {
   }, [activeNode?.id]);
 
   // to mock shareStatesSpec
-  useEffect(() => onArteryChange({ ...artery, sharedStatesSpec: SHARED_STATES_SPEC }), []);
+  // useEffect(() => onArteryChange({ ...artery, sharedStatesSpec: SHARED_STATES_SPEC }), []);
 
   return (
     <Modal
