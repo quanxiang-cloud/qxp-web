@@ -27,7 +27,25 @@
     @apply cursor-pointer hover:bg-blue-400;
   }
 
+  .bind-container {
+    @apply grid gap-4 grid-cols-5 max-h-144 overflow-auto;
+  }
+  
   .bind-item {
     @apply px-8 py-4 border-1 inline-block text-center hover:bg-blue-400 relative select-none;
+  }
+
+  .hover-bind-item {
+    &:hover {
+      .unbind-btn {
+        display: block;
+      }
+    }
+  }
+
+  .unbind-btn {
+    @apply absolute right-0 top-0 cursor-pointer;
+
+    transform: translate(-50%, 25%);
   }
 }

@@ -61,7 +61,7 @@ function ModalBindState(): JSX.Element | null {
           </div>
         )}
         {!!bindVariables.length && (
-          <div className="grid gap-4 grid-cols-5 max-h-120 overflow-auto">
+          <div className={styles['bind-container']}>
             {bindVariables.map(({ depID, type }) => {
               return (
                 <div
@@ -70,7 +70,17 @@ function ModalBindState(): JSX.Element | null {
                   onClick={() => editorType === 'expression' && editorRef.current?.onInsertText(depID)}
                 >
                   {depID}
-                  <Icon className="absolute r-0 t-0 hidden" name="close" />
+                  <Icon
+                    name="close"
+                    size={12}
+                    className={styles['unbind-btn']}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+
+                      handleUnbind(depID);
+                    }}
+                  />
                 </div>
               );
             })}
@@ -79,7 +89,7 @@ function ModalBindState(): JSX.Element | null {
         {updateAttrPayload?.path === 'shouldRender' && (
           <>
             <div className="py-4">逻辑运算符：</div>
-            <div className="grid gap-4 grid-cols-5 max-h-120 overflow-auto">
+            <div className="grid gap-4 grid-cols-5 max-h-144 overflow-auto">
               {LOGIC_OPERATOR.map((op) => {
                 return (
                   <div
@@ -100,6 +110,12 @@ function ModalBindState(): JSX.Element | null {
 
   function onCancel(): void {
     setModalBindStateOpen(false);
+  }
+
+  function handleUnbind(depID: string): void {
+    setBindVariables(bindVariables.filter(({ depID: id }) => id !== depID));
+    // todo dispatch expressionStr
+    console.log(expressionStr);
   }
 
   function bindSubmit(node: UpdateAttrPayloadType, property: ComputedProperty): void {
