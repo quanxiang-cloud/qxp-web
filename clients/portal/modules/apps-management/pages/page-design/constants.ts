@@ -4,7 +4,7 @@ import Header from './blocks/header';
 import Menu from './blocks/menu';
 // import Canvas from './blocks/canvas';
 import Simulator from './blocks/simulator';
-import Config from './blocks/config';
+import Config from './blocks/node-carve';
 import { BlocksCommunicationType } from './types';
 
 export const QUERY_KEY = {
