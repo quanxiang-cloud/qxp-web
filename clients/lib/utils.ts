@@ -340,8 +340,8 @@ export function isAcceptedFileType(file: File | QXPUploadFileBaseProps, accept: 
   const suffix = file.name.split('.').pop();
   if (!accept || !suffix) return false;
   const { type: fileType } = file;
-  return accept.some((acceptType) => acceptType === fileType || acceptType.split('/')[1].includes(suffix) ||
-  acceptType.split('.')[1].includes(suffix));
+  return accept.some((acceptType) => acceptType === fileType || acceptType.split('/')[1]?.includes(suffix) ||
+  acceptType.split('.')[1]?.includes(suffix));
 }
 
 export function createQueue(

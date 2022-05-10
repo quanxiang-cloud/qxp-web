@@ -39,10 +39,15 @@
           "name": "file_upload",
           "initialProps": {}
         },
-        "desc": "上传文件",
-        "label": "上传文件",
+        "desc": "可以上传文件",
+        "label": "文件上传",
         "initialProps": {
-          "className": ""
+          "iconName": "backup",
+          "uploaderDescription": "点击或拖拽上传文件",
+          "maxFileSize": 10,
+          "isPrivate": false,
+          "multiple": false,
+          "disabled": false
         }
       }
     ]
