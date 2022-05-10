@@ -1,10 +1,9 @@
-import React, { useRef, forwardRef, useImperativeHandle, ForwardedRef } from 'react';
+import React, { useRef, forwardRef, useImperativeHandle, ForwardedRef, useState, useEffect } from 'react';
 import Editor, { ReactCodeMirrorRef, TransactionSpec } from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
-import { debounce } from 'lodash';
 
 type Props = {
-  value: string;
+  initValue: string;
   type: 'expression' | 'convertor';
   onChange: (value: any) => void;
 }
@@ -14,26 +13,34 @@ export type EditorRefType = {
 }
 
 function CodeEditor(
-  { value, onChange, type }: Props,
+  { initValue, onChange }: Props,
   ref: ForwardedRef<EditorRefType | undefined>,
 ): JSX.Element {
+  const [value, setValue] = useState(initValue);
+
   const refEditor = useRef<ReactCodeMirrorRef>(null);
 
-  const onInsertText = (val: string): void => {
+  function onInsertText(val: string): void {
     const context = refEditor.current?.view?.state.replaceSelection(val);
     refEditor.current?.view?.dispatch(context as TransactionSpec);
-  };
+  }
+
+  function handleChange(val: string): void {
+    setValue(val);
+    onChange(val);
+  }
 
   useImperativeHandle(ref, () => ({ onInsertText }));
+
+  useEffect(() => setValue(initValue), [initValue]);
 
   return (
     <Editor
       ref={refEditor}
-      key={type}
-      value={value}
       height="200px"
+      value={value}
       extensions={[javascript()]}
-      onChange={debounce(onChange, 500)}
+      onChange={handleChange}
     />
   );
 }

@@ -23,7 +23,7 @@ export const HOOKS_PREFIX = 'lifecycleHooks';
 
 type AstNode = Node & { body: Node[] }
 
-function generateInitFunString({ name = '', args = '', notes = '', body = '' }): string {
+export function generateInitFunString({ name = '', args = '', notes = '', body = '' }): string {
   let defaultNotes = '';
   const userNotes = notes ? `// ${notes}` : '';
   if (args === '...args') {

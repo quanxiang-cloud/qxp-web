@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { get } from 'lodash';
-import { Modal, toast } from '@one-for-all/ui';
+import { Modal } from '@one-for-all/ui';
 import { ComputedProperty, ComputedDependency } from '@one-for-all/artery';
 
 import Tab from '@c/tab';
@@ -12,10 +12,21 @@ import Section from '../../../utils/section';
 import { updateNodeProperty } from '../utils';
 import CodeEditor, { EditorRefType } from './code-editor';
 import { LOGIC_OPERATOR, SHARED_STATES_SPEC } from './constants';
+import { generateInitFunString, parseToExpressionStr, toConvertorProp } from './utils';
 import { ConfigContextState, UpdateAttrPayloadType, useConfigContext } from '../context';
-import { confirmExpressionStr, parseToExpression, parseToExpressionStr } from './utils';
 
 import styles from './index.m.scss';
+import toast from '@lib/toast';
+
+type VariableListProps = {
+  sharedStates?: any[],
+  apiStates?: any[],
+}
+
+export type VariableBindConf = {
+  type: 'convertor' | 'expression';
+  contentStr: string;
+}
 
 function ModalBindState(): JSX.Element | null {
   const { dataSource } = useCtx();
@@ -29,25 +40,34 @@ function ModalBindState(): JSX.Element | null {
   } = useConfigContext() as ConfigContextState;
   const [bindVariables, setBindVariables] = useState<ComputedDependency[]>([]); // 已绑定的变量
   const [expressionStr, setExpressionStr] = useState(''); // 表达式
-  const [convertorStr, setConvertorStr] = useState(''); // convertor函数内容
-  const [editorType, setEditorType] = useState<'expression' | 'convertor'>('expression');
-  const expressionEditorRef = useRef<EditorRefType>();
-  const convertorEditorRef = useRef<EditorRefType>();
+  const [convertorStr, setConvertorStr] = useState(
+    generateInitFunString({ name: 'shouldRender', args: 'states' }),
+  ); // convertor函数内容
+  const [editorType, setEditorType] = useState<'expression' | 'convertor'>('expression'); // 最终保存的配置内容的类型 '表达式' | '自定义函数'
+  const editorRef = useRef<EditorRefType>();
   const [fallback, setFallBack] = useState<boolean>();
-  const sharedStates = Object.entries(dataSource.sharedState).map(([_, value]) => JSON.parse(value));
-  const apiStates = Object.entries(dataSource.apiState).map(([_, value]) => JSON.parse(value));
   const names = useMemo(() => bindVariables.map(({ depID }) => depID), [bindVariables]);
+  const finalConfig: VariableBindConf = useMemo(() => {
+    if (convertorStr) {
+      return { type: 'convertor', contentStr: convertorStr };
+    }
 
-  function VariableList() {
+    return { type: 'expression', contentStr: expressionStr };
+  }, [expressionStr, convertorStr]);
+
+  function VariableList({ sharedStates, apiStates }: VariableListProps) {
+    const _sharedStates = Object.entries(dataSource.sharedState).map(([_, value]) => JSON.parse(value));
+    const _apiStates = Object.entries(dataSource.apiState).map(([_, value]) => JSON.parse(value));
+
     return (
       <>
         <Section title="自定义变量" defaultExpand>
-          {sharedStates.map(({ name }) => {
+          {_sharedStates.map(({ name }) => {
             return (
               <div
                 key={name}
                 onClick={() => {
-                  expressionEditorRef.current?.onInsertText(`${name} `);
+                  editorType === 'expression' && editorRef.current?.onInsertText(`${name} `);
 
                   if (names.includes(name)) return;
                   setBindVariables([...bindVariables, { depID: name, type: 'shared_state' }]);
@@ -59,9 +79,9 @@ function ModalBindState(): JSX.Element | null {
             );
           })}
         </Section>
-        {!!apiStates.length && (
+        {!!_apiStates.length && (
           <Section title="API变量" defaultExpand>
-            {apiStates.map(({ name }) => {
+            {_apiStates.map(({ name }) => {
               return (
                 <div
                   key={name}
@@ -89,7 +109,7 @@ function ModalBindState(): JSX.Element | null {
               return (
                 <div
                   key={`${depID}_${type}`}
-                  onClick={() => expressionEditorRef.current?.onInsertText(depID)}
+                  onClick={() => editorType === 'expression' && editorRef.current?.onInsertText(depID)}
                   className="px-8 py-4 border-1 inline-block text-center cursor-pointer hover:bg-blue-400 relative"
                 >
                   {depID}
@@ -107,7 +127,7 @@ function ModalBindState(): JSX.Element | null {
                 return (
                   <div
                     key={op}
-                    onClick={() => expressionEditorRef.current?.onInsertText(`${op} `)}
+                    onClick={() => editorType === 'expression' && editorRef.current?.onInsertText(`${op} `)}
                     className="px-8 py-4 border-1 inline-block text-center cursor-pointer hover:bg-blue-400"
                   >
                     {op}
@@ -135,56 +155,31 @@ function ModalBindState(): JSX.Element | null {
     onCancel();
   }
 
+  function handleEditorChange(val: string): void {
+    if (editorType === 'convertor') {
+      return setConvertorStr(val);
+    }
+
+    setExpressionStr(val);
+  }
+
   function handleBind(): void {
     if (!updateAttrPayload) {
       return;
     }
 
-    const defaultProperty: ComputedProperty = {
+    if (!expressionStr && !convertorStr) {
+      return toast.error('表达式和 convertor 自定义函数，不能都为空！');
+    }
+
+    const computedProperty: ComputedProperty = {
       type: 'computed_property',
       deps: bindVariables,
       fallback: fallback,
-      convertor: {
-        type: 'state_convert_expression',
-        expression: expressionStr,
-      },
+      convertor: toConvertorProp(finalConfig),
     };
 
-    if (convertorStr) {
-      // need to confirm the body
-      // const match = convertorStr.match(/return \['( +)'\]/i);
-      // if (!match || !match[1]) {
-      //   toast.error('无效的自定义 convertor 函数');
-      //   return;
-      // }
-
-      return bindSubmit(updateAttrPayload, {
-        ...defaultProperty,
-        convertor: {
-          type: 'state_convertor_func_spec',
-          args: 'state',
-          body: convertorStr,
-        },
-      });
-    }
-
-    if (expressionStr) {
-      const finalStateExpr = parseToExpression(expressionStr, names);
-      // need to confirm the stateExpr with variable join and operator
-      if (!confirmExpressionStr(finalStateExpr)) return;
-
-      console.log(finalStateExpr);
-
-      return bindSubmit(updateAttrPayload, {
-        ...defaultProperty,
-        convertor: {
-          type: 'state_convert_expression',
-          expression: finalStateExpr,
-        },
-      });
-    }
-
-    return toast.error('变量表达式和自定义 convertor 函数不能都为空');
+    return bindSubmit(updateAttrPayload, computedProperty);
   }
 
   function initValueByBindConf(bindConf: any): void {
@@ -196,18 +191,20 @@ function ModalBindState(): JSX.Element | null {
       const _expr = parseToExpressionStr(expr);
 
       setEditorType('expression');
-      expressionEditorRef.current?.onInsertText(expr);
+      editorRef.current?.onInsertText(expr);
       setExpressionStr(_expr);
-      setConvertorStr('');
     }
 
     if (bindConf.convertor.type === 'state_convertor_func_spec') {
-      const body = bindConf.convertor?.body;
+      const body = generateInitFunString({
+        name: 'shouldRender',
+        args: 'states',
+        body: bindConf.convertor?.body,
+      });
 
       setEditorType('convertor');
-      convertorEditorRef.current?.onInsertText(body);
+      editorRef.current?.onInsertText(body);
       setConvertorStr(body);
-      setExpressionStr('');
     }
   }
 
@@ -262,40 +259,28 @@ function ModalBindState(): JSX.Element | null {
               {
                 id: 'expression',
                 name: updateAttrPayload?.path === 'shouldRender' ? '条件表达式' : '变量表达式',
-                content:
-                <>
-                  <div className="pb-12 text-blue-400 text-12">配置表达式前，应清空自定义函数，保存的表达式才能生效</div>
-                  <CodeEditor
-                    type="expression"
-                    ref={expressionEditorRef}
-                    value={expressionStr}
-                    onChange={setExpressionStr}
-                  />
-                </>,
+                content: <div className="text-blue-400 text-12">配置前，应清空自定义函数，保存的表达式才能生效</div>,
               },
               {
                 id: 'convertor',
                 name: '自定义函数',
-                content:
-                <>
-                  <div className="pb-12 text-blue-400 text-12">配置表达式前，应先清空自定义函数，保存的表达式才能生效</div>
-                  <CodeEditor
-                    type="convertor"
-                    ref={convertorEditorRef}
-                    value={convertorStr}
-                    onChange={setConvertorStr}
-                  />
-                </>,
+                content: <div className="text-blue-400 text-12">配置自定义函数</div>,
               },
             ]}
           />
+          <CodeEditor
+            type={editorType}
+            ref={editorRef}
+            initValue={editorType === 'convertor' ? convertorStr : expressionStr}
+            onChange={handleEditorChange}
+          />
           {updateAttrPayload?.path === 'shouldRender' && (
-            <div className="flex items-center">
+            <div className="flex items-center pt-12">
               <span>默认渲染：</span>
               <Toggle defaultChecked={fallback} onChange={setFallBack} />
             </div>
           )}
-          <div className="text-12 text-gray-400">表达式或自定义 convertor 函数因某种原因执行失败或者出现异常的时候，作为执行结果的默认值</div>
+          <div className="text-12 text-gray-400 pt-4">表达式或自定义 convertor 函数因某种原因执行失败或者出现异常的时候，作为执行结果的默认值</div>
         </div>
       </div>
     </Modal>

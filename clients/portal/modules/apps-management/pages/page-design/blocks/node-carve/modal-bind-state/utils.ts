@@ -1,5 +1,8 @@
+import { parse, Node } from 'acorn';
+
 import toast from '@lib/toast';
 
+import { VariableBindConf } from '.';
 import { LOGIC_OPERATOR } from './constants';
 
 export function parseToExpression(expr: string, variables: string[]): string {
@@ -36,6 +39,84 @@ export function confirmExpressionStr(expr: string): boolean {
   if (!match || !match[1]) {
     toast.error(`无效的表达式: ${expr}`);
     return false;
+  }
+
+  return true;
+}
+
+function getFnBody(ast: AstNode, fnString: string): string {
+  const [firstNode] = ast.body;
+  const { body } = firstNode as any;
+  return fnString.slice(body.start + 1, body.end - 1);
+}
+
+export function toConvertorProp({ type, contentStr }: VariableBindConf): any {
+  if (type === 'convertor') {
+    const bodyString = getFnBody(parseAst(contentStr), contentStr);
+
+    return {
+      type: 'state_convertor_func_spec',
+      args: 'state',
+      body: bodyString,
+    };
+  }
+
+  return {
+    type: 'state_convert_expression',
+    expression: contentStr,
+  };
+}
+
+export function generateInitFunString({ name = '', args = '', notes = '', body = '' }): string {
+  let defaultNotes = '';
+  const userNotes = notes ? `// ${notes}` : '';
+  if (args === '...args') {
+    defaultNotes =
+`/** 
+  * if specs does not have \`args\` props 
+  * it will use \`...args\` as default arguments
+  * to avoid missing arguments you need
+  * but \`args\` is not always exited 
+*/`;
+  }
+  return `${defaultNotes}
+${userNotes}
+function ${name}(${args}) {${body}}`;
+}
+
+type AstNode = Node & { body: Node[] }
+
+export function parseAst(fnString: string): AstNode {
+  return parse(fnString, {
+    ecmaVersion: 'latest',
+    sourceType: 'script',
+  }) as AstNode;
+}
+
+export function validateConvertor(fnString: string): boolean {
+  try {
+    const parseAst = parse(fnString, {
+      ecmaVersion: 'latest',
+      sourceType: 'script',
+    });
+    return isFunctionValid(parseAst as AstNode);
+  } catch (e) {
+    toast.error(e || '非法的函数定义');
+    return false;
+  }
+}
+
+export function isFunctionValid(ast: AstNode): boolean {
+  if (!ast.body.length) {
+    throw new Error('不存在处理函数');
+  }
+
+  if (ast.body.length > 1) {
+    throw new Error('所有内容都应该定义在函数体内');
+  }
+  const [firstNode] = ast.body;
+  if (firstNode.type !== 'FunctionDeclaration') {
+    throw new Error('不存在处理函数');
   }
 
   return true;
