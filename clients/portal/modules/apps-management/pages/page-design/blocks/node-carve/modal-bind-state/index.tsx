@@ -131,6 +131,7 @@ function ModalBindState(): JSX.Element | null {
   function handleEditorChange(val: string): void {
     if (editorType === 'convertor') {
       const bodyString = getFnBody(parseAst(val), val);
+      console.log(bodyString);
 
       return setConvertorStr(bodyString);
     }

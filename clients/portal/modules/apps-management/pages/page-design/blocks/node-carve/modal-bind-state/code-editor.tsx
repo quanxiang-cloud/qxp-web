@@ -35,12 +35,14 @@ function CodeEditor(
 
   useEffect(() => {
     let _initValue = initValue;
+    console.log('initValue: ', initValue, type);
+
     if (type === 'convertor') {
       _initValue = generateInitFunString({ name: 'shouldRender', args: 'states', body: initValue });
     }
 
     setValue(_initValue);
-  }, [initValue]);
+  }, [initValue, type]);
 
   return (
     <Editor
