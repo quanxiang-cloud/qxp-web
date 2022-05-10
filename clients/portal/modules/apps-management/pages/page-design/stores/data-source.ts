@@ -21,7 +21,12 @@ const defaultSharedVal: SharedVal = {
 
 class DataSource {
   // 普通变量, 命名兼容render-engine
-  @observable sharedState: Record<string, any> = {};
+  @observable sharedState: Record<string, any> = {
+    taskListModalVisible: '{"name":"taskListModalVisible","val":"false"}',
+    userBunnyInfo: '{"name":"userBunnyInfo","val":"{\\"name\\":\\"bunny\\"}","desc":""}',
+    userKangKangInfo: '{"name":"userKangKangInfo","val":"{\\"name\\":\\"iris\\"}","desc":""}',
+    userMarkDuanInfo: '{"name":"userMarkDuanInfo","val":"{\\"name\\":\\"mark\\"}","desc":""}',
+  };
 
   // api变量
   @observable apiState: Record<string, any> = {};

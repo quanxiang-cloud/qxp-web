@@ -54,38 +54,40 @@ function ModalBindState(): JSX.Element | null {
   function SupportedVariablesAndOperators() {
     return (
       <>
-        <div className="py-4">已绑定变量：</div>
-        {!bindVariables.length && (
-          <div className="px-8 py-4 border-1 text-red-400 text-center">
+        <div className="py-4">已绑定变量： <span className={styles.desc}>被绑定的变量值变化，触发重新执行条件表达式或者自定义函数</span></div>
+        <div className={styles['bind-container']}>
+          {!bindVariables.length && (
+            <div className="px-16 py-8 border-1 text-red-400 text-center flex-1">
             请先点击左侧可用变量列表进行变量绑定操作
-          </div>
-        )}
-        {!!bindVariables.length && (
-          <div className={styles['bind-container']}>
-            {bindVariables.map(({ depID, type }) => {
-              return (
-                <div
-                  key={`${depID}_${type}`}
-                  className={styles['bind-item']}
-                  onClick={() => editorType === 'expression' && editorRef.current?.onInsertText(depID)}
-                >
-                  {depID}
-                  <Icon
-                    name="close"
-                    size={12}
-                    className={styles['unbind-btn']}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      e.preventDefault();
+            </div>
+          )}
+          {!!bindVariables.length && (
+            <>
+              {bindVariables.map(({ depID, type }) => {
+                return (
+                  <span
+                    key={`${depID}_${type}`}
+                    className={styles['bind-item']}
+                    onClick={() => editorType === 'expression' && editorRef.current?.onInsertText(depID)}
+                  >
+                    {depID}
+                    <Icon
+                      name="close"
+                      size={12}
+                      className={styles['unbind-btn']}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
 
-                      handleUnbind(depID);
-                    }}
-                  />
-                </div>
-              );
-            })}
-          </div>
-        )}
+                        handleUnbind(depID);
+                      }}
+                    />
+                  </span>
+                );
+              })}
+            </>
+          )}
+        </div>
         {updateAttrPayload?.path === 'shouldRender' && (
           <>
             <div className="py-4">逻辑运算符：</div>

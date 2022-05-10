@@ -46,7 +46,7 @@ function CodeEditor(
   return (
     <Editor
       ref={refEditor}
-      width='500px'
+      width='600px'
       height="250px"
       value={value}
       extensions={[javascript()]}
