@@ -1,7 +1,7 @@
 import React, { CSSProperties } from 'react';
 import cs from 'classnames';
 
-import type { PackageComponent } from '@pageDesign/blocks/menu/type';
+import type { PackageComponent } from '@pageDesign/blocks/fountainhead/type';
 
 import ComponentRender from './component-render';
 import Search from './search';

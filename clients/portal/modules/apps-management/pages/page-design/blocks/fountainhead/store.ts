@@ -1,11 +1,12 @@
 import { flatten } from 'ramda';
 import { from } from 'rxjs6';
 import { switchMap, catchError, shareReplay } from 'rxjs6/operators';
-import { isEmpty, is } from 'ramda';
+import { isEmpty } from 'ramda';
+import { isObject } from '@one-for-all/artery-engine';
 
 import { PropsSpec } from '@one-for-all/node-carve';
 
-import type { Package, PackageComponent } from '@pageDesign/blocks/menu/type';
+import type { Package, PackageComponent } from '@pageDesign/blocks/fountainhead/type';
 import useObservable from '@lib/hooks/use-observable';
 import {
   getPackagesSourceDynamic, getPackagePropsSpec, getComponentsFromPackage,
@@ -22,7 +23,6 @@ const propsSpecs$ = packages$.pipe(
   catchError(async () => ({}) as Record<string, PropsSpec>),
   shareReplay(Infinity),
 );
-const isObject = is(Object);
 
 export function usePackages(): Package[] | undefined {
   const packages = useObservable(packages$);
@@ -34,7 +34,8 @@ export function useComponents(): PackageComponent[] | undefined {
   return isInvalid(components) ? undefined : components;
 }
 
-export function usePackagePropsSpec({ name, version }: Pick<Package, 'name' | 'version'>): PropsSpec | undefined {
+export function usePackagePropsSpec(params: Pick<Package, 'name' | 'version'>): PropsSpec | undefined {
+  const { name, version } = params;
   const key = `${name}@${version}`;
   const propsSpecs = useObservable(propsSpecs$);
   return propsSpecs[key];

@@ -4,10 +4,10 @@ import { observer } from 'mobx-react';
 import { toJS, reaction } from 'mobx';
 import { Icon, Button, Tooltip, Modal } from '@one-for-all/ui';
 import { ArteryRenderer } from '@one-for-all/artery-renderer';
-import { BlockItemProps } from '@one-for-all/artery-engine';
+import type { BlockItemProps } from '@one-for-all/artery-engine';
 
 import { useCtx } from '@pageDesign/ctx';
-import { BlocksCommunicationType } from '@pageDesign/types';
+import type { BlocksCommunicationType } from '@pageDesign/types';
 
 import styles from './style.m.scss';
 import './style.scss';
