@@ -48,12 +48,6 @@ const INIT_CURRENT_FUNC = {
   versionNum: 0,
 };
 
-const ENV = {
-  FUNC_CLEAR_SOURCE: 'true',
-  GOPROXY: 'https://goproxy.cn,direct',
-  FUNC_NAME: 'HelloWorld',
-};
-
 function getBuildStatusMap(statusList: FaasBuildStatus[]): Record<string, FaasProcessStatus> {
   return statusList.reduce<Record<string, FaasProcessStatus>>((acc, _status) => {
     if (_status.children) {
@@ -370,8 +364,8 @@ class FaasStore {
   };
 
   @action
-  buildFunc = (buildData: { version: string, describe: string }): void => {
-    buildFunc(this.groupID, { ...buildData, env: ENV, projectID: this.currentFuncID }).then(() => {
+  buildFunc = (buildData: { version: string, describe: string, env: Record<string, string> }): void => {
+    buildFunc(this.groupID, { ...buildData, projectID: this.currentFuncID }).then(() => {
       this.modalType = '';
     }).catch((err) => {
       toast.error(err);

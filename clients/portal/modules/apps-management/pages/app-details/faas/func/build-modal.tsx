@@ -1,10 +1,11 @@
 import React from 'react';
 import SchemaForm, { useForm } from '@formily/antd';
-import { Input } from '@formily/antd-components';
+import { Input, Select as AntdSelect } from '@formily/antd-components';
 
 import Modal from '@c/modal';
 
 import store from '../store';
+import EnvList from '../component/env-list';
 
 type Props = {
   onClose: () => void;
@@ -49,6 +50,42 @@ function BuildModal({ onClose }: Props): JSX.Element {
             ],
             'x-index': 0,
           },
+          env: {
+            type: 'array',
+            title: '环境变量',
+            'x-component': 'EnvList',
+            'x-mega-props': {
+              labelAlign: 'top',
+            },
+            items: {
+              type: 'object',
+              properties: {
+                envName: {
+                  type: 'string',
+                  'x-component': 'Input',
+                  title: 'key',
+                  'x-component-props': {
+                    placeholder: '请输入环境变量名',
+                  },
+                  'x-mega-props': {
+                    labelAlign: 'left',
+                  },
+                },
+                envValue: {
+                  type: 'string',
+                  'x-component': 'Input',
+                  title: 'value',
+                  'x-component-props': {
+                    placeholder: '请输入环境变量值',
+                  },
+                  'x-mega-props': {
+                    labelAlign: 'left',
+                  },
+                },
+              },
+            },
+            'x-index': 1,
+          },
           describe: {
             type: 'string',
             title: '描述',
@@ -63,7 +100,7 @@ function BuildModal({ onClose }: Props): JSX.Element {
               max: 100,
               message: '备注超过 100 字符!',
             },
-            'x-index': 3,
+            'x-index': 2,
           },
         },
       },
@@ -71,7 +108,16 @@ function BuildModal({ onClose }: Props): JSX.Element {
   };
   const form = useForm({
     onSubmit: (formData) => {
-      store.buildFunc(formData);
+      const _env: Record<string, string> = {};
+      (formData.env || [])
+        .filter((envItem: {envName: string, envValue: string}) => !!envItem.envName)
+        .forEach((envItem: {envName: string, envValue: string}) => {
+          const { envName, envValue } = envItem;
+          if (envValue) {
+            _env[envName] = envValue;
+          }
+        });
+      store.buildFunc({ ...formData, env: _env });
       onClose();
     },
   });
@@ -84,7 +130,7 @@ function BuildModal({ onClose }: Props): JSX.Element {
 
   return (
     <Modal
-      className="static-modal"
+      className="build-func"
       title="构建函数"
       onClose={onClose}
       footerBtns={[
@@ -107,7 +153,7 @@ function BuildModal({ onClose }: Props): JSX.Element {
         className="p-20"
         schema={SCHEMA}
         form={form as any}
-        components={{ Input, TextArea: Input.TextArea }}
+        components={{ AntdSelect, Input, TextArea: Input.TextArea, EnvList }}
       />
     </Modal>
   );
