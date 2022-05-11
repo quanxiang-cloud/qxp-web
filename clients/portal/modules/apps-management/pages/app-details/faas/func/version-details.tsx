@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { MouseEvent, useEffect, useMemo, useState } from 'react';
 import { observer } from 'mobx-react';
 import { Input } from 'antd';
 import dayjs from 'dayjs';
@@ -13,16 +13,18 @@ import ws from '@lib/push';
 import VersionStatus from '../component/version-status';
 import ApiDetails from '../../api-documentation/api-details';
 import BuildProcess from './build-process';
-import store from '../store';
+import store from './store';
 
 import '../index.scss';
 import '../../api-documentation/prism.css';
 import { API_DOC_STATE } from '../constants';
 import { wsSubscribe } from '../api';
+import { useHistory } from 'react-router-dom';
 
 const { TextArea } = Input;
 
 function VersionDetails(): JSX.Element {
+  const history = useHistory();
   const [des, setDes] = useState(store.currentVersionFunc?.describe || '');
 
   const apiDoc = useMemo(() => {
@@ -99,12 +101,16 @@ function VersionDetails(): JSX.Element {
     completionTime,
   } = store.currentVersionFunc;
 
+  function onGoBack(e: MouseEvent): void {
+    e.stopPropagation();
+    history.goBack();
+  }
   return (
     <div className='flex flex-col flex-1 h-full px-20 version-detail'>
       <div className='flex items-center justify-between h-48'>
         <div className='flex'>
           <div
-            onClick={() => store.modalType = 'funDetail'}
+            onClick={onGoBack}
             className='text-gray-600 text-14 corner-8-8-8-2 cursor-pointer hover:bg-gray-100'>
             <Icon
               clickable

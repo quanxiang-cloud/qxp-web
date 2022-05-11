@@ -5,7 +5,7 @@ import { Radio, Input, Select as AntdSelect } from '@formily/antd-components';
 import Modal from '@c/modal';
 import Icon from '@c/icon';
 
-import store from '../store';
+import store from './store';
 
 const SCHEMA = {
   type: 'object',
@@ -125,12 +125,12 @@ function BindGroupModal(): JSX.Element {
   return (
     <Modal
       title="创建 / 绑定空间"
-      onClose={() => store.setShowBindGroupModal(false)}
+      onClose={() => store.setModalType('')}
       footerBtns={[
         {
           text: '取消',
           key: 'cancel',
-          onClick: () => store.setShowBindGroupModal(false),
+          onClick: () => store.setModalType(''),
         },
         {
           text: '确定',

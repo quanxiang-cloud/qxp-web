@@ -5,7 +5,7 @@ import PageLoading from '@c/page-loading';
 import FlowRender from '@c/logic/flow-render';
 
 import ProcessSpan from './process-span';
-import store from '../store';
+import store from './store';
 import { getBuildProcess } from '../api';
 
 const nodeTypes = {

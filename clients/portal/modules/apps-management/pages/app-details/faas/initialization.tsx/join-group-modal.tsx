@@ -2,18 +2,18 @@ import React from 'react';
 
 import Modal from '@c/modal';
 
-import store from '../store';
+import store from './store';
 
 function AddToGroupModal(): JSX.Element {
   return (
     <Modal
       title="加入协作"
-      onClose={() => store.setShowJoinGroupModal(false)}
+      onClose={() => store.setModalType('')}
       footerBtns={[
         {
           text: '否，暂不加入',
           key: 'cancel',
-          onClick: () => store.setShowJoinGroupModal(false),
+          onClick: () => store.setModalType(''),
         },
         {
           text: '是，确定加入',

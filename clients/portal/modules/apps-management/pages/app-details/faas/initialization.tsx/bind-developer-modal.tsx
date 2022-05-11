@@ -5,7 +5,7 @@ import { Radio, Input } from '@formily/antd-components';
 import Icon from '@c/icon';
 import Modal from '@c/modal';
 
-import store from '../store';
+import store from './store';
 
 const SCHEMA = {
   type: 'object',
@@ -50,12 +50,12 @@ function BindDeveloperModal(): JSX.Element {
   return (
     <Modal
       title='绑定Git仓库账户'
-      onClose={() => store.setShowBindDevelopModal(false)}
+      onClose={() => store.setModalType('')}
       footerBtns={[
         {
           text: '取消',
           key: 'cancel',
-          onClick: () => store.setShowBindDevelopModal(false),
+          onClick: () => store.setModalType(''),
         },
         {
           text: '保存',

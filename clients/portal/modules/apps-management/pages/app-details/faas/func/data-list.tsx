@@ -15,7 +15,7 @@ import Pagination from '@c/pagination';
 import TableMoreFilterMenu from '@c/more-menu/table-filter';
 import { copyContent } from '@lib/utils';
 
-import store from '../store';
+import store from './store';
 import BuildModal from './build-modal';
 import { getGitLabDomain } from '../api';
 

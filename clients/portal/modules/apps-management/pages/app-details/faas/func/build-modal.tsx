@@ -4,7 +4,7 @@ import { Input, Select as AntdSelect } from '@formily/antd-components';
 
 import Modal from '@c/modal';
 
-import store from '../store';
+import store from './store';
 import EnvList from '../component/env-list';
 
 type Props = {

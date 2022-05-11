@@ -10,12 +10,14 @@ import Table from '@c/table';
 import PopConfirm from '@c/pop-confirm';
 import Pagination from '@c/pagination';
 
-import store from '../store';
+import store from './store';
 import TableMoreFilterMenu from '@c/more-menu/table-filter';
 import VersionStatus from '../component/version-status';
 import { FUNC_STATUS } from '../constants';
+import { useHistory } from 'react-router-dom';
 
 function FuncDetailsDrawer(): JSX.Element {
+  const history = useHistory();
   useEffect(() => {
     store.fetchFuncInfo();
     store.setVersionParams({});
@@ -33,8 +35,8 @@ function FuncDetailsDrawer(): JSX.Element {
           <span
             className="text-blue-600 cursor-pointer"
             onClick={() => {
-              onClickTool(id, 'VersionDetail');
-              // history.push(`/apps/details/${store.appID}/build_details`);
+              store.buildID = id;
+              history.push(`/apps/details/${store.appID}/build_details`);
             }}
           >
             {version}
@@ -61,14 +63,11 @@ function FuncDetailsDrawer(): JSX.Element {
         </TableMoreFilterMenu>
       ),
       id: 'state',
-      // accessor: ({ status, id, message, serverState, visibility }: VersionField) => (
       accessor: ({ status, id, message }: VersionField) => (
         <VersionStatus
-          // visibility={visibility}
           state={status}
           versionID={id}
           message={message}
-          // serverState={serverState}
         />
       ),
     },
@@ -105,11 +104,9 @@ function FuncDetailsDrawer(): JSX.Element {
               <PopConfirm content='确认上线改版本？' onOk={() => store.servingVer(id)} >
                 <span className="operate">上线</span>
               </PopConfirm>)}
-            {/* {status === FUNC_STATUS.StatusOK && ( */}
             <PopConfirm content='确定生成API文档？' onOk={() => store.registerAPI(id)} >
               <span className="operate">生成API文档</span>
             </PopConfirm>
-            {/* )} */}
             { status !== FUNC_STATUS.StatusOnline && (
               <PopConfirm content='确认删除改版本？' onOk={() => store.deleteVer(id)} >
                 <span className="cursor-pointer text-red-600">删除</span>
@@ -128,11 +125,6 @@ function FuncDetailsDrawer(): JSX.Element {
       store.modalType = '';
     }, 300);
   };
-
-  function onClickTool(id: string, modalType: string): void {
-    store.buildID = id;
-    store.modalType = modalType;
-  }
 
   return (
     <div

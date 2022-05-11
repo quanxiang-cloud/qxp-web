@@ -1,7 +1,7 @@
 import React from 'react';
 
 import StatusDisplay from '../component/status';
-import store from '../store';
+import store from '../func/store';
 
 type Props = {
   state: number;

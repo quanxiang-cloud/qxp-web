@@ -4,21 +4,29 @@ import { observer } from 'mobx-react';
 import TextHeader from '@c/text-header';
 import Loading from '@c/loading';
 
-import store from '../store';
+import store from './store';
 import DataList from './data-list';
 import StepsTip from './steps-tip';
 import DataEmpty from './data-empty';
 import EditModal from './edit-modal';
-import VersionDetails from './version-details';
 import FuncDetailsDrawer from './func-drawer';
 
 import '../index.scss';
 
-function FuncList(): JSX.Element {
-  const { fetchFuncList, modalType, setModalType, funcListLoading } = store;
+ type Props = {
+   appID: string,
+   group: string,
+ }
+
+function FuncList({ group, appID }: Props): JSX.Element {
+  const { modalType, setModalType, funcListLoading } = store;
 
   useEffect(() => {
-    fetchFuncList('', 1, 10);
+    store.setGroupID(group);
+  }, []);
+
+  useEffect(() => {
+    store.setAppID(appID);
   }, []);
 
   if (funcListLoading) {
@@ -49,9 +57,9 @@ function FuncList(): JSX.Element {
       )}
       {modalType === 'editModel' && <EditModal modalType={modalType} onClose={() => setModalType('')} />}
 
-      {modalType === 'VersionDetail' && (
+      {/* {modalType === 'VersionDetail' && (
         <VersionDetails/>
-      )}
+      )} */}
       {modalType === 'funDetail' && (
         <FuncDetailsDrawer/>
       )}

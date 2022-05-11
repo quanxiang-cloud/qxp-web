@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import { Handle, NodeProps, Position } from 'react-flow-renderer';
 
 import LoggerModal from './log-modal';
-import store from '../store';
+import store from './store';
 import { FUNC_STATUS } from '../constants';
 
 type NodeStatus = FaasProcessStatus | 'Disable';

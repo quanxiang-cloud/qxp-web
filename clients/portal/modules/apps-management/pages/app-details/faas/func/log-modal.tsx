@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import Modal from '@c/modal';
 import PageLoading from '@c/page-loading';
 
-import store from '../store';
+import store from './store';
 import { getBuildLog } from '../api';
 
 type Props = {
