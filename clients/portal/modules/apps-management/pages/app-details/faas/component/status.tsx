@@ -25,7 +25,7 @@ const STATUS_INFO: Record<number, { color: string, name: string }> = {
   [FUNC_STATUS.StatusFailed]: { color: 'red', name: '构建失败' },
   [FUNC_STATUS.StatusOK]: { color: 'green', name: '构建成功' },
   [FUNC_STATUS.StatusOnline]: { color: 'green', name: '上线' },
-  [FUNC_STATUS.StatusOffline]: { color: 'green', name: '下限' },
+  [FUNC_STATUS.StatusOffline]: { color: 'green', name: '下线' },
   [FUNC_STATUS.OnlineBuilding]: { color: 'yellow', name: '上线中' },
   [FUNC_STATUS.OnlineFailed]: { color: 'red', name: '上线失败' },
 };

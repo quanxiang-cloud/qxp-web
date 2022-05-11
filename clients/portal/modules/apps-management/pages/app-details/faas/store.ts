@@ -420,10 +420,10 @@ class FaasStore {
 
   @action
   offlineVer = (id: string): void => {
-    offlineVer(this.groupID, { id }).then(() => {
+    offlineVer(this.groupID, id ).then(() => {
       this.versionList = this.versionList.map((version) => {
         if (version.id === id) {
-          this.currentVersionFunc = { ...version, status: 7 };
+          this.currentVersionFunc = { ...version, status: 6 };
           return { ...version, status: 6 };
         }
 

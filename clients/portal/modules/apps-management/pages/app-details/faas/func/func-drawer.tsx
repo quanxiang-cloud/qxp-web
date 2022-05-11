@@ -101,7 +101,7 @@ function FuncDetailsDrawer(): JSX.Element {
               <PopConfirm content='确认下线改版本？' onOk={() => store.offlineVer(id)} >
                 <span className="operate">下线</span>
               </PopConfirm>)}
-            {isBuildOk && (
+            {isBuildOk && status !== FUNC_STATUS.StatusOnline && (
               <PopConfirm content='确认上线改版本？' onOk={() => store.servingVer(id)} >
                 <span className="operate">上线</span>
               </PopConfirm>)}

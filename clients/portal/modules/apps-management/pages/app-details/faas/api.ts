@@ -138,9 +138,9 @@ export function defineFunc(groupID: string, projectID: string): Promise<{ url: s
 
 export function offlineVer(
   groupID: string,
-  data: {id: string},
+  id: string,
 ): Promise<void> {
-  return httpClient.delete(`/api/v1/faas/group/${groupID}/project/offline`, data);
+  return httpClient.delete(`/api/v1/faas/group/${groupID}/project/offline/${id}`);
 }
 
 export function servingVer(
