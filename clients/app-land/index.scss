@@ -6,6 +6,14 @@
   }
 }
 
+[data-layout-type="right-sidebar-content"] {
+  @apply flex flex-row-reverse h-full overflow-auto;
+
+  [data-layout-child="routes-container"] {
+    @apply flex-1 overflow-auto;
+  }
+}
+
 [data-layout-type="left-sidebar-content"] {
   @apply flex h-full overflow-auto;
 
