@@ -27,7 +27,7 @@ function LogicOperatorsAndBoundVariables({ boundVariables, unBind, editorRef }: 
       <div className={styles['bind-container']}>
         {!boundVariables.length && (
           <div className="px-16 py-8 border-1 text-red-400 text-center flex-1">
-            请先点击左侧可用变量列表进行变量绑定操作，被绑定的变量值变化，触发重新执行条件表达式或者自定义函数
+            请先点击左侧可用变量列表进行变量绑定操作
           </div>
         )}
         {!!boundVariables.length && (

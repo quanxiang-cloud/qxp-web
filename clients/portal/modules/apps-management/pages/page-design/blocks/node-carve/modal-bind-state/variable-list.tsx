@@ -28,7 +28,7 @@ function VariableList({ boundVariables, updateBoundVariables, editorRef }: Props
   return (
     <>
       <Section title="自定义变量" defaultExpand>
-        {!sharedStates.length && <div>暂无自定义变量，请在数据源中添加</div>}
+        {!sharedStates.length && <div className="text-12 text-gray-400">暂无自定义变量，请在数据源中添加</div>}
         {!!sharedStates.length && sharedStates.map(({ name }) => {
           return (
             <div
@@ -42,7 +42,7 @@ function VariableList({ boundVariables, updateBoundVariables, editorRef }: Props
         })}
       </Section>
       <Section title="API变量" defaultExpand>
-        {!apiStates.length && <div>暂无 API 变量，请在数据源中添加</div>}
+        {!apiStates.length && <div className="text-12 text-gray-400">暂无 API 变量，请在数据源中添加</div>}
         {!!apiStates.length && (
           <>
             {apiStates.map(({ name }) => {

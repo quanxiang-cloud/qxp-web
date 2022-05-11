@@ -31,6 +31,7 @@ function ModalBindState(): JSX.Element | null {
     setModalBindStateOpen,
     updateAttrPayload,
   } = useConfigContext() as ConfigContextState;
+  const isShouldRenderConfig = updateAttrPayload?.path === 'shouldRender';
   const [boundVariables, setBoundVariables] = useState<ComputedDependency[]>([]); // 已绑定的变量
   const [fallback, setFallBack] = useState<boolean>(); // 默认值
   const [expressionStr, setExpressionStr] = useState(''); // 表达式
@@ -136,7 +137,7 @@ function ModalBindState(): JSX.Element | null {
 
   return (
     <Modal
-      title={updateAttrPayload?.path === 'shouldRender' ? '条件渲染配置' : '变量绑定'}
+      title={isShouldRenderConfig ? '条件渲染配置' : '变量绑定'}
       className='py-8'
       onClose={onCancel}
       footerBtns={[
@@ -176,7 +177,7 @@ function ModalBindState(): JSX.Element | null {
             items={[
               {
                 id: 'expression',
-                name: updateAttrPayload?.path === 'shouldRender' ? '条件表达式' : '变量表达式',
+                name: isShouldRenderConfig ? '条件表达式' : '变量表达式',
                 content: <div className={styles.tip}>配置前，应清空自定义函数，保存的表达式才能生效</div>,
               },
               {
@@ -192,7 +193,7 @@ function ModalBindState(): JSX.Element | null {
             initValue={editorType === 'convertor' ? convertorStr : expressionStr}
             onChange={handleEditorChange}
           />
-          {updateAttrPayload?.path === 'shouldRender' && (
+          {isShouldRenderConfig && (
             <>
               <div className="flex items-center pt-12">
                 <span>默认值：</span>
