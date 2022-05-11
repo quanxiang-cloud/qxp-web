@@ -4,20 +4,18 @@ import { Modal } from '@one-for-all/ui';
 import { ComputedProperty, ComputedDependency } from '@one-for-all/artery';
 
 import Tab from '@c/tab';
-import Icon from '@c/icon';
 import Toggle from '@c/toggle';
 import toast from '@lib/toast';
-import { useCtx } from '@pageDesign/ctx';
 
 import { findNode } from '../utils/tree';
-import Section from '../../../utils/section';
 import { updateNodeProperty } from '../utils';
 import CodeEditor, { EditorRefType } from './code-editor';
-import { LOGIC_OPERATOR } from './constants';
-import { generateInitFunString, getFnBody, parseAst, parseToExpressionStr, toConvertorProp } from './utils';
+import LogicOperatorsAndBoundVariables from './bound-and-logic';
 import { ConfigContextState, UpdateAttrPayloadType, useConfigContext } from '../context';
+import { generateInitFunString, getFnBody, parseAst, parseToExpressionStr, toConvertorProp } from './utils';
 
 import styles from './index.m.scss';
+import VariableList from './variable-list';
 
 export type VariableBindConf = {
   type: 'convertor' | 'expression';
@@ -25,7 +23,6 @@ export type VariableBindConf = {
 }
 
 function ModalBindState(): JSX.Element | null {
-  const { dataSource } = useCtx();
   const {
     activeNode,
     rawActiveNode,
@@ -34,15 +31,15 @@ function ModalBindState(): JSX.Element | null {
     setModalBindStateOpen,
     updateAttrPayload,
   } = useConfigContext() as ConfigContextState;
-  const [bindVariables, setBindVariables] = useState<ComputedDependency[]>([]); // 已绑定的变量
+  const [boundVariables, setBoundVariables] = useState<ComputedDependency[]>([]); // 已绑定的变量
+  const [fallback, setFallBack] = useState<boolean>(); // 默认值
   const [expressionStr, setExpressionStr] = useState(''); // 表达式
-  const [convertorStr, setConvertorStr] = useState(''); // convertor函数内容
+  const [convertorStr, setConvertorStr] = useState(''); // 自定义函数内容
   const [editorType, setEditorType] = useState<'expression' | 'convertor'>('expression'); // 最终保存的配置内容的类型 '表达式' | '自定义函数'
   const editorRef = useRef<EditorRefType>();
-  const [fallback, setFallBack] = useState<boolean>();
-  const sharedStates = Object.entries(dataSource.sharedState).map(([_, value]) => JSON.parse(value));
-  const apiStates = Object.entries(dataSource.apiState).map(([_, value]) => JSON.parse(value));
-  const names = useMemo(() => bindVariables.map(({ depID }) => depID), [bindVariables]);
+  const expressionEditorRef = useMemo(() => {
+    return editorType === 'expression' ? editorRef : undefined;
+  }, [editorType]);
   const finalConfig: VariableBindConf = useMemo(() => {
     if (convertorStr) {
       return { type: 'convertor', contentStr: convertorStr };
@@ -51,71 +48,12 @@ function ModalBindState(): JSX.Element | null {
     return { type: 'expression', contentStr: expressionStr };
   }, [expressionStr, convertorStr]);
 
-  function SupportedVariablesAndOperators() {
-    return (
-      <>
-        <div className="py-4">已绑定变量： <span className={styles.desc}>被绑定的变量值变化，触发重新执行条件表达式或者自定义函数</span></div>
-        <div className={styles['bind-container']}>
-          {!bindVariables.length && (
-            <div className="px-16 py-8 border-1 text-red-400 text-center flex-1">
-            请先点击左侧可用变量列表进行变量绑定操作
-            </div>
-          )}
-          {!!bindVariables.length && (
-            <>
-              {bindVariables.map(({ depID, type }) => {
-                return (
-                  <span
-                    key={`${depID}_${type}`}
-                    className={styles['bind-item']}
-                    onClick={() => editorType === 'expression' && editorRef.current?.onInsertText(depID)}
-                  >
-                    {depID}
-                    <Icon
-                      name="close"
-                      size={12}
-                      className={styles['unbind-btn']}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        e.preventDefault();
-
-                        handleUnbind(depID);
-                      }}
-                    />
-                  </span>
-                );
-              })}
-            </>
-          )}
-        </div>
-        {updateAttrPayload?.path === 'shouldRender' && (
-          <>
-            <div className="py-4">逻辑运算符：</div>
-            <div className="grid gap-4 grid-cols-5 max-h-144 overflow-auto">
-              {LOGIC_OPERATOR.map((op) => {
-                return (
-                  <div
-                    key={op}
-                    onClick={() => editorType === 'expression' && editorRef.current?.onInsertText(`${op} `)}
-                    className="px-8 py-4 border-1 inline-block text-center hover:bg-blue-400"
-                  >
-                    {op}
-                  </div>
-                );
-              })}
-            </div>
-          </>
-        )}
-      </>
-    );
-  }
-
   function onCancel(): void {
     setModalBindStateOpen(false);
   }
 
   function handleUnbind(depID: string): void {
-    setBindVariables(bindVariables.filter(({ depID: id }) => id !== depID));
+    setBoundVariables(boundVariables.filter(({ depID: id }) => id !== depID));
   }
 
   function bindSubmit(node: UpdateAttrPayloadType, property: ComputedProperty): void {
@@ -144,12 +82,12 @@ function ModalBindState(): JSX.Element | null {
     }
 
     if (!expressionStr && !convertorStr) {
-      return toast.error('表达式和 convertor 自定义函数的body内容，不能都为空！');
+      return toast.error('表达式和自定义函数的内容，不能都为空！');
     }
 
     const computedProperty: ComputedProperty = {
       type: 'computed_property',
-      deps: bindVariables,
+      deps: boundVariables,
       fallback: fallback,
       convertor: toConvertorProp(finalConfig),
     };
@@ -159,7 +97,7 @@ function ModalBindState(): JSX.Element | null {
 
   function initValueByBindConf(bindConf: any): void {
     setFallBack(bindConf.fallback);
-    setBindVariables(bindConf.deps);
+    setBoundVariables(bindConf.deps);
 
     if (bindConf.convertor.type === 'state_convert_expression') {
       const expr = bindConf.convertor?.expression;
@@ -219,42 +157,18 @@ function ModalBindState(): JSX.Element | null {
     >
       <div className={styles.modal}>
         <div className={styles.side}>
-          <Section title="自定义变量" defaultExpand>
-            {sharedStates.map(({ name }) => {
-              return (
-                <div
-                  key={name}
-                  className={styles['list-item']}
-                  onClick={() => {
-                    editorType === 'expression' && editorRef.current?.onInsertText(`${name} `);
-
-                    if (names.includes(name)) return;
-                    setBindVariables([...bindVariables, { depID: name, type: 'shared_state' }]);
-                  }}
-                >
-                  {name}
-                </div>
-              );
-            })}
-          </Section>
-          {!!apiStates.length && (
-            <Section title="API变量" defaultExpand>
-              {apiStates.map(({ name }) => {
-                return (
-                  <div
-                    key={name}
-                    className={styles['list-item']}
-                    onClick={() => console.log('bind: ', name, 'api_state')}
-                  >
-                    {name}
-                  </div>
-                );
-              })}
-            </Section>
-          )}
+          <VariableList
+            boundVariables={boundVariables}
+            updateBoundVariables={setBoundVariables}
+            editorRef={expressionEditorRef}
+          />
         </div>
         <div className={styles.body}>
-          <SupportedVariablesAndOperators />
+          <LogicOperatorsAndBoundVariables
+            boundVariables={boundVariables}
+            unBind={handleUnbind}
+            editorRef={expressionEditorRef}
+          />
           <Tab
             style={{ height: 'auto' }}
             currentKey={editorType}
@@ -279,12 +193,14 @@ function ModalBindState(): JSX.Element | null {
             onChange={handleEditorChange}
           />
           {updateAttrPayload?.path === 'shouldRender' && (
-            <div className="flex items-center pt-12">
-              <span>默认值：</span>
-              <Toggle defaultChecked={fallback} onChange={setFallBack} />
-            </div>
+            <>
+              <div className="flex items-center pt-12">
+                <span>默认值：</span>
+                <Toggle defaultChecked={fallback} onChange={setFallBack} />
+              </div>
+              <div className={styles.desc}>表达式或自定义函数因某种原因执行失败或者出现异常的时候，作为执行结果的默认值</div>
+            </>
           )}
-          <div className={styles.desc}>表达式或自定义函数因某种原因执行失败或者出现异常的时候，作为执行结果的默认值</div>
         </div>
       </div>
     </Modal>
