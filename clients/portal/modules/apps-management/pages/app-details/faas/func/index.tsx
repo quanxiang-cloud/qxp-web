@@ -55,11 +55,9 @@ function FuncList({ group, appID }: Props): JSX.Element {
           </div>
         </>
       )}
-      {modalType === 'editModel' && <EditModal modalType={modalType} onClose={() => setModalType('')} />}
-
-      {/* {modalType === 'VersionDetail' && (
-        <VersionDetails/>
-      )} */}
+      {modalType === 'editModel' && (
+        <EditModal modalType={modalType} onClose={() => setModalType('')} />
+      )}
       {modalType === 'funDetail' && (
         <FuncDetailsDrawer/>
       )}

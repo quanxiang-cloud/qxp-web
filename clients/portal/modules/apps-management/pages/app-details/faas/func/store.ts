@@ -17,7 +17,6 @@ import {
   deleteVer,
   registerAPI,
   getVersionInfo,
-  // wsSubscribe,
 } from '../api';
 import toast from '@lib/toast';
 import { getApiDoc } from '../../api-documentation/api';
@@ -48,13 +47,6 @@ function getBuildStatusMap(statusList: FaasBuildStatus[]): Record<string, FaasPr
 
     return { ...acc, [_status.name]: _status.status };
   }, {});
-}
-
-type GroupSchema = {
-  type: string;
-  gid: number;
-  name: string;
-  describe: string
 }
 
 class FaasStore {
@@ -182,7 +174,7 @@ class FaasStore {
 
   @action
   createFunc = (data: creatFuncParams): void => {
-    createFaasFunc(this.groupID, { ...data, tag: '1.16' }).then((res) => {
+    createFaasFunc(this.groupID, { ...data, version: '1.16' }).then((res) => {
       this.currentFuncID = res.id;
       this.currentFunc = { ...res, ...data, state: 'True' };
       this.funcList = [this.currentFunc, ...this.funcList];

@@ -26,6 +26,12 @@ function FuncDetailsDrawer(): JSX.Element {
   const [visible, setVisible] = useState<boolean>(false);
   const [fullScreen, setFullScreen] = useState<boolean>(false);
 
+  function onClinckVername(id: string): void {
+    store.buildID = id;
+    store.modalType = '';
+    history.push(`/apps/details/${store.appID}/build_details`);
+  }
+
   const COLUMNS: UnionColumn<VersionField>[] = [
     {
       Header: '版本号',
@@ -35,8 +41,7 @@ function FuncDetailsDrawer(): JSX.Element {
           <span
             className="text-blue-600 cursor-pointer"
             onClick={() => {
-              store.buildID = id;
-              history.push(`/apps/details/${store.appID}/build_details`);
+              onClinckVername(id);
             }}
           >
             {version}
