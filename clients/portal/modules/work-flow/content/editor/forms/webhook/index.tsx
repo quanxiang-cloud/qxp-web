@@ -118,8 +118,7 @@ export default function WebhookConfig(
       name: 'editWay',
       watch: true,
       component: EditWay,
-      hide: (values: any) => values.type !== 'send',
-      defaultValue: 'simple',
+      defaultValue: 'multiple',
     }, {
       name: 'inputs',
       watch: true,

@@ -74,7 +74,8 @@ export function fieldsTreeToParams(
 
   const _params: { [propertyName: string]: SwagSchema } = {};
   rootNode.children?.forEach((child) => {
-    const { data, id } = child;
+    const { data } = child;
+    const { id = '' } = data;
     const condition = data?.acceptable || false;
     if (condition) {
       if (!data.properties) {
