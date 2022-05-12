@@ -62,7 +62,7 @@ export function getUserDetail<T>(params: { query: string }): Promise<T> {
 }
 
 export function getDepDetail<T>(params: { query: string }): Promise<T> {
-  return httpClientGraphQL<T>('/api/v1/search/department', params);
+  return httpClientGraphQL<T>('/api/v1/search/departments', params);
 }
 
 export async function createAPIAuth(appID: string, data: APIAuth): Promise<void> {
