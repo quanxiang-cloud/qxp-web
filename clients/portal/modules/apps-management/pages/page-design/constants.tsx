@@ -8,7 +8,7 @@ import Simulator from './blocks/simulator';
 import Fountainhead from './blocks/fountainhead';
 import Structure from './blocks/structure';
 import Pool from './blocks/pool';
-import Config from './blocks/config';
+import NodeCarve from './blocks/node-carve';
 import { BlocksCommunicationType } from './types';
 
 export const QUERY_KEY = {
@@ -40,7 +40,7 @@ export const LAYERS: Layer<BlocksCommunicationType>[] = [
         render: Simulator,
       },
       {
-        render: Config,
+        render: NodeCarve,
       },
     ],
   },
