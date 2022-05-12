@@ -12,7 +12,7 @@ type Props = NodeRenderProps<SwagField> & {
 }
 
 function FieldRender({ node, store, isAll, type = 'output' }: Props): JSX.Element {
-  const nodeLabel = node.data.title || node.name || node.id || '';
+  const nodeLabel = node.data.title || node.name || node.data.id || '';
   const required = node.data.must || false;
 
   function onChange(e: ChangeEvent<HTMLInputElement>): void {
@@ -39,7 +39,7 @@ function FieldRender({ node, store, isAll, type = 'output' }: Props): JSX.Elemen
         type === 'output' ? 'grid-cols-3' : 'grid-cols-4',
       )}>
         <div className='truncate'>{nodeLabel}</div>
-        <div className='truncate'>{node.id || ''}</div>
+        <div className='truncate'>{node.data.id || ''}</div>
         <div className='truncate'>{node.data.type}</div>
         {type === 'input' && (<div>{node.data?.in || 'body'}</div>)}
       </div>

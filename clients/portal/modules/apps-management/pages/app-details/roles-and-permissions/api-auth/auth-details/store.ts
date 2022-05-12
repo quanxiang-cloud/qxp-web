@@ -70,9 +70,9 @@ export function apiFieldsToTreeNode(
   const _required = required.includes(id) || !!fields.required || false;
 
   return {
-    data: { ...fields, acceptable, must: _required },
-    name: fields?.title || '',
-    id,
+    data: { ...fields, acceptable, must: _required, id },
+    name: fields?.title || id || '',
+    id: `${parentId}-${id}`,
     parentId: parentId || id || '',
     path: `${parentId}/${id}`,
     isLeaf: !fields.properties,
