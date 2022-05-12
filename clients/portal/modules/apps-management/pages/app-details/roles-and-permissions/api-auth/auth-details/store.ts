@@ -66,8 +66,8 @@ export function apiFieldsToTreeNode(
     },
   );
 
-  const acceptable = !!params?.[id] || false;
   const _required = required.includes(id) || !!fields.required || false;
+  const acceptable = _required || !!params?.[id] || false;
 
   return {
     data: { ...fields, acceptable, must: _required, id },
