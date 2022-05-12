@@ -6,6 +6,7 @@ import {
   LoopContainerNode,
 } from '@one-for-all/artery';
 
+export type BlockStates = Record<string, { clickOutsideWhiteList: Set<HTMLElement> } | undefined>;
 export interface BlocksCommunicationType {
   appID?: string;
   arteryID?: string;
@@ -15,7 +16,8 @@ export interface BlocksCommunicationType {
     currentGroupType?: string;
     groupTypeContentPinned?: boolean;
     pannelWith?: number;
-  }
+  },
+  block: BlockStates;
 }
 
 export type ReactComp = React.ComponentType | React.JSXElementConstructor<any>;

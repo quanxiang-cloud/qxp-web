@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Select } from '@one-for-all/ui';
 
-import type { Package } from '@pageDesign/blocks/menu/type';
+import type { Package } from '@pageDesign/blocks/fountainhead/type';
 import Loading from '@c/loading';
 
 import { usePackages } from './store';

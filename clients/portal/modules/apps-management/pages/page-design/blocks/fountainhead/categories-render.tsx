@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { forEach, groupBy, keys, pipe } from 'ramda';
 
-import type { PackageComponent } from '@pageDesign/blocks/menu/type';
+import type { PackageComponent } from '@pageDesign/blocks/fountainhead/type';
 
 import Category from './category';
 

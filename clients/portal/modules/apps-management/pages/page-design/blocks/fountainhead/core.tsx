@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-import type { Package } from '@pageDesign/blocks/menu/type';
+import type { Package } from '@pageDesign/blocks/fountainhead/type';
 import Loading from '@c/loading';
 
 import PackageSelector from './package-selector';
@@ -11,16 +11,17 @@ import styles from './index.m.scss';
 
 interface Props {
   onAddNode: () => void;
-  currentPackage?: Package;
-  onChangePackage: (pkg: Package) => void;
 }
 
-function Fountainhead({ onAddNode, currentPackage, onChangePackage }: Props): JSX.Element {
-  const isAllPackage = currentPackage?.name === 'all';
+function Fountainhead({ onAddNode }: Props): JSX.Element {
+  const [currentPackage, setCurrentPackage] = useState<Package | undefined>();
   const components = useComponents();
+
   const currentComponents = components?.filter(
     (component) => component.package.name === currentPackage?.name,
   );
+
+  const isAllPackage = currentPackage?.name === 'all';
   const distComponents = isAllPackage ? components : currentComponents;
 
   if (!distComponents) {
@@ -29,7 +30,7 @@ function Fountainhead({ onAddNode, currentPackage, onChangePackage }: Props): JS
 
   return (
     <div className={styles.comps}>
-      <PackageSelector current={currentPackage} onChange={onChangePackage} />
+      <PackageSelector current={currentPackage} onChange={setCurrentPackage} />
       <CategoriesRender
         onAddNode={onAddNode}
         components={distComponents}

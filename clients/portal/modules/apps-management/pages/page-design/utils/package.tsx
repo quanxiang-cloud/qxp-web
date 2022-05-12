@@ -18,7 +18,7 @@ import type {
   VariantIcon,
   VariantImageIcon,
   VariantPlatFormIcon,
-} from '../blocks/menu/type';
+} from '../blocks/fountainhead/type';
 
 function imageIconBuilder(icon: VariantImageIcon): ReactComponent {
   const { initialProps, src } = icon;

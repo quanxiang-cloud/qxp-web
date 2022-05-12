@@ -1,6 +1,6 @@
 import React, { useRef, useCallback } from 'react';
 
-import { PackageComponent } from '@pageDesign/blocks/menu/type';
+import { PackageComponent } from '@pageDesign/blocks/fountainhead/type';
 import VisualScrollList, {
   RefProps,
   useUpdateVisualScrollList,
