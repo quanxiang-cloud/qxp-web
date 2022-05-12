@@ -74,7 +74,7 @@ httpClient.put = function<TData>(path: string, body: unknown) {
   return request<TData>(path, 'PUT', body);
 };
 
-httpClient.delete = function<TData>(path: string, body?: Body) {
+httpClient.delete = function<TData>(path: string, body?: unknown) {
   return request<TData>(path, 'DELETE', body);
 };
 
