@@ -45,8 +45,8 @@ export const FIELD_COLUMNS: UnionColumn<ModelField>[] = [
   },
   {
     Header: '是否允许为空',
-    id: 'not_null',
-    accessor: (rowData) => rowData.not_null ? '允许' : '不允许',
+    id: 'required',
+    accessor: (rowData) => rowData.required ? '不允许' : '允许',
   },
   {
     Header: '是否作为外键',
@@ -74,7 +74,7 @@ export default function ModelFields({ appID, tableID }: Props): JSX.Element {
     setLoading(true);
     if (appID && tableID) {
       getTableSchema(appID, tableID).then((res) => {
-        !isUnmount && setFields(schemaToFields(res?.schema));
+        !isUnmount && setFields(schemaToFields(res?.schema) as ModelField[]);
       }).catch((err) => {
         toast.error(err);
       }).finally(() => {
@@ -88,6 +88,17 @@ export default function ModelFields({ appID, tableID }: Props): JSX.Element {
   if (loading) {
     return <Loading />;
   }
+
+  // const getFields = (dataModelSchema: DataModelSchema): ModelField[] => {
+  //   return Object.entries(dataModelSchema.schema.properties || {}).map(([key, fieldSchema]) => {
+  //     return {
+  //       id: key,
+  //       ...fieldSchema,
+  //     };
+  //   }).sort((a, b) => {
+  //     return (b['x-index'] || 0) - (a['x-index'] || 0);
+  //   });
+  // };
 
   return (
     <>

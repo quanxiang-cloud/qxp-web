@@ -85,7 +85,7 @@ export const FIELD_FORM_SCHEMA = {
         //   'x-component': 'Select',
         //   'x-index': 12,
         // },
-        not_null: {
+        required: {
           type: 'boolean',
           title: '不允许为空',
           default: false,
