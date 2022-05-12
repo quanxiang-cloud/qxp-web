@@ -29,6 +29,7 @@ const drawerTitleMap = {
   processVariableAssignment: '变更流程参数',
   tableDataCreate: '数据新增',
   tableDataUpdate: '数据更新',
+  delayed: '延时',
   autocc: '抄送',
   email: '发送邮件',
   letter: '站内信',

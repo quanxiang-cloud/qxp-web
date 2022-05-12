@@ -9,6 +9,7 @@ import ProcessVariableAssignmentNode from './process-variable-assignment';
 import TableDataCreateNode from './table-data-create';
 import TableDataUpdateNode from './table-data-update';
 import SendEmailNode from './send-email';
+import DelayedNode from './delayed';
 import WebMessage from './web-message';
 import CCNode from './cc';
 import Webhook from './webhook';
@@ -22,6 +23,7 @@ const nodeTypes = {
   processVariableAssignment: ProcessVariableAssignmentNode,
   tableDataCreate: TableDataCreateNode,
   tableDataUpdate: TableDataUpdateNode,
+  delayed: DelayedNode,
   email: SendEmailNode,
   letter: WebMessage,
   autocc: CCNode,

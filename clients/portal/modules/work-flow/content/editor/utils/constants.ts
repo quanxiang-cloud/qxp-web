@@ -130,6 +130,13 @@ export const nodeLists = [{
   iconClassName: 'bg-indigo-500',
   groupType: 'manual',
 }, {
+  text: '延时',
+  type: 'delayed',
+  iconName: 'update',
+  iconClassName: 'bg-indigo-500',
+  groupType: 'manual',
+},
+{
   text: '发送邮件',
   type: 'email',
   iconName: 'email',

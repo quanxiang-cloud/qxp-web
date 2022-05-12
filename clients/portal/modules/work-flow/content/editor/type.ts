@@ -110,6 +110,20 @@ export type FormDataData = {
   triggerCondition: TriggerCondition;
   events: Record<any, any>;
 }
+export type DelayedType='tableColumn'|'aTime'|'specTime'
+export type DelayedValue = {
+  delayPolicy?: {
+    type: DelayedType;
+    data: {
+      timeFmt: number|string;
+      column: {
+        tableID: string;
+        columnID: string;
+        dataID: string;
+      }
+    }
+  }
+}
 export type TriggerValue = {
   triggerWay: TriggerWay;
   whenAlterFields: string[];
@@ -391,7 +405,7 @@ export type Data = CCNodeData | WebMessageNodeData | SendEmailNodeData | TableDa
   TableDataCreateNodeData | ProcessVariableAssignmentNodeData | ProcessBranchNodeData |
   FormDataNodeData | ApproveNodeData | FillInNodeData | ProcessBranchTargetNodeData | WebhookNodeData;
 export type NodeType = 'formData' | 'fillIn' | 'approve' | 'end' | 'processBranch' |
-  'processVariableAssignment' | 'tableDataCreate' | 'tableDataUpdate' | 'email' |
+  'processVariableAssignment' | 'tableDataCreate' | 'tableDataUpdate'|'delayed' | 'email' |
   'letter' | 'autocc' | 'processBranchSource' | 'processBranchTarget' | 'webhook';
 export interface CurrentElement {
   id: string;

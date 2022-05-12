@@ -14,6 +14,7 @@ import ProcessVariableAssignmentConfig from './process-variable-assignment-confi
 import FlowTableContext from './flow-source-table';
 import CreateTableData from './create-table-data';
 import UpdateTableData from './update-table-data';
+import Delayed from './delayed';
 import FlowContext from '../../../flow-context';
 import ProcessBranch from './process-branch';
 import ProcessBranchTarget from './process-branch-target';
@@ -63,6 +64,7 @@ const components: Record<string, JSXElementConstructor<any>> = {
   processBranchTarget: ProcessBranchTarget,
   processVariableAssignment: ProcessVariableAssignmentConfig,
   tableDataCreate: CreateTableData,
+  delayed: Delayed,
   email: SendEmailConfig,
   autocc: CopyTo,
   letter: WebMessage,
