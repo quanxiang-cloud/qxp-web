@@ -27,6 +27,7 @@ type FieldNode = {
   order?: number,
   sort?: boolean,
   id?: string,
+  required?: string[],
 }
 
 export function apiFieldsToTreeNode(
@@ -41,6 +42,7 @@ export function apiFieldsToTreeNode(
     order = 0,
     sort = false,
     id = 'schema',
+    required = [],
   }: FieldNode,
 ): TreeNode<SwagField> {
   const children = Object.entries(properties || {}).map(
@@ -58,16 +60,17 @@ export function apiFieldsToTreeNode(
         order: index,
         sort,
         id: fieldKey,
-
+        required: fields?.required || [],
       };
       return apiFieldsToTreeNode(_fieldNode);
     },
   );
 
   const acceptable = !!params?.[id] || false;
+  const _required = required.includes(id) || !!fields.required || false;
 
   return {
-    data: { ...fields, acceptable },
+    data: { ...fields, acceptable, must: _required },
     name: fields?.title || '',
     id,
     parentId: parentId || id || '',

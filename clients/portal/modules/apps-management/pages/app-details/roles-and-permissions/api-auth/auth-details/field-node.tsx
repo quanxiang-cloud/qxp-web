@@ -13,6 +13,7 @@ type Props = NodeRenderProps<SwagField> & {
 
 function FieldRender({ node, store, isAll, type = 'output' }: Props): JSX.Element {
   const nodeLabel = node.data.title || node.name || node.id || '';
+  const required = node.data.must || false;
 
   function onChange(e: ChangeEvent<HTMLInputElement>): void {
     onChangeFieldState(node, store, e.target.checked);
@@ -28,8 +29,8 @@ function FieldRender({ node, store, isAll, type = 'output' }: Props): JSX.Elemen
       <div className='pl-4' style={{ width: `${checkboxWidth}px` }}>
         <Checkbox
           key={node.id}
-          disabled={isAll}
-          checked={node.data?.acceptable || isAll || false}
+          disabled={isAll || required}
+          checked={node.data?.acceptable || isAll || required || false}
           onChange={onChange}
         />
       </div>
