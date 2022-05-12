@@ -7,6 +7,7 @@ import { ReactComponentNode } from '@one-for-all/artery';
 import Icon from '@one-for-all/icon';
 
 import Breadcrumb from '@c/breadcrumb';
+import ToolTip from '@c/tooltip';
 import type { BlocksCommunicationType } from '@pageDesign/types';
 
 import { ConfigContext, UpdateAttrPayloadType } from './context';
@@ -17,12 +18,11 @@ import RendererPanel from './renderer-panel';
 import ModalBindState from './modal-bind-state';
 import ModalComponentNode from './modal-component-node';
 import { isSystemComponent } from '../../utils/helpers';
+import { usePackagePropsSpec } from '../fountainhead/store';
 import { findNode } from './utils';
 
 import styles from './index.m.scss';
 import './style.scss';
-import { usePackagePropsSpec } from '../menu/group/type-content/fountainhead/store';
-import ToolTip from '@c/tooltip';
 
 function NodeCarve({
   artery,

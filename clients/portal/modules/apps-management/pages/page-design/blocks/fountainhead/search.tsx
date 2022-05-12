@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { PackageComponent } from '@pageDesign/blocks/menu/type';
+import { PackageComponent } from '@pageDesign/blocks/fountainhead/type';
 import { fuzzyFind } from '@c/visual-scroll-list';
 
 import ComponentSearch from './component-search';

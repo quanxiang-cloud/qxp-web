@@ -1124,10 +1124,10 @@
   resolved "https://registry.npmmirror.com/@one-for-all/api-spec-adapter/-/api-spec-adapter-0.4.0.tgz#fd662bf3e0e4dfc75f25cdb78b69215aac9856f6"
   integrity sha512-0AvMUdxfWa6/gdIgk0PPOzBO17XJnD/6QUAoAdvm1kOU+hmVydXLY4ODRvDHs9cVNvBDjcZwLsdQ0esRelnT7g==
 
-"@one-for-all/artery-engine@1.2.1":
-  version "1.2.1"
-  resolved "https://registry.npmmirror.com/@one-for-all/artery-engine/-/artery-engine-1.2.1.tgz#45ac043be10f9f1bf70044760c28e0cf6d5fbfed"
-  integrity sha512-a5a7o93XmIxWlBiwEjmN/7sIHR4eZ2fATdnxKKSpOGRtPu4WYC68cmQ1juO5hItNjJf28mN0H1dZWsvcaD/oZQ==
+"@one-for-all/artery-engine@1.3.0":
+  version "1.3.0"
+  resolved "https://registry.npmmirror.com/@one-for-all/artery-engine/-/artery-engine-1.3.0.tgz#c4eab6199d7756bdc153f113fbd898dc206b5f24"
+  integrity sha512-PkD1cqVKDeEThJufqNUDNAgAKESR4WGdFq8SzrhBtvXksDpAmVSZjJdhvUTjKTxPcleGDy1DhiBnWfaE1chcZA==
   dependencies:
     "@one-for-all/artery" "0.15.0"
     classnames "^2.3.1"

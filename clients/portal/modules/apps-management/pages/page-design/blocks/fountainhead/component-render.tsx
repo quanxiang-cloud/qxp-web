@@ -3,8 +3,9 @@ import cs from 'classnames';
 import type { Node } from '@one-for-all/artery';
 import { buildReactComponentNode } from '@one-for-all/artery-engine';
 
-import type { PackageComponent } from '@pageDesign/blocks/menu/type';
+import type { PackageComponent } from '@pageDesign/blocks/fountainhead/type';
 import { initialPropsToNodeProperties } from '@pageDesign/utils/package';
+import { useFoutainheadContext } from './context';
 
 import styles from './index.m.scss';
 
@@ -30,6 +31,7 @@ function genNode(props: Props): Node {
 const ComponentRender = (props: Props): JSX.Element => {
   const { Icon, desc, package: pkg, label, style, className } = props;
   const [isDragging, setIsDragging] = useState(false);
+  const { onPanelHide, onPanelClose } = useFoutainheadContext();
 
   // function addNodeToCanvas(target?: any): void {
   //   const prepareNode = {
@@ -41,6 +43,11 @@ const ComponentRender = (props: Props): JSX.Element => {
   //   onAddNode();
   // }
 
+  function onDragEnd(): void {
+    setIsDragging(false);
+    onPanelClose?.();
+  }
+
   return (
     <div
       draggable
@@ -51,10 +58,11 @@ const ComponentRender = (props: Props): JSX.Element => {
 
         setIsDragging(true);
         e.dataTransfer.setData('artery_node', JSON.stringify(genNode(props)));
+        onPanelHide?.();
 
         return false;
       }}
-      onDragEnd={() => setIsDragging(false)}
+      onDragEnd={onDragEnd}
       title={`${pkg.name}:${desc}`}
       style={style}
     >

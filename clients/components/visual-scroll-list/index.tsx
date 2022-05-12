@@ -24,6 +24,7 @@ interface Props<T> {
   tupleNumber?: number;
   style?: CSSProperties;
   gap?: number;
+  itemKey?: (item: T) => string;
   render: (props: ItemRenderProps<T>) => JSX.Element;
 }
 
@@ -43,7 +44,7 @@ export function VisualScrollList<T>(props: Props<T>, ref: ForwardedRef<RefProps>
   const listRef = useRef<HTMLDivElement>(null);
   const {
     containerRef, listItemHeight, list, viewportHeight, className,
-    tupleNumber = 1, style, gap = 0, render: Render,
+    tupleNumber = 1, style, gap = 0, render: Render, itemKey,
   } = props;
   const forceUpdate = useReducer(add(1), 0)[1];
   useImperativeHandle(ref, () => ({ forceUpdate, domRef: listRef }), []);
@@ -83,9 +84,11 @@ export function VisualScrollList<T>(props: Props<T>, ref: ForwardedRef<RefProps>
         const className = 'absolute w-full left-0';
         const top = (Math.floor(item.index / tupleNumber) * listItemHeight) + (gap * lineNumber);
         const style: CSSProperties = { height: listItemHeight, top };
+        const key = itemKey?.(item.origin) ?? index;
+
         return (
           <Render
-            key={JSON.stringify(item.origin)}
+            key={key}
             item={item.origin}
             originIndex={item.index}
             index={index}

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import type { PackageComponent } from '@pageDesign/blocks/menu/type';
+import type { PackageComponent } from '@pageDesign/blocks/fountainhead/type';
 import type { ItemRenderProps } from '@c/visual-scroll-list';
 
 import ComponentRender from '../component-render';
