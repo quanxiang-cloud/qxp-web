@@ -162,7 +162,7 @@ export function editFormDataRequest(
     {
       ...params,
       query: {
-        terms: { _id: [dataID] },
+        term: { _id: dataID },
       },
     },
   );

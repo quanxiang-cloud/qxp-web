@@ -16,7 +16,7 @@ import useObservable from '@lib/hooks/use-observable';
 import type { StoreValue } from '@flow/content/editor/type';
 
 import Send from './send';
-
+import BodyEditor, { EditorRefType } from './body-editor';
 import { getWebhookPathTreeValue } from './utils';
 
 interface Props {
@@ -28,6 +28,7 @@ interface Props {
 
 function Inputs({ value, onChange, values, error }: Props): JSX.Element | null {
   const formulaEditorRef = useRef<RefType>();
+  const refEditor = useRef<EditorRefType>();
   const [customRules, setCustomRules] = useState<CustomRule[]>();
   const { tableSchema } = useContext(sourceTable);
   const { id: flowId = '' } = useObservable<StoreValue>(store);
@@ -65,30 +66,43 @@ function Inputs({ value, onChange, values, error }: Props): JSX.Element | null {
 
   const hasCustomRulesAnd = and(!!customRules);
 
+  const onInsertText = (val: string): void=>{
+    refEditor.current?.onInsertText(val);
+  };
+
   return (
     <div className="webhook-request-inputs">
-      {hasCustomRulesAnd(isRequest(values)) && (
-        <ApiParamsConfig
-          onChange={onChange}
-          ref={formulaEditorRef}
-          value={value}
-          url={values.url}
-          customRules={customRules!}
-          validating={!isUndefined(error)}
-        />
+      {values.editWay === 'simple' && (
+        <BodyEditor value={JSON.stringify(value, null, 4)} onChange={onChange} ref={refEditor}/>
       )}
-      {hasCustomRulesAnd(isSend(values)) && (
-        <Send
-          value={value}
-          onChange={onChange}
-          ref={formulaEditorRef}
-          customRules={customRules!}
-        />
+
+      {(values.editWay === 'multiple' || values.type === 'request') && (
+        <div className='flex-1'>
+          {hasCustomRulesAnd(isRequest(values)) && (
+            <ApiParamsConfig
+              onChange={onChange}
+              ref={formulaEditorRef}
+              value={value}
+              url={values.url}
+              customRules={customRules!}
+              validating={!isUndefined(error)}
+            />
+          )}
+          {hasCustomRulesAnd(isSend(values)) && (
+            <Send
+              value={value}
+              onChange={onChange}
+              ref={formulaEditorRef}
+              customRules={customRules!}
+            />
+          )}
+        </div>
       )}
       <PathTreeWithOperates
         currentFormulaEditorRef={formulaEditorRef}
         pathTreeValue={pathTreeValue}
         onRulesChange={setCustomRules}
+        onInsertText={onInsertText}
       />
     </div>
   );

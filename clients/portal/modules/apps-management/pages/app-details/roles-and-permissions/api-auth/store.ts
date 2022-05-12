@@ -50,7 +50,7 @@ class APIAuthStore {
 
   @action
   setCurAuth = (curAuth: APIAuth): void => {
-    this.curAuth = curAuth;
+    this.curAuth = curAuth.condition ? curAuth : { ...curAuth, condition: {} };
   };
 
   @action

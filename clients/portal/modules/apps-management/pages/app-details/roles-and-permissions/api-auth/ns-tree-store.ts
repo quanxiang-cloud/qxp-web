@@ -33,7 +33,7 @@ export function apiNamespaceToTreeNode(
 
   return {
     data: namespace,
-    name: namespace.title,
+    name: namespace.title || namespace.name,
     id: namespace.id,
     parentId: parentId || namespace.parent || '',
     path: `${namespace.parent}/${namespace.name}`,
