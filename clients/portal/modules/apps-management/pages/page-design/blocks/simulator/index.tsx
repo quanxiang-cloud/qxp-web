@@ -6,11 +6,9 @@ import { BlocksCommunicationType } from '../../types';
 import isNodeSupportChildren from './is-node-support-children';
 import './index.scss';
 import isNodeInModalLayer from './is-node-modal-root';
-import { Node } from '@one-for-all/artery';
 
 function SimulatorBlock(props: BlockItemProps<BlocksCommunicationType>): JSX.Element {
-  const { artery, onChange } = props;
-  const [activeNode, setActiveNode] = useState<Node>();
+  const { artery, onChange, activeNode, setActiveNode } = props;
   const [activeModalLayer, setActiveModalLayer] = useState<string | undefined>();
 
   return (
