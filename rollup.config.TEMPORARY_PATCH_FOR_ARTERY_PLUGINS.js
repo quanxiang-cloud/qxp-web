@@ -1,0 +1,104 @@
+import commonjs from '@rollup/plugin-commonjs';
+import esbuild from 'rollup-plugin-esbuild-ts';
+import json from '@rollup/plugin-json';
+import progress from 'rollup-plugin-progress';
+import replace from '@rollup/plugin-replace';
+import resolve from '@rollup/plugin-node-resolve';
+import styles from 'rollup-plugin-styles';
+import webWorkerLoader from 'rollup-plugin-web-worker-loader';
+// import tsChecker from 'rollup-plugin-fork-ts-checker';
+
+import typescriptPaths from './rollup-configs/plugins/rollup-plugin-typescript-paths';
+import notifier from './rollup-configs/plugins/rollup-plugin-notifier';
+import esbuildConfig from './rollup-configs/esbuild-config';
+import { isProduction } from "./rollup-configs/env";
+
+const config = {
+  treeshake: isProduction,
+  // preserveEntrySignatures: false,
+
+  input: 'clients/portal/modules/apps-management/pages/page-design/blocks/simulator/plugins.ts',
+  output: {
+    format: 'system',
+    entryFileNames: isProduction ? '[name]-[hash].js' : '[name].js',
+    chunkFileNames: isProduction ? 'chunk-[name]-[hash].js' : 'chunk-[name].js',
+    file: 'dist/TEMPORARY_PATCH_FOR_ARTERY_PLUGINS.js',
+    sourcemap: isProduction ? false : 'inline',
+    plugins: [
+      isProduction ? false : notifier(),
+    ],
+  },
+
+  external: [
+    'react',
+    'react-dom',
+    'react-is',
+    'elkjs',
+
+    '@formily/antd-components',
+    '@formily/antd',
+    '@formily/core',
+    '@formily/react-schema-renderer',
+    '@formily/react-shared-components',
+    '@formily/react',
+    '@formily/shared',
+    '@formily/validator',
+    'antd',
+    'rxjs',
+    /rxjs\/.*/,
+    'moment',
+    'lodash',
+    // 'lodash/fp',
+    'ramda',
+    // 'react-use',
+    // /react-use\/.*/,
+
+    'draft-js',
+    // 'html-to-draftjs',
+    // 'react-draft-wysiwyg',
+    'jszip',
+    'react-beautiful-dnd',
+    'react-dnd',
+    // 'react-dnd-html5-backend',
+    'react-flow-renderer',
+    'xlsx',
+
+    /@one-for-all\/.*/,
+  ],
+
+  plugins: [
+    webWorkerLoader({
+      // todo output file name has no hash
+      targetPlatform: 'browser',
+      inline: false,
+      extensions: ['js', 'ts'],
+      loadPath: '/dist',
+      skipPlugins: ['rollup-plugin-output-manifest'],
+    }),
+    replace({
+      preventAssignment: true,
+      values: {
+        'process.env.NODE_ENV': JSON.stringify(isProduction ? 'production' : 'development'),
+      },
+    }),
+    resolve({
+      preferBuiltins: false,
+      browser: true,
+      mainFields: ['module', 'main'],
+    }),
+    commonjs({
+      ignoreDynamicRequires: false,
+      ignoreTryCatch: false,
+    }),
+    !isProduction ? progress({ clearLine: true }) : false,
+    styles({
+      autoModules: /\w+\.(module|m)\.scss/,
+    }),
+    json(),
+    typescriptPaths(),
+    esbuild(esbuildConfig),
+    // tsChecker(),
+  ],
+};
+
+export default config;

@@ -41,13 +41,16 @@ buildHome:
 rollup:
 	./node_modules/.bin/rollup -c rollup.config.js -w
 
+bundleTemporaryPatchArteryPlugins:
+	./node_modules/.bin/rollup -c rollup.config.TEMPORARY_PATCH_FOR_ARTERY_PLUGINS.js
+
 bundleHome:
 	./node_modules/.bin/rollup -c rollup.config.js -w --input home
 
 bundleAppLand:
 	./node_modules/.bin/rollup -c rollup.config.js -w --input appLand
 
-bundlePortal:
+bundlePortal: bundleTemporaryPatchArteryPlugins
 	./node_modules/.bin/rollup -c rollup.config.js -w --input portal
 
 bundleMobile:
