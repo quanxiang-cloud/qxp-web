@@ -42,7 +42,7 @@ rollup:
 	./node_modules/.bin/rollup -c rollup.config.js -w
 
 bundleTemporaryPatchArteryPlugins:
-	./node_modules/.bin/rollup -c rollup.config.TEMPORARY_PATCH_FOR_ARTERY_PLUGINS.js
+	./node_modules/.bin/rollup -c rollup-configs/rollup.config.TEMPORARY_PATCH_FOR_ARTERY_PLUGINS.js
 
 bundleHome:
 	./node_modules/.bin/rollup -c rollup.config.js -w --input home

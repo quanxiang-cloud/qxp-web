@@ -6,6 +6,8 @@ import { BlocksCommunicationType } from '../../types';
 import isNodeSupportChildren from './is-node-support-children';
 import './index.scss';
 import isNodeInModalLayer from './is-node-modal-root';
+// todo fixme
+import pluginsSrc from 'dll:./../../../../../../../../tmp/TEMPORARY_PATCH_FOR_ARTERY_PLUGINS.js';
 
 function SimulatorBlock(props: BlockItemProps<BlocksCommunicationType>): JSX.Element {
   const { artery, onChange, activeNode, setActiveNode } = props;
@@ -15,7 +17,7 @@ function SimulatorBlock(props: BlockItemProps<BlocksCommunicationType>): JSX.Ele
     <ArterySimulator
       className="artery-simulator"
       artery={artery}
-      pluginsSrc='/dist/TEMPORARY_PATCH_FOR_ARTERY_PLUGINS.js'
+      pluginsSrc={pluginsSrc}
       onChange={onChange}
       activeNode={activeNode}
       setActiveNode={setActiveNode}
