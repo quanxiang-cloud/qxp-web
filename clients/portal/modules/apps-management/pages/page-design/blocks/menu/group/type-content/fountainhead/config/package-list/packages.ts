@@ -32,4 +32,10 @@ export default [
     version: '0.6.2',
     categories,
   },
+  {
+    name: '@one-for-all/headless-ui',
+    label: 'headless-ui',
+    version: '0.2.0',
+    categories: ['基础组件', '表单组件', '高级组件'],
+  },
 ];
