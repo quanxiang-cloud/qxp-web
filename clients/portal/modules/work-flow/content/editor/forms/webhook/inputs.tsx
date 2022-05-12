@@ -1,13 +1,13 @@
 import React, { useRef, useState, useEffect, useContext, useCallback, useMemo } from 'react';
 import { useQuery } from 'react-query';
-import { propEq, and } from 'ramda';
 import { nanoid } from 'nanoid';
+import { isUndefined } from 'lodash';
 import { useUpdateEffect } from 'react-use';
 
 import type { CustomRule } from '@c/formula-editor';
 import { Input } from '@flow/content/editor/type';
 import PathTreeWithOperates from '@polyApi/nodes/forms/request-config/path-tree-with-operates';
-import { RefType } from '@polyApi/nodes/forms/request-config/api-params-config';
+import ApiParamsConfig, { RefType } from '@polyApi/nodes/forms/request-config/api-params-config';
 import sourceTable from '@flow/content/editor/forms/flow-source-table';
 import { getVariableList } from '@flow/api';
 import store from '@flow/content/editor/store';
@@ -26,7 +26,7 @@ interface Props {
   error?: string;
 }
 
-function Inputs({ value, onChange, values }: Props): JSX.Element | null {
+function Inputs({ value, onChange, values, error }: Props): JSX.Element | null {
   const { type: triggerType, url, editWay } = values;
   const formulaEditorRef = useRef<RefType>();
   const refEditor = useRef<EditorRefType>();
@@ -66,11 +66,8 @@ function Inputs({ value, onChange, values }: Props): JSX.Element | null {
   }, [triggerType]);
 
   useUpdateEffect(()=>{
-    onChange(inputVal);
+    triggerType === 'send' && onChange(inputVal);
   }, [triggerType, inputVal]);
-
-  const isRequest = propEq('type', 'request');
-  const isSend = propEq('type', 'send');
 
   if (isLoading) {
     return <Loading desc="加载中..." />;
@@ -80,24 +77,34 @@ function Inputs({ value, onChange, values }: Props): JSX.Element | null {
     return null;
   }
 
-  const hasCustomRulesAnd = and(!!customRules);
-
   const onInsertText = (val: string): void=>{
     refEditor.current?.onInsertText(val);
   };
 
   return (
     <div className="webhook-request-inputs">
-      {editWay === 'simple' && (
-        <BodyEditor value={JSON.stringify(value, null, 4)} onChange={onChange} ref={refEditor}/>
-      )}
-
-      {(editWay === 'multiple' || triggerType === 'request') && (
+      {triggerType === 'request' && (
         <div className='flex-1 overflow-hidden'>
-          {hasCustomRulesAnd(isRequest(values)) && (
+          {editWay === 'simple' && (
             <BodyEditor value={JSON.stringify(value, null, 4)} onChange={onChange} ref={refEditor}/>
           )}
-          {hasCustomRulesAnd(isSend(values)) && (
+          {editWay === 'multiple' && (
+            <ApiParamsConfig
+              onChange={onChange}
+              ref={formulaEditorRef}
+              value={value}
+              url={values.url}
+              customRules={customRules!}
+              validating={!isUndefined(error)}
+            />
+          )}
+        </div>)}
+      { triggerType === 'send' && (
+        <div className='flex-1 overflow-y-auto'>
+          {editWay === 'simple' && (
+            <BodyEditor value={JSON.stringify(value, null, 4)} onChange={onChange} ref={refEditor}/>
+          )}
+          {editWay === 'multiple' && (
             <Send
               value={value}
               onChange={onChange}
