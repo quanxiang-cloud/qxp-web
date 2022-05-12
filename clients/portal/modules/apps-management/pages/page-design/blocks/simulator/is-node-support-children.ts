@@ -1,4 +1,4 @@
-import type { NodePrimary } from '@one-for-all/artery-simulator';
+import type { NodePrimary } from '@one-for-all/artery-simulator/lib/types';
 
 const COMPONENTS_SUPPORT_CHILDREN = [
   'page',
