@@ -25,14 +25,13 @@ function PropsPanel(): JSX.Element {
   const [functionArtery, setFunctionArtery] = useState<Artery | null>(null);
   const { activeNode, packagePropsSpec } = useConfigContext() ?? {};
   const { exportName } = activeNode as ReactComponentNode;
-
   useEffect(() => {
     if (!activeNode || !packagePropsSpec) {
       setAttrArtery(null);
       setFunctionArtery(null);
       return;
     }
-    const specpath = `${exportName.toLowerCase()}.props`;
+    const specpath = `${exportName}.props`;
     const specs: BasePropSpec[] = get(packagePropsSpec, specpath, []);
 
     const attrSpecs = getArteryBySpec(specs.filter((s) => s.type !== 'function'), {
