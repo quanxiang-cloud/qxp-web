@@ -22,7 +22,7 @@ const MOCK = new Set<string>(pairs);
 // todo implement this
 function isNodeSupportChildren(node: NodePrimary): Promise<boolean> {
   if (node.type === 'react-component') {
-    const identifier = [node.packageName, node.packageVersion, node.exportName].join('/');
+    const identifier = [node.packageName, node.packageVersion, node.exportName?.toLowerCase()].join('/');
     if (MOCK.has(identifier)) {
       return Promise.resolve(true);
     }
