@@ -31,6 +31,9 @@ export const LAYERS: Layer<BlocksCommunicationType>[] = [
         render: Header,
       },
       {
+        style: {
+          backgroundColor: '#fff',
+        },
         render: Menu,
       },
       {
@@ -62,6 +65,7 @@ export const LAYERS: Layer<BlocksCommunicationType>[] = [
       {
         style: {
           position: 'relative',
+          overflow: 'hidden',
         },
         render: Fountainhead,
       },
@@ -91,6 +95,7 @@ export const LAYERS: Layer<BlocksCommunicationType>[] = [
       {
         style: {
           position: 'relative',
+          overflow: 'hidden',
         },
         render: Structure,
       },
@@ -120,6 +125,7 @@ export const LAYERS: Layer<BlocksCommunicationType>[] = [
       {
         style: {
           position: 'relative',
+          overflow: 'hidden',
         },
         render: Pool,
       },

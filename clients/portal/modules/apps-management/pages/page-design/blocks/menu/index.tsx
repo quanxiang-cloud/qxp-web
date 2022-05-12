@@ -1,18 +1,22 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import type { BlockItemProps } from '@one-for-all/artery-engine';
 import { mergeRight, omit } from 'ramda';
 
 import type { BlocksCommunicationType } from '@pageDesign/types';
 import TypeList from './type-list';
+import { TYPE_LIST } from './type-list/constants';
 
 import './index.scss';
 
 function Menu(props: BlockItemProps<BlocksCommunicationType>): JSX.Element {
   const { sharedState, onSharedStateChange, onUpdateLayer } = props;
 
+  useEffect(() => {
+    TYPE_LIST.forEach(({ name }) => onUpdateLayer({ layerId: name, name: 'hide', value: false }));
+  }, []);
+
   const onTypeSelect = useCallback((type: string): void => {
     onSharedStateChange('menu.currentGroupType', type);
-    onUpdateLayer({ layerId: type, name: 'hide', value: false });
   }, [onSharedStateChange]);
 
   const initBlockStates = useCallback((names: string[]) => {
