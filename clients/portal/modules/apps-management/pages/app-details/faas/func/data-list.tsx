@@ -1,5 +1,4 @@
 import React from 'react';
-import cs from 'classnames';
 import { Input } from 'antd';
 import { UnionColumn } from 'react-table';
 import { observer } from 'mobx-react';
@@ -12,25 +11,19 @@ import Button from '@c/button';
 import Search from '@c/search';
 import PopConfirm from '@c/pop-confirm';
 import Pagination from '@c/pagination';
-import TableMoreFilterMenu from '@c/more-menu/table-filter';
 import { copyContent } from '@lib/utils';
 
 import store from './store';
+import StatusDisplay from '../component/status';
 import BuildModal from './build-modal';
-import { getGitLabDomain } from '../api';
 
 import '../index.scss';
+import { PROJECT_STATE } from '../constants';
 
 const { TextArea } = Input;
 
 function DataList(): JSX.Element {
   const { setModalType, updateFuncDesc } = store;
-
-  function getDomain(name: string): void {
-    getGitLabDomain().then((res) => {
-      copyContent(`git clone ${res.domain}${store.appDetails.appSign}/${name}.git`);
-    });
-  }
 
   const COLUMNS: UnionColumn<FuncField>[] = [
     {
@@ -53,46 +46,19 @@ function DataList(): JSX.Element {
       accessor: 'name',
     },
     {
-      Header: () => {
-        return (
-          <TableMoreFilterMenu
-            menus={[
-              { key: 'SUCCESS', label: '成功' },
-              { key: 'ING', label: '进行中' },
-              { key: 'FAILED', label: '失败' },
-            ]}
-            onChange={() => console.log('')}
-          >
-            <div className={cs('flex items-center cursor-pointer', {
-              'pointer-events-none': true,
-            })}>
-              <span className="mr-4">状态</span>
-              <Icon name="funnel" />
-            </div>
-          </TableMoreFilterMenu>
-        );
-      },
+      Header: () => '状态',
       id: 'status',
-      accessor: ({ state, id, message }: FuncField) => {
+      accessor: ({ state, message }: FuncField) => {
         return (
-          <div>{state}</div>
-          // <StatusDisplay
-          //   errorMsg={message}
-          //   status={state || 'Unknown'}
-          //   topic='project'
-          //   dataID={id}
-          //   callBack={async (data) => {
-          //     const { key }: FaasSoketData = data?.content || {};
-          //     if (key !== id) {
-          //       return;
-          //     }
-
-        //     const res = await getFuncInfo(store.groupID, id);
-        //     if (res.info.state !== 'Unknown') {
-        //       store.mutateFuncStatus(id, res.info.state);
-        //     }
-        //   }}
-        // />
+          <StatusDisplay
+            errorMsg={message}
+            status={PROJECT_STATE[state]}
+            customText={{
+              [PROJECT_STATE.Unknown]: '未开始',
+              [PROJECT_STATE.False]: '失败',
+              [PROJECT_STATE.True]: '成功',
+            }}
+          />
         );
       },
     },
@@ -103,7 +69,7 @@ function DataList(): JSX.Element {
         let descriptionValue = description;
         return (
           <div className="flex items-center description">
-            <span className="truncate flex-1 max-w-min" title={description}>{description || '-' }</span>
+            <span className="truncate flex-1 max-w-min" title={description}>{description || '-'}</span>
             <PopConfirm
               content={(
                 <div
@@ -149,7 +115,7 @@ function DataList(): JSX.Element {
           <div className="flex gap-20">
             {info.state === 'True' && (
               <>
-                <span className="operate" onClick={() => getDomain(info.name)}>复制clone地址</span>
+                <span className="operate" onClick={() => copyContent(info.repoUrl || '')}>复制clone地址</span>
                 <span className="operate" onClick={() => onClickTool(info, 'build')}>构建</span>
                 <span className="cursor-pointer text-red-600" onClick={() => onClickTool(info, 'deletefunc')}>
                   删除

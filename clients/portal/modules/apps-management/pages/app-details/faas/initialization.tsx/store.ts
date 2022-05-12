@@ -11,7 +11,6 @@ import {
   bindGroup,
 } from '../api';
 import toast from '@lib/toast';
-import { INIT_API_CONTENT } from '../../api-documentation/constants';
 import { faasState } from '../constants';
 
 type GroupSchema = {
@@ -24,19 +23,9 @@ type GroupSchema = {
 class IniStore {
   @observable step = 0;
   @observable appID = '';
-  @observable initLoading = false;
-  @observable modalType = '';
-  @observable checkUserLoading = true;
   @observable groupID = '';
-  @observable initErr = false;
-  @observable APiContent: APiContent = INIT_API_CONTENT;
-  @observable isAPILoadingErr = '';
-  @observable isAPILoading = false;
-  @observable versionsParams: VersionListParams = {
-    state: '',
-    page: 1,
-    size: 10,
-  };
+  @observable checkUserLoading = true;
+  @observable modalType = '';
   @observable userAccount = '';
   @observable optionalGroup: Group[] = [];
 
@@ -44,7 +33,7 @@ class IniStore {
     reaction(() => this.modalType, this.fetchGroupList);
   }
 
-  @computed get optionalGroupToSelectEnum(): {label: string, value: number}[] {
+  @computed get optionalGroupToSelectEnum(): { label: string, value: number }[] {
     return this.optionalGroup.map((group) => {
       return { label: group?.name || '', value: group.gid || 0 };
     });
@@ -125,7 +114,7 @@ class IniStore {
   };
 
   @action
-  createDeveloper = (data: {account: string}): Promise<void> => {
+  createDeveloper = (data: { account: string }): Promise<void> => {
     return createDeveloper(data).then(() => {
       this.step = faasState.DEVELOP;
       this.userAccount = data.account;
@@ -184,17 +173,8 @@ class IniStore {
       this.step = faasState.INGROUP;
       this.setModalType('');
     }).catch((err) => {
-      this.initLoading = false;
-      this.initErr = true;
       toast.error(err);
     });
-  };
-
-  @action
-  clear = (): void => {
-    this.isAPILoading = false;
-    this.isAPILoadingErr = '';
-    this.initErr = false;
   };
 }
 

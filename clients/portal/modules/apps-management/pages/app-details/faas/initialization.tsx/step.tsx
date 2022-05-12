@@ -19,7 +19,7 @@ export function Develop({
   return (
     <div className='ini-bar'>
       <div className={cs('bar-title', isDevelop ? 'ini-ok' : 'not-ini')}>
-        <Icon name={isDevelop ? 'task-ok' : 'schedule'} size={20} className='mr-8'/>
+        <Icon name={isDevelop ? 'task-ok' : 'schedule'} size={20} className='mr-8' />
         {isDevelop ? '已绑定账号' : '未绑定账号'}
       </div>
       <div className='pl-16 my-20'>

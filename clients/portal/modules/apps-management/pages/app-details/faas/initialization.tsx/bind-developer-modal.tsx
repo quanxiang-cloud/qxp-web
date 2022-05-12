@@ -18,7 +18,6 @@ const SCHEMA = {
           type: 'string',
           title: '账号',
           required: true,
-          // description: 'Gitlab账号规则说明',
           'x-component-props': {
             placeholder: '请输入账号',
           },

@@ -19,9 +19,9 @@ function ProcessSpan({ data, id }: NodeProps<FaasProcessSpanProps>): JSX.Element
   const [logVisible, setLogVisible] = useState(false);
   const status = getState();
   function getState(): NodeStatus {
-    if (!store.currentVersionFunc?.status) return 'Disable';
-    if (store.currentVersionFunc?.status < FUNC_STATUS.StatusFailed) return 'Disable';
-    if (store.currentVersionFunc?.status === FUNC_STATUS.StatusFailed) return 'False';
+    if (!store.currentBuild?.status) return 'Disable';
+    if (store.currentBuild?.status < FUNC_STATUS.StatusFailed) return 'Disable';
+    if (store.currentBuild?.status === FUNC_STATUS.StatusFailed) return 'False';
     return 'True';
   }
 

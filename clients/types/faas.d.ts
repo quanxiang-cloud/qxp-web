@@ -15,6 +15,7 @@ type FuncField = {
   createdAt: number,
   message?: string,
   updatedAt?: number,
+  repoUrl?: string,
   tag?: string,
   language: string,
 }

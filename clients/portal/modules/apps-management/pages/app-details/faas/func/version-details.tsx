@@ -2,6 +2,7 @@ import React, { MouseEvent, useEffect, useMemo, useState } from 'react';
 import { observer } from 'mobx-react';
 import { Input } from 'antd';
 import dayjs from 'dayjs';
+import { useHistory } from 'react-router-dom';
 import 'prismjs/plugins/custom-class/prism-custom-class.js';
 
 import Tab from '@c/tab';
@@ -19,43 +20,42 @@ import '../index.scss';
 import '../../api-documentation/prism.css';
 import { API_DOC_STATE } from '../constants';
 import { wsSubscribe } from '../api';
-import { useHistory } from 'react-router-dom';
 
 const { TextArea } = Input;
 
 function VersionDetails(): JSX.Element {
   const history = useHistory();
-  const [des, setDes] = useState(store.currentVersionFunc?.describe || '');
+  const [des, setDes] = useState(store.currentBuild?.describe || '');
 
   const apiDoc = useMemo(() => {
-    if (store.currentVersionFunc?.docStatus === API_DOC_STATE.NULL) {
+    if (store.currentBuild?.docStatus === API_DOC_STATE.NULL) {
       return (<div>未注册API文档</div>);
     }
-    if (store.currentVersionFunc?.docStatus === API_DOC_STATE.REGISTERING) {
+    if (store.currentBuild?.docStatus === API_DOC_STATE.REGISTERING) {
       return <div>文档生成中...</div>;
     }
     if (store.isAPILoading) {
       return (<Loading />);
     }
     return (<ApiDetails apiPath={store.apiPath} />);
-  }, [store.isAPILoading, store.currentVersionFunc?.docStatus]);
+  }, [store.isAPILoading, store.currentBuild?.docStatus]);
 
   useEffect(() => {
-    if (store.currentVersionFunc?.docStatus === API_DOC_STATE.REGISTERING) {
+    if (store.currentBuild?.docStatus === API_DOC_STATE.REGISTERING) {
       wsSubscribe({
         topic: 'register',
-        key: store.currentVersionFunc.id,
+        key: store.currentBuild.id,
         uuid: ws.uuid,
       });
       ws.addEventListener(
         'faas',
         'doc-build',
-        (data) => store.apiStateChangeListener( data, 'status', store.currentVersionFunc?.id));
+        (data) => store.apiStateChangeListener( data, 'status', store.currentBuild?.id));
     }
     return () => {
       ws.removeEventListener('faas', 'doc-build');
     };
-  }, [store.currentVersionFunc?.docStatus]);
+  }, [store.currentBuild?.docStatus]);
 
   const tabItems = [
     {
@@ -79,11 +79,11 @@ function VersionDetails(): JSX.Element {
   useEffect(() => {
     store.getVersion();
     return () => {
-      store.currentVersionFunc = null;
+      store.currentBuild = null;
     };
   }, [store.buildID]);
 
-  if (!store.currentVersionFunc) {
+  if (!store.currentBuild) {
     return <div>Loading...</div>;
   }
 
@@ -93,13 +93,11 @@ function VersionDetails(): JSX.Element {
     createdAt,
     updatedAt,
     describe,
-    // serverState,
     message,
-    // visibility,
     updater,
     status,
     completionTime,
-  } = store.currentVersionFunc;
+  } = store.currentBuild;
 
   function onGoBack(e: MouseEvent): void {
     e.stopPropagation();
@@ -123,11 +121,9 @@ function VersionDetails(): JSX.Element {
           <div className='mx-8'>/</div>
           <div className='text-gray-900 font-semibold mr-16'>版本号：{version}</div>
           <VersionStatus
-            state={store.currentVersionFunc?.status || 0}
+            state={store.currentBuild?.status || 0}
             versionID={store.buildID}
             message={message}
-            // visibility={visibility}
-            // serverState={serverState}
           />
         </div>
         <a

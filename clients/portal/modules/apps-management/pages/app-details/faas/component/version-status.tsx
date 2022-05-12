@@ -1,4 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useUpdateEffect } from 'react-use';
+
+import ws from '@lib/push';
+
+import { wsSubscribe } from '../api';
 
 import StatusDisplay from '../component/status';
 import store from '../func/store';
@@ -7,41 +12,48 @@ type Props = {
   state: number;
   versionID: string;
   message: string;
-  // serverState: FaasProcessStatus;
-  // visibility: FaasVersionServingStatus;
 }
 
 export default function VersionStatus({
   state,
   versionID,
   message,
-  // serverState,
-  // visibility,
 }: Props): JSX.Element {
-  // if (state === 'True') {
-  //   const onlineStatus = visibility === 'online' ? 'True' : 'False';
+  useEffect(() => {
+    if (state < 2) {
+      wsSubscribe({
+        topic: 'builder',
+        key: versionID,
+        uuid: ws.uuid,
+      });
+    }
 
-  //   return (
-  //     <StatusDisplay
-  //       errorMsg={message}
-  //       status={serverState === 'Unknown' ? 'Unknown' : onlineStatus}
-  //       customText={{
-  //         Unknown: visibility === 'online' ? '上线中' : '下线中',
-  //         True: '在线',
-  //         False: '离线',
-  //       }}
-  //       topic='serving'
-  //       dataID={versionID}
-  //       callBack={(data) => store.versionStateChangeListener(versionID, data, 'serverState')} />
-  //   );
-  // }
+    if (state === 7) {
+      wsSubscribe({
+        topic: 'serving',
+        key: versionID,
+        uuid: ws.uuid,
+      });
+    }
+    ws.addEventListener(
+      'faas',
+      `status-${versionID}`,
+      (data) => store.versionStateChangeListener(versionID, data, 'status'));
+    return () => {
+      ws.removeEventListener('faas', `status-${versionID}`);
+    };
+  }, [state]);
+
+  useUpdateEffect(() => {
+    if (state > 1) {
+      ws.removeEventListener('faas', `status-${versionID}`);
+    }
+  }, [state]);
 
   return (
     <StatusDisplay
       errorMsg={message}
       status={state || 0}
-      topic='builder'
-      dataID={versionID}
-      callBack={(data) => store.versionStateChangeListener(versionID, data, 'status')} />
+    />
   );
 }

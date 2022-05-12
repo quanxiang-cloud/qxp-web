@@ -16,8 +16,8 @@ function Initializate(): JSX.Element {
           userAccount={userAccount}
           onClick={() => setModalType('bindDevelop')}
         />
-        <Group step={store.step} onClick={() =>setModalType('bindGroup')}/>
-        <AddInGroup step={store.step} onClick={() =>setModalType('join')}/>
+        <Group step={store.step} onClick={() => setModalType('bindGroup')} />
+        <AddInGroup step={store.step} onClick={() => setModalType('join')} />
       </div>
     </>
   );

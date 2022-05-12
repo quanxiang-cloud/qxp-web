@@ -11,7 +11,6 @@ import PopConfirm from '@c/pop-confirm';
 import Pagination from '@c/pagination';
 
 import store from './store';
-import TableMoreFilterMenu from '@c/more-menu/table-filter';
 import VersionStatus from '../component/version-status';
 import { FUNC_STATUS } from '../constants';
 import { useHistory } from 'react-router-dom';
@@ -50,23 +49,7 @@ function FuncDetailsDrawer(): JSX.Element {
       },
     },
     {
-      Header: () => (
-        <TableMoreFilterMenu
-          menus={[
-            { key: 'SUCCESS', label: '成功' },
-            { key: 'ING', label: '进行中' },
-            { key: 'FAILED', label: '失败' },
-          ]}
-          onChange={() => console.log('')}
-        >
-          <div className={cs('flex items-center cursor-pointer', {
-            'pointer-events-none': true,
-          })}>
-            <span className="mr-4">状态</span>
-            <Icon name="funnel" />
-          </div>
-        </TableMoreFilterMenu>
-      ),
+      Header: '状态',
       id: 'state',
       accessor: ({ status, id, message }: VersionField) => (
         <VersionStatus
@@ -168,14 +151,15 @@ function FuncDetailsDrawer(): JSX.Element {
         <div className='flex-1 overflow-hidden mx-20'>
           <Table
             rowKey="id"
-            data={store.versionList}
             columns={COLUMNS}
             className='h-full'
+            data={store?.versionList || []}
+            loading={store.versionListLoading}
           />
         </div>
         <Pagination
-          total={store.versionList.length}
-          renderTotalTip={() => `共 ${store.versionList.length} 条数据`}
+          total={store.versionList?.length || 0}
+          renderTotalTip={() => `共 ${store.versionList?.length || 0} 条数据`}
           onChange={(current, pageSize) => store.setVersionParams({ page: current, size: pageSize })}
         />
       </div>

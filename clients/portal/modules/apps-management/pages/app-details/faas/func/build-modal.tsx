@@ -110,8 +110,8 @@ function BuildModal({ onClose }: Props): JSX.Element {
     onSubmit: (formData) => {
       const _env: Record<string, string> = {};
       (formData.env || [])
-        .filter((envItem: {envName: string, envValue: string}) => !!envItem.envName)
-        .forEach((envItem: {envName: string, envValue: string}) => {
+        .filter((envItem: { envName: string, envValue: string }) => !!envItem.envName)
+        .forEach((envItem: { envName: string, envValue: string }) => {
           const { envName, envValue } = envItem;
           if (envValue) {
             _env[envName] = envValue;

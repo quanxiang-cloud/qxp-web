@@ -17,16 +17,14 @@ type Props = {
 
 function NotAvailable({ appID, onChangeStep, onChangeGrroup }: Props): JSX.Element {
   const { modalType } = store;
-
   const { checkUserState, setAppID } = store;
 
   useEffect(() => {
-    setAppID(appID);
-    checkUserState();
-    return () => {
-      store.clear();
-    };
-  }, []);
+    if (appID) {
+      setAppID(appID);
+      checkUserState();
+    }
+  }, [appID]);
 
   useEffect(() => {
     onChangeStep(store.step);
@@ -37,7 +35,7 @@ function NotAvailable({ appID, onChangeStep, onChangeGrroup }: Props): JSX.Eleme
   }, [store.groupID]);
 
   if (store.checkUserLoading) {
-    return <Loading/>;
+    return <Loading />;
   }
 
   return (
@@ -55,9 +53,9 @@ function NotAvailable({ appID, onChangeStep, onChangeGrroup }: Props): JSX.Eleme
         </p>
       </div>
       <Initializate />
-      {modalType === 'bindDevelop' && <BindDeveloperModal/>}
-      {modalType === 'bindGroup' && <BindGroupModal/>}
-      {modalType === 'join' && <JoinGroupModal/>}
+      {modalType === 'bindDevelop' && <BindDeveloperModal />}
+      {modalType === 'bindGroup' && <BindGroupModal />}
+      {modalType === 'join' && <JoinGroupModal />}
     </div>
   );
 }

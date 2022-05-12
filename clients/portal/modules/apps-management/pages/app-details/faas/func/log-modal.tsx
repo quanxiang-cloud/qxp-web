@@ -15,7 +15,7 @@ type Props = {
 
 const INTERVAL = 3000;
 
-function LoggerModal({ onClose, step, isChild, isOngoing }: Props): JSX.Element {
+function LoggerModal({ onClose, step, isOngoing }: Props): JSX.Element {
   const [logs, setLogs] = useState<BuildLog[]>([]);
   const [loading, setLoading] = useState(true);
   const timer = useRef<number | null>(null);
@@ -24,7 +24,7 @@ function LoggerModal({ onClose, step, isChild, isOngoing }: Props): JSX.Element 
   function updateLogs(): Promise<void> {
     return getBuildLog(
       store.groupID,
-      store.currentVersionFunc?.resourceRef || '',
+      store.currentBuild?.resourceRef || '',
       { step },
     ).then((res) => {
       const _logs = res.logs.filter((log) => log.step === step);

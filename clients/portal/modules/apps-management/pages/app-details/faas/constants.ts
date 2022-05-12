@@ -6,6 +6,12 @@ export const faasState = {
   DONE_INITIAL: 4,
 };
 
+export const PROJECT_STATE = {
+  Unknown: 0,
+  True: 3,
+  False: 2,
+};
+
 export const FUNC_STATUS = {
   StatusNull: 0,
   StatusBuilding: 1,
