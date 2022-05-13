@@ -2,7 +2,7 @@ import React from 'react';
 
 import Button from '@c/button';
 
-import store from '../store';
+import store from './store';
 
 function DataEmpty(): JSX.Element {
   const { setModalType } = store;
