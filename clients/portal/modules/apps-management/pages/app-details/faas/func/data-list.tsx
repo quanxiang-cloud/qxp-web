@@ -116,7 +116,12 @@ function DataList(): JSX.Element {
           <div className="flex gap-20">
             {info.state === 'True' && (
               <>
-                <span className="operate" onClick={() => copyContent(info.repoUrl || '')}>复制clone地址</span>
+                <span
+                  className="operate"
+                  onClick={() => copyContent(`git clone ${info?.repoUrl}`)}
+                >
+                  复制clone地址
+                </span>
                 <span className="operate" onClick={() => onClickTool(info, 'build')}>构建</span>
                 <span className="cursor-pointer text-red-600" onClick={() => onClickTool(info, 'deletefunc')}>
                   删除

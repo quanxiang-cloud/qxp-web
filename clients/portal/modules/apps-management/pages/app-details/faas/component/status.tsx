@@ -46,7 +46,7 @@ function StatusDisplay({
         }
       </div>
       <span className="ml-10">{customText?.[status] || STATUS_INFO[status].name}</span>
-      {status === FUNC_STATUS.StatusOK && !!errorMsg && (
+      {status === FUNC_STATUS.StatusFailed && !!errorMsg && (
         <Tooltip label={errorMsg} position='top' >
           <Icon clickable className="ml-8" name="error" style={{ color: 'red' }} />
         </Tooltip>
