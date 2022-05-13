@@ -1,11 +1,12 @@
-import { Observable, of, combineLatest } from 'rxjs';
-import { switchMap, debounceTime, filter, map, catchError } from 'rxjs/operators';
-import { from } from 'rxjs';
+import { Observable, of, combineLatest } from 'rxjs6';
+import { switchMap, debounceTime, filter, map, catchError } from 'rxjs6/operators';
+import { from } from 'rxjs6';
+import { mergeDeepRight } from 'ramda';
 import { FormEffectHooks, ISchemaFormActions } from '@formily/antd';
 
 import logger from '@lib/logger';
 import { fetchFormDataList, FormDataListResponse } from '@lib/http-client';
-import { operatorESParameter, Rule } from '@c/data-filter/utils';
+import { operatorESParameter, Rule, setESQueryParams, QueryParamsType } from '@c/data-filter/utils';
 import { compareOperatorMap } from '@c/form-builder/constants';
 
 const { onFieldValueChange$ } = FormEffectHooks;
@@ -33,17 +34,19 @@ function fetchLinkedTableData$(
       rule.valueFrom === 'fixedValue' ? rule.value as FormValue : getFieldValue(rule.value as string),
     );
   }) ?? [];
-  const query = {
-    bool: {
-      [linkage.ruleJoinOperator === 'every' ? 'must' : 'should']: rules,
-      [linkage.filterConfig?.tag as string]: filterRules,
-    },
+
+  const linkageRule = {
+    [linkage.ruleJoinOperator === 'every' ? 'must' : 'should']: rules.length > 0 ? rules : [],
+  };
+  const filterRule = {
+    [linkage.filterConfig?.tag as string]: filterRules.length > 0 ? filterRules : [],
   };
 
   return from(
     fetchFormDataList(linkage.linkedAppID, linkage.linkedTable.id, {
       sort: (linkage.linkedTableSortRules || []).filter(Boolean),
-      query,
+      query: setESQueryParams(mergeDeepRight(linkageRule, filterRule) as QueryParamsType),
+      size: 999,
     }),
   ).pipe(
     catchError(() => of({ entities: [], total: 0 })),
@@ -178,6 +181,7 @@ function executeLinkage(schema: ISchema, { linkage, formActions }: ExecuteLinkag
   const isMultiple = getMultipleStatus(schema, linkage);
   const { setFieldState, getFieldValue } = formActions;
   const listenedOnFields: string[] = [];
+  const linkedField = linkage.linkedField;
   linkage.rules.forEach((rule) => {
     if (rule.compareTo === 'currentFormValue') {
       listenedOnFields.push(rule.compareValue);
@@ -191,7 +195,7 @@ function executeLinkage(schema: ISchema, { linkage, formActions }: ExecuteLinkag
     ).subscribe(([linkedRow]) => {
       logger.debug(`execute defaultValueLinkage on field: ${linkage.targetField}`);
       setFieldState(linkage.targetField, (state) => {
-        state.value = linkage.linkedField ? linkedRow[0][linkage.linkedField] : getlinkedValData(linkedRow, isMultiple);
+        state.value = linkedField ? linkedRow[0][linkedField] : getlinkedValData(linkedRow, isMultiple);
       });
     });
     return;
@@ -205,7 +209,7 @@ function executeLinkage(schema: ISchema, { linkage, formActions }: ExecuteLinkag
   ).subscribe(([linkedRow, fieldRealPath]) => {
     logger.debug(`execute defaultValueLinkage on field: ${linkage.targetField}`);
     setFieldState(getFieldPath(linkage.targetField, fieldRealPath), (state) => {
-      state.value = linkage.linkedField ? linkedRow[0][linkage.linkedField] : getlinkedValData(linkedRow, isMultiple);
+      state.value = linkedField ? linkedRow[0][linkedField] : getlinkedValData(linkedRow, isMultiple);
     });
   });
 }

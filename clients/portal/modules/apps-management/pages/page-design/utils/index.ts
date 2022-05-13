@@ -1,22 +1,15 @@
-import { uuid } from '@one-for-all/artery-engine';
-import type { Artery, ReactComponentNode } from '@one-for-all/artery';
-import { nanoid } from 'nanoid';
-
-import { PAGE_TYPE, INIT_ARTERY_EDITOR_ARTERY } from '../constants';
+import { buildHTMLNode } from '@one-for-all/artery-engine';
+import type { Artery } from '@one-for-all/artery';
 
 export function getArteryKeys(arteryID: string, isDraft: boolean): string[] {
   const draftArteryKey = `${arteryID}:draft`;
   return isDraft ? [draftArteryKey] : [arteryID, draftArteryKey];
 }
 
-function getInitArtery(): Artery {
+export function getInitArtery(): Artery {
   return {
-    node: {
-      id: uuid(),
-      type: 'react-component',
-      packageName: '@one-for-all/ui',
-      packageVersion: 'latest',
-      exportName: 'page',
+    node: buildHTMLNode({
+      name: 'div',
       label: '页面',
       props: {
         style: {
@@ -28,25 +21,9 @@ function getInitArtery(): Artery {
         },
       },
       children: [],
-    },
+    }),
     apiStateSpec: {},
     sharedStatesSpec: {},
-  };
-}
-
-export function getInitArteryByPageType(pageType: string): Artery {
-  return pageType === PAGE_TYPE.ARTERY_EDITOR ? INIT_ARTERY_EDITOR_ARTERY : getInitArtery();
-}
-
-export function buildNode(id: string, exportName: string, label: string): ReactComponentNode {
-  return {
-    type: 'react-component',
-    id,
-    exportName,
-    label,
-    packageName: '@one-for-all/ui',
-    packageVersion: 'latest',
-    children: [],
   };
 }
 
@@ -64,11 +41,6 @@ export function isDev(): boolean {
   return !!window.__isDev__;
 }
 
-export function isFuncSource(source: string) {
+export function isFuncSource(source: string): boolean {
   return typeof source === 'string' && (/function/.test(source) || /\([^)]*\)\s*=>/.test(source));
-}
-
-export function elemId(elemType: string): string {
-  const type = elemType.replace(/elem\./, '').toLowerCase();
-  return [type, nanoid(8)].join('-');
 }

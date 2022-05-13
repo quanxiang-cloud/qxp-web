@@ -1,4 +1,3 @@
-import { toJS } from 'mobx';
 
 import HeadLessTree from '@c/headless-tree';
 
@@ -11,6 +10,5 @@ export default class Tree<T> extends HeadLessTree<T> {
       return;
     }
     this.props.store.onSelectNode(node.id);
-    this.props.onSelect?.(toJS(node.data));
   };
 }

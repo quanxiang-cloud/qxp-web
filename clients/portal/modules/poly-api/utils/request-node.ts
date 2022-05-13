@@ -71,6 +71,7 @@ export type ApiCascaderOption = {
   children: ApiCascaderOption[] | undefined;
   isLeaf: boolean;
   path: string;
+  method: string;
   childrenData?: any;
   disabled?: boolean;
 }
@@ -82,12 +83,13 @@ function mergeApiListToChildNameSpace(
     return PLACEHOLDER_OPTION;
   }
 
-  return (childNameSpace || []).concat(rawApiList.map(({ title, name, fullPath }: RawApiDetail) => {
+  return (childNameSpace || []).concat(rawApiList.map(({ title, name, fullPath, method }: RawApiDetail) => {
     return {
       label: title || name.split('.').shift() || '',
       value: fullPath,
       path: fullPath,
       children: undefined,
+      method: method,
       isLeaf: true,
       disabled: false,
     };
@@ -110,6 +112,7 @@ export function getChildrenOfCurrentSelectOption(
         value: name,
         children: undefined,
         isLeaf: true,
+        method: currentChild.method,
         path: fullPath,
         pathType,
       };
@@ -128,6 +131,7 @@ export function getChildrenOfCurrentSelectOption(
       isLeaf: false,
       path: `${parent}/${name}`,
       pathType,
+      method: '',
     };
   });
 }

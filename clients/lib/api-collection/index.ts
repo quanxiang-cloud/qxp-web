@@ -1,4 +1,4 @@
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs6';
 import { mergeRight } from 'ramda';
 
 import useObservable from '@lib/hooks/use-observable';

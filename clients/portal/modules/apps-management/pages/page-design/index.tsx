@@ -1,83 +1,83 @@
-/* eslint-disable */
 import React, { useState, useMemo, useEffect, useCallback, CSSProperties } from 'react';
 import cs from 'classnames';
-import { DndProvider } from 'react-dnd';
 import { useHistory } from 'react-router-dom';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-import ArteryEngine from '@one-for-all/artery-engine';
+import ArteryEngine, { Props } from '@one-for-all/artery-engine';
+import Icon from '@one-for-all/icon';
 
-import Icon from '@c/icon';
 import toast from '@lib/toast';
 import { getQuery } from '@lib/utils';
 import FileUploader from '@c/file-upload';
 import ApiSelector from '@polyApi/nodes/forms/request-config/api-selector';
+import Loading from '@c/loading';
 
 import ApiSpec from '../app-details/api-proxy/add-api';
-import SelectCustomPageEditor from './select-custom-page-editor';
-import ArteryEditor from './artery-editor';
-import { useQueryArtery, usePageTypeKey } from './hooks';
-import { PAGE_TYPE, PAGE_DESIGN_ID, LAYERS } from './constants';
-import { getInitArteryByPageType } from './utils';
+import { useQueryArtery, useStyle } from './hooks';
+import { PAGE_DESIGN_ID, LAYERS } from './constants';
 import Ctx from './ctx';
 import stores from './stores';
-import { useStyle } from './hooks/use-style';
 import { savePage } from './api';
+import { getInitArtery } from './utils';
+import type { BlocksCommunicationType } from './types';
 
 import './index.scss';
 import styles from './index.m.scss';
 
 function PageDesign(): JSX.Element | null {
-  const { appID, pageName, arteryID } = getQuery<{ appID: string ,pageName: string, arteryID: string }>();
-  const [pageType, setPageType] = useState('');
+  const { appID, pageName, arteryID } = getQuery<{ appID: string, pageName: string, arteryID: string }>();
   const history = useHistory();
 
-  const resetStyle: CSSProperties = useMemo(() => ({ overflow: 'hidden' }), [])
+  const resetStyle: CSSProperties = useMemo(() => ({ overflow: 'hidden' }), []);
   useStyle('body', resetStyle);
   useStyle('html', resetStyle);
 
-  const { pageType: savedPageType, isLoading: isSavedPageTypeLoading } = usePageTypeKey(arteryID);
   const { data: artery, isLoading: isArteryLoading } = useQueryArtery(
     { arteryID },
     { enabled: !!arteryID },
   );
 
-  const { layers, initialArtery } = useMemo(() => {
-    const initialArtery = artery ?? getInitArteryByPageType(PAGE_TYPE.PAGE_DESIGN_EDITOR);
-    const layer = LAYERS[0];
-    // to remove pageId params
-    layer.blocksCommunicationStateInitialValue = { activeNodeID: '', appID, arteryID: '' };
-    return {
-      layers: [...LAYERS],
-      initialArtery,
-    };
-  }, [artery]);
+  const { layers, artery: initialArtery, blocksCommunicationStateInitialValue } = useMemo(
+    (): Props<BlocksCommunicationType> => {
+      return {
+        layers: [...LAYERS],
+        artery: artery ?? getInitArtery(),
+        blocksCommunicationStateInitialValue: {
+          appID,
+          arteryID: '',
+          menu: { pannelWith: 280 },
+          block: {},
+        },
+      };
+    },
+    [artery],
+  );
 
-  const { designer, page, eventBus } = stores;
+  const { designer, eventBus } = stores;
   const [apiPath, setApiPath] = useState('');
-  function handleFileSuccess(file: QXPUploadFileTask): void {
-    const { readable: readableBucket, domain }: OSSConfig = window.CONFIG.oss_config;
-    if (file.state === 'success' || !file.state) {
-      const url = `${window.location.protocol}//${readableBucket}.${domain}/${file.uid}`;
-      designer.setUploadImage(url);
-    }
-  }
-  function handleGoBack(): void {
-    history.push(`/apps/details/${appID}/app_views?pageName=${pageName}`);
-  }
   useEffect(() => {
-    eventBus.on('clear:api-path', ()=> {
+    eventBus.on('clear:api-path', () => {
       setApiPath('');
     });
-
+    function handleGoBack(): void {
+      history.push(`/apps/details/${appID}/views`);
+    }
     // set page title
     designer.setVdom('title', (
       <div className='inline-flex items-center text-gray-900 text-12'>
-        <Icon name='keyboard_backspace' className='mr-8' onClick={handleGoBack} clickable />
+        <span onClick={handleGoBack}>
+          <Icon name='keyboard_backspace' className='mr-8 cursor-pointer' />
+        </span>
         <span className='mr-4'>正在设计页面:</span>
         <span>{pageName}</span>
       </div>
     ));
 
+    function handleFileSuccess(file: QXPUploadFileTask): void {
+      const { readable: readableBucket, domain }: OSSConfig = window.CONFIG.oss_config;
+      if (file.state === 'success' || !file.state) {
+        const url = `${window.location.protocol}//${readableBucket}.${domain}/${file.uid}`;
+        designer.setUploadImage(url);
+      }
+    }
     // set img upload
     designer.setVdom('uploadImage', (
       <div>
@@ -100,22 +100,22 @@ function PageDesign(): JSX.Element | null {
       </div>
     ));
   }, []);
-  function renderApiStateDetail(): JSX.Element {
-    if (!apiPath) {
+
+  useEffect(() => {
+    function renderApiStateDetail(): JSX.Element {
+      if (!apiPath) {
+        return (
+          <div className='flex flex-col justify-center items-center h-full'>
+            <img src="/dist/images/table-empty.svg" className="w-96 h-72 mb-8" />
+            <span className="text-caption-no-color-weight text-gray-400">请先选择一个要加入数据源的API数据</span>
+          </div>
+        );
+      }
       return (
-        <div className='flex flex-col justify-center items-center h-full'>
-          <img src="/dist/images/table-empty.svg" className="w-96 h-72 mb-8" />
-          <span className="text-caption-no-color-weight text-gray-400">请先选择一个要加入数据源的API数据</span>
-        </div>
+        <ApiSpec apiPath={apiPath} editMode tinyMode />
       );
     }
-    return (
-      <ApiSpec apiPath={apiPath} editMode tinyMode />
-    );
-  }
-  useEffect(() => {
     designer.setVdom('apiStateDetail', renderApiStateDetail());
-
     // setApiPath from another mobx store will not trigger update
     // because mobx instance is isolated
     designer.setVdom('platformApis', (
@@ -132,48 +132,28 @@ function PageDesign(): JSX.Element | null {
     ));
   }, [apiPath]);
 
-  // todo refactor this
-  if (pageType === PAGE_TYPE.ARTERY_EDITOR) {
-    const initialArtery = artery ?? getInitArteryByPageType(pageType);
-    return <ArteryEditor appID={appID} arteryID={arteryID} initialArtery={initialArtery} />;
-  }
-
   const handleSave = useCallback((page_artery: any, options?: Record<string, any>): void => {
-    savePage(arteryID, page_artery, options).then(() => {
-      if (!options?.silent) {
-        toast.success('页面已保存');
-      }
-    }).catch((err: Error) => {
-      toast.error(err.message);
-    });
+    savePage(arteryID, page_artery, options)
+      .then(() => !options?.silent && toast.success('页面已保存'))
+      .catch((err: Error) => toast.error(err.message));
   }, []);
+
   const ArteryEngineEntry = useMemo(() => (
-      <DndProvider backend={HTML5Backend}>
-        <Ctx.Provider value={Object.assign(stores, { onSave: handleSave })}>
-          <div className={cs(styles.designer)}>
-            <div id={PAGE_DESIGN_ID}>
-              <ArteryEngine schema={initialArtery} layers={layers} />
-            </div>
-          </div>
-        </Ctx.Provider>
-      </DndProvider>
-  ), [initialArtery, layers]);
+    <Ctx.Provider value={Object.assign(stores, { onSave: handleSave })}>
+      <div className={cs(styles.designer)}>
+        <div id={PAGE_DESIGN_ID}>
+          <ArteryEngine
+            artery={initialArtery}
+            layers={layers}
+            blocksCommunicationStateInitialValue={blocksCommunicationStateInitialValue}
+          />
+        </div>
+      </div>
+    </Ctx.Provider>
+  ), [initialArtery, layers, blocksCommunicationStateInitialValue]);
 
-  // todo refactor this
-  if (pageType === PAGE_TYPE.PAGE_DESIGN_EDITOR) {
-    return ArteryEngineEntry;
-  }
-
-  if (isArteryLoading || isSavedPageTypeLoading) {
-    return null;
-  }
-
-  if (!artery) {
-    return (<SelectCustomPageEditor arteryID={arteryID} onSelect={setPageType} />);
-  }
-
-  if (savedPageType === PAGE_TYPE.ARTERY_EDITOR) {
-    return (<ArteryEditor appID={appID} arteryID={arteryID} initialArtery={artery} />);
+  if (isArteryLoading) {
+    return <Loading desc="加载中..." />;
   }
 
   return ArteryEngineEntry;

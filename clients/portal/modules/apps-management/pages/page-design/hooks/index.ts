@@ -1,2 +1,2 @@
-export * from './page-type';
 export * from './artery';
+export * from './use-style';

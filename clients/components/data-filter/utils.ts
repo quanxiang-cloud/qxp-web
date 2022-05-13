@@ -319,6 +319,9 @@ export function operatorESParameter(key: string, op: string, value: FormValue): 
       _key = `${key}.value`;
     } else if (!Array.isArray(_value)) {
       _value = (_value as LabelValue).value;
+      if (!_value) {
+        return;
+      }
       _key = `${key}.value`;
     }
   }
@@ -415,7 +418,10 @@ export function toEs(filterConfig: FilterConfig): ESParameter {
       return;
     }
 
-    rule.push(operatorESParameter(key, op, value));
+    const searchItem = operatorESParameter(key, op, value);
+    if (searchItem) {
+      rule.push(operatorESParameter(key, op, value));
+    }
   });
 
   return rule.length ? { bool: { [filterConfig.tag]: rule } } : {};
@@ -472,4 +478,20 @@ export function toFilterConfig(esObj: ESParameter): FilterConfig {
     tag,
     condition,
   };
+}
+
+export interface QueryParamsType{
+  [key: string]: Rule[]
+}
+
+export function setESQueryParams(obj: QueryParamsType): QueryParamsType|{bool: QueryParamsType} {
+  Object.entries(obj).forEach(([key, val])=>{
+    if (!val.length) {
+      delete obj[key];
+    }
+  });
+  if (!Object.keys(obj).length) {
+    return {};
+  }
+  return { bool: obj };
 }

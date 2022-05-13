@@ -1,5 +1,5 @@
 import TaskList from '@c/task-lists';
-import type { SourceElement } from '../../../types';
+import type { SourceElement } from '@pageDesign/types';
 
 import ConfigForm, { DEFAULT_CONFIG } from './config-form';
 

@@ -5,15 +5,14 @@ import { javascript } from '@codemirror/lang-javascript';
 import { pick, get } from 'lodash';
 import cs from 'classnames';
 import { toJS } from 'mobx';
-
+import { generateNodeId } from '@one-for-all/artery-engine';
 import { Button, Icon, Tooltip, Modal, toast } from '@one-for-all/ui';
 
-import { PageNode } from '../../../types';
-import DataBind, { iterableStateTypes } from '../../../utils/data-bind';
-import { useCtx } from '../../../ctx';
-import Section from '../../../utils/section';
-import { elemId } from '../../../utils';
-import { mapRawProps } from '../../../utils/artery-adapter';
+import { PageNode } from '@pageDesign/types';
+import DataBind, { iterableStateTypes } from '@pageDesign/utils/data-bind';
+import { useCtx } from '@pageDesign/ctx';
+import Section from '@pageDesign/utils/section';
+import { mapRawProps } from '@pageDesign/utils/artery-adapter';
 
 import styles from './index.m.scss';
 
@@ -107,7 +106,7 @@ function RendererPanel(): JSX.Element {
         page.updateCurNodeAsComposedNode('iterableState', {
           iterableState,
           node: {
-            id: elemId('composed-node'),
+            id: generateNodeId('composed-node'),
             type: 'composed-node',
             outLayer: { ..._node },
             children: newChildren,

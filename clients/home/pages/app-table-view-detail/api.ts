@@ -1,4 +1,5 @@
 import httpClient, { fetchOneFormDataWithSchema } from '@lib/http-client';
+import toast from '@lib/toast';
 
 export type SchemaAndRecord = {
   schema: ISchema;
@@ -16,9 +17,14 @@ export function getSchemaAndRecord(
   });
 }
 
-export const getOperate = <T>(appID: string, formID: string) => {
-  return httpClient<T>(
-    `/api/v1/form/${appID}/home/permission/operatePer/getOperate`,
-    { formID },
-  );
+export const getOperate = (
+  appID: string,
+  data: {paths: { accessPath: string, method: string }[]},
+): Promise<Record<string, boolean>> => {
+  return httpClient<Record<string, boolean>>(`/api/v1/form/${appID}/home/apiPermit/list`, data)
+    .then((res) => res || {})
+    .catch((err) => {
+      toast.error(err);
+      return {};
+    });
 };

@@ -6,11 +6,12 @@ import { treeFind, pageListToTree, NodeItem } from '@c/two-level-menu';
 import { getCustomPageInfo, delFormDataRequest, fetchPageList } from '@lib/http-client';
 import { CustomPageInfo, MenuType } from '@portal/modules/apps-management/pages/app-details/type';
 
-import { getOperate } from './api';
+import { getButtonAPIList } from './utils';
+import { getOperate } from '../app-table-view-detail/api';
 
 type PerItem = {
-  id: string;
-  name: string;
+  roleID: string;
+  roleName: string;
 }
 
 type PerRes = {
@@ -27,13 +28,13 @@ class UserAppDetailsStore {
   @observable pageListLoading = true;
   @observable curPage: PageInfo = { id: '' };
   @observable fetchSchemeLoading = true;
-  @observable authority = 0;
+  @observable authority: Record<string, boolean> = {};
   @observable showPageNav = true;
   @observable operationType = '';
   @observable isMouseControl = false;
   @observable pageList: NodeItem<PageInfo>[] = [];
   @observable customPageInfo: CustomPageInfo | null = null;
-  @observable currentRoleInfo = { name: '', id: '' };
+  @observable currentRoleInfo: PerItem = { roleName: '', roleID: '' };
   @observable roleOptions: LabelValue[] = [];
   @observable appList: any = [];
 
@@ -47,6 +48,11 @@ class UserAppDetailsStore {
 
       return _page?.source;
     }, this.setCurPage);
+    if (window.APP_ID) {
+      this.appID = window.APP_ID;
+      this.getRoleInfo(this.appID);
+    }
+    reaction(() => this.appID, () => this.getRoleInfo(this.appID));
   }
 
   @action
@@ -73,6 +79,16 @@ class UserAppDetailsStore {
   };
 
   @action
+  setAppID = (appID: string): void => {
+    this.appID = appID;
+  };
+
+  @action
+  setCurrentRoleInfo = (currentRoleInfo: PerItem): void => {
+    this.currentRoleInfo = currentRoleInfo;
+  };
+
+  @action
   setCurPage = (pageInfo: PageInfo | undefined): void => {
     if (!pageInfo) {
       return;
@@ -86,8 +102,9 @@ class UserAppDetailsStore {
       });
     } else {
       this.fetchSchemeLoading = true;
-      getOperate<{ authority: number | null }>(this.appID, this.pageID).then((authorityRef) => {
-        this.authority = authorityRef?.authority || 0;
+      const toolList = getButtonAPIList(this.appID, this.pageID);
+      getOperate(this.appID, { paths: toolList }).then((authorityRef) => {
+        this.authority = authorityRef || {};
         this.pageName = pageInfo.name || '';
         this.fetchSchemeLoading = false;
       }).catch(() => {
@@ -143,10 +160,15 @@ class UserAppDetailsStore {
 
   @action
   getRoleInfo = (appID: string): void => {
+    if (!appID) {
+      return;
+    }
     getPerOption<PerRes>(appID).then((res: any) => {
-      const { optionPer = [], selectPer = { id: '' } } = res;
-      this.currentRoleInfo = { name: selectPer.name, id: selectPer.id };
-      this.roleOptions = (optionPer.map((option: PerItem) => ({ value: option.id, label: option.name })));
+      const { optionPer = [], selectPer = { roleId: '', roleName: '' } } = res;
+      this.currentRoleInfo = { roleName: selectPer.roleName, roleID: selectPer.roleID };
+      this.roleOptions = (optionPer.map((option: PerItem) => ({
+        value: option.roleID, label: option.roleName,
+      })));
     }).catch((reason) => {
       toast.error(reason);
     });
@@ -154,12 +176,14 @@ class UserAppDetailsStore {
 
   @action
   handleRoleChange = (roleID: string, roleName: string): void => {
-    if (!roleID || !this.appID) return;
-    this.currentRoleInfo = { name: roleName, id: roleID };
-    roleChange(this.appID, roleID).then(() => {
+    if (!roleID || !window.APP_ID) return;
+
+    roleChange(window.APP_ID, roleID).then(() => {
+      this.setCurrentRoleInfo({ roleName, roleID });
+
+      toast.success(`当前角色：${roleName}`);
       this.clear();
-      this.fetchPageList(this.appID);
-    });
+    }).catch(() => toast.error('角色切换失败'));
   };
 }
 export default new UserAppDetailsStore();

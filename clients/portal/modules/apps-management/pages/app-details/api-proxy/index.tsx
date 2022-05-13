@@ -23,6 +23,8 @@ function ApiProxy(): JSX.Element | null {
   useEffect(()=> {
     store.setAppId(appID);
     store.fetchNamespaces(appID);
+
+    return store.reset;
   }, []);
 
   if (!store.treeStore && store.isInitSuccessed) {

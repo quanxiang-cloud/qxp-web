@@ -3,3 +3,7 @@
     @apply h-100;
   }
 }
+
+.ant-tooltip-inner{
+  @apply bg-gray-600 text-12 rounded-8;
+}

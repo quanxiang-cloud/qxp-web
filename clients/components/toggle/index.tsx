@@ -9,6 +9,7 @@ type Props = {
   offText?: string
   disabled?: boolean
   defaultChecked?: boolean
+  checked?: boolean
   className?: string
   style?: React.CSSProperties
 }
@@ -19,22 +20,29 @@ function Toggle({
   offText,
   disabled = false,
   defaultChecked = false,
+  checked: isChecked,
   className,
   style,
 }: Props): JSX.Element {
-  const [checked, setChecked] = useState(defaultChecked);
+  const [checked, setChecked] = useState(isChecked || defaultChecked);
 
   const handleToggleSwitch = (): void => {
     if (disabled) {
       return;
     }
+    if (!(isChecked === undefined)) {
+      setChecked(isChecked);
+      onChange && onChange(!isChecked);
+      return;
+    }
+
     setChecked(!checked);
-    onChange(!checked);
+    onChange && onChange(!checked);
   };
 
   useEffect(() => {
-    setChecked(defaultChecked);
-  }, [defaultChecked]);
+    !(isChecked === undefined) && setChecked(isChecked);
+  }, [isChecked]);
 
   return (
     <label

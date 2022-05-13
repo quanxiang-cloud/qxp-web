@@ -29,7 +29,7 @@ function FormDataDetailsCard({
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState<{ schema: ISchema, record: Record<string, any> } | null>(null);
 
-  const groupTitleMap: Record<string, string> = {
+  const GROUP_TITLE_MAP: Record<string, string> = {
     LayoutGrid: '栅格',
     LayoutTabs: '选项卡',
   };
@@ -80,7 +80,7 @@ function FormDataDetailsCard({
       if ((fieldSchema as ISchema)['x-internal']?.isLayoutComponent) {
         const component = (fieldSchema as ISchema)['x-component'] || '';
         const title = (fieldSchema as ISchema).title ? (fieldSchema as ISchema).title as string :
-          groupTitleMap[component];
+          GROUP_TITLE_MAP[component];
         const _group: FormInfoCardDataProp[] = [];
         const fieldSchemaTemp = schemaToFields(fieldSchema).sort((fieldSchemaA, fieldSchemaB) => {
           return (fieldSchemaA?.['x-index'] || 0) - (fieldSchemaB?.['x-index'] || 0);

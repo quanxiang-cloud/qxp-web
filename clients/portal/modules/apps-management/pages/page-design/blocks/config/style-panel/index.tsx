@@ -4,9 +4,11 @@ import cs from 'classnames';
 import { observer } from 'mobx-react';
 import Editor from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
-
-import { useCtx } from '../../../ctx';
 import { Modal, Icon, Button, toast } from '@one-for-all/ui';
+
+import { useCtx } from '@pageDesign/ctx';
+import Section from '@pageDesign/utils/section';
+import { parseStyleToForm, formatStyles } from '@pageDesign/utils/config';
 
 import LayoutConfig from './layout-config';
 import PositionConfig from './position-config';
@@ -15,8 +17,6 @@ import BackgroundConfig from './background-config';
 import FontConfig from './font-config';
 import BorderConfig from './border-config';
 import ShadowConfig from './shadow-config';
-import Section from '../../../utils/section';
-import { parseStyleToForm, formatStyles } from '../../../utils/config';
 
 import styles from './index.m.scss';
 

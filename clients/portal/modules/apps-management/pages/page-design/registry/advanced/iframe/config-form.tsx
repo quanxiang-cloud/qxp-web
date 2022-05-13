@@ -2,8 +2,8 @@ import React, { useState, useEffect, HTMLAttributeReferrerPolicy } from 'react';
 import { useForm } from 'react-hook-form';
 import { defaults } from 'lodash';
 
-import { useCtx } from '../../../ctx';
-import ConfigBind from '../../../utils/data-bind';
+import { useCtx } from '@pageDesign/ctx';
+import ConfigBind from '@pageDesign/utils/data-bind';
 
 export interface IframeConfigProps {
   id?: string;

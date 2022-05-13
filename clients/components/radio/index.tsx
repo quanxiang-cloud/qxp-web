@@ -56,7 +56,6 @@ function InternalRadio(props: Props, ref?: Ref<HTMLInputElement>): JSX.Element {
           disabled ? 'cursor-not-allowed' : 'cursor-pointer',
           radioClass)}
         style={{ borderRadius: '50%' }}
-        onClick={() => handleChange(true)}
       >
         <input
           {...inputProps}

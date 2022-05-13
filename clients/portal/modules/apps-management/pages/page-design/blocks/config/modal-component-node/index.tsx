@@ -6,11 +6,11 @@ import cs from 'classnames';
 import { toJS } from 'mobx';
 import { get } from 'lodash';
 import { Modal, Icon, Tooltip, toast } from '@one-for-all/ui';
+import { generateNodeId } from '@one-for-all/artery-engine';
 
-import { useCtx } from '../../../ctx';
-import { PageNode } from '../../../types';
-import { elemId } from '../../../utils';
-import { mapRawProps } from '../../../utils/artery-adapter';
+import { useCtx } from '@pageDesign/ctx';
+import { PageNode } from '@pageDesign/types';
+import { mapRawProps } from '@pageDesign/utils/artery-adapter';
 
 type LabelValue = {
   label: string;
@@ -135,7 +135,7 @@ function ModalComponentNode(): JSX.Element {
     page.updateCurNodeAsComposedNode('iterableState', {
       iterableState,
       node: {
-        id: elemId('composed-node'),
+        id: generateNodeId('composed-node'),
         type: 'composed-node',
         outLayer: { ..._node },
         children: _nodeChildren,

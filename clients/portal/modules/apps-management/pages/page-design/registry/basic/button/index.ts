@@ -1,4 +1,4 @@
-import type { SourceElement } from '../../../types';
+import type { SourceElement } from '@pageDesign/types';
 
 import ButtonElem from './button';
 import ConfigForm, { DEFAULT_CONFIG } from './config-form';

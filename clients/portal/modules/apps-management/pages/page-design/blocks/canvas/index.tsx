@@ -2,31 +2,32 @@ import React, { useEffect, useRef, useLayoutEffect, useMemo } from 'react';
 import cs from 'classnames';
 import { observer } from 'mobx-react';
 import { useDrop } from 'react-dnd';
-import { toJS } from 'mobx';
 import { BlockItemProps } from '@one-for-all/artery-engine';
 
-import { useCtx } from '../../ctx';
-import { ElementInfo, BlocksCommunicationType } from '../../types';
+import { useCtx } from '@pageDesign/ctx';
+import { ElementInfo, BlocksCommunicationType } from '@pageDesign/types';
+import { loadDevEnvPageArtery } from '@pageDesign/utils/helpers';
+import { useStyle } from '@pageDesign/hooks/use-style';
+import { initPageArtery } from '@pageDesign/stores/page-helpers';
+
 import NodeRender from './node-render';
 import NodeToolbox from './node-toolbox';
-import { loadDevEnvPageArtery } from '../../utils/helpers';
-import { useStyle } from '../../hooks/use-style';
 
 import styles from './index.m.scss';
 import './style.scss';
-import { initPageArtery } from '../../stores/page-helpers';
 
-function Canvas({ schema }: BlockItemProps<BlocksCommunicationType>): JSX.Element {
-  const { page, registry, dataSource, designer } = useCtx();
+function Canvas(props: BlockItemProps<BlocksCommunicationType>): JSX.Element {
+  const { artery, sharedState, onSharedStateChange } = props;
+  const { page } = useCtx();
+  const { currentGroupType = '', groupTypeContentPinned = false, pannelWith } = sharedState.menu ?? {};
   const toolRef = useRef<any>();
 
-  const [{ isOver }, drop] = useDrop(() => ({
+  const [, drop] = useDrop(() => ({
     accept: ['elem', 'source_elem'],
     drop: (item: any, monitor) => {
       if (monitor.didDrop()) {
         return;
       }
-      console.log('dropped %o onto canvas: ', item);
       page.appendNode(item, null);
     },
     collect: (monitor) => ({
@@ -37,21 +38,20 @@ function Canvas({ schema }: BlockItemProps<BlocksCommunicationType>): JSX.Elemen
   useEffect(() => {
     loadDevEnvPageArtery();
     // sync schema prop with store state
-    schema && page.setSchema(schema as any);
-
+    artery && page.setSchema(artery as any);
     return () => page.setSchema(initPageArtery());
   }, []);
 
   useStyle(
-    '.page-engine-layer-block:nth-child(3)',
+    '.artery-engine-layer-block:nth-child(3)',
     useMemo(
       () => ({
         overflow: 'hidden',
         paddingBottom: '10px',
         transition: 'all .3s linear',
-        paddingLeft: designer.panelOpen ? '268px' : '0px',
+        paddingLeft: currentGroupType ? `${pannelWith}px` : '0px',
       }),
-      [designer.panelOpen],
+      [currentGroupType],
     ),
   );
 
@@ -64,7 +64,7 @@ function Canvas({ schema }: BlockItemProps<BlocksCommunicationType>): JSX.Elemen
     page.setSchemaElements(elementMap);
 
     toolRef.current.computedPlace();
-  }, [toJS(page.schema.node)]);
+  }, [page.schema.node]);
 
   function handleEle(elements: Element[], newElements: Record<string, ElementInfo>): void {
     elements.map((element: Element) => {
@@ -88,9 +88,9 @@ function Canvas({ schema }: BlockItemProps<BlocksCommunicationType>): JSX.Elemen
 
     // get event target's closest parent with attribute data-node-key
     // because some elem may has children, like container
-    const elemId = (e.target as Element)?.closest('[data-node-key]')?.getAttribute('data-node-key') || '';
-    elemId && page.setActiveElemId(elemId);
-    !designer.panelPinned && designer.setPanelOpen(false);
+    const nodeKey = (e.target as Element)?.closest('[data-node-key]')?.getAttribute('data-node-key') || '';
+    nodeKey && page.setActiveElemId(nodeKey);
+    !groupTypeContentPinned && onSharedStateChange('menu.currentGroupType', '');
   }
 
   return (
@@ -100,7 +100,11 @@ function Canvas({ schema }: BlockItemProps<BlocksCommunicationType>): JSX.Elemen
       ref={drop}
     >
       <NodeRender schema={page.schema.node} />
-      <NodeToolbox ref={toolRef} />
+      <NodeToolbox
+        ref={toolRef}
+        currentGroupType={currentGroupType}
+        groupTypeContentPinned={groupTypeContentPinned}
+      />
     </div>
   );
 }

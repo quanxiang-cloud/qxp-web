@@ -19,7 +19,7 @@ interface Props {
 }
 
 function Table(
-  { className, cols, rows, hasBorder, ...rest }: Props,
+  { className, cols = [], rows, hasBorder, ...rest }: Props,
   ref: ForwardedRef<HTMLTableElement>,
 ) {
   const renderHead = () => {
