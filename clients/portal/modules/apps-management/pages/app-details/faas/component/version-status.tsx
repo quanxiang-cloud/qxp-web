@@ -1,47 +1,60 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useUpdateEffect } from 'react-use';
+
+import ws from '@lib/push';
+
+import { wsSubscribe } from '../api';
 
 import StatusDisplay from '../component/status';
-import store from '../store';
+import store from '../func/store';
+import { FUNC_STATUS } from '../constants';
 
 type Props = {
-  state: FaasProcessStatus;
+  state: number;
   versionID: string;
   message: string;
-  serverState: FaasProcessStatus;
-  visibility: FaasVersionServingStatus;
 }
 
 export default function VersionStatus({
   state,
   versionID,
   message,
-  serverState,
-  visibility,
 }: Props): JSX.Element {
-  if (state === 'True') {
-    const onlineStatus = visibility === 'online' ? 'True' : 'False';
+  useEffect(() => {
+    if (state < FUNC_STATUS.StatusFailed) {
+      wsSubscribe({
+        topic: 'builder',
+        key: versionID,
+        uuid: ws.uuid,
+      });
+    }
 
-    return (
-      <StatusDisplay
-        errorMsg={message}
-        status={serverState === 'Unknown' ? 'Unknown' : onlineStatus}
-        customText={{
-          Unknown: visibility === 'online' ? '上线中' : '下线中',
-          True: '在线',
-          False: '离线',
-        }}
-        topic='serving'
-        dataID={versionID}
-        callBack={(data) => store.versionStateChangeListener(versionID, data, 'serverState')} />
-    );
-  }
+    if (state === FUNC_STATUS.OnlineBuilding) {
+      wsSubscribe({
+        topic: 'serving',
+        key: versionID,
+        uuid: ws.uuid,
+      });
+    }
+    ws.addEventListener(
+      'faas',
+      `status-${versionID}`,
+      (data) => store.versionStateChangeListener(versionID, data, 'status'));
+    return () => {
+      ws.removeEventListener('faas', `status-${versionID}`);
+    };
+  }, [state]);
+
+  useUpdateEffect(() => {
+    if (state !== FUNC_STATUS.StatusBuilding && state !== FUNC_STATUS.OnlineBuilding) {
+      ws.removeEventListener('faas', `status-${versionID}`);
+    }
+  }, [state]);
 
   return (
     <StatusDisplay
       errorMsg={message}
-      status={state || 'Unknown'}
-      topic='builder'
-      dataID={versionID}
-      callBack={(data) => store.versionStateChangeListener(versionID, data, 'state')} />
+      status={state || 0}
+    />
   );
 }
