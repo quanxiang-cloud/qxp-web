@@ -10,7 +10,6 @@ import path from 'path';
 // import tsChecker from 'rollup-plugin-fork-ts-checker';
 
 import typescriptPaths from './plugins/rollup-plugin-typescript-paths';
-import notifier from './plugins/rollup-plugin-notifier';
 import esbuildConfig from './esbuild-config';
 import { isProduction } from "./env";
 
@@ -25,9 +24,6 @@ const config = {
     chunkFileNames: isProduction ? 'chunk-[name]-[hash].js' : 'chunk-[name].js',
     file: './tmp/TEMPORARY_PATCH_FOR_ARTERY_PLUGINS.js',
     sourcemap: isProduction ? false : 'inline',
-    plugins: [
-      isProduction ? false : notifier(),
-    ],
   },
 
   external: [
