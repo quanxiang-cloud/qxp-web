@@ -27,8 +27,9 @@ export type TokenEdited<T extends Token> = {
   options: {
     type: TokenTypes;
     description?: string;
-  }
-} & Omit<TokenTypeSchema, 'label'> & Pick<T, 'name' | 'value' | 'unit'>;
+  };
+} & Omit<TokenTypeSchema, 'label'> &
+  Pick<T, 'name' | 'value' | 'unit'>;
 
 const defaultTokens: any = {
   version: 'v0.1.0',
@@ -44,10 +45,21 @@ export default class DesignTokenStore {
   @observable usedTokenSet: string[] = [GLOBAL_SET];
   @observable tokenToBeEdited: TokenEdited<Token> | null = null;
 
-  constructor({ tokenData, isGlobalEditable = false }: { tokenData: string, isGlobalEditable?: boolean }) {
+  constructor({
+    tokenData,
+    isGlobalEditable = false,
+  }: {
+    tokenData: string;
+    isGlobalEditable?: boolean;
+  }) {
     this.isGlobalEditable = isGlobalEditable;
-    const values = tokenData ? parseJSON(tokenData, defaultTokens.values) : defaultTokens.values;
-    this.setTokenData({ values: values });
+    const values = tokenData ?
+      parseJSON(tokenData, {
+        values: defaultTokens.values,
+        usedTokenSet: [GLOBAL_SET],
+      }) :
+      { values: defaultTokens.values, usedTokenSet: [GLOBAL_SET] };
+    this.setTokenData(values);
   }
   @computed get isEditDisabled() {
     if (this.activeTokenSet === GLOBAL_SET) {
@@ -57,11 +69,15 @@ export default class DesignTokenStore {
   }
 
   @computed get resolvedTokens() {
-    return resolveTokenValues(mergeTokenGroups(this.tokens, [...this.usedTokenSet, this.activeTokenSet]));
+    return resolveTokenValues(
+      mergeTokenGroups(this.tokens, [...this.usedTokenSet, this.activeTokenSet]),
+    );
   }
 
   @computed get resolvedUsedTokens() {
-    return resolveTokenValues(mergeTokenGroups(this.tokens, [...this.usedTokenSet]));
+    return resolveTokenValues(
+      mergeTokenGroups(this.tokens, [...this.usedTokenSet]),
+    );
   }
 
   @computed get memoizedTokens() {
@@ -142,7 +158,9 @@ export default class DesignTokenStore {
   @action
   duplicateTokenSet = (tokenSet: string): void => {
     const allTokenSets = Object.keys(this.tokens);
-    const existingTokenSet = allTokenSets.find((key: string) => key === tokenSet);
+    const existingTokenSet = allTokenSets.find(
+      (key: string) => key === tokenSet,
+    );
 
     if (existingTokenSet) {
       let index = 0;
@@ -162,8 +180,8 @@ export default class DesignTokenStore {
   setTokenData = (data: SetTokenInput): void => {
     const values = parseTokenValues(data.values);
     this.tokens = values;
-    this.setActiveTokenSet(GLOBAL_SET);
-    this.setUsedTokenSet([GLOBAL_SET]);
+    this.setActiveTokenSet(data.usedTokenSet?.[0] || GLOBAL_SET);
+    this.setUsedTokenSet(data.usedTokenSet || [GLOBAL_SET]);
   };
 
   @action
@@ -277,43 +295,42 @@ export default class DesignTokenStore {
 
   @action
   updateAliases = (oldName: string, newName: string): void => {
-    this.tokens = Object.entries(this.tokens).reduce<Record<string, AnyTokenList>>(
-      (acc, [key, values]) => {
-        const newValues = values.map<Token>((token) => {
-          if (Array.isArray(token.value)) {
-            return {
-              ...token,
-              value: token.value.map((t) =>
-                Object.entries(t).reduce<Record<string, string>>(
-                  (a, [k, v]) => {
-                    a[k] = replaceReferences(v, oldName, newName);
-                    return a;
-                  },
-                  {},
-                ),
-              ),
-            } as Token;
-          }
-          if (typeof token.value === 'object') {
-            return {
-              ...token,
-              value: Object.entries(token.value).reduce<Record<string, string>>((a, [k, v]) => {
+    this.tokens = Object.entries(this.tokens).reduce<
+      Record<string, AnyTokenList>
+    >((acc, [key, values]) => {
+      const newValues = values.map<Token>((token) => {
+        if (Array.isArray(token.value)) {
+          return {
+            ...token,
+            value: token.value.map((t) =>
+              Object.entries(t).reduce<Record<string, string>>((a, [k, v]) => {
                 a[k] = replaceReferences(v, oldName, newName);
                 return a;
               }, {}),
-            } as Token;
-          }
+            ),
+          } as Token;
+        }
+        if (typeof token.value === 'object') {
           return {
             ...token,
-            value: replaceReferences(token.value, oldName, newName),
+            value: Object.entries(token.value).reduce<Record<string, string>>(
+              (a, [k, v]) => {
+                a[k] = replaceReferences(v, oldName, newName);
+                return a;
+              },
+              {},
+            ),
           } as Token;
-        });
+        }
+        return {
+          ...token,
+          value: replaceReferences(token.value, oldName, newName),
+        } as Token;
+      });
 
-        acc[key] = newValues;
-        return acc;
-      },
-      {},
-    );
+      acc[key] = newValues;
+      return acc;
+    }, {});
   };
 
   getStringTokens = (): string => {

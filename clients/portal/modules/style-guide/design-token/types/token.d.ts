@@ -15,7 +15,7 @@ export type BaseToken<
   name: string;
   type: T;
   value: V;
-  unit?: U;
+  unit: U;
   description?: string;
   parent?: string;
 }

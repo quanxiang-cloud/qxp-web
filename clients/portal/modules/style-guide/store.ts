@@ -167,7 +167,6 @@ class StyleGuideStore {
         value: this.componentScssMap[this.currentComp?.key],
       },
     ]);
-    console.log(this.componentScssMap);
 
     this.triggerCompile();
   };
@@ -183,9 +182,10 @@ class StyleGuideStore {
       {
         version: VERSION,
         key: DESIGN_TOKEN_CONFIG_KEY,
-        value: JSON.stringify(
-          JSON.parse(this.designTokenStore?.getAllStringTokens() || ''),
-        ),
+        value: JSON.stringify({
+          values: JSON.parse(this.designTokenStore?.getAllStringTokens() || ''),
+          usedTokenSet: this.designTokenStore?.usedTokenSet,
+        }),
       },
       {
         version: VERSION,
