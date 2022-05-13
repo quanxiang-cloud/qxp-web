@@ -36,7 +36,6 @@ export function Develop({
 }
 
 export function Group({ step, onClick }: stepProps): JSX.Element {
-  console.log(step);
   const hasGroup = step > faasState.DEVELOP || step === faasState.NOT_DEVELOP_HAS_GROUP;
   return (
 
