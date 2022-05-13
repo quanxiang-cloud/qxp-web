@@ -1,6 +1,18 @@
-import { APISpecAdapter } from '@one-for-all/api-spec-adapter';
-import repository from '@c/artery-renderer/repository';
-import { Plugins } from '@one-for-all/artery-renderer';
+import type { APISpecAdapter } from '@one-for-all/api-spec-adapter';
+import type { Repository } from '@one-for-all/artery-renderer';
+
+import TaskList from '@c/task-lists';
+import UserAvatarMenu from '@c/user-avatar-menu';
+
+const systemComponents = {
+  SystemTaskList: TaskList,
+  UserMenuAvatar: UserAvatarMenu,
+};
+
+// todo fix this
+const repository: Repository = {
+  'system-components@1.0.0': systemComponents,
+};
 
 const adapter: APISpecAdapter = {
   build: () => {
@@ -11,6 +23,6 @@ const adapter: APISpecAdapter = {
   },
 };
 
-const plugins: Plugins = { repository, apiSpecAdapter: adapter };
+const plugins = { repository, apiSpecAdapter: adapter };
 
 export default plugins;

@@ -1,44 +1,29 @@
 import commonjs from '@rollup/plugin-commonjs';
 import esbuild from 'rollup-plugin-esbuild-ts';
 import json from '@rollup/plugin-json';
-import outputManifest from 'rollup-plugin-output-manifest';
 import progress from 'rollup-plugin-progress';
 import replace from '@rollup/plugin-replace';
 import resolve from '@rollup/plugin-node-resolve';
 import styles from 'rollup-plugin-styles';
 import webWorkerLoader from 'rollup-plugin-web-worker-loader';
-// import tsChecker from 'rollup-plugin-fork-ts-checker';
 
 import typescriptPaths from './plugins/rollup-plugin-typescript-paths';
-import notifier from './plugins/rollup-plugin-notifier';
 import esbuildConfig from './esbuild-config';
-import dll from './plugins/rollup-plugin-dll';
-
-import { isProduction } from './env';
-
-const output = {
-  format: 'system',
-  entryFileNames: isProduction ? '[name]-[hash].js' : '[name].js',
-  chunkFileNames: isProduction ? 'chunk-[name]-[hash].js' : 'chunk-[name].js',
-  dir: 'dist',
-  sourcemap: isProduction ? false : 'inline',
-  plugins: [
-    isProduction ? false : notifier(),
-  ],
-};
-
-const input = {
-  portal: 'clients/portal/index.tsx',
-  home: 'clients/home/index.tsx',
-  appLand: 'clients/app-land/index.tsx',
-};
+// import { isProduction } from "./env";
+const isProduction = true;
 
 const config = {
   treeshake: isProduction,
-  preserveEntrySignatures: false,
+  // preserveEntrySignatures: false,
 
-  input,
-  output,
+  input: 'clients/lib/legacy/legacy-ui-components.ts',
+  output: {
+    format: 'system',
+    // entryFileNames: isProduction ? '[name]-[hash].js' : '[name].js',
+    // chunkFileNames: isProduction ? 'chunk-[name]-[hash].js' : 'chunk-[name].js',
+    file: './tmp/legacy-ui-component-20220513.js',
+    sourcemap: isProduction ? false : 'inline',
+  },
 
   external: [
     'react',
@@ -78,7 +63,6 @@ const config = {
   ],
 
   plugins: [
-    dll(),
     webWorkerLoader({
       // todo output file name has no hash
       targetPlatform: 'browser',
@@ -108,40 +92,9 @@ const config = {
     }),
     json(),
     typescriptPaths(),
-    outputManifest(),
     esbuild(esbuildConfig),
     // tsChecker(),
   ],
 };
 
-const mobileInput = {
-  mobile: 'clients/mobile/index.tsx',
-};
-
-const mobileConfig = Object.assign(
-  {},
-  config,
-  {
-    input: mobileInput,
-    output: Object.assign({}, output, {
-      chunkFileNames: isProduction ? 'mobile-chunk-[name]-[hash].js' : 'mobile-chunk-[name].js',
-    }),
-    plugins: [
-      ...config.plugins.filter((plugin) => {
-        return plugin.name !== 'styles' && plugin.name !== 'rollup-plugin-output-manifest';
-      }),
-      styles({
-        autoModules: /index\.module\.scss/,
-        config: {
-          path: 'rollup-configs/mobile/postcss.config.js',
-        },
-      }),
-      outputManifest({ isMerge: true }),
-    ],
-  },
-);
-
-export default [
-  config,
-  mobileConfig,
-];
+export default config;

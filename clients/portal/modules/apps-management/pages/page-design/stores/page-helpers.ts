@@ -66,7 +66,7 @@ export function generateGridChildren(
         type: 'react-component',
         exportName: 'container',
         packageName: '@one-for-all/ui',
-        packageVersion: 'latest',
+        packageVersion: '0.3.3',
         label: '容器',
         props: {
           style: {
@@ -113,7 +113,7 @@ export function initPageArtery(): PageArtery {
       pid: '',
       type: 'react-component',
       packageName: '@one-for-all/ui',
-      packageVersion: 'latest',
+      packageVersion: '0.3.3',
       exportName: 'page',
       label: '页面',
       props: {

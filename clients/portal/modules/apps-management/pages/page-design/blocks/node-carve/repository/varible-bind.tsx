@@ -52,8 +52,10 @@ function VaribleBind({
         toast.error('必须为对象');
         return;
       }
-
-      onArteryChange?.(updateNodeProperty(activeNode, __path, varible, artery));
+      onArteryChange?.(updateNodeProperty(activeNode, __path, {
+        type: 'constant_property',
+        value: varible,
+      }, artery));
       setModalVisible(false);
     } catch (err: any) {
       toast.error(err.message);

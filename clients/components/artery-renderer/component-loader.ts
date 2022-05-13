@@ -32,6 +32,18 @@ function queryPackageMainSrc(packageName: string, packageVersion: string): Promi
 function componentLoader(
   { packageName, packageVersion, exportName }: ComponentLoaderParam,
 ): Promise<DynamicComponent> {
+  // todo optimize this
+  if (packageName.startsWith('@one-for-all') || packageName === 'ofa-ui') {
+    return System.import(packageName).then((systemModule) => {
+      // patch history bug
+      if (packageName === '@one-for-all/ui' && exportName === 'page') {
+        return systemModule.Page;
+      }
+
+      return systemModule[exportName || 'default'];
+    });
+  }
+
   return queryPackageMainSrc(packageName, packageVersion).then((src) => {
     return System.import(src);
   }).then((systemModule) => {

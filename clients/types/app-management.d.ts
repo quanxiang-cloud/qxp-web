@@ -158,8 +158,7 @@ declare global {
   }
 
   type SwagSchema = Schema;
-  // 分开 query body
-  type SwagField = SwagSchema & { acceptable?: boolean, in?: string };
+  type SwagField = SwagSchema & { acceptable?: boolean, in?: string, must?: boolean, id?: string };
 
   type APIAuth = {
     path?: string,

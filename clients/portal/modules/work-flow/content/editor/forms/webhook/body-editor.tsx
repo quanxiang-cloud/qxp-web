@@ -33,7 +33,7 @@ function BodyEditor({ value, onChange }: Props, ref: ForwardedRef<EditorRefType 
         const value = JSON.parse(val);
         if (!value) return;
         onChange(value);
-      }, 500)}
+      }, 1000)}
     />
   );
 }

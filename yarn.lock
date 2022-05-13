@@ -1124,6 +1124,19 @@
   resolved "https://registry.npmmirror.com/@one-for-all/api-spec-adapter/-/api-spec-adapter-0.4.0.tgz#fd662bf3e0e4dfc75f25cdb78b69215aac9856f6"
   integrity sha512-0AvMUdxfWa6/gdIgk0PPOzBO17XJnD/6QUAoAdvm1kOU+hmVydXLY4ODRvDHs9cVNvBDjcZwLsdQ0esRelnT7g==
 
+"@one-for-all/artery-engine@1.2.1":
+  version "1.2.1"
+  resolved "https://registry.npmjs.org/@one-for-all/artery-engine/-/artery-engine-1.2.1.tgz#45ac043be10f9f1bf70044760c28e0cf6d5fbfed"
+  integrity sha512-a5a7o93XmIxWlBiwEjmN/7sIHR4eZ2fATdnxKKSpOGRtPu4WYC68cmQ1juO5hItNjJf28mN0H1dZWsvcaD/oZQ==
+  dependencies:
+    "@one-for-all/artery" "0.15.0"
+    classnames "^2.3.1"
+    nanoid "^3.1.30"
+    ramda "^0.27.1"
+    react "^17.0.2"
+    react-dom "^17.0.2"
+    rxjs "^7.4.0"
+
 "@one-for-all/artery-engine@1.3.0":
   version "1.3.0"
   resolved "https://registry.npmmirror.com/@one-for-all/artery-engine/-/artery-engine-1.3.0.tgz#c4eab6199d7756bdc153f113fbd898dc206b5f24"
@@ -1151,16 +1164,31 @@
     react-jsx-parser "1.29.0"
     rxjs "^7.4.0"
 
-"@one-for-all/artery-simulator@^0.3.1":
-  version "0.3.1"
-  resolved "https://registry.npmjs.org/@one-for-all/artery-simulator/-/artery-simulator-0.3.1.tgz#50e52362ab5ee13e578db1e51278756931eaa2cf"
-  integrity sha512-2hVOx0wT0JMqEzgPFPXu2BaMTmcRXarhZc/IL+wJkuHUp/uYMmezZnht8ZcDiEQSHrH4IKzddy247sQiQWnYjg==
+"@one-for-all/artery-renderer@0.21.0":
+  version "0.21.0"
+  resolved "https://registry.npmjs.org/@one-for-all/artery-renderer/-/artery-renderer-0.21.0.tgz#00b9eb91c5de1ae4ac43f549eb110ebbcd9ccd78"
+  integrity sha512-RSWX4mwVppzINhDfRUJg3TwGKT6tp1NX7sHKm71SmFOnIctHsstxjk8V3vpmfW8k058MhukZ0F0cxQMpLGzR1g==
+  dependencies:
+    "@one-for-all/api-spec-adapter" "0.4.0"
+    "@one-for-all/artery" "0.15.0"
+    "@one-for-all/utils" "0.3.0"
+    history "5.3.0"
+    react "^17.0.2"
+    react-dom "^17.0.2"
+    react-jsx-parser "1.29.0"
+    rxjs "^7.4.0"
+
+"@one-for-all/artery-simulator@1.0.1":
+  version "1.0.1"
+  resolved "https://registry.npmjs.org/@one-for-all/artery-simulator/-/artery-simulator-1.0.1.tgz#3dbbc9039ad986de6235db7861f01ffe081bfddf"
+  integrity sha512-vZOQTZ8vjJCt7UmdO7+8A85pdDvPeicIcmskAdlSg08qcPfhFSr3bp6EJ6ACMF2Sb8If72IodIqI+zh7HXvzHg==
   dependencies:
     "@one-for-all/artery" "0.15.0"
+    "@one-for-all/artery-engine" "1.2.1"
     "@one-for-all/artery-renderer" "0.20.2"
     "@one-for-all/artery-utils" "0.17.0"
     "@one-for-all/elements-radar" "0.2.1"
-    "@one-for-all/headless-ui" "0.1.4"
+    "@one-for-all/headless-ui" "0.3.0"
     "@one-for-all/icon" "0.6.2"
     "@one-for-all/utils" "0.3.0"
     classnames "^2.3.1"
@@ -1190,12 +1218,12 @@
   dependencies:
     rxjs "^7.4.0"
 
-"@one-for-all/headless-ui@0.1.4", "@one-for-all/headless-ui@^0.1.4":
-  version "0.1.4"
-  resolved "https://registry.npmmirror.com/@one-for-all/headless-ui/-/headless-ui-0.1.4.tgz#31f1d53b409191dc208152fa5d065412c4e4e101"
-  integrity sha512-rE3HSQvAl9eiu2YcJV1NyzXkeDEUpHoUriMwJSU1wfwDvwmtB1zsTjdkx3VHbEhWC28SW4QdvM6d6XvbBayG7g==
+"@one-for-all/headless-ui@0.3.0":
+  version "0.3.0"
+  resolved "https://registry.npmjs.org/@one-for-all/headless-ui/-/headless-ui-0.3.0.tgz#30ad6c01764182b7fec85c5f814d8cb834e33a1a"
+  integrity sha512-awT/FJik88FRrF2QIpeTMk/iXcwfRtO9NOr0lii4fPWfpojMv397uUFylp5jPzkx4u0vXscmTMVWNpx7Bgh8Bg==
   dependencies:
-    "@one-for-all/icon" "0.6.1"
+    "@one-for-all/icon" "0.6.2"
     "@popperjs/core" "^2.11.0"
     classnames "^2.3.1"
     lodash "^4.17.21"
@@ -1203,13 +1231,6 @@
     react "^17.0.2"
     react-dom "^17.0.2"
     react-table "^7.7.0"
-
-"@one-for-all/icon@0.6.1":
-  version "0.6.1"
-  resolved "https://registry.npmmirror.com/@one-for-all/icon/-/icon-0.6.1.tgz#3b960f472a98d0c663091eb91ef4403ea937e13e"
-  integrity sha512-q5XVGJ0dtKIp2BtorFHP0IApbF6aGra+pB8BhHfyz893WBBzWGl64zQinYIJjboFFHd0J9VRBqb7Tet4J2DuOw==
-  dependencies:
-    react "^17.0.2"
 
 "@one-for-all/icon@0.6.2", "@one-for-all/icon@^0.6.1":
   version "0.6.2"

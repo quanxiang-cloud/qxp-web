@@ -16,6 +16,13 @@ interface Props {
 }
 
 export default function Fields({ register, fields, control, errors, values, setValue }: Props): JSX.Element {
+  const hiddenInput = (val: string): string=>{
+    if (val === 'hidden') {
+      return 'none';
+    }
+    return '';
+  };
+
   return (
     <>
       {
@@ -27,7 +34,12 @@ export default function Fields({ register, fields, control, errors, values, setV
             <div key={name} className={cs('schema-form-field', wrapperClassName)}>
               {native && (
                 <>
-                  <label htmlFor={name} className={labelClassName}>{title}</label>
+                  <label
+                    style={{ display: hiddenInput(native.type) }}
+                    htmlFor={name}
+                    className={labelClassName}>
+                    {title}
+                  </label>
                   <input className={className} type={native.type} {...register(name, native.options)} />
                   {error && <span className="text-red-500">{error}</span>}
                 </>
