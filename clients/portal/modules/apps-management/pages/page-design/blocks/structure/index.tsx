@@ -1,9 +1,7 @@
 import React, { useRef } from 'react';
 import { Panel } from '@one-for-all/ui';
 import { and } from 'ramda';
-import { DndProvider } from 'react-dnd';
 import type { BlockItemProps } from '@one-for-all/artery-engine';
-import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import type { BlocksCommunicationType } from '@pageDesign/types';
 import { GROUP_TITLE_MAP } from '@pageDesign/constants';
@@ -13,7 +11,7 @@ import Core from './core';
 
 const Structure = (props: BlockItemProps<BlocksCommunicationType>): JSX.Element => {
   const wrapperRef = useRef(null);
-  const { sharedState, onSharedStateChange } = props;
+  const { sharedState, onSharedStateChange, artery, onChange, activeNode, setActiveNode } = props;
   const { menu = {}, block } = sharedState;
   const { currentGroupType, groupTypeContentPinned, pannelWith } = menu;
   const isVisible = useRef(false);
@@ -53,9 +51,12 @@ const Structure = (props: BlockItemProps<BlocksCommunicationType>): JSX.Element 
         closable
         pinnable
       >
-        <DndProvider backend={HTML5Backend}>
-          <Core />
-        </DndProvider>
+        <Core
+          artery={artery}
+          activeNode={activeNode}
+          onChange={onChange}
+          setActiveNode={setActiveNode}
+        />
       </Panel>
     </div>
   );
