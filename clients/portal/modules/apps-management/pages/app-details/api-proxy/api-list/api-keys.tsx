@@ -14,6 +14,7 @@ import toast from '@lib/toast';
 import ToolTip from '@c/tooltip';
 import EmptyTips from '@c/empty-tips';
 import Pagination from '@c/pagination';
+import OperationConfirm from '@portal/modules/apps-management/pages/app-details/api-key/operation-confirm';
 
 import CreatApiKeyTable from './creat-api-key-table';
 import store from '../store';
@@ -334,17 +335,7 @@ function ApiKeys(): JSX.Element {
             },
           ]}
         >
-          <div className='px-40 py-24'>
-            <div className='flex items-center mb-8'>
-              <Icon name='info' className='text-yellow-600' type='primary' size={18}/>
-              <span className='ml-10 text-14 text-yellow-600'>
-                确认要关闭吗？
-              </span>
-            </div>
-            <div className='pl-28'>
-              如果设置关闭状态后，会导致相关 API 请求失败。
-            </div>
-          </div>
+          <OperationConfirm message='关闭' tips='如果设置关闭状态后，会导致相关 API 请求失败。'/>
         </Modal>
       )}
       {showDelModal && (
@@ -367,17 +358,7 @@ function ApiKeys(): JSX.Element {
             },
           ]}
         >
-          <div className='px-40 py-24'>
-            <div className='flex items-center mb-8'>
-              <Icon name='info' className='text-yellow-600' type='primary' size={18}/>
-              <span className='ml-10 text-14 text-yellow-600'>
-                确认要删除吗？
-              </span>
-            </div>
-            <div className='pl-28'>
-              如果该密钥被删除，将无法恢复。
-            </div>
-          </div>
+          <OperationConfirm message='删除' tips='如果该密钥被删除，将无法恢复。'/>
         </Modal>
       )}
     </div>

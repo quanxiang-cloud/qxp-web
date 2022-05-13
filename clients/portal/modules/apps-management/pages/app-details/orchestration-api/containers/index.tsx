@@ -29,8 +29,17 @@ function ApiNamespace(): JSX.Element | null {
   const parent = pathes.slice(0, -1).join('/');
 
   const rootData = {
-    active: 1, createAt: '', updateAt: '', desc: '', id: nanoid(), owner, ownerName: '', parent, name,
-    title: '', subCount: 0,
+    active: 1 as ApiStatus,
+    createAt: '',
+    updateAt: '',
+    desc: '',
+    id: nanoid(),
+    owner,
+    ownerName: '',
+    parent,
+    name,
+    title: '',
+    subCount: 0,
   };
   const rootPath = appRootPathData?.appPath?.slice(1) || '';
   const { data: initialData, isLoading: isNamespaceRootListLoading, error } = useQueryNameSpaceList(

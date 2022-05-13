@@ -11,7 +11,7 @@ const imgBgColors: string[] = [
   '#06B6D4',
 ];
 
-const getImgColor = (text: string, colors = imgBgColors) => {
+const getImgColor = (text: string, colors = imgBgColors): {name: string, color: string} => {
   const reg = /^[a-zA-Z]*$/;
   let _text = text;
   if (reg.test(text)) {

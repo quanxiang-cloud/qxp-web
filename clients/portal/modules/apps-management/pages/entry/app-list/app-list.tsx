@@ -25,7 +25,7 @@ function AppList({ isLoading, appList, openCreatedModal }: Props): JSX.Element {
   }
 
   function goDetails(id: string): void {
-    history.push(`/apps/details/${id}/page_setting`);
+    history.push(`/apps/details/${id}/views`);
   }
 
   function RenderModal() {

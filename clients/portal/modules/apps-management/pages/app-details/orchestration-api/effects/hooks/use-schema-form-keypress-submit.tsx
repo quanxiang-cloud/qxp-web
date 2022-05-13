@@ -1,6 +1,6 @@
 import { equals } from 'ramda';
 import { useEffect, useCallback, useMemo, useRef } from 'react';
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime } from 'rxjs6/operators';
 import { usePrevious } from 'react-use';
 import { FormEffectHooks } from '@formily/react-schema-renderer';
 

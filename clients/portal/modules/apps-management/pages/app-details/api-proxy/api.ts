@@ -95,12 +95,20 @@ export const registerApi = async (servicePath: string, params: PolyAPI.CreateApi
   return await httpClient(`/api/v1/polyapi/raw/reg/${normalizeSuffix(servicePath)}`, params);
 };
 
-export const uploadSwagger = async (body: any): Promise<PolyAPI.CreateApiResult> => {
-  return await httpClient('/upload/swagger', body, {
-    // 'Content-Type': 'multipart/form-data',
-    'X-Proxy': '',
-  }, { formData: true });
-};
+export function uploadSwagger(body: any): Promise<PolyAPI.CreateApiResult> {
+  return fetch('/upload/swagger', {
+    method: 'POST',
+    body: body,
+  }).then((response) => {
+    return response.json();
+  }).then(({ code, msg, data }) => {
+    if (code !== 0) {
+      return Promise.reject(new Error(msg));
+    }
+
+    return data;
+  });
+}
 
 export const getNamespaceApiList = async (namespacePath: string, params: Paging): Promise<{
   total: number;

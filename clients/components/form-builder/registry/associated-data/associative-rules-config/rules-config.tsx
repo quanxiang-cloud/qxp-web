@@ -7,7 +7,7 @@ import {
   FormButtonGroup,
   createFormActions,
 } from '@formily/antd';
-import { tap, skip, filter } from 'rxjs/operators';
+import { tap, skip, filter } from 'rxjs6/operators';
 import { Input, Switch, Select, Radio } from '@formily/antd-components';
 
 import Modal from '@c/modal';

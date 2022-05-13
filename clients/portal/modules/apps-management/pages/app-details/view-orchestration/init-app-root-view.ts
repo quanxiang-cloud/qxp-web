@@ -1,31 +1,56 @@
-import SchemaSpec from '@one-for-all/schema-spec';
+import ArterySpec from '@one-for-all/artery';
 
 import { LayoutType } from './types';
-import createLayoutSchema from './helpers/create-layout-schema';
-import { createRefSchema, genDesktopRootViewSchemaKey, saveSchema } from './helpers/utils';
+import createLayoutSchema, { ROOT_NODE_STYLE } from './helpers/create-layout-schema';
+import {
+  createRefSchema,
+  createAppLandingRouteNode,
+  genDesktopRootArteryKey,
+  saveArtery,
+} from './helpers/utils';
 import { ROOT_NODE_ID } from './constants';
 
 export async function initAppRootView(appID: string, layoutType: LayoutType | 'free'): FutureErrorMessage {
-  const rootSchemaKey = genDesktopRootViewSchemaKey(appID);
+  const rootSchemaKey = genDesktopRootArteryKey(appID);
+
+  const initialChild = await createAppLandingRouteNode();
+
+  if (!initialChild) throw new Error('create initial child failed');
 
   if (layoutType === 'free') {
-    return saveSchema(
+    return saveArtery(
       rootSchemaKey,
       {
         node: {
           id: 'root_route_node',
           type: 'route-node',
           path: `/a/${appID}`,
-          node: { id: ROOT_NODE_ID, type: 'html-element', name: 'div', children: [] },
+          node: {
+            id: ROOT_NODE_ID,
+            type: 'html-element',
+            name: 'div',
+            children: [initialChild],
+            props: {
+              style: ROOT_NODE_STYLE.style,
+            },
+          },
         },
       },
     );
   }
 
   const refSchemaKey = await createRefSchema(appID);
-  const rootNode = createLayoutSchema('ROOT_LAYOUT', layoutType, refSchemaKey, true);
 
-  const rootSchema: SchemaSpec.Schema = {
+  if (!refSchemaKey) throw new Error('get refSchemaKey failed');
+
+  const rootNode = createLayoutSchema({
+    layoutInfo: { name: 'ROOT_LAYOUT', type: layoutType },
+    refSchemaKey,
+    initialChild,
+    isRoot: true,
+  });
+
+  const rootSchema: ArterySpec.Artery = {
     node: {
       id: 'root_route_node',
       type: 'route-node',
@@ -34,5 +59,5 @@ export async function initAppRootView(appID: string, layoutType: LayoutType | 'f
     },
   };
 
-  return saveSchema(rootSchemaKey, rootSchema);
+  return saveArtery(rootSchemaKey, rootSchema);
 }

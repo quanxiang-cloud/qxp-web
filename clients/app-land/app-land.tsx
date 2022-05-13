@@ -1,12 +1,10 @@
 import React from 'react';
 
-import { VERSION } from '@portal/modules/apps-management/pages/app-details/view-orchestration/constants';
-import SchemaRender from '@c/page-schema-render';
+import ArteryRenderer from '@c/artery-renderer';
+import { ARTERY_KEY_VERSION } from '@portal/constants';
 
 import { rootSchemaKey } from './utils';
 
 export default function AppLand(): JSX.Element {
-  return (
-    <SchemaRender schemaKey={rootSchemaKey} version={VERSION} />
-  );
+  return <ArteryRenderer arteryID={rootSchemaKey} version={ARTERY_KEY_VERSION} />;
 }

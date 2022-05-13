@@ -19,9 +19,12 @@ type QueryRootPathResponse = {
   pathType: string;
   appPath: string;
 };
+
+export type PathType = 'raw.root' | 'poly' | 'inner.form' | 'raw.3party' | 'faas'
+
 export function useQueryNameSpaceRawRootPath(
   appID: QueryRootPathInput,
-  pathType: 'raw.root' | 'poly',
+  pathType: PathType,
   options?: UseQueryOptions<QueryRootPathResponse, Error>,
 ): UseQueryResult<QueryRootPathResponse, Error> {
   return useQuery<QueryRootPathResponse, Error>(

@@ -32,7 +32,7 @@ function RoleSwitcher(): JSX.Element {
         <div className="flex justify-between items-center flex-1 role-switcher">
           <div className="flex flex-col justify-between items-start select-none text-12 role-name">
             <div className="font-semibold w-100 text-gray-900 whitespace-nowrap overflow-ellipsis overflow-hidden">
-              {currentRoleInfo.name}
+              {currentRoleInfo.roleName}
             </div>
             <div className="text-gray-600">当前角色</div>
           </div>
@@ -72,13 +72,13 @@ function RoleSwitcher(): JSX.Element {
           {
             roleOptions.map((option: LabelValue) => {
               const { label, value } = option;
-              const isActive = value === currentRoleInfo.id;
+              const isActive = value === currentRoleInfo.roleID;
               return (
                 <div
                   key={value}
                   className={cs('flex justify-between items-center py-8 px-16 group cursor-pointer')}
                   onClick={() => {
-                    if (currentRoleInfo.id === value) return;
+                    if (currentRoleInfo.roleID === value) return;
                     handleRoleChange(value, label);
                   }}
                 >

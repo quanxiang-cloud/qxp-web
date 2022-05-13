@@ -72,15 +72,6 @@ function DetailsHeader(): JSX.Element {
             {isPublish ? '下线应用' : '发布应用'}
           </Button>
         </PopConfirm>
-        <hr className='app-global-header-hr mx-16' />
-        <a
-          className="btn mr-16"
-          target="_blank"
-          rel="noreferrer"
-          href={`/_jump_to_home?to=/apps/${appID}`}
-        >
-          访问应用端
-        </a>
         <hr className='app-global-header-hr' />
         <NavTaskBar type='manager' className='mx-16'/>
         <NavMsgBar type='portal' className='mr-16'/>

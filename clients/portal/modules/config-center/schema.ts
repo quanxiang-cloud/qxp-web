@@ -1,6 +1,6 @@
-import { Schema } from '@one-for-all/schema-spec';
+import { Artery } from '@one-for-all/artery';
 
-const schema: Schema = {
+const schema: Artery = {
   apiStateSpec: {
     querySchema: {
       apiID: 'post:/batchGetValue',
@@ -252,7 +252,7 @@ const schema: Schema = {
                     const version = this.states.version;
 
                     const body = {
-                      params: [{ key, version, value: schema }]
+                      keys: [{ key, version, value: schema }]
                     };
 
                     this.apiStates.setSchema.fetch({ body }, ({ error }) => {
