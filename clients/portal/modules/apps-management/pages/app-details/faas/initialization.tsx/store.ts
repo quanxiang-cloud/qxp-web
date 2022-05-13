@@ -97,10 +97,12 @@ class IniStore {
     return checkHasGroup({
       appID: this.appID,
     }).then((groupID) => {
-      if (groupID && this.step === faasState.DEVELOP) {
-        this.setStep(faasState.GROUP);
-      } else {
-        this.setStep(faasState.NOT_DEVELOP_HAS_GROUP);
+      if (groupID) {
+        if (this.step === faasState.DEVELOP) {
+          this.setStep(faasState.GROUP);
+        } else {
+          this.setStep(faasState.NOT_DEVELOP_HAS_GROUP);
+        }
       }
       this.setGroupID(groupID);
     }).catch((err) => {
