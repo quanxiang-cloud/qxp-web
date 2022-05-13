@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import Modal from '@c/modal';
 import PageLoading from '@c/page-loading';
 
-import store from './store';
+import store from '../store';
 import { getBuildLog } from '../api';
 
 type Props = {
@@ -15,22 +15,31 @@ type Props = {
 
 const INTERVAL = 3000;
 
-function LoggerModal({ onClose, step, isOngoing }: Props): JSX.Element {
+function LoggerModal({ onClose, step, isChild, isOngoing }: Props): JSX.Element {
   const [logs, setLogs] = useState<BuildLog[]>([]);
   const [loading, setLoading] = useState(true);
   const timer = useRef<number | null>(null);
   const logsRef = useRef<BuildLog[]>([]);
+  let startCount = 1;
 
   function updateLogs(): Promise<void> {
     return getBuildLog(
       store.groupID,
-      store.currentBuild?.resourceRef || '',
-      { step },
+      store.currentFuncID,
+      store.buildID,
+      { index: startCount },
     ).then((res) => {
-      const _logs = res.logs.filter((log) => log.step === step);
+      const _logs = res.logs.filter((log) => {
+        if (isChild) {
+          return log.step === step;
+        }
+
+        return log.run === step;
+      });
       const newLogs = [...logsRef.current, ..._logs];
       setLogs(newLogs);
       logsRef.current = newLogs;
+      startCount += res.logs.length;
     });
   }
 

@@ -3,7 +3,7 @@ import SchemaForm, { useForm } from '@formily/antd';
 import { Input } from '@formily/antd-components';
 import { Radio } from '@formily/antd-components';
 
-import store from './store';
+import store from '../store';
 import Modal from '@c/modal';
 
 type Props = {

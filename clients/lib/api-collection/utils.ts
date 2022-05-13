@@ -3,7 +3,7 @@ import httpClient from '@lib/http-client';
 
 import type { Directory, API, PathType, DirectoryChild } from './types';
 
-export async function getDirectoryPath(appID: string, pathType: string): Promise<string> {
+async function getDirectoryPath(appID: string, pathType: string): Promise<string> {
   const params = { appID, pathType };
   const { appPath } = await httpClient.post('/api/v1/polyapi/namespace/appPath', params);
   return appPath;

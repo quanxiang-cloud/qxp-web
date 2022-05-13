@@ -1,26 +1,42 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
+import { observer } from 'mobx-react';
+import { pick } from 'lodash';
+import { useHistory } from 'react-router-dom';
 
+import Loading from '@c/loading';
+
+import store from './store';
 import FuncList from './func';
-import NotAvailable from './initialization.tsx';
-import { faasState } from './constants';
-import { useParams } from 'react-router-dom';
+import AppDetailsStore from '../store';
+import NotAvailable from './not-available';
 
 function FaaS(): JSX.Element {
-  const { appID } = useParams<{ appID: string }>();
-
-  const [iniStep, setIniStep] = useState<number>(0);
-  const [group, setGroup] = useState<string | undefined>(undefined);
-
+  const history = useHistory();
+  const { developerInGroup, hasGroup, checkUserState } = store;
+  const { appDetails } = AppDetailsStore;
+  const User = window.USER;
   useEffect(() => {
-    setIniStep(0);
-  }, [appID]);
+    store.appDetails = AppDetailsStore.appDetails;
+
+    store.User = pick(User, ['id', 'email']);
+    if (appDetails.id) {
+      if (!store.appDetails.appSign) history.push('base_info');
+      checkUserState();
+    }
+    return () => {
+      store.clear();
+    };
+  }, [appDetails, User.id]);
+
+  if (store.checkUserLoading) {
+    return <Loading/>;
+  }
+
   return (
     <div className="h-full bg-white rounded-t-12">
-      {iniStep === faasState.INGROUP && group ?
-        <FuncList group={group} appID={appID}/> :
-        <NotAvailable onChangeStep={setIniStep} appID={appID} onChangeGrroup={setGroup}/>}
+      {hasGroup && developerInGroup ? <FuncList /> : <NotAvailable />}
     </div>
   );
 }
 
-export default FaaS;
+export default observer(FaaS);

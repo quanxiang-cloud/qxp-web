@@ -1,10 +1,3 @@
-type Group = {
-  gid?: number,
-  name?: string,
-  groupId?: string,
-  describe?: string,
-}
-
 type FuncField = {
   id: string,
   alias: string,
@@ -15,50 +8,29 @@ type FuncField = {
   createdAt: number,
   message?: string,
   updatedAt?: number,
-  repoUrl?: string,
   tag?: string,
   language: string,
+  versionNum?: number,
 }
 
 type VersionField = {
-  // completionTime: number,
-  // createdAt: number,
-  // creator: string,
-
-  // 报错的文案
-  // message: string,
-
-  // serverMsg: string,
-  // 上线 下限
-  // serverState: FaasProcessStatus;
-  // 失败
-  // state: FaasProcessStatus,
-  // tag: string,
-  // updatedAt: number,
-  // updater: string,
-  // visibility: FaasVersionServingStatus
-
-  describe: string,
-  env: string;
-  groupID: string;
-  id: string;
-  name: string;
-  projectID: string;
-  resourceRef: string;
-  status: number;
-  version: string;
-  createdAt: number;
-  updatedAt: number;
-  message: string,
-  creator: string,
-  updater: string,
   completionTime: number,
-  docStatus: number,
-  builtAt: number,
+  createdAt: number,
+  creator: string,
+  describe: string,
+  id: string,
+  message: string,
+  serverMsg: string,
+  serverState: FaasProcessStatus;
+  state: FaasProcessStatus,
+  tag: string,
+  updatedAt: number,
+  updater: string,
+  visibility: FaasVersionServingStatus
 }
 
 type FuncListParams = {
-  // appID: string,
+  appID: string,
   size: number,
   page: number,
   alias?: string,
@@ -69,7 +41,7 @@ type creatFuncParams = {
   alias: string;
   language: string;
   description: string;
-  version: string;
+  tag: string;
 }
 
 type VersionListParams = {
