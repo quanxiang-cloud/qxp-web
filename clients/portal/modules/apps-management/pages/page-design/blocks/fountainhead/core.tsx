@@ -22,7 +22,9 @@ function Fountainhead({ onAddNode }: Props): JSX.Element {
   );
 
   const isAllPackage = currentPackage?.name === 'all';
-  const distComponents = isAllPackage ? components : currentComponents;
+  const distComponents = isAllPackage ?
+    components?.filter(({ package: pkg }) => !pkg.hide) :
+    currentComponents;
 
   if (!distComponents) {
     return <Loading desc="loading..." />;
