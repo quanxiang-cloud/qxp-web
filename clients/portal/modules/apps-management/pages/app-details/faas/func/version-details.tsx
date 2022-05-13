@@ -50,7 +50,11 @@ function VersionDetails(): JSX.Element {
       ws.addEventListener(
         'faas',
         'doc-build',
-        (data) => store.apiStateChangeListener( data, 'status', store.currentBuild?.id));
+        (data) => store.apiDocStateChangeListener( data, store.currentBuild?.id));
+    }
+
+    if (store.currentBuild?.docStatus && store.currentBuild?.docStatus > API_DOC_STATE.REGISTERING) {
+      ws.removeEventListener('faas', 'doc-build');
     }
     return () => {
       ws.removeEventListener('faas', 'doc-build');
@@ -96,7 +100,7 @@ function VersionDetails(): JSX.Element {
     message,
     updater,
     status,
-    completionTime,
+    builtAt,
   } = store.currentBuild;
 
   function onGoBack(e: MouseEvent): void {
@@ -143,7 +147,7 @@ function VersionDetails(): JSX.Element {
         <div className='flex text-12 p-8 items-center '>
           <div className='text-gray-600'>构建时间：</div>
           <div className='text-gray-900 flex-1 card-value'>
-            {status === 3 ? `${completionTime - createdAt}s` : '-'}
+            {builtAt ? `${((builtAt - createdAt) / (60 * 1000)).toFixed(2)} min` : '-'}
           </div>
         </div>
         <div className='flex text-12 p-8 items-center '>
@@ -198,7 +202,7 @@ function VersionDetails(): JSX.Element {
       </div>
       <Tab
         items={tabItems}
-        className='w-full h-full opacity-95'
+        className='w-full h-full opacity-95 api-tab'
         onChange={(v) => {
           if (v === 'apidoc') {
             store.getApiPath();

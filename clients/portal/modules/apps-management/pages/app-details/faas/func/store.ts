@@ -72,6 +72,11 @@ class FaasStore {
   };
 
   @action
+  setSearchAlias = (searchAlias: string) => {
+    this.searchAlias = searchAlias;
+  };
+
+  @action
   setGroupID = (groupID: string): void => {
     this.groupID = groupID;
   };
@@ -310,7 +315,7 @@ class FaasStore {
   };
 
   @action
-  apiStateChangeListener = async (socket: SocketData, type: 'status', buildID?: string,
+  apiDocStateChangeListener = async (socket: SocketData, buildID?: string,
   ): Promise<void> => {
     if (!buildID) {
       return;

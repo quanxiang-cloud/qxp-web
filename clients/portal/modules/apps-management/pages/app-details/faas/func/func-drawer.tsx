@@ -62,8 +62,8 @@ function FuncDetailsDrawer(): JSX.Element {
     {
       Header: '构建时间',
       id: 'build',
-      accessor: ({ status, updatedAt, createdAt }: VersionField) =>
-        status === FUNC_STATUS.StatusOK ? `${updatedAt - createdAt}s` : '-',
+      accessor: ({ builtAt, createdAt }: VersionField) =>
+        builtAt ? `${((builtAt - createdAt) / (60 * 1000)).toFixed(2)} min` : '-',
     },
     // {
     //   Header: '创建人',

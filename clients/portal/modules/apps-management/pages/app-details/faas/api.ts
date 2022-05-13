@@ -120,8 +120,8 @@ export function updateVerDesc(
   buildID: string,
   data: { describe: string },
 ): Promise<void> {
-  return httpClient(
-    `/api/v1/midfielder/group/${groupID}/project/${projectID}/build/${buildID}/updateDesc`, data,
+  return httpClient.patch(
+    `/api/v1/faas/group/${groupID}/project/${projectID}/${buildID}/desc`, data,
   );
 }
 

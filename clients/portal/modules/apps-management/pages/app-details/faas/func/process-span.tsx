@@ -1,12 +1,10 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { observer } from 'mobx-react';
 import { Handle, NodeProps, Position } from 'react-flow-renderer';
 
 import LoggerModal from './log-modal';
 import store from './store';
 import { FUNC_STATUS } from '../constants';
-
-type NodeStatus = FaasProcessStatus | 'Disable';
 
 const COLOR = {
   True: 'green',
@@ -17,13 +15,13 @@ const COLOR = {
 
 function ProcessSpan({ data, id }: NodeProps<FaasProcessSpanProps>): JSX.Element {
   const [logVisible, setLogVisible] = useState(false);
-  const status = getState();
-  function getState(): NodeStatus {
-    if (!store.currentBuild?.status) return 'Disable';
+
+  const status = useMemo(()=> {
+    if (!store.currentBuild?.status) return 'Unknown';
     if (store.currentBuild?.status < FUNC_STATUS.StatusFailed) return 'Disable';
     if (store.currentBuild?.status === FUNC_STATUS.StatusFailed) return 'False';
     return 'True';
-  }
+  }, [store.currentBuild?.status]);
 
   return (
     <>

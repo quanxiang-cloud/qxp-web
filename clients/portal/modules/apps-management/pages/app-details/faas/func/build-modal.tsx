@@ -108,16 +108,15 @@ function BuildModal({ onClose }: Props): JSX.Element {
   };
   const form = useForm({
     onSubmit: (formData) => {
-      const _env: Record<string, string> = {};
-      (formData.env || [])
-        .filter((envItem: { envName: string, envValue: string }) => !!envItem.envName)
-        .forEach((envItem: { envName: string, envValue: string }) => {
-          const { envName, envValue } = envItem;
-          if (envValue) {
-            _env[envName] = envValue;
-          }
-        });
-      store.buildFunc({ ...formData, env: _env });
+      const env = (formData.env || []).reduce((
+        acc: Record<string, string>,
+        { envName, envValue }: { envName: string, envValue: string }) => {
+        if (envName) {
+          acc[envName] = envValue;
+        }
+        return acc;
+      }, {});
+      store.buildFunc({ ...formData, env });
       onClose();
     },
   });

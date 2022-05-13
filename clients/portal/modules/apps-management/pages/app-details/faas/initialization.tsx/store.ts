@@ -73,7 +73,9 @@ class IniStore {
   checkUserState = async (): Promise<void> => {
     this.checkUserLoading = true;
     await this.developerCheck();
-    this.step === faasState.DEVELOP && await this.isGroup();
+    if (this.step === faasState.DEVELOP) {
+      await this.isGroup();
+    }
     if (this.step === faasState.GROUP) {
       await this.isDeveloperInGroup();
     }
@@ -86,6 +88,8 @@ class IniStore {
       if (userAccount) {
         this.setUserAccount(userAccount);
         this.setStep(faasState.DEVELOP);
+      } else {
+        this.setStep(faasState.NOT_INITIAL);
       }
     }).catch((err) => toast.error(err));
   };
@@ -95,7 +99,11 @@ class IniStore {
     return checkHasGroup({
       appID: this.appID,
     }).then((groupID) => {
-      if (groupID) this.setStep(faasState.GROUP);
+      if (groupID) {
+        this.setStep(faasState.GROUP);
+      } else {
+        this.setStep(faasState.DEVELOP);
+      }
       this.setGroupID(groupID);
     }).catch((err) => {
       toast.error(err);
@@ -107,7 +115,11 @@ class IniStore {
     return checkInGroup({
       groupID: this.groupID,
     }).then((isMember) => {
-      if (isMember) this.setStep(faasState.INGROUP);
+      if (isMember) {
+        this.setStep(faasState.INGROUP);
+      } else {
+        this.setStep(faasState.GROUP);
+      }
     }).catch((err) => {
       toast.error(err);
     });

@@ -19,6 +19,7 @@ import BuildModal from './build-modal';
 
 import '../index.scss';
 import { PROJECT_STATE } from '../constants';
+import DataEmpty from './data-empty';
 
 const { TextArea } = Input;
 
@@ -140,11 +141,11 @@ function DataList(): JSX.Element {
     store.modalType = type;
   }
 
-  function handleInputKeydown(e: React.KeyboardEvent): void {
+  function handleInputKeydown(e: React.KeyboardEvent<HTMLInputElement>): void {
     if (e.key !== 'Enter') {
       return;
     }
-    store.fetchFuncList(store.searchAlias, 1, 10);
+    store.fetchFuncList(e.currentTarget.value, 1, 10);
   }
 
   return (
@@ -161,22 +162,21 @@ function DataList(): JSX.Element {
         <Search
           className="func-search text-12"
           placeholder="搜索函数名称"
+          value={store.searchAlias}
           onChange={(v) => {
             if (!v) store.fetchFuncList('', 1, 10);
-            setTimeout(() => {
-              store.searchAlias = v;
-            }, 500);
+            store.setSearchAlias(v);
           }}
           onKeyDown={handleInputKeydown}
         />
       </div>
-
       <div className='flex-1 overflow-hidden'>
         <Table
           rowKey="id"
           data={store.funcList}
           columns={COLUMNS}
           loading={store.funcListLoading}
+          emptyTips={<DataEmpty />}
         />
       </div>
       <Pagination

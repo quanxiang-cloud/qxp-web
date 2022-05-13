@@ -7,7 +7,6 @@ import Loading from '@c/loading';
 import store from './store';
 import DataList from './data-list';
 import StepsTip from './steps-tip';
-import DataEmpty from './data-empty';
 import EditModal from './edit-modal';
 import FuncDetailsDrawer from './func-drawer';
 
@@ -23,9 +22,6 @@ function FuncList({ group, appID }: Props): JSX.Element {
 
   useEffect(() => {
     store.setGroupID(group);
-  }, []);
-
-  useEffect(() => {
     store.setAppID(appID);
   }, []);
 
@@ -51,7 +47,7 @@ function FuncList({ group, appID }: Props): JSX.Element {
             className="flex flex-col w-full p-16 flex-1 overflow-hidden pb-0"
             style={{ height: 'calc(100% - 82px)' }}
           >
-            {!store.funcList.length && !store.searchAlias ? <DataEmpty /> : <DataList />}
+            <DataList />
           </div>
         </>
       )}
