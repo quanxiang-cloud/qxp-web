@@ -15,11 +15,11 @@ import { copyContent } from '@lib/utils';
 
 import store from './store';
 import StatusDisplay from '../component/status';
+import { PROJECT_STATE } from '../constants';
+import DataEmpty from './data-empty';
 import BuildModal from './build-modal';
 
 import '../index.scss';
-import { PROJECT_STATE } from '../constants';
-import DataEmpty from './data-empty';
 
 const { TextArea } = Input;
 

@@ -15,11 +15,11 @@ import VersionStatus from '../component/version-status';
 import ApiDetails from '../../api-documentation/api-details';
 import BuildProcess from './build-process';
 import store from './store';
-
-import '../index.scss';
 import '../../api-documentation/prism.css';
 import { API_DOC_STATE } from '../constants';
 import { wsSubscribe } from '../api';
+
+import '../index.scss';
 
 const { TextArea } = Input;
 

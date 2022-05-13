@@ -40,13 +40,13 @@ function StatusDisplay({
         className='relative w-8 h-8 rounded-full'
       >
         {
-          status === 0 && (
+          status === FUNC_STATUS.StatusNull && (
             <div className="animate-ping h-full w-full rounded-full opacity-75 faas-status-pulse"></div>
           )
         }
       </div>
       <span className="ml-10">{customText?.[status] || STATUS_INFO[status].name}</span>
-      {status === 2 && !!errorMsg && (
+      {status === FUNC_STATUS.StatusOK && !!errorMsg && (
         <Tooltip label={errorMsg} position='top' >
           <Icon clickable className="ml-8" name="error" style={{ color: 'red' }} />
         </Tooltip>

@@ -133,7 +133,6 @@ class PushServer {
 
   dispatchEvent = (data: SocketData): void => {
     const listenerMap = this.listenersMap.get(data.type || '') || {};
-    // console.log(listenerMap);
     Object.entries(listenerMap).map(([key, listener]) => {
       listener(data);
     });

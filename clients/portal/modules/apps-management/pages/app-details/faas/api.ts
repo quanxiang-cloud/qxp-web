@@ -172,12 +172,6 @@ export function getVersionInfo(
 ): Promise<VersionField> {
   return httpClient.get(`/api/v1/faas/group/${groupID}/project/${projectID}/${buildID}`);
 }
-// export function getVersion(
-//   groupID: string,
-//   projectID: string,
-//   buildID: string): Promise<{ build: VersionField }> {
-//   return httpClient(`/api/v1/midfielder/group/${groupID}/project/${projectID}/build/${buildID}/get`);
-// }
 
 export function getBuildProcess(): Promise<FaasBuildProcess> {
   return httpClient.get<{data: {runs: string[], steps: string[][]}}>('/api/v1/faas/graph')

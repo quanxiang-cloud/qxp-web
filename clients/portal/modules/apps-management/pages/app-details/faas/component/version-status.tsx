@@ -7,6 +7,7 @@ import { wsSubscribe } from '../api';
 
 import StatusDisplay from '../component/status';
 import store from '../func/store';
+import { FUNC_STATUS } from '../constants';
 
 type Props = {
   state: number;
@@ -20,7 +21,7 @@ export default function VersionStatus({
   message,
 }: Props): JSX.Element {
   useEffect(() => {
-    if (state < 2) {
+    if (state < FUNC_STATUS.StatusFailed) {
       wsSubscribe({
         topic: 'builder',
         key: versionID,
@@ -28,7 +29,7 @@ export default function VersionStatus({
       });
     }
 
-    if (state === 7) {
+    if (state === FUNC_STATUS.OnlineBuilding) {
       wsSubscribe({
         topic: 'serving',
         key: versionID,
@@ -45,7 +46,7 @@ export default function VersionStatus({
   }, [state]);
 
   useUpdateEffect(() => {
-    if (state > 1) {
+    if (state !== FUNC_STATUS.StatusBuilding && state !== FUNC_STATUS.OnlineBuilding) {
       ws.removeEventListener('faas', `status-${versionID}`);
     }
   }, [state]);
