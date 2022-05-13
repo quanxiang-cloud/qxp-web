@@ -106,6 +106,7 @@ function FormDesignHeader(): JSX.Element {
         </Button>
         <Button
           onClick={store.saveForm}
+          loading={store.saveSchemeLoading}
           iconName='save'
           modifier='primary'
           forbidden={store?.formStore?.flattenFields?.length === 0}

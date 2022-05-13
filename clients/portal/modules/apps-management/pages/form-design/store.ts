@@ -288,18 +288,22 @@ class FormDesignStore {
 
   @action
   saveFormConfig = async (): Promise<any> => {
-    await saveTableSchema(this.appID, this.pageID, this.allSchema || {});
-    createPageSchema(this.appID, {
-      tableID: this.pageID, config: {
-        pageTableColumns: this.pageTableColumns,
-        filters: this.filters,
-        pageTableShowRule: this.pageTableShowRule,
-      },
+    this.saveSchemeLoading = true;
+    return saveTableSchema(this.appID, this.pageID, this.allSchema || {}).then(() => {
+      return createPageSchema(this.appID, {
+        tableID: this.pageID, config: {
+          pageTableColumns: this.pageTableColumns,
+          filters: this.filters,
+          pageTableShowRule: this.pageTableShowRule,
+        },
+      });
+    }).then(() => {
+      toast.success(this.hasSchema ? '保存成功!' : '创建成功!');
+    }).finally(() => {
+      this.saveSchemeLoading = false;
+      (this.formStore as FormStore).hasEdit = false;
+      this.formStore?.setSerialFieldIds(this.formStore.schema);
     });
-    toast.success(this.hasSchema ? '保存成功!' : '创建成功!');
-    (this.formStore as FormStore).hasEdit = false;
-    this.saveSchemeLoading = false;
-    this.formStore?.setSerialFieldIds(this.formStore.schema);
   };
 
   @action

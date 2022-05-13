@@ -140,8 +140,11 @@ export function getValueOfPageDescription(key: string, data: CustomPageInfo & Ar
   case 'updatedBy':
     return data.updatedBy;
   case 'updatedAt':
-    return !data.updatedAt ? '-' :
-      moment(Math.floor(Number(data.updatedAt) / 1000), 'X').format('YYYY-MM-DD HH:mm:ss');
+    if (!data.updatedAt) return '-';
+    if ( (Number(data.updatedAt).toString().length === 10) ) {
+      return moment(Number(data.updatedAt), 'X').format('YYYY-MM-DD HH:mm:ss');
+    }
+    return moment(Number(data.updatedAt) / 1000, 'X').format('YYYY-MM-DD HH:mm:ss');
   case 'createdAt':
     return !data.createdAt ? '-' :
       moment(Math.floor(Number(data.createdAt) / 1000), 'X').format('YYYY-MM-DD HH:mm:ss');
