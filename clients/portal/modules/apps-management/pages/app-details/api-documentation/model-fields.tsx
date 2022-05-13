@@ -89,6 +89,17 @@ export default function ModelFields({ appID, tableID }: Props): JSX.Element {
     return <Loading />;
   }
 
+  // const getFields = (dataModelSchema: DataModelSchema): ModelField[] => {
+  //   return Object.entries(dataModelSchema.schema.properties || {}).map(([key, fieldSchema]) => {
+  //     return {
+  //       id: key,
+  //       ...fieldSchema,
+  //     };
+  //   }).sort((a, b) => {
+  //     return (b['x-index'] || 0) - (a['x-index'] || 0);
+  //   });
+  // };
+
   return (
     <>
       <div style={{ maxHeight: 'calc(100% - 45px)' }} className='flex w-full'>

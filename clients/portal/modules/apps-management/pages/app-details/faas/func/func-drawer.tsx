@@ -10,13 +10,11 @@ import Table from '@c/table';
 import PopConfirm from '@c/pop-confirm';
 import Pagination from '@c/pagination';
 
-import store from './store';
+import store from '../store';
+import TableMoreFilterMenu from '@c/more-menu/table-filter';
 import VersionStatus from '../component/version-status';
-import { FUNC_STATUS } from '../constants';
-import { useHistory } from 'react-router-dom';
 
 function FuncDetailsDrawer(): JSX.Element {
-  const history = useHistory();
   useEffect(() => {
     store.fetchFuncInfo();
     store.setVersionParams({});
@@ -25,77 +23,89 @@ function FuncDetailsDrawer(): JSX.Element {
   const [visible, setVisible] = useState<boolean>(false);
   const [fullScreen, setFullScreen] = useState<boolean>(false);
 
-  function onClinckVername(id: string): void {
-    store.buildID = id;
-    store.modalType = '';
-    history.push(`/apps/details/${store.appID}/build_details`);
-  }
-
   const COLUMNS: UnionColumn<VersionField>[] = [
     {
       Header: '版本号',
       id: 'tag',
-      accessor: ({ id, version }: VersionField) => {
+      accessor: ({ id, tag }: VersionField) => {
         return (
           <span
             className="text-blue-600 cursor-pointer"
-            onClick={() => {
-              onClinckVername(id);
-            }}
+            onClick={() => onClickTool(id, 'VersionDetail')}
           >
-            {version}
+            {tag}
           </span>
         );
       },
     },
     {
-      Header: '状态',
+      Header: () => (
+        <TableMoreFilterMenu
+          menus={[
+            { key: 'SUCCESS', label: '成功' },
+            { key: 'ING', label: '进行中' },
+            { key: 'FAILED', label: '失败' },
+          ]}
+          onChange={() => console.log('')}
+        >
+          <div className={cs('flex items-center cursor-pointer', {
+            'pointer-events-none': true,
+          })}>
+            <span className="mr-4">状态</span>
+            <Icon name="funnel" />
+          </div>
+        </TableMoreFilterMenu>
+      ),
       id: 'state',
-      accessor: ({ status, id, message }: VersionField) => (
+      accessor: ({ state, id, message, serverState, visibility }: VersionField) => (
         <VersionStatus
-          state={status}
+          visibility={visibility}
+          state={state}
           versionID={id}
           message={message}
+          serverState={serverState}
         />
       ),
     },
     {
       Header: '构建时间',
       id: 'build',
-      accessor: ({ builtAt, createdAt }: VersionField) =>
-        builtAt ? `${((builtAt - createdAt) / (60 * 1000)).toFixed(2)} min` : '-',
+      accessor: ({ state, completionTime, createdAt }: VersionField) =>
+        state === 'True' ? `${completionTime - createdAt}s` : '-',
     },
-    // {
-    //   Header: '创建人',
-    //   id: 'creator',
-    //   accessor: 'creator',
-    // },
+    {
+      Header: '创建人',
+      id: 'creator',
+      accessor: 'creator',
+    },
     {
       Header: '创建时间',
       id: 'createAt',
       accessor: ({ createdAt }: VersionField) => {
-        return createdAt ? dayjs(parseInt(String(createdAt))).format('YYYY-MM-DD HH:mm:ss') : '—';
+        return createdAt ? dayjs(parseInt(String(createdAt * 1000))).format('YYYY-MM-DD HH:mm:ss') : '—';
       },
     },
     {
       Header: '操作',
       id: 'action',
-      accessor: ({ id, status }: VersionField) => {
-        const isBuildOk = status > FUNC_STATUS.StatusFailed;
+      accessor: ({ id, visibility, state }: VersionField) => {
+        const _visibility = visibility || 'offline';
         return (
           <div className="flex gap-20">
-            {isBuildOk && status === FUNC_STATUS.StatusOnline && (
+            {state === 'True' && _visibility === 'online' && (
               <PopConfirm content='确认下线改版本？' onOk={() => store.offlineVer(id)} >
                 <span className="operate">下线</span>
               </PopConfirm>)}
-            {isBuildOk && status !== FUNC_STATUS.StatusOnline && (
+            {state === 'True' && _visibility === 'offline' && (
               <PopConfirm content='确认上线改版本？' onOk={() => store.servingVer(id)} >
                 <span className="operate">上线</span>
               </PopConfirm>)}
-            <PopConfirm content='确定生成API文档？' onOk={() => store.registerAPI(id)} >
-              <span className="operate">生成API文档</span>
-            </PopConfirm>
-            { status !== FUNC_STATUS.StatusOnline && (
+            {state === 'True' && (
+              <PopConfirm content='确定生成API文档？' onOk={() => store.registerAPI(id)} >
+                <span className="operate">生成API文档</span>
+              </PopConfirm>
+            )}
+            { !!state && _visibility !== 'online' && (
               <PopConfirm content='确认删除改版本？' onOk={() => store.deleteVer(id)} >
                 <span className="cursor-pointer text-red-600">删除</span>
               </PopConfirm>
@@ -113,6 +123,11 @@ function FuncDetailsDrawer(): JSX.Element {
       store.modalType = '';
     }, 300);
   };
+
+  function onClickTool(id: string, modalType: string): void {
+    store.buildID = id;
+    store.modalType = modalType;
+  }
 
   return (
     <div
@@ -151,15 +166,14 @@ function FuncDetailsDrawer(): JSX.Element {
         <div className='flex-1 overflow-hidden mx-20'>
           <Table
             rowKey="id"
+            data={store.versionList}
             columns={COLUMNS}
             className='h-full'
-            data={store?.versionList || []}
-            loading={store.versionListLoading}
           />
         </div>
         <Pagination
-          total={store.versionList?.length || 0}
-          renderTotalTip={() => `共 ${store.versionList?.length || 0} 条数据`}
+          total={store.versionList.length}
+          renderTotalTip={() => `共 ${store.versionList.length} 条数据`}
           onChange={(current, pageSize) => store.setVersionParams({ page: current, size: pageSize })}
         />
       </div>

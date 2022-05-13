@@ -16,7 +16,6 @@ import FaaS from './faas';
 import ApiKey from './api-key';
 import LayoutManagement from './view-orchestration/view-layouts';
 import NavManagement from './view-orchestration/nav-management';
-import VersionDetails from './faas/func/version-details';
 
 import './index.scss';
 
@@ -42,7 +41,6 @@ function AppDetailsContent(): JSX.Element {
               <Route exact path='/apps/details/:appID/file_api' component={ApiDocument} />
               <Route exact path='/apps/details/:appID/key_api' component={ApiKey} />
               <Route exact path='/apps/details/:appID/faas' component={FaaS} />
-              <Route exact path='/apps/details/:appID/build_details' component={VersionDetails} />
               <Route exact path='/apps/details/:appID/base_info' component={AppInfo} />
               <Route exact path='/apps/details/:appID/app_permission' component={AppRoles} />
               <Route exact path='/apps/details/:appID/app_manager' component={AppAdmin} />
