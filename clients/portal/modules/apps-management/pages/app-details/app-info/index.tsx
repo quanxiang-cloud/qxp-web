@@ -25,6 +25,7 @@ function AppInfo(): JSX.Element {
           //   name: '访问端个性化设置',
           //   content: (<div></div>),
           // },
+
         ]}
       />
     </div>

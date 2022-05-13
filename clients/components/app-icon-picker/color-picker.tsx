@@ -20,7 +20,7 @@ type Props = {
   onChange: (color: BgColor) => void;
 }
 
-function ColorPicker({ iconName = '', onChange, defaultColor, className }: Props) {
+function ColorPicker({ iconName = '', onChange, defaultColor, className }: Props): JSX.Element {
   const [curBgColor, setCurBgColor] = useState(defaultColor);
 
   return (

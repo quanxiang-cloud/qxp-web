@@ -1,4 +1,4 @@
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs6';
 import { FlowElement } from 'react-flow-renderer';
 import { uuid } from '@lib/utils';
 import { update, omit } from 'lodash';
@@ -33,12 +33,12 @@ const getStoreInitialData = (): StoreValue => {
     triggerMode: 'FORM_DATA',
     nodeIdForDrawerForm: '',
     currentConnection: {},
-    cancelable: false,
-    urgeable: false,
+    cancelable: true,
+    urgeable: true,
     canCancelType: 1,
     canCancelNodes: '',
-    seeStatusAndMsg: false,
-    nodeAdminMsg: false,
+    seeStatusAndMsg: true,
+    nodeAdminMsg: true,
     elements: [
       nodeBuilder(startID, 'formData', '工作表触发', {
         parentID: [],

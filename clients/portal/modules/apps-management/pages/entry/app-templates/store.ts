@@ -14,6 +14,7 @@ class TemplateStore {
   @observable templateList: TemplateInfo[] = [];
   @observable templateListLoading = false;
   @observable curTemplate?: TemplateInfo;
+  @observable isInit = false;
 
   @action
   setCurTemplate = (template?: TemplateInfo): void => {
@@ -26,14 +27,14 @@ class TemplateStore {
   };
 
   @action
-  fetchList = (): void => {
+  fetchList = (): Promise<void> => {
     this.templateListLoading = true;
-    fetchTemplateList().then((res: TemplateListRes) => {
+    return fetchTemplateList().then((res: TemplateListRes) => {
       this.setTemplateList(res.templates);
+      this.setCurTemplate(res?.templates?.[0]);
+    }).finally(() => {
       this.templateListLoading = false;
-    }).catch(() => {
-      toast.error('获取模版列表失败');
-      this.templateListLoading = false;
+      this.isInit = true;
     });
   };
 

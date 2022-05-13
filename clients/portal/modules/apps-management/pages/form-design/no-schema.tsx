@@ -2,7 +2,7 @@ import React from 'react';
 
 import AbsoluteCentered from '@c/absolute-centered';
 
-export default function NoSchema() {
+export default function NoSchema(): JSX.Element {
   return (
     <AbsoluteCentered>
       <div className='app-no-data'>

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { omit } from 'lodash';
-import { from } from 'rxjs';
-import { switchMap, filter, tap, skip } from 'rxjs/operators';
+import { from } from 'rxjs6';
+import { switchMap, filter, tap, skip } from 'rxjs6/operators';
 import {
   SchemaForm,
   FormButtonGroup,
@@ -25,7 +25,7 @@ import Button from '@c/button';
 import { StoreContext } from '@c/form-builder/context';
 import { JoinOperatorSelect, RulesList } from '@c/form-builder/customized-fields';
 import { getCompareOperatorOptions, getSourceElementOperator } from '@c/form-builder/utils/operator';
-import { getLinkageTables } from '@c/form-builder/utils/api';
+import { getFormDataMenuList } from '@c/form-table-selector/api';
 
 import { fetchLinkedTableFields } from './get-tables';
 import SCHEMA from './schema';
@@ -117,7 +117,7 @@ function LinkageConfig({
 
   useEffect(() => {
     // find all available linkage tables
-    getLinkageTables(store.appID).then((options) => {
+    getFormDataMenuList(store.appID).then((options) => {
       const filteredOptions = options.filter(({ value }) => value !== store.pageID);
       setLinkageTables(filteredOptions);
       setFieldState('linkedTableID', (state) => state.props.enum = filteredOptions);

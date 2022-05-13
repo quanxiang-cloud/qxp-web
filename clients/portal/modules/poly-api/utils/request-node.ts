@@ -1,5 +1,8 @@
 import { isEmpty, isString, omit } from 'lodash';
 
+import { DirectoryChild } from '@lib/api-collection';
+import { isApi } from '@lib/api-collection/utils';
+
 import { isObjectField } from './object-editor';
 import { RawApiDetail } from '../effects/api/raw';
 import { PLACEHOLDER_OPTION } from '../constants';
@@ -68,6 +71,7 @@ export type ApiCascaderOption = {
   children: ApiCascaderOption[] | undefined;
   isLeaf: boolean;
   path: string;
+  method: string;
   childrenData?: any;
   disabled?: boolean;
 }
@@ -79,23 +83,17 @@ function mergeApiListToChildNameSpace(
     return PLACEHOLDER_OPTION;
   }
 
-  return (childNameSpace || []).concat(rawApiList.map(({ title, name, fullPath }: RawApiDetail) => {
+  return (childNameSpace || []).concat(rawApiList.map(({ title, name, fullPath, method }: RawApiDetail) => {
     return {
       label: title || name.split('.').shift() || '',
       value: fullPath,
       path: fullPath,
       children: undefined,
+      method: method,
       isLeaf: true,
       disabled: false,
     };
   }));
-}
-
-export type ApiOptionData = {
-  name: string;
-  title: string;
-  parent: string;
-  children: ApiOptionData[] | null;
 }
 
 const Title_Map: Record<string, string> = {
@@ -103,20 +101,37 @@ const Title_Map: Record<string, string> = {
   customer: '第三方API',
 };
 export function getChildrenOfCurrentSelectOption(
-  currentChildrenData: ApiOptionData[],
-): ApiCascaderOption[] | undefined {
-  if (!currentChildrenData) {
-    return;
-  }
-
-  return currentChildrenData.map(({ name, children, parent, title }: ApiOptionData) => {
+  currentChildren: DirectoryChild[],
+  apiNamespacePath: string,
+): ApiCascaderOption[] {
+  return currentChildren.map((currentChild) => {
+    if (isApi(currentChild)) {
+      const { name, title, pathType, fullPath } = currentChild;
+      return {
+        label: title ? title : (Title_Map[name] || name),
+        value: name,
+        children: undefined,
+        isLeaf: true,
+        method: currentChild.method,
+        path: fullPath,
+        pathType,
+      };
+    }
+    const { name, title, pathType, children, parent } = currentChild;
+    let _children: ApiCascaderOption[] | undefined;
+    if (children && children.length) {
+      _children = getChildrenOfCurrentSelectOption(children, apiNamespacePath);
+    } else if (apiNamespacePath === `${parent}/${name}`) {
+      _children = PLACEHOLDER_OPTION;
+    }
     return {
       label: title ? title : (Title_Map[name] || name),
       value: name,
-      children: undefined,
-      childrenData: children,
+      children: _children,
       isLeaf: false,
       path: `${parent}/${name}`,
+      pathType,
+      method: '',
     };
   });
 }

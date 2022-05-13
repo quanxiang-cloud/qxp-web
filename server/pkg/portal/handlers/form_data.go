@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	base              = "/api/v1/structor/"
+	base              = "/api/v1/form/"
 	form              = "/home/form/"
 	userSchema        = "/home/schema/"
 	subForm           = "/home/subForm/"

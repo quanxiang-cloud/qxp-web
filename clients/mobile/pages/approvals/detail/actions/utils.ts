@@ -30,3 +30,10 @@ export function getAction(action?: string, flowName?: string): Action {
   }
   return { title: '', actionName: '' };
 }
+
+export function stepBackValidator(selected: Array<{ value: string }>): string {
+  if (selected && selected.length) {
+    return '';
+  }
+  return '请选择要回退到的节点';
+}

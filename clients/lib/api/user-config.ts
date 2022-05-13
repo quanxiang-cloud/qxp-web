@@ -14,8 +14,8 @@ export function getBatchUserData(keys: GetParams[]): Promise<{ result: Record<st
   return httpClient('/api/v1/persona/userBatchGetValue', { keys });
 }
 
-export function setBatchUserData(params: SetParams[]): Promise<void> {
-  return httpClient('/api/v1/persona/userBatchSetValue', { params });
+export function setBatchUserData(keys: SetParams[]): Promise<void> {
+  return httpClient('/api/v1/persona/userBatchSetValue', { keys });
 }
 
 export function cloneUserData(sourceKey: GetParams, targetKey: GetParams): Promise<any> {
@@ -29,12 +29,12 @@ export function getBatchGlobalConfig(keys: GetParams[]): Promise<{ result: Recor
   });
 }
 
-export function setBatchGlobalConfig(params: SetParams[]): FutureErrorMessage {
-  return httpClient('/api/v1/persona/batchSetValue', { params }).then(() => '').catch((err) => {
+export function setBatchGlobalConfig(keys: SetParams[]): FutureErrorMessage {
+  return httpClient('/api/v1/persona/batchSetValue', { keys }).then(() => '').catch((err) => {
     return err;
   });
 }
 
-export function setPageEngineMenuType(appID: string, id: string): Promise<any> {
-  return httpClient(`/api/v1/structor/${appID}/m/menu/toPage`, { id });
+export function setArteryEngineMenuType(appID: string, id: string): Promise<any> {
+  return httpClient(`/api/v1/form/${appID}/m/menu/toPage`, { id });
 }

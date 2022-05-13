@@ -1,6 +1,6 @@
 import qs from 'qs';
 
-import { CustomPageInfo, SchemaPageInfo } from '@portal/modules/apps-management/pages/app-details/type';
+import { CustomPageInfo, ArteryPageInfo } from '@portal/modules/apps-management/pages/app-details/type';
 import { ESParameter, toEs } from '@c/data-filter/utils';
 import schemaToFields from '@lib/schema-convert';
 
@@ -8,107 +8,75 @@ import { TIME_ZONE } from './utils';
 
 let alreadyAlertUnauthorizedError = false;
 
-type HttpMethods = 'POST' | 'GET' | 'PUT' | 'DELETE';
+type METHOD = 'POST' | 'GET' | 'PUT' | 'DELETE';
 
-async function request<TData, TBody = unknown>(path: string, method: HttpMethods,
-  body?: TBody, additionalHeaders?: HeadersInit, options?: Record<string, any>) {
-  const headers: Record<string, any> = {
-    'X-Proxy': 'API',
-    'X-Timezone': TIME_ZONE,
-    'Content-Type': 'application/json',
-    ...additionalHeaders,
-  };
+const HEADERS: Record<string, any> = {
+  'X-Proxy': 'API',
+  'X-Timezone': TIME_ZONE,
+  'Content-Type': 'application/json',
+};
 
-  const configs: {
-    method: HttpMethods,
-    body?: FormData | string,
-    headers: Record<string, any>
-  } = {
+function request<TData>(path: string, method: METHOD, body?: unknown): Promise<TData> {
+  const requestInit: RequestInit = {
     method: method,
-    body: options?.formData ? body as unknown as FormData : JSON.stringify(body || {}),
-    headers,
+    body: method !== 'GET' ? JSON.stringify(body) : undefined,
+    headers: HEADERS,
   };
 
-  if (method === 'GET') {
-    delete configs['body'];
-  }
+  return fetch(path, requestInit)
+    .then((response) => {
+      if (response.status > 400) {
+        return Promise.reject(new Error(response.statusText));
+      }
 
-  if (options?.formData) {
-    delete headers['Content-Type'];
-  }
+      return response.json();
+    })
+    .then(({ code, msg, data }) => {
+      if (code !== 0) {
+        return Promise.reject(new Error(msg));
+      }
 
-  const response = await fetch(path, configs);
+      return data;
+    })
+    .catch((err) => {
+      if (err.response?.status === 401) {
+        if (!alreadyAlertUnauthorizedError) {
+          alreadyAlertUnauthorizedError = true;
+          alert('当前会话已失效，请重新登录!');
+        }
 
-  if (response.status === 401) {
-    if (!alreadyAlertUnauthorizedError) {
-      alreadyAlertUnauthorizedError = true;
-      alert('当前会话已失效，请重新登录!');
-    }
+        window.location.reload();
+        return Promise.reject(new Error('当前会话已失效，请重新登录!'));
+      }
 
-    window.location.reload();
-    return Promise.reject(new Error('当前会话已失效，请重新登录!'));
-  }
-
-  if ([404, 500].includes(response.status)) {
-    return Promise.reject(new Error('请求失败!'));
-  }
-
-  const { code, msg, data } = await response.json();
-  if (code !== 0) {
-    const e = new Error(msg);
-    if (data) {
-      Object.assign(e, { data });
-    }
-    return Promise.reject(e);
-  }
-
-  return data as TData;
+      return Promise.reject(err);
+    });
 }
 
-const httpClient = function<TData, TBody = unknown>(path: string,
-  body?: TBody,
-  additionalHeaders?: HeadersInit,
-  options?: Record<string, any>) {
-  return httpClient.post<TData, TBody>(path, body, additionalHeaders, options);
-};
+function httpClient<TData>(path: string, body?: unknown): Promise<TData> {
+  return httpClient.post<TData>(path, body || {});
+}
 
-httpClient.get = function<TData, TBody = unknown>(path: string,
-  body?: TBody,
-  additionalHeaders?: HeadersInit,
-  options?: Record<string, any>) {
+httpClient.get = function<TData>(path: string, query?: Record<string, unknown>) {
   let _path = path;
-  if (body) {
-    _path = `${_path}?${qs.stringify(body)}`;
+  if (query) {
+    _path = `${_path}?${qs.stringify(query)}`;
   }
-  return request<TData, TBody>(_path, 'GET', body, additionalHeaders, options);
+
+  return request<TData>(_path, 'GET', undefined);
 };
 
-httpClient.post = function<TData, TBody = unknown>(path: string,
-  body?: TBody,
-  additionalHeaders?: HeadersInit,
-  options?: Record<string, any>) {
-  return request<TData, TBody>(path, 'POST', body, additionalHeaders, options);
+httpClient.post = function<TData>(path: string, body: unknown) {
+  return request<TData>(path, 'POST', body);
 };
 
-httpClient.put = function<TData, TBody = unknown>(path: string,
-  body?: TBody,
-  additionalHeaders?: HeadersInit,
-  options?: Record<string, any>) {
-  return request<TData, TBody>(path, 'PUT', body, additionalHeaders, options);
+httpClient.put = function<TData>(path: string, body: unknown) {
+  return request<TData>(path, 'PUT', body);
 };
 
-httpClient.delete = function<TData, TBody = unknown>(path: string, body?: TBody,
-  additionalHeaders?: HeadersInit, options?: Record<string, any>) {
-  return request<TData, TBody>(path, 'DELETE', body, additionalHeaders, options);
+httpClient.delete = function<TData>(path: string, body?: Body) {
+  return request<TData>(path, 'DELETE', body);
 };
-
-type FormDataRequestQueryDeleteParams = {
-  method: 'find' | 'findOne' | 'delete';
-  conditions: {
-    condition: Array<{ key: string; op: string; value: Array<string | number>; }>;
-    tag?: 'and' | 'or';
-  }
-}
 
 export type FormDataRequestCreateParams = {
   method: 'create';
@@ -126,8 +94,6 @@ export type FormDataRequestUpdateParams = {
 }
 
 export type FormDataListResponse = { entities: Record<string, any>[]; total: number };
-
-// new
 
 export type RefData = {
   updated?: Record<string, any>[];
@@ -164,11 +130,13 @@ export function fetchFormDataList(
   pageID: string,
   data: FormDataListRequestParams,
 ): Promise<FormDataListResponse> {
-  return httpClient(`/api/v1/form/${appID}/home/form/${pageID}/search`, {
+  return httpClient<Record<string, any>>(`/api/v1/form/${appID}/home/form/${pageID}/search`, {
     method: 'find',
     page: 1,
     size: 10,
     ...data,
+  }).then((res) => {
+    return { entities: res?.entities || [], total: res.total || 0 };
   });
 }
 
@@ -194,7 +162,7 @@ export function editFormDataRequest(
     {
       ...params,
       query: {
-        terms: { _id: [dataID] },
+        term: { _id: dataID },
       },
     },
   );
@@ -270,13 +238,7 @@ export function findOneFormDataRequest(
     {
       ref: buildQueryRef(schema),
       query: {
-        bool: {
-          must: [
-            {
-              term: { _id: rowID },
-            },
-          ],
-        },
+        term: { _id: rowID },
       },
     },
   ).then(({ entity }) => {
@@ -320,7 +282,7 @@ export async function fetchOneFormDataWithSchema(
 
 // new end
 
-type GetTableSchemaResponse = null | { config: any; schema: ISchema; };
+type GetTableSchemaResponse = null | { config: any; schema: ISchema; id: string, tableID: string };
 
 export function getTableSchema(appID: string, tableID: string): Promise<GetTableSchemaResponse> {
   const path = window.SIDE === 'home' ?
@@ -332,21 +294,21 @@ export function getTableSchema(appID: string, tableID: string): Promise<GetTable
 
 export function getCustomPageInfo(appID: string, menuId: string): Promise<CustomPageInfo> {
   const side = window.SIDE === 'portal' ? 'm' : 'home';
-  return httpClient(`/api/v1/structor/${appID}/${side}/page/getByMenu`, { menuId });
+  return httpClient(`/api/v1/form/${appID}/${side}/page/getByMenu`, { menuId });
 }
 
 export const fetchPageList = async (appID: string): Promise<fetchPageListRes> => {
   const side = window.SIDE === 'portal' ? 'm' : 'home';
-  return await httpClient(`/api/v1/structor/${appID}/${side}/menu/list`, { appID });
+  return await httpClient(`/api/v1/form/${appID}/${side}/menu/list`, { appID });
 };
 
-export function getSchemaPageInfo(appID: string, menuId: string): Promise<SchemaPageInfo> {
-  return httpClient(`/api/v1/structor/${appID}/m/table/getInfo`, { menuId });
+export function getArteryPageInfo(appID: string, tableID: string): Promise<ArteryPageInfo> {
+  return httpClient(`/api/v1/form/${appID}/m/table/getInfo`, { tableID });
 }
 
 export function saveTableSchema(
   appID: string, tableID: string, schema: ISchema, source?: SchemaSource,
-): Promise<{ tableID: string; }> {
+): Promise<unknown> {
   return httpClient(
     `/api/v1/form/${appID}/m/table/create`,
     { tableID, schema, source },

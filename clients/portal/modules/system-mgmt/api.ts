@@ -19,10 +19,9 @@ type LogQueryFilter = {
   size?: number;
 }
 
-// 发送消息和在草稿基础上，更新消息
-export const createMsg = async (msgData: Qxp.CreateMsgData)=> {
-  return await httpClient('/api/v1/message/manager/create', msgData);
-};
+export function createMsg(msgData: Qxp.CreateMsgData) {
+  return httpClient('/api/v1/message/manager/create', msgData);
+}
 
 // 根据id删除消息
 export const deleteMsgById = async (id: string)=> {

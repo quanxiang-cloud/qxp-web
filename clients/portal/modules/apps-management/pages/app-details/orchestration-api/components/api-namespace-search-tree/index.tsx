@@ -6,7 +6,7 @@ import Tree from '@c/headless-tree';
 import type { NodeRenderProps } from '@c/headless-tree/types';
 import Loading from '@c/loading';
 import { useApiNamespaceSearchStore } from '@orchestrationAPI/context';
-import { NameSpace, useSearchNameSpaceList } from '@orchestrationAPI/effects/api/api-namespace';
+import { useSearchNameSpaceList } from '@orchestrationAPI/effects/api/api-namespace';
 import { OrchestrationAPIStore } from '@orchestrationAPI/store';
 import { apiNamespaceToTreeNode, stringToAsciiNumber } from '@orchestrationAPI/utils';
 import withProps from '@orchestrationAPI/effects/hoc/with-props';
@@ -30,7 +30,7 @@ function APINamespaceSearchTree(
   }, [store, orchestrationAPIStore, shouldShow]);
 
   const localNodeRender = useMemo(() => {
-    return withProps<{ keyword: string }, NodeRenderProps<NameSpace>>(
+    return withProps<{ keyword: string }, NodeRenderProps<PolyAPI.Namespace>>(
       { keyword: searchKey || '' }, NodeRender,
     );
   }, [searchKey]);

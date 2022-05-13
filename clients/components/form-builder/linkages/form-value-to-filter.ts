@@ -3,7 +3,7 @@ import {
   ISchemaFormActions,
 } from '@formily/antd';
 import { get, set } from 'lodash';
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime } from 'rxjs6/operators';
 
 const SUPPORT_FILTER_COMP = ['AssociatedData', 'AssociatedRecords'];
 

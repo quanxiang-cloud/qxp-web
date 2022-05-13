@@ -10,7 +10,7 @@ export const saveAppAsTemplate = async (value: Omit<TemplateInfo, 'id'>, title: 
 };
 
 export async function fetchTemplateList(): Promise<TemplateListRes> {
-  return await httpClient('/api/v1/app-center/template/selfList');
+  return await httpClient('/api/v1/app-center/template/selfList', {});
 }
 
 export async function deleteTemplate(id: string): Promise<any> {

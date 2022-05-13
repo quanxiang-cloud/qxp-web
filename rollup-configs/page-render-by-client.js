@@ -102,7 +102,7 @@ const config = {
     }),
     !isProduction ? progress({ clearLine: true }) : false,
     styles({
-      autoModules: /index\.module\.scss/,
+      autoModules: /\w+\.(module|m)\.scss/,
     }),
     json(),
     typescriptPaths(),

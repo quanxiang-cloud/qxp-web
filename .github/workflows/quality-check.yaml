@@ -1,9 +1,11 @@
 name: Code Quality Check
 on:
-  push:
-    branches-ignore:
+  pull_request:
+    # Sequence of patterns matched against refs/heads
+    branches:
+      - main
       - 'release/**'
-      - alpha
+      - develop
 jobs:
   check-code-quality:
     runs-on: ubuntu-latest

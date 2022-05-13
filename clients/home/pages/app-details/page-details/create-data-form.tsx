@@ -62,10 +62,8 @@ function CreateDataForm({ appID, pageID, rowID, onCancel }: Props): JSX.Element 
           pageID,
           rowID,
           buildFormDataReqParams(schema, 'updated', newValue),
-        ).then((res) => {
-          if (res.errorCount !== 0) {
-            throw new Error('保存失败，没有权限');
-          }
+        ).then(() => {
+          toast.success('修改成功');
         });
       } else {
         setLoading(true);
