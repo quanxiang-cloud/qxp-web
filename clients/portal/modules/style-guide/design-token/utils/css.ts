@@ -20,7 +20,7 @@ export function generateCssVarible(tokens: ResolvedToken<Token>[]): string {
       if (isShadowToken(token)) {
         return (
           acc +
-          `${name}: ${generateWholeBoxShadowStyle(token as BoxShadowToken)}`
+          `${name}: ${generateWholeBoxShadowStyle(token as BoxShadowToken)};`
         );
       }
       const value = token.value + (token.unit ? token.unit?.toString() : '');
