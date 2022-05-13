@@ -5,7 +5,7 @@ import React, {
 } from 'react';
 import cs from 'classnames';
 
-import { ColData } from './config-form';
+import type { ColData } from './config-form';
 import { getStickyStyles } from './sticky';
 
 import './index.scss';

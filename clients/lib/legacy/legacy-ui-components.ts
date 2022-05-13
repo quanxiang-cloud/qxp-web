@@ -35,3 +35,19 @@ const legacyUIComponents = {
 };
 
 export default legacyUIComponents;
+
+export const page = Page;
+export const text = Text;
+export const para = Paragraph;
+export const image = Image;
+export const button = Button;
+export const icon = Icon;
+export const link = Link;
+export const modal = Modal;
+export const input = Input;
+export const radio = Radio;
+export const textarea = Textarea;
+export const form = Form;
+export const table = Table;
+export const grid = Grid;
+export const container = Container;
