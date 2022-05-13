@@ -1,9 +1,10 @@
 export const faasState = {
   NOT_INITIAL: 0,
-  DEVELOP: 1,
-  GROUP: 2,
-  INGROUP: 3,
-  DONE_INITIAL: 4,
+  NOT_DEVELOP_HAS_GROUP: 1,
+  DEVELOP: 2,
+  GROUP: 3,
+  INGROUP: 4,
+  DONE_INITIAL: 5,
 };
 
 export const PROJECT_STATE = {

@@ -73,9 +73,7 @@ class IniStore {
   checkUserState = async (): Promise<void> => {
     this.checkUserLoading = true;
     await this.developerCheck();
-    if (this.step === faasState.DEVELOP) {
-      await this.isGroup();
-    }
+    await this.isGroup();
     if (this.step === faasState.GROUP) {
       await this.isDeveloperInGroup();
     }
@@ -99,10 +97,10 @@ class IniStore {
     return checkHasGroup({
       appID: this.appID,
     }).then((groupID) => {
-      if (groupID) {
+      if (groupID && this.step === faasState.DEVELOP) {
         this.setStep(faasState.GROUP);
       } else {
-        this.setStep(faasState.DEVELOP);
+        this.setStep(faasState.NOT_DEVELOP_HAS_GROUP);
       }
       this.setGroupID(groupID);
     }).catch((err) => {
@@ -128,7 +126,11 @@ class IniStore {
   @action
   createDeveloper = (data: { account: string }): Promise<void> => {
     return createDeveloper(data).then(() => {
-      this.step = faasState.DEVELOP;
+      if (this.groupID) {
+        this.step = faasState.GROUP;
+      } else {
+        this.step = faasState.DEVELOP;
+      }
       this.userAccount = data.account;
       toast.success('绑定开发者账号成功');
     }).catch((error) => {

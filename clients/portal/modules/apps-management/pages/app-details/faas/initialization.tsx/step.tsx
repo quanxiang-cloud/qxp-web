@@ -36,14 +36,16 @@ export function Develop({
 }
 
 export function Group({ step, onClick }: stepProps): JSX.Element {
+  const hasGroup = step > faasState.DEVELOP || step === faasState.NOT_DEVELOP_HAS_GROUP;
   return (
+
     <div className='ini-bar'>
-      <div className={cs('bar-title', step > faasState.DEVELOP ? 'ini-ok' : 'not-ini')}>
-        <Icon name={step > faasState.DEVELOP ? 'task-ok' : 'schedule'} size={20} className='mr-8' />
-        {step > faasState.DEVELOP ? '已绑定空间' : '未绑定空间'}
+      <div className={cs('bar-title', hasGroup ? 'ini-ok' : 'not-ini')}>
+        <Icon name={hasGroup ? 'task-ok' : 'schedule'} size={20} className='mr-8' />
+        {hasGroup ? '已绑定空间' : '未绑定空间'}
       </div>
       <div className='pl-16 my-20'>
-        {step > faasState.DEVELOP ? '当前应用已绑定 Git 仓库的 Group 空间' : '当前应用还未绑定 Git 仓库的 Group 空间'}
+        {hasGroup ? '当前应用已绑定 Git 仓库的 Group 空间' : '当前应用还未绑定 Git 仓库的 Group 空间'}
       </div>
       <div className={cs('ini-action', step === faasState.DEVELOP ? '' : 'cursor-not-allowed')}>
         <span

@@ -72,7 +72,7 @@ class FaasStore {
   };
 
   @action
-  setSearchAlias = (searchAlias: string) => {
+  setSearchAlias = (searchAlias: string): void => {
     this.searchAlias = searchAlias;
   };
 
