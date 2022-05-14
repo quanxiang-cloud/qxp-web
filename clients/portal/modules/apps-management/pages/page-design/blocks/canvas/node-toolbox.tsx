@@ -7,12 +7,12 @@ import { useCtx } from '@pageDesign/ctx';
 
 interface Props {
   className?: string;
-  currentGroupType: string;
-  groupTypeContentPinned: boolean;
+  currentType: string;
+  pinned: boolean;
 }
 
 function NodeToolbox(props: Props, ref: any): JSX.Element {
-  const { currentGroupType, groupTypeContentPinned } = props;
+  const { currentType, pinned } = props;
   const domRef = useRef<HTMLDivElement>(null);
   const popperRef = useRef<Popper>(null);
   const reference = useRef<any>(null);
@@ -40,7 +40,7 @@ function NodeToolbox(props: Props, ref: any): JSX.Element {
   }, []);
 
   useEffect(() => {
-    if (!domRef.current || !currentGroupType) {
+    if (!domRef.current || !currentType) {
       return;
     }
     domRef.current.style.opacity = '0';
@@ -51,11 +51,11 @@ function NodeToolbox(props: Props, ref: any): JSX.Element {
     return () => {
       clearTimeout(tid);
     };
-  }, [currentGroupType]);
+  }, [currentType]);
 
   useLayoutEffect(()=> {
     computedPlace();
-  }, [groupTypeContentPinned, page.activeElemId]);
+  }, [pinned, page.activeElemId]);
 
   useLayoutEffect(()=> {
     // fix modal toolbox not checked, delay when modal display completely

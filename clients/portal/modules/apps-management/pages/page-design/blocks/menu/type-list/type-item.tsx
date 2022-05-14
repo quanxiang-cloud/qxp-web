@@ -18,10 +18,10 @@ export interface TypeItemProps {
 
 function TypeItem(props: TypeItemProps): JSX.Element {
   const { active, className, onClick, icon, label, clickOutsideWhiteList } = props;
-  const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const ref = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
-    when((list) => !!list, () => clickOutsideWhiteList?.add(wrapperRef.current!))(clickOutsideWhiteList);
-    () => clickOutsideWhiteList?.delete(wrapperRef.current!);
+    when((list) => !!list, () => clickOutsideWhiteList?.add(ref.current!))(clickOutsideWhiteList);
+    () => clickOutsideWhiteList?.delete(ref.current!);
   }, [clickOutsideWhiteList]);
 
   const cls = cs(
@@ -33,7 +33,7 @@ function TypeItem(props: TypeItemProps): JSX.Element {
 
   return (
     <div
-      ref={wrapperRef}
+      ref={ref}
       className={cls}
       onClick={onClick}
     >

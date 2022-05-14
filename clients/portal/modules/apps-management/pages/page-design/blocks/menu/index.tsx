@@ -16,7 +16,7 @@ function Menu(props: BlockItemProps<BlocksCommunicationType>): JSX.Element {
   }, []);
 
   const onTypeSelect = useCallback((type: string): void => {
-    onSharedStateChange('menu.currentGroupType', type);
+    onSharedStateChange('menu.currentType', type);
   }, [onSharedStateChange]);
 
   const initBlockStates = useCallback((names: string[]) => {
@@ -30,7 +30,7 @@ function Menu(props: BlockItemProps<BlocksCommunicationType>): JSX.Element {
 
   return (
     <TypeList
-      current={sharedState.menu?.currentGroupType}
+      current={sharedState.menu?.currentType}
       onClick={onTypeSelect}
       blockStates={sharedState.block}
       initBlockStates={initBlockStates}
