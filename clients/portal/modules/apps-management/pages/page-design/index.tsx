@@ -43,7 +43,7 @@ function PageDesign(): JSX.Element | null {
         blocksCommunicationStateInitialValue: {
           appID,
           arteryID: '',
-          menu: { pannelWith: 280 },
+          menu: { panelWidth: 280 },
           block: {},
         },
       };
