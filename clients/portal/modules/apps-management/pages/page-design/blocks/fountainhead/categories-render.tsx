@@ -1,12 +1,13 @@
 import React, { useMemo } from 'react';
 import { forEach, groupBy, keys, pipe } from 'ramda';
+import type { Node } from '@one-for-all/artery';
 
 import type { PackageComponent } from '@pageDesign/blocks/fountainhead/type';
 
 import Category from './category';
 
 interface Props {
-  onAddNode: () => void;
+  onAddNode: (node: Node) => void;
   components: PackageComponent[];
   categories?: string[];
   isIconPackage: boolean;

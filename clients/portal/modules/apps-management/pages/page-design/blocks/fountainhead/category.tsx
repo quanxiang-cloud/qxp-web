@@ -1,5 +1,6 @@
 import React, { CSSProperties } from 'react';
 import cs from 'classnames';
+import type { Node } from '@one-for-all/artery';
 
 import type { PackageComponent } from '@pageDesign/blocks/fountainhead/type';
 
@@ -11,7 +12,7 @@ import styles from './index.m.scss';
 interface Props {
   name: string;
   components: PackageComponent[];
-  onAddNode: () => void;
+  onAddNode: (node: Node) => void;
   isIconPackage: boolean;
   isAllPackage: boolean;
   style?: CSSProperties;

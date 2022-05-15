@@ -1,4 +1,5 @@
 import React from 'react';
+import type { Node } from '@one-for-all/artery';
 
 import type { PackageComponent } from '@pageDesign/blocks/fountainhead/type';
 import type { ItemRenderProps } from '@c/visual-scroll-list';
@@ -6,7 +7,7 @@ import type { ItemRenderProps } from '@c/visual-scroll-list';
 import ComponentRender from '../component-render';
 
 interface Props extends ItemRenderProps<PackageComponent> {
-  onAddNode: () => void;
+  onAddNode: (node: Node) => void;
   componentWidth: number;
   tupleNumber: number;
   gap: number;

@@ -1,4 +1,5 @@
 import React, { useRef, useCallback } from 'react';
+import type { Node } from '@one-for-all/artery';
 
 import { PackageComponent } from '@pageDesign/blocks/fountainhead/type';
 import VisualScrollList, {
@@ -14,7 +15,7 @@ export interface Props {
   components: PackageComponent[];
   tupleNumber: number;
   gap: number;
-  onAddNode: () => void;
+  onAddNode: (node: Node) => void;
   componentWidth: number;
 }
 

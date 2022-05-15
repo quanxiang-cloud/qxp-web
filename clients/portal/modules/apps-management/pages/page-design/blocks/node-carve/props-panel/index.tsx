@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { get } from 'lodash';
 
 import { Artery, ReactComponentNode } from '@one-for-all/artery';
 import { ArteryRenderer } from '@one-for-all/artery-renderer';
@@ -31,8 +30,7 @@ function PropsPanel(): JSX.Element {
       setFunctionArtery(null);
       return;
     }
-    const specpath = `${exportName}.props`;
-    const specs: BasePropSpec[] = get(packagePropsSpec, specpath, []);
+    const specs: BasePropSpec[] = packagePropsSpec[exportName]?.props ?? [];
 
     const attrSpecs = getArteryBySpec(specs.filter((s) => s.type !== 'function'), {
       prefix: 'props',
