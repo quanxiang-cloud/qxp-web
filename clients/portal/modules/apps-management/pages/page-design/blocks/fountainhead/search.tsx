@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import type { Node } from '@one-for-all/artery';
 
 import { PackageComponent } from '@pageDesign/blocks/fountainhead/type';
 import { fuzzyFind } from '@c/visual-scroll-list';
@@ -8,7 +9,7 @@ import ComponentSearch from './component-search';
 interface Props {
   show: boolean;
   components: PackageComponentWithDistance[];
-  onAddNode: () => void;
+  onAddNode: (node: Node) => void;
   placeholder: string;
 }
 

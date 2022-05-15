@@ -1,16 +1,17 @@
-import React, { CSSProperties, useState } from 'react';
+import React, { CSSProperties, useState, useMemo } from 'react';
 import cs from 'classnames';
 import type { Node } from '@one-for-all/artery';
 import { buildReactComponentNode } from '@one-for-all/artery-engine';
 
 import type { PackageComponent } from '@pageDesign/blocks/fountainhead/type';
 import { initialPropsToNodeProperties } from '@pageDesign/utils/package';
+
 import { useFoutainheadContext } from './context';
 
 import styles from './index.m.scss';
 
 interface Props extends PackageComponent {
-  onAddNode: () => void;
+  onAddNode: (node: Node) => void;
   style?: CSSProperties;
   className?: string;
 }
@@ -29,19 +30,10 @@ function genNode(props: Props): Node {
 }
 
 const ComponentRender = (props: Props): JSX.Element => {
-  const { Icon, desc, package: pkg, label, style, className } = props;
+  const { Icon, desc, package: pkg, label, style, className, onAddNode } = props;
   const [isDragging, setIsDragging] = useState(false);
   const { onPanelHide, onPanelClose } = useFoutainheadContext();
-
-  // function addNodeToCanvas(target?: any): void {
-  //   const prepareNode = {
-  //     exportName: name,
-  //     label,
-  //     defaultConfig: initialProps,
-  //   };
-  //   page.appendNode(prepareNode, target, { from: 'source' });
-  //   onAddNode();
-  // }
+  const node = useMemo(() => genNode(props), [props]);
 
   function onDragEnd(): void {
     setIsDragging(false);
@@ -52,12 +44,12 @@ const ComponentRender = (props: Props): JSX.Element => {
     <div
       draggable
       className={cs(styles.sourceElem, className, { [styles.dragging]: isDragging })}
-      // onClick={() => addNodeToCanvas()}
+      onClick={() => onAddNode(node)}
       onDragStart={(e) => {
         e.stopPropagation();
 
         setIsDragging(true);
-        e.dataTransfer.setData('artery_node', JSON.stringify(genNode(props)));
+        e.dataTransfer.setData('artery_node', JSON.stringify(node));
         onPanelHide?.();
 
         return false;
