@@ -22,7 +22,7 @@ type BatchGetValueReq struct {
 type PersonalizedConfig struct {
 	TitleIcon    string       `json:"titleIcon"`
 	Favicons     string       `json:"favicons"`
-	CommonCssUrl template.URL `json:"commonCssUrl"`
+	StyleCssUrl template.URL `json:"styleCssUrl"`
 }
 
 func getPersonalizedConfig(r *http.Request, appID string) PersonalizedConfig {
@@ -42,7 +42,7 @@ func getPersonalizedConfig(r *http.Request, appID string) PersonalizedConfig {
 	config := PersonalizedConfig{
 		TitleIcon:    "/dist/images/quanxiangyun.svg",
 		Favicons:     "/dist/images/favicons/favicon-32x32.png",
-		CommonCssUrl: "",
+		StyleCssUrl: "",
 	}
 
 	var result string
