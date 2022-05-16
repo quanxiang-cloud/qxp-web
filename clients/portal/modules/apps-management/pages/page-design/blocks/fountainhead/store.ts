@@ -4,12 +4,10 @@ import { switchMap, catchError, shareReplay } from 'rxjs6/operators';
 import { isEmpty } from 'ramda';
 import { isObject } from '@one-for-all/artery-engine';
 
-import { PropsSpec } from '@one-for-all/node-carve';
-
 import type { Package, PackageComponent } from '@pageDesign/blocks/fountainhead/type';
 import useObservable from '@lib/hooks/use-observable';
 import {
-  getPackagesSourceDynamic, getPackagePropsSpec, getComponentsFromPackage,
+  getPackagesSourceDynamic, getPackagePropsSpec, getComponentsFromPackage, PropsSpecMap,
 } from '@pageDesign/utils/package';
 
 const packages$ = from(getPackagesSourceDynamic());
@@ -20,7 +18,7 @@ const components$ = packages$.pipe(
 );
 const propsSpecs$ = packages$.pipe(
   switchMap(loadAllPropsSpecs),
-  catchError(async () => ({}) as Record<string, PropsSpec>),
+  catchError(async () => ({}) as Record<string, PropsSpecMap>),
   shareReplay(Infinity),
 );
 
@@ -34,18 +32,22 @@ export function useComponents(): PackageComponent[] | undefined {
   return isInvalid(components) ? undefined : components;
 }
 
-export function usePackagePropsSpec(params: Pick<Package, 'name' | 'version'>): PropsSpec | undefined {
+export function usePackagePropsSpecs(params: Pick<Package, 'name' | 'version'>): PropsSpecMap {
   const { name, version } = params;
   const key = `${name}@${version}`;
   const propsSpecs = useObservable(propsSpecs$);
   return propsSpecs[key];
 }
 
+export function usePackagePropsSpecsMap(): Record<string, PropsSpecMap> {
+  return useObservable(propsSpecs$);
+}
+
 function isInvalid<T>(value: T): boolean {
   return isObject(value) && isEmpty(value);
 }
 
-async function loadAllPropsSpecs(packages: Package[]): Promise<Record<string, PropsSpec>> {
+async function loadAllPropsSpecs(packages: Package[]): Promise<Record<string, PropsSpecMap>> {
   const propsSpecsPromise = packages.map(getPackagePropsSpec);
   const propsSpecs = await Promise.all(propsSpecsPromise);
   return propsSpecs.reduce((acc, propsSpec) => {

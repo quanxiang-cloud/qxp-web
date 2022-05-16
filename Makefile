@@ -38,7 +38,8 @@ buildHome:
 	@echo "build home web server..."
 	@go build -o ./bin/home server/cmd/home/main.go
 
-rollup:
+# todo revmoe bundleTemporaryPatchArteryPlugins
+rollup: bundleTemporaryPatchArteryPlugins
 	./node_modules/.bin/rollup -c rollup.config.js -w
 
 bundleTemporaryPatchArteryPlugins:

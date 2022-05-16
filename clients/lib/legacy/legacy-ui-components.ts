@@ -51,3 +51,21 @@ export const form = Form;
 export const table = Table;
 export const grid = Grid;
 export const container = Container;
+
+export {
+  Page,
+  Text,
+  Paragraph,
+  Image,
+  Button,
+  Icon,
+  Link,
+  Modal,
+  Input,
+  Radio,
+  Textarea,
+  Form,
+  Table,
+  Grid,
+  Container,
+};

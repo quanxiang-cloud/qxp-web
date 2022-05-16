@@ -13,9 +13,9 @@ export interface BlocksCommunicationType {
   docLink?: string;
   hideTestPreview?: boolean;
   menu?: {
-    currentGroupType?: string;
-    groupTypeContentPinned?: boolean;
-    pannelWith?: number;
+    currentType?: string;
+    pinned?: boolean;
+    panelWidth?: number;
   },
   block: BlockStates;
 }

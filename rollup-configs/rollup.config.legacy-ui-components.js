@@ -21,7 +21,7 @@ const config = {
     format: 'system',
     // entryFileNames: isProduction ? '[name]-[hash].js' : '[name].js',
     // chunkFileNames: isProduction ? 'chunk-[name]-[hash].js' : 'chunk-[name].js',
-    file: './tmp/legacy-ui-component-20220513.js',
+    file: './tmp/legacy-ui-component-20220513-1.js',
     sourcemap: isProduction ? false : 'inline',
   },
 

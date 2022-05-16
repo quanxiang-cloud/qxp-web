@@ -1,71 +1,90 @@
-import React, { useCallback, useRef, useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Panel } from '@one-for-all/ui';
-import { and, when } from 'ramda';
-import type { BlockItemProps } from '@one-for-all/artery-engine';
+import { and, mergeRight, or, when, lensPath, set, ifElse } from 'ramda';
+import { BlockItemProps } from '@one-for-all/artery-engine';
+import type { Node } from '@one-for-all/artery';
+import { insertAfter, insertAt } from '@one-for-all/artery-utils';
+import { get } from 'lodash';
 
 import type { BlocksCommunicationType } from '@pageDesign/types';
 import { GROUP_TITLE_MAP } from '@pageDesign/constants';
-import { useClickOutSide } from '@pageDesign/hooks/use-click-outside';
+import { useMenuPanel } from '@pageDesign/hooks';
 
+import { usePackagePropsSpecsMap } from './store';
 import { FountainheadContextProvider } from './context';
 import Core from './core';
+import { PropsSpecMap } from '../../utils/package';
 
 const Fountainhead = (props: BlockItemProps<BlocksCommunicationType>): JSX.Element => {
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const { sharedState, onSharedStateChange } = props;
-  const { menu = {}, block } = sharedState;
-  const { currentGroupType, groupTypeContentPinned, pannelWith } = menu;
-  const isVisible = useRef(false);
+  const { activeNode, artery, onChange } = props;
+  const propsSpecsMap = usePackagePropsSpecsMap();
 
-  isVisible.current = currentGroupType === 'fountainhead';
-
-  const onClose = useCallback((): void => {
-    onSharedStateChange('menu.currentGroupType', '');
-  }, [onSharedStateChange]);
+  const {
+    ref,
+    currentType,
+    onClose,
+    onPin,
+    pinned,
+    onSharedStateChange,
+    visible,
+    panelWidth,
+    onForceClose,
+  } = useMenuPanel(mergeRight(props, { type: 'fountainhead' }));
 
   useEffect(() => {
+    const resetWrapperVisibility = (): string => ref.current!.style.visibility = 'visible';
     when(
-      (el) => and(currentGroupType !== 'fountainhead', !!el),
-      () => setTimeout(() => wrapperRef.current!.style.visibility = 'visible', 300),
-    )(wrapperRef.current);
-  }, [currentGroupType]);
+      (el) => and(and(currentType !== 'fountainhead', !!el), !pinned),
+      () => setTimeout(resetWrapperVisibility, 300),
+    )(ref.current);
+  }, [currentType, pinned]);
 
   const onHide = useCallback((): void => {
-    if (wrapperRef.current) {
-      wrapperRef.current.style.visibility = 'hidden';
+    if (ref.current && !pinned) {
+      ref.current.style.visibility = 'hidden';
     }
-  }, []);
+  }, [pinned]);
 
-  useClickOutSide({
-    callback: onClose,
-    when: (target): boolean => {
-      const whiteListSet = block['fountainhead']?.clickOutsideWhiteList ?? new Set();
-      const whiteList = [...whiteListSet];
-      return and(
-        isVisible.current,
-        and(!groupTypeContentPinned, !whiteList.some((el) => el.contains(target))),
-      );
-    },
-    container: wrapperRef,
-  });
+  const getPropsSpecs = useCallback((nd: Node): PropsSpecMap | undefined => {
+    const packageName = get(nd, 'packageName', '');
+    const packageVersion = get(nd, 'packageVersion', '');
+    const packageId = `${packageName}@${packageVersion}`;
+    return propsSpecsMap[packageId];
+  }, [propsSpecsMap]);
 
-  function togglePinned(): void {
-    onSharedStateChange('menu.groupTypeContentPinned', !groupTypeContentPinned);
-  }
+  const onAddNode = useCallback((newNode: Node): void => {
+    !pinned && onSharedStateChange('menu.currentType', '');
 
-  const onAddNode = useCallback((): void => {
-    !groupTypeContentPinned && onSharedStateChange('menu.currentGroupType', '');
-  }, [groupTypeContentPinned, onSharedStateChange]);
+    const rootNode = artery.node;
+    const currentNode = activeNode ?? rootNode;
+    const newNodePropsSpecs = getPropsSpecs(newNode);
+    const currentNodePropsSpecs = getPropsSpecs(currentNode);
+    const propsSpecs = currentNodePropsSpecs ?? newNodePropsSpecs;
+
+    const currentNodecomponentName = get(currentNode, 'name', '') || get(currentNode, 'exportName', '');
+    const currentNodeChildrenLength = get(currentNode, 'children.length', 0);
+    const isCurrentNodeAcceptChild = or(
+      !!propsSpecs?.[currentNodecomponentName]?.isContainer,
+      currentNodecomponentName === 'div',
+    );
+
+    const newRootNode = ifElse(
+      () => isCurrentNodeAcceptChild,
+      () => insertAt(rootNode, currentNode.id, currentNodeChildrenLength, newNode),
+      () => insertAfter(rootNode, currentNode.id, newNode),
+    )();
+    newRootNode && onChange(set(lensPath(['node']), newRootNode, artery));
+  }, [pinned, onSharedStateChange, getPropsSpecs, onChange, artery, activeNode]);
 
   return (
-    <div ref={wrapperRef} style={{ pointerEvents: 'auto' }}>
+    <div ref={ref} style={{ pointerEvents: 'auto' }}>
       <Panel
-        title={GROUP_TITLE_MAP[currentGroupType ?? '']}
-        onClose={onClose}
-        onPin={togglePinned}
-        visible={isVisible.current}
-        pinned={groupTypeContentPinned}
-        width={pannelWith}
+        title={GROUP_TITLE_MAP[currentType ?? '']}
+        onClose={onForceClose}
+        onPin={onPin}
+        visible={visible}
+        pinned={pinned}
+        width={panelWidth}
         closable
         pinnable
       >

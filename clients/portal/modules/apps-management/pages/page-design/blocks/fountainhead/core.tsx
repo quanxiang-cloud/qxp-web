@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import type { Node } from '@one-for-all/artery';
 
 import type { Package } from '@pageDesign/blocks/fountainhead/type';
 import Loading from '@c/loading';
@@ -10,7 +11,7 @@ import { useComponents } from './store';
 import styles from './index.m.scss';
 
 interface Props {
-  onAddNode: () => void;
+  onAddNode: (node: Node) => void;
 }
 
 function Fountainhead({ onAddNode }: Props): JSX.Element {

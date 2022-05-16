@@ -3,12 +3,12 @@ import React from 'react';
 
 import Header from './blocks/header';
 import Menu from './blocks/menu';
-// import Canvas from './blocks/canvas';
 import Simulator from './blocks/simulator';
 import Fountainhead from './blocks/fountainhead';
 import Structure from './blocks/structure';
 import Pool from './blocks/pool';
 import NodeCarve from './blocks/node-carve';
+import StaticMenuPanel from './blocks/static-menu-panel';
 import { BlocksCommunicationType } from './types';
 
 export const QUERY_KEY = {
@@ -19,12 +19,14 @@ export const PAGE_DESIGN_ID = 'page-design-container';
 
 export const LAYERS: Layer<BlocksCommunicationType>[] = [
   {
+    id: 'root',
     style: {
       gridTemplateColumns: '56px 1fr 282px',
       gridTemplateRows: '44px calc(100vh - 44px)',
     },
     blocks: [
       {
+        id: 'static-header',
         style: {
           gridColumnStart: 'span 3',
         },
@@ -35,6 +37,21 @@ export const LAYERS: Layer<BlocksCommunicationType>[] = [
           backgroundColor: '#fff',
         },
         render: Menu,
+      },
+      {
+        id: 'static-fountainhead',
+        hide: true,
+        render: StaticMenuPanel,
+      },
+      {
+        id: 'static-structure',
+        hide: true,
+        render: StaticMenuPanel,
+      },
+      {
+        id: 'static-pool',
+        hide: true,
+        render: StaticMenuPanel,
       },
       {
         render: Simulator,
