@@ -34,7 +34,7 @@ export interface PageNode extends BaseNode {
   supportStateExposure?: boolean;
   // `packageName, packageVersion, exportName` only for react comp node
   packageName?: 'ofa-ui' | string;
-  packageVersion?: '1.0.0' | string;
+  packageVersion?: 'latest' | string;
   exportName: 'page' | 'elemName' | string; // registry elem type
   toProps?: any; // func body
   children?: Array<PageNode>;
