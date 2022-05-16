@@ -15,8 +15,9 @@ function SimulatorBlock(props: BlockItemProps<BlocksCommunicationType>): JSX.Ele
 
   useEffect(() => {
     if (simulatorRef.current?.iframe?.contentWindow) {
-      simulatorRef.current.iframe.contentWindow.CONFIG = window.CONFIG;
-      simulatorRef.current.iframe.contentWindow.USER = window.USER;
+      const subWin = simulatorRef.current?.iframe?.contentWindow;
+      subWin.CONFIG = window.CONFIG;
+      subWin.USER = window.USER;
     }
   }, []);
 
@@ -30,9 +31,9 @@ function SimulatorBlock(props: BlockItemProps<BlocksCommunicationType>): JSX.Ele
       activeNode={activeNode}
       setActiveNode={setActiveNode}
       isNodeSupportChildren={isNodeSupportChildren}
-      modalComponents={[{ packageName: '@one-for-all/headless-ui', exportName: 'MediocreDialog' }]}
-      setActiveModalLayer={setActiveModalLayer}
-      activeModalLayer={activeModalLayer}
+      setActiveOverLayerNodeID={setActiveModalLayer}
+      activeOverLayerNodeID={activeModalLayer}
+      cssURLs={[window.PERSONALIZED_CONFIG.styleCssUrl]}
     />
   );
 }

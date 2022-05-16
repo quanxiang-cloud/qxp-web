@@ -1098,6 +1098,21 @@
   dependencies:
     "@lezer/common" "^0.15.0"
 
+"@monaco-editor/loader@^1.3.2":
+  version "1.3.2"
+  resolved "https://registry.npmjs.org/@monaco-editor/loader/-/loader-1.3.2.tgz#04effbb87052d19cd7d3c9d81c0635490f9bb6d8"
+  integrity sha512-BTDbpHl3e47r3AAtpfVFTlAi7WXv4UQ/xZmz8atKl4q7epQV5e7+JbigFDViWF71VBi4IIBdcWP57Hj+OWuc9g==
+  dependencies:
+    state-local "^1.0.6"
+
+"@monaco-editor/react@^4.4.4":
+  version "4.4.5"
+  resolved "https://registry.npmjs.org/@monaco-editor/react/-/react-4.4.5.tgz#beabe491efeb2457441a00d1c7651c653697f65b"
+  integrity sha512-IImtzU7sRc66OOaQVCG+5PFHkSWnnhrUWGBuH6zNmH2h0YgmAhcjHZQc/6MY9JWEbUtVF1WPBMJ9u1XuFbRrVA==
+  dependencies:
+    "@monaco-editor/loader" "^1.3.2"
+    prop-types "^15.7.2"
+
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
   resolved "https://registry.npmmirror.com/@nodelib/fs.scandir/-/fs.scandir-2.1.5.tgz#7619c2eb21b25483f6d167548b4cfd5a7488c3d5"
@@ -1178,10 +1193,10 @@
     react-jsx-parser "1.29.0"
     rxjs "^7.4.0"
 
-"@one-for-all/artery-simulator@1.1.0":
-  version "1.1.0"
-  resolved "https://registry.npmjs.org/@one-for-all/artery-simulator/-/artery-simulator-1.1.0.tgz#030d0de7c94db04902554da2f4785cd3f810a392"
-  integrity sha512-c2sCymLtEm43NIpQI/qP4Bw3tjh26BUkk9jGLAMqJvOoyk/9zbIIY5qJWCEn4ScRPERXaXnw4my8j+d0y3Ypnw==
+"@one-for-all/artery-simulator@1.3.0":
+  version "1.3.0"
+  resolved "https://registry.npmjs.org/@one-for-all/artery-simulator/-/artery-simulator-1.3.0.tgz#1c81cb982f0d3622c18449e157d6186fcd9cf3cc"
+  integrity sha512-fWdhSHX5qpkmdw+gIYilUTKUMHJ1JYHupDufjfCHz8CV8rc48MphCjEVqMoEmbGMnsIJ1l2UuzfMkJA7JEBiiQ==
   dependencies:
     "@one-for-all/artery" "0.15.0"
     "@one-for-all/artery-engine" "1.2.1"
@@ -9014,6 +9029,11 @@ stacktrace-js@^2.0.2:
     error-stack-parser "^2.0.6"
     stack-generator "^2.0.5"
     stacktrace-gps "^3.0.4"
+
+state-local@^1.0.6:
+  version "1.0.7"
+  resolved "https://registry.npmjs.org/state-local/-/state-local-1.0.7.tgz#da50211d07f05748d53009bee46307a37db386d5"
+  integrity sha512-HTEHMNieakEnoe33shBYcZ7NX83ACUjCu8c40iOGEZsngj9zRnkqS9j1pqQPXwobB0ZcVTk27REb7COQ0UR59w==
 
 static-extend@^0.1.1:
   version "0.1.2"
