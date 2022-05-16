@@ -11,7 +11,7 @@ import { updateNodeProperty, findNode } from '../utils';
 import CodeEditor, { EditorRefType } from './code-editor';
 import LogicOperatorsAndBoundVariables from './bound-and-logic';
 import { ConfigContextState, UpdateAttrPayloadType, useConfigContext } from '../context';
-import { generateInitFunString, getFnBody, parseAst, parseToExpressionStr, toConvertorProp } from './utils';
+import { getFnBody, parseAst, parseToExpressionStr, toConvertorProp } from './utils';
 
 import styles from './index.m.scss';
 import VariableList from './variable-list';
@@ -109,15 +109,8 @@ function ModalBindState(): JSX.Element | null {
     }
 
     if (bindConf.convertor.type === 'state_convertor_func_spec') {
-      const body = generateInitFunString({
-        name: 'shouldRender',
-        args: 'states',
-        body: bindConf.convertor?.body,
-      });
-
       setEditorType('convertor');
-      editorRef.current?.onInsertText(body);
-      setConvertorStr(body);
+      setConvertorStr(bindConf.convertor?.body);
     }
   }
 

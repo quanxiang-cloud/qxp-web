@@ -66,19 +66,12 @@ export function toConvertorProp({ type, contentStr }: VariableBindConf): any {
 }
 
 export function generateInitFunString({ name = '', args = '', notes = '', body = '' }): string {
-  let defaultNotes = '';
-  const userNotes = notes ? `// ${notes}` : '';
-  if (args === '...args') {
-    defaultNotes =
+  const defaultNotes =
 `/** 
-  * if specs does not have \`args\` props 
-  * it will use \`...args\` as default arguments
-  * to avoid missing arguments you need
-  * but \`args\` is not always exited 
+  * JavaScript JavaScript expressions are executed as functions
+  * so ensure that your expression returns a value
 */`;
-  }
   return `${defaultNotes}
-${userNotes}
 function ${name}(${args}) {${body}}`;
 }
 
