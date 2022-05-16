@@ -7,6 +7,7 @@ import Tab from '@c/tab';
 import Toggle from '@c/toggle';
 import toast from '@lib/toast';
 
+import VariableList from './variable-list';
 import { updateNodeProperty, findNode } from '../utils';
 import CodeEditor, { EditorRefType } from './code-editor';
 import LogicOperatorsAndBoundVariables from './bound-and-logic';
@@ -14,7 +15,6 @@ import { ConfigContextState, UpdateAttrPayloadType, useConfigContext } from '../
 import { getFnBody, parseAst, parseToExpressionStr, toConvertorProp } from './utils';
 
 import styles from './index.m.scss';
-import VariableList from './variable-list';
 
 export type VariableBindConf = {
   type: 'convertor' | 'expression';
@@ -144,6 +144,7 @@ function ModalBindState(): JSX.Element | null {
           iconName: 'check',
           modifier: 'primary',
           onClick: handleBind,
+          forbidden: !boundVariables.length,
           text: '确定',
         },
       ]}

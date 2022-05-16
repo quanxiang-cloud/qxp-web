@@ -14,7 +14,11 @@ type Props = {
 }
 
 function VariableList({ boundVariables, updateBoundVariables, editorRef }: Props): JSX.Element {
-  const variableNames = boundVariables?.map(({ depID }) => depID);
+  if (!boundVariables) {
+    return <div className="p-20 text-12 text-gray-400">暂无可用变量，请在数据源中添加</div>;
+  }
+
+  const variableNames = boundVariables.map(({ depID }) => depID);
   const sharedStates = Object.entries(dataSource.sharedState).map(([_, value]) => JSON.parse(value));
   const apiStates = Object.entries(dataSource.apiState).map(([_, value]) => JSON.parse(value));
 

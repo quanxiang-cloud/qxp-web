@@ -5,6 +5,10 @@ import toast from '@lib/toast';
 import { VariableBindConf } from '.';
 import { LOGIC_OPERATOR } from './constants';
 
+export const defaultShouldRenderBody = `
+  return true;
+`;
+
 export function parseToExpression(expr: string, variables: string[]): string {
   return expr.split(' ').map((value) => {
     const variableMatch = value.split(/\s*[|&(!)=]+\s*/).find((val) => !!val);
@@ -52,10 +56,15 @@ export function getFnBody(ast: AstNode, fnString: string): string {
 
 export function toConvertorProp({ type, contentStr }: VariableBindConf): any {
   if (type === 'convertor') {
+    let _contentStr = contentStr;
+    if (contentStr === defaultShouldRenderBody) {
+      _contentStr = '';
+    }
+
     return {
       type: 'state_convertor_func_spec',
       args: 'state',
-      body: contentStr,
+      body: _contentStr,
     };
   }
 
@@ -68,7 +77,7 @@ export function toConvertorProp({ type, contentStr }: VariableBindConf): any {
 export function generateInitFunString({ name = '', args = '', notes = '', body = '' }): string {
   const defaultNotes =
 `/** 
-  * JavaScript JavaScript expressions are executed as functions
+  * JavaScript expression are executed as functions
   * so ensure that your expression returns a value
 */`;
   return `${defaultNotes}
