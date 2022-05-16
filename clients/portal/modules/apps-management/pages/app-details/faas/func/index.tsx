@@ -4,21 +4,25 @@ import { observer } from 'mobx-react';
 import TextHeader from '@c/text-header';
 import Loading from '@c/loading';
 
-import store from '../store';
+import store from './store';
 import DataList from './data-list';
 import StepsTip from './steps-tip';
-import DataEmpty from './data-empty';
 import EditModal from './edit-modal';
-import VersionDetails from './version-details';
 import FuncDetailsDrawer from './func-drawer';
 
 import '../index.scss';
 
-function FuncList(): JSX.Element {
-  const { fetchFuncList, modalType, setModalType, funcListLoading } = store;
+ type Props = {
+   appID: string,
+   group: string,
+ }
+
+function FuncList({ group, appID }: Props): JSX.Element {
+  const { modalType, setModalType, funcListLoading } = store;
 
   useEffect(() => {
-    fetchFuncList('', 1, 10);
+    store.setGroupID(group);
+    store.setAppID(appID);
   }, []);
 
   if (funcListLoading) {
@@ -43,14 +47,12 @@ function FuncList(): JSX.Element {
             className="flex flex-col w-full p-16 flex-1 overflow-hidden pb-0"
             style={{ height: 'calc(100% - 82px)' }}
           >
-            {!store.funcList.length && !store.searchAlias ? <DataEmpty /> : <DataList />}
+            <DataList />
           </div>
         </>
       )}
-      {modalType === 'editModel' && <EditModal modalType={modalType} onClose={() => setModalType('')} />}
-
-      {modalType === 'VersionDetail' && (
-        <VersionDetails/>
+      {modalType === 'editModel' && (
+        <EditModal modalType={modalType} onClose={() => setModalType('')} />
       )}
       {modalType === 'funDetail' && (
         <FuncDetailsDrawer/>
