@@ -1,17 +1,11 @@
 import type { APISpecAdapter } from '@one-for-all/api-spec-adapter';
 import type { Repository } from '@one-for-all/artery-renderer';
 
-import TaskList from '@c/task-lists';
-import UserAvatarMenu from '@c/user-avatar-menu';
-
-const systemComponents = {
-  SystemTaskList: TaskList,
-  UserMenuAvatar: UserAvatarMenu,
-};
+import repoSystemComponents from '@c/repo-system-components';
 
 // todo fix this
 const repository: Repository = {
-  'system-components@1.0.0': systemComponents,
+  ...repoSystemComponents,
 };
 
 const adapter: APISpecAdapter = {
