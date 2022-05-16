@@ -4,7 +4,7 @@ import { Checkbox, Input, Select, Switch, RadioGroup, CheckboxGroup } from '@one
 import FunctionBind from './function-bind';
 import StateBind from './state-bind';
 import UrlInput, { UrlInputProps } from './url-input';
-import VaribleBind from './varible-bind';
+import VariableBind from './variable-bind';
 import Unavaliable from './unavaliable';
 import Tips from './tips';
 import { connect } from '../utils/connect';
@@ -26,7 +26,7 @@ const repo: Repository = {
     }),
     imageurl: connect<UrlInputProps>(UrlInput),
     functionbind: FunctionBind,
-    variblebind: VaribleBind,
+    variblebind: VariableBind,
     statebind: StateBind,
     tips: Tips,
     unavaliable: Unavaliable,

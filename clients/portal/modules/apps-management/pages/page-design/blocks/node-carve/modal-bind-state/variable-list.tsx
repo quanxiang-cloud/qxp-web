@@ -14,7 +14,7 @@ type Props = {
 }
 
 function VariableList({ boundVariables, updateBoundVariables, editorRef }: Props): JSX.Element {
-  const variableNames = boundVariables.map(({ depID }) => depID);
+  const variableNames = boundVariables?.map(({ depID }) => depID);
   const sharedStates = Object.entries(dataSource.sharedState).map(([_, value]) => JSON.parse(value));
   const apiStates = Object.entries(dataSource.apiState).map(([_, value]) => JSON.parse(value));
 

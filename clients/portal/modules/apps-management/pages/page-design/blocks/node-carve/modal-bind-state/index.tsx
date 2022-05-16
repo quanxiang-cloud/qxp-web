@@ -99,7 +99,7 @@ function ModalBindState(): JSX.Element | null {
     setFallBack(bindConf.fallback);
     setBoundVariables(bindConf.deps);
 
-    if (bindConf.convertor.type === 'state_convert_expression') {
+    if (bindConf?.convertor?.type === 'state_convert_expression') {
       const expr = bindConf.convertor?.expression;
       const _expr = parseToExpressionStr(expr);
 
@@ -108,7 +108,7 @@ function ModalBindState(): JSX.Element | null {
       setExpressionStr(_expr);
     }
 
-    if (bindConf.convertor.type === 'state_convertor_func_spec') {
+    if (bindConf?.convertor?.type === 'state_convertor_func_spec') {
       setEditorType('convertor');
       setConvertorStr(bindConf.convertor?.body);
     }
