@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { get } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import { Modal } from '@one-for-all/ui';
 import { ComputedProperty, ComputedDependency } from '@one-for-all/artery';
 
@@ -15,6 +15,9 @@ import { ConfigContextState, UpdateAttrPayloadType, useConfigContext } from '../
 import { getFnBody, parseAst, parseToExpressionStr, toConvertorProp } from './utils';
 
 import styles from './index.m.scss';
+import { LOGIC_OPERATOR } from './constants';
+import sharedState from '../../pool/shared-state';
+import apiState from '../../pool/api-state';
 
 export type VariableBindConf = {
   type: 'convertor' | 'expression';
@@ -81,6 +84,11 @@ function ModalBindState(): JSX.Element | null {
       return;
     }
 
+    if (!boundVariables.length && !expressionStr && !convertorStr) {
+      console.log('should reset shoudlRender');
+      return;
+    }
+
     if (!expressionStr && !convertorStr) {
       return toast.error('表达式和自定义函数的内容，不能都为空！');
     }
@@ -144,7 +152,7 @@ function ModalBindState(): JSX.Element | null {
           iconName: 'check',
           modifier: 'primary',
           onClick: handleBind,
-          forbidden: !boundVariables.length,
+          forbidden: isEmpty(sharedState) && isEmpty(apiState),
           text: '确定',
         },
       ]}
@@ -171,7 +179,23 @@ function ModalBindState(): JSX.Element | null {
               {
                 id: 'expression',
                 name: isShouldRenderConfig ? '条件表达式' : '变量表达式',
-                content: <div className={styles.tip}>配置前，应清空自定义函数，保存的表达式才能生效</div>,
+                content: <>
+                  <div className={styles.tip}>配置前，应清空自定义函数，保存的表达式才能生效</div>
+                  <div className="py-4 text-12">表达式支持的逻辑运算符：</div>
+                  <div className="grid gap-4 grid-cols-5 max-h-144 overflow-auto">
+                    {LOGIC_OPERATOR.map((op) => {
+                      return (
+                        <div
+                          key={op}
+                          onClick={() => expressionEditorRef?.current?.onInsertText(op)}
+                          className="px-4 py-4 text-12 border-1 inline-block text-center hover:bg-blue-400"
+                        >
+                          {op}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>,
               },
               {
                 id: 'convertor',

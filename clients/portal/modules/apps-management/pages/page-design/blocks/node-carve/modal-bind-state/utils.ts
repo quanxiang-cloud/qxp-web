@@ -56,15 +56,10 @@ export function getFnBody(ast: AstNode, fnString: string): string {
 
 export function toConvertorProp({ type, contentStr }: VariableBindConf): any {
   if (type === 'convertor') {
-    let _contentStr = contentStr;
-    if (contentStr === defaultShouldRenderBody) {
-      _contentStr = '';
-    }
-
     return {
       type: 'state_convertor_func_spec',
       args: 'state',
-      body: _contentStr,
+      body: contentStr,
     };
   }
 
