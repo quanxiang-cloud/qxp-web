@@ -11,11 +11,13 @@
 <body>
   <div id="root"></div>
   <script>
+    
     window.USER = {{ .user }}
     window.ADMIN_USER_FUNC_TAGS = {{ .adminUserFuncTags }}
     window.USER_ADMIN_ROLES = {{ .userAdminRoles }}
     window.CONFIG = {{ .CONFIG }}
     window.__verbose_log__ = {{ .debugMode }}
+    window.PERSONALIZED_CONFIG = {{ .personalizedConfig }}
     window.SIDE = 'portal';
 
     // fixme: react throw process not defined
