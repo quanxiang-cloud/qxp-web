@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect, useCallback, CSSProperties } from 
 import cs from 'classnames';
 import { useHistory } from 'react-router-dom';
 import ArteryEngine, { Props } from '@one-for-all/artery-engine';
+import { useMonaco } from '@monaco-editor/react';
 import Icon from '@one-for-all/icon';
 
 import toast from '@lib/toast';
@@ -25,6 +26,7 @@ import styles from './index.m.scss';
 function PageDesign(): JSX.Element | null {
   const { appID, pageName, arteryID } = getQuery<{ appID: string, pageName: string, arteryID: string }>();
   const history = useHistory();
+  useMonaco();
 
   const resetStyle: CSSProperties = useMemo(() => ({ overflow: 'hidden' }), []);
   useStyle('body', resetStyle);

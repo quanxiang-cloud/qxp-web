@@ -12,7 +12,7 @@ import type { BlocksCommunicationType } from '@pageDesign/types';
 
 import { ConfigContext, UpdateAttrPayloadType } from './context';
 import PropsPanel from './props-panel';
-import StylePanel from './style-panel';
+import StyleStation from './style-station';
 import EventPanel from './event-panel';
 import RendererPanel from './renderer-panel';
 import ModalBindState from './modal-bind-state';
@@ -62,11 +62,11 @@ function NodeCarve({
         content: renderPropsPanel,
       },
       {
-        id: 'style',
+        id: 'style-station',
         name: <ToolTip label='样式配置' position='left'>
           <Icon name='featured_video' size={18}></Icon>
         </ToolTip>,
-        content: <StylePanel />,
+        content: <StyleStation />,
       },
     ];
 
