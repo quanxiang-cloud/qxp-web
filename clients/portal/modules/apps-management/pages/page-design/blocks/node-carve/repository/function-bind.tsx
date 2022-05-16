@@ -5,7 +5,6 @@ import { parse, Node } from 'acorn';
 import { get, set } from 'lodash';
 
 import Icon from '@one-for-all/icon';
-import { RadioGroup, Radio } from '@one-for-all/headless-ui';
 import { FunctionalProperty, LifecycleHookFuncSpec } from '@one-for-all/artery';
 
 import toast from '@lib/toast';
@@ -28,10 +27,10 @@ function generateInitFunString({ name = '', args = '', notes = '', body = '' }):
   if (args === '...args') {
     defaultNotes =
 `/** 
-  * if specs does not have \`args\` props 
-  * it will use \`...args\` as default arguments
-  * to avoid missing arguments you need
-  * but \`args\` is not always exited 
+  * 如果在事件属性描述中没有传递 \`args\` 变量对函数参数进行描述的话
+  * 会默认使用 \`...args\` 作为函数参数
+  * 这样的目的是为了避免需要用到函数参数却没有声明的情况
+  * 因此 \`...args\` 并非一定存在
 */`;
   }
   return `${defaultNotes}
@@ -74,7 +73,6 @@ function FunctionBind({
   const { activeNode, artery, onArteryChange } = useConfigContext() ?? {};
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [hasBound, setHasBound] = useState<boolean>(false);
-  const [eventType, setEventType] = useState<string>('custom');
   const [fnString, setFnString] = useState<string>(
     generateInitFunString({
       name: name || __path.split('.').pop() || 'func',
@@ -169,13 +167,13 @@ function FunctionBind({
       ) : (
         <div className={styles.btnAdd} onClick={onBind}>
           <Icon name="add" />
-          <span>绑定动作</span>
+          <span>定义事件</span>
         </div>
       )}
       {/* TODO:move to root */}
       {modalOpen && (
         <Modal
-          title="事件绑定"
+          title="定义事件"
           width={1200}
           height={600}
           onClose={() => setModalOpen(false)}
@@ -198,22 +196,6 @@ function FunctionBind({
           ]}
         >
           <div className={styles.modal}>
-            <div className={styles.eventType}>
-              <p className="text-12 text-gray-600">动作类型</p>
-              <RadioGroup onChange={(val: any) => setEventType(val)} value={eventType}>
-                {/* <Radio key='platform' label='平台方法' value='platform' defaultChecked={eventType === 'platform'} />*/}
-                <Radio key="custom" label="自定义方法" value="custom" />
-              </RadioGroup>
-            </div>
-            <div className={styles.side}>
-              <div
-                className="flex justify-between items-center cursor-pointer
-                px-16 py-4 hover:bg-gray-200 bg-gray-200"
-              >
-                <span>添加新动作</span>
-                <Icon name="check" />
-              </div>
-            </div>
             <div className="h-full">
               <Editor
                 value={fnString}
