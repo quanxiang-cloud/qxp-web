@@ -3,7 +3,7 @@ import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { Tab } from '@one-for-all/ui';
 import { getNodeParents } from '@one-for-all/artery-utils';
 import type { BlockItemProps } from '@one-for-all/artery-engine';
-import { ReactComponentNode } from '@one-for-all/artery';
+import { HTMLNode, ReactComponentNode } from '@one-for-all/artery';
 import Icon from '@one-for-all/icon';
 
 import Breadcrumb from '@c/breadcrumb';
@@ -105,7 +105,7 @@ function NodeCarve({
     return [...(parents || []), activeNode].slice(-3).map((node) => {
       return {
         key: node.id,
-        text: node.label || '',
+        text: node.label || (node as HTMLNode).name || '',
       };
     });
   }, [activeNode]);
