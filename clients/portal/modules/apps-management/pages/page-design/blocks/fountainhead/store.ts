@@ -1,5 +1,5 @@
 import { flatten } from 'ramda';
-import { from } from 'rxjs6';
+import { from, Subscription } from 'rxjs6';
 import { switchMap, catchError, shareReplay } from 'rxjs6/operators';
 import { isEmpty } from 'ramda';
 import { isObject } from '@one-for-all/artery-engine';
@@ -14,12 +14,12 @@ const packages$ = from(getPackagesSourceDynamic());
 const components$ = packages$.pipe(
   switchMap(loadAllComponents),
   catchError(() => []),
-  shareReplay(Infinity),
+  shareReplay(1),
 );
 const propsSpecs$ = packages$.pipe(
   switchMap(loadAllPropsSpecs),
   catchError(async () => ({}) as Record<string, PropsSpecMap>),
-  shareReplay(Infinity),
+  shareReplay(1),
 );
 
 export function usePackages(): Package[] | undefined {
@@ -32,10 +32,29 @@ export function useComponents(): PackageComponent[] | undefined {
   return isInvalid(components) ? undefined : components;
 }
 
-export function usePackagePropsSpecs(params: Pick<Package, 'name' | 'version'>): PropsSpecMap {
+export function usePackagePropsSpecs(params: Pick<Package, 'name' | 'version'>): PropsSpecMap | undefined {
   const { name, version } = params;
   const key = `${name}@${version}`;
   const propsSpecs = useObservable(propsSpecs$);
+  return propsSpecs[key];
+}
+
+function getPropsSpecsValue(): Promise<Record<string, PropsSpecMap> | never> {
+  return new Promise((resolve, reject) => {
+    const subscription: Subscription = propsSpecs$.subscribe({
+      next: resolve,
+      error: reject,
+      complete: () => subscription.unsubscribe(),
+    });
+  });
+}
+
+export async function getPackagePropsSpecs(
+  params: Pick<Package, 'name' | 'version'>,
+): Promise<PropsSpecMap | undefined> {
+  const { name, version } = params;
+  const key = `${name}@${version}`;
+  const propsSpecs = await getPropsSpecsValue();
   return propsSpecs[key];
 }
 
