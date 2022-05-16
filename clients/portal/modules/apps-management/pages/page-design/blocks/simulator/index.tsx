@@ -4,9 +4,10 @@ import { BlockItemProps } from '@one-for-all/artery-engine';
 
 import { BlocksCommunicationType } from '../../types';
 import isNodeSupportChildren from './is-node-support-children';
-import './index.scss';
 // todo fixme
 import pluginsSrc from 'dll:./../../../../../../../../tmp/TEMPORARY_PATCH_FOR_ARTERY_PLUGINS.js';
+
+import './index.scss';
 
 function SimulatorBlock(props: BlockItemProps<BlocksCommunicationType>): JSX.Element {
   const { artery, onChange, activeNode, setActiveNode } = props;

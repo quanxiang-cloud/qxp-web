@@ -1,8 +1,9 @@
 import qs from 'qs';
 
-import { CustomPageInfo, ArteryPageInfo } from '@portal/modules/apps-management/pages/app-details/type';
+import type { CustomPageInfo, ArteryPageInfo } from '@portal/modules/apps-management/pages/app-details/type';
 import { ESParameter, toEs } from '@c/data-filter/utils';
 import schemaToFields from '@lib/schema-convert';
+import { saveConfig } from '@pageDesign/blocks/fountainhead/config';
 
 import { TIME_ZONE } from './utils';
 
@@ -358,5 +359,6 @@ export async function httpClientGraphQL<TData>(
 }
 
 window.__httpClient = httpClient;
+window.__syncConfig = saveConfig;
 
 export default httpClient;

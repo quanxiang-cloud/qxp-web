@@ -1,5 +1,7 @@
 import type { NodePrimary } from '@one-for-all/artery-simulator/lib/types';
 
+import nameVersionMap from '../fountainhead/config/name-version-map';
+
 const COMPONENTS_SUPPORT_CHILDREN = [
   'page',
   'para',
@@ -9,7 +11,10 @@ const COMPONENTS_SUPPORT_CHILDREN = [
   'container',
 ];
 
-const LEGACY_PACKAGES = ['ofa-ui/latest', '@one-for-all/ui/latest'];
+const LEGACY_PACKAGES = [
+  `ofa-ui/${nameVersionMap['ofa-ui']}`,
+  `@one-for-all/ui/${nameVersionMap['@one-for-all/ui']}`,
+];
 const pairs: string[] = [];
 LEGACY_PACKAGES.forEach((packageName) => {
   COMPONENTS_SUPPORT_CHILDREN.forEach((compName) => {

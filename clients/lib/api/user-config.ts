@@ -35,6 +35,10 @@ export function setBatchGlobalConfig(keys: SetParams[]): FutureErrorMessage {
   });
 }
 
+export function setGlobalConfig(key: string, version: string, value: Record<string, any>): void {
+  setBatchGlobalConfig([{ key, version, value: JSON.stringify(value) }]);
+}
+
 export function setArteryEngineMenuType(appID: string, id: string): Promise<any> {
   return httpClient(`/api/v1/form/${appID}/m/menu/toPage`, { id });
 }

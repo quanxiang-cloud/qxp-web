@@ -1,16 +1,15 @@
+import { setGlobalConfig } from '@lib/api/user-config';
+
 import manifest from './manifest.json';
 import propsSpec from './props-spec.json';
+import versionMap from '../name-version-map';
 
-export const params = [{
-  key: 'PACKAGE_MANIFEST:system-components',
-  version: '1.0.0',
-  value: JSON.stringify(manifest),
-}];
-// __httpClient('/api/v1/persona/batchSetValue', { keys: params });
+const name = 'system-components';
+const version = versionMap[name];
+const manifestKey = `PACKAGE_MANIFEST:${name}`;
+const specKey = `PACKAGE_PROPS_SPEC:${name}`;
 
-export const specParams = [{
-  key: 'PACKAGE_PROPS_SPEC:system-components',
-  version: '1.0.0',
-  value: JSON.stringify(propsSpec),
-}];
-// __httpClient('/api/v1/persona/batchSetValue', { keys: specParams });
+export function saveSystemComponentsConfig(): void {
+  setGlobalConfig(manifestKey, version, manifest);
+  setGlobalConfig(specKey, version, propsSpec);
+}
