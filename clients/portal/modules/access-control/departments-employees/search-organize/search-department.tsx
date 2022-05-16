@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { observer } from 'mobx-react';
 import cs from 'classnames';
+import Icon from '@one-for-all/icon';
 
 import Loading from '@c/loading';
 import { TreeNode } from '@c/headless-tree/types';
@@ -38,14 +39,17 @@ function SearchDepartment({ searchWord, onChange }: Props): JSX.Element {
   }
 
   return (
-    <div className='px-5'>
+    <div>
       <span className='search-title'>部门({searchDepartment.length})</span>
       {searchDepartment.map((dep) => (
         <div
           key={dep.id}
-          className={cs('search-item', dep === selectedDepartment && 'is-selected')}
+          className={cs('search-item flex items-center', dep === selectedDepartment && 'is-selected')}
           onClick={() => handleClick(dep)}
-        >{ dep.name }</div>
+        >
+          <Icon color="#94A3B8" name="account_tree" className="mr-5" />
+          { dep.name }
+        </div>
       ))}
     </div>
   );

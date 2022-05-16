@@ -30,14 +30,10 @@ function DepartmentNode({ node }: NodeRenderProps<Department>): JSX.Element | nu
 
   useEffect(() => {
     const menuDescList: MenuDesc[] = [
-      { key: 'add', iconName: 'device_hub', label: '添加部门' },
+      { key: 'add', iconName: 'add', label: '新建子部门' },
       { key: 'edit', iconName: 'create', label: '修改信息' },
       { key: 'delete', iconName: 'restore_from_trash', label: '删除' },
     ];
-
-    if (isCompany()) {
-      menuDescList.unshift({ key: 'add-sub-company', iconName: 'house', label: '添加子公司' });
-    }
 
     setMenus(createMenuItem(menuDescList));
   }, []);
@@ -46,7 +42,7 @@ function DepartmentNode({ node }: NodeRenderProps<Department>): JSX.Element | nu
     return menuDescList.map((menuDesc) => ({
       key: menuDesc.key,
       label: (
-        <div className="flex items-center">
+        <div className={cs('flex items-center', menuDesc.key === 'delete' && 'text-red-600')}>
           <Icon name={menuDesc.iconName} size={16} className="mr-8" />
           <span className="font-normal">{menuDesc.label}</span>
         </div>
@@ -81,9 +77,8 @@ function DepartmentNode({ node }: NodeRenderProps<Department>): JSX.Element | nu
   }
 
   function getIconName(): string {
-    if (node.data.attr === 0) return 'm-organization_chart';
-    if (isCompany()) return 'house';
-    return 'people';
+    if (!node.parentId) return 'm-organization_chart';
+    return 'account_tree';
   }
 
   function handleMenuClick(key: string): void {
@@ -100,15 +95,19 @@ function DepartmentNode({ node }: NodeRenderProps<Department>): JSX.Element | nu
 
   return (
     <div className="flex items-center flex-grow max-w-full">
-      <span className={cs('truncate mr-auto', node.parentId && node.isLeaf && 'pl-20')} title={node.name}>
-        {<Icon name={getIconName()} />}
+      <span
+        className={cs('truncate mr-auto', node.isLeaf && 'pl-20')}
+        style={{ color: '#475569' }}
+        title={node.name}
+      >
+        {<Icon style={{ marginRight: 5 }} name={getIconName()} />}
         {node.name}
       </span>
       <Authorized authority={['accessControl/mailList/manage']}>
         <MoreMenu
           menus={menus}
           placement="bottom-end"
-          className="opacity-0 group-hover:opacity-100"
+          className="opacity-0 group-hover:opacity-100 bg-gray-200 rounded-4"
           onMenuClick={handleMenuClick}
         />
       </Authorized>

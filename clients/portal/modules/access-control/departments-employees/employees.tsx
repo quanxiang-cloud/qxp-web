@@ -7,6 +7,7 @@ import Pagination from '@c/pagination';
 import Authorized from '@c/authorized';
 import Button from '@c/button';
 import MoreMenu from '@c/more-menu';
+import ToolTip from '@c/tooltip';
 import { getTwoDimenArrayHead } from '@lib/utils';
 
 import EmployeeModal, { ModalType } from './modal';
@@ -166,44 +167,38 @@ export default function Employees({
         </div>
         <div className="flex items-stretch px-20 justify-between">
           <Authorized authority={['accessControl/mailList/manage']}>
-            {selectedUserIds.length > 0 ? (
-              <>
-                <Button
-                  modifier="primary"
-                  iconName="device_hub"
-                  onClick={(): void => openModal('adjust_dep')}
-                  className="mr-16"
-                >
-                  调整部门
-                </Button>
-                <Button
-                  iconName="password"
-                  onClick={(): void => openModal('reset_password')}
-                >
-                  重置密码
-                </Button>
-              </>
-            ) : (
-              <>
-                <div className="flex">
+            <div className="flex">
+              <Button
+                modifier="primary"
+                onClick={(): void => openModal('import_export_employees')}
+                className="mr-16"
+              >
+                批量导入/导出
+              </Button>
+              <Button
+                iconName="add"
+                onClick={(): void => handleUserInfo(initUserInfo)}
+                className="mr-16"
+              >
+                添加员工
+              </Button>
+              <ToolTip
+                position="top-start"
+                label='勾选成员后，才可以转移部门'
+                labelClassName="adjust-department-tip"
+              >
+                <span>
                   <Button
                     modifier="primary"
-                    iconName="create_new_folder"
-                    onClick={(): void => openModal('import_export_employees')}
+                    onClick={(): void => openModal('adjust_dep')}
                     className="mr-16"
+                    forbidden={!selectedUserIds.length}
                   >
-                    excel导入/导出
+                    变更部门
                   </Button>
-                  <Button
-                    iconName="add"
-                    onClick={(): void => handleUserInfo(initUserInfo)}
-                    className="mr-16"
-                  >
-                    添加员工
-                  </Button>
-                </div>
-              </>
-            )}
+                </span>
+              </ToolTip>
+            </div>
           </Authorized>
         </div>
 

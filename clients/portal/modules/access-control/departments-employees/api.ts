@@ -15,6 +15,7 @@ export async function createDepartment(params: { pid: string; name: string; attr
 
 export async function editDepartment(params: {
   id: string;
+  attr: string | number;
   pid?: string;
   name?: string;
   leaderID?: string;

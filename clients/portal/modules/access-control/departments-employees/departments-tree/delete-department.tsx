@@ -25,7 +25,7 @@ export default function DeleteModal({ id, closeModal }: Props): JSX.Element {
   function handleOk(): void {
     editDepartment({
       id,
-      useStatus: -1,
+      attr: -1,
     }).then(() => {
       toast.success('删除成功');
       store.fetchTree();

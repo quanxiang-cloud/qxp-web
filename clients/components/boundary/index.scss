@@ -1,0 +1,45 @@
+.boundary-outer-box {
+  overflow: hidden;
+  .boundary-box {
+    position: relative;
+    .boundary-content {
+      display: flex;
+      box-sizing: border-box;
+      &.not-border {
+        border: none;
+      }
+    }
+  }
+}
+
+.handle-line {
+  position: absolute;
+  padding: 0 2px;
+  height: 100%;
+  top:0;
+  cursor: ew-resize;
+  width: 1px;
+  z-index: 10;
+  box-sizing: content-box;
+  transition: all .06s linear;
+  &>div {
+    height: 100%;
+    margin: 0 auto;
+    width: 1px;
+    background-color: transparent;
+  }
+  &:hover>div {
+    background-color: #375FF3;
+    box-shadow: 0 0 4px #16A34A;
+  }
+}
+
+.boundary-item-box {
+  position: relative;
+  transition: all .06s linear;
+  .boundary-item-content {
+    overflow: auto;
+    max-height: 100%;
+    height: 100%;
+  }
+}

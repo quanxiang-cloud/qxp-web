@@ -1,17 +1,18 @@
-import React, { useState, useRef, MutableRefObject, LegacyRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import useClickAway from 'react-use/lib/useClickAway';
-import cs from 'classnames';
 
 import Icon from '@c/icon';
 import { TreeNode } from '@c/headless-tree/types';
+import Popper from '@c/popper';
 
 import PathField from './path-field';
 import TreePicker from './tree-picker';
 
+import './index.scss';
+
 export type Props<T> = {
   treeData: TreeNode<T>;
   labelKey?: string;
-  closeAble?: boolean;
   value?: string;
   onChange?: (value: string) => void;
 }
@@ -21,61 +22,60 @@ function TreePickerField<T extends { id: string; }>({
   onChange,
   treeData,
   labelKey = 'name',
-  closeAble = false,
 }: Props<T>): JSX.Element {
-  const [paths, setPaths] = useState<T[]>([]);
-  const domRef = useRef<HTMLDivElement>();
-  const [open, setOpen] = useState(true);
   const [pathValue, setPathValue] = useState(value || '');
+  const [popperWith, setPopperWith] = useState(0);
 
-  useClickAway(domRef as MutableRefObject<HTMLDivElement>, () => closeAble && setOpen(false));
+  const popperRef = useRef<Popper>(null);
+  const reference = useRef<HTMLDivElement>(null);
+  const pickerBoxRef = React.useRef<HTMLDivElement>(null);
 
-  const path = paths.map((p) => (p as any)[labelKey]).reverse().join(' > ');
+  useClickAway(pickerBoxRef, () => popperRef.current?.close());
 
-  function handleTreeChange(currValue: string, paths: T[]): void {
+  useEffect(() => {
+    if (!reference.current || reference.current.offsetWidth === popperWith) return;
+    setPopperWith(reference.current.offsetWidth);
+  });
+
+  function handleTreeChange(currValue: string): void {
+    if (currValue === pathValue) return;
+
     setPathValue(currValue);
     onChange && onChange(currValue);
-    setPaths(paths);
-  }
-
-  function onToggle(): void {
-    closeAble && setOpen((o) => !o);
   }
 
   return (
-    <div
-      className="flex flex-col items-center w-full"
-      ref={domRef as LegacyRef<HTMLDivElement>}
-    >
-      <TreePicker
-        treeData={treeData}
-        defaultValue={value || ''}
-        onChange={handleTreeChange}
-        onToggle={onToggle}
-        visible={open}
-      />
+    <div className="flex flex-col items-center w-full">
       <PathField
+        ref={reference}
         value={pathValue}
-        path={path}
-        onClick={onToggle}
-        appendix={closeAble ? (
+        labelKey={labelKey}
+        treeData={treeData}
+        appendix={(
           <Icon
             name="expand_more"
             size={20}
-            className={
-              cs(
-                'transition-all absolute cursor-pointer top-16 transform',
-                {
-                  '-rotate-180': open,
-                },
-              )
-            }
-            style={{
-              right: '0.6rem',
-            }}
+            className="cursor-pointer absolute top-1/2 right-6 transform -translate-y-1/2"
           />
-        ) : null}
+        )}
       />
+      <Popper
+        ref={popperRef}
+        reference={reference as any}
+        placement="bottom-start"
+      >
+        <div
+          ref={pickerBoxRef}
+          className="tree-picker-filed-popper"
+          style={{ width: popperWith }}
+        >
+          <TreePicker
+            treeData={treeData}
+            defaultValue={value || ''}
+            onChange={handleTreeChange}
+          />
+        </div>
+      </Popper>
     </div>
   );
 }

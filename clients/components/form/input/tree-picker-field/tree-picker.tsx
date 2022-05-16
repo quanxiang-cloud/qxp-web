@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
-import cs from 'classnames';
+import React, { useState, useEffect } from 'react';
 
 import { TreeNode } from '@c/headless-tree/types';
 import Tree from '@c/headless-tree';
@@ -11,20 +10,15 @@ import NodeRender from './tree-node';
 interface Props<T> {
   defaultValue: string;
   treeData?: TreeNode<T>;
-  onChange: (value: string, paths: T[]) => void;
-  onToggle: () => void;
-  visible?: boolean;
+  onChange: (value: string) => void;
 }
 
 export default function TreePicker<T extends { id: string} >({
   treeData,
   defaultValue,
   onChange,
-  visible,
-  onToggle,
-}: Props<T>) {
+}: Props<T>): JSX.Element {
   const [store, setStore] = useState<Store<T>>();
-  const isFirstLoadRef = useRef(true);
 
   useEffect(() => {
     if (!store || !defaultValue) {
@@ -32,8 +26,7 @@ export default function TreePicker<T extends { id: string} >({
     }
     const node = store.nodeList.find((node) => node.id === defaultValue);
     if (node) {
-      const path = [node.data, ...store.getNodeParents(node.id).map(({ data }) => data)];
-      onChange(node.id, path);
+      onChange(node.id);
       store.onSelectNode(node.id);
     }
   }, [defaultValue, store]);
@@ -57,27 +50,12 @@ export default function TreePicker<T extends { id: string} >({
       store={store}
       NodeRender={NodeRender}
       RootNodeRender={NodeRender}
-      className={cs(
-        'transition-all border border-blue-1000 border-b-0 overflow-scroll',
-        'visible rounded-tl-2 rounded-tr-8',
-        {
-          'h-0': !visible,
-          'h-280': visible,
-          invisible: !visible,
-          visible: visible,
-        },
-      )}
+      className="transition-all overflow-y-scroll visible h-230"
       onSelect={(node) => {
-        if (isFirstLoadRef.current) {
-          isFirstLoadRef.current = false;
-          return;
-        }
         if (!node) {
           return;
         }
-        const paths = [node, ...store.getNodeParents(node.id).map(({ data }) => data)];
-        onChange(node.id, paths);
-        onToggle();
+        onChange(node.id);
       }}
     />
   );

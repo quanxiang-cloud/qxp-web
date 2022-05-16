@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import TextHeader from '@c/text-header';
 import ErrorTips from '@c/error-tips';
 import Search from '@c/search';
+import Boundary from '@c/boundary';
 import toast from '@lib/toast';
 
 import DepartmentsTree from './departments-tree';
@@ -57,38 +58,49 @@ export default function DepartmentsEmployees(): JSX.Element {
       <TextHeader
         title='企业通讯录'
         desc="管理账号，如添加、编辑、删除账号等，同时还能关联每个账号的角色；用户可用账号名称或邮件登录全象云平台。"
-        // action="📌 如何管理通讯录？"
         className="bg-gray-1000 px-20 header-background-image"
         itemTitleClassName="text-h5"
       />
       <div className=" flex flex-col flex-grow" style={{
         height: 'calc(100% - 62px)',
       }}>
-        <div className='w-208 ml-20 mt-20 flex items-center'>
-          <Search
-            className="bg-gray-100"
-            placeholder="搜索员工名称"
-            value={inputValue}
-            onChange={(value: string): void => setInputValue(value)}
-            onKeyDown={handleKeDown}
-            onBlur={handleOnBlur}
-          />
-        </div>
-        <div className="mt-20 flex overflow-hidden"
-          style={{ height: 'calc(100% - 73px)' }} >
-          <div className=" flex flex-col border-r min-w-259 overflow-auto">
+        <Boundary
+          items={[
             {
-              searchWord ?
-                <SearchOrganize searchWord={searchWord} onChange={handleSelectDep} /> :
-                <DepartmentsTree onSelect={handleSelectDep}/>
-            }
-          </div>
-          {
-            currentDepartment && (
-              <Employees department={currentDepartment} />
-            )
-          }
-        </div>
+              key: 'left',
+              defaultSpan: 20,
+              content: (
+                <div className='department-tree-wrapper h-full'>
+                  <Search
+                    className="mb-8"
+                    placeholder="搜索名称..."
+                    value={inputValue}
+                    onChange={(value: string): void => setInputValue(value)}
+                    onKeyDown={handleKeDown}
+                    onBlur={handleOnBlur}
+                  />
+                  <div
+                    className="flex flex-col overflow-auto"
+                    style={{ height: 'calc(100% - 40px)' }}
+                  >
+                    {
+                      searchWord ?
+                        <SearchOrganize searchWord={searchWord} onChange={handleSelectDep} /> :
+                        <DepartmentsTree onSelect={handleSelectDep}/>
+                    }
+                  </div>
+                </div>
+              ),
+            },
+            {
+              key: 'right',
+              defaultSpan: 80,
+              content: (currentDepartment && (
+                <Employees department={currentDepartment} />
+              )),
+            },
+          ]}
+        />
       </div>
     </div>
   );

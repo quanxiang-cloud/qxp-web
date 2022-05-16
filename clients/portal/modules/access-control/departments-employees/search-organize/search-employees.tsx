@@ -4,6 +4,7 @@ import cs from 'classnames';
 import Loading from '@c/loading';
 
 import useSearchEmployees from '../hooks/useSearchEmployees';
+import UserCell from '../table-column/user-cell';
 
 type Props = {
   searchWord: string;
@@ -29,14 +30,16 @@ function SearchEmployees({ searchWord, onChange }: Props): JSX.Element {
   }
 
   return (
-    <div className='px-5'>
+    <div>
       <span className='search-title'>员工({employeesList?.total})</span>
       {employeesList?.users.map((user) => (
         <div
           key={user.id}
-          className={cs('search-item', user === selectedUser && 'is-selected')}
+          className={cs('search-item flex items-center', user === selectedUser && 'is-selected')}
           onClick={() => handleClick(user)}
-        >{ user.name }</div>
+        >
+          <UserCell user={user} />
+        </div>
       ))}
     </div>
   );

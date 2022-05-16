@@ -158,9 +158,9 @@ function EditDepartment({ department, closeModal }: Props): JSX.Element {
             !isTopCompany() && depTreeNode && (
               <Form.Item
                 name="pid"
-                label="组织"
+                label="所属部门"
                 rules={[
-                  { required: true, message: '请选择组织' },
+                  { required: true, message: '请选择部门' },
                 ]}
               >
                 <DepartmentPicker

@@ -63,6 +63,35 @@ input.from-input {
   }
 }
 
+.department-tree-wrapper {
+  @apply bg-gray-50;
+  .tree-node {
+    @apply bg-gray-50 text-gray-400;
+    padding-left: 40px;
+  }
+  .tree-root-node {
+    padding-left: 20px;
+  }
+  .tree-node--focused {
+    @apply bg-white;
+    &::after {
+      @apply bg-blue-600;
+      content: ' ';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 4px;
+      height: 100%;
+      border-radius: 4px 0px 0px 4px;
+    }
+  }
+}
+
+.adjust-department-tip {
+  background: rgba(30, 41, 59, 0.65);
+  border-radius: 8px;
+}
+
 .extend-properties-modal {
   .md-body {
     display: grid;

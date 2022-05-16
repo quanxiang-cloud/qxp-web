@@ -1,0 +1,24 @@
+.tree-picker-filed-popper {
+  margin-top: 4px;
+  padding: 8px;
+  box-shadow: 0px 8px 24px 4px rgba(148, 163, 184, 0.25);
+  border-radius: 8px;
+  overflow: hidden;
+  .tree-node {
+    padding-left: 20px;
+    color: var(--gray-600);
+    .tree-node__toggle-icon {
+      border-radius: 4px;
+    }
+  }
+  .tree-root-node {
+    padding-left: 0;
+  }
+  .tree-node--focused {
+    @apply bg-gray-100;
+    color: var(--blue-600);
+    .picker-selected-icon {
+      display: inline-block;
+    }
+  }
+}

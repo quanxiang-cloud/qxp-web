@@ -141,7 +141,7 @@ export default class Tree<T> extends React.Component<Props<T>> {
           <div
             key={rootNode.id}
             onClick={(): void => this.handleNodeClick(rootNode)}
-            className={cs('group', 'tree-node', {
+            className={cs('group', 'tree-node', 'tree-root-node', {
               'tree-node--focused': rootNode.id === currentFocusedNode.id,
               'tree-node--fade': renamingNodeID,
               'tree-node--accept-drop': this.isRootAcceptDrop,

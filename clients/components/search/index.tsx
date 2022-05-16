@@ -46,7 +46,7 @@ export default function Search(
 
   return (
     <div
-      className={cs('px-16 py-5 corner-2-8-8-8 bg-white flex items-center border border-gray-300 ',
+      className={cs('px-16 py-5 corner-2-8-8-8 bg-white flex items-center border border-gray-300 mx-20',
         className,
         {
           'input-focus-border': focused,
