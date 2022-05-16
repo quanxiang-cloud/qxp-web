@@ -136,7 +136,7 @@ export function createAppLandingPage(): Artery {
       id: nodeID,
       type: 'react-component',
       packageName: 'ofa-ui',
-      packageVersion: '1.0.0',
+      packageVersion: 'latest',
       exportName: 'page',
       label: '示例页面',
       props: {
@@ -160,7 +160,7 @@ export function createAppLandingPage(): Artery {
         supportStateExposure: true,
         type: 'react-component',
         packageName: 'ofa-ui',
-        packageVersion: '1.0.0',
+        packageVersion: 'latest',
         props: {
           id: {
             type: 'constant_property',
