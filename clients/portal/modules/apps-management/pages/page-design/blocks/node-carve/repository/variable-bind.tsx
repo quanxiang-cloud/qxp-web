@@ -37,24 +37,24 @@ function VaribleBind({
         return;
       }
 
-      const varible = JSON.parse(varibleString || '');
-      if (varible === null) {
+      const variable = JSON.parse(varibleString || '');
+      if (variable === null) {
         setModalVisible(false);
         return;
       }
 
-      if (type === 'array' && !Array.isArray(varible)) {
+      if (type === 'array' && !Array.isArray(variable)) {
         toast.error('必须为数组');
         return;
       }
 
-      if (type === 'object' && !isObject(varible)) {
+      if (type === 'object' && !isObject(variable)) {
         toast.error('必须为对象');
         return;
       }
       onArteryChange?.(updateNodeProperty(activeNode, __path, {
         type: 'constant_property',
-        value: varible,
+        value: variable,
       }, artery));
       setModalVisible(false);
     } catch (err: any) {

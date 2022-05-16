@@ -50,7 +50,7 @@ const Category = (props: Props): JSX.Element | null => {
             return (
               <ComponentRender
                 {...component}
-                key={component.name}
+                key={`${component.name}${component.desc}`}
                 onAddNode={onAddNode}
               />
             );
