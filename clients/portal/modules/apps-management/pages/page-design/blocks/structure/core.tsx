@@ -1,20 +1,31 @@
 import React, { useState } from 'react';
 import { observer } from 'mobx-react';
 import { RadioButtonGroup } from '@one-for-all/ui';
+import { Artery, Node } from '@one-for-all/artery';
 
-import { useCtx } from '@pageDesign/ctx';
+import Outline from './outline';
 
-import TreeView from './tree-view';
+type Mode = 'tree' | 'code' | string;
 
-import './index.scss';
+type Props = {
+  artery: Artery;
+  activeNode?: Node;
+  onChange: (artery: Artery) => void;
+  setActiveNode: (node?: Node) => void;
+};
 
-type Mode = 'tree' | 'code' | string
-
-function PageTree(): JSX.Element {
-  const { page } = useCtx();
+function PageTree({
+  artery,
+  activeNode,
+  onChange,
+  setActiveNode,
+}: Props): JSX.Element {
   const [mode, setMode] = useState<Mode>('tree');
 
-  // fixme: `gap-10` not work in projects with two tailwind config
+  function handleChangeNode(node: Node): void {
+    onChange({ ...artery, node });
+  }
+
   return (
     <div className="w-full h-full flex flex-col items-center overflow-hidden relative page-tree">
       <RadioButtonGroup
@@ -25,11 +36,16 @@ function PageTree(): JSX.Element {
         onChange={(mode) => setMode(mode as string)}
         currentValue={mode}
       />
-      <div className="grid w-full overflow-x-auto relative flex-1 mt-10">
-        {mode === 'tree' && (<TreeView />)}
+      <div className="w-full h-full mt-10 overflow-auto">
+        {mode === 'tree' && (<Outline
+          node={artery.node}
+          onChange={handleChangeNode}
+          activeNode={activeNode}
+          setActiveNode={setActiveNode}
+        />)}
         {mode === 'code' && (
           <pre className='mt-8'>
-            {page.schema ? JSON.stringify(page.schema, null, 2) : <p>暂无数据</p>}
+            {artery.node ? JSON.stringify(artery.node, null, 2) : <p>暂无数据</p>}
           </pre>
         )}
       </div>
