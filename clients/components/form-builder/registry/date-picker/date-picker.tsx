@@ -21,7 +21,7 @@ function getDateStr(dateString: string, formatStr: string, fromNow?: boolean): s
     return moment(moment().format(formatStr)).toISOString();
   }
 
-  return !dateString ? moment(dateString).format(formatStr) : '';
+  return dateString ? moment(dateString).format(formatStr) : '';
 }
 
 function DatePicker(props: ISchemaFieldComponentProps): JSX.Element {

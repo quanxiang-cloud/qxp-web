@@ -1,0 +1,55 @@
+{
+  "UserMenuAvatar": {
+    "props": [],
+    "isContainer": false,
+    "isOverLayer": false
+  },
+  "SystemTaskList": {
+    "props": [],
+    "isContainer": false,
+    "isOverLayer": false
+  },
+  "FileUpload": {
+    "props": [{
+      "label": "文件类型",
+      "name": "accept",
+      "type": "string",
+      "will": "Input"
+    }, {
+      "label": "上传图标",
+      "name": "iconName",
+      "type": "string",
+      "will": "Input"
+    }, {
+      "label": "文件内描述",
+      "name": "uploaderDescription",
+      "type": "string",
+      "will": "Input"
+    }, {
+      "label": "文件最大体积(MB)",
+      "name": "maxFileSize",
+      "type": "number"
+    }, {
+      "label": "是否私有",
+      "name": "isPrivate",
+      "type": "boolean",
+      "will": "Checkbox"
+    }, {
+      "label": "是否允许上传多个组件",
+      "name": "multiple",
+      "type": "boolean",
+      "will": "Checkbox"
+    }, {
+      "label": "是否禁用",
+      "name": "disabled",
+      "type": "boolean",
+      "will": "Checkbox"
+    }, {
+      "label": "文件上传成功之后的回调",
+      "name": "onFileSuccess",
+      "type": "function"
+    }],
+    "isContainer": false,
+    "isOverLayer": false
+  }
+}

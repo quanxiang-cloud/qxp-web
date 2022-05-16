@@ -1,14 +1,12 @@
-import { Repository } from '@one-for-all/artery-renderer';
+import type { Repository } from '@one-for-all/artery-renderer';
 
-import legacyUIComponents from '@lib/legacy/legacy-ui-components';
 import SimpleViewRenders from '@c/simple-view-render';
+import repoSystemComponents from '@c/repo-system-components';
 
 // todo fix this
 const repository: Repository = {
-  'ofa-ui@latest': legacyUIComponents,
-  '@one-for-all/ui@latest': legacyUIComponents,
-  'SimpleViewRenders@1.0.0': SimpleViewRenders,
-  'system-components@latest': legacyUIComponents,
+  ...SimpleViewRenders,
+  ...repoSystemComponents,
 };
 
 export default repository;

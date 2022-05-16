@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect, useCallback, CSSProperties } from 'react';
 import cs from 'classnames';
 import { useHistory } from 'react-router-dom';
-import ArteryEngine from '@one-for-all/artery-engine';
+import ArteryEngine, { Props } from '@one-for-all/artery-engine';
 import Icon from '@one-for-all/icon';
 
 import toast from '@lib/toast';
@@ -17,6 +17,7 @@ import Ctx from './ctx';
 import stores from './stores';
 import { savePage } from './api';
 import { getInitArtery } from './utils';
+import type { BlocksCommunicationType } from './types';
 
 import './index.scss';
 import styles from './index.m.scss';
@@ -34,19 +35,21 @@ function PageDesign(): JSX.Element | null {
     { enabled: !!arteryID },
   );
 
-  const { layers, initialArtery } = useMemo(() => {
-    const initialArtery = artery ?? getInitArtery();
-    const layer = LAYERS[0];
-    layer.blocksCommunicationStateInitialValue = {
-      appID,
-      arteryID: '',
-      menu: { pannelWith: 280 },
-    };
-    return {
-      layers: [...LAYERS],
-      initialArtery,
-    };
-  }, [artery]);
+  const { layers, artery: initialArtery, blocksCommunicationStateInitialValue } = useMemo(
+    (): Props<BlocksCommunicationType> => {
+      return {
+        layers: [...LAYERS],
+        artery: artery ?? getInitArtery(),
+        blocksCommunicationStateInitialValue: {
+          appID,
+          arteryID: '',
+          menu: { panelWidth: 280 },
+          block: {},
+        },
+      };
+    },
+    [artery],
+  );
 
   const { designer, eventBus } = stores;
   const [apiPath, setApiPath] = useState('');
@@ -139,11 +142,15 @@ function PageDesign(): JSX.Element | null {
     <Ctx.Provider value={Object.assign(stores, { onSave: handleSave })}>
       <div className={cs(styles.designer)}>
         <div id={PAGE_DESIGN_ID}>
-          <ArteryEngine artery={initialArtery} layers={layers} />
+          <ArteryEngine
+            artery={initialArtery}
+            layers={layers}
+            blocksCommunicationStateInitialValue={blocksCommunicationStateInitialValue}
+          />
         </div>
       </div>
     </Ctx.Provider>
-  ), [initialArtery, layers]);
+  ), [initialArtery, layers, blocksCommunicationStateInitialValue]);
 
   if (isArteryLoading) {
     return <Loading desc="加载中..." />;

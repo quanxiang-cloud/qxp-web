@@ -146,8 +146,8 @@ class DataSource {
   };
 
   @action
-  setCurApiId = (api_id: string): void => {
-    this.curApiId = `post:${api_id}`;
+  setCurApiId = (apiPath: string, method?: string): void => {
+    this.curApiId = `${method?.toLocaleLowerCase() || 'post'}:${apiPath}`;
   };
 
   @action

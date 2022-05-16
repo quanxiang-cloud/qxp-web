@@ -1,28 +1,35 @@
-import { action, observable } from 'mobx';
+import { action, observable, reaction } from 'mobx';
 
 import { delFormDataRequest } from '@lib/http-client';
 import { getOperate } from './api';
 
 import type { Props as TableViewsProps } from './index';
+import { getButtonAPIList } from './utils';
 
 class TableViewStore {
   @observable appID = '';
   @observable tableID = '';
   @observable tableName = '';
   @observable curRowID = '';
-  @observable fetchSchemeLoading = true;
-  @observable authority = 63;
+  @observable fetchSchemeLoading = false;
+  @observable curRoleID = '';
+  @observable authority: Record<string, boolean> = {};
   @observable operationType = '';
 
   constructor(props: TableViewsProps) {
     this.appID = props.appID;
     this.tableID = props.tableID;
-    // this.getAuthority(props.appID, props.tableID);
+    reaction(() => this.curRoleID, () => this.getAuthority(props.appID, props.tableID));
   }
 
   @action
   setAppID = (appID: string): void => {
     this.appID = appID;
+  };
+
+  @action
+  setCurRoleID = (curRoleID: string): void => {
+    this.curRoleID = curRoleID;
   };
 
   @action
@@ -53,8 +60,9 @@ class TableViewStore {
   @action
   getAuthority = (appID: string, tableID: string): void => {
     this.fetchSchemeLoading = true;
-    getOperate<{ authority: number | null }>(appID, tableID).then((authorityRef) => {
-      this.authority = authorityRef?.authority || 0;
+    const toolList = getButtonAPIList(appID, tableID);
+    getOperate(appID, { paths: toolList }).then((authorityRef) => {
+      this.authority = authorityRef || {};
     }).finally(() => {
       this.fetchSchemeLoading = false;
     });

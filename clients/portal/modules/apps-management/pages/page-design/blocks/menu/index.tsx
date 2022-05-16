@@ -1,21 +1,41 @@
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import type { BlockItemProps } from '@one-for-all/artery-engine';
+import { mergeRight, omit } from 'ramda';
 
 import type { BlocksCommunicationType } from '@pageDesign/types';
-
-import Group from './group';
-import { MenuContext } from './context';
+import TypeList from './type-list';
+import { TYPE_LIST } from './type-list/constants';
 
 import './index.scss';
 
 function Menu(props: BlockItemProps<BlocksCommunicationType>): JSX.Element {
-  const { artery, onChange } = props;
-  const value = { artery, onArteryChange: onChange };
+  const { sharedState, onSharedStateChange, onUpdateLayer } = props;
+
+  useEffect(() => {
+    TYPE_LIST.forEach(({ name }) => onUpdateLayer({ layerId: name, name: 'hide', value: false }));
+  }, []);
+
+  const onTypeSelect = useCallback((type: string): void => {
+    onSharedStateChange('menu.currentType', type);
+  }, [onSharedStateChange]);
+
+  const initBlockStates = useCallback((names: string[]) => {
+    const block = names.reduce((acc, name) => ({ ...acc, [name]: { clickOutsideWhiteList: new Set() } }), {});
+    onSharedStateChange('block', mergeRight(block, sharedState.block));
+  }, [onSharedStateChange, sharedState]);
+
+  const cleanBlockStates = useCallback((names: string[]) => {
+    onSharedStateChange('block', omit(names, sharedState.block));
+  }, [onSharedStateChange, sharedState]);
 
   return (
-    <MenuContext.Provider value={value}>
-      <Group {...props} />
-    </MenuContext.Provider>
+    <TypeList
+      current={sharedState.menu?.currentType}
+      onClick={onTypeSelect}
+      blockStates={sharedState.block}
+      initBlockStates={initBlockStates}
+      cleanBlockStates={cleanBlockStates}
+    />
   );
 }
 

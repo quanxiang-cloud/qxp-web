@@ -2,6 +2,7 @@ import React, { CSSProperties } from 'react';
 import { equals, flatten, ifElse, isEmpty, pipe, toPairs, reduce, merge } from 'ramda';
 import Icon from '@one-for-all/icon';
 import type { NodeProperties } from '@one-for-all/artery';
+import { PropsSpec } from '@one-for-all/node-carve';
 
 import { getBatchGlobalConfig } from '@lib/api/user-config';
 import { parseJSON } from '@lib/utils';
@@ -17,7 +18,7 @@ import type {
   VariantIcon,
   VariantImageIcon,
   VariantPlatFormIcon,
-} from '../blocks/menu/type';
+} from '../blocks/fountainhead/type';
 
 function imageIconBuilder(icon: VariantImageIcon): ReactComponent {
   const { initialProps, src } = icon;
@@ -116,13 +117,12 @@ async function getPackageComponentToCategoryVariantMapDynamic(
   return getter();
 }
 
-// TODO define props spec type
-export type PropsSpec = Record<string, any>;
-export type GetPackagePropsSpecResult = Pick<Package, 'name' | 'version'> & { result: PropsSpec; };
+export type PropsSpecMap = Record<string, PropsSpec | undefined>;
+export type GetPackagePropsSpecResult = Pick<Package, 'name' | 'version'> & { result: PropsSpecMap; };
 export async function getPackagePropsSpec({ name, version }: Package): Promise<GetPackagePropsSpecResult> {
   const key = `PACKAGE_PROPS_SPEC:${name}`;
   const { result } = await getBatchGlobalConfig([{ key, version }]);
-  return { name, version, result: parseJSON(result[key], {}) };
+  return { name, version, result: parseJSON(result[key], {}) as PropsSpecMap };
 }
 
 export function initialPropsToNodeProperties(initialProps: InitialProps = {}): NodeProperties {

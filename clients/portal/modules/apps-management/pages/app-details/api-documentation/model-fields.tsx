@@ -10,6 +10,7 @@ import Loading from '@c/loading';
 import { copyContent } from '@lib/utils';
 import { getTableSchema } from '@lib/http-client';
 import toast from '@lib/toast';
+import schemaToFields from '@lib/schema-convert';
 
 export const FIELD_COLUMNS: UnionColumn<ModelField>[] = [
   {
@@ -44,8 +45,8 @@ export const FIELD_COLUMNS: UnionColumn<ModelField>[] = [
   },
   {
     Header: '是否允许为空',
-    id: 'not_null',
-    accessor: (rowData) => rowData.not_null ? '允许' : '不允许',
+    id: 'required',
+    accessor: (rowData) => rowData.required ? '不允许' : '允许',
   },
   {
     Header: '是否作为外键',
@@ -72,9 +73,8 @@ export default function ModelFields({ appID, tableID }: Props): JSX.Element {
 
     setLoading(true);
     if (appID && tableID) {
-      getTableSchema(appID, tableID).then((res: any) => {
-        const dataModelSchema: DataModelSchema = { ...res, table_id: res.tableID };
-        !isUnmount && setFields(getFields(dataModelSchema));
+      getTableSchema(appID, tableID).then((res) => {
+        !isUnmount && setFields(schemaToFields(res?.schema) as ModelField[]);
       }).catch((err) => {
         toast.error(err);
       }).finally(() => {
@@ -85,20 +85,20 @@ export default function ModelFields({ appID, tableID }: Props): JSX.Element {
     return () => (isUnmount = true);
   }, [appID, tableID]);
 
-  const getFields = (dataModelSchema: DataModelSchema): ModelField[] => {
-    return Object.entries(dataModelSchema.schema.properties || {}).map(([key, fieldSchema]) => {
-      return {
-        id: key,
-        ...fieldSchema,
-      };
-    }).sort((a, b) => {
-      return (b['x-index'] || 0) - (a['x-index'] || 0);
-    });
-  };
-
   if (loading) {
     return <Loading />;
   }
+
+  // const getFields = (dataModelSchema: DataModelSchema): ModelField[] => {
+  //   return Object.entries(dataModelSchema.schema.properties || {}).map(([key, fieldSchema]) => {
+  //     return {
+  //       id: key,
+  //       ...fieldSchema,
+  //     };
+  //   }).sort((a, b) => {
+  //     return (b['x-index'] || 0) - (a['x-index'] || 0);
+  //   });
+  // };
 
   return (
     <>

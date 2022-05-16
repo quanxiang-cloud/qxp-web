@@ -33,7 +33,7 @@ type DataModelSchema = {
 }
 
 type ModelFieldSchema = ISchema & {
-  not_null?: boolean;
+  required?: boolean;
   isForeignKeys?: boolean;
   format?: string;
   length?: number;

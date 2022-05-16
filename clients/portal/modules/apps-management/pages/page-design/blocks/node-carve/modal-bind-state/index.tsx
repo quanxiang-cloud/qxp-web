@@ -7,8 +7,7 @@ import Tab from '@c/tab';
 import Toggle from '@c/toggle';
 import toast from '@lib/toast';
 
-import { findNode } from '../utils/tree';
-import { updateNodeProperty } from '../utils';
+import { updateNodeProperty, findNode } from '../utils';
 import CodeEditor, { EditorRefType } from './code-editor';
 import LogicOperatorsAndBoundVariables from './bound-and-logic';
 import { ConfigContextState, UpdateAttrPayloadType, useConfigContext } from '../context';

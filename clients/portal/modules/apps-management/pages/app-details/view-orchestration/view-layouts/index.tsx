@@ -40,7 +40,7 @@ function ViewLayout(): JSX.Element {
       return store?.layouts.filter((layout) => layout.name !== curLayout?.name)
         .map((layout) => layout.name);
     }
-  }, [isEdit, store?.layouts]) || [];
+  }, [isEdit, store?.layouts, curLayout]) || [];
 
   const fromRef = useRef<FormInstance>(null);
 
@@ -55,11 +55,14 @@ function ViewLayout(): JSX.Element {
     fromRef.current?.submit();
   }
 
-  function handleFinish(values: CreateLayoutInfo): void {
+  function handleFinish(_values: CreateLayoutInfo): void {
+    const name = _values.name.trim();
+    const description = _values?.description?.trim() || '';
+    const values = { ..._values, name, description };
     Promise.resolve().then(() => {
       setPending(true);
       if (!isEdit) {
-        return store?.addLayout(values as CreateLayoutInfo);
+        return store?.addLayout(values);
       }
       if (curLayout) {
         return store?.editLayout({ ...curLayout, ...values });

@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import Editor from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 import { parse, Node } from 'acorn';
+import { get, set } from 'lodash';
 
 import Icon from '@one-for-all/icon';
 import { RadioGroup, Radio } from '@one-for-all/headless-ui';
+import { FunctionalProperty, LifecycleHookFuncSpec } from '@one-for-all/artery';
 
 import toast from '@lib/toast';
 import Modal from '@c/modal';
@@ -12,12 +14,9 @@ import Tooltip from '@c/tooltip';
 
 import { useConfigContext } from '../context';
 import { ConnectedProps } from '../utils/connect';
+import { updateNodeProperty, findNode } from '../utils';
 
 import styles from './index.m.scss';
-import { updateNodeProperty } from '../utils';
-import { get, set } from 'lodash';
-import { FunctionalProperty, LifecycleHookFuncSpec } from '@one-for-all/artery';
-import { findNode } from '../utils/tree';
 
 export const HOOKS_PREFIX = 'lifecycleHooks';
 

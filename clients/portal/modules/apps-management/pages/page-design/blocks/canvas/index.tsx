@@ -19,7 +19,7 @@ import './style.scss';
 function Canvas(props: BlockItemProps<BlocksCommunicationType>): JSX.Element {
   const { artery, sharedState, onSharedStateChange } = props;
   const { page } = useCtx();
-  const { currentGroupType = '', groupTypeContentPinned = false, pannelWith } = sharedState.menu ?? {};
+  const { currentType = '', pinned = false, panelWidth } = sharedState.menu ?? {};
   const toolRef = useRef<any>();
 
   const [, drop] = useDrop(() => ({
@@ -49,9 +49,9 @@ function Canvas(props: BlockItemProps<BlocksCommunicationType>): JSX.Element {
         overflow: 'hidden',
         paddingBottom: '10px',
         transition: 'all .3s linear',
-        paddingLeft: currentGroupType ? `${pannelWith}px` : '0px',
+        paddingLeft: currentType ? `${panelWidth}px` : '0px',
       }),
-      [currentGroupType],
+      [currentType],
     ),
   );
 
@@ -90,7 +90,7 @@ function Canvas(props: BlockItemProps<BlocksCommunicationType>): JSX.Element {
     // because some elem may has children, like container
     const nodeKey = (e.target as Element)?.closest('[data-node-key]')?.getAttribute('data-node-key') || '';
     nodeKey && page.setActiveElemId(nodeKey);
-    !groupTypeContentPinned && onSharedStateChange('menu.currentGroupType', '');
+    !pinned && onSharedStateChange('menu.currentType', '');
   }
 
   return (
@@ -102,8 +102,8 @@ function Canvas(props: BlockItemProps<BlocksCommunicationType>): JSX.Element {
       <NodeRender schema={page.schema.node} />
       <NodeToolbox
         ref={toolRef}
-        currentGroupType={currentGroupType}
-        groupTypeContentPinned={groupTypeContentPinned}
+        currentType={currentType}
+        pinned={pinned}
       />
     </div>
   );

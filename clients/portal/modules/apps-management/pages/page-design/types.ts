@@ -6,16 +6,18 @@ import {
   LoopContainerNode,
 } from '@one-for-all/artery';
 
+export type BlockStates = Record<string, { clickOutsideWhiteList: Set<HTMLElement> } | undefined>;
 export interface BlocksCommunicationType {
   appID?: string;
   arteryID?: string;
   docLink?: string;
   hideTestPreview?: boolean;
   menu?: {
-    currentGroupType?: string;
-    groupTypeContentPinned?: boolean;
-    pannelWith?: number;
-  }
+    currentType?: string;
+    pinned?: boolean;
+    panelWidth?: number;
+  },
+  block: BlockStates;
 }
 
 export type ReactComp = React.ComponentType | React.JSXElementConstructor<any>;
@@ -32,7 +34,7 @@ export interface PageNode extends BaseNode {
   supportStateExposure?: boolean;
   // `packageName, packageVersion, exportName` only for react comp node
   packageName?: 'ofa-ui' | string;
-  packageVersion?: 'latest' | string;
+  packageVersion?: '1.0.0' | string;
   exportName: 'page' | 'elemName' | string; // registry elem type
   toProps?: any; // func body
   children?: Array<PageNode>;
