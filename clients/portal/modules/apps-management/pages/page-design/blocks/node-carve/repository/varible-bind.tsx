@@ -91,7 +91,7 @@ function VaribleBind({
               typeof varibleString === 'string' ?
                 varibleString : JSON.stringify(varibleString)
             }
-            height="120px"
+            height="400px"
             extensions={[javascript()]}
             onChange={(value) => {
               setVaribleString(value);
