@@ -1,12 +1,12 @@
 import { Repository } from '@one-for-all/artery-renderer';
 import { Checkbox, Input, Select, Switch, RadioGroup, CheckboxGroup } from '@one-for-all/headless-ui';
 
-import FunctionBind from './function-bind';
-import StateBind from './state-bind';
-import UrlInput, { UrlInputProps } from './url-input';
-import VariableBind from './variable-bind';
-import Unavaliable from './unavaliable';
-import Tips from './tips';
+import functionbind from './function-bind';
+import statebind from './state-bind';
+import imageurl, { UrlInputProps } from './url-input';
+import variablebind from './variable-bind';
+import unavaliable from './unavaliable';
+import tips from './tips';
 import { connect } from '../utils/connect';
 
 const repo: Repository = {
@@ -24,12 +24,12 @@ const repo: Repository = {
         return args[1]?.target?.checked;
       },
     }),
-    imageurl: connect<UrlInputProps>(UrlInput),
-    functionbind: FunctionBind,
-    variblebind: VariableBind,
-    statebind: StateBind,
-    tips: Tips,
-    unavaliable: Unavaliable,
+    imageurl: connect<UrlInputProps>(imageurl),
+    functionbind,
+    variablebind,
+    statebind,
+    tips,
+    unavaliable,
   },
 };
 
