@@ -10,7 +10,7 @@ declare global {
     primaryColor: string;
     titleIcon?: string;
     favicons?: string;
-    commonCssUrl?: string;
+    styleCssUrl?: string;
     themeVariable?: Record<string, string>;
   };
 }

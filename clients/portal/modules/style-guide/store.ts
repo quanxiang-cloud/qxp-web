@@ -40,17 +40,17 @@ class StyleGuideStore {
   @observable commonConfig: StyleGuideCommonConfig = { primaryColor: 'blue' };
   @observable shadowRoot: ShadowRoot | null = null;
   @observable componentScssMap: Record<string, string> = {};
-  @observable commonCssUrl = '';
+  @observable styleCssUrl = '';
 
   constructor() {
     this.destroySetShadowStyle = reaction(
-      () => [this.shadowRoot, this.commonCssUrl],
-      ([shadowRoot, commonCssUrl]) => {
-        if (!shadowRoot || !commonCssUrl) {
+      () => [this.shadowRoot, this.styleCssUrl],
+      ([shadowRoot, styleCssUrl]) => {
+        if (!shadowRoot || !styleCssUrl) {
           return;
         }
 
-        applyStyle((commonCssUrl as string) || '', shadowRoot as ShadowRoot);
+        applyStyle((styleCssUrl as string) || '', shadowRoot as ShadowRoot);
       },
     );
 
@@ -62,7 +62,7 @@ class StyleGuideStore {
     });
 
     this.fetchCssUrl().then((res) => {
-      this.commonCssUrl = res;
+      this.styleCssUrl = res;
     });
   }
 
@@ -200,7 +200,7 @@ class StyleGuideStore {
       {
         version: VERSION,
         key: COMPILED_CSS_FINAL_URL_KEY,
-        value: JSON.stringify({ commonCssUrl: this.commonCssUrl }),
+        value: JSON.stringify({ styleCssUrl: this.styleCssUrl }),
       },
     ]);
 
@@ -223,7 +223,7 @@ class StyleGuideStore {
         }),
       });
 
-      this.commonCssUrl = await this.fetchCssUrl();
+      this.styleCssUrl = await this.fetchCssUrl();
     } catch (e) {
       toast.error('编译错误');
     }
