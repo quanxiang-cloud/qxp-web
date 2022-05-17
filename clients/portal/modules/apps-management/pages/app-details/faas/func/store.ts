@@ -1,6 +1,9 @@
-import { action, observable, reaction } from 'mobx';
+import { action, computed, observable, reaction } from 'mobx';
 
 import { SocketData } from '@lib/push';
+import toast from '@lib/toast';
+import { getDirectoryPath } from '@lib/api-collection/utils';
+import { omit } from 'lodash';
 
 import {
   fetchFuncList,
@@ -16,11 +19,10 @@ import {
   deleteVer,
   registerAPI,
   getVersionInfo,
+  fetchCanBindProjectList,
 } from '../api';
-import toast from '@lib/toast';
 import { INIT_API_CONTENT } from '../../api-documentation/constants';
 import { API_DOC_STATE, FUNC_STATUS } from '../constants';
-import { getDirectoryPath } from '@lib/api-collection/utils';
 
 const INIT_CURRENT_FUNC = {
   id: '',
@@ -60,10 +62,18 @@ class FaasStore {
     size: 10,
   };
   @observable userAccount = '';
+  @observable optionalProject: {id: string, name: string}[] = [];
 
   constructor() {
     reaction(() => this.groupID, () => this.fetchFuncList('', 1, 10));
     reaction(() => this.versionsParams, this.fetchVersionList);
+    reaction(() => this.modalType, this.fetchCanBindProjectList);
+  }
+
+  @computed get optionalProjectToSelectEnum(): { label: string, value: string }[] {
+    return this.optionalProject.map((project) => {
+      return { label: project?.name || '', value: project.id || '' };
+    });
   }
 
   @action
@@ -97,6 +107,20 @@ class FaasStore {
   };
 
   @action
+  setOptionalProject = (optionalProject: {id: string, name: string}[]): void => {
+    this.optionalProject = optionalProject;
+  };
+
+  @action
+  fetchCanBindProjectList = (): void => {
+    if (this.modalType === 'editModel') {
+      fetchCanBindProjectList(this.groupID).then((res) => {
+        this.setOptionalProject(res);
+      });
+    }
+  };
+
+  @action
   fetchFuncList = (searchAlias: string, page: number, size: number): void => {
     if (!this.groupID) {
       return;
@@ -126,7 +150,8 @@ class FaasStore {
 
   @action
   createFunc = (data: creatFuncParams): void => {
-    createFaasFunc(this.groupID, { ...data, version: '1.16' }).then((res) => {
+    const _createFuncParams = omit(data, ['type']);
+    createFaasFunc(this.groupID, { ..._createFuncParams, version: '1.16' }).then((res) => {
       this.currentFuncID = res.id;
       this.currentFunc = { ...res, ...data, state: 'True' };
       this.funcList = [this.currentFunc, ...this.funcList];
