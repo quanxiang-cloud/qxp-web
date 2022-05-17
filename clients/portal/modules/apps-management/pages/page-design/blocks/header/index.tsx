@@ -9,6 +9,7 @@ import type { BlockItemProps } from '@one-for-all/artery-engine';
 import { useCtx } from '@pageDesign/ctx';
 import type { BlocksCommunicationType } from '@pageDesign/types';
 import componentLoader from '@c/artery-renderer/component-loader';
+import repository from '@c/artery-renderer/repository';
 
 import styles from './style.m.scss';
 import './style.scss';
@@ -72,7 +73,7 @@ function Toolbar({ sharedState, artery }: BlockItemProps<BlocksCommunicationType
     return (
       <ArteryRenderer
         artery={artery as any}
-        plugins={{ componentLoader }}
+        plugins={{ componentLoader, repository }}
       />
     );
   }
