@@ -11,7 +11,7 @@ import { isArray } from 'lodash';
 
 import isNodeSupportChildren from '@pageDesign/blocks/simulator/is-node-support-children';
 
-type NodeOrComposedNode = Node | ComposedNode | undefined;
+type NodeOrComposedNode = Node | ComposedNode;
 
 export function firstChildIs(rootNode: ImmutableNode, targetId: string, firstChildId: string): boolean {
   const firstChildPath = firstChild(rootNode, targetId);
@@ -71,23 +71,20 @@ export function getRealNode(node: Node): Node | Node[] | undefined {
 }
 
 export function getReRealNodeId(rootNode: Node, currentId: string, isSource?: boolean): string | undefined {
-  const parentNode = getNodeParents(rootNode, currentId)?.pop() as NodeOrComposedNode;
-  if (!parentNode) return;
+  const parentNodes = getNodeParents(rootNode, currentId)?.reverse() as NodeOrComposedNode[] | undefined;
+  if (!parentNodes) return;
 
-  const { type } = parentNode;
+  let _currentId = currentId;
+  let currentNodeIndex = 0;
+  while (currentNodeIndex < parentNodes.length) {
+    const currentNode = parentNodes[currentNodeIndex];
+    const { type } = currentNode;
 
-  if (['html-element', 'react-component'].includes(type)) return currentId;
+    if (['html-element', 'react-component'].includes(type)) return _currentId;
 
-  if (type === 'route-node') return getReRealNodeId(rootNode, parentNode.id);
+    if (type === 'composed-node' && (!isSource || currentNode.nodes.length !== 1)) return _currentId;
 
-  if (type === 'composed-node') {
-    if (isSource && parentNode.nodes.length === 1) {
-      return getReRealNodeId(rootNode, parentNode.id);
-    }
-    return currentId;
+    _currentId = currentNode.id;
+    currentNodeIndex += 1;
   }
-
-  if (type !== 'loop-container') return;
-
-  return getReRealNodeId(rootNode, parentNode.id);
 }
