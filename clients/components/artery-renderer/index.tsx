@@ -4,7 +4,6 @@ import { ArteryRenderer } from '@one-for-all/artery-renderer';
 import { useArteryWithAdapter } from './api';
 import ErrorBoundary from './error-boundary';
 import componentLoader from './component-loader';
-import repository from './repository';
 import refLoader from './ref-loader';
 
 type Props = {
@@ -23,7 +22,7 @@ export default function Renderer({ arteryID, version }: Props): JSX.Element | nu
     <ErrorBoundary>
       <ArteryRenderer
         artery={artery}
-        plugins={{ apiSpecAdapter: adapter, repository, componentLoader, refLoader }}
+        plugins={{ apiSpecAdapter: adapter, componentLoader, refLoader }}
       />
     </ErrorBoundary>
   );

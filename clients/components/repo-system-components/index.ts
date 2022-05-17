@@ -1,15 +1,10 @@
 import type { Repository } from '@one-for-all/artery-renderer';
 
-import TaskList from '@c/task-lists';
-import UserAvatarMenu from '@c/user-avatar-menu';
-
-const systemComponents = {
-  SystemTaskList: TaskList,
-  UserMenuAvatar: UserAvatarMenu,
-};
+import versionMap from '@pageDesign/blocks/fountainhead/config/name-version-map';
+import systemComponents from '@pageDesign/registry/system-components';
 
 const repoSystemComponents: Repository = {
-  'system-components@1.0.0': systemComponents,
+  [`system-components@${versionMap['system-components']}`]: systemComponents,
 };
 
 export default repoSystemComponents;

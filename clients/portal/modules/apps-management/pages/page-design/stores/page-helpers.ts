@@ -2,6 +2,7 @@ import { toJS } from 'mobx';
 import { generateNodeId } from '@one-for-all/artery-engine';
 
 import { PageNode, PageArtery } from '../types';
+import versionMap from '../blocks/fountainhead/config/name-version-map';
 
 export function deepMergeNode(node: PageNode): PageNode {
   const target = toJS(node);
@@ -66,7 +67,7 @@ export function generateGridChildren(
         type: 'react-component',
         exportName: 'container',
         packageName: '@one-for-all/ui',
-        packageVersion: '0.3.3',
+        packageVersion: versionMap['@one-for-all/ui'],
         label: '容器',
         props: {
           style: {
@@ -113,7 +114,7 @@ export function initPageArtery(): PageArtery {
       pid: '',
       type: 'react-component',
       packageName: '@one-for-all/ui',
-      packageVersion: '0.3.3',
+      packageVersion: versionMap['@one-for-all/ui'],
       exportName: 'page',
       label: '页面',
       props: {
