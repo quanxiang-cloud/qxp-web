@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import cs from 'classnames';
 import { useDrag, useDrop, DropTargetMonitor } from 'react-dnd';
 import Icon from '@one-for-all/icon';
@@ -10,12 +10,13 @@ import { useOutLineContext } from './context';
 
 interface Props {
   id: string;
-  title: string;
+  nodeName: string;
   hasChildren: boolean;
   expand: boolean;
   node?: Node;
   ComponentIcon?: ReactComp;
   onChangeExpand?: (expand: boolean) => void;
+  onModifiedNodeName?: (nodeName: string) => void;
 }
 
 type LocationType = 'before' | 'after';
@@ -24,16 +25,18 @@ type DragItemType = {
   id: string;
 };
 
-export default function TreeNodeHeader({
+export default function OutlineItemHeader({
   id,
-  title,
+  nodeName,
   hasChildren,
   ComponentIcon,
   expand,
   node,
   onChangeExpand,
+  onModifiedNodeName,
 }: Props): JSX.Element {
   const [hoverLocation, setHoverLocation] = useState<LocationType>();
+  const [_nodeName, setNodeName] = useState(nodeName);
   const dragAndDrop = useRef<HTMLDivElement>(null);
   const { moveToById, rootNodeId, activeNodeId, setActiveNode } = useOutLineContext() || {};
 
@@ -72,6 +75,8 @@ export default function TreeNodeHeader({
     }),
   }, [id, moveToById]);
 
+  useEffect(() => setNodeName(nodeName), [nodeName]);
+
   function computedLocation(monitor: DropTargetMonitor): LocationType {
     const { bottom, top } = dragAndDrop.current?.getBoundingClientRect() || { bottom: 0, top: 0 };
     const monitorTop = monitor.getClientOffset()?.y || 0;
@@ -88,6 +93,15 @@ export default function TreeNodeHeader({
     return id === rootNodeId;
   }
 
+  function handleChangeNodeName(): void {
+    onModifiedNodeName?.(_nodeName);
+  }
+
+  function onKeyDown(e: React.KeyboardEvent): void {
+    if (e.key !== 'Enter') return;
+    handleChangeNodeName();
+  }
+
   !isRootNode() && drag(dragAndDrop);
   drop(dragAndDrop);
 
@@ -95,7 +109,7 @@ export default function TreeNodeHeader({
     <div
       ref={dragAndDrop}
       className={cs(
-        'flex w-full relative h-36 max-h-36 bg-white hover:bg-blue-100 py-5',
+        'flex w-full relative h-36 max-h-36 bg-white hover:bg-blue-100 py-5 rounded-6',
         isDragging && 'opacity-20',
         activeNodeId === id && 'bg-blue-100 text-blue-600',
       )}
@@ -105,23 +119,34 @@ export default function TreeNodeHeader({
         className={cs(
           'w-full h-1/2 absolute top-0',
           isHover && 'bg-blue-100',
-          hoverLocation === 'after' && 'top-1/2',
+          hoverLocation === 'after' && 'top-1/2 rounded-b-6',
+          hoverLocation === 'before' && 'rounded-t-6',
         )}
       />
       <div className="w-full h-full flex items-center z-10">
         {hasChildren && (<span onClick={handleChangeExpand}>
           <Icon
-            style={{ transition: 'all .2s linear' }}
+            style={{ transition: 'transform .2s linear' }}
             className={cs('cursor-pointer hover:text-black-900 transform', expand && 'rotate-90')}
             name="arrow_right"
+            size={24}
           />
         </span>)}
         {ComponentIcon && (
-          <div className='w-26 h-26 max-h-26 flex items-center justify-center'>
+          <div className='h-full w-24 overflow-hidden flex items-center justify-center'>
             <ComponentIcon />
           </div>
         )}
-        <span className="ml-5"> {title} </span>
+        <div className="px-1">
+          <input
+            type="text"
+            className="outline-node-header-input w-full p-4 border-0"
+            value={_nodeName}
+            onBlur={handleChangeNodeName}
+            onChange={(e) => setNodeName(e.target.value)}
+            onKeyDown={onKeyDown}
+          />
+        </div>
       </div>
     </div>
   );

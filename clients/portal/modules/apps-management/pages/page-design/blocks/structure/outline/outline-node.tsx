@@ -1,26 +1,23 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import type { Node } from '@one-for-all/artery';
-import type { PackageComponent } from '@pageDesign/blocks/fountainhead/type';
 import cs from 'classnames';
 import { isArray } from 'lodash';
 
-import TreeNodeHeader from './tree-node-header';
+import OutlineNodeHeader from './outline-node-header';
 import { filterChildren, getRealNode } from '../utils';
+import { useOutLineContext } from './context';
 
 interface Props {
   node: Node;
-  components?: PackageComponent[];
 }
 
-export default function TreeNode({
-  node,
-  components,
-}: Props): JSX.Element {
+export default function OutlineNode({ node }: Props): JSX.Element {
+  const { components, modifiedNodeName } = useOutLineContext() || {};
   const [expand, setExpand] = useState(true);
 
   const nodeBodyRef = useRef<HTMLDivElement>(null);
 
-  const { title, children, id, realNode } = useMemo(() => {
+  const { nodeName, children, id, realNode } = useMemo(() => {
     const realNode = getRealNode(node);
     if (!realNode) return {};
 
@@ -30,7 +27,7 @@ export default function TreeNode({
 
     if (realNode.type === 'html-element') {
       return {
-        title: realNode.name,
+        nodeName: realNode.label || realNode.name,
         children: filterChildren(realNode.children),
         id: realNode.id,
         realNode,
@@ -39,7 +36,7 @@ export default function TreeNode({
 
     if (realNode.type === 'react-component') {
       return {
-        title: realNode.exportName,
+        nodeName: realNode.label || realNode.exportName,
         children: filterChildren(realNode.children),
         id: realNode.id,
         realNode,
@@ -78,44 +75,47 @@ export default function TreeNode({
     }
   }, [expand, children?.length]);
 
-  if (!title && !id && children?.length) {
+  function handleModifiedNodeName(nodeName: string): void {
+    modifiedNodeName?.(node, nodeName);
+  }
+
+  if (!nodeName && !id && children?.length) {
     return (
       <>
         {children.map((childNode) => (
-          <TreeNode
+          <OutlineNode
             key={childNode.id}
             node={childNode}
-            components={components}
           />
         ))}
       </>
     );
   }
 
-  if (!title || !id) return <></>;
+  if (!nodeName || !id) return <></>;
 
   return (
     <div className="w-full">
-      <TreeNodeHeader
+      <OutlineNodeHeader
         id={id}
-        title={title}
+        nodeName={nodeName}
         hasChildren={!!children?.length}
         expand={expand}
         node={realNode}
         ComponentIcon={Icon}
         onChangeExpand={setExpand}
+        onModifiedNodeName={handleModifiedNodeName}
       />
       {!!children?.length && (
         <div
           ref={nodeBodyRef}
           style={{ transition: 'all .2s linear' }}
-          className={cs('overflow-y-hidden pl-8 ml-8 border-l-1', expand && 'is-expand')}
+          className={cs('overflow-y-hidden pl-12 ml-12 border-l-1', expand && 'is-expand')}
         >
           {children.map((childNode) => (
-            <TreeNode
+            <OutlineNode
               key={childNode.id}
               node={childNode}
-              components={components}
             />
           ))}
         </div>
