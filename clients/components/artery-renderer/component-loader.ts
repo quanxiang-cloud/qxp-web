@@ -1,13 +1,6 @@
-import { mergeRight, or, cond, T, and } from 'ramda';
-import type {
-  Repository,
-  ComponentLoaderParam,
-  DynamicComponent,
-  ComponentLoader,
-} from '@one-for-all/artery-renderer';
+import { or, cond, T, and } from 'ramda';
+import type { ComponentLoaderParam, DynamicComponent, ComponentLoader } from '@one-for-all/artery-renderer';
 
-import SimpleViewRenders from '@c/simple-view-render';
-import repoSystemComponents from '@c/repo-system-components';
 import versionMap from '@pageDesign/blocks/fountainhead/config/name-version-map';
 import { getBatchGlobalConfig } from '@lib/api/user-config';
 
@@ -35,8 +28,6 @@ async function queryPackageMainSrc(packageName: string, packageVersion: string):
   return Promise.reject(new Error(errorMessage));
 }
 
-const repository: Repository = mergeRight(SimpleViewRenders, repoSystemComponents);
-
 type OnCache = (id: string, component: DynamicComponent) => void;
 
 function getComponentId(param: ComponentLoaderParam): string {
@@ -47,15 +38,6 @@ function getComponentId(param: ComponentLoaderParam): string {
 function getPackageId(param: Pick<ComponentLoaderParam, 'packageName' | 'packageVersion'>): string {
   const { packageName, packageVersion } = param;
   return `${packageName}@${packageVersion}`;
-}
-
-function internalComponentLoader(param: ComponentLoaderParam, onCache: OnCache): DynamicComponent {
-  const packageId = getPackageId(param);
-  const componentId = getComponentId(param);
-  const internalModule = repository[packageId];
-  const component = internalModule[param.exportName] ?? internalModule['default'] ?? (() => null);
-  onCache(componentId, component);
-  return component;
 }
 
 async function cdnComponentLoader(param: ComponentLoaderParam, onCache: OnCache): Promise<DynamicComponent> {
@@ -80,10 +62,6 @@ async function thirdPartComponentLoader(
   return component;
 }
 
-function isIntenralPackage(param: ComponentLoaderParam): boolean {
-  return Object.keys(repository).includes(getPackageId(param));
-}
-
 function isCDNPackage({ packageName }: ComponentLoaderParam): boolean {
   return or(packageName.startsWith('@one-for-all'), packageName.startsWith('ofa-ui'));
 }
@@ -99,7 +77,6 @@ function buildComponentLoader(): ComponentLoader {
     const cachedComponent = cache[componentId];
     const getComponent = cond([
       [() => !!cachedComponent, async () => cachedComponent],
-      [() => isIntenralPackage(param), async () => internalComponentLoader(param, onCache)],
       [() => isCDNPackage(param), () => cdnComponentLoader(param, onCache)],
       [T, () => thirdPartComponentLoader(param, onCache)],
     ]);

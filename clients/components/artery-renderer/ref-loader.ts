@@ -4,6 +4,7 @@ import { ARTERY_KEY_VERSION } from '@portal/constants';
 import SwaggerRPCSpecAdapter from '@lib/api-adapter';
 
 import componentLoader from './component-loader';
+import repository from './repository';
 import { fetchArteryWithSwagger } from './api';
 
 const refLoader: RefLoader = (arteryID: string) => {
@@ -18,6 +19,7 @@ const refLoader: RefLoader = (arteryID: string) => {
       plugins: {
         apiSpecAdapter: adapter,
         componentLoader,
+        repository,
       },
     };
   });
