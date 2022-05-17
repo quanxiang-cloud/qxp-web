@@ -22,11 +22,13 @@ export function cloneUserData(sourceKey: GetParams, targetKey: GetParams): Promi
   return httpClient('/api/v1/persona/cloneValue', { key: sourceKey, newKey: targetKey });
 }
 
-export function getBatchGlobalConfig(keys: GetParams[]): Promise<{ result: Record<string, string> }> {
-  return httpClient<{ result: Record<string, string> }>('/api/v1/persona/batchGetValue', { keys }).catch((err) => {
+export async function getBatchGlobalConfig(keys: GetParams[]): Promise<{ result: Record<string, string> }> {
+  try {
+    return await httpClient<{ result: Record<string, string>; }>('/api/v1/persona/batchGetValue', { keys });
+  } catch (err) {
     logger.error(err);
     return { result: {} };
-  });
+  }
 }
 
 export function setBatchGlobalConfig(keys: SetParams[]): FutureErrorMessage {
