@@ -62,7 +62,7 @@ class FaasStore {
     size: 10,
   };
   @observable userAccount = '';
-  @observable optionalProject: {id: string, name: string}[] = [];
+  @observable optionalProject: { id: string, name: string }[] = [];
 
   constructor() {
     reaction(() => this.groupID, () => this.fetchFuncList('', 1, 10));
@@ -107,7 +107,7 @@ class FaasStore {
   };
 
   @action
-  setOptionalProject = (optionalProject: {id: string, name: string}[]): void => {
+  setOptionalProject = (optionalProject: { id: string, name: string }[]): void => {
     this.optionalProject = optionalProject;
   };
 
@@ -227,7 +227,7 @@ class FaasStore {
 
   @action
   offlineVer = (id: string): void => {
-    offlineVer(this.groupID, id ).then(() => {
+    offlineVer(this.groupID, id).then(() => {
       this.versionList = this.versionList.map((version) => {
         if (version.id === id) {
           this.currentBuild = { ...version, status: 6 };
@@ -298,7 +298,7 @@ class FaasStore {
   getApiPath = (): void => {
     this.isAPILoading = true;
     getDirectoryPath(this.appID, 'faas').then((apiPath) => {
-      this.apiPath = `${apiPath}/${this.currentBuild?.name}.r`;
+      this.apiPath = `${apiPath}/faas/${this.currentBuild?.name}.r`;
     }).catch((err) => {
       toast.error(err);
     }).finally(() => this.isAPILoading = false);
@@ -311,7 +311,7 @@ class FaasStore {
       return;
     }
     const versionInfo = await getVersionInfo(this.groupID, this.currentFuncID, buildID);
-    if ( topic === 'builder' || topic === 'serving') {
+    if (topic === 'builder' || topic === 'serving') {
       if (
         versionInfo.status > FUNC_STATUS.StatusBuilding &&
         versionInfo.status !== FUNC_STATUS.OnlineBuilding
