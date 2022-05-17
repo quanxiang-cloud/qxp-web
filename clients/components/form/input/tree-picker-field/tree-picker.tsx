@@ -33,7 +33,7 @@ export default function TreePicker<T extends { id: string} >({
 
   useEffect(() => {
     if (treeData) {
-      const newStore = new Store({ rootNode: treeData }, false);
+      const newStore = new Store({ rootNode: treeData, treeNodeHeight: 36 }, false);
       setStore(newStore);
       if (store) {
         newStore.onSelectNode(store.currentFocusedNodeID);

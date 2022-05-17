@@ -15,7 +15,7 @@ interface Props {
 function DepartmentsTree({ onSelect }: Props): JSX.Element {
   const departmentTree = useMemo(() => {
     if (!store.depTreeNode) return;
-    return new TreeStore({ rootNode: store.depTreeNode });
+    return new TreeStore({ rootNode: store.depTreeNode, treeNodeHeight: 36 });
   }, [store.depTreeNode]);
 
   if (!departmentTree) {

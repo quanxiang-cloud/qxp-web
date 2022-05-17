@@ -12,13 +12,13 @@ import ImportExportEmployees from './import-export-employees-modal';
 import { UserStatus } from '../type';
 
 export type ModalType = '' | 'edit_employees' | 'import_export_employees' | 'reset_password' |
-  'alert_user_state' | 'adjust_dep' | 'leader_handle' | 'export_employees' | 'show_employees' | 'import_employees';
+  'user_state_normal' | 'user_state_disabled' | 'user_state_delete' | 'adjust_dep' |
+  'leader_handle' | 'export_employees' | 'show_employees' | 'import_employees';
 
 type Props = {
   modalType: ModalType;
   selectedUsers: Employee[];
   currUser: Employee;
-  modifyState: UserStatus;
   department: Department;
   closeModal: () => void;
 };
@@ -27,7 +27,6 @@ export default function EmployeeModal({
   modalType,
   selectedUsers,
   currUser,
-  modifyState,
   department,
   closeModal,
 }: Props): JSX.Element {
@@ -51,6 +50,16 @@ export default function EmployeeModal({
     // });
   }
 
+  function showUserStateModel(): boolean {
+    return ['user_state_normal', 'user_state_delete', 'user_state_disable'].includes(modalType);
+  }
+
+  function getCurUserStatue(): UserStatus {
+    if (modalType === 'user_state_delete') return UserStatus.delete;
+    if (modalType === 'user_state_disabled') return UserStatus.disable;
+    return UserStatus.normal;
+  }
+
   return (
     <>
       {modalType === 'show_employees' && (
@@ -71,8 +80,8 @@ export default function EmployeeModal({
         <ImportExportEmployees closeModal={closeModal} />
       )}
       {
-        modalType === 'alert_user_state' && (<AlterUserStateModal
-          status={modifyState}
+        showUserStateModel() && (<AlterUserStateModal
+          status={getCurUserStatue()}
           user={currUser}
           closeModal={closeModal}
         />)

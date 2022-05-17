@@ -64,9 +64,12 @@ input.from-input {
 }
 
 .department-tree-wrapper {
+  .tree-wrapper {
+    min-width: auto;
+  }
   @apply bg-gray-50;
   .tree-node {
-    @apply bg-gray-50 text-gray-400;
+    @apply bg-gray-50 text-gray-400 h-36 text-12 font-normal;
     padding-left: 40px;
   }
   .tree-root-node {
@@ -90,10 +93,28 @@ input.from-input {
 .adjust-department-tip {
   background: rgba(30, 41, 59, 0.65);
   border-radius: 8px;
+  font-size: 12px;
 }
 
 .extend-properties-modal {
   .md-body {
     display: grid;
   }
+}
+
+.employee-toggle {
+  height: 16px;
+  width: 28px;
+  min-width: 28px;
+  &::after {
+    width: 12px;
+    height: 12px;
+  }
+  &.checked::after {
+    left: calc(100% - 16px);
+  }
+}
+
+.employee-table-setting {
+  @apply flex items-center cursor-pointer ml-16 justify-center w-32 h-32 rounded-l-8 rounded-r-2 border-1.5 border-gray-500 bg-gray-100;
 }

@@ -4,8 +4,11 @@ import Icon from '@c/icon';
 import { MenuItem } from '@c/more-menu';
 
 import { UserStatus, LeaderStatus } from './type';
+import { ModalType } from './modal';
 
 export const userGraphQL = '{users{id,phone,position,email,name,useStatus,departments{id,name,attr},leaders{id,name,attr}},total}';
+
+export const initUserInfo = { id: '', name: '', email: '', phone: '', selfEamil: '' };
 
 export type AuthorMenuItem = {
   authority: number[];
@@ -102,6 +105,17 @@ export const EmployeesActions: AuthorMenuItem[] = [
     leader: [LeaderStatus.true, LeaderStatus.false],
   },
 ];
+
+export const KeyToModalTypeMap: { [key: string]: ModalType } = {
+  'show-info': 'show_employees',
+  edit: 'edit_employees',
+  confer: 'leader_handle',
+  revoke: 'leader_handle',
+  reset: 'reset_password',
+  disable: 'user_state_disabled',
+  enable: 'user_state_normal',
+  delete: 'user_state_delete',
+};
 
 export const ExpandActions: MenuItem[] = [
   {

@@ -10,7 +10,7 @@ export default observer(<T, >({ node }: NodeRenderProps<T>) => {
       className="transition-all py-8 w-full flex items-center justify-between"
     >
       <div className="flex items-center w-full">
-        <div className="ml-2 truncate w-full px-5 font-normal flex justify-between">
+        <div className="ml-2 truncate w-full font-normal flex justify-between">
           {node.name}
           <Icon name="done" className="picker-selected-icon hidden" color="#375FF3" />
         </div>
