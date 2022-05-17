@@ -60,7 +60,7 @@ export default function FormImgUploader(props: FileUploaderProps & ISchemaFieldC
   return (
     <ImgUploader
       {...configProps}
-      additionalPathPrefix={`/app/${appID}/form-attachment/${tableID}`}
+      additionalPathPrefix={`app/${appID}/form-attachment/${tableID}`}
       fileData={value?.map((file: QxpFileFormData) =>
         ({
           name: file.label,

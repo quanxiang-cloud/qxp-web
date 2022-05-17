@@ -11,7 +11,7 @@ import Section from '../../../utils/section';
 
 function getArteryBySpec(specs: BasePropSpec[], options: {
   prefix?: string;
-  bindVarible?: boolean;
+  bindVariable?: boolean;
 }): Artery | null {
   if (specs.length) {
     return buildNodeCarveArtery(specs, options);
@@ -34,7 +34,7 @@ function PropsPanel(): JSX.Element {
 
     const attrSpecs = getArteryBySpec(specs.filter((s) => s.type !== 'function'), {
       prefix: 'props',
-      bindVarible: true,
+      bindVariable: true,
     });
     const funcSpecs = getArteryBySpec(specs.filter((s) => s.type === 'function'), {
       prefix: 'props',

@@ -1,22 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import cs from 'classnames';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { get } from 'lodash';
-import Editor from '@uiw/react-codemirror';
-import { javascript } from '@codemirror/lang-javascript';
-
-import { Icon, Modal, toast, Tooltip } from '@one-for-all/ui';
-import { NodeProperty } from '@one-for-all/artery';
+import { Modal } from '@one-for-all/ui';
+import { ComputedProperty, ComputedDependency } from '@one-for-all/artery';
 
 import Tab from '@c/tab';
-import { ConfigContextState, useConfigContext } from '../context';
-import {
-  mapApiStateSpec,
-  mapSharedStateSpec,
-  updateCurNodeAsLoopContainer,
-  updateNodeProperty,
-} from '../utils';
+import Toggle from '@c/toggle';
+import toast from '@lib/toast';
+
+import { updateNodeProperty, findNode } from '../utils';
+import CodeEditor, { EditorRefType } from './code-editor';
+import LogicOperatorsAndBoundVariables from './bound-and-logic';
+import { ConfigContextState, UpdateAttrPayloadType, useConfigContext } from '../context';
+import { getFnBody, parseAst, parseToExpressionStr, toConvertorProp } from './utils';
 
 import styles from './index.m.scss';
+import VariableList from './variable-list';
+
+export type VariableBindConf = {
+  type: 'convertor' | 'expression';
+  contentStr: string;
+}
 
 function ModalBindState(): JSX.Element | null {
   const {
@@ -27,121 +30,113 @@ function ModalBindState(): JSX.Element | null {
     setModalBindStateOpen,
     updateAttrPayload,
   } = useConfigContext() as ConfigContextState;
-  const [selected, setSelected] = useState<{
-    name: string;
-    conf: string;
-  } | null>(null);
-  const [stateExpr, setStateExpr] = useState(''); // 绑定变量的表达式
-  const [convertorExpr, setConvertorExpr] = useState('state'); // 绑定变量的convertor表达式
-  const isLoopNode = rawActiveNode?.type === 'loop-container';
-
-  useEffect(() => {
-    if (!updateAttrPayload) {
-      return;
-    }
-    let bindConf;
-    if (isLoopNode) {
-      // todo: get loop node iterableState bind value
-      bindConf = get(rawActiveNode, 'iterableState', {});
-    } else {
-      bindConf = get(activeNode, updateAttrPayload.path, {});
+  const isShouldRenderConfig = updateAttrPayload?.path === 'shouldRender';
+  const [boundVariables, setBoundVariables] = useState<ComputedDependency[]>([]); // 已绑定的变量
+  const [fallback, setFallBack] = useState<boolean>(); // 默认值
+  const [expressionStr, setExpressionStr] = useState(''); // 表达式
+  const [convertorStr, setConvertorStr] = useState(''); // 自定义函数内容
+  const [editorType, setEditorType] = useState<'expression' | 'convertor'>('expression'); // 最终保存的配置内容的类型 '表达式' | '自定义函数'
+  const editorRef = useRef<EditorRefType>();
+  const expressionEditorRef = useMemo(() => {
+    return editorType === 'expression' ? editorRef : undefined;
+  }, [editorType]);
+  const finalConfig: VariableBindConf = useMemo(() => {
+    if (convertorStr) {
+      return { type: 'convertor', contentStr: convertorStr };
     }
 
-    if (bindConf.type === 'shared_state_property') {
-      const expr = `states['${bindConf.stateID}']`;
-      setStateExpr(expr);
-      setConvertorExpr(get(bindConf, 'convertor.expression', ''));
+    return { type: 'expression', contentStr: expressionStr };
+  }, [expressionStr, convertorStr]);
+
+  function onCancel(): void {
+    setModalBindStateOpen(false);
+  }
+
+  function handleUnbind(depID: string): void {
+    setBoundVariables(boundVariables.filter(({ depID: id }) => id !== depID));
+  }
+
+  function bindSubmit(node: UpdateAttrPayloadType, property: ComputedProperty): void {
+    if (node.type === 'loopNode') {
+      // to get looNode property
+      return onCancel();
     }
 
-    if (bindConf.type === 'api_result_property') {
-      const expr = `apiStates['${bindConf.stateID}']`;
-      setStateExpr(expr);
-      setConvertorExpr(get(bindConf, 'convertor.expression', ''));
+    activeNode && onArteryChange(updateNodeProperty(activeNode, node.path, property, artery));
+    onCancel();
+  }
+
+  function handleEditorChange(val: string): void {
+    if (editorType === 'convertor') {
+      const bodyString = getFnBody(parseAst(val), val);
+
+      return setConvertorStr(bodyString);
     }
-    if (bindConf.type === 'shared_state_mutation_property') {
-      // todo
-    }
-  }, [activeNode?.id]);
+
+    setExpressionStr(val);
+  }
 
   function handleBind(): void {
     if (!updateAttrPayload) {
       return;
     }
-    if (!stateExpr) {
-      toast.error('变量表达式不能为空');
-      return;
-    }
-    if (!convertorExpr) {
-      toast.error('变量转换函数不能为空');
-      return;
-    }
-    if (convertorExpr.indexOf('state') < 0) {
-      toast.error('变量转换函数必须包含 state 来引用当前变量值');
-      return;
+
+    if (!expressionStr && !convertorStr) {
+      return toast.error('表达式和自定义函数的内容，不能都为空！');
     }
 
-    const match = stateExpr.match(/states\['(.+)'\]/i);
-    if (!match || !match[1]) {
-      toast.error(`无效的 stateID: ${stateExpr}`);
-      return;
-    }
+    const computedProperty: ComputedProperty = {
+      type: 'computed_property',
+      deps: boundVariables,
+      fallback: fallback,
+      convertor: toConvertorProp(finalConfig),
+    };
 
-    const nodeType = stateExpr.includes('apiStates[') ?
-      'api_result_property' :
-      'shared_state_property';
-
-    if (updateAttrPayload.type === 'loopNode') {
-      const iterableState = {
-        type: nodeType,
-        stateID: match[1],
-        fallback: [],
-        convertor: {
-          type: 'state_convert_expression',
-          expression: convertorExpr,
-        },
-      };
-      activeNode &&
-        onArteryChange(
-          updateCurNodeAsLoopContainer(
-            activeNode,
-            'iterableState',
-            iterableState,
-            artery,
-          ),
-        );
-    } else {
-      const fallbackVal = get(activeNode, updateAttrPayload.path + '.value');
-      activeNode &&
-        onArteryChange(
-          updateNodeProperty(
-            activeNode,
-            updateAttrPayload.path,
-            {
-              type: nodeType,
-              stateID: match[1],
-              fallback: fallbackVal,
-              convertor: {
-                type: 'state_convert_expression',
-                expression: convertorExpr,
-              },
-            } as NodeProperty,
-            artery,
-          ),
-        );
-    }
-
-    setModalBindStateOpen(false);
+    return bindSubmit(updateAttrPayload, computedProperty);
   }
+
+  function initValueByBindConf(bindConf: any): void {
+    setFallBack(bindConf.fallback);
+    setBoundVariables(bindConf.deps);
+
+    if (bindConf?.convertor?.type === 'state_convert_expression') {
+      const expr = bindConf.convertor?.expression;
+      const _expr = parseToExpressionStr(expr);
+
+      setEditorType('expression');
+      editorRef.current?.onInsertText(expr);
+      setExpressionStr(_expr);
+    }
+
+    if (bindConf?.convertor?.type === 'state_convertor_func_spec') {
+      setEditorType('convertor');
+      setConvertorStr(bindConf.convertor?.body);
+    }
+  }
+
+  useEffect(() => {
+    if (!updateAttrPayload) {
+      return;
+    }
+
+    const node = findNode(artery.node, activeNode?.id);
+    const bindConf = get(node, updateAttrPayload.path);
+
+    if (!bindConf) return;
+
+    initValueByBindConf(bindConf);
+  }, [activeNode?.id]);
 
   return (
     <Modal
-      title="变量绑定"
-      onClose={() => setModalBindStateOpen(false)}
+      title={isShouldRenderConfig ? '条件渲染配置' : '变量绑定'}
+      className='py-8'
+      onClose={onCancel}
       footerBtns={[
         {
           key: 'close',
           iconName: 'close',
-          onClick: () => setModalBindStateOpen(false),
+          onClick: onCancel,
           text: '取消',
         },
         {
@@ -155,109 +150,50 @@ function ModalBindState(): JSX.Element | null {
     >
       <div className={styles.modal}>
         <div className={styles.side}>
-          <Tab items={[
-            {
-              id: 'sharedState',
-              name: '自定义变量',
-              content: Object.entries(mapSharedStateSpec(artery)).map(([name, conf]) => {
-                const checked =
-                  selected?.name === name || stateExpr.includes(`['${name}']`);
-                return (
-                  <div
-                    key={name}
-                    className={cs(
-                      'flex justify-between items-center cursor-pointer px-16 py-4 hover:bg-gray-200',
-                      {
-                        [styles.active]: checked,
-                      },
-                    )}
-                    onClick={() => {
-                      setSelected({ name, conf });
-                      setStateExpr(`states['${name}']`);
-                    }}
-                  >
-                    <span className="flex-1 flex flex-wrap items-center">
-                      {name}
-                    </span>
-                    {checked && <Icon name="check" />}
-                  </div>
-                );
-              }),
-            },
-            {
-              id: 'apiState',
-              name: 'API 变量',
-              content: Object.entries(mapApiStateSpec(artery)).map(([name, conf]) => {
-                const checked =
-                selected?.name === name || stateExpr.includes(`['${name}']`);
-                return (
-                  <div
-                    key={name}
-                    className={cs(
-                      'flex justify-between items-center cursor-pointer px-16 py-4 hover:bg-gray-200',
-                      {
-                        [styles.active]: checked,
-                      },
-                    )}
-                    onClick={() => {
-                      setSelected({ name, conf });
-                      setStateExpr(`apiStates['${name}']`);
-                    }}
-                  >
-                    <span className="flex-1 flex flex-wrap items-center">
-                      {name}
-                    </span>
-                    {checked && <Icon name="check" />}
-                  </div>
-                );
-              }),
-            }]} />
+          <VariableList
+            boundVariables={boundVariables}
+            updateBoundVariables={setBoundVariables}
+            editorRef={expressionEditorRef}
+          />
         </div>
         <div className={styles.body}>
-          <div className="mb-8">
-            <p className="flex items-center">
-              <span className="mr-8">变量表达式</span>
-              <Tooltip position="top" label="请选择普通变量 或 api变量">
-                <Icon name="info" />
-              </Tooltip>
-            </p>
-            <Editor
-              value={stateExpr}
-              height="200px"
-              extensions={[javascript()]}
-              onChange={setStateExpr}
-            />
-          </div>
-          <div className="mb-8">
-            <p className="flex items-center">
-              <span className="mr-8">变量转换函数(state convertor)</span>
-              <Tooltip
-                position="top"
-                label="将初始变量进行一次转换，一般用于 api 变量"
-              >
-                <Icon name="info" />
-              </Tooltip>
-            </p>
-            <div className="text-12">
-              <p>示例:</p>
-              <pre className="text-12 text-blue-400 bg-gray-100">
-                {'state.user_name'}
-              </pre>
-              <div className="text-gray-400">
-                <p>
-                  state
-                  为页面引擎传入的当前变量(请勿修改名称)，您只需修改state的表达式即可。
-                </p>
-                <p>代码编辑器只接收函数体的表达式，不需要填写完整的函数定义</p>
+          <LogicOperatorsAndBoundVariables
+            boundVariables={boundVariables}
+            unBind={handleUnbind}
+            editorRef={expressionEditorRef}
+          />
+          <Tab
+            style={{ height: 'auto' }}
+            currentKey={editorType}
+            onChange={(id) => id === 'convertor' ? setEditorType('convertor') : setEditorType('expression')}
+            items={[
+              {
+                id: 'expression',
+                name: isShouldRenderConfig ? '条件表达式' : '变量表达式',
+                content: <div className={styles.tip}>配置前，应清空自定义函数，保存的表达式才能生效</div>,
+              },
+              {
+                id: 'convertor',
+                name: '自定义函数',
+                content: <div className={styles.tip}>配置自定义函数</div>,
+              },
+            ]}
+          />
+          <CodeEditor
+            type={editorType}
+            ref={editorRef}
+            initValue={editorType === 'convertor' ? convertorStr : expressionStr}
+            onChange={handleEditorChange}
+          />
+          {isShouldRenderConfig && (
+            <>
+              <div className="flex items-center pt-12">
+                <span>默认值：</span>
+                <Toggle defaultChecked={fallback} onChange={setFallBack} />
               </div>
-            </div>
-            <Editor
-              value={convertorExpr}
-              height="120px"
-              extensions={[javascript()]}
-              onChange={setConvertorExpr}
-            />
-          </div>
+              <div className={styles.desc}>表达式或自定义函数因某种原因执行失败或者出现异常的时候，作为执行结果的默认值</div>
+            </>
+          )}
         </div>
       </div>
     </Modal>

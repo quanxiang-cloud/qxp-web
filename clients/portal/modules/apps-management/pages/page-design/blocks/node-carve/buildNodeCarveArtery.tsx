@@ -8,7 +8,7 @@ import { BasePropSpec } from '@one-for-all/node-carve';
 interface OptionsType {
   style?: CSSProperties;
   prefix?: string;
-  bindVarible?: boolean;
+  bindVariable?: boolean;
 }
 
 const WILL_COMPONENT_MAP: Record<string, string> = {
@@ -16,7 +16,7 @@ const WILL_COMPONENT_MAP: Record<string, string> = {
   number: 'NumberPicker',
   boolean: 'Switch',
   function: 'FunctionBind',
-  object: 'VaribleBind',
+  object: 'VariableBind',
 };
 
 function convertWillProps(spec: BasePropSpec): NodeProperties {
@@ -112,7 +112,7 @@ function createTextNode(
   }
 
   const textNode: Node[] = [createWrapperNode({ display: 'flex' }, labelNode)];
-  if (will !== 'Unavaliable' && options.bindVarible) {
+  if (will !== 'Unavaliable' && options.bindVariable) {
     textNode.push({
       id: generateNodeId(),
       type: 'react-component',

@@ -11,50 +11,50 @@ import { ConnectedProps } from '../utils/connect';
 import { updateNodeProperty } from '../utils';
 import { useConfigContext } from '../context';
 
-interface VaribleBindProps {
+interface VariableBindProps {
   type: 'array' | 'object',
   text?: string;
 }
 
-function VaribleBind({
+function VariableBind({
   __path,
   type,
   text = '输入变量',
-}: ConnectedProps<VaribleBindProps>): JSX.Element {
+}: ConnectedProps<VariableBindProps>): JSX.Element {
   const { activeNode, onArteryChange, artery } = useConfigContext() ?? {};
   const [modalVisible, setModalVisible] = useState(false);
-  const [varibleString, setVaribleString] = useState<string>();
+  const [variableString, setVariableString] = useState<string>();
 
   useEffect(() => {
     const value = get(activeNode, `${__path}.value`, '');
     const valueString = JSON.stringify(value, null, 2);
-    setVaribleString(valueString);
+    setVariableString(valueString);
   }, []);
 
-  function handleBindVaribleSave(): void {
+  function handleBindVariableSave(): void {
     try {
       if (!activeNode || !artery) {
         return;
       }
 
-      const varible = JSON.parse(varibleString || '');
-      if (varible === null) {
+      const variable = JSON.parse(variableString || '');
+      if (variable === null) {
         setModalVisible(false);
         return;
       }
 
-      if (type === 'array' && !Array.isArray(varible)) {
+      if (type === 'array' && !Array.isArray(variable)) {
         toast.error('必须为数组');
         return;
       }
 
-      if (type === 'object' && !isObject(varible)) {
+      if (type === 'object' && !isObject(variable)) {
         toast.error('必须为对象');
         return;
       }
       onArteryChange?.(updateNodeProperty(activeNode, __path, {
         type: 'constant_property',
-        value: varible,
+        value: variable,
       }, artery));
       setModalVisible(false);
     } catch (err: any) {
@@ -81,20 +81,20 @@ function VaribleBind({
               key: 'check',
               iconName: 'check',
               modifier: 'primary',
-              onClick: handleBindVaribleSave,
+              onClick: handleBindVariableSave,
               text: '绑定',
             },
           ]}
         >
           <Editor
             value={
-              typeof varibleString === 'string' ?
-                varibleString : JSON.stringify(varibleString)
+              typeof variableString === 'string' ?
+                variableString : JSON.stringify(variableString)
             }
-            height="120px"
+            height="400px"
             extensions={[javascript()]}
             onChange={(value) => {
-              setVaribleString(value);
+              setVariableString(value);
             }}
           />
         </Modal>
@@ -103,4 +103,4 @@ function VaribleBind({
   );
 }
 
-export default VaribleBind;
+export default VariableBind;

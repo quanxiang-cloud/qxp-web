@@ -1,13 +1,15 @@
 import { Repository } from '@one-for-all/artery-renderer';
+
+import { Textarea } from '@one-for-all/ui';
 import { Checkbox, Input, Select, Switch, RadioGroup, CheckboxGroup } from '@one-for-all/headless-ui';
 
-import FunctionBind from './function-bind';
-import StateBind from './state-bind';
-import UrlInput, { UrlInputProps } from './url-input';
-import VaribleBind from './varible-bind';
-import Unavaliable from './unavaliable';
-import Tips from './tips';
 import { connect } from '../utils/connect';
+import functionbind from './function-bind';
+import statebind from './state-bind';
+import imageurl, { UrlInputProps } from './url-input';
+import variablebind from './variable-bind';
+import unavaliable from './unavaliable';
+import tips from './tips';
 
 const repo: Repository = {
   'node-carve@1.0.0': {
@@ -17,19 +19,14 @@ const repo: Repository = {
     radiogroup: connect(RadioGroup),
     checkboxgroup: connect(CheckboxGroup),
     numberpicker: connect(Input, { defaultProps: { className: 'w-full', type: 'number' } }),
-    textarea: connect(Input, { defaultProps: { className: 'w-full', type: 'textarea' } }),
-    checkbox: connect(Checkbox, {
-      valueKey: 'checked',
-      getValue(...args) {
-        return args[1]?.target?.checked;
-      },
-    }),
-    imageurl: connect<UrlInputProps>(UrlInput),
-    functionbind: FunctionBind,
-    variblebind: VaribleBind,
-    statebind: StateBind,
-    tips: Tips,
-    unavaliable: Unavaliable,
+    textarea: connect(Textarea, { defaultProps: { className: 'w-full' } }),
+    checkbox: connect(Checkbox, { valueKey: 'checked', getValue: ([val, e]) => e?.target?.checked }),
+    imageurl: connect<UrlInputProps>(imageurl),
+    functionbind,
+    variablebind,
+    statebind,
+    tips,
+    unavaliable,
   },
 };
 

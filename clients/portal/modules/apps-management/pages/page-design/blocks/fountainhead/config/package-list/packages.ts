@@ -22,7 +22,7 @@ export default [
   {
     name: 'ofa-ui',
     label: 'legacy',
-    version: '1.0.0',
+    version: 'latest',
     categories: ['布局组件', '基础组件', '表单组件', '高级组件'],
     hide: true,
   },
