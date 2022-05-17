@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import cs from 'classnames';
 import { observer } from 'mobx-react';
 import { toJS, reaction } from 'mobx';
@@ -8,6 +8,7 @@ import type { BlockItemProps } from '@one-for-all/artery-engine';
 
 import { useCtx } from '@pageDesign/ctx';
 import type { BlocksCommunicationType } from '@pageDesign/types';
+import componentLoader from '@c/artery-renderer/component-loader';
 
 import styles from './style.m.scss';
 import './style.scss';
@@ -17,14 +18,10 @@ const historySizeLimit = 50;
 
 function Toolbar({ sharedState, artery }: BlockItemProps<BlocksCommunicationType>): JSX.Element {
   const ctx = useCtx();
-  const { page, designer, registry } = ctx;
+  const { page, designer } = ctx;
   const [openTestPreview, setOpenPreview] = useState(false);
   const [historyList, setHistoryList] = useState<string[]>([]); // page schema history
   const [hisIdx, setHisIdx] = useState(0); // history queue index
-  const repository = useMemo(()=> ({
-    'ofa-ui@latest': registry.toComponentMap('ofa-ui'),
-    'system-components@latest': registry.toComponentMap('systemComponents'),
-  }), []);
   const { docLink = '', hideTestPreview } = sharedState;
 
   useEffect(()=> {
@@ -75,7 +72,7 @@ function Toolbar({ sharedState, artery }: BlockItemProps<BlocksCommunicationType
     return (
       <ArteryRenderer
         artery={artery as any}
-        plugins={{ repository: repository as any }}
+        plugins={{ componentLoader }}
       />
     );
   }

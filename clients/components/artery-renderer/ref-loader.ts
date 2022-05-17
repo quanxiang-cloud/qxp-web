@@ -3,8 +3,8 @@ import { RefLoader } from '@one-for-all/artery-renderer';
 import { ARTERY_KEY_VERSION } from '@portal/constants';
 import SwaggerRPCSpecAdapter from '@lib/api-adapter';
 
+import componentLoader from './component-loader';
 import { fetchArteryWithSwagger } from './api';
-import repository from './repository';
 
 const refLoader: RefLoader = (arteryID: string) => {
   return fetchArteryWithSwagger(arteryID, ARTERY_KEY_VERSION).then(({ artery, swagger }) => {
@@ -14,9 +14,10 @@ const refLoader: RefLoader = (arteryID: string) => {
 
     const adapter = swagger ? new SwaggerRPCSpecAdapter(swagger) : undefined;
     return {
-      artery, plugins: {
+      artery,
+      plugins: {
         apiSpecAdapter: adapter,
-        repository,
+        componentLoader,
       },
     };
   });

@@ -1,9 +1,10 @@
 import { CSSProperties } from 'react';
 import { set } from 'lodash';
-
 import { Artery, HTMLNode, Node, NodeProperty, NodeProperties } from '@one-for-all/artery';
 import { generateNodeId } from '@one-for-all/artery-engine';
 import { BasePropSpec } from '@one-for-all/node-carve';
+
+import versionMap from '../fountainhead/config/name-version-map';
 
 interface OptionsType {
   style?: CSSProperties;
@@ -100,7 +101,7 @@ function createTextNode(
       id: generateNodeId(),
       type: 'react-component',
       packageName: 'node-carve',
-      packageVersion: '1.0.0',
+      packageVersion: versionMap['node-carve'],
       exportName: 'tips',
       props: {
         label: {
@@ -117,7 +118,7 @@ function createTextNode(
       id: generateNodeId(),
       type: 'react-component',
       packageName: 'node-carve',
-      packageVersion: '1.0.0',
+      packageVersion: versionMap['node-carve'],
       exportName: 'statebind',
       props: generateNodeProperties(spec, options),
     });
@@ -138,7 +139,7 @@ function createFieldNode(
           id: generateNodeId(),
           type: 'react-component',
           packageName: 'node-carve',
-          packageVersion: '1.0.0',
+          packageVersion: versionMap['node-carve'],
           exportName: will.toLowerCase(),
           props: generateNodeProperties(spec, options),
         },
