@@ -82,6 +82,10 @@ const schema: ISchema = {
               label: '选项集',
               value: 'predefined-dataset',
             },
+            {
+              label: 'API',
+              value: 'api',
+            },
           ],
           'x-component': 'select',
           'x-mega-props': {
@@ -99,6 +103,11 @@ const schema: ISchema = {
               target: 'predefinedDataset',
               condition: '{{ $value === "predefined-dataset" }}',
             },
+            {
+              type: 'value:visible',
+              target: '*(formApi,sendUserData)',
+              condition: '{{ $value === "api" }}',
+            },
           ],
         },
         customizedDataset: {
@@ -111,11 +120,27 @@ const schema: ISchema = {
           'x-component': 'DatasetSelector',
           'x-index': 6,
         },
+        formApi: {
+          title: 'API:',
+          required: true,
+          'x-rules': {
+            required: true,
+            message: '请选择API',
+          },
+          'x-component': 'FormApi',
+          'x-index': 7,
+        },
+        sendUserData: {
+          title: '允许发送用户信息',
+          default: false,
+          'x-component': 'Switch',
+          'x-index': 8,
+        },
         showFullPath: {
           title: '结果显示路径',
           default: false,
           'x-component': 'Switch',
-          'x-index': 7,
+          'x-index': 9,
         },
         // dropdownStyle: {
         //   type: 'string',
@@ -141,7 +166,7 @@ const schema: ISchema = {
           title: '是否必填',
           default: false,
           'x-component': 'Switch',
-          'x-index': 9,
+          'x-index': 10,
         },
       },
     },

@@ -20,6 +20,7 @@ type Props = {
   usePolyApiOption?: boolean;
   simpleMode?: boolean;
   apiDocDetail?: RawApiDocDetail;
+  onClear?: () => void;
 };
 
 function ApiSelector({
@@ -32,6 +33,7 @@ function ApiSelector({
   initRawApiPath,
   label = '全部API:',
   usePolyApiOption = false,
+  onClear,
 }: Props): JSX.Element {
   const [apiDirectoryWithPathType, setApiDirectoryWithPathType] = useState({ directory: '', pathType: PathType.RAW_ROOT });
   const options = useGetOptionFromCollection({ appID, apiDirectoryWithPathType, usePolyApiOption });
@@ -45,6 +47,7 @@ function ApiSelector({
       setApiPath(leafOption.path, leafOption.method);
       return;
     }
+    if (Array.isArray(value) && !value.length) onClear?.();
   }
 
   function loadData(selectedOptions: DefaultOptionType[]): void {

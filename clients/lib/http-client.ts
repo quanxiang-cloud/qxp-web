@@ -8,7 +8,7 @@ import { TIME_ZONE } from './utils';
 
 let alreadyAlertUnauthorizedError = false;
 
-type METHOD = 'POST' | 'GET' | 'PUT' | 'DELETE' | 'PATCH'
+export type METHOD = 'POST' | 'GET' | 'PUT' | 'DELETE' | 'PATCH'
 
 const HEADERS: Record<string, any> = {
   'X-Proxy': 'API',
@@ -16,7 +16,7 @@ const HEADERS: Record<string, any> = {
   'Content-Type': 'application/json',
 };
 
-function request<TData>(path: string, method: METHOD, body?: unknown): Promise<TData> {
+export function request<TData>(path: string, method: METHOD, body?: unknown): Promise<TData> {
   const requestInit: RequestInit = {
     method: method,
     body: method !== 'GET' ? JSON.stringify(body) : undefined,
