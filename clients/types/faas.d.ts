@@ -27,6 +27,7 @@ type VersionField = {
   id: string;
   name: string;
   projectID: string;
+  groupName: string;
   resourceRef: string;
   status: number;
   version: string;

@@ -120,7 +120,6 @@ const SCHEMA: ISchema = {
           },
         },
         language: {
-
           type: 'string',
           title: '语言',
           ['x-component']: 'RadioGroup',

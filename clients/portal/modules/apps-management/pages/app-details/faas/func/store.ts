@@ -153,7 +153,7 @@ class FaasStore {
     const _createFuncParams = omit(data, ['type']);
     createFaasFunc(this.groupID, { ..._createFuncParams, version: '1.16' }).then((res) => {
       this.currentFuncID = res.id;
-      this.currentFunc = { ...res, ...data, state: 'True' };
+      this.currentFunc = { ...data, ...res, state: 'True' };
       this.funcList = [this.currentFunc, ...this.funcList];
     }).catch((err) => {
       toast.error(err);
@@ -298,7 +298,7 @@ class FaasStore {
   getApiPath = (): void => {
     this.isAPILoading = true;
     getDirectoryPath(this.appID, 'faas').then((apiPath) => {
-      this.apiPath = `${apiPath}/faas/${this.currentBuild?.name}.r`;
+      this.apiPath = `${apiPath}/${this.currentBuild?.groupName}/${this.currentBuild?.name}.r`;
     }).catch((err) => {
       toast.error(err);
     }).finally(() => this.isAPILoading = false);

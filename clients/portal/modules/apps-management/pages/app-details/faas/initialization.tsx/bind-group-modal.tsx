@@ -55,21 +55,47 @@ const SCHEMA = {
           },
           enum: [],
         },
-        name: {
+        title: {
           type: 'string',
-          title: 'Group',
-          required: true,
+          title: 'Group名称',
+          'x-component': 'Input',
           'x-component-props': {
-            placeholder: '请输入名称',
+            placeholder: '请输入Group名称',
+          },
+          'x-mega-props': {
+            labelAlign: 'top',
           },
           'x-rules': [
             {
               required: true,
-              message: '请输入名称',
+              message: '请输入Group名称',
+            },
+            {
+              pattern: /^((?!(\ud83c[\udf00-\udfff])|(\ud83d[\udc00-\ude4f])|(\ud83d[\ude80-\udeff])).)*$/,
+              message: '不能输入emoji表情符号',
+            },
+            {
+              max: 30,
+              message: '名称不超过 30 字符，请修改！',
+            },
+          ],
+          'x-index': 2,
+        },
+        name: {
+          type: 'string',
+          title: 'Group标志',
+          required: true,
+          'x-component-props': {
+            placeholder: '请输入Group标志',
+          },
+          'x-rules': [
+            {
+              required: true,
+              message: '请输入Group标志',
             },
             {
               max: 20,
-              message: '函数标识不超过 20 字符，请修改！',
+              message: 'Group标识不超过 20 字符，请修改！',
             },
             {
               pattern: /^[a-z]+([0-9])*$/,
@@ -77,7 +103,7 @@ const SCHEMA = {
             },
           ],
           'x-component': 'Input',
-          'x-index': 2,
+          'x-index': 3,
           'x-mega-props': {
             labelAlign: 'top',
           },
@@ -93,7 +119,7 @@ const SCHEMA = {
             message: '超过 100 字符!',
           },
           'x-component': 'TextArea',
-          'x-index': 3,
+          'x-index': 4,
           'x-mega-props': {
             labelAlign: 'top',
           },
@@ -118,9 +144,6 @@ function BindGroupModal(): JSX.Element {
           state.props.enum = store.optionalGroupToSelectEnum;
         });
         setFieldState('name', (state) => {
-          state.visible = value === 'custom';
-        });
-        setFieldState('describe', (state) => {
           state.visible = value === 'custom';
         });
       });
