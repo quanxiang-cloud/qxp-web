@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Tab } from '@one-for-all/ui';
+import { Artery, SharedStatesSpec, APIStatesSpec } from '@one-for-all/artery';
 
 import SharedState from './shared-state';
 import ApiState from './api-state';
@@ -9,6 +10,8 @@ import styles from './index.m.scss';
 
 interface Props {
   className?: string;
+  artery: Artery;
+  onChange: (artery: Artery) => void;
 }
 
 // // @see https://github.com/suren-atoyan/monaco-react/issues/217
@@ -21,7 +24,20 @@ interface Props {
 //   },
 // });
 
-function DataSource(props: Props): JSX.Element {
+function DataSource({ artery, onChange }: Props): JSX.Element {
+  function handleChangeSharedState(sharedState: SharedStatesSpec): void {
+    onChange({ ...artery, sharedStatesSpec: sharedState });
+  }
+
+  function handleChangeApiState(apiState: APIStatesSpec): void {
+    onChange({ ...artery, apiStateSpec: apiState });
+  }
+
+  function hasSameKey(key: string): boolean {
+    if (Object.keys(artery.apiStateSpec || {}).includes(key)) return true;
+    return Object.keys(artery.sharedStatesSpec || {}).includes(key);
+  }
+
   return (
     <div className={styles.ds}>
       <Tab
@@ -36,7 +52,13 @@ function DataSource(props: Props): JSX.Element {
           {
             id: 'apiState',
             name: 'API',
-            content: (<ApiState />),
+            content: (
+              <ApiState
+                apiStateSpec={artery.apiStateSpec}
+                onChangeApiState={handleChangeApiState}
+                hasSameKey={hasSameKey}
+              />
+            ),
           },
         ]}
       />
