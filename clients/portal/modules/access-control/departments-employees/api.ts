@@ -17,7 +17,7 @@ export async function editDepartment(params: {
   id: string;
   attr: string | number;
   pid?: string;
-  name?: string;
+  name?: string
   leaderID?: string;
   useStatus?: number;
 }) {

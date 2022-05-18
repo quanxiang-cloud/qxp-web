@@ -1,6 +1,6 @@
 .list-menu-node-active {
   &::after {
-    content: "";
+    content: '';
     width: 4px;
     height: 100%;
     position: absolute;
@@ -16,7 +16,7 @@
   padding: 16px 16px 0px;
 }
 
-.role-header  .text-caption {
+.role-header .text-caption {
   font-weight: 600;
 }
 
@@ -24,7 +24,7 @@
   width: 150px;
 }
 
-input[type=checkbox] {
+input[type='checkbox'] {
   appearance: none;
   -webkit-appearance: none;
   width: 16px;
@@ -34,7 +34,7 @@ input[type=checkbox] {
   border-radius: 4px;
   outline: none;
   cursor: pointer;
-  background: #FFFFFF;
+  background: #ffffff;
   border: 1px solid var(--gray-400);
   &:disabled {
     border: 1px solid var(--gray-300);
@@ -117,4 +117,33 @@ input.from-input {
 
 .employee-table-setting {
   @apply flex items-center cursor-pointer ml-16 justify-center w-32 h-32 rounded-l-8 rounded-r-2 border-1.5 border-gray-500 bg-gray-100;
+}
+
+.group-nav {
+  width: 212px;
+
+  .group-search {
+    width: 160px;
+    height: 28px;
+    padding: 4px 14px;
+    margin: 0 8px;
+    border-width: 1px;
+    input {
+      width: 82px;
+    }
+  }
+
+  .group-add {
+    text-align: center;
+    line-height: 28px;
+    width: 28px;
+    height: 28px;
+    margin-right: 8px;
+    cursor: pointer;
+    border-radius: 8px;
+    border-top-right-radius: 2px;
+    background-color: var(--gray-700);
+    --tw-text-opacity: 1;
+    color: rgba(255, 255, 255, var(--tw-text-opacity));
+  }
 }

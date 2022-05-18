@@ -10,11 +10,12 @@ import PropertiesForm from './properties-form';
 import store from './store';
 
 import '../index.scss';
+import Search from '@c/search';
 
 function ExtendProperties(): JSX.Element {
   useEffect(() => {
     store.loading = true;
-    store.fetchCloum(0);
+    store.fetchCloum();
   }, []);
 
   return (
@@ -25,13 +26,24 @@ function ExtendProperties(): JSX.Element {
         itemTitleClassName="text-h5"
       />
       <div className='m-16'>
-        <Button
-          modifier='primary'
-          iconName='add'
-          onClick={() => store.handleAdd()}
-        >
-          新建属性
-        </Button>
+        <div className='mb-8 flex items-center justify-between'>
+          <Button
+            modifier='primary'
+            iconName='add'
+            onClick={() => store.handleAdd()}
+          >
+            新建属性
+          </Button>
+          <Search
+            className='w-220 text-12'
+            placeholder='搜索名称...'
+            value={store.search}
+            onChange={(val) => {
+              store.filterType === 'all' ? '' : store.filterType = 'all';
+              store.setSearch(val);
+            }}
+          />
+        </div>
         <PropertiesTable />
         {store.isVisible && (
           <Modal

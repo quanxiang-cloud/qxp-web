@@ -13,6 +13,7 @@ const InputCss: CSSProperties = {
 interface Props {
   value?: string;
   placeholder?: string;
+  iconSize?: number;
   onChange?: (val: string) => void;
   onBlur?(val?: string): void;
   onKeyDown?(e?: React.KeyboardEvent): void;
@@ -20,7 +21,7 @@ interface Props {
 }
 
 export default function Search(
-  { value: _value, placeholder, onChange, onKeyDown, onBlur, className }: Props): JSX.Element {
+  { value: _value, placeholder, iconSize, onChange, onKeyDown, onBlur, className }: Props): JSX.Element {
   const [value, setValue] = useState(_value || '');
   const [focused, setFocused] = useState(false);
 
@@ -53,7 +54,7 @@ export default function Search(
         })
       }
     >
-      <Icon name="search" size={20} className='mr-8' />
+      <Icon name="search" size={iconSize || 20} className='mr-8' />
       <input
         style={InputCss}
         className="flex-grow w-100"
@@ -70,7 +71,7 @@ export default function Search(
         <Icon
           className="ml-8"
           name="close"
-          size={20}
+          size={iconSize || 20}
           clickable
           onClick={handleClick}
         />

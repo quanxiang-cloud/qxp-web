@@ -1,6 +1,6 @@
 import httpClient from '@lib/http-client';
 
-import { ColumnInfo, SubmitParams, TableParams } from './type';
+import { SubmitParams, TableParams } from './type';
 
 export async function addColumn(params: SubmitParams): Promise<void> {
   return await httpClient('/api/v1/org/m/column/add', params);
@@ -11,15 +11,17 @@ export async function updateColumn(id: string, params: SubmitParams): Promise<vo
 }
 
 export async function deleColumn(id: string): Promise<void> {
-  return await httpClient.delete('/api/v1/org/m/column/drop', { id });
+  return await httpClient.delete('/api/v1/org/m/column/del', { id });
 }
 
-export async function getColumn(status: 0 | 1): Promise<{ all: Array<TableParams>}> {
-  return await httpClient.get('/api/v1/org/m/column/all', { status });
+export async function getColumn(name?: string): Promise<{ all: Array<TableParams>}> {
+  return await httpClient.get('/api/v1/org/m/column/all', { name });
 }
 
-export async function setColumn(add: Array<ColumnInfo>, ids: Array<string>): Promise<void> {
-  return await httpClient.put('/api/v1/org/m/column/set', { add, delete: ids });
+export async function setColumn(add: Array<string>, ids: Array<string>): Promise<void> {
+  return await httpClient.put('/api/v1/org/m/column/set', {
+    add, delete: ids, roleID: window.USER_ADMIN_ROLES[0].roleID,
+  });
 }
 
 export async function openExtend(): Promise<void> {

@@ -51,7 +51,7 @@ function PropertiesForm(): JSX.Element {
         <div className='mb-16'>
           <p>
             <span className='text-red-900 mr-2'>*</span>
-            字段名称
+            属性名称
           </p>
           <input
             className={cs('from-input', { error: errors.name })}
@@ -69,7 +69,7 @@ function PropertiesForm(): JSX.Element {
         <div className='mb-16'>
           <p>
             <span className='text-red-900 mr-2'>*</span>
-            字段英文名
+            属性标识
           </p>
           <input
             className={cs('from-input', { error: errors.columnName })}
@@ -88,7 +88,7 @@ function PropertiesForm(): JSX.Element {
         <div className='mb-16'>
           <p className='mb-8'>
             <span className='text-red-900 mr-2'>*</span>
-            字段类型
+            属性类型
           </p>
           <Select
             style={{ maxWidth: '100%' }}
@@ -124,7 +124,8 @@ function PropertiesForm(): JSX.Element {
               maxLength={2}
               {...register('pointLen', {
                 pattern: { value: /^[0-9]+$/, message: '请输入正整数' },
-              })} />
+              })}
+            />
             <ErrorMsg errors={errors} name='pointLen' />
           </div>
         )}

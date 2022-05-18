@@ -28,7 +28,7 @@ function PropertiesTable(): JSX.Element {
     {
       Header: (
         <Select
-          defaultValue='all'
+          value={store.filterType}
           options={filterTypeOptions}
           onChange={(val) => {
             store.setFilterType(val);
@@ -55,60 +55,20 @@ function PropertiesTable(): JSX.Element {
       Header: '可用状态',
       id: 'status',
       width: 'auto',
-      accessor: ({ id, status }: TableParams) => {
+      accessor: ({ id, attr, status }: TableParams) => {
         return (
           <div className='flex gap-6'>
-            <div
-              onClick={() => {
-                if (status) {
-                  // todo
-                }
-              }}
-            >
-              <Toggle
-                onText="开启"
-                offText="关闭"
+            {attr === 1 ? <span>启用</span> :
+              (<Toggle
                 className='text-12'
                 checked={status === 1 ? true : false}
                 onChange={(checked) => {
                   changeStatus(checked, id).then(() => {
-                    store.fetchCloum(0);
+                    store.fetchCloum();
                     toast.success('修改可用状态成功');
                   }).catch((err) => toast.error(err));
                 }}
-              />
-            </div>
-          </div>
-        );
-      },
-    },
-    {
-      Header: '可见状态',
-      id: 'viewerStatus',
-      width: 'auto',
-      accessor: ({ id, viewerStatus }: TableParams) => {
-        return (
-          <div className='flex gap-6'>
-            <div
-              onClick={() => {
-                if (viewerStatus) {
-                  // todo
-                }
-              }}
-            >
-              <Toggle
-                onText="开启"
-                offText="关闭"
-                className='text-12'
-                checked={viewerStatus === 1 ? true : false}
-                onChange={(checked) => {
-                  setColumn([{ columnID: id, viewerStatus: checked ? 1 : -1 }], []).then(() => {
-                    store.fetchCloum(0);
-                    toast.success('修改可见状态成功');
-                  }).catch((err) => toast.error(err));
-                }}
-              />
-            </div>
+              />)}
           </div>
         );
       },
@@ -126,14 +86,16 @@ function PropertiesTable(): JSX.Element {
             >
               修改
             </span>
-            {/* <span
-              className='delete-text-btn'
-              onClick={() =>{
-                store.handleDel(colDetail.id || '');
-              }}
-            >
+            { colDetail.attr === 2 && (
+              <span
+                className='delete-text-btn'
+                onClick={() =>{
+                  store.handleDel(colDetail.id || '');
+                }}
+              >
               删除
-            </span> */}
+              </span>
+            )}
           </div>
         );
       },
@@ -145,7 +107,7 @@ function PropertiesTable(): JSX.Element {
     id: string,
   ): Promise<void> {
     if (checked) {
-      return setColumn([{ columnID: id, viewerStatus: -1 }], []);
+      return setColumn([id], []);
     }
 
     return setColumn([], [id]);

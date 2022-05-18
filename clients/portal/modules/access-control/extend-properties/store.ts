@@ -1,4 +1,4 @@
-import { action, observable } from 'mobx';
+import { action, observable, reaction } from 'mobx';
 
 import toast from '@lib/toast';
 
@@ -62,6 +62,11 @@ class ExtendPropertiesStore {
   @observable isEdit = false;
   @observable curId = '';
   @observable curColDetail: SubmitParams = initCurCol;
+  @observable search = '';
+
+  constructor() {
+    reaction(() => this.search, this.fetchCloum);
+  }
 
   @action
   setIsVisible = (isVisible: boolean): void => {
@@ -79,6 +84,11 @@ class ExtendPropertiesStore {
   };
 
   @action
+  setSearch = (search: string): void => {
+    this.search = search;
+  };
+
+  @action
   getFilterData = (type: 'all' | FromTypes): void => {
     if (type === 'all') {
       this.tableData = this.data;
@@ -90,6 +100,8 @@ class ExtendPropertiesStore {
 
   @action
   onSubmit = (data: BaseParams): void => {
+    this.filterType = 'all';
+    this.search = '';
     const params: SubmitParams = {
       name: data.name,
       columnName: data.columnName,
@@ -101,7 +113,7 @@ class ExtendPropertiesStore {
     if (this.isEdit) {
       updateColumn(this.curId, params).then(() => {
         this.isVisible = false;
-        this.fetchCloum(0);
+        this.fetchCloum();
         toast.success('修改成功');
       }).catch((err) => toast.error(err));
 
@@ -110,7 +122,7 @@ class ExtendPropertiesStore {
 
     addColumn(params).then(() => {
       this.isVisible = false;
-      this.fetchCloum(0);
+      this.fetchCloum();
       toast.success('添加成功');
     }).catch((err) => toast.error(err));
   };
@@ -140,16 +152,17 @@ class ExtendPropertiesStore {
   handleDel = (id: string): void => {
     deleColumn(id).then(() => {
       toast.success('删除成功');
+      this.fetchCloum();
     }).catch((err) => {
       toast.error(err);
     });
   };
 
   @action
-  fetchCloum = (status: 0 | 1): void => {
-    getColumn(status).then((res) => {
+  fetchCloum = (): void => {
+    getColumn(this.search).then((res) => {
       this.loading = false;
-      this.data = res.all;
+      this.data = res.all || [];
       this.getFilterData(this.filterType);
     }).catch((err) => {
       toast.error(err);

@@ -11,6 +11,7 @@ import GlobalHeader from '@portal/global-header';
 import RoleManagement from './role-management';
 import DepartmentsEmployees from './departments-employees';
 import ExtendProperties from './extend-properties';
+import GroupManagement from './group-management';
 
 import './index.scss';
 
@@ -24,9 +25,16 @@ const MENU = [
   },
   {
     id: 'extend-properties',
-    icon: 'contacts',
+    icon: 'extend_properties',
     name: '扩展属性',
     url: '/access-control/extend-properties',
+    authority: 'accessControl/mailList/read',
+  },
+  {
+    id: 'group-management',
+    icon: 'member_group',
+    name: '分组管理',
+    url: '/access-control/group-management',
     authority: 'accessControl/mailList/read',
   },
   {
@@ -75,6 +83,7 @@ export default function Index(): JSX.Element {
             <Route path="/access-control/departments-employees" component={DepartmentsEmployees} />
             <Route path="/access-control/role-management" component={RoleManagement} />
             <Route path="/access-control/extend-properties" component={ExtendProperties} />
+            <Route path="/access-control/group-management" component={GroupManagement} />
             <Route component={() => <NotFoundError url='/access-control' classnames='main-content'/>}/>
           </Switch>
         </div>
