@@ -20,6 +20,7 @@ import {
   registerAPI,
   getVersionInfo,
   fetchCanBindProjectList,
+  initProject,
 } from '../api';
 import { INIT_API_CONTENT } from '../../api-documentation/constants';
 import { API_DOC_STATE, FUNC_STATUS } from '../constants';
@@ -149,11 +150,14 @@ class FaasStore {
   };
 
   @action
-  createFunc = (data: creatFuncParams): void => {
-    const _createFuncParams = omit(data, ['type']);
-    createFaasFunc(this.groupID, { ..._createFuncParams, version: '1.16' }).then((res) => {
+  createFunc = (creatParams: creatFuncParams): void => {
+    const _createFuncParams = omit(creatParams, ['type', 'init']);
+    createFaasFunc(this.groupID, { ..._createFuncParams, version: '1.16' }).then(async (res) => {
+      if (creatParams.init) {
+        await initProject(this.groupID, res.id);
+      }
       this.currentFuncID = res.id;
-      this.currentFunc = { ...data, ...res, state: 'True' };
+      this.currentFunc = { ..._createFuncParams, ...res, state: 'True' };
       this.funcList = [this.currentFunc, ...this.funcList];
     }).catch((err) => {
       toast.error(err);

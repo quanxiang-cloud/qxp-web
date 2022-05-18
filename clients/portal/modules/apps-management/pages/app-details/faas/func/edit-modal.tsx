@@ -140,6 +140,27 @@ const SCHEMA: ISchema = {
           },
           'x-index': 4,
         },
+        init: {
+          type: 'string',
+          title: '是否初始化Project',
+          'x-component': 'RadioGroup',
+          required: true,
+          default: true,
+          enum: [
+            {
+              label: '是',
+              value: true,
+            },
+            {
+              label: '否',
+              value: false,
+            },
+          ],
+          'x-mega-props': {
+            labelAlign: 'top',
+          },
+          'x-index': 5,
+        },
         description: {
           type: 'string',
           title: '描述',
@@ -154,7 +175,7 @@ const SCHEMA: ISchema = {
             max: 100,
             message: '备注超过 100 字符!',
           },
-          'x-index': 5,
+          'x-index': 6,
         },
       },
     },
@@ -176,6 +197,9 @@ function EditModal({ modalType, onClose }: Props): JSX.Element {
         });
         setFieldState('name', (state) => {
           state.editable = value === 'custom';
+        });
+        setFieldState('init', (state) => {
+          state.visible = value === 'custom';
         });
       });
       onFieldValueChange$('id').subscribe(({ values }) => {

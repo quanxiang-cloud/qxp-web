@@ -90,9 +90,14 @@ export function fetchFuncList(
 
 export function createFaasFunc(
   groupID: string,
-  data: Omit<creatFuncParams, 'type'>,
+  data: Omit<creatFuncParams, 'type' | 'init'>,
 ): Promise<{ id: string, createdAt: number, creator: string }> {
   return httpClient(`/api/v1/faas/group/${groupID}/project`, data);
+}
+
+export function initProject(groupID: string, projectID: string): Promise<unknown> {
+  return httpClient(`/api/v1/faas/group/${groupID}/project/${projectID}/init`)
+    .catch((err) => toast.error(err));
 }
 
 export function getFuncInfo(groupID: string, projectID: string): Promise<FuncField> {
