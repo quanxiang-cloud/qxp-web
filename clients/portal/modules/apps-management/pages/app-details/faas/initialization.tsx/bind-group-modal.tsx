@@ -53,10 +53,7 @@ const SCHEMA = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          enum: [
-            { label: 'some', value: 'currentFormValue' },
-            { label: 'one', value: 'fixedValue' },
-          ],
+          enum: [],
         },
         name: {
           type: 'string',
@@ -69,6 +66,14 @@ const SCHEMA = {
             {
               required: true,
               message: '请输入名称',
+            },
+            {
+              max: 20,
+              message: '函数标识不超过 20 字符，请修改！',
+            },
+            {
+              pattern: /^[a-z]+([0-9])*$/,
+              message: '必须以小写字母开头,由小写字母、数字组成',
             },
           ],
           'x-component': 'Input',

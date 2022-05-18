@@ -10,6 +10,8 @@ import { useMenuPanel } from '@pageDesign/hooks';
 import Core from './core';
 
 const Pool = (props: BlockItemProps<BlocksCommunicationType>): JSX.Element => {
+  const { artery, onChange } = props;
+
   const {
     ref,
     currentType,
@@ -32,7 +34,7 @@ const Pool = (props: BlockItemProps<BlocksCommunicationType>): JSX.Element => {
         closable
         pinnable
       >
-        <Core />
+        <Core artery={artery} onChange={onChange} />
       </Panel>
     </div>
   );

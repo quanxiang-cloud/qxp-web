@@ -1,8 +1,12 @@
-import packages from './packages';
+import { setGlobalConfig } from '@lib/api/user-config';
 
-export const params = [{
-  key: 'PACKAGES',
-  version: '1.0.0',
-  value: JSON.stringify(packages),
-}];
-// __httpClient('/api/v1/persona/batchSetValue', { keys: params });
+import { getPackages } from './packages';
+import versionMap from '../name-version-map';
+
+const name = 'PACKAGES';
+const version = versionMap[name];
+
+export async function savePackagesConfig(): Promise<void> {
+  const packages = await getPackages();
+  setGlobalConfig(name, version, packages);
+}

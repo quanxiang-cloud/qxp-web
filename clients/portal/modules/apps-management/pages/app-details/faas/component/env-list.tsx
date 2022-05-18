@@ -57,7 +57,7 @@ function EnvList(props: ISchemaFieldComponentProps): JSX.Element {
           />
         </RowStyleLayout>
       ))}
-      <Button onClick={handAddRule}>新增赋值规则</Button>
+      <Button onClick={handAddRule}>新增环境变量</Button>
     </ArrayList>
   );
 }

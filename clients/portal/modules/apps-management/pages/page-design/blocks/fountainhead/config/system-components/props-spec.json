@@ -9,46 +9,257 @@
     "isContainer": false,
     "isOverLayer": false
   },
+  "GridContainer": {
+    "props": [{
+      "label": "每行元素个数",
+      "name": "coloumCount",
+      "type": "number",
+      "desc": "每行至少一个元素",
+      "willProps": {
+        "min": 1
+      }
+    }, {
+      "label": "每列元素个数",
+      "name": "rowCount",
+      "type": "number",
+      "desc": "每列至少一个元素",
+      "willProps": {
+        "min": 1
+      }
+    }, {
+      "label": "行间距",
+      "name": "columnGap",
+      "type": "string",
+      "will": "Select",
+      "willProps": {
+        "options": [{
+          "label": "0px",
+          "value": "0px"
+        }, {
+          "label": "8px",
+          "value": "8px"
+        }, {
+          "label": "16px",
+          "value": "16px"
+        }, {
+          "label": "24px",
+          "value": "24px"
+        }]
+      }
+    }, {
+      "label": "列间距",
+      "name": "rowGap",
+      "type": "string",
+      "will": "Select",
+      "willProps": {
+        "options": [{
+          "label": "0px",
+          "value": "0px"
+        }, {
+          "label": "8px",
+          "value": "8px"
+        }, {
+          "label": "16px",
+          "value": "16px"
+        }, {
+          "label": "24px",
+          "value": "24px"
+        }]
+      }
+    }, {
+      "label": "水平对齐方式",
+      "name": "justifyItems",
+      "type": "string",
+      "will": "Select",
+      "willProps": {
+        "options": [{
+          "label": "铺满",
+          "value": "stretch"
+        }, {
+          "label": "左对齐",
+          "value": "start"
+        }, {
+          "label": "居中",
+          "value": "center"
+        }, {
+          "label": "右对齐",
+          "value": "end"
+        }]
+      }
+    }, {
+      "label": "垂直对齐方式",
+      "name": "alignItems",
+      "type": "string",
+      "will": "Select",
+      "willProps": {
+        "options": [{
+          "label": "铺满",
+          "value": "stretch"
+        }, {
+          "label": "顶部对齐",
+          "value": "start"
+        }, {
+          "label": "居中",
+          "value": "center"
+        }, {
+          "label": "尾部对齐",
+          "value": "end"
+        }]
+      }
+    }],
+    "isContainer": true,
+    "isOverLayer": false
+  },
   "FileUpload": {
     "props": [{
-      "label": "文件类型",
-      "name": "accept",
-      "type": "string",
-      "will": "Input"
-    }, {
-      "label": "上传图标",
-      "name": "iconName",
-      "type": "string",
-      "will": "Input"
-    }, {
-      "label": "文件内描述",
-      "name": "uploaderDescription",
-      "type": "string",
-      "will": "Input"
-    }, {
-      "label": "文件最大体积(MB)",
-      "name": "maxFileSize",
-      "type": "number"
-    }, {
-      "label": "是否私有",
-      "name": "isPrivate",
-      "type": "boolean",
-      "will": "Checkbox"
-    }, {
-      "label": "是否允许上传多个组件",
-      "name": "multiple",
-      "type": "boolean",
-      "will": "Checkbox"
-    }, {
-      "label": "是否禁用",
-      "name": "disabled",
-      "type": "boolean",
-      "will": "Checkbox"
-    }, {
-      "label": "文件上传成功之后的回调",
-      "name": "onFileSuccess",
-      "type": "function"
-    }],
+        "label": "文件类型",
+        "name": "accept",
+        "type": "string",
+        "will": "Input"
+      },
+      {
+        "label": "上传图标",
+        "name": "iconName",
+        "type": "string",
+        "will": "Input"
+      },
+      {
+        "label": "文件内描述",
+        "name": "uploaderDescription",
+        "type": "string",
+        "will": "Input"
+      },
+      {
+        "label": "文件最大体积(MB)",
+        "name": "maxFileSize",
+        "type": "number"
+      },
+      {
+        "label": "是否私有",
+        "name": "isPrivate",
+        "type": "boolean",
+        "will": "Checkbox"
+      },
+      {
+        "label": "是否允许上传多个组件",
+        "name": "multiple",
+        "type": "boolean",
+        "will": "Checkbox"
+      },
+      {
+        "label": "是否禁用",
+        "name": "disabled",
+        "type": "boolean",
+        "will": "Checkbox"
+      },
+      {
+        "label": "文件上传成功之后的回调",
+        "name": "onFileSuccess",
+        "type": "function"
+      }
+    ],
+    "isContainer": false,
+    "isOverLayer": false
+  },
+  "div": {
+    "props": [{
+        "label": "文本内容",
+        "name": "content",
+        "type": "string",
+        "will": "Textarea",
+        "initialValue": "文本"
+      },
+      {
+        "label": "点击事件",
+        "name": "onClick",
+        "type": "function"
+      }
+    ],
+    "isContainer": true,
+    "isOverLayer": false
+  },
+  "a": {
+    "props": [{
+        "label": "文本内容",
+        "name": "content",
+        "type": "string",
+        "will": "Textarea"
+      },
+      {
+        "label": "链接地址",
+        "name": "href",
+        "type": "string",
+        "will": "Textarea"
+      },
+      {
+        "label": "链接target",
+        "name": "target",
+        "type": "string",
+        "will": "Select",
+        "willProps": {
+          "options": [{
+              "label": "_blank",
+              "value": "_blank"
+            },
+            {
+              "label": "_self",
+              "value": "_self"
+            },
+            {
+              "label": "_parent",
+              "value": "_parent"
+            },
+            {
+              "label": "_top",
+              "value": "_top"
+            },
+            {
+              "label": "framename",
+              "value": "framename"
+            }
+          ]
+        }
+      }
+    ],
+    "isContainer": true,
+    "isOverLayer": false
+  },
+  "span": {
+    "props": [{
+        "label": "文本内容",
+        "name": "content",
+        "type": "string",
+        "will": "Textarea",
+        "initialValue": "文本"
+      },
+      {
+        "label": "点击事件",
+        "name": "onClick",
+        "type": "function"
+      }
+    ],
+    "isContainer": true,
+    "isOverLayer": false
+  },
+  "img": {
+    "props": [{
+        "label": "文本内容",
+        "name": "content",
+        "type": "string",
+        "will": "Textarea",
+        "initialValue": "文本"
+      },
+      {
+        "label": "点击事件",
+        "name": "onClick",
+        "type": "function"
+      },
+      {
+        "label": "图片地址",
+        "name": "src",
+        "type": "string"
+      }
+    ],
     "isContainer": false,
     "isOverLayer": false
   }

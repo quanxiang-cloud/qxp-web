@@ -4,9 +4,15 @@ import { BlockItemProps } from '@one-for-all/artery-engine';
 
 import { BlocksCommunicationType } from '../../types';
 import isNodeSupportChildren from './is-node-support-children';
-import './index.scss';
 // todo fixme
 import pluginsSrc from 'dll:./../../../../../../../../tmp/TEMPORARY_PATCH_FOR_ARTERY_PLUGINS.js';
+
+import './index.scss';
+
+// // todo fixme
+const __OVER_LAYER_COMPONENTS: Array<{ packageName: string; exportName: string; }> = [
+  { packageName: '@one-for-all/headless-ui', exportName: 'MediocreDialog' },
+];
 
 function SimulatorBlock(props: BlockItemProps<BlocksCommunicationType>): JSX.Element {
   const { artery, onChange, activeNode, setActiveNode } = props;
@@ -34,6 +40,7 @@ function SimulatorBlock(props: BlockItemProps<BlocksCommunicationType>): JSX.Ele
       setActiveOverLayerNodeID={setActiveModalLayer}
       activeOverLayerNodeID={activeModalLayer}
       cssURLs={[window.PERSONALIZED_CONFIG.styleCssUrl]}
+      overLayerComponents={__OVER_LAYER_COMPONENTS}
     />
   );
 }

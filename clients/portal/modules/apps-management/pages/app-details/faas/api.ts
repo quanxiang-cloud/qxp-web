@@ -71,6 +71,17 @@ export function fetchGroupList(): Promise<Group[]> {
     });
 }
 
+export function fetchCanBindProjectList(groupID: string): Promise<{id: string, name: string}[]> {
+  return httpClient.get<{projects: {id: string, name: string}[]}>(`/api/v1/faas/${groupID}/projects/repo`)
+    .then((res) => {
+      return res.projects;
+    })
+    .catch((err) => {
+      toast.error(err);
+      return [];
+    });
+}
+
 export function fetchFuncList(
   groupID: string,
   params: FuncListParams,
@@ -80,7 +91,7 @@ export function fetchFuncList(
 
 export function createFaasFunc(
   groupID: string,
-  data: creatFuncParams,
+  data: Omit<creatFuncParams, 'type'>,
 ): Promise<{ id: string, createdAt: number, creator: string }> {
   return httpClient(`/api/v1/faas/group/${groupID}/project`, data);
 }

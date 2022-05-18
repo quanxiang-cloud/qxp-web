@@ -12,6 +12,7 @@ import {
 import { deleteByID, findNodeByID, patchNode } from '@one-for-all/artery-utils';
 
 import { getTableSchema, saveTableSchema } from '@lib/http-client';
+import versionMap from '@pageDesign/blocks/fountainhead/config/name-version-map';
 
 import addLayoutToRoot, { copyLayoutToRoot, CreateLayoutInfo } from './helpers/add-layout-to-root';
 import addViewToRoot from './helpers/add-view-to-root';
@@ -181,7 +182,7 @@ class Orchestrator {
         // todo implement this
         packageName: 'SimpleViewRenders',
         // todo implement this
-        packageVersion: '1.0.0',
+        packageVersion: versionMap.SimpleViewRenders,
         // todo implement this
         exportName: 'TableSchemaViewRender',
         props: {
@@ -251,7 +252,7 @@ class Orchestrator {
       // todo implement this
       packageName: 'SimpleViewRenders',
       // todo implement this
-      packageVersion: '1.0.0',
+      packageVersion: versionMap.SimpleViewRenders,
       // todo implement this
       exportName: 'StaticViewRender',
       props: {
@@ -285,7 +286,7 @@ class Orchestrator {
       // todo implement this
       packageName: 'SimpleViewRenders',
       // todo implement this
-      packageVersion: '1.0.0',
+      packageVersion: versionMap.SimpleViewRenders,
       // todo implement this
       exportName: 'ExternalViewRender',
       props: {
