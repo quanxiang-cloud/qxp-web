@@ -1193,10 +1193,10 @@
     react-jsx-parser "1.29.0"
     rxjs "^7.4.0"
 
-"@one-for-all/artery-simulator@1.4.1":
-  version "1.4.1"
-  resolved "https://registry.npmjs.org/@one-for-all/artery-simulator/-/artery-simulator-1.4.1.tgz#8561dfe599e8d76011cc36d0e248046219e02c8d"
-  integrity sha512-tEyMCFKvJv+SbDUJq8nM0pMEmWFxkJXrhlp479NP9nnLV621ad6fGpSaoZZ5AECHO2D34rG7E/2YPqEAiiTdfg==
+"@one-for-all/artery-simulator@1.4.2":
+  version "1.4.2"
+  resolved "https://registry.npmjs.org/@one-for-all/artery-simulator/-/artery-simulator-1.4.2.tgz#89e264fab01c08ea3678f0f30741b4dca7cf508f"
+  integrity sha512-5dLOvSLxt8rHkN20OixYiyKaz0FBWPaMuQR84pP3R9clOeaPpOjc6k8g0ueByhIBCKTwWFfjMayPyTy9Fy77+Q==
   dependencies:
     "@one-for-all/artery" "0.15.0"
     "@one-for-all/artery-engine" "1.2.1"
