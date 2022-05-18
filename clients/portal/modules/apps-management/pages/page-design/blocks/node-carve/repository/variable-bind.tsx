@@ -3,6 +3,7 @@ import { get, isObject } from 'lodash';
 import Editor from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 
+import { findNodeByID } from '@one-for-all/artery-utils';
 import Button from '@c/button';
 import Modal from '@c/modal';
 import toast from '@lib/toast';
@@ -26,7 +27,11 @@ function VariableBind({
   const [variableString, setVariableString] = useState<string>();
 
   useEffect(() => {
-    const value = get(activeNode, `${__path}.value`, '');
+    if (!artery || !activeNode) {
+      return;
+    }
+    const realNode = findNodeByID(artery?.node, activeNode.id);
+    const value = get(realNode, `${__path}.value`, '');
     const valueString = JSON.stringify(value, null, 2);
     setVariableString(valueString);
   }, []);

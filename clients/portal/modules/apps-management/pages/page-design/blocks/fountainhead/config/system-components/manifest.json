@@ -31,6 +31,27 @@
       }
     ]
   },
+  "GridContainer": {
+    "variants": [
+      {
+        "icon": {
+          "type": "platform",
+          "name": "grid_on",
+          "initialProps": {}
+        },
+        "desc": "用于实现内部布局",
+        "label": "布局容器",
+        "initialProps": {
+          "columnGap": "16px",
+          "rowGap": "16px",
+          "justifyItems": "stretch",
+          "alignItems": "stretch",
+          "coloumCount": 1,
+          "rowCount": 1
+        }
+      }
+    ]
+  },
   "div": {
     "variants": [
       {

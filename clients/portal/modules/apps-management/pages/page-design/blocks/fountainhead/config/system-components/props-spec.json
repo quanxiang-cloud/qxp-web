@@ -9,9 +9,109 @@
     "isContainer": false,
     "isOverLayer": false
   },
+  "GridContainer": {
+    "props": [{
+      "label": "每行元素个数",
+      "name": "coloumCount",
+      "type": "number",
+      "desc": "每行至少一个元素",
+      "willProps": {
+        "min": 1
+      }
+    }, {
+      "label": "每列元素个数",
+      "name": "rowCount",
+      "type": "number",
+      "desc": "每列至少一个元素",
+      "willProps": {
+        "min": 1
+      }
+    }, {
+      "label": "行间距",
+      "name": "columnGap",
+      "type": "string",
+      "will": "Select",
+      "willProps": {
+        "options": [{
+          "label": "0px",
+          "value": "0px"
+        }, {
+          "label": "8px",
+          "value": "8px"
+        }, {
+          "label": "16px",
+          "value": "16px"
+        }, {
+          "label": "24px",
+          "value": "24px"
+        }]
+      }
+    }, {
+      "label": "列间距",
+      "name": "rowGap",
+      "type": "string",
+      "will": "Select",
+      "willProps": {
+        "options": [{
+          "label": "0px",
+          "value": "0px"
+        }, {
+          "label": "8px",
+          "value": "8px"
+        }, {
+          "label": "16px",
+          "value": "16px"
+        }, {
+          "label": "24px",
+          "value": "24px"
+        }]
+      }
+    }, {
+      "label": "水平对齐方式",
+      "name": "justifyItems",
+      "type": "string",
+      "will": "Select",
+      "willProps": {
+        "options": [{
+          "label": "铺满",
+          "value": "stretch"
+        }, {
+          "label": "左对齐",
+          "value": "start"
+        }, {
+          "label": "居中",
+          "value": "center"
+        }, {
+          "label": "右对齐",
+          "value": "end"
+        }]
+      }
+    }, {
+      "label": "垂直对齐方式",
+      "name": "alignItems",
+      "type": "string",
+      "will": "Select",
+      "willProps": {
+        "options": [{
+          "label": "铺满",
+          "value": "stretch"
+        }, {
+          "label": "顶部对齐",
+          "value": "start"
+        }, {
+          "label": "居中",
+          "value": "center"
+        }, {
+          "label": "尾部对齐",
+          "value": "end"
+        }]
+      }
+    }],
+    "isContainer": true,
+    "isOverLayer": false
+  },
   "FileUpload": {
-    "props": [
-      {
+    "props": [{
         "label": "文件类型",
         "name": "accept",
         "type": "string",
@@ -62,8 +162,7 @@
     "isOverLayer": false
   },
   "div": {
-    "props": [
-      {
+    "props": [{
         "label": "文本内容",
         "name": "content",
         "type": "string",
@@ -80,8 +179,7 @@
     "isOverLayer": false
   },
   "a": {
-    "props": [
-      {
+    "props": [{
         "label": "文本内容",
         "name": "content",
         "type": "string",
@@ -99,8 +197,7 @@
         "type": "string",
         "will": "Select",
         "willProps": {
-          "options": [
-            {
+          "options": [{
               "label": "_blank",
               "value": "_blank"
             },
@@ -128,8 +225,7 @@
     "isOverLayer": false
   },
   "span": {
-    "props": [
-      {
+    "props": [{
         "label": "文本内容",
         "name": "content",
         "type": "string",
@@ -146,8 +242,7 @@
     "isOverLayer": false
   },
   "img": {
-    "props": [
-      {
+    "props": [{
         "label": "文本内容",
         "name": "content",
         "type": "string",
