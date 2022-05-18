@@ -40,7 +40,7 @@ function ViewLayout(): JSX.Element {
       return store?.layouts.filter((layout) => layout.name !== curLayout?.name)
         .map((layout) => layout.name);
     }
-  }, [isEdit, store?.layouts]) || [];
+  }, [isEdit, store?.layouts, curLayout]) || [];
 
   const fromRef = useRef<FormInstance>(null);
 
@@ -55,11 +55,14 @@ function ViewLayout(): JSX.Element {
     fromRef.current?.submit();
   }
 
-  function handleFinish(values: CreateLayoutInfo): void {
+  function handleFinish(_values: CreateLayoutInfo): void {
+    const name = _values.name.trim();
+    const description = _values?.description?.trim() || '';
+    const values = { ..._values, name, description };
     Promise.resolve().then(() => {
       setPending(true);
       if (!isEdit) {
-        return store?.addLayout(values as CreateLayoutInfo);
+        return store?.addLayout(values);
       }
       if (curLayout) {
         return store?.editLayout({ ...curLayout, ...values });
@@ -167,11 +170,11 @@ function ViewLayout(): JSX.Element {
                         <div className='flex items-center gap-8 text-yellow-600'>
                           <Icon name='error_outline' size={20}/>
                           <span className='text-h6-bold font-semibold'>
-                            {canDelete ? '确认要删除该母版吗？' : '母版存在关联页面'}
+                            {canDelete ? '确认要删除该母版吗？' : '无法删除：该母版存在关联页面'}
                           </span>
                         </div>
                         <span className='text-body2 pl-28'>
-                          {canDelete ? '删除母版后，所有数据将无法找回' : '请先删除关联页面中的母版，以保障页面的正常显示'}
+                          {canDelete ? '删除母版后，所有数据将无法找回' : '若要删除该母版，请先删除母版关联的页面'}
                         </span>
                       </div>
                     ),

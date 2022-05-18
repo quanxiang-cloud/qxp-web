@@ -19,6 +19,12 @@ const normalStateTypes: NodePropType[] = [
   'api_result_property',
 ];
 
+// todo remove
+function getToolTips(path: string, bound: boolean): string {
+  const text = path === 'shouldRender' ? '渲染条件' : '变量';
+  return bound ? `编辑${text}` : `配置${text}`;
+}
+
 function ConfigItemBind({
   __path,
   isSetLoopNode = false,
@@ -86,9 +92,12 @@ function ConfigItemBind({
 
   return (
     <div className="inline-flex items-center">
-      <Tooltip position="top" label={bound ? '编辑绑定' : '绑定变量'}>
+      <Tooltip
+        position="top"
+        label={getToolTips(__path, bound)}
+      >
         <Icon
-          name="code"
+          name={__path === 'shouldRender' ? 'settings' : 'code'}
           color="gray"
           clickable
           onClick={handleClick}

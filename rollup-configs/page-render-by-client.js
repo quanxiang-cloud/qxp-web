@@ -12,6 +12,7 @@ import webWorkerLoader from 'rollup-plugin-web-worker-loader';
 import typescriptPaths from './plugins/rollup-plugin-typescript-paths';
 import notifier from './plugins/rollup-plugin-notifier';
 import esbuildConfig from './esbuild-config';
+import dll from './plugins/rollup-plugin-dll';
 
 import { isProduction } from './env';
 
@@ -77,6 +78,7 @@ const config = {
   ],
 
   plugins: [
+    dll(),
     webWorkerLoader({
       // todo output file name has no hash
       targetPlatform: 'browser',

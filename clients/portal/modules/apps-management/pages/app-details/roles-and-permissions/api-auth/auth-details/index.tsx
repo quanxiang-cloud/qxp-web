@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { observer } from 'mobx-react';
 
 import Modal from '@c/modal';
 import Tab from '@c/tab';
@@ -70,4 +71,4 @@ function AuthDetailModal(): JSX.Element {
   );
 }
 
-export default AuthDetailModal;
+export default observer(AuthDetailModal);

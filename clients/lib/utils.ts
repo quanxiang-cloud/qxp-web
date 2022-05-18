@@ -359,7 +359,7 @@ export function createQueue(
             numOfWorkers -= 1;
             getNextTask();
           })
-          .catch((error: Error)=> {
+          .catch((error: Error) => {
             failed(error);
           });
         taskIndex += 1;
@@ -371,4 +371,22 @@ export function createQueue(
     };
     getNextTask();
   });
+}
+
+export function realizeLink(appID: string, link: string): string {
+  const replacements: Record<string, string> = {
+    user_id: window.USER.id,
+    user_name: window.USER.name,
+    user_email: window.USER.email,
+    user_phone: window.USER.phone,
+    dep_id: window.USER.deps?.[0]?.[0].id,
+    dep_name: window.USER.deps?.[0]?.[0].name,
+    appid: appID,
+  };
+
+  let _link = link;
+  Object.keys(replacements).forEach((key) => {
+    _link = _link.replace(new RegExp('\\$\\{' + key + '\\}', 'g'), replacements?.[key]);
+  });
+  return _link;
 }

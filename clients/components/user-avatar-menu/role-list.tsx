@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import cs from 'classnames';
 import { observer } from 'mobx-react';
 
@@ -10,16 +10,7 @@ type Props = {
 }
 
 function RoleList({ visible }: Props): JSX.Element | null {
-  const { getRoleInfo, roleOptions, currentRoleInfo, handleRoleChange, setAppID } = store;
-
-  useEffect(() => {
-    if (!window.APP_ID) {
-      return;
-    }
-
-    setAppID(window.APP_ID);
-    getRoleInfo(window.APP_ID);
-  }, [window.APP_ID]);
+  const { roleOptions, currentRoleInfo, handleRoleChange } = store;
 
   if (!visible) {
     return null;

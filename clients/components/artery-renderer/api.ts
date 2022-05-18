@@ -34,7 +34,12 @@ export function useArteryWithAdapter(arteryID: string, version: string): Partial
   const [artery, setSchema] = useState<Artery>();
 
   useEffect(() => {
+    let unMounting = false;
     fetchArteryWithSwagger(arteryID, version).then((res) => {
+      if (unMounting) {
+        return;
+      }
+
       if (res.artery) {
         setSchema(res.artery);
       }
@@ -43,6 +48,10 @@ export function useArteryWithAdapter(arteryID: string, version: string): Partial
         setAdapter(new SwaggerRPCSpecAdapter(res.swagger));
       }
     });
+
+    return () => {
+      unMounting = true;
+    };
   }, [arteryID, version]);
 
   return { artery, adapter };

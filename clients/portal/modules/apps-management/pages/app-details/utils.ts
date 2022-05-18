@@ -14,7 +14,7 @@ export const SYSTEM_FIELDS: Record<string, ModelFieldSchema> = {
     readOnly: false,
     display: false,
     'x-component': 'Input',
-    not_null: false,
+    required: false,
     'x-internal': { isSystem: true },
     'x-index': 0,
   },
@@ -24,7 +24,7 @@ export const SYSTEM_FIELDS: Record<string, ModelFieldSchema> = {
     readOnly: false,
     display: false,
     'x-component': 'DatePicker',
-    not_null: false,
+    required: false,
     'x-component-props': { isNow: false, showTime: false },
     'x-internal': { isSystem: true },
     'x-index': 0,
@@ -35,7 +35,7 @@ export const SYSTEM_FIELDS: Record<string, ModelFieldSchema> = {
     readOnly: false,
     display: false,
     'x-component': 'DatePicker',
-    not_null: false,
+    required: false,
     'x-component-props': { isNow: false, showTime: false },
     'x-internal': { isSystem: true },
     'x-index': 0,
@@ -45,7 +45,7 @@ export const SYSTEM_FIELDS: Record<string, ModelFieldSchema> = {
     title: '创建者',
     readOnly: false,
     display: false,
-    not_null: false,
+    required: false,
     'x-component': 'Input',
     'x-internal': { isSystem: true },
     'x-index': 0,
@@ -56,7 +56,7 @@ export const SYSTEM_FIELDS: Record<string, ModelFieldSchema> = {
     readOnly: false,
     display: false,
     'x-component': 'Input',
-    not_null: false,
+    required: false,
     'x-internal': { isSystem: true },
     'x-index': 0,
   },
@@ -66,7 +66,7 @@ export const SYSTEM_FIELDS: Record<string, ModelFieldSchema> = {
     readOnly: false,
     display: false,
     'x-component': 'Input',
-    not_null: false,
+    required: false,
     'x-internal': { isSystem: true },
     'x-index': 0,
   },
@@ -76,7 +76,7 @@ export const SYSTEM_FIELDS: Record<string, ModelFieldSchema> = {
     readOnly: false,
     display: false,
     'x-component': 'Input',
-    not_null: false,
+    required: false,
     'x-internal': { isSystem: true },
     'x-index': 0,
   },
@@ -100,8 +100,8 @@ export const FIELD_COLUMNS: UnionColumn<ModelField>[] = [
   },
   {
     Header: '是否允许为空',
-    id: 'not_null',
-    accessor: (rowData) => rowData.not_null ? '不允许' : '允许',
+    id: 'required',
+    accessor: (rowData) => rowData.required ? '不允许' : '允许',
   },
 ];
 
@@ -140,8 +140,11 @@ export function getValueOfPageDescription(key: string, data: CustomPageInfo & Ar
   case 'updatedBy':
     return data.updatedBy;
   case 'updatedAt':
-    return !data.updatedAt ? '-' :
-      moment(Math.floor(Number(data.updatedAt) / 1000), 'X').format('YYYY-MM-DD HH:mm:ss');
+    if (!data.updatedAt) return '-';
+    if ( (Number(data.updatedAt).toString().length === 10) ) {
+      return moment(Number(data.updatedAt), 'X').format('YYYY-MM-DD HH:mm:ss');
+    }
+    return moment(Number(data.updatedAt) / 1000, 'X').format('YYYY-MM-DD HH:mm:ss');
   case 'createdAt':
     return !data.createdAt ? '-' :
       moment(Math.floor(Number(data.createdAt) / 1000), 'X').format('YYYY-MM-DD HH:mm:ss');

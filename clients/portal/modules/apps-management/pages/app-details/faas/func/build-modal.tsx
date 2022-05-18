@@ -1,10 +1,11 @@
 import React from 'react';
 import SchemaForm, { useForm } from '@formily/antd';
-import { Input } from '@formily/antd-components';
+import { Input, Select as AntdSelect } from '@formily/antd-components';
 
 import Modal from '@c/modal';
 
-import store from '../store';
+import store from './store';
+import EnvList from '../component/env-list';
 
 type Props = {
   onClose: () => void;
@@ -18,7 +19,7 @@ function BuildModal({ onClose }: Props): JSX.Element {
         type: 'object',
         'x-component': 'mega-layout',
         properties: {
-          tag: {
+          version: {
             type: 'string',
             title: '版本号',
             // description: '最多10个字符，只能包含数字、字母、下划线、小数点、且不可重复',
@@ -49,6 +50,52 @@ function BuildModal({ onClose }: Props): JSX.Element {
             ],
             'x-index': 0,
           },
+          env: {
+            type: 'array',
+            title: '环境变量',
+            'x-component': 'EnvList',
+            'x-mega-props': {
+              labelAlign: 'top',
+            },
+            items: {
+              type: 'object',
+              properties: {
+                envName: {
+                  type: 'string',
+                  'x-component': 'Input',
+                  title: 'key',
+                  'x-component-props': {
+                    placeholder: '请输入环境变量名',
+                  },
+                  'x-mega-props': {
+                    labelAlign: 'left',
+                  },
+                  'x-rules': [
+                    {
+                      pattern: /^((?!(\ud83c[\udf00-\udfff])|(\ud83d[\udc00-\ude4f])|(\ud83d[\ude80-\udeff])).)*$/,
+                      message: '环境变量名不能输入emoji表情符号',
+                    },
+                    {
+                      pattern: /^[^\u4e00-\u9fa5]{0,}$/,
+                      message: '环境变量名不能输入汉字',
+                    },
+                  ],
+                },
+                envValue: {
+                  type: 'string',
+                  'x-component': 'Input',
+                  title: 'value',
+                  'x-component-props': {
+                    placeholder: '请输入环境变量值',
+                  },
+                  'x-mega-props': {
+                    labelAlign: 'left',
+                  },
+                },
+              },
+            },
+            'x-index': 1,
+          },
           describe: {
             type: 'string',
             title: '描述',
@@ -63,7 +110,7 @@ function BuildModal({ onClose }: Props): JSX.Element {
               max: 100,
               message: '备注超过 100 字符!',
             },
-            'x-index': 3,
+            'x-index': 2,
           },
         },
       },
@@ -71,7 +118,15 @@ function BuildModal({ onClose }: Props): JSX.Element {
   };
   const form = useForm({
     onSubmit: (formData) => {
-      store.buildFunc(formData);
+      const env = (formData.env || []).reduce((
+        acc: Record<string, string>,
+        { envName, envValue }: { envName: string, envValue: string }) => {
+        if (envName) {
+          acc[envName] = envValue;
+        }
+        return acc;
+      }, {});
+      store.buildFunc({ ...formData, env });
       onClose();
     },
   });
@@ -84,7 +139,7 @@ function BuildModal({ onClose }: Props): JSX.Element {
 
   return (
     <Modal
-      className="static-modal"
+      className="build-func"
       title="构建函数"
       onClose={onClose}
       footerBtns={[
@@ -107,7 +162,7 @@ function BuildModal({ onClose }: Props): JSX.Element {
         className="p-20"
         schema={SCHEMA}
         form={form as any}
-        components={{ Input, TextArea: Input.TextArea }}
+        components={{ AntdSelect, Input, TextArea: Input.TextArea, EnvList }}
       />
     </Modal>
   );

@@ -18,7 +18,7 @@ import type {
   VariantIcon,
   VariantImageIcon,
   VariantPlatFormIcon,
-} from '../blocks/menu/type';
+} from '../blocks/fountainhead/type';
 
 function imageIconBuilder(icon: VariantImageIcon): ReactComponent {
   const { initialProps, src } = icon;
@@ -117,11 +117,12 @@ async function getPackageComponentToCategoryVariantMapDynamic(
   return getter();
 }
 
-export type GetPackagePropsSpecResult = Pick<Package, 'name' | 'version'> & { result: PropsSpec; };
+export type PropsSpecMap = Record<string, PropsSpec | undefined>;
+export type GetPackagePropsSpecResult = Pick<Package, 'name' | 'version'> & { result: PropsSpecMap; };
 export async function getPackagePropsSpec({ name, version }: Package): Promise<GetPackagePropsSpecResult> {
   const key = `PACKAGE_PROPS_SPEC:${name}`;
   const { result } = await getBatchGlobalConfig([{ key, version }]);
-  return { name, version, result: parseJSON(result[key], {}) as PropsSpec };
+  return { name, version, result: parseJSON(result[key], {}) as PropsSpecMap };
 }
 
 export function initialPropsToNodeProperties(initialProps: InitialProps = {}): NodeProperties {

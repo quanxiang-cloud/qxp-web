@@ -1,14 +1,15 @@
 import qs from 'qs';
 
-import { CustomPageInfo, ArteryPageInfo } from '@portal/modules/apps-management/pages/app-details/type';
+import type { CustomPageInfo, ArteryPageInfo } from '@portal/modules/apps-management/pages/app-details/type';
 import { ESParameter, toEs } from '@c/data-filter/utils';
 import schemaToFields from '@lib/schema-convert';
+import { saveConfig } from '@pageDesign/blocks/fountainhead/config';
 
 import { TIME_ZONE } from './utils';
 
 let alreadyAlertUnauthorizedError = false;
 
-type METHOD = 'POST' | 'GET' | 'PUT' | 'DELETE';
+type METHOD = 'POST' | 'GET' | 'PUT' | 'DELETE' | 'PATCH';
 
 const HEADERS: Record<string, any> = {
   'X-Proxy': 'API',
@@ -74,8 +75,12 @@ httpClient.put = function<TData>(path: string, body: unknown) {
   return request<TData>(path, 'PUT', body);
 };
 
-httpClient.delete = function<TData>(path: string, body?: Body) {
+httpClient.delete = function<TData>(path: string, body?: unknown) {
   return request<TData>(path, 'DELETE', body);
+};
+
+httpClient.patch = function<TData>(path: string, body?: unknown) {
+  return request<TData>(path, 'PATCH', body);
 };
 
 export type FormDataRequestCreateParams = {
@@ -162,7 +167,7 @@ export function editFormDataRequest(
     {
       ...params,
       query: {
-        terms: { _id: [dataID] },
+        term: { _id: dataID },
       },
     },
   );
@@ -354,5 +359,6 @@ export async function httpClientGraphQL<TData>(
 }
 
 window.__httpClient = httpClient;
+window.__syncConfig = saveConfig;
 
 export default httpClient;

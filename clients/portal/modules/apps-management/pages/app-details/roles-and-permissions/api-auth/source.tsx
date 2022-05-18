@@ -31,7 +31,7 @@ function Source(): JSX.Element {
       Header: 'API名称',
       id: 'title',
       width: 120,
-      accessor: 'title',
+      accessor: ({ title, name }) => title || name,
 
     },
     {

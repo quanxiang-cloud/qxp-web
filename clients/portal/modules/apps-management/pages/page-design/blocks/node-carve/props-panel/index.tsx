@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { get } from 'lodash';
 
 import { Artery, ReactComponentNode } from '@one-for-all/artery';
 import { ArteryRenderer } from '@one-for-all/artery-renderer';
@@ -12,7 +11,7 @@ import Section from '../../../utils/section';
 
 function getArteryBySpec(specs: BasePropSpec[], options: {
   prefix?: string;
-  bindVarible?: boolean;
+  bindVariable?: boolean;
 }): Artery | null {
   if (specs.length) {
     return buildNodeCarveArtery(specs, options);
@@ -24,7 +23,6 @@ function PropsPanel(): JSX.Element {
   const [attrArtery, setAttrArtery] = useState<Artery | null>(null);
   const [functionArtery, setFunctionArtery] = useState<Artery | null>(null);
   const { activeNode, packagePropsSpec } = useConfigContext() ?? {};
-  const { exportName } = activeNode as ReactComponentNode;
 
   useEffect(() => {
     if (!activeNode || !packagePropsSpec) {
@@ -32,12 +30,11 @@ function PropsPanel(): JSX.Element {
       setFunctionArtery(null);
       return;
     }
-    const specpath = `${exportName.toLowerCase()}.props`;
-    const specs: BasePropSpec[] = get(packagePropsSpec, specpath, []);
-
+    const { exportName } = activeNode as ReactComponentNode;
+    const specs: BasePropSpec[] = packagePropsSpec[exportName]?.props ?? [];
     const attrSpecs = getArteryBySpec(specs.filter((s) => s.type !== 'function'), {
       prefix: 'props',
-      bindVarible: true,
+      bindVariable: true,
     });
     const funcSpecs = getArteryBySpec(specs.filter((s) => s.type === 'function'), {
       prefix: 'props',

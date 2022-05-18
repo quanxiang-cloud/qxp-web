@@ -1,4 +1,6 @@
-import type { NodePrimary } from '@one-for-all/artery-simulator';
+import type { NodePrimary } from '@one-for-all/artery-simulator/lib/types';
+
+import nameVersionMap from '../fountainhead/config/name-version-map';
 
 const COMPONENTS_SUPPORT_CHILDREN = [
   'page',
@@ -9,7 +11,10 @@ const COMPONENTS_SUPPORT_CHILDREN = [
   'container',
 ];
 
-const LEGACY_PACKAGES = ['ofa-ui/latest', '@one-for-all/ui/latest'];
+const LEGACY_PACKAGES = [
+  `ofa-ui/${nameVersionMap['ofa-ui']}`,
+  `@one-for-all/ui/${nameVersionMap['@one-for-all/ui']}`,
+];
 const pairs: string[] = [];
 LEGACY_PACKAGES.forEach((packageName) => {
   COMPONENTS_SUPPORT_CHILDREN.forEach((compName) => {
@@ -22,7 +27,7 @@ const MOCK = new Set<string>(pairs);
 // todo implement this
 function isNodeSupportChildren(node: NodePrimary): Promise<boolean> {
   if (node.type === 'react-component') {
-    const identifier = [node.packageName, node.packageVersion, node.exportName].join('/');
+    const identifier = [node.packageName, node.packageVersion, node.exportName?.toLowerCase()].join('/');
     if (MOCK.has(identifier)) {
       return Promise.resolve(true);
     }

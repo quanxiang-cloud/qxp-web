@@ -1,9 +1,17 @@
-import UserMenuAvatar from './user-menu-avatar';
-import SystemTaskList from './system-task-list';
-import FileUpload from './file-upload';
+import SystemTaskList from '@c/task-lists';
+import UserMenuAvatar from '@c/user-avatar-menu';
+import GridContainer from './gridContainer';
+import a from './a';
+import div from './div';
+import img from './img';
+import span from './span';
 
-export {
+export default {
   UserMenuAvatar,
   SystemTaskList,
-  FileUpload,
+  GridContainer,
+  a,
+  div,
+  img,
+  span,
 };

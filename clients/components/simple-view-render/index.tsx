@@ -1,5 +1,16 @@
+import type { Repository } from '@one-for-all/artery-renderer';
+import versionMap from '@pageDesign/blocks/fountainhead/config/name-version-map';
+
 import ExternalViewRender from './external-view-render';
 import StaticViewRender from './static-view-render';
-import TableViewDetail from '../../home/pages/app-table-view-detail';
+import TableViewDetail from './table-schema-view-render';
 
-export default { ExternalViewRender, StaticViewRender, TableSchemaViewRender: TableViewDetail };
+const repoSimplyViewRender: Repository = {
+  [`SimpleViewRenders@${versionMap.SimpleViewRenders}`]: {
+    ExternalViewRender,
+    StaticViewRender,
+    TableSchemaViewRender: TableViewDetail,
+  },
+};
+
+export default repoSimplyViewRender;

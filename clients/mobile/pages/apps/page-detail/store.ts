@@ -3,7 +3,7 @@ import { action, computed, observable } from 'mobx';
 import { FetchPageListResponse, Menu } from '@m/pages/apps/types';
 import { CustomPageInfo, MenuType } from '@portal/modules/apps-management/pages/app-details/type';
 import { getOperate } from '@home/pages/app-details/api';
-import { getOperateButtonPer } from '@home/pages/app-details/utils';
+import { getButtonAPIList, getOperateButtonPer } from '@home/pages/app-details/utils';
 import toast from '@lib/toast';
 import { Task } from '@m/pages/approvals/types';
 import { getFlowSummary } from '@m/lib/value-render';
@@ -17,7 +17,7 @@ class AppDetailStore {
   @observable state = { loading: false, error: '' };
   @observable page?: Menu;
   @observable customPageInfo?: CustomPageInfo;
-  @observable authority?: number;
+  @observable authority?: Record<string, boolean>;
   @observable schema?: ISchema;
 
   // For app detail list loading
@@ -28,10 +28,21 @@ class AppDetailStore {
   @observable list: Task[] = [];
 
   @computed get canUpdate(): boolean {
-    return this.authority ? getOperateButtonPer(3, this.authority) : false;
+    return this.authority ?
+      getOperateButtonPer(
+        'update', {
+          appID: this?.page?.appID || '',
+          tableID: this?.page?.id || '',
+          authority: this.authority,
+        }) : false;
   }
   @computed get canDelete(): boolean {
-    return this.authority ? getOperateButtonPer(4, this.authority) : false;
+    return this.authority ? getOperateButtonPer(
+      'delete', {
+        appID: this?.page?.appID || '',
+        tableID: this?.page?.id || '',
+        authority: this.authority,
+      }) : false;
   }
 
   @action setup = (page: Menu): void => {
@@ -100,8 +111,9 @@ class AppDetailStore {
     const appID = this.page.appID;
     const pageID = this.page.id;
     this.state = { loading: true, error: '' };
-    getOperate<{ authority?: number }>(appID, pageID).then((authorityRef) => {
-      this.authority = authorityRef?.authority || 0;
+    const toolList = getButtonAPIList(appID, pageID);
+    getOperate(appID, { paths: toolList }).then((authorityRef) => {
+      this.authority = authorityRef || {};
     }).catch(() => {
       this.state = { loading: false, error: '加载失败' };
     });

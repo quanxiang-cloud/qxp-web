@@ -1,15 +1,17 @@
 import React from 'react';
-import SchemaForm, { useForm } from '@formily/antd';
-import { Input } from '@formily/antd-components';
-import { Radio } from '@formily/antd-components';
+import SchemaForm, { createFormActions, FormEffectHooks, useForm } from '@formily/antd';
+import { Input, Radio, Select as AntdSelect } from '@formily/antd-components';
 
-import store from '../store';
+import store from './store';
 import Modal from '@c/modal';
 
 type Props = {
   modalType: string;
   onClose: () => void;
 }
+
+const { onFieldValueChange$ } = FormEffectHooks;
+const actions = createFormActions();
 
 const SCHEMA: ISchema = {
   type: 'object',
@@ -18,6 +20,46 @@ const SCHEMA: ISchema = {
       type: 'object',
       'x-component': 'mega-layout',
       properties: {
+        type: {
+          type: 'string',
+          title: '来源',
+          'x-component': 'RadioGroup',
+          required: true,
+          default: 'custom',
+          enum: [
+            {
+              label: '新建',
+              value: 'custom',
+            },
+            {
+              label: '关联已有Project',
+              value: 'association',
+            },
+          ],
+          'x-mega-props': {
+            labelAlign: 'top',
+          },
+          'x-index': 0,
+        },
+        id: {
+          type: 'number',
+          title: '选择Project',
+          required: true,
+          'x-component-props': {
+            placeholder: '请选择',
+          },
+          'x-rules': [
+            {
+              required: true,
+              message: '选择Project',
+            },
+          ],
+          'x-component': 'AntdSelect',
+          'x-index': 1,
+          'x-mega-props': {
+            labelAlign: 'top',
+          },
+        },
         alias: {
           type: 'string',
           title: '函数名称',
@@ -47,7 +89,7 @@ const SCHEMA: ISchema = {
               message: '请勿包含空格',
             },
           ],
-          'x-index': 0,
+          'x-index': 2,
         },
         name: {
           type: 'string',
@@ -72,7 +114,7 @@ const SCHEMA: ISchema = {
             },
           ],
           'x-component': 'Input',
-          'x-index': 1,
+          'x-index': 3,
           'x-mega-props': {
             labelAlign: 'top',
           },
@@ -97,7 +139,7 @@ const SCHEMA: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 2,
+          'x-index': 4,
         },
         description: {
           type: 'string',
@@ -113,7 +155,7 @@ const SCHEMA: ISchema = {
             max: 100,
             message: '备注超过 100 字符!',
           },
-          'x-index': 3,
+          'x-index': 5,
         },
       },
     },
@@ -122,8 +164,26 @@ const SCHEMA: ISchema = {
 
 function EditModal({ modalType, onClose }: Props): JSX.Element {
   const form = useForm({
+    actions,
     onSubmit: (formData) => {
       store.createFunc(formData);
+    },
+    effects: ($) => {
+      const { setFieldState } = actions;
+      onFieldValueChange$('type').subscribe(({ value }) => {
+        setFieldState('id', (state) => {
+          state.visible = value === 'association';
+          state.props.enum = store.optionalProjectToSelectEnum;
+        });
+        setFieldState('name', (state) => {
+          state.editable = value === 'custom';
+        });
+      });
+      onFieldValueChange$('id').subscribe(({ values }) => {
+        setFieldState('name', (state) => {
+          state.value = values[1].title;
+        });
+      });
     },
   });
 
@@ -158,7 +218,7 @@ function EditModal({ modalType, onClose }: Props): JSX.Element {
         className="p-20"
         schema={SCHEMA}
         form={form as any}
-        components={{ Input, TextArea: Input.TextArea, RadioGroup: Radio.Group }}
+        components={{ Input, TextArea: Input.TextArea, RadioGroup: Radio.Group, AntdSelect }}
       />
     </Modal>
   );
