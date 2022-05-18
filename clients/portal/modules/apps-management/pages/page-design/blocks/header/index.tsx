@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import cs from 'classnames';
 import { observer } from 'mobx-react';
-import { toJS, reaction } from 'mobx';
+import { toJS } from 'mobx';
 import { Icon, Button, Tooltip, Modal } from '@one-for-all/ui';
 import { ArteryRenderer } from '@one-for-all/artery-renderer';
 import type { BlockItemProps } from '@one-for-all/artery-engine';
@@ -9,38 +9,18 @@ import type { BlockItemProps } from '@one-for-all/artery-engine';
 import { useCtx } from '@pageDesign/ctx';
 import type { BlocksCommunicationType } from '@pageDesign/types';
 import componentLoader from '@c/artery-renderer/component-loader';
+import repository from '@c/artery-renderer/repository';
 
 import styles from './style.m.scss';
 import './style.scss';
 
 const Divider = (): JSX.Element => <div className='w-1 h-20 bg-gray-200 mx-16' />;
-const historySizeLimit = 50;
 
-function Toolbar({ sharedState, artery }: BlockItemProps<BlocksCommunicationType>): JSX.Element {
+function Toolbar({ sharedState, artery, commands }: BlockItemProps<BlocksCommunicationType>): JSX.Element {
   const ctx = useCtx();
   const { page, designer } = ctx;
   const [openTestPreview, setOpenPreview] = useState(false);
-  const [historyList, setHistoryList] = useState<string[]>([]); // page schema history
-  const [hisIdx, setHisIdx] = useState(0); // history queue index
   const { docLink = '', hideTestPreview } = sharedState;
-
-  useEffect(()=> {
-    const dispose = reaction(()=> JSON.stringify(toJS(page.schema)), (schema)=> {
-      setHistoryList((prevHis)=> {
-        if (prevHis[0] === schema) {
-          // no need put new layer
-          return prevHis;
-        }
-        if (prevHis.length === historySizeLimit) {
-          return [schema, ...prevHis.slice(0, -1)];
-        }
-        return [schema, ...prevHis];
-      });
-      // setHisIdx(0); // when add history layer, reset idx
-    });
-
-    return dispose;
-  }, []);
 
   function handleSave(): void {
     ctx.onSave?.(artery);
@@ -72,37 +52,25 @@ function Toolbar({ sharedState, artery }: BlockItemProps<BlocksCommunicationType
     return (
       <ArteryRenderer
         artery={artery as any}
-        plugins={{ componentLoader }}
+        plugins={{ componentLoader, repository }}
       />
     );
   }
 
   function canUndo(): boolean {
-    return historyList.length > 1 && hisIdx < historyList.length - 1;
+    return true;
   }
 
   function canRedo(): boolean {
-    return historyList.length > 1 && hisIdx > 0 && hisIdx < historyList.length;
+    return true;
   }
 
   function handleRedo(): void {
-    setHisIdx((prevIdx)=> {
-      const curIdx = prevIdx > 0 ? prevIdx - 1 : 0;
-      if (prevIdx !== curIdx) {
-        page.setSchema(JSON.parse(historyList[curIdx]));
-      }
-      return curIdx;
-    });
+    commands?.redo();
   }
 
   function handleUndo(): void {
-    setHisIdx((prevIdx)=> {
-      const curIdx = prevIdx < historyList.length - 1 ? prevIdx + 1 : historyList.length - 1;
-      if (prevIdx !== curIdx && curIdx > 0) {
-        page.setSchema(JSON.parse(historyList[curIdx]));
-      }
-      return curIdx;
-    });
+    commands?.undo();
   }
 
   return (
