@@ -103,6 +103,8 @@ function ViewInfo({ view, openModal }: Props): JSX.Element {
       {
         type === ViewType.SchemaView && (
           <ArteryRenderer
+            // force rerender when arteryID change
+            key={view.arteryID}
             arteryID={view.arteryID}
             version={ARTERY_KEY_VERSION}
           />
