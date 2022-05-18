@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useMemo } from 'react';
 import cs from 'classnames';
 import { useDrag, useDrop, DropTargetMonitor } from 'react-dnd';
 import Icon from '@one-for-all/icon';
@@ -11,9 +11,10 @@ import { useOutLineContext } from './context';
 interface Props {
   id: string;
   nodeName: string;
-  hasChildren: boolean;
+  isLeaf: boolean;
   expand: boolean;
-  node?: Node;
+  level: number;
+  node: Node;
   ComponentIcon?: ReactComp;
   onChangeExpand?: (expand: boolean) => void;
   onModifiedNodeName?: (nodeName: string) => void;
@@ -25,12 +26,13 @@ type DragItemType = {
   id: string;
 };
 
-export default function OutlineItemHeader({
+function OutlineItem({
   id,
   nodeName,
-  hasChildren,
+  isLeaf,
   ComponentIcon,
   expand,
+  level,
   node,
   onChangeExpand,
   onModifiedNodeName,
@@ -77,6 +79,18 @@ export default function OutlineItemHeader({
 
   useEffect(() => setNodeName(nodeName), [nodeName]);
 
+  const lines = useMemo(() => (
+    <>
+      {new Array(level).fill(1).map((_, index) => (
+        <span
+          key={index}
+          className="w-1 h-full absolute bg-gray-300"
+          style={{ left: -(index * 20) - 8 }}
+        />
+      ))}
+    </>
+  ), [level]);
+
   function computedLocation(monitor: DropTargetMonitor): LocationType {
     const { bottom, top } = dragAndDrop.current?.getBoundingClientRect() || { bottom: 0, top: 0 };
     const monitorTop = monitor.getClientOffset()?.y || 0;
@@ -109,29 +123,32 @@ export default function OutlineItemHeader({
     <div
       ref={dragAndDrop}
       className={cs(
-        'flex w-full relative h-36 max-h-36 bg-white hover:bg-blue-100 py-5 rounded-6',
-        isDragging && 'opacity-20',
+        'flex relative h-36 max-h-36 min-w-full w-min bg-white hover:bg-blue-100 rounded-6',
+        isDragging && 'opacity-10',
         activeNodeId === id && 'bg-blue-100 text-blue-600',
       )}
       onClick={() => setActiveNode?.(node)}
+      style={{ paddingLeft: level * 20 }}
     >
       <div
         className={cs(
-          'w-full h-1/2 absolute top-0',
+          'w-full h-1/2 absolute left-0 top-0',
           isHover && 'bg-blue-100',
           hoverLocation === 'after' && 'top-1/2 rounded-b-6',
           hoverLocation === 'before' && 'rounded-t-6',
         )}
       />
-      <div className="w-full h-full flex items-center z-10">
-        {hasChildren && (<span onClick={handleChangeExpand}>
+      <div className="h-full flex items-center z-10 relative">
+        {lines}
+        {!isLeaf && (<span onClick={handleChangeExpand}>
           <Icon
             style={{ transition: 'transform .2s linear' }}
             className={cs('cursor-pointer hover:text-black-900 transform', expand && 'rotate-90')}
             name="arrow_right"
             size={24}
           />
-        </span>)}
+        </span>)
+        }
         {ComponentIcon && (
           <div className='h-full w-24 overflow-hidden flex items-center justify-center'>
             <ComponentIcon />
@@ -140,7 +157,7 @@ export default function OutlineItemHeader({
         <div className="px-1">
           <input
             type="text"
-            className="outline-node-header-input w-full p-4 border-0"
+            className="outline-item-input w-full min-w-90 p-4 border-0"
             value={_nodeName}
             onBlur={handleChangeNodeName}
             onChange={(e) => setNodeName(e.target.value)}
@@ -151,3 +168,5 @@ export default function OutlineItemHeader({
     </div>
   );
 }
+
+export default OutlineItem;

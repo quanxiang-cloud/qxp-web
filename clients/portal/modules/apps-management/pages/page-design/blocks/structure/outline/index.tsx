@@ -13,7 +13,7 @@ import {
   _insertChildAt,
 } from '@one-for-all/artery-utils';
 
-import OutlineNode from './outline-node';
+import OutlineRender from './outline-render';
 import { useComponents } from '../../fountainhead/store';
 import { OutLineContext, OutLineContextState } from './context';
 import { beforeIs, afterIs, firstChildIs, canHasCurChildren, getReRealNodeId } from '../utils';
@@ -98,7 +98,7 @@ export default function Outline({ rootNode, activeNode, onChange, setActiveNode 
   return (
     <DndProvider backend={HTML5Backend}>
       <OutLineContext.Provider value={contextValue}>
-        <OutlineNode node={rootNode} />
+        <OutlineRender rootNode={rootNode} />
       </OutLineContext.Provider>
     </DndProvider>
   );
