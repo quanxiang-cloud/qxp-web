@@ -48,8 +48,7 @@ function isInvalid<T>(value: T): boolean {
 }
 
 async function loadAllPropsSpecs(packages: Package[]): Promise<Record<string, PropsSpecMap>> {
-  const propsSpecsPromise = packages.map(getPackagePropsSpec);
-  const propsSpecs = await Promise.all(propsSpecsPromise);
+  const propsSpecs = await getPackagePropsSpec(packages);
   return propsSpecs.reduce((acc, propsSpec) => {
     const { name, version, result } = propsSpec;
     return { ...acc, [`${name}@${version}`]: result };
@@ -57,7 +56,6 @@ async function loadAllPropsSpecs(packages: Package[]): Promise<Record<string, Pr
 }
 
 async function loadAllComponents(packages: Package[]): Promise<PackageComponent[]> {
-  const componentsPromise = packages.map(getComponentsFromPackage);
-  const components = await Promise.all(componentsPromise);
+  const components = await getComponentsFromPackage(packages);
   return flatten(components);
 }

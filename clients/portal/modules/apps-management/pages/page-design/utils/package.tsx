@@ -1,5 +1,5 @@
 import React, { CSSProperties } from 'react';
-import { equals, flatten, ifElse, isEmpty, pipe, toPairs, reduce, merge } from 'ramda';
+import { equals, flatten, isEmpty, pipe, toPairs, reduce, merge } from 'ramda';
 import Icon from '@one-for-all/icon';
 import type { NodeProperties } from '@one-for-all/artery';
 import { PropsSpec } from '@one-for-all/node-carve';
@@ -8,13 +8,11 @@ import { getBatchGlobalConfig } from '@lib/api/user-config';
 import { parseJSON } from '@lib/utils';
 
 import type {
-  BasePackageComponent,
   CategoryVariants,
   InitialProps,
   Package,
   PackageComponent,
   ReactComponent,
-  Variant,
   VariantIcon,
   VariantImageIcon,
   VariantPlatFormIcon,
@@ -47,82 +45,112 @@ export function isPlatformIcon(icon: VariantIcon): icon is VariantPlatFormIcon {
   return equals('platform', icon.type);
 }
 
-async function iconBuilder(icon: VariantIcon): Promise<ReactComponent> {
+function iconBuilder(icon: VariantIcon): ReactComponent {
   if (isImageIcon(icon)) {
     return imageIconBuilder(icon);
   }
   return platformIconBuilder(icon);
 }
 
-async function getPackageComponentIcon(
+function getPackageComponentIcon(
   icon: VariantIcon, options: Omit<PackageComponent, 'Icon'>,
-): Promise<PackageComponent> {
+): PackageComponent {
   return {
     ...options,
-    Icon: await iconBuilder(icon),
+    Icon: iconBuilder(icon),
   };
 }
 
-function getFullComponent(categoryVariantsMap: Record<string, CategoryVariants | undefined>) {
-  return async (basePackageComponent: BasePackageComponent): Promise<PackageComponent[]> => {
-    const { name } = basePackageComponent;
-    const categoryVariantsFallback = { variants: [], category: undefined };
-    const { variants, category } = categoryVariantsMap[name] ?? categoryVariantsFallback;
-    const variantToComponentPromise = (variant: Variant): Promise<PackageComponent> => {
-      const { icon, ...restVariant } = variant;
-      return getPackageComponentIcon(icon, { ...basePackageComponent, ...restVariant, category });
-    };
-    const componentsPromises = variants.map(variantToComponentPromise);
-    return await Promise.all(componentsPromises);
+function getFullComponent(categoryVariantsMaps: CategoryVariantMapResult[]): PackageComponent[] {
+  return categoryVariantsMaps.reduce((acc: PackageComponent[], cur) => {
+    const { result, ...pkg } = cur;
+    const components = Object.entries(result).map(
+      ([componentName, { variants, category }]): PackageComponent[] => {
+        return variants.map((variant) => {
+          const { icon, ...restVariant } = variant;
+          return getPackageComponentIcon(
+            icon, { ...restVariant, category, name: componentName, package: pkg },
+          );
+        });
+      });
+    return acc.concat(flatten(components));
+  }, []);
+}
+
+export async function getComponentsFromPackage(pkgs: Package[]): Promise<PackageComponent[]> {
+  const categoryVariantsMaps = await getPackageComponentToCategoryVariantMapDynamic(pkgs);
+  return getFullComponent(categoryVariantsMaps);
+}
+
+function buildGetPackageSourceDynamic(): () => Promise<Package[]> {
+  const cache: Record<string, Package[]> = {};
+  return async function getPackagesSourceDynamic(): Promise<Package[]> {
+    const key = 'PACKAGES';
+    if (cache[key]) {
+      return cache[key];
+    }
+    const { result } = await getBatchGlobalConfig([{ key, version: '1.0.0' }]);
+    const packageList = parseJSON(result[key], []);
+    cache[key] = packageList;
+    return packageList;
   };
 }
-
-function getBaseComponentsFromComponentNames(
-  pkg: Package, componentNames: string[],
-): BasePackageComponent[] {
-  return componentNames.map((name) => ({ package: pkg, name }));
+export const getPackagesSourceDynamic = buildGetPackageSourceDynamic();
+type CategoryVariantMapResult = Package & { result: Record<string, CategoryVariants> };
+function buildCategoryVariantMapDynamic(): (pkgs: Package[]) => Promise<CategoryVariantMapResult[]> {
+  const cache: Record<string, CategoryVariantMapResult> = {};
+  return async function getPackageComponentToCategoryVariantMapDynamic(
+    pkgs: Package[],
+  ): Promise<CategoryVariantMapResult[]> {
+    const keyVersions = pkgs.filter(({ name }) => name !== 'all')
+      .map(({ name, version }) => ({ key: `PACKAGE_MANIFEST:${name}`, version }));
+    const { result } = await getBatchGlobalConfig(keyVersions.filter(({ key }) => !cache[key]));
+    const categoryVariantMap = pkgs.map((pkg): CategoryVariantMapResult => {
+      const key = `PACKAGE_MANIFEST:${pkg.name}`;
+      let res = {};
+      if (cache[key]) {
+        res = cache[key];
+      } else {
+        res = !isEmpty(result) ? parseJSON(result[key], {}) : {};
+      }
+      return { ...pkg, result: res };
+    });
+    return categoryVariantMap;
+  };
 }
-
-export async function getComponentsFromPackage(pkg: Package): Promise<PackageComponent[]> {
-  const categoryVariantsMap = await getPackageComponentToCategoryVariantMapDynamic(pkg);
-  const componentNames = Object.keys(categoryVariantsMap);
-  const baseComponents = getBaseComponentsFromComponentNames(pkg, componentNames);
-  const componentsArrayPromise = baseComponents.map(getFullComponent(categoryVariantsMap));
-  const componentsArray = await Promise.all(componentsArrayPromise);
-  const componentsArrayWithoutNull = componentsArray.filter(
-    (components): components is PackageComponent[] => components !== null,
-  );
-  return flatten(componentsArrayWithoutNull);
-}
-
-export async function getPackagesSourceDynamic(): Promise<Package[]> {
-  const key = 'PACKAGES';
-  const { result } = await getBatchGlobalConfig([{ key, version: '1.0.0' }]);
-  return parseJSON(result[key], []);
-}
-
-async function getPackageComponentToCategoryVariantMapDynamic(
-  { name, version }: Package,
-): Promise<Record<string, CategoryVariants | undefined>> {
-  if (name === 'all') {
-    return {};
-  }
-  const key = `PACKAGE_MANIFEST:${name}`;
-  const { result } = await getBatchGlobalConfig([{ key, version }]);
-  const getter = ifElse(
-    () => !isEmpty(result),
-    () => parseJSON(result[key], {}),
-    () => ({}),
-  );
-  return getter();
-}
+export const getPackageComponentToCategoryVariantMapDynamic = buildCategoryVariantMapDynamic();
 
 export type PropsSpecMap = Record<string, PropsSpec | undefined>;
-export type GetPackagePropsSpecResult = Pick<Package, 'name' | 'version'> & { result: PropsSpecMap; };
-export async function getPackagePropsSpec({ name, version }: Package): Promise<GetPackagePropsSpecResult> {
-  const key = `PACKAGE_PROPS_SPEC:${name}`;
-  const { result } = await getBatchGlobalConfig([{ key, version }]);
-  return { name, version, result: parseJSON(result[key], {}) as PropsSpecMap };
+type NameVersion = Pick<Package, 'name' | 'version'>;
+export type GetPackagePropsSpecResult = NameVersion & { result: PropsSpecMap; };
+type BuildGetPackagePropsSpec = (params: NameVersion[]) => Promise<GetPackagePropsSpecResult[]>;
+function buildGetPackagePropsSpec(): BuildGetPackagePropsSpec {
+  const cache: Record<string, PropsSpecMap> = {};
+  return async function getPackagePropsSpec(params: NameVersion[]): Promise<GetPackagePropsSpecResult[]> {
+    const keyVersions = params.map(({ name, version }) => ({ key: `PACKAGE_PROPS_SPEC:${name}`, version }));
+    const { result } = await getBatchGlobalConfig(keyVersions.filter(({ key }) => !cache[key]));
+    const specResult = params.map(({ name, version }): GetPackagePropsSpecResult => {
+      const key = `PACKAGE_PROPS_SPEC:${name}`;
+      let res = {};
+      if (cache[key]) {
+        res = cache[key];
+      } else {
+        res = parseJSON(result[key], {});
+      }
+      return { name, version, result: res };
+    });
+    return specResult;
+  };
+}
+export const getPackagePropsSpec = buildGetPackagePropsSpec();
+
+export type GetPackageComponentPropsSpecParam = Pick<Package, 'name' | 'version'> & { exportName: string };
+export async function getPackageComponentPropsSpec(
+  params: GetPackageComponentPropsSpecParam,
+): Promise<PropsSpec | undefined> {
+  const { name, version, exportName } = params;
+  const [{ result }] = await getPackagePropsSpec([{ name, version }]);
+  return result[exportName];
 }
 
 export function initialPropsToNodeProperties(initialProps: InitialProps = {}): NodeProperties {
