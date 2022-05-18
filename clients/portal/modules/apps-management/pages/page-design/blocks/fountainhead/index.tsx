@@ -65,7 +65,7 @@ const Fountainhead = (props: BlockItemProps<BlocksCommunicationType>): JSX.Eleme
     const currentNodeChildrenLength = get(currentNode, 'children.length', 0);
     const isCurrentNodeAcceptChild = or(
       !!propsSpecs?.[currentNodecomponentName]?.isContainer,
-      currentNodecomponentName === 'div',
+      or(['div', 'page'].includes(currentNodecomponentName), !!currentNodeChildrenLength),
     );
 
     const newRootNode = ifElse(
