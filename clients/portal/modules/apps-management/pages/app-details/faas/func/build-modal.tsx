@@ -70,6 +70,16 @@ function BuildModal({ onClose }: Props): JSX.Element {
                   'x-mega-props': {
                     labelAlign: 'left',
                   },
+                  'x-rules': [
+                    {
+                      pattern: /^((?!(\ud83c[\udf00-\udfff])|(\ud83d[\udc00-\ude4f])|(\ud83d[\ude80-\udeff])).)*$/,
+                      message: '环境变量名不能输入emoji表情符号',
+                    },
+                    {
+                      pattern: /^[^\u4e00-\u9fa5]{0,}$/,
+                      message: '环境变量名不能输入汉字',
+                    },
+                  ],
                 },
                 envValue: {
                   type: 'string',

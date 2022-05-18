@@ -47,6 +47,8 @@ type FuncListParams = {
 }
 
 type creatFuncParams = {
+  type: string;
+  id: string;
   name: string;
   alias: string;
   language: string;

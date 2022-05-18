@@ -32,7 +32,7 @@ function VersionDetails(): JSX.Element {
       return (<div>未注册API文档</div>);
     }
     if (store.currentBuild?.docStatus === API_DOC_STATE.REGISTERING) {
-      return <div>文档生成中...</div>;
+      return <Loading desc='文档正在生成中' />;
     }
     if (store.isAPILoading) {
       return (<Loading />);
@@ -50,7 +50,7 @@ function VersionDetails(): JSX.Element {
       ws.addEventListener(
         'faas',
         'doc-build',
-        (data) => store.apiDocStateChangeListener( data, store.currentBuild?.id));
+        (data) => store.apiDocStateChangeListener(data, store.currentBuild?.id));
     }
 
     if (store.currentBuild?.docStatus && store.currentBuild?.docStatus > API_DOC_STATE.REGISTERING) {
