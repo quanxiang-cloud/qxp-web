@@ -44,13 +44,16 @@ function ApiSelector({
     if (leafOption?.isLeaf) {
       setApiPath(leafOption.path, leafOption.method);
       return;
+    } else {
+      const targetOption = selectedOptions[selectedOptions.length - 1];
+      if (hasLeaf(targetOption)) return;
+
+      setApiDirectoryWithPathType({ directory: targetOption.path, pathType: targetOption.pathType });
     }
   }
 
-  function loadData(selectedOptions: DefaultOptionType[]): void {
-    const targetOption = selectedOptions[selectedOptions.length - 1];
-
-    setApiDirectoryWithPathType({ directory: targetOption.path, pathType: targetOption.pathType });
+  function hasLeaf(targetOption: DefaultOptionType): boolean {
+    return !!targetOption.children?.some(({ isLeaf }) => isLeaf);
   }
 
   if (simpleMode) {
@@ -61,7 +64,7 @@ function ApiSelector({
         defaultValue={[initRawApiPath]}
         // displayRender={(label)=> label[label.length - 1]}
         options={options}
-        loadData={loadData}
+        loadData={() => {}}
         onChange={onChange}
       />
     );
@@ -76,7 +79,7 @@ function ApiSelector({
           className="cascader"
           defaultValue={[initRawApiPath]}
           options={options}
-          loadData={loadData}
+          loadData={() => {}}
           onChange={onChange}
           placeholder="请选择API"
         />
