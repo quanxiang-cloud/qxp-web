@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import type { Node } from '@one-for-all/artery';
 import type { ReactComp } from '@pageDesign/blocks/fountainhead/type';
 import { isArray } from 'lodash';
 
 import { filterChildren, getRealNode } from '../utils';
-import { useOutLineContext } from './context';
 import OutlineItem from './outline-item';
+import { useComponents } from '../../fountainhead/store';
 
-type ListItem = {
+export type ListItem = {
   id: string,
   title: string,
   Icon?: ReactComp,
@@ -22,7 +22,7 @@ interface Props {
 }
 
 export default function OutlineRender({ rootNode }: Props): JSX.Element {
-  const { components, modifiedNodeName } = useOutLineContext() || {};
+  const components = useComponents();
   const [list, setList] = useState<ListItem[]>();
   const [unExpand, setUnExpand] = useState<string[]>([]);
 
@@ -36,7 +36,7 @@ export default function OutlineRender({ rootNode }: Props): JSX.Element {
     if (!realNode) return [];
 
     if (isArray(realNode)) {
-      return treeArrayToList(level, unExpand, filterChildren(realNode));
+      return forestToList(level, unExpand, filterChildren(realNode));
     }
 
     if (realNode.type === 'html-element' || realNode.type === 'react-component') {
@@ -57,7 +57,7 @@ export default function OutlineRender({ rootNode }: Props): JSX.Element {
       };
 
       if (isExpand) {
-        return [curList, ...treeArrayToList(level + 1, unExpand, afterFilterChildren)];
+        return [curList, ...forestToList(level + 1, unExpand, afterFilterChildren)];
       }
 
       return [curList];
@@ -66,7 +66,7 @@ export default function OutlineRender({ rootNode }: Props): JSX.Element {
     return [];
   }
 
-  function treeArrayToList(level: number, unExpand: string[], nodes?: Node[]): ListItem[] {
+  function forestToList(level: number, unExpand: string[], nodes?: Node[]): ListItem[] {
     if (!nodes) return [];
 
     return nodes.reduce((total: ListItem[], node) => {
@@ -74,29 +74,22 @@ export default function OutlineRender({ rootNode }: Props): JSX.Element {
     }, []);
   }
 
-  function handleChangeExpand(nodeItem: ListItem, expand: boolean): void {
+  const handleChangeExpand = useCallback((nodeItem: ListItem, expand: boolean): void => {
     if (expand) {
-      setUnExpand(unExpand.filter((id) => id !== nodeItem.id));
+      setUnExpand((unExpand) => unExpand.filter((id) => id !== nodeItem.id));
       return;
     }
 
-    setUnExpand([...unExpand, nodeItem.id]);
-  }
+    setUnExpand((unExpand) => [...unExpand, nodeItem.id]);
+  }, []);
 
   return (
     <div>
       {list?.map((item) => (
         <OutlineItem
           key={item.id}
-          id={item.id}
-          nodeName={item.title}
-          ComponentIcon={item.Icon}
-          node={item.data}
-          level={item.level}
-          expand={item.isExpand}
-          isLeaf={item.isLeaf}
-          onChangeExpand={(expand) => handleChangeExpand(item, expand)}
-          onModifiedNodeName={(nodeName) => modifiedNodeName?.(item.data, nodeName)}
+          item={item}
+          onChangeExpand={handleChangeExpand}
         />
       ))}
     </div>

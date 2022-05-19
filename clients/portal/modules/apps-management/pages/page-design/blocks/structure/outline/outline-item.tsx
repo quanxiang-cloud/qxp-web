@@ -1,23 +1,15 @@
-import React, { useRef, useState, useEffect, useMemo } from 'react';
+import React, { useRef, useState, useEffect, useMemo, memo } from 'react';
 import cs from 'classnames';
 import { useDrag, useDrop, DropTargetMonitor } from 'react-dnd';
 import Icon from '@one-for-all/icon';
-import { ReactComp } from '@pageDesign/types';
-import type { Node } from '@one-for-all/artery';
 
 import { DRAG_TYPE } from './constants';
 import { useOutLineContext } from './context';
+import { ListItem } from './outline-render';
 
 interface Props {
-  id: string;
-  nodeName: string;
-  isLeaf: boolean;
-  expand: boolean;
-  level: number;
-  node: Node;
-  ComponentIcon?: ReactComp;
-  onChangeExpand?: (expand: boolean) => void;
-  onModifiedNodeName?: (nodeName: string) => void;
+  item: ListItem,
+  onChangeExpand?: (item: ListItem, isExpand: boolean) => void;
 }
 
 type LocationType = 'before' | 'after';
@@ -27,20 +19,17 @@ type DragItemType = {
 };
 
 function OutlineItem({
-  id,
-  nodeName,
-  isLeaf,
-  ComponentIcon,
-  expand,
-  level,
-  node,
+  item,
   onChangeExpand,
-  onModifiedNodeName,
 }: Props): JSX.Element {
+  const { id, title, isLeaf, Icon: ComponentIcon, isExpand, level, data: node } = item;
+
   const [hoverLocation, setHoverLocation] = useState<LocationType>();
-  const [_nodeName, setNodeName] = useState(nodeName);
+  const [nodeName, setNodeName] = useState(title);
   const dragAndDrop = useRef<HTMLDivElement>(null);
-  const { moveToById, rootNodeId, activeNodeId, setActiveNode } = useOutLineContext() || {};
+  const { moveToById, rootNodeId, activeNodeId, setActiveNode, modifiedNodeName } = useOutLineContext() || {};
+
+  useEffect(() => setNodeName(title), [title]);
 
   const [{ isDragging }, drag] = useDrag({
     type: DRAG_TYPE,
@@ -64,7 +53,7 @@ function OutlineItem({
 
       const location = computedLocation(monitor);
 
-      if (location === 'after' && expand) {
+      if (location === 'after' && isExpand) {
         moveToById?.(dragItemId, id, 'inner');
       } else {
         moveToById?.(dragItemId, id, location);
@@ -76,8 +65,6 @@ function OutlineItem({
       isHover: monitor.isOver(),
     }),
   }, [id, moveToById]);
-
-  useEffect(() => setNodeName(nodeName), [nodeName]);
 
   const lines = useMemo(() => (
     <>
@@ -100,7 +87,7 @@ function OutlineItem({
 
   function handleChangeExpand(e: React.MouseEvent): void {
     e.stopPropagation();
-    onChangeExpand?.(!expand);
+    onChangeExpand?.(item, !isExpand);
   }
 
   function isRootNode(): boolean {
@@ -108,7 +95,7 @@ function OutlineItem({
   }
 
   function handleChangeNodeName(): void {
-    onModifiedNodeName?.(_nodeName);
+    modifiedNodeName?.(node, nodeName);
   }
 
   function onKeyDown(e: React.KeyboardEvent): void {
@@ -143,7 +130,7 @@ function OutlineItem({
         {!isLeaf && (<span onClick={handleChangeExpand}>
           <Icon
             style={{ transition: 'transform .2s linear' }}
-            className={cs('cursor-pointer hover:text-black-900 transform', expand && 'rotate-90')}
+            className={cs('cursor-pointer hover:text-black-900 transform', isExpand && 'rotate-90')}
             name="arrow_right"
             size={24}
           />
@@ -158,7 +145,7 @@ function OutlineItem({
           <input
             type="text"
             className="outline-item-input w-full min-w-90 p-4 border-0"
-            value={_nodeName}
+            value={nodeName}
             onBlur={handleChangeNodeName}
             onChange={(e) => setNodeName(e.target.value)}
             onKeyDown={onKeyDown}
@@ -169,4 +156,8 @@ function OutlineItem({
   );
 }
 
-export default OutlineItem;
+export default memo(OutlineItem, ({ item: prevItem }, { item: nextItem }) => {
+  return prevItem.id === nextItem.id && prevItem.isExpand === nextItem.isExpand &&
+    prevItem.isLeaf === nextItem.isLeaf && prevItem.level === nextItem.level &&
+    prevItem.title === nextItem.title;
+});
