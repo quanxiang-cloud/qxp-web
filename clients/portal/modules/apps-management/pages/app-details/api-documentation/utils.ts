@@ -50,7 +50,7 @@ export const createMenus = (directoryChildren: DirectoryChild[], isRoot?: boolea
         tableID: name,
         type: _isLeaf ? 'leaf' : 'group',
         source: directoryChild,
-        leafIsApi: leafIsApi(directoryChild),
+        leafIsApi: leafHasApi(directoryChild),
         children: _isLeaf ? undefined : createMenus(children || []),
       });
     }
@@ -96,10 +96,13 @@ const isRootDirectory = (directoryChild: Directory): boolean => {
   });
 };
 
-const leafIsApi = (directoryChild: Directory): boolean => {
+const leafHasApi = (directoryChild: Directory): boolean => {
   const curDirectoryRule = directoryRule.find(({ name, deep }) => {
     const splitPath = directoryChild.parent.split('/');
-    return splitPath[splitPath.length - deep + 1] === name;
+    for (let i = splitPath.length - deep + 1; i >= 0; i -= 1) {
+      if (splitPath[i] === name) return true;
+    }
+    return false;
   });
   return !!curDirectoryRule?.leafIsApi;
 };
@@ -107,7 +110,10 @@ const leafIsApi = (directoryChild: Directory): boolean => {
 const isLeaf = (directoryChild: Directory): boolean => {
   return directoryRule.some(({ name, deep }) => {
     const splitPath = directoryChild.parent.split('/');
-    return splitPath[splitPath.length - deep] === name;
+    if (name === 'form') {
+      return splitPath[splitPath.length - deep] === name;
+    }
+    return isApi(directoryChild);
   });
 };
 

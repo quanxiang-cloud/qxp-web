@@ -27,6 +27,7 @@ type VersionField = {
   id: string;
   name: string;
   projectID: string;
+  groupName: string;
   resourceRef: string;
   status: number;
   version: string;
@@ -49,6 +50,7 @@ type FuncListParams = {
 type creatFuncParams = {
   type: string;
   id: string;
+  init: boolean;
   name: string;
   alias: string;
   language: string;
