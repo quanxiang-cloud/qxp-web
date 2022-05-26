@@ -31,6 +31,11 @@ function isNodeSupportChildren(node: NodePrimary): Promise<boolean> {
     if (MOCK.has(identifier)) {
       return Promise.resolve(true);
     }
+
+    // todo fixme
+    if (node.packageName === 'system-components' && node.exportName === 'GridContainer') {
+      return Promise.resolve(true);
+    }
   }
 
   if (node.type === 'html-element') {
