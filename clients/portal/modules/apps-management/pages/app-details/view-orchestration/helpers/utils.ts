@@ -153,19 +153,13 @@ export function createAppLandingPage(): Artery {
       children: [
         {
           id: textNodeID,
-          type: 'react-component',
-          packageName: '@one-for-all/ui',
-          packageVersion: '0.3.3',
-          exportName: 'Text',
+          type: 'html-element',
+          name: 'h1',
           label: '文本',
           props: {
-            content: {
+            children: {
               type: 'constant_property',
               value: '自定义页面示例',
-            },
-            isAllowSelect: {
-              type: 'constant_property',
-              value: false,
             },
             style: {
               type: 'constant_property',
