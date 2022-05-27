@@ -19,7 +19,6 @@
 }
 
 .webhook-request-inputs {
-  max-height: 400px;
   @apply flex relative mt-8 h-full overflow-hidden;
 
   &>div:first-child {
