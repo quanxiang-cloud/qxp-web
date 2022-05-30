@@ -36,9 +36,10 @@ function Send(
     id: string, key: string, val: string, type: 'header' | 'body' | 'query', index: number,
   ): void {
     const hasName = key === 'name' && val;
-    const newValue = value?.map((v) => {
+    const hasExpr = key === 'data' && val;
+    const newValue: Input[] = value?.map((v) => {
       if (v.id === id) {
-        return { ...v, [key]: val };
+        return hasExpr ? { ...v, [key]: val, type: 'direct_expr' } : { ...v, [key]: val };
       }
       return v;
     }) || [];
