@@ -4,13 +4,12 @@ import { BlockItemProps } from '@one-for-all/artery-engine';
 
 import { BlocksCommunicationType } from '../../types';
 import isNodeSupportChildren from './is-node-support-children';
-// todo fixme
-import pluginsSrc from 'dll:./../../../../../../../../tmp/TEMPORARY_PATCH_FOR_ARTERY_PLUGINS.js';
+import pluginsSrc from 'REF:./plugins';
 
 import './index.scss';
 
 // // todo fixme
-const __OVER_LAYER_COMPONENTS: Array<{ packageName: string; exportName: string; }> = [
+const __OVER_LAYER_COMPONENTS: Array<{ packageName: string; exportName: string }> = [
   { packageName: '@one-for-all/headless-ui', exportName: 'MediocreDialog' },
 ];
 

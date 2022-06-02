@@ -13,6 +13,10 @@ const adapter: APISpecAdapter = {
   },
 };
 
-const plugins: Plugins = { componentLoader, repository: repoSystemComponents, apiSpecAdapter: adapter };
+const plugins: Plugins = {
+  componentLoader,
+  repository: repoSystemComponents,
+  apiSpecAdapter: adapter,
+};
 
 export default plugins;
