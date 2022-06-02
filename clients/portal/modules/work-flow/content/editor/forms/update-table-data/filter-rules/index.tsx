@@ -7,7 +7,7 @@ import Select from '@c/select';
 import { getFormFieldSchema } from '@flow/content/editor/forms/api';
 import { ValueRuleVal } from '@flow/content/editor/type';
 import { schemaToMap } from '@lib/schema-convert';
-import { buildQueryRef } from '@lib/http-client';
+import { buildQueryRef } from '@lib/http-client-form';
 
 import ConditionItem from './condition-item';
 

@@ -2,7 +2,7 @@ import { action, observable, reaction, computed, toJS } from 'mobx';
 import { isEqual, omit, set, unset } from 'lodash';
 
 import toast from '@lib/toast';
-import { getTableSchema } from '@lib/http-client';
+import { getTableSchema } from '@lib/http-client-form';
 import schemaToFields from '@lib/schema-convert';
 
 import { deleteSchema, modelDuplicate, saveTableSchema } from './api';

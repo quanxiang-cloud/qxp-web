@@ -1,5 +1,5 @@
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
-import { getTableSchema } from '@lib/http-client';
+import { getTableSchema } from '@lib/http-client-form';
 import schemaToFields from '@lib/schema-convert';
 
 import { LinkedTableFieldOptions } from './index';

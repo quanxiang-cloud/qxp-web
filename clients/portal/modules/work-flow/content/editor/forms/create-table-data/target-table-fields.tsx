@@ -6,7 +6,7 @@ import { getFormFieldSchema } from '@flow/content/editor/forms/api';
 import { FormRenderer } from '@c/form-builder';
 import { ValueRule, ValueRuleVal } from '@flow/content/editor/type';
 import { schemaToMap } from '@lib/schema-convert';
-import { getTableSchema } from '@lib/http-client';
+import { getTableSchema } from '@lib/http-client-form';
 
 import CustomField from './custom-field';
 import SubTableFields from './sub-table-fields';
