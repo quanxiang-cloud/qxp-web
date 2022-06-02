@@ -1,4 +1,3 @@
-import { or, cond, T, and } from 'ramda';
 import type { ComponentLoaderParam, DynamicComponent, ComponentLoader } from '@one-for-all/artery-renderer';
 
 import versionMap from '@pageDesign/blocks/fountainhead/config/name-version-map';
@@ -42,7 +41,7 @@ function getPackageId(param: Pick<ComponentLoaderParam, 'packageName' | 'package
 
 async function cdnComponentLoader(param: ComponentLoaderParam, onCache: OnCache): Promise<DynamicComponent> {
   const { packageName, exportName } = param;
-  const isOneForAllUIPage = and(packageName === '@one-for-all/ui', exportName === 'page');
+  const isOneForAllUIPage = packageName === '@one-for-all/ui' && exportName === 'page';
   const componentId = getComponentId(param);
   const module = await System.import(packageName);
   const component = module[isOneForAllUIPage ? 'Page' : exportName] ?? module['default'] ?? (() => null);
@@ -63,7 +62,7 @@ async function thirdPartComponentLoader(
 }
 
 function isCDNPackage({ packageName }: ComponentLoaderParam): boolean {
-  return or(packageName.startsWith('@one-for-all'), packageName.startsWith('ofa-ui'));
+  return packageName.startsWith('@one-for-all') || packageName.startsWith('ofa-ui');
 }
 
 function buildComponentLoader(): ComponentLoader {
@@ -75,12 +74,15 @@ function buildComponentLoader(): ComponentLoader {
   return async function componentLoader(param: ComponentLoaderParam): Promise<DynamicComponent | never> {
     const componentId = getComponentId(param);
     const cachedComponent = cache[componentId];
-    const getComponent = cond([
-      [() => !!cachedComponent, async () => cachedComponent],
-      [() => isCDNPackage(param), () => cdnComponentLoader(param, onCache)],
-      [T, () => thirdPartComponentLoader(param, onCache)],
-    ]);
-    return await getComponent();
+    if (cachedComponent) {
+      return cachedComponent;
+    }
+
+    if (isCDNPackage(param)) {
+      return cdnComponentLoader(param, onCache);
+    }
+
+    return thirdPartComponentLoader(param, onCache);
   };
 }
 
