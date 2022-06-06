@@ -5,7 +5,7 @@ import { StoreContext } from '@c/form-builder/context';
 
 import Select from '@c/select';
 import { getFormDataMenuList } from '@c/form-table-selector/api';
-import { getTableSchema } from '@lib/http-client';
+import { getTableSchema } from '@lib/http-client-form';
 
 type Option = {
   label: string;

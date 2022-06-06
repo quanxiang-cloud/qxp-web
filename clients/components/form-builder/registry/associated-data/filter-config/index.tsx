@@ -5,7 +5,7 @@ import Button from '@c/button';
 import PageLoading from '@c/page-loading';
 import DataFilter, { RefProps } from '@c/data-filter';
 import { FILTER_FIELD } from '@c/data-filter/utils';
-import { getTableSchema } from '@lib/http-client';
+import { getTableSchema } from '@lib/http-client-form';
 import schemaToFields from '@lib/schema-convert';
 
 import './index.scss';

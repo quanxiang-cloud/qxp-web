@@ -1,6 +1,6 @@
 import { get } from 'lodash';
 
-import { getTableSchema } from '@lib/http-client';
+import { getTableSchema } from '@lib/http-client-form';
 import { schemaToMap } from '@lib/schema-convert';
 
 const COMPONENT_VALUE_ARRAY = [

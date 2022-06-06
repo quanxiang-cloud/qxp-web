@@ -1,4 +1,5 @@
-import httpClient, { fetchOneFormDataWithSchema } from '@lib/http-client';
+import httpClient from '@lib/http-client';
+import { fetchOneFormDataWithSchema } from '@lib/http-client-form';
 import toast from '@lib/toast';
 
 export type SchemaAndRecord = {

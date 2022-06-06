@@ -1,30 +1,11 @@
 import qs from 'qs';
-import { TreeData, TreeItem } from '@atlaskit/tree';
+import type { TreeData, TreeItem } from '@atlaskit/tree';
 import { isObject } from 'lodash';
-import { TreeNode } from '@c/headless-tree/types';
 import { nanoid } from 'nanoid';
 import dayjs from 'dayjs';
 
+import type { TreeNode } from '@c/headless-tree/types';
 import toast from '@lib/toast';
-
-// https://attacomsian.com/blog/javascript-current-timezone
-function getTimeZone(): string {
-  const date = new Date();
-  const offset = date.getTimezoneOffset();
-  if (offset === 0) {
-    return 'UTC+0';
-  }
-
-  const delta = Math.abs(offset) / 60;
-
-  if (offset > 0) {
-    return `UTC-${delta}`;
-  }
-
-  return `UTC+${delta}`;
-}
-
-export const TIME_ZONE = getTimeZone();
 
 export function uuid(): string {
   return nanoid();
@@ -295,14 +276,6 @@ export function not<A extends any[]>(fn: (...args: [...A]) => boolean) {
   return (...args: [...A]): boolean => {
     return !fn(...args);
   };
-}
-
-export function quickSortObjectArray<T extends Record<string, T[keyof T]>>(key: string, arr: T[]): T[] {
-  if (!arr?.length || !key) return [];
-  const [head, ...tail] = arr;
-  const left = tail.filter((e) => (e[key] ?? 0) < (head[key] ?? 0));
-  const right = tail.filter((e) => (e[key] ?? 0) >= (head[key] ?? 0));
-  return quickSortObjectArray<T>(key, left).concat(head, quickSortObjectArray(key, right));
 }
 
 export async function copyContent(content: string, successMes?: string, errorMes?: string): Promise<void> {

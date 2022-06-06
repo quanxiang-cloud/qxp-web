@@ -8551,6 +8551,13 @@ rollup-plugin-progress@^1.1.2:
   dependencies:
     chalk "^2.4.2"
 
+rollup-plugin-reference-module@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.npmjs.org/rollup-plugin-reference-module/-/rollup-plugin-reference-module-0.0.1.tgz#4da3fc7f7823458a7afb22244636e037b0f09a1b"
+  integrity sha512-juS7laDzClnOZ3QfoK5J9oQDbjQxQ+XEJTvoJBonvVQ1D87pxYVh1Urg1xn/xqj06zdGfnfPKPlNQYxIOdiLkw==
+  dependencies:
+    rollup "^2.75.4"
+
 rollup-plugin-styles@^3.14.1:
   version "3.14.1"
   resolved "https://registry.npmmirror.com/rollup-plugin-styles/-/rollup-plugin-styles-3.14.1.tgz#8a9d13885ac5c82f513099f567b94cff9379728c"
@@ -8584,6 +8591,13 @@ rollup@2.68.0:
   version "2.68.0"
   resolved "https://registry.npmmirror.com/rollup/-/rollup-2.68.0.tgz#6ccabfd649447f8f21d62bf41662e5caece3bd66"
   integrity sha512-XrMKOYK7oQcTio4wyTz466mucnd8LzkiZLozZ4Rz0zQD+HeX4nUK4B8GrTX/2EvN2/vBF/i2WnaXboPxo0JylA==
+  optionalDependencies:
+    fsevents "~2.3.2"
+
+rollup@^2.75.4:
+  version "2.75.5"
+  resolved "https://registry.npmjs.org/rollup/-/rollup-2.75.5.tgz#7985c1962483235dd07966f09fdad5c5f89f16d0"
+  integrity sha512-JzNlJZDison3o2mOxVmb44Oz7t74EfSd1SQrplQk0wSaXV7uLQXtVdHbxlcT3w+8tZ1TL4r/eLfc7nAbz38BBA==
   optionalDependencies:
     fsevents "~2.3.2"
 

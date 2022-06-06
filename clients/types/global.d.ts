@@ -64,7 +64,7 @@ type OSSConfig = {
 
 type FutureErrorMessage = Promise<'' | string>;
 
-declare module 'dll:*' {
+declare module 'REF:*' {
   const v: string;
   export default v;
 }

@@ -1,7 +1,7 @@
 import React, { JSXElementConstructor, useEffect, useState, useContext, useMemo } from 'react';
 import { useQuery } from 'react-query';
 
-import { getTableSchema } from '@lib/http-client';
+import { getTableSchema } from '@lib/http-client-form';
 import type { NodeWorkForm, Data, BusinessData } from '@flow/content/editor/type';
 import schemaToFields from '@lib/schema-convert';
 

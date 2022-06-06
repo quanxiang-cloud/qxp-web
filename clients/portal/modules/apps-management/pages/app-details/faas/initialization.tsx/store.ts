@@ -1,4 +1,7 @@
 import { action, computed, observable, reaction } from 'mobx';
+import _ from 'lodash';
+
+import toast from '@lib/toast';
 
 import {
   checkHasGroup,
@@ -10,14 +13,14 @@ import {
   fetchGroupList,
   bindGroup,
 } from '../api';
-import toast from '@lib/toast';
 import { faasState } from '../constants';
 
 type GroupSchema = {
   type: string;
   gid: number;
   name: string;
-  describe: string
+  title: string;
+  describe: string;
 }
 
 class IniStore {
@@ -152,17 +155,16 @@ class IniStore {
   @action
   onSubmitGroupModal = (formData: GroupSchema): void => {
     if (formData.type === 'custom') {
-      this.createGroup(formData.name, formData.describe);
+      this.createGroup(_.pick(formData, ['name', 'describe', 'title']));
       return;
     }
-    this.bindGroup(formData.gid);
+    this.bindGroup(_.pick(formData, ['gid', 'describe', 'title']));
   };
 
   @action
-  createGroup = (name: string, describe: string): Promise<void> => {
+  createGroup = (creatParam: { name: string, describe: string, title: string }): Promise<void> => {
     return createGroup({
-      name,
-      describe,
+      ...creatParam,
       appID: this.appID,
     }).then((groupID) => {
       this.step = faasState.GROUP;
@@ -173,8 +175,8 @@ class IniStore {
   };
 
   @action
-  bindGroup = (gid: number): void => {
-    bindGroup({ gid, appID: this.appID })
+  bindGroup = (bindParams: { gid: number, describe: string, title: string }): void => {
+    bindGroup({ ...bindParams, appID: this.appID })
       .then((groupID) => {
         this.step = faasState.GROUP;
         this.setModalType('');

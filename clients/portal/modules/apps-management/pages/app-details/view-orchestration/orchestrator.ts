@@ -11,7 +11,7 @@ import {
 } from '@one-for-all/artery';
 import { deleteByID, findNodeByID, patchNode } from '@one-for-all/artery-utils';
 
-import { getTableSchema, saveTableSchema } from '@lib/http-client';
+import { getTableSchema, saveTableSchema } from '@lib/http-client-form';
 import versionMap from '@pageDesign/blocks/fountainhead/config/name-version-map';
 
 import addLayoutToRoot, { copyLayoutToRoot, CreateLayoutInfo } from './helpers/add-layout-to-root';

@@ -29,10 +29,16 @@ export function createDeveloper(data: { account: string }): Promise<void> {
   return httpClient('/api/v1/faas/user', data);
 }
 
+type BindGroupParams = {
+  appID: string,
+  title: string,
+  describe?: string,
+}
+
 export function createGroup(
-  data: { name: string, describe: string, appID: string },
+  data: BindGroupParams & { name: string },
 ): Promise<string> {
-  return httpClient<{groupID: string}>('/api/v1/faas/group', data)
+  return httpClient<{ groupID: string }>('/api/v1/faas/group', data)
     .then(({ groupID }) => groupID)
     .catch((err) => {
       toast.error(err);
@@ -40,8 +46,8 @@ export function createGroup(
     });
 }
 
-export function bindGroup(data: BindGroupParams): Promise<string> {
-  return httpClient<{groupID: string}>('/api/v1/faas/group.bind', data)
+export function bindGroup(data: BindGroupParams & { gid?: number }): Promise<string> {
+  return httpClient<{ groupID: string }>('/api/v1/faas/group.bind', data)
     .then(({ groupID }) => groupID)
     .catch((err) => {
       toast.error(err);
@@ -53,15 +59,8 @@ export function addToGroup(groupID: string): Promise<void> {
   return httpClient(`/api/v1/faas/${groupID}/member`, {});
 }
 
-type BindGroupParams = {
-  appID: string,
-  gid?: number,
-  group?: string,
-  describe?: string,
-}
-
 export function fetchGroupList(): Promise<Group[]> {
-  return httpClient.get<{groups: Group[]}>('/api/v1/faas/groups')
+  return httpClient.get<{ groups: Group[] }>('/api/v1/faas/groups')
     .then((res) => {
       return res.groups;
     })
@@ -71,8 +70,8 @@ export function fetchGroupList(): Promise<Group[]> {
     });
 }
 
-export function fetchCanBindProjectList(groupID: string): Promise<{id: string, name: string}[]> {
-  return httpClient.get<{projects: {id: string, name: string}[]}>(`/api/v1/faas/${groupID}/projects/repo`)
+export function fetchCanBindProjectList(groupID: string): Promise<{ id: string, name: string }[]> {
+  return httpClient.get<{ projects: { id: string, name: string }[] }>(`/api/v1/faas/${groupID}/projects/repo`)
     .then((res) => {
       return res.projects;
     })
@@ -91,12 +90,17 @@ export function fetchFuncList(
 
 export function createFaasFunc(
   groupID: string,
-  data: Omit<creatFuncParams, 'type'>,
+  data: Omit<creatFuncParams, 'type' | 'init'>,
 ): Promise<{ id: string, createdAt: number, creator: string }> {
   return httpClient(`/api/v1/faas/group/${groupID}/project`, data);
 }
 
-export function getFuncInfo(groupID: string, projectID: string): Promise< FuncField > {
+export function initProject(groupID: string, projectID: string): Promise<unknown> {
+  return httpClient(`/api/v1/faas/group/${groupID}/project/${projectID}/init`)
+    .catch((err) => toast.error(err));
+}
+
+export function getFuncInfo(groupID: string, projectID: string): Promise<FuncField> {
   return httpClient.get(`/api/v1/faas/group/${groupID}/project/${projectID}`);
 }
 
@@ -156,7 +160,7 @@ export function offlineVer(
 
 export function servingVer(
   groupID: string,
-  data: {id: string}): Promise<void> {
+  data: { id: string }): Promise<void> {
   return httpClient(`/api/v1/faas/group/${groupID}/project/serve`, data);
 }
 
@@ -185,7 +189,7 @@ export function getVersionInfo(
 }
 
 export function getBuildProcess(): Promise<FaasBuildProcess> {
-  return httpClient.get<{data: {runs: string[], steps: string[][]}}>('/api/v1/faas/graph')
+  return httpClient.get<{ data: { runs: string[], steps: string[][] } }>('/api/v1/faas/graph')
     .then((res) => res.data)
     .catch((err) => {
       toast.error(err);
@@ -204,7 +208,7 @@ export function getBuildProcessStatus(
 export function getBuildLog(
   groupID: string,
   resourceRef: string,
-  params: {step: string},
+  params: { step: string },
 ): Promise<{ logs: BuildLog[] }> {
   return httpClient.get(`/api/v1/faas/group/${groupID}/project/logger/${resourceRef}`, params);
 }

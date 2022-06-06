@@ -6,7 +6,7 @@ import toast from '@lib/toast';
 import FormStore from '@c/form-builder/store';
 import { schemaToMap } from '@lib/schema-convert';
 import AppPageDataStore from '@c/form-app-data-table/store';
-import { getTableSchema, saveTableSchema } from '@lib/http-client';
+import { getTableSchema, saveTableSchema } from '@lib/http-client-form';
 import { SYSTEM_FIELDS, INVALID_INVISIBLE } from '@c/form-builder/constants';
 import { TableConfig, TableColumnConfig } from '@c/form-app-data-table/type';
 import { numberTransform, validatePageConfig, validateFieldConfig } from '@c/form-builder/utils';

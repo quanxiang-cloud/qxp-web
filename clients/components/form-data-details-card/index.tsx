@@ -3,7 +3,7 @@ import cs from 'classnames';
 
 import FormDataValueRenderer from '@c/form-data-value-renderer';
 import Loading from '@c/page-loading';
-import { fetchOneFormDataWithSchema } from '@lib/http-client';
+import { fetchOneFormDataWithSchema } from '@lib/http-client-form';
 import { isMeanless } from '@lib/utils';
 import schemaToFields from '@lib/schema-convert';
 

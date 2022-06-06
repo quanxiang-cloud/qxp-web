@@ -3,7 +3,8 @@ import { action, reaction, IReactionDisposer, observable } from 'mobx';
 import toast from '@lib/toast';
 import { getPerOption, roleChange } from '@home/lib/api';
 import { treeFind, pageListToTree, NodeItem } from '@c/two-level-menu';
-import { getCustomPageInfo, delFormDataRequest, fetchPageList } from '@lib/http-client';
+import { delFormDataRequest } from '@lib/http-client-form';
+import { getCustomPageInfo, fetchPageList } from '@lib/http-client';
 import { CustomPageInfo, MenuType } from '@portal/modules/apps-management/pages/app-details/type';
 
 import { getButtonAPIList } from './utils';
