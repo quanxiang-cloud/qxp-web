@@ -1193,10 +1193,10 @@
     react-jsx-parser "1.29.0"
     rxjs "^7.4.0"
 
-"@one-for-all/artery-simulator@1.4.2":
-  version "1.4.2"
-  resolved "https://registry.npmjs.org/@one-for-all/artery-simulator/-/artery-simulator-1.4.2.tgz#89e264fab01c08ea3678f0f30741b4dca7cf508f"
-  integrity sha512-5dLOvSLxt8rHkN20OixYiyKaz0FBWPaMuQR84pP3R9clOeaPpOjc6k8g0ueByhIBCKTwWFfjMayPyTy9Fy77+Q==
+"@one-for-all/artery-simulator@1.4.4":
+  version "1.4.4"
+  resolved "https://registry.npmjs.org/@one-for-all/artery-simulator/-/artery-simulator-1.4.4.tgz#3cfba85f51a9280eae2642d7db40a7623e7aa23a"
+  integrity sha512-N7E3ONiFxcT6YfZWJ3Xt/BCV/JVEE2y1di7IR2B54POD+fwblJF8+Ei02We1DTcgwa9H0IMFjTg7xgzpfNTemw==
   dependencies:
     "@one-for-all/artery" "0.15.0"
     "@one-for-all/artery-engine" "1.2.1"
@@ -1210,7 +1210,6 @@
     immutable "4.0.0"
     lodash "^4.17.21"
     react "^17.0.2"
-    recoil "0.7.2"
     rxjs "^7.4.0"
 
 "@one-for-all/artery-utils@0.17.0":
@@ -4609,11 +4608,6 @@ growly@^1.3.0:
   version "1.3.0"
   resolved "https://registry.npmmirror.com/growly/-/growly-1.3.0.tgz#f10748cbe76af964b7c96c93c6bcc28af120c081"
   integrity sha512-+xGQY0YyAWCnqy7Cd++hc2JqMYzlm0dG30Jd0beaA64sROr8C4nt8Yc9V5Ro3avlSUDTN0ulqP/VBKi1/lLygw==
-
-hamt_plus@1.0.2:
-  version "1.0.2"
-  resolved "https://registry.npmmirror.com/hamt_plus/-/hamt_plus-1.0.2.tgz#e21c252968c7e33b20f6a1b094cd85787a265601"
-  integrity sha512-t2JXKaehnMb9paaYA7J0BX8QQAY8lwfQ9Gjf4pg/mk4krt+cmwmU652HOoWonf+7+EQV97ARPMhhVgU1ra2GhA==
 
 hard-rejection@^2.1.0:
   version "2.1.0"
@@ -8308,13 +8302,6 @@ readdirp@~3.6.0:
   integrity sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA==
   dependencies:
     picomatch "^2.2.1"
-
-recoil@0.7.2:
-  version "0.7.2"
-  resolved "https://registry.npmmirror.com/recoil/-/recoil-0.7.2.tgz#37aafc9e0674abae639263354a11c910e71bf78a"
-  integrity sha512-OT4pI7FOUHcIoRtjsL5Lqq+lFFzQfir4MIbUkqyJ3nqv3WfBP1pHepyurqTsK5gw+T+I2R8+uOD28yH+Lg5o4g==
-  dependencies:
-    hamt_plus "1.0.2"
 
 redent@^3.0.0:
   version "3.0.0"
