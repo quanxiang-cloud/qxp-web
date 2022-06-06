@@ -9,20 +9,31 @@
     "isContainer": false,
     "isOverLayer": false
   },
+  "RichTextEditor": {
+    "props": [{
+        "label": "默认文本",
+        "name": "initialValue",
+        "type": "string",
+        "will": "Textarea"
+      },
+      {
+        "label": "变化事件",
+        "name": "onChange",
+        "type": "function",
+        "willProps": {
+          "args": "html"
+        }
+      }
+    ],
+    "isContainer": false,
+    "isOverLayer": false
+  },
   "GridContainer": {
     "props": [{
       "label": "每行元素个数",
       "name": "coloumCount",
       "type": "number",
       "desc": "每行至少一个元素",
-      "willProps": {
-        "min": 1
-      }
-    }, {
-      "label": "每列元素个数",
-      "name": "rowCount",
-      "type": "number",
-      "desc": "每列至少一个元素",
       "willProps": {
         "min": 1
       }
@@ -69,6 +80,7 @@
     }, {
       "label": "水平对齐方式",
       "name": "justifyItems",
+      "desc": "justifyItems",
       "type": "string",
       "will": "Select",
       "willProps": {
@@ -104,6 +116,72 @@
         }, {
           "label": "尾部对齐",
           "value": "end"
+        }]
+      }
+    }, {
+      "label": "水平排列方式",
+      "name": "justifyContent",
+      "desc": "justifyContent",
+      "type": "string",
+      "will": "Select",
+      "willProps": {
+        "options": [{
+          "label": "铺满",
+          "value": "stretch"
+        }, {
+          "label": "左对齐",
+          "value": "start"
+        }, {
+          "label": "居中",
+          "value": "center"
+        }, {
+          "label": "右对齐",
+          "value": "end"
+        }, {
+          "label": "基准线",
+          "value": "baseline"
+        }, {
+          "label": "space-between",
+          "value": "space-between"
+        }, {
+          "label": "space-around",
+          "value": "space-around"
+        }, {
+          "label": "space-evenly",
+          "value": "space-evenly"
+        }]
+      }
+    }, {
+      "label": "垂直排列方式",
+      "name": "alignContent",
+      "desc": "alignContent",
+      "type": "string",
+      "will": "Select",
+      "willProps": {
+        "options": [{
+          "label": "铺满",
+          "value": "stretch"
+        }, {
+          "label": "左对齐",
+          "value": "start"
+        }, {
+          "label": "居中",
+          "value": "center"
+        }, {
+          "label": "右对齐",
+          "value": "end"
+        }, {
+          "label": "基准线",
+          "value": "baseline"
+        }, {
+          "label": "space-between",
+          "value": "space-between"
+        }, {
+          "label": "space-around",
+          "value": "space-around"
+        }, {
+          "label": "space-evenly",
+          "value": "space-evenly"
         }]
       }
     }],
@@ -163,6 +241,10 @@
   },
   "div": {
     "props": [{
+        "label": "id",
+        "name": "id",
+        "type": "string"
+      }, {
         "label": "文本内容",
         "name": "content",
         "type": "string",
@@ -180,6 +262,10 @@
   },
   "a": {
     "props": [{
+        "label": "id",
+        "name": "id",
+        "type": "string"
+      }, {
         "label": "文本内容",
         "name": "content",
         "type": "string",
@@ -226,6 +312,10 @@
   },
   "span": {
     "props": [{
+        "label": "id",
+        "name": "id",
+        "type": "string"
+      }, {
         "label": "文本内容",
         "name": "content",
         "type": "string",
@@ -243,6 +333,10 @@
   },
   "img": {
     "props": [{
+        "label": "id",
+        "name": "id",
+        "type": "string"
+      }, {
         "label": "文本内容",
         "name": "content",
         "type": "string",

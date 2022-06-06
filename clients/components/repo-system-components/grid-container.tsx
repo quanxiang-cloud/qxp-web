@@ -5,6 +5,8 @@ interface Props {
   style: CSSProperties;
   columnGap?: string;
   rowGap?: string;
+  alignContent: 'baseline' |'stretch' | 'start' | 'center' | 'end' | 'space-around' | 'space-evenly' | 'space-between';
+  justifyContent: 'baseline' | 'stretch' | 'start' | 'center' | 'end' | 'space-around' | 'space-evenly' | 'space-between';
   justifyItems: 'stretch' | 'start' | 'center' | 'end';
   alignItems: 'stretch' | 'start' | 'center' | 'end';
   coloumCount?: number;
@@ -19,6 +21,8 @@ function GridContainer(
     rowGap = '16px',
     justifyItems = 'stretch',
     alignItems = 'stretch',
+    alignContent = 'stretch',
+    justifyContent = 'stretch',
     coloumCount,
     rowCount,
     children,
@@ -34,7 +38,16 @@ function GridContainer(
   return (
     <div
       className={className}
-      style={{ ..._styles, columnGap, rowGap, justifyItems, alignItems, ...style }}
+      style={{
+        ..._styles,
+        columnGap,
+        rowGap,
+        justifyItems,
+        alignItems,
+        alignContent,
+        justifyContent,
+        ...style,
+      }}
       ref={ref}
     >
       {children}
