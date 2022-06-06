@@ -1152,10 +1152,10 @@
     react-dom "^17.0.2"
     rxjs "^7.4.0"
 
-"@one-for-all/artery-engine@1.3.0":
-  version "1.3.0"
-  resolved "https://registry.npmmirror.com/@one-for-all/artery-engine/-/artery-engine-1.3.0.tgz#c4eab6199d7756bdc153f113fbd898dc206b5f24"
-  integrity sha512-PkD1cqVKDeEThJufqNUDNAgAKESR4WGdFq8SzrhBtvXksDpAmVSZjJdhvUTjKTxPcleGDy1DhiBnWfaE1chcZA==
+"@one-for-all/artery-engine@1.4.1":
+  version "1.4.1"
+  resolved "https://registry.npmmirror.com/@one-for-all/artery-engine/-/artery-engine-1.4.1.tgz#3c1a40b048639ecc6cc42fd2e832fbc291f7e047"
+  integrity sha512-WnBya8l7qnD9m38097rfzCFcO94m7sOXVceG0Sjn7UKJufY2PVWv2InfLSUTmF9yYukGOVSiJ5Powadckes+Cw==
   dependencies:
     "@one-for-all/artery" "0.15.0"
     classnames "^2.3.1"
