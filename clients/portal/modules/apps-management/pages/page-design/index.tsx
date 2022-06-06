@@ -12,7 +12,7 @@ import ApiSelector from '@polyApi/nodes/forms/request-config/api-selector';
 import Loading from '@c/loading';
 
 import ApiSpec from '../app-details/api-proxy/add-api';
-import { useQueryArtery, useStyle } from './hooks';
+import { queryArtery, useStyle } from './hooks';
 import { PAGE_DESIGN_ID, LAYERS } from './constants';
 import Ctx from './ctx';
 import stores from './stores';
@@ -32,10 +32,7 @@ function PageDesign(): JSX.Element | null {
   useStyle('body', resetStyle);
   useStyle('html', resetStyle);
 
-  const { data: artery, isLoading: isArteryLoading } = useQueryArtery(
-    { arteryID },
-    { enabled: !!arteryID },
-  );
+  const { artery, isLoading: isArteryLoading } = queryArtery(arteryID);
 
   const { layers, artery: initialArtery, blocksCommunicationStateInitialValue } = useMemo(
     (): Props<BlocksCommunicationType> => {
