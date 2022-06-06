@@ -13,8 +13,7 @@ import {
   _insertChildAt,
 } from '@one-for-all/artery-utils';
 
-import OutlineNode from './outline-node';
-import { useComponents } from '../../fountainhead/store';
+import OutlineRender from './outline-render';
 import { OutLineContext, OutLineContextState } from './context';
 import { beforeIs, afterIs, firstChildIs, canHasCurChildren, getReRealNodeId } from '../utils';
 
@@ -30,8 +29,6 @@ type Props = {
 };
 
 export default function Outline({ rootNode, activeNode, onChange, setActiveNode }: Props): JSX.Element {
-  const components = useComponents();
-
   async function moveToById(
     sourceId: string,
     targetId: string,
@@ -90,7 +87,6 @@ export default function Outline({ rootNode, activeNode, onChange, setActiveNode 
     moveToById,
     modifiedNodeName,
     setActiveNode,
-    components,
     rootNodeId: rootNode.id,
     activeNodeId: activeNode?.id,
   };
@@ -98,7 +94,7 @@ export default function Outline({ rootNode, activeNode, onChange, setActiveNode 
   return (
     <DndProvider backend={HTML5Backend}>
       <OutLineContext.Provider value={contextValue}>
-        <OutlineNode node={rootNode} />
+        <OutlineRender rootNode={rootNode} />
       </OutLineContext.Provider>
     </DndProvider>
   );

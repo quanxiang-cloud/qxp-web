@@ -1,13 +1,11 @@
 import { MoveLocationType } from './index';
 import { createContext, useContext } from 'react';
 import type { Node } from '@one-for-all/artery';
-import type { PackageComponent } from '@pageDesign/blocks/fountainhead/type';
 
 export interface OutLineContextState {
   moveToById(sourceId: string, targetId: string, location: MoveLocationType): void;
   modifiedNodeName(updNode: Node, nodeName: string): void;
   rootNodeId: string;
-  components?: PackageComponent[];
   activeNodeId?: string;
   setActiveNode?: (node?: Node) => void;
 }
