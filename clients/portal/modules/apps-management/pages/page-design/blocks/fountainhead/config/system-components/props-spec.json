@@ -241,6 +241,10 @@
   },
   "div": {
     "props": [{
+        "label": "id",
+        "name": "id",
+        "type": "string"
+      }, {
         "label": "文本内容",
         "name": "content",
         "type": "string",
@@ -258,6 +262,10 @@
   },
   "a": {
     "props": [{
+        "label": "id",
+        "name": "id",
+        "type": "string"
+      }, {
         "label": "文本内容",
         "name": "content",
         "type": "string",
@@ -304,6 +312,10 @@
   },
   "span": {
     "props": [{
+        "label": "id",
+        "name": "id",
+        "type": "string"
+      }, {
         "label": "文本内容",
         "name": "content",
         "type": "string",
@@ -321,6 +333,10 @@
   },
   "img": {
     "props": [{
+        "label": "id",
+        "name": "id",
+        "type": "string"
+      }, {
         "label": "文本内容",
         "name": "content",
         "type": "string",
