@@ -46,9 +46,25 @@
           "rowGap": "16px",
           "justifyItems": "stretch",
           "alignItems": "stretch",
+          "justifyContent": "stretch",
+          "alignCotent": "stretch",
           "coloumCount": 1,
           "rowCount": 1
         }
+      }
+    ]
+  },
+  "RichTextEditor":{
+    "variants": [
+      {
+        "icon": {
+          "type": "platform",
+          "name": "text_format",
+          "initialProps": {}
+        },
+        "desc": "用于实现富文本编辑",
+        "label": "富文本编辑器",
+        "initialProps": {}
       }
     ]
   },

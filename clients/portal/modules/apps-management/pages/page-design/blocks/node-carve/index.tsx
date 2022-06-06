@@ -1,12 +1,10 @@
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 
 import { Tab } from '@one-for-all/ui';
-import { getNodeParents } from '@one-for-all/artery-utils';
 import type { BlockItemProps } from '@one-for-all/artery-engine';
-import { HTMLNode, ReactComponentNode } from '@one-for-all/artery';
+import { ReactComponentNode } from '@one-for-all/artery';
 import Icon from '@one-for-all/icon';
 
-import Breadcrumb from '@c/breadcrumb';
 import ToolTip from '@c/tooltip';
 import type { BlocksCommunicationType } from '@pageDesign/types';
 
@@ -27,7 +25,6 @@ import './style.scss';
 function NodeCarve({
   artery,
   onChange,
-  setActiveNode,
   activeNode,
 }: BlockItemProps<BlocksCommunicationType>): JSX.Element {
   const [modalBindStateOpen, setModalBindStateOpen] = useState<boolean>(false);
@@ -53,7 +50,7 @@ function NodeCarve({
   const rendererPanelContent = useMemo(() => <RendererPanel />, []);
   const renderPropsPanel = useMemo(() => <PropsPanel />, []);
   const styleStationPanel = useMemo(() => <StyleStation />, []);
-  const getAvailablePanels = useCallback(() => {
+  const availablePanels = useMemo(() => {
     const panels = [
       {
         id: 'props',
@@ -75,7 +72,7 @@ function NodeCarve({
       },
     ];
 
-    if (isSystemComponent((activeNode as any).category)) {
+    if (activeNode && isSystemComponent((activeNode as any).category)) {
       return panels;
     }
 
@@ -102,22 +99,11 @@ function NodeCarve({
   }, [activeNode]);
 
   useEffect(() => {
-    setActivePanel('props');
-  }, [activeNode]);
-
-  const segments = useMemo(() => {
-    if (!activeNode) {
-      return [];
+    const HasPanelIds = availablePanels.some((p) => p.id === activePanel);
+    if (!HasPanelIds) {
+      setActivePanel(availablePanels[0]?.id);
     }
-    const rawNode = findNode(artery.node, activeNode.id, true);
-    const parents = rawNode ? getNodeParents(artery.node, rawNode.id) : [];
-    return [...(parents || []), activeNode].slice(-3).map((node) => {
-      return {
-        key: node.id,
-        text: node.label || (node as HTMLNode).name || '',
-      };
-    });
-  }, [artery, activeNode]);
+  }, [activeNode]);
 
   function renderCont(): JSX.Element {
     if (!activeNode) {
@@ -131,23 +117,6 @@ function NodeCarve({
 
     return (
       <>
-        <div className="px-4">
-          <Breadcrumb
-            segments={segments}
-            separator=">"
-            segmentRender={(segment) => (
-              <span
-                className="text-12"
-                onClick={() => {
-                  const node = findNode(artery.node, segment.key);
-                  node && setActiveNode(node);
-                }}
-              >
-                {segment.text}
-              </span>
-            )}
-          />
-        </div>
         <div className={styles.curElem}>
           <span className="mr-8">{activeNode?.label} ID: </span>
           <span>{activeNode?.id}</span>
@@ -157,7 +126,7 @@ function NodeCarve({
           contentClassName={styles.tabCont}
           navsClassName={styles.tabNav}
           navTitleClassName="node-crave-tab-nav-title"
-          items={getAvailablePanels()}
+          items={availablePanels}
           currentKey={activePanel}
           onChange={setActivePanel}
         />
