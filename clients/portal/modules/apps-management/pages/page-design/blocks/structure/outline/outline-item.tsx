@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useMemo, memo } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import cs from 'classnames';
 import { useDrag, useDrop, DropTargetMonitor } from 'react-dnd';
 import Icon from '@one-for-all/icon';
@@ -66,18 +66,6 @@ function OutlineItem({
     }),
   }, [id, moveToById]);
 
-  const lines = useMemo(() => (
-    <>
-      {new Array(level).fill(1).map((_, index) => (
-        <span
-          key={index}
-          className="w-1 h-full absolute bg-gray-300"
-          style={{ left: -(index * 20) - 8 }}
-        />
-      ))}
-    </>
-  ), [level]);
-
   function computedLocation(monitor: DropTargetMonitor): LocationType {
     const { bottom, top } = dragAndDrop.current?.getBoundingClientRect() || { bottom: 0, top: 0 };
     const monitorTop = monitor.getClientOffset()?.y || 0;
@@ -110,9 +98,9 @@ function OutlineItem({
     <div
       ref={dragAndDrop}
       className={cs(
-        'flex relative h-36 max-h-36 min-w-full w-min bg-white hover:bg-blue-100 rounded-6',
+        'flex relative h-36 max-h-36 min-w-full w-min outline-item-outer rounded-6 z-10',
         isDragging && 'opacity-10',
-        activeNodeId === id && 'bg-blue-100 text-blue-600',
+        activeNodeId === id && 'bg-blue-100',
       )}
       onClick={() => setActiveNode?.(node)}
       style={{ paddingLeft: level * 20 }}
@@ -125,39 +113,36 @@ function OutlineItem({
           hoverLocation === 'before' && 'rounded-t-6',
         )}
       />
-      <div className="h-full flex items-center z-10 relative">
-        {lines}
-        {!isLeaf && (<span onClick={handleChangeExpand}>
-          <Icon
-            style={{ transition: 'transform .2s linear' }}
-            className={cs('cursor-pointer hover:text-black-900 transform', isExpand && 'rotate-90')}
-            name="arrow_right"
-            size={24}
-          />
-        </span>)
-        }
-        {ComponentIcon && (
-          <div className='h-full w-24 overflow-hidden flex items-center justify-center'>
-            <ComponentIcon />
+      <div className={cs('w-full bg-white outline-item-mask', activeNodeId === id && 'bg-blue-100 text-blue-600')}>
+        <div className="h-full flex items-center z-10 relative">
+          {!isLeaf && (<span onClick={handleChangeExpand}>
+            <Icon
+              style={{ transition: 'transform .2s linear' }}
+              className={cs('cursor-pointer hover:text-black-900 transform', isExpand && 'rotate-90')}
+              name="arrow_right"
+              size={24}
+            />
+          </span>)
+          }
+          {ComponentIcon && (
+            <div className='h-full w-24 overflow-hidden flex items-center justify-center'>
+              <ComponentIcon />
+            </div>
+          )}
+          <div className="px-1">
+            <input
+              type="text"
+              className="outline-item-input w-full min-w-90 p-4 border-0"
+              value={nodeName}
+              onBlur={handleChangeNodeName}
+              onChange={(e) => setNodeName(e.target.value)}
+              onKeyDown={onKeyDown}
+            />
           </div>
-        )}
-        <div className="px-1">
-          <input
-            type="text"
-            className="outline-item-input w-full min-w-90 p-4 border-0"
-            value={nodeName}
-            onBlur={handleChangeNodeName}
-            onChange={(e) => setNodeName(e.target.value)}
-            onKeyDown={onKeyDown}
-          />
         </div>
       </div>
     </div>
   );
 }
 
-export default memo(OutlineItem, ({ item: prevItem }, { item: nextItem }) => {
-  return prevItem.id === nextItem.id && prevItem.isExpand === nextItem.isExpand &&
-    prevItem.isLeaf === nextItem.isLeaf && prevItem.level === nextItem.level &&
-    prevItem.title === nextItem.title;
-});
+export default OutlineItem;

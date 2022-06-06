@@ -1,3 +1,10 @@
+.outline-item-outer:hover {
+  background-color: var(--blue-100);
+  .outline-item-mask {
+    background-color: var(--blue-100);
+  }
+}
+
 .outline-item-input {
   background-color: transparent;
   &:hover {

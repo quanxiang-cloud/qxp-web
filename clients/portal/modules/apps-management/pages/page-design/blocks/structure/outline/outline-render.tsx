@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import type { Node } from '@one-for-all/artery';
 import type { ReactComp } from '@pageDesign/blocks/fountainhead/type';
 import { isArray } from 'lodash';
 
 import { filterChildren, getRealNode } from '../utils';
+import OutlineLine from './outline-line';
 import OutlineItem from './outline-item';
 import { useComponents } from '../../fountainhead/store';
 
@@ -25,9 +26,13 @@ export default function OutlineRender({ rootNode }: Props): JSX.Element {
   const components = useComponents();
   const [list, setList] = useState<ListItem[]>();
   const [unExpand, setUnExpand] = useState<string[]>([]);
+  const [maxLevel, setMaxLevel] = useState(0);
+  const maxLevelRef = useRef(0);
 
   useEffect(() => {
     setList(treeToList(rootNode, 0, unExpand));
+    setMaxLevel(maxLevelRef.current);
+    maxLevelRef.current = 0;
   }, [rootNode, components, unExpand]);
 
   function treeToList(node: Node, level: number, unExpand: string[]): ListItem[] {
@@ -55,6 +60,7 @@ export default function OutlineRender({ rootNode }: Props): JSX.Element {
         level,
         isExpand,
       };
+      if (level > maxLevelRef.current) maxLevelRef.current = level;
 
       if (isExpand) {
         return [curList, ...forestToList(level + 1, unExpand, afterFilterChildren)];
@@ -84,7 +90,8 @@ export default function OutlineRender({ rootNode }: Props): JSX.Element {
   }, []);
 
   return (
-    <div>
+    <div className="relative">
+      <OutlineLine level={maxLevel} />
       {list?.map((item) => (
         <OutlineItem
           key={item.id}
