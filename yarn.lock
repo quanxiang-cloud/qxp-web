@@ -1220,6 +1220,14 @@
     "@one-for-all/artery" "0.15.0"
     immutable "4.0.0"
 
+"@one-for-all/artery-utils@0.18.0":
+  version "0.18.0"
+  resolved "https://registry.npmjs.org/@one-for-all/artery-utils/-/artery-utils-0.18.0.tgz#4bb33df2d1b0d274f3fed6f4297b8bc930fc62ba"
+  integrity sha512-MnMvx2tdnaVJHoIzTWtl84r5ZcZjBoTv0yaEPdtn9zboXDeMv77Q8wZ9rlXBd+l9EBjUeKTE0xGndqpLg8r/Ew==
+  dependencies:
+    "@one-for-all/artery" "0.15.0"
+    immutable "4.0.0"
+
 "@one-for-all/artery@0.15.0":
   version "0.15.0"
   resolved "https://registry.npmmirror.com/@one-for-all/artery/-/artery-0.15.0.tgz#495bdb35365a606a126ecfc8323a5dc086c6f1c5"
