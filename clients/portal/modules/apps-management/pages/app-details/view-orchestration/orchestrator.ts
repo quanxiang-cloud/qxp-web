@@ -221,6 +221,7 @@ class Orchestrator {
     const customPageSchema: Artery = {
       node: {
         id: genNodeID(),
+        label: params.name,
         type: 'html-element',
         name: 'div',
       },
@@ -312,12 +313,6 @@ class Orchestrator {
     const rootNode = addViewToLayout(this.rootNode, params.layoutID, externalViewNode);
     return this.saveSchema(rootNode);
   }
-
-  // async editTableSchemaView(view: TableSchemaView): FutureErrorMessage {
-
-  // };
-  // async editSchemaView(view: SchemaView): FutureErrorMessage;
-  // async editStaticView(view: StaticView): FutureErrorMessage;
 
   @action
   async editTableSchemaView(view: TableSchemaView): FutureErrorMessage {
@@ -425,58 +420,57 @@ class Orchestrator {
   }
 
   @action
-  handleViewInfoSubmit(
+  async handleViewInfoSubmit(
     viewInfo: CreateViewParams<View>,
   ): Promise<void> {
-    return Promise.resolve().then(() => {
-      if (this.modalType === 'createView') {
-        if (viewInfo.type === ViewType.TableSchemaView) {
-          return this.addTableSchemaView(viewInfo as CreateViewParams<TableSchemaView>);
-        }
-
-        if (viewInfo.type === ViewType.SchemaView) {
-          return this.addSchemaView(viewInfo as CreateViewParams<SchemaView>);
-        }
-
-        if (viewInfo.type === ViewType.StaticView) {
-          return this.addStaticView(viewInfo as CreateViewParams<StaticView>);
-        }
-        if (viewInfo.type === ViewType.ExternalView) {
-          return this.addExternalView(viewInfo as CreateViewParams<ExternalView>);
-        }
+    if (this.modalType === 'createView') {
+      if (viewInfo.type === ViewType.TableSchemaView) {
+        await this.addTableSchemaView(viewInfo as CreateViewParams<TableSchemaView>);
       }
 
-      if (this.modalType === 'editStaticView') {
-        return this.editStaticView(viewInfo as StaticView);
+      if (viewInfo.type === ViewType.SchemaView) {
+        await this.addSchemaView(viewInfo as CreateViewParams<SchemaView>);
       }
 
-      if (viewInfo.type === ViewType.ExternalView && this.modalType === 'editView') {
-        return this.editExternalView(viewInfo as ExternalView);
+      if (viewInfo.type === ViewType.StaticView) {
+        await this.addStaticView(viewInfo as CreateViewParams<StaticView>);
       }
+      if (viewInfo.type === ViewType.ExternalView) {
+        await this.addExternalView(viewInfo as CreateViewParams<ExternalView>);
+      }
+    }
 
-      if (viewInfo.type === ViewType.TableSchemaView && this.modalType === 'editView') {
-        const { tableID } = viewInfo;
-        // here modify table name first ,
-        // because there is a condition:
-        //  when schema label modified success and table name failed
-        //  edit modal will not close, and if submit again the edited name will be duplicated
-        return getTableSchema(this.appID, tableID).then((res) => {
-          if (!res) return;
-          const { schema, tableID } = res;
-          const updatedNameSchema = { ...schema, title: viewInfo.name };
-          return saveTableSchema(this.appID, tableID, updatedNameSchema);
-        }).then(() => this.editTableSchemaView(viewInfo as TableSchemaView));
-      }
+    if (this.modalType === 'editStaticView') {
+      await this.editStaticView(viewInfo as StaticView);
+    }
 
-      return this.updateViewName(this.currentView as View, viewInfo.name!);
-    }).then(() => {
-      if (viewInfo.id) {
-        this.setCurrentView(viewInfo);
-        return;
-      }
-      const view = this.views.find((view) => view.name === viewInfo.name);
-      this.setCurrentView(view as View);
-    });
+    if (viewInfo.type === ViewType.ExternalView && this.modalType === 'editView') {
+      await this.editExternalView(viewInfo as ExternalView);
+    }
+
+    if (viewInfo.type === ViewType.TableSchemaView && this.modalType === 'editView') {
+      const { tableID } = viewInfo;
+      // here modify table name first ,
+      // because there is a condition:
+      //  when schema label modified success and table name failed
+      //  edit modal will not close, and if submit again the edited name will be duplicated
+      await getTableSchema(this.appID, tableID).then((res) => {
+        if (!res) return;
+        const { schema, tableID } = res;
+        const updatedNameSchema = { ...schema, title: viewInfo.name };
+        return saveTableSchema(this.appID, tableID, updatedNameSchema);
+      }).then(() => this.editTableSchemaView(viewInfo as TableSchemaView));
+    }
+
+    await this.updateViewName(this.currentView as View, viewInfo.name!);
+
+    if (viewInfo.id) {
+      this.setCurrentView(viewInfo);
+      return;
+    }
+
+    const view = this.views.find((view) => view.name === viewInfo.name);
+    this.setCurrentView(view as View);
   }
 
   @action

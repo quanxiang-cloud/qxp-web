@@ -28,7 +28,7 @@ type Props = {
   onChange?: (node: Node) => void;
 };
 
-export default function Outline({ rootNode, activeNode, onChange, setActiveNode }: Props): JSX.Element {
+function Outline({ rootNode, activeNode, onChange, setActiveNode }: Props): JSX.Element {
   async function moveToById(
     sourceId: string,
     targetId: string,
@@ -46,7 +46,12 @@ export default function Outline({ rootNode, activeNode, onChange, setActiveNode 
     let newNode: Node | undefined;
     if (location === 'inner' && (await canHasCurChildren(rootNode, targetId, _sourceId))) {
       if (firstChildIs(immutableNode, targetId, _sourceId)) return false;
-      newNode = _insertChildAt(fromJS(deleteByID(rootNode, _sourceId)), targetId, 0, sourceNode)?.toJS() as any;
+      newNode = _insertChildAt(
+        fromJS(deleteByID(rootNode, _sourceId)),
+        targetId,
+        0,
+        sourceNode,
+      )?.toJS() as any;
 
       if (!newNode) return false;
       onChange?.(newNode);
@@ -99,3 +104,5 @@ export default function Outline({ rootNode, activeNode, onChange, setActiveNode 
     </DndProvider>
   );
 }
+
+export default Outline;

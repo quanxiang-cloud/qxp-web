@@ -1,5 +1,4 @@
 import React from 'react';
-import { observer } from 'mobx-react';
 import { Artery, Node } from '@one-for-all/artery';
 
 import Outline from './outline';
@@ -35,4 +34,4 @@ function PageTree({
   );
 }
 
-export default observer(PageTree);
+export default PageTree;

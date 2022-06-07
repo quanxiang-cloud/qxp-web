@@ -9,7 +9,7 @@ import { useMenuPanel } from '@pageDesign/hooks';
 
 import Core from './core';
 
-const Structure = (props: BlockItemProps<BlocksCommunicationType>): JSX.Element => {
+function Structure(props: BlockItemProps<BlocksCommunicationType>): JSX.Element {
   const { artery, onChange, activeNode, setActiveNode } = props;
 
   const {
@@ -25,14 +25,14 @@ const Structure = (props: BlockItemProps<BlocksCommunicationType>): JSX.Element 
   return (
     <div ref={ref} style={{ pointerEvents: 'auto' }}>
       <Panel
+        closable
+        pinnable
         title={GROUP_TITLE_MAP[currentType ?? '']}
         onClose={onForceClose}
         onPin={onPin}
         visible={visible}
         pinned={pinned}
         width={panelWidth}
-        closable
-        pinnable
       >
         <Core
           artery={artery}
@@ -43,6 +43,6 @@ const Structure = (props: BlockItemProps<BlocksCommunicationType>): JSX.Element 
       </Panel>
     </div>
   );
-};
+}
 
 export default Structure;
