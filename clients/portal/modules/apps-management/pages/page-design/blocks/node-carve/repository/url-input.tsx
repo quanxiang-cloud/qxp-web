@@ -27,8 +27,8 @@ function UrlInput({ value, onChange }: UrlInputProps): JSX.Element {
   }
 
   return (
-    <div className='relative'>
-      <Input className='w-full' value={urlString} onChange={(val: string) => setUrlString(val)}/>
+    <div className='relative w-full'>
+      <Input className='w-full pr-24' value={urlString} onChange={(val: string) => setUrlString(val)}/>
       <div
         ref={referenceRef}
         className='w-16 h-16 absolute cursor-pointer top-0 bottom-0 m-auto right-5'
