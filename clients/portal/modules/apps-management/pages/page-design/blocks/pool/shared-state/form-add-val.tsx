@@ -45,7 +45,7 @@ function FormAddVal(props: Props): JSX.Element | null {
     if (validateName(formData.name)) {
       dataSource.saveSharedState(formData.name, JSON.stringify(formData), ()=> {
         // save whole page schema
-        ctx.onSave(page.schema, { silent: true });
+        ctx.onSave(page.schema);
       });
     }
   }

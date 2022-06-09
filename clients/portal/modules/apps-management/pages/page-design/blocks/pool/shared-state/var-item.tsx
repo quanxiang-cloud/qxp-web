@@ -33,7 +33,7 @@ function VarItem({ className, name, conf }: Props): JSX.Element {
     const newName = countName === 0 ? `${name}_copy` : `${name}_copy${countName}`;
     const newConf = JSON.parse(conf);
     Object.assign(newConf, { name: newName });
-    dataSource.saveSharedState(newName, JSON.stringify(newConf), ()=> ctx.onSave(page.schema, { silent: true }));
+    dataSource.saveSharedState(newName, JSON.stringify(newConf), ()=> ctx.onSave(page.schema));
   }
 
   function handleEdit(ev: React.MouseEvent<SVGElement>): void {
@@ -44,7 +44,7 @@ function VarItem({ className, name, conf }: Props): JSX.Element {
 
   function handleDelete(ev: React.MouseEvent<SVGElement>): void {
     ev.stopPropagation();
-    dataSource.removeSharedState(name, ()=> ctx.onSave(page.schema, { silent: true }));
+    dataSource.removeSharedState(name, ()=> ctx.onSave(page.schema));
   }
 
   function handleExpand(ev: React.MouseEvent<SVGElement>): void {
