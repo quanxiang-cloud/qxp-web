@@ -239,6 +239,50 @@
     "isContainer": false,
     "isOverLayer": false
   },
+  "Tree": {
+    "props": [
+      {
+        "label": "树数据",
+        "name": "treeData",
+        "type": "object",
+        "desc": "应该包含 name,id,children 属性",
+        "willProps": {
+          "type": "object"
+        }
+      },
+      {
+        "label": "显示复选框",
+        "name": "treeCheckable",
+        "type": "boolean"
+      },
+      {
+        "label": "父子节点选中状态关联",
+        "name": "treeCheckStrictly",
+        "desc": "仅当显示复选框时生效",
+        "type": "boolean"
+      },
+      {
+        "label": "节点选中事件",
+        "name": "onSelect",
+        "type": "function",
+        "willProps": {
+          "args": "data",
+          "notes": "参数为节点的数据"
+        }
+      },
+      {
+        "label": "选中变化事件",
+        "name": "onChange",
+        "type": "function",
+        "desc": "仅当显示复选框时生效",
+        "willProps": {
+          "args": "pre, cur"
+        }
+      }
+    ],
+    "isContainer": false,
+    "isOverLayer": false
+  },
   "div": {
     "props": [{
         "label": "id",

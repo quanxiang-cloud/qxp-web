@@ -5,6 +5,7 @@ import SystemTaskList from '@c/task-lists';
 import UserMenuAvatar from '@c/user-avatar-menu';
 import RichTextEditor from '@c/quill';
 
+import Tree from './tree';
 import GridContainer from './grid-container';
 import a from './a';
 import div from './div';
@@ -17,6 +18,7 @@ const repoSystemComponents: Repository = {
     SystemTaskList,
     GridContainer,
     RichTextEditor,
+    Tree,
     a,
     div,
     img,
