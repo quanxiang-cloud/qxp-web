@@ -131,9 +131,8 @@ function PageDesign(): JSX.Element | null {
     ));
   }, [apiPath]);
 
-  const handleSave = useCallback((page_artery: any, options?: Record<string, any>): void => {
-    savePage(arteryID, page_artery, options)
-      .then(() => !options?.silent && toast.success('页面已保存'))
+  const handleSave = useCallback((page_artery: any): Promise<void> => {
+    return savePage(arteryID, page_artery)
       .catch((err: Error) => toast.error(err.message));
   }, []);
 
