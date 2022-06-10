@@ -7,10 +7,10 @@ import { isObject } from '@one-for-all/artery-engine';
 import type { Package, PackageComponent } from '@pageDesign/blocks/fountainhead/type';
 import useObservable from '@lib/hooks/use-observable';
 import {
-  getPackagesSourceDynamic, getPackagePropsSpec, getComponentsFromPackage, PropsSpecMap,
+  getAvailablePackages, getPackagePropsSpec, getComponentsFromPackage, PropsSpecMap,
 } from '@pageDesign/utils/package';
 
-const packages$ = from(getPackagesSourceDynamic());
+const packages$ = from(getAvailablePackages());
 const components$ = packages$.pipe(
   switchMap(loadAllComponents),
   catchError(() => []),

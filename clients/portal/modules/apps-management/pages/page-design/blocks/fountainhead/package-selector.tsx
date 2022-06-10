@@ -14,12 +14,8 @@ interface Props {
 const PackageSelector = ({ current, onChange }: Props): JSX.Element => {
   const packages = usePackages();
 
-  function getDefaultValue(): Package | undefined {
-    return packages?.[0];
-  }
-
   useEffect(() => {
-    const defaultValue = getDefaultValue();
+    const defaultValue = packages?.[0];
     defaultValue && !current && onChange(defaultValue);
   }, [packages, current]);
 

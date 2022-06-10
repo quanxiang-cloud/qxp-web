@@ -28,10 +28,23 @@ function imageIconBuilder(icon: VariantImageIcon): ReactComponent {
 }
 
 const iconSizeMap: Record<string, number | undefined> = {
-  stars: 24, 'button-component': 36, '布局组件-container': 36, 'single-container': 36, 'text-component': 36,
-  'short-text': 24, 'image-component': 36, 'hyper-link': 36, 'iframe-component': 36, radio_button_checked: 24,
-  'schema-表单组件': 24, 'border-all': 24, pages: 24, text_fields: 24, wrap_text: 24,
+  'border-all': 24,
+  'button-component': 36,
+  'hyper-link': 36,
+  'iframe-component': 36,
+  'image-component': 36,
+  'schema-表单组件': 24,
+  'short-text': 24,
+  'single-container': 36,
+  'text-component': 36,
+  '布局组件-container': 36,
+  pages: 24,
+  radio_button_checked: 24,
+  stars: 24,
+  text_fields: 24,
+  wrap_text: 24,
 };
+
 function platformIconBuilder(icon: VariantPlatFormIcon): ReactComponent {
   const { name, initialProps = {} } = icon;
   const size = iconSizeMap[name];
@@ -55,7 +68,8 @@ async function iconBuilder(icon: VariantIcon): Promise<ReactComponent> {
 }
 
 async function getPackageComponentIcon(
-  icon: VariantIcon, options: Omit<PackageComponent, 'Icon'>,
+  icon: VariantIcon,
+  options: Omit<PackageComponent, 'Icon'>,
 ): Promise<PackageComponent> {
   return {
     ...options,
@@ -77,9 +91,7 @@ function getFullComponent(categoryVariantsMap: Record<string, CategoryVariants |
   };
 }
 
-function getBaseComponentsFromComponentNames(
-  pkg: Package, componentNames: string[],
-): BasePackageComponent[] {
+function getBaseComponentsFromComponentNames(pkg: Package, componentNames: string[]): BasePackageComponent[] {
   return componentNames.map((name) => ({ package: pkg, name }));
 }
 
@@ -95,15 +107,17 @@ export async function getComponentsFromPackage(pkg: Package): Promise<PackageCom
   return flatten(componentsArrayWithoutNull);
 }
 
-export async function getPackagesSourceDynamic(): Promise<Package[]> {
-  const key = 'PACKAGES';
-  const { result } = await getBatchGlobalConfig([{ key, version: '1.0.0' }]);
-  return parseJSON(result[key], []);
+const ARTERY_ENGIN_AVAILABLE_PACKAGES_KEY = 'PACKAGES';
+export function getAvailablePackages(): Promise<Package[]> {
+  return getBatchGlobalConfig([{ key: ARTERY_ENGIN_AVAILABLE_PACKAGES_KEY, version: '1.0.0' }]).then(
+    ({ result }) => parseJSON(result[ARTERY_ENGIN_AVAILABLE_PACKAGES_KEY], []),
+  );
 }
 
-async function getPackageComponentToCategoryVariantMapDynamic(
-  { name, version }: Package,
-): Promise<Record<string, CategoryVariants | undefined>> {
+async function getPackageComponentToCategoryVariantMapDynamic({
+  name,
+  version,
+}: Package): Promise<Record<string, CategoryVariants | undefined>> {
   if (name === 'all') {
     return {};
   }
@@ -118,7 +132,7 @@ async function getPackageComponentToCategoryVariantMapDynamic(
 }
 
 export type PropsSpecMap = Record<string, PropsSpec | undefined>;
-export type GetPackagePropsSpecResult = Pick<Package, 'name' | 'version'> & { result: PropsSpecMap; };
+export type GetPackagePropsSpecResult = Pick<Package, 'name' | 'version'> & { result: PropsSpecMap };
 export async function getPackagePropsSpec({ name, version }: Package): Promise<GetPackagePropsSpecResult> {
   const key = `PACKAGE_PROPS_SPEC:${name}`;
   const { result } = await getBatchGlobalConfig([{ key, version }]);
@@ -127,7 +141,8 @@ export async function getPackagePropsSpec({ name, version }: Package): Promise<G
 
 export function initialPropsToNodeProperties(initialProps: InitialProps = {}): NodeProperties {
   const nodePropertiesReducer = (
-    acc: NodeProperties, [propertyName, value]: [string, unknown],
+    acc: NodeProperties,
+    [propertyName, value]: [string, unknown],
   ): NodeProperties => {
     return merge(acc, { [propertyName]: { type: 'constant_property', value } });
   };

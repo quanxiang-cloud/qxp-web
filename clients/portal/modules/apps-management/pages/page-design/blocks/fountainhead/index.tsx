@@ -10,9 +10,9 @@ import type { BlocksCommunicationType } from '@pageDesign/types';
 import { GROUP_TITLE_MAP } from '@pageDesign/constants';
 import { useMenuPanel } from '@pageDesign/hooks';
 
+import Core from './core';
 import { usePackagePropsSpecsMap } from './store';
 import { FountainheadContextProvider } from './context';
-import Core from './core';
 import { PropsSpecMap } from '../../utils/package';
 
 const Fountainhead = (props: BlockItemProps<BlocksCommunicationType>): JSX.Element => {
@@ -79,14 +79,14 @@ const Fountainhead = (props: BlockItemProps<BlocksCommunicationType>): JSX.Eleme
   return (
     <div ref={ref} style={{ pointerEvents: 'auto' }}>
       <Panel
+        pinnable
+        closable
         title={GROUP_TITLE_MAP[currentType ?? '']}
         onClose={onForceClose}
         onPin={onPin}
         visible={visible}
         pinned={pinned}
         width={panelWidth}
-        closable
-        pinnable
       >
         <FountainheadContextProvider onPanelHide={onHide} onPanelClose={onClose}>
           <Core onAddNode={onAddNode} />
