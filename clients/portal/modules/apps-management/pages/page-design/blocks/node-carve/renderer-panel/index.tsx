@@ -2,10 +2,9 @@ import React, { useEffect, useState } from 'react';
 import Editor from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 import { pick, get, set } from 'lodash';
-import cs from 'classnames';
 import { toJS } from 'mobx';
 
-import { Button, Icon, Tooltip, Modal, toast } from '@one-for-all/ui';
+import { Icon, Tooltip, Modal, toast } from '@one-for-all/ui';
 
 import DataBind, { iterableStateTypes } from '../repository/state-bind';
 import Section from '../../../utils/section';
@@ -201,26 +200,14 @@ function RendererPanel(): JSX.Element {
             <DataBind __path="shouldRender" />
           </div>
           <pre className="p-4 text-12 text-blue-400 bg-gray-100">
-            <p>本质是配置JS中if流程语句中的条件表达式</p>
-            <p>当且仅当配置最终结果为真值时渲染展示此节点</p>
+            {'// 即配置if流程语句条件表达式\n// 结果为真值渲染展示当前节点\n' }
           </pre>
         </Section>
-        <Section title="循环展示" defaultExpand>
+        <Section title="循环渲染" defaultExpand>
           <form className="flex flex-col">
-            <div className="mb-8">
-              <p>循环数据</p>
-              <div className="flex items-center justify-between">
-                <Button
-                  className={cs({ [styles.boundConst]: hasBindConst() })}
-                  onClick={() => setModalBindConstOpen(true)}
-                >
-                  {hasBindConst() ? '已绑定常量数据' : '绑定常量数据'}
-                </Button>
-                <DataBind
-                  __path="loop-node"
-                  isSetLoopNode
-                />
-              </div>
+            <div className="flex items-center justify-between mb-8">
+              <label>配置组件循环渲染规则</label>
+              <DataBind __path="loop-node" isSetLoopNode />
             </div>
             {hasBind && (
               <div className="mb-8">

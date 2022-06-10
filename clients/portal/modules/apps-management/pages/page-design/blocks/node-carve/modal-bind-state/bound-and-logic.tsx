@@ -22,7 +22,7 @@ function LogicOperatorsAndBoundVariables({ boundVariables, unBind, editorRef }: 
   return (
     <>
       <div className="py-4">
-        已绑定变量： <span className={styles.desc}>被绑定的变量值变化，触发重新执行条件表达式或者自定义函数</span>
+        已绑定变量： <span className={styles.desc}>被绑定的变量值变化，触发重新执行表达式或者自定义函数</span>
       </div>
       <div className={styles['bind-container']}>
         {!boundVariables?.length && (

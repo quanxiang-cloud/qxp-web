@@ -21,6 +21,11 @@ export type VariableBindConf = {
   contentStr: string;
 }
 
+const titleMap: Record<string, string> = {
+  shouldRender: '条件渲染配置',
+  'loop-node': '循环渲染规则配置',
+};
+
 function ModalBindState(): JSX.Element | null {
   const {
     activeNode,
@@ -31,11 +36,13 @@ function ModalBindState(): JSX.Element | null {
     updateAttrPayload,
   } = useConfigContext() as ConfigContextState;
   const isShouldRenderConfig = updateAttrPayload?.path === 'shouldRender';
+  const isLoopRenderConfig = updateAttrPayload?.path === 'loop-node';
   const [boundVariables, setBoundVariables] = useState<ComputedDependency[]>([]); // 已绑定的变量
   const [fallback, setFallBack] = useState<boolean>(); // 默认值
   const [expressionStr, setExpressionStr] = useState(''); // 表达式
   const [convertorStr, setConvertorStr] = useState(''); // 自定义函数内容
-  const [editorType, setEditorType] = useState<'expression' | 'convertor'>('expression'); // 最终保存的配置内容的类型 '表达式' | '自定义函数'
+  const [toPropsStr, setToPropsStr] = useState(''); // 循环渲染转换函数内容
+  const [editorType, setEditorType] = useState<'expression' | 'convertor' | 'toProps'>(isLoopRenderConfig ? 'toProps' : 'expression'); // 最终保存的配置内容的类型 '表达式' | '自定义函数'
   const editorRef = useRef<EditorRefType>();
   const expressionEditorRef = useMemo(() => {
     return editorType === 'expression' ? editorRef : undefined;
@@ -129,7 +136,7 @@ function ModalBindState(): JSX.Element | null {
 
   return (
     <Modal
-      title={isShouldRenderConfig ? '条件渲染配置' : '变量绑定'}
+      title={titleMap[`${updateAttrPayload?.path}`] ?? '变量绑定'}
       className='py-8'
       onClose={onCancel}
       footerBtns={[
@@ -157,43 +164,43 @@ function ModalBindState(): JSX.Element | null {
           />
         </div>
         <div className={styles.body}>
-          <LogicOperatorsAndBoundVariables
-            boundVariables={boundVariables}
-            unBind={handleUnbind}
-            editorRef={expressionEditorRef}
-          />
-          <Tab
-            style={{ height: 'auto' }}
-            currentKey={editorType}
-            onChange={(id) => id === 'convertor' ? setEditorType('convertor') : setEditorType('expression')}
-            items={[
-              {
-                id: 'expression',
-                name: isShouldRenderConfig ? '条件表达式' : '变量表达式',
-                content: <div className={styles.tip}>配置前，应清空自定义函数，保存的表达式才能生效</div>,
-              },
-              {
-                id: 'convertor',
-                name: '自定义函数',
-                content: <div className={styles.tip}>配置自定义函数</div>,
-              },
-            ]}
-          />
+          {!isLoopRenderConfig && (
+            <>
+              <LogicOperatorsAndBoundVariables
+                boundVariables={boundVariables}
+                unBind={handleUnbind}
+                editorRef={expressionEditorRef}
+              />
+              <Tab
+                style={{ height: 'auto' }}
+                currentKey={editorType}
+                onChange={(id) => id === 'convertor' ? setEditorType('convertor') : setEditorType('expression')}
+                items={[
+                  {
+                    id: 'expression',
+                    name: isShouldRenderConfig ? '条件表达式' : '变量表达式',
+                    content: <div className={styles.tip}>配置前，应清空自定义函数，保存的表达式才能生效</div>,
+                  },
+                  {
+                    id: 'convertor',
+                    name: '自定义函数',
+                    content: <div className={styles.tip}>配置自定义函数</div>,
+                  },
+                ]}
+              />
+            </>
+          )}
           <CodeEditor
             type={editorType}
             ref={editorRef}
             initValue={editorType === 'convertor' ? convertorStr : expressionStr}
             onChange={handleEditorChange}
           />
-          {isShouldRenderConfig && (
-            <>
-              <div className="flex items-center pt-12">
-                <span>默认值：</span>
-                <Toggle defaultChecked={fallback} onChange={setFallBack} />
-              </div>
-              <div className={styles.desc}>表达式或自定义函数因某种原因执行失败或者出现异常的时候，作为执行结果的默认值</div>
-            </>
-          )}
+          <div className="flex items-center pt-12">
+            <span>默认值：</span>
+            <Toggle defaultChecked={fallback} onChange={setFallBack} />
+          </div>
+          <div className={styles.desc}>表达式或自定义函数因某种原因执行失败或者出现异常的时候，将使用该默认值</div>
         </div>
       </div>
     </Modal>

@@ -5,7 +5,7 @@ import { generateInitFunString } from './utils';
 
 type Props = {
   initValue: string;
-  type: 'expression' | 'convertor';
+  type: 'expression' | 'convertor' | 'toProps';
   onChange: (value: any) => void;
 }
 
