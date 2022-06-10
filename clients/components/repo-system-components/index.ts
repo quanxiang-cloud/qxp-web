@@ -3,11 +3,11 @@ import type { Repository } from '@one-for-all/artery-renderer';
 import versionMap from '@pageDesign/blocks/fountainhead/config/name-version-map';
 import SystemTaskList from '@c/task-lists';
 import UserMenuAvatar from '@c/user-avatar-menu';
-import RichTextEditor from '@c/quill';
 
 import FileUpload from './file-upload';
-import Tree from './tree';
+import RichTextEditor from './rich-text-editor';
 import GridContainer from './grid-container';
+import Tree from './tree';
 import a from './a';
 import div from './div';
 import img from './img';
