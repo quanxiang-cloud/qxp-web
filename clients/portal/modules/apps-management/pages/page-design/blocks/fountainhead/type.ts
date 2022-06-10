@@ -58,7 +58,7 @@ export interface CategoryVariants extends Pick<PackageComponent, 'category'> {
 export type PropsSpecMap = Record<string, PropsSpec | undefined>;
 
 export interface FountainPackage {
-  package: Package;
-  propsSpec: PropsSpecMap;
+  pkg: Package;
+  propsSpecMap: PropsSpecMap;
   manifest: PackageComponent[];
 }

@@ -57,8 +57,8 @@ export async function loadFountainPackages(): Promise<Array<FountainPackage>> {
         .filter((components): components is PackageComponent[] => components !== null);
 
       return {
-        package: pkg,
-        propsSpec: parseJSON(result[`PACKAGE_PROPS_SPEC:${name}`], {}),
+        pkg,
+        propsSpecMap: parseJSON(result[`PACKAGE_PROPS_SPEC:${name}`], {}),
         manifest: flatten(componentsArrayWithoutNull),
       };
     })

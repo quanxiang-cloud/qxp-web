@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import { Panel } from '@one-for-all/ui';
 import { and, mergeRight, or, when, lensPath, set, ifElse } from 'ramda';
 import { BlockItemProps } from '@one-for-all/artery-engine';
@@ -13,11 +13,13 @@ import { useMenuPanel } from '@pageDesign/hooks';
 import Core from './core';
 import { usePackagePropsSpecsMap } from './store';
 import { FountainheadContextProvider } from './context';
-import { PropsSpecMap } from '../../utils/package';
+import { PropsSpecMap } from './type';
+import FountainContext from '../../fountain-context';
 
 const Fountainhead = (props: BlockItemProps<BlocksCommunicationType>): JSX.Element => {
   const { activeNode, artery, onChange } = props;
   const propsSpecsMap = usePackagePropsSpecsMap();
+  const { getNodePropsSpec } = useContext(FountainContext);
 
   const {
     ref,
@@ -53,18 +55,25 @@ const Fountainhead = (props: BlockItemProps<BlocksCommunicationType>): JSX.Eleme
   }, [propsSpecsMap]);
 
   const onAddNode = useCallback((newNode: Node): void => {
+    if (newNode.type !== 'html-element' && newNode.type !== 'react-component') {
+      return;
+    }
+
     !pinned && onSharedStateChange('menu.currentType', '');
 
     const rootNode = artery.node;
     const currentNode = activeNode ?? rootNode;
-    const newNodePropsSpecs = getPropsSpecs(newNode);
-    const currentNodePropsSpecs = getPropsSpecs(currentNode);
+    if (currentNode.type !== 'html-element' && currentNode.type !== 'react-component') {
+      return;
+    }
+    const newNodePropsSpecs = getNodePropsSpec(newNode);
+    const currentNodePropsSpecs = getNodePropsSpec(currentNode);
     const propsSpecs = currentNodePropsSpecs ?? newNodePropsSpecs;
 
     const currentNodecomponentName = get(currentNode, 'name', '') || get(currentNode, 'exportName', '');
     const currentNodeChildrenLength = get(currentNode, 'children.length', 0);
     const isCurrentNodeAcceptChild = or(
-      !!propsSpecs?.[currentNodecomponentName]?.isContainer,
+      !!propsSpecs?.isContainer,
       or(['div', 'page'].includes(currentNodecomponentName), !!currentNodeChildrenLength),
     );
 

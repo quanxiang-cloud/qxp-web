@@ -15,7 +15,7 @@ import stores from './stores';
 import { savePage } from './api';
 import { getInitArtery } from './utils';
 import type { BlocksCommunicationType } from './types';
-import FountainContext from './fountain-context';
+import FountainContext, { createFountainCTXValue } from './fountain-context';
 import { loadFountainPackages } from './utils/package';
 
 import './index.scss';
@@ -61,7 +61,7 @@ function PageDesign(): JSX.Element | null {
     <Ctx.Provider value={Object.assign(stores, { onSave: handleSave })}>
       <div className={cs(styles.designer)}>
         <div id={PAGE_DESIGN_ID}>
-          <FountainContext.Provider value={{ fountainPackages: fountainPackages || [] }}>
+          <FountainContext.Provider value={createFountainCTXValue(fountainPackages || [])}>
             <ArteryEngine
               artery={initialArtery}
               layers={layers}
