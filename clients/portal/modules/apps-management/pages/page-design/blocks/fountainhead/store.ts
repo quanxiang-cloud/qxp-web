@@ -39,10 +39,6 @@ export function usePackagePropsSpecs(params: Pick<Package, 'name' | 'version'>):
   return propsSpecs[key];
 }
 
-export function usePackagePropsSpecsMap(): Record<string, PropsSpecMap> {
-  return useObservable(propsSpecs$);
-}
-
 function isInvalid<T>(value: T): boolean {
   return isObject(value) && isEmpty(value);
 }

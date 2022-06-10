@@ -11,14 +11,11 @@ import { GROUP_TITLE_MAP } from '@pageDesign/constants';
 import { useMenuPanel } from '@pageDesign/hooks';
 
 import Core from './core';
-import { usePackagePropsSpecsMap } from './store';
 import { FountainheadContextProvider } from './context';
-import { PropsSpecMap } from './type';
 import FountainContext from '../../fountain-context';
 
 const Fountainhead = (props: BlockItemProps<BlocksCommunicationType>): JSX.Element => {
   const { activeNode, artery, onChange } = props;
-  const propsSpecsMap = usePackagePropsSpecsMap();
   const { getNodePropsSpec } = useContext(FountainContext);
 
   const {
@@ -46,13 +43,6 @@ const Fountainhead = (props: BlockItemProps<BlocksCommunicationType>): JSX.Eleme
       ref.current.style.visibility = 'hidden';
     }
   }, [pinned]);
-
-  const getPropsSpecs = useCallback((nd: Node): PropsSpecMap | undefined => {
-    const packageName = get(nd, 'packageName', '');
-    const packageVersion = get(nd, 'packageVersion', '');
-    const packageId = `${packageName}@${packageVersion}`;
-    return propsSpecsMap[packageId];
-  }, [propsSpecsMap]);
 
   const onAddNode = useCallback((newNode: Node): void => {
     if (newNode.type !== 'html-element' && newNode.type !== 'react-component') {
@@ -83,7 +73,7 @@ const Fountainhead = (props: BlockItemProps<BlocksCommunicationType>): JSX.Eleme
       () => insertAfter(rootNode, currentNode.id, newNode),
     )();
     newRootNode && onChange(set(lensPath(['node']), newRootNode, artery));
-  }, [pinned, onSharedStateChange, getPropsSpecs, onChange, artery, activeNode]);
+  }, [pinned, onSharedStateChange, onChange, artery, activeNode]);
 
   return (
     <div ref={ref} style={{ pointerEvents: 'auto' }}>

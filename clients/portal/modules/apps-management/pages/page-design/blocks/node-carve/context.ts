@@ -1,7 +1,7 @@
 import type { Artery, Node } from '@one-for-all/artery';
 import { createContext, useContext } from 'react';
 
-import type { PropsSpecMap } from '@pageDesign/utils/package';
+import { PropsSpecMap } from '../fountainhead/type';
 
 export interface UpdateAttrPayloadType {
   path: string;
