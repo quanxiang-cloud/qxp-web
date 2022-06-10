@@ -5,6 +5,7 @@ import SystemTaskList from '@c/task-lists';
 import UserMenuAvatar from '@c/user-avatar-menu';
 import RichTextEditor from '@c/quill';
 
+import FileUpload from './file-upload';
 import Tree from './tree';
 import GridContainer from './grid-container';
 import a from './a';
@@ -16,6 +17,7 @@ const repoSystemComponents: Repository = {
   [`system-components@${versionMap['system-components']}`]: {
     UserMenuAvatar,
     SystemTaskList,
+    FileUpload,
     GridContainer,
     RichTextEditor,
     Tree,

@@ -27,6 +27,27 @@
       }
     }]
   },
+  "FileUpload": {
+    "variants": [
+      {
+        "icon": {
+          "type": "platform",
+          "name": "file_upload",
+          "initialProps": {}
+        },
+        "desc": "可以上传文件",
+        "label": "文件上传",
+        "initialProps": {
+          "iconName": "backup",
+          "uploaderDescription": "点击或拖拽上传文件",
+          "maxFileSize": 10,
+          "isPrivate": false,
+          "multiple": false,
+          "disabled": false
+        }
+      }
+    ]
+  },
   "GridContainer": {
     "variants": [{
       "icon": {
