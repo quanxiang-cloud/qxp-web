@@ -2,23 +2,68 @@ import React, { CSSProperties } from 'react';
 import { equals, flatten, ifElse, isEmpty, pipe, toPairs, reduce, merge } from 'ramda';
 import Icon from '@one-for-all/icon';
 import type { NodeProperties } from '@one-for-all/artery';
-import { PropsSpec } from '@one-for-all/node-carve';
 
-import { getBatchGlobalConfig } from '@lib/api/user-config';
+import { getBatchGlobalConfig, GetParams } from '@lib/api/user-config';
 import { parseJSON } from '@lib/utils';
 
 import type {
   BasePackageComponent,
   CategoryVariants,
+  FountainPackage,
   InitialProps,
   Package,
   PackageComponent,
+  PropsSpecMap,
   ReactComponent,
   Variant,
   VariantIcon,
   VariantImageIcon,
   VariantPlatFormIcon,
 } from '../blocks/fountainhead/type';
+
+const ARTERY_ENGIN_AVAILABLE_PACKAGES_KEY = 'PACKAGES';
+export function getAvailablePackages(): Promise<Package[]> {
+  return getBatchGlobalConfig([{ key: ARTERY_ENGIN_AVAILABLE_PACKAGES_KEY, version: '1.0.0' }]).then(
+    ({ result }) => parseJSON(result[ARTERY_ENGIN_AVAILABLE_PACKAGES_KEY], []),
+  );
+}
+
+export async function loadFountainPackages(): Promise<Array<FountainPackage>> {
+  const availablePackages = await getAvailablePackages();
+  const packageManifestKeys: GetParams[] = availablePackages.map(({ name, version }) => {
+    return { key: `PACKAGE_MANIFEST:${name}`, version };
+  });
+  const componentPropsSpecKeys: GetParams[] = availablePackages.map(({ name, version }) => {
+    return { key: `PACKAGE_PROPS_SPEC:${name}`, version };
+  });
+
+  const { result } = await getBatchGlobalConfig(packageManifestKeys.concat(componentPropsSpecKeys));
+
+  return availablePackages
+    .map((pkg) => {
+      const { name } = pkg;
+      if (!result[`PACKAGE_MANIFEST:${name}`] || !result[`PACKAGE_PROPS_SPEC:${name}`]) {
+        return;
+      }
+
+      const manifest: Record<string, CategoryVariants | undefined> = parseJSON(
+        result[`PACKAGE_MANIFEST:${name}`],
+        {},
+      );
+
+      const componentsArrayWithoutNull = Object.keys(manifest)
+        .map((name) => ({ package: pkg, name }))
+        .map((backComponent) => getFullComponent(manifest, backComponent))
+        .filter((components): components is PackageComponent[] => components !== null);
+
+      return {
+        package: pkg,
+        propsSpec: parseJSON(result[`PACKAGE_PROPS_SPEC:${name}`], {}),
+        manifest: flatten(componentsArrayWithoutNull),
+      };
+    })
+    .filter((n): n is FountainPackage => !!n);
+}
 
 function imageIconBuilder(icon: VariantImageIcon): ReactComponent {
   const { initialProps, src } = icon;
@@ -60,35 +105,34 @@ export function isPlatformIcon(icon: VariantIcon): icon is VariantPlatFormIcon {
   return equals('platform', icon.type);
 }
 
-async function iconBuilder(icon: VariantIcon): Promise<ReactComponent> {
+function iconBuilder(icon: VariantIcon): ReactComponent {
   if (isImageIcon(icon)) {
     return imageIconBuilder(icon);
   }
   return platformIconBuilder(icon);
 }
 
-async function getPackageComponentIcon(
+function getPackageComponentIcon(
   icon: VariantIcon,
   options: Omit<PackageComponent, 'Icon'>,
-): Promise<PackageComponent> {
+): PackageComponent {
   return {
     ...options,
-    Icon: await iconBuilder(icon),
+    Icon: iconBuilder(icon),
   };
 }
 
-function getFullComponent(categoryVariantsMap: Record<string, CategoryVariants | undefined>) {
-  return async (basePackageComponent: BasePackageComponent): Promise<PackageComponent[]> => {
-    const { name } = basePackageComponent;
-    const categoryVariantsFallback = { variants: [], category: undefined };
-    const { variants, category } = categoryVariantsMap[name] ?? categoryVariantsFallback;
-    const variantToComponentPromise = (variant: Variant): Promise<PackageComponent> => {
-      const { icon, ...restVariant } = variant;
-      return getPackageComponentIcon(icon, { ...basePackageComponent, ...restVariant, category });
-    };
-    const componentsPromises = variants.map(variantToComponentPromise);
-    return await Promise.all(componentsPromises);
-  };
+function getFullComponent(
+  categoryVariantsMap: Record<string, CategoryVariants | undefined>,
+  basePackageComponent: BasePackageComponent,
+) {
+  const { name } = basePackageComponent;
+  const categoryVariantsFallback = { variants: [], category: undefined };
+  const { variants, category } = categoryVariantsMap[name] ?? categoryVariantsFallback;
+  return variants.map((variant: Variant): PackageComponent => {
+    const { icon, ...restVariant } = variant;
+    return getPackageComponentIcon(icon, { ...basePackageComponent, ...restVariant, category });
+  });
 }
 
 function getBaseComponentsFromComponentNames(pkg: Package, componentNames: string[]): BasePackageComponent[] {
@@ -99,19 +143,13 @@ export async function getComponentsFromPackage(pkg: Package): Promise<PackageCom
   const categoryVariantsMap = await getPackageComponentToCategoryVariantMapDynamic(pkg);
   const componentNames = Object.keys(categoryVariantsMap);
   const baseComponents = getBaseComponentsFromComponentNames(pkg, componentNames);
-  const componentsArrayPromise = baseComponents.map(getFullComponent(categoryVariantsMap));
-  const componentsArray = await Promise.all(componentsArrayPromise);
+  const componentsArray = baseComponents.map((backComponent) =>
+    getFullComponent(categoryVariantsMap, backComponent),
+  );
   const componentsArrayWithoutNull = componentsArray.filter(
     (components): components is PackageComponent[] => components !== null,
   );
   return flatten(componentsArrayWithoutNull);
-}
-
-const ARTERY_ENGIN_AVAILABLE_PACKAGES_KEY = 'PACKAGES';
-export function getAvailablePackages(): Promise<Package[]> {
-  return getBatchGlobalConfig([{ key: ARTERY_ENGIN_AVAILABLE_PACKAGES_KEY, version: '1.0.0' }]).then(
-    ({ result }) => parseJSON(result[ARTERY_ENGIN_AVAILABLE_PACKAGES_KEY], []),
-  );
 }
 
 async function getPackageComponentToCategoryVariantMapDynamic({
@@ -131,7 +169,6 @@ async function getPackageComponentToCategoryVariantMapDynamic({
   return getter();
 }
 
-export type PropsSpecMap = Record<string, PropsSpec | undefined>;
 export type GetPackagePropsSpecResult = Pick<Package, 'name' | 'version'> & { result: PropsSpecMap };
 export async function getPackagePropsSpec({ name, version }: Package): Promise<GetPackagePropsSpecResult> {
   const key = `PACKAGE_PROPS_SPEC:${name}`;

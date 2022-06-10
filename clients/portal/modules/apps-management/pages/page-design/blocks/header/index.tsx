@@ -15,6 +15,8 @@ import repository from '@c/artery-renderer/repository';
 import NotSavedModal from './not-saved-modal';
 import styles from './style.m.scss';
 import './style.scss';
+import { getQuery } from '@lib/utils';
+import { useHistory } from 'react-router-dom';
 
 const MAX_MODIFICARIONS = 15;
 const Divider = (): JSX.Element => <div className='w-1 h-20 bg-gray-200 mx-16' />;
@@ -26,8 +28,10 @@ function Toolbar({
   commandsHasNext,
   commandsHasPrev,
 }: BlockItemProps<BlocksCommunicationType>): JSX.Element {
+  const { appID, pageName } = getQuery<{ appID: string, pageName: string, arteryID: string }>();
   const ctx = useCtx();
-  const { page, designer } = ctx;
+  const history = useHistory();
+  const { page } = ctx;
   const [openTestPreview, setOpenPreview] = useState(false);
   const [openNotSaved, setOpenNotSaved] = useState(false);
   const [modifications, setModifications] = useState(0);
@@ -64,10 +68,14 @@ function Toolbar({
 
   function handleExit(): void {
     if (!modifications) {
-      history.back();
+      handleGoBack();
     } else {
       setOpenNotSaved(true);
     }
+  }
+
+  function handleGoBack(): void {
+    history.push(`/apps/details/${appID}/views`);
   }
 
   function handlePreview(): void {
@@ -104,7 +112,15 @@ function Toolbar({
 
   return (
     <div className={cs('bg-gray-50 h-44 flex justify-between items-center px-16', styles.toolbar)}>
-      <div className={styles.brand}>{designer.vdoms.title}</div>
+      <div className={styles.brand}>
+        <div className='inline-flex items-center text-gray-900 text-12'>
+          <span onClick={handleGoBack}>
+            <Icon name='keyboard_backspace' className='mr-8 cursor-pointer' />
+          </span>
+          <span className='mr-4'>正在设计页面:</span>
+          <span>{pageName}</span>
+        </div>
+      </div>
       <div className={cs('flex items-center', styles.actions)}>
         <Tooltip position='top' label='撤销'>
           <Icon

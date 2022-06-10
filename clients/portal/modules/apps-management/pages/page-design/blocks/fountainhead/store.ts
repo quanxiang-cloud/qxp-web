@@ -4,10 +4,10 @@ import { switchMap, catchError, shareReplay } from 'rxjs6/operators';
 import { isEmpty } from 'ramda';
 import { isObject } from '@one-for-all/artery-engine';
 
-import type { Package, PackageComponent } from '@pageDesign/blocks/fountainhead/type';
+import type { Package, PackageComponent, PropsSpecMap } from '@pageDesign/blocks/fountainhead/type';
 import useObservable from '@lib/hooks/use-observable';
 import {
-  getAvailablePackages, getPackagePropsSpec, getComponentsFromPackage, PropsSpecMap,
+  getAvailablePackages, getPackagePropsSpec, getComponentsFromPackage,
 } from '@pageDesign/utils/package';
 
 const packages$ = from(getAvailablePackages());

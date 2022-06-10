@@ -1,7 +1,7 @@
 import httpClient from '@lib/http-client';
 import logger from '@lib/logger';
 
-type GetParams = {
+export type GetParams = {
   version: string;
   key: string;
 }
