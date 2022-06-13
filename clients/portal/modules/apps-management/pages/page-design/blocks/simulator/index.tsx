@@ -1,12 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import ArterySimulator, { SimulatorRef } from '@one-for-all/artery-simulator';
 import { BlockItemProps } from '@one-for-all/artery-engine';
 
 import { BlocksCommunicationType } from '../../types';
-import isNodeSupportChildren from './is-node-support-children';
 import pluginsSrc from 'REF:./plugins';
 
 import './index.scss';
+import FountainContext from '../../fountain-context';
+import { NodePrimary } from '@one-for-all/artery-simulator/lib/types';
 
 // // todo fixme
 const __OVER_LAYER_COMPONENTS: Array<{ packageName: string; exportName: string }> = [
@@ -17,6 +18,11 @@ function SimulatorBlock(props: BlockItemProps<BlocksCommunicationType>): JSX.Ele
   const { artery, onChange, activeNode, setActiveNode } = props;
   const [activeModalLayer, setActiveModalLayer] = useState<string | undefined>();
   const simulatorRef = useRef<SimulatorRef>(null);
+  const { getNodePropsSpec } = useContext(FountainContext);
+
+  function isNodeSupportChildren(node: NodePrimary): Promise<boolean> {
+    return Promise.resolve(!!getNodePropsSpec(node)?.isContainer);
+  }
 
   useEffect(() => {
     if (simulatorRef.current?.iframe?.contentWindow) {
