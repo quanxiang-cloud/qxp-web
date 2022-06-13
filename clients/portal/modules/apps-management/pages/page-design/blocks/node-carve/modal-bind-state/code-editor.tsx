@@ -53,7 +53,7 @@ function CodeEditor(
     <Editor
       ref={refEditor}
       width='600px'
-      height="250px"
+      height={type === 'toProps' ? '360px' : '250px'}
       value={value}
       extensions={[javascript()]}
       onChange={handleChange}

@@ -74,12 +74,13 @@ function ModalBindState(): JSX.Element | null {
   }
 
   function handleEditorChange(val: string): void {
-    const bodyString = getFnBody(parseAst(val), val);
     if (editorType === 'toProps') {
+      const bodyString = getFnBody(parseAst(val), val);
       return setToPropsStr(bodyString);
     }
 
     if (editorType === 'convertor') {
+      const bodyString = getFnBody(parseAst(val), val);
       return setConvertorStr(bodyString);
     }
 
@@ -89,6 +90,10 @@ function ModalBindState(): JSX.Element | null {
   function handleBind(): void {
     if (!updateAttrPayload) {
       return;
+    }
+
+    if (editorType === 'toProps' && !toPropsStr) {
+      return toast.error('循环渲染的映射函数内容不能为空！');
     }
 
     if (!expressionStr && !convertorStr) {
@@ -164,35 +169,39 @@ function ModalBindState(): JSX.Element | null {
             boundVariables={boundVariables}
             updateBoundVariables={setBoundVariables}
             editorRef={expressionEditorRef}
+            singleBind={isLoopRenderConfig}
           />
         </div>
         <div className={styles.body}>
-          {!isLoopRenderConfig && (
-            <>
-              <LogicOperatorsAndBoundVariables
-                boundVariables={boundVariables}
-                unBind={handleUnbind}
-                editorRef={expressionEditorRef}
-              />
-              <Tab
-                style={{ height: 'auto' }}
-                currentKey={editorType}
-                onChange={setEditorType}
-                items={[
-                  {
-                    id: 'expression',
-                    name: isShouldRenderConfig ? '条件表达式' : '变量表达式',
-                    content: <div className={styles.tip}>配置前，应清空自定义函数，保存的表达式才能生效</div>,
-                  },
-                  {
-                    id: 'convertor',
-                    name: '自定义函数',
-                    content: <div className={styles.tip}>配置自定义函数</div>,
-                  },
-                ]}
-              />
-            </>
-          )}
+          <LogicOperatorsAndBoundVariables
+            boundVariables={boundVariables}
+            unBind={handleUnbind}
+            editorRef={expressionEditorRef}
+            hideOperator={isLoopRenderConfig}
+          />
+          <Tab
+            style={{ height: 'auto' }}
+            currentKey={editorType}
+            onChange={setEditorType}
+            items={isLoopRenderConfig ? [
+              {
+                id: 'toProps',
+                name: '变量映射函数',
+                content: <div className={styles.tip}></div>,
+              },
+            ] : [
+              {
+                id: 'expression',
+                name: isShouldRenderConfig ? '条件表达式' : '变量表达式',
+                content: <div className={styles.tip}>配置前，应清空自定义函数，保存的表达式才能生效</div>,
+              },
+              {
+                id: 'convertor',
+                name: '自定义函数',
+                content: <div className={styles.tip}>配置自定义函数</div>,
+              },
+            ]}
+          />
           <CodeEditor
             type={editorType}
             ref={editorRef}
