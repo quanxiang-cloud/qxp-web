@@ -1194,20 +1194,6 @@
     classnames "^2.3.1"
     react "^17.0.2"
 
-"@one-for-all/artery-renderer@0.20.2":
-  version "0.20.2"
-  resolved "https://registry.npmmirror.com/@one-for-all/artery-renderer/-/artery-renderer-0.20.2.tgz#9c9b57d82106efab68c222b9fd37d873a155f0dd"
-  integrity sha512-FwxXbloYFMTd/CckkRqk7v0jvWdqkCOaxJ6Knx+O3RPEUVjREGrnD6g5c55jY20ljoDLfL1+9yxZTjR+JHimXQ==
-  dependencies:
-    "@one-for-all/api-spec-adapter" "0.4.0"
-    "@one-for-all/artery" "0.15.0"
-    "@one-for-all/utils" "0.3.0"
-    history "5.3.0"
-    react "^17.0.2"
-    react-dom "^17.0.2"
-    react-jsx-parser "1.29.0"
-    rxjs "^7.4.0"
-
 "@one-for-all/artery-renderer@0.21.0":
   version "0.21.0"
   resolved "https://registry.npmjs.org/@one-for-all/artery-renderer/-/artery-renderer-0.21.0.tgz#00b9eb91c5de1ae4ac43f549eb110ebbcd9ccd78"
@@ -1222,15 +1208,15 @@
     react-jsx-parser "1.29.0"
     rxjs "^7.4.0"
 
-"@one-for-all/artery-simulator@1.4.4":
-  version "1.4.4"
-  resolved "https://registry.npmjs.org/@one-for-all/artery-simulator/-/artery-simulator-1.4.4.tgz#3cfba85f51a9280eae2642d7db40a7623e7aa23a"
-  integrity sha512-N7E3ONiFxcT6YfZWJ3Xt/BCV/JVEE2y1di7IR2B54POD+fwblJF8+Ei02We1DTcgwa9H0IMFjTg7xgzpfNTemw==
+"@one-for-all/artery-simulator@1.5.0":
+  version "1.5.0"
+  resolved "https://registry.npmjs.org/@one-for-all/artery-simulator/-/artery-simulator-1.5.0.tgz#f9f7bf336bc0eb4971ca4e0452463437e465a480"
+  integrity sha512-dNoAY8g9RoPRt406nGDtSHiYJs0TIjPpFSR6ayHrTvYKnVER5Slypn2dgAUjU/wCS5FdxLXMtsWiNn0VCxUj5w==
   dependencies:
-    "@one-for-all/artery" "0.15.0"
+    "@one-for-all/artery" "0.16.0"
     "@one-for-all/artery-engine" "1.2.1"
-    "@one-for-all/artery-renderer" "0.20.2"
-    "@one-for-all/artery-utils" "0.17.0"
+    "@one-for-all/artery-renderer" "0.21.0"
+    "@one-for-all/artery-utils" "0.18.1"
     "@one-for-all/elements-radar" "0.3.0"
     "@one-for-all/headless-ui" "0.4.0"
     "@one-for-all/icon" "0.6.2"
@@ -1240,14 +1226,6 @@
     lodash "^4.17.21"
     react "^17.0.2"
     rxjs "^7.4.0"
-
-"@one-for-all/artery-utils@0.17.0":
-  version "0.17.0"
-  resolved "https://registry.npmmirror.com/@one-for-all/artery-utils/-/artery-utils-0.17.0.tgz#0df41a64aefc7cc217a563cdc9c140839c3e969c"
-  integrity sha512-AFKBZLWR/ubMFRyGIRdexq4VhBJW2U0H7H3lTFJ1C6q0RKmILGaQrZD9Y6dO0tKmmzXD/7VNz4zjDbNH++PHrw==
-  dependencies:
-    "@one-for-all/artery" "0.15.0"
-    immutable "4.0.0"
 
 "@one-for-all/artery-utils@0.18.0":
   version "0.18.0"

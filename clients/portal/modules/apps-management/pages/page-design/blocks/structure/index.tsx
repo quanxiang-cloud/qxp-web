@@ -9,26 +9,53 @@ import type { BlocksCommunicationType } from '@pageDesign/types';
 import { GROUP_TITLE_MAP } from '@pageDesign/constants';
 import { useMenuPanel } from '@pageDesign/hooks';
 import FountainContext from '../../fountain-context';
+import { useOutlineRootNode } from './hooks';
+import LayerSwitcher from './layer-switcher';
 
 function Structure(props: BlockItemProps<BlocksCommunicationType>): JSX.Element {
   const { artery, onChange, activeNode, setActiveNode } = props;
   const { getNodePropsSpec } = useContext(FountainContext);
-  const {
-    ref,
-    currentType,
-    onPin,
-    pinned,
-    visible,
-    panelWidth,
-    onForceClose,
-  } = useMenuPanel(mergeRight(props, { type: 'structure' }));
+  const { ref, currentType, onPin, pinned, visible, panelWidth, onForceClose } = useMenuPanel(
+    mergeRight(props, { type: 'structure' }),
+  );
+
+  const { rootNode, onChangeNode } = useOutlineRootNode(artery, onChange);
 
   function isContainer(node: NodePrimary): boolean {
     return !!getNodePropsSpec(node)?.isContainer;
   }
 
+  if (!rootNode) {
+    return (
+      <div
+        ref={ref}
+        style={{ pointerEvents: 'auto' }}
+        // prevent panel collapse when interacting with outline
+        onClick={(e) => e.stopPropagation()}
+      >
+        <Panel
+          closable
+          pinnable
+          title={GROUP_TITLE_MAP[currentType ?? '']}
+          onClose={onForceClose}
+          onPin={onPin}
+          visible={visible}
+          pinned={pinned}
+          width={panelWidth}
+        >
+          缺少根结点
+        </Panel>
+      </div>
+    );
+  }
+
   return (
-    <div ref={ref} style={{ pointerEvents: 'auto' }}>
+    <div
+      ref={ref}
+      style={{ pointerEvents: 'auto' }}
+      // prevent panel collapse when interacting with outline
+      onClick={(e) => e.stopPropagation()}
+    >
       <Panel
         closable
         pinnable
@@ -39,16 +66,18 @@ function Structure(props: BlockItemProps<BlocksCommunicationType>): JSX.Element 
         pinned={pinned}
         width={panelWidth}
       >
-        {/* <Core
+        <LayerSwitcher
           artery={artery}
-          activeNode={activeNode}
           onChange={onChange}
-          setActiveNode={setActiveNode}
-        /> */}
+          activeLayer={props.sharedState.activeModalLayer || ''}
+          onActiveModalLayerChange={(activeModalLayer) => {
+            props.onSharedStateChange('activeModalLayer', activeModalLayer);
+          }}
+        />
         <ArteryOutline
-          rootNode={artery.node}
+          rootNode={rootNode}
           isContainer={isContainer}
-          onChange={(node) => onChange({ ...artery, node })}
+          onChange={onChangeNode}
           activeNode={activeNode}
           onActiveNodeChange={setActiveNode}
         />
