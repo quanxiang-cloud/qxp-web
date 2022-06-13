@@ -4,6 +4,8 @@
   height: 100%;
 
   .side {
+    max-height: 572px;
+    overflow: auto;
     background: #F8FAFC;
     box-shadow: inset -1px 0px 0px #E2E8F0;
     > div.active {
@@ -22,7 +24,7 @@
   .desc {
     @apply text-12 text-gray-400 pt-4;
   }
-  
+
   .list-item {
     @apply cursor-pointer hover:bg-blue-400;
   }

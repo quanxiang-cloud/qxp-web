@@ -74,9 +74,12 @@ function ModalBindState(): JSX.Element | null {
   }
 
   function handleEditorChange(val: string): void {
-    if (editorType === 'convertor') {
-      const bodyString = getFnBody(parseAst(val), val);
+    const bodyString = getFnBody(parseAst(val), val);
+    if (editorType === 'toProps') {
+      return setToPropsStr(bodyString);
+    }
 
+    if (editorType === 'convertor') {
       return setConvertorStr(bodyString);
     }
 
@@ -174,7 +177,7 @@ function ModalBindState(): JSX.Element | null {
               <Tab
                 style={{ height: 'auto' }}
                 currentKey={editorType}
-                onChange={(id) => id === 'convertor' ? setEditorType('convertor') : setEditorType('expression')}
+                onChange={setEditorType}
                 items={[
                   {
                     id: 'expression',
@@ -193,6 +196,7 @@ function ModalBindState(): JSX.Element | null {
           <CodeEditor
             type={editorType}
             ref={editorRef}
+            updateAttrPayloadPath={updateAttrPayload?.path}
             initValue={editorType === 'convertor' ? convertorStr : expressionStr}
             onChange={handleEditorChange}
           />
