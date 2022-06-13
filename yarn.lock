@@ -717,6 +717,37 @@
   resolved "https://registry.npmmirror.com/@ctrl/tinycolor/-/tinycolor-3.4.1.tgz#75b4c27948c81e88ccd3a8902047bcd797f38d32"
   integrity sha512-ej5oVy6lykXsvieQtqZxCOaLT+xD4+QNarq78cIYISHmZXshCvROLudpQN3lfL8G0NL7plMSSK+zlyvCaIJ4Iw==
 
+"@dnd-kit/accessibility@^3.0.0":
+  version "3.0.1"
+  resolved "https://registry.npmjs.org/@dnd-kit/accessibility/-/accessibility-3.0.1.tgz#3ccbefdfca595b0a23a5dc57d3de96bc6935641c"
+  integrity sha512-HXRrwS9YUYQO9lFRc/49uO/VICbM+O+ZRpFDe9Pd1rwVv2PCNkRiTZRdxrDgng/UkvdC3Re9r2vwPpXXrWeFzg==
+  dependencies:
+    tslib "^2.0.0"
+
+"@dnd-kit/core@~6.0.3":
+  version "6.0.3"
+  resolved "https://registry.npmjs.org/@dnd-kit/core/-/core-6.0.3.tgz#f99ce312e2d75a1245a99709bfce0d84434bebcc"
+  integrity sha512-8u/yer6W1uvDfAq7EmWWDYpOJzzx1Okylcy9STKzSmEJLXqyO3WiEdhSfW50WJUKjMl2TfvUi6DHZuYCuyAD7g==
+  dependencies:
+    "@dnd-kit/accessibility" "^3.0.0"
+    "@dnd-kit/utilities" "^3.2.0"
+    tslib "^2.0.0"
+
+"@dnd-kit/sortable@~7.0.0":
+  version "7.0.0"
+  resolved "https://registry.npmjs.org/@dnd-kit/sortable/-/sortable-7.0.0.tgz#b094b288a8bd37cb74af0ed347b5ca4cfe6ce795"
+  integrity sha512-Em6d1n18lMmpRnNB9mmBWN/X7wNDnIw26tab+c7H0jCjW9UQ0+lRV+vatB1lLzFZlgQgIas/A/TXZDY16RQA5Q==
+  dependencies:
+    "@dnd-kit/utilities" "^3.2.0"
+    tslib "^2.0.0"
+
+"@dnd-kit/utilities@^3.2.0", "@dnd-kit/utilities@~3.2.0":
+  version "3.2.0"
+  resolved "https://registry.npmjs.org/@dnd-kit/utilities/-/utilities-3.2.0.tgz#b3e956ea63a1347c9d0e1316b037ddcc6140acda"
+  integrity sha512-h65/pn2IPCCIWwdlR2BMLqRkDxpTEONA+HQW3n765HBijLYGyrnTCLa2YQt8VVjjSQD6EfFlTE6aS2Q/b6nb2g==
+  dependencies:
+    tslib "^2.0.0"
+
 "@emotion/is-prop-valid@^1.1.0":
   version "1.1.2"
   resolved "https://registry.npmmirror.com/@emotion/is-prop-valid/-/is-prop-valid-1.1.2.tgz#34ad6e98e871aa6f7a20469b602911b8b11b3a95"
@@ -1165,6 +1196,21 @@
     react-dom "^17.0.2"
     rxjs "^7.4.0"
 
+"@one-for-all/artery-outline@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.npmjs.org/@one-for-all/artery-outline/-/artery-outline-0.0.1.tgz#a44eb2fbecddb5e4a3dd66eedece1ec21b3091ff"
+  integrity sha512-knxhixpd/WGIRcBTqOatgE4c/8KWa9NiagGrU4lTvWn69Br3Dq0zjj7v5Zm4qvuLGunWeMjWDrjqggyiW6lj6g==
+  dependencies:
+    "@dnd-kit/core" "~6.0.3"
+    "@dnd-kit/sortable" "~7.0.0"
+    "@dnd-kit/utilities" "~3.2.0"
+    "@one-for-all/artery" "0.16.0"
+    "@one-for-all/artery-utils" "0.18.1"
+    "@one-for-all/icon" "0.6.2"
+    "@one-for-all/utils" "0.3.0"
+    classnames "^2.3.1"
+    react "^17.0.2"
+
 "@one-for-all/artery-renderer@0.20.2":
   version "0.20.2"
   resolved "https://registry.npmmirror.com/@one-for-all/artery-renderer/-/artery-renderer-0.20.2.tgz#9c9b57d82106efab68c222b9fd37d873a155f0dd"
@@ -1226,6 +1272,14 @@
   integrity sha512-MnMvx2tdnaVJHoIzTWtl84r5ZcZjBoTv0yaEPdtn9zboXDeMv77Q8wZ9rlXBd+l9EBjUeKTE0xGndqpLg8r/Ew==
   dependencies:
     "@one-for-all/artery" "0.15.0"
+    immutable "4.0.0"
+
+"@one-for-all/artery-utils@0.18.1":
+  version "0.18.1"
+  resolved "https://registry.npmjs.org/@one-for-all/artery-utils/-/artery-utils-0.18.1.tgz#e2df5112b281a22148c7e8cc2b60cfcedf492ea9"
+  integrity sha512-gJfh/wJv2bVT7s8k7zIVRBx4urAe2I6r0OVoh54aSLdy8rjhz0sELwpwl+LZCNpJmzWnfi+pw0QYlnZem1SaNA==
+  dependencies:
+    "@one-for-all/artery" "0.16.0"
     immutable "4.0.0"
 
 "@one-for-all/artery@0.15.0":
@@ -9585,7 +9639,7 @@ tslib@^1.10.0, tslib@^1.8.1, tslib@^1.9.0:
   resolved "https://registry.npmmirror.com/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
 
-tslib@^2, tslib@^2.1.0, tslib@^2.3.0, tslib@^2.3.1:
+tslib@^2, tslib@^2.0.0, tslib@^2.1.0, tslib@^2.3.0, tslib@^2.3.1:
   version "2.4.0"
   resolved "https://registry.npmmirror.com/tslib/-/tslib-2.4.0.tgz#7cecaa7f073ce680a05847aa77be941098f36dc3"
   integrity sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==

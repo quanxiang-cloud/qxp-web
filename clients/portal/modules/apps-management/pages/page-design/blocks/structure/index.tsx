@@ -1,17 +1,18 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Panel } from '@one-for-all/ui';
 import { mergeRight } from 'ramda';
 import type { BlockItemProps } from '@one-for-all/artery-engine';
+import ArteryOutline from '@one-for-all/artery-outline';
+import type { NodePrimary } from '@one-for-all/artery-outline/lib/types';
 
 import type { BlocksCommunicationType } from '@pageDesign/types';
 import { GROUP_TITLE_MAP } from '@pageDesign/constants';
 import { useMenuPanel } from '@pageDesign/hooks';
-
-import Core from './core';
+import FountainContext from '../../fountain-context';
 
 function Structure(props: BlockItemProps<BlocksCommunicationType>): JSX.Element {
   const { artery, onChange, activeNode, setActiveNode } = props;
-
+  const { getNodePropsSpec } = useContext(FountainContext);
   const {
     ref,
     currentType,
@@ -21,6 +22,10 @@ function Structure(props: BlockItemProps<BlocksCommunicationType>): JSX.Element 
     panelWidth,
     onForceClose,
   } = useMenuPanel(mergeRight(props, { type: 'structure' }));
+
+  function isContainer(node: NodePrimary): boolean {
+    return !!getNodePropsSpec(node)?.isContainer;
+  }
 
   return (
     <div ref={ref} style={{ pointerEvents: 'auto' }}>
@@ -34,11 +39,18 @@ function Structure(props: BlockItemProps<BlocksCommunicationType>): JSX.Element 
         pinned={pinned}
         width={panelWidth}
       >
-        <Core
+        {/* <Core
           artery={artery}
           activeNode={activeNode}
           onChange={onChange}
           setActiveNode={setActiveNode}
+        /> */}
+        <ArteryOutline
+          rootNode={artery.node}
+          isContainer={isContainer}
+          onChange={(node) => onChange({ ...artery, node })}
+          activeNode={activeNode}
+          onActiveNodeChange={setActiveNode}
         />
       </Panel>
     </div>
