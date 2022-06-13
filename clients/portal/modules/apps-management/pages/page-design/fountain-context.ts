@@ -1,7 +1,8 @@
 import React from 'react';
-import { FountainPackage } from './blocks/fountainhead/type';
 import { PropsSpec } from '@one-for-all/node-carve';
 import type { NodePrimary } from '@one-for-all/artery-simulator/lib/types';
+
+import { FountainPackage } from './blocks/fountainhead/type';
 
 type nodePropSpecGetter = (node: NodePrimary) => PropsSpec | undefined;
 
@@ -19,6 +20,11 @@ function versionCompatible(newerVersion: string, oldVersion: string): boolean {
 
   const newNumList = newerVersion.split('.').map((fragment) => parseInt(fragment));
   const oldNumList = oldVersion.split('.').map((fragment) => parseInt(fragment));
+
+  // major version should be the same
+  if (newNumList[0] !== oldNumList[0]) {
+    return false;
+  }
 
   return newNumList.every((num, index) => num >= oldNumList[index]);
 }
@@ -42,6 +48,8 @@ function toPropsSpecDB(fountainPackages: FountainPackage[]): Map<string, PropsSp
   return new Map(keyPropsSpecPairs);
 }
 
+const containerHTMLs = ['div', 'span', 'a'];
+
 export function createFountainCTXValue(fountainPackages: FountainPackage[]): FountainCTX {
   const propsSpecDB: Map<string, PropsSpec> = toPropsSpecDB(fountainPackages);
   const packageVersionMap = fountainPackages.reduce<Record<string, string>>((acc, { pkg }) => {
@@ -51,8 +59,8 @@ export function createFountainCTXValue(fountainPackages: FountainPackage[]): Fou
 
   function getNodePropsSpec(node: NodePrimary): PropsSpec | undefined {
     if (node.type === 'html-element') {
-      // todo define html node props as constants
-      return;
+      // TODO define html node props as constants
+      return { isContainer: containerHTMLs.includes(node.name), isOverLayer: false, props: [] };
     }
 
     const latestPackageVersion = packageVersionMap[node.packageName];

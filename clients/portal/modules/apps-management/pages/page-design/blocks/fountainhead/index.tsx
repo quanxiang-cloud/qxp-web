@@ -1,10 +1,9 @@
 import React, { useCallback, useContext, useEffect } from 'react';
 import { Panel } from '@one-for-all/ui';
-import { and, mergeRight, or, when, lensPath, set, ifElse } from 'ramda';
+import { and, mergeRight, when } from 'ramda';
 import { BlockItemProps } from '@one-for-all/artery-engine';
 import type { Node } from '@one-for-all/artery';
-import { insertAfter, insertAt } from '@one-for-all/artery-utils';
-import { get } from 'lodash';
+import { appendChild, insertAfter } from '@one-for-all/artery-utils';
 
 import type { BlocksCommunicationType } from '@pageDesign/types';
 import { GROUP_TITLE_MAP } from '@pageDesign/constants';
@@ -45,34 +44,26 @@ const Fountainhead = (props: BlockItemProps<BlocksCommunicationType>): JSX.Eleme
   }, [pinned]);
 
   const onAddNode = useCallback((newNode: Node): void => {
-    if (newNode.type !== 'html-element' && newNode.type !== 'react-component') {
+    if ((newNode.type !== 'html-element' && newNode.type !== 'react-component') ||
+      !activeNode ||
+      (activeNode.type !== 'html-element' && activeNode.type !== 'react-component')
+    ) {
       return;
     }
 
     !pinned && onSharedStateChange('menu.currentType', '');
 
-    const rootNode = artery.node;
-    const currentNode = activeNode ?? rootNode;
-    if (currentNode.type !== 'html-element' && currentNode.type !== 'react-component') {
-      return;
+    const { isContainer } = getNodePropsSpec(activeNode) || {};
+    let newRootNode: Node | undefined;
+    if (isContainer) {
+      newRootNode = appendChild(artery.node, activeNode.id, newNode);
+    } else {
+      newRootNode = insertAfter(artery.node, activeNode.id, newNode);
     }
-    const newNodePropsSpecs = getNodePropsSpec(newNode);
-    const currentNodePropsSpecs = getNodePropsSpec(currentNode);
-    const propsSpecs = currentNodePropsSpecs ?? newNodePropsSpecs;
 
-    const currentNodecomponentName = get(currentNode, 'name', '') || get(currentNode, 'exportName', '');
-    const currentNodeChildrenLength = get(currentNode, 'children.length', 0);
-    const isCurrentNodeAcceptChild = or(
-      !!propsSpecs?.isContainer,
-      or(['div', 'page'].includes(currentNodecomponentName), !!currentNodeChildrenLength),
-    );
-
-    const newRootNode = ifElse(
-      () => isCurrentNodeAcceptChild,
-      () => insertAt(rootNode, currentNode.id, currentNodeChildrenLength, newNode),
-      () => insertAfter(rootNode, currentNode.id, newNode),
-    )();
-    newRootNode && onChange(set(lensPath(['node']), newRootNode, artery));
+    if (newRootNode) {
+      onChange({ ...artery, node: newRootNode });
+    }
   }, [pinned, onSharedStateChange, onChange, artery, activeNode]);
 
   return (

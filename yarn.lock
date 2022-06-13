@@ -1233,6 +1233,11 @@
   resolved "https://registry.npmmirror.com/@one-for-all/artery/-/artery-0.15.0.tgz#495bdb35365a606a126ecfc8323a5dc086c6f1c5"
   integrity sha512-zZmnK09Zt33s335GBdQHMy5sG7+rSrWHaz1mqjIrdXLHWUvkkOISuEV739SWgnCamqEwUv58/QDTH9/VMIb32w==
 
+"@one-for-all/artery@0.16.0":
+  version "0.16.0"
+  resolved "https://registry.npmjs.org/@one-for-all/artery/-/artery-0.16.0.tgz#536d6fdac8a996a7e26345208fb23fdbc57b7026"
+  integrity sha512-ZI5oqovAVWEKV0lK8CTjOmZ5cwxipDEjl6DgRdvsFaQb+QxnO+f/9eYUKA/uu1QWDVLir2RIRuJGudZSwJPkhQ==
+
 "@one-for-all/elements-radar@0.3.0":
   version "0.3.0"
   resolved "https://registry.npmjs.org/@one-for-all/elements-radar/-/elements-radar-0.3.0.tgz#eb9fcd4a4f97b9345c4f8804bb3e8af085406532"
