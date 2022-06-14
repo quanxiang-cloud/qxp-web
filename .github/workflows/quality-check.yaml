@@ -1,6 +1,6 @@
 name: Code Quality Check
 on:
-  pull_request:
+  push:
     # Sequence of patterns matched against refs/heads
     branches:
       - main
