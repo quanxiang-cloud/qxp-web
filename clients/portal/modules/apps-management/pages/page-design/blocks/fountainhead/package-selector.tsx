@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Select } from '@one-for-all/ui';
 
 import type { Package } from '@pageDesign/blocks/fountainhead/type';
 import Loading from '@c/loading';
 
-import { usePackages } from './store';
+import FountainContext from '../../fountain-context';
 
 interface Props {
   current?: Package;
@@ -12,14 +12,10 @@ interface Props {
 }
 
 const PackageSelector = ({ current, onChange }: Props): JSX.Element => {
-  const packages = usePackages();
-
-  function getDefaultValue(): Package | undefined {
-    return packages?.[0];
-  }
+  const { packages } = useContext(FountainContext);
 
   useEffect(() => {
-    const defaultValue = getDefaultValue();
+    const defaultValue = packages?.[0];
     defaultValue && !current && onChange(defaultValue);
   }, [packages, current]);
 
@@ -36,11 +32,7 @@ const PackageSelector = ({ current, onChange }: Props): JSX.Element => {
 
   return (
     <div onClick={(e) => e.stopPropagation()} className="mb-10 flex-shrink-0">
-      <Select
-        options={options}
-        value={current?.name}
-        onChange={(url) => onChange(packageMap[url])}
-      />
+      <Select options={options} value={current?.name} onChange={(url) => onChange(packageMap[url])} />
     </div>
   );
 };

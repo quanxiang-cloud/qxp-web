@@ -10,7 +10,7 @@
     margin-bottom: 12px;
 
     > .title {
-      color: #94A3B8;
+      color: #94a3b8;
     }
 
     > .elems {
@@ -28,7 +28,7 @@
   justify-content: space-between;
   width: 60px;
   height: 60px;
-  border: 1px solid #E2E8F0;
+  border: 1px solid #e2e8f0;
   box-sizing: border-box;
   border-radius: 4px;
   cursor: pointer;
@@ -40,8 +40,7 @@
   }
 
   &.dragging {
-    opacity: .5;
+    opacity: 0.5;
     cursor: move;
   }
-
 }

@@ -26,18 +26,21 @@ const SearchResultList = (props: Props): JSX.Element => {
 
   useUpdateVisualScrollList(listRef, containerRef);
 
-  const render = useCallback((props: ItemRenderProps<PackageComponent>) => (
-    <SearchResultListItem
-      {...props}
-      onAddNode={onAddNode}
-      componentWidth={componentWidth}
-      tupleNumber={tupleNumber}
-      gap={gap}
-    />
-  ), [onAddNode, componentWidth, tupleNumber, gap]);
+  const render = useCallback(
+    (props: ItemRenderProps<PackageComponent>) => (
+      <SearchResultListItem
+        {...props}
+        onAddNode={onAddNode}
+        componentWidth={componentWidth}
+        tupleNumber={tupleNumber}
+        gap={gap}
+      />
+    ),
+    [onAddNode, componentWidth, tupleNumber, gap],
+  );
 
   return (
-    <div className='overflow-y-auto' ref={containerRef}>
+    <div className="overflow-y-auto" ref={containerRef}>
       <VisualScrollList
         ref={listRef}
         containerRef={containerRef}

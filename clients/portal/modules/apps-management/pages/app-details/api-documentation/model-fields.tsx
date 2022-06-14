@@ -8,7 +8,7 @@ import EmptyTips from '@c/empty-tips';
 import Tooltip from '@c/tooltip';
 import Loading from '@c/loading';
 import { copyContent } from '@lib/utils';
-import { getTableSchema } from '@lib/http-client';
+import { getTableSchema } from '@lib/http-client-form';
 import toast from '@lib/toast';
 import schemaToFields from '@lib/schema-convert';
 

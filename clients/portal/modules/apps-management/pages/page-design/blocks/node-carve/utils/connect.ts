@@ -1,7 +1,8 @@
 import { useContext, createElement, FC } from 'react';
 import { get } from 'lodash';
 
-import { ConstantProperty } from '@one-for-all/artery';
+import { ConstantProperty, Node } from '@one-for-all/artery';
+import { findNodeByID } from '@one-for-all/artery-utils';
 
 import logger from '@lib/logger';
 import { ConfigContext } from '../context';
@@ -35,16 +36,17 @@ export function connect<T extends Record<string, any> = Record<string, any>>(
       const { artery, activeNode, onArteryChange } = useContext(ConfigContext) ?? {};
       const { valueKey, eventKey, defaultProps = {}, getValue } = _options;
       const componentProps = { ...defaultProps, ...props } as T;
-      const property = get(activeNode, props.__path, { type: 'constant_property' });
+      // todo: sync active node
+      const realNode = findNodeByID(artery?.node as Node, activeNode?.id as string);
+      const property = get(realNode, props.__path, { type: 'constant_property' });
       componentProps[valueKey] = property.value;
       componentProps[eventKey] = function(...args: any[]) {
         props[eventKey] && props[eventKey](...args);
         if (!activeNode || !artery || !isConstantProperty(property)) {
           return;
         }
-
         const val = getValue ? getValue(...args) : args[0];
-        // TODO: add a artery_node_property
+        // TODO: add a nested_property
         const updatePayload: ConstantProperty = {
           type: 'constant_property',
           value: val,

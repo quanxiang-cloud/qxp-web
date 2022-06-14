@@ -9,7 +9,7 @@ import Button from '@c/button';
 import Loading from '@c/loading';
 import toast from '@lib/toast';
 import { FormRenderer } from '@c/form-builder';
-import { createFormDataRequest, editFormDataRequest } from '@lib/http-client';
+import { createFormDataRequest, editFormDataRequest } from '@lib/http-client-form';
 
 import { getSchemaAndRecord } from '../api';
 import { formDataDiff, buildFormDataReqParams } from '@home/utils';

@@ -9,46 +9,395 @@
     "isContainer": false,
     "isOverLayer": false
   },
+  "RichTextEditor": {
+    "props": [{
+        "label": "默认文本",
+        "name": "initialValue",
+        "type": "string",
+        "will": "Textarea"
+      },
+      {
+        "label": "变化事件",
+        "name": "onChange",
+        "type": "function",
+        "willProps": {
+          "args": "html"
+        }
+      }
+    ],
+    "isContainer": false,
+    "isOverLayer": false
+  },
+  "GridContainer": {
+    "props": [{
+      "label": "每行元素个数",
+      "name": "coloumCount",
+      "type": "number",
+      "desc": "每行至少一个元素",
+      "willProps": {
+        "min": 1
+      }
+    }, {
+      "label": "行间距",
+      "name": "columnGap",
+      "type": "string",
+      "will": "Select",
+      "willProps": {
+        "options": [{
+          "label": "0px",
+          "value": "0px"
+        }, {
+          "label": "8px",
+          "value": "8px"
+        }, {
+          "label": "16px",
+          "value": "16px"
+        }, {
+          "label": "24px",
+          "value": "24px"
+        }]
+      }
+    }, {
+      "label": "列间距",
+      "name": "rowGap",
+      "type": "string",
+      "will": "Select",
+      "willProps": {
+        "options": [{
+          "label": "0px",
+          "value": "0px"
+        }, {
+          "label": "8px",
+          "value": "8px"
+        }, {
+          "label": "16px",
+          "value": "16px"
+        }, {
+          "label": "24px",
+          "value": "24px"
+        }]
+      }
+    }, {
+      "label": "水平对齐方式",
+      "name": "justifyItems",
+      "desc": "justifyItems",
+      "type": "string",
+      "will": "Select",
+      "willProps": {
+        "options": [{
+          "label": "铺满",
+          "value": "stretch"
+        }, {
+          "label": "左对齐",
+          "value": "start"
+        }, {
+          "label": "居中",
+          "value": "center"
+        }, {
+          "label": "右对齐",
+          "value": "end"
+        }]
+      }
+    }, {
+      "label": "垂直对齐方式",
+      "name": "alignItems",
+      "type": "string",
+      "will": "Select",
+      "willProps": {
+        "options": [{
+          "label": "铺满",
+          "value": "stretch"
+        }, {
+          "label": "顶部对齐",
+          "value": "start"
+        }, {
+          "label": "居中",
+          "value": "center"
+        }, {
+          "label": "尾部对齐",
+          "value": "end"
+        }]
+      }
+    }, {
+      "label": "水平排列方式",
+      "name": "justifyContent",
+      "desc": "justifyContent",
+      "type": "string",
+      "will": "Select",
+      "willProps": {
+        "options": [{
+          "label": "铺满",
+          "value": "stretch"
+        }, {
+          "label": "左对齐",
+          "value": "start"
+        }, {
+          "label": "居中",
+          "value": "center"
+        }, {
+          "label": "右对齐",
+          "value": "end"
+        }, {
+          "label": "基准线",
+          "value": "baseline"
+        }, {
+          "label": "space-between",
+          "value": "space-between"
+        }, {
+          "label": "space-around",
+          "value": "space-around"
+        }, {
+          "label": "space-evenly",
+          "value": "space-evenly"
+        }]
+      }
+    }, {
+      "label": "垂直排列方式",
+      "name": "alignContent",
+      "desc": "alignContent",
+      "type": "string",
+      "will": "Select",
+      "willProps": {
+        "options": [{
+          "label": "铺满",
+          "value": "stretch"
+        }, {
+          "label": "左对齐",
+          "value": "start"
+        }, {
+          "label": "居中",
+          "value": "center"
+        }, {
+          "label": "右对齐",
+          "value": "end"
+        }, {
+          "label": "基准线",
+          "value": "baseline"
+        }, {
+          "label": "space-between",
+          "value": "space-between"
+        }, {
+          "label": "space-around",
+          "value": "space-around"
+        }, {
+          "label": "space-evenly",
+          "value": "space-evenly"
+        }]
+      }
+    }],
+    "isContainer": true,
+    "isOverLayer": false
+  },
   "FileUpload": {
     "props": [{
-      "label": "文件类型",
-      "name": "accept",
-      "type": "string",
-      "will": "Input"
-    }, {
-      "label": "上传图标",
-      "name": "iconName",
-      "type": "string",
-      "will": "Input"
-    }, {
-      "label": "文件内描述",
-      "name": "uploaderDescription",
-      "type": "string",
-      "will": "Input"
-    }, {
-      "label": "文件最大体积(MB)",
-      "name": "maxFileSize",
-      "type": "number"
-    }, {
-      "label": "是否私有",
-      "name": "isPrivate",
-      "type": "boolean",
-      "will": "Checkbox"
-    }, {
-      "label": "是否允许上传多个组件",
-      "name": "multiple",
-      "type": "boolean",
-      "will": "Checkbox"
-    }, {
-      "label": "是否禁用",
-      "name": "disabled",
-      "type": "boolean",
-      "will": "Checkbox"
-    }, {
-      "label": "文件上传成功之后的回调",
-      "name": "onFileSuccess",
-      "type": "function"
-    }],
+        "label": "文件类型",
+        "name": "accept",
+        "type": "string",
+        "will": "Input"
+      },
+      {
+        "label": "上传图标",
+        "name": "iconName",
+        "type": "string",
+        "will": "Input"
+      },
+      {
+        "label": "文件内描述",
+        "name": "uploaderDescription",
+        "type": "string",
+        "will": "Input"
+      },
+      {
+        "label": "文件最大体积(MB)",
+        "name": "maxFileSize",
+        "type": "number"
+      },
+      {
+        "label": "是否私有",
+        "name": "isPrivate",
+        "type": "boolean",
+        "will": "Checkbox"
+      },
+      {
+        "label": "是否允许上传多个组件",
+        "name": "multiple",
+        "type": "boolean",
+        "will": "Checkbox"
+      },
+      {
+        "label": "是否禁用",
+        "name": "disabled",
+        "type": "boolean",
+        "will": "Checkbox"
+      },
+      {
+        "label": "文件上传成功之后的回调",
+        "name": "onFileSuccess",
+        "type": "function"
+      }
+    ],
+    "isContainer": false,
+    "isOverLayer": false
+  },
+  "Tree": {
+    "props": [
+      {
+        "label": "树数据",
+        "name": "treeData",
+        "type": "object",
+        "desc": "应该包含 name,id,children 属性",
+        "willProps": {
+          "type": "object"
+        }
+      },
+      {
+        "label": "显示复选框",
+        "name": "treeCheckable",
+        "type": "boolean"
+      },
+      {
+        "label": "父子节点选中状态关联",
+        "name": "treeCheckStrictly",
+        "desc": "仅当显示复选框时生效",
+        "type": "boolean"
+      },
+      {
+        "label": "节点选中事件",
+        "name": "onSelect",
+        "type": "function",
+        "willProps": {
+          "args": "data",
+          "notes": "参数为节点的数据"
+        }
+      },
+      {
+        "label": "选中变化事件",
+        "name": "onChange",
+        "type": "function",
+        "desc": "仅当显示复选框时生效",
+        "willProps": {
+          "args": "pre, cur"
+        }
+      }
+    ],
+    "isContainer": false,
+    "isOverLayer": false
+  },
+  "div": {
+    "props": [{
+        "label": "id",
+        "name": "id",
+        "type": "string"
+      }, {
+        "label": "文本内容",
+        "name": "content",
+        "type": "string",
+        "will": "Textarea",
+        "initialValue": "文本"
+      },
+      {
+        "label": "点击事件",
+        "name": "onClick",
+        "type": "function"
+      }
+    ],
+    "isContainer": true,
+    "isOverLayer": false
+  },
+  "a": {
+    "props": [{
+        "label": "id",
+        "name": "id",
+        "type": "string"
+      }, {
+        "label": "文本内容",
+        "name": "content",
+        "type": "string",
+        "will": "Textarea"
+      },
+      {
+        "label": "链接地址",
+        "name": "href",
+        "type": "string",
+        "will": "Textarea"
+      },
+      {
+        "label": "链接target",
+        "name": "target",
+        "type": "string",
+        "will": "Select",
+        "willProps": {
+          "options": [{
+              "label": "_blank",
+              "value": "_blank"
+            },
+            {
+              "label": "_self",
+              "value": "_self"
+            },
+            {
+              "label": "_parent",
+              "value": "_parent"
+            },
+            {
+              "label": "_top",
+              "value": "_top"
+            },
+            {
+              "label": "framename",
+              "value": "framename"
+            }
+          ]
+        }
+      }
+    ],
+    "isContainer": true,
+    "isOverLayer": false
+  },
+  "span": {
+    "props": [{
+        "label": "id",
+        "name": "id",
+        "type": "string"
+      }, {
+        "label": "文本内容",
+        "name": "content",
+        "type": "string",
+        "will": "Textarea",
+        "initialValue": "文本"
+      },
+      {
+        "label": "点击事件",
+        "name": "onClick",
+        "type": "function"
+      }
+    ],
+    "isContainer": true,
+    "isOverLayer": false
+  },
+  "img": {
+    "props": [{
+        "label": "id",
+        "name": "id",
+        "type": "string"
+      }, {
+        "label": "文本内容",
+        "name": "content",
+        "type": "string",
+        "will": "Textarea",
+        "initialValue": "文本"
+      },
+      {
+        "label": "点击事件",
+        "name": "onClick",
+        "type": "function"
+      },
+      {
+        "label": "图片地址",
+        "name": "src",
+        "type": "string"
+      }
+    ],
     "isContainer": false,
     "isOverLayer": false
   }

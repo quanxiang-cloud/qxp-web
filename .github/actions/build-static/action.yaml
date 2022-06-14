@@ -5,8 +5,6 @@ runs:
   steps:
     - run: make buildAssets
       shell: bash
-    - run: make bundleTemporaryPatchArteryPlugins
-      shell: bash
     - run: NODE_ENV=production ./node_modules/.bin/rollup --config rollup.config.js
       shell: bash
     - name: Upload dist folder

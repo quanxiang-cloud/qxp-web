@@ -7,7 +7,7 @@ import AbsoluteCentered from '@c/absolute-centered';
 import { schemaPermissionTransformer } from '@c/form-builder/utils';
 import { SizeType } from '@c/table';
 import { SYSTEM_FIELDS } from '@c/form-builder/constants';
-import { getTableSchema } from '@lib/http-client';
+import { getTableSchema } from '@lib/http-client-form';
 import { schemaToMap } from '@lib/schema-convert';
 
 import FormAppDataContent from './form-app-data-content';

@@ -1,5 +1,5 @@
 import { observable, computed, action } from 'mobx';
-import { mapValues, omit, pick } from 'lodash';
+import { mapValues, omit } from 'lodash';
 
 import type { Category, SourceElement } from '../types';
 import * as builtInElems from '../registry/elements';
@@ -66,19 +66,15 @@ class RegistryStore {
     return this.elementMap[this.normalizeType(elementType)].acceptChild;
   };
 
-  toComponentMap = (category?: 'systemComponents' | 'ofa-ui'): Record<string, React.ComponentType>=> {
+  toComponentMap = (category?: 'ofa-ui'): Record<string, React.ComponentType<any>>=> {
     let _components = this.elements;
-    if (category === 'systemComponents') {
-      _components = pick(this.elements, 'systemComponents');
-    }
-
     if (category === 'ofa-ui') {
       _components = omit(this.elements, 'system-components');
     }
 
     return Object.values({ ..._components })
       .flat()
-      .reduce((memo: Record<string, React.ComponentType>, elem: SourceElement<any>)=> {
+      .reduce((memo: Record<string, React.ComponentType<any>>, elem: SourceElement<any>)=> {
         memo[this.normalizeType(elem.name)] = elem.component;
         return memo;
       }, {});

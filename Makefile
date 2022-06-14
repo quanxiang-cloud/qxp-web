@@ -38,12 +38,8 @@ buildHome:
 	@echo "build home web server..."
 	@go build -o ./bin/home server/cmd/home/main.go
 
-# todo revmoe bundleTemporaryPatchArteryPlugins
-rollup: bundleTemporaryPatchArteryPlugins
+rollup:
 	./node_modules/.bin/rollup -c rollup.config.js -w
-
-bundleTemporaryPatchArteryPlugins:
-	./node_modules/.bin/rollup -c rollup-configs/rollup.config.TEMPORARY_PATCH_FOR_ARTERY_PLUGINS.js
 
 bundleHome:
 	./node_modules/.bin/rollup -c rollup.config.js -w --input home
@@ -51,7 +47,7 @@ bundleHome:
 bundleAppLand:
 	./node_modules/.bin/rollup -c rollup.config.js -w --input appLand
 
-bundlePortal: bundleTemporaryPatchArteryPlugins
+bundlePortal:
 	./node_modules/.bin/rollup -c rollup.config.js -w --input portal
 
 bundleMobile:

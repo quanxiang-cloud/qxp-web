@@ -1,17 +1,27 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import ArterySimulator, { SimulatorRef } from '@one-for-all/artery-simulator';
 import { BlockItemProps } from '@one-for-all/artery-engine';
 
 import { BlocksCommunicationType } from '../../types';
-import isNodeSupportChildren from './is-node-support-children';
+import pluginsSrc from 'REF:./plugins';
+
 import './index.scss';
+import FountainContext from '../../fountain-context';
+import { NodePrimary } from '@one-for-all/artery-simulator/lib/types';
+
 // todo fixme
-import pluginsSrc from 'dll:./../../../../../../../../tmp/TEMPORARY_PATCH_FOR_ARTERY_PLUGINS.js';
+const __OVER_LAYER_COMPONENTS: Array<{ packageName: string; exportName: string }> = [
+  { packageName: '@one-for-all/headless-ui', exportName: 'MediocreDialog' },
+];
 
 function SimulatorBlock(props: BlockItemProps<BlocksCommunicationType>): JSX.Element {
   const { artery, onChange, activeNode, setActiveNode } = props;
-  const [activeModalLayer, setActiveModalLayer] = useState<string | undefined>();
   const simulatorRef = useRef<SimulatorRef>(null);
+  const { getNodePropsSpec } = useContext(FountainContext);
+
+  function isContainer(node: NodePrimary): boolean {
+    return !!getNodePropsSpec(node)?.isContainer;
+  }
 
   useEffect(() => {
     if (simulatorRef.current?.iframe?.contentWindow) {
@@ -30,10 +40,14 @@ function SimulatorBlock(props: BlockItemProps<BlocksCommunicationType>): JSX.Ele
       onChange={onChange}
       activeNode={activeNode}
       setActiveNode={setActiveNode}
-      isNodeSupportChildren={isNodeSupportChildren}
-      setActiveOverLayerNodeID={setActiveModalLayer}
-      activeOverLayerNodeID={activeModalLayer}
+      isContainer={isContainer}
+      // todo optimize this
+      setActiveOverLayerNodeID={(activeModalLayer) => {
+        props.onSharedStateChange('activeModalLayer', activeModalLayer);
+      }}
+      activeOverLayerNodeID={props.sharedState.activeModalLayer}
       cssURLs={[window.PERSONALIZED_CONFIG.styleCssUrl]}
+      overLayerComponents={__OVER_LAYER_COMPONENTS}
     />
   );
 }

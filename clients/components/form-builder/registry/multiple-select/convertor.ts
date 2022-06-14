@@ -13,6 +13,8 @@ export interface MultipleSelectConfig {
   allowCustom: boolean;
   defaultValueFrom: FormBuilder.DefaultValueFrom;
   datasetId: string;
+  formApi: string[];
+  sendUserData: boolean;
   availableOptions: Array<Record<string, string | boolean>>,
   defaultValue: undefined | string,
 }
@@ -26,6 +28,8 @@ export const defaultConfig: MultipleSelectConfig = {
   allowCustom: false,
   defaultValueFrom: 'customized',
   datasetId: '',
+  formApi: [],
+  sendUserData: false,
   availableOptions: [
     { label: '选项一', isDefault: false },
     { label: '选项二', isDefault: false },
@@ -52,6 +56,8 @@ export function toSchema(value: MultipleSelectConfig): ISchema {
     ['x-component-props']: {
       datasetId: value.datasetId,
       allowCustom: value.allowCustom,
+      formApi: value.formApi,
+      sendUserData: value.sendUserData,
     },
     ['x-internal']: {
       sortable: value.sortable,
@@ -71,6 +77,9 @@ export function toConfig(schema: ISchema): MultipleSelectConfig {
     allowCustom: schema['x-component-props']?.allowCustom,
     defaultValueFrom: schema['x-internal']?.defaultValueFrom || 'customized',
     datasetId: schema['x-component-props']?.datasetId,
+    formApi: schema['x-component-props']?.formApi,
+    sendUserData: schema['x-component-props']?.sendUserData,
+
     availableOptions: schema.enum?.map((label) => {
       return {
         label: label,

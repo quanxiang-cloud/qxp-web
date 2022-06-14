@@ -4,7 +4,7 @@ import { UnionColumn } from 'react-table';
 import Table from '@c/table';
 import schemaToFields from '@lib/schema-convert';
 
-import { getTableSchema } from '@lib/http-client';
+import { getTableSchema } from '@lib/http-client-form';
 
 const EXCLUDE_FIELDS = ['_id'];
 const DEFAULT_COL = [{

@@ -1,4 +1,5 @@
 import { ReactComp } from '@pageDesign/types';
+import { PropsSpec } from '@one-for-all/node-carve';
 
 export * from '@pageDesign/types';
 
@@ -9,6 +10,7 @@ export interface Package {
   name: string;
   version: string;
   categories?: string[];
+  // todo delete this
   hide?: boolean;
 }
 
@@ -51,4 +53,12 @@ export interface PackageComponent extends Omit<Variant, 'icon'>, BasePackageComp
 
 export interface CategoryVariants extends Pick<PackageComponent, 'category'> {
   variants: Variant[];
+}
+
+export type PropsSpecMap = Record<string, PropsSpec | undefined>;
+
+export interface FountainPackage {
+  pkg: Package;
+  propsSpecMap: PropsSpecMap;
+  manifest: PackageComponent[];
 }

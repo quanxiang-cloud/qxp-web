@@ -10,6 +10,7 @@ import imageurl, { UrlInputProps } from './url-input';
 import variablebind from './variable-bind';
 import unavaliable from './unavaliable';
 import tips from './tips';
+import UrlInputGroup from './url-input-group';
 
 const repo: Repository = {
   'node-carve@1.0.0': {
@@ -19,9 +20,10 @@ const repo: Repository = {
     radiogroup: connect(RadioGroup),
     checkboxgroup: connect(CheckboxGroup),
     numberpicker: connect(Input, { defaultProps: { className: 'w-full', type: 'number' } }),
-    textarea: connect(Textarea, { defaultProps: { className: 'w-full' } }),
-    checkbox: connect(Checkbox, { valueKey: 'checked', getValue: ([val, e]) => e?.target?.checked }),
+    textarea: connect(Textarea, { defaultProps: { className: 'w-full' }, getValue: (e) => e?.target?.value }),
+    checkbox: connect(Checkbox, { valueKey: 'checked', getValue: (val, e) => e?.target?.checked }),
     imageurl: connect<UrlInputProps>(imageurl),
+    imageurlgroup: connect(UrlInputGroup),
     functionbind,
     variablebind,
     statebind,

@@ -91,6 +91,10 @@ const schema: ISchema = {
               label: '选项集',
               value: 'dataset',
             },
+            {
+              label: 'API',
+              value: 'api',
+            },
           ],
           'x-component': 'select',
           'x-mega-props': {
@@ -119,6 +123,11 @@ const schema: ISchema = {
               type: 'value:visible',
               target: 'defaultValue',
               condition: '{{ $value === "dataset" }}',
+            },
+            {
+              type: 'value:visible',
+              target: '*(formApi,sendUserData)',
+              condition: '{{ $value === "api" }}',
             },
           ],
         },
@@ -149,6 +158,22 @@ const schema: ISchema = {
             labelAlign: 'top',
           },
           'x-index': 9,
+        },
+        formApi: {
+          title: 'API:',
+          required: true,
+          'x-rules': {
+            required: true,
+            message: '请选择API',
+          },
+          'x-component': 'FormApi',
+          'x-index': 10,
+        },
+        sendUserData: {
+          title: '允许发送用户信息',
+          default: false,
+          'x-component': 'Switch',
+          'x-index': 11,
         },
         defaultValue: {
           type: 'string',

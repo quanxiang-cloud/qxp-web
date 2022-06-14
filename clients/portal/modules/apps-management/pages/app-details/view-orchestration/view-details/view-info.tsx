@@ -7,13 +7,14 @@ import Tab from '@c/tab';
 import Icon from '@c/icon';
 import Button from '@c/button';
 import ArteryRenderer from '@c/artery-renderer';
+import { realizeLink } from '@lib/utils';
 import { getArteryPageInfo } from '@lib/http-client';
 import { ARTERY_KEY_VERSION } from '@portal/constants';
 
 import appStore from '../../store';
 import { DefaultFormDescriptions } from '../constants';
 import { mapToArteryPageDescription } from '../../utils';
-import { ExternalView, SchemaView, TableSchemaView, View, ViewType } from '../types.d';
+import { SchemaView, TableSchemaView, View, ViewType } from '../types.d';
 
 type Props = {
   view: View;
@@ -55,25 +56,6 @@ const VIEW_MAP: Record<ViewType, View_Map> = {
   },
 };
 
-function realizeLink(view: ExternalView): string {
-  const { link = '', appID = '' } = view;
-  const replacements: Record<string, string> = {
-    user_id: window.USER.id,
-    user_name: window.USER.name,
-    user_email: window.USER.email,
-    user_phone: window.USER.phone,
-    dep_id: window.USER.deps[0][0].id,
-    dep_name: window.USER.deps[0][0].name,
-    appid: appID,
-  };
-
-  let _link = link;
-  Object.keys(replacements).forEach((key) => {
-    _link = _link.replace(new RegExp('\\$\\{' + key + '\\}', 'g'), replacements?.[key]);
-  });
-  return _link;
-}
-
 function ViewInfo({ view, openModal }: Props): JSX.Element {
   const { type } = view;
   const history = useHistory();
@@ -89,13 +71,13 @@ function ViewInfo({ view, openModal }: Props): JSX.Element {
             src={view.fileUrl}
             style={{ border: 'none' }}
           />
-        ) }
+        )}
 
       {
         type === ViewType.ExternalView && (
           <iframe
             className="w-full h-full"
-            src={realizeLink(view)}
+            src={realizeLink(view.appID, view.link)}
             style={{ border: 'none' }}
           />
         )
@@ -103,21 +85,22 @@ function ViewInfo({ view, openModal }: Props): JSX.Element {
       {
         type === ViewType.SchemaView && (
           <ArteryRenderer
+            // force rerender when arteryID change
+            key={view.arteryID}
             arteryID={view.arteryID}
             version={ARTERY_KEY_VERSION}
           />
         )
       }
     </div>
-  )
-  , [view]);
+  ), [view]);
 
   useEffect(() => {
     let isUnmounted = false;
     if (view.type === ViewType.TableSchemaView) {
       setFormDescriptions(DefaultFormDescriptions);
       getArteryPageInfo(appID, view.tableID).then((res) => {
-        !isUnmounted && setFormDescriptions( (prevDescriptions) => prevDescriptions?.map((description) => {
+        !isUnmounted && setFormDescriptions((prevDescriptions) => prevDescriptions?.map((description) => {
           return mapToArteryPageDescription(description, res);
         }));
       }).catch(() => {

@@ -14,16 +14,15 @@ interface Props {
   components: PackageComponent[];
   onAddNode: (node: Node) => void;
   isIconPackage: boolean;
-  isAllPackage: boolean;
   style?: CSSProperties;
   className?: string;
 }
 
 const Category = (props: Props): JSX.Element | null => {
-  const { name, components, onAddNode, className, style, isIconPackage, isAllPackage } = props;
-  const addonClassName = isIconPackage || isAllPackage ? 'h-full overflow-hidden' : '';
+  const { name, components, onAddNode, className, style, isIconPackage } = props;
+  const addonClassName = isIconPackage ? 'h-full overflow-hidden' : '';
 
-  const hide = !isIconPackage && !isAllPackage && !components.length;
+  const hide = !isIconPackage && !components.length;
 
   if (hide) {
     return null;
@@ -32,19 +31,8 @@ const Category = (props: Props): JSX.Element | null => {
   return (
     <div className={cs(styles.cate, className, addonClassName)} style={style}>
       <div className={styles.title}>{name}</div>
-      <Search
-        show={isIconPackage}
-        components={components}
-        onAddNode={onAddNode}
-        placeholder='搜索图标'
-      />
-      <Search
-        show={isAllPackage}
-        components={components}
-        onAddNode={onAddNode}
-        placeholder='搜索所有组件'
-      />
-      {!isIconPackage && !isAllPackage && (
+      <Search show={isIconPackage} components={components} onAddNode={onAddNode} placeholder="搜索图标" />
+      {!isIconPackage && (
         <div className={styles.elems}>
           {components?.map((component) => {
             return (

@@ -1,6 +1,9 @@
-import { action, observable, reaction } from 'mobx';
+import { action, computed, observable, reaction } from 'mobx';
 
 import { SocketData } from '@lib/push';
+import toast from '@lib/toast';
+import { getDirectoryPath } from '@lib/api-collection/utils';
+import { omit } from 'lodash';
 
 import {
   fetchFuncList,
@@ -16,11 +19,11 @@ import {
   deleteVer,
   registerAPI,
   getVersionInfo,
+  fetchCanBindProjectList,
+  initProject,
 } from '../api';
-import toast from '@lib/toast';
 import { INIT_API_CONTENT } from '../../api-documentation/constants';
 import { API_DOC_STATE, FUNC_STATUS } from '../constants';
-import { getDirectoryPath } from '@lib/api-collection/utils';
 
 const INIT_CURRENT_FUNC = {
   id: '',
@@ -60,10 +63,18 @@ class FaasStore {
     size: 10,
   };
   @observable userAccount = '';
+  @observable optionalProject: { id: string, name: string }[] = [];
 
   constructor() {
     reaction(() => this.groupID, () => this.fetchFuncList('', 1, 10));
     reaction(() => this.versionsParams, this.fetchVersionList);
+    reaction(() => this.modalType, this.fetchCanBindProjectList);
+  }
+
+  @computed get optionalProjectToSelectEnum(): { label: string, value: string }[] {
+    return this.optionalProject.map((project) => {
+      return { label: project?.name || '', value: project.id || '' };
+    });
   }
 
   @action
@@ -97,6 +108,20 @@ class FaasStore {
   };
 
   @action
+  setOptionalProject = (optionalProject: { id: string, name: string }[]): void => {
+    this.optionalProject = optionalProject;
+  };
+
+  @action
+  fetchCanBindProjectList = (): void => {
+    if (this.modalType === 'editModel') {
+      fetchCanBindProjectList(this.groupID).then((res) => {
+        this.setOptionalProject(res);
+      });
+    }
+  };
+
+  @action
   fetchFuncList = (searchAlias: string, page: number, size: number): void => {
     if (!this.groupID) {
       return;
@@ -125,10 +150,14 @@ class FaasStore {
   };
 
   @action
-  createFunc = (data: creatFuncParams): void => {
-    createFaasFunc(this.groupID, { ...data, version: '1.16' }).then((res) => {
+  createFunc = (creatParams: creatFuncParams): void => {
+    const _createFuncParams = omit(creatParams, ['type', 'init']);
+    createFaasFunc(this.groupID, { ..._createFuncParams, version: '1.16' }).then(async (res) => {
+      if (creatParams.init) {
+        await initProject(this.groupID, res.id);
+      }
       this.currentFuncID = res.id;
-      this.currentFunc = { ...res, ...data, state: 'True' };
+      this.currentFunc = { ..._createFuncParams, ...res, state: 'True' };
       this.funcList = [this.currentFunc, ...this.funcList];
     }).catch((err) => {
       toast.error(err);
@@ -202,7 +231,7 @@ class FaasStore {
 
   @action
   offlineVer = (id: string): void => {
-    offlineVer(this.groupID, id ).then(() => {
+    offlineVer(this.groupID, id).then(() => {
       this.versionList = this.versionList.map((version) => {
         if (version.id === id) {
           this.currentBuild = { ...version, status: 6 };
@@ -273,7 +302,7 @@ class FaasStore {
   getApiPath = (): void => {
     this.isAPILoading = true;
     getDirectoryPath(this.appID, 'faas').then((apiPath) => {
-      this.apiPath = `${apiPath}/${this.currentBuild?.name}.r`;
+      this.apiPath = `${apiPath}/${this.currentBuild?.groupName}/${this.currentBuild?.name}.r`;
     }).catch((err) => {
       toast.error(err);
     }).finally(() => this.isAPILoading = false);
@@ -286,7 +315,7 @@ class FaasStore {
       return;
     }
     const versionInfo = await getVersionInfo(this.groupID, this.currentFuncID, buildID);
-    if ( topic === 'builder' || topic === 'serving') {
+    if (topic === 'builder' || topic === 'serving') {
       if (
         versionInfo.status > FUNC_STATUS.StatusBuilding &&
         versionInfo.status !== FUNC_STATUS.OnlineBuilding

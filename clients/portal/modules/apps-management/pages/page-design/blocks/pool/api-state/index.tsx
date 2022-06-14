@@ -1,57 +1,56 @@
-import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import cs from 'classnames';
-import { observer } from 'mobx-react';
-import { pickBy } from 'lodash';
-import { useUpdateEffect, useDebounce } from 'react-use';
+import React, { useState, useMemo } from 'react';
+import { Search, Icon, Tooltip } from '@one-for-all/ui';
+import { APIStatesSpec } from '@one-for-all/artery';
+import { omit } from 'lodash';
 
-import ApiSelector from '@polyApi/nodes/forms/request-config/api-selector';
-import { Search, Icon, Tooltip, Modal, toast } from '@one-for-all/ui';
-import { getQuery } from '@lib/utils';
-import { useCtx } from '@pageDesign/ctx';
-
-import VarItem from './var-item';
-
+import SelectApiModal from './select-api-modal';
+import DisplayApi from './display-api';
 import styles from '../index.m.scss';
 
-interface Props {
-  className?: string;
-}
+type Props = {
+  apiStateSpec?: APIStatesSpec;
+  onChangeApiState?: (apiState: APIStatesSpec) => void;
+  hasSameKey: (key: string) => boolean;
+};
 
-function ApiState(props: Props): JSX.Element {
-  const ctx = useCtx();
-  const { dataSource, page } = ctx;
-  const { modalOpen, setModalOpen, curApiState, curApiId } = dataSource;
-  const { register, formState: { errors }, handleSubmit, getValues, trigger, clearErrors } = useForm();
+export default function ApiState({
+  apiStateSpec,
+  onChangeApiState,
+  hasSameKey,
+}: Props): JSX.Element {
   const [search, setSearch] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
-  const [curStates, setCurStates] = useState(dataSource.apiState);
+  const [modalOpen, setModalOpen] = useState(false);
 
-  const { appID } = getQuery<{ appID: string; pageName: string; arteryID: string }>();
+  const filteredApi = useMemo(() => {
+    if (!search || !apiStateSpec) return apiStateSpec;
+    return Object.entries(apiStateSpec).reduce((total: APIStatesSpec, [name, apiSpec]) => {
+      if (name.match(search)) {
+        total[name] = apiSpec;
+      }
 
-  useEffect(()=> {
-    if (!dataSource.modalOpen) {
-      dataSource.setCurApiId('');
-    }
-  }, [dataSource.modalOpen]);
+      return total;
+    }, {});
+  }, [search, apiStateSpec]);
 
-  useDebounce(()=> {
-    setDebouncedSearch(search);
-  }, 500, [search]);
+  function handleSelectApi(name: string, apiPath: string, method: string, desc?: string): void {
+    const currentApi = {
+      apiID: `${apiPath}:${method}`,
+      desc,
+    };
 
-  useUpdateEffect(()=> {
-    setCurStates(pickBy(dataSource.apiState, (_, key)=> key.toLowerCase().includes(debouncedSearch.toLowerCase())));
-  }, [debouncedSearch]);
-
-  function onSubmit(data: any): void {
-    if (!curApiId) {
-      toast.error('请选择一个平台 API');
-      return;
-    }
-    dataSource.saveApiState(data.name, curApiId, ()=> ctx.onSave(page.schema, { silent: true }));
+    onChangeApiState?.({ ...apiStateSpec, [name]: currentApi });
   }
 
-  const noData = !Object.keys(curStates).length;
+  function handleDelete(name: string): void {
+    if (!apiStateSpec) return;
+    onChangeApiState?.(omit(apiStateSpec, [name]));
+  }
+
+  function hasSelectApi(apiStateSpec?: APIStatesSpec): boolean {
+    if (!apiStateSpec) return false;
+    if (!Object.keys(apiStateSpec).length) return false;
+    return true;
+  }
 
   return (
     <div>
@@ -60,119 +59,38 @@ function ApiState(props: Props): JSX.Element {
         value={search}
         onChange={setSearch}
         placeholder='搜索 API 名称..'
-        // @ts-ignore
         actions={(
           <Tooltip position='top' label='选中平台 API'>
-            <Icon name='add' clickable onClick={() => {
-              setModalOpen(true);
-            }} />
+            <Icon name='add' clickable onClick={() => setModalOpen(true)} />
           </Tooltip>
         )}
       />
       <div className='relative'>
-        {noData && (
+        {hasSelectApi(filteredApi) ? (
+          <div className='flex flex-col h-full'>
+            {Object.entries(filteredApi || {}).map(([name, spec]) => {
+              return (
+                <DisplayApi key={name} name={name} spec={spec} onDelete={() => handleDelete(name)} />
+              );
+            })}
+          </div>
+        ) : (
           <div
             className='flex justify-center items-center h-full flex-col text-center px-40 text-gray-400'
             style={{ marginTop: '72px' }}
           >
             <p>暂无数据</p>
-            {!Object.keys(dataSource.apiState).length && <p>可以选择将该应用的内部API和第三方API数据加入后使用哦！</p>}
-          </div>
-        )}
-        {!noData && (
-          <div className='flex flex-col h-full'>
-            {Object.entries(curStates).map(([name, spec]: [string, any]) => {
-              return (
-                <VarItem key={name} name={name} spec={spec} />
-              );
-            })}
+            {!hasSelectApi(apiStateSpec) && <p>可以选择将该应用的内部 API 和第三方 API</p>}
           </div>
         )}
       </div>
       {modalOpen && (
-        <Modal
-          title='选择平台 API'
-          width={800}
-          onClose={() => setModalOpen(false)}
-          footerBtns={[
-            {
-              key: 'close',
-              iconName: 'close',
-              onClick: () => setModalOpen(false),
-              text: '取消',
-            },
-            {
-              key: 'check',
-              iconName: 'check',
-              modifier: 'primary',
-              onClick: () => {
-                trigger().then((valid) => {
-                  if (valid) {
-                    onSubmit(getValues());
-                  }
-                });
-              },
-              text: '确定导入',
-            },
-          ]}
-        >
-          <form
-            className='px-40 py-24'
-            onSubmit={handleSubmit(onSubmit)}
-            onChange={() => {
-              trigger().then((valid) => {
-                if (valid) {
-                  clearErrors();
-                }
-              });
-            }}
-          >
-            <div className='mb-24'>
-              <p className='text-12 text-gray-600'>API变量名称</p>
-              <input
-                type="text"
-                style={{ width: '259px' }}
-                className={cs('input', styles.input, { [styles.error]: errors.name })}
-                maxLength={120}
-                defaultValue={curApiState ? curApiState.name : ''}
-                {...register('name', {
-                  shouldUnregister: true,
-                  validate: (val) => {
-                    if (!val) {
-                      toast.error('请填写变量名');
-                      return false;
-                    }
-                    if (!/^[\u4e00-\u9fa5_a-zA-Z0-9\-\s]+$/.test(val)) {
-                      toast.error('非法的变量名');
-                      return false;
-                    }
-                    return true;
-                  },
-                })}
-              />
-              <p className='text-12 text-gray-600'>不超过 120 字符，支持字母、数字、下划线、中文，名称不可重复。</p>
-            </div>
-            <div>
-              <div className='flex flex-col mb-24 relative -top-8'>
-                <p className='text-12 text-gray-600'>选择 API</p>
-                <ApiSelector
-                  simpleMode
-                  usePolyApiOption
-                  appID={appID}
-                  className='api-selector-wrap'
-                  initRawApiPath=""
-                  setApiPath={ctx.dataSource.setCurApiId}
-                />
-              </div>
-            </div>
-            <div className='hidden'>
-              {ctx.designer.vdoms.apiStateDetail}
-            </div>
-          </form>
-        </Modal>
+        <SelectApiModal
+          closeModal={() => setModalOpen(false)}
+          onSelectApi={handleSelectApi}
+          existSameName={hasSameKey}
+        />
       )}
     </div>
   );
 }
-
-export default observer(ApiState);
