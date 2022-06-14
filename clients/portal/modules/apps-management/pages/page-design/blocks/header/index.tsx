@@ -176,7 +176,7 @@ function Toolbar({
         <NotSavedModal
           onSave={handleSave}
           onCancel={() => setOpenNotSaved(false)}
-          onAbandon={() => history.back()} />
+          onAbandon={() => history.push(`/apps/details/${appID}/views`)} />
       )}
     </div>
   );
