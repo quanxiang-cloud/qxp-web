@@ -8,6 +8,8 @@ export interface CascadeConfig {
   defaultValueFrom: FormBuilder.DefaultValueFrom;
   customizedDataset?: FormBuilder.CascadeOption[];
   predefinedDataset?: string; // dataset id
+  formApi: string[];
+  sendUserData: boolean;
   showFullPath: boolean;
   dropdownStyle: 'cascade' | 'tree';
   required: boolean;
@@ -21,6 +23,8 @@ export const defaultConfig: CascadeConfig = {
   defaultValueFrom: 'customized',
   customizedDataset: [],
   predefinedDataset: '',
+  formApi: [],
+  sendUserData: false,
   showFullPath: true,
   dropdownStyle: 'cascade',
   required: false,
@@ -45,6 +49,8 @@ export function toSchema(value: CascadeConfig): ISchema {
       dropdownStyle: value.dropdownStyle,
       required: value.required,
       options: defaultValueFrom === 'customized' ? customizedDataset : [],
+      formApi: value.formApi,
+      sendUserData: value.sendUserData,
     },
     ['x-internal']: {
       defaultValueFrom: value.defaultValueFrom,
@@ -64,6 +70,8 @@ export function toConfig(schema: ISchema): CascadeConfig {
     customizedDataset: schema['x-component-props']?.options || [],
     predefinedDataset: schema['x-component-props']?.predefinedDataset || '',
     showFullPath: schema['x-component-props']?.showFullPath || true,
+    formApi: schema['x-component-props']?.formApi,
+    sendUserData: schema['x-component-props']?.sendUserData,
     dropdownStyle: schema['x-component-props']?.dropdownStyle || 'cascade',
     required: !!schema.required,
   };
