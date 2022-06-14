@@ -1,6 +1,8 @@
 import { Container } from '@one-for-all/ui';
+
+import type { SourceElement } from '@pageDesign/types';
+
 import ConfigForm from './config-form';
-import type { SourceElement } from '../../../types';
 
 type Props = {
   name?: string

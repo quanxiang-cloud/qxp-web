@@ -7,7 +7,7 @@ import Toggle from '@c/toggle';
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 import schemaToFields from '@lib/schema-convert';
 import { FieldConfigContext } from '@c/form-builder/form-settings-panel/form-field-config/context';
-import { getTableSchema } from '@lib/http-client';
+import { getTableSchema } from '@lib/http-client-form';
 
 import { SUPPORTED_COMPONENTS_NAMES } from '../constants';
 

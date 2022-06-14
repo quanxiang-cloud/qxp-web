@@ -47,13 +47,19 @@ function DocumentNav({ collectionValue, className, hideTitle, onSelectNode, onGe
   };
 
   const handleSelect = (node: NodeItem<DirectoryChild>): void => {
-    if (node.leafIsApi && node.source && !isApi(node.source) && (!node.children || !node.children.length)) {
+    if (node.leafIsApi && node.source && !isApi(node.source) && !includeApi(node.children)) {
       const { parent, name, pathType } = node.source;
       onGetApiList?.(`${parent}/${name}`, pathType);
     }
     if (!node.disableSelect) {
       onSelectNode?.(node);
     }
+  };
+
+  const includeApi = (children?: NodeItem<DirectoryChild>[]) => {
+    if (!children) return false;
+
+    return children.some((child) => child.source && isApi(child.source));
   };
 
   return (

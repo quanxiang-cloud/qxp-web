@@ -21,29 +21,13 @@ type FuncField = {
 }
 
 type VersionField = {
-  // completionTime: number,
-  // createdAt: number,
-  // creator: string,
-
-  // 报错的文案
-  // message: string,
-
-  // serverMsg: string,
-  // 上线 下限
-  // serverState: FaasProcessStatus;
-  // 失败
-  // state: FaasProcessStatus,
-  // tag: string,
-  // updatedAt: number,
-  // updater: string,
-  // visibility: FaasVersionServingStatus
-
   describe: string,
   env: string;
   groupID: string;
   id: string;
   name: string;
   projectID: string;
+  groupName: string;
   resourceRef: string;
   status: number;
   version: string;
@@ -58,13 +42,15 @@ type VersionField = {
 }
 
 type FuncListParams = {
-  // appID: string,
   size: number,
   page: number,
   alias?: string,
 }
 
 type creatFuncParams = {
+  type: string;
+  id: string;
+  init: boolean;
   name: string;
   alias: string;
   language: string;

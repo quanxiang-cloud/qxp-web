@@ -1,6 +1,6 @@
 import { action, observable, reaction } from 'mobx';
 
-import { delFormDataRequest } from '@lib/http-client';
+import { delFormDataRequest } from '@lib/http-client-form';
 import { getOperate } from './api';
 
 import type { Props as TableViewsProps } from './index';

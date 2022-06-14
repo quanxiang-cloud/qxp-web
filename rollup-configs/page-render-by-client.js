@@ -7,11 +7,13 @@ import replace from '@rollup/plugin-replace';
 import resolve from '@rollup/plugin-node-resolve';
 import styles from 'rollup-plugin-styles';
 import webWorkerLoader from 'rollup-plugin-web-worker-loader';
+import referenceModule from 'rollup-plugin-reference-module';
 // import tsChecker from 'rollup-plugin-fork-ts-checker';
 
 import typescriptPaths from './plugins/rollup-plugin-typescript-paths';
 import notifier from './plugins/rollup-plugin-notifier';
 import esbuildConfig from './esbuild-config';
+// import dll from './plugins/rollup-plugin-dll';
 
 import { isProduction } from './env';
 
@@ -34,7 +36,6 @@ const input = {
 
 const config = {
   treeshake: isProduction,
-  preserveEntrySignatures: false,
 
   input,
   output,
@@ -108,6 +109,9 @@ const config = {
     typescriptPaths(),
     outputManifest(),
     esbuild(esbuildConfig),
+    referenceModule({
+      extensions: ['js', 'ts', 'tsx'],
+    }),
     // tsChecker(),
   ],
 };

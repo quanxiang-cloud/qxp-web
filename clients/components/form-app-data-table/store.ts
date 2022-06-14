@@ -4,7 +4,7 @@ import { action, observable, reaction, computed, IReactionDisposer } from 'mobx'
 import { toPairs, fromPairs, set } from 'lodash';
 import { pipe, map } from 'lodash/fp';
 
-import { fetchFormDataList } from '@lib/http-client';
+import { fetchFormDataList } from '@lib/http-client-form';
 import schemaToFields, { schemaToMap } from '@lib/schema-convert';
 import { toEs } from '@c/data-filter/utils';
 import { SizeType } from '@c/table';

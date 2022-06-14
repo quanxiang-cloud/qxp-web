@@ -1,4 +1,5 @@
-import httpClient, { FormDataRequestUpdateParamsRef } from '@lib/http-client';
+import httpClient from '@lib/http-client';
+import { FormDataRequestUpdateParamsRef } from '@lib/http-client-form';
 
 export const getFlowFormData = (
   processInstanceID: string,

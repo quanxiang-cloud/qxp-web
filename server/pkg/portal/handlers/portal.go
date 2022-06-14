@@ -13,6 +13,7 @@ func PortalHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	personalizedConfig := getPersonalizedConfig(r, "")
 	adminUserFuncTags := getAdminUserFuncTags(r)
 	userAdminRoles := getUserAdminRoles(r)
 
@@ -20,6 +21,7 @@ func PortalHandler(w http.ResponseWriter, r *http.Request) {
 		"user":              user,
 		"adminUserFuncTags": adminUserFuncTags,
 		"userAdminRoles":    userAdminRoles,
+		"personalizedConfig": personalizedConfig,
 		"debugMode":         contexts.Config.DevMode,
 		"CONFIG":            contexts.Config.ClientConfig,
 	})

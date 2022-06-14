@@ -1,6 +1,7 @@
+import type { SourceElement } from '@pageDesign/types';
+
 import RadioGroupElm from './radio';
 import ConfigForm, { DEFAULT_CONFIG } from './config-form';
-import type { SourceElement } from '../../../types';
 
 type Props = {
   name?: string

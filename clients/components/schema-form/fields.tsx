@@ -15,14 +15,14 @@ interface Props {
   setValue: UseFormSetValue<any>;
 }
 
-export default function Fields({ register, fields, control, errors, values, setValue }: Props): JSX.Element {
-  const hiddenInput = (val: string): string=>{
-    if (val === 'hidden') {
-      return 'none';
-    }
-    return '';
-  };
+const hiddenInput = (val: string): string=>{
+  if (val === 'hidden') {
+    return 'none';
+  }
+  return '';
+};
 
+export default function Fields({ register, fields, control, errors, values, setValue }: Props): JSX.Element {
   return (
     <>
       {

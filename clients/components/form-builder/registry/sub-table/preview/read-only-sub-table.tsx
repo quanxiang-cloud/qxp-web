@@ -6,7 +6,7 @@ import Table from '@c/table';
 import { DEFAULT_WIDTH } from '@c/table/utils';
 import schemaToFields from '@lib/schema-convert';
 import { FormDataSubTableValueRenderer } from '@c/form-data-value-renderer';
-import { getTableSchema } from '@lib/http-client';
+import { getTableSchema } from '@lib/http-client-form';
 
 type Props = {
   value: Record<string, any>[];

@@ -6,7 +6,7 @@ import Button from '@c/button';
 import Icon from '@c/icon';
 import FormDataValueRenderer from '@c/form-data-value-renderer';
 import { isMeanless } from '@lib/utils';
-import { buildQueryRef } from '@lib/http-client';
+import { buildQueryRef } from '@lib/http-client-form';
 import { getFlowFormData } from '@lib/api/flow';
 import { schemaToFields } from '@lib/schema-convert';
 

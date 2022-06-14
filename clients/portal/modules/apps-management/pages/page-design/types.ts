@@ -1,5 +1,3 @@
-import { BaseBlocksCommunicationState } from '@one-for-all/artery-engine';
-import { Repository } from '@one-for-all/render-engine';
 import {
   BaseNode,
   APIStatesSpec,
@@ -8,13 +6,19 @@ import {
   LoopContainerNode,
 } from '@one-for-all/artery';
 
-export interface BlocksCommunicationType extends BaseBlocksCommunicationState {
-  componentToAdd?: any;
-  docLink?: string;
-  hideTestPreview?: boolean;
-  repository?: Repository;
+export type BlockStates = Record<string, { clickOutsideWhiteList: Set<HTMLElement> } | undefined>;
+export interface BlocksCommunicationType {
   appID?: string;
   arteryID?: string;
+  docLink?: string;
+  hideTestPreview?: boolean;
+  menu?: {
+    currentType?: string;
+    pinned?: boolean;
+    panelWidth?: number;
+  },
+  block: BlockStates;
+  activeModalLayer?: string;
 }
 
 export type ReactComp = React.ComponentType | React.JSXElementConstructor<any>;

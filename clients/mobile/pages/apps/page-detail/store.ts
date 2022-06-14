@@ -8,10 +8,11 @@ import toast from '@lib/toast';
 import { Task } from '@m/pages/approvals/types';
 import { getFlowSummary } from '@m/lib/value-render';
 import {
-  delFormDataRequest, fetchFormDataList, fetchPageList, getCustomPageInfo, getTableSchema,
-} from '@lib/http-client';
+  delFormDataRequest, fetchFormDataList, getTableSchema,
+} from '@lib/http-client-form';
 
 import { mapMenu } from '../utils';
+import { fetchPageList, getCustomPageInfo } from '@lib/http-client';
 
 class AppDetailStore {
   @observable state = { loading: false, error: '' };

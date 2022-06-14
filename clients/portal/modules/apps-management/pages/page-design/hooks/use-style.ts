@@ -8,6 +8,7 @@ const noIndexKey = (_: unknown, key: string | number | null): boolean => {
 export function useStyle(selector: string, style: CSSProperties): void {
   useEffect(() => {
     const element = document.querySelector(selector) as HTMLElement;
+    if (!element) return;
     const originStyle = { ...element.style };
     Object.assign(element.style, style);
     return () => {

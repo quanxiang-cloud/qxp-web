@@ -1,0 +1,172 @@
+{
+  "UserMenuAvatar": {
+    "variants": [{
+      "icon": {
+        "type": "platform",
+        "name": "supervised_user_circle",
+        "initialProps": {}
+      },
+      "desc": "用户菜单用于展示用户操作",
+      "label": "头像",
+      "initialProps": {
+        "className": ""
+      }
+    }]
+  },
+  "SystemTaskList": {
+    "variants": [{
+      "icon": {
+        "type": "platform",
+        "name": "list",
+        "initialProps": {}
+      },
+      "desc": "任务列表展示未执行任务",
+      "label": "任务列表",
+      "initialProps": {
+        "className": ""
+      }
+    }]
+  },
+  "FileUpload": {
+    "variants": [
+      {
+        "icon": {
+          "type": "platform",
+          "name": "file_upload",
+          "initialProps": {}
+        },
+        "desc": "可以上传文件",
+        "label": "文件上传",
+        "initialProps": {
+          "iconName": "backup",
+          "uploaderDescription": "点击或拖拽上传文件",
+          "maxFileSize": 10,
+          "isPrivate": false,
+          "multiple": false,
+          "disabled": false
+        }
+      }
+    ]
+  },
+  "GridContainer": {
+    "variants": [{
+      "icon": {
+        "type": "platform",
+        "name": "grid_on",
+        "initialProps": {}
+      },
+      "desc": "用于实现内部布局",
+      "label": "布局容器",
+      "initialProps": {
+        "columnGap": "16px",
+        "rowGap": "16px",
+        "justifyItems": "stretch",
+        "alignItems": "stretch",
+        "justifyContent": "stretch",
+        "alignCotent": "stretch",
+        "coloumCount": 1,
+        "rowCount": 1
+      }
+    }]
+  },
+  "RichTextEditor": {
+    "variants": [{
+      "icon": {
+        "type": "platform",
+        "name": "text_format",
+        "initialProps": {}
+      },
+      "desc": "用于实现富文本编辑",
+      "label": "富文本编辑器",
+      "initialProps": {}
+    }]
+  },
+  "Tree": {
+    "variants": [{
+      "icon": {
+        "type": "platform",
+        "name": "account_tree",
+        "initialProps": {}
+      },
+      "desc": "树状展示数据",
+      "label": "树",
+      "initialProps": {
+        "treeData": {
+          "name": "根结点",
+          "id": "rootnode",
+          "children": [{
+              "name": "节点一",
+              "id": "node1",
+              "children": [{
+                  "id": "node1-node",
+                  "name": "节点一子节点"
+                }
+              ]
+            },
+            {
+              "id": "node-2",
+              "name": "节点二"
+            }
+          ]
+        }
+      }
+    }]
+  },
+  "div": {
+    "variants": [{
+      "icon": {
+        "type": "platform",
+        "name": "drive_file_rename_outline",
+        "initialProps": {}
+      },
+      "desc": "原生 div 标签",
+      "label": "div元素",
+      "initialProps": {
+        "content": "div"
+      }
+    }]
+  },
+  "a": {
+    "variants": [{
+      "icon": {
+        "type": "platform",
+        "name": "link",
+        "initialProps": {}
+      },
+      "desc": "原生 a 标签",
+      "label": "a 元素",
+      "initialProps": {
+        "content": "a",
+        "href": "#"
+      }
+    }]
+  },
+  "span": {
+    "variants": [{
+      "icon": {
+        "type": "platform",
+        "name": "stay_primary_landscape",
+        "initialProps": {}
+      },
+      "desc": "原生 span 标签",
+      "label": "span 元素",
+      "initialProps": {
+        "content": "span"
+      }
+    }]
+  },
+  "img": {
+    "variants": [{
+      "icon": {
+        "type": "platform",
+        "name": "image",
+        "initialProps": {}
+      },
+      "desc": "原生 img 标签",
+      "label": "img 元素",
+      "initialProps": {
+        "src": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAAAXNSR0IArs4c6QAABGNJREFUaEPtmksodVEUx/8XkYQiKWNSHokMDBBloAxMyMBjgFIeRZ5RngOJRAzkUZ7JxEAGHkleA/LIwMAjeYSBUkh5xP1a6+vc7+Lce8+Te+vbE3efs89/rd9aa+993bMN29vbRh8fH7i5ucER28vLC+7u7mA4PT010ofAwEB4e3s7FMv9/T1OTk5AiTBcXV0ZPTw8+IIjwQgQ5PPT09NfkICAAJjfsPfMfPX1+vr6HwjVlCPAiPn4DcTeYSwFWhTEXmGsVYtFEHuDsVXyVkHsBcYWBPlpE+S3YaRASAb5LRipELJAfhpGDoRskJ+CkQuhCERvGCUQikH0glEKoQpEaxg1EKpBtIJRC6EJiFoYLSA0A1EKoxWEpiByYbSE0BxEKozWELqA2ILRA0I3EEswekHoCvIVhvp6/rgh6Ws8OaG0CVmg5/X8heY/iJQMmc8Jhy0tsYntcJPdmsN6wWg+R6Q4KmWMlNI1H6MpiBwH5YyVAqUZiBLHlDxjCUoTEDUOqXlW09LSwhEtNFRlRAsHhKiq1VIMotawWK2r0VQEosagrRVIqbZsEKWGbAGY31diQxaIFAOPj4/sk6enpxzfv421ZMuSvmSQ7u5ulJaWfjLY1taGqqoqvvb6+or8/HyMjY1xPysrC0NDQ3B1dZUE1N/fj4KCgk9jm5qakJKSwl//3d3drepLAqHokNPLy8tYWloyGSMnXVxcuN/Z2cljdnZ28Pz8jKCgIHR0dKC8vFwSSF9fH8bHx7GwsPBJn97W0j9k8/PzoGBa0rcJIqR4dXUVMzMzDCPWQkNDkZmZidraWvT29qKkpAQhISE4ODjg4QMDA3h7e0NhYSH3u7q64Ovri+zsbO4TyNTUlKg++RAVFcX6zc3NovqSX71NTk6ivb0dqamp/E47KSkJ6enp7ITRaISTkxODJiYmIiIiAtXV1VwqHx8fMBgMWFtbQ3x8PDtC4ylbFP2YmBgTiC19ynpGRgbi4uK+6Ut+GbqxsYHZ2VmOzO3tLYqKijA4OIi8vDw8PDzwiQnK1ubmJkc+NjaWoSiaXl5e7CyVRXR0NH/e3d1FZGSkKblS9Mk+lRjpUSDN9RW/nqbap7KZm5vjqDs7O2N0dBSNjY3Y29vD4uIi0tLS8P7+ztmiv8XFxZienmbn6V5PTw/fE2uW9Ovr6zEyMoLz83Pk5OSY9BUfGKCM7O/vY319nf0IDg7G0dERT/qysjK0trZieHgYh4eHfL+mpgYTExNYWVnh0kpISOBVqKGhQRTEmn5ubi7q6uo4O8fHx/z8JxBLazcZbmlp4XKhOt/a2kJycjJPbHKQGtV8ZWUlzs7OuB8eHg6KXkVFhckQfaCjItQuLy95afb392cwufphYWFc1rREU1mbQGwdqqE9gSItbEi0+tByKCy/tI+QMC2h1OTuI0r0KfsXFxe8z/ChGjnHnG5ubuDn52cC+FoXand2ufpCFfExJ7GDZ7RkUsqF9rUvWti/dFE4ePYH03Hgqx/ojtsAAAAASUVORK5CYII="
+      }
+    }]
+  }
+}

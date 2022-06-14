@@ -1,37 +1,91 @@
+import type { ComponentLoaderParam, DynamicComponent, ComponentLoader } from '@one-for-all/artery-renderer';
+
+import versionMap from '@pageDesign/blocks/fountainhead/config/name-version-map';
 import { getBatchGlobalConfig } from '@lib/api/user-config';
-import { ComponentLoaderParam, DynamicComponent } from '@one-for-all/artery-renderer';
 
 const packageEntryCache: Record<string, string> = {};
-const CONFIG_VERSION = '1.0.0';
-
-function queryPackageMainSrc(packageName: string, packageVersion: string): Promise<string> {
+async function queryPackageMainSrc(packageName: string, packageVersion: string): Promise<string> {
   const cacheKey = `${packageName}:${packageVersion}`;
   if (packageEntryCache[cacheKey]) {
     return Promise.resolve(packageEntryCache[cacheKey]);
   }
 
   const configKey = `third_party_package_entry:${cacheKey}`;
-  return getBatchGlobalConfig([{ key: configKey, version: CONFIG_VERSION }]).then(({ result }) => {
-    if (result[configKey]) {
-      packageEntryCache[cacheKey] = result[configKey];
+  const { third_party_package_entry: version } = versionMap;
+  const { result } = await getBatchGlobalConfig([{ key: configKey, version }]);
 
-      return result[configKey];
+  if (result[configKey]) {
+    packageEntryCache[cacheKey] = result[configKey];
+    return result[configKey];
+  }
+
+  const errorMessage = [
+    `no package entry found for package: [${packageName}]`,
+    `, version: [${packageVersion}] in config-center, please make sure you have the correct config`,
+  ].join('');
+
+  return Promise.reject(new Error(errorMessage));
+}
+
+type OnCache = (id: string, component: DynamicComponent) => void;
+
+function getComponentId(param: ComponentLoaderParam): string {
+  const { exportName } = param;
+  return `${getPackageId(param)}/${exportName}`;
+}
+
+function getPackageId(param: Pick<ComponentLoaderParam, 'packageName' | 'packageVersion'>): string {
+  const { packageName, packageVersion } = param;
+  return `${packageName}@${packageVersion}`;
+}
+
+async function cdnComponentLoader(param: ComponentLoaderParam, onCache: OnCache): Promise<DynamicComponent> {
+  const { packageName, exportName } = param;
+  const isOneForAllUIPage = packageName === '@one-for-all/ui' && exportName === 'page';
+  const componentId = getComponentId(param);
+  const module = await System.import(packageName);
+  const component = module[isOneForAllUIPage ? 'Page' : exportName] ?? module['default'] ?? (() => null);
+  onCache(componentId, component);
+  return component;
+}
+
+async function thirdPartComponentLoader(
+  param: ComponentLoaderParam, onCache: OnCache,
+): Promise<DynamicComponent> {
+  const { packageName, packageVersion, exportName = 'default' } = param;
+  const componentId = getComponentId(param);
+  const src = await queryPackageMainSrc(packageName, packageVersion);
+  const module = await System.import(src);
+  const component = module[exportName] ?? module['default'] ?? (() => null);
+  onCache(componentId, component);
+  return component;
+}
+
+function isCDNPackage({ packageName }: ComponentLoaderParam): boolean {
+  return packageName.startsWith('@one-for-all') || packageName.startsWith('ofa-ui');
+}
+
+function buildComponentLoader(): ComponentLoader {
+  const cache: Record<string, DynamicComponent> = {};
+  const onCache = (componentId: string, component: DynamicComponent): void => {
+    cache[componentId] = component;
+  };
+
+  return async function componentLoader(param: ComponentLoaderParam): Promise<DynamicComponent | never> {
+    const componentId = getComponentId(param);
+    const cachedComponent = cache[componentId];
+    if (cachedComponent) {
+      return cachedComponent;
     }
 
-    return Promise.reject(
-      new Error('no package entry found in config-center, please make sure you have the correct config'),
-    );
-  });
+    if (isCDNPackage(param)) {
+      return cdnComponentLoader(param, onCache);
+    }
+
+    return thirdPartComponentLoader(param, onCache);
+  };
 }
 
-function componentLoader(
-  { packageName, packageVersion, exportName }: ComponentLoaderParam,
-): Promise<DynamicComponent> {
-  return queryPackageMainSrc(packageName, packageVersion).then((src) => {
-    return System.import(src);
-  }).then((systemModule) => {
-    return systemModule[exportName || 'default'];
-  });
-}
+const componentLoader = buildComponentLoader();
 
 export default componentLoader;
