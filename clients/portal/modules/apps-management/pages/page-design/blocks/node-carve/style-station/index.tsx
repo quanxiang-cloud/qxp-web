@@ -4,7 +4,7 @@ import { get } from 'lodash';
 
 import { Tab } from '@one-for-all/ui';
 
-import StylePanel from '../style-panel';
+import StyleMirror from './style-mirror';
 import CssEditor from './code-editor';
 import { useConfigContext } from '../context';
 import { updateNodeProperty } from '../utils';
@@ -13,7 +13,7 @@ import { cssStringToJsonObj, jsonObjToFormattedCssString } from './utils';
 import './index.scss';
 
 function StyleStation(): JSX.Element {
-  const [currentPanel, setCurrentPanel] = useState<string>('customStyle');
+  const [currentPanel, setCurrentPanel] = useState<string>('style-mirror');
   const { artery, rawActiveNode, onArteryChange } = useConfigContext() ?? {};
   const curElemStyles = useMemo(() =>get(rawActiveNode, 'props.style.value', {}), [artery] );
 
@@ -33,9 +33,9 @@ function StyleStation(): JSX.Element {
 
   const panels = [
     {
-      id: 'customStyle',
+      id: 'style-mirror',
       name: '自定义样式',
-      content: <StylePanel />,
+      content: <StyleMirror />,
     },
     {
       id: 'cssSourceCode',
@@ -46,7 +46,7 @@ function StyleStation(): JSX.Element {
           theme='vs-dark'
           language='css'
           className='h-full'
-          value={jsonObjToFormattedCssString(curElemStyles, rawActiveNode?.id || 'unknown-component')}
+          value={jsonObjToFormattedCssString(curElemStyles, `component-${rawActiveNode?.id}` || 'unknown-component')}
           onChange={handleCssEditorStyleChange}
         />
       ),

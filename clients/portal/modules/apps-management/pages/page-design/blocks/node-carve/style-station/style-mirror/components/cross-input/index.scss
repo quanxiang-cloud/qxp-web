@@ -1,0 +1,74 @@
+.cross-input{
+  .cross-top, .cross-bottom ,.cross-left, .cross-right{
+    width: 60px;
+    @apply absolute;
+  }
+  .cross-top, .cross-bottom, .lock-top, .lock-bottom {
+    left: 50%;
+    transform: translateX(-50%);
+  } 
+  .cross-left, .cross-right, .lock-left, .lock-right {
+    top: 50%;
+    transform: translateY(-50%);
+  } 
+  .cross-top{
+    top: 20px;
+  }
+  .cross-bottom{
+    bottom: 20px;
+  }
+  .cross-left{
+    left: 0px;
+  }
+  .cross-right{
+    right: 0px;
+  }
+
+  .lock-top, .lock-right, .lock-bottom, .lock-left{
+    @apply rounded-4 absolute cursor-pointer hover:shadow-md;
+    .lock-line{
+      @apply border-gray-500 duration-300 transition-all ;
+    }
+    .lock-line-active{
+      @apply border-blue-600;
+    }
+  }
+
+  .lock-top, .lock-bottom{
+    @apply px-10 py-4;
+    .lock-line {
+      @apply h-20 border-l-2 border-dashed;
+    }
+    .lock-line-active{
+      @apply h-24;
+    }
+    .lock-solid {
+      @apply border-solid;
+    }
+  }
+
+  .lock-left, .lock-right{
+    @apply px-4 py-10;
+    .lock-line {
+      @apply w-20 border-t-2;
+    }
+    .lock-line-active{
+      @apply w-28;
+    }
+  }
+
+  .lock-top{
+    bottom: 15px;
+  }
+
+  .lock-bottom{
+    top: 15px;
+  }
+  .lock-left{
+    right: 15px;
+  }
+  .lock-right{
+    left: 15px;
+  }
+
+}
