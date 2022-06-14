@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
-import { Artery, ReactComponentNode } from '@one-for-all/artery';
+import { Artery } from '@one-for-all/artery';
 import { ArteryRenderer } from '@one-for-all/artery-renderer';
 import { BasePropSpec } from '@one-for-all/node-carve';
 
@@ -8,6 +8,7 @@ import repository from '../repository';
 import { useConfigContext } from '../context';
 import buildNodeCarveArtery from '../buildNodeCarveArtery';
 import Section from '../../../utils/section';
+import FountainContext from '../../../fountain-context';
 
 function getArteryBySpec(specs: BasePropSpec[], options: {
   prefix?: string;
@@ -22,16 +23,16 @@ function getArteryBySpec(specs: BasePropSpec[], options: {
 function PropsPanel(): JSX.Element {
   const [attrArtery, setAttrArtery] = useState<Artery | null>(null);
   const [functionArtery, setFunctionArtery] = useState<Artery | null>(null);
-  const { activeNode, packagePropsSpec } = useConfigContext() ?? {};
+  const { activeNode } = useConfigContext() ?? {};
+  const { getNodePropsSpec } = useContext(FountainContext);
 
   useEffect(() => {
-    if (!activeNode || !packagePropsSpec) {
+    if (!activeNode || (activeNode.type !== 'react-component' && activeNode.type !== 'html-element')) {
       setAttrArtery(null);
       setFunctionArtery(null);
       return;
     }
-    const { exportName } = activeNode as ReactComponentNode;
-    const specs: BasePropSpec[] = packagePropsSpec[exportName]?.props ?? [];
+    const specs: BasePropSpec[] = getNodePropsSpec(activeNode)?.props || [];
     const attrSpecs = getArteryBySpec(specs.filter((s) => s.type !== 'function'), {
       prefix: 'props',
       bindVariable: true,

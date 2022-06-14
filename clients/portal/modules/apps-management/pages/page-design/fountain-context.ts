@@ -2,15 +2,12 @@ import React from 'react';
 import { PropsSpec } from '@one-for-all/node-carve';
 import type { NodePrimary } from '@one-for-all/artery-simulator/lib/types';
 
-import { FountainPackage } from './blocks/fountainhead/type';
-
-type nodePropSpecGetter = (node: NodePrimary) => PropsSpec | undefined;
+import { FountainPackage, Package, PackageComponent } from './blocks/fountainhead/type';
 
 interface FountainCTX {
-  getNodePropsSpec: nodePropSpecGetter;
-  // fountainPackages: FountainPackage[];
-  // key format: packageName:packageVersion:componentName
-  // propsSpecDB: Map<string, PropsSpec>;
+  getNodePropsSpec: (node: NodePrimary) => PropsSpec | undefined;
+  packages: Package[];
+  components: PackageComponent[];
 }
 
 function versionCompatible(newerVersion: string, oldVersion: string): boolean {
@@ -51,6 +48,11 @@ function toPropsSpecDB(fountainPackages: FountainPackage[]): Map<string, PropsSp
 const containerHTMLs = ['div', 'span', 'a'];
 
 export function createFountainCTXValue(fountainPackages: FountainPackage[]): FountainCTX {
+  const packages: Package[] = fountainPackages.map(({ pkg }) => pkg);
+  const components: PackageComponent[] = fountainPackages
+    .map(({ manifest }) => manifest)
+    .reduce((acc, cur) => acc.concat(cur));
+
   const propsSpecDB: Map<string, PropsSpec> = toPropsSpecDB(fountainPackages);
   const packageVersionMap = fountainPackages.reduce<Record<string, string>>((acc, { pkg }) => {
     acc[pkg.name] = pkg.version;
@@ -75,9 +77,13 @@ export function createFountainCTXValue(fountainPackages: FountainPackage[]): Fou
     return;
   }
 
-  return { getNodePropsSpec };
+  return { getNodePropsSpec, packages, components };
 }
 
-const FountainContext = React.createContext<FountainCTX>({ getNodePropsSpec: () => undefined });
+const FountainContext = React.createContext<FountainCTX>({
+  getNodePropsSpec: () => undefined,
+  packages: [],
+  components: [],
+});
 
 export default FountainContext;

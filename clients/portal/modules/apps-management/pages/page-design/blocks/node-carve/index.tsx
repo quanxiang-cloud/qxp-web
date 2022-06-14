@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo } from 'react';
 
 import { Tab } from '@one-for-all/ui';
 import type { BlockItemProps } from '@one-for-all/artery-engine';
-import { ReactComponentNode } from '@one-for-all/artery';
 import Icon from '@one-for-all/icon';
 
 import ToolTip from '@c/tooltip';
@@ -16,7 +15,6 @@ import RendererPanel from './renderer-panel';
 import ModalBindState from './modal-bind-state';
 import ModalComponentNode from './modal-component-node';
 import { isSystemComponent } from '../../utils/helpers';
-import { usePackagePropsSpecs } from '../fountainhead/store';
 import { findNode } from './utils';
 
 import styles from './index.m.scss';
@@ -30,14 +28,11 @@ function NodeCarve({
   const [modalBindStateOpen, setModalBindStateOpen] = useState<boolean>(false);
   const [modalComponentNodeOpen, setModalComponentNodeOpen] = useState<boolean>(false);
   const [updateAttrPayload, setUpdateAttrPayload] = useState<UpdateAttrPayloadType | null>(null);
-  const { packageName, packageVersion } = (activeNode as ReactComponentNode) || {};
-  const packagePropsSpec = usePackagePropsSpecs({ name: packageName, version: packageVersion });
 
   const value = {
     artery,
     activeNode,
     rawActiveNode: activeNode ? findNode(artery.node, activeNode?.id, true) : null,
-    packagePropsSpec,
     updateAttrPayload,
     setUpdateAttrPayload,
     setModalBindStateOpen,

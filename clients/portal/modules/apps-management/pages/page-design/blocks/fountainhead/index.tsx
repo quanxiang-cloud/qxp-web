@@ -17,20 +17,11 @@ const Fountainhead = (props: BlockItemProps<BlocksCommunicationType>): JSX.Eleme
   const { activeNode, artery, onChange } = props;
   const { getNodePropsSpec } = useContext(FountainContext);
 
-  const {
-    ref,
-    currentType,
-    onClose,
-    onPin,
-    pinned,
-    onSharedStateChange,
-    visible,
-    panelWidth,
-    onForceClose,
-  } = useMenuPanel(mergeRight(props, { type: 'fountainhead' }));
+  const { ref, currentType, onClose, onPin, pinned, onSharedStateChange, visible, panelWidth, onForceClose } =
+    useMenuPanel(mergeRight(props, { type: 'fountainhead' }));
 
   useEffect(() => {
-    const resetWrapperVisibility = (): string => ref.current!.style.visibility = 'visible';
+    const resetWrapperVisibility = (): string => (ref.current!.style.visibility = 'visible');
     when(
       (el) => and(and(currentType !== 'fountainhead', !!el), !pinned),
       () => setTimeout(resetWrapperVisibility, 300),
@@ -43,28 +34,32 @@ const Fountainhead = (props: BlockItemProps<BlocksCommunicationType>): JSX.Eleme
     }
   }, [pinned]);
 
-  const onAddNode = useCallback((newNode: Node): void => {
-    if ((newNode.type !== 'html-element' && newNode.type !== 'react-component') ||
-      !activeNode ||
-      (activeNode.type !== 'html-element' && activeNode.type !== 'react-component')
-    ) {
-      return;
-    }
+  const onAddNode = useCallback(
+    (newNode: Node): void => {
+      if (
+        (newNode.type !== 'html-element' && newNode.type !== 'react-component') ||
+        !activeNode ||
+        (activeNode.type !== 'html-element' && activeNode.type !== 'react-component')
+      ) {
+        return;
+      }
 
-    !pinned && onSharedStateChange('menu.currentType', '');
+      !pinned && onSharedStateChange('menu.currentType', '');
 
-    const { isContainer } = getNodePropsSpec(activeNode) || {};
-    let newRootNode: Node | undefined;
-    if (isContainer) {
-      newRootNode = appendChild(artery.node, activeNode.id, newNode);
-    } else {
-      newRootNode = insertAfter(artery.node, activeNode.id, newNode);
-    }
+      const { isContainer } = getNodePropsSpec(activeNode) || {};
+      let newRootNode: Node | undefined;
+      if (isContainer) {
+        newRootNode = appendChild(artery.node, activeNode.id, newNode);
+      } else {
+        newRootNode = insertAfter(artery.node, activeNode.id, newNode);
+      }
 
-    if (newRootNode) {
-      onChange({ ...artery, node: newRootNode });
-    }
-  }, [pinned, onSharedStateChange, onChange, artery, activeNode]);
+      if (newRootNode) {
+        onChange({ ...artery, node: newRootNode });
+      }
+    },
+    [pinned, onSharedStateChange, onChange, artery, activeNode],
+  );
 
   return (
     <div ref={ref} style={{ pointerEvents: 'auto' }}>
