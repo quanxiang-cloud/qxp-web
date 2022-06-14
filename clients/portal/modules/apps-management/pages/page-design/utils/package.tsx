@@ -1,7 +1,7 @@
 import React, { CSSProperties } from 'react';
-import { equals, flatten, ifElse, isEmpty, pipe, toPairs, reduce, merge } from 'ramda';
+import { flatten } from 'ramda';
 import Icon from '@one-for-all/icon';
-import type { NodeProperties } from '@one-for-all/artery';
+import type { ConstantProperty, NodeProperties } from '@one-for-all/artery';
 
 import { getBatchGlobalConfig, GetParams } from '@lib/api/user-config';
 import { parseJSON } from '@lib/utils';
@@ -53,8 +53,7 @@ export async function loadFountainPackages(): Promise<Array<FountainPackage>> {
 
       const componentsArrayWithoutNull = Object.keys(manifest)
         .map((name) => ({ package: pkg, name }))
-        .map((backComponent) => getFullComponent(manifest, backComponent))
-        .filter((components): components is PackageComponent[] => components !== null);
+        .map((backComponent) => getFullComponent(manifest, backComponent));
 
       return {
         pkg,
@@ -98,11 +97,11 @@ function platformIconBuilder(icon: VariantPlatFormIcon): ReactComponent {
 }
 
 function isImageIcon(icon: VariantIcon): icon is VariantImageIcon {
-  return equals('image', icon.type);
+  return 'image' === icon.type;
 }
 
 export function isPlatformIcon(icon: VariantIcon): icon is VariantPlatFormIcon {
-  return equals('platform', icon.type);
+  return 'platform' === icon.type;
 }
 
 function iconBuilder(icon: VariantIcon): ReactComponent {
@@ -125,7 +124,7 @@ function getPackageComponentIcon(
 function getFullComponent(
   categoryVariantsMap: Record<string, CategoryVariants | undefined>,
   basePackageComponent: BasePackageComponent,
-) {
+): PackageComponent[] {
   const { name } = basePackageComponent;
   const categoryVariantsFallback = { variants: [], category: undefined };
   const { variants, category } = categoryVariantsMap[name] ?? categoryVariantsFallback;
@@ -133,40 +132,6 @@ function getFullComponent(
     const { icon, ...restVariant } = variant;
     return getPackageComponentIcon(icon, { ...basePackageComponent, ...restVariant, category });
   });
-}
-
-function getBaseComponentsFromComponentNames(pkg: Package, componentNames: string[]): BasePackageComponent[] {
-  return componentNames.map((name) => ({ package: pkg, name }));
-}
-
-export async function getComponentsFromPackage(pkg: Package): Promise<PackageComponent[]> {
-  const categoryVariantsMap = await getPackageComponentToCategoryVariantMapDynamic(pkg);
-  const componentNames = Object.keys(categoryVariantsMap);
-  const baseComponents = getBaseComponentsFromComponentNames(pkg, componentNames);
-  const componentsArray = baseComponents.map((backComponent) =>
-    getFullComponent(categoryVariantsMap, backComponent),
-  );
-  const componentsArrayWithoutNull = componentsArray.filter(
-    (components): components is PackageComponent[] => components !== null,
-  );
-  return flatten(componentsArrayWithoutNull);
-}
-
-async function getPackageComponentToCategoryVariantMapDynamic({
-  name,
-  version,
-}: Package): Promise<Record<string, CategoryVariants | undefined>> {
-  if (name === 'all') {
-    return {};
-  }
-  const key = `PACKAGE_MANIFEST:${name}`;
-  const { result } = await getBatchGlobalConfig([{ key, version }]);
-  const getter = ifElse(
-    () => !isEmpty(result),
-    () => parseJSON(result[key], {}),
-    () => ({}),
-  );
-  return getter();
 }
 
 export type GetPackagePropsSpecResult = Pick<Package, 'name' | 'version'> & { result: PropsSpecMap };
@@ -177,12 +142,11 @@ export async function getPackagePropsSpec({ name, version }: Package): Promise<G
 }
 
 export function initialPropsToNodeProperties(initialProps: InitialProps = {}): NodeProperties {
-  const nodePropertiesReducer = (
-    acc: NodeProperties,
-    [propertyName, value]: [string, unknown],
-  ): NodeProperties => {
-    return merge(acc, { [propertyName]: { type: 'constant_property', value } });
-  };
+  return Object.entries(initialProps)
+    .map<[string, ConstantProperty]>(([key, value]) => [key, { type: 'constant_property', value }])
+    .reduce<NodeProperties>((acc, [key, v]) => {
+      acc[key] = v;
 
-  return pipe(toPairs, reduce(nodePropertiesReducer, {}))(initialProps);
+      return acc;
+    }, {});
 }
