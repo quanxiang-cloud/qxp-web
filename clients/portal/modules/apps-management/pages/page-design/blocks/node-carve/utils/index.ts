@@ -191,12 +191,13 @@ export function updateCurNodeAsLoopContainer(
       artery,
     );
   } else {
-    newArtery = updateNodeProperty(
+    updateNodeProperty(
       rawNode,
       'iterableState',
       confItem,
       artery,
     );
+
     newArtery = updateNodeProperty(
       rawNode,
       'toProps',

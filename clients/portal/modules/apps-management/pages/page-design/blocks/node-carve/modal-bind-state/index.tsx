@@ -21,6 +21,8 @@ export type VariableBindConf = {
   contentStr: string;
 }
 
+export type FuncType = 'expression' | 'convertor' | 'toProps';
+
 const titleMap: Record<string, string> = {
   shouldRender: '条件渲染配置',
   'loop-node': '循环渲染规则配置',
@@ -47,7 +49,7 @@ function ModalBindState(): JSX.Element | null {
   const [expressionStr, setExpressionStr] = useState(''); // 表达式
   const [convertorStr, setConvertorStr] = useState(''); // 自定义函数内容
   const [toPropsStr, setToPropsStr] = useState(''); // 循环渲染转换函数内容
-  const [editorType, setEditorType] = useState<'expression' | 'convertor' | 'toProps'>(isLoopRenderConfig ? 'toProps' : 'expression'); // 最终保存的配置内容的类型 '表达式' | '自定义函数'
+  const [editorType, setEditorType] = useState<FuncType>(isLoopRenderConfig ? 'toProps' : 'expression'); // 最终保存的配置内容的类型 '表达式' | '自定义函数'
   const editorRef = useRef<EditorRefType>();
   const expressionEditorRef = useMemo(() => {
     return editorType === 'expression' ? editorRef : undefined;
@@ -249,7 +251,7 @@ function ModalBindState(): JSX.Element | null {
               {
                 id: 'toProps',
                 name: '变量映射函数',
-                content: <div className={styles.tip}>将当前已绑定的可循环的变量数据映射到组件属性</div>,
+                content: <div className={styles.tip}>将当前已绑定的可循环的数据源映射到组件属性</div>,
               },
             ] : [
               {
@@ -260,7 +262,7 @@ function ModalBindState(): JSX.Element | null {
               {
                 id: 'convertor',
                 name: '自定义函数',
-                content: <div className={styles.tip}>配置自定义函数</div>,
+                content: <div className={styles.tip}>配置自定义函数，处理已绑定的变量</div>,
               },
             ]}
           />

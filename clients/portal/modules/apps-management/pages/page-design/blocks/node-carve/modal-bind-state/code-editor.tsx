@@ -3,9 +3,11 @@ import Editor, { ReactCodeMirrorRef, TransactionSpec } from '@uiw/react-codemirr
 import { javascript } from '@codemirror/lang-javascript';
 import { generateInitFunString } from './utils';
 
+import { FuncType } from './index';
+
 type Props = {
   initValue: string;
-  type: 'expression' | 'convertor' | 'toProps';
+  type: FuncType;
   onChange: (value: any) => void;
   updateAttrPayloadPath?: string;
 }

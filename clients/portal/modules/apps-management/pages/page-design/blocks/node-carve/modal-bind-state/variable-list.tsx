@@ -1,4 +1,5 @@
 import React from 'react';
+import toast from '@lib/toast';
 import { ComputedDependency } from '@one-for-all/artery';
 
 import Section from '../../../utils/section';
@@ -6,7 +7,6 @@ import { EditorRefType } from './code-editor';
 import dataSource from '../../../stores/data-source';
 
 import styles from './index.m.scss';
-import toast from '@lib/toast';
 
 type Props = {
   boundVariables: ComputedDependency[];
@@ -15,7 +15,8 @@ type Props = {
   singleBind?: boolean;
 }
 
-function VariableList({ boundVariables = [],
+function VariableList({
+  boundVariables = [],
   editorRef,
   singleBind,
   updateBoundVariables,
