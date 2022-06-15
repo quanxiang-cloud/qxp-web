@@ -13,7 +13,6 @@ import StyleStation from './style-station';
 import EventPanel from './event-panel';
 import RendererPanel from './renderer-panel';
 import ModalBindState from './modal-bind-state';
-import ModalComponentNode from './modal-component-node';
 import { isSystemComponent } from '../../utils/helpers';
 import { findNode } from './utils';
 
@@ -26,7 +25,6 @@ function NodeCarve({
   activeNode,
 }: BlockItemProps<BlocksCommunicationType>): JSX.Element {
   const [modalBindStateOpen, setModalBindStateOpen] = useState<boolean>(false);
-  const [modalComponentNodeOpen, setModalComponentNodeOpen] = useState<boolean>(false);
   const [updateAttrPayload, setUpdateAttrPayload] = useState<UpdateAttrPayloadType | null>(null);
 
   const value = {
@@ -36,7 +34,6 @@ function NodeCarve({
     updateAttrPayload,
     setUpdateAttrPayload,
     setModalBindStateOpen,
-    setModalComponentNodeOpen,
     onArteryChange: onChange,
   };
 
@@ -134,7 +131,6 @@ function NodeCarve({
       <div className={styles.panel}>
         {renderCont()}
         {modalBindStateOpen && <ModalBindState />}
-        {modalComponentNodeOpen && <ModalComponentNode />}
       </div>
     </ConfigContext.Provider>
   );
