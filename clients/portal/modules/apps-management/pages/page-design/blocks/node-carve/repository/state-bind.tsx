@@ -2,7 +2,7 @@ import React from 'react';
 import cs from 'classnames';
 import { get } from 'lodash';
 import { Icon, Tooltip } from '@one-for-all/ui';
-import type { NodePropType, ReactComponentNode } from '@one-for-all/artery';
+import type { NodePropType } from '@one-for-all/artery';
 
 import { ConfigContextState, useConfigContext } from '../context';
 import { unsetComposedNode, unsetLoopNode, updateNodeProperty } from '../utils';
@@ -43,7 +43,6 @@ function ConfigItemBind({
     onArteryChange,
     setUpdateAttrPayload,
     setModalBindStateOpen,
-    setModalComponentNodeOpen,
   } = useConfigContext() as ConfigContextState;
   const isLoopNode = rawActiveNode?.type === 'loop-container';
   const isComposedNode = isLoopNode && rawActiveNode?.node && rawActiveNode?.node.type === 'composed-node';
@@ -86,13 +85,8 @@ function ConfigItemBind({
   }
 
   function handleClick(): void {
-    const { exportName } = activeNode as ReactComponentNode;
     setUpdateAttrPayload({ path: __path, type: isSetLoopNode ? 'loopNode' : 'normal' });
-    if (exportName === 'container' && isSetLoopNode) {
-      setModalComponentNodeOpen(true);
-    } else {
-      setModalBindStateOpen(true);
-    }
+    setModalBindStateOpen(true);
   }
 
   return (

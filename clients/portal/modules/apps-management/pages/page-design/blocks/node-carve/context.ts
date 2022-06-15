@@ -13,7 +13,6 @@ export interface ConfigContextState {
   onArteryChange: (artery: Artery) => void;
   setUpdateAttrPayload: (val: UpdateAttrPayloadType) => void;
   setModalBindStateOpen: (visible: boolean) => void;
-  setModalComponentNodeOpen: (visible: boolean) => void;
 }
 
 export const ConfigContext = createContext<ConfigContextState | null>(null);
