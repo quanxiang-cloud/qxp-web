@@ -9,6 +9,7 @@ import Structure from './blocks/structure';
 import Pool from './blocks/pool';
 import NodeCarve from './blocks/node-carve';
 import StaticMenuPanel from './blocks/static-menu-panel';
+import MiniArteries from './blocks/mini-arteries';
 import { BlocksCommunicationType } from './types';
 
 export const QUERY_KEY = {
@@ -50,6 +51,11 @@ export const LAYERS: Layer<BlocksCommunicationType>[] = [
       },
       {
         id: 'static-pool',
+        hide: true,
+        render: StaticMenuPanel,
+      },
+      {
+        id: 'static-miniArteries',
         hide: true,
         render: StaticMenuPanel,
       },
@@ -151,11 +157,41 @@ export const LAYERS: Layer<BlocksCommunicationType>[] = [
       },
     ],
   },
+  {
+    id: 'miniArteries',
+    style: {
+      gridTemplateColumns: '56px 1fr 282px',
+      gridTemplateRows: '44px calc(100vh - 44px)',
+      pointerEvents: 'none',
+    },
+    hide: true,
+    blocks: [
+      {
+        style: {
+          gridColumnStart: 'span 3',
+        },
+        render: () => <div></div>,
+      },
+      {
+        render: () => <div></div>,
+      },
+      {
+        style: {
+          position: 'relative',
+          overflow: 'hidden',
+        },
+        render: MiniArteries,
+      },
+      {
+        render: () => <div></div>,
+      },
+    ],
+  },
 ];
 
 export const GROUP_TITLE_MAP: { [key: string]: string } = {
   fountainhead: '平台组件库',
-  templates: '区块模板',
   structure: '页面层级',
   pool: '数据源',
+  miniArteries: '区块模版',
 };

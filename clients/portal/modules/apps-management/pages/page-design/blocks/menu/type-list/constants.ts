@@ -16,4 +16,9 @@ export const TYPE_LIST: TypeItemProps[] = [
     label: '数据源',
     icon: 'database',
   },
+  {
+    name: 'miniArteries',
+    label: '区块模版',
+    icon: 'database',
+  },
 ];
