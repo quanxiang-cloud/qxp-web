@@ -44,7 +44,7 @@ export function useOutlineRootNode(
     });
 
     return { ...artery.node, children: filteredFirstLevelNode };
-  }, [artery, modalLayerRoots]);
+  }, [artery, modalLayerRoots, activeOverLayerNodeID]);
 
   const onChangeNode = useCallback((node: Node) => {
     if (!('children' in artery.node)) {
@@ -60,13 +60,13 @@ export function useOutlineRootNode(
         return node;
       });
 
-      onChange({ ...artery, node: { ...artery.node, children: firstLevelChildren } });
+      return onChange({ ...artery, node: { ...artery.node, children: firstLevelChildren } });
     }
 
     (node as HTMLNode | ReactComponentNode).children?.concat(modalLayerRoots);
 
     onChange({ ...artery, node });
-  }, []);
+  }, [activeOverLayerNodeID, artery]);
 
   return { rootNode, onChangeNode };
 }

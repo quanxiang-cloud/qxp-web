@@ -12,7 +12,12 @@ interface Props {
   activeLayer: string;
 }
 
-function LayerSwitcher({ artery, onChange, onActiveModalLayerChange, activeLayer }: Props): JSX.Element | null {
+function LayerSwitcher({
+  artery,
+  onChange,
+  onActiveModalLayerChange,
+  activeLayer,
+}: Props): JSX.Element | null {
   const layers = useLayerList(artery, activeLayer);
 
   function handleDeleteLayer(id: string): void {
@@ -20,7 +25,9 @@ function LayerSwitcher({ artery, onChange, onActiveModalLayerChange, activeLayer
       return;
     }
 
-    const firstLevelChildren = artery.node.children?.filter((firstLevelChild) => firstLevelChild.id === id);
+    onActiveModalLayerChange('');
+
+    const firstLevelChildren = artery.node.children?.filter((firstLevelChild) => firstLevelChild.id !== id);
     onChange({ ...artery, node: { ...artery.node, children: firstLevelChildren } });
   }
 
@@ -39,7 +46,11 @@ function LayerSwitcher({ artery, onChange, onActiveModalLayerChange, activeLayer
             >
               {name}
             </span>
-            {index !== 0 && <Icon name="delete" onClick={() => handleDeleteLayer(id)} />}
+            {index !== 0 && (
+              <span className="action" onClick={() => handleDeleteLayer(id)}>
+                <Icon name="delete" />
+              </span>
+            )}
           </div>
         );
       })}

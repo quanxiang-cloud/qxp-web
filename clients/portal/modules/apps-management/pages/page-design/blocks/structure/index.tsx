@@ -11,6 +11,7 @@ import { useMenuPanel } from '@pageDesign/hooks';
 import FountainContext from '../../fountain-context';
 import { useOutlineRootNode } from './hooks';
 import LayerSwitcher from './layer-switcher';
+import './index.scss';
 
 function Structure(props: BlockItemProps<BlocksCommunicationType>): JSX.Element {
   const { artery, onChange, activeNode, setActiveNode } = props;
@@ -19,7 +20,7 @@ function Structure(props: BlockItemProps<BlocksCommunicationType>): JSX.Element 
     mergeRight(props, { type: 'structure' }),
   );
 
-  const { rootNode, onChangeNode } = useOutlineRootNode(artery, onChange);
+  const { rootNode, onChangeNode } = useOutlineRootNode(artery, onChange, props.sharedState.activeModalLayer);
 
   function isContainer(node: NodePrimary): boolean {
     return !!getNodePropsSpec(node)?.isContainer;

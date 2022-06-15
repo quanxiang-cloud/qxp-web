@@ -1,0 +1,26 @@
+.outline-layers {
+  margin-bottom: 20px;
+  padding: 4px;
+  border: 1px solid var(--gray-100);
+
+  .outline-layer {
+    display: flex;
+    align-content: center;
+    padding: 4px;
+    border-radius: 4px;
+
+    .outline-layer__name {
+      flex-grow: 1;
+      margin-right: 8px;
+      cursor: pointer;
+    }
+  }
+
+  .outline-layer--active {
+    background-color: var(--green-200);
+  }
+
+  .action {
+    cursor: pointer;
+  }
+}
