@@ -19,9 +19,14 @@ const normalStateTypes: NodePropType[] = [
   'api_result_property',
 ];
 
+const tipsMap: Record<string, string> = {
+  shouldRender: '渲染条件',
+  'loop-node': '循环规则',
+};
+
 // todo remove
 function getToolTips(path: string, bound: boolean): string {
-  const text = path === 'shouldRender' ? '渲染条件' : '变量';
+  const text = tipsMap[`${path}`] ?? '变量';
   return bound ? `编辑${text}` : `配置${text}`;
 }
 
@@ -97,7 +102,7 @@ function ConfigItemBind({
         label={getToolTips(__path, bound)}
       >
         <Icon
-          name={__path === 'shouldRender' ? 'settings' : 'code'}
+          name={['shouldRender', 'loop-node'].includes(__path) ? 'settings' : 'code'}
           color="gray"
           clickable
           onClick={handleClick}

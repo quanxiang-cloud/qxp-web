@@ -1,4 +1,5 @@
 import React from 'react';
+import toast from '@lib/toast';
 import { ComputedDependency } from '@one-for-all/artery';
 
 import Section from '../../../utils/section';
@@ -11,18 +12,28 @@ type Props = {
   boundVariables: ComputedDependency[];
   updateBoundVariables: (newBoundVariables: ComputedDependency[]) => void;
   editorRef?: React.MutableRefObject<EditorRefType | undefined>;
+  singleBind?: boolean;
 }
 
-function VariableList({ boundVariables, updateBoundVariables, editorRef }: Props): JSX.Element {
-  const variableNames = boundVariables?.map(({ depID }) => depID);
+function VariableList({
+  boundVariables = [],
+  editorRef,
+  singleBind,
+  updateBoundVariables,
+}: Props): JSX.Element {
+  const variableNames = boundVariables.map(({ depID }) => depID);
   const sharedStates = Object.entries(dataSource.sharedState).map(([_, value]) => JSON.parse(value));
   const apiStates = Object.entries(dataSource.apiState).map(([_, value]) => JSON.parse(value));
 
-  function handleVariableClick(variable: string): void {
+  function handleVariableClick(variable: string, type: 'shared_state' | 'api_state'): void {
+    if (singleBind && boundVariables.length === 1) {
+      return toast.error('只能绑定一个被循环的变量！');
+    }
+
     editorRef?.current && editorRef.current.onInsertText(variable);
 
     if (variableNames.includes(variable)) return;
-    updateBoundVariables([...boundVariables, { depID: variable, type: 'shared_state' }]);
+    updateBoundVariables([...boundVariables, { depID: variable, type }]);
   }
 
   return (
@@ -34,7 +45,7 @@ function VariableList({ boundVariables, updateBoundVariables, editorRef }: Props
             <div
               key={name}
               className={styles['list-item']}
-              onClick={() => handleVariableClick(name)}
+              onClick={() => handleVariableClick(name, 'shared_state')}
             >
               {name}
             </div>
@@ -50,7 +61,7 @@ function VariableList({ boundVariables, updateBoundVariables, editorRef }: Props
                 <div
                   key={name}
                   className={styles['list-item']}
-                  onClick={() => console.log('bind: ', name, 'api_state')}
+                  onClick={() => handleVariableClick(name, 'api_state')}
                 >
                   {name}
                 </div>

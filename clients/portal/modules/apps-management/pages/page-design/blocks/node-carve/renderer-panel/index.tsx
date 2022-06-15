@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
+import { toJS } from 'mobx';
+import { pick, get, set } from 'lodash';
 import Editor from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
-import { pick, get, set } from 'lodash';
-import cs from 'classnames';
-import { toJS } from 'mobx';
+import { generateNodeId } from '@one-for-all/artery-engine';
 
-import { Button, Icon, Tooltip, Modal, toast } from '@one-for-all/ui';
+import { Icon, Tooltip, Modal, toast } from '@one-for-all/ui';
 
-import DataBind, { iterableStateTypes } from '../repository/state-bind';
 import Section from '../../../utils/section';
 import { mapRawProps } from '../../../utils/artery-adapter';
+import { generateInitFunString } from '../modal-bind-state/utils';
+import DataBind, { iterableStateTypes } from '../repository/state-bind';
 
 import styles from './index.m.scss';
 import { ConfigContextState, useConfigContext } from '../context';
@@ -24,7 +25,6 @@ import {
   setNodeAsComposedNode,
   updateCurNodeAsLoopContainer,
 } from '../utils';
-import { generateNodeId } from '@one-for-all/artery-engine';
 
 const defaultToPropsFn = 'return state';
 const defaultLoopKey = 'id';
@@ -36,26 +36,24 @@ function RendererPanel(): JSX.Element {
   const [loopKey, setLoopKey] = useState(defaultLoopKey);
   const [modalBindConstOpen, setModalBindConstOpen] = useState(false);
   const [bindConst, setBindConst] = useState('null'); // 绑定的常量循环数据
+  const rawNode: any = rawActiveNode;
 
   useEffect(() => {
+    if (!rawNode) return;
     // todo: get cur loop node conf
-    const rawNode = rawActiveNode;
-    if (!rawNode) {
-      return;
-    }
     if (rawNode?.type === 'loop-container') {
       const { iterableState, loopKey, toProps } = pick(
         rawNode as IndividualLoopContainer,
         ['iterableState', 'loopKey', 'toProps'],
       );
-      let node = rawNode.node;
-      if (rawNode.node.type === 'composed-node') {
-        node = rawNode.node.outLayer as ComposeOutLayer;
+      let { node } = rawNode;
+      if (node.type === 'composed-node') {
+        node = node.outLayer as ComposeOutLayer;
       }
       const rawPropsKeys = Object.keys(mapRawProps(node.props || {})).join(',');
-      setToPropsFn(
-        get(toProps, 'body', `//${rawPropsKeys}\n${defaultToPropsFn}`),
-      );
+      const toPropsBody = get(toProps, 'body', `//${rawPropsKeys}\n${defaultToPropsFn}`);
+      setToPropsFn(generateInitFunString({ name: 'toProps', args: 'item', body: toPropsBody }));
+
       setLoopKey(loopKey || '');
 
       if (iterableState?.type === 'constant_property') {
@@ -63,14 +61,11 @@ function RendererPanel(): JSX.Element {
       }
     } else {
       const toProps = get(rawNode, 'toProps', {});
-      const rawPropsKeys = Object.keys(mapRawProps(rawNode.props || {})).join(
-        ',',
-      );
-      setToPropsFn(
-        get(toProps, 'body', `//${rawPropsKeys}\n${defaultToPropsFn}`),
-      );
+      const rawPropsKeys = Object.keys(mapRawProps(rawNode.props || {})).join(',');
+      const toPropsBody = get(toProps, 'body', `//${rawPropsKeys}\n${defaultToPropsFn}`);
+      setToPropsFn(generateInitFunString({ name: 'toProps', args: 'item', body: toPropsBody }));
     }
-  }, [rawActiveNode]);
+  }, [rawNode?.iterableState, rawNode?.toProps, rawNode?.loopKey]);
 
   // useUpdateEffect(()=> {
   //   // console.log('sync all loop conf to elem: %s, %s, %o', toPropsFn, loopKey, toJS(bindConst));
@@ -168,7 +163,6 @@ function RendererPanel(): JSX.Element {
   }
 
   function hasBindConst(): boolean {
-    const rawNode = rawActiveNode;
     if (rawNode && rawNode.type === 'loop-container') {
       const isConstType =
         get(rawNode, 'iterableState.type') === 'constant_property';
@@ -187,7 +181,7 @@ function RendererPanel(): JSX.Element {
     return false;
   }
 
-  const iterType = get(rawActiveNode, 'iterableState.type');
+  const iterType = get(rawNode, 'iterableState.type');
   const hasBindVariable = iterableStateTypes.includes(iterType);
   const hasBind = hasBindConst() || hasBindVariable;
 
@@ -200,26 +194,14 @@ function RendererPanel(): JSX.Element {
             <DataBind __path="shouldRender" />
           </div>
           <pre className="p-4 text-12 text-blue-400 bg-gray-100">
-            <p>本质是配置JS中if流程语句中的条件表达式</p>
-            <p>当且仅当配置最终结果为真值时渲染展示此节点</p>
+            {'// 即配置if流程语句条件表达式\n// 结果为真值渲染展示当前节点\n' }
           </pre>
         </Section>
-        <Section title="循环展示" defaultExpand>
+        <Section title="循环渲染" defaultExpand>
           <form className="flex flex-col">
-            <div className="mb-8">
-              <p>循环数据</p>
-              <div className="flex items-center justify-between">
-                <Button
-                  className={cs({ [styles.boundConst]: hasBindConst() })}
-                  onClick={() => setModalBindConstOpen(true)}
-                >
-                  {hasBindConst() ? '已绑定常量数据' : '绑定常量数据'}
-                </Button>
-                <DataBind
-                  __path="loop-node"
-                  isSetLoopNode
-                />
-              </div>
+            <div className="flex items-center justify-between mb-8">
+              <label>配置组件循环渲染规则</label>
+              <DataBind __path="loop-node" isSetLoopNode />
             </div>
             {hasBind && (
               <div className="mb-8">
@@ -252,41 +234,20 @@ function RendererPanel(): JSX.Element {
                   <Icon name="info" />
                 </Tooltip>
               </p>
-              <div className="text-12">
+              <div className="text-12 pb-8">
                 <p>示例:</p>
                 <pre className="text-12 text-blue-400 bg-gray-100">
                   {
                     '// 将当前循环数据作为组件props\n 1. return state\n\n// 将当前循环数据的data属性\n// 作为组件的app属性\n 2. return { app: state.data }'
                   }
                 </pre>
-                <div className="text-gray-400">
-                  <p>
-                    state
-                    为页面引擎传入的当前变量(请勿修改名称)，您只需修改state的表达式即可。
-                  </p>
-                  <p>
-                    代码编辑器只接收函数体的表达式，不需要填写完整的函数定义,
-                    注意表达式需带上 return 关键字
-                  </p>
-                </div>
               </div>
               {hasBind && (
                 <Editor
+                  editable={false}
                   value={toPropsFn}
                   height="120px"
                   extensions={[javascript()]}
-                  onChange={(value) => {
-                    setToPropsFn(value);
-                    activeNode &&
-                      onArteryChange(
-                        updateCurNodeAsLoopContainer(
-                          activeNode,
-                          'toProps',
-                          value,
-                          artery,
-                        ),
-                      );
-                  }}
                 />
               )}
             </div>

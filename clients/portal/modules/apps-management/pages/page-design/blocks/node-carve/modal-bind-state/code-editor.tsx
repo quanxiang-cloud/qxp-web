@@ -3,10 +3,13 @@ import Editor, { ReactCodeMirrorRef, TransactionSpec } from '@uiw/react-codemirr
 import { javascript } from '@codemirror/lang-javascript';
 import { generateInitFunString } from './utils';
 
+import { FuncType } from './index';
+
 type Props = {
   initValue: string;
-  type: 'expression' | 'convertor';
+  type: FuncType;
   onChange: (value: any) => void;
+  updateAttrPayloadPath?: string;
 }
 
 export type EditorRefType = {
@@ -14,7 +17,7 @@ export type EditorRefType = {
 }
 
 function CodeEditor(
-  { initValue, onChange, type }: Props,
+  { initValue, updateAttrPayloadPath, onChange, type }: Props,
   ref: ForwardedRef<EditorRefType | undefined>,
 ): JSX.Element {
   const [value, setValue] = useState(initValue);
@@ -37,7 +40,12 @@ function CodeEditor(
     let _initValue = initValue;
 
     if (type === 'convertor') {
-      _initValue = generateInitFunString({ name: 'shouldRender', args: 'states', body: initValue });
+      const name = updateAttrPayloadPath === 'shouldRender' ? 'shouldRender' : 'convertor';
+      _initValue = generateInitFunString({ name, args: 'states', body: initValue });
+    }
+
+    if (type === 'toProps') {
+      _initValue = generateInitFunString({ name: 'toProps', args: 'item', body: initValue });
     }
 
     setValue(_initValue);
@@ -47,7 +55,7 @@ function CodeEditor(
     <Editor
       ref={refEditor}
       width='600px'
-      height="250px"
+      height={type === 'toProps' ? '360px' : '250px'}
       value={value}
       extensions={[javascript()]}
       onChange={handleChange}
