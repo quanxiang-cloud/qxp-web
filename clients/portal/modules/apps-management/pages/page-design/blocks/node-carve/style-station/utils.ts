@@ -1,6 +1,8 @@
 import { CSSProperties } from 'react';
 import { camelCase, kebabCase } from 'lodash';
 
+export type PartialCSSProperties<T extends keyof CSSProperties> = Partial<Pick<CSSProperties, T>>
+
 export function matchCssClassBrackets(cssString: string): string[] {
   const classBracketsReg = /[\w.-]+{((.|\n)*?)}/g;
   return cssString?.match(classBracketsReg) || [];
@@ -8,7 +10,7 @@ export function matchCssClassBrackets(cssString: string): string[] {
 
 export function jsonObjToFormattedCssString(
   cssObj: Record<string, string | number>,
-  className: string,
+  selector: string,
 ): string {
   const cssStringArray = Object.keys(cssObj).map((key) => {
     const cssPropKey = kebabCase(key);
@@ -16,7 +18,7 @@ export function jsonObjToFormattedCssString(
     return `\t${cssPropKey}:${cssPropValue};\n`;
   });
 
-  const cssFormateString = `.${className}{\n${cssStringArray.join('')}}`;
+  const cssFormateString = `${selector}{\n${cssStringArray.join('')}}`;
   return cssFormateString;
 }
 
@@ -40,7 +42,7 @@ export function cssStringToJsonObj(formattedCssString?: string): CSSProperties |
 
   const cssPropsRawArray = classContentString?.match(cssPropReg) || [];
 
-  if (!cssPropsRawArray.length) return;
+  if (!cssPropsRawArray.length) return {};
 
   const cssPropsKeyValueArray = cssPropsRawArray.map((cssPropString) => {
     const key = camelCase(keyReg.exec(cssPropString)?.[1]);
@@ -51,4 +53,9 @@ export function cssStringToJsonObj(formattedCssString?: string): CSSProperties |
   });
   const cssProperties = Object.fromEntries(cssPropsKeyValueArray);
   return cssProperties;
+}
+
+export function getClearObjectValueFromKeys(keys: string[]): Record<string, string> {
+  const clearedObj = Object.fromEntries(keys.map((key) => [key, '']));
+  return clearedObj;
 }

@@ -175,7 +175,7 @@ function ModalComponentNode(): JSX.Element {
               id: generateNodeId('composed-node'),
               type: 'composed-node',
               outLayer: { ..._node },
-              children: _nodeChildren,
+              nodes: _nodeChildren,
             } as ComposedNode,
           },
           artery,

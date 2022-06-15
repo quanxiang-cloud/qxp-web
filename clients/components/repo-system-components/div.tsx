@@ -4,6 +4,6 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
   content: string;
 }
 
-export default function Img({ content, ...props }: Props): JSX.Element {
+export default function Div({ content, ...props }: Props): JSX.Element {
   return <div {...props}>{content}</div>;
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import type { Node } from '@one-for-all/artery';
 
 import type { Package } from '@pageDesign/blocks/fountainhead/type';
@@ -6,7 +6,7 @@ import Loading from '@c/loading';
 
 import PackageSelector from './package-selector';
 import CategoriesRender from './categories-render';
-import { useComponents } from './store';
+import FountainContext from '../../fountain-context';
 
 import styles from './index.m.scss';
 
@@ -16,18 +16,13 @@ interface Props {
 
 function Fountainhead({ onAddNode }: Props): JSX.Element {
   const [currentPackage, setCurrentPackage] = useState<Package | undefined>();
-  const components = useComponents();
+  const { components } = useContext(FountainContext);
 
   const currentComponents = components?.filter(
     (component) => component.package.name === currentPackage?.name,
   );
 
-  const isAllPackage = currentPackage?.name === 'all';
-  const distComponents = isAllPackage ?
-    components?.filter(({ package: pkg }) => !pkg.hide) :
-    currentComponents;
-
-  if (!distComponents) {
+  if (!currentComponents) {
     return <Loading desc="loading..." />;
   }
 
@@ -36,10 +31,9 @@ function Fountainhead({ onAddNode }: Props): JSX.Element {
       <PackageSelector current={currentPackage} onChange={setCurrentPackage} />
       <CategoriesRender
         onAddNode={onAddNode}
-        components={distComponents}
+        components={currentComponents}
         categories={currentPackage?.categories}
         isIconPackage={currentPackage?.name === '@one-for-all/icon'}
-        isAllPackage={isAllPackage}
       />
     </div>
   );

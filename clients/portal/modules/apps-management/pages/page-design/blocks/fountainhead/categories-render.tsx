@@ -11,29 +11,30 @@ interface Props {
   components: PackageComponent[];
   categories?: string[];
   isIconPackage: boolean;
-  isAllPackage: boolean;
 }
 
 const CategoriesRender = (props: Props): JSX.Element => {
-  const { onAddNode, components, categories = [], isIconPackage, isAllPackage } = props;
+  const { onAddNode, components, categories = [], isIconPackage } = props;
   let groupedComponents: Record<string, PackageComponent[] | undefined> = useMemo(() => {
     return groupBy((component: PackageComponent) => component?.category ?? '', components);
   }, [components]);
 
-  pipe(keys, forEach((key) => !categories.includes(key) && categories.push(key)))(groupedComponents);
+  pipe(
+    keys,
+    forEach((key) => !categories.includes(key) && categories.push(key)),
+  )(groupedComponents);
 
-  if (isAllPackage || isIconPackage) {
+  if (isIconPackage) {
     categories.splice(0);
     categories.push('');
     groupedComponents = { '': components };
   }
 
   return (
-    <div className={isIconPackage || isAllPackage ? 'overflow-hidden' : 'overflow-y-auto'}>
+    <div className={isIconPackage ? 'overflow-hidden' : 'overflow-y-auto'}>
       {categories.map((category) => (
         <Category
           isIconPackage={isIconPackage}
-          isAllPackage={isAllPackage}
           key={category}
           name={category}
           components={groupedComponents[category] ?? []}

@@ -80,7 +80,7 @@ export default function ApiState({
             style={{ marginTop: '72px' }}
           >
             <p>暂无数据</p>
-            {!hasSelectApi(apiStateSpec) && <p>可以选择将该应用的内部API和第三方API数据加入后使用哦！</p>}
+            {!hasSelectApi(apiStateSpec) && <p>可以选择将该应用的内部 API 和第三方 API</p>}
           </div>
         )}
       </div>

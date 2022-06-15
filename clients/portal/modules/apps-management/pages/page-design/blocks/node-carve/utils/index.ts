@@ -68,13 +68,13 @@ export function getActualNode(node: Node, currentNode: Node): Node {
   let actualNode = node;
   if (node.type === 'loop-container') {
     if (node.node.type === 'composed-node') {
-      const { outLayer, children, nodes } = node.node;
+      const { outLayer, nodes } = node.node;
       if (outLayer && outLayer.id === currentNode.id) {
         actualNode = outLayer;
       }
 
-      if ((nodes || children) && outLayer?.id !== currentNode.id) {
-        actualNode = (nodes || children).find(
+      if (nodes && outLayer?.id !== currentNode.id) {
+        actualNode = nodes.find(
           (item: Node) => item.id === currentNode.id,
         ) as Node;
       }
@@ -232,10 +232,10 @@ export function unsetComposedNode(node: Node, artery: Artery): Artery {
   if (composedNode.type === 'loop-container') {
     const { node } = composedNode;
     if (node) {
-      const { outLayer, children, nodes } = node as ComposedNode;
+      const { outLayer, nodes } = node as ComposedNode;
       if (outLayer) {
         const newNode: Node = { ...outLayer };
-        newNode.children = children || nodes;
+        newNode.children = nodes;
         replaceNode(node, newNode, artery);
       }
     }
@@ -251,12 +251,12 @@ export function findNode(tree: Node | ComposedNode, node_id?: string, loopNode?:
     return tree;
   }
   if (tree.type === 'composed-node') {
-    const { outLayer, children, nodes } = tree || {};
+    const { outLayer, nodes } = tree || {};
     if (outLayer && outLayer.id === node_id) {
       return loopNode ? tree : outLayer;
     }
-    if (nodes || children) {
-      for (const child of nodes || children) {
+    if (nodes) {
+      for (const child of nodes) {
         const found = findNode(child as Node, node_id, loopNode);
         if (found) {
           return loopNode ? tree : found;
@@ -267,12 +267,12 @@ export function findNode(tree: Node | ComposedNode, node_id?: string, loopNode?:
   // if loop node, return wrapper node
   if (tree.type === 'loop-container') {
     if (tree.node?.type === 'composed-node') {
-      const { outLayer, children, nodes } = tree.node || {};
+      const { outLayer, nodes } = tree.node || {};
       if (outLayer && outLayer.id === node_id) {
         return loopNode ? tree : outLayer;
       }
-      if (nodes || children) {
-        for (const child of nodes || children) {
+      if (nodes) {
+        for (const child of nodes) {
           const found = findNode(child as Node, node_id, loopNode);
           if (found) {
             return loopNode ? tree : found;
@@ -325,14 +325,14 @@ export function replaceTreeNode(tree: Node, node_id: string, newNode: Node): voi
           }
 
           if (node.type === 'composed-node') {
-            const { children, outLayer, nodes } = node;
+            const { outLayer, nodes } = node;
             if (outLayer && outLayer.id === node_id) {
               outAdd = true;
               newIndex = index;
               return;
             }
             let inAdd = false;
-            (nodes || children || []).map((item, _index) => {
+            (nodes || []).map((item, _index) => {
               if (item.id === node_id) {
                 inAdd = true;
                 newIndex = _index;
@@ -341,7 +341,7 @@ export function replaceTreeNode(tree: Node, node_id: string, newNode: Node): voi
               return item;
             });
 
-            inAdd && (nodes || children)?.splice(newIndex, 1, newNode as ComposedNodeChild);
+            inAdd && nodes?.splice(newIndex, 1, newNode as ComposedNodeChild);
             return;
           }
         }

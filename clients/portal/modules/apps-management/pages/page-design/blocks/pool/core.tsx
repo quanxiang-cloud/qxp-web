@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Tab } from '@one-for-all/ui';
-import { Artery, SharedStatesSpec, APIStatesSpec } from '@one-for-all/artery';
+import { Artery, APIStatesSpec } from '@one-for-all/artery';
 
 import SharedState from './shared-state';
 import ApiState from './api-state';
@@ -25,10 +25,6 @@ interface Props {
 // });
 
 function DataSource({ artery, onChange }: Props): JSX.Element {
-  function handleChangeSharedState(sharedState: SharedStatesSpec): void {
-    onChange({ ...artery, sharedStatesSpec: sharedState });
-  }
-
   function handleChangeApiState(apiState: APIStatesSpec): void {
     onChange({ ...artery, apiStateSpec: apiState });
   }

@@ -1,5 +1,4 @@
 import qs from 'qs';
-import type { TreeData, TreeItem } from '@atlaskit/tree';
 import { isObject } from 'lodash';
 import { nanoid } from 'nanoid';
 import dayjs from 'dayjs';
@@ -147,53 +146,6 @@ export function copyToClipboard(str: string, msg: string): void {
   toast.success(msg || '复制成功');
 }
 
-function _buildTreeDataItems(
-  items: { [key: string]: TreeItem },
-  menus: Array<PageInfo>,
-): { [key: string]: TreeItem } {
-  const childItems = menus.map((page) => {
-    return _buildTreeDataItems(items, page.child || []);
-  }).reduce((acc, childItems) => {
-    return { ...acc, ...childItems };
-  }, {});
-
-  const newItems = menus.reduce<{ [key: string]: TreeItem }>((acc, page) => {
-    acc[page.id] = {
-      id: page.id,
-      children: (page.child || []).map((childPage) => childPage.id),
-      hasChildren: page.menuType === 1,
-      isExpanded: false,
-      isChildrenLoading: false,
-      data: page,
-    };
-    return acc;
-  }, items);
-
-  return {
-    ...childItems,
-    ...newItems,
-  };
-}
-
-export function buildAppPagesTreeData(menus: Array<PageInfo>): TreeData {
-  const rootItem: { [key: string]: TreeItem } = {
-    ROOT: {
-      id: 'ROOT',
-      children: menus.map((childPage) => childPage.id),
-      hasChildren: !!menus.length,
-      isExpanded: true,
-      isChildrenLoading: false,
-    },
-  };
-
-  const treeData: TreeData = {
-    rootId: 'ROOT',
-    items: _buildTreeDataItems(rootItem, menus),
-  };
-
-  return treeData;
-}
-
 export function getQuery<T>(): T {
   const search = window.location.search;
   if (search) {
@@ -313,7 +265,8 @@ export function isAcceptedFileType(file: File | QXPUploadFileBaseProps, accept: 
   const suffix = file.name.split('.').pop();
   if (!accept || !suffix) return false;
   const { type: fileType } = file;
-  return accept.some((acceptType) => acceptType === fileType || acceptType.split('/')[1].includes(suffix));
+  return accept.some((acceptType) => acceptType === fileType || acceptType.split('/')[1]?.includes(suffix) ||
+  acceptType.split('.')[1]?.includes(suffix));
 }
 
 export function createQueue(

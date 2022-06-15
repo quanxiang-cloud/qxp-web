@@ -18,6 +18,7 @@ export interface BlocksCommunicationType {
     panelWidth?: number;
   },
   block: BlockStates;
+  activeModalLayer?: string;
 }
 
 export type ReactComp = React.ComponentType | React.JSXElementConstructor<any>;

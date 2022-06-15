@@ -14,16 +14,7 @@ interface Props extends ItemRenderProps<PackageComponent> {
 }
 
 function SearchResultListItem(props: Props): JSX.Element {
-  const {
-    item: component,
-    className,
-    style,
-    index,
-    onAddNode,
-    componentWidth,
-    tupleNumber,
-    gap,
-  } = props;
+  const { item: component, className, style, index, onAddNode, componentWidth, tupleNumber, gap } = props;
 
   return (
     <ComponentRender

@@ -15,7 +15,6 @@ import DataBind, { iterableStateTypes } from '../repository/state-bind';
 import styles from './index.m.scss';
 import { ConfigContextState, useConfigContext } from '../context';
 import {
-  ComposedNode,
   ComposedNodeChild,
   ComposeOutLayer,
   ConstantProperty,
@@ -137,8 +136,8 @@ function RendererPanel(): JSX.Element {
                 id: generateNodeId('composed-node'),
                 type: 'composed-node',
                 outLayer: { ..._node } as ComposeOutLayer,
-                children: newChildren as ComposedNodeChild[],
-              } as ComposedNode,
+                nodes: newChildren as ComposedNodeChild[],
+              },
             },
             artery,
           ),

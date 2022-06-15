@@ -16,6 +16,7 @@ import styles from './index.m.scss';
 import { useConfigContext } from '../context';
 import { updateNodeProperty } from '../utils';
 import { get } from 'lodash';
+
 interface Props {
   className?: string;
 }

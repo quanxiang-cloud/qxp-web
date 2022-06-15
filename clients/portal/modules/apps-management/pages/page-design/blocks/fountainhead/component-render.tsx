@@ -59,7 +59,7 @@ const ComponentRender = (props: Props): JSX.Element => {
       style={style}
     >
       <div
-        className='w-full h-40 flex items-center justify-center bg-gray-50'
+        className="w-full h-40 flex items-center justify-center bg-gray-50"
         style={{ filter: 'grayscale(100%)' }}
       >
         <Icon />

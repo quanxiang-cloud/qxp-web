@@ -1,24 +1,68 @@
 import React, { CSSProperties } from 'react';
-import { equals, flatten, ifElse, isEmpty, pipe, toPairs, reduce, merge } from 'ramda';
+import { flatten } from 'ramda';
 import Icon from '@one-for-all/icon';
-import type { NodeProperties } from '@one-for-all/artery';
-import { PropsSpec } from '@one-for-all/node-carve';
+import type { ConstantProperty, NodeProperties } from '@one-for-all/artery';
 
-import { getBatchGlobalConfig } from '@lib/api/user-config';
+import { getBatchGlobalConfig, GetParams } from '@lib/api/user-config';
 import { parseJSON } from '@lib/utils';
 
 import type {
   BasePackageComponent,
   CategoryVariants,
+  FountainPackage,
   InitialProps,
   Package,
   PackageComponent,
+  PropsSpecMap,
   ReactComponent,
   Variant,
   VariantIcon,
   VariantImageIcon,
   VariantPlatFormIcon,
 } from '../blocks/fountainhead/type';
+
+const ARTERY_ENGIN_AVAILABLE_PACKAGES_KEY = 'PACKAGES';
+export function getAvailablePackages(): Promise<Package[]> {
+  return getBatchGlobalConfig([{ key: ARTERY_ENGIN_AVAILABLE_PACKAGES_KEY, version: '1.0.0' }]).then(
+    ({ result }) => parseJSON(result[ARTERY_ENGIN_AVAILABLE_PACKAGES_KEY], []),
+  );
+}
+
+export async function loadFountainPackages(): Promise<Array<FountainPackage>> {
+  const availablePackages = await getAvailablePackages();
+  const packageManifestKeys: GetParams[] = availablePackages.map(({ name, version }) => {
+    return { key: `PACKAGE_MANIFEST:${name}`, version };
+  });
+  const componentPropsSpecKeys: GetParams[] = availablePackages.map(({ name, version }) => {
+    return { key: `PACKAGE_PROPS_SPEC:${name}`, version };
+  });
+
+  const { result } = await getBatchGlobalConfig(packageManifestKeys.concat(componentPropsSpecKeys));
+
+  return availablePackages
+    .map((pkg) => {
+      const { name } = pkg;
+      if (!result[`PACKAGE_MANIFEST:${name}`] || !result[`PACKAGE_PROPS_SPEC:${name}`]) {
+        return;
+      }
+
+      const manifest: Record<string, CategoryVariants | undefined> = parseJSON(
+        result[`PACKAGE_MANIFEST:${name}`],
+        {},
+      );
+
+      const componentsArrayWithoutNull = Object.keys(manifest)
+        .map((name) => ({ package: pkg, name }))
+        .map((backComponent) => getFullComponent(manifest, backComponent));
+
+      return {
+        pkg,
+        propsSpecMap: parseJSON(result[`PACKAGE_PROPS_SPEC:${name}`], {}),
+        manifest: flatten(componentsArrayWithoutNull),
+      };
+    })
+    .filter((n): n is FountainPackage => !!n);
+}
 
 function imageIconBuilder(icon: VariantImageIcon): ReactComponent {
   const { initialProps, src } = icon;
@@ -28,10 +72,23 @@ function imageIconBuilder(icon: VariantImageIcon): ReactComponent {
 }
 
 const iconSizeMap: Record<string, number | undefined> = {
-  stars: 24, 'button-component': 36, '布局组件-container': 36, 'single-container': 36, 'text-component': 36,
-  'short-text': 24, 'image-component': 36, 'hyper-link': 36, 'iframe-component': 36, radio_button_checked: 24,
-  'schema-表单组件': 24, 'border-all': 24, pages: 24, text_fields: 24, wrap_text: 24,
+  'border-all': 24,
+  'button-component': 36,
+  'hyper-link': 36,
+  'iframe-component': 36,
+  'image-component': 36,
+  'schema-表单组件': 24,
+  'short-text': 24,
+  'single-container': 36,
+  'text-component': 36,
+  '布局组件-container': 36,
+  pages: 24,
+  radio_button_checked: 24,
+  stars: 24,
+  text_fields: 24,
+  wrap_text: 24,
 };
+
 function platformIconBuilder(icon: VariantPlatFormIcon): ReactComponent {
   const { name, initialProps = {} } = icon;
   const size = iconSizeMap[name];
@@ -40,85 +97,44 @@ function platformIconBuilder(icon: VariantPlatFormIcon): ReactComponent {
 }
 
 function isImageIcon(icon: VariantIcon): icon is VariantImageIcon {
-  return equals('image', icon.type);
+  return 'image' === icon.type;
 }
 
 export function isPlatformIcon(icon: VariantIcon): icon is VariantPlatFormIcon {
-  return equals('platform', icon.type);
+  return 'platform' === icon.type;
 }
 
-async function iconBuilder(icon: VariantIcon): Promise<ReactComponent> {
+function iconBuilder(icon: VariantIcon): ReactComponent {
   if (isImageIcon(icon)) {
     return imageIconBuilder(icon);
   }
   return platformIconBuilder(icon);
 }
 
-async function getPackageComponentIcon(
-  icon: VariantIcon, options: Omit<PackageComponent, 'Icon'>,
-): Promise<PackageComponent> {
+function getPackageComponentIcon(
+  icon: VariantIcon,
+  options: Omit<PackageComponent, 'Icon'>,
+): PackageComponent {
   return {
     ...options,
-    Icon: await iconBuilder(icon),
+    Icon: iconBuilder(icon),
   };
 }
 
-function getFullComponent(categoryVariantsMap: Record<string, CategoryVariants | undefined>) {
-  return async (basePackageComponent: BasePackageComponent): Promise<PackageComponent[]> => {
-    const { name } = basePackageComponent;
-    const categoryVariantsFallback = { variants: [], category: undefined };
-    const { variants, category } = categoryVariantsMap[name] ?? categoryVariantsFallback;
-    const variantToComponentPromise = (variant: Variant): Promise<PackageComponent> => {
-      const { icon, ...restVariant } = variant;
-      return getPackageComponentIcon(icon, { ...basePackageComponent, ...restVariant, category });
-    };
-    const componentsPromises = variants.map(variantToComponentPromise);
-    return await Promise.all(componentsPromises);
-  };
+function getFullComponent(
+  categoryVariantsMap: Record<string, CategoryVariants | undefined>,
+  basePackageComponent: BasePackageComponent,
+): PackageComponent[] {
+  const { name } = basePackageComponent;
+  const categoryVariantsFallback = { variants: [], category: undefined };
+  const { variants, category } = categoryVariantsMap[name] ?? categoryVariantsFallback;
+  return variants.map((variant: Variant): PackageComponent => {
+    const { icon, ...restVariant } = variant;
+    return getPackageComponentIcon(icon, { ...basePackageComponent, ...restVariant, category });
+  });
 }
 
-function getBaseComponentsFromComponentNames(
-  pkg: Package, componentNames: string[],
-): BasePackageComponent[] {
-  return componentNames.map((name) => ({ package: pkg, name }));
-}
-
-export async function getComponentsFromPackage(pkg: Package): Promise<PackageComponent[]> {
-  const categoryVariantsMap = await getPackageComponentToCategoryVariantMapDynamic(pkg);
-  const componentNames = Object.keys(categoryVariantsMap);
-  const baseComponents = getBaseComponentsFromComponentNames(pkg, componentNames);
-  const componentsArrayPromise = baseComponents.map(getFullComponent(categoryVariantsMap));
-  const componentsArray = await Promise.all(componentsArrayPromise);
-  const componentsArrayWithoutNull = componentsArray.filter(
-    (components): components is PackageComponent[] => components !== null,
-  );
-  return flatten(componentsArrayWithoutNull);
-}
-
-export async function getPackagesSourceDynamic(): Promise<Package[]> {
-  const key = 'PACKAGES';
-  const { result } = await getBatchGlobalConfig([{ key, version: '1.0.0' }]);
-  return parseJSON(result[key], []);
-}
-
-async function getPackageComponentToCategoryVariantMapDynamic(
-  { name, version }: Package,
-): Promise<Record<string, CategoryVariants | undefined>> {
-  if (name === 'all') {
-    return {};
-  }
-  const key = `PACKAGE_MANIFEST:${name}`;
-  const { result } = await getBatchGlobalConfig([{ key, version }]);
-  const getter = ifElse(
-    () => !isEmpty(result),
-    () => parseJSON(result[key], {}),
-    () => ({}),
-  );
-  return getter();
-}
-
-export type PropsSpecMap = Record<string, PropsSpec | undefined>;
-export type GetPackagePropsSpecResult = Pick<Package, 'name' | 'version'> & { result: PropsSpecMap; };
+export type GetPackagePropsSpecResult = Pick<Package, 'name' | 'version'> & { result: PropsSpecMap };
 export async function getPackagePropsSpec({ name, version }: Package): Promise<GetPackagePropsSpecResult> {
   const key = `PACKAGE_PROPS_SPEC:${name}`;
   const { result } = await getBatchGlobalConfig([{ key, version }]);
@@ -126,11 +142,11 @@ export async function getPackagePropsSpec({ name, version }: Package): Promise<G
 }
 
 export function initialPropsToNodeProperties(initialProps: InitialProps = {}): NodeProperties {
-  const nodePropertiesReducer = (
-    acc: NodeProperties, [propertyName, value]: [string, unknown],
-  ): NodeProperties => {
-    return merge(acc, { [propertyName]: { type: 'constant_property', value } });
-  };
+  return Object.entries(initialProps)
+    .map<[string, ConstantProperty]>(([key, value]) => [key, { type: 'constant_property', value }])
+    .reduce<NodeProperties>((acc, [key, v]) => {
+      acc[key] = v;
 
-  return pipe(toPairs, reduce(nodePropertiesReducer, {}))(initialProps);
+      return acc;
+    }, {});
 }
