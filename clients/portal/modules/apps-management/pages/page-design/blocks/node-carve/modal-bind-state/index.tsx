@@ -1,13 +1,13 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { get } from 'lodash';
 import { Modal } from '@one-for-all/ui';
-import { ComputedProperty, ComputedDependency } from '@one-for-all/artery';
+import { ComputedProperty, ComputedDependency, NodeProperty } from '@one-for-all/artery';
 
 import Tab from '@c/tab';
 import Toggle from '@c/toggle';
 import toast from '@lib/toast';
 
-import { updateNodeProperty, findNode } from '../utils';
+import { updateNodeProperty, findNode, updateCurNodeAsLoopContainer } from '../utils';
 import CodeEditor, { EditorRefType } from './code-editor';
 import LogicOperatorsAndBoundVariables from './bound-and-logic';
 import { ConfigContextState, UpdateAttrPayloadType, useConfigContext } from '../context';
@@ -24,6 +24,11 @@ export type VariableBindConf = {
 const titleMap: Record<string, string> = {
   shouldRender: '条件渲染配置',
   'loop-node': '循环渲染规则配置',
+};
+
+const stateTypeMap: Record<string, 'shared_state_property' | 'api_result_property'> = {
+  shared_state: 'shared_state_property',
+  api_state: 'api_result_property',
 };
 
 function ModalBindState(): JSX.Element | null {
@@ -63,9 +68,17 @@ function ModalBindState(): JSX.Element | null {
     setBoundVariables(boundVariables.filter(({ depID: id }) => id !== depID));
   }
 
-  function bindSubmit(node: UpdateAttrPayloadType, property: ComputedProperty): void {
+  function bindSubmit(node: UpdateAttrPayloadType, property: ComputedProperty | NodeProperty): void {
     if (node.type === 'loopNode') {
-      // to get looNode property
+      rawActiveNode && onArteryChange(
+        updateCurNodeAsLoopContainer(
+          rawActiveNode,
+          'iterableState',
+          property,
+          artery,
+          toPropsStr,
+        ),
+      );
       return onCancel();
     }
 
@@ -92,8 +105,23 @@ function ModalBindState(): JSX.Element | null {
       return;
     }
 
-    if (editorType === 'toProps' && !toPropsStr) {
-      return toast.error('循环渲染的映射函数内容不能为空！');
+    if (!boundVariables.length) {
+      return toast.error('请绑定变量！');
+    }
+
+    if (editorType === 'toProps' ) {
+      if (!toPropsStr) {
+        return toast.error('循环渲染的映射函数内容不能为空！');
+      }
+
+      const bindState = boundVariables.pop();
+      const iterableState: NodeProperty = {
+        type: stateTypeMap[`${bindState?.type}`],
+        stateID: bindState?.depID ?? '',
+        fallback: '',
+      };
+
+      return bindSubmit(updateAttrPayload, iterableState);
     }
 
     if (!expressionStr && !convertorStr) {
@@ -112,7 +140,17 @@ function ModalBindState(): JSX.Element | null {
 
   function initValueByBindConf(bindConf: any): void {
     setFallBack(bindConf.fallback);
-    setBoundVariables(bindConf.deps);
+    if (bindConf.iterableState) {
+      const state = bindConf.iterableState;
+      setBoundVariables([
+        {
+          depID: state.stateID,
+          type: state.type === 'shared_state_property' ? 'shared_state' : 'api_state',
+        },
+      ]);
+    } else {
+      setBoundVariables(bindConf.deps);
+    }
 
     if (bindConf?.convertor?.type === 'state_convert_expression') {
       const expr = bindConf.convertor?.expression;
@@ -127,6 +165,21 @@ function ModalBindState(): JSX.Element | null {
       setEditorType('convertor');
       setConvertorStr(bindConf.convertor?.body);
     }
+
+    if (bindConf.toProps) {
+      setEditorType('toProps');
+      setToPropsStr(bindConf.toProps?.body);
+    }
+  }
+
+  function initCodeEditor(): string {
+    if (editorType === 'toProps') {
+      return toPropsStr;
+    }
+    if (editorType === 'convertor') {
+      return convertorStr;
+    }
+    return expressionStr;
   }
 
   useEffect(() => {
@@ -134,11 +187,20 @@ function ModalBindState(): JSX.Element | null {
       return;
     }
 
-    const node = findNode(artery.node, activeNode?.id);
-    const bindConf = get(node, updateAttrPayload.path);
+    const node = findNode(
+      artery.node,
+      updateAttrPayload.path === 'loop-node' ? rawActiveNode?.id : activeNode?.id,
+    );
+
+    let bindConf = get(node, updateAttrPayload.path);
+    if (updateAttrPayload.path === 'loop-node') {
+      const iterableState = get(node, 'iterableState');
+      const toProps = get(node, 'toProps');
+      if (!iterableState || !toProps) return;
+      bindConf = { iterableState, toProps };
+    }
 
     if (!bindConf) return;
-
     initValueByBindConf(bindConf);
   }, [activeNode?.id]);
 
@@ -187,7 +249,7 @@ function ModalBindState(): JSX.Element | null {
               {
                 id: 'toProps',
                 name: '变量映射函数',
-                content: <div className={styles.tip}></div>,
+                content: <div className={styles.tip}>将当前已绑定的可循环的变量数据映射到组件属性</div>,
               },
             ] : [
               {
@@ -206,7 +268,7 @@ function ModalBindState(): JSX.Element | null {
             type={editorType}
             ref={editorRef}
             updateAttrPayloadPath={updateAttrPayload?.path}
-            initValue={editorType === 'convertor' ? convertorStr : expressionStr}
+            initValue={initCodeEditor()}
             onChange={handleEditorChange}
           />
           <div className="flex items-center pt-12">

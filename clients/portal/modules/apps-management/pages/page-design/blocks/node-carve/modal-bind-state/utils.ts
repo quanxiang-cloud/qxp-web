@@ -67,8 +67,8 @@ export function toConvertorProp({ type, contentStr }: VariableBindConf): any {
 
 export function generateInitFunString({ name = '', args = '', notes = '', body = '' }): string {
   const defaultNotes =
-`/** 
-  * JavaScript JavaScript expressions are executed as functions
+`/*
+  * JavaScript expressions are executed as functions
   * so ensure that your expression returns a value
 */`;
   return `${defaultNotes}

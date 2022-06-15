@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
+import { toJS } from 'mobx';
+import { pick, get, set } from 'lodash';
 import Editor from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
-import { pick, get, set } from 'lodash';
-import { toJS } from 'mobx';
+import { generateNodeId } from '@one-for-all/artery-engine';
 
 import { Icon, Tooltip, Modal, toast } from '@one-for-all/ui';
 
-import DataBind, { iterableStateTypes } from '../repository/state-bind';
 import Section from '../../../utils/section';
 import { mapRawProps } from '../../../utils/artery-adapter';
+import { generateInitFunString } from '../modal-bind-state/utils';
+import DataBind, { iterableStateTypes } from '../repository/state-bind';
 
 import styles from './index.m.scss';
 import { ConfigContextState, useConfigContext } from '../context';
@@ -24,7 +26,6 @@ import {
   setNodeAsComposedNode,
   updateCurNodeAsLoopContainer,
 } from '../utils';
-import { generateNodeId } from '@one-for-all/artery-engine';
 
 const defaultToPropsFn = 'return state';
 const defaultLoopKey = 'id';
@@ -36,26 +37,24 @@ function RendererPanel(): JSX.Element {
   const [loopKey, setLoopKey] = useState(defaultLoopKey);
   const [modalBindConstOpen, setModalBindConstOpen] = useState(false);
   const [bindConst, setBindConst] = useState('null'); // 绑定的常量循环数据
+  const rawNode: any = rawActiveNode;
 
   useEffect(() => {
+    if (!rawNode) return;
     // todo: get cur loop node conf
-    const rawNode = rawActiveNode;
-    if (!rawNode) {
-      return;
-    }
     if (rawNode?.type === 'loop-container') {
       const { iterableState, loopKey, toProps } = pick(
         rawNode as IndividualLoopContainer,
         ['iterableState', 'loopKey', 'toProps'],
       );
-      let node = rawNode.node;
-      if (rawNode.node.type === 'composed-node') {
-        node = rawNode.node.outLayer as ComposeOutLayer;
+      let { node } = rawNode;
+      if (node.type === 'composed-node') {
+        node = node.outLayer as ComposeOutLayer;
       }
       const rawPropsKeys = Object.keys(mapRawProps(node.props || {})).join(',');
-      setToPropsFn(
-        get(toProps, 'body', `//${rawPropsKeys}\n${defaultToPropsFn}`),
-      );
+      const toPropsBody = get(toProps, 'body', `//${rawPropsKeys}\n${defaultToPropsFn}`);
+      setToPropsFn(generateInitFunString({ name: 'toProps', args: 'item', body: toPropsBody }));
+
       setLoopKey(loopKey || '');
 
       if (iterableState?.type === 'constant_property') {
@@ -63,14 +62,11 @@ function RendererPanel(): JSX.Element {
       }
     } else {
       const toProps = get(rawNode, 'toProps', {});
-      const rawPropsKeys = Object.keys(mapRawProps(rawNode.props || {})).join(
-        ',',
-      );
-      setToPropsFn(
-        get(toProps, 'body', `//${rawPropsKeys}\n${defaultToPropsFn}`),
-      );
+      const rawPropsKeys = Object.keys(mapRawProps(rawNode.props || {})).join(',');
+      const toPropsBody = get(toProps, 'body', `//${rawPropsKeys}\n${defaultToPropsFn}`);
+      setToPropsFn(generateInitFunString({ name: 'toProps', args: 'item', body: toPropsBody }));
     }
-  }, [rawActiveNode]);
+  }, [rawNode?.iterableState, rawNode?.toProps, rawNode?.loopKey]);
 
   // useUpdateEffect(()=> {
   //   // console.log('sync all loop conf to elem: %s, %s, %o', toPropsFn, loopKey, toJS(bindConst));
@@ -168,7 +164,6 @@ function RendererPanel(): JSX.Element {
   }
 
   function hasBindConst(): boolean {
-    const rawNode = rawActiveNode;
     if (rawNode && rawNode.type === 'loop-container') {
       const isConstType =
         get(rawNode, 'iterableState.type') === 'constant_property';
@@ -187,7 +182,7 @@ function RendererPanel(): JSX.Element {
     return false;
   }
 
-  const iterType = get(rawActiveNode, 'iterableState.type');
+  const iterType = get(rawNode, 'iterableState.type');
   const hasBindVariable = iterableStateTypes.includes(iterType);
   const hasBind = hasBindConst() || hasBindVariable;
 
@@ -240,41 +235,20 @@ function RendererPanel(): JSX.Element {
                   <Icon name="info" />
                 </Tooltip>
               </p>
-              <div className="text-12">
+              <div className="text-12 pb-8">
                 <p>示例:</p>
                 <pre className="text-12 text-blue-400 bg-gray-100">
                   {
                     '// 将当前循环数据作为组件props\n 1. return state\n\n// 将当前循环数据的data属性\n// 作为组件的app属性\n 2. return { app: state.data }'
                   }
                 </pre>
-                <div className="text-gray-400">
-                  <p>
-                    state
-                    为页面引擎传入的当前变量(请勿修改名称)，您只需修改state的表达式即可。
-                  </p>
-                  <p>
-                    代码编辑器只接收函数体的表达式，不需要填写完整的函数定义,
-                    注意表达式需带上 return 关键字
-                  </p>
-                </div>
               </div>
               {hasBind && (
                 <Editor
+                  editable={false}
                   value={toPropsFn}
                   height="120px"
                   extensions={[javascript()]}
-                  onChange={(value) => {
-                    setToPropsFn(value);
-                    activeNode &&
-                      onArteryChange(
-                        updateCurNodeAsLoopContainer(
-                          activeNode,
-                          'toProps',
-                          value,
-                          artery,
-                        ),
-                      );
-                  }}
                 />
               )}
             </div>

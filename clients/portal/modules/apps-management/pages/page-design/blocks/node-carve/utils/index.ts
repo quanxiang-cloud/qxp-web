@@ -93,6 +93,7 @@ export function updateNodeProperty(
 ): Artery {
   const rawNode = findNode(artery.node, node.id, true);
   const actualNode = getActualNode(rawNode, node);
+  set(rawNode, path, value);
   set(actualNode, path, value);
   patchNode(artery.node, rawNode);
   return { ...artery };
@@ -121,7 +122,7 @@ export function replaceNode(
   artery: Artery,
 ): Artery {
   const srcNode = findNode(artery.node, node.id, true);
-  if (srcNode.type === 'loop-container') {
+  if (srcNode?.type === 'loop-container') {
     if (srcNode.node && srcNode.node.type === 'composed-node') {
       const { children, outLayer, nodes } = srcNode.node;
       if (outLayer.id !== node.id) {
@@ -175,26 +176,39 @@ export function updateCurNodeAsLoopContainer(
   propKey: string,
   confItem: any,
   artery: Artery,
+  toPropsBody?: any,
 ): Artery {
   let newArtery;
   const rawNode = findNode(artery.node, node.id, true);
   if (!rawNode?.iterableState) {
     // replace current normal node to loop node
-    newArtery = setNodeAsLoopContainer(node, { [propKey]: confItem }, artery);
+    newArtery = setNodeAsLoopContainer(
+      node,
+      {
+        [propKey]: confItem,
+        toProps: toPropsBody,
+      },
+      artery,
+    );
   } else {
     newArtery = updateNodeProperty(
       rawNode,
-      propKey,
-      propKey === 'toProps' ?
-        {
-          args: 'state',
-          body: confItem || 'return state',
-          type: 'to_props_function_spec',
-        } :
-        confItem,
+      'iterableState',
+      confItem,
+      artery,
+    );
+    newArtery = updateNodeProperty(
+      rawNode,
+      'toProps',
+      {
+        args: 'state',
+        body: toPropsBody || 'return state',
+        type: 'to_props_function_spec',
+      },
       artery,
     );
   }
+
   return newArtery;
 }
 
