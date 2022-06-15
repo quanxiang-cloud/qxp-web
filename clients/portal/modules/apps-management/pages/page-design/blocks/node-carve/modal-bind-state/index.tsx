@@ -45,7 +45,7 @@ function ModalBindState(): JSX.Element | null {
   const isShouldRenderConfig = updateAttrPayload?.path === 'shouldRender';
   const isLoopRenderConfig = updateAttrPayload?.path === 'loop-node';
   const [boundVariables, setBoundVariables] = useState<ComputedDependency[]>([]); // 已绑定的变量
-  const [fallback, setFallBack] = useState<boolean>(); // 默认值
+  const [fallback, setFallBack] = useState<unknown>(); // 默认值
   const [expressionStr, setExpressionStr] = useState(''); // 表达式
   const [convertorStr, setConvertorStr] = useState(''); // 自定义函数内容
   const [toPropsStr, setToPropsStr] = useState(''); // 循环渲染转换函数内容
@@ -100,6 +100,12 @@ function ModalBindState(): JSX.Element | null {
     }
 
     setExpressionStr(val);
+  }
+
+  function updateFallBack(val: boolean): void {
+    if (!val) return setFallBack(undefined);
+    isShouldRenderConfig && setFallBack(true);
+    isLoopRenderConfig && setFallBack([]);
   }
 
   function handleBind(): void {
@@ -275,9 +281,10 @@ function ModalBindState(): JSX.Element | null {
           />
           <div className="flex items-center pt-12">
             <span>默认值：</span>
-            <Toggle defaultChecked={fallback} onChange={setFallBack} />
+            <Toggle defaultChecked={!!fallback} onChange={updateFallBack} />
+            <span className={styles.desc}>表达式或自定义函数因某种原因执行失败或者出现异常的时候，将使用该默认值</span>
+            {/* to do support edit fallback value */}
           </div>
-          <div className={styles.desc}>表达式或自定义函数因某种原因执行失败或者出现异常的时候，将使用该默认值</div>
         </div>
       </div>
     </Modal>
