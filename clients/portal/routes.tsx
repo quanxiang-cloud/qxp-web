@@ -6,10 +6,9 @@ import Loading from '@c/loading';
 import NotFoundError from '@c/404-error';
 // import { getNestedPropertyToArray } from '@lib/utils';
 
-import AppsRoutes from './modules/apps-management/routes';
-import RedirectToApps from './modules/dashboard/redirect-to-apps';
-import PagePreview from './modules/apps-management/pages/page-design/page-preview';
-
+const AppsRoutes = React.lazy(() => import('./modules/apps-management/routes'));
+const RedirectToApps = React.lazy(() => import('./modules/dashboard/redirect-to-apps'));
+const PagePreview = React.lazy(() => import('./modules/apps-management/pages/page-design/page-preview'));
 const PageDesign = React.lazy(() => import('./modules/apps-management/pages/page-design'));
 const MetaData = React.lazy(() => import('./modules/metadata'));
 const AccessControl = React.lazy(() => import('./modules/access-control'));
