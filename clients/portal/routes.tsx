@@ -8,9 +8,9 @@ import NotFoundError from '@c/404-error';
 
 import AppsRoutes from './modules/apps-management/routes';
 import RedirectToApps from './modules/dashboard/redirect-to-apps';
-import PageDesign from './modules/apps-management/pages/page-design';
 import PagePreview from './modules/apps-management/pages/page-design/page-preview';
 
+const PageDesign = React.lazy(() => import('./modules/apps-management/pages/page-design'));
 const MetaData = React.lazy(() => import('./modules/metadata'));
 const AccessControl = React.lazy(() => import('./modules/access-control'));
 const SystemMgmt = React.lazy(() => import('./modules/system-mgmt'));
