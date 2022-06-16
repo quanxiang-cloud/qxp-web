@@ -6,7 +6,7 @@ import { ViewType } from '../types.d';
 type Props = {
   currentSelectType?: ViewType;
   onSelect?: (type: ViewType) => void;
-}
+};
 
 export type ViewTypeItemProps = {
   name: string;
@@ -14,7 +14,7 @@ export type ViewTypeItemProps = {
   description: string;
   imgSrc: string;
   imgSrcActive: string;
-}
+};
 
 export const VIEW_TYPE_MAP: ViewTypeItemProps[] = [
   {
@@ -45,7 +45,6 @@ export const VIEW_TYPE_MAP: ViewTypeItemProps[] = [
     imgSrc: '/dist/images/external-view.svg',
     imgSrcActive: '/dist/images/external-view-active.svg',
   },
-
 ];
 
 function ViewTypeSelector({ onSelect, currentSelectType }: Props): JSX.Element {
@@ -54,52 +53,48 @@ function ViewTypeSelector({ onSelect, currentSelectType }: Props): JSX.Element {
   // );
 
   return (
-    <div className='flex gap-16 p-24'>
-      {
-        VIEW_TYPE_MAP.map((typeItem) => {
-          const active = currentSelectType === typeItem.type;
-          return (
-            <div
-              className={cs('flex flex-col-reverse w-230 h-270 border-1 border-gray-300 cursor-pointer rounded-8 duration-300 hover:shadow-xl', {
+    <div className="flex gap-16 p-24">
+      {VIEW_TYPE_MAP.map((typeItem) => {
+        const active = currentSelectType === typeItem.type;
+        return (
+          <div
+            className={cs(
+              'flex flex-col-reverse w-230 h-270 border-1 border-gray-300 cursor-pointer rounded-8 duration-300 hover:shadow-xl overflow-hidden',
+              {
                 'shadow-xl view-type-card-selected': active,
-              })}
-              key={typeItem.type}
-              onClick={() => {
-                onSelect?.(typeItem.type);
-              } }
-            >
-              <div className='flex flex-col gap-6 text-12 p-16'>
-                <span
-                  style={active ? { color: 'var(--blue-600)' } : {}}
-                  className='text-gray-900 font-semibold'>
-                  {typeItem.name}
-                </span>
-                <span
-                  style={active ? { color: 'var(--blue-600)' } : {}}
-                  className='text-gray-600'>
-                  {typeItem.description}
-                </span>
-              </div>
-              <div className='relative w-full'>
-                <img
-                  className={cs('w-full')}
-                  src={typeItem.imgSrc}
-                  alt={typeItem.name}
-                  draggable={false}
-                />
-                <img
-                  className={cs('w-full duration-300 absolute left-0 top-0',
-                    active ? ' opacity-100' : 'opacity-0')
-                  }
-                  src={typeItem.imgSrcActive}
-                  alt={typeItem.name}
-                  draggable={false}
-                />
-              </div>
+              },
+            )}
+            key={typeItem.type}
+            onClick={() => {
+              onSelect?.(typeItem.type);
+            }}
+          >
+            <div className="flex flex-col gap-6 text-12 p-16">
+              <span
+                style={active ? { color: 'var(--blue-600)' } : {}}
+                className="text-gray-900 font-semibold"
+              >
+                {typeItem.name}
+              </span>
+              <span style={active ? { color: 'var(--blue-600)' } : {}} className="text-gray-600">
+                {typeItem.description}
+              </span>
             </div>
-          );
-        })
-      }
+            <div className="relative w-full">
+              <img className={cs('w-full')} src={typeItem.imgSrc} alt={typeItem.name} draggable={false} />
+              <img
+                className={cs(
+                  'w-full duration-300 absolute left-0 top-0',
+                  active ? ' opacity-100' : 'opacity-0',
+                )}
+                src={typeItem.imgSrcActive}
+                alt={typeItem.name}
+                draggable={false}
+              />
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
