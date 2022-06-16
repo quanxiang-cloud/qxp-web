@@ -1,4 +1,4 @@
-import React, { ForwardedRef } from 'react';
+import React, { ForwardedRef, forwardRef } from 'react';
 
 import QuillEditor from '@c/quill';
 
@@ -8,4 +8,4 @@ function RichTextEditor(props: any, ref: ForwardedRef<HTMLDivElement>): JSX.Elem
   );
 }
 
-export default RichTextEditor;
+export default forwardRef(RichTextEditor);
