@@ -1280,6 +1280,21 @@
     react-dom "^17.0.2"
     react-table "^7.7.0"
 
+"@one-for-all/headless-ui@0.8.0":
+  version "0.8.0"
+  resolved "https://registry.npmmirror.com/@one-for-all/headless-ui/-/headless-ui-0.8.0.tgz#d7c38dd7bba747ae830bd2aaebcb5e952a76c00e"
+  integrity sha512-5ijw/Qi+dZ8/CGLrLRv+D+HNk90s8GPVLsBoNkPkzRuQpW/t12ldDVGMF1QsHBSuXydU2x3IduOD1Q17uLJ/qA==
+  dependencies:
+    "@one-for-all/icon" "0.6.2"
+    "@popperjs/core" "^2.11.0"
+    classnames "^2.3.1"
+    dayjs "~1.11.3"
+    lodash "^4.17.21"
+    nanoid "^3.1.30"
+    react "^17.0.2"
+    react-dom "^17.0.2"
+    react-table "^7.7.0"
+
 "@one-for-all/icon@0.6.2", "@one-for-all/icon@^0.6.1":
   version "0.6.2"
   resolved "https://registry.npmmirror.com/@one-for-all/icon/-/icon-0.6.2.tgz#0f733bb37b213dba7b4b5bd06a50749b603cd289"
@@ -3474,6 +3489,11 @@ dayjs@1.x, dayjs@^1.10.4:
   version "1.11.1"
   resolved "https://registry.npmmirror.com/dayjs/-/dayjs-1.11.1.tgz#90b33a3dda3417258d48ad2771b415def6545eb0"
   integrity sha512-ER7EjqVAMkRRsxNCC5YqJ9d9VQYuWdGt7aiH2qA5R5wt8ZmWaP2dLUSIK6y/kVzLMlmh1Tvu5xUf4M/wdGJ5KA==
+
+dayjs@~1.11.3:
+  version "1.11.3"
+  resolved "https://registry.npmmirror.com/dayjs/-/dayjs-1.11.3.tgz#4754eb694a624057b9ad2224b67b15d552589258"
+  integrity sha512-xxwlswWOlGhzgQ4TKzASQkUhqERI3egRNqgV4ScR8wlANA/A9tZ7miXa44vTTKEq5l7vWoL5G57bG3zA+Kow0A==
 
 debug@4, debug@^4.1.0, debug@^4.1.1, debug@^4.3.2, debug@^4.3.3:
   version "4.3.4"
