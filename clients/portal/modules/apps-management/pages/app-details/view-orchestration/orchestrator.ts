@@ -86,7 +86,9 @@ class Orchestrator {
       return [];
     }
 
-    return findViews(this.rootNode);
+    return findViews(this.rootNode).sort((viewA, viewB) => {
+      return viewA.name < viewB.name ? -1 : 1;
+    });
   }
 
   // async createGroup(name: string): FutureErrorMessage {
