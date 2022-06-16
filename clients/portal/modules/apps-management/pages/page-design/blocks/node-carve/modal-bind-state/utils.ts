@@ -11,7 +11,7 @@ export function parseToExpression(expr: string, variables: string[]): string {
     // value maybe has symbol of '.' or '[]'
     const variable = variableMatch?.split('.')[0]?.split('[')[0] || '';
 
-    const _value = variables.includes(variable) ? value.replace(variable, `states['${variable}']`) : value;
+    const _value = variables.includes(variable) ? value.replace(variable, `state['${variable}']`) : value;
 
     return _value;
   }).join(' ');

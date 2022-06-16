@@ -41,7 +41,7 @@ function CodeEditor(
 
     if (type === 'convertor') {
       const name = updateAttrPayloadPath === 'shouldRender' ? 'shouldRender' : 'convertor';
-      _initValue = generateInitFunString({ name, args: 'states', body: initValue });
+      _initValue = generateInitFunString({ name, args: 'state', body: initValue });
     }
 
     if (type === 'toProps') {
