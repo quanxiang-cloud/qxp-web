@@ -438,6 +438,8 @@ class Orchestrator {
       if (viewInfo.type === ViewType.ExternalView) {
         await this.addExternalView(viewInfo as CreateViewParams<ExternalView>);
       }
+
+      return;
     }
 
     if (this.modalType === 'editStaticView') {
