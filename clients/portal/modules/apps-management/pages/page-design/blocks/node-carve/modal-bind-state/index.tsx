@@ -11,7 +11,7 @@ import { updateNodeProperty, findNode, updateCurNodeAsLoopContainer } from '../u
 import CodeEditor, { EditorRefType } from './code-editor';
 import LogicOperatorsAndBoundVariables from './bound-and-logic';
 import { ConfigContextState, UpdateAttrPayloadType, useConfigContext } from '../context';
-import { getFnBody, parseAst, parseToExpressionStr, toConvertorProp } from './utils';
+import { getFnBody, parseAst, parseToExpression, parseToExpressionStr, toConvertorProp } from './utils';
 
 import styles from './index.m.scss';
 import VariableList from './variable-list';
@@ -59,7 +59,10 @@ function ModalBindState(): JSX.Element | null {
       return { type: 'convertor', contentStr: convertorStr };
     }
 
-    return { type: 'expression', contentStr: expressionStr };
+    return {
+      type: 'expression',
+      contentStr: parseToExpression(expressionStr, boundVariables.map(({ depID }) => depID)),
+    };
   }, [expressionStr, convertorStr]);
 
   function onCancel(): void {
