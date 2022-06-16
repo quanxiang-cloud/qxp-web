@@ -5,7 +5,7 @@ import Icon from '@c/icon';
 import MoreMenu, { MenuItem } from '@c/more-menu';
 
 import './index.scss';
-import { View } from '../types.d';
+import { View, ViewType } from '../types.d';
 
 type Props = {
   view: View;
@@ -33,6 +33,16 @@ function ViewOption({ view, homeViewID, onViewOptionClick, className }: Props): 
         <div className="flex items-center">
           <Icon name="home" size={18} className="mr-8" />
           <span className="font-normal">设为应用主页</span>
+        </div>
+      ),
+    },
+    {
+      key: 'saveAsTemplate',
+      disabled: view.type !== ViewType.SchemaView && view.type !== ViewType.TableSchemaView,
+      label: (
+        <div className="flex items-center">
+          <Icon name="template" size={18} className="mr-8" />
+          <span className="font-normal">保存为模版</span>
         </div>
       ),
     },
