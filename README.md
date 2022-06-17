@@ -24,4 +24,4 @@
 
 本项目是全象低代码平台的 web 端，包含了管理与开发端 Portal，用户端 Home 和部分移动端的代码，项目技术栈主要为 React + Typescript 和 Golang，其中前端的部分核心组件在 [one-for-all](https://github.com/quanxiang-cloud/one-for-all) 开源项目中。
 
-关于 QXP Web 的架构和详细技术实现请参阅项[目文档](docs/index.md)。
+关于 QXP Web 的架构和详细技术实现请参阅[项目文档](docs/index.md)。
