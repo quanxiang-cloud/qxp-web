@@ -45,3 +45,15 @@ r.PathPrefix("/").Methods("GET").HandlerFunc(loginRequired(handlers.PortalHandle
 ```
 
 此路由放在了最后位置，当前面的路由匹配规则没有命中时，请求就会落到此路由上，返回 HTML 然后由前端渲染。
+
+## 前端项目结构
+
+`qxp-web` 使用了 React 和其他开源前端库来搭建，只要看一下 `package.json` 的 dependencies 就能知道具体用到了哪些。为了解耦，我们将一些低代码领域的公用组件都放到 [one-for-all](https://github.com/quanxiang-cloud/one-for-all) 项目中维护。前端源代码都在 `clients` 文件夹下，这里对前端项目的文件结构做简要介绍。
+
+从业务角度看，前端主要由三部分组成：
+
+- 公用的登录页面 `clients/login`
+- 管理端 portal `clients/portal`
+- 用户侧的应用访问页面 `clients/app-land`
+
+`clients/home` 是旧版本的用户端，目前 dashboard 和流程的相关前端页面还在其中，`clients/mobile` 是为 mobile 用户访问准备的页面。因为时间仓促，前端项目结构有很多不合理的地方，欢迎提 PR 更新。
