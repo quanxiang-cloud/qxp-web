@@ -1,7 +1,7 @@
 {
   "name": "qxp-web",
   "version": "1.0.0",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "main": "index.js",
   "scripts": {
     "dev:server:home": "go build -o ./bin/home server/cmd/home/main.go && ./bin/home -c config.yaml",
