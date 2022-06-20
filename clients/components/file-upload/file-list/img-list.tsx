@@ -12,6 +12,7 @@ type Props = {
   canDownload?: boolean;
   fileBucket: string;
   style?: React.CSSProperties;
+  originalThumbnail?: boolean,
   handleDownload?: (file: QXPUploadFileTask) => void;
   deleteFileItem?: (file: QXPUploadFileTask) => void;
   uploadProgressRender?: (file: QXPUploadFileTask) => React.ReactNode;
@@ -22,9 +23,10 @@ export function ImgList({
   style,
   className,
   fileBucket,
-  canDownload = true,
+  canDownload,
   handleDownload,
   deleteFileItem,
+  originalThumbnail,
   uploadProgressRender,
 }: Props): JSX.Element {
   return (
@@ -59,7 +61,9 @@ export function ImgList({
                 (state === 'success' || !state) && (
                   <>
                     <Thumbnail
-                      imgPath={`${fileBucket}/${uid}`}
+                      fileBucket={fileBucket}
+                      original={originalThumbnail}
+                      imgPath={uid}
                       imgName={name}
                       size={THUMBNAIL_SIZE}
                     />

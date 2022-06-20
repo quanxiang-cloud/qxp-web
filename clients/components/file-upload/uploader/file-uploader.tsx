@@ -19,8 +19,10 @@ export type FileUploaderProps = {
   disabled?: boolean;
   className?: string;
   maxFileSize?: number;
+  canDownload?: boolean;
   style?: React.CSSProperties;
   additionalPathPrefix?: string;
+  originalThumbnail?: boolean;
   uploaderDescription?: React.ReactNode;
   fileData?: QXPUploadFileBaseProps[];
   children?: React.ReactNode;
@@ -135,7 +137,6 @@ function FileUploader({
         {children}
       </FilePicker>
       <FileList
-        canDownload
         className="w-full"
         isPrivate={isPrivate}
         files={toJS(storeFiles)}

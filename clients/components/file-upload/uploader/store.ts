@@ -52,6 +52,11 @@ class FileStore {
   @observable fileRequests: Record<string, (() => void) | null> = {};
 
   @action
+  setUploadedFiles = (files: QXPUploadFileBaseProps[]): void => {
+    this.files = files;
+  };
+
+  @action
   addUploadFile = (fileItem: QXPUploadFileTask): void => {
     this.files.push(fileItem);
   };

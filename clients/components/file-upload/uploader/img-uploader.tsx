@@ -22,9 +22,11 @@ function ImgUploader({
   maxFileSize,
   fileData = [],
   isPrivate = true,
+  originalThumbnail,
   uploaderDescription,
   additionalPathPrefix,
   onFileError,
+  canDownload,
   onFileAbort,
   onFileDelete,
   onFileSuccess,
@@ -33,7 +35,7 @@ function ImgUploader({
     fileBucket: isPrivate ? OSS_PRIVATE_BUCKET_NAME : OSS_PUBLIC_BUCKET_NAME,
     files: fileData,
     additionalPathPrefix,
-    requestThumbnail: true,
+    requestThumbnail: !originalThumbnail,
     onError: onFileError,
     onSuccess: onFileSuccess,
   });
@@ -45,6 +47,7 @@ function ImgUploader({
     abortAllFiles,
     clearUploadFiles,
     removeUploadFile,
+    setUploadedFiles,
   } = fileStore;
 
   useEffect(() => {
@@ -53,6 +56,10 @@ function ImgUploader({
       clearUploadFiles();
     };
   }, []);
+
+  useEffect(()=> {
+    setUploadedFiles(fileData);
+  }, [fileData]);
 
   function deleteFileItem(deleteFile: QXPUploadFileTask): void {
     deleteFile.state === 'success' || !deleteFile.state ?
@@ -103,7 +110,8 @@ function ImgUploader({
     >
       <FileList
         imgOnly
-        canDownload
+        canDownload={canDownload}
+        originalThumbnail={originalThumbnail}
         isPrivate={isPrivate}
         files={toJS(storeFiles)}
         deleteFileItem={deleteFileItem}
