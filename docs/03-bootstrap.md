@@ -4,7 +4,7 @@
 
 **TL;DR;**
 
-- 安装 Golang 1.16.x 或以上版本, 安装 NodeJS 16.x.x, yarn 1.22.x 和 redis
+- 安装 Golang 1.16.x 或以上版本, 安装 Node.js 16.x.x, yarn 1.22.x 和 redis
 - 安装 nginx, 复制 `docs/appendix/qxp-web.conf` 到 nginx 配置文件夹下
 - 修改 `qxp-web.conf` 中的 root 路径
 - 复制一份 `config.yaml.example` 为 `config.yaml` 并修改为合适的本地开发地址，特别注意 `server_port` 需要和 nginx 配置转发端口一致
@@ -14,7 +14,7 @@
 
 ## 安装依赖
 
-如 [架构和技术栈](02-architecture.md) 中所述，qxp-web 是一个大前端项目，所以除了安装 NodeJS 等相关前端依赖以外，还需要安装 Golang 等其他后端依赖，下面逐步详细说明安装步骤。
+如 [架构和技术栈](02-architecture.md) 中所述，qxp-web 是一个大前端项目，所以除了安装 Node.js 等相关前端依赖以外，还需要安装 Golang 等其他后端依赖，下面逐步详细说明安装步骤。
 
 ### 安装 Golang
 
@@ -61,9 +61,9 @@ http {
 
 完成配置文件的更新后，可以执行 `nginx -t` 检查一下配置文件是否有语法错误，如果没有错误可以执行 `nginx -s reload` 重启 nginx 使配置文件生效。
 
-### 安装 NodeJS 和 yarn
+### 安装 Node.js 和 yarn
 
-相信你本地大概率已经安装了，只要保证 NodeJS 版本大于 16.x，yarn 版本为 1.x 即可。
+相信你本地大概率已经安装了，只要保证 Node.js 版本大于 16.x，yarn 版本为 1.x 即可。
 
 ## 项目启动
 
