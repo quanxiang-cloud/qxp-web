@@ -7,12 +7,24 @@ import moment from 'moment';
 import { SaveWorkFlowParamsType } from '@flow/api';
 
 import { edgeBuilder, nodeBuilder } from './utils';
-import type { StoreValue, BusinessData, CurrentElement, Data, FormDataElement } from './type';
+import type { StoreValue, BusinessData, CurrentElement, Data, FormDataElement, DelayedData } from './type';
 import { CURRENT_WORK_FLOW_VERSION } from './utils/constants';
 
-const getStoreInitialData = (): StoreValue => {
-  const startID = 'formData' + uuid();
+const getStoreInitialData = (triggerMethod: string): StoreValue => {
+  const startID = (triggerMethod === 'form-data' ? 'formData' : 'delayed') + uuid();
   const endID = 'end' + uuid();
+  const triggerMode = triggerMethod === 'form-data' ? 'FORM_DATA' : 'FORM_TIME';
+
+  let startNode = nodeBuilder(startID, 'formData', '工作表触发', {
+    parentID: [],
+    childrenID: [endID],
+  });
+  if (triggerMethod !== 'form-data') {
+    startNode = nodeBuilder(startID, 'delayed', '定时触发', {
+      parentID: [],
+      childrenID: [endID],
+    });
+  }
   return {
     saved: false,
     needSaveFlow: false,
@@ -30,7 +42,7 @@ const getStoreInitialData = (): StoreValue => {
     keyFields: '',
     instanceName: '',
     processKey: '',
-    triggerMode: 'FORM_DATA',
+    triggerMode,
     nodeIdForDrawerForm: '',
     currentConnection: {},
     cancelable: true,
@@ -40,10 +52,7 @@ const getStoreInitialData = (): StoreValue => {
     seeStatusAndMsg: true,
     nodeAdminMsg: true,
     elements: [
-      nodeBuilder(startID, 'formData', '工作表触发', {
-        parentID: [],
-        childrenID: [endID],
-      }),
+      startNode,
       nodeBuilder(endID, 'end', '结束', {
         width: 100,
         height: 28,
@@ -55,10 +64,10 @@ const getStoreInitialData = (): StoreValue => {
   };
 };
 
-const store = new BehaviorSubject<StoreValue>(getStoreInitialData());
+const store = new BehaviorSubject<StoreValue>(getStoreInitialData('form-data'));
 
-export function initStore(): void {
-  store.next(getStoreInitialData());
+export function initStore(triggerMethod: string): void {
+  store.next(getStoreInitialData(triggerMethod));
 }
 
 export function updateStore(updater: (st: StoreValue) => StoreValue): void {
@@ -140,6 +149,11 @@ export function buildWorkFlowSaveData(
     version, nodeIdForDrawerForm, name, triggerMode, cancelable, urgeable, nodeAdminMsg,
     seeStatusAndMsg, keyFields, instanceName, canCancelNodes, canCancelType,
   } = store.value;
+
+  let cron = undefined;
+  if (triggerMode === 'FORM_TIME') {
+    cron = (saveData as Partial<DelayedData>).timer;
+  }
   return {
     bpmnText: buildBpmnText(version, nodeIdForDrawerForm, saveData),
     name: name as string,
@@ -153,6 +167,7 @@ export function buildWorkFlowSaveData(
     instanceName,
     canCancelNodes,
     canCancelType,
+    cron,
   };
 }
 

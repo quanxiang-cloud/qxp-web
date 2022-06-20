@@ -16,11 +16,12 @@ import CreateTableData from './create-table-data';
 import UpdateTableData from './update-table-data';
 import FlowContext from '../../../flow-context';
 import ProcessBranch from './process-branch';
+import Delayed from './timer-start';
 import ProcessBranchTarget from './process-branch-target';
 import WebHookConfig from './webhook';
 
 interface Props {
-  workForm: NodeWorkForm;
+  workForm: NodeWorkForm | string
   defaultValue: Data;
   onSubmit: (data: BusinessData) => void;
   onCancel: () => void;
@@ -36,6 +37,8 @@ function useTableSchema(appID: string, tableID: string): [ReturnType<typeof sche
     }
 
     return getTableSchema(appID, tableID).then((pageSchema) => (pageSchema?.schema || {}));
+  }, {
+    enabled: !tableID,
   });
 
   useEffect(() => {
@@ -63,6 +66,7 @@ const components: Record<string, JSXElementConstructor<any>> = {
   processBranchTarget: ProcessBranchTarget,
   processVariableAssignment: ProcessVariableAssignmentConfig,
   tableDataCreate: CreateTableData,
+  delayed: Delayed,
   email: SendEmailConfig,
   autocc: CopyTo,
   letter: WebMessage,
@@ -79,6 +83,7 @@ export default function Form({
 }: Props): JSX.Element {
   function getConfigForm(): JSX.Element {
     const component = components[defaultValue.type];
+
     return React.createElement(component, {
       defaultValue: defaultValue.businessData,
       onSubmit,
@@ -88,7 +93,7 @@ export default function Form({
     });
   }
   const { appID } = useContext(FlowContext);
-  const [sourceTableSchema, isLoading] = useTableSchema(appID, workForm?.value || '');
+  const [sourceTableSchema, isLoading] = useTableSchema(appID, (workForm as NodeWorkForm)?.value || '');
 
   if (isLoading) {
     // todo handle error case
@@ -98,12 +103,12 @@ export default function Form({
   // this a patch.
   // When creating work flow, selecting working-table should be the first step, nothing else.
   // All nodes in flow requires working-table, except the start node.
-  if (defaultValue.type === 'formData') {
+  if (defaultValue.type === 'formData' && workForm as NodeWorkForm) {
     return (
       <FlowTableContext.Provider
         value={{
-          tableID: workForm?.value || '',
-          tableName: workForm?.name || '',
+          tableID: (workForm as NodeWorkForm)?.value || '',
+          tableName: (workForm as NodeWorkForm)?.name || '',
           tableSchema: sourceTableSchema,
         }}
       >
@@ -114,21 +119,13 @@ export default function Form({
     );
   }
 
-  if (!sourceTableSchema.length) {
-    return (<div>loading...</div>);
-  }
+  // if (!sourceTableSchema.length) {
+  //   return (<div>loading...</div>);
+  // }
 
   return (
-    <FlowTableContext.Provider
-      value={{
-        tableID: workForm?.value || '',
-        tableName: workForm?.name || '',
-        tableSchema: sourceTableSchema,
-      }}
-    >
-      <div className="flex-1 flex flex-col" style={{ height: 'calc(100% - 56px)' }}>
-        {getConfigForm()}
-      </div>
-    </FlowTableContext.Provider>
+    <div className="flex-1 flex flex-col" style={{ height: 'calc(100% - 56px)' }}>
+      {getConfigForm()}
+    </div>
   );
 }

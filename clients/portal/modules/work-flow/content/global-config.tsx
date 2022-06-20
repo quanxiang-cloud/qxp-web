@@ -46,7 +46,7 @@ export default function GlobalConfig(): JSX.Element | null {
   const { appID, flowID } = useContext(FlowContext);
   const formDataElement = getFormDataElement();
   const { data: fieldList, isLoading } = useQuery(
-    ['GET_FIELD_LIST', formDataElement.data.businessData.form.value, appID],
+    ['GET_FIELD_LIST', formDataElement?.data?.businessData?.form?.value || '', appID],
     async ({ queryKey, meta }) => {
       const schema = await getFormFieldSchema({ queryKey, meta });
       const schemaFields = schemaToFields(schema);

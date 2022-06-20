@@ -31,7 +31,9 @@ import './style.scss';
 type OperateType = 'edit' | 'settings' | 'variables';
 
 export default function Detail(): JSX.Element {
+  const { flowID, type, appID } = useParams<{ flowID: string; type: string; appID: string }>();
   const [currentOperateType, setCurrentOperateType] = useState<OperateType>('edit');
+
   const isFirstLoad = useRef(true);
   const {
     showDataNotSaveConfirm, currentDataNotSaveConfirmCallback, status, needSaveFlow, elements, id,
@@ -40,7 +42,6 @@ export default function Detail(): JSX.Element {
 
   const isEmptyWorkFlow = !id;
 
-  const { flowID, type, appID } = useParams<{ flowID: string; type: string; appID: string }>();
   const saver = useSaver(appID, flowID);
 
   const { data, isLoading, isError, refetch } = useQuery(['GET_WORK_FLOW_INFO', flowID], getWorkFlowInfo, {
@@ -109,6 +110,7 @@ export default function Detail(): JSX.Element {
         canCancelType: data.canCancelType === 0 ? 1 : data.canCancelType,
         canCancelNodes: data.canCancelNodes,
         instanceName: data.instanceName,
+        cron: data?.cron,
       }));
     } catch (error) {
       toast.error('bpmn 数据格式解析错误!');
@@ -116,7 +118,7 @@ export default function Detail(): JSX.Element {
   }, [data]);
 
   useEffect(() => {
-    !flowID && initStore();
+    !flowID && initStore(type);
   }, [flowID]);
 
   function saveWorkFlow(): void {

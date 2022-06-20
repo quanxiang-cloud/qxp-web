@@ -5,6 +5,7 @@ export const PARAMS_MAP = {
   FORM_TIME: '工作表时间触发',
   'form-data': '工作表触发',
   'form-time': '工作表时间触发',
+  'timer-trigger': '定时触发',
 };
 
 export const POPPER_PARAMS = {

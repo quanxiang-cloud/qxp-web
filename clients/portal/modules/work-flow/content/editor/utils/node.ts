@@ -86,6 +86,13 @@ function getNodeInitialData(type: NodeType): BusinessData {
       filterRule: {},
       updateRule: [],
     },
+    delayed: {
+      timer: '',
+      triggerWay: [],
+      whenAlterFields: [],
+      triggerCondition: { op: '', expr: [] },
+      events: {},
+    },
     processBranchSource: {
       processBranchEndStrategy: '',
     },
