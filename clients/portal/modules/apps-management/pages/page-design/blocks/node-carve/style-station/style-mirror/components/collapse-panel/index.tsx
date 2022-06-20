@@ -48,8 +48,9 @@ function CollapsePanel({
         />
       </div>
       <div
-        style={{ height: isCollapse ? 0 : 'auto' }}
-        className={cs('overflow-hidden', contentClassName)}
+        className={cs('overflow-hidden', {
+          hidden: isCollapse,
+        }, contentClassName)}
       >
         {children}
       </div>

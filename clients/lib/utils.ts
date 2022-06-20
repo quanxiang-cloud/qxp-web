@@ -315,3 +315,12 @@ export function realizeLink(appID: string, link: string): string {
   });
   return _link;
 }
+
+export function isJSON(str: string): boolean {
+  try {
+    const obj = JSON.parse(str);
+    return !!(typeof obj === 'object' && obj);
+  } catch (e) {
+    return false;
+  }
+}

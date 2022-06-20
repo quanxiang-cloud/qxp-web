@@ -26,6 +26,13 @@ const InfoCard = () => {
       url: '/system/unusual',
       authority: 'abnormalFlow',
     },
+    {
+      id: 'config',
+      icon: 'outlet',
+      name: '平台参数配置',
+      url: '/system/config',
+      authority: 'abnormalFlow',
+    },
   ];
 
   return (

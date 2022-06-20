@@ -16,6 +16,7 @@ type FileListProps = {
   canDownload?: boolean;
   isPrivate?: boolean;
   style?: React.CSSProperties;
+  originalThumbnail?: boolean;
   showFileName?: boolean;
   deleteFileItem?: (file: QXPUploadFileTask) => void;
   onRetryFileUpload?: (file: QXPUploadFileTask) => void;
@@ -29,6 +30,7 @@ export default function FileList({
   isPrivate = true,
   canDownload = true,
   showFileName = true,
+  originalThumbnail,
   deleteFileItem,
   onRetryFileUpload,
 }: FileListProps): JSX.Element | null {
@@ -76,6 +78,7 @@ export default function FileList({
   if (imgOnly) {
     return (
       <ImgList
+        originalThumbnail={originalThumbnail}
         files={files}
         style={style}
         fileBucket={isPrivate ? OSS_PRIVATE_BUCKET_NAME : OSS_PUBLIC_BUCKET_NAME}
