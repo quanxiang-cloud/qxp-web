@@ -25,12 +25,12 @@ const Delayed = ({ defaultValue, onSubmit, onCancel }: Props): ReactElement=>{
           name: '基础配置',
           content: (
             <div className="mb-24 flex flex-col">
-              <div className="mb-8">触发方式</div>
+              <div className="mb-8">触发事件</div>
               <Input
                 className="flex-1 grid"
                 value={timer}
                 onChange={(e) => setTimer(e.target.value)}
-                placeholder="直属上级姓名"
+                placeholder="corn表达式：0 0/1 * * * ?"
               />
             </div>
           ),
