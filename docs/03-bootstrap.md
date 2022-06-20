@@ -14,7 +14,7 @@
 
 ## 安装依赖
 
-如 [架构和技术栈](architecture.md) 中所述，qxp-web 是一个大前端项目，所以除了安装 NodeJS 等相关前端依赖以外，还需要安装 Golang 等其他后端依赖，下面逐步详细说明安装步骤。
+如 [架构和技术栈](02-architecture.md) 中所述，qxp-web 是一个大前端项目，所以除了安装 NodeJS 等相关前端依赖以外，还需要安装 Golang 等其他后端依赖，下面逐步详细说明安装步骤。
 
 ### 安装 Golang
 
@@ -77,7 +77,7 @@ http {
 
 如果改了前端代码，等待 bundle 完成后，刷新一下浏览器就能看到效果。如果改了服务端代码则需要中断后重新执行 `make -j`，因为服务端的代码很少改动，所以没有加自动重启。
 
-总有些事情不会很顺利，不要慌，如果你看不到登录页面，建议先看看 [架构和技术栈](architecture.md) 和 [项目构建说明](build_instructions.md)，分析一下问题后再看看下面的 Troubleshooting。
+总有些事情不会很顺利，不要慌，如果你看不到登录页面，建议先看看 [架构和技术栈](architecture.md) 和 [项目构建说明](04-build_instructions.md)，分析一下问题后再看看下面的 Troubleshooting。
 
 ### Troubleshooting
 
