@@ -11,6 +11,7 @@ const MessageDetails = lazy(() => import('./message-details'));
 const Log = lazy(() => import('./audit-log'));
 const UnusualTask = lazy(() => import('./unusual-task'));
 const UnusualTaskDetail = lazy(() => import('./unusual-task/detail'));
+const Config = lazy(() => import('./platform-setting'));
 
 export default function Index(): JSX.Element {
   const { path } = useRouteMatch();
@@ -37,6 +38,7 @@ export default function Index(): JSX.Element {
           path={`${path}/unusual/detail/:id/:status/:processInstanceId/:taskId/:flowInstanceId`}
           component={UnusualTaskDetail} />
         <Route path={`${path}/unusual`} component={UnusualTask} />
+        <Route path={`${path}/config`} component={Config} />
         <Redirect from={path} to={`${path}/message`} />
         <Route component={() => <NotFoundError url={`${path}/message`}/>} />
       </Switch>
