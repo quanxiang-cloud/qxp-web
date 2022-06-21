@@ -1,12 +1,13 @@
 import React from 'react';
 
-import Menu from './menu';
+import Menu from './navigation-menu';
 
 function Test(): JSX.Element {
   return (
     <>
-      <Menu />
-      <div className='h-130 bg-indigo-300'></div>
+      <Menu mode="top" />
+      <div className='h-280 bg-indigo-300'></div>
+      <Menu mode="side" />
     </>
   );
 }
