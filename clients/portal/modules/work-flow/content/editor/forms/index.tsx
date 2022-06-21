@@ -10,10 +10,10 @@ import type {
 import store, {
   getNodeElementById,
   updateStore,
+  updateBusinessData,
   getFormDataElement,
   buildWorkFlowSaveData,
   toggleNodeForm,
-  updateBusinessData,
 } from '@flow/content/editor/store';
 
 import Form from './form';
@@ -30,7 +30,7 @@ const drawerTitleMap = {
   tableDataCreate: '数据新增',
   tableDataUpdate: '数据更新',
   autocc: '抄送',
-  delayed: '定时1',
+  delayed: '定时',
   email: '发送邮件',
   letter: '站内信',
   processBranchSource: '分流',
@@ -81,11 +81,9 @@ export default function NodeFormWrapper(): JSX.Element | null {
 
   const previousName = usePrevious(name);
   function saveWorkFlow(data: BusinessData): void {
-    console.log(data);
     if (!name || !previousName || !elements?.length) {
       return;
     }
-
     saver(buildWorkFlowSaveData(appID, data), () => {
       setFormDataChanged(false);
       updateBusinessData(nodeIdForDrawerForm, (b) => ({ ...b, ...data }), { saved: true });

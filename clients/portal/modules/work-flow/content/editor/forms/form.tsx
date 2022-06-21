@@ -83,7 +83,6 @@ export default function Form({
 }: Props): JSX.Element {
   function getConfigForm(): JSX.Element {
     const component = components[defaultValue.type];
-
     return React.createElement(component, {
       defaultValue: defaultValue.businessData,
       onSubmit,
@@ -103,7 +102,7 @@ export default function Form({
   // this a patch.
   // When creating work flow, selecting working-table should be the first step, nothing else.
   // All nodes in flow requires working-table, except the start node.
-  if (defaultValue.type === 'formData' && workForm as NodeWorkForm) {
+  if (defaultValue.type === 'formData') {
     return (
       <FlowTableContext.Provider
         value={{
@@ -118,10 +117,6 @@ export default function Form({
       </FlowTableContext.Provider>
     );
   }
-
-  // if (!sourceTableSchema.length) {
-  //   return (<div>loading...</div>);
-  // }
 
   return (
     <div className="flex-1 flex flex-col" style={{ height: 'calc(100% - 56px)' }}>

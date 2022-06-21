@@ -83,14 +83,11 @@ export default function FormDataForm({ defaultValue, onSubmit, onCancel, onChang
 
   function onSave(): void {
     if (!isTriggerWayValid() || !isTriggerConditionValid(value.triggerCondition.expr)) {
-      console.log(11);
       return updateStore((s) => ({ ...s, validating: true }));
     }
     if (isEmptyTable) {
-      console.log(22);
       return emptyTableNotify();
     }
-    console.log(33);
     onSubmit(value);
   }
 

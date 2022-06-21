@@ -23,8 +23,8 @@ export type SaveWorkFlowParamsType = {
   canCancelNodes?: string,
   cron?: string,
 };
-export async function saveWorkFlow(flowData: SaveWorkFlowParamsType): Promise<WorkFlowData> {
-  return await httpClient<WorkFlowData>(
+export function saveWorkFlow(flowData: SaveWorkFlowParamsType): Promise<WorkFlowData> {
+  return httpClient<WorkFlowData>(
     '/api/v1/flow/saveFlow',
     flowData,
   );

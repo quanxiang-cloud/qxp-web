@@ -5,7 +5,6 @@ export default function useObservable<T = Record<string, any>>(
   obs$: Observable<T> | void, defaultValue?: T,
 ): T {
   const [value, setValue] = useState<T>(defaultValue ?? {} as T);
-
   useEffect(() => {
     if (obs$) {
       const subscription = obs$.subscribe(setValue);
