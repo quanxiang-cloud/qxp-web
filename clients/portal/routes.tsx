@@ -4,6 +4,7 @@ import { Route, Switch } from 'react-router-dom';
 import Loading from '@c/loading';
 import NotFoundError from '@c/404-error';
 
+const Test = React.lazy(() => import('../test'));
 const AppsRoutes = React.lazy(() => import('./modules/apps-management/routes'));
 const RedirectToApps = React.lazy(() => import('./modules/dashboard/redirect-to-apps'));
 const PagePreview = React.lazy(() => import('./modules/apps-management/pages/page-design/page-preview'));
@@ -19,6 +20,7 @@ export default function Routes(): JSX.Element {
     <React.Suspense fallback={<Loading className="w-screen h-screen" desc="加载中..." />}>
       <Switch>
         <Route exact path="/" component={RedirectToApps} />
+        <Route path="/test" component={Test} />
         <Route path="/metadata" component={MetaData} />
         <Route path="/access-control" component={AccessControl} />
         <Route path="/system" component={SystemMgmt} />
