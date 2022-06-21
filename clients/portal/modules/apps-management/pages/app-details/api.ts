@@ -71,3 +71,7 @@ export const formDuplicate = (
 export const initAppPath = (appID: string): Promise<void> => {
   return httpClient('/api/v1/polyapi/namespace/initAppPath', { data: { appID } });
 };
+
+export const appRolePoly = (appID: string, perPoly: boolean): Promise<void> => {
+  return httpClient('/api/v1/app-center/perPoly', { appID, perPoly });
+};

@@ -10,6 +10,7 @@ declare global {
     appIcon: string;
     useStatus: number;
     appSign: string;
+    perPoly: boolean;
     appZipInfo?: any;
     createdBy?: string;
     template?: string;
