@@ -20,7 +20,7 @@ type RoleOption = {
 
 const STRATEGY_OPTIONS: RoleOption[] = [
   {
-    label: '单角色访问',
+    label: '多角色访问',
     value: false,
   },
   {
@@ -101,7 +101,7 @@ function BasicInfo(): JSX.Element {
             onChange={handleStrategyChange}
             value={appDetailsStore.appDetails.perPoly}
           />
-          <SubTitle title="分角色访问：当用户有多个角色时，可在用户头像内进行角色切换" />
+          <SubTitle title="多角色访问：当用户有多个角色时，可在用户头像内切换多个角色" />
           <SubTitle title="合并角色访问：当用户有多个角色时，系统会自动将权限聚合成最大权限范围" />
         </div>
       </Card>
