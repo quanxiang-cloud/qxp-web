@@ -88,10 +88,6 @@ function getNodeInitialData(type: NodeType): BusinessData {
     },
     delayed: {
       timer: '',
-      triggerWay: [],
-      whenAlterFields: [],
-      triggerCondition: { op: '', expr: [] },
-      events: {},
     },
     processBranchSource: {
       processBranchEndStrategy: '',

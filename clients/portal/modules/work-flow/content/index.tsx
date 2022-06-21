@@ -17,6 +17,7 @@ export default function Content({ currentOperateType }: Props): JSX.Element {
     [T, always(() => null)],
   ]);
   const Main = getMain(currentOperateType);
+
   return (
     <main className="flex flex-1">
       <Main />

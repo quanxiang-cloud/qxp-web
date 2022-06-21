@@ -8,7 +8,6 @@ import ItemWithTitleDesc from '@c/item-with-title-desc';
 import Icon from '@c/icon';
 import Popper from '@c/popper';
 
-// import SetimeTaskModal from './time-flow-modal';
 import './style.scss';
 
 interface Props {
@@ -16,10 +15,9 @@ interface Props {
   onSearchInputChange: (value: string) => void;
 }
 
-export default function({ onTriggerTypeChange, onSearchInputChange }: Props): JSX.Element {
+export default function({ onSearchInputChange }: Props): JSX.Element {
   const history = useHistory();
   const { appID } = useParams<{ appID: string; }>();
-  // const [showTimedModal, setShowTimedModal] = useState(false);
   const reference = useRef<HTMLButtonElement>(null);
 
   function newWorkFlow(flowType: string): void {
@@ -27,9 +25,8 @@ export default function({ onTriggerTypeChange, onSearchInputChange }: Props): JS
   }
 
   return (
-    <>
-      <div className="flex justify-between mb-8">
-        {/* <Switch
+    <div className="flex justify-between mb-8">
+      {/* <Switch
         className="mr-20"
         value=""
         options={[{
@@ -46,73 +43,66 @@ export default function({ onTriggerTypeChange, onSearchInputChange }: Props): JS
         ]}
         onChange={(value) => onTriggerTypeChange(value)}
       /> */}
-        <Button ref={reference} iconName="add" textClassName="text-12" modifier="primary">
-        新建工作流
-        </Button>
-        <Popper
-          trigger='hover'
-          reference={reference}
-          placement="bottom-start"
-          modifiers={[{ name: 'offset', options: { offset: [0, 4] } }]}
-        >
-          <div className="w-552 z-20 shadow-title bg-white rounded-6 mr-2 group">
-            <TextHeader
-              title="选择要新建的工作流触发方式："
-              // action={<a className="ease-linear text-underline"> 📌 如何选择？</a>}
-              className="px-16 py-7 whitespace-nowrap"
+      <Button ref={reference} iconName="add" textClassName="text-12" modifier="primary">
+          新建工作流
+      </Button>
+      <Popper
+        trigger='hover'
+        reference={reference}
+        placement="bottom-start"
+        modifiers={[{ name: 'offset', options: { offset: [0, 4] } }]}
+      >
+        <div className="w-552 z-20 shadow-title bg-white rounded-6 mr-2 group">
+          <TextHeader
+            title="选择要新建的工作流触发方式："
+            // action={<a className="ease-linear text-underline"> 📌 如何选择？</a>}
+            className="px-16 py-7 whitespace-nowrap"
+          />
+          <div
+            key="FORM_DATA"
+            className="flex cursor-pointer items-center justify-between px-16 py-12 create-flow-menu-group"
+            onClick={() => newWorkFlow('form-data')}
+          >
+            <ItemWithTitleDesc
+              itemRender={(<Icon size={44} name="form-data" className="corner-12-2-12-12" />)}
+              title="工作表触发"
+              titleClassName="text-h6"
+              desc="当工作表中新增记录或已有记录发生变更时触发"
+              descClassName="text-caption"
+              textClassName="whitespace-nowrap"
             />
-            <div
-              key="FORM_DATA"
-              className="flex cursor-pointer items-center justify-between px-16 py-12 create-flow-menu-group"
-              onClick={() => newWorkFlow('form-data')}
-            >
-              <ItemWithTitleDesc
-                itemRender={(<Icon size={44} name="form-data" className="corner-12-2-12-12" />)}
-                title="工作表触发"
-                titleClassName="text-h6"
-                desc="当工作表中新增记录或已有记录发生变更时触发"
-                descClassName="text-caption"
-                textClassName="whitespace-nowrap"
-              />
-              <Icon
-                name="nav-right"
-                className="ml-80 transition-all"
-                size={24}
-              />
-            </div>
-            <div
-              key="FORM_TIME"
-              className="flex cursor-pointer items-center justify-between px-16 py-12 create-flow-menu-group"
-              onClick={() => newWorkFlow('time-flow')}
-            >
-              <ItemWithTitleDesc
-                itemRender={(<Icon size={44} name="form-time" className="corner-12-2-12-12" />)}
-                title="定时触发"
-                titleClassName="text-h6"
-                desc="根据设定的定时触发规则，在定时生效时触发流程"
-                descClassName="text-caption"
-                textClassName="whitespace-nowrap"
-              />
-              <Icon
-                name="nav-right"
-                className="ml-80 transition-all"
-                size={24}
-              />
-            </div>
+            <Icon
+              name="nav-right"
+              className="ml-80 transition-all"
+              size={24}
+            />
           </div>
-        </Popper>
-        <Search
-          className="flow-search"
-          placeholder="搜索工作流名称……"
-          onChange={onSearchInputChange}
-        />
-      </div>
-      {/* {showTimedModal && (
-        <SetimeTaskModal
-          onCancel={() => setShowTimedModal(false)}
-          onSubmit={() => history.push(`/apps/flow/new/time-flow/${appID}`)}
-        />
-      )} */}
-    </>
+          <div
+            key="FORM_TIME"
+            className="flex cursor-pointer items-center justify-between px-16 py-12 create-flow-menu-group"
+            onClick={() => newWorkFlow('time-flow')}
+          >
+            <ItemWithTitleDesc
+              itemRender={(<Icon size={44} name="form-time" className="corner-12-2-12-12" />)}
+              title="定时触发"
+              titleClassName="text-h6"
+              desc="根据设定的定时触发规则，在定时生效时触发流程"
+              descClassName="text-caption"
+              textClassName="whitespace-nowrap"
+            />
+            <Icon
+              name="nav-right"
+              className="ml-80 transition-all"
+              size={24}
+            />
+          </div>
+        </div>
+      </Popper>
+      <Search
+        className="flow-search"
+        placeholder="搜索工作流名称……"
+        onChange={onSearchInputChange}
+      />
+    </div>
   );
 }

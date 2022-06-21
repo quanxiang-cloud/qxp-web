@@ -13,13 +13,6 @@ const advancedCompTypes = [
 ];
 export const excludeComps = ['subtable'];
 
-export const targetFieldExcludeComps = [
-  'serial',
-  'aggregationrecords',
-  'associatedrecords',
-  'associateddata',
-  'subtable'];
-
 export const complexFieldTypes = ['subtable', 'associatedrecords', 'associateddata'];
 
 type Options = {

@@ -33,7 +33,6 @@ type OperateType = 'edit' | 'settings' | 'variables';
 export default function Detail(): JSX.Element {
   const { flowID, type, appID } = useParams<{ flowID: string; type: string; appID: string }>();
   const [currentOperateType, setCurrentOperateType] = useState<OperateType>('edit');
-
   const isFirstLoad = useRef(true);
   const {
     showDataNotSaveConfirm, currentDataNotSaveConfirmCallback, status, needSaveFlow, elements, id,

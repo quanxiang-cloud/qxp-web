@@ -1,19 +1,60 @@
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement } from 'react';
 import Tab from '@c/tab';
 import SaveButtonGroup from '@flow/content/editor/components/_common/action-save-button-group';
 import type { DelayedData } from '@flow/content/editor/type';
-import { Input } from 'antd';
+import { SchemaForm, useForm, createFormActions } from '@formily/antd';
+import { Input, Select, Switch, NumberPicker } from '@formily/antd-components';
+
 interface Props {
   defaultValue: DelayedData;
   onSubmit: (value: any) => void;
   onCancel: () => void;
 }
 
+const FIELD_FORM_SCHEMA = {
+  type: 'object',
+  properties: {
+    Fields: {
+      type: 'object',
+      'x-component': 'mega-layout',
+      properties: {
+        timer: {
+          type: 'string',
+          title: '定时触发',
+          required: true,
+          'x-rules': [
+            {
+              required: true,
+              message: '请输入cron表达式',
+            },
+            {
+              pattern: /^((\*|\?|\d+((\/|\\-){0,1}(\d+))*)\s*){6}$/,
+              message: '请输入合格的cron表达式',
+            },
+          ],
+          'x-component': 'Input',
+          'x-index': 0,
+          'x-mega-props': {
+            labelAlign: 'top',
+          },
+        },
+      },
+    },
+  },
+};
+
+const actions = createFormActions();
 const Delayed = ({ defaultValue, onSubmit, onCancel }: Props): ReactElement=>{
-  const [timer, setTimer] = useState<string>(defaultValue?.timer || '');
+  const form = useForm({
+    actions,
+    onSubmit: (formData) => {
+      onSubmit(formData);
+    },
+    initialValues: defaultValue,
+  });
 
   function onSave(): void {
-    onSubmit({ timer });
+    form.submit();
   }
 
   return (
@@ -24,15 +65,11 @@ const Delayed = ({ defaultValue, onSubmit, onCancel }: Props): ReactElement=>{
           id: 'basicConfig',
           name: '基础配置',
           content: (
-            <div className="mb-24 flex flex-col">
-              <div className="mb-8">触发方式</div>
-              <Input
-                className="flex-1 grid"
-                value={timer}
-                onChange={(e) => setTimer(e.target.value)}
-                placeholder="直属上级姓名"
-              />
-            </div>
+            <SchemaForm
+              form={form as any}
+              components={{ Input, Select, Switch, NumberPicker }}
+              schema={FIELD_FORM_SCHEMA}
+            />
           ),
         }]}
       />

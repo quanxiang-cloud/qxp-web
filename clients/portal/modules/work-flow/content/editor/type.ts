@@ -29,7 +29,7 @@ export interface WorkFlowData {
   instanceName: string;
   canCancelType: number,
   canCancelNodes: string,
-  cron: string,
+  cron?: string,
 }
 
 export interface EdgeProps {
@@ -103,7 +103,7 @@ export type CurrentConnection = {
 }
 export type TriggerWayValue = string | 'whenAdd' | 'whenAlter' | '';
 type TriggerWay = TriggerWayValue[];
-export type NodeWorkForm = { name?: string; value: string }
+export type NodeWorkForm = { name?: string; value: string };
 
 export type FormDataData = {
   form: NodeWorkForm;
@@ -113,11 +113,10 @@ export type FormDataData = {
   events: Record<any, any>;
 }
 
-export type DelayedType='tableColumn'|'aTime'|'specTime'
-
 export type DelayedData = {
   timer: string
 }
+
 export type TriggerValue = {
   triggerWay: TriggerWay;
   whenAlterFields: string[];
@@ -404,6 +403,7 @@ interface ProcessBranchTargetNodeData extends BaseNodeData {
 export type Data = CCNodeData | WebMessageNodeData | SendEmailNodeData | TableDataUpdateNodeData |
   TableDataCreateNodeData | ProcessVariableAssignmentNodeData | ProcessBranchNodeData |
   FormDataNodeData | ApproveNodeData | FillInNodeData | ProcessBranchTargetNodeData | WebhookNodeData | DelayedNodeData;
+
 export type NodeType = 'formData' | 'fillIn' | 'approve' | 'end' | 'processBranch' |
 'processVariableAssignment' | 'tableDataCreate' | 'tableDataUpdate' | 'delayed' | 'email' |
   'letter' | 'autocc' | 'processBranchSource' | 'processBranchTarget' | 'webhook';
