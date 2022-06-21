@@ -124,4 +124,81 @@ POST /api/v1/persona/batchSetValue
 
 页面引擎的组件库展示了我们可以使用的组件有哪些，这些组件都是以 package 为单位归类的，package 的名称需要全局唯一。那一个 package 中有哪些组件可用呢？这个组件的 export name 又是什么的？
 
-上述的信息就需要组件库的作者提供一份声明文件，我们把这份描述文件叫做 manifest json。
+上述的信息就需要组件库的作者提供一份声明文件，我们把这份描述文件叫做 manifest json。你可以在[这里](https://github.com/quanxiang-cloud/qxp-web/blob/develop/clients/portal/modules/apps-management/pages/page-design/blocks/fountainhead/type.ts#L63)找到 manifest 的类型定义，也可以参考 @one-for-all/headless-ui 中的组件的 manifest，比如这是 divider 组件的 [manifest](https://github.com/quanxiang-cloud/one-for-all/blob/main/packages/headless-ui/src/shared/divider/artery-config.ts#L3)，下面给出一个简单的示例说明：
+
+```typescript
+const dividerManifest = {
+  // category 表示此组件在 package 中的分类，组件库 block 会按照分类按展示组件，可以省略
+  category: '基础组件',
+  // 组件的 props 可能会很多，为了更好的用户体验，我们可以在 manifest 里定义一些 props 的组合，
+  // 为组件指定一些默认的 props。所以我们定义了一个名为 variants 的对象数组，数组中的每一项就是
+  // 预制的组件 props 组合。当然，如果一个组件比较简单，那 variants 的长度可以直接为 1。
+  variants: [
+    {
+      // 组件的 icon，使用 icon 标识组件用户体验更友好
+      icon: {
+        type: 'image',
+        // 图片的地址或者图片的 base64 字符串
+        src: 'base64_image_string',
+      },
+      // 组件的描述
+      desc: '分隔线',
+      // 组件的显示名称
+      label: '分隔线',
+      // 此 variants 的默认 props 组合
+      initialProps: {
+        direction: 'horizontal',
+        size: '100%',
+        thickness: '1px',
+      },
+    },
+  ],
+};
+
+const packageManifest: Record<string, Inventory> = {
+  // `divider` 是分割符组件在此 package 中的 export name
+  divider: dividerManifest,
+  anotherComponent: anotherManifest,
+};
+```
+
+只有声明了 manifest 的组件才能显示在组件库中。写完之后我们需要将其保存到配置中心，key 为 `PACKAGE_MANIFEST:<packageName>`，packageName 自然就是组件库的名称，请求的参数的版本和组件的版本保持一致就可以，value 就是把整个 package 的 manifest 序列化成字符串。所以一段示例 js 代码可以写为：
+
+```javascript
+batchSetPersona([{
+  key: 'PACKAGE_MANIFEST:myAwesomeComponents',
+  version: '1.0.0',
+  value: JSON.stringify(packageManifest)
+}])
+```
+
+### 组件配置 Block 和 Props Spec json
+
+页面引擎的组件配置 Block 是用来配置组件的 props 的，通过传入不同的 props，我们就能让组件表现出不同的行为或者渲染预期的 UI。那组件具体有哪些 props 可以配置呢？这些 props 又是什么数据格式的？
+
+同样的，我们需要为每个组件写一份 Props Spec。Props Spec 的定义比 manifest 定义要复杂，因为组件的 props 类型是不确定的，props 的值也有不同的约束，[这里](https://github.com/quanxiang-cloud/one-for-all/blob/main/packages/node-carve/src/index.d.ts)是 Props Spec 的定义。这里不对 props 的写法举例，请直接参考 [@one-for-all/headless-ui 的实现](https://github.com/quanxiang-cloud/one-for-all/tree/main/packages/headless-ui)。
+
+一份完整的组件 Props Spec 定义类型是 `Record<string, PropsSpec>`，和 manifest 一样，使用组件的 export name 来作为唯一的 key。
+
+在写完 Props Spec 之后，需要将其保存到配置中心。key 为 `PACKAGE_PROPS_SPEC:<packageName>`，packageName 自然就是组件库的名称，请求的参数的版本和组件的版本保持一致就可以，value 就是把整个 package 的 Props Spec 序列化成字符串，具体请求参考前面保存 manifest 的示例代码。
+
+### 启用自定义组件
+
+页面引擎中可以使用的组件库不止一套，组件库后面也肯定会升级，为此需要维护一个可以使用的组件库列表。
+
+在配置中心里有这样一份数据，它的 key 是 `PACKAGES`, version 是 `1.0.0`, value 反序列化后是一个对象数组，数组中的对象格式如下：
+
+```typescript
+interface Package {
+  // 组件的显示名称，一般为中文
+  label: string;
+  // 组件的唯一标识
+  name: string;
+  // 组件的版本
+  version: string;
+}
+```
+
+如果要新增一个可用组件库的话，直接在数组后面新增一个，然后保存就好。如果要更新组件库的版本，那把原数组中的 package 的版本更新之后重新保存即可。
+
+这是最后一步了。
