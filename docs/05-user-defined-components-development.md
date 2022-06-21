@@ -14,4 +14,114 @@ qxp-web 是个开放的、可扩展的低代码平台前端，从项目开始的
 - 将构建好的组件文件上传到某个静态文件服务器上，需要可以公开访问
 - 如果要在页面引擎中使用自定义组件，需要提供组件的 manifest 和 propsSpec
 
-推荐使用 Rollup 对组件进行打包，Rollup 的配置文件可以参考 @one-for-all/headless-ui 的[配置](https://github.com/quanxiang-cloud/one-for-all/blob/main/packages/headless-ui/rollup.config.js)。有条件的话可以直接将打包好的文件上传到 CDN 服务器上，没有条件可以将文件上传到全象低代码平台的 file-server 上，请记住最后组件的 js 文件地址。
+推荐使用 Rollup 对组件进行打包，Rollup 的配置文件可以参考 @one-for-all/headless-ui 的[配置](https://github.com/quanxiang-cloud/one-for-all/blob/main/packages/headless-ui/rollup.config.js)。因为 qxp-web 是基于 React 实现的，所以在打包过程中可以将 React 的相关库声明为外部依赖，不用和组件的实现 bundle 在一起。
+
+组件打包完成之后需要将打包好的文件上传到静态文件服务器上，可以是 CDN，可以是对象存储，也可以是自己的某个 nginx 服务目录。总只，只要最后能通过一个 URL 下载到打包的文件即可。这里不推荐在文件名中携带 hash 值，因为我们可以采用更易维护和对人类友好的方式。我们可以将组件库的版本号加入到 bundle 文件的 URL 中，每次更新组件后，都应该根据更新的内容，按照 semantic version 的规范升级组件的版本号。在上传文件时，最后上传的 URL 可以采用类似的格式：`https://example.com/<packagename/<packageVersion>/index.js>`。
+
+这样实现最大好处就是组件版本的兼容，假设我们在 Artery 中有三个节点，他们都是用到了同一个组件库的组件，他们的版本分别为 `1.0.0` `1.0.1` `2.0.0`。显而易见的，前两个节点他们对应的组件版本是兼容的，那么我们在下载组件时就可以只下载最新的兼容版本 `1.0.1`。版本 `2.0.0` 和前两者不兼容，那我们可以单独下载，这样也做到了在同一个页面中使用不同版本的组件实现，最大程度上的减少了版本升级的压力。还有的好处就是可读性，组件不可避免的存在 bug，只要根据 URL 中的版本号，我们就能很容易的知道是哪个版本出了问题，可以选择升级版本或提交 bug fix。
+
+## 将组件的 bundle 文件地址保存到配置中心
+
+配置中心是前端的重度依赖服务，前端的自定义页面的 Artery 都是保存到了配置中心里。配置中心支持批量查询和修改数据，API 格式如下：
+
+查询 API：
+
+```text
+# REQUEST
+
+POST /api/v1/persona/batchGetValue
+
+{
+  keys: [{ key: key1, version: 1.0.0 }, { key: key2, version: 2.0.0 }]
+}
+
+# RESPONSE
+
+{
+  code: 0,
+  data: {
+    result: {
+      key1: <string_value>,
+      key2: <string_value>
+    }
+  }
+}
+```
+
+修改 API:
+
+```text
+# REQUEST
+
+POST /api/v1/persona/batchSetValue
+
+{
+  keys: [{ key: key1, version: 1.0.0, value: <string_value> }, { key: key2, version: 2.0.0, value: <string_value> }]
+}
+
+# RESPONSE
+
+{
+  code: 0,
+  data: {
+    failKeys: [key1, key2...],
+    successKeys: [key1, key2...]
+  }
+}
+```
+
+下面我们需要做的就是调用修改 API 把自定义组件的 bundle 地址保存到配置中心。请求参数中 `key` 的值为以下格式：
+
+```text
+third_party_package_entry:${packageName}:${packageVersion}
+```
+
+其中 `third_party_package_entry` 是我们约定好的前缀；`packageName` 即为组件库的名称，它应该是全局唯一的；`packageVersion` 就是组件的版本。例如我们现在想在 qxp-web 中使用的组件库名称为 `my-awesome-components`，版本为 `1.0.1`，那调用配置中心的请求应该为：
+
+```text
+POST /api/v1/persona/batchSetValue
+
+{
+  keys: [{
+    key: third_party_package_entry:my-awesome-components:1.0.1,
+    version: 1.0.0,
+    value: https://example.com/some/path/to/index.js
+  }]
+}
+```
+
+保存完成之后，在 qxp-web 中就可以使用自定义组件了。我们在 portal 端提供了配置 home 首页 [Artery](https://github.com/quanxiang-cloud/one-for-all/tree/main/packages/artery) 的功能，此功能在系统管理中的平台参数配置。假如你现在自己开发了一个很酷的图表组件，在完成了上面的操作之后，只要写类似这样的一段 Artery, 然后保存，那在 home 端的首页就能看到组件被渲染到页面上。
+
+```json
+{
+  "node": {
+    "id": "some_id",
+    "type": "react-component",
+    "packageName": "my-awesome-components",
+    "packageVersion": "1.0.0",
+    "exportName": "AwesomeChart",
+    "props": {
+      "test": {
+        "type": "constant_property",
+        "value": "some value"
+      }
+    }
+  }
+}
+```
+
+## 在页面引擎中使用自定义组件
+
+如果想要在页面引擎中使用自定义组件，除了完成前面提到的工作完，还需要提供两份说明文件，一份是 manifest，另一份是 propsSpec。下面先介绍一下背景，然后再说明一下如何编写和配置两份说明文件。
+
+### 页面引擎和自定义组件
+
+通常意义上的页面引擎是指构建页面的一个功能模块，但其实不是这样的，页面引擎不提供任何构建页面的能力，它只是一个框架，是一系列规范，是具体功能模块的运行容器，“页面引擎的功能”也是由一个个的功能模块独立提供的。这样设计和实现的目的就是为了扩展性，有了良好的扩展性，开发者才能将自己的自定义组件加入到页面引擎中。
+
+我们把页面引擎的完成具体功能的部分称为 Block，页面引擎中有三个重要的 Block：组件库 FountainHead、canvas 和组件配置 Node Carve。在页面引擎中使用自定义组件，其实就是和分别和这三个 block 对接，如果已经完成了前面的步骤，那和 canvas 的对接就完成了。下面介绍一下与组件库和组件配置对接的过程。
+
+### 组件库 Block 和 manifest json
+
+页面引擎的组件库展示了我们可以使用的组件有哪些，这些组件都是以 package 为单位归类的，package 的名称需要全局唯一。那一个 package 中有哪些组件可用呢？这个组件的 export name 又是什么的？
+
+上述的信息就需要组件库的作者提供一份声明文件，我们把这份描述文件叫做 manifest json。
