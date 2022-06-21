@@ -6,6 +6,7 @@ import Avatar from '@c/avatar';
 import Icon from '@c/icon';
 import usePopper from '@c/popper2';
 import ResetPasswordModal from '@portal/global-header/reset-password-modal';
+import store from '@home/pages/app-details/store';
 
 import RoleList from './role-list';
 
@@ -79,7 +80,7 @@ function UserAvatarMenu(
                 <Icon name='password' />
                 <span className='ml-4'>修改密码</span>
               </div>
-              {!!window.APP_ID && (
+              { !store.perPoly && !!window.APP_ID && (
                 <div className='border-b-1 py-10'>
                   <div
                     className="flex justify-between items-center"
