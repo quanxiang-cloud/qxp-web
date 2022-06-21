@@ -8,6 +8,7 @@ import {
   fetchAppDetails,
   updateAppStatus,
   updateApp,
+  appRolePoly,
 } from './api';
 class AppDetailsStore {
   @observable appDetails: AppInfo = {
@@ -17,6 +18,7 @@ class AppDetailsStore {
     appIcon: '',
     appSign: '',
     accessURL: '',
+    perPoly: false,
   };
   @observable loading = false;
   @observable lastUpdateTime = 0;
@@ -80,6 +82,16 @@ class AppDetailsStore {
     }).catch((err) => {
       toast.error(err);
     });
+  };
+
+  @action
+  setRolePoly = (polyRole: boolean): void => {
+    this.appDetails.perPoly = polyRole;
+  };
+
+  @action
+  updateAppRolePoly = (polyRole: boolean): Promise<void> => {
+    return appRolePoly(this.appID, polyRole );
   };
 }
 
