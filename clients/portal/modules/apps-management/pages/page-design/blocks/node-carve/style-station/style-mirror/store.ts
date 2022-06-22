@@ -12,6 +12,7 @@ import { ShadowValue } from './shadow-config';
 
 class StyleMirrorStore {
   @observable cssProperties: CSSProperties = {};
+  @observable styleType = 'style';
 
   @computed get sizes(): SizeValue {
     return this.getPartialCssObjFromAll(SIZE_KEYS, this.cssProperties);
@@ -48,6 +49,11 @@ class StyleMirrorStore {
   @action
   setCssProperties = (value: CSSProperties): void => {
     this.cssProperties = value;
+  };
+
+  @action
+  setStyleType = (type: string): void => {
+    this.styleType = type;
   };
 
   @action
