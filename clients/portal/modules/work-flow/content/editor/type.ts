@@ -364,7 +364,7 @@ interface FormDataNodeData extends BaseNodeData {
   businessData: FormDataData;
 }
 interface DelayedNodeData extends BaseNodeData {
-  type: 'delayed';
+  type: 'FORM_TIME';
   businessData: DelayedData;
 }
 interface ProcessBranchNodeData extends BaseNodeData {
@@ -405,7 +405,7 @@ export type Data = CCNodeData | WebMessageNodeData | SendEmailNodeData | TableDa
   FormDataNodeData | ApproveNodeData | FillInNodeData | ProcessBranchTargetNodeData | WebhookNodeData | DelayedNodeData;
 
 export type NodeType = 'formData' | 'fillIn' | 'approve' | 'end' | 'processBranch' |
-'processVariableAssignment' | 'tableDataCreate' | 'tableDataUpdate' | 'delayed' | 'email' |
+'processVariableAssignment' | 'tableDataCreate' | 'tableDataUpdate' | 'FORM_TIME' | 'email' |
   'letter' | 'autocc' | 'processBranchSource' | 'processBranchTarget' | 'webhook';
 export interface CurrentElement {
   id: string;
@@ -451,6 +451,7 @@ export interface StoreValue {
   showDataNotSaveConfirm?: boolean;
   keyFields: string;
   instanceName: string;
+  cron: string;
 }
 
 export type FieldOperatorOptions = {

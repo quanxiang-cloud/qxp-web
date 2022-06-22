@@ -18,7 +18,7 @@ const nodeTypes = {
   formData: FormDataNode,
   end: EndNode,
   fillIn: FillInNode,
-  delayed: DelayedNode,
+  FORM_TIME: DelayedNode,
   approve: ApproveNode,
   processBranch: ProcessBranchNode,
   processVariableAssignment: ProcessVariableAssignmentNode,

@@ -30,7 +30,7 @@ const drawerTitleMap = {
   tableDataCreate: '数据新增',
   tableDataUpdate: '数据更新',
   autocc: '抄送',
-  delayed: '定时',
+  FORM_TIME: '定时',
   email: '发送邮件',
   letter: '站内信',
   processBranchSource: '分流',
@@ -115,7 +115,7 @@ export default function NodeFormWrapper(): JSX.Element | null {
       return formData.businessData.form;
     }
 
-    if (formData.type === 'delayed') {
+    if (formData.type === 'FORM_TIME') {
       return formData.businessData.timer;
     }
 
@@ -123,7 +123,7 @@ export default function NodeFormWrapper(): JSX.Element | null {
       return formDataElement.data.businessData.form;
     }
 
-    return 'delayed';
+    return 'formTime';
   }
 
   return (

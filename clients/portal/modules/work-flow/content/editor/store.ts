@@ -11,7 +11,7 @@ import type { StoreValue, BusinessData, CurrentElement, Data, FormDataElement, D
 import { CURRENT_WORK_FLOW_VERSION } from './utils/constants';
 
 const getStoreInitialData = (triggerMethod: string): StoreValue => {
-  const startID = (triggerMethod === 'form-data' ? 'formData' : 'delayed') + uuid();
+  const startID = (triggerMethod === 'form-data' ? 'formData' : 'FORM_TIME') + uuid();
   const endID = 'end' + uuid();
   const triggerMode = triggerMethod === 'form-data' ? 'FORM_DATA' : 'FORM_TIME';
 
@@ -20,12 +20,13 @@ const getStoreInitialData = (triggerMethod: string): StoreValue => {
     childrenID: [endID],
   });
   if (triggerMethod !== 'form-data') {
-    startNode = nodeBuilder(startID, 'delayed', '定时触发', {
+    startNode = nodeBuilder(startID, 'FORM_TIME', '定时触发', {
       parentID: [],
       childrenID: [endID],
     });
   }
   return {
+    cron: (startNode?.data?.businessData as DelayedData )?.timer || '',
     saved: false,
     needSaveFlow: false,
     readonly: false,
@@ -147,13 +148,10 @@ export function buildWorkFlowSaveData(
 ): SaveWorkFlowParamsType {
   const {
     version, nodeIdForDrawerForm, name, triggerMode, cancelable, urgeable, nodeAdminMsg,
-    seeStatusAndMsg, keyFields, instanceName, canCancelNodes, canCancelType,
+    seeStatusAndMsg, keyFields, instanceName, canCancelNodes, canCancelType, cron,
   } = store.value;
 
-  let cron = undefined;
-  if (triggerMode === 'FORM_TIME') {
-    cron = (saveData as Partial<DelayedData>).timer;
-  }
+  const newcron = (saveData as Partial<DelayedData>).timer || cron || '';
   return {
     bpmnText: buildBpmnText(version, nodeIdForDrawerForm, saveData),
     name: name as string,
@@ -167,7 +165,7 @@ export function buildWorkFlowSaveData(
     instanceName,
     canCancelNodes,
     canCancelType,
-    cron,
+    cron: newcron,
   };
 }
 

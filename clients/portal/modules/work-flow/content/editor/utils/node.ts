@@ -86,7 +86,7 @@ function getNodeInitialData(type: NodeType): BusinessData {
       filterRule: {},
       updateRule: [],
     },
-    delayed: {
+    FORM_TIME: {
       timer: '',
     },
     processBranchSource: {

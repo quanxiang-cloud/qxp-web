@@ -66,7 +66,7 @@ const components: Record<string, JSXElementConstructor<any>> = {
   processBranchTarget: ProcessBranchTarget,
   processVariableAssignment: ProcessVariableAssignmentConfig,
   tableDataCreate: CreateTableData,
-  delayed: Delayed,
+  FORM_TIME: Delayed,
   email: SendEmailConfig,
   autocc: CopyTo,
   letter: WebMessage,
