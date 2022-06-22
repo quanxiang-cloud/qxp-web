@@ -15,13 +15,13 @@ const APP_LAYOUT_CONFIG: LayoutItemProps[] = [
     img: 'top-nav.png',
     type: LayoutType.HeaderContent,
     title: '顶部导航',
-    description: '不使用任何形式的导航，从空白开始创建应用',
+    description: '预设有 Logo 位、菜单项和个人，固定于所有页面的顶部',
   },
   {
     img: 'left-nav.png',
     type: LayoutType.LeftSidebarContent,
     title: '左侧导航',
-    description: '不使用任何形式的导航，从空白开始创建应用',
+    description: '预设有 Logo 位、菜单项和个人，固定于所有页面的左侧',
   },
 ];
 
