@@ -38,7 +38,7 @@ function StyleMirror({ style, className }: Props): JSX.Element {
     if (rawActiveNode && artery) {
       const newArtery = updateNodeProperty(
         rawActiveNode,
-        'props.className',
+        `props.${store.styleType === 'itemStyle' ? 'itemClassName' : 'className'}`,
         { type: 'constant_property', value: newClassName },
         artery,
       );
@@ -51,7 +51,7 @@ function StyleMirror({ style, className }: Props): JSX.Element {
     if (rawActiveNode && artery) {
       const newArtery = updateNodeProperty(
         rawActiveNode,
-        'props.style',
+        `props.${store.styleType}`,
         { type: 'constant_property', value: toJS(store.cssProperties) },
         artery,
       );
@@ -65,12 +65,12 @@ function StyleMirror({ style, className }: Props): JSX.Element {
 
   useEffect(() => {
     if (rawActiveNode) {
-      const defaultClassName = get(rawActiveNode, 'props.className.value', '');
-      const defaultStyles = get(rawActiveNode, 'props.style.value', {});
+      const defaultClassName = get(rawActiveNode, `props.${store.styleType === 'itemStyle' ? 'itemClassName' : 'className'}.value`, '');
+      const defaultStyles = get(rawActiveNode, `props.${store.styleType}.value`, {});
       setComponentClassName(defaultClassName);
       setCssProperties(defaultStyles);
     }
-  }, [rawActiveNode?.id]);
+  }, [rawActiveNode?.id, store.styleType]);
 
   return (
     <div
