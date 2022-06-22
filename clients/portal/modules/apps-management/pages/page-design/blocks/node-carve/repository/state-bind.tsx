@@ -17,6 +17,7 @@ export const iterableStateTypes: NodePropType[] = [
 const normalStateTypes: NodePropType[] = [
   'shared_state_property',
   'api_result_property',
+  'computed_property',
 ];
 
 const tipsMap: Record<string, string> = {

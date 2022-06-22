@@ -28,25 +28,23 @@
     }]
   },
   "FileUpload": {
-    "variants": [
-      {
-        "icon": {
-          "type": "platform",
-          "name": "file_upload",
-          "initialProps": {}
-        },
-        "desc": "可以上传文件",
-        "label": "文件上传",
-        "initialProps": {
-          "iconName": "backup",
-          "uploaderDescription": "点击或拖拽上传文件",
-          "maxFileSize": 10,
-          "isPrivate": false,
-          "multiple": false,
-          "disabled": false
-        }
+    "variants": [{
+      "icon": {
+        "type": "platform",
+        "name": "file_upload",
+        "initialProps": {}
+      },
+      "desc": "可以上传文件",
+      "label": "文件上传",
+      "initialProps": {
+        "iconName": "backup",
+        "uploaderDescription": "点击或拖拽上传文件",
+        "maxFileSize": 10,
+        "isPrivate": false,
+        "multiple": false,
+        "disabled": false
       }
-    ]
+    }]
   },
   "GridContainer": {
     "variants": [{
@@ -98,10 +96,9 @@
               "name": "节点一",
               "id": "node1",
               "children": [{
-                  "id": "node1-node",
-                  "name": "节点一子节点"
-                }
-              ]
+                "id": "node1-node",
+                "name": "节点一子节点"
+              }]
             },
             {
               "id": "node-2",
@@ -109,6 +106,95 @@
             }
           ]
         }
+      }
+    }]
+  },
+  "OptionalTable": {
+    "variants": [{
+      "icon": {
+        "type": "platform",
+        "name": "border_all",
+        "initialProps": {}
+      },
+      "desc": "表格展示数据",
+      "label": "表格",
+      "initialProps": {
+        "columns": [{
+            "width": 100,
+            "fixed": false,
+            "Header": "Dessert",
+            "id": "dessert",
+            "accessor": "dessert"
+          },
+          {
+            "Header": "Calories",
+            "id": "calories",
+            "accessor": "calories"
+          },
+          {
+            "Header": "Fat (g)",
+            "id": "fat",
+            "accessor": "fat"
+          },
+          {
+            "Header": "Carbs (g)",
+            "id": "carbs",
+            "accessor": "carbs"
+          },
+          {
+            "Header": "Protein (g)",
+            "id": "protein",
+            "accessor": "protein"
+          }
+        ],
+        "data": [{
+            "id": "001",
+            "dessert": "Frozen yoghurt",
+            "calories": 159,
+            "fat": 6,
+            "carbs": 24,
+            "protein": 4
+          },
+          {
+            "id": "002",
+            "dessert": "Ice cream sandwich",
+            "calories": 237,
+            "fat": 9,
+            "carbs": 37,
+            "protein": 4.3
+          },
+          {
+            "id": "003",
+            "dessert": "Eclair",
+            "calories": 262,
+            "fat": 16,
+            "carbs": 24,
+            "protein": 6
+          },
+          {
+            "id": "004",
+            "dessert": "Cupcake",
+            "calories": 305,
+            "fat": 3.7,
+            "carbs": 67,
+            "protein": 4.3
+          },
+          {
+            "id": "005",
+            "dessert": "Gingerbread",
+            "calories": 356,
+            "fat": 16,
+            "carbs": 49,
+            "protein": 3.9
+          }
+        ],
+        "emptyTips": "无数据",
+        "rowKey": "id",
+        "optionLabel": "操作",
+        "options": [{
+          "key": "delete",
+          "label": "删除"
+        }]
       }
     }]
   },
