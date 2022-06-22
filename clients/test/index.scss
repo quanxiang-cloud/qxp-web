@@ -6,6 +6,9 @@
 
 .menu-item {
   @apply relative flex justify-between items-center whitespace-nowrap overflow-hidden cursor-pointer duration-300;
+  &:hover {
+    @include active;
+  }
 }
 
 .item-label {
