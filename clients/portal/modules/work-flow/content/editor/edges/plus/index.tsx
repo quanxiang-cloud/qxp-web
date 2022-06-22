@@ -62,7 +62,7 @@ export default function PlusEdge({
   });
   const switcher = useEdgeSwitch();
   const formDataElement = elements.find(({ type }) => type === 'formData');
-  const DelayDataElement = elements.find(({ type }) => type === 'delayed');
+  const DelayDataElement = elements.find(({ type }) => type === 'FORM_TIME');
 
   function onDragOver(e: DragEvent): void {
     e.preventDefault();

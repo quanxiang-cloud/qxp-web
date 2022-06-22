@@ -109,7 +109,7 @@ export default function Detail(): JSX.Element {
         canCancelType: data.canCancelType === 0 ? 1 : data.canCancelType,
         canCancelNodes: data.canCancelNodes,
         instanceName: data.instanceName,
-        cron: data?.cron,
+        cron: data?.cron || '',
       }));
     } catch (error) {
       toast.error('bpmn 数据格式解析错误!');
