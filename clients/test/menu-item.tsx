@@ -5,6 +5,8 @@ import usePopper from '@c/popper2';
 
 import Icon from '@c/icon';
 
+import './index.scss';
+
 export type MenuItemType = {
   id: string;
   title: string;
@@ -21,16 +23,29 @@ type Props = {
   itemHeight?: number;
   activeId?: string;
   mode?: 'top' | 'side';
+  className?: string;
+  style?: Record<string, string>;
+  onSelectItem?: (item: any) => void;
+  showExpandIcon?: boolean;
 }
 
 export default function MenuItem({
-  menu, level = 1, maxLevel = 3, itemHeight = 30, activeId, mode = 'side',
+  menu,
+  level = 1,
+  maxLevel = 3,
+  itemHeight = 30,
+  activeId,
+  mode = 'side',
+  className,
+  style,
+  showExpandIcon = true,
+  onSelectItem,
 }: Props): JSX.Element | null {
   const { id, title, icon, children, externalLink, innerPath } = menu;
   const nodeRef = useRef<HTMLDivElement>(null);
   const currentChildrenHeight = useRef<number>();
   const [expand, setExpand] = useState(false);
-  const { handleClick, referenceRef, Popper } = usePopper<HTMLDivElement>();
+  const { handleClick: changeShowPopper, referenceRef, Popper } = usePopper<HTMLDivElement>();
 
   useEffect(() => {
     if (nodeRef.current && children) {
@@ -38,84 +53,82 @@ export default function MenuItem({
     }
   }, []);
 
-  function isChildActive(): boolean {
-    return children ? children.some((item) => item.id === activeId) : false;
-  }
-
   function getSubMenuItemsHeight(): number {
     return expand && children && currentChildrenHeight.current ? currentChildrenHeight.current : 0;
   }
 
-  function handleMenuItemClick(): void {
-    if (mode === 'top') {
-      return;
-    }
+  function changeExpand(): void {
+    if (mode === 'top') return;
+    if (!children) return setExpand(true);
     setExpand((prevExpand) => !prevExpand);
+  }
+
+  function handleItemClick(): void {
+    changeExpand();
+    !children && onSelectItem && onSelectItem(id);
+    // !children && history.push('/apps/details');
+  }
+
+  function renderSubItems(item: MenuItemType) {
+    return (
+      <MenuItem
+        menu={item}
+        key={item.id}
+        level={level + 1}
+        maxLevel={maxLevel}
+        className={cs('bg-white', className)}
+        style={{ ...style }}
+        onSelectItem={onSelectItem}
+        activeId={activeId}
+        showExpandIcon={showExpandIcon}
+      />
+    );
   }
 
   if (level > maxLevel) return null;
 
   return (
-    <div
-      className="duration-300"
-      ref={referenceRef}
-      onClick={mode === 'top' ? handleClick() : handleMenuItemClick}
-    >
+    <>
       <div
-        style={{ height: `${itemHeight}px` }}
-        className={cs(
-          'relative flex justify-between items-center cursor-pointer',
-          'select-none whitespace-nowrap duration-300',
-          {
-            active: id === activeId,
-            collapse: isChildActive(),
-          },
-        )}
-        // onClick={() => !children && history.push('/apps/details')}
+        ref={referenceRef}
+        className="duration-300 text-12"
+        onClick={mode === 'top' ? changeShowPopper() : undefined}
       >
-        {icon && (
-          <Icon
-            name={icon}
-            className="flex-shrink-0 duration-0"
-            size={children || level === 1 ? 24 : 20}
-          />
-        )}
-        <span className="flex-1 text-12 pl-8 transition-opacity duration-300">{title}</span>
-        {children && (
-          <Icon
-            size={22}
-            name={'keyboard_arrow_down'}
-            className={cs(
-              'flex-shrink-0 transform transition-transform duration-300',
-              { 'rotate-180': expand },
-            )}
-          />
+        <div
+          style={{ ...style, height: `${itemHeight}px` }}
+          className={cs(
+            'menu-item',
+            { 'active-menu-item': id === activeId },
+            className,
+          )}
+          onClick={handleItemClick}
+        >
+          {icon && (<Icon name={icon} className="item-icon" size={children || level === 1 ? 24 : 20} />)}
+          <span className={cs(`item-label px-${mode === 'side' && level > 1 ? 16 : 8}`)}>{title}</span>
+          {children && showExpandIcon && (
+            <Icon
+              size={22}
+              name="keyboard_arrow_down"
+              className={cs(
+                'flex-shrink-0 transform transition-transform duration-300',
+                { 'rotate-180': expand },
+              )}
+            />
+          )}
+        </div>
+        {mode === 'side' && (
+          <div
+            ref={nodeRef}
+            style={{ height: getSubMenuItemsHeight() }}
+            className={cs('menu-items-wrapper', { 'opacity-0 scale-y-0': !expand })}
+          >
+            {children?.map(renderSubItems)}
+          </div>
         )}
       </div>
-      <Popper
-        className='bg-white'
-        placement='bottom-start'
-      >
-        <div className='pl-8 pr-16'>
-          {children?.map((item) => {
-            return (<MenuItem menu={item} key={item.id} level={level + 1} maxLevel={maxLevel} />);
-          })}
-        </div>
+      <Popper placement='bottom-start'>
+        <div>{children?.map(renderSubItems)}</div>
       </Popper>
-      {mode === 'side' && (
-        <div
-          ref={nodeRef}
-          style={{ height: getSubMenuItemsHeight() }}
-          className={cs(
-            'px-16 transition-all duration-300 transform origin-top',
-            { 'opacity-0 scale-y-0': !expand },
-          )}
-        >
-          {children?.map((item) => {
-            return (<MenuItem menu={item} key={item.id} level={level + 1} maxLevel={maxLevel} />);
-          })}
-        </div>
-      )}
-    </div>
+    </>
   );
 }

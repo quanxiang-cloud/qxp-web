@@ -1,75 +1,48 @@
-import React from 'react';
+import React, { useState } from 'react';
 import cs from 'classnames';
 
 import MenuItem, { MenuItemType } from './menu-item';
 
-const menus: Array<MenuItemType> = [
-  {
-    id: 'view_setting',
-    title: '视图管理',
-    children: [
-      {
-        id: 'page_setting',
-        title: '页面管理',
-      },
-      {
-        id: 'nav_setting',
-        title: '导航管理',
-      },
-    ],
-  },
-  {
-    id: 'modal_api',
-    title: '数据管理',
-    children: [
-      {
-        id: 'data_models',
-        title: '数据模型管理',
-      },
-      {
-        id: 'api_proxy',
-        title: '第三方 API 代理',
-      },
-      {
-        id: 'orchestration_api',
-        title: 'API 编排管理',
-      },
-      {
-        id: 'faas',
-        title: 'FaaS 函数管理',
-      },
-      {
-        id: 'key_api',
-        title: 'API 密钥管理',
-      },
-      {
-        id: 'file_api',
-        title: 'API 文档',
-      },
-    ],
-  },
-  {
-    id: 'setting_flow',
-    title: '工作流',
-  },
-  {
-    id: 'app_control',
-    title: '访问控制',
-  },
-  {
-    id: 'base_info',
-    title: '应用设置',
-  },
-];
-
 type Props = {
-  mode: 'top' | 'side';
+  menus: Array<MenuItemType>;
+  mode?: 'top' | 'side';
+  className?: string;
+  itemClassName?: string;
+  style?: Record<string, string>;
+  itemStyle?: Record<string, string>;
+  showExpandIcon?: boolean;
 }
 
-function NavigationMenu({ mode }: Props): JSX.Element {
+function NavigationMenu({
+  menus,
+  mode,
+  style,
+  itemStyle,
+  className,
+  itemClassName,
+  showExpandIcon,
+}: Props): JSX.Element {
+  const [activeItemId, setActiveItemId] = useState<string>('');
+
   return (
-    <div className={cs('bg-white', { flex: mode === 'top' })}>
-      {menus.map((menu) => (<MenuItem menu={menu} key={menu.id} level={1} maxLevel={2} mode={mode} />))}
+    <div
+      className={cs('bg-white', { flex: mode === 'top' }, className)}
+      style={style}
+    >
+      {menus.map((menu) => (
+        <MenuItem
+          menu={menu}
+          key={menu.id}
+          level={1}
+          maxLevel={2}
+          mode={mode}
+          className={cs('bg-white', itemClassName)}
+          style={itemStyle}
+          onSelectItem={setActiveItemId}
+          activeId={activeItemId}
+          showExpandIcon={showExpandIcon}
+        />
+      ))}
     </div>
   );
 }
