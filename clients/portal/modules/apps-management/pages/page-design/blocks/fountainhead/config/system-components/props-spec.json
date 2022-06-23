@@ -381,9 +381,9 @@
       }, {
         "label": "文本内容",
         "name": "content",
+        "desc": "可以添加文本将此元素设置为一个单纯的文本节点，或者置空文本将此节点作为一个容器节点",
         "type": "string",
-        "will": "Textarea",
-        "initialValue": "文本"
+        "will": "Textarea"
       },
       {
         "label": "点击事件",
@@ -402,6 +402,7 @@
       }, {
         "label": "文本内容",
         "name": "content",
+        "desc": "可以添加文本将此元素设置为一个单纯的文本节点，或者置空文本将此节点作为一个容器节点",
         "type": "string",
         "will": "Textarea"
       },
@@ -452,9 +453,9 @@
       }, {
         "label": "文本内容",
         "name": "content",
+        "desc": "可以添加文本将此元素设置为一个单纯的文本节点，或者置空文本将此节点作为一个容器节点",
         "type": "string",
-        "will": "Textarea",
-        "initialValue": "文本"
+        "will": "Textarea"
       },
       {
         "label": "点击事件",
@@ -470,12 +471,6 @@
         "label": "id",
         "name": "id",
         "type": "string"
-      }, {
-        "label": "文本内容",
-        "name": "content",
-        "type": "string",
-        "will": "Textarea",
-        "initialValue": "文本"
       },
       {
         "label": "点击事件",
