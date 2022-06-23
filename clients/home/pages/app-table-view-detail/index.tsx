@@ -83,7 +83,7 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
   const tableHeaderBtnList = useMemo(() => {
     return Object.entries(BUTTON_GROUP).reduce((acc: TableHeaderBtn[], [key, buttonValue]) => {
       const _apiPath = getAPIPath(appID, tableID, key, 'POST');
-      if (store.authority[_apiPath]) {
+      if (store.authority[_apiPath] || userAppDetailsStore.perPoly) {
         return [...acc, buttonValue];
       }
       return acc;
@@ -128,7 +128,7 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
       const perParams = { appID, tableID, authority: store.authority };
       return (
         <div>
-          {getOperateButtonPer('get', perParams) && (
+          {(getOperateButtonPer('get', perParams) || userAppDetailsStore.perPoly) && (
             <span
               onClick={() => {
                 store.operationType = '查看';
@@ -139,7 +139,7 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
               查看
             </span>
           )}
-          {getOperateButtonPer('update', perParams) && (
+          {(getOperateButtonPer('update', perParams) || userAppDetailsStore.perPoly) && (
             <span
               onClick={() => {
                 store.operationType = '修改';
@@ -150,7 +150,7 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
               修改
             </span>
           )}
-          {getOperateButtonPer('delete', perParams) && (
+          {(getOperateButtonPer('delete', perParams) || userAppDetailsStore.perPoly) && (
             <PopConfirm content='确认删除该数据？' onOk={() => delFormData([rowData._id])}>
               <span className='text-red-600 cursor-pointer'>删除</span>
             </PopConfirm>

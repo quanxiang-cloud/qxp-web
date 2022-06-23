@@ -80,23 +80,16 @@ function CreateDataForm({ appID, pageID, rowID, onCancel }: Props): JSX.Element 
   };
 
   return (
-    <div className='flex flex-col flex-1 px-20 pt-20'>
+    <div className='flex flex-col flex-1 px-20 pt-20 h-full'>
       <div className='user-app-schema-form'>
         <FormRenderer
-          className='p-40'
+          className='pt-20 px-40'
           onSubmit={handleSubmit}
           defaultValue={toJS(defaultValues)}
           schema={schema as ISchema}
           usePermission
         >
-          <FormButtonGroup className='pl-96'>
-            <Button
-              className="mr-20"
-              iconName="close"
-              onClick={onCancel}
-            >
-              取消
-            </Button>
+          <FormButtonGroup className='flex justify-end bg-white sticky bottom-0'>
             <Button
               type='submit'
               modifier="primary"
@@ -104,6 +97,13 @@ function CreateDataForm({ appID, pageID, rowID, onCancel }: Props): JSX.Element 
               loading={loading}
             >
               {defaultValues ? '保存' : '确认新建'}
+            </Button>
+            <Button
+              className="mr-20"
+              iconName="close"
+              onClick={onCancel}
+            >
+              取消
             </Button>
           </FormButtonGroup>
         </FormRenderer>
