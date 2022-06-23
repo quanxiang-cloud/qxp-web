@@ -82,7 +82,7 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
   const tableHeaderBtnList = useMemo(() => {
     return Object.entries(BUTTON_GROUP).reduce((acc: TableHeaderBtn[], [key, buttonValue]) => {
       const _apiPath = getAPIPath(appID, tableID, key, 'POST');
-      if (store.authority[_apiPath]) {
+      if (store.authority[_apiPath] || userAppDetailsStore.perPoly) {
         return [...acc, buttonValue];
       }
       return acc;

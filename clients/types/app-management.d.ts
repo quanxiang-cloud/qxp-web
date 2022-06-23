@@ -166,7 +166,7 @@ declare global {
     method?: string,
     params?: { [propertyName: string]: SwagSchema },
     response?: { [propertyName: string]: SwagSchema },
-    condition?: any,
+    condition?: { type: string, query: Record<string, any> },
     roleID?: string,
     id?: string,
     uri?: string,
