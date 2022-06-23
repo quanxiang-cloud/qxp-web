@@ -18,17 +18,18 @@ export type MenuItemType = {
 
 type Props = {
   menu: MenuItemType;
+  goLink: (path: string, type: 'external' | 'inner') => void;
   level?: number;
   maxLevel?: number;
   itemHeight?: number;
   activeId?: string;
   mode?: 'top' | 'side';
+  showExpandIcon?: boolean;
   className?: string;
   activeClassName?: string;
   itemHoverClassName?: string;
   style?: Record<string, string>;
   onSelectItem?: (item: any) => void;
-  showExpandIcon?: boolean;
 }
 
 export default function MenuItem({
@@ -44,6 +45,7 @@ export default function MenuItem({
   itemHoverClassName,
   showExpandIcon = true,
   onSelectItem,
+  goLink,
 }: Props): JSX.Element | null {
   const { id, title, icon, children, externalLink, innerPath } = menu;
   const nodeRef = useRef<HTMLDivElement>(null);
@@ -69,8 +71,11 @@ export default function MenuItem({
 
   function handleItemClick(): void {
     changeExpand();
-    !children && onSelectItem && onSelectItem(id);
-    // !children && history.push('/apps/details');
+    if (!children) {
+      onSelectItem && onSelectItem(id);
+      goLink && goLink('/apps/details', 'inner');
+      return;
+    }
   }
 
   function renderSubItems(item: MenuItemType) {
@@ -80,6 +85,8 @@ export default function MenuItem({
         key={item.id}
         level={level + 1}
         maxLevel={maxLevel}
+        mode={mode}
+        goLink={goLink}
         className={cs('bg-white', className)}
         style={{ ...style }}
         onSelectItem={onSelectItem}

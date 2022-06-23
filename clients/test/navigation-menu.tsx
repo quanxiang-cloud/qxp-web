@@ -5,14 +5,15 @@ import MenuItem, { MenuItemType } from './menu-item';
 
 type Props = {
   menus: Array<MenuItemType>;
+  goLink: (path: string, type: 'external' | 'inner') => void;
   mode?: 'top' | 'side';
+  showExpandIcon?: boolean;
   className?: string;
   itemClassName?: string;
   activeClassName?: string;
   itemHoverClassName?: string;
   style?: Record<string, string>;
   itemStyle?: Record<string, string>;
-  showExpandIcon?: boolean;
 }
 
 function NavigationMenu({
@@ -25,6 +26,7 @@ function NavigationMenu({
   showExpandIcon,
   itemHoverClassName = 'menu-item-hover',
   activeClassName = 'active-menu-item',
+  goLink,
 }: Props): JSX.Element {
   const [activeItemId, setActiveItemId] = useState<string>('');
 
@@ -43,6 +45,7 @@ function NavigationMenu({
           className={cs('bg-white', itemClassName)}
           style={itemStyle}
           onSelectItem={setActiveItemId}
+          goLink={goLink}
           activeId={activeItemId}
           showExpandIcon={showExpandIcon}
           itemHoverClassName={itemHoverClassName}

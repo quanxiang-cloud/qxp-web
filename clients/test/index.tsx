@@ -12,6 +12,7 @@ function Test(): JSX.Element {
         showExpandIcon={false}
         itemStyle={{ maxWidth: '140px' }}
         // activeClassName="bg-blue-300"
+        goLink={(path: string, type: 'external'|'inner') => console.log(path, type)}
       />
       <div className="h-280 bg-indigo-300"></div>
       <NavigationMenu
@@ -19,6 +20,7 @@ function Test(): JSX.Element {
         mode="side"
         style={{ maxWidth: '200px' }}
         // activeClassName="bg-blue-300"
+        goLink={(path: string, type: 'external'|'inner') => console.log(path, type)}
       />
     </>
   );
