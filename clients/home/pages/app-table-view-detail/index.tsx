@@ -76,14 +76,13 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
   };
 
   useEffect(() => {
-    userAppDetailsStore.currentRoleInfo.roleID &&
-    store.setCurRoleID(userAppDetailsStore.currentRoleInfo.roleID);
+    store.setCurRoleID(userAppDetailsStore.currentRoleInfo.roleID || 'POLY_ROLE_ID');
   }, [userAppDetailsStore.currentRoleInfo]);
 
   const tableHeaderBtnList = useMemo(() => {
     return Object.entries(BUTTON_GROUP).reduce((acc: TableHeaderBtn[], [key, buttonValue]) => {
       const _apiPath = getAPIPath(appID, tableID, key, 'POST');
-      if (store.authority[_apiPath] || userAppDetailsStore.perPoly) {
+      if (store.authority[_apiPath]) {
         return [...acc, buttonValue];
       }
       return acc;
@@ -128,7 +127,7 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
       const perParams = { appID, tableID, authority: store.authority };
       return (
         <div>
-          {(getOperateButtonPer('get', perParams) || userAppDetailsStore.perPoly) && (
+          {(getOperateButtonPer('get', perParams)) && (
             <span
               onClick={() => {
                 store.operationType = '查看';
@@ -139,7 +138,7 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
               查看
             </span>
           )}
-          {(getOperateButtonPer('update', perParams) || userAppDetailsStore.perPoly) && (
+          {(getOperateButtonPer('update', perParams)) && (
             <span
               onClick={() => {
                 store.operationType = '修改';
@@ -150,7 +149,7 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
               修改
             </span>
           )}
-          {(getOperateButtonPer('delete', perParams) || userAppDetailsStore.perPoly) && (
+          {(getOperateButtonPer('delete', perParams)) && (
             <PopConfirm content='确认删除该数据？' onOk={() => delFormData([rowData._id])}>
               <span className='text-red-600 cursor-pointer'>删除</span>
             </PopConfirm>
