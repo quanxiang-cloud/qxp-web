@@ -4,7 +4,7 @@ import { Route, Switch } from 'react-router-dom';
 import Loading from '@c/loading';
 import NotFoundError from '@c/404-error';
 
-const Test = React.lazy(() => import('../test'));
+const Test = React.lazy(() => import('../components/NavigateMenu/test'));
 const AppsRoutes = React.lazy(() => import('./modules/apps-management/routes'));
 const RedirectToApps = React.lazy(() => import('./modules/dashboard/redirect-to-apps'));
 const PagePreview = React.lazy(() => import('./modules/apps-management/pages/page-design/page-preview'));
