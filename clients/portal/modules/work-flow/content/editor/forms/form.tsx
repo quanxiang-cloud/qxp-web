@@ -28,17 +28,18 @@ interface Props {
   onChange: (data: BusinessData) => void;
 }
 
-function useTableSchema(appID: string, tableID: string): [ReturnType<typeof schemaToFields>, boolean] {
+function useTableSchema(
+  appID: string,
+  formData: string | NodeWorkForm,
+): [ReturnType<typeof schemaToFields>, boolean] {
   const [schema, setSchema] = useState<ISchema>();
-
+  const tableID = (formData as NodeWorkForm)?.value || undefined;
   const { data, isLoading, isError } = useQuery<ISchema>(['FETCH_TABLE_SCHEMA', appID, tableID], () => {
     if (!tableID) {
       return Promise.resolve({});
     }
 
     return getTableSchema(appID, tableID).then((pageSchema) => (pageSchema?.schema || {}));
-  }, {
-    enabled: !tableID,
   });
 
   useEffect(() => {
@@ -92,7 +93,7 @@ export default function Form({
     });
   }
   const { appID } = useContext(FlowContext);
-  const [sourceTableSchema, isLoading] = useTableSchema(appID, (workForm as NodeWorkForm)?.value || '');
+  const [sourceTableSchema, isLoading] = useTableSchema(appID, workForm);
 
   if (isLoading) {
     // todo handle error case
@@ -117,10 +118,20 @@ export default function Form({
       </FlowTableContext.Provider>
     );
   }
-
+  if (!sourceTableSchema.length && typeof workForm !== 'string') {
+    return (<div>loading...</div>);
+  }
   return (
-    <div className="flex-1 flex flex-col" style={{ height: 'calc(100% - 56px)' }}>
-      {getConfigForm()}
-    </div>
+    <FlowTableContext.Provider
+      value={{
+        tableID: (workForm as NodeWorkForm)?.value || '',
+        tableName: (workForm as NodeWorkForm)?.value || '',
+        tableSchema: sourceTableSchema,
+      }}
+    >
+      <div className="flex-1 flex flex-col" style={{ height: 'calc(100% - 56px)' }}>
+        {getConfigForm()}
+      </div>
+    </FlowTableContext.Provider>
   );
 }

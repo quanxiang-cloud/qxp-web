@@ -47,7 +47,6 @@ export default function({ onSearchInputChange }: Props): JSX.Element {
           新建工作流
       </Button>
       <Popper
-        trigger='hover'
         reference={reference}
         placement="bottom-start"
         modifiers={[{ name: 'offset', options: { offset: [0, 4] } }]}
