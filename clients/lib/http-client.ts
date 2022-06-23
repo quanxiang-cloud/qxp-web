@@ -1,7 +1,7 @@
 import qs from 'qs';
 
 import type { CustomPageInfo, ArteryPageInfo } from '@portal/modules/apps-management/pages/app-details/type';
-// import { saveConfig } from '@pageDesign/blocks/fountainhead/config';
+import { saveConfig } from '@pageDesign/blocks/fountainhead/config';
 
 // https://attacomsian.com/blog/javascript-current-timezone
 function getTimeZone(): string {
@@ -153,6 +153,6 @@ export async function httpClientGraphQL<TData>(
 }
 
 window.__httpClient = httpClient;
-// window.__syncConfig = saveConfig;
+window.__syncConfig = saveConfig;
 
 export default httpClient;

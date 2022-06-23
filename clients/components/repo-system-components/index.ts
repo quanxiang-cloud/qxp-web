@@ -3,6 +3,7 @@ import type { Repository } from '@one-for-all/artery-renderer';
 import versionMap from '@pageDesign/blocks/fountainhead/config/name-version-map';
 import SystemTaskList from '@c/task-lists';
 import UserMenuAvatar from '@c/user-avatar-menu';
+import NavigateMenu from '@c/NavigateMenu';
 
 import FileUpload from './file-upload';
 import RichTextEditor from './rich-text-editor';
@@ -18,6 +19,7 @@ const repoSystemComponents: Repository = {
   [`system-components@${versionMap['system-components']}`]: {
     UserMenuAvatar,
     SystemTaskList,
+    NavigateMenu,
     FileUpload,
     GridContainer,
     RichTextEditor,
