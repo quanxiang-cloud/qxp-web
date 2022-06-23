@@ -20,6 +20,8 @@ const WILL_COMPONENT_MAP: Record<string, string> = {
   object: 'VariableBind',
 };
 
+const NOT_IN_PROPS_PANEL_WILL = ['ClassName', 'StyleSheet'];
+
 function convertWillProps(spec: BasePropSpec): NodeProperties {
   const willProps = spec.willProps;
   if (!willProps) {
@@ -44,10 +46,7 @@ function convertWillProps(spec: BasePropSpec): NodeProperties {
   return nodeProperties;
 }
 
-function generateNodeProperties(
-  spec: BasePropSpec,
-  options: OptionsType,
-): NodeProperties {
+function generateNodeProperties(spec: BasePropSpec, options: OptionsType): NodeProperties {
   const willProperties = convertWillProps(spec);
   const defaultProperties = {
     __path: {
@@ -79,22 +78,21 @@ function createWrapperNode(style?: CSSProperties, children?: Node[]): HTMLNode {
   return wrapperNode;
 }
 
-function createTextNode(
-  spec: BasePropSpec,
-  options: OptionsType,
-): Node {
+function createTextNode(spec: BasePropSpec, options: OptionsType): Node {
   const will = spec.will || WILL_COMPONENT_MAP[spec.type] || 'Unavaliable';
-  const labelNode: Node[] = [{
-    id: generateNodeId(),
-    type: 'html-element',
-    name: 'label',
-    props: {
-      children: {
-        type: 'constant_property',
-        value: spec.label,
+  const labelNode: Node[] = [
+    {
+      id: generateNodeId(),
+      type: 'html-element',
+      name: 'label',
+      props: {
+        children: {
+          type: 'constant_property',
+          value: spec.label,
+        },
       },
     },
-  }];
+  ];
 
   if (spec.desc) {
     labelNode.push({
@@ -127,59 +125,56 @@ function createTextNode(
   return createWrapperNode(options.style, textNode);
 }
 
-function createFieldNode(
-  spec: BasePropSpec,
-  options: OptionsType,
-): Node {
+function createFieldNode(spec: BasePropSpec, options: OptionsType): Node {
   const will = spec.will || WILL_COMPONENT_MAP[spec.type] || 'Unavaliable';
   const children: Node[] = [
-    createWrapperNode({ flex: '1' },
-      [
-        {
-          id: generateNodeId(),
-          type: 'react-component',
-          packageName: 'node-carve',
-          packageVersion: versionMap['node-carve'],
-          exportName: will.toLowerCase(),
-          props: generateNodeProperties(spec, options),
-        },
-      ],
-    ),
+    createWrapperNode({ flex: '1' }, [
+      {
+        id: generateNodeId(),
+        type: 'react-component',
+        packageName: 'node-carve',
+        packageVersion: versionMap['node-carve'],
+        exportName: will.toLowerCase(),
+        props: generateNodeProperties(spec, options),
+      },
+    ]),
   ];
 
-  return createWrapperNode({
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  }, children);
+  return createWrapperNode(
+    {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+    children,
+  );
 }
 
-export function buildNodeCarveArtery(
-  spec: BasePropSpec[],
-  options: OptionsType,
-): Artery {
-  const attrSpecNodes = spec.map((spec: BasePropSpec) => {
-    const wrapperNode: HTMLNode = {
-      id: generateNodeId(),
-      type: 'html-element',
-      name: 'div',
-    };
-    const labelNode: Node = createTextNode(spec, {
-      ...options,
-      style: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        padding: '8px 0',
-        alignItems: 'center',
-      },
-    });
-    const FieldNode: Node = createFieldNode(spec, options);
+export function buildNodeCarveArtery(spec: BasePropSpec[], options: OptionsType): Artery {
+  const attrSpecNodes = spec
+    .filter((s) => s.will ? !NOT_IN_PROPS_PANEL_WILL.includes(s.will) : true)
+    .map((spec: BasePropSpec) => {
+      const wrapperNode: HTMLNode = {
+        id: generateNodeId(),
+        type: 'html-element',
+        name: 'div',
+      };
+      const labelNode: Node = createTextNode(spec, {
+        ...options,
+        style: {
+          display: 'flex',
+          justifyContent: 'space-between',
+          padding: '8px 0',
+          alignItems: 'center',
+        },
+      });
+      const FieldNode: Node = createFieldNode(spec, options);
 
-    return {
-      ...wrapperNode,
-      children: [labelNode, FieldNode],
-    };
-  });
+      return {
+        ...wrapperNode,
+        children: [labelNode, FieldNode],
+      };
+    });
 
   const rootNode = createWrapperNode({ width: '100%' }, attrSpecNodes);
 

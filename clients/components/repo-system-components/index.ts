@@ -7,6 +7,7 @@ import UserMenuAvatar from '@c/user-avatar-menu';
 import FileUpload from './file-upload';
 import RichTextEditor from './rich-text-editor';
 import GridContainer from './grid-container';
+import OptionalTable from './table';
 import Tree from './tree';
 import a from './a';
 import div from './div';
@@ -20,6 +21,7 @@ const repoSystemComponents: Repository = {
     FileUpload,
     GridContainer,
     RichTextEditor,
+    OptionalTable,
     Tree,
     a,
     div,

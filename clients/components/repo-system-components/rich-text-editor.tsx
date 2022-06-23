@@ -2,9 +2,14 @@ import React, { ForwardedRef, forwardRef } from 'react';
 
 import QuillEditor from '@c/quill';
 
-function RichTextEditor(props: any, ref: ForwardedRef<HTMLDivElement>): JSX.Element {
+function RichTextEditor(
+  { className, style, ...restProps }: any,
+  ref: ForwardedRef<HTMLDivElement>,
+): JSX.Element {
   return (
-    <div ref={ref}><QuillEditor {...props} /></div>
+    <div className={className} style={style} ref={ref}>
+      <QuillEditor {...restProps} />
+    </div>
   );
 }
 
