@@ -117,7 +117,7 @@ export default function MenuItem({
           onClick={handleItemClick}
         >
           {icon && (<Icon name={icon} className="item-icon" size={children || level === 1 ? 24 : 20} />)}
-          <span className={cs(`item-label px-${mode === 'side' && level > 1 ? 16 : 8}`)}>{title}</span>
+          <span className={cs(`menu-item-label px-${mode === 'side' && level > 1 ? 16 : 8}`)}>{title}</span>
           {children && showExpandIcon && (
             <Icon
               size={22}
