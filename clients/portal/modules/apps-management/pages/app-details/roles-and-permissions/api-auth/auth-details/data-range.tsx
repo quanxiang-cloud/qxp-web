@@ -1,6 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import cs from 'classNames';
+import cs from 'classnames';
 
 import RadioGroup from '@c/radio/group';
 import Radio from '@c/radio';
