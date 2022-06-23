@@ -8,6 +8,8 @@ type Props = {
   mode?: 'top' | 'side';
   className?: string;
   itemClassName?: string;
+  activeClassName?: string;
+  itemHoverClassName?: string;
   style?: Record<string, string>;
   itemStyle?: Record<string, string>;
   showExpandIcon?: boolean;
@@ -21,6 +23,8 @@ function NavigationMenu({
   className,
   itemClassName,
   showExpandIcon,
+  itemHoverClassName = 'menu-item-hover',
+  activeClassName = 'active-menu-item',
 }: Props): JSX.Element {
   const [activeItemId, setActiveItemId] = useState<string>('');
 
@@ -41,6 +45,8 @@ function NavigationMenu({
           onSelectItem={setActiveItemId}
           activeId={activeItemId}
           showExpandIcon={showExpandIcon}
+          itemHoverClassName={itemHoverClassName}
+          activeClassName={activeClassName}
         />
       ))}
     </div>

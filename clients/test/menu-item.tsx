@@ -24,6 +24,8 @@ type Props = {
   activeId?: string;
   mode?: 'top' | 'side';
   className?: string;
+  activeClassName?: string;
+  itemHoverClassName?: string;
   style?: Record<string, string>;
   onSelectItem?: (item: any) => void;
   showExpandIcon?: boolean;
@@ -38,6 +40,8 @@ export default function MenuItem({
   mode = 'side',
   className,
   style,
+  activeClassName,
+  itemHoverClassName,
   showExpandIcon = true,
   onSelectItem,
 }: Props): JSX.Element | null {
@@ -81,6 +85,8 @@ export default function MenuItem({
         onSelectItem={onSelectItem}
         activeId={activeId}
         showExpandIcon={showExpandIcon}
+        itemHoverClassName={itemHoverClassName}
+        activeClassName={activeClassName}
       />
     );
   }
@@ -97,8 +103,8 @@ export default function MenuItem({
         <div
           style={{ ...style, height: `${itemHeight}px` }}
           className={cs(
-            'menu-item',
-            { 'active-menu-item': id === activeId },
+            `menu-item ${itemHoverClassName}`,
+            { [`${activeClassName}`]: id === activeId },
             className,
           )}
           onClick={handleItemClick}
