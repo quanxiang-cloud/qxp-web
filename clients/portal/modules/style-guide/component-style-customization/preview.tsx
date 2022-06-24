@@ -27,7 +27,7 @@ function ShadowContent({
 
     const style = document.createElement('style');
     const compStyle = document.createElement('link');
-    compStyle.href = 'https://ofapkg.pek3b.qingstor.com/@one-for-all/headless-ui@0.1.2/ofa-headless-ui-web.css';
+    compStyle.href = `${window.VendorPrefix}/@one-for-all/headless-ui@0.1.2/ofa-headless-ui-web.css`;
     compStyle.rel = 'stylesheet';
     style.textContent = `
     .style-guide-comp-item {
