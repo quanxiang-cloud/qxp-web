@@ -52,7 +52,6 @@ const config = {
     'draft-js',
     // 'html-to-draftjs',
     // 'react-draft-wysiwyg',
-    'jszip',
     'react-beautiful-dnd',
     'react-dnd',
     // 'react-dnd-html5-backend',
