@@ -18,11 +18,11 @@ func PortalHandler(w http.ResponseWriter, r *http.Request) {
 	userAdminRoles := getUserAdminRoles(r)
 
 	renderWebAppPage(w, "portal.html", map[string]interface{}{
-		"user":              user,
-		"adminUserFuncTags": adminUserFuncTags,
-		"userAdminRoles":    userAdminRoles,
+		"user":               user,
+		"adminUserFuncTags":  adminUserFuncTags,
+		"userAdminRoles":     userAdminRoles,
 		"personalizedConfig": personalizedConfig,
-		"debugMode":         contexts.Config.DevMode,
-		"CONFIG":            contexts.Config.ClientConfig,
+		"debugMode":          contexts.Config.DevMode,
+		"CONFIG":             contexts.Config.ClientConfig,
 	})
 }
