@@ -198,7 +198,7 @@ export function initSizeByLayoutType(layoutType: LayoutType): NodeProperties {
   let value: Record<string, string> = { width: '200px' };
 
   if (layoutType === LayoutType.HeaderContent) {
-    value = { height: '100px' };
+    value = { height: '50px' };
   }
 
   return {

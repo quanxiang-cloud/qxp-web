@@ -32,7 +32,10 @@ function NavigationMenu({
 
   return (
     <div
-      className={cs('bg-white', { flex: mode === 'top' }, className)}
+      className={cs(
+        `bg-white overflow-auto ${mode === 'top' ? 'flex h-full' : 'w-full'}`,
+        className,
+      )}
       style={style}
     >
       {menus.map((menu) => (
