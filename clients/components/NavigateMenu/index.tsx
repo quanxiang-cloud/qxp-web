@@ -42,7 +42,7 @@ function NavigationMenu({
           level={1}
           maxLevel={2}
           mode={mode}
-          className={cs('bg-white', itemClassName)}
+          className={itemClassName}
           style={itemStyle}
           onSelectItem={setActiveItemId}
           goLink={goLink}

@@ -93,7 +93,7 @@ export default function MenuItem({
         maxLevel={maxLevel}
         mode={mode}
         goLink={goLink}
-        className={cs('bg-white', className)}
+        className={className}
         style={{ ...style }}
         onSelectItem={onSelectItem}
         activeId={activeId}
