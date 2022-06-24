@@ -1,6 +1,6 @@
 import React, { CSSProperties, useState, useMemo } from 'react';
 import cs from 'classnames';
-import type { Node } from '@one-for-all/artery';
+import type { Node, NodeProperties } from '@one-for-all/artery';
 import { buildReactComponentNode } from '@one-for-all/artery-engine';
 
 import type { PackageComponent } from '@pageDesign/blocks/fountainhead/type';
@@ -19,13 +19,29 @@ interface Props extends PackageComponent {
 // todo refactor this
 function genNode(props: Props): Node {
   const { package: pkg, name, label, initialProps } = props;
+  let _initProps: NodeProperties = initialPropsToNodeProperties(initialProps);
+
+  if (pkg.name === 'system-components' && name === 'NavigateMenu') {
+    _initProps = Object.assign(_initProps, {
+      goLink: {
+        type: 'functional_property',
+        func: {
+          type: 'raw',
+          args: 'path',
+          body: `
+            this.history.push(path);
+          `,
+        },
+      },
+    });
+  }
 
   return buildReactComponentNode({
     packageName: pkg.name,
     packageVersion: pkg.version,
     exportName: name,
     label: label,
-    props: initialPropsToNodeProperties(initialProps),
+    props: _initProps,
   });
 }
 

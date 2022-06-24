@@ -5,7 +5,7 @@ import MenuItem, { MenuItemType } from './menu-item';
 
 type Props = {
   menus: Array<MenuItemType>;
-  goLink: (path: string, type: 'external' | 'inner') => void;
+  goLink: (path: string) => void;
   mode?: 'top' | 'side';
   showExpandIcon?: boolean;
   className?: string;
