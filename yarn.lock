@@ -1372,14 +1372,6 @@
   resolved "https://registry.npmmirror.com/@one-for-all/schema-spec/-/schema-spec-0.15.0.tgz#665d9a4b40dbeb399d8dbe1c48b80d55f7bf6a7f"
   integrity sha512-tPqHVGyGfAJnfNoVvbGJEMxLFPr4VsKySE9WDZw1IYGDLCzXrhSotb7M59aNww4XlCo+PFM/mhQtUpupH9lBww==
 
-"@one-for-all/schema-utils@0.10.0":
-  version "0.10.0"
-  resolved "https://registry.npmmirror.com/@one-for-all/schema-utils/-/schema-utils-0.10.0.tgz#f0719177989c1cae3ce40dbfc97962da11ee30a7"
-  integrity sha512-YaV6e/6+5i1EZob/57SABRQ4ZwojbKAWL9DOyxiom6Br9WHljDbbVWskQPU+g9LMmzT+iXcRu8A9G2z2KqKCEA==
-  dependencies:
-    "@one-for-all/schema-spec" "0.15.0"
-    immutable "4.0.0"
-
 "@one-for-all/ui@0.2.18":
   version "0.2.18"
   resolved "https://registry.npmmirror.com/@one-for-all/ui/-/ui-0.2.18.tgz#d3b809c8f277c72764a43730534bcc73a13b7abb"
