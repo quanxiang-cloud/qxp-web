@@ -24,5 +24,6 @@ func PortalHandler(w http.ResponseWriter, r *http.Request) {
 		"personalizedConfig": personalizedConfig,
 		"debugMode":          contexts.Config.DevMode,
 		"CONFIG":             contexts.Config.ClientConfig,
+		"vendorPrefix":       contexts.Config.ClientConfig.VendorPrefix,
 	})
 }

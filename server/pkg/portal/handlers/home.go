@@ -27,8 +27,9 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 		"user":               user,
 		"adminUserFuncTags":  adminUserFuncTags,
 		"userAdminRoles":     userAdminRoles,
+		"personalizedConfig": personalizedConfig,
 		"debugMode":          contexts.Config.DevMode,
 		"CONFIG":             contexts.Config.ClientConfig,
-		"personalizedConfig": personalizedConfig,
+		"vendorPrefix":       contexts.Config.ClientConfig.VendorPrefix,
 	})
 }

@@ -4,9 +4,10 @@ import { ComputedDependency } from '@one-for-all/artery';
 
 import Section from '../../../utils/section';
 import { EditorRefType } from './code-editor';
-import dataSource from '../../../stores/data-source';
 
 import styles from './index.m.scss';
+import { ConfigContextState, useConfigContext } from '../context';
+import { mapSharedStateSpec, mapApiStateSpec } from '../../pool/shared-state/utils';
 
 type Props = {
   boundVariables: ComputedDependency[];
@@ -22,8 +23,9 @@ function VariableList({
   updateBoundVariables,
 }: Props): JSX.Element {
   const variableNames = boundVariables.map(({ depID }) => depID);
-  const sharedStates = Object.entries(dataSource.sharedState).map(([_, value]) => JSON.parse(value));
-  const apiStates = Object.entries(dataSource.apiState).map(([_, value]) => JSON.parse(value));
+  const { artery } = useConfigContext() as ConfigContextState;
+  const sharedStates = Object.entries(mapSharedStateSpec(artery)).map(([_, value]) => JSON.parse(value));
+  const apiStates = Object.entries(mapApiStateSpec(artery)).map(([_, value]) => JSON.parse(value));
 
   function handleVariableClick(variable: string, type: 'shared_state' | 'api_state'): void {
     if (singleBind && boundVariables.length === 1) {
