@@ -51,3 +51,7 @@ client_config:
   portal_hostname: portal.qxp.localhost
   # 文档的域名
   docs_hostname: docs.qxp.com
+  vendor:
+    protocol: https
+    hostname: example.com
+    port: 443

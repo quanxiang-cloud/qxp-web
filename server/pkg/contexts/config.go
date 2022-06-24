@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"net/url"
 
 	"github.com/kelseyhightower/envconfig"
 	"gopkg.in/go-playground/validator.v9"
@@ -42,13 +43,22 @@ type OSSConfig struct {
 	ReadableBucket string `json:"readable"`
 }
 
+// VendorsConfig define frontend vendor library address
+type VendorsConfig struct {
+	Protocol string `yaml:"protocol" json:"protocol" default:"https"`
+	Hostname string `yaml:"hostname" json:"hostname" default:"ofapkg.pek3b.qingstor.com"`
+	Port     int    `yaml:"port" json:"port" default:"443"`
+}
+
 // ClientConfig containe configs for frontend
 type ClientConfig struct {
-	WebsocketHostname string    `yaml:"websocket_hostname" default:"keeper" vaildate:"required" split_words:"true" json:"websocket_hostname"`
-	HomeHostname      string    `yaml:"home_hostname" default:"home.qxp.com" split_words:"true" json:"home_hostname"`
-	PortalHostname    string    `yaml:"portal_hostname" default:"portal.qxp.com" split_words:"true" json:"portal_hostname"`
-	DocsHostname      string    `yaml:"docs_hostname" default:"docs.qxp.com" split_words:"true" json:"docs_hostname"`
-	OSSConfig         OSSConfig `json:"oss_config"`
+	WebsocketHostname string        `yaml:"websocket_hostname" default:"keeper" vaildate:"required" split_words:"true" json:"websocket_hostname"`
+	HomeHostname      string        `yaml:"home_hostname" default:"home.qxp.com" split_words:"true" json:"home_hostname"`
+	PortalHostname    string        `yaml:"portal_hostname" default:"portal.qxp.com" split_words:"true" json:"portal_hostname"`
+	DocsHostname      string        `yaml:"docs_hostname" default:"docs.qxp.com" split_words:"true" json:"docs_hostname"`
+	OSSConfig         OSSConfig     `json:"oss_config"`
+	VendorsConfig     VendorsConfig `yaml:"vendor" json:"vendor"`
+	VendorPrefix      string
 }
 
 // Configuration is the type of project config file
@@ -89,6 +99,17 @@ func initConfig(configFile string) Configuration {
 	if err != nil {
 		log.Fatal("config is invailed", err.Error())
 	}
+
+	if Config.ClientConfig.VendorsConfig.Hostname == "" {
+		Config.ClientConfig.VendorsConfig = VendorsConfig{Protocol: "https", Hostname: "ofapkg.pek3b.qingstor.com", Port: 443}
+	}
+
+	vendorConfig := Config.ClientConfig.VendorsConfig
+	vendorURL := url.URL{
+		Scheme: vendorConfig.Protocol,
+		Host:   fmt.Sprintf("%s:%d", vendorConfig.Hostname, vendorConfig.Port),
+	}
+	Config.ClientConfig.VendorPrefix = vendorURL.String()
 
 	return Config
 }
