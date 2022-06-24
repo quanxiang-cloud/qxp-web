@@ -192,7 +192,15 @@
             "title": "子菜单项",
             "children": [{ "id": "submenu-item", "title": "子菜单项" }]
           }],
-        "gpLink": ""
+        "goLink": {
+          "type": "functional_property",
+          "func": {
+            "type": "raw",
+            "args": "e",
+            "body": "return this.history.push"
+          }
+        },
+        "mode": "side"
       }
     }]
   }

@@ -413,10 +413,10 @@
       "will": "Select",
       "willProps": {
         "options": [{
-          "label": "水平",
+          "label": "垂直",
           "value": "side"
         }, {
-          "label": "垂直",
+          "label": "水平",
           "value": "top"
         }]
       }
