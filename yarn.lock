@@ -1302,10 +1302,10 @@
   dependencies:
     react "^17.0.2"
 
-"@one-for-all/node-carve@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.npmmirror.com/@one-for-all/node-carve/-/node-carve-0.1.0.tgz#dcdafbad0398aae83b26bbcdbf9c1260bdaa119c"
-  integrity sha512-hS367fgNJO4B7gxKsjAeQn9KVWPbssbPteqOJgF0m3PLBlYwavQFsfzX/PHmVamNiLvOeMAvR360OvQ+44ttfw==
+"@one-for-all/node-carve@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.npmmirror.com/@one-for-all/node-carve/-/node-carve-0.2.0.tgz#225655d5eb817138bf46d015af4a4799a0e47438"
+  integrity sha512-Ox0xNGXC71LkSloiwmJdjDTCSWCW9fiQN9F9xQ+dtyRSiSpIKBuTR8hx032t5kyIAGGfau9eJtSzGIzZWrF5Rg==
 
 "@one-for-all/page-engine@0.10.0":
   version "0.10.0"
