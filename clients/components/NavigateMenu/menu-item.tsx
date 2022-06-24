@@ -11,14 +11,14 @@ export type MenuItemType = {
   id: string;
   title: string;
   icon?: string;
-  externalLink?: string;
-  innerPath?: string;
+  linkPath?: string;
+  isExternal?: string;
   children?: Array<MenuItemType>;
 }
 
 type Props = {
   menu: MenuItemType;
-  goLink: (path: string, type: 'external' | 'inner') => void;
+  goLink: (path: string) => void;
   level?: number;
   maxLevel?: number;
   itemHeight?: number;
@@ -47,7 +47,7 @@ export default function MenuItem({
   onSelectItem,
   goLink,
 }: Props): JSX.Element | null {
-  const { id, title, icon, children, externalLink, innerPath } = menu;
+  const { id, title, icon, children, linkPath, isExternal } = menu;
   const nodeRef = useRef<HTMLDivElement>(null);
   const currentChildrenHeight = useRef<number>();
   const [expand, setExpand] = useState(false);
@@ -71,11 +71,17 @@ export default function MenuItem({
 
   function handleItemClick(): void {
     changeExpand();
-    if (!children) {
-      onSelectItem && onSelectItem(id);
-      goLink && goLink('/apps/details', 'inner');
+    if (children) return;
+
+    onSelectItem && onSelectItem(id);
+    if (!linkPath) return;
+
+    if (isExternal) {
+      window.open(linkPath);
       return;
     }
+
+    return goLink && goLink(linkPath);
   }
 
   function renderSubItems(item: MenuItemType) {

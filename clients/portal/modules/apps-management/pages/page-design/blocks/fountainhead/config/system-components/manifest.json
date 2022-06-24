@@ -265,28 +265,31 @@
       "desc": "用于制作页面跳转的链接汇总",
       "label": "导航菜单",
       "initialProps": {
-        "menus": [{ 
+        "menus": [
+          {
             "id": "item-1",
-            "title": "菜单项一"
+            "title": "菜单项一",
+            "linkPath": "/apps"
           },
-          { 
+          {
             "id": "item-2",
-            "title": "菜单项二"
+            "title": "菜单项二",
+            "linkPath": "https://www.baidu.com",
+            "isExternal": "true"
           },
-          { 
+          {
             "id": "submenu",
             "title": "子菜单项",
-            "children": [{ "id": "submenu-item", "title": "子菜单项" }]
-          }],
-        "goLink": {
-          "type": "functional_property",
-          "func": {
-            "type": "raw",
-            "args": "e",
-            "body": "return this.history.push"
+            "children": [
+              {
+                "id": "submenu-item",
+                "title": "子菜单项"
+              }
+            ]
           }
-        },
-        "mode": "side"
+        ],
+        "mode": "side",
+        "showExpandIcon": true
       }
     }]
   }
