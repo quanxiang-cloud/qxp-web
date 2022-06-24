@@ -2,8 +2,6 @@
   @apply flex flex-col h-full overflow-auto flex-shrink-0;
 
   [data-layout-child="fragment-container"] {
-    max-height: 80px;
-    max-width: none;
     overflow: auto;
   }
 
@@ -29,7 +27,5 @@
 }
 
 [data-layout-child="fragment-container"] {
-  max-width: 120px;
-  max-height: none;
   overflow: auto;
 }

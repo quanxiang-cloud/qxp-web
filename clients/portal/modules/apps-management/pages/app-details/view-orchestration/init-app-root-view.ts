@@ -1,12 +1,13 @@
 import ArterySpec from '@one-for-all/artery';
 
-import { LayoutType } from './types';
+import { LayoutType } from './types.d';
 import createLayoutSchema, { ROOT_NODE_STYLE } from './helpers/create-layout-schema';
 import {
   createRefSchema,
   createAppLandingRouteNode,
   genDesktopRootArteryKey,
   saveArtery,
+  initSizeByLayoutType,
 } from './helpers/utils';
 import { ROOT_NODE_ID } from './constants';
 
@@ -39,7 +40,7 @@ export async function initAppRootView(appID: string, layoutType: LayoutType | 'f
     );
   }
 
-  const refSchemaKey = await createRefSchema(appID);
+  const refSchemaKey = await createRefSchema(appID, { ...initSizeByLayoutType(layoutType) });
 
   if (!refSchemaKey) throw new Error('get refSchemaKey failed');
 
