@@ -33,5 +33,6 @@ func AppLandHandler(w http.ResponseWriter, r *http.Request) {
 		"debugMode":         contexts.Config.DevMode,
 		"CONFIG":            contexts.Config.ClientConfig,
 		"appID":             appID,
+		"vendorPrefix":      contexts.Config.ClientConfig.VendorPrefix,
 	})
 }
