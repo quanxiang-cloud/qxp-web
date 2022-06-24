@@ -282,6 +282,76 @@
     "isContainer": false,
     "isOverLayer": false
   },
+  "IFrame": {
+    "props": [{
+      "label": "id",
+      "name": "id",
+      "type": "string"
+    }, {
+      "label":"iframe 地址",
+      "name": "iframeAddr",
+      "type": "string"
+    }, {
+      "label":"iframe 宽度",
+      "name": "iframeWidth",
+      "type": "string"
+    }, {
+      "label":"iframe 高度",
+      "name": "iframeHeight",
+      "type": "string"
+    }, {
+      "label":"iframe 名称",
+      "name": "iframeName",
+      "type": "string"
+    }, {
+      "label":"iframe 额外限制",
+      "name": "sandbox",
+      "type": "string"
+    }, {
+      "label":"iframe 允许范围",
+      "name": "iframeAllow",
+      "type": "string"
+    }, {
+      "label":"允许激活全屏模式",
+      "name": "allowFullscreen",
+      "type": "boolean"
+    }, {
+      "label":"iframe 推荐配置",
+      "name": "referrerPolicy",
+      "type": "string",
+      "will": "Select",
+      "willProps": {
+        "placeholder": "请选择",
+        "options": [{
+          "label": "no-referrer",
+          "value": "no-referrer"
+        }, {
+          "label": "no-referrer-when-downgrade",
+          "value": "no-referrer-when-downgrade"
+        }, {
+          "label": "origin",
+          "value": "origin"
+        }, {
+          "label": "origin-when-cross-origin",
+          "value": "origin-when-cross-origin"
+        }, {
+          "label": "same-origin",
+          "value": "same-origin"
+        }, {
+          "label": "strict-origin",
+          "value": "strict-origin"
+        }, {
+          "label": "strict-origin-when-cross-origin",
+          "value": "strict-origin-when-cross-origin"
+        }, {
+          "label": "unsafe-url",
+          "value": "unsafe-url"
+        }]
+      }
+    }],
+    "isContainer": false,
+    "isOverLayer": false
+  },
   "OptionalTable": {
     "props": [{
         "label": "列设置",

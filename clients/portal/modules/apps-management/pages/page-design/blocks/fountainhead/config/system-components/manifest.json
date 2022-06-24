@@ -198,6 +198,28 @@
       }
     }]
   },
+  "IFrame": {
+    "variants": [{
+      "icon": {
+        "type": "platform",
+        "name": "iframe-component",
+        "initialProps": {}
+      },
+      "desc": "iframe 组件",
+      "label": "iframe",
+      "initialProps": {
+        "sandbox": "allow-scripts allow-same-origin allow-forms",
+        "iframeName": "",
+        "iframeAddr": "",
+        "iframeWidth": "auto",
+        "iframeHeight": "auto",
+        "allowFullscreen": false,
+        "importance": "auto",
+        "referrerPolicy": "",
+        "iframeAllow": ""
+      }
+    }]
+  },
   "div": {
     "variants": [{
       "icon": {
