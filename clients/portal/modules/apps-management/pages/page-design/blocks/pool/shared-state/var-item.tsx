@@ -1,9 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import cs from 'classnames';
-import { observer } from 'mobx-react';
 import { Icon } from '@one-for-all/ui';
-
-import { useCtx } from '@pageDesign/ctx';
 
 import styles from '../index.m.scss';
 
@@ -11,29 +8,41 @@ interface Props {
   className?: string;
   name: string;
   conf: string; // json string value
+  sharedState: Record<string, any>;
+  setSharedState: (state: Record<string, any>) => void;
+  setModalOpen: (open: boolean) => void;
+  setCurSharedStateKey: (key: string) => void;
+  saveSharedState: (key: string, val: any) => void;
+  removeSharedState: (key: string) => void;
 }
 
 type VarContent = {
   name: string;
   val: any;
   desc: string;
-}
+};
 
-function VarItem({ className, name, conf }: Props): JSX.Element {
-  const ctx = useCtx();
-  const { dataSource, page } = ctx;
-  const { setCurSharedStateKey, setModalOpen } = dataSource;
+function VarItem({
+  className,
+  name,
+  conf,
+  sharedState,
+  setModalOpen,
+  removeSharedState,
+  setCurSharedStateKey,
+  saveSharedState,
+}: Props): JSX.Element {
   const data: VarContent = useMemo(() => JSON.parse(conf), [conf]);
   const [expand, setExpand] = useState(false);
 
   function handleCopy(ev: React.MouseEvent<SVGElement>): void {
     ev.stopPropagation();
     setCurSharedStateKey('');
-    const countName = Object.keys(dataSource.sharedState).filter((n) => n.startsWith(`${name}_copy`)).length;
+    const countName = Object.keys(sharedState).filter((n) => n.startsWith(`${name}_copy`)).length;
     const newName = countName === 0 ? `${name}_copy` : `${name}_copy${countName}`;
     const newConf = JSON.parse(conf);
     Object.assign(newConf, { name: newName });
-    dataSource.saveSharedState(newName, JSON.stringify(newConf), ()=> ctx.onSave(page.schema));
+    saveSharedState(newName, JSON.stringify(newConf));
   }
 
   function handleEdit(ev: React.MouseEvent<SVGElement>): void {
@@ -44,7 +53,7 @@ function VarItem({ className, name, conf }: Props): JSX.Element {
 
   function handleDelete(ev: React.MouseEvent<SVGElement>): void {
     ev.stopPropagation();
-    dataSource.removeSharedState(name, ()=> ctx.onSave(page.schema));
+    removeSharedState(name);
   }
 
   function handleExpand(ev: React.MouseEvent<SVGElement>): void {
@@ -62,24 +71,26 @@ function VarItem({ className, name, conf }: Props): JSX.Element {
           <span>{name}</span>
         </div>
         <div className={styles.varActions}>
-          <Icon name='content_copy' clickable onClick={handleCopy} />
-          <Icon name='edit' clickable onClick={handleEdit} />
-          <Icon name='delete' clickable onClick={handleDelete} />
-          <Icon name={expand ? 'expand_less' : 'expand_more'} clickable onClick={handleExpand}/>
+          <Icon name="content_copy" clickable onClick={handleCopy} />
+          <Icon name="edit" clickable onClick={handleEdit} />
+          <Icon name="delete" clickable onClick={handleDelete} />
+          <Icon name={expand ? 'expand_less' : 'expand_more'} clickable onClick={handleExpand} />
         </div>
       </div>
       <div className={styles.varCont}>
-        <div className='flex items-center mb-8 mt-8'>
+        <div className="flex items-center mb-8 mt-8">
           <span>初始值:</span>
-          <span className='flex-wrap break-all flex-1 ml-6'>{typeof data.val === 'object' ? JSON.stringify(data.val) : data.val}</span>
+          <span className="flex-wrap break-all flex-1 ml-6">
+            {typeof data.val === 'object' ? JSON.stringify(data.val) : data.val}
+          </span>
         </div>
-        <div className='flex items-center'>
+        <div className="flex items-center">
           <span>描述:</span>
-          <span className='flex-wrap break-all flex-1 ml-6'>{data.desc}</span>
+          <span className="flex-wrap break-all flex-1 ml-6">{data.desc}</span>
         </div>
       </div>
     </div>
   );
 }
 
-export default observer(VarItem);
+export default VarItem;
