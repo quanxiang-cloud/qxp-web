@@ -1280,10 +1280,10 @@
     react-dom "^17.0.2"
     react-table "^7.7.0"
 
-"@one-for-all/headless-ui@0.8.1":
-  version "0.8.1"
-  resolved "https://registry.npmmirror.com/@one-for-all/headless-ui/-/headless-ui-0.8.1.tgz#822ba3dff369c924117ee5779f8d4c0da0cc2f98"
-  integrity sha512-PQMXBYCfGfsBc00vLKT1IXoMQt+L4KLbt+yWs41uL8cg+C8ISLQgZ6q9JyZxQqUIE/Aa/x/uBZ8bNIpHXQrYlA==
+"@one-for-all/headless-ui@0.8.2":
+  version "0.8.2"
+  resolved "https://registry.npmmirror.com/@one-for-all/headless-ui/-/headless-ui-0.8.2.tgz#3d79d1630166e40985b05f238a6b45bdd1089412"
+  integrity sha512-3DJDyjPu5QIoU3AYs+jeNoqZUoKZm4BM+H5etf7rxBJV9d1IRR9MeFTD01Wp7rbcS7g+O0+IZDUId6TxPs5kEA==
   dependencies:
     "@one-for-all/icon" "0.6.2"
     "@popperjs/core" "^2.11.0"
