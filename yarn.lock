@@ -1280,10 +1280,10 @@
     react-dom "^17.0.2"
     react-table "^7.7.0"
 
-"@one-for-all/headless-ui@0.8.2":
-  version "0.8.2"
-  resolved "https://registry.npmmirror.com/@one-for-all/headless-ui/-/headless-ui-0.8.2.tgz#3d79d1630166e40985b05f238a6b45bdd1089412"
-  integrity sha512-3DJDyjPu5QIoU3AYs+jeNoqZUoKZm4BM+H5etf7rxBJV9d1IRR9MeFTD01Wp7rbcS7g+O0+IZDUId6TxPs5kEA==
+"@one-for-all/headless-ui@0.8.3":
+  version "0.8.3"
+  resolved "https://registry.npmmirror.com/@one-for-all/headless-ui/-/headless-ui-0.8.3.tgz#e8efe4b2e1975f9f1ba84f65fc19fe5df0102826"
+  integrity sha512-m4+Do0I1J0NpLYzEAXlOcXPzcpVirQx1feCy+7QomtrCexyYBNR02ZXiu46zckNiZMLwjVO0FuAYQ1NlJdLkZw==
   dependencies:
     "@one-for-all/icon" "0.6.2"
     "@popperjs/core" "^2.11.0"
@@ -8011,6 +8011,11 @@ react-beautiful-dnd@^13.1.0:
     react-redux "^7.2.0"
     redux "^4.0.4"
     use-memo-one "^1.1.1"
+
+react-codemirror2@^7.2.1:
+  version "7.2.1"
+  resolved "https://registry.npmmirror.com/react-codemirror2/-/react-codemirror2-7.2.1.tgz#38dab492fcbe5fb8ebf5630e5bb7922db8d3a10c"
+  integrity sha512-t7YFmz1AXdlImgHXA9Ja0T6AWuopilub24jRaQdPVbzUJVNKIYuy3uCFZYa7CE5S3UW6SrSa5nAqVQvtzRF9gw==
 
 react-color@^2.19.3:
   version "2.19.3"
