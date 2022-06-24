@@ -1,0 +1,185 @@
+{
+  "baseColors": {
+    "colorNos": [
+      50,
+      100,
+      200,
+      300,
+      400,
+      500,
+      600,
+      700,
+      800,
+      900
+    ],
+    "primaryColor": "blue",
+    "primaryColorNo": 500,
+    "colors": [
+      {
+        "name": "red",
+        "colorValues": [
+          "#FFF2F0",
+          "#FFD5CF",
+          "#FFAFA6",
+          "#F58078",
+          "#E8524D",
+          "#DC2626",
+          "#B5161B",
+          "#8F0A13",
+          "#69020C",
+          "#420109"
+        ]
+      },
+      {
+        "name": "blue",
+        "colorValues": [
+          "#F0F6FF",
+          "#DEE9FF",
+          "#B5CCFF",
+          "#8CADFF",
+          "#638AFF",
+          "#375FF3",
+          "#2543CC",
+          "#162BA6 ",
+          "#0A1880",
+          "#060D59"
+        ]
+      },
+      {
+        "name": "green",
+        "colorValues": [
+          "#E6F5E9",
+          "#B0E8BE",
+          "#84DB9C",
+          "#61CF80",
+          "#36C267",
+          "#16B552",
+          "#0E8F40",
+          "#026930",
+          "#004220",
+          "#001C0E"
+        ]
+      },
+      {
+        "name": "yellow",
+        "colorValues": [
+          "#FFF7E6",
+          "#FFE3AB",
+          "#FFD182",
+          "#F2B355",
+          "#E6952C",
+          "#D97706",
+          "#B35900",
+          "#8C4100",
+          "#662C00",
+          "#401A00"
+        ]
+      },
+      {
+        "name": "gray",
+        "colorValues": [
+          "#F8FAFC",
+          "#F1F5F9",
+          "#E2E8F0",
+          "#CBD5E1",
+          "#94A3B8",
+          "#64748B",
+          "#475569",
+          "#334155",
+          "#1E293B",
+          "#0F172A"
+        ]
+      },
+      {
+        "name": "orange",
+        "colorValues": [
+          "#FFF3E6",
+          "#FFD6B0",
+          "#FFBD87",
+          "#FFA15E",
+          "#F97316",
+          "#EA580C",
+          "#C43E00",
+          "#9E2D00",
+          "#781E00",
+          "#521200"
+        ]
+      },
+      {
+        "name": "teal",
+        "colorValues": [
+          "#E1F5EF",
+          "#B0E8D9",
+          "#84DBC7",
+          "#5BCFB7",
+          "#36C2AB",
+          "#16B59F",
+          "#0A8F82",
+          "#026962",
+          "#004240",
+          "#001C1C"
+        ]
+      },
+      {
+        "name": "cyan",
+        "colorValues": [
+          "#E6FCFC",
+          "#B4ECF0",
+          "#86DAE3",
+          "#5CC6D6",
+          "#36B1C9",
+          "#159ABC",
+          "#097596",
+          "#015370",
+          "#00344A",
+          "#001824"
+        ]
+      },
+      {
+        "name": "indigo",
+        "colorValues": [
+          "#F4F0FF",
+          "#DFD6FF",
+          "#BCADFF",
+          "#917FF5",
+          "#6554E8",
+          "#3B2CDB",
+          "#231BB5",
+          "#100E8F",
+          "#050769",
+          "#030642"
+        ]
+      },
+      {
+        "name": "purple",
+        "colorValues": [
+          "#FAF0FF",
+          "#F3DBFF",
+          "#E2B3FF",
+          "#CE8AFF",
+          "#A855F7",
+          "#9333EA",
+          "#7021C4",
+          "#52139E",
+          "#370878",
+          "#220552"
+        ]
+      },
+      {
+        "name": "fuchsia",
+        "colorValues": [
+          "#FFF0FE",
+          "#FFD1FE",
+          "#F8A5FA",
+          "#E777ED",
+          "#D44CE0",
+          "#C026D3",
+          "#9717AD",
+          "#700B87",
+          "#4D0361",
+          "#2C013B"
+        ]
+      }
+    ]
+  }
+}

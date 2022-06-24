@@ -12,6 +12,7 @@ const MetaData = React.lazy(() => import('./modules/metadata'));
 const AccessControl = React.lazy(() => import('./modules/access-control'));
 const SystemMgmt = React.lazy(() => import('./modules/system-mgmt'));
 const PolyAPI = React.lazy(() => import('./modules/poly-api'));
+const StyleGuide = React.lazy(() => import('./modules/style-guide'));
 const ConfigCenter = React.lazy(() => import('./modules/config-center'));
 
 export default function Routes(): JSX.Element {
@@ -23,6 +24,7 @@ export default function Routes(): JSX.Element {
         <Route path="/access-control" component={AccessControl} />
         <Route path="/system" component={SystemMgmt} />
         <Route path="/apps" component={AppsRoutes} />
+        <Route path="/style-guide" component={StyleGuide} />
         <Route path="/poly/:appID/:polyFullPath+" component={PolyAPI}/>
         <Route path="/config-center" component={ConfigCenter} />
         <Route path="/artery-engine" component={PageDesign} />

@@ -360,28 +360,3 @@ export function replaceTreeNode(tree: Node, node_id: string, newNode: Node): voi
 
   return;
 }
-
-export function mapSharedStateSpec(artery: Artery) {
-  return Object.entries(artery.sharedStatesSpec || {}).reduce(
-    (acc: Record<string, any>, [k, v]: [string, any]) => {
-      const conf = {
-        name: k,
-        val: JSON.stringify(v.initial),
-        desc: '',
-      };
-      acc[k] = JSON.stringify(conf);
-      return acc;
-    },
-    {},
-  );
-}
-
-export function mapApiStateSpec(artery: Artery) {
-  return Object.entries(artery.apiStateSpec || {}).reduce(
-    (acc: Record<string, any>, [k, v]: [string, any]) => {
-      acc[k] = v.apiID;
-      return acc;
-    },
-    {},
-  );
-}

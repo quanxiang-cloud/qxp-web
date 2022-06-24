@@ -29,7 +29,7 @@ type MenusProps<T extends React.Key> = {
   activeMenu?: T;
 }
 
-const Menus = forwardRef<HTMLDivElement, MenusProps<any>>(
+export const Menus = forwardRef<HTMLDivElement, MenusProps<any>>(
   <T extends React.Key>({ items, onClick, activeMenu }: MenusProps<T>, ref: Ref<HTMLDivElement>,
   ): JSX.Element => {
     return (
