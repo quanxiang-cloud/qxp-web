@@ -14,7 +14,7 @@ export function queryArtery(arteryID: string): { artery?: Artery; isLoading: boo
         toast.error('查询页面 schema 失败');
         return undefined;
       });
-  });
+  }, { cacheTime: 0 });
 
   return { artery, isLoading };
 }
