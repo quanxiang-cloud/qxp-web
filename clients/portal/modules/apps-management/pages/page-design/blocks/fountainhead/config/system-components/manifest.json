@@ -202,7 +202,7 @@
     "variants": [{
       "icon": {
         "type": "platform",
-        "name": "iframe-component",
+        "name": "filter_none",
         "initialProps": {}
       },
       "desc": "iframe 组件",

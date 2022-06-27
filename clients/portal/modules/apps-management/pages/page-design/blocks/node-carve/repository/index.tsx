@@ -1,7 +1,8 @@
 import { FC } from 'react';
-import { Repository } from '@one-for-all/artery-renderer';
+import { ColorResult } from 'react-color';
 
-import { Textarea } from '@one-for-all/ui';
+import { Repository } from '@one-for-all/artery-renderer';
+import { Textarea, ColorPicker } from '@one-for-all/ui';
 import {
   Checkbox,
   Input,
@@ -23,6 +24,8 @@ import Unavaliable from './unavaliable';
 import Tips from './tips';
 import UrlInputGroup from './url-input-group';
 
+const { formatRgba }: any = ColorPicker;
+
 const repoMap: Record<string, FC<any>> = {
   Input: connect(Input, { defaultProps: { className: 'w-full' } }),
   Switch: connect(Switch, { valueKey: 'checked' }),
@@ -37,6 +40,7 @@ const repoMap: Record<string, FC<any>> = {
   DatePicker: connect(DatePicker, { defaultProps: { className: 'w-full' } }),
   TimePicker: connect(TimePicker, { defaultProps: { className: 'w-full' } }),
   DateTimePicker: connect(DateTimePicker, { defaultProps: { className: 'w-full' } }),
+  ColorPicker: connect(ColorPicker, { getValue: (val: ColorResult) => formatRgba(val.rgb) }),
   FunctionBind,
   VariableBind,
   StateBind,
