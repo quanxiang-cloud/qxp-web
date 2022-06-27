@@ -32,7 +32,7 @@ function PageDesign(): JSX.Element | null {
   const { data: fountainPackages, isLoading } = useQuery('fountainPackages', loadFountainPackages);
   const { artery, isLoading: isArteryLoading } = queryArtery(arteryID);
 
-  const { layers, artery: initialArtery, blocksCommunicationStateInitialValue } = useMemo(
+  const { layers, blocksCommunicationStateInitialValue } = useMemo(
     (): Props<BlocksCommunicationType> => {
       return {
         layers: [...LAYERS],
@@ -63,7 +63,7 @@ function PageDesign(): JSX.Element | null {
         <div id={PAGE_DESIGN_ID}>
           <FountainContext.Provider value={createFountainCTXValue(fountainPackages || [])}>
             <ArteryEngine
-              artery={initialArtery}
+              artery={artery ?? getInitArtery()}
               layers={layers}
               blocksCommunicationStateInitialValue={blocksCommunicationStateInitialValue}
             />
