@@ -580,6 +580,13 @@
       "name": "showExpandIcon",
       "label": "是否显示展开图标",
       "type": "boolean"
+    }, {
+      "name": "iconSize",
+      "label": "图标尺寸",
+      "type": "number",
+      "willProps": {
+        "min": 16
+      }
     }]
   }
 }

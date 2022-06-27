@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import cs from 'classnames';
+import { omit } from 'lodash';
 
 import MenuItem, { MenuItemType } from './menu-item';
 
@@ -8,6 +9,7 @@ type Props = {
   goLink: (path: string) => void;
   mode?: 'top' | 'side';
   showExpandIcon?: boolean;
+  iconSize?: number;
   className?: string;
   itemClassName?: string;
   activeClassName?: string;
@@ -20,6 +22,7 @@ function NavigationMenu({
   menus,
   mode,
   style,
+  iconSize,
   itemStyle,
   className,
   itemClassName,
@@ -33,7 +36,7 @@ function NavigationMenu({
   return (
     <div
       className={cs(
-        `bg-white overflow-auto ${mode === 'top' ? 'flex h-full' : 'w-full'}`,
+        `bg-white overflow-auto ${mode === 'top' ? 'flex items-center h-full' : 'w-full'}`,
         className,
       )}
       style={style}
@@ -45,6 +48,7 @@ function NavigationMenu({
           level={1}
           maxLevel={2}
           mode={mode}
+          iconSize={iconSize}
           className={itemClassName}
           style={itemStyle}
           onSelectItem={setActiveItemId}
@@ -53,6 +57,7 @@ function NavigationMenu({
           showExpandIcon={showExpandIcon}
           itemHoverClassName={itemHoverClassName}
           activeClassName={activeClassName}
+          popperStyle={{ ...omit(style, 'height', 'width') }}
         />
       ))}
     </div>

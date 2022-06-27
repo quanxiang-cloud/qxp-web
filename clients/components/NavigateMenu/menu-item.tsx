@@ -16,19 +16,26 @@ export type MenuItemType = {
   children?: Array<MenuItemType>;
 }
 
+function getItemHeight(height: string): number {
+  if (!height) return 30;
+
+  return parseInt(height.replace('px', ''));
+}
+
 type Props = {
   menu: MenuItemType;
   goLink: (path: string) => void;
   level?: number;
   maxLevel?: number;
-  itemHeight?: number;
   activeId?: string;
   mode?: 'top' | 'side';
   showExpandIcon?: boolean;
+  iconSize?: number;
   className?: string;
   activeClassName?: string;
   itemHoverClassName?: string;
   style?: Record<string, string>;
+  popperStyle?: Record<string, string>;
   onSelectItem?: (item: any) => void;
 }
 
@@ -36,11 +43,12 @@ export default function MenuItem({
   menu,
   level = 1,
   maxLevel = 3,
-  itemHeight = 30,
   activeId,
   mode = 'side',
   className,
+  iconSize,
   style,
+  popperStyle,
   activeClassName,
   itemHoverClassName,
   showExpandIcon = true,
@@ -52,6 +60,7 @@ export default function MenuItem({
   const currentChildrenHeight = useRef<number>();
   const [expand, setExpand] = useState(false);
   const { handleClick: changeShowPopper, referenceRef, Popper } = usePopper<HTMLDivElement>();
+  const itemHeight = getItemHeight(style?.height ?? '');
 
   useEffect(() => {
     if (nodeRef.current && children) {
@@ -109,11 +118,11 @@ export default function MenuItem({
   return (
     <>
       <div
-        ref={referenceRef}
         className="duration-300 text-12"
         onClick={mode === 'top' ? changeShowPopper() : undefined}
       >
         <div
+          ref={referenceRef}
           style={{ ...style, height: `${itemHeight}px` }}
           className={cs(
             `menu-item ${itemHoverClassName}`,
@@ -122,7 +131,13 @@ export default function MenuItem({
           )}
           onClick={handleItemClick}
         >
-          {icon && (<Icon name={icon} className="item-icon" size={children || level === 1 ? 24 : 20} />)}
+          {icon && (
+            <Icon
+              name={icon}
+              className={cs('item-icon', { 'ml-16': level === 2 })}
+              size={iconSize ?? (children || level === 1 ? 24 : 20)}
+            />
+          )}
           <span className={cs(`menu-item-label px-${mode === 'side' && level > 1 ? 16 : 8}`)}>{title}</span>
           {children && showExpandIcon && (
             <Icon
@@ -146,7 +161,7 @@ export default function MenuItem({
         )}
       </div>
       <Popper placement='bottom-start'>
-        <div>{children?.map(renderSubItems)}</div>
+        <div className="bg-white" style={{ ...popperStyle }}>{children?.map(renderSubItems)}</div>
       </Popper>
     </>
   );
