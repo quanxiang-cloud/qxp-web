@@ -5,7 +5,7 @@ import versionMap from '../name-version-map';
 export async function getPackages(): Promise<Package[]> {
   const iconVersion = versionMap['@one-for-all/icon'];
   const res = await fetch(
-    `${window.VendorPrefix}/@one-for-all/icon@${iconVersion}/svgNameMap.json`,
+    `${window.CONFIG.VendorPrefix}/@one-for-all/icon@${iconVersion}/svgNameMap.json`,
   );
   const svgNameMap = await res.json();
   const categories = Object.keys(svgNameMap);
