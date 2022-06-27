@@ -30,8 +30,8 @@ function DataSource({ artery, onChange }: Props): JSX.Element {
   }
 
   function hasSameKey(key: string): boolean {
-    if (Object.keys(artery.apiStateSpec || {}).includes(key)) return true;
-    return Object.keys(artery.sharedStatesSpec || {}).includes(key);
+    if (Object.keys(artery.apiStateSpec || []).includes(key)) return true;
+    return Object.keys(artery.sharedStatesSpec || []).includes(key);
   }
 
   return (
@@ -43,7 +43,7 @@ function DataSource({ artery, onChange }: Props): JSX.Element {
           {
             id: 'sharedState',
             name: '变量参数',
-            content: (<SharedState />),
+            content: <SharedState artery={artery} onChange={onChange} />,
           },
           {
             id: 'apiState',

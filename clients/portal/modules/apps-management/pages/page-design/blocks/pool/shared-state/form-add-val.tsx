@@ -1,52 +1,57 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import cs from 'classnames';
+import { get } from 'lodash';
 import Editor from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 import { useForm } from 'react-hook-form';
-import { observer } from 'mobx-react';
-import { toJS } from 'mobx';
+
 import { Modal, toast } from '@one-for-all/ui';
 
-import { useCtx } from '@pageDesign/ctx';
-
 import styles from '../index.m.scss';
-
 interface Props {
   className?: string;
+  sharedState: Record<string, any>;
+  curSharedStateKey: string;
+  setModalOpen: (open: boolean) => void;
+  saveSharedState: (key: string, val: any) => void;
 }
 
-function FormAddVal(props: Props): JSX.Element | null {
-  const ctx = useCtx();
-  const { dataSource, page } = ctx;
-  const { formState: { errors } } = useForm();
-  const { curSharedState, modalOpen, setModalOpen, curSharedVal, setCurSharedVal } = dataSource;
+export type SharedVal = {
+  name: string;
+  val: string; // json string
+  desc: string;
+};
 
-  useEffect(()=> {
-    // set form initial vals
-    if (!modalOpen) {
-      dataSource.resetCurSharedVal();
-    } else {
-      // init cur shared val by chosen state key
-      if (curSharedState) {
-        setCurSharedVal(curSharedState);
-      }
-    }
-  }, [modalOpen]);
+const defaultSharedVal: SharedVal = {
+  name: '',
+  val: JSON.stringify({ key1: 'val1' }),
+  desc: '',
+};
+
+function FormAddVal({
+  sharedState,
+  curSharedStateKey,
+  setModalOpen,
+  saveSharedState,
+}: Props): JSX.Element | null {
+  const [curSharedVal, setCurSharedVal] = useState(defaultSharedVal);
+  const { formState: { errors } } = useForm();
+
+  useEffect(() => {
+    const state = get(sharedState, curSharedStateKey);
+    state && setCurSharedVal(state ? JSON.parse(state) : state);
+  }, [curSharedStateKey]);
 
   function handleSaveSharedVal(): void {
-    // check editor val is valid js value
     try {
       JSON.parse(curSharedVal.val);
     } catch (err: any) {
       toast.error(`变量值不是合法的 JS 数据: ${err.message}`);
       return;
     }
-    const formData = toJS(curSharedVal);
+    const formData = curSharedVal;
     if (validateName(formData.name)) {
-      dataSource.saveSharedState(formData.name, JSON.stringify(formData), ()=> {
-        // save whole page schema
-        ctx.onSave(page.schema);
-      });
+      saveSharedState(formData.name, JSON.stringify(formData));
     }
   }
 
@@ -62,14 +67,10 @@ function FormAddVal(props: Props): JSX.Element | null {
     return true;
   }
 
-  if (!modalOpen) {
-    return null;
-  }
-
   return (
     <Modal
       className={styles.editorModal}
-      title={dataSource.curSharedStateKey ? '修改变量参数' : '新建变量参数'}
+      title={curSharedStateKey ? '修改变量参数' : '新建变量参数'}
       onClose={() => setModalOpen(false)}
       footerBtns={[
         {
@@ -87,8 +88,8 @@ function FormAddVal(props: Props): JSX.Element | null {
         },
       ]}
     >
-      <form className='px-40 py-24'>
-        <div className='flex flex-col mb-24'>
+      <form className="px-40 py-24">
+        <div className="flex flex-col mb-24">
           <p>参数名称</p>
           <input
             type="text"
@@ -96,13 +97,18 @@ function FormAddVal(props: Props): JSX.Element | null {
             maxLength={20}
             value={curSharedVal.name}
             // onBlur={(ev)=> validateName(ev.target.value)}
-            onChange={(ev)=> {
-              setCurSharedVal('name', ev.target.value || '');
+            onChange={(ev) => {
+              setCurSharedVal({
+                ...curSharedVal,
+                name: ev.target.value || '',
+              });
             }}
           />
-          <p className='text-12 text-gray-600'>不超过 20 字符，支持字母、数字、下划线、中文，名称不可重复。</p>
+          <p className="text-12 text-gray-600">
+            不超过 20 字符，支持字母、数字、下划线、中文，名称不可重复。
+          </p>
         </div>
-        <div className='flex flex-col mb-24'>
+        <div className="flex flex-col mb-24">
           <p>变量数据</p>
           <Editor
             value={curSharedVal.val}
@@ -110,19 +116,26 @@ function FormAddVal(props: Props): JSX.Element | null {
             // theme='dark'
             extensions={[javascript()]}
             onChange={(val) => {
-              setCurSharedVal('val', val);
+              setCurSharedVal({
+                ...curSharedVal,
+                val,
+              });
             }}
           />
         </div>
-        <div className='flex flex-col'>
+        <div className="flex flex-col">
           <p>描述</p>
           <textarea
-            placeholder='选填（不超过100字符）'
+            placeholder="选填（不超过100字符）"
             maxLength={100}
             className={cs('textarea', styles.textarea)}
             value={curSharedVal.desc}
-            onChange={(ev)=> {
-              setCurSharedVal('desc', ev.target.value || '');
+            onChange={(ev) => {
+              console.log(ev);
+              setCurSharedVal({
+                ...curSharedVal,
+                desc: ev.target.value || '',
+              });
             }}
             cols={20}
             rows={3}
@@ -133,4 +146,4 @@ function FormAddVal(props: Props): JSX.Element | null {
   );
 }
 
-export default observer(FormAddVal);
+export default FormAddVal;
