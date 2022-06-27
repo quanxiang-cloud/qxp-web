@@ -7,9 +7,11 @@ import MenuItem, { MenuItemType } from './menu-item';
 type Props = {
   menus: Array<MenuItemType>;
   goLink: (path: string) => void;
+  onSelectedItem?: (itemId: string) => void;
   mode?: 'top' | 'side';
   showExpandIcon?: boolean;
   iconSize?: number;
+  activeId?: string;
   className?: string;
   itemClassName?: string;
   activeClassName?: string;
@@ -22,6 +24,7 @@ function NavigationMenu({
   menus,
   mode,
   style,
+  activeId,
   iconSize,
   itemStyle,
   className,
@@ -29,9 +32,15 @@ function NavigationMenu({
   showExpandIcon,
   itemHoverClassName = 'menu-item-hover',
   activeClassName = 'active-menu-item',
+  onSelectedItem,
   goLink,
 }: Props): JSX.Element {
-  const [activeItemId, setActiveItemId] = useState<string>('');
+  const [activeItemId, setActiveItemId] = useState<string>(activeId ?? '');
+
+  function handleSelectItem(itemId: string): void {
+    onSelectedItem && onSelectedItem(itemId);
+    setActiveItemId(itemId);
+  }
 
   return (
     <div
@@ -51,7 +60,7 @@ function NavigationMenu({
           iconSize={iconSize}
           className={itemClassName}
           style={itemStyle}
-          onSelectItem={setActiveItemId}
+          onSelectItem={handleSelectItem}
           goLink={goLink}
           activeId={activeItemId}
           showExpandIcon={showExpandIcon}
