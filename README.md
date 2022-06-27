@@ -1,9 +1,9 @@
 # QXP Web - 全象 QuanXiang 低代码平台管理和用户端
 
 用户端截图
-![用户端截图](docs/assets/qxp-web-portal-screen-shot.png)
+![用户端截图](docs/assets/qxp-web-home-screen-shot.png)
 管理端截图
-![管理端截图](docs/assets/qxp-web-home-screen-shot.png)
+![管理端截图](docs/assets/qxp-web-portal-screen-shot.png)
 
 ## 关于全象低代码平台
 
