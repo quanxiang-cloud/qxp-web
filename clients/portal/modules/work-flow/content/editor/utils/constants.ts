@@ -93,6 +93,10 @@ export const groupType2NameMap: Record<string, string> = {
   developer: '开发者',
 };
 
+export const nodeMenu: Record<string, string[]> = {
+  FORM_TIME: ['email', 'webhook', 'letter'],
+};
+
 export const nodeLists = [{
   text: '填写',
   type: 'fillIn',
