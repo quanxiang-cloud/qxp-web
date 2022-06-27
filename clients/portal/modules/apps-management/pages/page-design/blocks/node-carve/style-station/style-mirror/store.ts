@@ -59,7 +59,12 @@ class StyleMirrorStore {
   @action
   updateCssProperties = (value: CSSProperties): void => {
     const newCssProperties = { ...this.cssProperties, ...value };
-    const filterKeyValueArray = Object.entries(newCssProperties).filter(([, value]) => value);
+    const filterKeyValueArray = Object.entries(newCssProperties).filter(([, value]) => {
+      if (value === 0) {
+        return true;
+      }
+      return value;
+    });
     const filteredCssValue = Object.fromEntries(filterKeyValueArray);
     this.cssProperties = filteredCssValue;
   };
