@@ -281,7 +281,7 @@
     "variants": [{
       "icon": {
         "type": "platform",
-        "name": "add",
+        "name": "menu_open",
         "initialProps": {}
       },
       "desc": "用于制作页面跳转的链接汇总",

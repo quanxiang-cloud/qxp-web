@@ -587,6 +587,10 @@
       "willProps": {
         "min": 16
       }
+    }, {
+      "name": "activeId",
+      "label": "默认选中菜单的id",
+      "type": "string"
     }]
   }
 }
