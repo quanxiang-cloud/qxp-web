@@ -1,6 +1,6 @@
 name: Deploy for alpha
 env:
-  IMAGE_REPO: qxcr.xyz/lowcode
+  IMAGE_REPO: qxcr.io/lowcode
   DATE: $(date "+%Y%m%d")
 on:
   push:
