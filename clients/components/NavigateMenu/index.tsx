@@ -31,7 +31,7 @@ function NavigationMenu({
   itemClassName,
   showExpandIcon,
   itemHoverClassName = 'menu-item-hover',
-  activeClassName = 'active-menu-item',
+  activeClassName = 'menu-item-active',
   onSelectedItem,
   goLink,
 }: Props): JSX.Element {
@@ -64,8 +64,8 @@ function NavigationMenu({
           goLink={goLink}
           activeId={activeItemId}
           showExpandIcon={showExpandIcon}
-          itemHoverClassName={itemHoverClassName}
-          activeClassName={activeClassName}
+          itemHoverClassName={!itemHoverClassName ? 'menu-item-hover' : itemHoverClassName}
+          activeClassName={!activeClassName ? 'menu-item-active' : activeClassName}
           popperStyle={{ ...omit(style, 'height', 'width') }}
         />
       ))}

@@ -1,5 +1,8 @@
 import { CSSProperties } from 'react';
 
+export const TITLE_CLASS_NAME = 'sticky top-0 left-0 bg-white z-10 cursor-pointer hover:bg-blue-200 duration-300 text-14 font-semibold border-t-1 border-blue-200';
+export const CONTENT_CLASS_NAME = 'flex flex-col px-12 py-8 gap-4';
+
 export const SIZE_KEYS: (keyof CSSProperties)[] = ['width', 'minWidth', 'maxWidth', 'height', 'minHeight', 'maxHeight'];
 export const PADDING_KEYS: (keyof CSSProperties)[] = ['padding', 'paddingTop', 'paddingBottom', 'paddingLeft', 'paddingRight'];
 export const MARGIN_KEYS: (keyof CSSProperties)[] = ['margin', 'marginTop', 'marginBottom', 'marginLeft', 'marginRight'];

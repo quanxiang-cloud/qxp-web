@@ -1,57 +1,47 @@
-import React, { useEffect, useState, CSSProperties } from 'react';
+import React, { useEffect, CSSProperties } from 'react';
 import cs from 'classnames';
+import { toJS } from 'mobx';
 import { get } from 'lodash';
 
-import CollapsePanel from './components/collapse-panel';
-import ClassStation from '../class-station';
-import { useConfigContext } from '../../context';
-import { updateNodeProperty } from '../../utils';
 import LayoutConfig from './layout-config';
 import DisplayConfig from './display-config';
+import { useConfigContext } from '../../context';
+import { updateNodeProperty } from '../../utils';
+import CollapsePanel from './components/collapse-panel';
 
 import store from './store';
 import { observer } from 'mobx-react';
-import TypographyConfig from './typography-config';
+import ClassConfig from './class-config';
 import BorderConfig from './border-config';
-import BackgroundConfig from './background-config';
 import ShadowConfig from './shadow-config';
-import { BACKGROUND_KEYS, BORDER_KEYS, BOX_SHADOW_KEY, DISPLAY_KEYS, TYPOGRAPHY_KEYS } from './constant';
-
+import TypographyConfig from './typography-config';
+import BackgroundConfig from './background-config';
 import { getClearObjectValueFromKeys } from '../utils';
-import { toJS } from 'mobx';
+import {
+  DISPLAY_KEYS,
+  BORDER_KEYS,
+  BOX_SHADOW_KEY,
+  BACKGROUND_KEYS,
+  TYPOGRAPHY_KEYS,
+  TITLE_CLASS_NAME,
+  CONTENT_CLASS_NAME,
+} from './constant';
 
 export type Props = {
   style?: React.CSSProperties;
   className?: string;
 }
 
-const TITLE_CLASS_NAME = 'sticky top-0 left-0 bg-white z-10 cursor-pointer hover:bg-blue-200 duration-300 text-14 font-semibold border-t-1 border-blue-200';
-const CONTENT_CLASS_NAME = 'flex flex-col px-12 py-8 gap-4';
-
 function StyleMirror({ style, className }: Props): JSX.Element {
-  const { sizes, margin, padding, setCssProperties, updateCssProperties } = store;
-  const [componentClassName, setComponentClassName] = useState<string>('');
+  const { sizes, margin, padding, setCssProperties, updateCssProperties, styleType } = store;
   const { artery, rawActiveNode, onArteryChange } = useConfigContext() ?? {};
-
-  function handleClassNameChange(newClassName: string): void {
-    setComponentClassName(newClassName);
-    if (rawActiveNode && artery) {
-      const newArtery = updateNodeProperty(
-        rawActiveNode,
-        `props.${store.styleType === 'itemStyle' ? 'itemClassName' : 'className'}`,
-        { type: 'constant_property', value: newClassName },
-        artery,
-      );
-      onArteryChange?.(newArtery);
-    }
-  }
 
   function handleStyleChange(style: React.CSSProperties): void {
     updateCssProperties(style);
     if (rawActiveNode && artery) {
       const newArtery = updateNodeProperty(
         rawActiveNode,
-        `props.${store.styleType}`,
+        `props.${styleType}`,
         { type: 'constant_property', value: toJS(store.cssProperties) },
         artery,
       );
@@ -65,9 +55,7 @@ function StyleMirror({ style, className }: Props): JSX.Element {
 
   useEffect(() => {
     if (rawActiveNode) {
-      const defaultClassName = get(rawActiveNode, `props.${store.styleType === 'itemStyle' ? 'itemClassName' : 'className'}.value`, '');
-      const defaultStyles = get(rawActiveNode, `props.${store.styleType}.value`, {});
-      setComponentClassName(defaultClassName);
+      const defaultStyles = get(rawActiveNode, `props.${styleType}.value`, {});
       setCssProperties(defaultStyles);
     }
   }, [rawActiveNode?.id, store.styleType]);
@@ -77,17 +65,7 @@ function StyleMirror({ style, className }: Props): JSX.Element {
       style={style}
       className={cs('w-full mb-32', className)}
     >
-      <CollapsePanel
-        defaultCollapse={false}
-        titleClassName={TITLE_CLASS_NAME}
-        contentClassName={CONTENT_CLASS_NAME}
-        title={'ClassName 设置'}
-      >
-        <ClassStation
-          defaultClassName={componentClassName}
-          onChange={handleClassNameChange}
-        />
-      </CollapsePanel>
+      <ClassConfig />
       <CollapsePanel
         defaultCollapse={false}
         titleClassName={TITLE_CLASS_NAME}
