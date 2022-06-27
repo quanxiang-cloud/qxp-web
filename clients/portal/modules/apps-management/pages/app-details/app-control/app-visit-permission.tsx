@@ -6,6 +6,7 @@ import toast from '@lib/toast';
 import PopConfirm from '@c/pop-confirm';
 import Button from '@c/button';
 import Table from '@c/table';
+import Pagination from '@c/pagination';
 import EmployeeOrDepartmentPickerModal from '@c/employee-or-department-picker';
 import Modal from '@c/modal';
 
@@ -19,16 +20,19 @@ function AppVisitPermission(): JSX.Element {
   const [delLoading, setDelLoading] = useState(false);
   const { appID } = useParams<{ appID: string }>();
   const [members, setMembers] = useState<Array<Employee>>([]);
+  const [pagination, setPagination] = useState({ page: 1, size: 10 });
+  const [totalMembers, setTotal] = useState(0);
 
   useEffect(() => {
     fetchMembers();
-  }, []);
+  }, [pagination]);
 
   function fetchMembers(): void {
     setLoading(true);
-    getAppVisitPermission(appID).then((employees) => {
+    getAppVisitPermission(appID, pagination.page, pagination.size).then(({ members, total }) => {
       setLoading(false);
-      setMembers(employees);
+      setMembers(members);
+      setTotal(total);
     });
   }
 
@@ -60,7 +64,10 @@ function AppVisitPermission(): JSX.Element {
       return;
     }
 
-    return addAppMembers(appID, selected.map(({ id }) => id)).then(() => {
+    return addAppMembers(
+      appID,
+      selected.map(({ id }) => id),
+    ).then(() => {
       fetchMembers();
       setModalType('');
     });
@@ -136,6 +143,14 @@ function AppVisitPermission(): JSX.Element {
             loading={loading}
             className="text-12"
             onSelectChange={handleSelectChange}
+          />
+          <Pagination
+            pageSize={pagination.size}
+            current={pagination.page}
+            total={totalMembers}
+            onChange={(current, pageSize) => {
+              setPagination({ size: pageSize, page: current });
+            }}
           />
         </div>
         {modalType === 'confirmRemoveMember' && (

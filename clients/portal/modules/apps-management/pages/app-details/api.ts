@@ -72,15 +72,20 @@ export const appRolePoly = (appID: string, perPoly: boolean): Promise<void> => {
 };
 
 // userID list
-export function getAppVisitPermission(appID: string): Promise<Array<Employee>> {
-  return httpClient<{ list: Array<string> }>(`/api/v1/app-center/homeAccess/${appID}`, {
-    page: 1,
-    size: 9999,
-  }).then(({ list }) => {
-    const query = `{query(ids:${JSON.stringify(list)}){users{id,email,name,phone,departments{id,name}}}}`;
+export async function getAppVisitPermission(
+  appID: string,
+  page: number,
+  size: number,
+): Promise<{ members: Array<Employee>; total: number }> {
+  const { list, total } = await httpClient<{ list: Array<string>; total: number }>(
+    `/api/v1/app-center/homeAccess/${appID}`,
+    { page, size },
+  );
 
-    return httpClientGraphQL<{ users: Employee[] }>('/api/v1/search/users', { query });
-  }).then(({ users }) => users);
+  const query = `{query(ids:${JSON.stringify(list)}){users{id,email,name,phone,departments{id,name}}}}`;
+  const { users } = await httpClientGraphQL<{ users: Employee[] }>('/api/v1/search/users', { query });
+
+  return { members: users, total };
 }
 
 export function addAppMembers(appID: string, members: string[]): Promise<void> {
