@@ -1,0 +1,30 @@
+@mixin active {
+  color: var(--gray-600);
+  background: var(--blue-300);
+}
+
+.menu-item {
+  @apply relative flex justify-between items-center whitespace-nowrap overflow-hidden cursor-pointer duration-300;
+}
+
+.menu-item-label {
+  @apply flex-1 truncate transition-opacity duration-300;
+}
+
+.menu-item-hover {
+  &:hover {
+    @include active;
+  }
+}
+
+.menu-item-active {
+  @include active;
+}
+
+.item-icon {
+  @apply flex-shrink-0;
+}
+
+.menu-items-wrapper {
+  @apply transition-all duration-300 transform origin-top;
+}

@@ -2,12 +2,13 @@ import { get } from 'lodash';
 import { nanoid } from 'nanoid';
 
 import { findNodeByID, appendChild, getNodeParents } from '@one-for-all/artery-utils';
-import { Artery, RouteNode, Node, HTMLNode, RefNode } from '@one-for-all/artery';
+import { Artery, RouteNode, Node, HTMLNode, RefNode, NodeProperties } from '@one-for-all/artery';
 
 import { ARTERY_KEY_VERSION } from '@portal/constants';
 import { getBatchGlobalConfig, setBatchGlobalConfig } from '@lib/api/user-config';
 
 import { LAYOUT_CHILD_TYPE_ROUTES_CONTAINER, ROOT_NODE_ID } from '../constants';
+import { LayoutType } from '../types.d';
 
 export function genNodeID(): string {
   return nanoid(8);
@@ -43,10 +44,10 @@ export async function fetchSchema(appID: string): Promise<Artery> {
   return JSON.parse(result[key]);
 }
 
-export async function createRefSchema(appID: string): Promise<string> {
+export async function createRefSchema(appID: string, initProps?: any): Promise<string> {
   const refSchemaKey = genDesktopArteryKey(appID);
   const refedSchema: Artery = {
-    node: { id: genNodeID(), type: 'html-element', name: 'div' },
+    node: { id: genNodeID(), type: 'html-element', name: 'div', props: initProps },
   };
 
   await saveArtery(refSchemaKey, refedSchema);
@@ -191,4 +192,16 @@ export async function createAppLandingRouteNode(): Promise<RouteNode> {
   return saveArtery(demoViewRefArteryKey, createAppLandingPage()).then(() => {
     return demoViewNode;
   });
+}
+
+export function initSizeByLayoutType(layoutType: LayoutType): NodeProperties {
+  let value: Record<string, string> = { width: '200px' };
+
+  if (layoutType === LayoutType.HeaderContent) {
+    value = { height: '50px' };
+  }
+
+  return {
+    style: { type: 'constant_property', value },
+  };
 }

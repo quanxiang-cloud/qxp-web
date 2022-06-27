@@ -9,6 +9,7 @@ type Params = {
   rootNode: Node;
   layoutInfo: CreateLayoutInfo;
   refSchemaID?: string;
+  initProps?: any;
 }
 
 export type CreateLayoutInfo = Pick<Layout, 'name' | 'type' > & { refSchemaID?: string, description?: string;}

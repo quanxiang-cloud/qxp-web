@@ -556,5 +556,51 @@
     ],
     "isContainer": false,
     "isOverLayer": false
+  },
+  "NavigateMenu": {
+    "props": [{
+      "name": "menus",
+      "label": "导航菜单内容",
+      "type": "object"
+    },{
+      "name": "mode",
+      "label": "菜单模式",
+      "type": "string",
+      "will": "Select",
+      "willProps": {
+        "options": [{
+          "label": "垂直",
+          "value": "side"
+        }, {
+          "label": "水平",
+          "value": "top"
+        }]
+      }
+    }, {
+      "name": "showExpandIcon",
+      "label": "是否显示展开图标",
+      "type": "boolean"
+    }, {
+      "name": "iconSize",
+      "label": "图标尺寸",
+      "type": "number",
+      "willProps": {
+        "min": 16
+      }
+    }, {
+      "name": "activeId",
+      "label": "默认选中菜单的id",
+      "type": "string"
+    }, {
+      "name": "activeClassName",
+      "label": "item 选中样式",
+      "type": "string",
+      "will": "ClassName"
+    }, {
+      "name": "itemHoverClassName",
+      "label": "item 高亮样式",
+      "type": "string",
+      "will": "ClassName"
+    }]
   }
 }
