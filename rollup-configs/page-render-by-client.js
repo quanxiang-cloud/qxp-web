@@ -45,6 +45,7 @@ const config = {
     'react-dom',
     'react-is',
     'elkjs',
+    'react-codemirror2',
 
     '@formily/antd-components',
     '@formily/antd',
@@ -67,7 +68,6 @@ const config = {
     'draft-js',
     // 'html-to-draftjs',
     // 'react-draft-wysiwyg',
-    'jszip',
     'react-beautiful-dnd',
     'react-dnd',
     // 'react-dnd-html5-backend',

@@ -5,15 +5,16 @@ export type Props = {
   title?: string;
   style?: React.CSSProperties;
   className?: string;
+  titleClassName?: string;
   onResetValue?: () => void;
 }
 
-function StyleSubTitle({ style, className, title, onResetValue }: Props): JSX.Element {
+function StyleSubTitle({ style, className, title, onResetValue, titleClassName }: Props): JSX.Element {
   return (
     <div style={style} className={cs('flex justify-between items-center', {
       'flex-row-reverse': !title,
     }, className)}>
-      {title && (<span className='text-12 text-gray-500'>{title}</span>)}
+      {title && (<span className={cs('text-12 text-gray-500', titleClassName)}>{title}</span>)}
       {
         onResetValue && (
           <button

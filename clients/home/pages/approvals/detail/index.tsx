@@ -131,7 +131,6 @@ function ApprovalDetail(): JSX.Element {
   }
   const appID = get(data, 'appId');
   const tableID = get(data, 'tableId');
-
   return (
     <>
       <Breadcrumb
@@ -203,7 +202,7 @@ function ApprovalDetail(): JSX.Element {
           )
         }
       </div>
-      {appID && tableID && (
+      {appID && (
         <ActionModals
           flowName={data?.flowName}
           formData={formValues}

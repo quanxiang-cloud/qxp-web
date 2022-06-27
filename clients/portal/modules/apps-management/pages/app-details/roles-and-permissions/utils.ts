@@ -104,3 +104,14 @@ export function findSchema(apiDoc: APIDocResponse): {
   };
 }
 
+export function isJSON(json: string): boolean {
+  if (!(json && typeof json === 'string')) {
+    return false;
+  }
+  try {
+    JSON.parse(json);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}

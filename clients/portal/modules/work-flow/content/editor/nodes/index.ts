@@ -2,6 +2,7 @@ import FormDataNode from './form-data';
 import EndNode from './end';
 import FillInNode from './fill-in';
 import ApproveNode from './approve';
+import DelayedNode from './delayed';
 import ProcessBranchNode from './process-branch';
 import ProcessBranchSourceNode from './process-branch-source';
 import ProcessBranchTargetNode from './process-branch-target';
@@ -17,6 +18,7 @@ const nodeTypes = {
   formData: FormDataNode,
   end: EndNode,
   fillIn: FillInNode,
+  FORM_TIME: DelayedNode,
   approve: ApproveNode,
   processBranch: ProcessBranchNode,
   processVariableAssignment: ProcessVariableAssignmentNode,

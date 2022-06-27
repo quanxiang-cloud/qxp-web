@@ -157,7 +157,7 @@ function VersionDetails(): JSX.Element {
         <div className='flex text-12 p-8 items-center '>
           <div className='text-gray-600'>创建时间：</div>
           <div className='text-gray-900 flex-1 card-value'>
-            {createdAt ? dayjs(parseInt(String(createdAt * 1000))).format('YYYY-MM-DD HH:mm:ss') : '—'}
+            {createdAt ? dayjs(parseInt(String(createdAt))).format('YYYY-MM-DD HH:mm:ss') : '—'}
           </div>
         </div>
         <div className='flex text-12 p-8 items-center '>

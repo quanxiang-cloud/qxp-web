@@ -55,6 +55,13 @@ export interface CategoryVariants extends Pick<PackageComponent, 'category'> {
   variants: Variant[];
 }
 
+export interface Inventory {
+  category?: string;
+  variants: Variant[];
+}
+
+export type Manifest = Record<string, Inventory>;
+
 export type PropsSpecMap = Record<string, PropsSpec | undefined>;
 
 export interface FountainPackage {

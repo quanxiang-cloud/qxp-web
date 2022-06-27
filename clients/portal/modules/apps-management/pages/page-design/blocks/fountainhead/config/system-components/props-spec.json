@@ -240,8 +240,7 @@
     "isOverLayer": false
   },
   "Tree": {
-    "props": [
-      {
+    "props": [{
         "label": "树数据",
         "name": "treeData",
         "type": "object",
@@ -283,6 +282,167 @@
     "isContainer": false,
     "isOverLayer": false
   },
+  "IFrame": {
+    "props": [{
+      "label": "id",
+      "name": "id",
+      "type": "string"
+    }, {
+      "label":"iframe 地址",
+      "name": "iframeAddr",
+      "type": "string"
+    }, {
+      "label":"iframe 宽度",
+      "name": "iframeWidth",
+      "type": "string"
+    }, {
+      "label":"iframe 高度",
+      "name": "iframeHeight",
+      "type": "string"
+    }, {
+      "label":"iframe 名称",
+      "name": "iframeName",
+      "type": "string"
+    }, {
+      "label":"iframe 额外限制",
+      "name": "sandbox",
+      "type": "string"
+    }, {
+      "label":"iframe 允许范围",
+      "name": "iframeAllow",
+      "type": "string"
+    }, {
+      "label":"允许激活全屏模式",
+      "name": "allowFullscreen",
+      "type": "boolean"
+    }, {
+      "label":"iframe 推荐配置",
+      "name": "referrerPolicy",
+      "type": "string",
+      "will": "Select",
+      "willProps": {
+        "placeholder": "请选择",
+        "options": [{
+          "label": "no-referrer",
+          "value": "no-referrer"
+        }, {
+          "label": "no-referrer-when-downgrade",
+          "value": "no-referrer-when-downgrade"
+        }, {
+          "label": "origin",
+          "value": "origin"
+        }, {
+          "label": "origin-when-cross-origin",
+          "value": "origin-when-cross-origin"
+        }, {
+          "label": "same-origin",
+          "value": "same-origin"
+        }, {
+          "label": "strict-origin",
+          "value": "strict-origin"
+        }, {
+          "label": "strict-origin-when-cross-origin",
+          "value": "strict-origin-when-cross-origin"
+        }, {
+          "label": "unsafe-url",
+          "value": "unsafe-url"
+        }]
+      }
+    }],
+    "isContainer": false,
+    "isOverLayer": false
+  },
+  "OptionalTable": {
+    "props": [{
+        "label": "列设置",
+        "name": "columns",
+        "type": "object"
+      },
+      {
+        "label": "数据",
+        "name": "data",
+        "type": "object"
+      },
+      {
+        "label": "操作列名称",
+        "name": "optionHeader",
+        "type": "string",
+        "desc": "可设置操作列标题"
+      },
+      {
+        "label": "操作列设置",
+        "name": "options",
+        "type": "object",
+        "desc": "可设置操作列按钮，格式为{ key: string, label: string }[]"
+      },
+      {
+        "label": "行ID",
+        "name": "rowKey",
+        "type": "string"
+      },
+      {
+        "label": "空白提示",
+        "name": "emptyTips",
+        "type": "string"
+      },
+      {
+        "label": "加载",
+        "name": "loading",
+        "type": "boolean"
+      },
+      {
+        "label": "允许选择",
+        "name": "showCheckbox",
+        "type": "boolean"
+      },
+      {
+        "label": "允许跨页选择",
+        "name": "canAcrossPageChoose",
+        "type": "boolean",
+        "desc": "仅在允许选择时生效"
+      },
+      {
+        "label": "允许设置列宽",
+        "name": "canSetColumnWidth",
+        "type": "boolean"
+      },
+      {
+        "label": "单行点击事件",
+        "name": "onRowClick",
+        "type": "function",
+        "willProps": {
+          "args": "id, data"
+        }
+      },
+      {
+        "label": "操作点击事件",
+        "name": "onOptionClick",
+        "type": "function",
+        "willProps": {
+          "args": "key, data"
+        }
+      },
+      {
+        "label": "选中变化事件",
+        "name": "onSelectChange",
+        "type": "function",
+        "willProps": {
+          "args": "selectedKeys, selectedRows"
+        }
+      },
+      {
+        "label": "宽度变化事件",
+        "name": "widthMapChange",
+        "type": "function",
+        "desc": "仅在允许设置列宽时生效",
+        "willProps": {
+          "args": "widthMap"
+        }
+      }
+    ],
+    "isContainer": false,
+    "isOverLayer": false
+  },
   "div": {
     "props": [{
         "label": "id",
@@ -291,9 +451,9 @@
       }, {
         "label": "文本内容",
         "name": "content",
+        "desc": "可以添加文本将此元素设置为一个单纯的文本节点，或者置空文本将此节点作为一个容器节点",
         "type": "string",
-        "will": "Textarea",
-        "initialValue": "文本"
+        "will": "Textarea"
       },
       {
         "label": "点击事件",
@@ -312,6 +472,7 @@
       }, {
         "label": "文本内容",
         "name": "content",
+        "desc": "可以添加文本将此元素设置为一个单纯的文本节点，或者置空文本将此节点作为一个容器节点",
         "type": "string",
         "will": "Textarea"
       },
@@ -362,9 +523,9 @@
       }, {
         "label": "文本内容",
         "name": "content",
+        "desc": "可以添加文本将此元素设置为一个单纯的文本节点，或者置空文本将此节点作为一个容器节点",
         "type": "string",
-        "will": "Textarea",
-        "initialValue": "文本"
+        "will": "Textarea"
       },
       {
         "label": "点击事件",
@@ -380,12 +541,6 @@
         "label": "id",
         "name": "id",
         "type": "string"
-      }, {
-        "label": "文本内容",
-        "name": "content",
-        "type": "string",
-        "will": "Textarea",
-        "initialValue": "文本"
       },
       {
         "label": "点击事件",
@@ -395,7 +550,8 @@
       {
         "label": "图片地址",
         "name": "src",
-        "type": "string"
+        "type": "string",
+        "will": "ImageUrl"
       }
     ],
     "isContainer": false,

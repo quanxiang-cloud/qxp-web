@@ -18,6 +18,7 @@ type PerItem = {
 type PerRes = {
   optionPer: PerItem[];
   selectPer: PerItem;
+  perPoly: boolean;
 }
 
 class UserAppDetailsStore {
@@ -38,6 +39,7 @@ class UserAppDetailsStore {
   @observable currentRoleInfo: PerItem = { roleName: '', roleID: '' };
   @observable roleOptions: LabelValue[] = [];
   @observable appList: any = [];
+  @observable perPoly = false;
 
   constructor() {
     this.destroySetCurPage = reaction(() => {
@@ -165,7 +167,8 @@ class UserAppDetailsStore {
       return;
     }
     getPerOption<PerRes>(appID).then((res: any) => {
-      const { optionPer = [], selectPer = { roleId: '', roleName: '' } } = res;
+      const { optionPer = [], selectPer = { roleId: '', roleName: '' }, perPoly } = res;
+      this.perPoly = perPoly;
       this.currentRoleInfo = { roleName: selectPer.roleName, roleID: selectPer.roleID };
       this.roleOptions = (optionPer.map((option: PerItem) => ({
         value: option.roleID, label: option.roleName,

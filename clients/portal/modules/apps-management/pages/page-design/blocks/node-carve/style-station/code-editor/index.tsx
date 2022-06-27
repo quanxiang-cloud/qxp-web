@@ -10,21 +10,30 @@ export type Props = {
   theme?: string;
   language?: string;
   autoFocus?: boolean;
+  hideFolding?: boolean;
+  hideLineNumber?: boolean;
+  hideIndentGuide?: boolean;
   onChange?: (value?: string) => void;
+  onMount?: (editor: any, monaco: any) => void
 }
 
 function CodeEditor({
   value,
   width,
   height,
+  hideFolding, // 隐藏折叠代码
   onChange,
-  className,
   readOnly,
+  className,
   autoFocus,
+  hideIndentGuide, // 隐藏缩进指示器
+  hideLineNumber, // 隐藏行号
   language = 'javascript',
   theme = 'vs-dark',
+  onMount,
 }: Props): JSX.Element {
-  const handleEditorDidMount: OnMount = (editor): void => {
+  const handleEditorDidMount: OnMount = (editor, monaco): void => {
+    onMount?.(editor, monaco);
     autoFocus && editor.focus();
   };
 
@@ -41,6 +50,9 @@ function CodeEditor({
         padding: { top: 6 },
         lineNumbersMinChars: 2,
         lineDecorationsWidth: 0,
+        lineNumbers: hideLineNumber ? 'off' : 'on',
+        renderIndentGuides: !hideIndentGuide,
+        folding: !hideFolding,
         minimap: { enabled: false },
         formatOnType: true,
         tabSize: 2,

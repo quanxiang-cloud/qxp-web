@@ -28,23 +28,18 @@ const ALL_ALLOWED = {};
 
 // 仅自己
 const ONLY_SELF = {
-  query: {
-    $user: 'creator_id',
-  },
+  $user: 'creator_id',
 };
 
 // 自己和下属
-const SELF_AND_SUB =
-  {
-    query: {
-      bool: {
-        should: [
-          { $user: 'creator_id' },
-          { $subordinate: 'creator_id' },
-        ],
-      },
-    },
-  };
+const SELF_AND_SUB = {
+  bool: {
+    should: [
+      { $user: 'creator_id' },
+      { $subordinate: 'creator_id' },
+    ],
+  },
+};
 
 export const DATA_RANGE_OPTIONS = [
   {
@@ -58,6 +53,10 @@ export const DATA_RANGE_OPTIONS = [
   {
     label: '本人及下属的数据',
     value: 'SELF_WITH_SUB',
+  },
+  {
+    label: '自定义',
+    value: 'CUSTOM',
   },
 ];
 

@@ -16,20 +16,24 @@ import CreateTableData from './create-table-data';
 import UpdateTableData from './update-table-data';
 import FlowContext from '../../../flow-context';
 import ProcessBranch from './process-branch';
+import Delayed from './timer-start';
 import ProcessBranchTarget from './process-branch-target';
 import WebHookConfig from './webhook';
 
 interface Props {
-  workForm: NodeWorkForm;
+  workForm: NodeWorkForm | string
   defaultValue: Data;
   onSubmit: (data: BusinessData) => void;
   onCancel: () => void;
   onChange: (data: BusinessData) => void;
 }
 
-function useTableSchema(appID: string, tableID: string): [ReturnType<typeof schemaToFields>, boolean] {
+function useTableSchema(
+  appID: string,
+  formData: string | NodeWorkForm,
+): [ReturnType<typeof schemaToFields>, boolean] {
   const [schema, setSchema] = useState<ISchema>();
-
+  const tableID = (formData as NodeWorkForm)?.value || undefined;
   const { data, isLoading, isError } = useQuery<ISchema>(['FETCH_TABLE_SCHEMA', appID, tableID], () => {
     if (!tableID) {
       return Promise.resolve({});
@@ -63,6 +67,7 @@ const components: Record<string, JSXElementConstructor<any>> = {
   processBranchTarget: ProcessBranchTarget,
   processVariableAssignment: ProcessVariableAssignmentConfig,
   tableDataCreate: CreateTableData,
+  FORM_TIME: Delayed,
   email: SendEmailConfig,
   autocc: CopyTo,
   letter: WebMessage,
@@ -88,7 +93,7 @@ export default function Form({
     });
   }
   const { appID } = useContext(FlowContext);
-  const [sourceTableSchema, isLoading] = useTableSchema(appID, workForm?.value || '');
+  const [sourceTableSchema, isLoading] = useTableSchema(appID, workForm);
 
   if (isLoading) {
     // todo handle error case
@@ -102,8 +107,8 @@ export default function Form({
     return (
       <FlowTableContext.Provider
         value={{
-          tableID: workForm?.value || '',
-          tableName: workForm?.name || '',
+          tableID: (workForm as NodeWorkForm)?.value || '',
+          tableName: (workForm as NodeWorkForm)?.name || '',
           tableSchema: sourceTableSchema,
         }}
       >
@@ -113,16 +118,14 @@ export default function Form({
       </FlowTableContext.Provider>
     );
   }
-
-  if (!sourceTableSchema.length) {
+  if (!sourceTableSchema.length && typeof workForm !== 'string') {
     return (<div>loading...</div>);
   }
-
   return (
     <FlowTableContext.Provider
       value={{
-        tableID: workForm?.value || '',
-        tableName: workForm?.name || '',
+        tableID: (workForm as NodeWorkForm)?.value || '',
+        tableName: (workForm as NodeWorkForm)?.value || '',
         tableSchema: sourceTableSchema,
       }}
     >

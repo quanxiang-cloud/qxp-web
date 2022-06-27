@@ -12,6 +12,7 @@ import { ShadowValue } from './shadow-config';
 
 class StyleMirrorStore {
   @observable cssProperties: CSSProperties = {};
+  @observable styleType = 'style';
 
   @computed get sizes(): SizeValue {
     return this.getPartialCssObjFromAll(SIZE_KEYS, this.cssProperties);
@@ -51,9 +52,19 @@ class StyleMirrorStore {
   };
 
   @action
+  setStyleType = (type: string): void => {
+    this.styleType = type;
+  };
+
+  @action
   updateCssProperties = (value: CSSProperties): void => {
     const newCssProperties = { ...this.cssProperties, ...value };
-    const filterKeyValueArray = Object.entries(newCssProperties).filter(([, value]) => value);
+    const filterKeyValueArray = Object.entries(newCssProperties).filter(([, value]) => {
+      if (value === 0) {
+        return true;
+      }
+      return value;
+    });
     const filteredCssValue = Object.fromEntries(filterKeyValueArray);
     this.cssProperties = filteredCssValue;
   };
