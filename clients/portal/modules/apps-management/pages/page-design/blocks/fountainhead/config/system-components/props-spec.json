@@ -591,6 +591,16 @@
       "name": "activeId",
       "label": "默认选中菜单的id",
       "type": "string"
+    }, {
+      "name": "activeClassName",
+      "label": "item 选中样式",
+      "type": "string",
+      "will": "ClassName"
+    }, {
+      "name": "itemHoverClassName",
+      "label": "item 高亮样式",
+      "type": "string",
+      "will": "ClassName"
     }]
   }
 }
