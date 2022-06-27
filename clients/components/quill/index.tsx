@@ -7,8 +7,8 @@ import OPTIONS from './options';
 
 export type { Quill };
 
-const quillSrc = `${window.VendorPrefix}/@one-for-all/quill@1.3.6/index.min.js`;
-const styleSrc = `${window.VendorPrefix}/@one-for-all/quill@1.3.6/1.3.6-quill.snow.css`;
+const quillSrc = `${window.CONFIG.VendorPrefix}/@one-for-all/quill@1.3.6/index.min.js`;
+const styleSrc = `${window.CONFIG.VendorPrefix}/@one-for-all/quill@1.3.6/1.3.6-quill.snow.css`;
 
 function loadQuill(): Promise<Quill | null> {
   return System.import(styleSrc).then((module) => {
