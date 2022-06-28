@@ -160,7 +160,7 @@ function ModalBindState(): JSX.Element | null {
         },
       ]);
     } else {
-      setBoundVariables(bindConf.deps);
+      setBoundVariables(bindConf.deps ?? []);
     }
 
     if (bindConf?.convertor?.type === 'state_convert_expression') {
