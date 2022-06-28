@@ -230,17 +230,18 @@ function WorkFlowTable({ type, searchInput }: Props): JSX.Element {
   }
 
   return (
-    <div className="flex-1 flex flex-col flow-table">
+    <>
       {!isError && (
-        <Table<any>
-          style={{ maxHeight: 'calc(100vh - 350px)' }}
-          rowKey="id"
-          data={filterFlowOfName()}
-          emptyTips={<EmptyTipsRender />}
-          columns={columns}
-          loading={isLoading}
-          canSetColumnWidth
-        />
+        <div className='flex-1 flex flex-col flow-table overflow-hidden'>
+          <Table<any>
+            rowKey="id"
+            data={filterFlowOfName()}
+            emptyTips={<EmptyTipsRender />}
+            columns={columns}
+            loading={isLoading}
+            canSetColumnWidth
+          />
+        </div>
       )}
       {isError && (
         <ErrorTips desc="something wrong..."/>
@@ -286,7 +287,7 @@ function WorkFlowTable({ type, searchInput }: Props): JSX.Element {
           </p>
         </Modal>
       )}
-    </div>
+    </>
   );
 }
 
