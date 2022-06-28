@@ -132,7 +132,8 @@ function BorderConfig({ defaultValue, onChange, onReset }: Props): JSX.Element {
           <ColorPicker
             value={defaultValue[`border${curBorderPos}Color` as keyof BorderValue] as string || defaultValue.borderColor || ''}
             onChange={(color: ColorResult) => {
-              handleChange(color.hex, `border${curBorderPos}Color`);
+              const { r, g, b, a } = color.rgb;
+              handleChange(a === 1 ? color.hex : `rgba(${r},${g},${b},${a})`, `border${curBorderPos}Color`);
             }}
           />
         </div>

@@ -164,7 +164,8 @@ function ShadowConfig({ defaultValue, onChange, onReset }: Props): JSX.Element {
                 <ColorPicker
                   value={shadowValue.color || ''}
                   onChange={(color: ColorResult) => {
-                    handleChange(color.hex, 'color');
+                    const { r, g, b, a } = color.rgb;
+                    handleChange(a === 1 ? color.hex : `rgba(${r},${g},${b},${a})`, 'color');
                   }}
                 />
               </div>
