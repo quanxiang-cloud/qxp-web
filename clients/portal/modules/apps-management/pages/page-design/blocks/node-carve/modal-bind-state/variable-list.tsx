@@ -14,7 +14,7 @@ type Props = {
   updateBoundVariables: (newBoundVariables: ComputedDependency[]) => void;
   editorRef?: React.MutableRefObject<EditorRefType | undefined>;
   singleBind?: boolean;
-}
+};
 
 function VariableList({
   boundVariables = [],
@@ -24,8 +24,12 @@ function VariableList({
 }: Props): JSX.Element {
   const variableNames = boundVariables.map(({ depID }) => depID);
   const { artery } = useConfigContext() as ConfigContextState;
-  const sharedStates = Object.entries(mapSharedStateSpec(artery)).map(([_, value]) => JSON.parse(value));
-  const apiStates = Object.entries(mapApiStateSpec(artery)).map(([_, value]) => JSON.parse(value));
+  const sharedStates = Object.values(mapSharedStateSpec(artery)).map((value) => JSON.parse(value));
+  const apiStates = Object.entries(mapApiStateSpec(artery)).map(([name, { apiID, desc }]) => ({
+    name,
+    apiID,
+    desc,
+  }));
 
   function handleVariableClick(variable: string, type: 'shared_state' | 'api_state'): void {
     if (singleBind && boundVariables.length === 1) {
@@ -41,18 +45,21 @@ function VariableList({
   return (
     <>
       <Section title="自定义变量" defaultExpand>
-        {!sharedStates.length && <div className="text-12 text-gray-400">暂无自定义变量，请在数据源中添加</div>}
-        {!!sharedStates.length && sharedStates.map(({ name }) => {
-          return (
-            <div
-              key={name}
-              className={styles['list-item']}
-              onClick={() => handleVariableClick(name, 'shared_state')}
-            >
-              {name}
-            </div>
-          );
-        })}
+        {!sharedStates.length && (
+          <div className="text-12 text-gray-400">暂无自定义变量，请在数据源中添加</div>
+        )}
+        {!!sharedStates.length &&
+          sharedStates.map(({ name }) => {
+            return (
+              <div
+                key={name}
+                className={styles['list-item']}
+                onClick={() => handleVariableClick(name, 'shared_state')}
+              >
+                {name}
+              </div>
+            );
+          })}
       </Section>
       <Section title="API变量" defaultExpand>
         {!apiStates.length && <div className="text-12 text-gray-400">暂无 API 变量，请在数据源中添加</div>}

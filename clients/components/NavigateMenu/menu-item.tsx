@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import cs from 'classnames';
 
-import usePopper from '@c/popper2';
-
 import Icon from '@c/icon';
+import usePopper from '@c/popper2';
 
 import './index.scss';
 
@@ -141,7 +140,7 @@ export default function MenuItem({
           <span className={cs(`menu-item-label px-${mode === 'side' && level > 1 ? 16 : 8}`)}>{title}</span>
           {children && showExpandIcon && (
             <Icon
-              size={22}
+              size={iconSize ?? (children || level === 1 ? 22 : 18)}
               name="keyboard_arrow_down"
               className={cs(
                 'flex-shrink-0 transform transition-transform duration-300',

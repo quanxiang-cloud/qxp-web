@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import cs from 'classnames';
 import { get } from 'lodash';
 import { Icon, Tooltip } from '@one-for-all/ui';
 import type { NodePropType } from '@one-for-all/artery';
 
 import { ConfigContextState, useConfigContext } from '../context';
-import { unsetComposedNode, unsetLoopNode, updateNodeProperty } from '../utils';
+import { findNode, unsetComposedNode, unsetLoopNode, updateNodeProperty } from '../utils';
 import { ConnectedProps } from '../utils/connect';
 
 export const iterableStateTypes: NodePropType[] = [
@@ -37,6 +37,7 @@ function ConfigItemBind({
 }: ConnectedProps<{
   isSetLoopNode?: boolean,
 }>): JSX.Element {
+  const [bound, setBound] = useState<boolean>(false);
   const {
     rawActiveNode,
     activeNode,
@@ -47,18 +48,23 @@ function ConfigItemBind({
   } = useConfigContext() as ConfigContextState;
   const isLoopNode = rawActiveNode?.type === 'loop-container';
   const isComposedNode = isLoopNode && rawActiveNode?.node && rawActiveNode?.node.type === 'composed-node';
-  let bound;
-  if (isSetLoopNode) {
-    // if bind constant value, loop node iterableState will be constant_property
-    // if bind shared state, loop node iterableState will be shared_property
-    // if bind api state, loop node iterableState will be api_result_property
-    const iterType = get(rawActiveNode, 'iterableState.type');
-    bound = iterableStateTypes.includes(iterType);
-  } else {
-    const typePath = `${__path}.type`;
-    const propType = get(activeNode, typePath);
-    bound = normalStateTypes.includes(propType);
-  }
+
+  useEffect(() => {
+    let realNode;
+    if (isSetLoopNode) {
+      realNode = findNode(artery.node, activeNode?.id, true);
+      // if bind constant value, loop node iterableState will be constant_property
+      // if bind shared state, loop node iterableState will be shared_property
+      // if bind api state, loop node iterableState will be api_result_property
+      const iterType = get(realNode, 'iterableState.type');
+      setBound(iterableStateTypes.includes(iterType));
+    } else {
+      realNode = findNode(artery.node, activeNode?.id);
+      const typePath = `${__path}.type`;
+      const propType = get(realNode, typePath);
+      setBound(normalStateTypes.includes(propType));
+    }
+  }, [artery]);
 
   function handleUnbind(): void {
     if (!activeNode) {

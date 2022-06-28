@@ -26,7 +26,7 @@ export function mapSharedStateSpec(artery: Artery): Record<string, any> {
 export function mapApiStateSpec(artery: Artery): Record<string, any> {
   return Object.entries(artery.apiStateSpec || {}).reduce(
     (acc: Record<string, any>, [k, v]: [string, any]) => {
-      acc[k] = v.apiID;
+      acc[k] = v;
       return acc;
     },
     {},
