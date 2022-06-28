@@ -31,7 +31,7 @@ export type TokenEdited<T extends Token> = {
 } & Omit<TokenTypeSchema, 'label'> &
   Pick<T, 'name' | 'value' | 'unit'>;
 
-const defaultTokens: any = {
+export const defaultTokens: any = {
   version: 'v0.1.0',
   values: defaultJSON,
 };

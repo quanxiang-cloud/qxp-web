@@ -16,10 +16,11 @@ export const BACKGROUND_KEYS: (keyof CSSProperties)[] = ['backgroundSize', 'back
 export const BOX_SHADOW_KEY: (keyof CSSProperties)[] = ['boxShadow'];
 
 export const DISPLAY_OPTION: LabelValue[] = [
-  { value: 'block', label: '块级' },
+  { value: 'block', label: '块' },
   { value: 'inline', label: '行内' },
   { value: 'inline-block', label: '行内块' },
   { value: 'flex', label: '弹性' },
+  { value: 'grid', label: '网格' },
 ];
 
 export const DIRECTION_LIST: LabelValue[] = [
