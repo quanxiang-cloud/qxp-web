@@ -197,7 +197,7 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
       <TableContext.Provider value={{ appID, tableID, name }}>
         <div className='h-full'>
           <Header tableName={name} operationType={store.operationType} onCancel={() => handleCancel(true)} />
-          <div style={{ maxHeight: 'calc(100% - 62px)' }} className='h-full relative overflow-hidden'>
+          <div style={{ maxHeight: 'calc(100% - 62px)' }} className='h-full relative overflow-auto'>
             {renderPageBody()}
             {modalType === 'dataForm' && (
               <CreateDataForm
