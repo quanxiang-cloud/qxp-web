@@ -42,7 +42,8 @@ function BackgroundConfig({ defaultValue, onChange, onReset }: Props): JSX.Eleme
           <ColorPicker
             value={defaultValue.backgroundColor || ''}
             onChange={(color: ColorResult) => {
-              handleChange(color.hex, 'backgroundColor');
+              const { r, g, b, a } = color.rgb;
+              handleChange(a === 1 ? color.hex : `rgba(${r},${g},${b},${a})`, 'backgroundColor');
             }}
           />
         </div>
