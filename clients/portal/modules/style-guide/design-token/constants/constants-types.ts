@@ -36,4 +36,12 @@ export const TYPE_MAPS: Record<string, Record<string, string>> = {
     'pt-{name}': 'padding-top: {value}{unit};',
     'pb-{name}': 'padding-bottom: {value}{unit};',
   },
+  [TokenTypes.COLOR]: {
+    'text-{name}': 'color: {value};',
+    'hover__text-{name}:hover': 'color: {value};',
+    'focus__text-{name}:focus': 'color: {value};',
+    'bg-{name}': 'background-color: {value};',
+    'hover__bg-{name}:hover': 'background-color: {value};',
+    'focus__bg-{name}:focus': 'background-color: {value};',
+  },
 };

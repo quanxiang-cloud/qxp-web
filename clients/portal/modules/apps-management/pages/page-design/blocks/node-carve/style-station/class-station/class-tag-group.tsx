@@ -47,7 +47,7 @@ function ClassTagGroup({ styleData, onDeleteClassName, className }: Props): JSX.
 
   function styleEffectPreviewRender( type: string, value: React.CSSProperties): React.ReactNode {
     if ( type === 'color' ) {
-      return colorPreviewRender(value.color as string);
+      return colorPreviewRender(value.color as string || value.backgroundColor as string);
     }
     if (['typography', 'fontSize'].includes(type)) {
       return fontPreviewRender(value);
@@ -57,7 +57,7 @@ function ClassTagGroup({ styleData, onDeleteClassName, className }: Props): JSX.
   function colorPreviewRender(color: string): JSX.Element {
     return (
       <div
-        className='w-14 h-14 border-1 border-black-100'
+        className='w-14 h-14 border-1 border-black-100 hover:text-black-50'
         style={{ backgroundColor: color }}
       />
     );

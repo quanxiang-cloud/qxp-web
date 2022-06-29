@@ -5,7 +5,7 @@ import { TokenBoxshadowUnit, TokenBoxshadowValue } from '../types/values';
 import { aliasRegex } from './aliases';
 import { ResolvedToken } from './token-helper';
 
-function resolveClassNameByTokenName(name: string): string {
+export function resolveClassNameByTokenName(name: string): string {
   return `.${name.split('.').join('-')}`;
 }
 
@@ -18,10 +18,7 @@ export function generateCssVarible(tokens: ResolvedToken<Token>[]): string {
         return acc;
       }
       if (isShadowToken(token)) {
-        return (
-          acc +
-          `${name}: ${generateWholeBoxShadowStyle(token as BoxShadowToken)};`
-        );
+        return acc + `${name}: ${generateWholeBoxShadowStyle(token as BoxShadowToken)};`;
       }
       const value = token.value + (token.unit ? token.unit?.toString() : '');
 
@@ -30,19 +27,14 @@ export function generateCssVarible(tokens: ResolvedToken<Token>[]): string {
   return `:root{${cssVarible}}`;
 }
 
-export function generateBoxShadowStyle(
-  boxShadow: TokenBoxshadowValue,
-  unit: TokenBoxshadowUnit,
-): string {
+export function generateBoxShadowStyle(boxShadow: TokenBoxshadowValue, unit: TokenBoxshadowUnit): string {
   const { color, type } = boxShadow;
   const shadowType = type === BoxShadowTypes.OUTSET ? '' : ' inset';
   const partialValue = Object.keys(unit).reduce<string>(
     (acc, cur) =>
       acc +
       (cur in boxShadow ?
-        `${boxShadow[cur as keyof TokenBoxshadowValue]}${
-          unit[cur as keyof TokenBoxshadowUnit]
-        } ` :
+        `${boxShadow[cur as keyof TokenBoxshadowValue]}${unit[cur as keyof TokenBoxshadowUnit]} ` :
         ''),
     '',
   );
@@ -55,10 +47,7 @@ export function generateWholeBoxShadowStyle(token: BoxShadowToken): string {
   if (Array.isArray(token.value)) {
     boxShadowStyle = token.value
       .map((shadow, index) => {
-        return generateBoxShadowStyle(
-          shadow,
-          (token.unit as TokenBoxshadowUnit[])[index],
-        );
+        return generateBoxShadowStyle(shadow, (token.unit as TokenBoxshadowUnit[])[index]);
       })
       .join(',');
   } else {
@@ -70,37 +59,47 @@ export function generateWholeBoxShadowStyle(token: BoxShadowToken): string {
   return boxShadowStyle;
 }
 
-function objectToCss(
-  obj: Record<string, string>,
-  unit: Record<string, string>,
-): string {
-  return Object.entries(obj)
+function objectToCss(obj: Record<string, string>, unit: Record<string, string>): string {
+  const cssProperty = addUnitToCssProperty(obj, unit);
+  return Object.entries(cssProperty)
     .map(([k, v]) => {
       const _k = k.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`);
-      const _v = k in unit ? `${v}${unit[k]}` : v;
-      return `${_k}:${_v};`;
+      return `${_k}:${v};`;
     })
     .join('');
 }
 
+export function addUnitToCssProperty(
+  obj: Record<string, string>,
+  unit: Record<string, string>,
+): Record<string, string> {
+  return Object.entries(obj).reduce((acc, [k, v]) => {
+    const _v = k in unit ? `${v}${unit[k]}` : v;
+    return {
+      ...acc,
+      [k]: _v,
+    };
+  }, {});
+}
+
+export function generateSingleClasses(token: ResolvedToken<Token>): string {
+  if (isTypographyToken(token)) {
+    return generateTypoGraphyClass(token as TypographyToken);
+  }
+  if (isShadowToken(token)) {
+    return generateBoxShadowClass(token as BoxShadowToken);
+  }
+  if (TYPE_MAPS[token.type]) {
+    return generateMapingTypeClass(token);
+  }
+
+  return generateNormalClass(token);
+}
+
 export function generateClasses(tokens: ResolvedToken<Token>[]): string {
-  const classStyles = tokens
+  return tokens
     .filter((t) => !t.resolveFailed)
-    .reduce<string>((acc, token) => {
-      if (isTypographyToken(token)) {
-        return acc + generateTypoGraphyClass(token as TypographyToken);
-      }
-      if (isShadowToken(token)) {
-        return acc + generateBoxShadowClass(token as BoxShadowToken);
-      }
-      if (TYPE_MAPS[token.type]) {
-        return acc + generateMapingTypeClass(token);
-      }
-
-      return acc + generateNormalClass(token);
-    }, '');
-
-  return classStyles;
+    .reduce<string>((acc, token) => acc + generateSingleClasses(token), '');
 }
 
 export function generateNormalClass(token: ResolvedToken<Token>): string {
@@ -114,16 +113,12 @@ export function generateNormalClass(token: ResolvedToken<Token>): string {
   return `${className}{${styleValue}}`;
 }
 
-export function generateTypoGraphyClass(
-  token: ResolvedToken<TypographyToken>,
-): string {
+export function generateTypoGraphyClass(token: ResolvedToken<TypographyToken>): string {
   const className = resolveClassNameByTokenName(token.name);
   return `${className}{${objectToCss(token.value, token.unit)}}`;
 }
 
-export function generateBoxShadowClass(
-  token: ResolvedToken<BoxShadowToken>,
-): string {
+export function generateBoxShadowClass(token: ResolvedToken<BoxShadowToken>): string {
   const className = resolveClassNameByTokenName(token.name);
   return `${className}{box-shadow:${generateWholeBoxShadowStyle(token)}}`;
 }
@@ -142,17 +137,11 @@ export function generateMapingTypeClass(token: ResolvedToken<Token>): string {
   }, '');
 }
 
-export function replaceMatchValue(
-  cssString: string,
-  reflectMap: ResolvedToken<Token>,
-): string {
+export function replaceMatchValue(cssString: string, reflectMap: ResolvedToken<Token>): string {
   const matches = cssString.match(aliasRegex) || [];
   let newStr = cssString;
   matches.forEach((matchStr) => {
-    const key = matchStr.slice(
-      1,
-      matchStr.length - 1,
-    ) as keyof ResolvedToken<Token>;
+    const key = matchStr.slice(1, matchStr.length - 1) as keyof ResolvedToken<Token>;
     if (typeof reflectMap[key] === 'string') {
       newStr = newStr.replace(matchStr, reflectMap[key] as string);
     }
