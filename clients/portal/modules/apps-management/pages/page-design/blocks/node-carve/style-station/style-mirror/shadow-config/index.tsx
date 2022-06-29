@@ -7,6 +7,7 @@ import { ColorPicker } from '@one-for-all/ui';
 import RadioButtonGroup from '../components/radio-button-group';
 import { PartialCSSProperties } from '../../utils';
 import { SHADOW_TYPE } from '../constant';
+import { shadowDetailValueToString } from '../utils/helper';
 
 export type Props = {
   defaultValue: ShadowValue;
@@ -61,14 +62,6 @@ function ShadowConfig({ defaultValue, onChange, onReset }: Props): JSX.Element {
     if (!inset) return 'outset';
     if (inset === 'inset') return 'inset';
     return '';
-  }
-
-  function shadowDetailValueToString(detail: ShadowValueDetail): string {
-    const valueArr = [detail.x, detail.y, detail.blur, detail.spread, detail.color];
-    if (detail.type === 'inset') {
-      return ['inset'].concat(valueArr).join(' ');
-    }
-    return valueArr.join(' ');
   }
 
   useEffect(() => {

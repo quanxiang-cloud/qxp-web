@@ -1,22 +1,21 @@
 import React from 'react';
-import ClassSelector from './class-selector';
+import ClassSelector, { StyleDataItem } from './class-selector';
 
-import { Props } from './class-selector';
-import { useStyleData } from './hooks';
+type Props = {
+  defaultClassName: string;
+  classNameData: StyleDataItem[];
+  onChange?: (className: string) => void;
+}
 
-function ClassStation(
-  { defaultClassName, onChange }: Pick<Props, 'defaultClassName' | 'onChange'>,
-): JSX.Element {
-  const [isLoading, styleData] = useStyleData();
-
-  if (isLoading) {
-    return <div>正在获取ClassName...</div>;
-  }
-
+function ClassStation({
+  defaultClassName,
+  onChange,
+  classNameData,
+}: Props): JSX.Element {
   return (
     <ClassSelector
       onChange={onChange}
-      styleData={styleData}
+      styleData={classNameData}
       defaultClassName={defaultClassName}
     />
   );

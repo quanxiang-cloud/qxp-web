@@ -1,3 +1,4 @@
+import { ShadowValueDetail } from '../shadow-config';
 
 export function getValidMaxValue(stringArray: (string | undefined)[]): string {
   const validValue = (stringArray as string[]).filter((value) => !isNaN(parseInt(value)))
@@ -18,3 +19,10 @@ export function firstWordUpperCase(value: string): string {
   return firstChar + value.slice(1);
 }
 
+export function shadowDetailValueToString(detail: ShadowValueDetail): string {
+  const valueArr = [detail.x, detail.y, detail.blur, detail.spread, detail.color];
+  if (detail.type === 'inset') {
+    return ['inset'].concat(valueArr).join(' ');
+  }
+  return valueArr.join(' ');
+}

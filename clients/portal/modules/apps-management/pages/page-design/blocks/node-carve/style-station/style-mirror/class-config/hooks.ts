@@ -20,7 +20,7 @@ import {
   resolveTokenValues,
 } from '@portal/modules/style-guide/design-token/utils/token-helper';
 import { useEffect, useState } from 'react';
-import { StyleDataItem } from './class-selector';
+import { StyleDataItem } from '../../class-station/class-selector';
 
 export function useStyleData(): [boolean, StyleDataItem[]] {
   const [isLoading, setIsLoading] = useState<boolean>(false);
