@@ -77,7 +77,9 @@ function AppNav(): JSX.Element {
         <Button
           modifier='primary'
           onClick={() => {
-            history.push(`/artery-engine?appID=${store.appID}&pageName=应用布局&arteryID=${rootLayout?.refSchemaID}`);
+            history.push(`/artery-engine?appID=${store.appID}&pageName=应用布局&arteryID=${rootLayout?.refSchemaID}`, {
+              isNav: true,
+            });
           }} >
           设计导航
         </Button>

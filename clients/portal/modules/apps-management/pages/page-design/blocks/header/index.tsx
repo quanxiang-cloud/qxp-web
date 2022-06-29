@@ -76,6 +76,10 @@ function Toolbar({
   }
 
   function handleGoBack(): void {
+    if (history.location.state?.isNav) {
+      history.push(`/apps/details/${appID}/app_nav`);
+      return;
+    }
     history.push(`/apps/details/${appID}/views`);
   }
 
