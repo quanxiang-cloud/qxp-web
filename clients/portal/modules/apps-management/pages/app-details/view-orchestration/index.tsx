@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
 
 import PageLoading from '@c/page-loading';
@@ -17,6 +17,8 @@ import pageTemplatesStore from '@portal/modules/apps-management/page-templates/s
 import CreateFromTemplate from './create-from-template';
 
 import useAppStore from './hooks';
+
+import appStore from '../store';
 
 import { CreateViewParams, StaticView, TableSchemaView, View, ViewType } from '../view-orchestration/types.d';
 
@@ -100,6 +102,13 @@ function AppViews(): JSX.Element {
     }
   }
 
+  useEffect(() => {
+    if (appStore.lastFocusViewID && store) {
+      const view = store.views.find((view) => (view as View).id === appStore.lastFocusViewID );
+      store.setCurrentView(view as View);
+    }
+  }, [store]);
+
   if (isLoading || !store) {
     return (
       <div className="flex h-full">
@@ -124,13 +133,15 @@ function AppViews(): JSX.Element {
             <CreateFromTemplate />
           </div>
         </div>
-        <div className="app-view-list-wrapper h-full">
+        <div style={{ height: 'calc(100% - 44px)' }} className="app-view-list-wrapper h-full">
           <ViewList
-            className="pb-10"
             currentView={store.currentView as View}
             homeView={store.homeView}
             views={store.views as View[]}
-            onViewClick={(view) => store.setCurrentView(view)}
+            onViewClick={(view) => {
+              store.setCurrentView(view);
+              appStore.setLastFocusViewID(view.id);
+            }}
             onOptionClick={onViewOptionClick}
           />
         </div>
