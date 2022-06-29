@@ -131,7 +131,6 @@ function FormAddVal({
             className={cs('textarea', styles.textarea)}
             value={curSharedVal.desc}
             onChange={(ev) => {
-              console.log(ev);
               setCurSharedVal({
                 ...curSharedVal,
                 desc: ev.target.value || '',
