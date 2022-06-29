@@ -27,12 +27,12 @@ function LogicOperatorsAndBoundVariables({
 
   return (
     <>
-      <div className="py-4">
-        已绑定变量： <span className={styles.desc}>被绑定的变量值变化，触发重新执行表达式或者自定义函数</span>
+      <div className="py-8">
+        已绑定变量:<span className={styles.desc}>被绑定的变量值变化，触发重新执行表达式或者自定义函数</span>
       </div>
       <div className={styles['bind-container']}>
         {!boundVariables?.length && (
-          <div className="px-16 py-8 border-1 text-red-400 text-center flex-1">
+          <div className="px-16 py-8 border-1 text-red-400 text-center flex-1 rounded-4">
             请先点击左侧可用变量列表进行变量绑定操作
           </div>
         )}
@@ -65,14 +65,14 @@ function LogicOperatorsAndBoundVariables({
       </div>
       {!hideOperator && (
         <>
-          <div className="py-4">逻辑运算符：</div>
-          <div className="grid gap-4 grid-cols-5 max-h-144 overflow-auto">
+          <div className="py-8">逻辑运算符：</div>
+          <div className={styles['operator-container']}>
             {LOGIC_OPERATOR.map((op) => {
               return (
                 <div
                   key={op}
                   onClick={() => editorInsertText(op)}
-                  className="px-4 py-4 border-1 inline-block text-center hover:bg-blue-400"
+                  className={styles.operator}
                 >
                   {op}
                 </div>

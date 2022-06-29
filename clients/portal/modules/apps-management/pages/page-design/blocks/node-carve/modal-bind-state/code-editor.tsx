@@ -54,7 +54,7 @@ function CodeEditor(
   return (
     <Editor
       ref={refEditor}
-      width='600px'
+      width='524px'
       height={type === 'toProps' ? '360px' : '250px'}
       value={value}
       extensions={[javascript()]}
