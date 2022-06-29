@@ -26,9 +26,6 @@ function ShadowContent({
     }
 
     const style = document.createElement('style');
-    const compStyle = document.createElement('link');
-    compStyle.href = `${window.CONFIG.VendorPrefix}/@one-for-all/headless-ui@0.8.3/ofa-headless-ui-web.css`;
-    compStyle.rel = 'stylesheet';
     style.textContent = `
     .style-guide-comp-item {
      cursor: pointer;
@@ -42,7 +39,6 @@ function ShadowContent({
     .style-guide-comp-item:hover, .style-guide-comp-item-active {
       border: 1px solid var(--blue-500);
     }`;
-    store.shadowRoot.appendChild(compStyle);
     store.shadowRoot.appendChild(style);
   }, [store.shadowRoot]);
 
@@ -69,6 +65,7 @@ function PreviewConfigurableComponent(): JSX.Element {
   }
 
   const { key } = store.currentComp;
+  console.log(headlessUI);
   const Component = (headlessUI as any)[key];
 
   if (!Component) {
