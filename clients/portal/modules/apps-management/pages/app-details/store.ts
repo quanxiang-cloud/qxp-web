@@ -24,6 +24,7 @@ class AppDetailsStore {
   @observable lastUpdateTime = 0;
   @observable apps: AppInfo[] = [];
   @observable appID = '';
+  @observable lastFocusViewID = '';
 
   @action
   fetchAppList = (): void => {
@@ -92,6 +93,11 @@ class AppDetailsStore {
   @action
   updateAppRolePoly = (polyRole: boolean): Promise<void> => {
     return appRolePoly(this.appID, polyRole );
+  };
+
+  @action
+  setLastFocusViewID = (id: string): void => {
+    this.lastFocusViewID = id;
   };
 }
 

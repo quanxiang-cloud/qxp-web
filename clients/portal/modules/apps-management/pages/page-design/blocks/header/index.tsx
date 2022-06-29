@@ -41,6 +41,7 @@ function Toolbar({
     const timer = setInterval(() => {
       !!modifications && autoSave();
     }, 30 * 1000);
+
     return () => {
       clearInterval(timer);
     };

@@ -40,6 +40,7 @@ import {
 import { ROOT_NODE_ID } from './constants';
 import { createBlank, fetchAppDetails, updateApp } from '../api';
 import pageTemplatesStore from '@portal/modules/apps-management/page-templates/store';
+import appStore from '../store';
 
 class Orchestrator {
   @observable loading = true;
@@ -66,7 +67,7 @@ class Orchestrator {
     this.appLayout = get(_rootNOde, 'props.data-layout-type.value', undefined);
 
     this.fetchAppHomeView(appID).then(() => {
-      if (this.homeView) {
+      if (this.homeView && !appStore.lastFocusViewID ) {
         this.currentView = this.homeView;
       }
     });
@@ -90,22 +91,6 @@ class Orchestrator {
       return viewA.name < viewB.name ? -1 : 1;
     });
   }
-
-  // async createGroup(name: string): FutureErrorMessage {
-
-  // }
-
-  // async renameGroup(oldName: string, newName: string): FutureErrorMessage {
-
-  // }
-
-  // async deleteGroup(name: string): FutureErrorMessage {
-
-  // }
-
-  // async changeViewGroup(viewID: string, from: string, to?: string): FutureErrorMessage {
-
-  // }
 
   @action
   async addLayout(layoutInfo: CreateLayoutInfo): FutureErrorMessage {
