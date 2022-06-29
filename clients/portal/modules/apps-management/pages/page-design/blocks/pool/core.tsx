@@ -42,7 +42,7 @@ function DataSource({ artery, onChange }: Props): JSX.Element {
         items={[
           {
             id: 'sharedState',
-            name: '变量参数',
+            name: '共享状态',
             content: <SharedState artery={artery} onChange={onChange} />,
           },
           {

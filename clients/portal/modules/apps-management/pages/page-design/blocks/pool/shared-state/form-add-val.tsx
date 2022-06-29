@@ -70,7 +70,7 @@ function FormAddVal({
   return (
     <Modal
       className={styles.editorModal}
-      title={curSharedStateKey ? '修改变量参数' : '新建变量参数'}
+      title={curSharedStateKey ? '修改状态' : '新建状态'}
       onClose={() => setModalOpen(false)}
       footerBtns={[
         {
@@ -90,7 +90,7 @@ function FormAddVal({
     >
       <form className="px-40 py-24">
         <div className="flex flex-col mb-24">
-          <p>参数名称</p>
+          <p>状态名称</p>
           <input
             type="text"
             className={cs('input', styles.input, { [styles.error]: errors.name })}
@@ -109,7 +109,7 @@ function FormAddVal({
           </p>
         </div>
         <div className="flex flex-col mb-24">
-          <p>变量数据</p>
+          <p>状态默认值</p>
           <Editor
             value={curSharedVal.val}
             height="200px"

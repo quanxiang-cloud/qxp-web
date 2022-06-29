@@ -81,7 +81,7 @@ function SharedState({ artery, onChange }: Props): JSX.Element {
         onChange={setSearch}
         placeholder="搜索参数名称.."
         actions={
-          (<Tooltip position="top" label="新建变量参数">
+          (<Tooltip position="top" label="新建状态">
             <Icon
               name="add"
               clickable
