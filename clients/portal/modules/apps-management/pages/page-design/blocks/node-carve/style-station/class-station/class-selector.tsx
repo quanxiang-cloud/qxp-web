@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import ClassTagGroup from './class-tag-group';
 import AutoComplete from './auto-complete';
@@ -18,8 +18,7 @@ export type Props = {
 }
 
 function ClassSelector({ defaultClassName, onChange, styleData }: Props): JSX.Element {
-  const [curStyleData, setCurStyleData] = useState<StyleDataItem[]>(getSelectedStyleData(defaultClassName));
-
+  const [curStyleData, setCurStyleData] = useState<StyleDataItem[]>([]);
   const options = useMemo(() => styleData.filter((style) =>
     !curStyleData.find((curStyle) => curStyle.name === style.name),
   ).map((style) => ({ label: style.name, value: style.name }))
@@ -53,6 +52,10 @@ function ClassSelector({ defaultClassName, onChange, styleData }: Props): JSX.El
     const className = styleData.map((styleItem) => styleItem?.name).join(' ');
     onChange?.(className);
   }
+
+  useEffect(() => {
+    setCurStyleData(getSelectedStyleData(defaultClassName));
+  }, [defaultClassName]);
 
   return (
     <div>

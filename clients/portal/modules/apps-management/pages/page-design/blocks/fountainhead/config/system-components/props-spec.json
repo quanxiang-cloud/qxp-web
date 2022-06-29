@@ -601,6 +601,11 @@
       "label": "item 高亮样式",
       "type": "string",
       "will": "ClassName"
+    }, {
+      "name": "itemStyle",
+      "label": "组件 item 样式",
+      "type": "string",
+      "will": "StyleSheet"
     }]
   }
 }
