@@ -7,14 +7,14 @@ import Tab from '@c/tab';
 import Toggle from '@c/toggle';
 import toast from '@lib/toast';
 
-import { updateNodeProperty, findNode, updateCurNodeAsLoopContainer } from '../utils';
+import VariableList from './variable-list';
 import CodeEditor, { EditorRefType } from './code-editor';
 import LogicOperatorsAndBoundVariables from './bound-and-logic';
+import { updateNodeProperty, findNode, updateCurNodeAsLoopContainer } from '../utils';
 import { ConfigContextState, UpdateAttrPayloadType, useConfigContext } from '../context';
 import { getFnBody, parseAst, parseToExpression, parseToExpressionStr, toConvertorProp } from './utils';
 
 import styles from './index.m.scss';
-import VariableList from './variable-list';
 
 export type VariableBindConf = {
   type: 'convertor' | 'expression';
@@ -282,7 +282,7 @@ function ModalBindState(): JSX.Element | null {
             initValue={initCodeEditor()}
             onChange={handleEditorChange}
           />
-          <div className="flex items-center pt-12">
+          <div className="flex items-center py-8">
             <span>默认值：</span>
             <Toggle defaultChecked={!!fallback} onChange={updateFallBack} />
             <span className={styles.desc}>表达式或自定义函数因某种原因执行失败或者出现异常的时候，将使用该默认值</span>

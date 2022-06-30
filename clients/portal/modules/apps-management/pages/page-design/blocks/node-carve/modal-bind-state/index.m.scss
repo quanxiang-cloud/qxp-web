@@ -14,12 +14,11 @@
   }
   
   .body {
-    padding-left: 8px;
-    padding-right: 8px;
+    @apply px-8;
   }
 
   .tip {
-    @apply text-blue-400 text-12;
+    @apply text-blue-500 text-12;
   }
   
   .desc {
@@ -27,16 +26,24 @@
   }
 
   .list-item {
-    @apply cursor-pointer hover:bg-blue-400;
+    @apply cursor-pointer hover:bg-blue-200;
   }
 
   .bind-container {
     @apply flex items-center max-h-144 overflow-auto flex-wrap;
-    width: 600px;
+    width: 524px
+  }
+  
+  .operator-container {
+    @apply grid gap-8 grid-cols-6 max-h-144 overflow-auto font-mono;
   }
   
   .bind-item {
-    @apply px-16 py-8 mr-4 mb-4 border-1 inline-block text-center hover:bg-blue-400 relative select-none;
+    @apply relative select-none px-16 py-8 mr-4 mb-4 border-1 inline-block text-center hover:bg-blue-200 rounded-4;
+  }
+
+  .operator {
+    @apply p-4  cursor-pointer border-1 inline-block text-center hover:bg-blue-200 rounded-4;
   }
 
   .hover-bind-item {
