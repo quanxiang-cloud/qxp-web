@@ -125,7 +125,7 @@ function LogoSetting(): JSX.Element {
             />
           </div>
         </div>
-        <SubTitle className='tracking-wide' title='仅支持上传 png 格式的图片, 大小不超过 5 MB'/>
+        <SubTitle className='tracking-wide' title='仅支持上传 png 格式的图片, 图片最佳高度为 32 px , 大小不超过 5 MB'/>
         <span>
           <Button onClick={handleSave} modifier='primary'>保存</Button>
         </span>

@@ -35,31 +35,37 @@ export default function GlobalHeader() {
   }
 
   return (
-    <>
-      <div className="flex justify-between items-center px-24 bg-white shadow-flow-header">
-        <HeaderNav />
-        {
-          loading ? (
-            <Icon
-              name='image'
-              size={20}
-              className='animate-pulse'
-            />
-          ) : (
-            <div className={cs('flex-1 h-52 flex items-center justify-center', {
-              'py-10': config?.portalLogo,
-            })}>
-              <img
-                className='h-full'
-                src={config?.portalLogo ? `${window.location.protocol}//${OSS_PUBLIC_BUCKET_NAME}.${OSS_DOMAIN}/${config?.portalLogo}` : '/dist/images/quanxiangyun.svg'}
-                alt="portal_logo"
-              />
-            </div>
-
-          )
-        }
-        <HeaderMenu />
-      </div>
-    </>
+    <div className="flex justify-between items-center px-24 bg-white shadow-flow-header">
+      <HeaderNav />
+      {
+        loading ? (
+          <Icon
+            name='image'
+            size={20}
+            className='animate-pulse'
+          />
+        ) : (
+          <div className={cs('flex-1 h-52 flex items-center justify-center', {
+            'py-10': config?.portalLogo,
+          })}>
+            {
+              config?.portalLogo ? (
+                <img
+                  className='h-full'
+                  src={`${window.location.protocol}//${OSS_PUBLIC_BUCKET_NAME}.${OSS_DOMAIN}/${config?.portalLogo}`}
+                  alt="portal_logo"
+                />
+              ) : (
+                <Icon
+                  name='image'
+                  size={20}
+                />
+              )
+            }
+          </div>
+        )
+      }
+      <HeaderMenu />
+    </div>
   );
 }

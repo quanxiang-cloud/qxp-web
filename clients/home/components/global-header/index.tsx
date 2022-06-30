@@ -23,31 +23,37 @@ export default function GlobalHeader(): JSX.Element {
   }
 
   return (
-    <>
-      <div className="flex justify-between items-center py-2 px-24 bg-blue-600 home-global-header">
-        <HeaderNav />
-        {
-          loading ? (
-            <Icon
-              name='image'
-              size={20}
-              className='animate-pulse'
-            />
-          ) : (
-            <div className={cs('flex-1 h-52 flex items-center justify-center', {
-              'py-10': config?.homeLogo,
-            })}>
-              <img
-                className='h-full'
-                src={config?.homeLogo ? `${window.location.protocol}//${OSS_PUBLIC_BUCKET_NAME}.${OSS_DOMAIN}/${config?.homeLogo}` : '/dist/images/home_logo.svg'}
-                alt="home_logo"
-              />
-            </div>
-
-          )
-        }
-        <HeaderMenu />
-      </div>
-    </>
+    <div className="flex justify-between items-center py-2 px-24 bg-blue-600 home-global-header">
+      <HeaderNav />
+      {
+        loading ? (
+          <Icon
+            name='image'
+            size={20}
+            className='animate-pulse'
+          />
+        ) : (
+          <div className={cs('flex-1 h-52 flex items-center justify-center', {
+            'py-10': config?.homeLogo,
+          })}>
+            {
+              config?.homeLogo ? (
+                <img
+                  className='h-full'
+                  src={`${window.location.protocol}//${OSS_PUBLIC_BUCKET_NAME}.${OSS_DOMAIN}/${config?.homeLogo}`}
+                  alt="home_logo"
+                />
+              ) : (
+                <Icon
+                  name='image'
+                  size={20}
+                />
+              )
+            }
+          </div>
+        )
+      }
+      <HeaderMenu />
+    </div>
   );
 }
