@@ -44,7 +44,7 @@ function StyleStation(): JSX.Element {
 
   const curElemStyles = useMemo(() =>get(rawActiveNode,
     `props.${styleStore.styleType}.value`, {}),
-  [artery, styleStore.styleType] );
+  [artery, styleStore.styleType, activeNode] );
 
   function handleCssEditorStyleChange(value?: string): void {
     const styleObj = cssStringToJsonObj(value);
@@ -73,7 +73,7 @@ function StyleStation(): JSX.Element {
     editorRef.current.setValue(
       jsonObjToFormattedCssString(curElemStyles, `component-${rawActiveNode?.id}-item` || 'unknown-component-item'),
     );
-  }, [styleStore.styleType]);
+  }, [styleStore.styleType, activeNode]);
 
   const panels = [
     {
