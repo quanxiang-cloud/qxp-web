@@ -1208,10 +1208,10 @@
     react-jsx-parser "1.29.0"
     rxjs "^7.4.0"
 
-"@one-for-all/artery-renderer@0.21.1":
-  version "0.21.1"
-  resolved "https://registry.npmjs.org/@one-for-all/artery-renderer/-/artery-renderer-0.21.1.tgz#9474933461174eac7cfb3a509803aa91f3e4e326"
-  integrity sha512-Rt23FLWGg1/er/1witMrsUl1Rx+6bNTKvAn34Lotix9+QD+RNEd4seH6wNN1bzsuNO1PoM/mA1LhrNUfEpapUg==
+"@one-for-all/artery-renderer@0.21.2":
+  version "0.21.2"
+  resolved "https://registry.npmmirror.com/@one-for-all/artery-renderer/-/artery-renderer-0.21.2.tgz#66c56d9b18953313f661e0cb4fe6ddc101bd55aa"
+  integrity sha512-Eq0fjVORdDGPVLG59jokVPdpJoGYyRBnw9N1PmEOjr30g64Sqt38YQDXOHylTqD+oEY1EfCJaOGzXwk761zFMw==
   dependencies:
     "@one-for-all/api-spec-adapter" "0.4.0"
     "@one-for-all/artery" "0.16.0"
