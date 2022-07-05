@@ -2,7 +2,7 @@ import React, { MouseEvent, useEffect, useMemo, useState } from 'react';
 import { observer } from 'mobx-react';
 import { Input } from 'antd';
 import dayjs from 'dayjs';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import 'prismjs/plugins/custom-class/prism-custom-class.js';
 
 import Tab from '@c/tab';
@@ -25,8 +25,16 @@ const { TextArea } = Input;
 
 function VersionDetails(): JSX.Element {
   const history = useHistory();
+  const { groupID, funcID, buildID } = useParams<{ groupID: string, funcID: string, buildID: string }>();
+
   const [des, setDes] = useState(store.currentBuild?.describe || '');
 
+  useEffect(() => {
+    store.getVersion(groupID, funcID, buildID);
+    return () => {
+      store.currentBuild = null;
+    };
+  }, []);
   const apiDoc = useMemo(() => {
     if (store.currentBuild?.docStatus === API_DOC_STATE.NULL) {
       return (<div>未注册API文档</div>);
@@ -79,13 +87,6 @@ function VersionDetails(): JSX.Element {
       content: apiDoc,
     },
   ];
-
-  useEffect(() => {
-    store.getVersion();
-    return () => {
-      store.currentBuild = null;
-    };
-  }, [store.buildID]);
 
   if (!store.currentBuild) {
     return <div>Loading...</div>;

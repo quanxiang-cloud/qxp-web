@@ -28,7 +28,7 @@ function FuncDetailsDrawer(): JSX.Element {
   function onClinckVername(id: string): void {
     store.buildID = id;
     store.modalType = '';
-    history.push(`/apps/details/${store.appID}/build_details`);
+    history.push(`/apps/details/${store.appID}/build_details/${store.groupID}/${store.currentFuncID}/${id}`);
   }
 
   const COLUMNS: UnionColumn<VersionField>[] = [
@@ -95,7 +95,7 @@ function FuncDetailsDrawer(): JSX.Element {
             <PopConfirm content='确定生成API文档？' onOk={() => store.registerAPI(id)} >
               <span className="operate">生成API文档</span>
             </PopConfirm>
-            { status !== FUNC_STATUS.StatusOnline && (
+            {status !== FUNC_STATUS.StatusOnline && (
               <PopConfirm content='确认删除改版本？' onOk={() => store.deleteVer(id)} >
                 <span className="cursor-pointer text-red-600">删除</span>
               </PopConfirm>
