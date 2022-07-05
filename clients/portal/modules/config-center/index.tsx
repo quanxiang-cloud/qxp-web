@@ -9,6 +9,7 @@ import SwaggerRPCSpecAdapter from '@lib/api-adapter';
 // import schema from './schema';
 import swagger from './swagger';
 import httpClient from '@lib/http-client';
+import componentLoader from '@c/artery-renderer/component-loader';
 
 const CONFIG_CENTER_PAGE_SCHEMA_KEY = 'SCHEMA_CONFIG_CENTER';
 
@@ -48,7 +49,7 @@ export default function MyApps(): JSX.Element | null {
 
   return (
     <ErrorBoundary>
-      <ArteryRenderer artery={schema} plugins={{ apiSpecAdapter }} />
+      <ArteryRenderer artery={schema} plugins={{ apiSpecAdapter, componentLoader }} />
     </ErrorBoundary>
   );
 }
