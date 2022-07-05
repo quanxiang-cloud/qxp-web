@@ -10,6 +10,7 @@ import Icon from '@c/icon';
 import PopConfirm from '@c/pop-confirm';
 import Loading from '@c/loading';
 import ws from '@lib/push';
+import InsideDocsPortal from '@c/qxp-docs-inside-portal';
 
 import VersionStatus from '../component/version-status';
 import ApiDetails from '../../api-documentation/api-details';
@@ -132,10 +133,8 @@ function VersionDetails(): JSX.Element {
           />
         </div>
         <a
-          href={`//${window.CONFIG.docs_hostname}`}
-          target="_blank"
-          rel="noreferrer"
           className="app-header-icon corner-4-0-4-4 text-white"
+          onClick={() => InsideDocsPortal.show({ targetUrl: 'https://docs.clouden.io/' })}
         >
           <Icon name="help_doc" size={21} style={{ fill: 'var(--gray-400)' }} className='m-6' />
         </a>
