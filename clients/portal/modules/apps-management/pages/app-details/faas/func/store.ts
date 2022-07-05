@@ -273,8 +273,8 @@ class FaasStore {
     });
   };
 
-  getVersion = (): void => {
-    getVersionInfo(this.groupID, this.currentFuncID, this.buildID).then((build) => {
+  getVersion = (groupID: string, funcID: string, buildID: string): void => {
+    getVersionInfo(groupID, funcID, buildID).then((build) => {
       this.currentBuild = build;
     }).catch((err) => {
       toast.error(err);
@@ -300,6 +300,7 @@ class FaasStore {
 
   @action
   getApiPath = (): void => {
+    console.log(222);
     this.isAPILoading = true;
     getDirectoryPath(this.appID, 'faas').then((apiPath) => {
       this.apiPath = `${apiPath}/${this.currentBuild?.groupName}/${this.currentBuild?.name}.r`;
