@@ -31,7 +31,7 @@ function BackgroundConfig({ defaultValue, onChange, onReset }: Props): JSX.Eleme
       <StyleSubTitle title='常用' onResetValue={onReset} />
       <div className='flex relative align-center gap-8'>
         <StyleInput
-          inputClassName='pl-32'
+          style={{ paddingLeft: 32 }}
           value={defaultValue.backgroundColor || ''}
           onChange={handleChange}
           name='backgroundColor'

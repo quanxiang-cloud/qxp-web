@@ -104,7 +104,7 @@ function SizeConfig({
             value={sizes.maxHeight || ''}
             onChange={handleChange}
             className='flex-1'
-            placeholder='minHeight'
+            placeholder='maxHeight'
             name='maxHeight'
             label='最大高'
           />

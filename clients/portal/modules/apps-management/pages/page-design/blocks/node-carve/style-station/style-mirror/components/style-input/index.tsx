@@ -45,7 +45,6 @@ function StyleInput({
 
   return (
     <div
-      style={style}
       className={cs('flex', {
         'flex-col': !horizontal,
         'gap-4': label,
@@ -59,12 +58,13 @@ function StyleInput({
         {label}
       </label>
       <input
+        style={style}
         id={inputName}
         type="text"
         ref={inputRef}
         onFocus={handleInputFocus}
         autoComplete='off'
-        className={cs('rounded-4 px-12 py-6 w-full', inputClassName)}
+        className={cs('rounded-4 px-8 py-6 w-full', inputClassName)}
         value={value}
         name={inputName}
         placeholder={placeholder}
