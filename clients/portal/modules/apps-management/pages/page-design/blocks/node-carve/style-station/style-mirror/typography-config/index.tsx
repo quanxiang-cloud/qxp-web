@@ -81,7 +81,7 @@ function TypographyConfig({ defaultValue, onChange, onReset }: Props): JSX.Eleme
       </div>
       <div className='flex relative align-center gap-8'>
         <StyleInput
-          inputClassName='pl-32'
+          style={{ paddingLeft: 32 }}
           value={defaultValue.color || ''}
           onChange={handleChange}
           placeholder='#FFFFFF'

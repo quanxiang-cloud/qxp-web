@@ -121,7 +121,7 @@ function BorderConfig({ defaultValue, onChange, onReset }: Props): JSX.Element {
       />
       <div className='flex relative align-center gap-8'>
         <StyleInput
-          inputClassName='pl-32'
+          style={{ paddingLeft: 32 }}
           value={defaultValue[`border${curBorderPos}Color` as keyof BorderValue] || defaultValue.borderColor || ''}
           onChange={handleChange}
           name={`border${curBorderPos}Color`}
