@@ -16,9 +16,9 @@ AppLand，既在 Portal 端构建的应用的访问端。
 
 ## 页面结构方案
 
-整理一下我们见过的页面，大部分是顶部导航 + 内容区域或者左侧导航 + 右侧内容区域的结构。前面介绍的布局，就是为了满足这类需求。当然实际的页面结构还有很多，我们的目标也是也满足大部分的场景需求。
+整理一下我们见过的页面，大部分是顶部导航 + 内容区域或者左侧导航 + 右侧内容区域的结构。前面介绍的布局，就是为了满足这类需求。当然实际的页面结构还有很多，我们的目标是先满足大部分的场景需求。
 
-使用 Artery + Artery Renderer 我们不但可以渲染单个页面，更可以完成整个单页面应用的渲染。为此可以用下图来说明整个 AppLand 的页面结构。
+我们不但可以使用 Artery + Artery Renderer 渲染单个页面，更可以完成整个单页面应用的渲染。为此可以用下图来说明整个 AppLand 的页面结构。
 
 ![appland-architecture](../assets/appland-architecture.png)
 
@@ -34,14 +34,14 @@ Orchestrator 会 parse artery，直接返回页面列表和布局列表，同时
 
 ### AppLand 路由结构
 
-为了简化开发难度，我们在 Portal 端屏蔽路由的概念，但是如果你是有经验的开发者，并且在 Home 端有需要知道当前路由的需求，可以参考 AppLand 的页面结构图和下面的路由规则说明：
+为了简化开发难度，我们在 Portal 端屏蔽了路由的概念，但是如果你是有经验的开发者，并且在 Home 端有需要知道当前路由的需求，可以参考 AppLand 的页面结构图和下面的路由规则说明：
 
 - AppLand 的所有页面都在 path `/a/<appID>` 下，包括应用的主页
-- 如果一个页面不在某个页面布局（模板）里，那它的访问 path 为 `/a/<appID>/<p-xxx>`
+- 如果一个页面不在某个页面布局（母版）里，那它的访问 path 为 `/a/<appID>/<p-xxx>`
 - 如果一个页面在页面布局内，那它的访问 path 为 `/a/<appID>/<l-xxx>/<p-xxx>`
 - `p-xxx` 表示对应的是`页面`，`p-` 是固定前缀，`xxx` 在实际中是随机生成的字符串
 - `l-xxx` 表示对应的是`布局`，`l-` 是固定前缀，`xxx` 含义同上
 
-在 Artery 和组件内部，可以直接通过 `window.location.pathname` 获取当前浏览器的 path，然后按照上述规则 parse 出自己需要的部分。
+在 Artery 和组件内部，可以直接通过 `window.location.pathname` 获取当前浏览器的 path，然后按照上述规则 parse 出需要的部分。
 
 在 Artery 的 functional property 中，可以通过 `this.history` 获得 [history](https://github.com/remix-run/history/blob/3e9dab413f4eda8d6bce565388c5ddb7aeff9f7e/packages/history/index.ts#L188) 对象，也可以写 `this.history.push('/to/some/path')` 实现页面跳转。
