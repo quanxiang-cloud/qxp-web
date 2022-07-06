@@ -202,8 +202,8 @@ export function updateCurNodeAsLoopContainer(
       rawNode,
       'toProps',
       {
-        args: 'state',
-        body: toPropsBody || 'return state',
+        args: 'item',
+        body: toPropsBody || 'return item',
         type: 'to_props_function_spec',
       },
       artery,
