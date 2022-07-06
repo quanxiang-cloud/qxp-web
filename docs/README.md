@@ -8,6 +8,6 @@
   - [单点登录](development-guide/01-sso-login.md)
   - [基于 Formily 的表单设计器实现原理分析](development-guide/02-design-of-form-engin.md)
   - 页面引擎
-  - 页面编排
+  - [页面编排](development-guide/04-view-orchestration.md)
 - 使用说明
   - [页面引擎](user-guide/01-artery-engine.md)
