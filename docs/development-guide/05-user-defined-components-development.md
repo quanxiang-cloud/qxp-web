@@ -193,16 +193,15 @@ PropsSpec 即组件库的属性描述文件，里面包含了对组件自身以�
 单个组件 `PropsSpec` 由三部分组成:
 
 - `props` 描述组件具体的属性的配置项
-  在 props 中接收一个描述数组`BasePropSpec[]`，每一个描述项针对单独的一个属性。同时用 `type` 描述属性的基本类型，如果在没有传递 `will` 的情况下，会根据 `type` 渲染默认的配置组件
-    - BasePropSpec
+  在 props 中接收一个描述数组 `BasePropSpec[]`，每一个描述项针对单独的一个属性。同时用 `type` 描述属性的基本类型，如果在没有传递 `will` 的情况下，会根据 `type` 渲染默认的配置组件
 
     | name      | required | type                    | description                                                ｜
     |  ----     | ----     | ----                    | ----                                                       |
-    | label     | 是       | string                  | 配置表单中配置此属性的标题                                       | 
+    | label     | 是       | string                  | 配置表单中配置此属性的标题                                       |
     | type      | 是       | string                  | 表示属性的类型，例如 string number boolean 等                   |
-    | name      | 是       | string                  | 此属性在对应组件的 key                                          | 
-    | desc      | 否       | string                  | 此属性的一些额外描述                                            | 
-    | will      | 否       | WillTypes               | 配置表单中渲染的具体配置组件，不传递的话则会根据 type 渲染默认的配置组件 | 
+    | name      | 是       | string                  | 此属性在对应组件的 key                                          |
+    | desc      | 否       | string                  | 此属性的一些额外描述                                            |
+    | will      | 否       | WillTypes               | 配置表单中渲染的具体配置组件，不传递的话则会根据 type 渲染默认的配置组件 |
     | willProps | 否       | Record<string, unknown> | 配置组件的属性，暂不支持函数属性                                  |
 
 - `isContainer` 描述组件是否能够接受 `children`
