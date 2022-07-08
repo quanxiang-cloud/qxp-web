@@ -66,6 +66,7 @@ function Inputs({ value, onChange, values, error }: Props): JSX.Element | null {
   }, [triggerType]);
 
   useUpdateEffect(()=>{
+    console.log(inputVal);
     triggerType === 'send' && onChange(inputVal);
   }, [triggerType, inputVal]);
 
