@@ -55,7 +55,7 @@ function Inputs({ value, onChange, values, error }: Props): JSX.Element | null {
     return item;
   }, [editWay]);
 
-  const inputVal = useMemo(()=>{
+  const inputVal = useMemo(() => {
     return ['header' as const, 'body' as const, 'query' as const].map(getInit);
   }, [getInit]);
 
@@ -65,7 +65,7 @@ function Inputs({ value, onChange, values, error }: Props): JSX.Element | null {
     }
   }, [triggerType]);
 
-  useUpdateEffect(()=>{
+  useUpdateEffect(() => {
     triggerType === 'send' && onChange(inputVal);
   }, [triggerType, inputVal]);
 

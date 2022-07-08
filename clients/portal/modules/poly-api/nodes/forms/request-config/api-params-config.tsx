@@ -1,4 +1,4 @@
-import React, { forwardRef, ForwardedRef, useImperativeHandle, useRef, useEffect } from 'react';
+import React, { forwardRef, ForwardedRef, useImperativeHandle, useRef, useEffect, useMemo } from 'react';
 import { lensPath, set, view, values } from 'ramda';
 import { isArray, first } from 'lodash';
 
@@ -29,6 +29,10 @@ function ApiParamsConfig(
   const currentFormulaEditorRef = useRef<RefProps | null>(null);
   const errorsRef = useRef<Record<string, string>>({});
   const changedRef = useRef<Record<string, boolean>>({});
+  const initValue = useMemo(() => {
+    console.log(url);
+    return { ...value };
+  }, [url]);
 
   useImperativeHandle(ref, () => ({
     getCurrent: () => currentFormulaEditorRef.current,
@@ -63,25 +67,37 @@ function ApiParamsConfig(
     errorsRef.current[path] = `请输入${name}配置`;
   }
 
+  function getDistValue(path: string, value: any, val: any): any {
+    const dataLens = lensPath(`${path}.data`.split('.').map(toNumber));
+    const typeLens = lensPath(`${path}.type`.split('.').map(toNumber));
+    view(dataLens, value);
+    const newInputs = set(dataLens, val, value);
+    const currentType = view(typeLens, newInputs);
+
+    let distValue: any = newInputs;
+    if (val.indexOf('$') !== -1 && currentType !== 'direct_expr') {
+      distValue = set(typeLens, 'direct_expr', distValue);
+    } else if (val.indexOf('$') === -1 && currentType === 'number') {
+      distValue = set(dataLens, toNumber(val), distValue);
+    } else if (val.indexOf('$') === -1 && currentType === 'direct_expr') {
+      const originalType = view(typeLens, initValue);
+      console.log('initType', originalType);
+      distValue = set(typeLens, originalType, distValue);
+      if (originalType === 'number') {
+        distValue = set(dataLens, toNumber(val), distValue);
+      }
+    }
+
+    return distValue;
+  }
+
   function handleFormulaChange(path: string, name: string, required: boolean, oldVal?: string) {
     return (val: string) => {
       if (val === oldVal) {
         return;
       }
       handleSetCurrentFormulaRef(path)();
-      const dataLens = lensPath(`${path}.data`.split('.').map(toNumber));
-      view(dataLens, value);
-      const newInputs = set(dataLens, val, value);
-      const typeLens = lensPath(`${path}.type`.split('.').map(toNumber));
-      const currentType = view(typeLens, newInputs);
-
-      let distValue: any = newInputs;
-      if (val.indexOf('$') !== -1) {
-        distValue = set(typeLens, 'direct_expr', newInputs);
-      } else if (currentType === 'number') {
-        distValue = set(dataLens, toNumber(val), distValue);
-      }
-
+      const distValue = getDistValue(path, value, val);
       onChange(distValue);
       changedRef.current[path] = true;
       if (required) {
