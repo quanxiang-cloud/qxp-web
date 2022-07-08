@@ -73,8 +73,15 @@ function ApiParamsConfig(
       view(dataLens, value);
       const newInputs = set(dataLens, val, value);
       const typeLens = lensPath(`${path}.type`.split('.').map(toNumber));
-      view(typeLens, newInputs);
-      const distValue = set(typeLens, 'direct_expr', newInputs);
+      const currentType = view(typeLens, newInputs);
+
+      let distValue: any = newInputs;
+      if (val.indexOf('$') !== -1) {
+        distValue = set(typeLens, 'direct_expr', newInputs);
+      } else if (currentType === 'number') {
+        distValue = set(dataLens, toNumber(val), distValue);
+      }
+
       onChange(distValue);
       changedRef.current[path] = true;
       if (required) {
