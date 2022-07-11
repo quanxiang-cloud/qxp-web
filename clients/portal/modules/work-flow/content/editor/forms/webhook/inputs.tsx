@@ -27,7 +27,7 @@ interface Props {
 }
 
 function Inputs({ value, onChange, values, error }: Props): JSX.Element | null {
-  const { type: triggerType, url, editWay } = values;
+  const { type: triggerType, url, editWay = 'multiple' } = values;
   const formulaEditorRef = useRef<RefType>();
   const refEditor = useRef<EditorRefType>();
   const [customRules, setCustomRules] = useState<CustomRule[]>();

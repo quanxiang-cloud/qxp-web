@@ -8,7 +8,7 @@ type Props = {
   values: Record<string, any>;
 }
 
-function EditWay({ value, onChange, values: { url, type } }: Props): JSX.Element {
+function EditWay({ value = 'multiple', onChange, values: { url, type } }: Props): JSX.Element {
   if (type === 'request' && !url) {
     return <></>;
   }
