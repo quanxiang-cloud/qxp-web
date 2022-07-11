@@ -14,6 +14,7 @@ type Props = {
   onChange: (value: POLY_API.PolyNodeInput[]) => void;
   customRules: CustomRule[];
   validating?: boolean;
+  initValue?: POLY_API.PolyNodeInput[];
 }
 
 export type RefType = {
@@ -22,7 +23,7 @@ export type RefType = {
 }
 
 function ApiParamsConfig(
-  { value, onChange, customRules, url, validating }: Props,
+  { value, onChange, customRules, url, validating, initValue }: Props,
   ref: ForwardedRef<RefType | undefined>,
 ): JSX.Element {
   const formulaRefs = useRef<Record<string, RefProps>>({});
@@ -63,18 +64,37 @@ function ApiParamsConfig(
     errorsRef.current[path] = `请输入${name}配置`;
   }
 
+  function getDistValue(path: string, value: any, val: any): any {
+    const dataLens = lensPath(`${path}.data`.split('.').map(toNumber));
+    const typeLens = lensPath(`${path}.type`.split('.').map(toNumber));
+    view(dataLens, value);
+    const newInputs = set(dataLens, val, value);
+    const currentType = view(typeLens, newInputs);
+
+    let distValue: any = newInputs;
+    if (val.indexOf('$') !== -1 && currentType !== 'direct_expr') {
+      distValue = set(typeLens, 'direct_expr', distValue);
+    } else if (val.indexOf('$') === -1 && currentType === 'number') {
+      distValue = set(dataLens, toNumber(val), distValue);
+    } else if (val.indexOf('$') === -1 && currentType === 'direct_expr') {
+      const originalType = view(typeLens, initValue);
+      if (!originalType) return distValue;
+      distValue = set(typeLens, originalType, distValue);
+      if (originalType === 'number') {
+        distValue = set(dataLens, toNumber(val), distValue);
+      }
+    }
+
+    return distValue;
+  }
+
   function handleFormulaChange(path: string, name: string, required: boolean, oldVal?: string) {
     return (val: string) => {
       if (val === oldVal) {
         return;
       }
       handleSetCurrentFormulaRef(path)();
-      const dataLens = lensPath(`${path}.data`.split('.').map(toNumber));
-      view(dataLens, value);
-      const newInputs = set(dataLens, val, value);
-      const typeLens = lensPath(`${path}.type`.split('.').map(toNumber));
-      view(typeLens, newInputs);
-      const distValue = set(typeLens, 'direct_expr', newInputs);
+      const distValue = getDistValue(path, value, val);
       onChange(distValue);
       changedRef.current[path] = true;
       if (required) {
