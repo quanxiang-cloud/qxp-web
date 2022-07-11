@@ -33,6 +33,7 @@ function Inputs({ value, onChange, values, error }: Props): JSX.Element | null {
   const [customRules, setCustomRules] = useState<CustomRule[]>();
   const { tableSchema } = useContext(sourceTable);
   const { id: flowId = '' } = useObservable<StoreValue>(store);
+  const initInputsValue = useMemo(() => value, [values.url]);
 
   const getVariables = useCallback(() => {
     return getVariableList(flowId);
@@ -94,12 +95,13 @@ function Inputs({ value, onChange, values, error }: Props): JSX.Element | null {
               ref={formulaEditorRef}
               value={value}
               url={values.url}
+              initValue={initInputsValue}
               customRules={customRules!}
               validating={!isUndefined(error)}
             />
           )}
         </div>)}
-      { triggerType === 'send' && (
+      {triggerType === 'send' && (
         <div className='flex-1 overflow-y-auto'>
           {editWay === 'simple' && (
             <BodyEditor value={JSON.stringify(value, null, 4)} onChange={onChange} ref={refEditor}/>

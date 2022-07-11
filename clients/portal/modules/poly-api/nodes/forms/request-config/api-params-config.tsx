@@ -1,4 +1,4 @@
-import React, { forwardRef, ForwardedRef, useImperativeHandle, useRef, useEffect, useMemo } from 'react';
+import React, { forwardRef, ForwardedRef, useImperativeHandle, useRef, useEffect } from 'react';
 import { lensPath, set, view, values } from 'ramda';
 import { isArray, first } from 'lodash';
 
@@ -14,6 +14,7 @@ type Props = {
   onChange: (value: POLY_API.PolyNodeInput[]) => void;
   customRules: CustomRule[];
   validating?: boolean;
+  initValue?: POLY_API.PolyNodeInput[];
 }
 
 export type RefType = {
@@ -22,17 +23,13 @@ export type RefType = {
 }
 
 function ApiParamsConfig(
-  { value, onChange, customRules, url, validating }: Props,
+  { value, onChange, customRules, url, validating, initValue }: Props,
   ref: ForwardedRef<RefType | undefined>,
 ): JSX.Element {
   const formulaRefs = useRef<Record<string, RefProps>>({});
   const currentFormulaEditorRef = useRef<RefProps | null>(null);
   const errorsRef = useRef<Record<string, string>>({});
   const changedRef = useRef<Record<string, boolean>>({});
-  const initValue = useMemo(() => {
-    console.log(url);
-    return { ...value };
-  }, [url]);
 
   useImperativeHandle(ref, () => ({
     getCurrent: () => currentFormulaEditorRef.current,
@@ -81,7 +78,7 @@ function ApiParamsConfig(
       distValue = set(dataLens, toNumber(val), distValue);
     } else if (val.indexOf('$') === -1 && currentType === 'direct_expr') {
       const originalType = view(typeLens, initValue);
-      console.log('initType', originalType);
+      if (!originalType) return distValue;
       distValue = set(typeLens, originalType, distValue);
       if (originalType === 'number') {
         distValue = set(dataLens, toNumber(val), distValue);
