@@ -62,10 +62,10 @@ function InternalRadio(props: Props, ref?: Ref<HTMLInputElement>): JSX.Element {
         <input
           {...inputProps}
           ref={ref}
+          style={{ zIndex: 1, opacity: 0, position: 'absolute' }}
           checked={checked}
           type="radio"
           id={id}
-          className="hidden"
           disabled={disabled}
           onChange={(e: ChangeEvent<HTMLInputElement>) => {
             const { checked } = e.target;
