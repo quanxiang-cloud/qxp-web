@@ -36,10 +36,11 @@ export default function Card({
 }: Props): JSX.Element {
   const classNames = useCss({
     'border-radius': '12px',
+    'background-color': 'var(--menu-bg-color)',
   });
 
   return (
-    <div style={style} className={cs('bg-white', classNames, className)}>
+    <div style={style} className={cs(classNames, className)}>
       {title && (
         <TextHeader
           title={title}

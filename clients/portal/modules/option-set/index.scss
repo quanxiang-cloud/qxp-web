@@ -143,12 +143,12 @@
 
 .datasetHeader {
   position: relative;
-  background: #F59E0B;
+  background: var(--enfi-600);
   background-position: top right;
   background-size: contain;
   background-repeat: no-repeat;
   background-image: url(/dist/images/datasetHeaderBg.svg);
-  box-shadow: 0px 8px 24px 8px rgba(245, 158, 11, 0.15);
+  box-shadow: 0px 8px 24px 8px rgba(4, 57, 104, 0.15);
 
   &-right {
     width: calc(100% - 49px);

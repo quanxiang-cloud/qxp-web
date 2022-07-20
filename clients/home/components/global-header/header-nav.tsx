@@ -13,7 +13,7 @@ export default function HeaderLeft(): JSX.Element {
       <div className="w-100 group">
         <div className={cs(
           'mr-20 p-6 flex items-center text-blue-300 rounded-8 rounded-tr-2',
-          'group-hover:bg-blue-500 group-hover:text-gray-50',
+          'group-hover:bg-enfi-500 group-hover:text-gray-50',
           { 'text-gray-50': isHome },
         )}>
           <Icon size={20} name='home_qxp' style={{ fill: 'var(--blue-300)' }} />

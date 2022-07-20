@@ -26,7 +26,7 @@ function TabNavs<T extends React.Key>({
 }: Props<T>,
 ref?: React.Ref<HTMLDivElement>): JSX.Element {
   return (
-    <div> {/* This layer of div is used to solve the overflow-x auto */}
+    <div className='z-10'> {/* This layer of div is used to solve the overflow-x auto */}
       <div
         ref={ref}
         className={cs('tab-navs text-12', navsClassName)}>
@@ -43,7 +43,7 @@ ref?: React.Ref<HTMLDivElement>): JSX.Element {
                     disabled: item.disabled,
                     'tab-nav-item-separator': separator,
                     'stretch-navs': stretchNav,
-                    'active text-blue-600': active,
+                    'active text-enfi-600': active,
                     [`tab-nav__${item.state}`]: item.state,
                   },
                   navTitleClassName,

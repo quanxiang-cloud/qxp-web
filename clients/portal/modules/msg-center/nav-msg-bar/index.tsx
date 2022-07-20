@@ -96,7 +96,7 @@ const NavMsgBar = ({ type, className }: Props): JSX.Element => {
             'relative cursor-pointer text-blue-100',
             styles.navItem,
             {
-              'text-gray-50 group-hover:bg-blue-500': type !== 'portal',
+              'text-gray-50 group-hover:bg-enfi-500': type !== 'portal',
               'text-gray-400 group-hover:bg-gray-100 hover:text-gray-600': type === 'portal',
             },
           )}

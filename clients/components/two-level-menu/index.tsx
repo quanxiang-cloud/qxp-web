@@ -54,7 +54,7 @@ function NavItem<T>({
   groupBanSelect,
 }: NavItemProps<T>): JSX.Element {
   const [expand, setExpand] = useState(!!node.root);
-  const iconName = useMemo(()=> {
+  const iconName = useMemo(() => {
     const hasChild = !!(node.children && node.children.length) || !!node.hasChild;
     if (node.type === 'group') {
       if (hasChild) {
@@ -70,8 +70,8 @@ function NavItem<T>({
       <div
         style={{ paddingLeft: (16 * (level + 1)) + 'px' }}
         key={node.id}
-        className={cs('two-level-menu-node px-16  hover:bg-white flex items-center h-36', {
-          'two-level-menu-node-active bg-white': (!groupBanSelect || node.type !== 'group') && activeNode?.id === node.id,
+        className={cs('two-level-menu-node px-16 hover:bg-enfi-600 flex items-center h-36', {
+          'two-level-menu-node-active bg-enfi-600': (!groupBanSelect || node.type !== 'group') && activeNode?.id === node.id,
         })}
         onClick={() => {
           setExpand(!expand);
@@ -91,7 +91,7 @@ function NavItem<T>({
             'two-level-menu-sub-nodes flex flex-col overflow-hidden',
             `two-level-menu-child-box-${expand ? 'open' : 'close'}`)}
         >
-          {node.children.map((c)=> (
+          {node.children.map((c) => (
             <NavItem
               key={c.id}
               node={c}
@@ -139,10 +139,10 @@ function TwoLevelMenu<T>({
 
   return (
     <div
-      style={style}
-      className={cs('text-12', 'overflow-auto', 'beauty-scroll', 'bg-gray-50', className)}
+      style={{ ...style, backgroundColor: 'var(--menu-bg-color)' }}
+      className={cs('text-12', 'overflow-auto', 'beauty-scroll', className)}
     >
-      {menus.map((menu)=> (
+      {menus.map((menu) => (
         <NavItem
           key={menu.id}
           node={menu}

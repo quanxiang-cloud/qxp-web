@@ -1,6 +1,6 @@
 @mixin active {
   color: var(--gray-50);
-  background: linear-gradient(90deg, #638AFF 0%, #375FF3 100%);
+  background: linear-gradient(90deg, var(--enfi-500) 0%, var(--enfi-600) 100%);
   box-shadow: 0px 8px 24px 4px rgba(55, 95, 243, 0.25);
   
   .menu-icon svg {
@@ -10,6 +10,7 @@
 
 .app-menu-tree {
   box-shadow: 8px 0px 24px 4px rgba(148, 163, 184, 0.25);
+  background-color: var(--menu-bg-color);
 }
 
 .app-menu-tree:hover {
@@ -28,11 +29,11 @@
   }
 
   .tree-node-title:hover:not(.active, .collapse) {
-    background: var(--blue-100);
-    color: var(--blue-600);
+    background: var(--enfi-100);
+    color: var(--enfi-600);
     
     .menu-icon svg {
-      fill: var(--blue-400);
+      fill: var(--enfi-400);
     }
   }
 

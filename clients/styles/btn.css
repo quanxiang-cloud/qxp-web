@@ -8,29 +8,28 @@
   line-height: 30px;
   font-weight: 400;
   font-size: 12px;
-  border-radius: 4px;
-  border: 1px solid var(--gray-700);
+  border-radius: 2px !important;
+  border: 1px solid #909090 !important;
   background-color: white;
   cursor: pointer;
   user-select: none;
   font-weight: 500;
-  color: var(--gray-600);
+  color: #909090 !important;
   transition: all 0.3s linear;
 }
 
 .btn--disabled {
   cursor: not-allowed;
-  pointer-events: none;
 }
 
 .btn:hover:not(.btn--forbidden) {
-  color: var(--gray-900);
-  border-color: var(--gray-800);
+  color: #026ecc !important;
+  border-color: #026ecc !important;
 }
 
 .btn:hover:active {
-  color: white;
-  background-color: var(--gray-900);
+  color: white !important;
+  background-color: #026ecc !important;
 }
 
 .btn:not(.icon-btn) .icon {
@@ -38,8 +37,9 @@
 }
 
 .btn--primary {
-  color: white;
-  background-color: var(--gray-700);
+  color: white !important;
+  border-color: var(--enfi-600) !important;
+  background-color: var(--enfi-600) !important;
 }
 
 .btn--loading {
@@ -47,12 +47,12 @@
 }
 
 .btn--primary:hover:not(.btn--forbidden) {
-  color: white;
-  background-color: var(--gray-600);
+  color: white !important;
+  background-color: #026ecc !important;
 }
 
 .btn--primary:hover:active {
-  background-color: var(--gray-800);
+  background-color: var(--enfi-800)!important;
 }
 
 .btn--forbidden {
@@ -120,13 +120,18 @@
 }
 
 .btn--danger {
-  color: #ddd;
+  color: #fff!important;
   background-color: var(--red-500);
-  border-color: transparent;
+  border-color: transparent !important;
 }
 .btn--danger:not(.btn--forbidden):is(:hover, :focus) {
-  color: #fff;
-  border-color: transparent;
+  color: #fff !important;;
+  border-color: transparent !important;
+}
+
+.btn--danger:hover:active {
+  color: #fff!important;
+  background-color: var(--red-800)!important;
 }
 
 .btn-badge {

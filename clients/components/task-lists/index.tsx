@@ -56,7 +56,7 @@ const NavTaskBar = ({ type, className, ...rest }: Props, ref?: ForwardedRef<HTML
           className={cs(
             'relative cursor-pointer text-blue-100 nav-item',
             {
-              'text-gray-50 group-hover:bg-blue-500': type === 'home',
+              'text-gray-50 group-hover:bg-enfi-500': type === 'home',
               'text-gray-400 group-hover:bg-gray-100 hover:text-gray-600': type !== 'home',
             },
           )}

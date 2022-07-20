@@ -2,6 +2,7 @@
 
 @import "./variables/colors.css";
 @import "./variables/global.css";
+@import "./enfi.css";
 
 @import './components/dropdown.css';
 
@@ -22,7 +23,7 @@
 }
 
 html {
-  background-color: #e6ecf9;
+  background-color: var(--body-bg-color);
 }
 
 .beauty-scroll::-webkit-scrollbar {

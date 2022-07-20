@@ -3,7 +3,7 @@
     user-select: none;
     cursor: pointer;
     &:hover {
-      color: var(--gray-900);
+      color: #fff;
       &-actions {
         display: block;
       }
@@ -11,7 +11,7 @@
 
     &-active {
       position: relative;
-      color: var(--gray-900);
+      color: #fff;
       &::after {
         content: "";
         width: 4px;
@@ -20,7 +20,7 @@
         top: 0;
         right: 0;
         border-radius: 4px 0 0 4px;
-        background-color: var(--blue-600);
+        background-color: var(--enfi-600);
       }
 
       .two-level-menu-actions {

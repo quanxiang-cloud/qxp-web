@@ -58,14 +58,14 @@ class Toast {
 
       .toast.error {
         background: #FEF2F2;
-        border: 1px solid #DC2626;
-        color: #DC2626;
+        border: 1px solid #cc0202;
+        color: #cc0202;
       }
 
       .toast.info {
         background: #F0FDF4;;
-        border: 1px solid #16A34A;
-        color: #16A34A;
+        border: 1px solid #17b813;
+        color: #17b813;
       }
     `;
     document.head.appendChild(style);

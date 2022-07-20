@@ -19,7 +19,8 @@
 }
 
 .app-global-header {
- @apply flex justify-between px-16 bg-white items-center;
+ @apply flex justify-between px-16 items-center;
+ background-color: var(--menu-bg-color);
  height: 52px;
 }
 
