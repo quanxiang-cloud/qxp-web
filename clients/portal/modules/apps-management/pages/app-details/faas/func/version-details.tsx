@@ -134,7 +134,7 @@ function VersionDetails(): JSX.Element {
         </div>
         <a
           className="app-header-icon corner-4-0-4-4 text-white"
-          onClick={() => InsideDocsPortal.show({ targetUrl: 'https://docs.clouden.io/' })}
+          onClick={() => InsideDocsPortal.show({ targetUrl: `https://${window.CONFIG.docs_hostname}` })}
         >
           <Icon name="help_doc" size={21} style={{ fill: 'var(--gray-400)' }} className='m-6' />
         </a>
