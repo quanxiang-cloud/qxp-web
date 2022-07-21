@@ -32,6 +32,7 @@ type VersionField = {
   status: number;
   version: string;
   createdAt: number;
+  project: string;
   updatedAt: number;
   message: string,
   creator: string,
