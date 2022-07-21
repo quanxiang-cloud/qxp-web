@@ -302,10 +302,7 @@ class FaasStore {
   getApiPath = (): void => {
     this.isAPILoading = true;
     getDirectoryPath(this.appID, 'faas').then((apiPath) => {
-      this.apiPath = `
-      ${apiPath}/${this.currentBuild?.groupName}/
-      ${this.currentBuild?.project}/
-      ${this.currentBuild?.version}.r`;
+      this.apiPath = `${apiPath}/${this.currentBuild?.groupName}/${this.currentBuild?.project}/${this.currentBuild?.version}.r`;
     }).catch((err) => {
       toast.error(err);
     }).finally(() => this.isAPILoading = false);
