@@ -34,7 +34,7 @@
 
 在全局功能区中的**数据源**板块可以定义共享状态和 API 状态，然后点击下图中的 icon 可以打开数据绑定对话框。
 
-![bind data source](./assets/../../assets/bind-data-source-icon.png|300)
+![bind data source](./assets/../../assets/bind-data-source-icon.png)
 
 ![bind data source modal](./assets/../../assets/bind-data-source-modal.png)
 
