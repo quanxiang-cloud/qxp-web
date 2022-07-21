@@ -26,7 +26,7 @@ export function Develop({
         {isDevelop ? '当前账号已绑定 Git 仓库账号' : '当前未绑定 Git 仓库账号'}
       </div>
       <div className='ini-action'>
-        <div className='text-btn' onClick={onClick}>{isDevelop ? '重新绑定' : '绑定'}</div>
+        {<div className='text-btn' onClick={onClick}>{isDevelop ? '' : '绑定'}</div>}
         {userAccount && (
           <div className='ml-8 text-blue-600'>{`${userAccount} >`} </div>
         )}
