@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { registerValidationFormats, setValidationLocale } from '@formily/antd';
 
 import App from './application';
 
 import '../portal/scss/index.scss';
 import '../styles/index.css';
 import './index.scss';
-import { registerValidationFormats, setValidationLocale } from '@formily/antd';
 
 registerValidationFormats({
   post_code: /^[1-9]\d{5}$/g,

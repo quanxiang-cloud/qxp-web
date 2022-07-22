@@ -57,7 +57,6 @@ function PageDataTable(): JSX.Element {
                     <Button
                       forbidden={isBatch && selected.length === 0 ? true : false}
                       iconName={iconName}
-                      modifier='primary'
                     >
                       {text}
                     </Button>
@@ -69,7 +68,7 @@ function PageDataTable(): JSX.Element {
                 <Button
                   iconName={iconName}
                   forbidden={isBatch && selected.length === 0 ? true : false}
-                  modifier='primary'
+                  modifier={key === 'create' ? 'primary' : undefined}
                   key={key}
                   onClick={() => {
                     if (key === 'import') {
