@@ -10,6 +10,10 @@ function AppDetails(): JSX.Element {
 
   useEffect(() => {
     appDetailsStore.fetchAppDetails(appID);
+
+    return () => {
+      appDetailsStore.clearViewStore();
+    };
   }, [appID]);
 
   return (

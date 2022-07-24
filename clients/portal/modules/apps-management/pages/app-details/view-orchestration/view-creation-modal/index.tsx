@@ -7,6 +7,7 @@ import { Icon, Modal, Select } from '@one-for-all/ui';
 import ViewTypeSelector from './view-type-selector';
 import StaticViewUpload from '../static-view-upload';
 import { URL_PARAM_LIST } from '../constants';
+import appStore from '../../store';
 
 import { BaseView, CreateViewParams, ExternalView, Layout, View, ViewGroup, ViewType } from '../types.d';
 import toast from '@lib/toast';
@@ -181,6 +182,7 @@ function CreateViewModal({
                   (<span
                     className="inline-flex items-center text-blue-600 pt-4 cursor-pointer text-12"
                     onClick={() => {
+                      appStore.viewStore?.setModalType('');
                       history.push({
                         pathname: `/apps/details/${appID}/view_layout`,
                         state: { openCreateModal: true },
@@ -194,18 +196,6 @@ function CreateViewModal({
               >
                 <Select placeholder="无布局（默认）" options={layoutOptions} defaultValue={''} />
               </Item>
-              {/* <Item
-              name="description"
-              label="描述"
-              rules={[
-                {
-                  type: 'string',
-                  message: '备注超过 100 字符!',
-                },
-              ]}
-            >
-              <TextArea placeholder='选填（不超过 100 字符）' />
-            </Item> */}
             </>
           )}
           {viewType === ViewType.StaticView && isCreateView && (

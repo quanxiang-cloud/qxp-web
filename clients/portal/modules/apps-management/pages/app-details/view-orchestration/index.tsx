@@ -16,8 +16,6 @@ import EditStaticViewModal from './view-details/edit-static-view-modal';
 import pageTemplatesStore from '@portal/modules/apps-management/page-templates/store';
 import CreateFromTemplate from './create-from-template';
 
-import useAppStore from './hooks';
-
 import appStore from '../store';
 
 import { CreateViewParams, StaticView, TableSchemaView, View, ViewType } from '../view-orchestration/types.d';
@@ -25,16 +23,15 @@ import { CreateViewParams, StaticView, TableSchemaView, View, ViewType } from '.
 import './index.scss';
 
 function AppViews(): JSX.Element {
-  const { isLoading, store } = useAppStore();
+  const { viewStore } = appStore;
   const [btnLoading, setBtnLoading] = useState<boolean>(false);
-
   const handleModalSubmit = useCallback(
     (viewInfo: CreateViewParams<View>): void => {
       setBtnLoading(true);
-      store
+      viewStore
         ?.handleViewInfoSubmit(viewInfo)
         .then(() => {
-          toast.success((store.modalType === 'createView' ? '添加' : '修改') + '成功');
+          toast.success((viewStore.modalType === 'createView' ? '添加' : '修改') + '成功');
           closeModal();
         })
         .catch(() => {
@@ -44,29 +41,29 @@ function AppViews(): JSX.Element {
           setBtnLoading(false);
         });
     },
-    [store?.modalType],
+    [viewStore?.modalType],
   );
 
   function closeModal(): void {
-    store?.setModalType('');
+    viewStore?.setModalType('');
   }
 
   function onViewOptionClick(key: string, view: View): void {
-    store?.setCurrentView(view);
-    store?.setModalType(key);
+    viewStore?.setCurrentView(view);
+    viewStore?.setModalType(key);
     if (key === 'delView') {
       const delViewModal = Modal.open({
         title: '删除页面',
         content: `确定要删除页面 ${view.name} 吗?`,
         confirmText: '确认删除',
         onConfirm: () => {
-          store
+          viewStore
             ?.deleteViewOrLayout(view.id)
             .then(() => {
               delViewModal.close();
               toast.success(`已删除页面 ${view.name} `);
               if ((view as TableSchemaView).tableID) {
-                deleteSchema(store.appID, (view as TableSchemaView).tableID);
+                deleteSchema(viewStore.appID, (view as TableSchemaView).tableID);
               }
             })
             .catch((err) => {
@@ -76,7 +73,7 @@ function AppViews(): JSX.Element {
       });
     }
     if (key === 'setHomeView') {
-      store?.setHomeView(view.name).then(() => {
+      viewStore?.setHomeView(view.id).then(() => {
         toast.success(`已将 ${view.name} 设置为应用主页`);
       });
     }
@@ -103,13 +100,15 @@ function AppViews(): JSX.Element {
   }
 
   useEffect(() => {
-    if (appStore.lastFocusViewID && store) {
-      const view = store.views.find((view) => (view as View).id === appStore.lastFocusViewID );
-      store.setCurrentView(view as View);
+    if (appStore.lastFocusViewID && viewStore) {
+      const view = viewStore.views.find((view) => (view as View).id === appStore.lastFocusViewID );
+      viewStore.setCurrentView(view as View);
     }
-  }, [store]);
+  }, [viewStore?.views]);
 
-  if (isLoading || !store) {
+  window.store = viewStore;
+
+  if (appStore.loading || !viewStore) {
     return (
       <div className="flex h-full">
         <div className="app-details-nav">
@@ -125,7 +124,7 @@ function AppViews(): JSX.Element {
         <div className="h-44 flex flex-end items-center px-16 py-20 justify-center">
           <span className="font-semibold text-gray-400 mr-auto text-12">页面</span>
           <div className="flex items-center">
-            <div onClick={() => store.setModalType('createView')}>
+            <div onClick={() => viewStore.setModalType('createView')}>
               <Tooltip label="新建页面" position="top" theme="dark">
                 <Icon className="cursor-pointer mr-8 hover:text-blue-600" size={16} name="post_add" />
               </Tooltip>
@@ -135,32 +134,32 @@ function AppViews(): JSX.Element {
         </div>
         <div style={{ height: 'calc(100% - 44px)' }} className="app-view-list-wrapper h-full">
           <ViewList
-            currentView={store.currentView as View}
-            homeView={store.homeView}
-            views={store.views as View[]}
+            currentView={viewStore.currentView as View}
+            homeView={viewStore.homeView}
+            views={viewStore.views as View[]}
             onViewClick={(view) => {
-              store.setCurrentView(view);
+              viewStore.setCurrentView(view);
               appStore.setLastFocusViewID(view.id);
             }}
             onOptionClick={onViewOptionClick}
           />
         </div>
       </div>
-      <ViewDetails openModal={(type) => store.setModalType(type)} viewInfo={store.currentView as View} />
-      {['editView', 'createView'].includes(store.modalType) && (
+      <ViewDetails openModal={(type) => viewStore.setModalType(type)} viewInfo={viewStore.currentView as View} />
+      {['editView', 'createView'].includes(viewStore.modalType) && (
         <EditViewModal
-          modalType={store.modalType}
-          layouts={store.layouts || []}
-          views={store.views || []}
+          modalType={viewStore.modalType}
+          layouts={viewStore.layouts || []}
+          views={viewStore.views || []}
           onCancel={closeModal}
-          viewParams={store.modalType === 'editView' ? (store.currentView as View) : undefined}
+          viewParams={viewStore.modalType === 'editView' ? (viewStore.currentView as View) : undefined}
           onSubmit={handleModalSubmit}
           isPending={btnLoading}
         />
       )}
-      {store.modalType === 'editStaticView' && (
+      {viewStore.modalType === 'editStaticView' && (
         <EditStaticViewModal
-          view={store.currentView as StaticView}
+          view={viewStore.currentView as StaticView}
           onClose={closeModal}
           onSubmit={handleModalSubmit}
         />
