@@ -5,8 +5,8 @@ import { Form, Input, Select } from 'antd';
 
 import Modal from '@c/modal';
 import pageTemplatesStore from '@portal/modules/apps-management/page-templates/store';
+import appStore from '../store';
 
-import useAppStore from './hooks';
 import toast from '@lib/toast';
 
 const { Item } = Form;
@@ -22,14 +22,14 @@ interface FormValue {
 function CreateFromTemplate(): JSX.Element {
   const [isShowModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { store: viewOrchestratorStore } = useAppStore();
+  const { viewStore } = appStore;
   const [form] = Form.useForm();
   const templateOptions = pageTemplatesStore.pageTemplates.map(({ key, name }) => ({
     label: name,
     value: key,
   }));
 
-  const layouts = viewOrchestratorStore?.layouts || [];
+  const layouts = viewStore?.layouts || [];
 
   const layoutOptions = useMemo(
     () =>
@@ -49,13 +49,13 @@ function CreateFromTemplate(): JSX.Element {
   }
 
   function handleFinish(value: FormValue): void {
-    if (!viewOrchestratorStore) {
+    if (!viewStore) {
       return;
     }
 
     setLoading(true);
 
-    viewOrchestratorStore
+    viewStore
       .addPageFromTemplate(value.templateKey, value.name, value.layoutID)
       .then((errorMessage) => {
         setLoading(false);

@@ -38,7 +38,7 @@ import {
   ViewType,
 } from './types.d';
 import { ROOT_NODE_ID } from './constants';
-import { createBlank, fetchAppDetails, updateApp } from '../api';
+import { createBlank } from '../api';
 import pageTemplatesStore from '@portal/modules/apps-management/page-templates/store';
 import appStore from '../store';
 
@@ -66,11 +66,18 @@ class Orchestrator {
     const _rootNOde = findNodeByID(node, ROOT_NODE_ID);
     this.appLayout = get(_rootNOde, 'props.data-layout-type.value', undefined);
 
-    this.fetchAppHomeView(appID).then(() => {
-      if (this.homeView && !appStore.lastFocusViewID ) {
-        this.currentView = this.homeView;
-      }
-    });
+    if (!appStore.appDetails.accessURL && this.views.length === 1) {
+      this.currentView = this.views[0];
+      this.setHomeView((this.views[0] as View).id);
+      return;
+    }
+
+    const view = this.views.find((view) => (view as View).url === appStore.appDetails.accessURL);
+    this.homeView = view as View;
+
+    if (this.homeView && !appStore.lastFocusViewID) {
+      this.currentView = this.homeView;
+    }
   }
 
   @computed get layouts(): Array<Layout> {
@@ -193,6 +200,7 @@ class Orchestrator {
         },
       },
     };
+    appStore.setLastFocusViewID(renderTableSchemaViewNode.id);
 
     if (!layoutID) {
       return this.saveSchema(addViewToRoot(this.rootNode, renderTableSchemaViewNode));
@@ -227,6 +235,8 @@ class Orchestrator {
       label: pageName,
     };
 
+    appStore.setLastFocusViewID(renderSchemaView.id);
+
     if (!layoutID) {
       return this.saveSchema(addViewToRoot(this.rootNode, renderSchemaView));
     }
@@ -258,6 +268,8 @@ class Orchestrator {
         },
       },
     };
+
+    appStore.setLastFocusViewID(staticViewNode.id);
 
     return Promise.resolve().then(() => {
       if (!params.layoutID) {
@@ -296,6 +308,8 @@ class Orchestrator {
         },
       },
     };
+
+    appStore.setLastFocusViewID(externalViewNode.id);
 
     if (!params.layoutID) {
       return this.saveSchema(addViewToRoot(this.rootNode, externalViewNode));
@@ -477,35 +491,15 @@ class Orchestrator {
   }
 
   @action
-  saveAppHomeViewUrl(url: string): Promise<unknown> {
-    return updateApp({
-      id: this.appID,
-      accessURL: url,
-    });
-  }
-
-  @action
-  setHomeView(viewName?: string): Promise<unknown> {
-    const view = this.views.find((view) => view.name === viewName) as View;
+  setHomeView(id?: string): Promise<void> {
+    const view = this.views.find((view) => (view as View).id === id) as View;
 
     if (!view) {
       throw new Error('view is not found');
     }
 
     this.homeView = view;
-    return this.saveAppHomeViewUrl(view.url);
-  }
-
-  @action
-  fetchAppHomeView(id: string): Promise<void> {
-    return fetchAppDetails(id).then(({ accessURL }) => {
-      if (!accessURL && this.views.length === 1) {
-        this.setHomeView(this.views[0].name);
-        return;
-      }
-      const view = this.views.find((view) => (view as View).url === accessURL);
-      this.homeView = view as View;
-    });
+    return appStore.setAccessURL(view.url);
   }
 
   async addPageFromTemplate(templateKey: string, name: string, layoutID?: string): FutureErrorMessage {

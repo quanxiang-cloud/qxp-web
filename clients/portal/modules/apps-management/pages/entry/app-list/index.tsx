@@ -11,6 +11,7 @@ import Header from './header';
 import AppList from './app-list';
 import CreatedAppModal from './app-edit/created-app-modal';
 import templateStore from '../app-templates/store';
+import appStore from '../../app-details/store';
 
 import './index.scss';
 
@@ -31,6 +32,7 @@ function MyApp(): JSX.Element {
     templateStore.fetchList().catch(() => {
       toast.error('获取模版列表失败');
     });
+    appStore.setLastFocusViewID('');
     return () => {
       store.isListLoading = true;
     };
