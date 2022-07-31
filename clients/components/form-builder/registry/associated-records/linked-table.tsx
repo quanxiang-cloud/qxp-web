@@ -4,8 +4,8 @@ import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { StoreContext } from '@c/form-builder/context';
 
 import Select from '@c/select';
-import { getLinkageTables } from '@c/form-builder/utils/api';
-import { getTableSchema } from '@lib/http-client';
+import { getFormDataMenuList } from '@c/form-table-selector/api';
+import { getTableSchema } from '@lib/http-client-form';
 
 type Option = {
   label: string;
@@ -18,7 +18,7 @@ function LinkedTable({ mutators, value }: ISchemaFieldComponentProps): JSX.Eleme
   const [tableID, setTableID] = useState<string>(value?.tableID);
 
   useEffect(() => {
-    getLinkageTables(store.appID).then((options) => {
+    getFormDataMenuList(store.appID).then((options) => {
       const filteredOptions = options.filter(({ value }) => value !== store.pageID);
       setLinkageTables(filteredOptions);
     });

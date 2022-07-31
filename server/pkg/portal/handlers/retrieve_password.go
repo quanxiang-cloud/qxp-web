@@ -35,7 +35,7 @@ func HandleRetrievePasswordSubmit(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	respBody, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/nurturing/userForgetResetPWD", resetPasswordParams, map[string]string{
+	respBody, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/warden/org/h/account/forget/reset", resetPasswordParams, map[string]string{
 		"Content-Type": "application/json",
 	})
 	if errMsg != "" {

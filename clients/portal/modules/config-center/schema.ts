@@ -1,6 +1,6 @@
-import { Schema } from '@one-for-all/schema-spec';
+import { Artery } from '@one-for-all/artery';
 
-const schema: Schema = {
+const schema: Artery = {
   apiStateSpec: {
     querySchema: {
       apiID: 'post:/batchGetValue',
@@ -179,7 +179,7 @@ const schema: Schema = {
                       };
                       this.apiStates.querySchema.fetch({ body }, () => {
                         try {
-                          const value = this.apiStates.querySchema.result.result[this.states.key];
+                          const value = this.apiStates.querySchema.result.data.result[this.states.key];
                           this.states.schema = JSON.stringify(JSON.parse(value), null, 2);
                         } catch (err) {
                           console.log(err)
@@ -252,7 +252,7 @@ const schema: Schema = {
                     const version = this.states.version;
 
                     const body = {
-                      params: [{ key, version, value: schema }]
+                      keys: [{ key, version, value: schema }]
                     };
 
                     this.apiStates.setSchema.fetch({ body }, ({ error }) => {

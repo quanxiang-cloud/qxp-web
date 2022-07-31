@@ -1,26 +1,35 @@
-import React, { useRef, useState } from 'react';
+import React, { ForwardedRef, useState } from 'react';
 import cs from 'classnames';
+import { observer } from 'mobx-react';
 
-import ResetPasswordModal from '@portal/global-header/reset-password-modal';
 import Avatar from '@c/avatar';
 import Icon from '@c/icon';
-import Popper from '@c/popper';
+import usePopper from '@c/popper2';
+import ResetPasswordModal from '@portal/global-header/reset-password-modal';
+import store from '@home/pages/app-details/store';
+
+import RoleList from './role-list';
 
 import './index.scss';
 
-interface Props {
+interface Props extends React.HTMLProps<HTMLDivElement> {
+  'data-in-canvas'?: boolean;
   className?: string;
 }
 
-export default function UserAvatarMenu({ className }: Props): JSX.Element {
+function UserAvatarMenu(
+  { className, ...rest }: Props,
+  ref?: ForwardedRef<HTMLDivElement>,
+): JSX.Element {
+  const [expand, setExpand] = useState<boolean>(false);
   const [openResetPasswordModal, setOpenResetPasswordModal] = useState<boolean>(false);
-  const reference = useRef<HTMLDivElement>(null);
-  const popperRef = useRef<Popper>(null);
-  const [show, setShow] = useState(popperRef.current?.state.popVisible);
+  const { close, handleClick, referenceRef, Popper } = usePopper<HTMLDivElement>();
+  const [popperShow, setPopperShow] = useState(false);
+  const dataInCanvas = !!rest['data-in-canvas'];
 
   function handleEditPasswordClick(): void {
     setOpenResetPasswordModal(true);
-    popperRef.current?.close();
+    close();
   }
 
   function handleLogOutClick(): void {
@@ -29,62 +38,76 @@ export default function UserAvatarMenu({ className }: Props): JSX.Element {
   }
 
   return (
-    <div>
+    <div ref={ref} {...rest}>
+      <div
+        ref={referenceRef}
+        onClick={handleClick()}
+        className={cs('cursor-pointer flex items-center h-36 transition pl-6', className)}
+      >
+        <Avatar username={window.USER?.name || ''} />
+        <Icon name={popperShow ? 'arrow_drop_up' : 'arrow_drop_down'} className='text-current' size={20} />
+      </div>
+      {!dataInCanvas && (
+        <Popper
+          className='corner-12-2-12-12'
+          placement='bottom-start'
+          onVisibleChange={(visible) => setPopperShow(visible)}
+        >
+          <div className='user-avatar-menu corner-12-2-12-12'>
+            <div className='user-avatar-menu-bg flex py-20'>
+              <div className='pl-20'>
+                <Avatar
+                  username={window.USER?.name || ''}
+                  size={48}
+                />
+              </div>
+              <div className='flex flex-col ml-8'>
+                <span className='text-20 font-medium text-gray-900'>
+                  {window.USER.name}
+                </span>
+                <span className='pr-20 text-12 text-gray-600'>
+                  {window.SIDE === 'portal' ? `角色: ${window.USER_ADMIN_ROLES[0]?.name || '-'}` : (
+                    window.USER.email || window.USER.phone
+                  )}
+                </span>
+              </div>
+            </div>
+            <div className='text-gray-600 flex flex-col mx-16 cursor-pointer'>
+              <div
+                className='user-avatar-menu-password'
+                onClick={handleEditPasswordClick}
+              >
+                <Icon name='password' />
+                <span className='ml-4'>修改密码</span>
+              </div>
+              { !store.perPoly && !!window.APP_ID && (
+                <div className='border-b-1 py-10'>
+                  <div
+                    className="flex justify-between items-center"
+                    onClick={() => setExpand(!expand)}
+                  >
+                    <span><Icon className='mr-4' name='group' />切换角色</span>
+                    <Icon className="expand" name={`expand_${expand ? 'more' : 'less'}`} />
+                  </div>
+                  <RoleList visible={expand} />
+                </div>
+              )}
+              <div className='user-avatar-menu-logout' onClick={handleLogOutClick}>
+                <Icon name='logout' />
+                <span className='ml-4'>退出登录</span>
+              </div>
+            </div>
+          </div>
+        </Popper>
+      )}
       {openResetPasswordModal && (
         <ResetPasswordModal
           visible={openResetPasswordModal}
           onCancel={() => setOpenResetPasswordModal(false)}
-        />)}
-      <div
-        className={cs('cursor-pointer flex items-center h-36 transition pl-6', className)}
-        ref={reference}
-      >
-        <Avatar
-          username={window.USER?.userName || ''}
         />
-        <Icon name={show ? 'arrow_drop_up' : 'arrow_drop_down'} className='text-current' size={20} />
-      </div>
-      <Popper
-        reference={reference}
-        ref={popperRef}
-        className='corner-12-2-12-12'
-        onVisibilityChange={(visible)=> setShow(visible)}
-        placement='bottom-start'
-        trigger='hover'
-      >
-        <div className='user-avatar-menu corner-12-2-12-12'>
-          <div className='user-avatar-menu-bg flex py-20'>
-            <div className='pl-20'>
-              <Avatar
-                username={window.USER?.userName || ''}
-                size={48}
-              />
-            </div>
-            <div className='flex flex-col ml-8'>
-              <span className='text-20 font-medium text-gray-900'>
-                {window.USER.userName}
-              </span>
-              <span className='pr-20 text-12 text-gray-600'>
-                {window.SIDE === 'portal' ?
-                  `角色: ${window.USER_ADMIN_ROLES[0]?.name || '-'}` : (window.USER.email || window.USER.phone)}
-              </span>
-            </div>
-          </div>
-          <div className='text-gray-600 flex flex-col mx-16 cursor-pointer'>
-            <div
-              className='user-avatar-menu-password'
-              onClick={handleEditPasswordClick}
-            >
-              <Icon name='password' />
-              <span className='ml-4'>修改密码</span>
-            </div>
-            <div className='user-avatar-menu-logout' onClick={handleLogOutClick}>
-              <Icon name='logout' />
-              <span className='ml-4'>退出登录</span>
-            </div>
-          </div>
-        </div>
-      </Popper>
+      )}
     </div>
   );
 }
+
+export default observer(React.forwardRef<HTMLDivElement, Props>(UserAvatarMenu));

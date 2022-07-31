@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { toJS } from 'mobx';
-import { filter } from 'rxjs/operators';
+import { filter } from 'rxjs6/operators';
 import { Input, Switch, Select, Radio } from '@formily/antd-components';
 import {
   useForm,
@@ -14,8 +14,9 @@ import { FormInstance } from 'antd';
 import { schemaToMap } from '@lib/schema-convert';
 import FilterConfig from '@c/form-builder/registry/associated-data/filter-config';
 import { StoreContext } from '@c/form-builder/context';
-import { getLinkageTables, getTableSchema } from '@c/form-builder/utils/api';
+import { getTableSchema } from '@lib/http-client-form';
 import schemaToFields from '@lib/schema-convert';
+import { getFormDataMenuList } from '@c/form-table-selector/api';
 
 import configSchema from './config-schema';
 import { AssociatedDataConfig } from './convertor';
@@ -143,7 +144,7 @@ function AssociatedDataConfig({ initialValue, onChange, subTableSchema }: Props)
 
   useEffect(() => {
     onChange({ ...initialValue, appID });
-    getLinkageTables(appID).then((pages) => {
+    getFormDataMenuList(appID).then((pages) => {
       setFieldState('associationTableID', (state) => {
         state.props.enum = pages.filter(({ value }) => value !== pageID);
       });

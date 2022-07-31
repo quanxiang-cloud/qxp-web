@@ -2,53 +2,61 @@ import React, { useState } from 'react';
 import cs from 'classnames';
 import { clone } from 'ramda';
 import { Cascader } from 'antd';
-import { useParams } from 'react-router-dom';
 import { SingleValueType, DefaultOptionType } from 'rc-cascader/lib/Cascader';
 
 import { RawApiDocDetail } from '@polyApi/effects/api/raw';
 import ApiDocDetail from '@polyApi/components/api-doc-detail';
-import { getChildrenOfCurrentSelectOption } from '@polyApi/utils/request-node';
+import { PathType } from '@lib/api-collection';
 
-import { useGetOptions } from './hooks/api-selector-hooks';
+import { useGetOptionFromCollection } from './hooks/api-selector-hooks';
 
 type Props = {
   initRawApiPath: string;
-  setApiPath: (apiPath: string) => void;
+  setApiPath: (apiPath: string, method?: string) => void;
+  appID: string,
   label?: string;
   error?: string;
   className?: string;
   usePolyApiOption?: boolean;
   simpleMode?: boolean;
   apiDocDetail?: RawApiDocDetail;
-}
+  onClear?: () => void;
+};
 
 function ApiSelector({
   error,
   className,
   simpleMode,
   setApiPath,
+  appID,
   apiDocDetail,
   initRawApiPath,
   label = '全部API:',
   usePolyApiOption = false,
+  onClear,
 }: Props): JSX.Element {
-  const { appID } = useParams<{ appID: string }>();
-  const [apiNamespacePath, setApiNamespacePath] = useState('');
-  const options = useGetOptions(appID, apiNamespacePath, usePolyApiOption);
+  const [apiDirectoryWithPathType, setApiDirectoryWithPathType] = useState({ directory: '', pathType: PathType.RAW_ROOT });
+  const options = useGetOptionFromCollection({ appID, apiDirectoryWithPathType, usePolyApiOption });
 
-  function onChange(value: SingleValueType | SingleValueType[], selectedOptions: DefaultOptionType[]): void {
+  function onChange(
+    value: SingleValueType | SingleValueType[],
+    selectedOptions: DefaultOptionType[],
+  ): void {
     const leafOption = clone(selectedOptions).pop();
     if (leafOption?.isLeaf) {
-      setApiPath(leafOption.path);
+      setApiPath(leafOption.path, leafOption.method);
       return;
+    } else {
+      const targetOption = selectedOptions[selectedOptions.length - 1];
+      if (hasLeaf(targetOption)) return;
+
+      setApiDirectoryWithPathType({ directory: targetOption.path, pathType: targetOption.pathType });
     }
+    if (Array.isArray(value) && !value.length) onClear?.();
   }
 
-  function loadData(selectedOptions: DefaultOptionType[]): void {
-    const targetOption = selectedOptions[selectedOptions.length - 1];
-
-    setApiNamespacePath(targetOption.path);
-    targetOption.children = getChildrenOfCurrentSelectOption(targetOption.childrenData);
+  function hasLeaf(targetOption: DefaultOptionType): boolean {
+    return !!targetOption.children?.some(({ isLeaf }) => isLeaf);
   }
 
   if (simpleMode) {
@@ -59,7 +67,7 @@ function ApiSelector({
         defaultValue={[initRawApiPath]}
         // displayRender={(label)=> label[label.length - 1]}
         options={options}
-        loadData={loadData}
+        loadData={() => {}}
         onChange={onChange}
       />
     );
@@ -74,7 +82,7 @@ function ApiSelector({
           className="cascader"
           defaultValue={[initRawApiPath]}
           options={options}
-          loadData={loadData}
+          loadData={() => {}}
           onChange={onChange}
           placeholder="请选择API"
         />

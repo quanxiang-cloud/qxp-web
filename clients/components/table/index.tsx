@@ -18,7 +18,7 @@ import './index.scss';
 type WidthMap = Record<any, number | string>;
 export type SizeType = 'middle' | 'small';
 
-interface Props<T extends Record<string, any>> {
+export interface Props<T extends Record<string, any>> {
   className?: string;
   columns: UnionColumn<T>[];
   data: Array<T>;

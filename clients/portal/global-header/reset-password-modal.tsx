@@ -1,5 +1,4 @@
 import React, { useState, FocusEvent, useRef } from 'react';
-import { useMutation } from 'react-query';
 
 import Modal from '@c/modal';
 import { userResetPassword } from '@lib/api/auth';
@@ -13,6 +12,10 @@ interface Props {
   onCancel: () => void;
 }
 
+function goLoin(): void {
+  window.location.pathname = '/login/password';
+}
+
 export default function ResetPasswordModal({ visible, onCancel }: Props): JSX.Element|null {
   const [values, setValues] = useState({
     old: '',
@@ -20,21 +23,15 @@ export default function ResetPasswordModal({ visible, onCancel }: Props): JSX.El
   });
   const formRef = useRef<FormRef>(null);
   const [loading, setLoading] = useState(false);
-  const mutation = useMutation(userResetPassword, {
-    onSuccess: () => {
-      window.location.pathname = '/login/password';
-    },
-    onError: (err: Error) => {
-      toast.error(err.message);
-      setLoading(false);
-    },
-  });
 
   function onResetSubmit(): void {
     formRef.current?.validateFields().then((isAllValid) => {
       if (values.new && values.old && isAllValid) {
         setLoading(true);
-        mutation.mutate(values);
+        userResetPassword({ ...values })
+          .then(goLoin)
+          .catch(() => toast.error('密码重置失败'))
+          .finally(() => setLoading(false));
       }
     });
   }

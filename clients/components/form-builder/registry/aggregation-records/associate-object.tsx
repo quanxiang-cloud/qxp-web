@@ -5,7 +5,7 @@ import { Select } from 'antd';
 
 import { StoreContext } from '@c/form-builder/context';
 import schemaToFields, { schemaToMap } from '@lib/schema-convert';
-import { getTableSchema } from '@lib/http-client';
+import { getTableSchema } from '@lib/http-client-form';
 
 const acceptFieldTypes = [
   'subtable',

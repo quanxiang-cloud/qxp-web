@@ -15,7 +15,7 @@ interface Props {
   onSearchInputChange: (value: string) => void;
 }
 
-export default function({ onTriggerTypeChange, onSearchInputChange }: Props): JSX.Element {
+export default function({ onSearchInputChange }: Props): JSX.Element {
   const history = useHistory();
   const { appID } = useParams<{ appID: string; }>();
   const reference = useRef<HTMLButtonElement>(null);
@@ -44,7 +44,7 @@ export default function({ onTriggerTypeChange, onSearchInputChange }: Props): JS
         onChange={(value) => onTriggerTypeChange(value)}
       /> */}
       <Button ref={reference} iconName="add" textClassName="text-12" modifier="primary">
-        新建工作流
+          新建工作流
       </Button>
       <Popper
         reference={reference}
@@ -76,16 +76,16 @@ export default function({ onTriggerTypeChange, onSearchInputChange }: Props): JS
               size={24}
             />
           </div>
-          {/* <div
+          <div
             key="FORM_TIME"
             className="flex cursor-pointer items-center justify-between px-16 py-12 create-flow-menu-group"
-            onClick={() => newWorkFlow('form-time')}
+            onClick={() => newWorkFlow('time-flow')}
           >
             <ItemWithTitleDesc
               itemRender={(<Icon size={44} name="form-time" className="corner-12-2-12-12" />)}
-              title="工作时间触发"
+              title="定时触发"
               titleClassName="text-h6"
-              desc="指定一个工作表中的时间字段，并将该时间作为触发工作流的时间"
+              desc="根据设定的定时触发规则，在定时生效时触发流程"
               descClassName="text-caption"
               textClassName="whitespace-nowrap"
             />
@@ -94,7 +94,7 @@ export default function({ onTriggerTypeChange, onSearchInputChange }: Props): JS
               className="ml-80 transition-all"
               size={24}
             />
-          </div> */}
+          </div>
         </div>
       </Popper>
       <Search

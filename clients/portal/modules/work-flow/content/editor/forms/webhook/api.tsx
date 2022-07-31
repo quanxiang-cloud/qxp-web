@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { UseFormSetValue } from 'react-hook-form';
+import { useParams } from 'react-router-dom';
 
 import Loading from '@c/loading';
 import APISelector from '@polyApi/nodes/forms/request-config/api-selector';
@@ -22,6 +23,9 @@ interface Props {
 export default function API(
   { value, onChange, setFormValue, values, error: errorMessage }: Props,
 ): JSX.Element {
+  const initload = useRef(true);
+  const { appID } = useParams<{ appID: string }>();
+
   const { data: apiDocDetail, isLoading, error } = useGetRequestNodeApi({
     path: value.value.slice(1),
     body: { docType: 'raw', titleFirst: true },
@@ -29,9 +33,14 @@ export default function API(
 
   useEffect(() => {
     apiDocDetail?.doc.url && setFormValue('url', apiDocDetail.doc.url);
-    apiDocDetail?.doc.input.inputs && setFormValue(
-      'inputs', mergeInputs(values.inputs, filterPolyApiInputs(apiDocDetail.doc.input.inputs)),
-    );
+    if (values.inputs.length && initload.current) {
+      setFormValue('inputs', values.inputs);
+    } else {
+      apiDocDetail?.doc.input.inputs && setFormValue(
+        'inputs', mergeInputs(values.inputs, filterPolyApiInputs(apiDocDetail.doc.input.inputs)),
+      );
+    }
+
     apiDocDetail?.doc.method && setFormValue('method', apiDocDetail.doc.method);
   }, [apiDocDetail?.doc]);
 
@@ -51,8 +60,12 @@ export default function API(
   return (
     <>
       <APISelector
+        appID={appID}
         initRawApiPath={value.value}
-        setApiPath={(path) => onChange({ value: path })}
+        setApiPath={(path) => {
+          initload.current = false;
+          onChange({ value: path });
+        }}
         className="webhook-api-select"
         label="API:"
         error={errorMessage}

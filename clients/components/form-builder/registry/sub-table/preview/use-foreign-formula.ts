@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { last, pick } from 'lodash';
 import { findVariables, parse, resolve } from 'qxp-formula';
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime } from 'rxjs6/operators';
 
 import { useFormEffects, FormEffectHooks } from '@formily/react-schema-renderer';
 

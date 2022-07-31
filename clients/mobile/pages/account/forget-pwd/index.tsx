@@ -8,7 +8,7 @@ import { Input, InputInstance } from '@m/qxp-ui-mobile/input';
 import toast from '@lib/toast';
 import Icon from '@m/qxp-ui-mobile/icon';
 import VerCodeInput from '@m/components/vercode-input';
-import httpClient from '@lib/http-client';
+// import httpClient from '@lib/http-client';
 
 export default function ForgetPwd(): JSX.Element {
   const usernameRef = useRef<InputInstance>(null);
@@ -20,11 +20,11 @@ export default function ForgetPwd(): JSX.Element {
     const usernameError = usernameRef?.current?.validate();
     if (usernameError) return false;
     try {
-      await httpClient(
-        '/api/v1/org/forget/code',
-        { userName: usernameRef?.current?.value },
-        { 'X-Proxy': 'API-NO-AUTH' },
-      );
+      // await httpClient.get(
+      //   '/api/v1/org/h/account/forget/code',
+      //   { userName: usernameRef?.current?.value },
+      //   { 'X-Proxy': 'API-NO-AUTH' },
+      // );
       return true;
     } catch (e) {
       toast.error(e);
@@ -43,22 +43,22 @@ export default function ForgetPwd(): JSX.Element {
       return;
     }
     setLoading(true);
-    httpClient(
-      '/api/v1/nurturing/userForgetResetPWD',
-      {
-        userName: usernameRef?.current?.value,
-        newPassword: passwordRef?.current?.value,
-        code: codeRef?.current?.value,
-      },
-      { 'X-Proxy': 'API-NO-AUTH' },
-    ).then(() => {
-      setLoading(false);
-      toast.success('密码修改成功');
-      window.location.pathname = '/login/password';
-    }).catch((e) => {
-      toast.error(e);
-      setLoading(false);
-    });
+    // httpClient(
+    //   '/api/v1/warden/org/h/account/forget/reset',
+    //   {
+    //     userName: usernameRef?.current?.value,
+    //     newPassword: passwordRef?.current?.value,
+    //     code: codeRef?.current?.value,
+    //   },
+    //   { 'X-Proxy': 'API-NO-AUTH' },
+    // ).then(() => {
+    //   setLoading(false);
+    //   toast.success('密码修改成功');
+    //   window.location.pathname = '/login/password';
+    // }).catch((e) => {
+    //   toast.error(e);
+    //   setLoading(false);
+    // });
   }
 
   return (

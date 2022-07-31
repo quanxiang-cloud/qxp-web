@@ -1,0 +1,215 @@
+.authority-detail {
+  height: 100%;
+  overflow: hidden;
+
+  .qxp-tab-container {
+    height: auto;
+  }
+
+  position: relative;
+
+  & > .rights-mes {
+    position: absolute;
+    top: 16px;
+    left: 32px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    z-index: 20;
+
+    .rights-des {
+      max-width: 160px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .rights-image {
+    position: absolute;
+    top: 5px;
+    right: 20px;
+    width: 104px;
+    height: 48px;
+    overflow: hidden;
+    border-radius: 8px;
+    z-index: 10;
+
+    &-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+
+      .yellow {
+        width: 104px;
+        height: 52px;
+        position: absolute;
+        left: 55.64%;
+        right: 0%;
+        top: -101.14%;
+        bottom: 86.36%;
+        background: linear-gradient(180deg, #fcd34d 0%, #fbbf24 100%);
+        border-radius: 26px;
+        transform: rotate(120deg);
+      }
+
+      .purple {
+        width: 104px;
+        height: 52px;
+        position: absolute;
+        left: 62.64%;
+        right: 22.13%;
+        top: 27.86%;
+        bottom: 86.36%;
+        background: linear-gradient(180deg, #f0abfc 0%, #e879f9 100%);
+        opacity: 0.65;
+        border-radius: 26px;
+      }
+
+      .orange {
+        width: 104px;
+        height: 52px;
+        border: 1px solid orange;
+        position: absolute;
+        left: 8.97%;
+        right: -1.19%;
+        bottom: 85.2%;
+        border-radius: 26px;
+        transform: rotate(-105deg);
+      }
+    }
+  }
+
+  .rights-tab {
+    & > :first-child .tab-navs {
+      width: auto;
+      height: 48px;
+      margin: 0 16px;
+      border-radius: 8px;
+      justify-content: center;
+      background: url(/dist/images/authority-line.png) top right no-repeat,
+        linear-gradient(90deg, #638aff 0%, #375ff3 100%);
+      background-size: contain;
+      box-shadow: 0px 8px 24px 8px rgba(55, 95, 243, 0.15);
+
+      .tab-nav-item {
+        color: #fff;
+
+        &:hover {
+          color: #fff;
+        }
+
+        &::after {
+          background: #fff;
+        }
+      }
+    }
+
+    & .tab-content {
+      overflow: hidden;
+      padding: 0;
+      border-radius: 0;
+    }
+  }
+}
+
+.conf-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 52px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--blue-1000);
+}
+
+.tab-label-item {
+  font-size: 12px !important;
+  line-height: 24px !important;
+}
+
+.access-btn {
+  div {
+    &:nth-child(2) {
+      margin-right: 0;
+    }
+  }
+
+  label.radio-button {
+    margin-right: 0;
+
+    span {
+      font-size: 12px;
+    }
+  }
+}
+
+.rights-add {
+  width: 28px;
+  height: 28px;
+  @apply text-white bg-gray-700 rounded-8 rounded-tr-2 text-center leading-28 cursor-pointer hover:bg-gray-600;
+}
+
+.data-source {
+  display: grid;
+  grid-template-columns: 212px 1fr;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+
+  &--sider {
+    position: relative;
+    background-color: var(--gray-50);
+    border-right: 1px solid var(--gray-300);
+    overflow: hidden;
+    .tree-node-item {
+      height: 36px;
+      font-size: 12px;
+      font-weight: normal;
+      line-height: 24px;
+      color: var(--gray-900);
+      background: var(--gray-50);
+      &:hover,
+      &.tree-node--focused {
+        background: white;
+        &::after {
+          content: "";
+          width: 4px;
+          height: 100%;
+          position: absolute;
+          top: 0;
+          right: 0;
+          border-radius: 4px 0 0 4px;
+          background-color: var(--blue-600);
+        }
+      }
+    }
+  }
+
+  &--main-cont {
+    display: grid;
+    grid-template-rows: min-content 1fr;
+    border-top-right-radius: 12px;
+  }
+}
+
+.auth-detail-modal .auth-details {
+  .tab-content {
+    overflow: hidden;
+  }
+  .fields-item {
+    box-shadow: inset 0px -1px 0px #e2e8f0;
+  }
+  .fields-tree {
+    .tree-node {
+      height: 36px;
+      cursor: default;
+      box-shadow: inset 0px -2px 0px #e2e8f0;
+      .tree-node__indent-placeholder {
+        height: 36px;
+      }
+      .tree-node__toggle-icon{
+        cursor: pointer;
+        margin-right: 0px;
+      }
+    }
+  }
+}

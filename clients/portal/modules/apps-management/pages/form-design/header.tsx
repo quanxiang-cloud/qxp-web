@@ -12,6 +12,7 @@ import Button from '@c/button';
 import { FormRenderer } from '@c/form-builder';
 import Tab, { TabProps } from '@c/no-content-tab';
 import { validateFieldConfig } from '@c/form-builder/utils';
+import InsideDocsPortal from '@c/qxp-docs-inside-portal';
 
 import store from './store';
 import NotSavedModal from './not-saved-modal';
@@ -59,7 +60,7 @@ function FormDesignHeader(): JSX.Element {
   };
 
   const goPageDetails = (): void => {
-    history.push(`/apps/details/${appID}/page_setting?pageID=${pageId}`);
+    history.push(`/apps/details/${appID}/views`);
   };
 
   return (
@@ -77,16 +78,12 @@ function FormDesignHeader(): JSX.Element {
           <span className="text-h6-bold mr-4">正在设计表单：{store.pageName}</span>
         </div>
         <Tab onChange={tabChange} activeTab={pageType} tabs={TABS} />
-        <div className='flex justify-end'>
-          <a
-            href={`//${window.CONFIG.docs_hostname}`}
-            target="_blank"
-            rel="noreferrer"
-            className="app-nav-button corner-8-8-8-2"
-          >
-            <Icon size={20} className='mr-4 app-icon-color-inherit' name="book" />
+        <div
+          className='flex justify-end cursor-pointer'
+          onClick={() => InsideDocsPortal.show({ targetUrl: `https://${window.CONFIG.docs_hostname}/manual/form/new/` })}
+        >
+          <Icon size={20} className='mr-4 app-icon-color-inherit' name="book" />
             帮助文档
-          </a>
         </div>
         {showNotSavedTips && (
           <NotSavedModal
@@ -106,6 +103,7 @@ function FormDesignHeader(): JSX.Element {
         </Button>
         <Button
           onClick={store.saveForm}
+          loading={store.saveSchemeLoading}
           iconName='save'
           modifier='primary'
           forbidden={store?.formStore?.flattenFields?.length === 0}

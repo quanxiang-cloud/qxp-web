@@ -1,5 +1,5 @@
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
-import { getTableSchema } from '@lib/http-client';
+import { getTableSchema } from '@lib/http-client-form';
 import schemaToFields from '@lib/schema-convert';
 
 import { LinkedTableFieldOptions } from './index';
@@ -35,7 +35,7 @@ export async function fetchLinkedTableFields(
     return {
       value: field.id,
       label: (field.title || field.id) as string,
-      fieldEnum: (field.enum || []) as Array<FormBuilder.Option>,
+      fieldEnum: (field.enum || []) as string[],
       componentName: field.componentName || 'antdselect',
     };
   });

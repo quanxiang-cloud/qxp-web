@@ -20,21 +20,24 @@ declare module 'web-worker:*' {
 
 type UserDepartment = {
   id: string;
-  departmentName: string;
-  departmentLeaderID: string;
+  name: string;
+  leaderID: string;
   pid: string;
   superID: string;
   grade: number;
-  child: UserDepartment;
+  attr: 1 | 2;
 }
 type CurrentUser = {
   id: string;
-  userName: string;
+  avatar: string;
+  name: string;
   status: number;
+  useStatus: number;
+  selfEmail: string;
   email: string;
   phone: string;
   depIds: string[]
-  dep: UserDepartment;
+  deps: UserDepartment[][];
 }
 
 interface Window {
@@ -57,4 +60,11 @@ type OSSConfig = {
   private: string;
   readable: string;
   domain: string;
+}
+
+type FutureErrorMessage = Promise<'' | string>;
+
+declare module 'REF:*' {
+  const v: string;
+  export default v;
 }

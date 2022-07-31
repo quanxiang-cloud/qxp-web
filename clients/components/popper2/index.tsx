@@ -13,6 +13,7 @@ import React, {
   MouseEventHandler,
   FocusEventHandler,
   RefObject,
+  useEffect,
 } from 'react';
 import { createPopper, Placement, Modifier } from '@popperjs/core';
 
@@ -192,6 +193,7 @@ export default function usePopper<T extends Element>(): UsePopperResult<T> {
     container,
     enableArrow = false,
     children,
+    onVisibleChange,
   }: PopperProps): JSX.Element {
     function getContainer(): HTMLDivElement {
       const popupContainer = document.createElement('div');
@@ -219,6 +221,10 @@ export default function usePopper<T extends Element>(): UsePopperResult<T> {
         modifiers: (modifiers || []).concat(arrowModifier),
       });
     }
+
+    useEffect(() => {
+      onVisibleChange?.(popperShow);
+    }, [popperShow]);
 
     return (
       <PopperContext.Provider value={{ onPopupMouseDown: onPopupMouseDown }}>

@@ -9,11 +9,14 @@ import SideNavs from './side-navs';
 import AppAdmin from './app-admin';
 import AppInfo from './app-info';
 import DataModels from './data-models';
-import PageMenuDesign from './page-menu-design';
-import UsersAndPermissions from './users-and-permissions';
+import AppViewOrchestration from './view-orchestration';
+import AppRoles from './roles-and-permissions';
 import ApiDocument from './api-documentation';
 import FaaS from './faas';
 import ApiKey from './api-key';
+import LayoutManagement from './view-orchestration/view-layouts';
+import NavManagement from './view-orchestration/nav-management';
+import VersionDetails from './faas/func/version-details';
 
 import './index.scss';
 
@@ -31,14 +34,17 @@ function AppDetailsContent(): JSX.Element {
         <div className="m-16 flex-1 mb-0 overflow-hidden">
           <React.Suspense fallback={<Loading className="w-screen h-screen" desc="加载中..." />}>
             <Switch>
-              <Route exact path='/apps/details/:appID/page_setting' component={PageMenuDesign} />
+              <Route exact path='/apps/details/:appID/views' component={AppViewOrchestration} />
+              <Route path='/apps/details/:appID/view_layout' component={LayoutManagement} />
+              <Route exact path='/apps/details/:appID/app_nav' component={NavManagement} />
               <Route exact path='/apps/details/:appID/setting_flow' component={WorkFlows} />
               <Route exact path='/apps/details/:appID/data_models' component={DataModels} />
               <Route exact path='/apps/details/:appID/file_api' component={ApiDocument} />
               <Route exact path='/apps/details/:appID/key_api' component={ApiKey} />
               <Route exact path='/apps/details/:appID/faas' component={FaaS} />
+              <Route exact path='/apps/details/:appID/build_details/:groupID/:funcID/:buildID' component={VersionDetails} />
               <Route exact path='/apps/details/:appID/base_info' component={AppInfo} />
-              <Route exact path='/apps/details/:appID/app_permission' component={UsersAndPermissions} />
+              <Route exact path='/apps/details/:appID/app_permission' component={AppRoles} />
               <Route exact path='/apps/details/:appID/app_manager' component={AppAdmin} />
               <Route exact path='/apps/details/:appID/app_control' component={AppControl} />
               <Route exact path='/apps/details/:appID/api_proxy' component={ApiProxy} />

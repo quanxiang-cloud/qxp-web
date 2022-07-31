@@ -1,5 +1,5 @@
 import commonjs from '@rollup/plugin-commonjs';
-import esbuild from 'rollup-plugin-esbuild';
+import esbuild from 'rollup-plugin-esbuild-ts';
 import json from '@rollup/plugin-json';
 import outputManifest from 'rollup-plugin-output-manifest';
 import progress from 'rollup-plugin-progress';
@@ -7,11 +7,13 @@ import replace from '@rollup/plugin-replace';
 import resolve from '@rollup/plugin-node-resolve';
 import styles from 'rollup-plugin-styles';
 import webWorkerLoader from 'rollup-plugin-web-worker-loader';
+import referenceModule from 'rollup-plugin-reference-module';
 // import tsChecker from 'rollup-plugin-fork-ts-checker';
 
 import typescriptPaths from './plugins/rollup-plugin-typescript-paths';
 import notifier from './plugins/rollup-plugin-notifier';
 import esbuildConfig from './esbuild-config';
+// import dll from './plugins/rollup-plugin-dll';
 
 import { isProduction } from './env';
 
@@ -29,11 +31,11 @@ const output = {
 const input = {
   portal: 'clients/portal/index.tsx',
   home: 'clients/home/index.tsx',
+  appLand: 'clients/app-land/index.tsx',
 };
 
 const config = {
   treeshake: isProduction,
-  preserveEntrySignatures: false,
 
   input,
   output,
@@ -43,6 +45,7 @@ const config = {
     'react-dom',
     'react-is',
     'elkjs',
+    'react-codemirror2',
 
     '@formily/antd-components',
     '@formily/antd',
@@ -65,7 +68,6 @@ const config = {
     'draft-js',
     // 'html-to-draftjs',
     // 'react-draft-wysiwyg',
-    'jszip',
     'react-beautiful-dnd',
     'react-dnd',
     // 'react-dnd-html5-backend',
@@ -101,12 +103,15 @@ const config = {
     }),
     !isProduction ? progress({ clearLine: true }) : false,
     styles({
-      autoModules: /index\.module\.scss/,
+      autoModules: /\w+\.(module|m)\.scss/,
     }),
     json(),
     typescriptPaths(),
     outputManifest(),
     esbuild(esbuildConfig),
+    referenceModule({
+      extensions: ['js', 'ts', 'tsx'],
+    }),
     // tsChecker(),
   ],
 };

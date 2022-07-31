@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useTitle } from 'react-use';
 import { observer } from 'mobx-react';
 
+import { toast } from '@one-for-all/ui';
 import TextHeader from '@c/text-header';
 import { useTaskComplete } from '@c/task-lists/utils';
 
@@ -9,6 +10,8 @@ import store from './store';
 import Header from './header';
 import AppList from './app-list';
 import CreatedAppModal from './app-edit/created-app-modal';
+import templateStore from '../app-templates/store';
+import appStore from '../../app-details/store';
 
 import './index.scss';
 
@@ -26,7 +29,10 @@ function MyApp(): JSX.Element {
 
   useEffect(() => {
     store.changeParams({});
-
+    templateStore.fetchList().catch(() => {
+      toast.error('获取模版列表失败');
+    });
+    appStore.setLastFocusViewID('');
     return () => {
       store.isListLoading = true;
     };
@@ -52,7 +58,7 @@ function MyApp(): JSX.Element {
         isLoading={isListLoading}
         openCreatedModal={() => setModalType('createdApp')}
       />
-      {['createdApp', 'importApp'].includes(modalType) && (
+      {['createdApp', 'importApp', 'createAppWithTemplate'].includes(modalType) && (
         <CreatedAppModal modalType={modalType} onCancel={() => setModalType('')} />
       )}
     </div>

@@ -9,6 +9,7 @@ import ApiList from './list';
 import GroupSetting from './group-setting';
 import ApiKeys from './api-keys';
 import NoData from '../comps/no-data';
+import { useNamespace } from '../hooks';
 
 import store from '../store';
 
@@ -42,6 +43,7 @@ function renderApiListTips(): JSX.Element | string {
 }
 
 function ListPage(): JSX.Element {
+  const ns = useNamespace();
   const [tabKey, setTabKey] = useState(defaultKey);
   const tabs = useMemo(()=> {
     return [
@@ -65,7 +67,7 @@ function ListPage(): JSX.Element {
   }, [store.currentNs?.id, store.svc?.fullPath, store.svc?.authType, store.apiKeyTotal]);
 
   useEffect(()=> {
-    store.fetchSvc().then(() => {
+    ns && store.fetchSvc().then(() => {
       if (!store.svc) {
         setTabKey('group-setting');
       } else if (store.svc.authType === 'signature' && !store.apiKeyTotal) {
@@ -74,7 +76,7 @@ function ListPage(): JSX.Element {
         setTabKey(defaultKey);
       }
     });
-  }, [store.currentSvcPath]);
+  }, [ns]);
 
   return (
     <>

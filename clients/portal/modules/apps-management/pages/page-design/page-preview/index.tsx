@@ -1,14 +1,12 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { getQuery } from '@lib/utils';
 
-import SchemaPage from '../schema-page';
+import ArteryPage from '../artery-page';
 
 function PagePreview(): JSX.Element {
-  const { appID, pageId } = useParams<{appID: string, pageId: string}>();
+  const { arteryID } = getQuery<{appID: string, pageId: string, arteryID: string}>();
 
-  return (
-    <SchemaPage appId={appID} pageId={pageId} draft />
-  );
+  return <ArteryPage arteryID={arteryID} />;
 }
 
 export default PagePreview;

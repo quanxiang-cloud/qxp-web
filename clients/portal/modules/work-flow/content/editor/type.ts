@@ -29,6 +29,7 @@ export interface WorkFlowData {
   instanceName: string;
   canCancelType: number,
   canCancelNodes: string,
+  cron?: string,
 }
 
 export interface EdgeProps {
@@ -103,6 +104,7 @@ export type CurrentConnection = {
 export type TriggerWayValue = string | 'whenAdd' | 'whenAlter' | '';
 type TriggerWay = TriggerWayValue[];
 export type NodeWorkForm = { name?: string; value: string };
+
 export type FormDataData = {
   form: NodeWorkForm;
   triggerWay: TriggerWay;
@@ -110,6 +112,11 @@ export type FormDataData = {
   triggerCondition: TriggerCondition;
   events: Record<any, any>;
 }
+
+export type DelayedData = {
+  timer: string
+}
+
 export type TriggerValue = {
   triggerWay: TriggerWay;
   whenAlterFields: string[];
@@ -228,10 +235,13 @@ export interface TableDataCreateData {
     }
   }
 }
+
+export type SelectFormType = 'work-form' | 'others';
 export interface TableDataUpdateData {
   targetTableId: string;
   silent: boolean;
   selectField?: string;
+  formType?: SelectFormType;
   filterRule?: {
     tag: 'and' | 'or';
     conditions: Array<{
@@ -320,7 +330,8 @@ export interface NewFieldPermission {
 
 export type BusinessData = FormDataData | FillInData | ProcessBranchData |
   ProcessVariableAssignmentData | TableDataCreateData | TableDataUpdateData | SendEmailData |
-  WebMessageData | CCData | ProcessBranchTargetData | WebhookData;
+  WebMessageData | CCData | ProcessBranchTargetData | WebhookData | DelayedData;
+
 type NodeData = {
   width: number;
   height: number;
@@ -351,6 +362,10 @@ interface ApproveNodeData extends BaseNodeData {
 interface FormDataNodeData extends BaseNodeData {
   type: 'formData';
   businessData: FormDataData;
+}
+interface DelayedNodeData extends BaseNodeData {
+  type: 'FORM_TIME';
+  businessData: DelayedData;
 }
 interface ProcessBranchNodeData extends BaseNodeData {
   type: 'processBranch';
@@ -384,11 +399,13 @@ interface ProcessBranchTargetNodeData extends BaseNodeData {
   type: 'processBranchTarget';
   businessData: ProcessBranchTargetData;
 }
+
 export type Data = CCNodeData | WebMessageNodeData | SendEmailNodeData | TableDataUpdateNodeData |
   TableDataCreateNodeData | ProcessVariableAssignmentNodeData | ProcessBranchNodeData |
-  FormDataNodeData | ApproveNodeData | FillInNodeData | ProcessBranchTargetNodeData | WebhookNodeData;
+  FormDataNodeData | ApproveNodeData | FillInNodeData | ProcessBranchTargetNodeData | WebhookNodeData | DelayedNodeData;
+
 export type NodeType = 'formData' | 'fillIn' | 'approve' | 'end' | 'processBranch' |
-  'processVariableAssignment' | 'tableDataCreate' | 'tableDataUpdate' | 'email' |
+'processVariableAssignment' | 'tableDataCreate' | 'tableDataUpdate' | 'FORM_TIME' | 'email' |
   'letter' | 'autocc' | 'processBranchSource' | 'processBranchTarget' | 'webhook';
 export interface CurrentElement {
   id: string;
@@ -434,6 +451,7 @@ export interface StoreValue {
   showDataNotSaveConfirm?: boolean;
   keyFields: string;
   instanceName: string;
+  cron: string;
 }
 
 export type FieldOperatorOptions = {

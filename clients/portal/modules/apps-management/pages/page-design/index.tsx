@@ -1,76 +1,77 @@
-import React, { useState } from 'react';
+import React, { useMemo, useCallback, CSSProperties } from 'react';
+import cs from 'classnames';
+import ArteryEngine, { Props } from '@one-for-all/artery-engine';
+import { useMonaco } from '@monaco-editor/react';
 import { useQuery } from 'react-query';
-import { useParams } from 'react-router-dom';
-import { Schema } from '@one-for-all/schema-spec';
 
-import { parseJSON } from '@lib/utils';
-import { useGetGlobalConfig } from '@lib/configuration-center';
+import toast from '@lib/toast';
+import { getQuery } from '@lib/utils';
+import Loading from '@c/loading';
 
-import PageEngine from './page-engine';
-import SelectCustomPageEditor from './select-custom-page-editor';
-import SchemaEditor from './schema-editor';
-import { getPage } from './api';
-import {
-  getKeyOfCustomPageEditor,
-  CUSTOM_PAGE_EDITOR_SCHEMA,
-  CUSTOM_PAGE_EDITOR_PAGE_ENGINE,
-  initialSchema,
-} from './utils';
+import { queryArtery, useStyle } from './hooks';
+import { PAGE_DESIGN_ID, LAYERS } from './constants';
+import Ctx from './ctx';
+import stores from './stores';
+import { savePage } from './api';
+import { getInitArtery } from './utils';
+import type { BlocksCommunicationType } from './types';
+import FountainContext, { createFountainCTXValue } from './fountain-context';
+import { loadFountainPackages } from './utils/package';
+
 import './index.scss';
+import styles from './index.m.scss';
 
-export function useCustomPageSchema(appID: string, pageId: string): { loading: boolean; schema?: Schema } {
-  const { isLoading, data } = useQuery<Schema | undefined>(
-    ['check_has_custom_page_schema', appID, pageId],
-    () => {
-      return getPage(appID, pageId).then((schema) => {
-        if (!schema) {
-          return;
-        }
-
-        return parseJSON(schema, undefined);
-      });
-    },
-  );
-
-  return { loading: isLoading, schema: data };
-}
-
-function useWhichCustomPageEditor(appID: string, pageId: string): { editor: string; loading: boolean; } {
-  const [key, newKey] = getKeyOfCustomPageEditor(appID, pageId);
-  const [editor, loading] = useGetGlobalConfig(key, '1.0.0', '');
-  const [newEditor, newLoading] = useGetGlobalConfig(newKey, '1.0.0', '');
-  return { editor: newEditor || editor, loading: newLoading || loading };
-}
+const resetStyle: CSSProperties = { overflow: 'hidden' };
 
 function PageDesign(): JSX.Element | null {
-  const { appID, pageId } = useParams<{appID: string; pageId: string}>();
-  const { schema, loading: hasSchemaLoading } = useCustomPageSchema(appID, pageId);
-  const { editor, loading: editorLoading } = useWhichCustomPageEditor(appID, pageId);
-  const [selectedEditor, setSelectedEditor] = useState('');
+  const { appID, arteryID } = getQuery<{ appID: string, pageName: string, arteryID: string }>();
+  useMonaco();
+  useStyle('body', resetStyle);
+  useStyle('html', resetStyle);
 
-  // todo refactor this
-  if (selectedEditor === CUSTOM_PAGE_EDITOR_SCHEMA) {
-    return (<SchemaEditor appID={appID} pageId={pageId} initialSchema={schema || initialSchema} />);
+  const { data: fountainPackages, isLoading } = useQuery('fountainPackages', loadFountainPackages);
+  const { artery, isLoading: isArteryLoading } = queryArtery(arteryID);
+
+  const { layers, blocksCommunicationStateInitialValue } = useMemo(
+    (): Props<BlocksCommunicationType> => {
+      return {
+        layers: [...LAYERS],
+        artery: artery ?? getInitArtery(),
+        blocksCommunicationStateInitialValue: {
+          appID,
+          arteryID: '',
+          menu: { panelWidth: 280 },
+          block: {},
+        },
+      };
+    },
+    [artery],
+  );
+
+  const handleSave = useCallback((page_artery: any): Promise<void> => {
+    return savePage(arteryID, page_artery)
+      .catch((err: Error) => toast.error(err.message));
+  }, []);
+
+  if (isArteryLoading || isLoading) {
+    return <Loading desc="加载中..." />;
   }
 
-  // todo refactor this
-  if (selectedEditor === CUSTOM_PAGE_EDITOR_PAGE_ENGINE) {
-    return (<PageEngine />);
-  }
-
-  if (hasSchemaLoading || editorLoading) {
-    return null;
-  }
-
-  if (!schema) {
-    return (<SelectCustomPageEditor appID={appID} pageId={pageId} onSelect={setSelectedEditor} />);
-  }
-
-  if (editor === CUSTOM_PAGE_EDITOR_SCHEMA) {
-    return (<SchemaEditor appID={appID} pageId={pageId} initialSchema={schema} />);
-  }
-
-  return (<PageEngine />);
+  return (
+    <Ctx.Provider value={Object.assign(stores, { onSave: handleSave })}>
+      <div className={cs(styles.designer)}>
+        <div id={PAGE_DESIGN_ID}>
+          <FountainContext.Provider value={createFountainCTXValue(fountainPackages || [])}>
+            <ArteryEngine
+              artery={artery ?? getInitArtery()}
+              layers={layers}
+              blocksCommunicationStateInitialValue={blocksCommunicationStateInitialValue}
+            />
+          </FountainContext.Provider>
+        </div>
+      </div>
+    </Ctx.Provider>
+  );
 }
 
 export default PageDesign;

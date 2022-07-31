@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, ForwardedRef } from 'react';
 import { observer } from 'mobx-react';
 import { toJS } from 'mobx';
 import cs from 'classnames';
@@ -19,8 +19,10 @@ export type FileUploaderProps = {
   disabled?: boolean;
   className?: string;
   maxFileSize?: number;
+  canDownload?: boolean;
   style?: React.CSSProperties;
   additionalPathPrefix?: string;
+  originalThumbnail?: boolean;
   uploaderDescription?: React.ReactNode;
   fileData?: QXPUploadFileBaseProps[];
   children?: React.ReactNode;
@@ -47,7 +49,8 @@ function FileUploader({
   onFileAbort,
   onFileDelete,
   onFileSuccess,
-}: FileUploaderProps): JSX.Element {
+  ...rest
+}: FileUploaderProps, ref?: ForwardedRef<HTMLDivElement>): JSX.Element {
   const fileStore = useFileStore({
     fileBucket: isPrivate ? OSS_PRIVATE_BUCKET_NAME : OSS_PUBLIC_BUCKET_NAME,
     files: fileData,
@@ -117,6 +120,8 @@ function FileUploader({
     <div
       className={cs('qxp-file-uploader', className)}
       style={style}
+      ref={ref}
+      {...rest}
     >
       <FilePicker
         className="w-full h-56 p-10"
@@ -132,7 +137,6 @@ function FileUploader({
         {children}
       </FilePicker>
       <FileList
-        canDownload
         className="w-full"
         isPrivate={isPrivate}
         files={toJS(storeFiles)}
@@ -142,4 +146,4 @@ function FileUploader({
     </div>
   );
 }
-export default observer(FileUploader);
+export default observer(React.forwardRef<HTMLDivElement, FileUploaderProps>(FileUploader));

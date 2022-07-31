@@ -170,3 +170,18 @@ export const getImgColor = (text: string, colors = imgBgColors): {name: string, 
     color: colors[num],
   };
 };
+
+export function buildGraphQLQuery(params: any): number | string {
+  if (typeof params === 'number') {
+    return params;
+  }
+
+  if (typeof params !== 'object' || Array.isArray(params)) {
+    return JSON.stringify(params);
+  }
+
+  const props = Object.entries(params).map(([key, value]) => `${key}:${buildGraphQLQuery(value)}`).join(',');
+
+  return `query(${props})`;
+}
+

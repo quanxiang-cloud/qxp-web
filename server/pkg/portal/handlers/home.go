@@ -21,12 +21,15 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 
 	adminUserFuncTags := getAdminUserFuncTags(r)
 	userAdminRoles := getUserAdminRoles(r)
+	personalizedConfig := getPersonalizedConfig(r, "")
 
 	renderWebAppPage(w, "home.html", map[string]interface{}{
-		"user":              user,
-		"adminUserFuncTags": adminUserFuncTags,
-		"userAdminRoles":    userAdminRoles,
-		"debugMode":         contexts.Config.DevMode,
-		"CONFIG":            contexts.Config.ClientConfig,
+		"user":               user,
+		"adminUserFuncTags":  adminUserFuncTags,
+		"userAdminRoles":     userAdminRoles,
+		"personalizedConfig": personalizedConfig,
+		"debugMode":          contexts.Config.DevMode,
+		"CONFIG":             contexts.Config.ClientConfig,
+		"vendorPrefix":       contexts.Config.ClientConfig.VendorPrefix,
 	})
 }

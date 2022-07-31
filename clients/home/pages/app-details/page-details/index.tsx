@@ -7,10 +7,11 @@ import { useTaskComplete } from '@c/task-lists/utils';
 import { Ref, TableHeaderBtn } from '@c/form-app-data-table/type';
 import PopConfirm from '@c/pop-confirm';
 import PageLoading from '@c/page-loading';
+import toast from '@lib/toast';
 import { MenuType } from '@portal/modules/apps-management/pages/app-details/type';
-import SchemaPage from '@portal/modules/apps-management/pages/page-design/schema-page';
+import ArteryPage from '@portal/modules/apps-management/pages/page-design/artery-page';
 
-import { getOperateButtonPer } from '../utils';
+import { getAPIPath, getOperateButtonPer } from '../utils';
 import CreateDataForm from './create-data-form';
 import DetailsDrawer from './details-drawer';
 import store from '../store';
@@ -19,12 +20,12 @@ import Header from '../header';
 import './index.scss';
 
 function PageDetails(): JSX.Element | null {
-  const { curPage, fetchSchemeLoading } = store;
+  const { appID, pageID, curPage, fetchSchemeLoading } = store;
   const [modalType, setModalType] = useState('');
   const [curRowID, setCurRowID] = useState('');
   const formTableRef = useRef<Ref>(null);
-  const BUTTON_GROUP: Record<number, TableHeaderBtn> = {
-    2: {
+  const BUTTON_GROUP: Record<string, TableHeaderBtn> = {
+    create: {
       key: 'add',
       action: () => {
         store.operationType = '新建';
@@ -33,7 +34,7 @@ function PageDetails(): JSX.Element | null {
       text: '新建',
       iconName: 'add',
     },
-    4: {
+    batchRemove: {
       key: 'batchRemove',
       action: delFormData,
       text: '批量删除',
@@ -42,13 +43,13 @@ function PageDetails(): JSX.Element | null {
       isBatch: true,
       popText: '确认删除选择数据？',
     },
-    5: {
+    import: {
       key: 'import',
       action: () => {},
       text: '导入',
       iconName: 'file_download',
     },
-    6: {
+    export: {
       key: 'export',
       action: () => {},
       text: '导出',
@@ -77,13 +78,16 @@ function PageDetails(): JSX.Element | null {
   }
 
   async function delFormData(ids: string[]): Promise<any> {
-    await store.delFormData(ids);
+    await store.delFormData(ids)
+      .then(() =>toast.success('删除成功'))
+      .catch((err) => toast.error(err));
     formTableRef.current?.refresh();
   }
 
   const tableHeaderBtnList: TableHeaderBtn[] =
   Object.entries(BUTTON_GROUP).reduce((acc: TableHeaderBtn[], [key, buttonValue]) => {
-    if (getOperateButtonPer(Number(key), store.authority)) {
+    const _apiPath = getAPIPath(appID, pageID, key, 'POST');
+    if (store.authority[_apiPath]) {
       return [...acc, buttonValue];
     }
     return acc;
@@ -94,9 +98,10 @@ function PageDetails(): JSX.Element | null {
     Header: '操作',
     fixed: true,
     accessor: (rowData: any) => {
+      const perParams = { appID, tableID: pageID, authority: store.authority };
       return (
         <div>
-          {getOperateButtonPer(1, store.authority) && (
+          {getOperateButtonPer('get', perParams) && (
             <span
               onClick={() => {
                 store.operationType = '查看';
@@ -107,7 +112,7 @@ function PageDetails(): JSX.Element | null {
               查看
             </span>
           )}
-          {getOperateButtonPer(3, store.authority) && (
+          {getOperateButtonPer('update', perParams) && (
             <span
               onClick={() => {
                 store.operationType = '修改';
@@ -118,7 +123,7 @@ function PageDetails(): JSX.Element | null {
               修改
             </span>
           )}
-          {getOperateButtonPer(4, store.authority) && (
+          {getOperateButtonPer('delete', perParams) && (
             <PopConfirm content='确认删除该数据？' onOk={() => delFormData([rowData._id])}>
               <span className='text-red-600 cursor-pointer'>删除</span>
             </PopConfirm>
@@ -148,9 +153,9 @@ function PageDetails(): JSX.Element | null {
           style={{ border: 'none' }}
         />
       );
-    } else if (menuType === MenuType.schemaPage) {
+    } else if (menuType === MenuType.arteryPage) {
       return (
-        <SchemaPage appId={store.appID} pageId={store.pageID} />
+        <ArteryPage arteryID={store.pageID} />
       );
     } else {
       if (fetchSchemeLoading) {
@@ -159,7 +164,9 @@ function PageDetails(): JSX.Element | null {
 
       return (
         <FormAppDataTable
-          showCheckbox={getOperateButtonPer(4, store.authority)}
+          showCheckbox={
+            getOperateButtonPer('batchRemove', { appID, tableID: pageID, authority: store.authority })
+          }
           ref={formTableRef}
           tableHeaderBtnList={tableHeaderBtnList}
           customColumns={customColumns}

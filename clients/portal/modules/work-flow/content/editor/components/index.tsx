@@ -4,18 +4,25 @@ import { groupBy } from 'ramda';
 import { toggleNodeForm } from '../store';
 import Drawer from '../forms/drawer';
 import DragNode from './drag-node';
-import { nodeLists, groupType2WeightMap, groupType2NameMap } from '../utils/constants';
+import { nodeLists, groupType2WeightMap, groupType2NameMap, nodeMenu } from '../utils/constants';
 
 type Props = {
+  triggerMode: string;
   nodeIdForDrawerForm: string;
 }
 
-export default function ComponentsSelector({ nodeIdForDrawerForm }: Props): JSX.Element {
-  const groupedNodeMap = groupBy((node) => node.groupType, nodeLists);
+export default function ComponentsSelector({ nodeIdForDrawerForm, triggerMode }: Props): JSX.Element {
+  const _nodeLists = triggerMode === 'FORM_DATA' ? nodeLists : getNodeLists();
+
+  const groupedNodeMap = groupBy((node) => node.groupType, _nodeLists);
 
   const groupedNodeList = Object.entries(groupedNodeMap).sort(
     ([groupType], [bGroupType]) => groupType2WeightMap[groupType] - groupType2WeightMap[bGroupType],
   );
+
+  function getNodeLists(): any[] {
+    return nodeLists.filter(({ type }) => nodeMenu[triggerMode]?.includes(type));
+  }
 
   return (
     <>

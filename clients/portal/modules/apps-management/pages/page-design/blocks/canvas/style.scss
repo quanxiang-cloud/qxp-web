@@ -1,0 +1,51 @@
+$ibc: #dcdfe6;
+
+.artery-engine-layer-block__canvas {
+  box-sizing: border-box;
+  background-color: #f6f6f6;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  .artery-engine-layer-block__canvas-toolbar {
+    padding: 30px;
+    border-bottom: 1px solid $ibc;
+  }
+
+  .artery-engine-layer-block__canvas-container {
+    padding: 20px;
+    background-color: white;
+    flex: 1;
+    overflow: auto;
+
+    &>div {
+      display: unset;
+    }
+
+    .artery-engine-layer-block__canvas-container-item {
+      position: relative;
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+      }
+    }
+
+    .artery-engine-layer-block__canvas-container-item--active {
+      $size: 4px;
+      &::after {
+        content: '';
+        position: absolute;
+        top: -$size;
+        left: -$size;
+        bottom: -$size;
+        right: -$size;
+        border: 1px dashed blue;
+      }
+    }
+  }
+}

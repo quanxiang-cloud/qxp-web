@@ -2,7 +2,8 @@ import { QueryFunctionContext } from 'react-query';
 import { isEmpty } from 'lodash';
 import { and, pick } from 'ramda';
 
-import httpClient, { getTableSchema } from '@lib/http-client';
+import { getTableSchema } from '@lib/http-client-form';
+import httpClient from '@lib/http-client';
 import { schemaToOptions, SchemaToOptionsOptions } from '@lib/schema-convert';
 import logger from '@lib/logger';
 import { SYSTEM_FIELDS } from '@c/form-builder/constants';

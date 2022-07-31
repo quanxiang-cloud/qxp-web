@@ -24,8 +24,8 @@ func HandleSSOLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resBody, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/jwt/auth", []byte(""), map[string]string{
-		"Content-Type": "application/json",
+	resBody, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/warden/auth", []byte(""), map[string]string{
+		"Content-Type": "application/x-www-form-urlencoded",
 		"Access-Token": code,
 	})
 
@@ -65,8 +65,23 @@ func HandleSSOLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	session := contexts.GetCurrentRequestSession(r)
+	if err := session.Save(r, w); err != nil {
+		renderErrorPage(w, r, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
+		return
+	}
+
+	http.SetCookie(w, &http.Cookie{
+		Name:  "sk",
+		Value: session.ID,
+		// 29 days
+		MaxAge:   86400 * 29,
+		Path:     "/",
+		SameSite: http.SameSiteNoneMode,
+		Secure:   true,
+	})
+
 	saveToken(r, loginResponse.Data.AccessToken, loginResponse.Data.RefreshToken, expireTime)
 	contexts.Logger.Infof("sso login success, redirect user to %s, request_id: %s", redirectURL, requestID)
-
 	http.Redirect(w, r, redirectURL, http.StatusFound)
 }

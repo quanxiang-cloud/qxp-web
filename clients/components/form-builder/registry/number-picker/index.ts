@@ -1,4 +1,4 @@
-import { FormEffectHooks, createFormActions } from '@formily/react';
+import { createFormActions, FormEffectHooks } from '@formily/antd';
 
 import { validateRegistryElement } from '@c/form-builder/utils';
 

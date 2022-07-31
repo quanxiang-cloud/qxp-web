@@ -6,9 +6,10 @@ import NotFoundError from '@c/404-error';
 import SideNavCard from '@c/side-nav-card';
 import ItemWithTitleDesc from '@c/item-with-title-desc';
 
-import OptionSet from '../option-set';
-import AppList from './pages/entry/app-list';
-import AppTemplates from './pages/entry/app-templates';
+const OptionSet = React.lazy(() => import('../option-set'));
+const AppList = React.lazy(() => import('./pages/entry/app-list'));
+const AppTemplates = React.lazy(() => import('./pages/entry/app-templates'));
+const PageTemplates = React.lazy(() => import('./page-templates'));
 
 const MENU = [
   {
@@ -30,6 +31,13 @@ const MENU = [
     icon: 'template',
     name: '模版库',
     url: '/apps/app-templates',
+    authority: 'application/read',
+  },
+  {
+    id: 'page-templates',
+    icon: 'template',
+    name: '页面模版',
+    url: '/apps/page-templates',
     authority: 'application/read',
   },
 ];
@@ -61,6 +69,7 @@ function AppManagerEntry(): JSX.Element {
           <Route path="/apps/my-apps" component={AppList} />
           <Route path="/apps/option-set" component={OptionSet} />
           <Route path="/apps/app-templates" component={AppTemplates} />
+          <Route path="/apps/page-templates" component={PageTemplates} />
           <Route component={NotFoundError}/>
         </Switch>
       </div>

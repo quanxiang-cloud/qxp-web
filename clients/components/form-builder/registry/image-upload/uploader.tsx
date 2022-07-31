@@ -1,20 +1,18 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useContext } from 'react';
 
-import { getQuery } from '@lib/utils';
 import { ImgUploader, FileList } from '@c/file-upload';
 import { DEFAULT_IMG_TYPES } from '@c/file-upload/constants';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import type { FileUploaderProps } from '@c/file-upload/uploader/file-uploader';
 import type { QxpFileFormData } from '../file-upload/uploader';
+import { TableContext } from '@home/pages/app-table-view-detail';
 
 export default function FormImgUploader(props: FileUploaderProps & ISchemaFieldComponentProps): JSX.Element {
+  const { appID, tableID } = useContext(TableContext);
   const { value, form, path } = props;
   const { readOnly } = props.props;
   const configProps = props?.props['x-component-props'];
-  const { pageID } = getQuery<{ pageID: string }>();
-  const { appID } = useParams<{ appID: string }>();
 
   function handleFileSuccess(currentFile: QXPUploadFileBaseProps): void {
     const currentFileFormData: QxpFileFormData = {
@@ -62,7 +60,9 @@ export default function FormImgUploader(props: FileUploaderProps & ISchemaFieldC
   return (
     <ImgUploader
       {...configProps}
-      additionalPathPrefix={`${appID}/${pageID}`}
+      isPrivate={false}
+      originalThumbnail
+      additionalPathPrefix={`app/${appID}/form-attachment/${tableID}`}
       fileData={value?.map((file: QxpFileFormData) =>
         ({
           name: file.label,

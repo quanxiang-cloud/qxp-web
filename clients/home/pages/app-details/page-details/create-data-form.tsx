@@ -9,7 +9,7 @@ import Button from '@c/button';
 import Loading from '@c/loading';
 import toast from '@lib/toast';
 import { FormRenderer } from '@c/form-builder';
-import { createFormDataRequest, editFormDataRequest } from '@lib/http-client';
+import { createFormDataRequest, editFormDataRequest } from '@lib/http-client-form';
 
 import { getSchemaAndRecord } from '../api';
 import { formDataDiff, buildFormDataReqParams } from '@home/utils';
@@ -62,10 +62,8 @@ function CreateDataForm({ appID, pageID, rowID, onCancel }: Props): JSX.Element 
           pageID,
           rowID,
           buildFormDataReqParams(schema, 'updated', newValue),
-        ).then((res) => {
-          if (res.errorCount !== 0) {
-            throw new Error('保存失败，没有权限');
-          }
+        ).then(() => {
+          toast.success('修改成功');
         });
       } else {
         setLoading(true);

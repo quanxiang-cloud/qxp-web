@@ -9,11 +9,12 @@ import {
 import { StoreContext } from '@c/form-builder/context';
 
 import EditLabels from './edit-labels';
-import OptionsConfig from './options_config';
+import OptionsConfig from './options-config';
 import { FieldConfigContext } from './context';
 import InputForLabels from './input-for-labels';
 import CalculationFormulaBtn from './calculation-formula-btn';
 import DefaultValueLinkageConfigBtn from './default-value-linkage-config-btn';
+import FormApi from './form-api';
 
 const COMMON_CONFIG_COMPONENTS = {
   ArrayTable,
@@ -30,6 +31,7 @@ const COMMON_CONFIG_COMPONENTS = {
   DefaultValueLinkageConfigBtn,
   CalculationFormulaBtn,
   InputForLabels,
+  FormApi,
 };
 
 type Props = {

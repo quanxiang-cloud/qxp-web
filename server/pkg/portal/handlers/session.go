@@ -45,7 +45,6 @@ type LoginResponse struct {
 type ResetPasswordResponse struct {
 	Code    int    `json:"code"`
 	Message string `json:"msg"`
-	Data    string `json:"data"`
 }
 
 // RefreshTokenData refresh token response data struct
@@ -57,25 +56,26 @@ type RefreshTokenData struct {
 
 // Department represents department fields
 type Department struct {
-	ID                 string      `json:"id"`
-	Grade              int         `json:"grade"`
-	Pid                string      `json:"pid"`
-	SuperID            string      `json:"superID"`
-	DepartmentLeaderID string      `json:"departmentLeaderID"`
-	DepartmentName     string      `json:"departmentName"`
-	Child              *Department `json:"child"`
+	ID       string `json:"id"`
+	Grade    int    `json:"grade"`
+	Pid      string `json:"pid"`
+	SuperID  string `json:"superID"`
+	LeaderID string `json:"leaderID"`
+	Name     string `json:"name"`
+	Attr     int    `json:"attr"`
 }
 
 // User represents user fields
 type User struct {
-	ID       string     `json:"id"`
-	UserName string     `json:"userName"`
-	Email    string     `json:"email"`
-	Phone    string     `json:"phone"`
-	Avatar   string     `json:"avatar"`
-	Status   int        `json:"status"`
-	DepIds   []string   `json:"depIds"`
-	Dep      Department `json:"dep"`
+	ID        string           `json:"id"`
+	Name      string           `json:"name"`
+	Email     string           `json:"email"`
+	SelfEmail string           `json:"selfEmail"`
+	Avatar    string           `json:"avatar"`
+	Phone     string           `json:"phone"`
+	UseStatus int              `json:"useStatus"`
+	Status    int              `json:"status"`
+	Deps      []([]Department) `json:"deps"`
 }
 
 func getTokenKey(r *http.Request) string {
@@ -97,7 +97,7 @@ func getRefreshToken(r *http.Request) string {
 // renewToken refresh token
 func renewToken(r *http.Request, refreshToken string) bool {
 	requestID := contexts.GetRequestID(r)
-	respBody, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/jwt/refresh", nil, map[string]string{
+	respBody, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/warden/refresh", nil, map[string]string{
 		"Content-Type":  "application/json",
 		"Refresh-Token": refreshToken,
 	})
@@ -165,7 +165,7 @@ func getToken(r *http.Request) string {
 }
 
 func getCurrentUser(ctx context.Context, token string) *User {
-	respBody, errMsg := contexts.SendRequest(ctx, "POST", "/api/v1/org/userUserInfo", nil, map[string]string{
+	respBody, errMsg := contexts.SendRequest(ctx, "GET", "/api/v1/org/h/user/info", nil, map[string]string{
 		"Access-Token": token,
 	})
 
@@ -220,13 +220,14 @@ func HasToken(r *http.Request) bool {
 }
 
 // RedirectToLoginPage redirect to login page
-func RedirectToLoginPage(w http.ResponseWriter, r *http.Request, path string) {
+func RedirectToLoginPage(w http.ResponseWriter, r *http.Request) {
 	session := contexts.GetCurrentRequestSession(r)
-	if path != "" {
-		session.Values["redirect_url"] = path
-	} else {
-		session.Values["redirect_url"] = r.URL.Path
+	redirectURL := r.URL.Path
+	if r.URL.RawQuery != "" {
+		redirectURL = fmt.Sprintf("%s?%s", redirectURL, r.URL.RawQuery)
 	}
+	session.Values["redirect_url"] = redirectURL
+
 	if err := session.Save(r, w); err != nil {
 		renderErrorPage(w, r, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
 		return

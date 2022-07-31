@@ -8,6 +8,11 @@ import ItemWithTitleDesc from '@c/item-with-title-desc';
 import Card from '@c/card';
 import Icon from '@c/icon';
 import GlobalHeader from '@home/components/global-header';
+import { getTwoDimenArrayHead } from '@lib/utils';
+import { useGetGlobalConfig } from '@lib/configuration-center';
+import { HOME_SCHEMA_KEY, VERSION } from '@portal/modules/system-mgmt/platform-setting/home-schema-setting';
+import ArteryRenderer from '@c/artery-renderer';
+import PageLoading from '@c/page-loading';
 
 import MyApps from './my-apps';
 import store from '../store';
@@ -16,12 +21,23 @@ import './index.scss';
 
 function Dashboard(): JSX.Element {
   const history = useHistory();
+  const [config, loading] = useGetGlobalConfig(HOME_SCHEMA_KEY, VERSION, null);
 
   useEffect(() => {
     document.title = '工作台';
     store.fetchTodoList();
     store.fetchAppList();
   }, []);
+
+  const dep = getTwoDimenArrayHead(window.USER.deps);
+
+  if (loading) {
+    return <PageLoading />;
+  }
+
+  if (config) {
+    return <ArteryRenderer arteryID={HOME_SCHEMA_KEY} version={VERSION} />;
+  }
 
   return (
     <>
@@ -35,9 +51,9 @@ function Dashboard(): JSX.Element {
               <div className="z-10">
                 <ItemWithTitleDesc
                   itemRender={(
-                    <Avatar size={48} username={window.USER.userName}/>
+                    <Avatar size={48} username={window.USER.name} />
                   )}
-                  title={`${window.USER.userName}, 下午好!`}
+                  title={`${window.USER.name}, 下午好!`}
                   desc="不是杰出者才能做梦，而是善梦者才杰出"
                   descClassName="text-12"
                   titleClassName="text-h4"
@@ -45,11 +61,11 @@ function Dashboard(): JSX.Element {
                 <div className="pl-48 mt-20 text-16">
                   <div>
                     <img className="inline-block mr-8" src="/dist/images/email.svg" />
-                  邮箱：{window.USER.email}
+                        邮箱：{window.USER.email}
                   </div>
                   <div className="mt-8">
                     <img className="inline-block mr-8" src="/dist/images/department.svg" />
-                  部门：{window.USER.dep.departmentName}
+                        部门：{dep?.name}
                   </div>
                 </div>
               </div>
@@ -97,7 +113,7 @@ function Dashboard(): JSX.Element {
                     <Icon className="mr-8" name={icon} size={20} />
                     {name}
                     <div className="rbtns">
-                      {(count !== undefined && count > 0 ) && (<div className="untreated">{count}</div>)}
+                      {(count !== undefined && count > 0) && (<div className="untreated">{count}</div>)}
                       <Icon name="chevron_right" size={20} />
                     </div>
                   </div>

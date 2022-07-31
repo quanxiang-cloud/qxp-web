@@ -12,7 +12,7 @@ import {
 } from '@formily/antd-components';
 import { FormPath } from '@formily/shared';
 import { toJS } from 'mobx';
-import { filter, tap, skip } from 'rxjs/operators';
+import { filter, tap, skip } from 'rxjs6/operators';
 
 import DatePicker from '@c/form-builder/registry/date-picker/date-picker';
 import Modal from '@c/modal';
@@ -23,7 +23,7 @@ import { JoinOperatorSelect, RulesList } from '@c/form-builder/customized-fields
 import { OperatorOptions, OPERATORS } from '@c/form-builder/constants';
 import schemaToFields, { schemaToMap } from '@lib/schema-convert';
 
-import { compareValueValidateMap } from './constants';
+import { compareValueValidateMap } from '../../utils';
 
 const COMPONENTS = {
   Input, AntdSelect, DatePicker, NumberPicker, Switch, RadioGroup: Radio.Group, RulesList, JoinOperatorSelect,

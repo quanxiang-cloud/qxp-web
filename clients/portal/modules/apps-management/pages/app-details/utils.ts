@@ -1,12 +1,11 @@
 import moment from 'moment';
 import { UnionColumn } from 'react-table';
-import { flattenDeep, isEmpty } from 'lodash';
 
 import toast from '@lib/toast';
 
 import { fetchCorrelationFlows, fetchCorrelationRoles } from './api';
-import { CardListInfo, CardList, CustomPageInfo, Description, SchemaPageInfo, MenuType } from './type';
-import { Menu } from './page-menu-design/menu-tree/type';
+import { CardListInfo, CardList, CustomPageInfo, Description, ArteryPageInfo } from './type';
+import { ViewType } from './view-orchestration/types.d';
 
 export const SYSTEM_FIELDS: Record<string, ModelFieldSchema> = {
   _id: {
@@ -15,7 +14,7 @@ export const SYSTEM_FIELDS: Record<string, ModelFieldSchema> = {
     readOnly: false,
     display: false,
     'x-component': 'Input',
-    not_null: false,
+    required: false,
     'x-internal': { isSystem: true },
     'x-index': 0,
   },
@@ -25,7 +24,7 @@ export const SYSTEM_FIELDS: Record<string, ModelFieldSchema> = {
     readOnly: false,
     display: false,
     'x-component': 'DatePicker',
-    not_null: false,
+    required: false,
     'x-component-props': { isNow: false, showTime: false },
     'x-internal': { isSystem: true },
     'x-index': 0,
@@ -36,7 +35,7 @@ export const SYSTEM_FIELDS: Record<string, ModelFieldSchema> = {
     readOnly: false,
     display: false,
     'x-component': 'DatePicker',
-    not_null: false,
+    required: false,
     'x-component-props': { isNow: false, showTime: false },
     'x-internal': { isSystem: true },
     'x-index': 0,
@@ -46,7 +45,7 @@ export const SYSTEM_FIELDS: Record<string, ModelFieldSchema> = {
     title: '创建者',
     readOnly: false,
     display: false,
-    not_null: false,
+    required: false,
     'x-component': 'Input',
     'x-internal': { isSystem: true },
     'x-index': 0,
@@ -57,7 +56,7 @@ export const SYSTEM_FIELDS: Record<string, ModelFieldSchema> = {
     readOnly: false,
     display: false,
     'x-component': 'Input',
-    not_null: false,
+    required: false,
     'x-internal': { isSystem: true },
     'x-index': 0,
   },
@@ -67,7 +66,7 @@ export const SYSTEM_FIELDS: Record<string, ModelFieldSchema> = {
     readOnly: false,
     display: false,
     'x-component': 'Input',
-    not_null: false,
+    required: false,
     'x-internal': { isSystem: true },
     'x-index': 0,
   },
@@ -77,7 +76,7 @@ export const SYSTEM_FIELDS: Record<string, ModelFieldSchema> = {
     readOnly: false,
     display: false,
     'x-component': 'Input',
-    not_null: false,
+    required: false,
     'x-internal': { isSystem: true },
     'x-index': 0,
   },
@@ -101,8 +100,8 @@ export const FIELD_COLUMNS: UnionColumn<ModelField>[] = [
   },
   {
     Header: '是否允许为空',
-    id: 'not_null',
-    accessor: (rowData) => rowData.not_null ? '不允许' : '允许',
+    id: 'required',
+    accessor: (rowData) => rowData.required ? '不允许' : '允许',
   },
 ];
 
@@ -134,16 +133,21 @@ export function filterDeletedPage(
   });
 }
 
-export function getValueOfPageDescription(key: string, data: CustomPageInfo & SchemaPageInfo): string | undefined {
+export function getValueOfPageDescription(key: string, data: CustomPageInfo & ArteryPageInfo): string | undefined {
   switch (key) {
   case 'createdBy':
     return data.createdBy;
   case 'updatedBy':
     return data.updatedBy;
   case 'updatedAt':
-    return !data.updatedAt ? '-' : moment(data.updatedAt, 'X').format('YYYY-MM-DD');
+    if (!data.updatedAt) return '-';
+    if ( (Number(data.updatedAt).toString().length === 10) ) {
+      return moment(Number(data.updatedAt), 'X').format('YYYY-MM-DD HH:mm:ss');
+    }
+    return moment(Number(data.updatedAt) / 1000, 'X').format('YYYY-MM-DD HH:mm:ss');
   case 'createdAt':
-    return !data.createdAt ? '-' : moment(data.createdAt, 'X').format('YYYY-MM-DD');
+    return !data.createdAt ? '-' :
+      moment(Math.floor(Number(data.createdAt) / 1000), 'X').format('YYYY-MM-DD HH:mm:ss');
   case 'fileSize':
     return data.fileSize;
   case 'fieldLen':
@@ -153,8 +157,8 @@ export function getValueOfPageDescription(key: string, data: CustomPageInfo & Sc
   }
 }
 
-export function mapToSchemaPageDescription(
-  { id, title, value }: Description, data: SchemaPageInfo,
+export function mapToArteryPageDescription(
+  { id, title, value }: Description, data: ArteryPageInfo,
 ): Description {
   const test = getValueOfPageDescription(id, { ...data, id: data.tableID || '' });
 
@@ -189,7 +193,7 @@ export async function getPageCardList(
   appID: string,
   pageID: string,
   cardList: CardList[],
-  menuType: number | undefined,
+  menuType?: ViewType,
 ): Promise<CardList[]> {
   let flowList: CardListInfo[] = [];
   let roleList: CardListInfo[] = [];
@@ -199,7 +203,7 @@ export async function getPageCardList(
     toast.error(err.message);
   });
 
-  if (menuType === MenuType.schemaForm) {
+  if (menuType === ViewType.TableSchemaView) {
     await fetchCorrelationFlows({ appID, formID: pageID }).then((res: CardListInfo[]) => {
       flowList = res;
     }).catch((err) => {
@@ -239,32 +243,4 @@ export function formatFileSize(fileSize: number): string {
   const i = Math.floor(Math.log(fileSize) / Math.log(1024));
 
   return parseFloat((fileSize / Math.pow(1024, i)).toFixed(2)) + ' ' + units[i];
-}
-
-function getFlatMenu(menus: Menu[] = []): Menu[] {
-  return flattenDeep(menus.map((menu: Menu) => menu.child?.length ? [menu, menu.child] : menu));
-}
-
-type MenuMap = Record<string, Menu>;
-function getReduceMap(menus: Menu[]): MenuMap {
-  const reducerFn = (acc: MenuMap, menu: Menu): MenuMap => {
-    acc[menu.id] = menu;
-    return acc;
-  };
-  return getFlatMenu(menus).reduce(reducerFn, {});
-}
-
-export function hasActiveMenu(list: Menu[], { id }: Menu): boolean {
-  return !!id && !isEmpty(getReduceMap(list)?.[id]);
-}
-
-export function updateNode(nodeList: Menu[], node: Menu): Menu[] {
-  return nodeList.map((currentNode) => {
-    if (currentNode.id === node.id) {
-      return node;
-    } else if (currentNode.child?.length) {
-      currentNode.child = updateNode(currentNode.child, node);
-    }
-    return currentNode;
-  });
 }

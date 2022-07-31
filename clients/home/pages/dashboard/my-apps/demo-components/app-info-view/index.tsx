@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import cs from 'classnames';
 
 import AppIcon from '@c/app-icon';
 import { parseJSON } from '@lib/utils';
@@ -12,13 +12,17 @@ type Props = {
 }
 
 function AppInfoView({ appInfo, className = '' }: Props): JSX.Element {
-  const history = useHistory();
   const appIcon = parseJSON<AppIconInfo>(appInfo.appIcon, { bgColor: 'amber', iconName: '' });
 
   return (
-    <div
-      onClick={() => history.push(`/apps/${appInfo.id}`)}
-      className={`${className} flex-1 flex overflow-hidden items-center`}
+    <a
+      href={appInfo.accessURL}
+      onClick={(e) => {
+        if (!appInfo.accessURL) e.preventDefault();
+      }}
+      className={cs('rounded-12 bg-white flex-1 flex overflow-hidden items-center', {
+        'opacity-70': !appInfo.accessURL,
+      }, className)}
     >
       <AppIcon
         className='mr-8'
@@ -28,11 +32,11 @@ function AppInfoView({ appInfo, className = '' }: Props): JSX.Element {
       />
       <div className='flex-1 app-info-view-text overflow-hidden'>
         <p className='truncate app-info-view-name text-gray-900'>{appInfo.appName}</p>
-        {'useStatus' in appInfo && (
-          <p className='app-info-view-status'>{appInfo.useStatus > 0 ? '已发布' : '未发布'}</p>
-        )}
+        {
+          !appInfo.accessURL && (<p className='app-info-view-status'>该应用未配置主页，无法访问</p>)
+        }
       </div>
-    </div>
+    </a>
   );
 }
 

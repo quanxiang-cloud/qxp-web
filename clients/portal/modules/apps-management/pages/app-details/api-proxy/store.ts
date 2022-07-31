@@ -236,20 +236,16 @@ class ApiProxyStore {
 
   @action
   fetchSvc = async (): Promise<void> => {
-    this.isLoading = true;
     try {
       this.svc = await apis.getService(this.currentSvcPath);
       await this.setApiKey();
     } catch (err) {
       this.svc = null;
-    } finally {
-      this.isLoading = false;
     }
   };
 
   @action
   fetchApiListInSvc = async (paging: {page: number; pageSize: number, search?: string}): Promise<void> => {
-    this.isLoading = true;
     try {
       if (paging.search) {
         const curNs = [this.currentNs?.parent, this.currentNs?.name].join('/');
@@ -264,8 +260,6 @@ class ApiProxyStore {
       }
     } catch (err) {
       toast.error(err);
-    } finally {
-      this.isLoading = false;
     }
   };
 
@@ -299,6 +293,7 @@ class ApiProxyStore {
     this.loadingNs = false;
     this.isLoading = false;
     this.svcApis = null;
+    this.svc = null;
   };
 }
 

@@ -15,6 +15,8 @@ class ApprovalsDetailStore {
   @observable taskDetails: TaskDetail[] = [];
   @observable canViewStatusAndMsg = false;
   @observable canMsg = false;
+  @observable formValues = {};
+  @observable isRefresh = false;
 
   @action init = (title: string): void => {
     this.title = title;

@@ -58,15 +58,14 @@ function InternalRadio(props: Props, ref?: Ref<HTMLInputElement>): JSX.Element {
           disabled ? 'cursor-not-allowed' : 'cursor-pointer',
           radioClass)}
         style={{ borderRadius: '50%' }}
-        onClick={() => handleChange(true)}
       >
         <input
           {...inputProps}
           ref={ref}
+          style={{ zIndex: 1, opacity: 0, position: 'absolute' }}
           checked={checked}
           type="radio"
           id={id}
-          className="hidden"
           disabled={disabled}
           onChange={(e: ChangeEvent<HTMLInputElement>) => {
             const { checked } = e.target;

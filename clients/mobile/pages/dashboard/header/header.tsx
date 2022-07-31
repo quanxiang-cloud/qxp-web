@@ -5,16 +5,17 @@ import Avatar from '@m/qxp-ui-mobile/avatar';
 import { HomePageProps } from '../types';
 
 import './header.scss';
+import { getUserDepartment } from '@lib/utils';
 
 const Header: React.FC<HomePageProps> = (props) => {
-  const depName = window.USER?.dep?.departmentName ?? '';
+  const userDepartment = getUserDepartment(window.USER);
 
   function renderHeader(): JSX.Element {
     return (
       <div className='safe-area-top header flex w-full title3 items-center'>
-        <Avatar name={depName} size='.32rem'/>
+        <Avatar name={userDepartment?.name || ''} size='.32rem'/>
         <h3 className='flex-1 truncate'>
-          {depName}
+          {userDepartment?.name || ''}
         </h3>
       </div>
     );

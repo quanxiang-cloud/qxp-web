@@ -10,7 +10,6 @@ import useModal from '@orchestrationAPI/effects/hooks/use-modal';
 import {
   CreateInput,
   CreateResponse,
-  NameSpace,
   UpdateParams,
   useCreateNameSpace,
   CreateParams,
@@ -25,7 +24,7 @@ import {
 import ModalRemoveTips from '../modal-remove-tips';
 import { MatchHighlight } from '@c/match-highlight';
 
-type Props = NodeRenderProps<NameSpace> & {
+type Props = NodeRenderProps<PolyAPI.Namespace> & {
   keyword?: string;
 }
 
@@ -41,7 +40,7 @@ function NamespaceNode({ node, store, keyword }: Props): JSX.Element | null {
       await store.loadChildren(pNode, true);
     }
 
-    function loadChildren(n: TreeNode<NameSpace>): void {
+    function loadChildren(n: TreeNode<PolyAPI.Namespace>): void {
       if (n.childrenStatus === 'resolved' && n.expanded && !(type === 'create' && n.id === node.id)) {
         return;
       }
@@ -49,7 +48,7 @@ function NamespaceNode({ node, store, keyword }: Props): JSX.Element | null {
       n.children?.forEach(loadChildren);
     }
 
-    function deleteFilter(n: TreeNode<NameSpace>): boolean {
+    function deleteFilter(n: TreeNode<PolyAPI.Namespace>): boolean {
       if (type === 'delete' && node.id === n.id) {
         const selectId = pNode?.children?.find((nn) => nn.id !== node.id)?.id;
         const ppNode = !selectId ? store.getNode(pNode?.parentId || '') : null;

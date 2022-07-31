@@ -23,7 +23,7 @@ func doLogout(w http.ResponseWriter, r *http.Request) {
 	contexts.Cache.Del(contexts.Ctx, refreshTokenKey)
 
 	requestID := contexts.GetRequestID(r)
-	_, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/jwt/logout", nil, map[string]string{
+	_, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/warden/logout", nil, map[string]string{
 		"Content-Type":  "application/x-www-form-urlencoded",
 		"Refresh-Token": refreshToken,
 		"Access-Token":  token,

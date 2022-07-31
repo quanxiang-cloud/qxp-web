@@ -7,8 +7,8 @@ import OPTIONS from './options';
 
 export type { Quill };
 
-const quillSrc = 'https://ofapkg.pek3b.qingstor.com/@one-for-all/quill@1.3.6/index.min.js';
-const styleSrc = 'https://ofapkg.pek3b.qingstor.com/@one-for-all/quill@1.3.6/1.3.6-quill.snow.css';
+const quillSrc = `${window.CONFIG.VendorPrefix}/@one-for-all/quill@1.3.6/index.min.js`;
+const styleSrc = `${window.CONFIG.VendorPrefix}/@one-for-all/quill@1.3.6/1.3.6-quill.snow.css`;
 
 function loadQuill(): Promise<Quill | null> {
   return System.import(styleSrc).then((module) => {
@@ -27,9 +27,10 @@ function loadQuill(): Promise<Quill | null> {
 
 type Props = {
   initialValue: string;
+  onChange?: (val: string) => void;
 }
 
-function QuillEditor({ initialValue }: Props, ref: React.Ref<Quill | null>): JSX.Element {
+function QuillEditor({ initialValue, onChange }: Props, ref: React.Ref<Quill | null>): JSX.Element {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const quillRef = useRef<Quill | null>(null);
   const [loaded, setLoaded] = useState<boolean>(false);
@@ -48,6 +49,10 @@ function QuillEditor({ initialValue }: Props, ref: React.Ref<Quill | null>): JSX
 
       const quill = new (quillClass as any)(containerRef.current, OPTIONS);
       quill.setContents(quill.clipboard.convert(initialValue));
+      quill.on('text-change', ()=>{
+        const html = quill.root.outerHTML;
+        onChange?.(html);
+      });
       quillRef.current = quill;
       setLoaded(true);
     });

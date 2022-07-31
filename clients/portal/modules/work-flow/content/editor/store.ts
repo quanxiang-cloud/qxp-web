@@ -1,4 +1,4 @@
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs6';
 import { FlowElement } from 'react-flow-renderer';
 import { uuid } from '@lib/utils';
 import { update, omit } from 'lodash';
@@ -7,13 +7,26 @@ import moment from 'moment';
 import { SaveWorkFlowParamsType } from '@flow/api';
 
 import { edgeBuilder, nodeBuilder } from './utils';
-import type { StoreValue, BusinessData, CurrentElement, Data, FormDataElement } from './type';
+import type { StoreValue, BusinessData, CurrentElement, Data, FormDataElement, DelayedData } from './type';
 import { CURRENT_WORK_FLOW_VERSION } from './utils/constants';
 
-const getStoreInitialData = (): StoreValue => {
-  const startID = 'formData' + uuid();
+const getStoreInitialData = (triggerMethod: string): StoreValue => {
+  const startID = (triggerMethod === 'form-data' ? 'formData' : 'FORM_TIME') + uuid();
   const endID = 'end' + uuid();
+  const triggerMode = triggerMethod === 'form-data' ? 'FORM_DATA' : 'FORM_TIME';
+
+  let startNode = nodeBuilder(startID, 'formData', '工作表触发', {
+    parentID: [],
+    childrenID: [endID],
+  });
+  if (triggerMethod !== 'form-data') {
+    startNode = nodeBuilder(startID, 'FORM_TIME', '定时触发', {
+      parentID: [],
+      childrenID: [endID],
+    });
+  }
   return {
+    cron: (startNode?.data?.businessData as DelayedData )?.timer || '',
     saved: false,
     needSaveFlow: false,
     readonly: false,
@@ -30,20 +43,17 @@ const getStoreInitialData = (): StoreValue => {
     keyFields: '',
     instanceName: '',
     processKey: '',
-    triggerMode: 'FORM_DATA',
+    triggerMode,
     nodeIdForDrawerForm: '',
     currentConnection: {},
-    cancelable: false,
-    urgeable: false,
+    cancelable: true,
+    urgeable: true,
     canCancelType: 1,
     canCancelNodes: '',
-    seeStatusAndMsg: false,
-    nodeAdminMsg: false,
+    seeStatusAndMsg: true,
+    nodeAdminMsg: true,
     elements: [
-      nodeBuilder(startID, 'formData', '工作表触发', {
-        parentID: [],
-        childrenID: [endID],
-      }),
+      startNode,
       nodeBuilder(endID, 'end', '结束', {
         width: 100,
         height: 28,
@@ -55,10 +65,10 @@ const getStoreInitialData = (): StoreValue => {
   };
 };
 
-const store = new BehaviorSubject<StoreValue>(getStoreInitialData());
+const store = new BehaviorSubject<StoreValue>(getStoreInitialData('form-data'));
 
-export function initStore(): void {
-  store.next(getStoreInitialData());
+export function initStore(triggerMethod: string): void {
+  store.next(getStoreInitialData(triggerMethod));
 }
 
 export function updateStore(updater: (st: StoreValue) => StoreValue): void {
@@ -138,8 +148,10 @@ export function buildWorkFlowSaveData(
 ): SaveWorkFlowParamsType {
   const {
     version, nodeIdForDrawerForm, name, triggerMode, cancelable, urgeable, nodeAdminMsg,
-    seeStatusAndMsg, keyFields, instanceName, canCancelNodes, canCancelType,
+    seeStatusAndMsg, keyFields, instanceName, canCancelNodes, canCancelType, cron,
   } = store.value;
+
+  const newcron = (saveData as Partial<DelayedData>).timer || cron || '';
   return {
     bpmnText: buildBpmnText(version, nodeIdForDrawerForm, saveData),
     name: name as string,
@@ -153,6 +165,7 @@ export function buildWorkFlowSaveData(
     instanceName,
     canCancelNodes,
     canCancelType,
+    cron: newcron,
   };
 }
 

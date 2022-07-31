@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect, useContext, useCallback, useMemo } 
 import { useQuery } from 'react-query';
 import { nanoid } from 'nanoid';
 import { isUndefined } from 'lodash';
-import { propEq, and } from 'ramda';
+import { useUpdateEffect } from 'react-use';
 
 import type { CustomRule } from '@c/formula-editor';
 import { Input } from '@flow/content/editor/type';
@@ -16,7 +16,7 @@ import useObservable from '@lib/hooks/use-observable';
 import type { StoreValue } from '@flow/content/editor/type';
 
 import Send from './send';
-
+import BodyEditor, { EditorRefType } from './body-editor';
 import { getWebhookPathTreeValue } from './utils';
 
 interface Props {
@@ -27,10 +27,13 @@ interface Props {
 }
 
 function Inputs({ value, onChange, values, error }: Props): JSX.Element | null {
+  const { type: triggerType, url, editWay } = values;
   const formulaEditorRef = useRef<RefType>();
+  const refEditor = useRef<EditorRefType>();
   const [customRules, setCustomRules] = useState<CustomRule[]>();
   const { tableSchema } = useContext(sourceTable);
   const { id: flowId = '' } = useObservable<StoreValue>(store);
+  const initInputsValue = useMemo(() => value, [values.url]);
 
   const getVariables = useCallback(() => {
     return getVariableList(flowId);
@@ -43,52 +46,81 @@ function Inputs({ value, onChange, values, error }: Props): JSX.Element | null {
 
   const pathTreeValue = useMemo(() => getWebhookPathTreeValue(tableSchema, data), [tableSchema, data]);
 
-  useEffect(() => {
-    const getInit = (type: 'header' | 'body' | 'query'): Input => ({
-      type: 'string', name: '', data: '', in: type, id: nanoid(),
-    });
-    if (values.type === 'send' && !value?.length) {
-      onChange(['header' as const, 'body' as const, 'query' as const].map(getInit));
+  const getInit = useCallback((type: 'header' | 'body' | 'query'): Input => {
+    const item: Input = {
+      type: 'string', name: '', data: '', in: type,
+    };
+    if (editWay === 'multiple') {
+      return { ...item, id: nanoid() };
     }
-  }, [values.type]);
+    return item;
+  }, [editWay]);
 
-  const isRequest = propEq('type', 'request');
-  const isSend = propEq('type', 'send');
+  const inputVal = useMemo(() => {
+    return ['header' as const, 'body' as const, 'query' as const].map(getInit);
+  }, [getInit]);
+
+  useEffect(() => {
+    if (triggerType === 'send' && !value?.length) {
+      onChange(inputVal);
+    }
+  }, [triggerType]);
+
+  useUpdateEffect(() => {
+    triggerType === 'send' && onChange(inputVal);
+  }, [triggerType, inputVal]);
 
   if (isLoading) {
     return <Loading desc="加载中..." />;
   }
 
-  if (values.type === 'request' && !values.url) {
+  if (triggerType === 'request' && !url) {
     return null;
   }
 
-  const hasCustomRulesAnd = and(!!customRules);
+  const onInsertText = (val: string): void=>{
+    refEditor.current?.onInsertText(val);
+  };
 
   return (
     <div className="webhook-request-inputs">
-      {hasCustomRulesAnd(isRequest(values)) && (
-        <ApiParamsConfig
-          onChange={onChange}
-          ref={formulaEditorRef}
-          value={value}
-          url={values.url}
-          customRules={customRules!}
-          validating={!isUndefined(error)}
-        />
-      )}
-      {hasCustomRulesAnd(isSend(values)) && (
-        <Send
-          value={value}
-          onChange={onChange}
-          ref={formulaEditorRef}
-          customRules={customRules!}
-        />
+      {triggerType === 'request' && (
+        <div className='flex-1 overflow-hidden'>
+          {editWay === 'simple' && (
+            <BodyEditor value={JSON.stringify(value, null, 4)} onChange={onChange} ref={refEditor}/>
+          )}
+          {editWay === 'multiple' && (
+            <ApiParamsConfig
+              onChange={onChange}
+              ref={formulaEditorRef}
+              value={value}
+              url={values.url}
+              initValue={initInputsValue}
+              customRules={customRules!}
+              validating={!isUndefined(error)}
+            />
+          )}
+        </div>)}
+      {triggerType === 'send' && (
+        <div className='flex-1 overflow-y-auto'>
+          {editWay === 'simple' && (
+            <BodyEditor value={JSON.stringify(value, null, 4)} onChange={onChange} ref={refEditor}/>
+          )}
+          {editWay === 'multiple' && (
+            <Send
+              value={value}
+              onChange={onChange}
+              ref={formulaEditorRef}
+              customRules={customRules!}
+            />
+          )}
+        </div>
       )}
       <PathTreeWithOperates
         currentFormulaEditorRef={formulaEditorRef}
         pathTreeValue={pathTreeValue}
         onRulesChange={setCustomRules}
+        onInsertText={onInsertText}
       />
     </div>
   );

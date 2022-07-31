@@ -103,8 +103,8 @@ function ShowModal({ modalType, isNoData = false }: Props): JSX.Element {
     const {
       option_set_name, option_set_tag, option_set_expand,
     } = formAddRef?.current?.getValues() ?? {};
-    const apiType = option_set_expand.length === 1 ? 1 : 2;
-    const queryType = option_set_expand.length === 1 ? 'list' : 'tree';
+    const apiType = option_set_expand?.length === 1 ? 1 : 2;
+    const queryType = option_set_expand?.length === 1 ? 'list' : 'tree';
     createOptionSet({
       name: option_set_name,
       tag: option_set_tag,

@@ -3,37 +3,58 @@ import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { Form, Input } from 'antd';
 
 import TreePicker from '@c/form/input/tree-picker-field';
-import CheckboxGroup from '@c/checkbox/checkbox-group';
 import Modal from '@c/modal';
 import toast from '@lib/toast';
 import Loading from '@c/loading';
 import { departmentToTreeNode } from '@lib/utils';
+import RadioGroup from '@c/radio/group';
+import Radio from '@c/radio';
+import { getTwoDimenArrayHead } from '@lib/utils';
 
 import DirectSuperior from './direct-superior';
 import { SpecialSymbolsReg, PhoneReg } from '../utils';
 import { getERPTree, addDepUser, updateUser } from '../api';
+import { sendMsgOption } from './reset-password-modal';
 
 const EMAIL_HELP = '企业成员的真实邮箱，设置后可以通过邮箱接收到全象云平台发送的各类消息提醒（手机号/邮箱，两者中至少必填一项）。';
 
+type Dep = {
+  depID: string;
+  attr: string
+}
+
+type Leader = {
+  userID: string;
+  attr: string;
+}
+
+type SendMessage = {
+  sendChannel: number;
+  sendTo: string;
+}
+
 export type FormValues = {
   position: string;
-  leaderID: string;
-  userName: string;
+  leader?: Leader[];
+  name: string;
   phone: string;
   email: string;
-  depIDs: string[];
-  roleIDs?: string[];
-  delete?: string[];
-  add?: string[];
+  selfEmail?: string;
+  dep: Dep[];
   id?: string;
-  sendEmailMsg?: 1 | -1;
-  sendPhoneMsg?: 1 | -1;
+  useStatus?: number;
+  sendMessage?: SendMessage;
 };
 
 interface Props {
   user: Employee;
   closeModal(): void;
 }
+
+export const SEND_MAP: Record<any, 'email' | 'phone'> = {
+  1: 'email',
+  2: 'phone',
+};
 
 function EditEmployeesModal( { user, closeModal }: Props): JSX.Element {
   const [form] = Form.useForm();
@@ -61,35 +82,52 @@ function EditEmployeesModal( { user, closeModal }: Props): JSX.Element {
   }
 
   function handleFinish(values: any): void {
-    const { userName, phone, email, sendPasswordBy, depID, leader, position } = values;
+    const { name, phone, email, selfEmail, sendPasswordBy, depID, leader, position } = values;
     if (!user.id) {
+      const sendMessage = {
+        sendChannel: sendPasswordBy || 0,
+        sendTo: values[SEND_MAP[sendPasswordBy]] || '',
+      };
       const params: FormValues = {
         position,
-        leaderID: leader.id,
-        userName,
+        name,
         phone,
         email,
-        sendPhoneMsg: sendPasswordBy && sendPasswordBy.includes('phone') ? 1 : -1,
-        sendEmailMsg: sendPasswordBy && sendPasswordBy.includes('email') ? 1 : -1,
-        depIDs: depID ? [depID] : [],
+        selfEmail,
+        useStatus: 1,
+        sendMessage,
+        dep: depID ? [{
+          depID: depID,
+          attr: '',
+        }] : [],
       };
+      if (leader.id) {
+        params.leader = [{ userID: leader.id, attr: '' }];
+      }
       staffMutation.mutate(params);
     } else {
       const params: FormValues = {
         position,
-        leaderID: leader.id,
         id: user.id,
-        userName,
+        name,
         phone,
         email,
-        delete: [],
-        depIDs: depID ? [depID] : [],
+        useStatus: user.useStatus,
+        dep: depID ? [{
+          depID: depID,
+          attr: '',
+        }] : [],
       };
+      if (leader.id) {
+        params.leader = [{ userID: leader.id, attr: '' }];
+      }
       staffMutation.mutate(params);
     }
   }
 
-  const showDepTree = !user.id || (user.id && user.isDEPLeader !== -1);
+  const dep = getTwoDimenArrayHead(user.departments);
+  const isLeader = dep?.attr === '1';
+  const showDepTree = !user.id || (user.id && !isLeader);
 
   if (isLoading && !departmentTree) {
     return <Loading desc="加载中..." />;
@@ -122,18 +160,19 @@ function EditEmployeesModal( { user, closeModal }: Props): JSX.Element {
         form={form}
         onFinish={handleFinish}
         initialValues={{
-          userName: user.userName,
+          name: user.name,
           phone: user.phone,
           email: user.email,
           leader: {
-            id: user.leaderID,
-            userName: user.leaderName,
+            id: getTwoDimenArrayHead(user.leaders)?.id,
+            name: getTwoDimenArrayHead(user.leaders)?.name,
           },
+          depID: dep?.id,
           position: user.position,
         }}
       >
         <Form.Item
-          name="userName"
+          name="name"
           label="员工姓名"
           rules={[
             { required: true, message: '请输入员工姓名' },
@@ -141,6 +180,9 @@ function EditEmployeesModal( { user, closeModal }: Props): JSX.Element {
               validator: (_, value) => {
                 if (value && SpecialSymbolsReg.test(value)) {
                   return Promise.reject(new Error('只能包含汉字、英文、横线("-")以及下划线("_")，请修改！'));
+                }
+                if (value && !/^((?!(\ud83c[\udf00-\udfff])|(\ud83d[\udc00-\ude4f])|(\ud83d[\ude80-\udeff])).)*$/.test(value)) {
+                  return Promise.reject(new Error('不能输入emoji表情符号'));
                 }
                 return Promise.resolve();
               },
@@ -178,6 +220,15 @@ function EditEmployeesModal( { user, closeModal }: Props): JSX.Element {
         >
           <Input disabled={user.id ? true : false} placeholder="例如：name@company.com" />
         </Form.Item>
+        <Form.Item
+          name="selfEmail"
+          label="私人邮箱"
+          rules={[
+            { type: 'email', message: '请输入合法的邮箱地址' },
+          ]}
+        >
+          <Input disabled={user.id ? true : false} placeholder="例如：name@company.com" />
+        </Form.Item>
         {
           !user.id && (
             <Form.Item
@@ -187,18 +238,18 @@ function EditEmployeesModal( { user, closeModal }: Props): JSX.Element {
                 { required: false, message: '请选择密码的发送方式' },
               ]}
             >
-              <CheckboxGroup
-                options={[
-                  {
-                    label: '通过邮箱',
-                    value: 'email',
-                  },
-                  {
-                    label: '通过短信',
-                    value: 'phone',
-                  },
-                ]}
-              />
+              <RadioGroup onChange={(value) => value}>
+                {sendMsgOption.map((option) => {
+                  return (
+                    <Radio
+                      className="mr-8"
+                      key={option.value}
+                      value={option.value}
+                      label={option.label}
+                    />
+                  );
+                })}
+              </RadioGroup>
             </Form.Item>
           )
         }
@@ -212,25 +263,19 @@ function EditEmployeesModal( { user, closeModal }: Props): JSX.Element {
           >
             <TreePicker
               treeData={departmentToTreeNode(departmentTree as Department)}
-              labelKey="departmentName"
+              labelKey="name"
             />
           </Form.Item>
         )}
         <Form.Item
           name="leader"
           label="直属上级"
-          rules={[
-            { required: true, message: '请选择直属上级' },
-          ]}
         >
           <DirectSuperior />
         </Form.Item>
         <Form.Item
           name="position"
           label="职位"
-          rules={[
-            { required: true, message: '请输入职位名称' },
-          ]}
         >
           <Input placeholder='请输入职位名称' />
         </Form.Item>

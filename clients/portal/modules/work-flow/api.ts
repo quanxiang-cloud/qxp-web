@@ -21,6 +21,7 @@ export type SaveWorkFlowParamsType = {
   instanceName?: string;
   canCancelType?: number,
   canCancelNodes?: string,
+  cron?: string,
 };
 export function saveWorkFlow(flowData: SaveWorkFlowParamsType): Promise<WorkFlowData> {
   return httpClient<WorkFlowData>(

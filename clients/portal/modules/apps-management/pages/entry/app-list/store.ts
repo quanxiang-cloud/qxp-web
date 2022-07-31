@@ -3,7 +3,7 @@ import { observable, action, reaction, IReactionDisposer, computed } from 'mobx'
 import toast from '@lib/toast';
 import { subscribeStatusChange } from '@c/task-lists/utils';
 
-import { updateAppStatus, createPage } from '../../app-details/api';
+import { updateAppStatus } from '../../app-details/api';
 import {
   delApp,
   createdApp,
@@ -107,12 +107,6 @@ class AppListStore {
       const newApp = { ...appInfo, ...res };
       this.appList = [newApp, ...this.appList];
       this.allAppList = [newApp, ...this.allAppList];
-      createPage({
-        describe: undefined,
-        icon: 'event_available',
-        name: '示例页面',
-        appID: res.id, id: '',
-      });
       return newApp.id;
     });
   };
@@ -137,7 +131,7 @@ class AppListStore {
   @action
   createdAppByTemplate = async (appInfo: AppInfo): Promise<any> => {
     if (!appInfo.template) {
-      return;
+      throw new Error('请选择模版');
     }
 
     const createdAppRes = await createDummyApp(appInfo);

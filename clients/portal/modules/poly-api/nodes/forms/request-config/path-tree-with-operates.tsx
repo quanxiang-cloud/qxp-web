@@ -14,9 +14,10 @@ type Props = {
   currentFormulaEditorRef: MutableRefObject<ApiParamsConfigRefType | undefined>;
   onRulesChange: (customRules?: CustomRule[]) => void;
   pathTreeValue?: POLY_API.PolyNodeInput[];
+  onInsertText?: (val: string) => void;
 }
 export default function PathTreeWithOperates(props: Props): JSX.Element {
-  const { currentFormulaEditorRef, pathTreeValue, onRulesChange } = props;
+  const { currentFormulaEditorRef, pathTreeValue, onRulesChange, onInsertText } = props;
   const polyPathTreeValue = usePathTreeSource();
 
   function onSelectVariable(node: any): void {
@@ -24,11 +25,13 @@ export default function PathTreeWithOperates(props: Props): JSX.Element {
       currentFormulaEditorRef?.current?.getCurrent()?.insertEntity(
         { key: node.path, name: node.data.descPath },
       );
+      onInsertText?.(node.path);
     }
   }
 
   function handleOperatesClick(operate: string): void {
     currentFormulaEditorRef?.current?.getCurrent()?.insertText(operate);
+    onInsertText?.(operate);
   }
 
   return (

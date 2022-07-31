@@ -10,6 +10,7 @@ import withDragResize from '@lib/hoc/with-drag-resize';
 import TriggerWay from './trigger-way';
 import API from './api';
 import Inputs from './inputs';
+import EditWay from './edit-way';
 import ContentType from './content-type';
 import Outputs from './outputs';
 import SendMethod from './send-method';
@@ -112,6 +113,12 @@ export default function WebhookConfig(
       component: SendMethod,
       hide: (values: any) => values.type !== 'send',
       defaultValue: 'POST',
+    }, {
+      title: '编辑方式',
+      name: 'editWay',
+      watch: true,
+      component: EditWay,
+      defaultValue: 'multiple',
     }, {
       name: 'inputs',
       watch: true,

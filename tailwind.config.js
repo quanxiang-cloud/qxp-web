@@ -22,6 +22,7 @@ module.exports = {
       8: '8px',
       10: '10px',
       12: '12px',
+      14: '14px',
       16: '16px',
       18: '18px',
       20: '20px',
@@ -96,6 +97,7 @@ module.exports = {
         'flow-header': "0px 8px 24px 4px rgba(148, 163, 184, 0.25)",
         'flow-aside': "1px 0px 0px #E2E8F0",
         'more-action': "0px 8px 24px rgba(148, 163, 184, 0.25)",
+        'around': "0px 1px 5px 1px rgba(0,0,0, 0.1);",
       },
       width: {
         24: '24px',
@@ -120,6 +122,7 @@ module.exports = {
       minWidth: {
         90: '90px',
         120: '120px',
+        740: '740px'
       },
       maxWidth: {
         '290': 290,
@@ -134,7 +137,9 @@ module.exports = {
         86: '86px',
         64: '64px',
         92: '92px',
+        130: '130px',
         160: '160px',
+        270: '270px',
         280: '280px',
       },
       borderWidth: {

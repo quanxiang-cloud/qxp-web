@@ -1,15 +1,13 @@
-import React, { KeyboardEvent, useCallback, useEffect, useState } from 'react';
+import React, { KeyboardEvent, useCallback } from 'react';
 import { toJS } from 'mobx';
-import { has } from 'ramda';
 import { Form, Input } from 'antd';
 
 import toast from '@lib/toast';
-import Select from '@c/select';
 
 import AppZipUpload from './app-zip-upload';
-import AppCreatedBy from './app-created-by';
 import AppIconPicker from './app-icon-picker';
 import { fetchTemplateList, TemplateListRes } from '../../app-templates/api';
+import AppLayoutType from '../layout-select';
 
 import './style.scss';
 
@@ -19,8 +17,6 @@ type Props = {
   modalType: string;
   className?: string;
   appInfo?: AppInfo;
-  templateID?: string;
-  basic?: boolean;
   onSubmitCallback?: () => void;
   onValuesChange?: (value: any) => void;
 }
@@ -37,13 +33,11 @@ async function getTemplateOptions(): Promise<LabelValue[]> {
 }
 
 function CreatedEditApp({
-  appInfo, modalType, className, onSubmitCallback, onValuesChange, templateID, basic = false,
+  appInfo, modalType, className, onSubmitCallback, onValuesChange,
 }: Props, ref?: any): JSX.Element {
   const [form] = Form.useForm();
   const initData = appInfo && toJS(appInfo);
-  const [options, setOptions] = useState<LabelValue[]>([]);
   const { appName, appIcon = '{}', appSign } = initData || {};
-  const [createdBy, setCreatedBy] = useState(templateID ? 'template' : 'base');
 
   const handleEnterSubmit = useCallback((e: KeyboardEvent<HTMLInputElement>) => {
     e.key === 'Enter' && handleFinish();
@@ -54,13 +48,9 @@ function CreatedEditApp({
   }
 
   function handleValuesChange(value: Record<string, unknown>): void {
-    has('createdBy', value) && setCreatedBy(value.createdBy as string);
+    // has('createdBy', value) && setCreatedBy(value.createdBy as string);
     onValuesChange?.(value);
   }
-
-  useEffect(() => {
-    getTemplateOptions().then(setOptions);
-  }, []);
 
   return (
     <Form
@@ -72,8 +62,7 @@ function CreatedEditApp({
         appName,
         appSign,
         appIcon,
-        createdBy,
-        template: templateID,
+        layoutType: 'free',
       }}
       onFinish={handleFinish}
       onValuesChange={handleValuesChange}
@@ -113,8 +102,8 @@ function CreatedEditApp({
       </Form.Item>
       <Form.Item
         name='appSign'
-        label='应用标识:'
-        // extra='必须以字母开头,由字母、数字、单下划线组成'
+        label='应用标识'
+        tooltip='应用标识用于标记开发者账号，即用户 id，便于在二次开发中使用'
         extra='必须以字母开头,由字母、数字组成'
         rules={[
           {
@@ -123,12 +112,12 @@ function CreatedEditApp({
           },
           {
             type: 'string',
-            max: 30,
-            message: '不能超过 30 个字符',
+            max: 20,
+            message: '不能超过 20 个字符',
           },
           {
-            pattern: /^[a-zA-Z][a-zA-Z0-9]*$/,
-            message: '必须以字母开头,由字母、数字组成',
+            pattern: /^[a-z][a-z0-9]*$/,
+            message: '必须以小写字母开头,由小写字母、数字组成',
           },
         ]}
       >
@@ -146,22 +135,15 @@ function CreatedEditApp({
       >
         <AppIconPicker />
       </Form.Item>
-      {modalType === 'createdApp' && !basic && (
-        <Form.Item
-          name="createdBy"
-          label="新建方式"
-        >
-          <AppCreatedBy value={createdBy} />
-        </Form.Item>
-      )}
-      {createdBy === 'template' && (
-        <Form.Item
-          name="template"
-          label="选择模版"
-        >
-          <Select className='w-full' options={options}/>
-        </Form.Item>
-      )}
+      <Form.Item
+        name="layoutType"
+        label="应用导航"
+        tooltip='应用导航可将多张页面链接起来，使其可以方便地访问到所需的内容'
+        hidden={['importApp', 'createAppWithTemplate', 'editApp'].includes(modalType)}
+      >
+        <AppLayoutType includeFree />
+      </Form.Item>
+
       {modalType === 'importApp' && (
         <Form.Item
           required

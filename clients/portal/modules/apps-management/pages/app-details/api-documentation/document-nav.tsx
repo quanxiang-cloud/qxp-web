@@ -1,122 +1,84 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import { observer } from 'mobx-react';
-import { isObject } from 'lodash';
+import React, { useState, useRef, useEffect } from 'react';
 import cs from 'classnames';
 
+import { DirectoryChild, CollectionState, PathType } from '@lib/api-collection';
+import { isApi } from '@lib/api-collection/utils';
 import Search from '@c/search';
 import TwoLevelMenu, { NodeItem } from '@c/two-level-menu';
+import { findFirstLeafNode } from '@c/two-level-menu/utils';
 
-import store, { mapNsToNodeItem } from './store';
+import { createMenus, filterMenusByKeyWord, sortMenusByOrder, concatApiDataList } from './utils';
 
 interface Props {
+  collectionValue: CollectionState;
   className?: string;
   hideTitle?: boolean;
-  onSelectNode?: (node: NodeItem<any>) => void;
+  onSelectNode?: (node: NodeItem<any> | undefined) => void;
+  onGetApiList?: (directoryPath: string, pathType?: PathType ) => void;
 }
 
-function DocumentNav(props: Props): JSX.Element {
-  const [loading, setLoading] = useState(true);
+function DocumentNav({ collectionValue, className, hideTitle, onSelectNode, onGetApiList }: Props): JSX.Element {
+  const [keyWord, setKeyWord] = useState('');
+  const [menus, setMenus] = useState<NodeItem<DirectoryChild>[]>([]);
+  const canReselected = useRef(true);
 
   useEffect(() => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 100);
-  }, [store.defaultActiveKey]);
+    let currentMenus = createMenus(concatApiDataList(collectionValue.apiDataList), true);
+    currentMenus = sortMenusByOrder(filterMenusByKeyWord(currentMenus, keyWord));
+    reselected(currentMenus);
+    setMenus(currentMenus);
+  }, [collectionValue, keyWord]);
 
-  const menus = useMemo(() => {
-    const form: NodeItem<DataModel> = {
-      id: 'form_group',
-      title: '页面表单API',
-      type: 'group',
-      children: [],
-      root: true,
-      disableSelect: true,
-    };
+  const reselected = (menus: NodeItem<DirectoryChild>[]): void => {
+    if (!canReselected.current) return;
+    const menu = findFirstLeafNode(menus);
+    if (menu) {
+      onSelectNode?.(menu);
+      canReselected.current = false;
+    } else {
+      onSelectNode?.(undefined);
+    }
+  };
 
-    const dataModel: NodeItem<DataModel> = {
-      id: 'data_model_group',
-      title: '数据模型API',
-      type: 'group',
-      children: [],
-      root: true,
-      disableSelect: true,
-    };
+  const changeKeyWord = (keyWord: string): void => {
+    setKeyWord(keyWord);
+    if (!keyWord) return;
+    canReselected.current = true;
+  };
 
-    store.dataModels.forEach((model) => {
-      if (model.source === 1) {
-        form.children?.push({
-          id: model.tableID,
-          title: model.title,
-          type: 'leaf',
-          source: model,
-          parentID: 'form_group',
-        });
-      } else {
-        dataModel.children?.push({
-          id: model.tableID,
-          title: model.title,
-          type: 'leaf',
-          source: model,
-          parentID: 'data_model_group',
-        });
-      }
-    });
+  const handleSelect = (node: NodeItem<DirectoryChild>): void => {
+    if (node.leafIsApi && node.source && !isApi(node.source) && !includeApi(node.children)) {
+      const { parent, name, pathType } = node.source;
+      onGetApiList?.(`${parent}/${name}`, pathType);
+    }
+    if (!node.disableSelect) {
+      onSelectNode?.(node);
+    }
+  };
 
-    const proxyApis: NodeItem<PolyAPI.Namespace> = {
-      id: 'proxy_api',
-      title: '第三方代理API',
-      type: 'group',
-      children: [],
-      root: true,
-      disableSelect: true,
-    };
-    store.apiNsList.forEach((item) => {
-      proxyApis.children?.push(mapNsToNodeItem(item));
-    });
+  const includeApi = (children?: NodeItem<DirectoryChild>[]) => {
+    if (!children) return false;
 
-    return [form, dataModel, proxyApis];
-  }, [store.dataModels, store.apiNsList]);
+    return children.some((child) => child.source && isApi(child.source));
+  };
 
   return (
-    <div className={cs('api-doc-details-nav rounded-tl-12 flex flex-col', props.className)}>
-      {!props.hideTitle && <div className='h-44 text-gray-400 text-14 font-semibold flex items-center pl-16'>API文档</div>}
+    <div className={cs('api-doc-details-nav rounded-tl-12 flex flex-col', className)}>
+      {!hideTitle && <div className='h-44 text-gray-400 text-14 font-semibold flex items-center pl-16'>API文档</div>}
       <Search
         className="mx-8 mb-8 text-12"
         placeholder="输入目录名称..."
-        onChange={store.changeKeyword}
+        onChange={changeKeyWord}
       />
-      {!loading && (
-        <TwoLevelMenu<any>
-          menus={menus}
-          style={{
-            height: 'calc(100% - 76px)',
-          }}
-          onSelect={(node) => {
-            if (!node.disableSelect) {
-              store.currentDataModel = node.source;
-              if (node.source?.tableID) {
-                store.tableID = node.source?.tableID || '';
-              }
-            }
-            if (isObject(node.source) && ('parent' in node.source) && ('subCount' in node.source)) {
-              if (node.hasChild && !node.childResolved) {
-                store.fetchSubNamespaces(node);
-              }
-              // leaf ns node, fetch its apis
-              if (!node.hasChild && !node.apisResolved && node.type === 'group') {
-                store.fetchNsApis(node);
-              }
-            }
-
-            if (node.type === 'leaf') {
-              props.onSelectNode && props.onSelectNode(node);
-            }
-          }}
-        />
-      )}
+      <TwoLevelMenu<any>
+        menus={menus}
+        style={{
+          height: 'calc(100% - 76px)',
+        }}
+        onSelect={handleSelect}
+      />
     </div>
   );
 }
 
-export default observer(DocumentNav);
+export default DocumentNav;

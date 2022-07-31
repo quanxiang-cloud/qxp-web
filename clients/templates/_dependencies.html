@@ -2,62 +2,64 @@
 <script type="systemjs-importmap">
   {
     "imports": {
-      "@formily/antd-components": "https://ofapkg.pek3b.qingstor.com/formily/antd-components.1.3.13{{if not .debugMode}}.min{{end}}.js",
-      "@formily/antd": "https://ofapkg.pek3b.qingstor.com/formily/antd.1.3.13{{if not .debugMode}}.min{{end}}.js",
-      "@formily/core": "https://ofapkg.pek3b.qingstor.com/formily/core.1.3.13{{if not .debugMode}}.min{{end}}.js",
-      "@formily/react-schema-renderer": "https://ofapkg.pek3b.qingstor.com/formily/react-schema-render.1.3.14{{if not .debugMode}}.min{{end}}.js",
-      "@formily/react-shared-components": "https://ofapkg.pek3b.qingstor.com/formily/react-shared-components.1.3.13{{if not .debugMode}}.min{{end}}.js",
-      "@formily/react": "https://ofapkg.pek3b.qingstor.com/formily/react.1.3.13{{if not .debugMode}}.min{{end}}.js",
-      "@formily/shared": "https://ofapkg.pek3b.qingstor.com/formily/shared.1.3.13{{if not .debugMode}}.min{{end}}.js",
-      "@formily/validator": "https://ofapkg.pek3b.qingstor.com/formily/validator.1.3.13{{if not .debugMode}}.min{{end}}.js",
-      "antd": "https://ofapkg.pek3b.qingstor.com/antd/antd.4.15.0{{if not .debugMode}}.min{{end}}.js",
-      "draft-js": "https://ofapkg.pek3b.qingstor.com/@one-for-all/draft-js@0.11.7/index{{if not .debugMode}}.min{{end}}.js",
-      "lodash": "https://ofapkg.pek3b.qingstor.com/lodash/lodash.js",
-      "moment": "https://ofapkg.pek3b.qingstor.com/moment/moment.js",
-      "react-dom": "https://ofapkg.pek3b.qingstor.com/react-dom@17.0.1/react-dom.17.0.1{{if not .debugMode}}.min{{end}}.js",
-      "react": "https://ofapkg.pek3b.qingstor.com/react@17.0.1/react.17.0.1{{if not .debugMode}}.min{{end}}.js",
-      "react-is": "https://ofapkg.pek3b.qingstor.com/react-is@17.0.1/react-is.17.0.1{{if not .debugMode}}.min{{end}}.js",
-      "jszip": "https://ofapkg.pek3b.qingstor.com/@ofa/jszip@3.7.1/index{{if not .debugMode}}.min{{end}}.js",
-      "ramda": "https://ofapkg.pek3b.qingstor.com/@ofa/ramda@0.27.1/index{{if not .debugMode}}.min{{end}}.js",
-      "react-beautiful-dnd": "https://ofapkg.pek3b.qingstor.com/@ofa/react-beautiful-dnd@13.1.0/index{{if not .debugMode}}.min{{end}}.js",
-      "react-dnd": "https://ofapkg.pek3b.qingstor.com/@ofa/react-dnd@14.0.4/index{{if not .debugMode}}.min{{end}}.js",
-      "react-flow-renderer": "https://ofapkg.pek3b.qingstor.com/@ofa/react-flow-renderer@9.6.9/index{{if not .debugMode}}.min{{end}}.js",
-      "rxjs/ajax": "https://ofapkg.pek3b.qingstor.com/@ofa/rxjs6@6.6.7/rxjs-ajax{{if not .debugMode}}.min{{end}}.js",
-      "rxjs/fetch": "https://ofapkg.pek3b.qingstor.com/@ofa/rxjs6@6.6.7/rxjs-fetch{{if not .debugMode}}.min{{end}}.js",
-      "rxjs/operators": "https://ofapkg.pek3b.qingstor.com/@ofa/rxjs6@6.6.7/rxjs-operators{{if not .debugMode}}.min{{end}}.js",
-      "rxjs/shared": "https://ofapkg.pek3b.qingstor.com/@ofa/rxjs6@6.6.7/rxjs-shared{{if not .debugMode}}.min{{end}}.js",
-      "rxjs/testing": "https://ofapkg.pek3b.qingstor.com/@ofa/rxjs6@6.6.7/rxjs-testing{{if not .debugMode}}.min{{end}}.js",
-      "rxjs/websocket": "https://ofapkg.pek3b.qingstor.com/@ofa/rxjs6@6.6.7/rxjs-websocket{{if not .debugMode}}.min{{end}}.js",
-      "rxjs": "https://ofapkg.pek3b.qingstor.com/@ofa/rxjs6@6.6.7/rxjs{{if not .debugMode}}.min{{end}}.js",
-      "xlsx": "https://ofapkg.pek3b.qingstor.com/@ofa/xlsx@0.17.3/index{{if not .debugMode}}.min{{end}}.js",
-      "@one-for-all/api-spec-adapter": "https://ofapkg.pek3b.qingstor.com/@one-for-all/api-spec-adapter@0.3.3/index{{if not .debugMode}}.min{{end}}.js",
-      "@one-for-all/render-engine": "https://ofapkg.pek3b.qingstor.com/@one-for-all/render-engine@0.11.0/index{{if not .debugMode}}.min{{end}}.js",
-      "@one-for-all/utils": "https://ofapkg.pek3b.qingstor.com/@one-for-all/utils@0.1.0/index{{if not .debugMode}}.min{{end}}.js",
-      "@one-for-all/ui": "https://ofapkg.pek3b.qingstor.com/@one-for-all/ui@0.2.19/index{{if not .debugMode}}.min{{end}}.js",
-      "@one-for-all/page-engine": "https://ofapkg.pek3b.qingstor.com/@one-for-all/page-engine@0.9.5/index{{if not .debugMode}}.min{{end}}.js",
-      "elkjs": "https://ofapkg.pek3b.qingstor.com/@one-for-all/elkjs@0.7.3-dev/index{{if not .debugMode}}.min{{end}}.js"
-    },
-    "scopes": {
-      "https://ofapkg.pek3b.qingstor.com/@one-for-all/render-engine@0.11.0/": {
-        "rxjs/ajax": "https://ofapkg.pek3b.qingstor.com/@ofa/rxjs@7.4.0/rxjs-ajax{{if not .debugMode}}.min{{end}}.js",
-        "rxjs/fetch": "https://ofapkg.pek3b.qingstor.com/@ofa/rxjs@7.4.0/rxjs-fetch{{if not .debugMode}}.min{{end}}.js",
-        "rxjs/operators": "https://ofapkg.pek3b.qingstor.com/@ofa/rxjs@7.4.0/rxjs-operators{{if not .debugMode}}.min{{end}}.js",
-        "rxjs/shared": "https://ofapkg.pek3b.qingstor.com/@ofa/rxjs@7.4.0/rxjs-shared{{if not .debugMode}}.min{{end}}.js",
-        "rxjs/testing": "https://ofapkg.pek3b.qingstor.com/@ofa/rxjs@7.4.0/rxjs-testing{{if not .debugMode}}.min{{end}}.js",
-        "rxjs/websocket": "https://ofapkg.pek3b.qingstor.com/@ofa/rxjs@7.4.0/rxjs-websocket{{if not .debugMode}}.min{{end}}.js",
-        "rxjs": "https://ofapkg.pek3b.qingstor.com/@ofa/rxjs@7.4.0/rxjs{{if not .debugMode}}.min{{end}}.js"
-      }
+      "@formily/antd-components": "{{ .vendorPrefix }}/formily/antd-components.1.3.13{{if not .debugMode}}.min{{end}}.js",
+      "@formily/antd": "{{ .vendorPrefix }}/formily/antd.1.3.13{{if not .debugMode}}.min{{end}}.js",
+      "@formily/core": "{{ .vendorPrefix }}/formily/core.1.3.13{{if not .debugMode}}.min{{end}}.js",
+      "@formily/react-schema-renderer": "{{ .vendorPrefix }}/formily/react-schema-render.1.3.14{{if not .debugMode}}.min{{end}}.js",
+      "@formily/react-shared-components": "{{ .vendorPrefix }}/formily/react-shared-components.1.3.13{{if not .debugMode}}.min{{end}}.js",
+      "@formily/react": "{{ .vendorPrefix }}/formily/react.1.3.13{{if not .debugMode}}.min{{end}}.js",
+      "@formily/shared": "{{ .vendorPrefix }}/formily/shared.1.3.13{{if not .debugMode}}.min{{end}}.js",
+      "@formily/validator": "{{ .vendorPrefix }}/formily/validator.1.3.13{{if not .debugMode}}.min{{end}}.js",
+      "@one-for-all/api-spec-adapter": "{{ .vendorPrefix }}/@one-for-all/api-spec-adapter@0.4.0/index{{if not .debugMode}}.min{{end}}.js",
+      "@one-for-all/artery-engine": "{{ .vendorPrefix }}/@one-for-all/artery-engine@1.5.0/index{{if not .debugMode}}.min{{end}}.js",
+      "@one-for-all/artery-outline": "{{ .vendorPrefix }}/@one-for-all/artery-outline@0.0.1/index{{if not .debugMode}}.min{{end}}.js",
+      "@one-for-all/artery-renderer": "{{ .vendorPrefix }}/@one-for-all/artery-renderer@0.21.3/index{{if not .debugMode}}.min{{end}}.js",
+      "@one-for-all/artery-simulator": "{{ .vendorPrefix }}/@one-for-all/artery-simulator@1.5.0/index.js",
+      "@one-for-all/artery-utils": "{{ .vendorPrefix }}/@one-for-all/artery-utils@0.18.0/index{{if not .debugMode}}.min{{end}}.js",
+      "@one-for-all/elements-radar": "{{ .vendorPrefix }}/@one-for-all/elements-radar@0.3.0/index{{if not .debugMode}}.min{{end}}.js",
+      "@one-for-all/headless-ui": "{{ .vendorPrefix }}/@one-for-all/headless-ui@0.8.3/web{{if not .debugMode}}.min{{end}}.js",
+      "@one-for-all/icon": "{{ .vendorPrefix }}/@one-for-all/icon@0.6.2/index{{if not .debugMode}}.min{{end}}.js",
+      "@one-for-all/page-engine": "{{ .vendorPrefix }}/@one-for-all/page-engine@0.10.0/index{{if not .debugMode}}.min{{end}}.js",
+      "@one-for-all/render-engine": "{{ .vendorPrefix }}/@one-for-all/render-engine@0.20.0/index{{if not .debugMode}}.min{{end}}.js",
+      "@one-for-all/ui": "{{ .vendorPrefix }}/@one-for-all/ui@0.3.3/index{{if not .debugMode}}.min{{end}}.js",
+      "@one-for-all/utils": "{{ .vendorPrefix }}/@one-for-all/utils@0.1.0/index{{if not .debugMode}}.min{{end}}.js",
+      "@one-for-all/headless-ui-interfaces": "{{ .vendorPrefix }}/@one-for-all/headless-ui@0.8.3/components-interface.json",
+      "@one-for-all/style-guide-csslint": "{{ .vendorPrefix }}/@one-for-all/style-guide@0.1.5/csslint.js",
+      "@one-for-all/style-guide": "{{ .vendorPrefix }}/@one-for-all/style-guide@0.1.5/index.js",
+      "react-codemirror2": "{{ .vendorPrefix }}/@one-for-all/codemirror@0.1.0/index.js",
+      "antd": "{{ .vendorPrefix }}/antd/antd.4.15.0{{if not .debugMode}}.min{{end}}.js",
+      "draft-js": "{{ .vendorPrefix }}/@one-for-all/draft-js@0.11.7/index{{if not .debugMode}}.min{{end}}.js",
+      "elkjs": "{{ .vendorPrefix }}/@one-for-all/elkjs@0.7.3-dev/index{{if not .debugMode}}.min{{end}}.js",
+      "history": "{{ .vendorPrefix }}/@one-for-all/history@5.3.0/index.min.js",
+      "lodash": "{{ .vendorPrefix }}/lodash/lodash.js",
+      "moment": "{{ .vendorPrefix }}/moment/moment.js",
+      "ofa-ui": "{{ .vendorPrefix }}/__legacy/legacy-ui-component-20220513-1.js",
+      "ramda": "{{ .vendorPrefix }}/@ofa/ramda@0.27.1/index{{if not .debugMode}}.min{{end}}.js",
+      "react-beautiful-dnd": "{{ .vendorPrefix }}/@ofa/react-beautiful-dnd@13.1.0/index{{if not .debugMode}}.min{{end}}.js",
+      "react-dnd": "{{ .vendorPrefix }}/@ofa/react-dnd@14.0.4/index{{if not .debugMode}}.min{{end}}.js",
+      "react-dom": "{{ .vendorPrefix }}/react-dom@17.0.1/react-dom.17.0.1{{if not .debugMode}}.min{{end}}.js",
+      "react-flow-renderer": "{{ .vendorPrefix }}/@ofa/react-flow-renderer@9.6.9/index{{if not .debugMode}}.min{{end}}.js",
+      "react-is": "{{ .vendorPrefix }}/react-is@17.0.1/react-is.17.0.1{{if not .debugMode}}.min{{end}}.js",
+      "react": "{{ .vendorPrefix }}/react@17.0.1/react.17.0.1{{if not .debugMode}}.min{{end}}.js",
+      "rxjs": "{{ .vendorPrefix }}/@ofa/rxjs@7.4.0/rxjs{{if not .debugMode}}.min{{end}}.js",
+      "rxjs/ajax": "{{ .vendorPrefix }}/@ofa/rxjs@7.4.0/rxjs-ajax{{if not .debugMode}}.min{{end}}.js",
+      "rxjs/fetch": "{{ .vendorPrefix }}/@ofa/rxjs@7.4.0/rxjs-fetch{{if not .debugMode}}.min{{end}}.js",
+      "rxjs/operators": "{{ .vendorPrefix }}/@ofa/rxjs@7.4.0/rxjs-operators{{if not .debugMode}}.min{{end}}.js",
+      "rxjs/shared": "{{ .vendorPrefix }}/@ofa/rxjs@7.4.0/rxjs-shared{{if not .debugMode}}.min{{end}}.js",
+      "rxjs/testing": "{{ .vendorPrefix }}/@ofa/rxjs@7.4.0/rxjs-testing{{if not .debugMode}}.min{{end}}.js",
+      "rxjs/websocket": "{{ .vendorPrefix }}/@ofa/rxjs@7.4.0/rxjs-websocket{{if not .debugMode}}.min{{end}}.js",
+      "xlsx": "{{ .vendorPrefix }}/@ofa/xlsx@0.17.3/index{{if not .debugMode}}.min{{end}}.js"
     }
   }
 </script>
 {{end}}
 
 {{define "_systemjs"}}
-<script src="https://ofapkg.pek3b.qingstor.com/system@6.10.3/system.6.10.3{{if not .debugMode}}.min{{end}}.js"></script>
+<script src="{{ .vendorPrefix }}/system@6.10.3/system.6.10.3{{if not .debugMode}}.min{{end}}.js"></script>
 {{end}}
 
 {{define "_polyfill"}}
-<script src="https://ofapkg.pek3b.qingstor.com/construct-style-sheets-polyfill@3.1.0/adoptedStyleSheets.js"></script>
+<script src="{{ .vendorPrefix }}/construct-style-sheets-polyfill@3.1.0/adoptedStyleSheets.js"></script>
 {{end}}
 
 {{define "_jsEntry"}}

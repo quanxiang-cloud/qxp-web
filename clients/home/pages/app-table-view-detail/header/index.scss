@@ -1,0 +1,9 @@
+.app-details-header {
+  position: relative;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.25)
+}
+
+.app-global-header {
+ @apply flex justify-between px-16 bg-white items-center;
+ height: 52px;
+}

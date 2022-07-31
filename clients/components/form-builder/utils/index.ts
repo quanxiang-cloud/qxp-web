@@ -1,6 +1,6 @@
 import { get, has, merge } from 'lodash';
 import { customAlphabet } from 'nanoid';
-import { Curry } from 'ts-toolbelt/out/Function/Curry';
+import type { Curry } from 'ts-toolbelt/out/Function/Curry';
 import { IFormExtendedValidateFieldOptions, ValidateNodeResult } from '@formily/antd';
 import fp, {
   pipe, entries, filter, fromPairs, every, equals, property, curry, map, cond, values, stubTrue,
@@ -220,7 +220,10 @@ export function schemaPermissionTransformer<T extends ISchema>(
       [isPermissionNormal, permissionTransformer({ display: true, readOnly: false }, field)],
     ]);
     const conditions = cond([
-      [(isReadOnly) => !!isReadOnly, permissionTransformer({ display: true, readOnly: true }, field)],
+      [
+        (isReadOnly: boolean | undefined) => !!isReadOnly,
+        permissionTransformer({ display: true, readOnly: true }, field),
+      ],
       [stubTrue, () => transformer(permission)],
     ]);
     conditions(readOnly && !isPermissionReadOnly(permission) && !isPermissionInvisible(permission));

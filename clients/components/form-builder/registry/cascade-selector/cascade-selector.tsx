@@ -3,24 +3,28 @@ import { useQuery } from 'react-query';
 import { Cascader, CascaderProps } from 'antd';
 import { DefaultOptionType } from 'antd/lib/cascader';
 import { omit, last } from 'lodash';
+import { flatten } from 'ramda';
 
-import { getOptionSetById } from '@portal/modules/option-set/api';
+import { getOptionSetById, getSelectApiData, ApiDataType } from '@portal/modules/option-set/api';
 
-export type DefaultValueFrom = 'customized' | 'predefined-dataset';
+export type DefaultValueFrom = 'customized' | 'predefined-dataset' | 'api';
 
 type CascaderOptionType = DefaultOptionType;
 type SingleValueType = (string | number)[];
 type CascaderValueType = SingleValueType | SingleValueType[];
 
-interface FetchOptions extends CascaderProps<any> {
+type baseProps={
+  sendUserData: boolean;
+  formApi: ApiDataType;
   predefinedDataset?: string;
   defaultValueFrom: DefaultValueFrom;
+}
+
+type FetchOptions = CascaderProps<any> & baseProps & {
   options: CascaderOptionType[];
 }
 
-export type CascadeSelectorProps = CascaderProps<any> & {
-  predefinedDataset?: string;
-  defaultValueFrom: DefaultValueFrom;
+export type CascadeSelectorProps = CascaderProps<any> & baseProps & {
   showFullPath?: boolean;
   onChange: (value: CascaderOptionType) => void;
   value: CascaderOptionType;
@@ -30,11 +34,16 @@ function useFetchOptions({
   options,
   defaultValueFrom,
   predefinedDataset,
+  sendUserData,
+  formApi,
 }: FetchOptions): CascaderOptionType[] {
   const [preparedOptions, setOptions] = useState(options || []);
   useEffect(() => setOptions(options), [options, defaultValueFrom]);
 
   const { data, isLoading, isError } = useQuery([defaultValueFrom, predefinedDataset], () => {
+    if (defaultValueFrom === 'api') {
+      return getSelectApiData(formApi, sendUserData).then((val)=>val);
+    }
     if (defaultValueFrom === 'customized' || !predefinedDataset) {
       return options;
     }
@@ -72,10 +81,15 @@ function CascadeSelector({
     predefinedDataset,
     defaultValueFrom,
     options: cascadeProps.options || [],
+    formApi: cascadeProps.formApi,
+    sendUserData: cascadeProps.sendUserData,
   });
 
-  function handleChange(_value: CascaderValueType, selected?: CascaderOptionType[]): void {
-    const labelToSave = (selected || []).map(({ label }) => label).join('/');
+  function handleChange(
+    _value: CascaderValueType, selected?: CascaderOptionType[] | CascaderOptionType[][],
+  ): void {
+    const selectedArray = flatten(selected ?? []);
+    const labelToSave = selectedArray.map(({ label }) => label).join('/');
     const valueToSave = _value.join('/');
     cascadeProps && cascadeProps.onChange({ label: labelToSave, value: valueToSave });
   }

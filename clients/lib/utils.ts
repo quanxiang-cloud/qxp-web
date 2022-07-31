@@ -1,30 +1,10 @@
 import qs from 'qs';
-import { TreeData, TreeItem } from '@atlaskit/tree';
 import { isObject } from 'lodash';
-import { TreeNode } from '@c/headless-tree/types';
 import { nanoid } from 'nanoid';
 import dayjs from 'dayjs';
 
+import type { TreeNode } from '@c/headless-tree/types';
 import toast from '@lib/toast';
-
-// https://attacomsian.com/blog/javascript-current-timezone
-function getTimeZone(): string {
-  const date = new Date();
-  const offset = date.getTimezoneOffset();
-  if (offset === 0) {
-    return 'UTC+0';
-  }
-
-  const delta = Math.abs(offset) / 60;
-
-  if (offset > 0) {
-    return `UTC-${delta}`;
-  }
-
-  return `UTC+${delta}`;
-}
-
-export const TIME_ZONE = getTimeZone();
 
 export function uuid(): string {
   return nanoid();
@@ -126,7 +106,7 @@ export function departmentToTreeNode(department: Department, level = 0): TreeNod
 
   return {
     data: department,
-    name: department.departmentName,
+    name: department.name,
     id: department.id,
     parentId: department.pid,
     path: '',
@@ -164,53 +144,6 @@ export function copyToClipboard(str: string, msg: string): void {
     document.getSelection()?.addRange(selected);
   }
   toast.success(msg || '复制成功');
-}
-
-function _buildTreeDataItems(
-  items: { [key: string]: TreeItem },
-  menus: Array<PageInfo>,
-): { [key: string]: TreeItem } {
-  const childItems = menus.map((page) => {
-    return _buildTreeDataItems(items, page.child || []);
-  }).reduce((acc, childItems) => {
-    return { ...acc, ...childItems };
-  }, {});
-
-  const newItems = menus.reduce<{ [key: string]: TreeItem }>((acc, page) => {
-    acc[page.id] = {
-      id: page.id,
-      children: (page.child || []).map((childPage) => childPage.id),
-      hasChildren: page.menuType === 1,
-      isExpanded: false,
-      isChildrenLoading: false,
-      data: page,
-    };
-    return acc;
-  }, items);
-
-  return {
-    ...childItems,
-    ...newItems,
-  };
-}
-
-export function buildAppPagesTreeData(menus: Array<PageInfo>): TreeData {
-  const rootItem: { [key: string]: TreeItem } = {
-    ROOT: {
-      id: 'ROOT',
-      children: menus.map((childPage) => childPage.id),
-      hasChildren: !!menus.length,
-      isExpanded: true,
-      isChildrenLoading: false,
-    },
-  };
-
-  const treeData: TreeData = {
-    rootId: 'ROOT',
-    items: _buildTreeDataItems(rootItem, menus),
-  };
-
-  return treeData;
 }
 
 export function getQuery<T>(): T {
@@ -282,26 +215,19 @@ export function isMeanless(value: any): boolean {
   return false;
 }
 
-export function getUserDepartment(user: CurrentUser): UserDepartment {
-  let dep = user.dep;
-  while (dep.child) {
-    dep = dep.child;
-  }
+export function getUserDepartment(user: CurrentUser): Department {
+  const dep = getTwoDimenArrayHead(user.deps) as Department;
   return dep;
+}
+
+export function getTwoDimenArrayHead<T>(dep?: T[][]): T | undefined {
+  return dep?.[0]?.[0];
 }
 
 export function not<A extends any[]>(fn: (...args: [...A]) => boolean) {
   return (...args: [...A]): boolean => {
     return !fn(...args);
   };
-}
-
-export function quickSortObjectArray<T extends Record<string, T[keyof T]>>(key: string, arr: T[]): T[] {
-  if (!arr?.length || !key) return [];
-  const [head, ...tail] = arr;
-  const left = tail.filter((e) => (e[key] ?? 0) < (head[key] ?? 0));
-  const right = tail.filter((e) => (e[key] ?? 0) >= (head[key] ?? 0));
-  return quickSortObjectArray<T>(key, left).concat(head, quickSortObjectArray(key, right));
 }
 
 export async function copyContent(content: string, successMes?: string, errorMes?: string): Promise<void> {
@@ -339,7 +265,8 @@ export function isAcceptedFileType(file: File | QXPUploadFileBaseProps, accept: 
   const suffix = file.name.split('.').pop();
   if (!accept || !suffix) return false;
   const { type: fileType } = file;
-  return accept.some((acceptType) => acceptType === fileType || acceptType.split('/')[1].includes(suffix));
+  return accept.some((acceptType) => acceptType === fileType || acceptType.split('/')[1]?.includes(suffix) ||
+  acceptType.split('.')[1]?.includes(suffix));
 }
 
 export function createQueue(
@@ -357,7 +284,7 @@ export function createQueue(
             numOfWorkers -= 1;
             getNextTask();
           })
-          .catch((error: Error)=> {
+          .catch((error: Error) => {
             failed(error);
           });
         taskIndex += 1;
@@ -369,4 +296,31 @@ export function createQueue(
     };
     getNextTask();
   });
+}
+
+export function realizeLink(appID: string, link: string): string {
+  const replacements: Record<string, string> = {
+    user_id: window.USER.id,
+    user_name: window.USER.name,
+    user_email: window.USER.email,
+    user_phone: window.USER.phone,
+    dep_id: window.USER.deps?.[0]?.[0].id,
+    dep_name: window.USER.deps?.[0]?.[0].name,
+    appid: appID,
+  };
+
+  let _link = link;
+  Object.keys(replacements).forEach((key) => {
+    _link = _link.replace(new RegExp('\\$\\{' + key + '\\}', 'g'), replacements?.[key]);
+  });
+  return _link;
+}
+
+export function isJSON(str: string): boolean {
+  try {
+    const obj = JSON.parse(str);
+    return !!(typeof obj === 'object' && obj);
+  } catch (e) {
+    return false;
+  }
 }
