@@ -2,12 +2,13 @@ import { get } from 'lodash';
 import { nanoid } from 'nanoid';
 
 import { findNodeByID, appendChild, getNodeParents } from '@one-for-all/artery-utils';
-import { Artery, RouteNode, Node, HTMLNode, RefNode } from '@one-for-all/artery';
+import { Artery, RouteNode, Node, HTMLNode, RefNode, NodeProperties } from '@one-for-all/artery';
 
 import { ARTERY_KEY_VERSION } from '@portal/constants';
 import { getBatchGlobalConfig, setBatchGlobalConfig } from '@lib/api/user-config';
 
 import { LAYOUT_CHILD_TYPE_ROUTES_CONTAINER, ROOT_NODE_ID } from '../constants';
+import { LayoutType } from '../types.d';
 
 export function genNodeID(): string {
   return nanoid(8);
@@ -43,10 +44,10 @@ export async function fetchSchema(appID: string): Promise<Artery> {
   return JSON.parse(result[key]);
 }
 
-export async function createRefSchema(appID: string): Promise<string> {
+export async function createRefSchema(appID: string, initProps?: any): Promise<string> {
   const refSchemaKey = genDesktopArteryKey(appID);
   const refedSchema: Artery = {
-    node: { id: genNodeID(), type: 'html-element', name: 'div' },
+    node: { id: genNodeID(), type: 'html-element', name: 'div', props: initProps },
   };
 
   await saveArtery(refSchemaKey, refedSchema);
@@ -129,67 +130,50 @@ export function addRouteNodeToRootNode(rootNode: Node, routeNode: RouteNode): No
 
 export function createAppLandingPage(): Artery {
   const nodeID = genNodeID();
-  const textNodeID = 'text-' + genNodeID();
+  const textNodeID = 'react-component' + genNodeID();
 
   const ARTERY_DEMO: Artery = {
     node: {
       id: nodeID,
-      type: 'react-component',
-      packageName: 'ofa-ui',
-      packageVersion: 'latest',
-      exportName: 'page',
-      label: '示例页面',
+      type: 'html-element',
+      name: 'div',
       props: {
         style: {
           type: 'constant_property',
           value: {
+            display: 'flex',
+            fontWeight: 400,
             width: '100%',
             height: '100%',
-            display: 'flex',
+            flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            fontWeight: 400,
-            flexWrap: 'nowrap',
           },
         },
       },
-      children: [{
-        exportName: 'text',
-        label: '文本',
-        id: textNodeID,
-        supportStateExposure: true,
-        type: 'react-component',
-        packageName: 'ofa-ui',
-        packageVersion: 'latest',
-        props: {
-          id: {
-            type: 'constant_property',
-            value: textNodeID,
-          },
-          content: {
-            type: 'constant_property',
-            value: '页面设计示例页面',
-          },
-          isAllowSelect: {
-            type: 'constant_property',
-            value: false,
-          },
-          style: {
-            type: 'constant_property',
-            value: {
-              display: 'block',
-              fontSize: '50px',
-              fontWeight: 600,
-              color: '#000000',
-              borderStyle: 'none',
-              borderWidth: 1,
+      children: [
+        {
+          id: textNodeID,
+          type: 'html-element',
+          name: 'h1',
+          label: '文本',
+          props: {
+            children: {
+              type: 'constant_property',
+              value: '自定义页面示例',
+            },
+            style: {
+              type: 'constant_property',
+              value: {
+                display: 'block',
+                fontSize: '55px',
+                fontWeight: 400,
+              },
             },
           },
         },
-      }],
+      ],
     },
-    apiStateSpec: {},
-    sharedStatesSpec: {},
   };
 
   return ARTERY_DEMO;
@@ -208,4 +192,16 @@ export async function createAppLandingRouteNode(): Promise<RouteNode> {
   return saveArtery(demoViewRefArteryKey, createAppLandingPage()).then(() => {
     return demoViewNode;
   });
+}
+
+export function initSizeByLayoutType(layoutType: LayoutType): NodeProperties {
+  let value: Record<string, string> = { width: '200px' };
+
+  if (layoutType === LayoutType.HeaderContent) {
+    value = { height: '50px' };
+  }
+
+  return {
+    style: { type: 'constant_property', value },
+  };
 }

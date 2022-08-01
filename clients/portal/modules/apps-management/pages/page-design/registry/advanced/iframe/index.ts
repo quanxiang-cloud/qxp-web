@@ -1,4 +1,4 @@
-import type { SourceElement } from '../../../types';
+import type { SourceElement } from '@pageDesign/types';
 
 import Iframe from './iframe';
 import ConfigForm, { DEFAULT_CONFIG } from './config-form';

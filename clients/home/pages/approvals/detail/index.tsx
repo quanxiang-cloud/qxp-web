@@ -13,7 +13,7 @@ import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
 import toast from '@lib/toast';
 import { FormRenderer } from '@c/form-builder';
-import { buildQueryRef } from '@lib/http-client';
+import { buildQueryRef } from '@lib/http-client-form';
 import { getFlowFormData } from '@lib/api/flow';
 
 import Panel from './panel';
@@ -131,7 +131,6 @@ function ApprovalDetail(): JSX.Element {
   }
   const appID = get(data, 'appId');
   const tableID = get(data, 'tableId');
-
   return (
     <>
       <Breadcrumb
@@ -203,7 +202,7 @@ function ApprovalDetail(): JSX.Element {
           )
         }
       </div>
-      {appID && tableID && (
+      {appID && (
         <ActionModals
           flowName={data?.flowName}
           formData={formValues}

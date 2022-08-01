@@ -1,8 +1,8 @@
-import { Repository } from '@one-for-all/artery-renderer';
+import type { Repository } from '@one-for-all/artery-renderer';
 
-import { getRenderRepository } from '@portal/modules/apps-management/pages/page-design/api';
+import SimpleViewRenders from '@c/simple-view-render';
+import repoSystemComponents from '@c/repo-system-components';
 
-// todo fix this
-const repository: Repository = getRenderRepository();
+const repository: Repository = Object.assign({}, SimpleViewRenders, repoSystemComponents);
 
 export default repository;

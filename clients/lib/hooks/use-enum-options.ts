@@ -3,14 +3,13 @@ import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { uniq } from 'lodash';
 
 import { parseJSON } from '@lib/utils';
-import { getOptionSetById } from '@portal/modules/option-set/api';
+import { getOptionSetById, getSelectApiData } from '@portal/modules/option-set/api';
 import { convertEnumsToLabels } from '@c/form-builder/utils';
 
 export default function useEnumOptions(fieldProps: ISchemaFieldComponentProps): string[] {
   const [options, setOptions] = useState<string[]>([]);
-  const { datasetId } = fieldProps.props['x-component-props'];
+  const { datasetId, formApi, sendUserData } = fieldProps.props['x-component-props'];
   const defaultValueFrom = fieldProps.props['x-internal']?.defaultValueFrom;
-
   useEffect(() => {
     if (defaultValueFrom === 'customized') {
       // compatible with old version
@@ -30,7 +29,14 @@ export default function useEnumOptions(fieldProps: ISchemaFieldComponentProps): 
         setOptions(uniq(labels));
       });
     }
-  }, [datasetId, fieldProps.props.enum, fieldProps.dataSource]);
+
+    if (defaultValueFrom === 'api') {
+      getSelectApiData(formApi, sendUserData).then((val) => {
+        const labels = val.map(({ label }) => label);
+        setOptions(uniq(labels));
+      });
+    }
+  }, [datasetId, fieldProps.props.enum, fieldProps.dataSource, formApi, sendUserData]);
 
   return options;
 }

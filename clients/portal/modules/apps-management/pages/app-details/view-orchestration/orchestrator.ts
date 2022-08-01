@@ -11,7 +11,8 @@ import {
 } from '@one-for-all/artery';
 import { deleteByID, findNodeByID, patchNode } from '@one-for-all/artery-utils';
 
-import { getTableSchema, saveTableSchema } from '@lib/http-client';
+import { getTableSchema, saveTableSchema } from '@lib/http-client-form';
+import versionMap from '@pageDesign/blocks/fountainhead/config/name-version-map';
 
 import addLayoutToRoot, { copyLayoutToRoot, CreateLayoutInfo } from './helpers/add-layout-to-root';
 import addViewToRoot from './helpers/add-view-to-root';
@@ -33,12 +34,13 @@ import {
   CreateViewParams,
   ExternalView,
   StaticView,
-  SchemaView,
   TableSchemaView,
   ViewType,
 } from './types.d';
 import { ROOT_NODE_ID } from './constants';
-import { createBlank, fetchAppDetails, updateApp } from '../api';
+import { createBlank } from '../api';
+import pageTemplatesStore from '@portal/modules/apps-management/page-templates/store';
+import appStore from '../store';
 
 class Orchestrator {
   @observable loading = true;
@@ -64,11 +66,18 @@ class Orchestrator {
     const _rootNOde = findNodeByID(node, ROOT_NODE_ID);
     this.appLayout = get(_rootNOde, 'props.data-layout-type.value', undefined);
 
-    this.fetchAppHomeView(appID).then(() => {
-      if (this.homeView) {
-        this.currentView = this.homeView;
-      }
-    });
+    if (!appStore.appDetails.accessURL && this.views.length === 1) {
+      this.currentView = this.views[0];
+      this.setHomeView((this.views[0] as View).id);
+      return;
+    }
+
+    const view = this.views.find((view) => (view as View).url === appStore.appDetails.accessURL);
+    this.homeView = view as View;
+
+    if (this.homeView && !appStore.lastFocusViewID) {
+      this.currentView = this.homeView;
+    }
   }
 
   @computed get layouts(): Array<Layout> {
@@ -85,24 +94,10 @@ class Orchestrator {
       return [];
     }
 
-    return findViews(this.rootNode);
+    return findViews(this.rootNode).sort((viewA, viewB) => {
+      return viewA.name < viewB.name ? -1 : 1;
+    });
   }
-
-  // async createGroup(name: string): FutureErrorMessage {
-
-  // }
-
-  // async renameGroup(oldName: string, newName: string): FutureErrorMessage {
-
-  // }
-
-  // async deleteGroup(name: string): FutureErrorMessage {
-
-  // }
-
-  // async changeViewGroup(viewID: string, from: string, to?: string): FutureErrorMessage {
-
-  // }
 
   @action
   async addLayout(layoutInfo: CreateLayoutInfo): FutureErrorMessage {
@@ -138,10 +133,14 @@ class Orchestrator {
   @action
   async editLayout(partialLayoutInfo: Pick<Layout, 'name' | 'description' | 'id'>): FutureErrorMessage {
     const layoutList = get(this.rootNode, 'node.children[1].children', []);
-    const index = findIndex(layoutList, (layoutItem: RouteNode) => layoutItem.node.id === partialLayoutInfo.id);
+    const index = findIndex(
+      layoutList,
+      (layoutItem: RouteNode) => layoutItem.node.id === partialLayoutInfo.id,
+    );
 
     set(this.rootNode, `node.children[1].children[${index}].node.label`, partialLayoutInfo.name);
-    set(this.rootNode, `node.children[1].children[${index}].node.props.data-layout-description`, { // temp description ,should remove soon
+    set(this.rootNode, `node.children[1].children[${index}].node.props.data-layout-description`, {
+      // temp description ,should remove soon
       type: 'constant_property',
       value: partialLayoutInfo.description,
     });
@@ -166,95 +165,85 @@ class Orchestrator {
     return this.saveSchema(rootNode);
   }
 
-  async addTableSchemaView(params: CreateViewParams<TableSchemaView>): FutureErrorMessage {
+  async addTableSchemaView(pageName: string, layoutID?: string, tableSchema?: ISchema): FutureErrorMessage {
     if (!this.rootNode) {
       return 'no root node found for this app, please init root node again!';
     }
-    let renderTableSchemaViewNode: ReactComponentNode;
-    return createBlank(this.appID).then(({ tableID: id }) => {
-      // todo create empty table schema?
-      const tableID = id;
-      renderTableSchemaViewNode = {
-        id: genNodeID(),
-        type: 'react-component',
-        label: params.name,
-        // todo implement this
-        packageName: 'SimpleViewRenders',
-        // todo implement this
-        packageVersion: '1.0.0',
-        // todo implement this
-        exportName: 'TableSchemaViewRender',
-        props: {
-          tableID: {
-            type: 'constant_property',
-            value: tableID,
-          },
-          name: {
-            type: 'constant_property',
-            value: params.name,
-          },
-          appID: {
-            type: 'constant_property',
-            value: this.appID,
-          },
+
+    const { tableID } = await createBlank(this.appID);
+    if (tableSchema) {
+      await saveTableSchema(this.appID, tableID, tableSchema);
+    }
+
+    const renderTableSchemaViewNode: ReactComponentNode = {
+      id: genNodeID(),
+      type: 'react-component',
+      label: pageName,
+      // todo implement this
+      packageName: 'SimpleViewRenders',
+      // todo implement this
+      packageVersion: versionMap.SimpleViewRenders,
+      // todo implement this
+      exportName: 'TableSchemaViewRender',
+      props: {
+        tableID: {
+          type: 'constant_property',
+          value: tableID,
         },
-      };
+        name: {
+          type: 'constant_property',
+          value: pageName,
+        },
+        appID: {
+          type: 'constant_property',
+          value: this.appID,
+        },
+      },
+    };
+    appStore.setLastFocusViewID(renderTableSchemaViewNode.id);
 
-      if (!params.layoutID) {
-        return this.saveSchema(addViewToRoot(this.rootNode, renderTableSchemaViewNode));
-      }
+    if (!layoutID) {
+      return this.saveSchema(addViewToRoot(this.rootNode, renderTableSchemaViewNode));
+    }
 
-      const rootNode = addViewToLayout(this.rootNode, params.layoutID, renderTableSchemaViewNode);
+    const rootNode = addViewToLayout(this.rootNode, layoutID, renderTableSchemaViewNode);
 
-      return this.saveSchema(rootNode);
-    });
+    return this.saveSchema(rootNode);
   }
 
-  async addSchemaView(params: CreateViewParams<SchemaView>): FutureErrorMessage {
+  async addSchemaView(pageName: string, layoutID?: string, artery?: Artery): FutureErrorMessage {
     if (!this.rootNode) {
       return 'no root node found for this app, please init root node again!';
     }
-    let renderSchemaView: RefNode;
 
     const pageSchemaKey = genDesktopArteryKey(this.appID);
-    const customPageSchema: Artery = {
+    const customPageSchema: Artery = artery ?? {
       node: {
         id: genNodeID(),
-        type: 'react-component',
-        packageName: 'ofa-ui',
-        packageVersion: 'latest',
-        exportName: 'page',
-        label: params.name,
-        props: {
-          style: {
-            type: 'constant_property',
-            value: {
-              width: '100%',
-              height: '100%',
-            },
-          },
-        },
-        children: [],
+        label: pageName,
+        type: 'html-element',
+        name: 'div',
       },
-      apiStateSpec: {},
-      sharedStatesSpec: {},
     };
-    return saveArtery(pageSchemaKey, customPageSchema).then(() => {
-      renderSchemaView = {
-        id: genNodeID(),
-        type: 'ref-node',
-        arteryID: pageSchemaKey,
-        label: params.name,
-      };
 
-      if (!params.layoutID) {
-        return this.saveSchema(addViewToRoot(this.rootNode, renderSchemaView));
-      }
+    await saveArtery(pageSchemaKey, customPageSchema);
 
-      const rootNode = addViewToLayout(this.rootNode, params.layoutID, renderSchemaView);
+    const renderSchemaView: RefNode = {
+      id: genNodeID(),
+      type: 'ref-node',
+      arteryID: pageSchemaKey,
+      label: pageName,
+    };
 
-      return this.saveSchema(rootNode);
-    });
+    appStore.setLastFocusViewID(renderSchemaView.id);
+
+    if (!layoutID) {
+      return this.saveSchema(addViewToRoot(this.rootNode, renderSchemaView));
+    }
+
+    const rootNode = addViewToLayout(this.rootNode, layoutID, renderSchemaView);
+
+    return this.saveSchema(rootNode);
   }
 
   async addStaticView(params: CreateViewParams<StaticView>): FutureErrorMessage {
@@ -265,7 +254,7 @@ class Orchestrator {
       // todo implement this
       packageName: 'SimpleViewRenders',
       // todo implement this
-      packageVersion: '1.0.0',
+      packageVersion: versionMap.SimpleViewRenders,
       // todo implement this
       exportName: 'StaticViewRender',
       props: {
@@ -279,6 +268,8 @@ class Orchestrator {
         },
       },
     };
+
+    appStore.setLastFocusViewID(staticViewNode.id);
 
     return Promise.resolve().then(() => {
       if (!params.layoutID) {
@@ -299,7 +290,7 @@ class Orchestrator {
       // todo implement this
       packageName: 'SimpleViewRenders',
       // todo implement this
-      packageVersion: '1.0.0',
+      packageVersion: versionMap.SimpleViewRenders,
       // todo implement this
       exportName: 'ExternalViewRender',
       props: {
@@ -318,6 +309,8 @@ class Orchestrator {
       },
     };
 
+    appStore.setLastFocusViewID(externalViewNode.id);
+
     if (!params.layoutID) {
       return this.saveSchema(addViewToRoot(this.rootNode, externalViewNode));
     }
@@ -325,12 +318,6 @@ class Orchestrator {
     const rootNode = addViewToLayout(this.rootNode, params.layoutID, externalViewNode);
     return this.saveSchema(rootNode);
   }
-
-  // async editTableSchemaView(view: TableSchemaView): FutureErrorMessage {
-
-  // };
-  // async editSchemaView(view: SchemaView): FutureErrorMessage;
-  // async editStaticView(view: StaticView): FutureErrorMessage;
 
   @action
   async editTableSchemaView(view: TableSchemaView): FutureErrorMessage {
@@ -438,58 +425,59 @@ class Orchestrator {
   }
 
   @action
-  handleViewInfoSubmit(
-    viewInfo: CreateViewParams<View>,
-  ): Promise<void> {
-    return Promise.resolve().then(() => {
-      if (this.modalType === 'createView') {
-        if (viewInfo.type === ViewType.TableSchemaView) {
-          return this.addTableSchemaView(viewInfo as CreateViewParams<TableSchemaView>);
-        }
-
-        if (viewInfo.type === ViewType.SchemaView) {
-          return this.addSchemaView(viewInfo as CreateViewParams<SchemaView>);
-        }
-
-        if (viewInfo.type === ViewType.StaticView) {
-          return this.addStaticView(viewInfo as CreateViewParams<StaticView>);
-        }
-        if (viewInfo.type === ViewType.ExternalView) {
-          return this.addExternalView(viewInfo as CreateViewParams<ExternalView>);
-        }
+  async handleViewInfoSubmit(viewInfo: CreateViewParams<View>): Promise<void> {
+    if (this.modalType === 'createView') {
+      if (viewInfo.type === ViewType.TableSchemaView) {
+        await this.addTableSchemaView(viewInfo.name, viewInfo.layoutID);
       }
 
-      if (this.modalType === 'editStaticView') {
-        return this.editStaticView(viewInfo as StaticView);
+      if (viewInfo.type === ViewType.SchemaView) {
+        await this.addSchemaView(viewInfo.name, viewInfo.layoutID);
       }
 
-      if (viewInfo.type === ViewType.ExternalView && this.modalType === 'editView') {
-        return this.editExternalView(viewInfo as ExternalView);
+      if (viewInfo.type === ViewType.StaticView) {
+        await this.addStaticView(viewInfo as CreateViewParams<StaticView>);
+      }
+      if (viewInfo.type === ViewType.ExternalView) {
+        await this.addExternalView(viewInfo as CreateViewParams<ExternalView>);
       }
 
-      if (viewInfo.type === ViewType.TableSchemaView && this.modalType === 'editView') {
-        const { tableID } = viewInfo;
-        // here modify table name first ,
-        // because there is a condition:
-        //  when schema label modified success and table name failed
-        //  edit modal will not close, and if submit again the edited name will be duplicated
-        return getTableSchema(this.appID, tableID).then((res) => {
+      return;
+    }
+
+    if (this.modalType === 'editStaticView') {
+      await this.editStaticView(viewInfo as StaticView);
+    }
+
+    if (viewInfo.type === ViewType.ExternalView && this.modalType === 'editView') {
+      await this.editExternalView(viewInfo as ExternalView);
+    }
+
+    if (viewInfo.type === ViewType.TableSchemaView && this.modalType === 'editView') {
+      const { tableID } = viewInfo;
+      // here modify table name first ,
+      // because there is a condition:
+      //  when schema label modified success and table name failed
+      //  edit modal will not close, and if submit again the edited name will be duplicated
+      await getTableSchema(this.appID, tableID)
+        .then((res) => {
           if (!res) return;
           const { schema, tableID } = res;
           const updatedNameSchema = { ...schema, title: viewInfo.name };
           return saveTableSchema(this.appID, tableID, updatedNameSchema);
-        }).then(() => this.editTableSchemaView(viewInfo as TableSchemaView));
-      }
+        })
+        .then(() => this.editTableSchemaView(viewInfo as TableSchemaView));
+    }
 
-      return this.updateViewName(this.currentView as View, viewInfo.name!);
-    }).then(() => {
-      if (viewInfo.id) {
-        this.setCurrentView(viewInfo);
-        return;
-      }
-      const view = this.views.find((view) => view.name === viewInfo.name);
-      this.setCurrentView(view as View);
-    });
+    await this.updateViewName(this.currentView as View, viewInfo.name!);
+
+    if (viewInfo.id) {
+      this.setCurrentView(viewInfo);
+      return;
+    }
+
+    const view = this.views.find((view) => view.name === viewInfo.name);
+    this.setCurrentView(view as View);
   }
 
   @action
@@ -503,35 +491,32 @@ class Orchestrator {
   }
 
   @action
-  saveAppHomeViewUrl(url: string): Promise<unknown> {
-    return updateApp({
-      id: this.appID,
-      accessURL: url,
-    });
-  }
-
-  @action
-  setHomeView(viewName?: string): Promise<unknown> {
-    const view = this.views.find((view) => view.name === viewName) as View;
+  setHomeView(id?: string): Promise<void> {
+    const view = this.views.find((view) => (view as View).id === id) as View;
 
     if (!view) {
       throw new Error('view is not found');
     }
 
     this.homeView = view;
-    return this.saveAppHomeViewUrl(view.url);
+    return appStore.setAccessURL(view.url);
   }
 
-  @action
-  fetchAppHomeView(id: string): Promise<void> {
-    return fetchAppDetails(id).then(({ accessURL }) => {
-      if (!accessURL && this.views.length === 1) {
-        this.setHomeView(this.views[0].name);
-        return;
-      }
-      const view = this.views.find((view) => (view as View).url === accessURL);
-      this.homeView = view as View;
-    });
+  async addPageFromTemplate(templateKey: string, name: string, layoutID?: string): FutureErrorMessage {
+    const template = pageTemplatesStore.pageTemplates.find(({ key }) => key === templateKey);
+    if (!template) {
+      return Promise.resolve('模板未找到');
+    }
+
+    if (template.type === 'form') {
+      return this.addTableSchemaView(name, layoutID, template.schema);
+    }
+
+    if (template.type === 'artery') {
+      return this.addSchemaView(name, layoutID, template.artery);
+    }
+
+    return '';
   }
 }
 

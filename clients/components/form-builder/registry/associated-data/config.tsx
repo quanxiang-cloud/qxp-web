@@ -14,7 +14,7 @@ import { FormInstance } from 'antd';
 import { schemaToMap } from '@lib/schema-convert';
 import FilterConfig from '@c/form-builder/registry/associated-data/filter-config';
 import { StoreContext } from '@c/form-builder/context';
-import { getTableSchema } from '@lib/http-client';
+import { getTableSchema } from '@lib/http-client-form';
 import schemaToFields from '@lib/schema-convert';
 import { getFormDataMenuList } from '@c/form-table-selector/api';
 

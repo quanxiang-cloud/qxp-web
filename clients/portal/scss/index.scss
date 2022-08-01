@@ -254,7 +254,7 @@ body {
   border: 1px solid transparent;
   border-color: #d5dee7;
   position: relative;
-  vertical-align: top;  
+  vertical-align: top;
   padding-bottom: calc(0.375em - 1px);
   padding-left: calc(0.625em - 1px);
   padding-right: calc(0.625em - 1px);
@@ -378,7 +378,7 @@ button {
 
 input {
   outline: none;
-  @apply border rounded-tl-2 rounded-tr-8 rounded-br-8 rounded-bl-8;
+  @apply border rounded-2;
   &:focus {
     box-shadow: 0px 0px 4px rgb(50 69 88 / 12%);
     border-color: var(--blue-600);
@@ -390,7 +390,7 @@ input {
   width: 8px;
   height: 8px;
   border-radius: 100%;
-  border-radius: 50%; 
+  border-radius: 50%;
   background-color: var(--status-color); /* 实心圆 ，如果没有这个就是一个小圆圈 */
   z-index: 2;
 }

@@ -9,7 +9,7 @@ import logger from '@lib/logger';
 import FormDataValueRenderer from '@c/form-data-value-renderer';
 import { isMeanless } from '@lib/utils';
 import schemaToFields from '@lib/schema-convert';
-import { getTableSchema } from '@lib/http-client';
+import { getTableSchema } from '@lib/http-client-form';
 
 import { getDefaultValue, schemaRulesTransform } from './utils';
 import SubTableList from './list';

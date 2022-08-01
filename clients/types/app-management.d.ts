@@ -10,6 +10,7 @@ declare global {
     appIcon: string;
     useStatus: number;
     appSign: string;
+    perPoly: boolean;
     appZipInfo?: any;
     createdBy?: string;
     template?: string;
@@ -165,7 +166,7 @@ declare global {
     method?: string,
     params?: { [propertyName: string]: SwagSchema },
     response?: { [propertyName: string]: SwagSchema },
-    condition?: any,
+    condition?: { type: string, query: Record<string, any> },
     roleID?: string,
     id?: string,
     uri?: string,

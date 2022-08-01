@@ -8,7 +8,7 @@ import EmptyTips from '@c/empty-tips';
 import Tooltip from '@c/tooltip';
 import Loading from '@c/loading';
 import { copyContent } from '@lib/utils';
-import { getTableSchema } from '@lib/http-client';
+import { getTableSchema } from '@lib/http-client-form';
 import toast from '@lib/toast';
 import schemaToFields from '@lib/schema-convert';
 
@@ -88,17 +88,6 @@ export default function ModelFields({ appID, tableID }: Props): JSX.Element {
   if (loading) {
     return <Loading />;
   }
-
-  // const getFields = (dataModelSchema: DataModelSchema): ModelField[] => {
-  //   return Object.entries(dataModelSchema.schema.properties || {}).map(([key, fieldSchema]) => {
-  //     return {
-  //       id: key,
-  //       ...fieldSchema,
-  //     };
-  //   }).sort((a, b) => {
-  //     return (b['x-index'] || 0) - (a['x-index'] || 0);
-  //   });
-  // };
 
   return (
     <>

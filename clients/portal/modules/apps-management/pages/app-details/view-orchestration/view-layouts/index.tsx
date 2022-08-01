@@ -17,7 +17,7 @@ import { Icon } from '@one-for-all/ui';
 
 import { Layout, LayoutType } from '../types.d';
 import { CreateLayoutInfo } from '../helpers/add-layout-to-root';
-import useAppStore from '../hooks';
+import appStore from '../../store';
 import ViewLayoutSelector from '../../../entry/app-list/layout-select/view-layout-selector';
 import { VIEW_TYPE_MAP } from '../constants';
 
@@ -28,19 +28,19 @@ const initLayout: Layout = {
 function ViewLayout(): JSX.Element {
   const history = useHistory();
   const { state } = useLocation<{openCreateModal: boolean}>();
-  const { store, isLoading } = useAppStore();
+  const { viewStore } = appStore;
   const [showModal, setShowModal] = useState<boolean>(state?.openCreateModal || false);
   const [pending, setPending] = useState<boolean>(false);
   const [curLayout, setCurLayout] = useState<Layout>();
   const [isEdit, setIsEdit] = useState<boolean>(false);
-  const allLayoutNames = useMemo(() => store?.layouts.map((layout) => layout.name), [store?.layouts] ) || [];
+  const allLayoutNames = useMemo(() => viewStore?.layouts.map((layout) => layout.name), [viewStore?.layouts] ) || [];
 
   const excludeLayoutNames = useMemo(() => {
     if (isEdit) {
-      return store?.layouts.filter((layout) => layout.name !== curLayout?.name)
+      return viewStore?.layouts.filter((layout) => layout.name !== curLayout?.name)
         .map((layout) => layout.name);
     }
-  }, [isEdit, store?.layouts, curLayout]) || [];
+  }, [isEdit, viewStore?.layouts, curLayout]) || [];
 
   const fromRef = useRef<FormInstance>(null);
 
@@ -62,10 +62,10 @@ function ViewLayout(): JSX.Element {
     Promise.resolve().then(() => {
       setPending(true);
       if (!isEdit) {
-        return store?.addLayout(values);
+        return viewStore?.addLayout(values);
       }
       if (curLayout) {
-        return store?.editLayout({ ...curLayout, ...values });
+        return viewStore?.editLayout({ ...curLayout, ...values });
       }
     }).then(() => {
       setShowModal(false);
@@ -148,7 +148,7 @@ function ViewLayout(): JSX.Element {
             <span
               className='text-btn mr-16'
               onClick={() => {
-                history.push(`/artery-engine?appID=${store?.appID}&pageName=${layout.name}&arteryID=${layout.refSchemaID}`);
+                history.push(`/artery-engine?appID=${viewStore?.appID}&pageName=${layout.name}&arteryID=${layout.refSchemaID}`);
               }}
             >
               去设计
@@ -158,7 +158,7 @@ function ViewLayout(): JSX.Element {
               placement="bottom-end"
               onMenuClick={(key): void => {
                 if (key === 'copy') {
-                  store?.copyLayout(layout);
+                  viewStore?.copyLayout(layout);
                   return;
                 }
                 if (key === 'delete') {
@@ -170,16 +170,16 @@ function ViewLayout(): JSX.Element {
                         <div className='flex items-center gap-8 text-yellow-600'>
                           <Icon name='error_outline' size={20}/>
                           <span className='text-h6-bold font-semibold'>
-                            {canDelete ? '确认要删除该母版吗？' : '母版存在关联页面'}
+                            {canDelete ? '确认要删除该母版吗？' : '无法删除：该母版存在关联页面'}
                           </span>
                         </div>
                         <span className='text-body2 pl-28'>
-                          {canDelete ? '删除母版后，所有数据将无法找回' : '请先删除关联页面中的母版，以保障页面的正常显示'}
+                          {canDelete ? '删除母版后，所有数据将无法找回' : '若要删除该母版，请先删除母版关联的页面'}
                         </span>
                       </div>
                     ),
                     onConfirm: () => {
-                      canDelete && store?.deleteViewOrLayout(layout.id).then(() => {
+                      canDelete && viewStore?.deleteViewOrLayout(layout.id).then(() => {
                         toast.success('删除成功');
                       });
                       modal.close();
@@ -215,7 +215,7 @@ function ViewLayout(): JSX.Element {
     },
   ];
 
-  if (isLoading) {
+  if (appStore.loading) {
     return <Loading />;
   }
 
@@ -246,7 +246,7 @@ function ViewLayout(): JSX.Element {
               emptyTips={<EmptyTips text='暂无页面布局' className="pt-40" />}
               rowKey='id'
               columns={columns}
-              data={store?.layouts.filter((layout) => layout.id !== 'root_node') || []}
+              data={viewStore?.layouts.filter((layout) => layout.id !== 'root_node') || []}
             />
           </div>
         </div>

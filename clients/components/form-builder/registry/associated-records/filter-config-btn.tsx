@@ -4,7 +4,7 @@ import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import Button from '@c/button';
 import { StoreContext } from '@c/form-builder/context';
-import { getTableSchema } from '@lib/http-client';
+import { getTableSchema } from '@lib/http-client-form';
 
 import FilterConfigModal from './filter-config-modal';
 

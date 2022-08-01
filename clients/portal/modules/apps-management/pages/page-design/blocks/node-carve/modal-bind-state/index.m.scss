@@ -1,0 +1,61 @@
+.modal {
+  display: grid;
+  grid-template-columns: 212px 1fr;
+  height: 100%;
+
+  .side {
+    max-height: 572px;
+    overflow: auto;
+    background: #F8FAFC;
+    box-shadow: inset -1px 0px 0px #E2E8F0;
+    > div.active {
+      background-color: var(--gray-200);
+    }
+  }
+  
+  .body {
+    @apply px-8;
+  }
+
+  .tip {
+    @apply text-blue-500 text-12;
+  }
+  
+  .desc {
+    @apply text-12 text-gray-400 pt-4 ml-8;
+  }
+
+  .list-item {
+    @apply cursor-pointer hover:bg-blue-200;
+  }
+
+  .bind-container {
+    @apply flex items-center max-h-144 overflow-auto flex-wrap;
+    width: 524px
+  }
+  
+  .operator-container {
+    @apply grid gap-8 grid-cols-6 max-h-144 overflow-auto font-mono;
+  }
+  
+  .bind-item {
+    @apply relative select-none px-16 py-8 mr-4 mb-4 border-1 inline-block text-center hover:bg-blue-200 rounded-4;
+  }
+
+  .operator {
+    @apply p-4  cursor-pointer border-1 inline-block text-center hover:bg-blue-200 rounded-4;
+  }
+
+  .hover-bind-item {
+    &:hover {
+      .unbind-btn {
+        display: block;
+      }
+    }
+  }
+
+  .unbind-btn {
+    @apply absolute right-0 top-0 cursor-pointer;
+    transform: translate(-25%, 25%);
+  }
+}

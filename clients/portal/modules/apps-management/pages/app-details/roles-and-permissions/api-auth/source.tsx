@@ -126,7 +126,7 @@ function Source(): JSX.Element {
       method: _path[2],
       params: {},
       response: {},
-      condition: {},
+      condition: { type: 'ALL', query: {} },
       uri: _path[1],
       roleID: store.currentRoleID,
       paramsAll: true,

@@ -1,12 +1,19 @@
 import { groupBy, merge } from 'lodash';
 
 import { FormFieldOption } from '@flow/content/editor/forms/api';
-import { quickSortObjectArray } from '@lib/utils';
 import { PERMISSION } from '@c/form-builder/constants';
 import treeUtil from '@lib/tree';
 import {
   numberTransform, isPermissionReadable, isPermissionHiddenAble, isPermissionWriteable, isPermissionEditable,
 } from '@c/form-builder/utils';
+
+function quickSortObjectArray<T extends Record<string, T[keyof T]>>(key: string, arr: T[]): T[] {
+  if (!arr?.length || !key) return [];
+  const [head, ...tail] = arr;
+  const left = tail.filter((e) => (e[key] ?? 0) < (head[key] ?? 0));
+  const right = tail.filter((e) => (e[key] ?? 0) >= (head[key] ?? 0));
+  return quickSortObjectArray<T>(key, left).concat(head, quickSortObjectArray(key, right));
+}
 
 export type FilterFunc = (currentSchema: ISchema) => boolean;
 export type FieldsFilterFunc = (currentSchema: SchemaFieldItem) => boolean;

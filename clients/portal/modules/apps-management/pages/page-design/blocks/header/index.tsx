@@ -1,68 +1,91 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import cs from 'classnames';
 import { observer } from 'mobx-react';
-import { toJS, reaction } from 'mobx';
+import { toJS } from 'mobx';
 import { Icon, Button, Tooltip, Modal } from '@one-for-all/ui';
 import { ArteryRenderer } from '@one-for-all/artery-renderer';
-import ArteryEngine, { BlockItemProps } from '@one-for-all/artery-engine';
+import type { BlockItemProps } from '@one-for-all/artery-engine';
 
-import { useCtx } from '../../ctx';
-import { BlocksCommunicationType } from '../../types';
+import toast from '@lib/toast';
+import { useCtx } from '@pageDesign/ctx';
+import type { BlocksCommunicationType } from '@pageDesign/types';
+import componentLoader from '@c/artery-renderer/component-loader';
+import repository from '@c/artery-renderer/repository';
 
+import NotSavedModal from './not-saved-modal';
 import styles from './style.m.scss';
 import './style.scss';
+import { getQuery } from '@lib/utils';
+import { useHistory } from 'react-router-dom';
 
+const MAX_MODIFICARIONS = 15;
 const Divider = (): JSX.Element => <div className='w-1 h-20 bg-gray-200 mx-16' />;
-const historySizeLimit = 50;
 
-function Toolbar({ blocksCommunicationState$ }: BlockItemProps<BlocksCommunicationType>): JSX.Element {
+function Toolbar({
+  sharedState,
+  artery,
+  commands,
+  commandsHasNext,
+  commandsHasPrev,
+}: BlockItemProps<BlocksCommunicationType>): JSX.Element {
+  const { appID, pageName } = getQuery<{ appID: string, pageName: string, arteryID: string }>();
   const ctx = useCtx();
-  const { page, designer, registry } = ctx;
+  const history = useHistory();
+  const { page } = ctx;
   const [openTestPreview, setOpenPreview] = useState(false);
-  const [historyList, setHistoryList] = useState<string[]>([]); // page schema history
-  const [hisIdx, setHisIdx] = useState(0); // history queue index
-  const repository = useMemo(()=> ({
-    'ofa-ui@latest': registry.toComponentMap('ofa-ui'),
-    'system-components@latest': registry.toComponentMap('systemComponents'),
-  }), []);
-  const { docLink = '', hideTestPreview } = ArteryEngine.useObservable(
-    blocksCommunicationState$, { activeNodeID: '' },
-  );
+  const [openNotSaved, setOpenNotSaved] = useState(false);
+  const [modifications, setModifications] = useState(0);
+  const { docLink = '', hideTestPreview } = sharedState;
 
-  useEffect(()=> {
-    const dispose = reaction(()=> JSON.stringify(toJS(page.schema)), (schema)=> {
-      setHistoryList((prevHis)=> {
-        if (prevHis[0] === schema) {
-          // no need put new layer
-          return prevHis;
-        }
-        if (prevHis.length === historySizeLimit) {
-          return [schema, ...prevHis.slice(0, -1)];
-        }
-        return [schema, ...prevHis];
-      });
-      // setHisIdx(0); // when add history layer, reset idx
-    });
+  useEffect(() => {
+    const timer = setInterval(() => {
+      !!modifications && autoSave();
+    }, 30 * 1000);
 
-    return dispose;
+    return () => {
+      clearInterval(timer);
+    };
   }, []);
 
-  function handleSave(): void {
-    const pageSchema = toJS(page.schema);
-    window.__isDev__ && console.log('save page schema: ', pageSchema);
-    ctx.onSave?.(pageSchema);
+  useEffect(() => {
+    setModifications(modifications + 1);
+  }, [artery]);
+
+  useEffect(() => {
+    if (modifications === MAX_MODIFICARIONS) {
+      autoSave();
+    }
+  }, [modifications]);
+
+  async function autoSave(): Promise<void> {
+    await ctx.onSave?.(artery);
+    setModifications(0);
   }
 
-  function saveAndExit(): void {
-    handleSave();
-    history.back();
+  function handleSave(): void {
+    autoSave();
+    toast.success('保存成功');
+  }
+
+  function handleExit(): void {
+    if (!modifications) {
+      handleGoBack();
+    } else {
+      setOpenNotSaved(true);
+    }
+  }
+
+  function handleGoBack(): void {
+    if (history.location.state?.isNav) {
+      history.push(`/apps/details/${appID}/app_nav`);
+      return;
+    }
+    history.push(`/apps/details/${appID}/views`);
   }
 
   function handlePreview(): void {
-    const renderSchema = toJS(page.schema);
-    window.__isDev__ && console.log('preview render schema: ', renderSchema);
-    ctx.onSave?.(renderSchema, { draft: true, silent: true });
-    // open new page
+    window.__isDev__ && console.log('preview render schema: ', artery);
+    ctx.onSave?.(artery);
     const aElem = document.createElement('a');
     Object.assign(aElem, {
       href: location.href.replace(/\/artery-engine/, '/artery-preview'),
@@ -79,57 +102,45 @@ function Toolbar({ blocksCommunicationState$ }: BlockItemProps<BlocksCommunicati
     return (
       <ArteryRenderer
         artery={artery as any}
-        plugins={{ repository: repository as any }}
+        plugins={{ componentLoader, repository }}
       />
     );
   }
 
-  function canUndo(): boolean {
-    return historyList.length > 1 && hisIdx < historyList.length - 1;
-  }
-
-  function canRedo(): boolean {
-    return historyList.length > 1 && hisIdx > 0 && hisIdx < historyList.length;
-  }
-
   function handleRedo(): void {
-    setHisIdx((prevIdx)=> {
-      const curIdx = prevIdx > 0 ? prevIdx - 1 : 0;
-      if (prevIdx !== curIdx) {
-        page.setSchema(JSON.parse(historyList[curIdx]));
-      }
-      return curIdx;
-    });
+    commands?.redo();
   }
 
   function handleUndo(): void {
-    setHisIdx((prevIdx)=> {
-      const curIdx = prevIdx < historyList.length - 1 ? prevIdx + 1 : historyList.length - 1;
-      if (prevIdx !== curIdx && curIdx > 0) {
-        page.setSchema(JSON.parse(historyList[curIdx]));
-      }
-      return curIdx;
-    });
+    commands?.undo();
   }
 
   return (
     <div className={cs('bg-gray-50 h-44 flex justify-between items-center px-16', styles.toolbar)}>
-      <div className={styles.brand}>{designer.vdoms.title}</div>
+      <div className={styles.brand}>
+        <div className='inline-flex items-center text-gray-900 text-12'>
+          <span onClick={handleGoBack}>
+            <Icon name='keyboard_backspace' className='mr-8 cursor-pointer' />
+          </span>
+          <span className='mr-4'>正在设计页面:</span>
+          <span>{pageName}</span>
+        </div>
+      </div>
       <div className={cs('flex items-center', styles.actions)}>
         <Tooltip position='top' label='撤销'>
           <Icon
             name='undo'
             className='mr-16'
-            clickable={canUndo()}
-            disabled={!canUndo()}
+            clickable={commandsHasPrev}
+            disabled={!commandsHasPrev}
             onClick={handleUndo}
           />
         </Tooltip>
         <Tooltip position='top' label='重做'>
           <Icon
             name='redo'
-            clickable={canRedo()}
-            disabled={!canRedo()}
+            clickable={commandsHasNext}
+            disabled={!commandsHasNext}
             onClick={handleRedo}
           />
         </Tooltip>
@@ -140,14 +151,14 @@ function Toolbar({ blocksCommunicationState$ }: BlockItemProps<BlocksCommunicati
             target='_blank'
             rel="noopener noreferrer"
           >
-            <Icon name='help_doc' color='gray' clickable/>
+            <Icon name='help_doc' color='gray' clickable />
           </a>
         </Tooltip>
         {window.__isDev__ && !hideTestPreview && (
           <>
             <Divider />
             <Tooltip position='top' label='测试预览'>
-              <Icon name='eye-open' color='gray' clickable onClick={()=> setOpenPreview(true)}/>
+              <Icon name='eye-open' color='gray' clickable onClick={() => setOpenPreview(true)} />
             </Tooltip>
           </>
         )}
@@ -155,16 +166,22 @@ function Toolbar({ blocksCommunicationState$ }: BlockItemProps<BlocksCommunicati
         <Button iconName='preview' onClick={handlePreview}>预览</Button>
         <Divider />
         <Button iconName='save' modifier='primary' onClick={handleSave} className={styles.btnSave}>保存</Button>
-        <Button iconName='save' modifier='primary' onClick={saveAndExit}>保存并退出</Button>
+        <Button iconName='save' modifier='primary' onClick={handleExit}>退出</Button>
       </div>
       {openTestPreview && (
         <Modal
           title='测试预览'
-          onClose={()=> setOpenPreview(false)}
+          onClose={() => setOpenPreview(false)}
           fullscreen
         >
           {rendeArtery()}
         </Modal>
+      )}
+      {openNotSaved && (
+        <NotSavedModal
+          onSave={handleSave}
+          onCancel={() => setOpenNotSaved(false)}
+          onAbandon={() => history.push(`/apps/details/${appID}/views`)} />
       )}
     </div>
   );

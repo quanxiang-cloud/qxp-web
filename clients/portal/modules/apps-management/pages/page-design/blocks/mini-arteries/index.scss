@@ -1,0 +1,45 @@
+.create-mini-artery {
+  margin-bottom: 20px;
+}
+
+.create-mini-artery__btn {
+  display: flex;
+  align-content: center;
+  margin-bottom: 8px;
+
+  .ofa-svg-icon {
+    margin-right: 4px;
+  }
+
+  &.disabled {
+    opacity: 0.8;
+  }
+}
+
+.create-mini-artery__desc {
+  font-size: 12px;
+  line-height: 20px;
+  color: var(--gray-400);
+}
+
+.mini-artery {
+  display: flex;
+  align-content: center;
+  padding: 8px 0;
+
+  &:not(:last-of-type) {
+    border-bottom: 1px solid var(--gray-200);
+  }
+
+  .mini-artery__name {
+    flex-grow: 1;
+  }
+
+  .mini-artery__action {
+    cursor: pointer;
+
+    &:not(:last-of-type) {
+      margin-right: 8px;
+    }
+  }
+}

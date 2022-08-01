@@ -47,7 +47,7 @@ export default function GlobalConfig(): JSX.Element | null {
   const formDataElement = getFormDataElement();
   const hasAssociativeTable = !!(formDataElement.data.businessData.form.value && appID);
   const { data: fieldList, isLoading } = useQuery(
-    ['GET_FIELD_LIST', formDataElement.data.businessData.form.value, appID],
+    ['GET_FIELD_LIST', formDataElement?.data?.businessData?.form?.value || '', appID],
     async ({ queryKey, meta }) => {
       if (!hasAssociativeTable) {
         return [];

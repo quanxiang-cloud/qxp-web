@@ -5,6 +5,7 @@ import { observer } from 'mobx-react';
 import Icon from '@c/icon';
 import PopConfirm from '@c/pop-confirm';
 import Button from '@c/button';
+import InsideDocsPortal from '@c/qxp-docs-inside-portal';
 
 import AppsSwitcher from '@c/apps-switcher';
 import MoreMenu from '@c/more-menu';
@@ -76,10 +77,8 @@ function DetailsHeader(): JSX.Element {
         <NavTaskBar type='manager' className='mx-16'/>
         <NavMsgBar type='portal' className='mr-16'/>
         <a
-          href={`//${window.CONFIG.docs_hostname}`}
-          target="_blank"
-          rel="noreferrer"
           className="app-header-icon corner-4-0-4-4 text-white"
+          onClick={() => InsideDocsPortal.show({ targetUrl: `https://${window.CONFIG.docs_hostname}` })}
         >
           <Icon name="help_doc" size={21} style={{ fill: 'var(--gray-400)' }} className='m-6'/>
         </a>

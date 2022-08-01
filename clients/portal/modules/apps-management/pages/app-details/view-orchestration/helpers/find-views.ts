@@ -107,7 +107,7 @@ export default function findViews(node: Node): Array<View> {
   const views: Array<View> = [];
 
   travel(node, {
-    routeNode: (routeNode: RouteNode) => {
+    routeNode: (routeNode: RouteNode): undefined => {
       if (isLayoutNode(routeNode.node)) {
         return;
       }

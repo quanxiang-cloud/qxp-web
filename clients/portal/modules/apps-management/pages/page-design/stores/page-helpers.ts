@@ -1,18 +1,19 @@
 import { toJS } from 'mobx';
+import { generateNodeId } from '@one-for-all/artery-engine';
 
 import { PageNode, PageArtery } from '../types';
-import { elemId } from '../utils';
+import versionMap from '../blocks/fountainhead/config/name-version-map';
 
 export function deepMergeNode(node: PageNode): PageNode {
   const target = toJS(node);
   // support loop-container
   if (target.type === 'loop-container') {
-    Object.assign(target, { id: elemId('loop-node') });
+    Object.assign(target, { id: generateNodeId('loop-node') });
 
     if (target.node) {
       // composed-node
       if (target.node.type === 'composed-node') {
-        Object.assign(target.node, { id: elemId('composed-node') });
+        Object.assign(target.node, { id: generateNodeId('composed-node') });
         if (target.node.outLayer) {
           target.node.outLayer = deepMergeNode(target.node.outLayer);
         }
@@ -30,7 +31,7 @@ export function deepMergeNode(node: PageNode): PageNode {
     return target;
   }
 
-  Object.assign(target, { id: elemId(node.exportName) });
+  Object.assign(target, { id: generateNodeId(node.exportName) });
   if (target.children) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
@@ -59,14 +60,14 @@ export function generateGridChildren(
   if (childrenLength < scaleArray.length) {
     const _array: PageNode[] = [];
     for (let i = 0; i < (scaleArray.length - childrenLength); (i = i + 1)) {
-      const elementId = elemId('container');
+      const elementId = generateNodeId('container');
       _array.push({
         id: elementId,
         pid: parentId,
         type: 'react-component',
         exportName: 'container',
-        packageName: 'ofa-ui',
-        packageVersion: 'latest',
+        packageName: '@one-for-all/ui',
+        packageVersion: versionMap['@one-for-all/ui'],
         label: '容器',
         props: {
           style: {
@@ -109,11 +110,11 @@ export function generateGridChildren(
 export function initPageArtery(): PageArtery {
   return {
     node: {
-      id: elemId('page'),
+      id: generateNodeId('page'),
       pid: '',
       type: 'react-component',
-      packageName: 'ofa-ui',
-      packageVersion: 'latest',
+      packageName: '@one-for-all/ui',
+      packageVersion: versionMap['@one-for-all/ui'],
       exportName: 'page',
       label: '页面',
       props: {

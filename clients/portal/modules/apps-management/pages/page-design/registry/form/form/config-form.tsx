@@ -4,8 +4,8 @@ import { useForm } from 'react-hook-form';
 import { observer } from 'mobx-react';
 import { Select } from '@one-for-all/ui';
 
-import { useCtx } from '../../../ctx';
-import ConfigBind from '../../../utils/data-bind';
+import { useCtx } from '@pageDesign/ctx';
+import ConfigBind from '@pageDesign/utils/data-bind';
 
 const targetOption = [{
   label: '在新窗口打开',

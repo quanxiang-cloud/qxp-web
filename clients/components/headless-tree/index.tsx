@@ -8,7 +8,7 @@ import RenderNode from './node';
 import { SwitcherIcon, TreeNode } from './types';
 import SelectableTreeStore from './multiple-select-tree';
 
-interface Props<T> {
+export interface Props<T> {
   store: TreeStore<T>;
   NodeRender: React.FC<{ node: TreeNode<T>; store: TreeStore<T> | SelectableTreeStore<T> }>;
   RootNodeRender: React.FC<{ node: TreeNode<T>; store: TreeStore<T> | SelectableTreeStore<T> }>;

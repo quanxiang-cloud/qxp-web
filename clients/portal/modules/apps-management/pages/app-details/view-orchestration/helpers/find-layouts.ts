@@ -39,7 +39,7 @@ export default function findLayouts(node: Node): Array<Layout> {
   const layouts: Array<Layout> = [];
 
   travel(node, {
-    htmlNode: (currentNode: HTMLNode) => {
+    htmlNode: (currentNode: HTMLNode): undefined => {
       if (!isLayoutNode(currentNode)) {
         return;
       }

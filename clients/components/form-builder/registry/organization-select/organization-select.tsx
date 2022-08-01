@@ -67,7 +67,7 @@ const OrganizationPicker = ({
 }: Props): JSX.Element => {
   useEffect(() => {
     const { id, name } = getUserDepartment(window.USER);
-    if (value?.length) {
+    if (value.length) {
       return;
     }
 
@@ -82,10 +82,6 @@ const OrganizationPicker = ({
   }, []);
 
   useEffect(() => {
-    if (value?.length) {
-      return;
-    }
-
     const noLabelValues = getNoLabelValues(value);
 
     if (noLabelValues.length) {
@@ -169,12 +165,7 @@ const OrganizationPicker = ({
     );
   }
 
-  let selected;
-  if (value) {
-    selected = otherProps.multiple ? value : [...value].shift();
-  } else {
-    selected = [];
-  }
+  const selected = otherProps.multiple ? value : [...value].shift();
 
   return (
     <TreeSelect

@@ -15,7 +15,7 @@ import { addNewNode } from './utils';
 
 export default function Editor(): JSX.Element {
   const { appID } = useContext(FlowContext);
-  const { currentConnection, elements, nodeIdForDrawerForm } = useObservable<StoreValue>(store);
+  const { currentConnection, elements, nodeIdForDrawerForm, triggerMode } = useObservable<StoreValue>(store);
 
   async function onDrop(e: DragEvent): Promise<void> {
     e.preventDefault();
@@ -35,7 +35,7 @@ export default function Editor(): JSX.Element {
   const siblings = useMemo(() => {
     return (
       <Fragment>
-        <Components nodeIdForDrawerForm={nodeIdForDrawerForm} />
+        <Components triggerMode={triggerMode} nodeIdForDrawerForm={nodeIdForDrawerForm} />
         {nodeIdForDrawerForm && (
           <DrawerForm key={nodeIdForDrawerForm} />
         )}

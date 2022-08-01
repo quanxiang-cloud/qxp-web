@@ -62,6 +62,7 @@ export default function PlusEdge({
   });
   const switcher = useEdgeSwitch();
   const formDataElement = elements.find(({ type }) => type === 'formData');
+  const DelayDataElement = elements.find(({ type }) => type === 'FORM_TIME');
 
   function onDragOver(e: DragEvent): void {
     e.preventDefault();
@@ -84,7 +85,7 @@ export default function PlusEdge({
     });
   }
 
-  const hasForm = !!(formDataElement?.data?.businessData as FormDataData)?.form.name;
+  const hasForm = !!(formDataElement?.data?.businessData as FormDataData)?.form.name || !!DelayDataElement;
   const cursorClassName = cs({ 'cursor-not-allowed': !hasForm });
 
   return (

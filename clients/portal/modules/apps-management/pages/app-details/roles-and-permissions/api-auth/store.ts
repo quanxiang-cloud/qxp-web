@@ -1,4 +1,4 @@
-import { action, observable, reaction } from 'mobx';
+import { action, observable } from 'mobx';
 import _ from 'lodash';
 
 import toast from '@lib/toast';
@@ -16,7 +16,7 @@ import {
 } from '../api';
 import { DATA_RANGE, Role } from '../constants';
 import FieldsStore from './auth-details/store';
-import { fieldsTreeToParams, findSchema } from '../utils';
+import { fieldsTreeToParams, findSchema, isJSON } from '../utils';
 class APIAuthStore {
   @observable appID = '';
   @observable currentRoleID = '';
@@ -37,11 +37,8 @@ class APIAuthStore {
   @observable inputTreeStore: FieldsStore | null = null;
   @observable outputTreeStore: FieldsStore | null = null;
   @observable curAuthDetailTabKey = 'viewableData';
-  @observable conditionValue = 'ALL';
-
-  constructor() {
-    reaction(() => this.curAuth?.condition, this.findConditionValue);
-  }
+  @observable conditionType = 'ALL';
+  @observable conditionQuery = '{}';
 
   @action
   setAppID = (appID: string): void => {
@@ -50,7 +47,11 @@ class APIAuthStore {
 
   @action
   setCurAuth = (curAuth: APIAuth): void => {
-    this.curAuth = curAuth.condition ? curAuth : { ...curAuth, condition: {} };
+    this.curAuth = curAuth.condition?.query ? curAuth : {
+      ...curAuth, condition: {
+        type: 'ALL', query: {},
+      },
+    };
   };
 
   @action
@@ -59,8 +60,8 @@ class APIAuthStore {
   };
 
   @action
-  setConditionValue = (conditionValue: string): void => {
-    this.conditionValue = conditionValue;
+  setConditionType = (conditionType: string): void => {
+    this.conditionType = conditionType;
   };
 
   @action
@@ -120,16 +121,30 @@ class APIAuthStore {
   };
 
   @action
-  onChangeCondition = (label: string): void => {
-    this.setConditionValue(label as string);
-    this.setCurAuth({ ...this.curAuth, condition: DATA_RANGE[label] });
+  setConditionQuery = (query: string): void => {
+    this.conditionQuery = query;
+  };
+
+  @action
+  onChangeConditionType = (type: string): void => {
+    this.setConditionType(type);
+    if (type !== 'CUSTOM') {
+      this.setConditionQuery(JSON.stringify(DATA_RANGE[type], null, 4));
+      return;
+    }
+    this.setConditionQuery(JSON.stringify({}, null, 4));
+  };
+
+  @action
+  onChangeConditionQuery = (query: string): void => {
+    this.setConditionQuery(query);
   };
 
   @action
   findConditionValue = (): void => {
     this.curAuth?.condition && Object.keys(DATA_RANGE).forEach((label) => {
       if (_.isEqual(this.curAuth?.condition, DATA_RANGE[label])) {
-        this.setConditionValue(label);
+        this.setConditionType(label);
       }
     });
   };
@@ -200,6 +215,8 @@ class APIAuthStore {
       const { inputSchema, outputSchema } = docRes;
       this.setOutputTreeStore(new FieldsStore(outputSchema || {}, apiAuthRes?.response || {}));
       this.setInputTreeStore(new FieldsStore(inputSchema || {}, apiAuthRes?.params || {}));
+      this.setConditionType(apiAuthRes.condition?.type || 'ALL');
+      this.setConditionQuery(JSON.stringify(apiAuthRes.condition?.query, null, 4));
       this.setCurAuth(apiAuthRes);
     }).catch((err) => {
       toast.error(err);
@@ -239,10 +256,15 @@ class APIAuthStore {
 
   @action
   onSubmitSaveAuthDetail = (): void => {
+    if (!isJSON(this.conditionQuery)) {
+      toast.error('数据过滤规则请输入JSON格式');
+      return;
+    }
     const output = fieldsTreeToParams(this.outputTreeStore?.rootNode);
     const input = fieldsTreeToParams(this.inputTreeStore?.rootNode);
     const apiInfo = _.pick(this.curAPI, ['accessPath', 'uri', 'method']);
-    const _curAuth = { ...this?.curAuth, response: output, params: input, ...apiInfo };
+    const condition = { type: this.conditionType, query: JSON.parse(this.conditionQuery) };
+    const _curAuth = { ...this?.curAuth, response: output, params: input, ...apiInfo, condition };
     this.updateAPIAuth(_curAuth);
   };
 

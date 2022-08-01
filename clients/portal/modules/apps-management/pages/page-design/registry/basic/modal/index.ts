@@ -1,6 +1,7 @@
+import type { SourceElement } from '@pageDesign/types';
+
 import Dialog from './dialog';
 import ConfigForm, { defaultConfig, Props } from './config-form';
-import type { SourceElement } from '../../../types';
 
 const elem: SourceElement<Props> = {
   name: 'modal',

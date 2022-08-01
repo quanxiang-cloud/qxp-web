@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 
 import Card from '@c/card';
 import Loading from '@c/loading';
-import useAppStore from '../hooks';
+import appStore from '../../store';
 import { Button, Icon } from '@one-for-all/ui';
 import ArteryRenderer from '@c/artery-renderer';
 import { ARTERY_KEY_VERSION } from '@portal/constants';
@@ -20,15 +20,15 @@ export const LAYOUT_TYPE_MAP = {
 };
 
 function AppNav(): JSX.Element {
-  const { store, isLoading } = useAppStore();
+  const { viewStore } = appStore;
   const history = useHistory();
-  const rootLayout = store?.layouts.find((view) => view.id === 'root_node');
+  const rootLayout = viewStore?.layouts.find((view) => view.id === 'root_node');
 
-  if (isLoading) {
+  if (appStore.loading) {
     return <Loading />;
   }
 
-  if (!store?.appLayout) {
+  if (!viewStore?.appLayout) {
     return (
       <AbsoluteCentered>
         <EmptyTips text="该没有应用导航" className="py-10" />
@@ -77,7 +77,9 @@ function AppNav(): JSX.Element {
         <Button
           modifier='primary'
           onClick={() => {
-            history.push(`/artery-engine?appID=${store.appID}&pageName=应用布局&arteryID=${rootLayout?.refSchemaID}`);
+            history.push(`/artery-engine?appID=${viewStore.appID}&pageName=应用布局&arteryID=${rootLayout?.refSchemaID}`, {
+              isNav: true,
+            });
           }} >
           设计导航
         </Button>

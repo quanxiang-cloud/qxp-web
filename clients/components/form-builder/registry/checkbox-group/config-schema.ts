@@ -111,6 +111,10 @@ const schema: ISchema = {
               label: '选项集',
               value: 'dataset',
             },
+            {
+              label: 'API',
+              value: 'api',
+            },
             // {
             //   label: '关联已有数据',
             //   value: 'linkage',
@@ -160,6 +164,11 @@ const schema: ISchema = {
               target: 'defaultValue',
               condition: '{{ $value === "dataset" }}',
             },
+            {
+              type: 'value:visible',
+              target: '*(formApi,sendUserData)',
+              condition: '{{ $value === "api" }}',
+            },
           ],
         },
         linkageConfig: {
@@ -197,6 +206,22 @@ const schema: ISchema = {
           },
           'x-index': 12,
         },
+        formApi: {
+          title: 'API:',
+          required: true,
+          'x-rules': {
+            required: true,
+            message: '请选择API',
+          },
+          'x-component': 'FormApi',
+          'x-index': 13,
+        },
+        sendUserData: {
+          title: '允许发送用户信息',
+          default: false,
+          'x-component': 'Switch',
+          'x-index': 14,
+        },
         defaultValue: {
           type: 'string',
           title: '默认值',
@@ -207,7 +232,7 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 13,
+          'x-index': 15,
         },
       },
     },

@@ -1,0 +1,26 @@
+.group-head {
+  position: relative;
+  &::after {
+    content: '';
+    position: absolute;
+    width: 2px;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background: var(--gray-600);
+  }
+
+  .group-button {
+    display: none;
+  }
+
+  &:hover {
+    .group-button {
+      display: flex;
+    }
+  }
+}
+
+.ofa-popper-container {
+  z-index: 99;
+}

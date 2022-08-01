@@ -5,7 +5,7 @@ import {
   FormDataRequestUpdateParamsRef,
   FormDataBody,
   RefData,
-} from '@lib/http-client';
+} from '@lib/http-client-form';
 import { SYSTEM_FIELDS } from '@c/form-builder/constants';
 
 type Values = Record<string, any>;

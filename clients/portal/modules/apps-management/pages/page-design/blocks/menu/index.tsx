@@ -1,89 +1,42 @@
-import React, { useCallback, useEffect, useRef } from 'react';
-import cs from 'classnames';
-import { observer } from 'mobx-react';
-import { debounce } from 'lodash';
-import { Panel } from '@one-for-all/ui';
+import React, { useCallback, useEffect } from 'react';
+import type { BlockItemProps } from '@one-for-all/artery-engine';
+import { mergeRight, omit } from 'ramda';
 
-import { useCtx } from '../../ctx';
+import type { BlocksCommunicationType } from '@pageDesign/types';
+import TypeList from './type-list';
+import { TYPE_LIST } from './type-list/constants';
 
-import Group from './group';
-import { groups, panelTitle } from './config';
-import PlatformComps from './platform-comps';
-// import CustomTemplate from './custom-template'
-import PageTree from './page-tree';
-import DataSource from './data-source';
-
-import styles from './index.m.scss';
 import './index.scss';
 
-function SourcePanel(): JSX.Element {
-  const { designer: store } = useCtx();
-  const { activeGroup, panelPinned, panelOpen } = store;
-  const panelRef = useRef<HTMLDivElement>(null);
-  const hoverDoc = useCallback(debounce(handleClickOutside, 100), []);
-  const hoverGroup = useCallback((name: string)=> {
-    store.setActiveGroup(name);
-    store.setPanelOpen(true);
-  }, []);
+function Menu(props: BlockItemProps<BlocksCommunicationType>): JSX.Element {
+  const { sharedState, onSharedStateChange, onUpdateLayer } = props;
 
   useEffect(() => {
-    document.addEventListener('click', hoverDoc);
-    return () => {
-      document.removeEventListener('click', hoverDoc);
-    };
+    TYPE_LIST.forEach(({ name }) => onUpdateLayer({ layerId: name, name: 'hide', value: false }));
   }, []);
 
-  function handleClickOutside(ev: any): void {
-    if (!panelRef.current?.contains(ev.target) && !store.panelPinned) {
-      store.setPanelOpen(false);
-    }
-  }
+  const onTypeSelect = useCallback((type: string): void => {
+    onSharedStateChange('menu.currentType', type);
+  }, [onSharedStateChange]);
 
-  function renderPanelCont(): JSX.Element | null {
-    if (store.activeGroup === 'comps') {
-      return <PlatformComps />;
-    }
-    // if (store.activeGroup === 'templates') {
-    //   return <CustomTemplate />;
-    // }
-    if (store.activeGroup === 'page_tree') {
-      return <PageTree />;
-    }
-    if (store.activeGroup === 'data_source') {
-      return <DataSource />;
-    }
-    return null;
-  }
+  const initBlockStates = useCallback((names: string[]) => {
+    const block = names.reduce((acc, name) => ({ ...acc, [name]: { clickOutsideWhiteList: new Set() } }), {});
+    onSharedStateChange('block', mergeRight(block, sharedState.block));
+  }, [onSharedStateChange, sharedState]);
+
+  const cleanBlockStates = useCallback((names: string[]) => {
+    onSharedStateChange('block', omit(names, sharedState.block));
+  }, [onSharedStateChange, sharedState]);
 
   return (
-    <div className='flex relative h-full' ref={panelRef}>
-      <div className={cs(styles.sourcePanel, 'flex flex-col items-center relative')}>
-        {groups.map((gp) => {
-          return (
-            <Group
-              {...gp}
-              key={gp.name}
-              active={activeGroup === gp.name}
-              onHover={() => hoverGroup(gp.name)}
-            />
-          );
-        })}
-      </div>
-      <Panel
-        title={panelTitle[activeGroup]}
-        style={{ transform: 'translateX(55px)' }}
-        onClose={() => store.setPanelOpen(false)}
-        onPin={() => store.setPanelPinned(!panelPinned)}
-        visible={panelOpen}
-        pinned={panelPinned}
-        closable
-        pinnable
-      >
-        {renderPanelCont()}
-      </Panel>
-    </div>
-
+    <TypeList
+      current={sharedState.menu?.currentType}
+      onClick={onTypeSelect}
+      blockStates={sharedState.block}
+      initBlockStates={initBlockStates}
+      cleanBlockStates={cleanBlockStates}
+    />
   );
 }
 
-export default observer(SourcePanel);
+export default Menu;

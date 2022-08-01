@@ -1,6 +1,6 @@
 $ibc: #dcdfe6;
 
-.page-engine-layer-block__canvas {
+.artery-engine-layer-block__canvas {
   box-sizing: border-box;
   background-color: #f6f6f6;
   height: 100%;
@@ -8,12 +8,12 @@ $ibc: #dcdfe6;
   display: flex;
   flex-direction: column;
 
-  .page-engine-layer-block__canvas-toolbar {
+  .artery-engine-layer-block__canvas-toolbar {
     padding: 30px;
     border-bottom: 1px solid $ibc;
   }
 
-  .page-engine-layer-block__canvas-container {
+  .artery-engine-layer-block__canvas-container {
     padding: 20px;
     background-color: white;
     flex: 1;
@@ -23,7 +23,7 @@ $ibc: #dcdfe6;
       display: unset;
     }
 
-    .page-engine-layer-block__canvas-container-item {
+    .artery-engine-layer-block__canvas-container-item {
       position: relative;
       &::after {
         content: '';
@@ -35,7 +35,7 @@ $ibc: #dcdfe6;
       }
     }
 
-    .page-engine-layer-block__canvas-container-item--active {
+    .artery-engine-layer-block__canvas-container-item--active {
       $size: 4px;
       &::after {
         content: '';
