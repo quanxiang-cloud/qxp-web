@@ -34,7 +34,7 @@ export default function ApiState({
 
   function handleSelectApi(name: string, apiPath: string, method: string, desc?: string): void {
     const currentApi = {
-      apiID: `${apiPath}:${method}`,
+      apiID: `${method}:${apiPath}`,
       desc,
     };
 
