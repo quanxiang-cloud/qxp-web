@@ -12,9 +12,8 @@ export default function HeaderLeft(): JSX.Element {
     <Link to="/" className="flex-2">
       <div className="w-100 group">
         <div className={cs(
-          'mr-20 p-6 flex items-center text-blue-300 rounded-8 rounded-tr-2',
+          'mr-20 p-6 flex items-center rounded-8 rounded-tr-2',
           'group-hover:bg-enfi-500 group-hover:text-gray-50',
-          { 'text-gray-50': isHome },
         )}>
           <Icon size={20} name='home_qxp' style={{ fill: 'var(--blue-300)' }} />
           <span className="ml-4">工作台</span>

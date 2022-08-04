@@ -106,7 +106,7 @@ const NavMsgBar = ({ type, className }: Props): JSX.Element => {
           <Icon
             size={20}
             name="home_bell"
-            style={{ fill: `${type === 'portal' ? 'var(--gray-400)' : 'var(--blue-100)'}` }}
+            style={{ fill: 'var(--gray-400)' }}
             className="m-6"
           />
           {countUnread > 0 && <BtnBadge className={styles.count_btn} count={countUnread} />}

@@ -12,9 +12,9 @@ export default function GlobalHeader(): JSX.Element {
 
   return (
     <>
-      <div className="flex justify-between items-center py-2 px-24 bg-enfi-600 home-global-header">
+      <div className="flex justify-between items-center py-2 px-24 home-global-header">
         <HeaderNav />
-        <img className="h-48" src="/dist/images/enfi-logo.svg" alt="quanxiangyun"/>
+        <img className="h-48" src="/dist/images/enfi-home-logo.svg" alt="quanxiangyun"/>
         <HeaderMenu />
       </div>
     </>

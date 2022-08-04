@@ -64,7 +64,7 @@ const NavTaskBar = ({ type, className, ...rest }: Props, ref?: ForwardedRef<HTML
           <Icon
             size={20}
             name="task"
-            style={{ fill: `${type !== 'home' ? 'var(--gray-400)' : 'var(--blue-100)'}` }}
+            style={{ fill: 'var(--gray-400)' }}
             className="m-6"
           />
           {!!store.inProgressCount && <BtnBadge className='task_count_btn' count={store.inProgressCount} />}
