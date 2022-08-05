@@ -274,6 +274,8 @@ class FaasStore {
   };
 
   getVersion = (groupID: string, funcID: string, buildID: string): void => {
+    this.setGroupID(groupID);
+    this.buildID = buildID;
     getVersionInfo(groupID, funcID, buildID).then((build) => {
       this.currentBuild = build;
     }).catch((err) => {
