@@ -26,7 +26,7 @@ const { TextArea } = Input;
 
 function VersionDetails(): JSX.Element {
   const history = useHistory();
-  const { groupID, funcID, buildID } = useParams<{ groupID: string, funcID: string, buildID: string }>();
+  const { appID, groupID, funcID, buildID } = useParams<{ appID: string, groupID: string, funcID: string, buildID: string }>();
 
   const [des, setDes] = useState(store.currentBuild?.describe || '');
 
@@ -36,6 +36,11 @@ function VersionDetails(): JSX.Element {
       store.currentBuild = null;
     };
   }, []);
+
+  useEffect(() => {
+    store.setAppID(appID);
+  }, [appID]);
+
   const apiDoc = useMemo(() => {
     if (store.currentBuild?.docStatus === API_DOC_STATE.NULL) {
       return (<div>未注册API文档</div>);
