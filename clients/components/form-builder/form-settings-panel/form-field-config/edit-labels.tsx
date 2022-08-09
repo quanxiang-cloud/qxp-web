@@ -11,7 +11,7 @@ function EditLabels({ props, form, mutators }: ISchemaFieldComponentProps): JSX.
   const [showModal, setShowModal] = useState(false);
   const { isLinkedFieldHide, isLinkedTableReadonly } = props?.['x-component-props'] || {};
   const { getFieldValue } = form;
-  const availableOptions = getFieldValue('availableOptions');
+  const availableOptions = getFieldValue('availableOptions') || [];
 
   return (
     <>
