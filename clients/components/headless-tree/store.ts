@@ -29,6 +29,7 @@ export default class TreeStore<T> {
 
   @observable rootNode: TreeNode<T>;
   @observable currentFocusedNodeID = '';
+  @observable currentTimeFocusedNodeID = '';
   @observable renamingNodeID = '';
   @observable draggingNode: TreeNode<T> | null = null;
   @observable autoSelect?: boolean;
@@ -300,6 +301,7 @@ export default class TreeStore<T> {
   onSelectNode(nodeID: string): void {
     this.currentFocusedNodeID = nodeID;
 
+    this.currentTimeFocusedNodeID = `${nodeID} ${new Date().getTime()}`;
     if (this.currentFocusedNode.isLeaf) {
       return;
     }

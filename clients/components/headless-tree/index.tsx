@@ -39,7 +39,10 @@ export default class Tree<T> extends React.Component<Props<T>> {
   constructor(props: Props<T>) {
     super(props);
 
-    this.selectDisposer = reaction(() => this.props.store.currentFocusedNodeID, () => {
+    // this.selectDisposer = reaction(() => this.props.store.currentFocusedNodeID, () => {
+    //   this.props.onSelect?.(toJS(this.props.store.currentFocusedNode.data));
+    // });
+    this.selectDisposer = reaction(() => this.props.store.currentTimeFocusedNodeID, () => {
       this.props.onSelect?.(toJS(this.props.store.currentFocusedNode.data));
     });
   }
