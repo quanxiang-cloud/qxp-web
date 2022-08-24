@@ -76,7 +76,7 @@ const schema: ISchema = {
           title: '允许上传多个附件',
           default: false,
           'x-component': 'Switch',
-          'x-index': 4,
+          'x-index': 5,
         },
         maxFileSize: {
           title: '附件最大体积(MB)',
