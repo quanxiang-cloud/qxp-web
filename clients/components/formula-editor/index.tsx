@@ -39,6 +39,7 @@ type Props = {
   value?: string;
   help?: string;
   maxLength?: number;
+  isInsertEntityFromEmpty?: boolean;
 }
 
 export type RefProps = {
@@ -72,6 +73,7 @@ function FormulaEditor({
   readOnly,
   defaultValue = '',
   value,
+  isInsertEntityFromEmpty = false,
 }: Props, ref: React.Ref<any>): JSX.Element {
   const [contentLength, setLength] = useState(0);
   const decorator = useMemo(() => new CompositeDecorator(defaultDecorators), []);
@@ -209,11 +211,25 @@ function FormulaEditor({
     if (!insertBefore(entityData.name.length + 2)) {
       return;
     }
+    let _editorState = editorState;
+    if (isInsertEntityFromEmpty) {
+      const compositeDecorator = new CompositeDecorator([
+        ...defaultDecorators,
+        {
+          strategy: (contentBlock, callback, contentState) => {
+            handleFieldHighlight(contentBlock, callback, contentState, customRules.map(({ name }) => name));
+          },
+          component: FieldSpan,
+        },
+      ]);
+      _editorState = EditorState.createEmpty(compositeDecorator);
+    }
 
-    const contentState = editorState.getCurrentContent();
+    const contentState = _editorState.getCurrentContent();
     let contentStateWithEntity = contentState.createEntity('variable', 'IMMUTABLE', entityData);
+
     const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-    let selection = editorState.getSelection();
+    let selection = _editorState.getSelection();
     if (selection.isCollapsed()) {
       contentStateWithEntity = Modifier.insertText(
         contentStateWithEntity, selection, entityData.name, undefined, entityKey,
@@ -236,7 +252,7 @@ function FormulaEditor({
       focusOffset: end,
     }) as SelectionState;
     contentStateWithEntity = Modifier.insertText(contentStateWithEntity, selection, ' ');
-    let newEditorState = EditorState.set(editorState, { currentContent: contentStateWithEntity });
+    let newEditorState = EditorState.set(_editorState, { currentContent: contentStateWithEntity });
     newEditorState = EditorState.forceSelection(newEditorState, selection);
     handleChange(newEditorState);
   };
