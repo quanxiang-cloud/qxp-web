@@ -18,7 +18,6 @@ import { isUrl, inputValidator, requestApiValidator } from './utils';
 import useDrawerContainerPadding from './hooks/use-drawer-container-padding';
 
 import './style.scss';
-import { PARAMS_MAP } from '@portal/modules/work-flow/flow-header/constants';
 
 type LocalValue = (RequestConfig | SendConfig) & { type: 'request' | 'send' };
 
@@ -133,10 +132,14 @@ export default function WebhookConfig(
   }), []);
 
   const handleSubmit = useCallback(({ type, ...config }: LocalValue) => {
-    const workPathTreeValue = window.CONFIG.WebhookPathTreeValue
-      .find((item: any)=>item?.descPath === PARAMS_MAP.FORM_DATA);
-    const { name, data } = workPathTreeValue;
-    const directexprTypeArr = data.map((item: any)=>`$${name}.${item.name}`);
+    const VARIABLE = 'variable';
+    const directExprArr = window.CONFIG.WebhookPathTreeValue
+      .filter((item: any)=>item?.name !== VARIABLE);
+    let directexprTypeArr: any = [];
+    directExprArr.forEach((item: any)=>{
+      const { name, data } = item;
+      directexprTypeArr = [...directexprTypeArr, ...data.map((item: any)=>`$${name}.${item.name}`)];
+    });
     config.inputs = config.inputs.map((item)=>{
       const val = String(item.data)?.trim();
       return {
