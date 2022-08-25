@@ -110,6 +110,7 @@ function SendBlock(
                   className="node-formula-editor"
                   onChange={(val) => val !== row.data && handleChange('data', row, val, index)}
                   onBlur={() => handleChange('data', row, row.data as string, index)}
+                  isInsertEntityFromEmpty={true}
                 />
                 {(index !== value.length - 1) && (
                   <Icon name="delete" clickable onClick={() => row.id && onRemove(row.id)} />
