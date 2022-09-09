@@ -486,7 +486,7 @@ export interface RequestConfig {
   };
   // url, method, inputs, outputs 均根据 api 的 path 调用 api doc 获取
   // 前端最终可能不会存 url, method, outputs, 仅存 inputs 配置的值
-  inputs: Input[]; // API 定义的输入以及字段的公式映射配置
+  inputs: Input[] | any; // API 定义的输入以及字段的公式映射配置
   url: string; // 可选
   method: HTTPMethod; // 可选
   outputs?: Input[]; // API 定义的输出(可选)
