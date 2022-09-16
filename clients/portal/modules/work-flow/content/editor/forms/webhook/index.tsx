@@ -164,12 +164,34 @@ export default function WebhookConfig(
     return result;
   };
 
+  const formatData = (val: { data: string; })=>{
+    let list: any = [];
+    const result = { ...val };
+    const pathTreeValue = window.CONFIG.WebhookPathTreeValue;
+    pathTreeValue.forEach((item: any)=>{
+      const { name, data, desc } = item;
+      data.forEach((item: { value: string; name: any; descPath: string; desc: any; })=>{
+        item.value = `$${name}.${item.name}`;
+        item.descPath = `${desc}.${item.desc}`;
+      });
+      list = [...list, ...data];
+    });
+
+    list.find((item: { descPath: any; value: any; })=>{
+      if (result?.data?.includes(item?.descPath)) {
+        result.data = result.data?.replace(item?.descPath, item?.value);
+        return;
+      }
+    });
+    return result;
+  };
   const handleSubmit = useCallback(({ type, ...config }: LocalValue) => {
     window.test = config.inputs;
     config.inputs = config.inputs.map((item: any)=>{
       const val = String(item.data)?.trim();
+      formatData(item);
       return {
-        ...item,
+        ...formatData(item),
         type: getType(val),
         fieldType: getField(val, FieldType.fieldType),
         fieldName: getField(val, FieldType.fieldName),

@@ -40,6 +40,7 @@ type Props = {
   help?: string;
   maxLength?: number;
   isInsertEntityFromEmpty?: boolean;
+  isWebhook?: boolean;
 }
 
 export type RefProps = {
@@ -74,13 +75,14 @@ function FormulaEditor({
   defaultValue = '',
   value,
   isInsertEntityFromEmpty = false,
+  isWebhook = false,
 }: Props, ref: React.Ref<any>): JSX.Element {
   const [contentLength, setLength] = useState(0);
   const decorator = useMemo(() => new CompositeDecorator(defaultDecorators), []);
   const _value = value || defaultValue;
   const [editorState, setEditorState] = useState(
     _value ? EditorState.createWithContent(
-      convertFromRaw(toContentState(_value, customRules)), decorator,
+      convertFromRaw(toContentState(_value, customRules, isWebhook)), decorator,
     ) : EditorState.createEmpty(decorator),
   );
 
