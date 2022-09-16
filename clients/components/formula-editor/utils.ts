@@ -6,7 +6,6 @@ export function escapeRegExp(str: string): string {
   return str.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
 }
 
-// TODO:
 function formatValue(value: string): string {
   let result = value;
   let list: any = [];
