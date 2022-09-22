@@ -9,9 +9,14 @@
   {{template "_style_sources_head" .}}
 </head>
 <body>
+  <style>
+    :root {
+      --blue-600: var(--enfi-600, #024d8e);
+    }
+  </style>
   <div id="root"></div>
   <script>
-    
+
     window.USER = {{ .user }}
     window.ADMIN_USER_FUNC_TAGS = {{ .adminUserFuncTags }}
     window.USER_ADMIN_ROLES = {{ .userAdminRoles }}
