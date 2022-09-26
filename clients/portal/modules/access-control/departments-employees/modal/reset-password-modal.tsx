@@ -27,10 +27,10 @@ export const sendMsgOption = [
     label: '通过邮箱',
     value: 1,
   },
-  {
-    label: '通过短信',
-    value: 2,
-  },
+  // {
+  //   label: '通过短信',
+  //   value: 2,
+  // },
 ];
 
 export default function ResetPasswordModal({
