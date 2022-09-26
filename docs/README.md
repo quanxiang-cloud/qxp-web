@@ -11,3 +11,4 @@
   - [自定义组件开发](development-guide/05-user-defined-components-development.md)
 - 使用说明
   - [页面引擎](user-guide/01-artery-engine.md)
+  - [嵌入第三方页面](user-guide/02-integrating-third-party-page.md)
