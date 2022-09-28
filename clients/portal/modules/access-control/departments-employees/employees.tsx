@@ -150,9 +150,9 @@ export default function Employees({
 
     getUserAdminInfo({
       query: `{${queryGraphQL}${userGraphQL}`,
-    }).then((res) => {
+    }).then((res: any) => {
       const { users } = res;
-      users.map((item: { departments: any; })=>{
+      users.map((item: any)=>{
         let department = '';
         const departments = [...JSON.parse(JSON.stringify(item.departments))][0];
         departments && departments.reverse();
@@ -160,7 +160,7 @@ export default function Employees({
           department += '/' + item.name;
         });
         item.department = department;
-        item.leader = getTwoDimenArrayHead(item?.leaders)?.name;
+        item.leader = item?.leaders?.[0]?.[0]?.name;
       });
       exportEmployees(users);
     }).catch((error)=>{
