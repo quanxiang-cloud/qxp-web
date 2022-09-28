@@ -105,6 +105,7 @@ function ImportEmployeesModal({ currDepId, closeModal }: Props): JSX.Element {
             successTotal,
           });
         }
+        closeModal();
       } else {
         toast.error(res?.msg || '操作失败！');
       }
@@ -154,7 +155,7 @@ function ImportEmployeesModal({ currDepId, closeModal }: Props): JSX.Element {
   function downTemp(): void {
     // tempMutation.mutate();
     downloadTempFile()
-      .then((res)=>{
+      .then((res: any)=>{
         const { fileName, data } = res;
         const aElem = document.createElement('a');
         document.body.appendChild(aElem);
@@ -210,6 +211,7 @@ function ImportEmployeesModal({ currDepId, closeModal }: Props): JSX.Element {
       };
     });
     resetMutation.mutate({ userIDs: successUsersId, sendMessage });
+    closeModal();
   }
 
   return (
