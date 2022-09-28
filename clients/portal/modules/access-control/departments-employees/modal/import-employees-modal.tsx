@@ -13,7 +13,7 @@ import Radio from '@c/radio';
 
 import { FileUploadStatus } from '../type';
 import { exportEmployeesFail } from '../utils';
-import { getUserTemplate, importTempFile, resetUserPWD } from '../api';
+import { getUserTemplate, importTempFile, resetUserPWD, downloadTempFile } from '../api';
 import { SendMessage, sendMsgOption } from './reset-password-modal';
 import { SEND_MAP } from './edit-employees-modal';
 
@@ -152,7 +152,19 @@ function ImportEmployeesModal({ currDepId, closeModal }: Props): JSX.Element {
   }
 
   function downTemp(): void {
-    tempMutation.mutate();
+    // tempMutation.mutate();
+    downloadTempFile()
+      .then((res)=>{
+        const { fileName, data } = res;
+        const aElem = document.createElement('a');
+        document.body.appendChild(aElem);
+        aElem.setAttribute('href', 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + encodeURIComponent(data));
+        aElem.download = fileName;
+        aElem.click();
+        document.body.removeChild(aElem);
+      }).catch((error)=>{
+        toast.error(error);
+      });
   }
 
   function deleteUploadFile(delFile: QXPUploadFileBaseProps): void {

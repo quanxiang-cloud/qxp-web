@@ -8,14 +8,9 @@ export const PhoneReg = /^[1](([3][0-9])|([4][5-9])|([5][0-3,5-9])|([6][5,6])|([
 
 export const excelHeader: any[] = [
   {
-    Header: '员工姓名',
-    id: 'userName',
-    accessor: 'userName',
-  },
-  {
-    Header: '所属部门',
-    id: 'depName',
-    accessor: 'depName',
+    Header: '姓名',
+    id: 'name',
+    accessor: 'name',
   },
   {
     Header: '手机号码',
@@ -28,15 +23,45 @@ export const excelHeader: any[] = [
     accessor: 'email',
   },
   {
-    Header: '职位',
+    Header: '部门',
+    id: 'department',
+    accessor: 'department',
+  },
+  {
+    Header: '岗位',
     id: 'position',
     accessor: 'position',
   },
   {
-    Header: '上级领导',
-    id: 'leaderName',
-    accessor: 'leaderName',
+    Header: '直属上级',
+    id: 'leader',
+    accessor: 'leader',
   },
+  // {
+  //   Header: '员工姓名',
+  //   id: 'userName',
+  //   accessor: 'userName',
+  // },
+  // {
+  //   Header: '所属部门',
+  //   id: 'depName',
+  //   accessor: 'depName',
+  // },
+  // {
+  //   Header: '手机号码',
+  //   id: 'phone',
+  //   accessor: 'phone',
+  // },
+  // {
+  //   Header: '邮箱',
+  //   id: 'email',
+  //   accessor: 'email',
+  // },
+  // {
+  //   Header: '上级领导',
+  //   id: 'leaderName',
+  //   accessor: 'leaderName',
+  // },
 ];
 
 export const exportEmployees = (data: Employee[]): void => {

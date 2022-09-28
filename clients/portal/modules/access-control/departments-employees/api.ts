@@ -40,7 +40,11 @@ export async function getUserTemplate() {
 }
 
 export async function importTempFile({ depID, file }: FileParams) {
-  return await httpFile('/api/v1/org/importFile', { depID, file });
+  return await httpFile('/api/v1/org/m/user/importFile', { file, useStatus: 1, isUpdate: 1 });
+}
+
+export async function downloadTempFile() {
+  return await httpClient.get('/api/v1/org/m/user/template', {});
 }
 
 export async function addDepUser(values: FormValues) {
