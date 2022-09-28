@@ -54,6 +54,7 @@ type UploadRes = {
   status: FileUploadStatus;
   successTotal: number;
   failTotal: number;
+  updateSuccessTotal?: number;
 };
 
 type ButtonStatus = 0 | 1;
@@ -73,6 +74,7 @@ function ImportEmployeesModal({ currDepId, closeModal }: Props): JSX.Element {
     status: FileUploadStatus.init,
     successTotal: 0,
     failTotal: 0,
+    updateSuccessTotal: 0,
   });
   const [failUsers, setFailUsers] = useState([]);
   const [successUsersId, setSuccessUsersId] = useState<string[]>([]);
@@ -95,7 +97,7 @@ function ImportEmployeesModal({ currDepId, closeModal }: Props): JSX.Element {
         toast.success('操作成功');
         const { data } = res;
         if (data) {
-          const { failTotal, failUsers, successTotal, success, addSuccessTotal } = data;
+          const { failTotal, failUsers, successTotal, success, addSuccessTotal, updateSuccessTotal } = data;
           let status: FileUploadStatus = FileUploadStatus.init;
           if (failTotal > 0 && successTotal === 0) {
             status = FileUploadStatus.fail;
@@ -113,6 +115,7 @@ function ImportEmployeesModal({ currDepId, closeModal }: Props): JSX.Element {
             status,
             failTotal,
             successTotal: addSuccessTotal,
+            updateSuccessTotal,
           });
         }
       } else {
@@ -288,7 +291,7 @@ function ImportEmployeesModal({ currDepId, closeModal }: Props): JSX.Element {
               /> */}
               <span>
                 数据导入完成，导入成功 {uploadStatus.successTotal}{' '}
-                数据，导入失败 {uploadStatus.failTotal} 数据。
+                数据，导入失败 {uploadStatus.failTotal} 数据， 更新成功 {uploadStatus.updateSuccessTotal} 数据。
               </span>
             </div>
           )}
