@@ -1,6 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-
+import cs from 'classnames';
 import Icon from '@c/icon';
 
 import './index.scss';
@@ -31,7 +31,17 @@ function DetailsHeader({ tableName, operationType, onCancel }: Props): JSX.Eleme
             <div className="font-semibold text-gray-900 text-12">{operationType}</div>
           </>) : (
           <>
-            <span className="font-semibold text-gray-900 text-12">{tableName}</span>
+            <div className="group flex items-center">
+              <div className={cs(
+                'p-6 flex items-center rounded-8 rounded-tr-2',
+                'group-hover:bg-enfi-500 group-hover:text-gray-50',
+              )}>
+                <Icon size={16} name='home_qxp' style={{ fill: 'var(--blue-300)' }} />
+                <a href='/' className="ml-4">工作台</a>
+              </div>
+              <div className='mx-8 text-12 text-gray-600'>/</div>
+              <span className="font-semibold text-gray-900 text-12"> {tableName}</span>
+            </div>
           </>)}
         <div>
         </div>
