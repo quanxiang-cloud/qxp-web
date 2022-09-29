@@ -164,7 +164,7 @@ function RuleItem(props: Props): JSX.Element {
       const fieldSchema = {
         type: 'object',
         properties: {
-          [fieldName]: { ...fieldProps, title: '', default: defaultVal },
+          [fieldName]: { ...fieldProps, title: '', default: defaultVal, readOnly: false },
         },
       };
 
