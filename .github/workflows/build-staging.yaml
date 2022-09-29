@@ -1,6 +1,6 @@
 name: Build for staging environment
 env:
-  IMAGE_REPO: qxcr.xyz/lowcode
+  IMAGE_REPO: qxcr.io/lowcode
   DATE: $(date "+%Y%m%d")
   GIT_TAG: $(git describe --tags --abbrev=0)
 on:
@@ -29,7 +29,7 @@ jobs:
         with:
           name: dist
           path: dist
-      - run: echo IMAGE_TAG="${{ github.ref }}"
+      - run: echo IMAGE_TAG="${{ github.ref_name }}" >> $GITHUB_ENV
       - run: docker build -t "$IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG" -f ./deploy/Dockerfile-nginx .
       - run: docker tag $IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG $IMAGE_REPO/qxp-web-nginx:latest
       - run: docker push "$IMAGE_REPO/qxp-web-nginx:$IMAGE_TAG"
@@ -52,7 +52,7 @@ jobs:
           path: dist
       - run: go mod tidy
       - run: go mod vendor
-      - run: echo IMAGE_TAG="${{ github.ref }}"
+      - run: echo IMAGE_TAG="${{ github.ref_name }}" >> $GITHUB_ENV
       - run: docker build -t "$IMAGE_REPO/qxp-web-portal:$IMAGE_TAG" -f ./deploy/Dockerfile-portal .
       - run: docker build -t "$IMAGE_REPO/qxp-web-home:$IMAGE_TAG" -f ./deploy/Dockerfile-home .
       - run: docker tag $IMAGE_REPO/qxp-web-portal:$IMAGE_TAG $IMAGE_REPO/qxp-web-portal:latest
@@ -73,7 +73,7 @@ jobs:
     needs: [build-qxp-web-nginx, build-qxp-web-portal-and-home]
     runs-on: self-hosted
     steps:
-      - run: echo IMAGE_TAG="${{ github.ref }}"
+      - run: echo IMAGE_TAG="${{ github.ref_name }}" >> $GITHUB_ENV
       - run: bash -c "helm upgrade qxp-web-portal /root/quanxiang_charts_staging/qxp-web-portal --kubeconfig ~/.kube/config_staging --set image.tag=$IMAGE_TAG --set image.repo=$IMAGE_REPO -n lowcode"
       - run: bash -c "helm upgrade qxp-web-home /root/quanxiang_charts_staging/qxp-web-home --kubeconfig ~/.kube/config_staging --set image.tag=$IMAGE_TAG --set image.repo=$IMAGE_REPO -n lowcode"
       - run: bash -c "helm upgrade qxp-web-nginx /root/quanxiang_charts_staging/qxp-web-nginx --kubeconfig ~/.kube/config_staging --set image.tag=$IMAGE_TAG --set image.repo=$IMAGE_REPO -n lowcode"
