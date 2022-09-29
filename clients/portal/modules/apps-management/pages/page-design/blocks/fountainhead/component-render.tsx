@@ -36,11 +36,13 @@ function genNode(props: Props): Node {
     });
   }
 
+  const _label = pkg.name === '@one-for-all/icon' ? 'icon' : label;
+
   return buildReactComponentNode({
     packageName: pkg.name,
     packageVersion: pkg.version,
     exportName: name,
-    label: label,
+    label: _label,
     props: _initProps,
   });
 }
