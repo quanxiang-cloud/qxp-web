@@ -5,6 +5,7 @@ import cs from 'classnames';
 import AddOptionSetItem from './option-set-popconfirm/add-item';
 import EditOptionSetItem from './option-set-popconfirm/edit-item';
 import DeleteOptionSetItem from './option-set-popconfirm/delete-item';
+import { APPLICATION_CREATE } from '@portal/constants';
 
 import store from './store';
 
@@ -26,7 +27,10 @@ function ListContent({ className }: Props): JSX.Element {
             可选项
           </span>
         </div>
-        <AddOptionSetItem type='list' />
+        {
+          window.ADMIN_USER_FUNC_TAGS.includes(APPLICATION_CREATE) &&
+          <AddOptionSetItem type='list' />
+        }
         {
           store.list.map(({ label }: OptionSetListItem, idx: number) => {
             return (
@@ -39,10 +43,14 @@ function ListContent({ className }: Props): JSX.Element {
                   className='items-center w-5/6 py-8 text-gray-900 overflow-hidden overflow-ellipsis whitespace-nowrap flex-1'>
                   {label}
                 </span>
-                <span className='action-show'>
-                  <EditOptionSetItem type='list' label={label} idx={idx} />
-                  <DeleteOptionSetItem type='list' idx={idx} />
-                </span>
+                {
+                  window.ADMIN_USER_FUNC_TAGS.includes(APPLICATION_CREATE) &&
+                   (<span className='action-show'>
+                     <EditOptionSetItem type='list' label={label} idx={idx} />
+                     <DeleteOptionSetItem type='list' idx={idx} />
+                   </span>)
+                }
+
               </div>
             );
           })

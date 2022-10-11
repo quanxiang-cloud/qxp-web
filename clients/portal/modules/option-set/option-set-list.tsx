@@ -13,6 +13,7 @@ import MoreIconMenu from './more-icon-menu';
 import { useURLSearch } from '@lib/hooks';
 
 import store from './store';
+import { APPLICATION_CREATE } from '@portal/constants';
 
 import './index.scss';
 
@@ -78,7 +79,7 @@ function OptionSetList({ className }: Props): JSX.Element {
           onChange={handleSearch}
           className='mt-16 border-none'
         />
-        {!store.search && (<span
+        { window.ADMIN_USER_FUNC_TAGS.includes(APPLICATION_CREATE) && !store.search && (<span
           className='flex mt-8 py-8 pl-16 items-center hover:bg-blue-100 cursor-pointer hover:text-blue-600'
           onClick={() => {
             store.modalType = 'add';
@@ -109,7 +110,10 @@ function OptionSetList({ className }: Props): JSX.Element {
                 {name === '职位' && <Icon name="folder_shared_qxp" />}
                 {name !== '职位' && <Icon name="database" />}
                 <span className="ml-8 flex-grow w-0 truncate">{name}</span>
-                <MoreIconMenu tabKey={store.queryType} />
+                {
+                  window.ADMIN_USER_FUNC_TAGS.includes(APPLICATION_CREATE) &&
+                  <MoreIconMenu tabKey={store.queryType} />
+                }
               </div>
             );
           })}
