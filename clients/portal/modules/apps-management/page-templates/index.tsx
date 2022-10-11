@@ -8,6 +8,7 @@ import EmptyTips from '@c/empty-tips';
 
 import store, { PageTemplate } from './store';
 import RenameTemplateModal from './rename-template-modal';
+import { APPLICATION_CREATE } from '@portal/constants';
 
 function PageTemplatesManagement(): JSX.Element {
   const [renameTemplateKey, setRenameTemplateKey] = useState('');
@@ -31,17 +32,19 @@ function PageTemplatesManagement(): JSX.Element {
       Header: '操作',
       accessor: (row) => {
         return (
-          <>
-            <span
-              className="text-blue-600 cursor-pointer mr-20"
-              onClick={() => store.deleteTemplate(row.key)}
-            >
+          window.ADMIN_USER_FUNC_TAGS.includes(APPLICATION_CREATE) ?
+            (<>
+              <span
+                className="text-blue-600 cursor-pointer mr-20"
+                onClick={() => store.deleteTemplate(row.key)}
+              >
               删除
-            </span>
-            <span className="text-blue-600 cursor-pointer" onClick={() => setRenameTemplateKey(row.key)}>
+              </span>
+              <span className="text-blue-600 cursor-pointer" onClick={() => setRenameTemplateKey(row.key)}>
               重命名
-            </span>
-          </>
+              </span>
+            </>) :
+            '-'
         );
       },
     },

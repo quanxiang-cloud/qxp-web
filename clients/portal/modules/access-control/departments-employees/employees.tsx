@@ -334,7 +334,7 @@ export default function Employees({
                   >
                   添加员工
                   </Button>
-                  {/* <Button
+                  <Button
                     modifier="primary"
                     iconName="create_new_folder"
                     onClick={(): void => openModal('import_employees')}
@@ -349,7 +349,7 @@ export default function Employees({
                     className="mr-16"
                   >
                   导出
-                  </Button> */}
+                  </Button>
                   {/* <MoreMenu
                     menus={ExpandActions}
                     placement="bottom-end"
