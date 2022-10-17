@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 
 import Button from '@c/button';
 import ShowModal from './show-modal';
+import { APPLICATION_CREATE } from '@portal/constants';
 
 import './index.scss';
 import store from './store';
@@ -51,15 +52,19 @@ function NoDataContent({ type }: Props): JSX.Element {
             </div>
           </>
         )}
-        <Button
-          iconName='add'
-          modifier='primary'
-          onClick={() => {
-            store.modalOpen = true;
-          }}
-        >
+        {
+          window.ADMIN_USER_FUNC_TAGS.includes(APPLICATION_CREATE) &&
+          (<Button
+            iconName='add'
+            modifier='primary'
+            onClick={() => {
+              store.modalOpen = true;
+            }}
+          >
           添加选项集
-        </Button>
+          </Button>)
+        }
+
       </div>
       <div className='flex flex-1 items-start'>
         <img src={`/dist/images/no-data-option-set-${type}.svg`} />

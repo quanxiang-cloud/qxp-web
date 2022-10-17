@@ -31,7 +31,7 @@ const InfoCard = () => {
       icon: 'outlet',
       name: '平台参数配置',
       url: '/system/config',
-      authority: 'abnormalFlow',
+      authority: 'application/create',
     },
   ];
 

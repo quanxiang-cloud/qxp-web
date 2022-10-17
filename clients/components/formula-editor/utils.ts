@@ -6,7 +6,28 @@ export function escapeRegExp(str: string): string {
   return str.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
 }
 
-export function toContentState(defaultValue: string, customRules: CustomRule[]): RawDraftContentState {
+function formatValue(value: string): string {
+  let result = value;
+  let list: any = [];
+  const pathTreeValue = window.CONFIG.WebhookPathTreeValue;
+  pathTreeValue.forEach((item: any)=>{
+    const { name, data, desc } = item;
+    data.forEach((item: { value: string; name: any; descPath: string; desc: any; })=>{
+      item.value = `$${name}.${item.name}`;
+      item.descPath = `${desc}.${item.desc}`;
+    });
+    list = [...list, ...data];
+  });
+  list.find((item: { value: string; descPath: string; })=>{
+    if (typeof value === 'string' && value?.includes(item.value)) {
+      result = value.replace(item.value, item.descPath);
+      return true;
+    }
+  });
+  return result;
+}
+
+export function toContentState(defaultValue: string, customRules: CustomRule[], isWebhook?: boolean): RawDraftContentState {
   const entityMap: { [key: string]: RawDraftEntity<{ [key: string]: any }>; } = {};
   const entityRanges: RawDraftEntityRange[] = [];
   let defaultValueTmp = defaultValue;
@@ -38,7 +59,9 @@ export function toContentState(defaultValue: string, customRules: CustomRule[]):
       }
     }
   }
-
+  if (isWebhook) {
+    defaultValueTmp = formatValue(defaultValueTmp);
+  }
   return {
     blocks: [
       {

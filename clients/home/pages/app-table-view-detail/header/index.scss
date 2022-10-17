@@ -7,3 +7,16 @@
  @apply flex justify-between px-16 bg-white items-center;
  height: 52px;
 }
+
+.group:hover  {
+  .items-center{
+    background-color:   var(--blue-500) !important;
+    border-top-right-radius: 2px;
+    border-radius: 8px;
+   
+  }
+  
+  a:hover{
+    color: #fff !important;
+  }
+}

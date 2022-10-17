@@ -4,29 +4,39 @@ import { UnionColumn } from 'react-table';
 
 import { FilePicker, FileList } from '@c/file-upload';
 import { isMacosX } from '@lib/utils';
-import Icon from '@c/icon';
 import toast from '@lib/toast';
 import Modal from '@c/modal';
-import Table from '@c/table';
-import RadioGroup from '@c/radio/group';
-import Radio from '@c/radio';
 
 import { FileUploadStatus } from '../type';
 import { exportEmployeesFail } from '../utils';
-import { getUserTemplate, importTempFile, resetUserPWD } from '../api';
-import { SendMessage, sendMsgOption } from './reset-password-modal';
+import { getUserTemplate, importTempFile, resetUserPWD, downloadTempFile } from '../api';
 import { SEND_MAP } from './edit-employees-modal';
 
 const columns: UnionColumn<any>[] = [
   {
     Header: '姓名',
-    id: 'userName',
-    accessor: 'userName',
+    id: 'name',
+    accessor: 'name',
+  },
+  {
+    Header: '工号',
+    id: 'jobNumber',
+    accessor: 'jobNumber',
+  },
+  {
+    Header: '所在部门名称',
+    id: 'depName',
+    accessor: 'depName',
   },
   {
     Header: '手机号',
     id: 'phone',
     accessor: 'phone',
+  },
+  {
+    Header: '私人邮箱',
+    id: 'selfEmail',
+    accessor: 'selfEmail',
   },
   {
     Header: '邮箱',
@@ -35,8 +45,8 @@ const columns: UnionColumn<any>[] = [
   },
   {
     Header: '原因',
-    id: 'remarks',
-    accessor: 'remarks',
+    id: 'remark',
+    accessor: 'remark',
   },
 ];
 
@@ -44,6 +54,7 @@ type UploadRes = {
   status: FileUploadStatus;
   successTotal: number;
   failTotal: number;
+  updateSuccessTotal?: number;
 };
 
 type ButtonStatus = 0 | 1;
@@ -63,6 +74,7 @@ function ImportEmployeesModal({ currDepId, closeModal }: Props): JSX.Element {
     status: FileUploadStatus.init,
     successTotal: 0,
     failTotal: 0,
+    updateSuccessTotal: 0,
   });
   const [failUsers, setFailUsers] = useState([]);
   const [successUsersId, setSuccessUsersId] = useState<string[]>([]);
@@ -85,13 +97,13 @@ function ImportEmployeesModal({ currDepId, closeModal }: Props): JSX.Element {
         toast.success('操作成功');
         const { data } = res;
         if (data) {
-          const { failTotal, failUsers, successTotal, success } = data;
+          const { failTotal, failUsers, successTotal, success, addSuccessTotal, updateSuccessTotal } = data;
           let status: FileUploadStatus = FileUploadStatus.init;
           if (failTotal > 0 && successTotal === 0) {
             status = FileUploadStatus.fail;
           } else if (failTotal === 0) {
             status = FileUploadStatus.success;
-          } else if (failTotal > 0 && successTotal > 0) {
+          } else if (failTotal > 0 && addSuccessTotal > 0 ) {
             status = FileUploadStatus.depSuccess;
           } else {
             status = FileUploadStatus.success;
@@ -102,7 +114,8 @@ function ImportEmployeesModal({ currDepId, closeModal }: Props): JSX.Element {
           setUploadStatus({
             status,
             failTotal,
-            successTotal,
+            successTotal: addSuccessTotal,
+            updateSuccessTotal,
           });
         }
       } else {
@@ -152,7 +165,19 @@ function ImportEmployeesModal({ currDepId, closeModal }: Props): JSX.Element {
   }
 
   function downTemp(): void {
-    tempMutation.mutate();
+    // tempMutation.mutate();
+    downloadTempFile()
+      .then((res: any)=>{
+        const { fileName, data } = res;
+        const aElem = document.createElement('a');
+        document.body.appendChild(aElem);
+        aElem.setAttribute('href', 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + encodeURIComponent(data));
+        aElem.download = fileName;
+        aElem.click();
+        document.body.removeChild(aElem);
+      }).catch((error)=>{
+        toast.error(error);
+      });
   }
 
   function deleteUploadFile(delFile: QXPUploadFileBaseProps): void {
@@ -187,17 +212,18 @@ function ImportEmployeesModal({ currDepId, closeModal }: Props): JSX.Element {
   }
 
   function handleSubmit(): void {
-    if (checkWay && !checkWay.sendChannel) {
-      toast.error('请选择发送方式');
-      return;
-    }
-    const sendMessage: SendMessage[] = successUsersId.map((id) => {
-      return {
-        userID: id,
-        ...checkWay,
-      };
-    });
-    resetMutation.mutate({ userIDs: successUsersId, sendMessage });
+    // if (checkWay && !checkWay.sendChannel) {
+    //   toast.error('请选择发送方式');
+    //   return;
+    // }
+    // const sendMessage: SendMessage[] = successUsersId.map((id) => {
+    //   return {
+    //     userID: id,
+    //     ...checkWay,
+    //   };
+    // });
+    // resetMutation.mutate({ userIDs: successUsersId, sendMessage });
+    closeModal();
   }
 
   return (
@@ -233,7 +259,7 @@ function ImportEmployeesModal({ currDepId, closeModal }: Props): JSX.Element {
         }
       >
         <div className="w-full text-14 p-20">
-          {uploadStatus.status === FileUploadStatus.fail && (
+          {/* {uploadStatus.status === FileUploadStatus.fail && (
             <div className="text-red-600 mb-24 font-semibold flex items-center">
               <Icon
                 size={16}
@@ -243,8 +269,8 @@ function ImportEmployeesModal({ currDepId, closeModal }: Props): JSX.Element {
               />
               <span>导入失败 {uploadStatus.failTotal} 条数据。</span>
             </div>
-          )}
-          {uploadStatus.status === FileUploadStatus.success && (
+          )} */}
+          {/* {uploadStatus.status === FileUploadStatus.success && (
             <div className="text-green-600 mb-24 font-semibold flex items-center">
               <Icon
                 size={16}
@@ -254,18 +280,18 @@ function ImportEmployeesModal({ currDepId, closeModal }: Props): JSX.Element {
               />
               <span>导入成功 {uploadStatus.successTotal} 条数据。</span>
             </div>
-          )}
-          {uploadStatus.status === FileUploadStatus.depSuccess && (
-            <div className="text-yellow-600 mb-24 font-semibold flex items-center">
-              <Icon
+          )} */}
+          {uploadStatus.status === FileUploadStatus.success && (
+            <div className=" mb-24 font-semibold flex items-center">
+              {/* <Icon
                 size={16}
                 name="priority_high"
                 className="mr-8"
                 style={{ color: '#d0a406' }}
-              />
+              /> */}
               <span>
                 数据导入完成，导入成功 {uploadStatus.successTotal}{' '}
-                数据，导入失败 {uploadStatus.failTotal} 数据。
+                数据，导入失败 {uploadStatus.failTotal} 数据， 更新成功 {uploadStatus.updateSuccessTotal} 数据。
               </span>
             </div>
           )}
@@ -305,7 +331,7 @@ function ImportEmployeesModal({ currDepId, closeModal }: Props): JSX.Element {
               </ul>
             </div>
           )}
-          {
+          {/* {
             [FileUploadStatus.success, FileUploadStatus.depSuccess].includes(
               uploadStatus.status,
             ) && (
@@ -328,8 +354,8 @@ function ImportEmployeesModal({ currDepId, closeModal }: Props): JSX.Element {
                 </RadioGroup>
               </div>
             )
-          }
-          {
+          } */}
+          {/* {
             [FileUploadStatus.depSuccess, FileUploadStatus.fail].includes(
               uploadStatus.status,
             ) && (
@@ -353,6 +379,19 @@ function ImportEmployeesModal({ currDepId, closeModal }: Props): JSX.Element {
                 </div>
               </div>
             )
+          } */}
+          {
+            !!failUsers.length && (<div>
+              <div className="mb-8 flex items-center">
+                <p className="text-gray-600 font-semibold">失败原因：</p>
+                <span
+                  onClick={exportEmployees}
+                  className="text-blue-600 cursor-pointer"
+                >
+                 下载失败列表
+                </span>
+              </div>
+            </div>)
           }
         </div>
       </Modal>

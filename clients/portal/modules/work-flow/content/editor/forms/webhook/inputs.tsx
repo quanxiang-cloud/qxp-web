@@ -46,6 +46,7 @@ function Inputs({ value, onChange, values, error }: Props): JSX.Element | null {
 
   const pathTreeValue = useMemo(() => getWebhookPathTreeValue(tableSchema, data), [tableSchema, data]);
 
+  window.CONFIG.WebhookPathTreeValue = pathTreeValue;
   const getInit = useCallback((type: 'header' | 'body' | 'query'): Input => {
     const item: Input = {
       type: 'string', name: '', data: '', in: type,
@@ -66,7 +67,7 @@ function Inputs({ value, onChange, values, error }: Props): JSX.Element | null {
     }
   }, [triggerType]);
 
-  useUpdateEffect(() => {
+  useUpdateEffect(()=>{
     triggerType === 'send' && onChange(inputVal);
   }, [triggerType, inputVal]);
 

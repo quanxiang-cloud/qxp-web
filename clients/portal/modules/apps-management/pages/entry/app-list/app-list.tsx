@@ -7,6 +7,7 @@ import AppItem from './app-item';
 import DeleteAppModal from './app-edit/del-app-modal';
 import AppSetStatusModal from './app-edit/app-set-status-modal';
 import EditTemplateModal from '../app-templates/template-edit/edit-template-modal';
+import { APPLICATION_CREATE } from '@portal/constants';
 
 type Props = {
   isLoading: boolean;
@@ -64,10 +65,14 @@ function AppList({ isLoading, appList, openCreatedModal }: Props): JSX.Element {
     return (
       <div className='app-no-data mt-58'>
         <img src='/dist/images/new_tips.svg' />
-        <span>无应用数据。点击
-          <span onClick={openCreatedModal} className='text-btn'>&nbsp;新建应用</span>
+        {
+          window.ADMIN_USER_FUNC_TAGS.includes(APPLICATION_CREATE) ?
+            (<span>无应用数据。点击
+              <span onClick={openCreatedModal} className='text-btn'>&nbsp;新建应用</span>
           ，开始构建应用
-        </span>
+            </span>) :
+            <span>无应用数据</span>
+        }
       </div>
     );
   }
