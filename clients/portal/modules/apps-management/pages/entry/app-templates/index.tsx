@@ -13,6 +13,7 @@ import store from './store';
 import EditTemplateModal from './template-edit/edit-template-modal';
 import DelTemplateModal from './template-edit/del-template-modal';
 import CreatedAppModal from '../app-list/app-edit/created-app-modal';
+import { APPLICATION_CREATE } from '@portal/constants';
 
 function AppTemplates(): JSX.Element {
   const [modalType, setModalType] = useState('');
@@ -52,20 +53,22 @@ function AppTemplates(): JSX.Element {
       Header: '操作',
       accessor: (row) => {
         return (
-          <>
-            <span
-              className="text-blue-600 cursor-pointer mr-20"
-              onClick={() => handelMenuClick('createAppWithTemplate', row)}
-            >
+          window.ADMIN_USER_FUNC_TAGS.includes(APPLICATION_CREATE) ?
+            (<>
+              <span
+                className="text-blue-600 cursor-pointer mr-20"
+                onClick={() => handelMenuClick('createAppWithTemplate', row)}
+              >
               使用
-            </span>
-            <MoreMenu
-              menus={MENUS}
-              onMenuClick={(key) => handelMenuClick(key, row)}
-            >
-              <Icon changeable clickable name='more_horiz' />
-            </MoreMenu>
-          </>
+              </span>
+              <MoreMenu
+                menus={MENUS}
+                onMenuClick={(key) => handelMenuClick(key, row)}
+              >
+                <Icon changeable clickable name='more_horiz' />
+              </MoreMenu>
+            </>) :
+            '-'
         );
       },
     },

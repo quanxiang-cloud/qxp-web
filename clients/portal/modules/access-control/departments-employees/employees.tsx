@@ -9,7 +9,7 @@ import Authorized from '@c/authorized';
 import Button from '@c/button';
 import MoreMenu from '@c/more-menu';
 import { getTwoDimenArrayHead } from '@lib/utils';
-// import toast from '@lib/toast';
+import toast from '@lib/toast';
 
 // import { getUserAdminInfo } from './api';
 import EditEmployeesModal from './modal/edit-employees-modal';
@@ -20,11 +20,10 @@ import AdjustDepModal from './modal/adjust-dep-modal';
 import LeaderHandleModal from './modal/leader-handle-modal';
 import ExportEmployees from './export-employees';
 
-// import { exportEmployees } from './utils';
 import { UserStatus } from './type';
 import { EmployeesColumns, EmployeesActions } from './constant';
 import { getUserAdminInfo } from './api';
-import { buildGraphQLQuery } from './utils';
+import { buildGraphQLQuery, exportEmployees } from './utils';
 
 type ModalType = '' | 'edit_employees' | 'import_employees' | 'reset_password' |
   'alert_user_state' | 'adjust_dep' | 'leader_handle' | 'export_employees';
@@ -124,7 +123,49 @@ export default function Employees({
   }
 
   function openExportModal(): void {
-    openModal('export_employees');
+    const queryGraphQL = `query(
+      name:"",
+      phone:"",
+      email:"",
+      jobNumber:"",
+      useStatus:0,
+      gender:"",
+      position:"",
+      roleName:"",
+      departmentID:"${department.id}",
+      departmentName:"",
+      page:0,
+      size:999
+      )`;
+    const userGraphQL = `{users{
+      id,
+      email,
+      name,
+      phone,
+      useStatus,
+      position,
+      departments{id,name},
+      leaders{id,name}},
+      total}}`;
+
+    getUserAdminInfo({
+      query: `{${queryGraphQL}${userGraphQL}`,
+    }).then((res: any) => {
+      const { users } = res;
+      users.map((item: any)=>{
+        let department = '';
+        const departments = [...JSON.parse(JSON.stringify(item.departments))][0];
+        departments && departments.reverse();
+        departments && departments.map((item: { name: string; }, index: number)=>{
+          department += '/' + item.name;
+        });
+        item.department = department;
+        item.leader = item?.leaders?.[0]?.[0]?.name;
+      });
+      exportEmployees(users);
+    }).catch((error)=>{
+      toast.error(error);
+    });
   }
 
   // 导出数据
@@ -292,6 +333,22 @@ export default function Employees({
                     className="mr-16"
                   >
                   添加员工
+                  </Button>
+                  <Button
+                    modifier="primary"
+                    iconName="create_new_folder"
+                    onClick={(): void => openModal('import_employees')}
+                    className="mr-16"
+                  >
+                  导入
+                  </Button>
+                  <Button
+                    modifier="primary"
+                    iconName="create_new_folder"
+                    onClick={(): void => openExportModal()}
+                    className="mr-16"
+                  >
+                  导出
                   </Button>
                   {/* <MoreMenu
                     menus={ExpandActions}

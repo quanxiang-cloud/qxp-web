@@ -9,6 +9,7 @@ import RemoveOptionSetItems from './option-set-popconfirm/remove-items';
 import AddOptionSetItem from './option-set-popconfirm/add-item';
 import EditOptionSetItem from './option-set-popconfirm/edit-item';
 import DeleteOptionSetItem from './option-set-popconfirm/delete-item';
+import { APPLICATION_CREATE } from '@portal/constants';
 
 import store from './store';
 
@@ -77,9 +78,15 @@ function TreeContent({ className }: Props): JSX.Element {
           <span className='pl-16 py-8 w-5/6'>
             {zhCNLevel}级可选项
           </span>
-          <RemoveOptionSetItems zhCNLevel={zhCNLevel} prefix={prefix}/>
+          {
+            window.ADMIN_USER_FUNC_TAGS.includes(APPLICATION_CREATE) &&
+            <RemoveOptionSetItems zhCNLevel={zhCNLevel} prefix={prefix}/>
+          }
         </div>
-        <AddOptionSetItem type='tree' prefix={prefix} />
+        {
+          window.ADMIN_USER_FUNC_TAGS.includes(APPLICATION_CREATE) &&
+          <AddOptionSetItem type='tree' prefix={prefix} />
+        }
         {treeItems &&
             treeItems.map((itm, idx) => {
               const nodePath = getNodePath(prefix, idx);
@@ -106,10 +113,14 @@ function TreeContent({ className }: Props): JSX.Element {
                   >
                     {itm.label}
                   </span>
-                  <div className='flex action-show'>
-                    <EditOptionSetItem type='tree' label={itm.label} nodePath={nodePath} />
-                    <DeleteOptionSetItem type='tree' nodePath={nodePath} prefix={prefix} />
-                  </div>
+                  {
+                    window.ADMIN_USER_FUNC_TAGS.includes(APPLICATION_CREATE) &&
+                    (<div className='flex action-show'>
+                      <EditOptionSetItem type='tree' label={itm.label} nodePath={nodePath} />
+                      <DeleteOptionSetItem type='tree' nodePath={nodePath} prefix={prefix} />
+                    </div>)
+                  }
+
                   {Array.isArray(itm.children) && !!itm.children.length && (
                     <span className="action-to-show">
                       <Icon name="keyboard_arrow_right" size={20}/>
@@ -123,7 +134,7 @@ function TreeContent({ className }: Props): JSX.Element {
   }
 
   function additionalItem(level: number): JSX.Element | undefined {
-    if (level > 2) return;
+    if (level > 2 || !window.ADMIN_USER_FUNC_TAGS.includes(APPLICATION_CREATE)) return;
     return (
       <div className='flex flex-col flex-1 option-set-item h-full text-blueGray-400 rounded-lg box-border'>
         <div

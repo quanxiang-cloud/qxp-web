@@ -19,7 +19,13 @@ import useDrawerContainerPadding from './hooks/use-drawer-container-padding';
 
 import './style.scss';
 
-type LocalValue = (RequestConfig | SendConfig) & { type: 'request' | 'send' };
+type LocalValue = (RequestConfig | SendConfig) & { type: 'request' | 'send'} ;
+
+enum FieldType {
+  fieldType='fieldType',
+  fieldName='fieldName',
+  tableID='tableID',
+}
 
 type Props = {
   onSubmit: (v: WebhookData) => void;
@@ -131,20 +137,65 @@ export default function WebhookConfig(
     }],
   }), []);
 
-  const handleSubmit = useCallback(({ type, ...config }: LocalValue) => {
-    const VARIABLE = 'variable';
-    const directExprArr = window.CONFIG.WebhookPathTreeValue
-      .filter((item: any)=>item?.name !== VARIABLE);
+  const getType = ( val: string): string=>{
+    const directExprArr = window.CONFIG.WebhookPathTreeValue;
     let directexprTypeArr: any = [];
     directExprArr.forEach((item: any)=>{
       const { name, data } = item;
       directexprTypeArr = [...directexprTypeArr, ...data.map((item: any)=>`$${name}.${item.name}`)];
     });
-    config.inputs = config.inputs.map((item)=>{
+    return directexprTypeArr.find((item: string)=>val.includes(item)) ? 'direct_expr' : 'string';
+  };
+
+  const getField = (val: string, type: FieldType): string=>{
+    let result = '';
+    let list: any = [];
+    const directExprArr = window.CONFIG.WebhookPathTreeValue;
+    directExprArr.forEach((item: any)=>{
+      const { name, data } = item;
+      data.forEach((item: { value: string; name: any; })=>item.value = `$${name}.${item.name}`);
+      list = [...list, ...data];
+    });
+    list.find((item: any)=>{
+      if (val.includes(item.value)) {
+        return result = item?.[type];
+      }
+    });
+    return result;
+  };
+
+  const formatData = (val: { data: string; })=>{
+    let list: any = [];
+    const result = { ...val };
+    const pathTreeValue = window.CONFIG.WebhookPathTreeValue;
+    pathTreeValue.forEach((item: any)=>{
+      const { name, data, desc } = item;
+      data.forEach((item: { value: string; name: any; descPath: string; desc: any; })=>{
+        item.value = `$${name}.${item.name}`;
+        item.descPath = `${desc}.${item.desc}`;
+      });
+      list = [...list, ...data];
+    });
+
+    list.find((item: { descPath: any; value: any; })=>{
+      if (result?.data?.includes(item?.descPath)) {
+        result.data = result.data?.replace(item?.descPath, item?.value);
+        return;
+      }
+    });
+    return result;
+  };
+  const handleSubmit = useCallback(({ type, ...config }: LocalValue) => {
+    window.test = config.inputs;
+    config.inputs = config.inputs.map((item: any)=>{
       const val = String(item.data)?.trim();
+      formatData(item);
       return {
-        ...item,
-        type: directexprTypeArr.includes(val) ? 'direct_expr' : 'string',
+        ...formatData(item),
+        type: getType(val),
+        fieldType: getField(val, FieldType.fieldType),
+        fieldName: getField(val, FieldType.fieldName),
+        tableID: getField(val, FieldType.tableID),
       };
     });
     onSubmit({ type, config } as WebhookData);

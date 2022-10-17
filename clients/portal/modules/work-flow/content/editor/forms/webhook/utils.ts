@@ -27,8 +27,16 @@ export function getWebhookPathTreeValue(
       return {
         type: 'object',
         data: tableSchema.map((schema) => {
+          const SubTable = 'SubTable';
+          const Foregin_Table = 'foreign_table';
+          const ForeignTable = 'ForeignTable';
+          const subordination = schema['x-component-props']?.subordination;
+          const fieldType = schema['x-component'] ? schema['x-component'] : '';
           return {
             type: schema.type as POLY_API.API_FIELD_TYPE,
+            fieldType: (fieldType === SubTable && subordination === Foregin_Table) ? ForeignTable : fieldType,
+            fieldName: schema.fieldName ? schema.fieldName : '',
+            tableID: schema['x-component-props']?.tableID ? schema['x-component-props']?.tableID : '',
             in: '',
             desc: isString(schema.title) ? schema.title : '',
             name: isString(schema.fieldName) ? schema.fieldName : '',

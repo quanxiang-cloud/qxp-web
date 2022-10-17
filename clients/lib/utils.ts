@@ -10,7 +10,7 @@ export function uuid(): string {
   return nanoid();
 }
 
-export const httpFile = async (url: string, data?: Record<string, string | Blob>): Promise<any> => {
+export const httpFile = async (url: string, data?: Record<string, string | Blob | any>): Promise<any> => {
   const formData = new FormData();
   if (data) {
     Object.entries(data).forEach(([key, value]) => {
