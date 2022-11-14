@@ -76,19 +76,20 @@ export async function getAppVisitPermission(
   appID: string,
   page: number,
   size: number,
-): Promise<{ members: Array<Employee>; total: number }> {
+): Promise<{ members: Array<Employee>; total: number, list?: any }> {
   const { list, total } = await httpClient<{ list: Array<string>; total: number }>(
     `/api/v1/app-center/homeAccess/${appID}`,
     { page, size },
   );
 
-  const query = `{query(ids:${JSON.stringify(list)}){users{id,email,name,phone,departments{id,name}}}}`;
+  const _list = list.map((item: any)=>item?.scopeID);
+  const query = `{query(ids:${JSON.stringify(_list)}){users{id,email,name,phone,departments{id,name}}}}`;
   const { users } = await httpClientGraphQL<{ users: Employee[] }>('/api/v1/search/users', { query });
 
-  return { members: users, total };
+  return { members: users, total, list: list };
 }
 
-export function addAppMembers(appID: string, members: string[]): Promise<void> {
+export function addAppMembers(appID: string, members: any[]): Promise<void> {
   return httpClient('/api/v1/app-center/homeAccess/update/owner', { appID, add: members });
 }
 
