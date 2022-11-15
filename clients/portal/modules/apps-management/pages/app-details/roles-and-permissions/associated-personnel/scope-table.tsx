@@ -12,6 +12,7 @@ function ScopeTable(): JSX.Element {
 
   useEffect(() => {
     store.fetchSomeScope(scopeType);
+    store.fetchDeptScope();
   }, [currentRoleID, scopeType]);
 
   const columns: any = [{
@@ -74,7 +75,7 @@ function ScopeTable(): JSX.Element {
           showCheckbox
           rowKey="id"
           loading={store.isLoadingSome || store.isLoadingDetail}
-          data={store.scopeDetailList}
+          data={(scopeType === 1) ? store.scopeDetailList : store.deptScopes as any}
           className="rounded-bl-none rounded-br-none text-12"
           columns={columns}
           emptyTips={(

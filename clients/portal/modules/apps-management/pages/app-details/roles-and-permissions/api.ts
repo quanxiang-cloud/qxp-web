@@ -45,6 +45,20 @@ export function fetchRolePerson(
   });
 }
 
+export function fetchRoleDept(
+  appID: string,
+  roleID: string,
+  data: { type: number },
+): Promise<{ list: DeptAndUser[], total: number }> {
+  return httpClient<{ list: DeptAndUser[], total: number }>(
+    `/api/v1/form/${appID}/m/apiRole/grant/list/${roleID}`, data,
+  ).then((res) => {
+    return res;
+  }).catch(() => {
+    return { list: [], total: 0 };
+  });
+}
+
 export function updateRole(appID: string, data: RoleRight): Promise<void> {
   return httpClient(`/api/v1/form/${appID}/m/apiRole/update`, data);
 }
