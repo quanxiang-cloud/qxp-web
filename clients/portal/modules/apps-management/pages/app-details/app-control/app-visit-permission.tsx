@@ -13,6 +13,7 @@ import Modal from '@c/modal';
 import { addAppMembers, deleteAppMembers, getAppVisitPermission } from '../api';
 import { getTwoDimenArrayHead } from '@lib/utils';
 import { getERPTree } from '@portal/modules/access-control/departments-employees/api';
+import RadioButtonGroup from '@c/radio/radio-button-group';
 
 function AppVisitPermission(): JSX.Element {
   const [modalType, setModalType] = useState<'addMember' | 'confirmRemoveMember' | ''>('');
@@ -26,6 +27,7 @@ function AppVisitPermission(): JSX.Element {
   const [departments, setDepartments] = useState<any>([]);
   const [employees, setEmployees] = useState([]);
   const [treeData, setTreeData] = useState([]);
+  const [showBindType, setShowBindType] = useState<number>(1);
 
   useEffect(() => {
     fetchMembers();
@@ -179,35 +181,78 @@ function AppVisitPermission(): JSX.Element {
     [],
   );
 
+  const deptColumns = React.useMemo(
+    () => [
+      {
+        id: 'dep',
+        Header: '部门',
+        accessor: (data: any) => {
+          return data?.ownerName;
+        },
+      },
+      {
+        id: 'action',
+        Header: '操作',
+        accessor: ({ id }: { id: string }): JSX.Element => (
+          <PopConfirm onOk={() => removeMembers([id])} content={<span>确认移除部门吗？</span>}>
+            <span className="text-btn">移除</span>
+          </PopConfirm>
+        ),
+      },
+    ],
+    [],
+  );
+
   return (
     <>
       <div className="flex-1 py-16">
-        {!!selectedIdArr.length && (
-          <Button
-            className="ml-16"
-            onClick={() => setModalType('confirmRemoveMember')}
-            modifier="primary"
-            iconName="restore_from_trash"
-          >
+        <div className='app-visit-permission btn-wrap'>
+          <div >
+            {!!selectedIdArr.length && (
+              <Button
+                className="ml-16"
+                onClick={() => setModalType('confirmRemoveMember')}
+                modifier="primary"
+                iconName="restore_from_trash"
+              >
             批量移除
-          </Button>
-        )}
-        <Button
-          onClick={() => setModalType('addMember')}
-          className="ml-16"
-          modifier="primary"
-          iconName="add"
-          textClassName="text-12 py-6"
-        >
+              </Button>
+            )}
+            <Button
+              onClick={() => setModalType('addMember')}
+              className="ml-16"
+              modifier="primary"
+              iconName="add"
+              textClassName="text-12 py-6"
+            >
           添加成员
-        </Button>
+            </Button>
+          </div>
+
+          <RadioButtonGroup
+            className="mr-16 text-12"
+            radioBtnClass="bg-white"
+            currentValue={showBindType + ''}
+            listData={[
+              {
+                label: '员工',
+                value: '1',
+              }, {
+                label: '部门',
+                value: '2',
+              },
+            ]}
+            onChange={(value) => setShowBindType(Number(value))}
+          />
+        </div>
+
         <div className="bg-white px-16 py-8 rounded-12">
           <Table
             showCheckbox
             rowKey="id"
             style={{ maxHeight: 'calc(100vh - 300px)' }}
-            columns={columns}
-            data={members}
+            columns={(showBindType === 1) ? columns : deptColumns as any}
+            data={(showBindType === 1) ? members : departments as any}
             loading={loading}
             className="text-12"
             onSelectChange={handleSelectChange}
@@ -215,7 +260,7 @@ function AppVisitPermission(): JSX.Element {
           <Pagination
             pageSize={pagination.size}
             current={pagination.page}
-            total={totalMembers}
+            total={(showBindType === 1) ? employees.length : departments.length }
             onChange={(current, pageSize) => {
               setPagination({ size: pageSize, page: current });
             }}
