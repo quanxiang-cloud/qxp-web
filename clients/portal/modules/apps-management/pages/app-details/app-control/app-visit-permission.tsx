@@ -136,6 +136,8 @@ function AppVisitPermission(): JSX.Element {
   async function handleDeptRemove(data: any): Promise<void> {
     return deleteAppMembers(appID, [data.id]).then(() => {
       setDepartments([...departments.filter((item: any)=>item.id !== data.id)]);
+      setEmployees([...employees.filter((item: any)=>item.id !== data.id)]);
+      fetchMembers();
       // toast.success('删除成功！');
     });
   }
