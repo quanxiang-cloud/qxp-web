@@ -3,6 +3,7 @@ import { action, computed, observable, reaction } from 'mobx';
 import toast from '@lib/toast';
 
 import {
+  fetchRoleDept,
   fetchRolePerson,
   getDepDetail,
   getUserDetail,
@@ -26,6 +27,7 @@ class RoleAssociateStore {
   @observable showPickerModal = false;
   @observable isLoadingDetail = false;
   @observable total = 0;
+  @observable deptScopes: DeptAndUser[] = [];
 
   constructor() {
     reaction(() => this.someScope, this.fetchScopeDetailList);
@@ -98,6 +100,18 @@ class RoleAssociateStore {
   };
 
   @action
+  fetchDeptScope = (): void => {
+    this.isLoadingAll = true;
+    fetchRoleDept(this.appID, this.currentRoleID, { type: SCOPE.DEP })
+      .then((res: any)=>{
+        this.deptScopes = res?.list || [];
+      })
+      .finally(() => {
+        this.isLoadingAll = false;
+      });
+  };
+
+  @action
   fetchSomeScope = (type: number): void => {
     this.isLoadingSome = true;
     this.fetchRolePerson(type)
@@ -155,6 +169,7 @@ class RoleAssociateStore {
   @action
   deletePerGroupUser = (ids: string[]): void => {
     this.someScope = this.someScope.filter((scope) => !ids.includes(scope.id));
+    this.deptScopes = this.deptScopes.filter((scope) => !ids.includes(scope.id));
     this.total = this.someScope.length;
     this.updatePerUser({ add: [], removes: ids });
   };
