@@ -10,9 +10,10 @@ import OwnerStore from './store';
 export interface ISelectedList {
   className?: string;
   ownerStore: OwnerStore;
+  onDeptRemove?: (data: any) => void;
 }
 
-export default observer( function SelectedList({ className, ownerStore }: ISelectedList) {
+export default observer( function SelectedList({ className, ownerStore, onDeptRemove }: ISelectedList) {
   const users = ownerStore.owners.filter(({ type }) => type === 1);
   const departments = ownerStore.owners.filter(({ type }) => type === 2);
   const isFirstLoad = useRef<boolean>(true);
@@ -29,6 +30,7 @@ export default observer( function SelectedList({ className, ownerStore }: ISelec
   const onRemove = (owner: EmployeeOrDepartmentOfRole): void => {
     ownerStore.onRemove(owner);
     ownerStore.departmentTreeStore.toggleCheck(owner.ownerID);
+    onDeptRemove && onDeptRemove(owner);
   };
 
   const onClear = (): void => {

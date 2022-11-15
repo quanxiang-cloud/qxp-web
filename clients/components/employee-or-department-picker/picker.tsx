@@ -23,10 +23,12 @@ interface Props {
   employees?: EmployeeOrDepartmentOfRole[];
   onChange: (departmentsOrEmployees: EmployeeOrDepartmentOfRole[]) => void;
   onlyEmployees?: boolean;
+  textHeaderDesc?: string;
+  onDeptRemove?: (data: any) => void;
 }
 
 export default observer(function EmployeeOrDepartmentPicker({
-  departments = [], employees = [], onChange, onlyEmployees,
+  departments = [], employees = [], onChange, onlyEmployees, textHeaderDesc, onDeptRemove,
 }: Props) {
   const [store, setStore] = useState<OwnerStore>();
 
@@ -142,7 +144,7 @@ export default observer(function EmployeeOrDepartmentPicker({
             className="pb-0"
             title="选择部门"
             itemTitleClassName="text-h6-no-color-weight font-semibold"
-            desc="角色关联部门后，在该部门下添加员工时会默认自动带入该部门的角色。例如：部门关联角色“普通管理员”，添加新员工时，自动关联角色“普通管理员”。"
+            desc={textHeaderDesc || '角色关联部门后，在该部门下添加员工时会默认自动带入该部门的角色。例如：部门关联角色“普通管理员”，添加新员工时，自动关联角色“普通管理员”。'}
             itemClassName="flex flex-col items-start"
             textClassName="ml-0 mt-4"
             descClassName="mb-8 text-caption"
@@ -185,6 +187,7 @@ export default observer(function EmployeeOrDepartmentPicker({
       <div className="vertical-line flex-grow-0" />
       <SelectedList
         ownerStore={store}
+        onDeptRemove={onDeptRemove}
       />
     </div>
   );

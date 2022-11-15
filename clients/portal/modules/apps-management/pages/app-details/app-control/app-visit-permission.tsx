@@ -12,6 +12,7 @@ import Modal from '@c/modal';
 
 import { addAppMembers, deleteAppMembers, getAppVisitPermission } from '../api';
 import { getTwoDimenArrayHead } from '@lib/utils';
+import { getERPTree } from '@portal/modules/access-control/departments-employees/api';
 
 function AppVisitPermission(): JSX.Element {
   const [modalType, setModalType] = useState<'addMember' | 'confirmRemoveMember' | ''>('');
@@ -22,10 +23,69 @@ function AppVisitPermission(): JSX.Element {
   const [members, setMembers] = useState<Array<Employee>>([]);
   const [pagination, setPagination] = useState({ page: 1, size: 10 });
   const [totalMembers, setTotal] = useState(0);
+  const [departments, setDepartments] = useState<any>([]);
+  const [employees, setEmployees] = useState([]);
+  const [treeData, setTreeData] = useState([]);
+
+  useEffect(() => {
+    fetchMembers();
+    fetchTree();
+  }, []);
 
   useEffect(() => {
     fetchMembers();
   }, [pagination]);
+
+  useEffect(()=>{
+    getAppVisitPermission(appID, pagination.page, totalMembers || 1000).then(({ members, total, list }) => {
+      const treeList = treeToList(treeData);
+      const depart: any = [];
+      const employee: any = [];
+      treeList.map((item: any)=>{
+        list.map((_item: { scopeID: any; })=>{
+          if (item.id === _item.scopeID) {
+            depart.push({
+              id: item.id,
+              ownerID: item.id,
+              ownerName: item.name,
+              type: 2,
+            });
+          }
+        });
+      });
+      setDepartments([...new Set(depart)]);
+
+      members.map((item: any)=>{
+        employee.push({
+          id: item.id,
+          ownerID: item.id,
+          ownerName: item.name,
+          type: 1,
+        });
+      });
+      setEmployees(employee);
+    });
+  }, [totalMembers]);
+
+  function treeToList(obj: any): any {
+    const res: any = [];
+    function a(obj: any): any {
+      res.push({ ...obj });
+      if (obj.child) {
+        for (const v of obj.child) {
+          a(v);
+        }
+      }
+    }
+    a(obj);
+    return res;
+  }
+
+  function fetchTree(): void {
+    getERPTree().then((_treeData: any) => {
+      setTreeData(_treeData);
+    });
+  }
 
   function fetchMembers(): void {
     setLoading(true);
@@ -59,20 +119,26 @@ function AppVisitPermission(): JSX.Element {
     _: EmployeeOrDepartmentOfRole[],
     selected: EmployeeOrDepartmentOfRole[],
   ): Promise<void> {
-    if (selected.length === 0 && members.length === 0) {
+    if (selected.length === 0 && _.length === 0 && members.length === 0) {
       toast.error('请选择要添加的成员');
       return;
     }
-
     return addAppMembers(
       appID,
-      selected.map(({ id }) => id),
+      [...selected.map(({ id }) =>
+        ({ scopeID: id, type: 'user' })), ..._.map(({ id }) => ({ scopeID: id, type: 'department' }))],
     ).then(() => {
       fetchMembers();
       setModalType('');
     });
   }
 
+  async function handleDeptRemove(data: any): Promise<void> {
+    return deleteAppMembers(appID, [data.id]).then(() => {
+      setDepartments([...departments.filter((item: any)=>item.id !== data.id)]);
+      // toast.success('删除成功！');
+    });
+  }
   const columns: UnionColumn<Employee>[] = React.useMemo(
     () => [
       {
@@ -179,12 +245,14 @@ function AppVisitPermission(): JSX.Element {
         )}
         {modalType === 'addMember' && (
           <EmployeeOrDepartmentPickerModal
-            onlyEmployees
+            // onlyEmployees
+            textHeaderDesc={' '}
             title="添加可访问成员"
             submitText="添加"
-            employees={[]}
-            departments={[]}
+            employees={employees as EmployeeOrDepartmentOfRole[]}
+            departments={departments as EmployeeOrDepartmentOfRole[]}
             onSubmit={handleAdd}
+            onDeptRemove={handleDeptRemove}
             onCancel={() => setModalType('')}
           />
         )}

@@ -16,6 +16,8 @@ interface Props {
   employees?: EmployeeOrDepartmentOfRole[];
   departments?: EmployeeOrDepartmentOfRole[];
   onlyEmployees?: boolean;
+  textHeaderDesc?: string;
+  onDeptRemove?: (data: any) => void;
 }
 
 export default function EmployeeOrDepartmentPickerModal({
@@ -26,6 +28,8 @@ export default function EmployeeOrDepartmentPickerModal({
   title,
   submitText,
   onlyEmployees,
+  textHeaderDesc,
+  onDeptRemove,
 }: Props): JSX.Element {
   const [departmentsOrEmployees, setDepartmentsOrEmployees] = useState<
     EmployeeOrDepartmentOfRole[]
@@ -87,6 +91,8 @@ export default function EmployeeOrDepartmentPickerModal({
         employees={employees}
         onChange={setDepartmentsOrEmployees}
         onlyEmployees={onlyEmployees}
+        textHeaderDesc={textHeaderDesc}
+        onDeptRemove = {onDeptRemove}
       />
     </Modal>
   );
