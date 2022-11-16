@@ -1,3 +1,6 @@
+/* eslint-disable max-len */
+/* eslint-disable no-case-declarations */
+/* eslint-disable guard-for-in */
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { observer } from 'mobx-react';
 import { Ref, TableHeaderBtn } from '@c/form-app-data-table/type';
@@ -14,6 +17,7 @@ import CreateDataForm from './create-data-form';
 import DetailsDrawer from './details-drawer';
 import useTableViewStore from './use-table-view-store';
 import { getAPIPath, getOperateButtonPer } from './utils';
+import { getApiPermit, getPolyapi, getSubordinate } from './api';
 
 export type Props = {
   appID: string;
@@ -36,7 +40,10 @@ export const TableContext = React.createContext<Props>(
 
 function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
   const store = useTableViewStore({ appID, tableID, name });
-
+  const [polyapiList, setPolyapiList] = useState<any>([]);
+  const [polyBtnObj, setPolyBtnObj] = useState<any>({});
+  const [btnCondition, setBtnCondition] = useState<any>({});
+  const [subordinateList, setSubordinateList] = useState<any>([]);
   const { fetchSchemeLoading, setCurRowID } = store;
   const [modalType, setModalType] = useState('');
 
@@ -78,6 +85,91 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
   useEffect(() => {
     store.setCurRoleID(userAppDetailsStore.currentRoleInfo.roleID || 'POLY_ROLE_ID');
   }, [userAppDetailsStore.currentRoleInfo]);
+
+  useEffect(()=>{
+    getPolyapi(appID || '', tableID || '', {
+      active: 1,
+    }).then((res: any) => {
+      setPolyapiList(res?.list || []);
+    });
+
+    getSubordinateList();
+  }, []);
+
+  useEffect(()=>{
+    polyapiList.length && getPolyBtnObj();
+  }, [polyapiList]);
+
+  useEffect(()=>{
+    const obj: any = {};
+    for (const key in polyBtnObj) {
+      getApiPermit(appID || '', polyBtnObj[key]).then((res: any) => {
+        const { condition } = res;
+        obj[key] = condition;
+      });
+    }
+    setBtnCondition(obj);
+  }, [polyBtnObj]);
+
+  const getPolyBtnObj = ()=>{
+    const obj: any = {};
+    polyapiList.map((item: any)=>{
+      const key = item.name.replace(`${tableID}_`, '').replace('.r', '');
+      obj[key] = null;
+    });
+    for (const key in obj) {
+      const item = polyapiList?.find((item: any)=>item.name === `${tableID}_${key}.r`);
+      if (item) {
+        obj[key] = {
+          roleID: store.curRoleID,
+          path: item?.accessPath || '',
+          uri: item?.uri || '',
+          method: item?.method || '',
+        };
+      }
+    }
+    setPolyBtnObj(obj);
+  };
+
+  const getOperateButtonAuth = (type: string, data: { creator_id: any; }, btnCondition: any): boolean | undefined=>{
+    try {
+      if (btnCondition[type]) {
+        const condition = btnCondition[type];
+        const { creator_id } = data;
+        switch (condition?.type) {
+        case 'ALL': return true;
+        case 'SELF': return (creator_id === window.USER.id) ? true : false;
+        case 'SELF_WITH_SUB':
+          if (creator_id === window.USER.id || isSubordinate(creator_id)) {
+            return true;
+          } else {
+            return false;
+          }
+        case 'CUSTOM':
+          return true;
+        default: return true;
+        }
+      }
+    } catch (error) {
+      // console.log(error)
+      return true;
+    }
+  };
+
+  const getSubordinateList = ()=>{
+    const queryGraphQL = 'query(page:0,size:10)';
+    const userGraphQL = '{users{id,email,name,departments{id,name},roles{id,name},leaders{id,name}},total}';
+    getSubordinate({
+      query: `{${queryGraphQL}${userGraphQL}}`,
+    }).then((res: any)=>{
+      setSubordinateList(res?.users || []);
+    });
+  };
+
+  const isSubordinate = (creator_id: any)=>{
+    const item = subordinateList.find((item: { id: any; })=>item.id === creator_id);
+    return item ? true : false;
+  };
 
   const tableHeaderBtnList = useMemo(() => {
     return Object.entries(BUTTON_GROUP).reduce((acc: TableHeaderBtn[], [key, buttonValue]) => {
@@ -125,9 +217,13 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
     fixed: true,
     accessor: (rowData: any) => {
       const perParams = { appID, tableID, authority: store.authority };
+
       return (
         <div>
-          {(getOperateButtonPer('get', perParams) || userAppDetailsStore.perPoly) && (
+          {
+          // (getOperateButtonPer('get', perParams) || userAppDetailsStore.perPoly) &&
+            (getOperateButtonAuth('get', rowData, btnCondition) ) &&
+          (
             <span
               onClick={() => {
                 store.operationType = '查看';
@@ -138,7 +234,10 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
               查看
             </span>
           )}
-          {(getOperateButtonPer('update', perParams) || userAppDetailsStore.perPoly) && (
+          {
+          // (getOperateButtonPer('update', perParams) || userAppDetailsStore.perPoly) &&
+            (getOperateButtonAuth('update', rowData, btnCondition)) &&
+          (
             <span
               onClick={() => {
                 store.operationType = '修改';
@@ -149,7 +248,11 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
               修改
             </span>
           )}
-          {(getOperateButtonPer('delete', perParams) || userAppDetailsStore.perPoly) && (
+          {
+          // (getOperateButtonPer('delete', rowData) || userAppDetailsStore.perPoly) &&
+            (getOperateButtonAuth('delete', rowData, btnCondition) ) &&
+
+          (
             <PopConfirm content='确认删除该数据？' onOk={() => delFormData([rowData._id])}>
               <span className='text-red-600 cursor-pointer'>删除</span>
             </PopConfirm>
@@ -176,6 +279,7 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
 
     return (
       <FormAppDataTable
+        key={new Date().getTime()}
         showCheckbox={getOperateButtonPer('batchRemove', { appID, tableID, authority: store.authority })}
         ref={formTableRef}
         tableHeaderBtnList={tableHeaderBtnList}
