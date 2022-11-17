@@ -93,13 +93,12 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
     }).then((res: any) => {
       setPolyapiList(res?.list || []);
     });
-
     getSubordinateList();
   }, []);
 
-  useEffect(()=>{
-    polyapiList.length && getPolyBtnObj();
-  }, [polyapiList]);
+  useEffect(() => {
+    (JSON.stringify(store.authority) !== '{}') && polyapiList.length && getPolyBtnObj();
+  }, [store.authority, polyapiList]);
 
   useEffect(()=>{
     const obj: any = {};
@@ -113,11 +112,16 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
   }, [polyBtnObj]);
 
   const getPolyBtnObj = ()=>{
+    const { authority } = store;
+    const arr = ['get', 'update', 'delete'];
     const obj: any = {};
-    polyapiList.map((item: any)=>{
-      const key = item.name.replace(`${tableID}_`, '').replace('.r', '');
-      obj[key] = null;
-    });
+
+    for (const key in authority) {
+      const _key = key.replace(`/api/v1/form/${appID}/home/form/${tableID}/`, '').split('-')[0];
+      if (arr.indexOf(_key) > -1) {
+        obj[_key] = null;
+      }
+    }
     for (const key in obj) {
       const item = polyapiList?.find((item: any)=>item.name === `${tableID}_${key}.r`);
       if (item) {
@@ -147,7 +151,26 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
             return false;
           }
         case 'CUSTOM':
-          return true;
+          if (JSON.stringify(condition) === '{}') {
+            return true;
+          }
+          if (JSON.stringify(condition).indexOf('$user') > -1 && JSON.stringify(condition).indexOf('$subordinate') > -1) {
+            if (creator_id === window.USER.id || isSubordinate(creator_id)) {
+              return true;
+            }
+          }
+          if (JSON.stringify(condition).indexOf('$user') > -1) {
+            if (creator_id === window.USER.id) {
+              return true;
+            }
+          }
+          if (JSON.stringify(condition).indexOf('$subordinate') > -1) {
+            if (isSubordinate(creator_id)) {
+              return true;
+            }
+          }
+
+          return false;
         default: return true;
         }
       }
