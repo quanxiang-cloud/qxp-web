@@ -49,6 +49,7 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
   const [modalBtnAuth, setModalBtnAuth] = useState<any>();
 
   const formTableRef = useRef<Ref>(null);
+  const btnConObj: any = {};
 
   const BUTTON_GROUP: Record<string, TableHeaderBtn> = {
     create: {
@@ -101,15 +102,16 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
   }, [store.authority, polyapiList]);
 
   useEffect(()=>{
-    const obj: any = {};
-    for (const key in polyBtnObj) {
-      getApiPermit(appID || '', polyBtnObj[key]).then((res: any) => {
-        const { condition } = res;
-        obj[key] = condition;
-      });
+    if ( JSON.stringify(polyBtnObj) !== '{}') {
+      for (const key in polyBtnObj) {
+        getApiPermit(appID || '', polyBtnObj[key]).then((res: any) => {
+          const { condition } = res;
+          btnConObj[key] = condition;
+          setBtnCondition({ ...btnConObj });
+        });
+      }
     }
-    setBtnCondition(obj);
-  }, [polyBtnObj]);
+  }, [store.authority, polyBtnObj]);
 
   const getPolyBtnObj = ()=>{
     const { authority } = store;
@@ -236,7 +238,7 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
     });
   }
 
-  const customColumns = [{
+  const getCustomColumns = ()=> [{
     id: 'action',
     Header: '操作',
     fixed: true,
@@ -245,9 +247,8 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
       const showUpdate = getOperateButtonAuth('update', rowData, btnCondition);
       const showDel = getOperateButtonAuth('delete', rowData, btnCondition);
       const showDetail = getOperateButtonAuth('get', rowData, btnCondition);
-
       return (
-        <div>
+        <div key={new Date().getTime()}>
           {
           // (getOperateButtonPer('get', perParams) || userAppDetailsStore.perPoly) &&
             showDetail &&
@@ -306,11 +307,10 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
 
     return (
       <FormAppDataTable
-        key={new Date().getTime()}
         showCheckbox={getOperateButtonPer('batchRemove', { appID, tableID, authority: store.authority })}
         ref={formTableRef}
         tableHeaderBtnList={tableHeaderBtnList}
-        customColumns={customColumns}
+        customColumns={getCustomColumns()}
         appID={store.appID}
         appName={''}
         pageID={store.tableID}
