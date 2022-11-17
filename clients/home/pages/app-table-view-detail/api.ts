@@ -1,4 +1,4 @@
-import httpClient from '@lib/http-client';
+import httpClient, { httpClientGraphQL } from '@lib/http-client';
 import { fetchOneFormDataWithSchema } from '@lib/http-client-form';
 import toast from '@lib/toast';
 
@@ -26,6 +26,46 @@ export const getOperate = (
     .then((res) => res || {})
     .catch((err) => {
       toast.error(err);
+      return {};
+    });
+};
+
+export const getApiPermit = (
+  appID: string,
+  data: { roleID: string, path: string, uri: string, method: string },
+): any => {
+  return httpClient(`/api/v1/form/${appID}/m/apiPermit/get`, data)
+    .then((res) => res || {})
+    .catch((err) => {
+      toast.error(err);
+      return {};
+    });
+};
+
+export const getPolyapi = (
+  appID: string,
+  tableID: string,
+  data: object,
+): any => {
+  return httpClient(`/api/v1/polyapi/raw/list/system/app/${appID}/raw/inner/form/${tableID}`, data)
+    .then((res) => res || {})
+    .catch((err) => {
+      toast.error(err);
+      return {};
+    });
+};
+
+// 下级成员
+export const getSubordinate = (
+  params: { query: string },
+): any => {
+  return httpClientGraphQL('/api/v1/search/subordinate', params, {
+    'User-Id': 1,
+    'Tenant-Id': 1,
+  } as any)
+    .then((res) => res || {})
+    .catch((err) => {
+      // toast.error(err);
       return {};
     });
 };
