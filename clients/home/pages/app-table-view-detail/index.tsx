@@ -46,6 +46,7 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
   const [subordinateList, setSubordinateList] = useState<any>([]);
   const { fetchSchemeLoading, setCurRowID } = store;
   const [modalType, setModalType] = useState('');
+  const [modalBtnAuth, setModalBtnAuth] = useState<any>();
 
   const formTableRef = useRef<Ref>(null);
 
@@ -186,9 +187,10 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
     setModalType('dataForm');
   }
 
-  function goView(rowID: string): void {
+  function goView(rowID: string, btnAuth: any): void {
     setCurRowID(rowID);
     setModalType('details');
+    setModalBtnAuth(btnAuth);
   }
 
   function delFormData(ids: string[]): Promise<any> {
@@ -217,17 +219,20 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
     fixed: true,
     accessor: (rowData: any) => {
       const perParams = { appID, tableID, authority: store.authority };
+      const showUpdate = getOperateButtonAuth('update', rowData, btnCondition);
+      const showDel = getOperateButtonAuth('delete', rowData, btnCondition);
+      const showDetail = getOperateButtonAuth('get', rowData, btnCondition);
 
       return (
         <div>
           {
           // (getOperateButtonPer('get', perParams) || userAppDetailsStore.perPoly) &&
-            (getOperateButtonAuth('get', rowData, btnCondition) ) &&
+            showDetail &&
           (
             <span
               onClick={() => {
                 store.operationType = '查看';
-                goView(rowData._id);
+                goView(rowData._id, { update: showUpdate, delete: showDel });
               }}
               className='mr-16 text-blue-600 cursor-pointer'
             >
@@ -236,7 +241,7 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
           )}
           {
           // (getOperateButtonPer('update', perParams) || userAppDetailsStore.perPoly) &&
-            (getOperateButtonAuth('update', rowData, btnCondition)) &&
+            showUpdate &&
           (
             <span
               onClick={() => {
@@ -250,8 +255,7 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
           )}
           {
           // (getOperateButtonPer('delete', rowData) || userAppDetailsStore.perPoly) &&
-            (getOperateButtonAuth('delete', rowData, btnCondition) ) &&
-
+            showDel &&
           (
             <PopConfirm content='确认删除该数据？' onOk={() => delFormData([rowData._id])}>
               <span className='text-red-600 cursor-pointer'>删除</span>
@@ -322,6 +326,7 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
                 tableName={name}
                 authority={store.authority}
                 setOperationType={store.setOperationType}
+                btnAuth={modalBtnAuth}
               />
             )}
           </div>
