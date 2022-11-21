@@ -225,7 +225,7 @@ function AppVisitPermission(): JSX.Element {
               iconName="add"
               textClassName="text-12 py-6"
             >
-          添加成员与部门
+          添加成员
             </Button>
           </div>
 
