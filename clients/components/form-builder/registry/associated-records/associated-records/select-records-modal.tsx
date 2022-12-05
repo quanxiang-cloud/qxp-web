@@ -3,6 +3,7 @@ import React, { useRef, useState } from 'react';
 import Modal, { FooterBtnProps } from '@c/modal';
 import FormDataTable from '@c/form-app-data-table';
 import { Ref } from '@c/form-app-data-table/type';
+import { Checkbox } from 'antd';
 
 type Props = {
   defaultValues: Record<string, any>[];
@@ -45,17 +46,21 @@ export default function SelectRecordsModal({
     },
   ];
 
-  const customColumns = multiple ? undefined : [
+  const customColumnsBefore = multiple ? undefined : [
     {
       id: 'action',
-      Header: '操作',
+      // Header: '操作',
+      Header: ' ',
       fixed: true,
       accessor: (rowData: any) => {
-        if (defaultSelectIDs.includes(rowData._id)) {
-          return (<div>已选择</div>);
-        }
+        // if (defaultSelectIDs.includes(rowData._id)) {
+        //   return (<div>已选择</div>);
+        // }
 
-        return (<div className='text-btn' onClick={() => onSubmit([rowData])}>选择</div>);
+        // return (<div className='text-btn' onClick={() => onSubmit([rowData])}>选择</div>);
+        return (
+          <Checkbox onClick={() => onSubmit([rowData])}/>
+        );
       },
     },
   ];
@@ -73,7 +78,8 @@ export default function SelectRecordsModal({
         allowRequestData
         filterConfig={filterConfig}
         showCheckbox={multiple}
-        customColumns={customColumns}
+        customColumns={[]}
+        customColumnsBefore = {customColumnsBefore}
         ref={tableRef}
         defaultSelect={defaultSelectIDs}
         onSelect={(_, rows) => setSelected(rows || [])}

@@ -22,6 +22,7 @@ type Props = {
   pageName?: string;
   tableHeaderBtnList?: TableHeaderBtn[];
   customColumns?: UnionColumn<any>[];
+  customColumnsBefore?: UnionColumn<any>[];
   allowRequestData?: boolean;
   showCheckbox?: boolean;
   className?: string;
@@ -42,6 +43,7 @@ function FormAppDataTableWrap({
   appName,
   tableHeaderBtnList,
   customColumns,
+  customColumnsBefore,
   showCheckbox,
   filterConfig,
   allowRequestData = false,
@@ -88,7 +90,8 @@ function FormAppDataTableWrap({
     }
 
     store.customColumns = customColumns || [];
-  }, [customColumns]);
+    store.customColumnsBefore = customColumnsBefore || [];
+  }, [customColumns, customColumnsBefore]);
 
   useEffect(() => {
     setLoading(true);
@@ -104,6 +107,7 @@ function FormAppDataTableWrap({
         filterConfig,
         tableHeaderBtnList,
         customColumns,
+        customColumnsBefore,
         showCheckbox,
         allowRequestData,
         appID,

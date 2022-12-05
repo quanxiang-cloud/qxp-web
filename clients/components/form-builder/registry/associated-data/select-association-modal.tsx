@@ -3,6 +3,7 @@ import React, { useRef } from 'react';
 import Modal from '@c/modal';
 import FormDataTable from '@c/form-app-data-table';
 import { Ref } from '@c/form-app-data-table/type';
+import Checkbox from '@c/checkbox';
 
 type Props = {
   onClose: () => void;
@@ -23,14 +24,16 @@ export default function SelectAssociationModal({
     onSubmit(rowData, schema);
   };
 
-  const customColumns = [
+  const customColumnsBefore = [
     {
       id: 'action',
       fixed: true,
-      Headers: '操作',
+      // Headers: '操作',
+      Headers: ' ',
       accessor: (rowData: any) => {
         return (
-          <div className='text-btn' onClick={() => handleSelect(rowData)}>选择</div>
+          // <div className='text-btn' onClick={() => handleSelect(rowData)}>选择</div>
+          <Checkbox onClick={() => handleSelect(rowData)}/>
         );
       },
     },
@@ -46,7 +49,8 @@ export default function SelectAssociationModal({
           allowRequestData
           showCheckbox={false}
           filterConfig={filterConfig}
-          customColumns={customColumns}
+          customColumns={[]}
+          customColumnsBefore={customColumnsBefore}
           ref={tableRef as React.Ref<Ref>}
           pageID={tableID}
           appID={appID}
