@@ -3,6 +3,8 @@ import React, { useRef, useState } from 'react';
 import Modal, { FooterBtnProps } from '@c/modal';
 import FormDataTable from '@c/form-app-data-table';
 import { Ref } from '@c/form-app-data-table/type';
+import Checkbox from '@c/checkbox';
+import Radio from '@c/radio';
 
 type Props = {
   defaultValues: Record<string, any>[];
@@ -14,15 +16,15 @@ type Props = {
   associatedTable: ISchema;
   columns: string[];
   filterConfig?: FilterConfig;
+  selectedValue?: string;
 }
 
 export default function SelectRecordsModal({
-  onClose, appID, tableID, multiple, onSubmit, filterConfig, defaultValues,
+  onClose, appID, tableID, multiple, onSubmit, filterConfig, defaultValues, selectedValue,
 }: Props): JSX.Element {
   const tableRef: React.Ref<any> = useRef<Ref>();
   const [selected, setSelected] = useState<Record<string, any>[]>(defaultValues || []);
   const defaultSelectIDs = selected.map(({ _id }) => _id);
-
   const handleSubmit = (): void => {
     if (!tableRef.current) {
       return;
@@ -45,17 +47,21 @@ export default function SelectRecordsModal({
     },
   ];
 
-  const customColumns = multiple ? undefined : [
+  const customColumnsBefore = multiple ? undefined : [
     {
       id: 'action',
-      Header: '操作',
+      // Header: '操作',
+      Header: ' ',
       fixed: true,
       accessor: (rowData: any) => {
-        if (defaultSelectIDs.includes(rowData._id)) {
-          return (<div>已选择</div>);
-        }
-
-        return (<div className='text-btn' onClick={() => onSubmit([rowData])}>选择</div>);
+        return (
+          multiple ?
+            <Checkbox onClick={() => onSubmit([rowData])}/> :
+            (<Radio
+              onClick={() => onSubmit([rowData])}
+              value={rowData?._id}
+              defaultChecked={rowData?._id === selectedValue }/>)
+        );
       },
     },
   ];
@@ -66,14 +72,17 @@ export default function SelectRecordsModal({
       onClose={onClose}
       footerBtns={multiple ? btns : undefined}
     >
-      <div className='px-20 py-10'>已选{selected.length}条</div>
+      {
+        multiple && <div className='px-20 py-10'>已选{selected.length}条</div>
+      }
       <FormDataTable
         canAcrossPageChoose
         className="p-20"
         allowRequestData
         filterConfig={filterConfig}
         showCheckbox={multiple}
-        customColumns={customColumns}
+        customColumns={[]}
+        customColumnsBefore = {customColumnsBefore}
         ref={tableRef}
         defaultSelect={defaultSelectIDs}
         onSelect={(_, rows) => setSelected(rows || [])}

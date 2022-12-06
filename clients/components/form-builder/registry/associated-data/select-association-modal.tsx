@@ -3,6 +3,7 @@ import React, { useRef } from 'react';
 import Modal from '@c/modal';
 import FormDataTable from '@c/form-app-data-table';
 import { Ref } from '@c/form-app-data-table/type';
+import Radio from '@c/radio';
 
 type Props = {
   onClose: () => void;
@@ -11,10 +12,11 @@ type Props = {
   fieldName: string;
   tableID: string;
   filterConfig?: FilterConfig;
+  selectedValue?: string;
 }
 
 export default function SelectAssociationModal({
-  onClose, appID, tableID, onSubmit, fieldName, filterConfig,
+  onClose, appID, tableID, onSubmit, fieldName, filterConfig, selectedValue,
 }: Props): JSX.Element {
   const tableRef: React.MutableRefObject<Ref | undefined> = useRef<Ref>();
   const handleSelect = (rowData: Record<string, any>): void => {
@@ -22,15 +24,18 @@ export default function SelectAssociationModal({
     const schema = tableRef?.current?.getSchema()?.properties?.[fieldName] as ISchema;
     onSubmit(rowData, schema);
   };
-
-  const customColumns = [
+  const customColumnsBefore = [
     {
       id: 'action',
       fixed: true,
-      Headers: '操作',
+      // Headers: '操作',
+      Headers: ' ',
       accessor: (rowData: any) => {
         return (
-          <div className='text-btn' onClick={() => handleSelect(rowData)}>选择</div>
+          <Radio
+            onClick={() => handleSelect(rowData)}
+            value={rowData?._id}
+            defaultChecked={rowData?._id === selectedValue }/>
         );
       },
     },
@@ -46,7 +51,8 @@ export default function SelectAssociationModal({
           allowRequestData
           showCheckbox={false}
           filterConfig={filterConfig}
-          customColumns={customColumns}
+          customColumns={[]}
+          customColumnsBefore={customColumnsBefore}
           ref={tableRef as React.Ref<Ref>}
           pageID={tableID}
           appID={appID}

@@ -35,6 +35,7 @@ type InitData = {
   allowRequestData?: boolean;
   tableHeaderBtnList?: TableHeaderBtn[];
   customColumns?: UnionColumn<any>[];
+  customColumnsBefore?: UnionColumn<any>[];
   filterConfig?: FilterConfig;
   canAcrossPageChoose?: boolean;
   onTableUserConfigChange?: (tableUserConfig: TableUserConfig) => void;
@@ -73,6 +74,7 @@ class AppPageDataStore {
   @observable tableSize: SizeType = 'small';
   @observable canAcrossPageChoose = false;
   @observable customColumns: UnionColumn<FormData>[] = [];
+  @observable customColumnsBefore: UnionColumn<FormData>[] = [];
   @observable params: Params = {
     condition: [],
     sort: [],
@@ -91,6 +93,7 @@ class AppPageDataStore {
     allowRequestData,
     tableHeaderBtnList = [],
     customColumns = [],
+    customColumnsBefore = [],
     showCheckbox = true,
     filterConfig,
     canAcrossPageChoose = false,
@@ -105,6 +108,7 @@ class AppPageDataStore {
     this.canAcrossPageChoose = canAcrossPageChoose;
     this.selected = defaultSelect || [];
     this.customColumns = customColumns;
+    this.customColumnsBefore = customColumnsBefore;
     this.showCheckbox = showCheckbox;
     this.tableHeaderBtnList = tableHeaderBtnList;
     this.setTableColumns(tableColumns);
@@ -144,7 +148,7 @@ class AppPageDataStore {
       return acc;
     }, []);
 
-    return [..._columns, ...this.customColumns];
+    return [...this.customColumnsBefore, ..._columns, ...this.customColumns];
   }
 
   @action
