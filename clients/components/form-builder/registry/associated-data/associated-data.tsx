@@ -17,6 +17,7 @@ type Props = {
   placeholder?: string;
   filterConfig?: FilterConfig;
   onChange?: (dataRow: Record<string, any> | null, schema: ISchema | null) => void;
+  selectedValue?: string;
 }
 
 export function AssociatedData({
@@ -26,6 +27,7 @@ export function AssociatedData({
   filterConfig,
   fieldName,
   value,
+  selectedValue,
   onChange,
 }: Props): JSX.Element {
   const [modalVisible, setVisible] = useState(false);
@@ -72,6 +74,7 @@ export function AssociatedData({
           fieldName={fieldName}
           tableID={associationTableID}
           onClose={() => setVisible(false)}
+          selectedValue={selectedValue}
         />
       )}
     </div>
@@ -79,6 +82,7 @@ export function AssociatedData({
 }
 
 export default function AssociatedDataWrap(p: ISchemaFieldComponentProps): JSX.Element {
+  const [selectedValue, setSelectedValue] = useState(p?.initialValue?.value);
   if (p.props.readOnly) {
     return <FormDataValueRenderer value={p.value} schema={p.schema} />;
   }
@@ -105,12 +109,14 @@ export default function AssociatedDataWrap(p: ISchemaFieldComponentProps): JSX.E
       {...p.props['x-component-props']}
       value={p.value}
       readOnly={!!p.props.readOnly}
+      selectedValue = {selectedValue}
       onChange={(dataRow, schema) => {
         if (!dataRow) {
           p.mutators.change(undefined);
+          setSelectedValue('');
           return;
         }
-
+        setSelectedValue(dataRow?._id);
         const value = dataRow[p.props['x-component-props'].fieldName];
         const label = value ? getBasicValue(schema as ISchema, value) : '--';
         executeAssignMent(dataRow);
