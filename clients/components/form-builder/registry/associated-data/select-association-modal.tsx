@@ -3,7 +3,7 @@ import React, { useRef } from 'react';
 import Modal from '@c/modal';
 import FormDataTable from '@c/form-app-data-table';
 import { Ref } from '@c/form-app-data-table/type';
-import Checkbox from '@c/checkbox';
+import Radio from '@c/radio';
 
 type Props = {
   onClose: () => void;
@@ -12,10 +12,11 @@ type Props = {
   fieldName: string;
   tableID: string;
   filterConfig?: FilterConfig;
+  selectedValue?: string;
 }
 
 export default function SelectAssociationModal({
-  onClose, appID, tableID, onSubmit, fieldName, filterConfig,
+  onClose, appID, tableID, onSubmit, fieldName, filterConfig, selectedValue,
 }: Props): JSX.Element {
   const tableRef: React.MutableRefObject<Ref | undefined> = useRef<Ref>();
   const handleSelect = (rowData: Record<string, any>): void => {
@@ -23,7 +24,6 @@ export default function SelectAssociationModal({
     const schema = tableRef?.current?.getSchema()?.properties?.[fieldName] as ISchema;
     onSubmit(rowData, schema);
   };
-
   const customColumnsBefore = [
     {
       id: 'action',
@@ -32,8 +32,10 @@ export default function SelectAssociationModal({
       Headers: ' ',
       accessor: (rowData: any) => {
         return (
-          // <div className='text-btn' onClick={() => handleSelect(rowData)}>选择</div>
-          <Checkbox onClick={() => handleSelect(rowData)}/>
+          <Radio
+            onClick={() => handleSelect(rowData)}
+            value={rowData?._id}
+            defaultChecked={rowData?._id === selectedValue }/>
         );
       },
     },

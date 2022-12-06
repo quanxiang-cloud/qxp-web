@@ -61,8 +61,8 @@ function AssociatedRecords({
   className,
 }: Props): JSX.Element {
   const [showSelectModal, setShowSelectModal] = useState(false);
+  const [selectedValue, setSelectValue] = useState(multiple ? '' : defaultValues[0]?._id);
   const tableColumns = computeTableColumns(associatedTable, columns);
-
   !readOnly && tableColumns.push({
     id: 'remove',
     Header: '操作',
@@ -73,7 +73,10 @@ function AssociatedRecords({
           clickable
           size={24}
           name="delete"
-          onClick={() => onChange(value.filter(({ _id }) => _id !== row._id))}
+          onClick={() => {
+            onChange(value.filter(({ _id }) => _id !== row._id));
+            setSelectValue('');
+          }}
         />
       );
     },
@@ -102,6 +105,7 @@ function AssociatedRecords({
           multiple={multiple}
           associatedTable={associatedTable}
           columns={columns}
+          selectedValue={selectedValue}
           onSubmit={(newSelectedRecords) => {
             if (multiple) {
               const selecteds = value.concat(
@@ -110,6 +114,7 @@ function AssociatedRecords({
               onChange(selecteds);
             } else {
               onChange(newSelectedRecords);
+              setSelectValue(newSelectedRecords[0]?._id);
             }
             setShowSelectModal(false);
           }}
