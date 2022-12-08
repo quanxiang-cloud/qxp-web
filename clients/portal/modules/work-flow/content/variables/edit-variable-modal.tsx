@@ -2,12 +2,13 @@ import React from 'react';
 import { useMutation } from 'react-query';
 
 import { createFormActions, IFieldState, SchemaForm, FormEffectHooks, useForm } from '@formily/antd';
-import { Select, Input, NumberPicker, DatePicker, Radio } from '@formily/antd-components';
+import { Select, Input, NumberPicker, Radio } from '@formily/antd-components';
 import Modal from '@c/modal';
 import toast from '@lib/toast';
 import { saveFlowVariable } from '@flow/api';
 
 import { FLOW_VARIABLE_FIELD_TYPES } from '../editor/utils/constants';
+import DatePicker from '@c/form-builder/registry/date-picker/date-picker';
 
 const FIELD_FORM_SCHEMA = {
   type: 'object',

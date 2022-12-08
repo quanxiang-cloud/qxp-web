@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import React, { useEffect } from 'react';
 import { omit, isArray, isEmpty, isEqual } from 'lodash';
 import cs from 'classnames';
@@ -16,6 +17,7 @@ import type {
 import FormRender from '@c/form-builder/form-renderer';
 import { COMPONENT_OPERATORS_MAP, OPERATOR_OPTIONS } from '@flow/content/editor/utils/constants';
 import { getFieldValuePath } from '@flow/content/editor/forms/utils';
+import { RangeValue } from 'rc-picker/lib/interface';
 
 const { RangePicker } = DatePicker;
 
@@ -94,6 +96,49 @@ export default function ConditionItem({ condition, options, onChange, schemaMap 
     });
   }
 
+  const formatISODate = (value: string | number | Date, dateFormat: any)=>{
+    const now = new Date();
+    const Year = now.getFullYear();
+    const Month = now.getMonth() + 1;
+    const Day = now.getDay();
+    const Hours = now.getHours();
+    const Minutes = now.getMinutes();
+    const Seconds = now.getSeconds();
+
+    if (value) {
+      const _year = new Date(value).getFullYear();
+      const _month = new Date(value).getMonth() + 1;
+      const _day = new Date(value).getDate();
+      const _hours = new Date(value).getHours();
+      const _minutes = new Date(value).getMinutes();
+      const _seconds = new Date(value).getSeconds();
+
+      switch (dateFormat) {
+      case 'YYYY':
+        return new Date(`${_year}-${Month}-${Day} ${Hours}:${Minutes}:${Seconds}`).toISOString();
+      case 'YYYY-MM':
+        return new Date(`${_year}-${_month}-${Day} ${Hours}:${Minutes}:${Seconds}`).toISOString();
+      case 'YYYY-MM-DD':
+        return new Date(`${_year}-${_month}-${_day} ${Hours}:${Minutes}:${Seconds}`).toISOString();
+      case 'YYYY-MM-DD HH':
+        return new Date(`${_year}-${_month}-${_day} ${_hours}:${Minutes}:${Seconds}`).toISOString();
+      case 'YYYY-MM-DD HH:mm':
+        return new Date(`${_year}-${_month}-${_day} ${_hours}:${_minutes}:${Seconds}`).toISOString();
+      case 'YYYY-MM-DD HH:mm:ss':
+        return new Date(`${_year}-${_month}-${_day} ${_hours}:${_minutes}:${_seconds}`).toISOString();
+      default:
+        return new Date(`${_year}-${_month}-${_day} ${Hours}:${Minutes}:${Seconds}`).toISOString();
+      }
+    } else {
+      return '';
+    }
+  };
+
+  const handleRangePickerChange = (_: RangeValue<moment.Moment>, value: any[])=>{
+    const newValue = value.map((item: any)=>formatISODate(item, dateFormat));
+    onChange({ value: newValue });
+  };
+
   return (
     <>
       <Select
@@ -149,8 +194,8 @@ export default function ConditionItem({ condition, options, onChange, schemaMap 
           <RangePicker
             {...(currentSchema?.['x-component-props'])}
             format={dateFormat}
-            value={rangePickerDefaultValue}
-            onChange={(_, value: string[]) => onChange({ value })}
+            value={rangePickerDefaultValue || []}
+            onChange={(_, value: string[]) => handleRangePickerChange(_, value)}
           />
         )}
       </div>
