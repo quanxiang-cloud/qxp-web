@@ -13,7 +13,6 @@ import {
 import {
   Input,
   Select as AntdSelect,
-  DatePicker,
   NumberPicker,
   Switch,
   Radio,
@@ -31,6 +30,7 @@ import { fetchLinkedTableFields } from './get-tables';
 import SCHEMA from './schema';
 import { convertFormValues, convertLinkage } from './convertor';
 import { compareValueValidateMap } from '../../utils';
+import DatePicker from '@c/form-builder/registry/date-picker/date-picker';
 
 const { onFieldValueChange$ } = FormEffectHooks;
 const COMPONENTS = {

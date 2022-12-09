@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { FormPath } from '@formily/shared';
-import { Input, Select as AntdSelect, Switch, DatePicker, NumberPicker } from '@formily/antd-components';
+import { Input, Select as AntdSelect, Switch, NumberPicker } from '@formily/antd-components';
 import {
   SchemaForm,
   FormEffectHooks,
@@ -20,6 +20,7 @@ import RulesList from './rules-list';
 import { useTableFieldOptions, ConfigSchema, availableVariableCtx } from './utils';
 import FormulaModalOpener from './formula-modal-opener';
 import ProcessVariableSelector from '../variable-selector';
+import DatePicker from '@c/form-builder/registry/date-picker/date-picker';
 
 type Props = {
   defaultValue: ProcessVariableAssignmentData;

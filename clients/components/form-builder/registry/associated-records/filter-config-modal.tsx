@@ -7,7 +7,7 @@ import {
 } from '@formily/antd';
 import { FormPath } from '@formily/shared';
 import {
-  Input, Select as AntdSelect, DatePicker, NumberPicker, Switch, Radio,
+  Input, Select as AntdSelect, NumberPicker, Switch, Radio,
 } from '@formily/antd-components';
 
 import Modal from '@c/modal';
@@ -19,6 +19,7 @@ import {
 } from '@c/form-builder/customized-fields';
 
 import { INTERNAL_FIELD_NAMES } from '../../store';
+import DatePicker from '../date-picker/date-picker';
 
 type RuleConfig = {
   rules: Array<FormBuilder.FormDataFilterRule>;
