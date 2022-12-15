@@ -41,8 +41,8 @@ function PageDataTable(): JSX.Element {
   return (
     <>
       <div className='form-app-data-table-container flex flex-col'>
-        <div className='flex justify-between'>
-          <div className='mb-16 flex items-center gap-x-16'>
+        <div className='flex justify-between filterGroup'>
+          <div className='mb-16 flex btnGroup items-center gap-x-16'>
             {store.tableHeaderBtnList.map(({ key, text, action, type, popText, iconName, isBatch }) => {
               if (type === 'popConfirm') {
                 return (
@@ -86,7 +86,7 @@ function PageDataTable(): JSX.Element {
               );
             })}
           </div>
-          <div className='flex gap-x-5 items-center'>
+          <div className='flex gap-x-5 configGroup items-center'>
             <TableConfig />
             <MoreMenu
               onMenuClick={(size) => store.tableSize = size}

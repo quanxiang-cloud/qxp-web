@@ -105,7 +105,11 @@ function ImgUploader({
 
   return (
     <div
-      className={cs('flex flex-wrap gap-4 w-full max-h-144 overflow-auto relative qxp-img-uploader', className)}
+      className={cs('flex flex-wrap gap-4 w-full max-h-144 overflow-auto relative qxp-img-uploader', className,
+        {
+          'is-mobile-qxp-img-uploader': window?.isMobile,
+        },
+      )}
       style={style}
     >
       <FileList

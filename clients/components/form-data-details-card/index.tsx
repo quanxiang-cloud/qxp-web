@@ -132,7 +132,8 @@ function FormDataDetailsCard({
 
     <div className={cs('flex-1 overflow-auto', className)}>
       <div className={cs('grid gap-x-16 grid-flow-row-dense p-16 pr-0',
-        fullScreen ? 'grid-cols-4' : 'grid-cols-2')}
+        fullScreen ? 'grid-cols-4' : 'grid-cols-2',
+        window?.isMobile ? 'details-drawer-is-mobile' : '')}
       >
         {formDatas.map(({ type, itemInfo }) => {
           if (type === 'details') {

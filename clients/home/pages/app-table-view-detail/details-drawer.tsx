@@ -29,7 +29,7 @@ function DetailsDrawer(
 ): JSX.Element {
   const [beganClose, setBeganClose] = useState<boolean>(false);
   const [visible, setVisible] = useState<boolean>(false);
-  const [fullScreen, setFullScreen] = useState<boolean>(false);
+  const [fullScreen, setFullScreen] = useState<boolean>(window?.isMobile ? true : false);
 
   const handleCancel = (): void => {
     setBeganClose(true);
@@ -52,6 +52,7 @@ function DetailsDrawer(
       className={cs('page-data-drawer-modal-mask', {
         'page-data-drawer-began-close': beganClose,
         'page-data-drawer-close': visible,
+        'page-data-drawer-is-mobile': window?.isMobile,
       })}
       onClick={handleCancel}
     >
