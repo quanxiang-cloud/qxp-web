@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, { useState } from 'react';
 import { useUpdateEffect } from 'react-use';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
@@ -53,7 +54,7 @@ export function AssociatedData({
 
   return (
     <div className='w-full h-32'>
-      <div className='ant-input h-full flex justify-between py-2 items-center'>
+      <div className={`ant-input h-full flex justify-between py-2 items-center ${window?.isMobile ? 'is-mobile-associated-data' : ''}`}>
         <div className='flex-1'>
           {value ? (
             <span className='associated-span'>

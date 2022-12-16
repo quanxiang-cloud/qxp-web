@@ -6,22 +6,26 @@ import { useParams } from 'react-router';
 import toast from '@lib/toast';
 import { MenuType } from '@portal/modules/apps-management/pages/app-details/type';
 import { pathPrefix } from '@m/constant';
-import Loading from '@m/qxp-ui-mobile/loading';
-import { Empty } from '@m/qxp-ui-mobile/empty';
-import AppItem from '@m/components/app-item';
-import Icon from '@m/qxp-ui-mobile/icon';
 import NavPage from '@m/components/nav-page';
-import { mapColor } from '../utils';
 import { Menu } from '../types';
 import detailStore from '../page-detail/store';
+import AppTableViewDetail from '@home/pages/app-table-view-detail';
+// import AppItem from '@m/components/app-item';
+// import { Loading } from '@one-for-all/headless-ui';
+// import { Icon } from '@one-for-all/ui';
+// import { Empty } from 'antd';
+// import { mapColor } from '../utils';
 
 import store from './store';
+import 'antd/dist/antd.css';
+import '../../../../assets/css/antd.css';
 import './index.scss';
 
 function AppDetail(): JSX.Element {
   const { appID } = useParams<{ appID: string }>();
 
   useEffect(() => {
+    window.isMobile = true;
     store.initApp(appID);
     return store.clear;
   }, []);
@@ -52,9 +56,10 @@ function AppDetail(): JSX.Element {
     detailStore.setup(record);
     history.push(`${pathPrefix}/apps/${appID}/${record.id}`);
   }
+
   return (
     <NavPage title={store.app?.name ?? appID} style={{ padding: '.12rem .16rem' }}>
-      {store.state.loading && <Loading className='pt-16 pb-16'>加载中...</Loading>}
+      {/* {store.state.loading && <Loading className='pt-16 pb-16'>加载中...</Loading>}
 
       {!store.state.loading && store.state.error && (
         <Empty
@@ -108,7 +113,19 @@ function AppDetail(): JSX.Element {
             );
           })}
         </>
-      )}
+      )} */}
+      {
+        store.tableID &&
+        (<AppTableViewDetail
+          key={store.tableID}
+          appID={appID || 'noAppID'}
+          tableID={store.tableID || 'noTableID'}
+          name={store.name || 'noName'}
+          isMobile={true}
+        />)
+
+      }
+
     </NavPage>
   );
 }

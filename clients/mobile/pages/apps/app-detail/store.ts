@@ -4,19 +4,23 @@ import { fetchUserList } from '@home/lib/api';
 import { parseAppIcon } from '@m/pages/dashboard/workbench/utils';
 import { MenuType } from '@portal/modules/apps-management/pages/app-details/type';
 import { fetchFormDataList } from '@lib/http-client-form';
-import { fetchPageList } from '@lib/http-client';
+import { fetchPageListSchema } from '@lib/http-client';
 import toast from '@lib/toast';
-import { FetchPageListResponse, Menu } from '../types';
-import { mapMenu } from '../utils';
+import { Menu } from '../types';
+import { ARTERY_KEY_VERSION } from '@portal/constants';
+import { get } from 'lodash';
 
 interface AppDetail {
   name: string;
   color: string;
   id: string;
+  accessURL?: string;
 }
 
 class UserAppsStore {
   @observable app?: AppDetail;
+  @observable tableID?: string;
+  @observable name?: string;
   @observable state = { loading: false, error: '' };
   @observable authority = 0;
   @observable menu = [] as Menu[];
@@ -31,37 +35,67 @@ class UserAppsStore {
   };
 
   @action initApp = (appId: string): void => {
-    if (this.app?.id !== appId) {
-      this.state = { loading: true, error: '' };
-      fetchUserList().then((res: any) => {
-        const appFound: AppInfo = res.data.find(({ id }: AppInfo) => id === appId);
-        if (!appFound) {
-          this.state = { loading: false, error: '应用不存在' };
-          return;
-        }
-        const appIcon = parseAppIcon(appFound.appIcon);
-        this.app = { name: appFound.appName, color: appIcon.bgColor, id: appId };
+    this.state = { loading: true, error: '' };
+    fetchUserList().then((res: any) => {
+      const appFound: AppInfo = res.data.find(({ id }: AppInfo) => id === appId);
+      if (!appFound) {
+        this.state = { loading: false, error: '应用不存在' };
+        return;
+      }
+      const appIcon = parseAppIcon(appFound.appIcon);
+      this.app = { name: appFound.appName, color: appIcon.bgColor, id: appId,
+        accessURL: appFound.accessURL };
 
-        this.initPageList();
-      }).catch(() => {
-        this.state = { loading: false, error: '获取app页面列表失败' };
-      });
-    } else {
       this.initPageList();
-    }
+    }).catch(() => {
+      this.state = { loading: false, error: '获取app页面列表失败' };
+    });
+    // if (this.app?.id !== appId) {
+    //   this.state = { loading: true, error: '' };
+    //   fetchUserList().then((res: any) => {
+    //     const appFound: AppInfo = res.data.find(({ id }: AppInfo) => id === appId);
+    //     if (!appFound) {
+    //       this.state = { loading: false, error: '应用不存在' };
+    //       return;
+    //     }
+    //     const appIcon = parseAppIcon(appFound.appIcon);
+    //     this.app = { name: appFound.appName, color: appIcon.bgColor, id: appId,
+    //       accessURL: appFound.accessURL};
+
+    //     this.initPageList(appFound);
+    //   }).catch(() => {
+    //     this.state = { loading: false, error: '获取app页面列表失败' };
+    //   });
+    // } else {
+    //   this.initPageList();
+    // }
   };
 
   @action initPageList = (): void => {
     if (!this.app) return;
     const appID = this.app.id;
     this.state = { loading: true, error: '' };
-    fetchPageList(appID).then((res) => {
-      const menuMapped = mapMenu(res as FetchPageListResponse);
-      this.menu = menuMapped;
+    // fetchPageList(appID).then((res) => {
+    //   const menuMapped = mapMenu(res as FetchPageListResponse);
+    //   this.menu = menuMapped;
+    //   this.state = { loading: false, error: '' };
+    //   this.initRecords(menuMapped);
+    // }).catch(() => {
+    //   this.state = { loading: false, error: '获取页面列表失败' };
+    //   this.state = { loading: false, error: '' };
+    // });
+
+    fetchPageListSchema(appID, ARTERY_KEY_VERSION).then((res) => {
+      const pathList = this.app?.accessURL?.split('/') || [];
+      const path = pathList[pathList.length - 1];
+      const node = get(res, 'artery.node.node.children')?.filter((item: any)=>item?.path === path) || [];
+      const tableID = get(node[0], 'node.props.tableID.value') || '';
+      const name = get(node[0], 'node.props.name.value') || '';
+      this.tableID = tableID;
+      this.name = name;
       this.state = { loading: false, error: '' };
-      this.initRecords(menuMapped);
     }).catch(() => {
-      this.state = { loading: false, error: '获取页面列表失败' };
+      this.state = { loading: false, error: '' };
     });
   };
 

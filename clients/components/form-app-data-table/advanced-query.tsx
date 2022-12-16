@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, { useRef, useState } from 'react';
 import { Popover } from 'antd';
 
@@ -37,7 +38,7 @@ function AdvancedQuery({ fields, search, tag }: Props): JSX.Element {
 
   return (
     <Popover placement="topLeft" trigger="click" content={(
-      <div className='advanced-query-container'>
+      <div className={`advanced-query-container ${window?.isMobile ? 'advanced-query-container-is-mobile' : ''}`}>
         <DataFilter
           initTag={tag}
           ref={dataFilterRef}

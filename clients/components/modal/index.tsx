@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import styled, { createGlobalStyle, keyframes, css } from 'styled-components';
@@ -85,7 +86,7 @@ export default function Modal({
     <Wrap className={className}>
       <GlobalStyle />
       <Mask />
-      <InnerWrap width={width} height={height} fullscreen={fullscreen}>
+      <InnerWrap className={`${window?.isMobile ? 'is-mobile-inner-wrap' : ''}`} width={window?.isMobile ? '100vw' : width} height={height} fullscreen={fullscreen}>
         <Header>
           <div className='md-header-left'>
             <div className='md-title'>{title}</div>

@@ -2,6 +2,15 @@ import qs from 'qs';
 
 import type { CustomPageInfo, ArteryPageInfo } from '@portal/modules/apps-management/pages/app-details/type';
 // import { saveConfig } from '@pageDesign/blocks/fountainhead/config';
+import { Spec } from '@one-for-all/api-spec-adapter/lib/src/swagger-schema-official';
+import type { Artery } from '@one-for-all/artery';
+
+import logger from '@lib/logger';
+
+type SchemaWithSwagger = {
+  artery: Artery;
+  swagger: Spec;
+}
 
 // https://attacomsian.com/blog/javascript-current-timezone
 function getTimeZone(): string {
@@ -109,6 +118,20 @@ export const fetchPageList = async (appID: string): Promise<fetchPageListRes> =>
   const side = window.SIDE === 'portal' ? 'm' : 'home';
   return await httpClient(`/api/v1/form/${appID}/${side}/menu/list`, { appID });
 };
+
+export function fetchPageListSchema(
+  appID: string, version: string,
+): Promise<Partial<SchemaWithSwagger>> {
+  const arteryID = `app_id:${appID}:desktop_artery:root`;
+  const url = `/api/page_schema_with_swagger?artery_id=${arteryID}&version=${version}`;
+  return fetch(url, { method: 'GET' })
+    .then((response) => response.json())
+    .then(({ data }) => data)
+    .catch((err) => {
+      logger.error(err);
+      return {};
+    });
+}
 
 export function getArteryPageInfo(appID: string, tableID: string): Promise<ArteryPageInfo> {
   return httpClient(`/api/v1/form/${appID}/m/table/getInfo`, { tableID });
