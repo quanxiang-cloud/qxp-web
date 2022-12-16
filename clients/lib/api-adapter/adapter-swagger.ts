@@ -57,7 +57,7 @@ export default class SwaggerSpecAdapter implements APISpecAdapter {
     });
 
     headers['x-proxy'] = 'API';
-    headers['content-type'] = 'application/json';
+    headers['Content-Type'] = 'application/json';
 
     return { method, url, queryParams, headers, body: fetchParams?.body };
   }
