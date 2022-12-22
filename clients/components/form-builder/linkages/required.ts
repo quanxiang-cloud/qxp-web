@@ -11,7 +11,7 @@ const INIT_VALUE: Record<string, string| number | Array<string | number>> = {
   object: [],
 };
 
-function getComparator(linkage: FormBuilder.VisibleHiddenLinkage): FormBuilder.Comparator {
+function getRequiredComparator(linkage: FormBuilder.RequiredLinkage): FormBuilder.Comparator {
   return (values: Record<string, any>): boolean => {
     const pairs: Array<[any, FormBuilder.CompareOperator, any]> = linkage.rules.map(({
       sourceKey, compareOperator, compareValue,
@@ -26,44 +26,43 @@ function getComparator(linkage: FormBuilder.VisibleHiddenLinkage): FormBuilder.C
   };
 }
 
-export default function visibleHiddenLinkageEffect(
-  linkages: FormBuilder.VisibleHiddenLinkage[],
+export default function requiredLinkageEffect(
+  linkages: FormBuilder.RequiredLinkage[],
   { setFieldState }: ISchemaFormActions,
 ): void {
   let fieldObj: any = {};
   const pairs: Array<[FormBuilder.Comparator, Array<string>, boolean]> = linkages.map((linkages) => {
-    const isShow = !!linkages.isShow;
-    return [getComparator(linkages), linkages.targetKeys, isShow];
+    const isRequired = !!linkages.isRequired;
+    return [getRequiredComparator(linkages), linkages.targetKeys, isRequired];
   });
 
   onFormInit$().subscribe(({ values }) => {
     fieldObj = {};
-    pairs.forEach(([comparator, targetKeys, isShow]) => {
-      const isVisible = isShow ? comparator(values) : !comparator(values);
+    pairs.forEach(([comparator, targetKeys, isRequired]) => {
+      const _isRequired = isRequired ? comparator(values) : !comparator(values);
       targetKeys.map((targetKey)=>{
         if (!fieldObj[targetKey]) {
-          fieldObj[targetKey] = isVisible;
+          fieldObj[targetKey] = _isRequired;
         }
       });
     });
     for (const key in fieldObj) {
-      setFieldState( `*(${key})`, (state) => state.visible = fieldObj[key]);
+      setFieldState( `*(${key})`, (state) => state.required = fieldObj[key]);
     }
   });
 
   onFormValuesChange$().subscribe(({ values }) => {
     fieldObj = {};
-    pairs.forEach(([comparator, targetKeys, isShow]) => {
-      const isVisible = isShow ? comparator(values) : !comparator(values);
+    pairs.forEach(([comparator, targetKeys, isRequired]) => {
+      const _isRequired = isRequired ? comparator(values) : !comparator(values);
       targetKeys.map((targetKey)=>{
         if (!fieldObj[targetKey]) {
-          fieldObj[targetKey] = isVisible;
+          fieldObj[targetKey] = _isRequired;
         }
       });
     });
     for (const key in fieldObj) {
-      setFieldState( `*(${key})`, (state) => state.visible = fieldObj[key]);
+      setFieldState( `*(${key})`, (state) => state.required = fieldObj[key]);
     }
   });
 }
-

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SchemaForm, setValidationLanguage, IForm, createFormActions } from '@formily/antd';
+import { SchemaForm, setValidationLanguage, IForm, createFormActions, IFormValidateResult } from '@formily/antd';
 import { ConfigProvider } from 'antd';
 import zhCN from 'antd/lib/locale/zh_CN';
 import { parse, resolve, findVariables } from 'qxp-formula';
@@ -11,6 +11,7 @@ import treeUtil from '@lib/tree';
 
 import registry from './registry';
 import visibleHiddenLinkageEffect from './linkages/visible-hidden';
+import requiredLinkageEffect from './linkages/required';
 import defaultValueLinkageEffect from './linkages/default-value';
 import formValueToFilter from './linkages/form-value-to-filter';
 import calculationFormulaEffect from './linkages/calculation-formula';
@@ -24,6 +25,7 @@ type Props = {
   value?: any;
   defaultValue?: any;
   className?: string;
+  onValidate?: (value: boolean) => void;
   onSubmit?: (value: any) => void;
   onFormValueChange?: (value: any) => void;
   children?: React.ReactElement | ((form: IForm) => React.ReactElement);
@@ -36,6 +38,7 @@ function FormRenderer({
   schema: inputSchema,
   defaultValue,
   className,
+  onValidate,
   onSubmit,
   onFormValueChange,
   value,
@@ -57,6 +60,7 @@ function FormRenderer({
   }, 'properties', [], schema);
 
   function handleSubmit(values: any): void {
+    onValidate && onValidate(true);
     const validations = schema['x-internal']?.validations || [];
     const valid = validations.every(({ formula, message }) => {
       try {
@@ -93,6 +97,10 @@ function FormRenderer({
     }
   }
 
+  function handleValidateFailed(valideted: IFormValidateResult): void {
+    onValidate && onValidate(false);
+  }
+
   function handleOnChange(values: any): void {
     onFormValueChange?.(omit(fieldsToOmit, values));
     setErrorMessage('');
@@ -109,6 +117,7 @@ function FormRenderer({
           previewPlaceholder='-'
           actions={actions}
           onSubmit={handleSubmit}
+          onValidateFailed={handleValidateFailed}
           onChange={handleOnChange}
           defaultValue={defaultValue}
           components={{ ...registry.components, ...additionalComponents }}
@@ -120,6 +129,14 @@ function FormRenderer({
                 actions,
               );
             }
+
+            if (schema['x-internal']?.requiredLinkages) {
+              requiredLinkageEffect(
+                schema['x-internal']?.requiredLinkages,
+                actions,
+              );
+            }
+
             // find all defaultValueLinkages and run defaultValueLinkageEffect
             const _schema = { ...schema, properties: schemaToMap(schema) };
             defaultValueLinkageEffect(_schema, actions);

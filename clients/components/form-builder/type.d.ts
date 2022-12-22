@@ -20,6 +20,7 @@ type XInternal = {
   columns?: column;
   tabIndex?: string;
   visibleHiddenLinkages?: FormBuilder.VisibleHiddenLinkage[];
+  requiredLinkages?: FormBuilder.RequiredLinkage[];
   defaultValueFrom?: FormBuilder.DefaultValueFrom;
   defaultValueLinkage?: FormBuilder.DefaultValueLinkage;
   calculationFormula?: string;
@@ -130,6 +131,14 @@ declare namespace FormBuilder {
     rules: CompareRule[];
     targetKeys: string[];
     isShow: boolean;
+  }
+
+  type RequiredLinkage = {
+    key: string;
+    ruleJoinOperator: 'every' | 'some';
+    rules: CompareRule[];
+    targetKeys: string[];
+    isRequired: boolean;
   }
 
   type Comparator = (values: Record<string, any>) => boolean;
