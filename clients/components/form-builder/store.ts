@@ -22,6 +22,8 @@ import {
   filterLinkagesOnDeleteField,
   generateRandomFormFieldID,
   updateFieldIndex,
+  shouldRequiredFilterLinkages,
+  filterRequiredLinkagesOnDeleteField,
 } from './utils';
 
 type Props = {
@@ -49,6 +51,7 @@ export default class FormBuilderStore {
   @observable columnsCount: 1 | 2 = 1;
   @observable isLinkageConfigVisible = false;
   @observable visibleHiddenLinkages: FormBuilder.VisibleHiddenLinkage[] = [];
+  @observable requiredLinkages: FormBuilder.RequiredLinkage[] = [];
   @observable hasEdit = false;
   @observable validations: Array<ValidationFormula>;
   @observable isDragging = false;
@@ -66,6 +69,7 @@ export default class FormBuilderStore {
     this.appID = appID;
     this.pageID = pageID;
     this.visibleHiddenLinkages = schema['x-internal']?.visibleHiddenLinkages || [];
+    this.requiredLinkages = schema['x-internal']?.requiredLinkages || [];
     this.columnsCount = schema['x-internal']?.columns || 1;
     this.labelAlign = schema?.['x-internal']?.labelAlign || 'top';
     this.validations = schema['x-internal']?.validations || [];
@@ -124,6 +128,7 @@ export default class FormBuilderStore {
         labelAlign: this.labelAlign,
         columns: 1,
         visibleHiddenLinkages: toJS(this.visibleHiddenLinkages),
+        requiredLinkages: toJS(this.requiredLinkages),
         validations: this.validations ? toJS(this.validations) : undefined,
         defaultValueFrom: 'customized',
       },
@@ -251,6 +256,12 @@ export default class FormBuilderStore {
     });
   }
 
+  @action deleteRequiredLinkage(key: string): void {
+    this.requiredLinkages = this.requiredLinkages.filter((linkage) => {
+      return linkage.key !== key;
+    });
+  }
+
   @action handleLinkageChange(linkage: FormBuilder.VisibleHiddenLinkage): void {
     if (!linkage.key) {
       this.visibleHiddenLinkages.push({
@@ -262,6 +273,21 @@ export default class FormBuilderStore {
     }
 
     this.visibleHiddenLinkages = this.visibleHiddenLinkages.map((config) => {
+      return config.key === linkage.key ? linkage : config;
+    });
+  }
+
+  @action handleRequiredLinkageChange(linkage: FormBuilder.RequiredLinkage): void {
+    if (!linkage.key) {
+      this.requiredLinkages.push({
+        ...linkage,
+        key: generateRandomFormFieldID(),
+      });
+
+      return;
+    }
+
+    this.requiredLinkages = this.requiredLinkages.map((config) => {
       return config.key === linkage.key ? linkage : config;
     });
   }
@@ -300,6 +326,38 @@ export default class FormBuilderStore {
           this.visibleHiddenLinkages = filterLinkagesOnDeleteField(
             fieldId,
             this.visibleHiddenLinkages,
+            filterLinkageRules,
+            filterLinkageTargetKeys,
+          );
+
+          this.flattenFields = this.flattenFields.filter((field) => getFieldId(field) !== fieldId);
+
+          if (pid) this.removeEmptyLayout(pid);
+          deleteConfirmModal.close();
+        },
+      });
+
+      return;
+    }
+
+    this.flattenFields = this.flattenFields.filter((field) => getFieldId(field) !== fieldId);
+
+    if (pid) this.removeEmptyLayout(pid);
+  }
+
+  @action
+  deleteRequiredField(fieldId: string): void {
+    this.hasEdit = true;
+    const pid = this.flattenFieldsMap[fieldId]?.['x-internal']?.parentFieldId;
+
+    if (shouldRequiredFilterLinkages(fieldId, this.requiredLinkages)) {
+      const deleteConfirmModal = Modal.open({
+        title: '提示',
+        content: '有显隐规则引用到此字段，直接删除会清除对应的引用，是否确认删除？',
+        onConfirm: () => {
+          this.requiredLinkages = filterRequiredLinkagesOnDeleteField(
+            fieldId,
+            this.requiredLinkages,
             filterLinkageRules,
             filterLinkageTargetKeys,
           );

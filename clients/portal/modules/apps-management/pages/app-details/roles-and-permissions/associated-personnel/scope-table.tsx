@@ -89,7 +89,10 @@ function ScopeTable(): JSX.Element {
         />
       </div>
       <div className="h-52 text-gray-600 text-12 flex items-center ml-16">
-        共{store.scopeDetailList.length}条数据
+        共
+        {store.total}
+        {/* {store.scopeDetailList.length} */}
+        条数据
       </div>
     </div>
   );
