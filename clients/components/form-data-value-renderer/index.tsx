@@ -103,7 +103,9 @@ export default function FormDataValueRenderer({ value, schema, className }: Prop
       <div className="flex flex-wrap gap-4 w-full max-h-144 overflow-auto">
         <FileList
           canDownload
+          isPrivate={false}
           imgOnly={true}
+          originalThumbnail
           files={(value as QxpFileFormData[]).map((file) =>
             ({
               name: file.label,
