@@ -78,6 +78,7 @@ export default function FileList({
   if (imgOnly) {
     return (
       <ImgList
+        canDownload={canDownload}
         originalThumbnail={originalThumbnail}
         files={files}
         style={style}
