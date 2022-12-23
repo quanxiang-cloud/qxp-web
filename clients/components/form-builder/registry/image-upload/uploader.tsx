@@ -42,6 +42,7 @@ export default function FormImgUploader(props: FileUploaderProps & ISchemaFieldC
     return (
       <div className="max-w-290">
         <FileList
+          isPrivate={false}
           imgOnly
           files={value?.map((file: QxpFileFormData) =>
             ({

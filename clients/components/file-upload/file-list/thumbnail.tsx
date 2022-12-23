@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Icon from '@c/icon';
 import httpClient from '@lib/http-client';
 
-import { FILE_DOWNLOAD_INFO_API, OSS_DOMAIN, OSS_PUBLIC_BUCKET_NAME } from '../constants';
+import { FILE_DOWNLOAD_INFO_API, OSS_DOMAIN } from '../constants';
 
 type Props = {
   imgPath: string;
@@ -31,7 +31,7 @@ export default function Thumbnail({
     if (imgPath.split('/')[0] === 'qxp-file') return;
 
     if (original) {
-      setThumbnailSrc(`${window.location.protocol}//${OSS_PUBLIC_BUCKET_NAME}.${OSS_DOMAIN}/${imgPath}`);
+      setThumbnailSrc(`${window.location.protocol}//${fileBucket}.${OSS_DOMAIN}/${imgPath}`);
       return;
     }
     const zoomSize = size / 2;
