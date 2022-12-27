@@ -10,6 +10,7 @@ const OptionSet = React.lazy(() => import('../option-set'));
 const AppList = React.lazy(() => import('./pages/entry/app-list'));
 const AppTemplates = React.lazy(() => import('./pages/entry/app-templates'));
 const PageTemplates = React.lazy(() => import('./page-templates'));
+const ProjectGroup = React.lazy(() => import('./project-group'));
 
 const MENU = [
   {
@@ -38,6 +39,13 @@ const MENU = [
     icon: 'template',
     name: '页面模版',
     url: '/apps/page-templates',
+    authority: 'application/read',
+  },
+  {
+    id: 'project-group',
+    icon: 'donut_small',
+    name: '项目组管理',
+    url: '/apps/project-group',
     authority: 'application/read',
   },
 ];
@@ -70,6 +78,7 @@ function AppManagerEntry(): JSX.Element {
           <Route path="/apps/option-set" component={OptionSet} />
           <Route path="/apps/app-templates" component={AppTemplates} />
           <Route path="/apps/page-templates" component={PageTemplates} />
+          <Route path="/apps/project-group" component={ProjectGroup} />
           <Route component={NotFoundError}/>
         </Switch>
       </div>
