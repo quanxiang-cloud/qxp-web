@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { uniqueId } from 'lodash';
@@ -217,7 +218,7 @@ function DataFilter({
         {conditions.map((condition) => (
           <div
             key={condition.id}
-            className='flex gap-x-8 mt-8 items-center px-8 h-64 w-full rounded-8 bg-gray-100 overflow-auto'
+            className={`flex gap-x-8 mt-8 items-center px-8 h-64 w-full rounded-8 bg-gray-100 overflow-auto ${window?.isMobile ? 'qxp-data-filter-box-wrap-is-mobile' : ''}`}
           >
             <div>
               <Controller

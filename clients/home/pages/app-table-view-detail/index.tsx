@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { observer } from 'mobx-react';
 import { Ref, TableHeaderBtn } from '@c/form-app-data-table/type';
@@ -19,6 +20,7 @@ export type Props = {
   appID: string;
   tableID: string;
   name: string;
+  isMobile?: boolean;
 }
 
 const queryClient = new QueryClient({
@@ -34,9 +36,8 @@ export const TableContext = React.createContext<Props>(
   { appID: 'noAppID', tableID: 'noTableID', name: 'noName' },
 );
 
-function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
+function TableViewDetail({ appID, tableID, name, isMobile = false }: Props): JSX.Element {
   const store = useTableViewStore({ appID, tableID, name });
-
   const { fetchSchemeLoading, setCurRowID } = store;
   const [modalType, setModalType] = useState('');
 
@@ -195,8 +196,11 @@ function TableViewDetail({ appID, tableID, name }: Props): JSX.Element {
     <QueryClientProvider client={queryClient}>
       <TableContext.Provider value={{ appID, tableID, name }}>
         <div className='h-full'>
+          {
+            !isMobile &&
           <Header tableName={name} operationType={store.operationType} onCancel={() => handleCancel(true)} />
-          <div style={{ maxHeight: 'calc(100% - 62px)' }} className='h-full relative overflow-auto'>
+          }
+          <div style={{ maxHeight: 'calc(100% - 62px)' }} className={`h-full relative overflow-hidden ${isMobile ? 'is-mobile' : ''}`}>
             {renderPageBody()}
             {modalType === 'dataForm' && (
               <CreateDataForm

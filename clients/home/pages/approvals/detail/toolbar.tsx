@@ -10,7 +10,6 @@ import Icon from '@c/icon';
 import Button from '@c/button';
 
 import { handleReadTask } from '../api';
-import { validateTaskFrom } from './utils';
 import actionMap from './action-map';
 
 const { TextArea } = Input;
@@ -20,6 +19,7 @@ interface Props {
   permission: { custom: PermissionItem[], system: PermissionItem[], default?: PermissionItem[] };
   globalActions: Record<string, boolean>;
   onClickAction: (actionKey: TaskHandleType, task: any, reasonRequired?: boolean) => void;
+  onSubmitClick: (actionKey: TaskHandleType, task: any, reasonRequired?: boolean) => void;
   workFlowType?: string;
   schema: ISchema;
   formData: Record<string, unknown>;
@@ -37,6 +37,7 @@ const getIconByAction = (action: string): string => {
 
 function Toolbar({
   currTask, permission, onClickAction, globalActions, workFlowType, schema, formData,
+  onSubmitClick,
 }: Props): JSX.Element {
   const { processInstanceID, taskID } = useParams<{ processInstanceID: string; taskID: string }>();
   const [comment, setComment] = useState('');
@@ -116,10 +117,11 @@ function Toolbar({
                 iconName={getIconByAction(value)}
                 modifier={value === 'REFUSE' ? 'danger' : 'primary'}
                 className={cs(value === 'AGREE' && 'btn-item-done')}
-                onClick={async () => {
-                  const isValidate = await validateTaskFrom(schema, formData);
-                  isValidate ? onClickAction(value, currTask, reasonRequired) : toast.error('必填项未填写完整');
-                }}
+                onClick={()=>onSubmitClick(value, currTask, reasonRequired)}
+                // onClick={async () => {
+                //   const isValidate = await validateTaskFrom(schema, formData);
+                //   isValidate ? onClickAction(value, currTask, reasonRequired) : toast.error('必填项未填写完整');
+                // }}
                 key={`${value}-${idx}`}
               >
                 {text ?? name ?? defaultText}

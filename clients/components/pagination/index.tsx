@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, { useEffect } from 'react';
 import cs from 'classnames';
 
@@ -280,7 +281,7 @@ function Pagination({
   }
 
   return (
-    <div className="w-full px-20 flex items-center justify-between">
+    <div className={`w-full px-20 flex items-center justify-between ${window?.isMobile ? 'is-mobile-page-wrapper' : ''}`}>
       <div className="text-12 leading-28">
         {totalText || `共 ${total} 条数据`}
       </div>

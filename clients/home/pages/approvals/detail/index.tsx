@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useParams, useHistory } from 'react-router';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
@@ -25,6 +26,7 @@ import { getTaskFormById } from '../api';
 import store from './store';
 
 import './index.scss';
+import Button from '@c/button';
 
 const globalActionKeys = [
   'canMsg', 'canViewStatusAndMsg', 'hasCancelBtn',
@@ -38,6 +40,12 @@ function ApprovalDetail(): JSX.Element {
   const [currentTaskId, setCurrentTaskId] = useState<string>('');
   const [showSwitch, setShowSwitch] = useState<boolean>(false);
   const [taskEnd, setTaskEnd] = useState<boolean>(false);
+  const [count, setCount] = useState<number>(0);
+
+  const [validate, setValidate] = useState<boolean>(false);
+  const [actionParams, setActionParams] = useState<any>({});
+  const submitRef = useRef<any>();
+
   const listType = search.get('list') || 'todo';
   const { processInstanceID, type } = useParams<{
     processInstanceID: string;
@@ -107,6 +115,19 @@ function ApprovalDetail(): JSX.Element {
     document.title = '流程详情';
   }, []);
 
+  const onSubmitClick = (value: any, currTask: any, reasonRequired: any)=>{
+    setActionParams({ value, currTask, reasonRequired });
+    submitRef?.current?.click();
+  };
+
+  useEffect(()=>{
+    if (count > 0) {
+      const { value, currTask, reasonRequired } = actionParams;
+      validate ? store.handleClickAction(value, currTask, reasonRequired) : toast.error('必填项未填写完整');
+      console.log('validate', validate, value, currTask, reasonRequired, count);
+    }
+  }, [count]);
+
   const renderSchemaForm = (task: any): JSX.Element | null => {
     return (
       <div className='task-form overflow-auto px-24'>
@@ -116,7 +137,13 @@ function ApprovalDetail(): JSX.Element {
           onFormValueChange={setFormValues}
           readOnly={taskEnd || type === 'APPLY_PAGE' || type === 'HANDLED_PAGE' }
           usePermission
-        />
+          onValidate={(value) => {
+            setValidate(value);
+            setCount(count + 1);
+          }}
+        >
+          <Button style={{ display: 'none' }} ref={submitRef} type="submit" modifier="primary">submit</Button>
+        </FormRenderer>
       </div>
     );
   };
@@ -170,6 +197,7 @@ function ApprovalDetail(): JSX.Element {
                 workFlowType={type}
                 schema={task?.formSchema}
                 formData={formValues}
+                onSubmitClick={onSubmitClick}
               />
               <div className='flow-name hidden'>{data?.flowName}</div>
               {renderSchemaForm(task)}

@@ -93,6 +93,33 @@ export function filterLinkagesOnDeleteField(
   });
 }
 
+export function filterRequiredLinkagesOnDeleteField(
+  fieldName: string,
+  linkages: FormBuilder.RequiredLinkage[],
+  filterLinkageRules: (fieldName: string, rules: FormBuilder.CompareRule[]) => FormBuilder.CompareRule[],
+  filterLinkageTagetKeys: (fieldName: string, targetKeys: string[]) => string[],
+): FormBuilder.RequiredLinkage[] {
+  return linkages.filter((linkage) => {
+    const isOneElement = pipe(property('length'), equals(1));
+    const elementEqualsFieldName = (path: string): any => {
+      return pipe(property(path), equals(fieldName));
+    };
+    const isLinkageTargetKeysEqualsFieldName = elementEqualsFieldName('targetKeys.0');
+    const isLinkageRulesEqualsFieldName = elementEqualsFieldName('rules.0.sourceKey');
+
+    if ((isOneElement(linkage.targetKeys) && isLinkageTargetKeysEqualsFieldName(linkage)) ||
+      (isOneElement(linkage.rules) && isLinkageRulesEqualsFieldName(linkage))
+    ) {
+      return false;
+    }
+
+    linkage.rules = filterLinkageRules(fieldName, linkage.rules);
+    linkage.targetKeys = filterLinkageTagetKeys(fieldName, linkage.targetKeys);
+
+    return linkages;
+  });
+}
+
 export function filterLinkageRules(
   fieldName: string, rules: FormBuilder.CompareRule[],
 ): FormBuilder.CompareRule[] {
@@ -109,6 +136,18 @@ export function filterLinkageTargetKeys(fieldName: string, targetKeys: string[])
 
 export function shouldFilterLinkages(
   fieldName: string, linkages: FormBuilder.VisibleHiddenLinkage[],
+): boolean {
+  const keys: Array<string> = [];
+  linkages.forEach((linkage) => {
+    linkage.rules.forEach((rule) => keys.push(rule.sourceKey));
+    linkage.targetKeys.forEach((targetKey) => keys.push(targetKey));
+  });
+
+  return keys.includes(fieldName);
+}
+
+export function shouldRequiredFilterLinkages(
+  fieldName: string, linkages: FormBuilder.RequiredLinkage[],
 ): boolean {
   const keys: Array<string> = [];
   linkages.forEach((linkage) => {

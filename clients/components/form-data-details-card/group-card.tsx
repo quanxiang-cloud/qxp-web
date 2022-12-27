@@ -20,6 +20,7 @@ export function InfoCard({ list }: {list: FormInfoCardDataProp}): JSX.Element {
         'flex text-12 p-8 items-center ',
         {
           'col-span-full': FULL_COMP.includes(fieldSchema['x-component'] as string),
+          'is-mobile-info-card': window?.isMobile,
         },
       )}
     >
@@ -55,6 +56,7 @@ function GroupCard({ title, list, fullScreen }: Props): JSX.Element {
         <div
           className={cs('grid gap-x-16 grid-flow-row-dense p-16 pr-0',
             fullScreen ? 'grid-cols-4' : 'grid-cols-2',
+            window?.isMobile ? 'is-mobile-info-card-wrap' : '',
           )}
         >
           {list.map((group) =>

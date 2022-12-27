@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, { useState } from 'react';
 import { FormButtonGroup, setValidationLanguage } from '@formily/antd';
 import { toJS } from 'mobx';
@@ -89,7 +90,7 @@ function CreateDataForm({ appID, pageID, rowID, onCancel }: Props): JSX.Element 
           schema={schema as ISchema}
           usePermission
         >
-          <FormButtonGroup className='flex justify-end bg-white sticky bottom-0'>
+          <FormButtonGroup className={`flex justify-end bg-white sticky bottom-0 ${window?.isMobile ? 'is-mobile-btn-group' : ''}`}>
             <Button
               type='submit'
               modifier="primary"

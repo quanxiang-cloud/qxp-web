@@ -7,6 +7,7 @@ import Icon from '@c/icon';
 import { StoreContext } from '../../context';
 import ValidationRules from './validation-rules';
 import VsibleHiddenRules from './visible-hidden-rules';
+import RequiredRules from './required-rules';
 
 type RenderLayoutOptionProps = {
   labelAlign: 'right' | 'top';
@@ -63,6 +64,7 @@ function FormConfig(): JSX.Element {
           </div>
         </div>
         <VsibleHiddenRules />
+        <RequiredRules />
         <div className="pb-24">
           <div className="item-title">表单提交验证规则</div>
           <ValidationRules />
