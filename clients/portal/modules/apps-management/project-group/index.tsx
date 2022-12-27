@@ -71,13 +71,10 @@ function ProjectGroup(): JSX.Element {
   }
 
   function RenderModal() {
-    if (!curTemplate) {
-      return null;
-    }
-
     return (
       <>
         {modalType === 'create' && (
+
           <EditProjectModal
             modalType={modalType}
             templateInfo={curTemplate}
@@ -107,7 +104,10 @@ function ProjectGroup(): JSX.Element {
           <div>
             <Button
               iconName="add"
-              onClick={() => setModalType('create')}
+              onClick={() => {
+                console.log('11');
+                setModalType('create');
+              }}
               className="mr-16"
             >
               添加项目
