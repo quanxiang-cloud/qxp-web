@@ -2,18 +2,22 @@ import React from 'react';
 import { Input, Form } from 'antd';
 
 import Modal from '@c/modal';
-import toast from '@lib/toast';
+
+// import toast from '@lib/toast';
 
 import store from './store';
-import { validateTemplateName } from './api';
+import ButtonField from './button-field';
+// import { validateTemplateName } from './api';
 import { DISABLE_SPECIAL_SYMBOL_REG } from '../pages/entry/app-list/app-edit/created-edit-app';
 // import AppIconPicker from '../../app-list/app-edit/app-icon-picker';
 
 type Props = {
   modalType: string;
-  templateInfo: TemplateInfo;
+  templateInfo: TemplateInfo | undefined;
   onCancel: () => void;
 }
+
+const { TextArea } = Input;
 
 function EditProjectModal({ modalType, templateInfo, onCancel }: Props): JSX.Element {
   const [form] = Form.useForm();
@@ -24,15 +28,15 @@ function EditProjectModal({ modalType, templateInfo, onCancel }: Props): JSX.Ele
     const { name, icon } = form.getFieldsValue();
 
     if (isEdit) {
-      await editTemplate(templateInfo.id, name, icon);
+      await editTemplate(templateInfo?.id || '', name, icon);
       return onCancel();
     }
 
-    validateTemplateName(name).then(() => {
-      return addTemplate({ ...templateInfo, name, appIcon: icon });
-    }).then(() => {
-      onCancel();
-    }).catch(() => toast.error('模版名称校验失败')).finally(store.fetchList);
+    // validateTemplateName(name).then(() => {
+    //   return addTemplate({ ...templateInfo, name, appIcon: icon });
+    // }).then(() => {
+    //   onCancel();
+    // }).catch(() => toast.error('模版名称校验失败')).finally(store.fetchList);
   }
 
   return (
@@ -61,8 +65,8 @@ function EditProjectModal({ modalType, templateInfo, onCancel }: Props): JSX.Ele
           layout="vertical"
           form={form}
           initialValues={{
-            name: templateInfo.name,
-            icon: templateInfo.appIcon,
+            name: templateInfo?.name,
+            icon: templateInfo?.appIcon,
           }}
         >
           <Form.Item
@@ -98,16 +102,21 @@ function EditProjectModal({ modalType, templateInfo, onCancel }: Props): JSX.Ele
             <Input placeholder="请输入项目名称" />
           </Form.Item>
           <Form.Item
-            name="icon"
-            label="模版图标:"
+            name="member"
+            label="项目组成员"
             rules={[
-              {
-                required: true,
-                message: '请选择应用图标',
-              },
+              { required: true, message: '请选择人员' },
             ]}
           >
-            {/* <AppIconPicker /> */}
+            <ButtonField />
+          </Form.Item>
+          <Form.Item
+            name="description"
+            label="描述"
+            rules={[{ max: 100, message: '输入超过 100 字符' }]}
+            // initialValue={msgApiKey?.description}
+          >
+            <TextArea placeholder="选填(不超过 100 字符)"/>
           </Form.Item>
         </Form>
       </div>
