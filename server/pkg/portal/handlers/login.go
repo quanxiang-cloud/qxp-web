@@ -22,6 +22,10 @@ func getLoginTemplate(r *http.Request) string {
 		templateName = "login-by-captcha.html"
 	}
 
+	if loginType == "sso" {
+		templateName = "login-by-sso.html"
+	}
+
 	return templateName
 }
 
@@ -37,6 +41,7 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 	render(w, template, map[string]interface{}{
 		// todo delete this
 		"redirectUrl": r.URL.Query().Get("redirectUrl"),
+		"ssoUrl":      contexts.Config.ClientConfig.SSOUrl,
 	})
 }
 
