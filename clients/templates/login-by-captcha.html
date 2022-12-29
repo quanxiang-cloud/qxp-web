@@ -19,9 +19,7 @@
       <h1 class="flex  space-between text-h3 login-header">
         欢迎登录
         <div class="flex login-tab">
-          <span class="text-button flex align-center login-link login-link-sso "   >
-            SSO登录
-          </span>
+        
           <span class="text-button flex align-center login-link login-link-password" >
             密码登录
           </span>
@@ -37,21 +35,6 @@
         {{ .errorMessage }}
         {{ end }}
       </p>
-
-      <div class="login--form">
-        <div class="mb-20">
-          <p class="flex space-between  text-h4 text-blue-b10">
-            全象云低代码
-          </p>
-          <p class="flex space-between text-h5">
-            办公、业务、流程系统
-          </p>
-        </div>
-        <button type="submit" id="sso-btn"
-        class="btn-login text-white-n00 bg-gray-7 py-5 text-center bd-none outline-none clickable text-button" >SSO登录</button>
-      </div>
-  
-
 
      <div   class="login--form">
       <div class="input-field mb-21">
@@ -93,19 +76,7 @@
         class="btn-login text-white-n00 bg-gray-7 py-5 text-center bd-none outline-none clickable text-button">登录</button>
      </div>
      </div>
-      
-   
-     
-
-
-   
-
   </form>
-
-
-
-
-
 </main>
 <aside class="right-aside"></aside>
 {{template "_login-by-password_scripts"}}
