@@ -59,6 +59,7 @@ type ClientConfig struct {
 	OSSConfig         OSSConfig     `json:"oss_config"`
 	VendorsConfig     VendorsConfig `yaml:"vendor" json:"vendor"`
 	VendorPrefix      string
+	SSOUrl            string `yaml:"sso_url" default:"http://proxy.yunify.com/lowcode" split_words:"true" json:"sso_url"`
 }
 
 // Configuration is the type of project config file

@@ -126,3 +126,38 @@ export function imgChange(img: HTMLImageElement, input: HTMLInputElement): void 
   input.type = 'text';
   img.dataset.passwordVisible = 'true';
 }
+
+const loginLinks = document.querySelectorAll('.login-link');
+const loginForms = document.querySelectorAll('.login--form');
+
+loginForms.forEach((item: any, index)=>{
+  item.style.display = 'none';
+  if (index === 0) {
+    item.style.display = 'block';
+  }
+});
+
+loginLinks.forEach((item, index)=>{
+  if (index === 0) {
+    item .className = item.className + ' text-blue-b10';
+  }
+  item.addEventListener('click', function(e) {
+    loginLinks.forEach((dom)=>{
+      const newClassName = dom.className.replace('text-blue-b10', '');
+      dom.className = newClassName;
+    });
+    item.className = item.className + ' text-blue-b10';
+    loginForms.forEach((item: any, idx)=>{
+      item.style.display = 'none';
+      if (index === idx) {
+        item.style.display = 'block';
+      }
+    });
+  });
+});
+
+const ssoBtn = document.querySelector('#sso-btn');
+
+ssoBtn?.addEventListener('click', function() {
+  window.location.href = window.CONFIG.sso_url || 'http://proxy.yunify.com/lowcode';
+});
