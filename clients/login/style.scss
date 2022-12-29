@@ -235,3 +235,29 @@ body {
 .text-button{
   cursor: pointer;
 }
+
+.mb-20{
+  margin-bottom: 20px;
+}
+
+.login-header{
+  align-items: center;
+}
+
+.login-link{
+    padding: 8px;
+    background: transparent;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border: 1px solid;
+    cursor: pointer;
+    border-color: rgba(5, 5, 5, 0.06);
+    &.text-blue-b10{
+      background: #fff;
+    }
+}
+
+.login-tab{
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
