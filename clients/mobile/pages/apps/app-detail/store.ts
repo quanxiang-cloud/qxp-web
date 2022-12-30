@@ -117,7 +117,8 @@ class UserAppsStore {
       const menuArteryID = get(res, 'artery.node.node.children[0].children[0].arteryID') || '';
 
       getPageMenuSchema(menuArteryID, ARTERY_KEY_VERSION).then((res)=>{
-        const menus = get(res, 'artery.node.children[0].props.menus.value') || [];
+        const NavigateMenuNode = get(res, 'artery.node.children')?.filter((item)=>item.exportName === 'NavigateMenu')[0] || {};
+        const menus = get(NavigateMenuNode, 'props.menus.value') || [];
         this.menu = menus;
         this.goLink = get(res, 'artery.node.children[0].props.goLink') || {
           type: 'functional_property',
