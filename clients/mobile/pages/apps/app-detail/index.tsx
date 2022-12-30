@@ -20,6 +20,7 @@ import store from './store';
 import 'antd/dist/antd.css';
 import '../../../../assets/css/antd.css';
 import './index.scss';
+import MobileMenu from '@c/NavigateMenu';
 
 function AppDetail(): JSX.Element {
   const { appID } = useParams<{ appID: string }>();
@@ -56,6 +57,10 @@ function AppDetail(): JSX.Element {
     detailStore.setup(record);
     history.push(`${pathPrefix}/apps/${appID}/${record.id}`);
   }
+
+  const handleGoLink = (path: string)=>{
+    store.initPageList(path);
+  };
 
   return (
     <NavPage title={store.app?.name ?? appID} style={{ padding: '.12rem .16rem' }}>
@@ -114,8 +119,13 @@ function AppDetail(): JSX.Element {
           })}
         </>
       )} */}
-      {
-        store.tableID &&
+
+      <div className='mobile-wrapper'>
+        <div className='mobile-menu'>
+          {<MobileMenu menus={store.menu as any} goLink={handleGoLink}></MobileMenu>}
+        </div>
+        {
+          store.tableID &&
         (<AppTableViewDetail
           key={store.tableID}
           appID={appID || 'noAppID'}
@@ -124,7 +134,8 @@ function AppDetail(): JSX.Element {
           isMobile={true}
         />)
 
-      }
+        }
+      </div>
 
     </NavPage>
   );

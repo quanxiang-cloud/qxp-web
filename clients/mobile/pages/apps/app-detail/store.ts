@@ -4,7 +4,7 @@ import { fetchUserList } from '@home/lib/api';
 import { parseAppIcon } from '@m/pages/dashboard/workbench/utils';
 import { MenuType } from '@portal/modules/apps-management/pages/app-details/type';
 import { fetchFormDataList } from '@lib/http-client-form';
-import { fetchPageListSchema } from '@lib/http-client';
+import { fetchPageListSchema, getPageMenuSchema } from '@lib/http-client';
 import toast from '@lib/toast';
 import { Menu } from '../types';
 import { ARTERY_KEY_VERSION } from '@portal/constants';
@@ -24,6 +24,7 @@ class UserAppsStore {
   @observable state = { loading: false, error: '' };
   @observable authority = 0;
   @observable menu = [] as Menu[];
+  @observable goLink = [] as any[];
   @observable records = [] as Menu[];
 
   @action init = (app: AppDetail | string): void => {
@@ -71,7 +72,7 @@ class UserAppsStore {
     // }
   };
 
-  @action initPageList = (): void => {
+  @action initPageList = (linkPath?: string): void => {
     if (!this.app) return;
     const appID = this.app.id;
     this.state = { loading: true, error: '' };
@@ -86,14 +87,48 @@ class UserAppsStore {
     // });
 
     fetchPageListSchema(appID, ARTERY_KEY_VERSION).then((res) => {
-      const pathList = this.app?.accessURL?.split('/') || [];
+      const pathList = linkPath ? linkPath.split('/') : this.app?.accessURL?.split('/') || [];
       const path = pathList[pathList.length - 1];
       const node = get(res, 'artery.node.node.children')?.filter((item: any)=>item?.path === path) || [];
       const tableID = get(node[0], 'node.props.tableID.value') || '';
-      const name = get(node[0], 'node.props.name.value') || '';
-      this.tableID = tableID;
+      let _node = [];
+      let _tableID = '';
+      try {
+        const nodeList = get(res, 'artery.node.node.children');
+        let newNodeList: any = [];
+        nodeList.forEach((item: any)=>{
+          if (item.children) {
+            newNodeList = [...newNodeList, ...item.children];
+          } else {
+            newNodeList = [...newNodeList, item];
+          }
+        });
+        _node = newNodeList?.filter((item: any)=>item?.path === path) || [];
+        _tableID = get(_node[0], 'node.props.tableID.value') || '';
+      } catch (error) {
+        console.log(error);
+      }
+
+      const name = get(_node[0], 'node.props.name.value') || '';
+      this.tableID = _tableID;
       this.name = name;
       this.state = { loading: false, error: '' };
+
+      const menuArteryID = get(res, 'artery.node.node.children[0].children[0].arteryID') || '';
+
+      getPageMenuSchema(menuArteryID, ARTERY_KEY_VERSION).then((res)=>{
+        const menus = get(res, 'artery.node.children[0].props.menus.value') || [];
+        this.menu = menus;
+        this.goLink = get(res, 'artery.node.children[0].props.goLink') || {
+          type: 'functional_property',
+          func: {
+            type: 'raw',
+            args: 'path',
+            body: `
+              this.history.push(path);
+            `,
+          } };
+      });
     }).catch(() => {
       this.state = { loading: false, error: '' };
     });
