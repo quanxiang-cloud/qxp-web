@@ -7,29 +7,25 @@ import Table from '@c/table';
 import Button from '@c/button';
 import TextHeader from '@c/text-header';
 import EmptyTips from '@c/empty-tips';
+import Pagination from '@c/pagination';
+import { APPLICATION_CREATE } from '@portal/constants';
 
 import store from './store';
 import EditProjectModal from './edit-project-modal';
-// import DelTemplateModal from './template-edit/del-template-modal';
-// import CreatedAppModal from '../app-list/app-edit/created-app-modal';
-import { APPLICATION_CREATE } from '@portal/constants';
+import DelProjectModal from './del-project-modal';
+import { Project } from './api';
 
 function ProjectGroup(): JSX.Element {
   const [modalType, setModalType] = useState('');
-  const { templateList, templateListLoading, fetchList, curTemplate, setCurTemplate } = store;
 
-  const COLUMNS: UnionColumn<TemplateInfo>[] = [
+  const COLUMNS: UnionColumn<Project>[] = [
     {
       Header: '项目组',
       accessor: 'name',
     },
     {
-      Header: '项目成员',
-      accessor: 'version',
-    },
-    {
       Header: '备注',
-      accessor: 'appName',
+      accessor: 'description',
     },
     {
       Header: '操作',
@@ -44,7 +40,7 @@ function ProjectGroup(): JSX.Element {
                 编辑
               </span>
               <span
-                className="text-blue-600 cursor-pointer mr-20"
+                className="text-red-600 cursor-pointer mr-20"
                 onClick={() => handelMenuClick('delete', row)}
               >
                 删除
@@ -57,34 +53,35 @@ function ProjectGroup(): JSX.Element {
   ];
 
   useEffect(() => {
-    fetchList().catch(() => {
-      toast.error('获取模版列表失败');
+    store.fetchProjectList().catch(() => {
+      toast.error('获取项目列表失败');
     });
-    return () => {
-      setCurTemplate(store.templateList?.[0]);
-    };
   }, []);
 
-  function handelMenuClick(_modalType: string, rowData: TemplateInfo): void {
+  function handelMenuClick(_modalType: string, rowData: Project): void {
     setModalType(_modalType);
-    setCurTemplate(rowData);
+    store.setCurProject(rowData);
   }
 
-  function RenderModal() {
+  function RenderModal(): JSX.Element {
     return (
       <>
         {modalType === 'create' && (
-
           <EditProjectModal
             modalType={modalType}
-            templateInfo={curTemplate}
             onCancel={() => setModalType('')}
           />
         )}
-        {/* {modalType === 'delTemplate' &&
-          <DelTemplateModal templateInfo={curTemplate} onCancel={() => setModalType('')} />
-        } */}
-
+        {modalType === 'modify' && (
+          <EditProjectModal
+            modalType={modalType}
+            project={store.curProject}
+            onCancel={() => setModalType('')}
+          />
+        )}
+        {modalType === 'delete' &&
+          <DelProjectModal projectInfo={store.curProject} onCancel={() => setModalType('')} />
+        }
       </>
     );
   }
@@ -93,19 +90,17 @@ function ProjectGroup(): JSX.Element {
     <>
       <div className="flex flex-col h-full">
         <TextHeader
-          title="模版库"
+          title="项目库"
           desc=""
-          // action="👋 快速开始"
           className="app-list-headertitle bg-gray-1000 px-20 py-16 header-background-image h-44"
           itemTitleClassName="text-h6"
         />
         <div className="p-16 font-semibold flex justify-between items-center">
-          我的项目 · {templateList.length}
+          我的项目 · {store.projectList?.length}
           <div>
             <Button
               iconName="add"
               onClick={() => {
-                console.log('11');
                 setModalType('create');
               }}
               className="mr-16"
@@ -117,12 +112,17 @@ function ProjectGroup(): JSX.Element {
         <div className="flex-1 px-16 overflow-auto">
           <Table
             rowKey="id"
-            data={templateList}
+            data={store.projectList}
             columns={COLUMNS}
-            loading={templateListLoading}
+            loading={store.projectListLoading}
             emptyTips={<EmptyTips text="暂无模版数据" className="py-32" />}
           />
         </div>
+        <Pagination
+          total={store.total}
+          renderTotalTip={() => `共 ${store.total} 条数据`}
+          onChange={(current, pageSize) => store.setProjectParams({ page: current, size: pageSize })}
+        />
       </div>
       <RenderModal />
     </>

@@ -41,6 +41,15 @@ const SELF_AND_SUB = {
   },
 };
 
+// 所在项目数据
+const OWN_PROJECT = {
+  bool: {
+    should: [
+      { $project: 'project_id' },
+    ],
+  },
+};
+
 export const DATA_RANGE_OPTIONS = [
   {
     label: '全部数据',
@@ -55,6 +64,10 @@ export const DATA_RANGE_OPTIONS = [
     value: 'SELF_WITH_SUB',
   },
   {
+    label: '所在项目数据',
+    value: 'OWN_PROJECT',
+  },
+  {
     label: '自定义',
     value: 'CUSTOM',
   },
@@ -64,6 +77,7 @@ export const DATA_RANGE: Record<string, Record<string, any>> = {
   ALL: ALL_ALLOWED,
   SELF: ONLY_SELF,
   SELF_WITH_SUB: SELF_AND_SUB,
+  OWN_PROJECT: OWN_PROJECT,
 };
 
 export const INIT_INPUT_SCHEMA: SwagField = {
