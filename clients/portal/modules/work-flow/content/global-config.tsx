@@ -45,7 +45,8 @@ export default function GlobalConfig(): JSX.Element | null {
   const formulaEditorRef = useRef<RefProps>();
   const { appID, flowID } = useContext(FlowContext);
   const formDataElement = getFormDataElement();
-  const hasAssociativeTable = !!(formDataElement.data.businessData.form.value && appID);
+  const hasAssociativeTable = !!(formDataElement?.data?.businessData?.form?.value && appID);
+
   const { data: fieldList, isLoading } = useQuery(
     ['GET_FIELD_LIST', formDataElement?.data?.businessData?.form?.value || '', appID],
     async ({ queryKey, meta }) => {
