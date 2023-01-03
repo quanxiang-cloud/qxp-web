@@ -44,6 +44,7 @@ export type FormValues = {
   id?: string;
   useStatus?: number;
   sendMessage?: SendMessage;
+  jobNumber?: string;
 };
 
 interface Props {
@@ -82,7 +83,7 @@ function EditEmployeesModal( { user, closeModal }: Props): JSX.Element {
   }
 
   function handleFinish(values: any): void {
-    const { name, phone, email, selfEmail, sendPasswordBy, depID, leader, position } = values;
+    const { name, phone, email, selfEmail, sendPasswordBy, depID, leader, position, jobNumber } = values;
     if (!user.id) {
       const sendMessage = {
         sendChannel: sendPasswordBy || 0,
@@ -92,6 +93,7 @@ function EditEmployeesModal( { user, closeModal }: Props): JSX.Element {
         position,
         name,
         phone,
+        jobNumber,
         email,
         selfEmail,
         useStatus: 1,
@@ -112,6 +114,7 @@ function EditEmployeesModal( { user, closeModal }: Props): JSX.Element {
         name,
         phone,
         email,
+        jobNumber,
         useStatus: user.useStatus,
         dep: depID ? [{
           depID: depID,
@@ -163,6 +166,7 @@ function EditEmployeesModal( { user, closeModal }: Props): JSX.Element {
           name: user.name,
           phone: user.phone,
           email: user.email,
+          jobNumber: user?.jobNumber,
           leader: {
             id: getTwoDimenArrayHead(user.leaders)?.id,
             name: getTwoDimenArrayHead(user.leaders)?.name,
@@ -278,6 +282,12 @@ function EditEmployeesModal( { user, closeModal }: Props): JSX.Element {
           label="职位"
         >
           <Input placeholder='请输入职位名称' />
+        </Form.Item>
+        <Form.Item
+          name="jobNumber"
+          label="工号"
+        >
+          <Input placeholder='请输入工号' />
         </Form.Item>
       </Form>
     </Modal>

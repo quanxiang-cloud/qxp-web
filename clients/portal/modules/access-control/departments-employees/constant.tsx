@@ -46,6 +46,11 @@ export const EmployeesColumns = [
       return getTwoDimenArrayHead(leaders)?.name;
     },
   },
+  {
+    Header: '工号',
+    id: 'jobNumber',
+    accessor: 'jobNumber',
+  },
 ];
 
 export type AuthorMenuItem = {
