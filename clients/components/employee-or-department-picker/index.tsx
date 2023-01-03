@@ -17,7 +17,7 @@ interface Props {
   departments?: EmployeeOrDepartmentOfRole[];
   onlyEmployees?: boolean;
   textHeaderDesc?: string;
-  onDeptRemove?: (data: any) => void;
+  onDeptRemove?: (data: any, departmentsOrEmployees: any) => void;
 }
 
 export default function EmployeeOrDepartmentPickerModal({
@@ -92,7 +92,7 @@ export default function EmployeeOrDepartmentPickerModal({
         onChange={setDepartmentsOrEmployees}
         onlyEmployees={onlyEmployees}
         textHeaderDesc={textHeaderDesc}
-        onDeptRemove = {onDeptRemove}
+        onDeptRemove = {(data)=>onDeptRemove && onDeptRemove(data, departmentsOrEmployees)}
       />
     </Modal>
   );
