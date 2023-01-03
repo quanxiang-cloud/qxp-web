@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { toJS } from 'mobx';
 import cs from 'classnames';
 
@@ -7,31 +7,31 @@ import toast from '@lib/toast';
 import Icon from '@c/icon';
 import ModalSelectReceiver from '@c/employee-or-department-picker';
 
-export type CheckedInfo = EmployeeOrDepartmentOfRole & {
-  name: string;
-}
-
 interface Props {
-  value?: CheckedInfo[];
-  onChange?: (values: CheckedInfo[]) => void;
+  value?: EmployeeOrDepartmentOfRole[];
+  onChange?: (values: EmployeeOrDepartmentOfRole[]) => void;
 }
 
 function ButtonField({ value, onChange }: Props): JSX.Element {
   const [openReceiverModal, setOpenReceiverModal] = useState(false);
-  const [_chosenDepOrPerson, setChosenDepOrPerson] = useState<CheckedInfo[]>(
+  const [_chosenDepOrPerson, setChosenDepOrPerson] = useState<EmployeeOrDepartmentOfRole[]>(
     value || []); // 已选中的员工或部门
 
+  useEffect(() => {
+    value && setChosenDepOrPerson(value);
+  }, [value]);
+
   const chosenDepOrPerson = useMemo(() => {
-    return _chosenDepOrPerson.map(({ id, type, name, ownerName, departmentName }) => (
-      { id, type, name: name || ownerName || departmentName }
+    return _chosenDepOrPerson.map(({ id, type, ownerName, departmentName }) => (
+      { id, type, name: ownerName || departmentName }
     ));
   }, [_chosenDepOrPerson]);
 
   const chooseReceiver = (departments: any[], employees: any[]): Promise<any> => {
     const receivers = [...departments, ...employees].map((d) => toJS(d));
     if (!receivers.length) {
-      toast.error('请至少选择一个员工或部门');
-      return Promise.reject(new Error('请至少选择一个员工或部门'));
+      toast.error('请至少选择一个员工');
+      return Promise.reject(new Error('请至少选择一个员工'));
     }
     setOpenReceiverModal(false);
     onChange && onChange(receivers);
@@ -57,10 +57,11 @@ function ButtonField({ value, onChange }: Props): JSX.Element {
         <ModalSelectReceiver
           onSubmit={chooseReceiver}
           onCancel={() => setOpenReceiverModal(false)}
-          title="选择员工或部门"
+          title="选择员工"
           submitText="确定选择"
-          departments={_chosenDepOrPerson.filter((itm) => itm.type === 2)}
-          employees={_chosenDepOrPerson.filter((itm) => itm.type === 1)}
+          onlyEmployees
+          departments={[]}
+          employees={_chosenDepOrPerson}
         />
       )}
       <div className="mt-8">

@@ -1,26 +1,65 @@
 import httpClient from '@lib/http-client';
 
-export type TemplateListRes = {
-  count: number;
-  templates: any;
+export type ProjectParams = {
+  size: number,
+  page: number,
 }
 
-export const saveAppAsTemplate = async (value: Omit<TemplateInfo, 'id'>, title: string): Promise<void> => {
-  return await httpClient('/api/v1/entrepot/task/create/createTemplate', { value, title });
-};
-
-export async function fetchTemplateList(): Promise<TemplateListRes> {
-  return await httpClient('/api/v1/app-center/template/selfList', {});
+export type AssociateParams = {
+  projectID: string,
+  projectName: string,
+  add: {
+    userID: string,
+    userName: string,
+  }[],
+  removes: {
+    userID: string,
+    userName: string,
+  }[]
 }
 
-export async function deleteTemplate(id: string): Promise<any> {
-  return await httpClient('/api/v1/app-center/template/delete', { id });
+export type ProjectWithPerson = {
+  id: string
+  projectID: string,
+  projectName: string,
+  userID: string,
+  userName: string,
 }
 
-export async function validateTemplateName(name: string): Promise<any> {
-  return await httpClient('/api/v1/app-center/template/checkNameRepeat', { name });
+export type Project = {
+  id: string,
+  name: string;
+  description?: string;
 }
 
-export async function editTemplateInfo(id: string, name: string, appIcon: string): Promise<any> {
-  return await httpClient('/api/v1/app-center/template/update', { id, name, appIcon });
+export function fetchProjectList(
+  params: ProjectParams,
+): Promise<{ list: Project[], total: number; }> {
+  return httpClient('/api/v1/form/project/m/list', params);
+}
+
+export async function createProject(data: {name: string, description: string}): Promise<{id: string}> {
+  return await httpClient('/api/v1/form/project/m/create', data);
+}
+
+export function associatePerson(
+  params: AssociateParams,
+): Promise<{ list: Project[], total: number; }> {
+  return httpClient('/api/v1/form/project/m/grant/user', params);
+}
+
+export function getAssociatePerson(
+  params: {page: number, size: number, projectID: string},
+): Promise<{ list: ProjectWithPerson[], total: number }> {
+  return httpClient<{ list: ProjectWithPerson[], total: number }>(
+    '/api/v1/form/project/m/grant/list', params,
+  ).then((res) => {
+    return { list: res.list || [], total: res.total || 0 };
+  }).catch(() => {
+    return { list: [], total: 0 };
+  });
+}
+
+export async function deleteProject(id: string): Promise<any> {
+  return await httpClient('/api/v1/form/project/m/delete', { id });
 }

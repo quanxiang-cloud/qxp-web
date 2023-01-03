@@ -1,6 +1,8 @@
 import React, { useImperativeHandle, forwardRef } from 'react';
 import { useForm } from 'react-hook-form';
 import cs from 'classnames';
+// import RadioGroup from '@c/radio/group';
+// import Radio from '@c/radio';
 
 import formFieldWrap from '@c/form-field-wrap';
 
@@ -40,6 +42,23 @@ function BasicInfoForm(
           pattern: { value: /^((?!(\ud83c[\udf00-\udfff])|(\ud83d[\udc00-\ude4f])|(\ud83d[\ude80-\udeff])).)*$/, message: '不能输入表情符号' },
         })}
       />
+      {/* <div className='mb-8'>
+        <p >角色类型</p>
+        <RadioGroup onChange={(value) => console.log(value)}>
+          <Radio
+            className="mr-8"
+            value='group'
+            label='组织角色'
+            defaultChecked
+          />
+          <Radio
+            className="mr-8"
+            value='project'
+            label='项目角色'
+            // defaultChecked={store.conditionType === option.value}
+          />
+        </RadioGroup>
+      </div> */}
       <Textarea
         className='h-58'
         label='描述'
