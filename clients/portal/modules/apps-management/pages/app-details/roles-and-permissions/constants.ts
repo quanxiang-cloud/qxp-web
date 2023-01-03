@@ -43,11 +43,7 @@ const SELF_AND_SUB = {
 
 // 所在项目数据
 const OWN_PROJECT = {
-  bool: {
-    should: [
-      { $project: 'project_id' },
-    ],
-  },
+  $project: 'project_id',
 };
 
 export const DATA_RANGE_OPTIONS = [
