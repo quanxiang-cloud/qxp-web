@@ -37,6 +37,11 @@ export const excelHeader: any[] = [
     id: 'leader',
     accessor: 'leader',
   },
+  {
+    Header: '工号',
+    id: 'jobNumber',
+    accessor: 'jobNumber',
+  },
   // {
   //   Header: '员工姓名',
   //   id: 'userName',

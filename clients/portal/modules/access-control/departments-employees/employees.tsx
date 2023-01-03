@@ -31,7 +31,7 @@ type ModalType = '' | 'edit_employees' | 'import_employees' | 'reset_password' |
 const initUserInfo = { id: '', name: '', email: '', phone: '', selfEamil: '' };
 const initSearch = { page: 1, limit: 10, userName: '' };
 
-const userGraphQL = '{users{id,phone,position,email,name,useStatus,departments{id,name,attr},leaders{id,name,attr}},total}';
+const userGraphQL = '{users{id,phone,position,email,name,jobNumber,useStatus,departments{id,name,attr},leaders{id,name,attr}},total}';
 interface Props {
   department: Department;
   searchWord: string;
@@ -54,6 +54,7 @@ export default function Employees({
       const queryGraphQL = buildGraphQLQuery({
         departmentID: department.id,
         name: searchWord,
+        jobNumber: '',
         page: pageParams.page,
         size: pageParams.limit,
       });
@@ -125,9 +126,9 @@ export default function Employees({
   function openExportModal(): void {
     const queryGraphQL = `query(
       name:"",
+      jobNumber:"",
       phone:"",
       email:"",
-      jobNumber:"",
       useStatus:0,
       gender:"",
       position:"",
@@ -141,6 +142,7 @@ export default function Employees({
       id,
       email,
       name,
+      jobNumber,
       phone,
       useStatus,
       position,
