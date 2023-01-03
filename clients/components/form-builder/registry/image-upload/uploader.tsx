@@ -42,7 +42,6 @@ export default function FormImgUploader(props: FileUploaderProps & ISchemaFieldC
     return (
       <div className="max-w-290">
         <FileList
-          isPrivate={false}
           imgOnly
           files={value?.map((file: QxpFileFormData) =>
             ({
@@ -61,8 +60,6 @@ export default function FormImgUploader(props: FileUploaderProps & ISchemaFieldC
   return (
     <ImgUploader
       {...configProps}
-      isPrivate={false}
-      originalThumbnail
       additionalPathPrefix={`app/${appID}/form-attachment/${tableID}`}
       fileData={value?.map((file: QxpFileFormData) =>
         ({

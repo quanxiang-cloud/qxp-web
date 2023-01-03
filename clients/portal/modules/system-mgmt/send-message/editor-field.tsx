@@ -57,7 +57,6 @@ function EditorField({ value }: Props, ref: React.Ref<RefProps>): JSX.Element {
       <div className="p-16">
         <FileUploader
           fileData={files}
-          isPrivate={false}
           multiple
           maxFileSize={5}
           additionalPathPrefix='message'
