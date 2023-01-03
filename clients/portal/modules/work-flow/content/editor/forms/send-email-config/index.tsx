@@ -237,7 +237,6 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
         render={() => {
           return (
             <FileUploader
-              isPrivate={false}
               multiple={true}
               fileData={files}
               className='px-40 form-upload'

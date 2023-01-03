@@ -1,4 +1,4 @@
-import { observable, action } from 'mobx';
+import { observable, action, runInAction } from 'mobx';
 import { uniqueId } from 'lodash';
 
 import toast from '@lib/toast';
@@ -172,7 +172,7 @@ class FileStore {
       contentType: file.type,
       path: fileSignPath.join('/'),
     }).then((response) => {
-      const { url, uploadID } = response as { url?: string, uploadID?: string};
+      const { url, uploadID } = response as { url?: string, uploadID?: string };
       const signedFile = this.updateUploadFile(file.name, {
         uid: fileUid.join('/'),
         uploadID,
@@ -230,20 +230,27 @@ class FileStore {
     this.onError?.(err, file);
   };
 
-  onFileUploadSuccess = async (file: QXPUploadFileTask): Promise<void> => {
+  onFileUploadSuccess = (file: QXPUploadFileTask): void => {
     const { uid, name } = file;
-    if (isAcceptedFileType(file, DEFAULT_IMG_TYPES) && this.requestThumbnail) {
-      await httpClient(IMG_THUMBNAIL_API, {
-        path: `${this.fileBucket}/${file.uid}`,
-        width: THUMBNAIL_SIZE / 2,
+    Promise.resolve().then(() => {
+      if (isAcceptedFileType(file, DEFAULT_IMG_TYPES) && this.requestThumbnail) {
+        return httpClient(IMG_THUMBNAIL_API, {
+          path: `${this.fileBucket}/${file.uid}`,
+          width: THUMBNAIL_SIZE / 2,
+        });
+      }
+    }).catch(() => {
+      toast.error('图片缩略图生成失败');
+    }).finally(() => {
+      runInAction(() => {
+        file.state = 'success';
+        file.md5Worker = null;
+        file.fileChunks = null;
+        this.fileRequests[uid] = null;
+        this.updateUploadFile(name, file);
+        this.onSuccess?.(file);
       });
-    }
-    file.state = 'success';
-    file.md5Worker = null;
-    file.fileChunks = null;
-    this.fileRequests[uid] = null;
-    this.updateUploadFile(name, file);
-    this.onSuccess?.(file);
+    });
   };
 
   onFileUploading = (file: QXPUploadFileTask, progress: number): void => {

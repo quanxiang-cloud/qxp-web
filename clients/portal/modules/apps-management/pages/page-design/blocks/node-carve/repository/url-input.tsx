@@ -49,7 +49,6 @@ function UrlInput({ value, onChange }: UrlInputProps): JSX.Element {
                   <div className="text-gray-400">支持 20MB 以内的 csv 文件</div>
                 </>)
               }
-              isPrivate={false}
               maxFileSize={10}
               additionalPathPrefix="message"
               accept={[
