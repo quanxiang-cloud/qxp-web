@@ -11,9 +11,10 @@ export interface ISelectedList {
   className?: string;
   ownerStore: OwnerStore;
   onDeptRemove?: (data: any) => void;
+  onDeptAllRemove?: () => void;
 }
 
-export default observer( function SelectedList({ className, ownerStore, onDeptRemove }: ISelectedList) {
+export default observer( function SelectedList({ className, ownerStore, onDeptRemove, onDeptAllRemove }: ISelectedList) {
   const users = ownerStore.owners.filter(({ type }) => type === 1);
   const departments = ownerStore.owners.filter(({ type }) => type === 2);
   const isFirstLoad = useRef<boolean>(true);
@@ -38,6 +39,7 @@ export default observer( function SelectedList({ className, ownerStore, onDeptRe
       ownerStore.departmentTreeStore.toggleCheck(owner.ownerID);
     });
     ownerStore.onClear();
+    onDeptAllRemove && onDeptAllRemove();
   };
 
   const tagRender = ({

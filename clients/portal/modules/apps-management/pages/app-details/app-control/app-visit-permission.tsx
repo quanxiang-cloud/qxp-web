@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import React, { useState, useEffect } from 'react';
 import { UnionColumn } from 'react-table';
 import { useParams } from 'react-router-dom';
@@ -151,26 +152,30 @@ function AppVisitPermission(): JSX.Element {
   async function handleDeptRemove(data: any, departmentsOrEmployees: any): Promise<void> {
     _employees = departmentsOrEmployees.filter((item: any)=>item.type === 1).filter((item: any)=>item.id !== data.id) || [];
     _departments = departmentsOrEmployees.filter((item: any)=>item.type === 2).filter((item: any)=>item.id !== data.id) || [];
-
-    console.log('data', JSON.parse(JSON.stringify(data)));
-    console.log('departmentsOrEmployees', JSON.parse(JSON.stringify(departmentsOrEmployees)));
-    console.log('employees', JSON.parse(JSON.stringify(employees)));
-    console.log('departments', JSON.parse(JSON.stringify(departments)));
-
-    console.log('_employees', JSON.parse(JSON.stringify(_employees)));
-    console.log('_departments', JSON.parse(JSON.stringify(_departments)));
     if (employees.find((item: any)=>item.id === data.id) || departments.find((item: any)=>item.id === data.id)) {
-      // _employees = [..._employees.filter((item: any)=>item.id !== data.id)];
-      // _departments=[..._departments.filter((item: any)=>item.id !== data.id)];
       return deleteAppMembers(appID, [data.id]).then(() => {
         setDepartments(_departments);
         setEmployees(_employees);
-        // setDepartments([..._departments.filter((item: any)=>item.id !== data.id)]);
-        // setEmployees([..._employees.filter((item: any)=>item.id !== data.id)]);
         fetchMembers();
         // toast.success('删除成功！');
       });
     }
+  }
+
+  async function handleDeptAllRemove(): Promise<void> {
+    employees.map((item: any)=>{
+      return deleteAppMembers(appID, [item.id]).then(() => {
+      });
+    });
+    departments.map((item: any)=>{
+      return deleteAppMembers(appID, [item.id]).then(() => {
+      });
+    });
+    setTimeout(()=>{
+      setDepartments([]);
+      setEmployees([]);
+      fetchMembers();
+    });
   }
   const columns: UnionColumn<Employee>[] = React.useMemo(
     () => [
@@ -329,6 +334,7 @@ function AppVisitPermission(): JSX.Element {
             departments={departments as EmployeeOrDepartmentOfRole[]}
             onSubmit={handleAdd}
             onDeptRemove={handleDeptRemove}
+            onDeptAllRemove={handleDeptAllRemove}
             onCancel={() => setModalType('')}
           />
         )}
