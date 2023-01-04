@@ -25,10 +25,11 @@ interface Props {
   onlyEmployees?: boolean;
   textHeaderDesc?: string;
   onDeptRemove?: (data: any) => void;
+  onDeptAllRemove?: () => void;
 }
 
 export default observer(function EmployeeOrDepartmentPicker({
-  departments = [], employees = [], onChange, onlyEmployees, textHeaderDesc, onDeptRemove,
+  departments = [], employees = [], onChange, onlyEmployees, textHeaderDesc, onDeptRemove, onDeptAllRemove,
 }: Props) {
   const [store, setStore] = useState<OwnerStore>();
 
@@ -188,6 +189,7 @@ export default observer(function EmployeeOrDepartmentPicker({
       <SelectedList
         ownerStore={store}
         onDeptRemove={onDeptRemove}
+        onDeptAllRemove={onDeptAllRemove}
       />
     </div>
   );
