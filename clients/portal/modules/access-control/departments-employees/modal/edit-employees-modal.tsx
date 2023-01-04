@@ -70,7 +70,9 @@ function EditEmployeesModal( { user, closeModal }: Props): JSX.Element {
     onSuccess: () => {
       toast.success('操作成功');
       closeModal();
-      queryClient.invalidateQueries('GET_USER_ADMIN_INFO');
+      setTimeout(()=>{
+        queryClient.invalidateQueries('GET_USER_ADMIN_INFO');
+      }, 1000);
     },
     onError: (error: string) => {
       toast.error(error);
