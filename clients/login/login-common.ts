@@ -159,5 +159,5 @@ loginLinks.forEach((item, index)=>{
 const ssoBtn = document.querySelector('#sso-btn');
 
 ssoBtn?.addEventListener('click', function() {
-  window.location.href = window.CONFIG.sso_url || '';
+  window.location.href = window?.CONFIG?.sso_url || '';
 });
