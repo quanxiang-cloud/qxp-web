@@ -16,16 +16,11 @@ func getLoginType(r *http.Request) string {
 }
 
 func getLoginTemplate(r *http.Request) string {
-	loginType := getLoginType(r)
+	// loginType := getLoginType(r)
 	templateName := "login-by-password.html"
-	if loginType == "captcha" {
-		templateName = "login-by-captcha.html"
-	}
-
-	if loginType == "sso" {
-		templateName = "login-by-sso.html"
-	}
-
+	// if loginType == "captcha" {
+	// 	templateName = "login-by-captcha.html"
+	// }
 	return templateName
 }
 
@@ -42,12 +37,14 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 		// todo delete this
 		"redirectUrl": r.URL.Query().Get("redirectUrl"),
 		"ssoUrl":      contexts.Config.ClientConfig.SSOUrl,
+		"loginType":   "",
 	})
 }
 
 // HandleLoginSubmit resolve login request
 func HandleLoginSubmit(w http.ResponseWriter, r *http.Request) {
-	loginType := getLoginType(r)
+	// loginType := getLoginType(r)
+	loginType := r.FormValue("type")
 	templateName := getLoginTemplate(r)
 	loginType4API := ""
 	username := r.FormValue("username")
@@ -58,18 +55,18 @@ func HandleLoginSubmit(w http.ResponseWriter, r *http.Request) {
 		loginType4API = "code"
 		password = r.FormValue("captcha")
 	case "password":
-		templateName = "login-by-password.html"
+		// templateName = "login-by-password.html"
 		loginType4API = "pwd"
 		password = r.FormValue("password")
 	}
 
 	if loginType4API == "" {
-		render(w, templateName, map[string]interface{}{"errorMessage": http.StatusText(http.StatusBadRequest)})
+		render(w, templateName, map[string]interface{}{"errorMessage": http.StatusText(http.StatusBadRequest), "ssoUrl": contexts.Config.ClientConfig.SSOUrl, "loginType": loginType})
 		return
 	}
 
 	if password == "" || username == "" {
-		render(w, templateName, map[string]interface{}{"errorMessage": "请输入用户名和密码"})
+		render(w, templateName, map[string]interface{}{"errorMessage": "请输入用户名和密码", "ssoUrl": contexts.Config.ClientConfig.SSOUrl, "loginType": loginType})
 		return
 	}
 
@@ -83,7 +80,7 @@ func HandleLoginSubmit(w http.ResponseWriter, r *http.Request) {
 	requestID := contexts.GetRequestID(r)
 	if err != nil {
 		contexts.Logger.Errorf("failed to marshal login request body: %s, request_id: %s", err.Error(), requestID)
-		render(w, templateName, map[string]interface{}{"errorMessage": http.StatusText(http.StatusBadRequest)})
+		render(w, templateName, map[string]interface{}{"errorMessage": http.StatusText(http.StatusBadRequest), "ssoUrl": contexts.Config.ClientConfig.SSOUrl, "loginType": loginType})
 		return
 	}
 
@@ -93,26 +90,26 @@ func HandleLoginSubmit(w http.ResponseWriter, r *http.Request) {
 
 	if errMsg != "" {
 		contexts.Logger.Errorf("failed to login, err: %s, request_id: %s", errMsg, requestID)
-		render(w, templateName, map[string]interface{}{"errorMessage": errMsg})
+		render(w, templateName, map[string]interface{}{"errorMessage": errMsg, "ssoUrl": contexts.Config.ClientConfig.SSOUrl, "loginType": loginType})
 		return
 	}
 
 	var loginResponse LoginResponse
 	if err := json.Unmarshal(respBody, &loginResponse); err != nil {
 		contexts.Logger.Errorf("failed to unmarshal login response body, err: %s, request_id: %s", err.Error(), requestID)
-		render(w, templateName, map[string]interface{}{"errorMessage": http.StatusText(http.StatusInternalServerError)})
+		render(w, templateName, map[string]interface{}{"errorMessage": http.StatusText(http.StatusInternalServerError), "ssoUrl": contexts.Config.ClientConfig.SSOUrl, "loginType": loginType})
 		return
 	}
 
 	if loginResponse.Code != 0 {
-		render(w, templateName, map[string]interface{}{"errorMessage": loginResponse.Message})
+		render(w, templateName, map[string]interface{}{"errorMessage": loginResponse.Message, "ssoUrl": contexts.Config.ClientConfig.SSOUrl, "loginType": loginType})
 		return
 	}
 
 	expireTime, err := time.Parse(time.RFC3339, loginResponse.Data.Expire)
 	if err != nil {
 		contexts.Logger.Errorf("failed to parse login response: %s", err.Error())
-		render(w, templateName, map[string]interface{}{"errorMessage": http.StatusText(http.StatusInternalServerError)})
+		render(w, templateName, map[string]interface{}{"errorMessage": http.StatusText(http.StatusInternalServerError), "ssoUrl": contexts.Config.ClientConfig.SSOUrl, "loginType": loginType})
 		return
 	}
 
