@@ -22,7 +22,7 @@ export default function ResetPasswordModal({ visible, onCancel }: Props): JSX.El
   const [loading, setLoading] = useState(false);
   const mutation = useMutation(userResetPassword, {
     onSuccess: () => {
-      window.location.pathname = '/login/password';
+      window.location.pathname = '/login';
     },
     onError: (err: Error) => {
       toast.error(err.message);

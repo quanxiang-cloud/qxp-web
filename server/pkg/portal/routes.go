@@ -48,8 +48,6 @@ func GetRouter() http.Handler {
 	r.Path("/liveness").Methods("GET").HandlerFunc(probe.LivenessProbe)
 	r.Path("/readiness").HandlerFunc(probe.ReadinessProbe)
 
-	// r.Path("/login/{type}").Methods("GET").HandlerFunc(handlers.HandleLogin)
-	// r.Path("/login/{type}").Methods("POST").HandlerFunc(handlers.HandleLoginSubmit)
 	r.Path("/login").Methods("GET").HandlerFunc(handlers.HandleLogin)
 	r.Path("/login").Methods("POST").HandlerFunc(handlers.HandleLoginSubmit)
 
