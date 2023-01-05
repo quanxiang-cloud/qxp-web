@@ -1,6 +1,6 @@
 describe('验证码登录', function () {
   beforeEach(function () {
-    cy.visit('http://newtitan.localhost/login/captcha');
+    cy.visit('http://newtitan.localhost/login');
   });
 
   it('输入不合法的用户名', function () {
@@ -44,6 +44,6 @@ describe('验证码登录', function () {
     cy.get('.btn-login').should('not.have.class', 'disabled').click();
     cy.url().should('eq', 'http://newtitan.localhost/');
     cy.get('button[type="submit"]').click();
-    cy.url().should('eq', 'http://newtitan.localhost/login/password');
+    cy.url().should('eq', 'http://newtitan.localhost/login');
   });
 });

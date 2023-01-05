@@ -13,7 +13,7 @@ interface Props {
 }
 
 function goLoin(): void {
-  window.location.pathname = '/login/password';
+  window.location.pathname = '/login';
 }
 
 export default function ResetPasswordModal({ visible, onCancel }: Props): JSX.Element|null {
