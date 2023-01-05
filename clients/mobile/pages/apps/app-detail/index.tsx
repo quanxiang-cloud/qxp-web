@@ -126,14 +126,17 @@ function AppDetail(): JSX.Element {
         </div>
         {
           store.tableID &&
-        (<AppTableViewDetail
-          key={store.tableID}
-          appID={appID || 'noAppID'}
-          tableID={store.tableID || 'noTableID'}
-          name={store.name || 'noName'}
-          isMobile={true}
-        />)
-
+          (<AppTableViewDetail
+            key={store.tableID}
+            appID={appID || 'noAppID'}
+            tableID={store.tableID || 'noTableID'}
+            name={store.name || 'noName'}
+            isMobile={true}
+          />)
+        }
+        {
+          !store.tableID &&
+          ( <h1>自定义页面示例</h1>)
         }
       </div>
 
