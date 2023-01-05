@@ -186,8 +186,29 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
   const contentVariables = React.useMemo(() => {
     return tableSchema.filter(({ type, componentName }) => {
       return !isAdvancedField(type, componentName);
-    }).map((field) => {
-      return { label: field.title as string, key: field.id };
+    }).map((item) => {
+      const { id, title } = item;
+      let type: any = item?.['x-component'] || '';
+      const tableID = item?.['x-component-props']?.tableID;
+      const aggType = item?.['x-component-props']?.aggType;
+      const sourceFieldId = item?.['x-component-props']?.sourceFieldId;
+      let _fieldName = id;
+      const mapType: any = {
+        AggregationRecords: 'aggregation',
+        AssociatedRecords: 'associated_records',
+        ForeignTable: 'foreign_table',
+        SubTable: 'sub_table',
+        Serial: 'serial',
+      };
+      if (mapType[type]) {
+        type = mapType[type];
+      }
+      if (tableID) {
+        _fieldName = _fieldName + `.${tableID}.${type}`;
+        sourceFieldId && (_fieldName = `${_fieldName}.${sourceFieldId}`);
+        (sourceFieldId && aggType) && (_fieldName = `${_fieldName}.${aggType}`);
+      }
+      return { label: title as string, key: _fieldName };
     });
   }, [tableSchema]);
 
