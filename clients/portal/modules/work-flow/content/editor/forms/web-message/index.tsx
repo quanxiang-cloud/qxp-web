@@ -68,6 +68,7 @@ function WebMessage({ defaultValue, onSubmit, onCancel, onChange }: Props): JSX.
       const { fieldName, title } = item;
       let type: any = item?.['x-component'] || '';
       const tableID = item?.['x-component-props']?.tableID;
+      const aggType = item?.['x-component-props']?.aggType;
       const sourceFieldId = item?.['x-component-props']?.sourceFieldId;
       let _fieldName = fieldName;
       const mapType: any = {
@@ -83,6 +84,7 @@ function WebMessage({ defaultValue, onSubmit, onCancel, onChange }: Props): JSX.
       if (tableID) {
         _fieldName = _fieldName + `.${tableID}.${type}`;
         sourceFieldId && (_fieldName = `${_fieldName}.${sourceFieldId}`);
+        (sourceFieldId && aggType) && (_fieldName = `${_fieldName}.${aggType}`);
       }
       return { label: title as string, key: _fieldName };
     });
