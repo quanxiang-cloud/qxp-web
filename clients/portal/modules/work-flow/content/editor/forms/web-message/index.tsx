@@ -70,9 +70,11 @@ function WebMessage({ defaultValue, onSubmit, onCancel, onChange }: Props): JSX.
       const tableID = item?.['x-component-props']?.tableID;
       let _fieldName = fieldName;
       const mapType: any = {
+        AggregationRecords: 'aggregation',
         AssociatedRecords: 'associated_records',
         ForeignTable: 'foreign_table',
         SubTable: 'sub_table',
+        Serial: 'serial',
       };
       if (mapType[type]) {
         type = mapType[type];
