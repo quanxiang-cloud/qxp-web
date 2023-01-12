@@ -39,6 +39,7 @@ export default function Thumbnail({
     const thumbnailPath = `${fileBucket}/${imgPath}`.split('/');
     thumbnailPath.splice(-1, 0, `${zoomSize}x${0}`);
     httpClient<{ url: string }>(FILE_DOWNLOAD_INFO_API, {
+      fileName: imgName,
       path: thumbnailPath.join('/'),
     }).then(({ url }) => {
       if (!url) throw Error('缩略图下载失败');

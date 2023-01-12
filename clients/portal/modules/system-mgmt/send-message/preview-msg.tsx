@@ -55,7 +55,6 @@ const PreviewMsg = ({
         <div className={styles.info}>{infoText}</div>
         <div dangerouslySetInnerHTML={{ __html: content }} />
         <FileList
-          isPrivate={false}
           files={fileList}
           canDownload={true}
         />

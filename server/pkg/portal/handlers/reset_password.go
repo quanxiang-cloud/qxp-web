@@ -68,5 +68,5 @@ func HandleResetPasswordSubmit(w http.ResponseWriter, r *http.Request) {
 	session.Values["refresh_token"] = nil
 	session.Save(r, w)
 
-	http.Redirect(w, r, "/login/password", http.StatusFound)
+	http.Redirect(w, r, "/login", http.StatusFound)
 }

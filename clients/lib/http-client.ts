@@ -133,6 +133,19 @@ export function fetchPageListSchema(
     });
 }
 
+export function getPageMenuSchema(
+  arteryID: string, version: string,
+): Promise<Partial<SchemaWithSwagger>> {
+  const url = `/api/page_schema_with_swagger?artery_id=${arteryID}&version=${version}`;
+  return fetch(url, { method: 'GET' })
+    .then((response) => response.json())
+    .then(({ data }) => data)
+    .catch((err) => {
+      logger.error(err);
+      return {};
+    });
+}
+
 export function getArteryPageInfo(appID: string, tableID: string): Promise<ArteryPageInfo> {
   return httpClient(`/api/v1/form/${appID}/m/table/getInfo`, { tableID });
 }

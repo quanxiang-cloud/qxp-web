@@ -54,7 +54,7 @@ export default function ForgetPwd(): JSX.Element {
     // ).then(() => {
     //   setLoading(false);
     //   toast.success('密码修改成功');
-    //   window.location.pathname = '/login/password';
+    //   window.location.pathname = '/login';
     // }).catch((e) => {
     //   toast.error(e);
     //   setLoading(false);

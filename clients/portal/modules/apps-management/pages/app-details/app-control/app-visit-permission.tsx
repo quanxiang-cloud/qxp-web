@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import React, { useState, useEffect } from 'react';
 import { UnionColumn } from 'react-table';
 import { useParams } from 'react-router-dom';
@@ -15,6 +16,9 @@ import { getTwoDimenArrayHead } from '@lib/utils';
 import { getERPTree } from '@portal/modules/access-control/departments-employees/api';
 import RadioButtonGroup from '@c/radio/radio-button-group';
 
+let _employees: any = [];
+let _departments: any = [];
+
 function AppVisitPermission(): JSX.Element {
   const [modalType, setModalType] = useState<'addMember' | 'confirmRemoveMember' | ''>('');
   const [selectedIdArr, setSelectedArr] = useState<string[]>([]);
@@ -25,7 +29,7 @@ function AppVisitPermission(): JSX.Element {
   const [pagination, setPagination] = useState({ page: 1, size: 10 });
   const [totalMembers, setTotal] = useState(0);
   const [departments, setDepartments] = useState<any>([]);
-  const [employees, setEmployees] = useState([]);
+  const [employees, setEmployees] = useState<any>([]);
   const [treeData, setTreeData] = useState([]);
   const [showBindType, setShowBindType] = useState<number>(1);
 
@@ -55,8 +59,7 @@ function AppVisitPermission(): JSX.Element {
           }
         });
       });
-      setDepartments([...new Set(depart)]);
-
+      _departments.length ? setDepartments(_departments) : setDepartments([...new Set(depart)]);
       members.map((item: any)=>{
         employee.push({
           id: item.id,
@@ -65,7 +68,7 @@ function AppVisitPermission(): JSX.Element {
           type: 1,
         });
       });
-      setEmployees(employee);
+      _employees.length ? setEmployees(_employees) : setEmployees(employee);
     });
   }, [totalMembers]);
 
@@ -125,22 +128,53 @@ function AppVisitPermission(): JSX.Element {
       toast.error('请选择要添加的成员');
       return;
     }
+
+    const _members = [...selected.map(({ id }) =>
+      ({ scopeID: id, type: 'user' })), ..._.map(({ id }) => ({ scopeID: id, type: 'department' }))];
+    const addMembers = _members.filter((member)=>
+      !(employees.find((employee: any)=>employee.id === member.scopeID && member.type === 'user') ||
+      departments.find((department: any)=>department.id === member.scopeID && member.type === 'department')),
+    );
+
     return addAppMembers(
       appID,
-      [...selected.map(({ id }) =>
-        ({ scopeID: id, type: 'user' })), ..._.map(({ id }) => ({ scopeID: id, type: 'department' }))],
+      addMembers,
+      // [...selected.map(({ id }) =>
+      //   ({ scopeID: id, type: 'user' })), ..._.map(({ id }) => ({ scopeID: id, type: 'department' }))],
     ).then(() => {
       fetchMembers();
       setModalType('');
+      _departments = [];
+      _employees = [];
     });
   }
 
-  async function handleDeptRemove(data: any): Promise<void> {
-    return deleteAppMembers(appID, [data.id]).then(() => {
-      setDepartments([...departments.filter((item: any)=>item.id !== data.id)]);
-      setEmployees([...employees.filter((item: any)=>item.id !== data.id)]);
+  async function handleDeptRemove(data: any, departmentsOrEmployees: any): Promise<void> {
+    _employees = departmentsOrEmployees.filter((item: any)=>item.type === 1).filter((item: any)=>item.id !== data.id) || [];
+    _departments = departmentsOrEmployees.filter((item: any)=>item.type === 2).filter((item: any)=>item.id !== data.id) || [];
+    if (employees.find((item: any)=>item.id === data.id) || departments.find((item: any)=>item.id === data.id)) {
+      return deleteAppMembers(appID, [data.id]).then(() => {
+        setDepartments(_departments);
+        setEmployees(_employees);
+        fetchMembers();
+        // toast.success('删除成功！');
+      });
+    }
+  }
+
+  async function handleDeptAllRemove(): Promise<void> {
+    employees.map((item: any)=>{
+      return deleteAppMembers(appID, [item.id]).then(() => {
+      });
+    });
+    departments.map((item: any)=>{
+      return deleteAppMembers(appID, [item.id]).then(() => {
+      });
+    });
+    setTimeout(()=>{
+      setDepartments([]);
+      setEmployees([]);
       fetchMembers();
-      // toast.success('删除成功！');
     });
   }
   const columns: UnionColumn<Employee>[] = React.useMemo(
@@ -300,6 +334,7 @@ function AppVisitPermission(): JSX.Element {
             departments={departments as EmployeeOrDepartmentOfRole[]}
             onSubmit={handleAdd}
             onDeptRemove={handleDeptRemove}
+            onDeptAllRemove={handleDeptAllRemove}
             onCancel={() => setModalType('')}
           />
         )}

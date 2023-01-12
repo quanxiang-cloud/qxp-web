@@ -60,5 +60,5 @@ func HandleRetrievePasswordSubmit(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	http.Redirect(w, r, "/login/password", http.StatusFound)
+	http.Redirect(w, r, "/login", http.StatusFound)
 }

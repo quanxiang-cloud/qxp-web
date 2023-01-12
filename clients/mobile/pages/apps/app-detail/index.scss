@@ -156,3 +156,12 @@
   font-size: 16px !important;
  } 
 }
+
+.mobile-menu{
+  position: relative;
+  z-index: 9999999;
+ &>div{
+  display: flex;
+  overflow: visible;
+ }
+}
