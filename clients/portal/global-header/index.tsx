@@ -28,8 +28,8 @@ export default function GlobalHeader() {
       <div className="flex justify-between items-center px-24 bg-white shadow-flow-header">
         <HeaderNav />
         <img
-          className="h-52"
-          src="/dist/images/enfi1.svg"
+          className="h-40"
+          src="/dist/images/enfi-logo-20230113.png"
           alt="quanxiangyun"
         />
         <HeaderMenu />
