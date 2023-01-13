@@ -48,6 +48,7 @@ function TableViewDetail({ appID, tableID, name, isMobile = false }: Props): JSX
       key: 'create',
       action: () => {
         store.operationType = '新建';
+        setModalType('dataForm');
         goEdit('');
       },
       text: '新建',

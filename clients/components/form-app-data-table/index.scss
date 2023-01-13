@@ -40,7 +40,9 @@
   flex: 1;
   background-color: #fff;
   border-radius: 12px;
-
+  .form-render{
+    overflow: auto;
+  }
   .ant-form-item-label {
     white-space: pre-wrap;
     label{
