@@ -86,7 +86,7 @@ function CreateDataForm({ appID, pageID, rowID, onCancel }: Props): JSX.Element 
     <div style={{ maxHeight: 'calc(100% - 62px)' }} className='flex flex-col flex-1 px-20 pt-20'>
       <div className='user-app-schema-form'>
         <FormRenderer
-          className='p-40'
+          className='p-40 form-render'
           onSubmit={handleSubmit}
           defaultValue={toJS(defaultValues)}
           schema={schema as ISchema}

@@ -14,6 +14,8 @@
   max-height: calc(100%) !important;
   .form-app-data-table-container{
     padding: 10px 0;
+    position: relative;
+    z-index: 99;
     .filterGroup{
         // flex-wrap: wrap; 
         .btnGroup{
@@ -37,17 +39,23 @@
       flex: none;
       width: 100%;
       display: flex;
+      flex-wrap: wrap;
+      .ant-select{
+        min-width: 180px;
+      }
     }
   }
 
   .is-mobile-page-wrapper{
     padding-left: 0 !important;
     padding-right: 0 !important;
+    flex-wrap: wrap;
     div{
       font-size: 0.1rem !important;
     }
     .pagination-comp{
       margin-bottom: 0;
+      flex-wrap: wrap;
     }
   }
 
@@ -159,9 +167,10 @@
 
 .mobile-menu{
   position: relative;
-  z-index: 9999999;
+  z-index: 9;
  &>div{
   display: flex;
   overflow: visible;
+  flex-wrap: wrap;
  }
 }
