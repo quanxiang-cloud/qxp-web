@@ -14,6 +14,8 @@
   max-height: calc(100%) !important;
   .form-app-data-table-container{
     padding: 10px 0;
+    position: relative;
+    z-index: 99;
     .filterGroup{
         // flex-wrap: wrap; 
         .btnGroup{
@@ -165,7 +167,7 @@
 
 .mobile-menu{
   position: relative;
-  z-index: 9999999;
+  z-index: 9;
  &>div{
   display: flex;
   overflow: visible;
