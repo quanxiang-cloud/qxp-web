@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { registerValidationFormats, setValidationLocale } from '@formily/antd';
 
+import '../components/patch-moment-lang';
 import App from './application';
 
 import '../portal/scss/index.scss';

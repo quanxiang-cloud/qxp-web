@@ -5,6 +5,8 @@ import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import FormDataValueRenderer from '@c/form-data-value-renderer';
 
+moment.locale('zh-cn');
+
 export function getPicker(format: string): 'year' | 'month' | undefined {
   switch (format) {
   case 'YYYY':
