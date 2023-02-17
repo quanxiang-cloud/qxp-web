@@ -1,4 +1,5 @@
 /* eslint-disable */
+// @ts-nocheck
 import moment from 'moment';
 
 moment.defineLocale('zh-cn', {
