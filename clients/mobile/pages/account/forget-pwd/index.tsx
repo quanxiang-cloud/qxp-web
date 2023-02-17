@@ -68,7 +68,7 @@ export default function ForgetPwd(): JSX.Element {
           <Icon name='info' size='.2rem' className='absolute' style={{ top: '.05rem' }}/>
           <div style={{ width: '.22rem', height: '.2rem', display: 'inline-block' }}/>
           <span className='body2 text-placeholder'>
-            通过手机号或邮箱重置密码，若无法重置，可联系企业管理员修改
+            通过邮箱重置密码，若无法重置，可联系企业管理员修改
           </span>
         </div>
         <p className='mb-8'>手机号/邮箱</p>
@@ -78,7 +78,7 @@ export default function ForgetPwd(): JSX.Element {
           enterKeyHint='next'
           type='email'
           onEnterPress={() => codeRef?.current?.focus?.()}
-          placeholder='输入手机号或邮箱'
+          placeholder='输入邮箱'
         />
         <p className='mt-16 mb-8'>验证码</p>
         <VerCodeInput
