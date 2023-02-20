@@ -31,7 +31,7 @@ export function httpClient<TData>(
 }
 
 function stringify(obj: Record<string, any>): string {
-  return Object.entries(obj).reduce((acc, [key, value], index) => {
+  return Object.entries(obj)?.reduce((acc, [key, value], index) => {
     let query = acc + `${key}=${value}`;
     if (index < Object.entries(obj).length - 1) {
       query += '&';

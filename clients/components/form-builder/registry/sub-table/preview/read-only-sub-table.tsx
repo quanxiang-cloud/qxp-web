@@ -43,7 +43,7 @@ function ReadOnlySubTable({ value, schema: definedSchema, className }: Props): J
       return [] as UnionColumn<any>[];
     }
 
-    return schemaToFields(schema).reduce<UnionColumn<any>[]>((acc, field) => {
+    return schemaToFields(schema)?.reduce<UnionColumn<any>[]>((acc, field) => {
       const isHidden = !field.display;
       if ((isFromForeign && !columns?.includes(field.id)) || field.id === '_id' || isHidden) {
         return acc;

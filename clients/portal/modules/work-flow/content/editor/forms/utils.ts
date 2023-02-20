@@ -93,7 +93,7 @@ const mapSchemaProps = <T extends SchemaFieldItem>(
     .filter(([, field]) => {
       return filterFn ? filterFn(field) : true;
     })
-    .reduce((acc: Record<string, any>, [key, field]: [string, T]) => {
+    ?.reduce((acc: Record<string, any>, [key, field]: [string, T]) => {
       mutateField && mutateField(key, field, acc);
       return acc;
     }, {});

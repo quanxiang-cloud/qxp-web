@@ -56,7 +56,7 @@ export function fuzzyFind<T>(params: FuzzyFindParams<T>): Array<WithDistance<T>>
 
   const listMapper = (item: T): WithDistance<T> | null => {
     let hasMatched = false;
-    const result = pathesList.reduce(
+    const result = pathesList?.reduce(
       getPathesListReducer(() => hasMatched = true),
       { ...item, distance: Infinity },
     );

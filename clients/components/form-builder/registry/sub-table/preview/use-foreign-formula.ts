@@ -53,7 +53,7 @@ export function useForeignFormula(
           return getFieldPath(`${prefix}.${dependentField}`, state.path || '');
         });
         let missingValueField = false;
-        const values = dependentFields.reduce<{ [key: string]: any }>((acc, fieldName) => {
+        const values = dependentFields?.reduce<{ [key: string]: any }>((acc, fieldName) => {
           const value = actions.getFieldValue(fieldName);
           if (value === undefined) {
             missingValueField = true;

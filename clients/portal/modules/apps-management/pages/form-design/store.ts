@@ -58,6 +58,7 @@ class FormDesignStore {
         isSystem: fieldSchema['x-internal']?.isSystem ? true : false,
         cProps: fieldSchema['x-component-props'],
         xComponent: fieldSchema['x-component'] as string,
+        display: fieldSchema.display,
       };
     });
   }
@@ -83,7 +84,7 @@ class FormDesignStore {
   @computed get internalFields(): Record<string, ISchema> {
     let innerFieldIndex: number = this.formStore?.flattenFields.length || 0;
 
-    const _internalFields = this.formStore?.internalFields.reduce<Record<string, ISchema>>((acc, field) => {
+    const _internalFields = this.formStore?.internalFields?.reduce<Record<string, ISchema>>((acc, field) => {
       const { componentName, configValue, fieldName } = field;
       const fieldId = fieldName;
       if (fieldId) {
@@ -189,7 +190,7 @@ class FormDesignStore {
   @action
   toggleShowAllFields(isShowAll: boolean): void {
     if (isShowAll) {
-      this.pageTableColumns = this.fieldList.reduce((acc, col) => {
+      this.pageTableColumns = this.fieldList?.reduce((acc, col) => {
         if (this.pageTableColumns.findIndex(({ id }) => id === col.id) === -1) {
           return [...acc, { id: col.id }];
         }

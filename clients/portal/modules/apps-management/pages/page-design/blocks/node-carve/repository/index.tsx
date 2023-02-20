@@ -49,7 +49,7 @@ const repoMap: Record<string, FC<any>> = {
 };
 
 const repo: Repository = {
-  'node-carve@1.0.0': Object.entries(repoMap).reduce<Record<string, FC<any>>>((res, [key, comp]) => {
+  'node-carve@1.0.0': Object.entries(repoMap)?.reduce<Record<string, FC<any>>>((res, [key, comp]) => {
     return {
       ...res,
       [key.toLowerCase()]: comp,

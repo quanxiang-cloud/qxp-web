@@ -78,7 +78,7 @@ const getTargetTableOptions = (fieldName: string, schema: ISchema): Promise<Asso
 
 function AssociateObject(props: ISchemaFieldComponentProps): JSX.Element {
   const { schema, appID, activeFieldId } = useContext(StoreContext);
-  const selectTables = schemaToFields(schema).reduce((acc: LabelValue[], field) => {
+  const selectTables = schemaToFields(schema)?.reduce((acc: LabelValue[], field) => {
     if (acceptFieldTypes.includes(field.componentName) && field.id !== activeFieldId) {
       acc.push({ label: field.title as string, value: field.id });
     }

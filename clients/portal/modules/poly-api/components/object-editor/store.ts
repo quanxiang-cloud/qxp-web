@@ -132,7 +132,7 @@ export class Store<T extends { children: T[]; id: string }> extends BehaviorSubj
   }
 
   setChildren(childes: T[]): void {
-    const oldChildMap: Record<string, ItemStore<T>> = this.value.reduce(
+    const oldChildMap: Record<string, ItemStore<T>> = this.value?.reduce(
       (acc, c) => ({ ...acc, [c.id]: c }), {},
     );
     const itemStores = childes.map((child) => {

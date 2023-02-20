@@ -14,6 +14,7 @@ type Props = {
   style?: React.CSSProperties;
   original?: boolean
   onError?: (error?: any) => void;
+  getThumbnailSrc?: (url: any) => void
 }
 
 export default function Thumbnail({
@@ -25,8 +26,14 @@ export default function Thumbnail({
   size = 80,
   className,
   fileBucket,
+  getThumbnailSrc,
 }: Props): JSX.Element {
   const [thumbnailSrc, setThumbnailSrc] = useState('');
+
+  useEffect(()=>{
+    getThumbnailSrc && getThumbnailSrc(thumbnailSrc);
+  }, [thumbnailSrc]);
+
   useEffect(() => {
     if (imgPath.split('/')[0] === 'qxp-file') return;
 

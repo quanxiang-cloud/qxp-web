@@ -21,7 +21,7 @@ const RuleList = ({ onEdit }: VisibleHiddenLinkagesProps): JSX.Element => {
         title: (field.title || field.id) as string,
         enum: (field.enum || []) as Array<LabelValue>,
       };
-    }).reduce((acc: KeyLabels, current) => {
+    })?.reduce((acc: KeyLabels, current) => {
       acc[current.key] = current;
       return acc;
     }, {});

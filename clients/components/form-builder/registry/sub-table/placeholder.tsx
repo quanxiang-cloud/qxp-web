@@ -18,7 +18,7 @@ function Placeholder({ props }: Props): JSX.Element {
     const schema: ISchema = props?.items;
     return Object.entries(schema?.properties || {}).sort((a, b) => {
       return (a[1]?.['x-index'] || 0) - (b[1]?.['x-index'] || 0);
-    }).reduce<UnionColumn<any>[]>((acc, [key, val]) => {
+    })?.reduce<UnionColumn<any>[]>((acc, [key, val]) => {
       if (!EXCLUDE_FIELDS.includes(key)) {
         return [...acc, {
           id: key,

@@ -20,7 +20,7 @@ function Menu(props: BlockItemProps<BlocksCommunicationType>): JSX.Element {
   }, [onSharedStateChange]);
 
   const initBlockStates = useCallback((names: string[]) => {
-    const block = names.reduce((acc, name) => ({ ...acc, [name]: { clickOutsideWhiteList: new Set() } }), {});
+    const block = names?.reduce((acc, name) => ({ ...acc, [name]: { clickOutsideWhiteList: new Set() } }), {});
     onSharedStateChange('block', mergeRight(block, sharedState.block));
   }, [onSharedStateChange, sharedState]);
 

@@ -13,6 +13,7 @@ const FULL_COMP = ['AssociatedRecords', 'SubTable', 'ImageUpload', 'FileUpload']
 
 export function InfoCard({ list }: {list: FormInfoCardDataProp}): JSX.Element {
   const { label, value, key, fieldSchema } = list;
+  const { display } = fieldSchema;
   return (
     <div
       key={key}

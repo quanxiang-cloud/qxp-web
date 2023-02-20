@@ -46,7 +46,7 @@ const availableElements = [
 
 export type Elements = { [key: string]: FormBuilder.SourceElement<any> };
 
-const elements = availableElements.reduce<Elements>((acc, element, index) => {
+const elements = availableElements?.reduce<Elements>((acc, element, index) => {
   acc[element.componentName.toLowerCase()] = {
     ...element,
     displayOrder: index,

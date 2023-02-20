@@ -54,7 +54,7 @@ export function getParamByMethod(method: string, parameters: Array<Parameter>): 
 
   const _properties = parameters
     .filter((param): param is QueryParameter => param.in === 'query')
-    .reduce((acc: { [propertyName: string]: SwagField }, params) => {
+    ?.reduce((acc: { [propertyName: string]: SwagField }, params) => {
       const id = params.name;
       const _properties = { type: params.type, in: params.in };
 

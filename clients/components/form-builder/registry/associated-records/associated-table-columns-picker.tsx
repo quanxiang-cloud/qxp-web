@@ -35,7 +35,7 @@ function getColumnsMap(
   columns: Array<{ fieldKey: string; fieldName: string; }>,
   selected: string[],
 ): ColumnsMap {
-  return columns.reduce<ColumnsMap>((acc, { fieldKey, fieldName }, index) => {
+  return columns?.reduce<ColumnsMap>((acc, { fieldKey, fieldName }, index) => {
     acc[fieldKey] = { index, fieldName, checked: selected.includes(fieldKey) };
 
     return acc;

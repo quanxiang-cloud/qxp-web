@@ -52,7 +52,7 @@ export function createTokensObject(
   tokenFilter = '',
 ): Record<string, { values: Token[]; type?: TokenTypes }> {
   if (tokens.length > 0) {
-    const obj = tokens.reduce<Record<string, { values: Token[]; type?: TokenTypes }>>((acc, cur) => {
+    const obj = tokens?.reduce<Record<string, { values: Token[]; type?: TokenTypes }>>((acc, cur) => {
       if (
         tokenFilter === '' ||
         (cur.name as string)?.toLowerCase().search(tokenFilter?.toLowerCase()) >= 0

@@ -97,7 +97,7 @@ export function schemaToFields(
 export function schemaToMap(
   schema?: ISchema, filter?: FieldsFilterFunc | null, options?: SchemaToArrayOptions,
 ): Record<string, SchemaFieldItem> {
-  return schemaToFields(schema, filter, options).reduce(
+  return schemaToFields(schema, filter, options)?.reduce(
     (fieldsMap: Record<string, SchemaFieldItem>, field: SchemaFieldItem) => {
       const fieldId = field?.['x-internal']?.fieldId;
       if (fieldId) fieldsMap[fieldId] = field;

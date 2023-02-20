@@ -40,7 +40,7 @@ export function useStyleData(): [boolean, StyleDataItem[]] {
         return resolveTokenValues(mergeTokenGroups(parseTokenValues(tokenData.values), []));
       })
       .then((resolveTokenValues) => {
-        const data = resolveTokenValues.reduce<StyleDataItem[]>((acc, token) => {
+        const data = resolveTokenValues?.reduce<StyleDataItem[]>((acc, token) => {
           const name = `${token.name.replace(/\./g, '-')}`;
           const type = token.type;
           let _value;
@@ -52,7 +52,7 @@ export function useStyleData(): [boolean, StyleDataItem[]] {
           } else if (isShadowToken(token)) {
             _value = { [type]: generateWholeBoxShadowStyle(token as BoxShadowToken) };
           } else if (TYPE_MAPS[token.type]) {
-            const res = Object.entries(TYPE_MAPS[token.type]).reduce<StyleDataItem[]>((pre, [key, value]) => {
+            const res = Object.entries(TYPE_MAPS[token.type])?.reduce<StyleDataItem[]>((pre, [key, value]) => {
               const className = resolveClassNameByTokenName(token.name).slice(1);
               const classToken = { ...token, name: className };
               let _className = replaceMatchValue(key, classToken);

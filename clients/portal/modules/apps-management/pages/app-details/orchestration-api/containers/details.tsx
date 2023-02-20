@@ -147,7 +147,7 @@ function APINamespaceDetails(): JSX.Element {
 
   const data = isSearchEnabled ? searchData : queryData;
 
-  const name2idMap = useMemo(() => data?.list.reduce((acc: Record<string, string>, cur: PolyListItem) => {
+  const name2idMap = useMemo(() => data?.list?.reduce((acc: Record<string, string>, cur: PolyListItem) => {
     acc[cur.name] = cur.id;
     return acc;
   }, {}) || {}, [data]);

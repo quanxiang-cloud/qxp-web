@@ -130,7 +130,7 @@ function transformSubTableLinkage(
 }
 
 function findAllLinkages(schema: ISchema, subTableFieldName?: string): FormBuilder.DefaultValueLinkage[] {
-  return Object.entries(schema.properties || {}).reduce<FormBuilder.DefaultValueLinkage[]>((
+  return Object.entries(schema.properties || {})?.reduce<FormBuilder.DefaultValueLinkage[]>((
     linkages,
     [fieldName, fieldSchema]: [string, ISchema],
   ) => {

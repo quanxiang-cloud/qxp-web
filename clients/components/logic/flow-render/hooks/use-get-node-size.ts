@@ -8,7 +8,7 @@ export type NodeSize = {
 export type GetNodeSizeReturn = (id: string) => NodeSize;
 
 export default function useGetNodeSize(nodesStates: Node[]): GetNodeSizeReturn {
-  const nodesStatesMap = nodesStates.reduce((acc: Record<string, Node>, state) => {
+  const nodesStatesMap = nodesStates?.reduce((acc: Record<string, Node>, state) => {
     acc[state.id] = state;
     return acc;
   }, {});
