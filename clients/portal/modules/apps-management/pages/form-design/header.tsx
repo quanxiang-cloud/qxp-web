@@ -80,7 +80,7 @@ function FormDesignHeader(): JSX.Element {
         <Tab onChange={tabChange} activeTab={pageType} tabs={TABS} />
         <div
           className='flex justify-end cursor-pointer'
-          onClick={() => InsideDocsPortal.show({ targetUrl: `https://${window.CONFIG.docs_hostname}/manual/form/new/` })}
+          onClick={() => InsideDocsPortal.show({ targetUrl: `//${window.CONFIG.docs_hostname}/manual/form/new/` })}
         >
           <Icon size={20} className='mr-4 app-icon-color-inherit' name="book" />
             帮助文档
