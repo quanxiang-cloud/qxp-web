@@ -1,14 +1,14 @@
 import React, { useEffect, useMemo } from 'react';
-import { Input, Form } from 'antd';
+import { Input, Form, DatePicker } from 'antd';
 import { observer } from 'mobx-react';
+import dayjs from 'dayjs';
 
-import toast from '@lib/toast';
 import Modal from '@c/modal';
 import Loading from '@c/loading';
 
 import store from './store';
 import ButtonField from './button-field';
-import { DISABLE_SPECIAL_SYMBOL_REG } from '../pages/entry/app-list/app-edit/created-edit-app';
+import { DISABLE_SPECIAL_SYMBOL_REG } from '../../apps-management/pages/entry/app-list/app-edit/created-edit-app';
 import { Project, ProjectWithPerson } from './api';
 
 type Props = {
@@ -53,8 +53,7 @@ function EditProjectModal({ modalType, project, onCancel }: Props): JSX.Element 
   }, [user]);
 
   async function handleSubmit(): Promise<void> {
-    const { name, member, description } = form.getFieldsValue();
-
+    const { name, member, description, startAt, status, endAt, serialNumber } = form.getFieldsValue();
     const deletes: any[] = user.filter((item: { id: string; }) => {
       return !member.find((m: ProjectWithPerson) => m.id === item.id);
     }).map(({ id }: UserOrDept) => {
@@ -65,21 +64,26 @@ function EditProjectModal({ modalType, project, onCancel }: Props): JSX.Element 
     }).map(({ id, ownerName }: EmployeeOrDepartmentOfRole) => {
       return { userID: id, userName: ownerName };
     });
-
+    const projectInfo = {
+      name,
+      description,
+      serialNumber,
+      status,
+      startAt: startAt?.valueOf(),
+      endAt: endAt?.valueOf(),
+    };
     if (modalType === 'create') {
-      store.createProject({ name, description }, { add: adds, removes: deletes }).then(() => {
+      store.createProject(projectInfo, { add: adds, removes: deletes }).then(() => {
         onCancel();
       });
       return;
     }
 
-    store.associatePerson( {
-      projectID: store?.curProject?.id || '',
-      projectName: name,
-      add: adds, removes: deletes }).then(() => {
-      toast.success('项目修改成功');
-      onCancel();
-    });
+    if (project && modalType === 'modify') {
+      store.editProject({ ...project, ...projectInfo }, { add: adds, removes: deletes }).then(() => {
+        onCancel();
+      });
+    }
   }
 
   return (
@@ -113,8 +117,12 @@ function EditProjectModal({ modalType, project, onCancel }: Props): JSX.Element 
             form={form}
             initialValues={{
               name: project?.name || '',
-              description: project?.description || '',
+              serialNumber: project?.serialNumber || '',
+              status: project?.status || '',
               member: user as EmployeeOrDepartmentOfRole[],
+              description: project?.description || '',
+              startAt: project?.startAt ? dayjs(project?.startAt) : undefined,
+              endAt: project?.endAt ? dayjs(project?.endAt) : undefined,
             }}
           >
             <Form.Item
@@ -147,7 +155,39 @@ function EditProjectModal({ modalType, project, onCancel }: Props): JSX.Element 
                 },
               ]}
             >
-              <Input placeholder="请输入项目名称" disabled= {isEdit}/>
+              <Input placeholder="请输入项目名称"/>
+            </Form.Item>
+            <Form.Item
+              name="serialNumber"
+              label='项目编号'
+              rules={[
+                {
+                  required: true,
+                  message: '请输入项目编码',
+                },
+                {
+                  max: 30,
+                  message: '项目编码不超过 30 字符，请修改！',
+                },
+                {
+                  pattern: /^[a-zA-Z]+([_]?[a-zA-Z0-9])*$/,
+                  message: '必须以字母开头,由字母、数字、单下划线组成',
+                },
+              ]}
+            >
+              <Input placeholder="请输入项目编号"/>
+            </Form.Item>
+            <Form.Item
+              name="status"
+              label='状态'
+              rules={[
+                {
+                  required: true,
+                  message: '请输入项目状态',
+                },
+              ]}
+            >
+              <Input placeholder="请输入项目名称"/>
             </Form.Item>
             <Form.Item
               name="member"
@@ -158,12 +198,18 @@ function EditProjectModal({ modalType, project, onCancel }: Props): JSX.Element 
             >
               <ButtonField value={user as EmployeeOrDepartmentOfRole[]}/>
             </Form.Item>
+            <Form.Item name='startAt' label="开始日期">
+              <DatePicker />
+            </Form.Item>
+            <Form.Item name='endAt' label="结束日期">
+              <DatePicker />
+            </Form.Item>
             <Form.Item
               name="description"
               label="描述"
               rules={[{ max: 100, message: '输入超过 100 字符' }]}
             >
-              <TextArea placeholder="选填(不超过 100 字符)" disabled= {isEdit}/>
+              <TextArea placeholder="选填(不超过 100 字符)"/>
             </Form.Item>
           </Form>
         )}

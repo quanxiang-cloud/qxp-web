@@ -30,6 +30,10 @@ export type Project = {
   id: string,
   name: string;
   description?: string;
+  serialNumber?: string;
+  startAt?: number;
+  endAt?: number;
+  status?: string;
 }
 
 export function fetchProjectList(
@@ -38,8 +42,12 @@ export function fetchProjectList(
   return httpClient('/api/v1/form/project/m/list', params);
 }
 
-export async function createProject(data: {name: string, description: string}): Promise<{id: string}> {
+export async function createProject(data: Omit<Project, 'id'>): Promise<{id: string}> {
   return await httpClient('/api/v1/form/project/m/create', data);
+}
+
+export async function editProject(data: Project): Promise<void> {
+  return await httpClient('/api/v1/form/project/m/update', data);
 }
 
 export function associatePerson(
