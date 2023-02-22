@@ -10,6 +10,7 @@ import GlobalHeader from '@portal/global-header';
 
 import RoleManagement from './role-management';
 import DepartmentsEmployees from './departments-employees';
+import ProjectGroup from './project-group';
 
 import './index.scss';
 
@@ -27,6 +28,13 @@ const MENU = [
     name: '角色管理',
     url: '/access-control/role-management',
     authority: 'accessControl/role/read',
+  },
+  {
+    id: 'project-group',
+    icon: 'donut_small',
+    name: '项目组管理',
+    url: '/access-control/project-group',
+    authority: 'accessControl',
   },
 ];
 
@@ -66,6 +74,7 @@ export default function Index(): JSX.Element {
             <Route exact path="/access-control" component={DepartmentsEmployees} />
             <Route path="/access-control/departments-employees" component={DepartmentsEmployees} />
             <Route path="/access-control/role-management" component={RoleManagement} />
+            <Route path="/access-control/project-group" component={ProjectGroup} />
             <Route component={() => <NotFoundError url='/access-control' classnames='main-content'/>}/>
           </Switch>
         </div>
