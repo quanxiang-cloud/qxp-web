@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo } from 'react';
 import { Input, Form, DatePicker } from 'antd';
 import { observer } from 'mobx-react';
-import dayjs from 'dayjs';
+import zhCN from 'antd/lib/date-picker/locale/zh_CN';
+import moment from 'moment';
 
 import Modal from '@c/modal';
 import Loading from '@c/loading';
@@ -121,8 +122,8 @@ function EditProjectModal({ modalType, project, onCancel }: Props): JSX.Element 
               status: project?.status || '',
               member: user as EmployeeOrDepartmentOfRole[],
               description: project?.description || '',
-              startAt: project?.startAt ? dayjs(project?.startAt) : undefined,
-              endAt: project?.endAt ? dayjs(project?.endAt) : undefined,
+              startAt: project?.startAt ? moment(project?.startAt) : null,
+              endAt: project?.endAt ? moment(project?.startAt) : undefined,
             }}
           >
             <Form.Item
@@ -131,7 +132,7 @@ function EditProjectModal({ modalType, project, onCancel }: Props): JSX.Element 
               rules={[
                 {
                   required: true,
-                  message: '请输入应用名称',
+                  message: '请输入项目名称',
                 },
                 {
                   pattern: /^((?!(\ud83c[\udf00-\udfff])|(\ud83d[\udc00-\ude4f])|(\ud83d[\ude80-\udeff])).)*$/,
@@ -178,18 +179,6 @@ function EditProjectModal({ modalType, project, onCancel }: Props): JSX.Element 
               <Input placeholder="请输入项目编号"/>
             </Form.Item>
             <Form.Item
-              name="status"
-              label='状态'
-              rules={[
-                {
-                  required: true,
-                  message: '请输入项目状态',
-                },
-              ]}
-            >
-              <Input placeholder="请输入项目名称"/>
-            </Form.Item>
-            <Form.Item
               name="member"
               label="项目组成员"
               rules={[
@@ -198,11 +187,14 @@ function EditProjectModal({ modalType, project, onCancel }: Props): JSX.Element 
             >
               <ButtonField value={user as EmployeeOrDepartmentOfRole[]}/>
             </Form.Item>
+            <Form.Item name="status" label='状态'>
+              <Input placeholder="请输入项目状态"/>
+            </Form.Item>
             <Form.Item name='startAt' label="开始日期">
               <DatePicker />
             </Form.Item>
             <Form.Item name='endAt' label="结束日期">
-              <DatePicker />
+              <DatePicker locale={zhCN}/>
             </Form.Item>
             <Form.Item
               name="description"
