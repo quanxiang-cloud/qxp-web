@@ -1,4 +1,4 @@
-import React, { useEffect, ForwardedRef } from 'react';
+import React, { useEffect, ForwardedRef, useImperativeHandle } from 'react';
 import { observer } from 'mobx-react';
 import { toJS } from 'mobx';
 import cs from 'classnames';
@@ -50,7 +50,7 @@ function FileUploader({
   onFileDelete,
   onFileSuccess,
   ...rest
-}: FileUploaderProps, ref?: ForwardedRef<HTMLDivElement>): JSX.Element {
+}: FileUploaderProps, ref?: ForwardedRef<HTMLDivElement | { setFiles: (files: QXPUploadFileBaseProps[]) => void }>): JSX.Element {
   const fileStore = useFileStore({
     fileBucket: isPrivate ? OSS_PRIVATE_BUCKET_NAME : OSS_PUBLIC_BUCKET_NAME,
     files: fileData,
@@ -67,6 +67,10 @@ function FileUploader({
     clearUploadFiles,
     removeUploadFile,
   } = fileStore;
+
+  useImperativeHandle(ref, () => ({
+    setFiles: (files: QXPUploadFileBaseProps[]) => fileStore.setUploadedFiles(files),
+  }));
 
   useEffect(() => {
     return () => {
@@ -120,7 +124,6 @@ function FileUploader({
     <div
       className={cs('qxp-file-uploader', className)}
       style={style}
-      ref={ref}
       {...rest}
     >
       <FilePicker
@@ -131,7 +134,7 @@ function FileUploader({
         disabled={disabled || (!multiple && storeFiles.length >= 1)}
         description={(!multiple && storeFiles.length >= 1) ? '只能上传一个文件' : uploaderDescription}
         onSelectFiles={(files) => {
-          files.every((file)=> beforeUpload(file, files, storeFiles)) && prepareFilesUpload(files);
+          files.every((file) => beforeUpload(file, files, storeFiles)) && prepareFilesUpload(files);
         }}
       >
         {children}
@@ -146,4 +149,4 @@ function FileUploader({
     </div>
   );
 }
-export default observer(React.forwardRef<HTMLDivElement, FileUploaderProps>(FileUploader));
+export default observer(React.forwardRef<HTMLDivElement | { setFiles: (files: QXPUploadFileBaseProps[]) => void }, FileUploaderProps>(FileUploader));
