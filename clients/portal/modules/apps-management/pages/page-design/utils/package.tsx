@@ -144,7 +144,7 @@ export async function getPackagePropsSpec({ name, version }: Package): Promise<G
 export function initialPropsToNodeProperties(initialProps: InitialProps = {}): NodeProperties {
   return Object.entries(initialProps)
     .map<[string, ConstantProperty]>(([key, value]) => [key, { type: 'constant_property', value }])
-    .reduce<NodeProperties>((acc, [key, v]) => {
+    ?.reduce<NodeProperties>((acc, [key, v]) => {
       acc[key] = v;
 
       return acc;

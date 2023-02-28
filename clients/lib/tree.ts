@@ -32,7 +32,7 @@ function treeReduce<T, S extends Record<string, any>>(
 
   const acc = reducer(init, node, currentIndex);
   if (isArray(node)) {
-    return node.reduce<T>(currentReducer, acc);
+    return node?.reduce(currentReducer, acc);
   }
 
   const childKey = getChildKey(_childKey, node);
@@ -42,7 +42,7 @@ function treeReduce<T, S extends Record<string, any>>(
   }
 
   if (isArray(currentChild)) {
-    return currentChild.reduce<T>(currentReducer, acc);
+    return currentChild?.reduce<T>(currentReducer, acc);
   }
 
   return reduceObject<T, S>(currentReducer, acc, currentChild, _childKey);
@@ -90,7 +90,7 @@ function hasChildren<T extends Record<string, any>>(childKey: string, node: T): 
 function reduceObject<T, S extends Record<string, any>>(
   reducer: Reducer<T, S>, acc: T, currentValue: Record<string, S>, _childKey: string | string[],
 ): T {
-  return Object.entries(currentValue).reduce((acc: T, [key, value]) => {
+  return Object.entries(currentValue)?.reduce((acc: T, [key, value]) => {
     const childKey = getChildKey(_childKey, value);
     const child = value?.[childKey];
     const accumulator = reducer(acc, value, key, currentValue);

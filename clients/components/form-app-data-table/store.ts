@@ -139,7 +139,7 @@ class AppPageDataStore {
   }
 
   @computed get tableShowColumns(): UnionColumn<FormData>[] {
-    const _columns = this.tableColumns.reduce<UnionColumn<FormData>[]>((acc, col) => {
+    const _columns = this.tableColumns?.reduce<UnionColumn<FormData>[]>((acc, col) => {
       const curConfig = this.columnConfig[col.id || ''] || {};
       if (!curConfig.hidden) {
         return [...acc, { ...col, fixed: 'fixed' in curConfig ? curConfig.fixed : col.fixed }];

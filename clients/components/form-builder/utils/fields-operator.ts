@@ -66,7 +66,7 @@ export function getNewField({
  * @return {Record<string, ISchema>}
  */
 function schemaArrToTree(schemaTreeArr: ISchema[]): Record<string, ISchema> {
-  return schemaTreeArr.reduce((acc: Record<string, ISchema>, item: ISchema) => {
+  return schemaTreeArr?.reduce((acc: Record<string, ISchema>, item: ISchema) => {
     const key: string = getFieldId(item);
     if (key) acc[key] = item;
 

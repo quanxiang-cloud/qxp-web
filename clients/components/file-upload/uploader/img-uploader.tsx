@@ -87,8 +87,8 @@ function ImgUploader({
     }
 
     if (multiple) {
-      const preUploadTotalSize = files.reduce((total, currFile) => (total + currFile.size), 0);
-      const uploadedTotalSize = storeFiles.reduce((total: number, currFile: { size: number; }) =>
+      const preUploadTotalSize = files?.reduce((total, currFile) => (total + currFile.size), 0);
+      const uploadedTotalSize = storeFiles?.reduce((total: number, currFile: { size: number; }) =>
         (total + currFile.size), preUploadTotalSize);
       if (maxSize && uploadedTotalSize > maxSize) {
         toast.error(`图片总大小不能超过${maxFileSize}MB`);

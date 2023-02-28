@@ -48,7 +48,7 @@ function SubTableColumns({ value, mutators }: ISchemaFieldComponentProps): JSX.E
     subRef.current = onFieldValueChange$('Fields.linkedTable').subscribe(handleLinkedTableChange);
   });
 
-  const schemaOptions = schemaToFields(currentSchema).reduce((cur: Option[], field) => {
+  const schemaOptions = schemaToFields(currentSchema)?.reduce((cur: Option[], field) => {
     if (field.id !== '_id' && !INTERNAL_FIELD_NAMES.includes(field.id) &&
       SUPPORTED_COMPONENTS_NAMES.includes(field.componentName)) {
       cur.push({

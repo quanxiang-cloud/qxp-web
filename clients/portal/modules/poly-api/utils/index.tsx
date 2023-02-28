@@ -172,7 +172,7 @@ export function mergeRefs<T>(...refs: Ref<T>[]): any {
 function elementsToMap(
   elements: POLY_API.Element[], effect?: (element: POLY_API.Element) => void,
 ): Record<string, POLY_API.Element> {
-  const elementIDMap = elements.reduce((acc: Record<string, POLY_API.Element>, element) => {
+  const elementIDMap = elements?.reduce((acc: Record<string, POLY_API.Element>, element) => {
     effect?.(element);
     acc[element.id] = element;
     return acc;

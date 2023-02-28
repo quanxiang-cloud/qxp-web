@@ -54,7 +54,7 @@ export function getNamespaceNodeSiblingNodes(
 }
 
 export function stringToAsciiNumber(value: string): number {
-  return value.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  return value.split('')?.reduce((acc, char) => acc + char.charCodeAt(0), 0);
 }
 
 export function getSchemaKeys(schema?: ISchema): string[] {
@@ -63,7 +63,7 @@ export function getSchemaKeys(schema?: ISchema): string[] {
 }
 
 export function getFieldActiveMap(schemaKeys: string[]): FieldActiveMap {
-  return schemaKeys.reduce((map: FieldActiveMap, key) => {
+  return schemaKeys?.reduce((map: FieldActiveMap, key) => {
     map[key] = false;
     return map;
   }, {});

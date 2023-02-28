@@ -100,7 +100,7 @@ function DataFilter({
       return [];
     }
 
-    return associationFields.reduce((acc, fields) => {
+    return associationFields?.reduce((acc, fields) => {
       if (fields['x-component'] === curField?.['x-component']) {
         return acc.concat({ label: fields.title as string, value: fields.id });
       }

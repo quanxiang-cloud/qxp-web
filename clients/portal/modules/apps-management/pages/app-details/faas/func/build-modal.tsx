@@ -118,7 +118,7 @@ function BuildModal({ onClose }: Props): JSX.Element {
   };
   const form = useForm({
     onSubmit: (formData) => {
-      const env = (formData.env || []).reduce((
+      const env = (formData.env || [])?.reduce((
         acc: Record<string, string>,
         { envName, envValue }: { envName: string, envValue: string }) => {
         if (envName) {

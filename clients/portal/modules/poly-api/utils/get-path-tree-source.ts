@@ -14,7 +14,7 @@ function addNodeNamePrefix2PolyNodeInput(
 
 export default function getPathTreeSource(currentNodeId: string): POLY_API.PolyNodeInput[] {
   const { nodes = [] } = store$.getRootValue();
-  const nodeIdMap = nodes.reduce((acc: Record<string, POLY_API.PlainElement>, node) => {
+  const nodeIdMap = nodes?.reduce((acc: Record<string, POLY_API.PlainElement>, node) => {
     acc[node.id] = node;
     return acc;
   }, {});

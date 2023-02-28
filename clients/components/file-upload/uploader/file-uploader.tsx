@@ -104,8 +104,8 @@ function FileUploader({
     }
 
     if (multiple) {
-      const preUploadTotalSize = files.reduce((total, currFile) => (total + currFile.size), 0);
-      const uploadedTotalSize = storeFiles.reduce((total: number, currFile: { size: number; }) =>
+      const preUploadTotalSize = files?.reduce((total, currFile) => (total + currFile.size), 0);
+      const uploadedTotalSize = storeFiles?.reduce((total: number, currFile: { size: number; }) =>
         (total + currFile.size), preUploadTotalSize);
       if (maxSize && uploadedTotalSize > maxSize) {
         toast.error(`文件总大小不能超过${maxFileSize}MB`);

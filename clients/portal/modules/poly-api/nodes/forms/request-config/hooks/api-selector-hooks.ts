@@ -31,7 +31,7 @@ export function useGetOptionFromCollection({
   }, [apiDirectoryWithPathType]);
 
   useEffect(() => {
-    const directoryChildren = collectionValue.apiDataList.reduce(
+    const directoryChildren = collectionValue.apiDataList?.reduce(
       (directoryChildren: DirectoryChild[], list) => {
         if (!list.directory.children) {
           return directoryChildren;

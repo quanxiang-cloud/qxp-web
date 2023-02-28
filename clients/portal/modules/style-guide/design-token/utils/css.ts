@@ -12,7 +12,7 @@ export function resolveClassNameByTokenName(name: string): string {
 export function generateCssVarible(tokens: ResolvedToken<Token>[]): string {
   const cssVarible = tokens
     .filter((t) => !t.resolveFailed)
-    .reduce<string>((acc, token) => {
+    ?.reduce<string>((acc, token) => {
       const name = `--${token.name.split('.').join('-')}`;
       if (isTypographyToken(token)) {
         return acc;
@@ -30,7 +30,7 @@ export function generateCssVarible(tokens: ResolvedToken<Token>[]): string {
 export function generateBoxShadowStyle(boxShadow: TokenBoxshadowValue, unit: TokenBoxshadowUnit): string {
   const { color, type } = boxShadow;
   const shadowType = type === BoxShadowTypes.OUTSET ? '' : ' inset';
-  const partialValue = Object.keys(unit).reduce<string>(
+  const partialValue = Object.keys(unit)?.reduce<string>(
     (acc, cur) =>
       acc +
       (cur in boxShadow ?
@@ -73,7 +73,7 @@ export function addUnitToCssProperty(
   obj: Record<string, string>,
   unit: Record<string, string>,
 ): Record<string, string> {
-  return Object.entries(obj).reduce((acc, [k, v]) => {
+  return Object.entries(obj)?.reduce((acc, [k, v]) => {
     const _v = k in unit ? `${v}${unit[k]}` : v;
     return {
       ...acc,
@@ -99,7 +99,7 @@ export function generateSingleClasses(token: ResolvedToken<Token>): string {
 export function generateClasses(tokens: ResolvedToken<Token>[]): string {
   return tokens
     .filter((t) => !t.resolveFailed)
-    .reduce<string>((acc, token) => acc + generateSingleClasses(token), '');
+    ?.reduce<string>((acc, token) => acc + generateSingleClasses(token), '');
 }
 
 export function generateNormalClass(token: ResolvedToken<Token>): string {
@@ -125,7 +125,7 @@ export function generateBoxShadowClass(token: ResolvedToken<BoxShadowToken>): st
 
 export function generateMapingTypeClass(token: ResolvedToken<Token>): string {
   const map = TYPE_MAPS[token.type] || {};
-  return Object.entries(map).reduce((acc, [key, value]) => {
+  return Object.entries(map)?.reduce((acc, [key, value]) => {
     const className = resolveClassNameByTokenName(token.name).slice(1);
     const classToken = {
       ...token,
