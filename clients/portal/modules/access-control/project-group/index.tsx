@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
 import { UnionColumn } from 'react-table';
+import dayjs from 'dayjs';
 
 import { toast } from '@one-for-all/ui';
 import Table from '@c/table';
@@ -22,6 +23,22 @@ function ProjectGroup(): JSX.Element {
     {
       Header: '项目组',
       accessor: 'name',
+    },
+    {
+      Header: '项目编号',
+      accessor: 'serialNumber',
+    },
+    {
+      Header: '开始日期',
+      accessor: ({ startAt }) => {
+        return startAt ? dayjs(startAt).format('YYYY-MM-DD') : '-';
+      },
+    },
+    {
+      Header: '结束日期',
+      accessor: ({ endAt }) => {
+        return endAt ? dayjs(endAt).format('YYYY-MM-DD') : '-';
+      },
     },
     {
       Header: '备注',
