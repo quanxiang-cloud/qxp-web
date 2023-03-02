@@ -227,6 +227,17 @@ export function onRemoveNode(
   newElements = updateParentAndChildNodeElementRelationship(
     newElements, elementToRemove, parentID, childrenID, isRemoveLastBranch,
   );
+  const _removedElements = removeElements([elementToRemove], newElements).map((item: any)=> {
+    const sourceElement = getNodeElementById(item?.data?.nodeDate?.parentID?.[0]);
+    const targetElement = getNodeElementById(item?.data?.nodeDate?.childrenID?.[0]);
+    const branchID = getBranchID(sourceElement, targetElement);
+    const branchTargetElementID = getBranchTargetElementID(sourceElement, targetElement);
+    if (!branchID || !branchTargetElementID) {
+      delete item?.data?.nodeData?.branchID;
+      delete item?.data?.nodeData?.branchTargetElementID;
+    }
+    return item;
+  });
   return removeElements([elementToRemove], newElements);
 }
 
