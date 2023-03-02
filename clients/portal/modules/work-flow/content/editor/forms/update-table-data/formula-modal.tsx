@@ -24,7 +24,7 @@ function FormulaModal(props: Props): JSX.Element | null {
   const allFields = useMemo(()=> [...targetFields, ...sourceFields], [targetFields, sourceFields]);
   const formulaFields = useMemo(()=> allFields.filter(({ value })=> {
     return !SYSTEM_FIELDS.includes(value);
-  }).reduce((acc: FormulaFields, { value }: LabelValue)=> {
+  })?.reduce((acc: FormulaFields, { value }: LabelValue)=> {
     const field = [...sourceSchema, ...targetSchemaFields].find((item)=> item.fieldName === value);
     const valuePath = field && getFieldValuePath(field);
     if (valuePath) {

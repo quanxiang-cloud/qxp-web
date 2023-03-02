@@ -75,7 +75,7 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
   const { tableSchema } = useContext(FlowTableContext);
   const formulaFields = useMemo(() => tableSchema.filter((schema) => {
     return !SYSTEM_FIELDS.includes(schema.fieldName);
-  }).reduce((acc: Record<string, string>, field) => {
+  })?.reduce((acc: Record<string, string>, field) => {
     const labelPath = getFieldLabelPath(field);
     if (labelPath) {
       const { fieldName } = field;
@@ -87,7 +87,7 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
   // This field is required by the backend
   const fieldType = useMemo(() => tableSchema.filter((schema) => {
     return !SYSTEM_FIELDS.includes(schema.fieldName);
-  }).reduce((acc: Record<string, string>, field) => {
+  })?.reduce((acc: Record<string, string>, field) => {
     if (VerCompontType.includes(field.componentName)) {
       const { fieldName } = field;
       acc[fieldName] = field.componentName;

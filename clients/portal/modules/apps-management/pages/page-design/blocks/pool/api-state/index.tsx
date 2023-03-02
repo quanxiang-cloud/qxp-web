@@ -23,7 +23,7 @@ export default function ApiState({
 
   const filteredApi = useMemo(() => {
     if (!search || !apiStateSpec) return apiStateSpec;
-    return Object.entries(apiStateSpec).reduce((total: APIStatesSpec, [name, apiSpec]) => {
+    return Object.entries(apiStateSpec)?.reduce((total: APIStatesSpec, [name, apiSpec]) => {
       if (name.match(search)) {
         total[name] = apiSpec;
       }

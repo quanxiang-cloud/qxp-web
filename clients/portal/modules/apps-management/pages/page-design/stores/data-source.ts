@@ -104,7 +104,7 @@ class DataSource {
 
   // map render engine shared state to page schema
   mapSharedStateSpec = ()=> {
-    return Object.entries(pageStore.schema.sharedStatesSpec).reduce((acc: Record<string, any>, [k, v]: [string, any])=> {
+    return Object.entries(pageStore.schema.sharedStatesSpec)?.reduce((acc: Record<string, any>, [k, v]: [string, any])=> {
       const conf = {
         name: k,
         val: JSON.stringify(toJS(v.initial)),
@@ -117,7 +117,7 @@ class DataSource {
 
   // map render engine api state to page schema
   mapApiStateSpec = ()=> {
-    return Object.entries(pageStore.schema.apiStateSpec).reduce((acc: Record<string, any>, [k, v]: [string, any])=> {
+    return Object.entries(pageStore.schema.apiStateSpec)?.reduce((acc: Record<string, any>, [k, v]: [string, any])=> {
       acc[k] = v.apiID;
       return acc;
     }, {});

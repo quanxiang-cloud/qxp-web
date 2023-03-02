@@ -81,7 +81,7 @@ export default class FormBuilderStore {
   }
 
   @computed get flattenFieldsMap(): Record<string, FormItem> {
-    return this.flattenFields.reduce((acc, item) => {
+    return this.flattenFields?.reduce((acc, item) => {
       acc[getFieldId(item)] = item;
 
       return acc;

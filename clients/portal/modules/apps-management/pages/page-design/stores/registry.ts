@@ -19,7 +19,7 @@ class RegistryStore {
   // }
 
   @computed get elementMap(): Record<string, SourceElement<any>> {
-    return Object.values(this.elements).flat().reduce((acc: Record<string, any>, cur: SourceElement<any>) => {
+    return Object.values(this.elements).flat()?.reduce((acc: Record<string, any>, cur: SourceElement<any>) => {
       const compName = (cur.name as string).toLowerCase();
       acc[compName] = cur;
       return acc;
@@ -74,7 +74,7 @@ class RegistryStore {
 
     return Object.values({ ..._components })
       .flat()
-      .reduce((memo: Record<string, React.ComponentType<any>>, elem: SourceElement<any>)=> {
+      ?.reduce((memo: Record<string, React.ComponentType<any>>, elem: SourceElement<any>)=> {
         memo[this.normalizeType(elem.name)] = elem.component;
         return memo;
       }, {});

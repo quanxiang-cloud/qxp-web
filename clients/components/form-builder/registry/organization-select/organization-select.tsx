@@ -109,7 +109,7 @@ const OrganizationPicker = ({
       }
 
       const fullPaths: string[] = [];
-      const visibleParentNodes: string[] = rangeList.reduce((acc, { value }) => {
+      const visibleParentNodes: string[] = rangeList?.reduce((acc, { value }) => {
         const nodeTmp = treeDataTmp?.find(({ id }) => id === value);
         if (nodeTmp) {
           fullPaths.push(nodeTmp.fullPath);

@@ -29,7 +29,7 @@ function stringToCamelCase(str: string): string {
 }
 
 function objectKeyToCamelCase(value: Record<string, any>): Record<string, any> {
-  return Object.entries(value).reduce((acc: Record<string, any>, [key, val]) => {
+  return Object.entries(value)?.reduce((acc: Record<string, any>, [key, val]) => {
     acc[stringToCamelCase(key)] = val;
     return acc;
   }, {});

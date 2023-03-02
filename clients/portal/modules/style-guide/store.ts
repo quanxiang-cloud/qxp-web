@@ -28,7 +28,7 @@ const COMPILED_CSS_FINAL_URL_KEY = 'style_guide_css';
 
 const VERSION = '0.1.0';
 
-const ALL_COMPONENTS_KEYS = componentSpecs.reduce<string[]>((acc, cur) => {
+const ALL_COMPONENTS_KEYS = componentSpecs?.reduce<string[]>((acc, cur) => {
   return [...acc, cur.key];
 }, []);
 class StyleGuideStore {
@@ -75,7 +75,7 @@ class StyleGuideStore {
     const totalKey = this.currentComp?.key;
     if (totalKey) {
       const spec = componentSpecs.filter((t) => t.key === totalKey).pop();
-      const totalScss = spec?.specs.reduce((acc, cur) => {
+      const totalScss = spec?.specs?.reduce((acc, cur) => {
         return acc + (this.componentScssMap[`${totalKey}.${cur.title}`] || '');
       }, '');
       this.componentScssMap = {

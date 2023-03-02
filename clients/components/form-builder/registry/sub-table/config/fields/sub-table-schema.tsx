@@ -73,7 +73,7 @@ function SubTableSchema(props: ISchemaFieldComponentProps): JSX.Element {
 
   const subTableSchemas = props.value?.properties as SchemaProperties;
 
-  const schemaList = Object.entries(subTableSchemas || {}).reduce((cur: Field[], next) => {
+  const schemaList = Object.entries(subTableSchemas || {})?.reduce((cur: Field[], next) => {
     const [key, schema] = next;
     if (key === '_id') {
       return cur;
@@ -109,7 +109,7 @@ function SubTableSchema(props: ISchemaFieldComponentProps): JSX.Element {
       type: 'object',
       properties: {
         _id: getSchemaFromOptionType('id'),
-        ...fields.reduce((cur: ISchema, next: Field) => {
+        ...fields?.reduce((cur: ISchema, next: Field) => {
           const { schema, sort, value } = next;
           cur[(value || `subtable_${generateRandomFormFieldID()}`) as keyof ISchema] = {
             ...schema,

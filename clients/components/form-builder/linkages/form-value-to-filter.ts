@@ -27,7 +27,7 @@ function getNewCondition(
   getFieldValue: (path: string) => any,
   rowIdxStr: string,
 ): Condition[] {
-  return initConditions.reduce((acc, conditionItem) => {
+  return initConditions?.reduce((acc, conditionItem) => {
     const value = getFieldValue(getFieldRealPath(conditionItem.path || '', rowIdxStr));
 
     if (
@@ -45,7 +45,7 @@ function getNewCondition(
 }
 
 function findLinkagesFilterComp(schema: ISchema, precedingPath = ''): LinkedFilterConfig[] {
-  return Object.entries(schema.properties || {}).reduce((
+  return Object.entries(schema.properties || {})?.reduce((
     acc,
     [fieldName, fieldSchema]: [string, ISchema],
   ) => {
@@ -56,7 +56,7 @@ function findLinkagesFilterComp(schema: ISchema, precedingPath = ''): LinkedFilt
     if (SUPPORT_FILTER_COMP.includes(fieldSchema['x-component'] as string)) {
       const { filterConfig } = fieldSchema['x-component-props'] || {};
       if (filterConfig && filterConfig.condition && filterConfig.condition.length !== 0) {
-        const targetFields = (filterConfig as FilterConfig).condition.reduce((targetFieldsAcc, condition) => {
+        const targetFields = (filterConfig as FilterConfig).condition?.reduce((targetFieldsAcc, condition) => {
           if (condition.valueFrom === 'form') {
             targetFieldsAcc.push(precedingPath + condition.value?.toString() || '');
             condition.path = precedingPath + condition.value?.toString() || '';

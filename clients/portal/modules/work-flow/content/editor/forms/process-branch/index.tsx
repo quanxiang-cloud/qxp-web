@@ -68,7 +68,7 @@ export default function ProcessBranch({ defaultValue, onSubmit, onCancel, onChan
   const { tableSchema } = useContext(FlowTableContext);
   const formulaFields = useMemo(()=> tableSchema.filter((schema) => {
     return !SYSTEM_FIELDS.includes(schema.fieldName);
-  }).reduce((acc: Record<string, string>, field) => {
+  })?.reduce((acc: Record<string, string>, field) => {
     const valuePath = getFieldValuePath(field);
     if (valuePath) {
       const { fieldName } = field;

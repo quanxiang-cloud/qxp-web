@@ -213,6 +213,12 @@
         "type": "number"
       },
       {
+        "label": "文件列表源URL",
+        "name": "filesSourceUrl",
+        "type": "string",
+        "will": "Input"
+      },
+      {
         "label": "是否私有",
         "name": "isPrivate",
         "type": "boolean",

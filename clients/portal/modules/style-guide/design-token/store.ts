@@ -295,7 +295,7 @@ export default class DesignTokenStore {
 
   @action
   updateAliases = (oldName: string, newName: string): void => {
-    this.tokens = Object.entries(this.tokens).reduce<
+    this.tokens = Object.entries(this.tokens)?.reduce<
       Record<string, AnyTokenList>
     >((acc, [key, values]) => {
       const newValues = values.map<Token>((token) => {
@@ -303,7 +303,7 @@ export default class DesignTokenStore {
           return {
             ...token,
             value: token.value.map((t) =>
-              Object.entries(t).reduce<Record<string, string>>((a, [k, v]) => {
+              Object.entries(t)?.reduce<Record<string, string>>((a, [k, v]) => {
                 a[k] = replaceReferences(v, oldName, newName);
                 return a;
               }, {}),
@@ -313,7 +313,7 @@ export default class DesignTokenStore {
         if (typeof token.value === 'object') {
           return {
             ...token,
-            value: Object.entries(token.value).reduce<Record<string, string>>(
+            value: Object.entries(token.value)?.reduce<Record<string, string>>(
               (a, [k, v]) => {
                 a[k] = replaceReferences(v, oldName, newName);
                 return a;
