@@ -1,5 +1,5 @@
 /* eslint-disable no-case-declarations */
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useHistory } from 'react-router-dom';
 
 import Icon from '@c/icon';
@@ -8,7 +8,6 @@ import MoreMenu, { MenuItem } from '@c/more-menu';
 import { subscribeStatusChange } from '@c/task-lists/utils';
 
 import { exportAppAndCreateTask } from './api';
-import { fetchUserList } from '@home/lib/api';
 
 type Props = {
   appInfo: AppInfo;
@@ -20,15 +19,6 @@ function AppActions({ openModal, appInfo }: Props): JSX.Element {
   const hasUpdateAccess = window.ADMIN_USER_FUNC_TAGS.includes('application/update');
   const hasReadAccess = window.ADMIN_USER_FUNC_TAGS.includes('application/read');
   const hasDeleteAccess = window.ADMIN_USER_FUNC_TAGS.includes('application/delete');
-
-  const [userList, setUserList] = useState([]);
-
-  useEffect(()=>{
-    fetchUserList().then((res: any) => {
-      const { data = [] } = res;
-      setUserList(data);
-    });
-  }, []);
 
   const menus: MenuItem[] = [
     {
@@ -98,10 +88,12 @@ function AppActions({ openModal, appInfo }: Props): JSX.Element {
       history.push(`/apps/details/${appInfo.id}/setting/info`);
       break;
     case 'visit':
-      const temp: any = userList?.find(({ id }: AppInfo) => id === appInfo.id);
-      const path = temp?.accessURL;
-      path ? window.open(`/_jump_to_home?to=${path}`) :
-        window.open(`//${window.CONFIG.home_hostname}/apps/` + appInfo.id);
+      const path = appInfo?.accessURL;
+      if (path) {
+        window.open(`/_jump_to_home?to=${path}`);
+      } else {
+        toast.error('该应用未配置主页，无法访问');
+      }
       break;
     case 'exportApp':
       exportAppAndCreateTask({
