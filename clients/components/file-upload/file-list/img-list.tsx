@@ -117,19 +117,19 @@ export function ImgList({
                       className={cs(
                         'w-full h-full absolute top-0 left-0 transition-opacity duration-300',
                         'opacity-0 hover:opacity-100 text-white text-12',
-                        'flex justify-center items-center bg-gray-900 qxp-file-img-opt',
+                        'flex items-center bg-gray-900 qxp-file-img-opt space-evenly',
                       )}
                     >
                       <EyeOutlined className='img-icon-eye' onClick={()=>handlePreview(index)}/>
 
-                      {
+                      {/* {
                         canDownload && (
                           <Icon
                             {...FILE_LIST_ICON['download']}
                             clickable
                             onClick={() => handleDownload?.(file)}
                           />)
-                      }
+                      } */}
                       {
                         deleteFileItem && (
                           <span className="">
