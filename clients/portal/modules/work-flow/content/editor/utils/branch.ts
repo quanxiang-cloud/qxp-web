@@ -15,14 +15,14 @@ export function getBranchTargetElementID(
   sourceElement: CurrentElement,
   targetElement: CurrentElement,
 ): string | undefined {
-  if (targetElement.type === 'processBranchTarget') {
+  if (targetElement?.type === 'processBranchTarget') {
     return targetElement.id;
   }
-  if (targetElement.type === 'processBranchSource') {
+  if (targetElement?.type === 'processBranchSource') {
     return targetElement.data.nodeData.parentBranchTargetElementID;
   }
-  return sourceElement.data.nodeData.branchTargetElementID ||
-    targetElement.data.nodeData.branchTargetElementID;
+  return sourceElement?.data.nodeData.branchTargetElementID ||
+    targetElement?.data.nodeData.branchTargetElementID;
 }
 
 export function buildBranchNodes(
@@ -119,11 +119,11 @@ export function buildBranchNodes(
 }
 
 export function getBranchID(sourceElement: Node<Data>, targetElement: Node<Data>): undefined | string {
-  if (sourceElement.type === 'processBranch') {
+  if (sourceElement?.type === 'processBranch') {
     return sourceElement.id;
   }
-  if (targetElement.type === 'processBranch') {
+  if (targetElement?.type === 'processBranch') {
     return targetElement.id;
   }
-  return sourceElement.data?.nodeData.branchID || targetElement.data?.nodeData.branchID;
+  return sourceElement?.data?.nodeData.branchID || targetElement?.data?.nodeData.branchID;
 }

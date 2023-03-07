@@ -23,7 +23,7 @@ function selectedNodes<T>(nodeMap: NodeMap<T>, id: string): SelectedNodePaths<T>
 }
 
 function selectedNodeSingleMode<T>(nodeMap: NodeMap<T>): SelectedNodePaths<T> {
-  return Object.entries(nodeMap).reduce((cur: SelectedNodePaths<T>, next) => {
+  return Object.entries(nodeMap)?.reduce((cur: SelectedNodePaths<T>, next) => {
     const [_, node] = next;
     if (node.checkStatus === 'checked') {
       cur.push([toJS(node)]);
@@ -46,7 +46,7 @@ export default class SelectableTreeStore<T> extends BaseStore<T> {
 
   generateNodeMap(): void {
     // todo support initial check status
-    this._nodeMap = this.nodeList.reduce<NodeMap<T>>((nodeMap, node) => {
+    this._nodeMap = this.nodeList?.reduce<NodeMap<T>>((nodeMap, node) => {
       nodeMap[node.id] = {
         data: node.data,
         id: node.id,

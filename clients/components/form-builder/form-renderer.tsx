@@ -50,7 +50,7 @@ function FormRenderer({
   const [errorMessage, setErrorMessage] = useState('');
   const actions = createFormActions();
   const schema = usePermission ? schemaPermissionTransformer(inputSchema, readOnly) : inputSchema;
-  const fieldsToOmit = treeUtil.reduce((fields: string[], schema: ISchema, fieldId?: string | number) => {
+  const fieldsToOmit = treeUtil?.reduce((fields: string[], schema: ISchema, fieldId?: string | number) => {
     if ([INVISIBLE_NO_WRITE, READONLY_NO_WRITE, INVALID_READONLY_LEGACY].includes(
       schema?.['x-internal']?.permission as PERMISSION,
     )) {

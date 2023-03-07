@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { XYPosition, Node, FlowElement, removeElements, isNode, Elements } from 'react-flow-renderer';
 import { cloneDeep, set } from 'lodash';
 
@@ -227,6 +228,34 @@ export function onRemoveNode(
   newElements = updateParentAndChildNodeElementRelationship(
     newElements, elementToRemove, parentID, childrenID, isRemoveLastBranch,
   );
+  const _removedElements = removeElements([elementToRemove], newElements);
+  const _filterElements = _removedElements.map((item: any)=> {
+    const sourceElement: any = _removedElements.find(({ id })=> id === item?.data?.nodeData?.parentID?.[0]);
+    const targetElement: any = _removedElements.find(({ id })=> id === item?.data?.nodeData?.childrenID?.[0]);
+    const branchID = getBranchID(sourceElement, targetElement);
+    const branchTargetElementID = getBranchTargetElementID(sourceElement, targetElement);
+    if (!branchID || !branchTargetElementID) {
+      delete item?.data?.nodeData?.branchID;
+      delete item?.data?.nodeData?.branchTargetElementID;
+    }
+    return item;
+  });
+
+  const temp = _filterElements.map((item: any)=>{
+    const sourceElement: any = _filterElements.find(({ id })=> id === item?.data?.nodeData?.parentID?.[0]);
+    if (item?.data?.nodeData?.branchID && _filterElements.findIndex((n)=>n.id === item?.data?.nodeData?.branchID) === -1) {
+      const { data: { nodeData } } = sourceElement;
+      item.data.nodeData = {
+        ...item.data.nodeData,
+        branchID: nodeData?.branchID,
+        branchTargetElementID: nodeData?.branchTargetElementID,
+      };
+    }
+    return {
+      ...item,
+    };
+  });
+
   return removeElements([elementToRemove], newElements);
 }
 

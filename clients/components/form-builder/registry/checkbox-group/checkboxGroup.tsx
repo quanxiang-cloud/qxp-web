@@ -43,7 +43,7 @@ function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
     }
 
     setCheckedValues(
-      fieldProps.value.reduce((acc: string[], option: string) => {
+      fieldProps.value?.reduce((acc: string[], option: string) => {
         if (options.includes(option)) {
           return [...acc, option];
         }
@@ -65,7 +65,7 @@ function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   }, [customValues.length]);
 
   function getRealValue(values: string[]): string[] {
-    return values.reduce((acc: string[], option: string) => {
+    return values?.reduce((acc: string[], option: string) => {
       if (options.includes(option)) {
         return [...acc, option];
       }

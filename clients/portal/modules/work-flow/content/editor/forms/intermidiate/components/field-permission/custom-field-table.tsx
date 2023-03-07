@@ -35,7 +35,7 @@ export default function CustomFieldTable({
   const { flowID: flowId } = useContext(flowContext);
   const schemaMap = schemaToMap(schema, null, { keepLayout: true, parseSubTable: true });
   const layoutFields = schemaToArray(schema, { parseSubTable: true, keepLayout: true })
-    .reduce((layoutFields: string[], schema) => {
+    ?.reduce((layoutFields: string[], schema) => {
       const internal = schema['x-internal'];
       if (internal?.isLayoutComponent && internal.fieldId) {
         layoutFields.push(internal.fieldId);

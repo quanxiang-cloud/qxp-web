@@ -73,7 +73,7 @@ function applySubNodes(item: any, isRoot: boolean, objectNodes?: Array<any>, arr
   }
   if (objectNodes) {
     const requiredKeys: string[] = objectNodes.filter((v: ApiParam)=> v.required).map((v: ApiParam)=> v.name);
-    const properties = mapRawParams(objectNodes).reduce((acc, cur)=> {
+    const properties = mapRawParams(objectNodes)?.reduce((acc, cur)=> {
       acc[cur.name] = omit(cur, 'name', 'required');
       return acc;
     }, {});
@@ -197,7 +197,7 @@ export default class Store {
           schema: {
             type: 'object',
             required: response.filter((v: ApiParam)=> v.required).map((v: ApiParam)=> v.name),
-            properties: mapRawParams(response, { root: true }).reduce((acc, cur)=> {
+            properties: mapRawParams(response, { root: true })?.reduce((acc, cur)=> {
               delete cur.required;
               acc[cur.name] = omit(cur, 'name');
               return acc;

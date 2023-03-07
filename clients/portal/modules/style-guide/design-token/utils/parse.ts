@@ -70,7 +70,7 @@ export function parseTokenValues(
     };
   }
 
-  const reducedTokens = Object.entries(tokens).reduce<[string, AnyTokenList][]>(
+  const reducedTokens = Object.entries(tokens)?.reduce<[string, AnyTokenList][]>(
     (prev, [name, parsedGroup]: TokenEntry) => {
       if (Array.isArray(parsedGroup)) {
         prev.push([name, parsedGroup]);

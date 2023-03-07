@@ -37,7 +37,7 @@ function convertWillProps(spec: BasePropSpec): NodeProperties {
     return [key, _value];
   });
 
-  const nodeProperties: NodeProperties = propsMap.reduce((acc: NodeProperties, [key, value]) => {
+  const nodeProperties: NodeProperties = propsMap?.reduce((acc: NodeProperties, [key, value]) => {
     acc[key] = value;
 
     return acc;

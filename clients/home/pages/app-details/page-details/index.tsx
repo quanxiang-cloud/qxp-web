@@ -85,7 +85,7 @@ function PageDetails(): JSX.Element | null {
   }
 
   const tableHeaderBtnList: TableHeaderBtn[] =
-  Object.entries(BUTTON_GROUP).reduce((acc: TableHeaderBtn[], [key, buttonValue]) => {
+  Object.entries(BUTTON_GROUP)?.reduce((acc: TableHeaderBtn[], [key, buttonValue]) => {
     const _apiPath = getAPIPath(appID, pageID, key, 'POST');
     if (store.authority[_apiPath]) {
       return [...acc, buttonValue];

@@ -17,7 +17,7 @@ const directoryRule: DirectoryRule[] = [
 ];
 
 export const createMenus = (directoryChildren: DirectoryChild[], isRoot?: boolean): NodeItem<DirectoryChild>[] => {
-  return directoryChildren.reduce((menus: NodeItem<DirectoryChild>[], directoryChild) => {
+  return directoryChildren?.reduce((menus: NodeItem<DirectoryChild>[], directoryChild) => {
     if (directoryChild.active === 0) return menus;
 
     if (isApi(directoryChild)) {
@@ -81,7 +81,7 @@ export const sortMenusByOrder = (menus: NodeItem<DirectoryChild>[]): NodeItem<Di
 };
 
 export const concatApiDataList = (apiDataList: APIData[]): DirectoryChild[] => {
-  return apiDataList.reduce((directoryChildren: DirectoryChild[], apiData) => {
+  return apiDataList?.reduce((directoryChildren: DirectoryChild[], apiData) => {
     if (!apiData.directory.children) return directoryChildren;
     if (apiData.directory.name === 'poly') {
       return [...directoryChildren, { ...apiData.directory, title: '编排API', active: 1 }];

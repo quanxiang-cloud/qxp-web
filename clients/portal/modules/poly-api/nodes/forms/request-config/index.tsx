@@ -30,7 +30,7 @@ export function mergeInputs(
   );
   const diff2Sets = [...add, ...replace];
 
-  const values = diff2Sets.reduce((acc, diff) => {
+  const values = diff2Sets?.reduce((acc, diff) => {
     const { path, value } = diff;
     const lastPath = `${last(path)}`;
     const typePath = lastPath === 'type' ? path : path.slice(0, -1).concat('type');
@@ -47,7 +47,7 @@ export function mergeInputs(
     return set(lensPath(path), value, acc);
   }, vInputs);
 
-  return remove.reduce((acc, diff) => dissocPath(diff.path, acc), values);
+  return remove?.reduce((acc, diff) => dissocPath(diff.path, acc), values);
 }
 
 type RequestConfigRef = {

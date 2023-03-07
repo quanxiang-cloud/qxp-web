@@ -3,14 +3,14 @@ import type { APIStatesSpec, NodeProperty, SharedStatesSpec } from '@one-for-all
 import { mapValues, mergeWith, noop } from 'lodash';
 
 export function mapApiState(states: Record<string, string>): APIStatesSpec {
-  return Object.entries(states).reduce((memo: Record<string, any>, [k, v]: [string, string])=> {
+  return Object.entries(states)?.reduce((memo: Record<string, any>, [k, v]: [string, string])=> {
     memo[k] = { apiID: v };
     return memo;
   }, {});
 }
 
 export function mapShareState(states: Record<string, string>): SharedStatesSpec {
-  return Object.entries(states).reduce((memo: Record<string, any>, [k, v]: [string, string])=> {
+  return Object.entries(states)?.reduce((memo: Record<string, any>, [k, v]: [string, string])=> {
     const parsedVal: {val: any} = JSON.parse(v);
     memo[k] = { initial: JSON.parse(parsedVal.val) };
     return memo;

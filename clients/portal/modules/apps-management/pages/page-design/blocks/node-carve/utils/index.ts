@@ -20,7 +20,7 @@ export function isConstantProperty(
   return (
     !!property &&
     typeof property === 'object' &&
-    (property as NodeProperty).type === 'constant_property'
+    (property as NodeProperty)?.type === 'constant_property'
   );
 }
 
@@ -28,7 +28,7 @@ export function isFunctionalProperty(property: unknown): boolean {
   return (
     !!property &&
     typeof property === 'object' &&
-    (property as NodeProperty).type === 'functional_property'
+    (property as NodeProperty)?.type === 'functional_property'
   );
 }
 
@@ -36,7 +36,7 @@ export function isShareStateProperty(property: unknown): boolean {
   return (
     !!property &&
     typeof property === 'object' &&
-    (property as NodeProperty).type === 'shared_state_property'
+    (property as NodeProperty)?.type === 'shared_state_property'
   );
 }
 
@@ -44,7 +44,7 @@ export function isApiStateProperty(property: unknown): boolean {
   return (
     !!property &&
     typeof property === 'object' &&
-    (property as NodeProperty).type === 'api_result_property'
+    (property as NodeProperty)?.type === 'api_result_property'
   );
 }
 
@@ -60,14 +60,14 @@ export function isLifecycleHooks(hooks: unknown): boolean {
   return (
     !!hooks &&
     typeof hooks === 'object' &&
-    (hooks as LifecycleHookFuncSpec).type === 'lifecycle_hook_func_spec'
+    (hooks as LifecycleHookFuncSpec)?.type === 'lifecycle_hook_func_spec'
   );
 }
 
 export function getActualNode(node: Node, currentNode: Node): Node {
   let actualNode = node;
-  if (node.type === 'loop-container') {
-    if (node.node.type === 'composed-node') {
+  if (node?.type === 'loop-container') {
+    if (node.node?.type === 'composed-node') {
       const { outLayer, nodes } = node.node;
       if (outLayer && outLayer.id === currentNode.id) {
         actualNode = outLayer;
@@ -123,7 +123,7 @@ export function replaceNode(
 ): Artery {
   const srcNode = findNode(artery.node, node.id, true);
   if (srcNode?.type === 'loop-container') {
-    if (srcNode.node && srcNode.node.type === 'composed-node') {
+    if (srcNode.node && srcNode.node?.type === 'composed-node') {
       const { children, outLayer, nodes } = srcNode.node;
       if (outLayer.id !== node.id) {
         let _oldNode = {} as Node;
@@ -218,7 +218,7 @@ export function unsetLoopNode(node: Node, artery: Artery): Artery {
   if (!loopNode) {
     return artery;
   }
-  if (loopNode.type === 'loop-container') {
+  if (loopNode?.type === 'loop-container') {
     const innerNode = loopNode.node;
     replaceNode(node, innerNode, artery);
   }
@@ -230,7 +230,7 @@ export function unsetComposedNode(node: Node, artery: Artery): Artery {
   if (!composedNode) {
     return artery;
   }
-  if (composedNode.type === 'loop-container') {
+  if (composedNode?.type === 'loop-container') {
     const { node } = composedNode;
     if (node) {
       const { outLayer, nodes } = node as ComposedNode;
@@ -251,7 +251,7 @@ export function findNode(tree: Node | ComposedNode, node_id?: string, loopNode?:
   if (!node_id || tree.id === node_id) {
     return tree;
   }
-  if (tree.type === 'composed-node') {
+  if (tree?.type === 'composed-node') {
     const { outLayer, nodes } = tree || {};
     if (outLayer && outLayer.id === node_id) {
       return loopNode ? tree : outLayer;
@@ -266,7 +266,7 @@ export function findNode(tree: Node | ComposedNode, node_id?: string, loopNode?:
     }
   }
   // if loop node, return wrapper node
-  if (tree.type === 'loop-container') {
+  if (tree?.type === 'loop-container') {
     if (tree.node?.type === 'composed-node') {
       const { outLayer, nodes } = tree.node || {};
       if (outLayer && outLayer.id === node_id) {
@@ -316,7 +316,7 @@ export function replaceTreeNode(tree: Node, node_id: string, newNode: Node): voi
         return;
       }
 
-      if (child.type === 'loop-container') {
+      if (child?.type === 'loop-container') {
         const { node } = child;
         if (node) {
           if (node.id === node_id) {
@@ -325,7 +325,7 @@ export function replaceTreeNode(tree: Node, node_id: string, newNode: Node): voi
             return;
           }
 
-          if (node.type === 'composed-node') {
+          if (node?.type === 'composed-node') {
             const { outLayer, nodes } = node;
             if (outLayer && outLayer.id === node_id) {
               outAdd = true;

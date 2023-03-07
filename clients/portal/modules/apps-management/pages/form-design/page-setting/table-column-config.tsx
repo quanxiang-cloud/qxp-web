@@ -90,12 +90,17 @@ function FieldItem({ field, selected, onChange }: FieldItemProps): JSX.Element {
 }
 
 function TableColumnConfig({ onChange, fieldList, sortChange, selectFields }: Props): JSX.Element {
+  const hideFields = fieldList
+    .filter((item: any)=>item?.display === false)
+    .map(({ id })=>id);
   const _selectFields = useMemo(() => {
     const noSelectFieldsTmp: ColumnConfigView[] = [];
-    const selectFieldsTmp: ColumnConfigView[] = selectFields.map((field) => {
-      const selected = fieldList.find(({ id }) => id === field.id);
-      return { ...field, label: selected?.label || '' };
-    });
+    const selectFieldsTmp: ColumnConfigView[] = selectFields
+      // .filter(({ id })=>!hideFields.includes(id))
+      .map((field) => {
+        const selected = fieldList.find(({ id }) => id === field.id);
+        return { ...field, label: selected?.label || '' };
+      });
 
     fieldList.forEach((field) => {
       const index = selectFieldsTmp.findIndex(({ id }) => id === field.id);

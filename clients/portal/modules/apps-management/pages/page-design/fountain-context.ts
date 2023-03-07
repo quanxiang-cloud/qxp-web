@@ -40,7 +40,7 @@ function toPropsSpecDB(fountainPackages: FountainPackage[]): Map<string, PropsSp
           propSpec,
         ]),
     )
-    .reduce<Array<[string, PropsSpec]>>((acc, pairs) => acc.concat(pairs), []);
+    ?.reduce<Array<[string, PropsSpec]>>((acc, pairs) => acc.concat(pairs), []);
 
   return new Map(keyPropsSpecPairs);
 }
@@ -51,10 +51,10 @@ export function createFountainCTXValue(fountainPackages: FountainPackage[]): Fou
   const packages: Package[] = fountainPackages.map(({ pkg }) => pkg);
   const components: PackageComponent[] = fountainPackages
     .map(({ manifest }) => manifest)
-    .reduce((acc, cur) => acc.concat(cur));
+    ?.reduce((acc, cur) => acc.concat(cur));
 
   const propsSpecDB: Map<string, PropsSpec> = toPropsSpecDB(fountainPackages);
-  const packageVersionMap = fountainPackages.reduce<Record<string, string>>((acc, { pkg }) => {
+  const packageVersionMap = fountainPackages?.reduce<Record<string, string>>((acc, { pkg }) => {
     acc[pkg.name] = pkg.version;
     return acc;
   }, {});
