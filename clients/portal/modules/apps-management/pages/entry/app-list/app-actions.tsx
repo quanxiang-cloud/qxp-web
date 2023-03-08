@@ -89,8 +89,11 @@ function AppActions({ openModal, appInfo }: Props): JSX.Element {
       break;
     case 'visit':
       const path = appInfo?.accessURL;
-      path ? window.open(`/_jump_to_home?to=${path}`) :
-        window.open(`//${window.CONFIG.home_hostname}/apps/` + appInfo.id);
+      if (path) {
+        window.open(`/_jump_to_home?to=${path}`);
+      } else {
+        toast.error('该应用未配置主页，无法访问');
+      }
       break;
     case 'exportApp':
       exportAppAndCreateTask({
