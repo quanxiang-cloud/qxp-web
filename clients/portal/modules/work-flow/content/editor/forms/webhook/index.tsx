@@ -186,16 +186,14 @@ export default function WebhookConfig(
     return result;
   };
   const handleSubmit = useCallback(({ type, ...config }: LocalValue) => {
-    window.test = config.inputs;
     config.inputs = config.inputs.map((item: any)=>{
       const val = String(item.data)?.trim();
-      formatData(item);
       return {
         ...formatData(item),
         type: getType(val),
-        fieldType: getField(val, FieldType.fieldType),
-        fieldName: getField(val, FieldType.fieldName),
-        tableID: getField(val, FieldType.tableID),
+        fieldType: item?.fieldType || getField(val, FieldType.fieldType),
+        fieldName: item?.fieldName || getField(val, FieldType.fieldName),
+        tableID: item?.tableID || getField(val, FieldType.tableID),
       };
     });
     onSubmit({ type, config } as WebhookData);
