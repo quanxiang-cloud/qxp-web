@@ -44,7 +44,7 @@ class ApprovalsStore {
   @action
   loadApprovals = async (props: LoadApprovalsProps): Promise<void> => {
     const { pageKey, filterKey, filter, tagType } = props;
-    const params: Record<string, any> = { page: pageKey, limit, orderType: 'DESC' };
+    const params: Record<string, any> = { page: pageKey, limit, orderType: 'DESC', size: limit };
     const filterValue = filter?.value;
     if (filterCheck(filterKey, filterValue)) {
       params[filterKey as string] = filterValue;
