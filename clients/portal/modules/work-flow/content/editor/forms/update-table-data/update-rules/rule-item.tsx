@@ -94,6 +94,7 @@ function RuleItem(props: Props): JSX.Element {
 
           return subItem &&
             !isAdvancedField(subItem.type, subItem['x-component']) &&
+            // @ts-ignore
             isFieldTypeMatch(subItem.type, subItem['x-component'], schema);
         }
         if (compName === 'associatedrecords') {
@@ -102,6 +103,7 @@ function RuleItem(props: Props): JSX.Element {
         }
         if (compName === 'associateddata') {
           const assocItem = get(relatedTableSchema, `properties.${item.fieldName}`);
+          // @ts-ignore
           return assocItem && isFieldTypeMatch(assocItem.type, assocItem['x-component'], schema);
         }
 
@@ -148,12 +150,14 @@ function RuleItem(props: Props): JSX.Element {
             const subItem = get(selectField, 'x-component-props.subordination') === 'foreign_table' ?
               get(relatedTableSchema, `properties.${fieldName}`) :
               get(selectField, `items.properties.${fieldName}`);
+              // @ts-ignore
             fieldProps = subItem || {};
           } else if (componentName === 'associatedrecords') {
             const subItem = get(selectField, `x-component-props.associatedTable.properties.${fieldName}`);
             fieldProps = subItem || {};
           } else if (componentName === 'associateddata') {
             const subItem = get(relatedTableSchema, `properties.${fieldName}`);
+            // @ts-ignore
             fieldProps = subItem || {};
           }
         } else {

@@ -39,6 +39,7 @@ export function connect<T extends Record<string, any> = Record<string, any>>(
       // todo: sync active node
       const realNode = findNodeByID(artery?.node as Node, activeNode?.id as string);
       const property = get(realNode, props.__path, { type: 'constant_property' });
+      // @ts-ignore
       componentProps[valueKey] = property.value;
       componentProps[eventKey] = function(...args: any[]) {
         props[eventKey] && props[eventKey](...args);

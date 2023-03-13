@@ -184,7 +184,8 @@ export function FormDataSubTableValueRenderer({ value, schema, className }: Prop
         {!isEmpty(value) ? (
           <div className="flex flex-nowrap gap-4">
             <FileList
-              canDownload
+              imgOnly
+              canDownload={false}
               files={(value as QxpFileFormData[]).map((file) => ({
                 name: file.label,
                 uid: file.value,

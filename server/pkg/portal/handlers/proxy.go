@@ -64,6 +64,11 @@ func ProxyAPIHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Add("Content-Type", resp.Header.Get("Content-Type"))
+
+	if resp.Header.Get("Content-Encoding") != "" {
+		w.Header().Add("Content-Encoding", resp.Header.Get("Content-Encoding"))
+	}
+
 	w.WriteHeader(resp.StatusCode)
 	w.Write(body)
 }

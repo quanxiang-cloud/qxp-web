@@ -323,13 +323,14 @@ export function validateDatasetElement<T>(value: T, schema?: ISchema): boolean {
 
     const val = get(value, key);
     const checkedValueFrom = get(value, 'defaultValueFrom');
+    // @ts-ignore
     if (checkedValueFrom === 'customized') {
       if (key !== 'datasetId' && !val) {
         toast.error(rules?.message);
         return false;
       }
     }
-
+    // @ts-ignore
     if (checkedValueFrom === 'dataset') {
       if (!val) {
         toast.error(rules?.message);
@@ -357,12 +358,14 @@ export function getSchemaPermissionFromSchemaConfig(
 
 export function getDisplayModifierFromSchema(schema: ISchema): FormBuilder.DisplayModifier {
   const permission = get(schema, 'x-internal.permission');
+  // @ts-ignore
   if (isPermissionReadOnly(permission)) {
     return 'readonly';
   }
   if (isPermissionInvisible(permission)) {
     return 'hidden';
   }
+  // @ts-ignore
   if (isPermissionNormal(permission)) {
     return 'normal';
   }

@@ -16,5 +16,6 @@ export function FormItem({
 }
 
 export function ErrorMsg({ errors, name }: {errors: FieldErrors, name: string}): JSX.Element | null {
+  // @ts-ignore
   return errors[name] ? <p className='text-red-400 text-12 mb-5'>{errors[name].message}</p> : null;
 }

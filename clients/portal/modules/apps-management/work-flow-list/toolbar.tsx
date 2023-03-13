@@ -37,7 +37,7 @@ export default function({ onSearchInputChange }: Props): JSX.Element {
           value: 'FORM_DATA',
         },
         // {
-        //   label: '工作表时间触发',
+        //   label: '定时触发',
         //   value: 'FORM_TIME',
         // }
         ]}

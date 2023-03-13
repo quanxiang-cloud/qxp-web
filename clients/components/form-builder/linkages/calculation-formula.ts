@@ -18,7 +18,9 @@ export function findAllFormula(schema: ISchema, subTableFieldName?: string): Arr
     const field = get(schema, `properties.${fieldName}`);
     const defaultValueFrom = get(field, 'x-internal.defaultValueFrom');
     const calculationFormula = get(field, 'x-internal.calculationFormula');
+    // @ts-ignore
     if (field.items && field['x-component']?.toLowerCase() === 'subtable') {
+      // @ts-ignore
       return findAllFormula(field.items as ISchema, fieldName);
     }
 

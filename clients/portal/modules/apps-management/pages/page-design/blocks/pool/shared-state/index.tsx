@@ -41,10 +41,6 @@ function SharedState({ artery, onChange }: Props): JSX.Element {
   function saveSharedState(key: string, val: any): void {
     if (curSharedStateKey) {
       const oldKey = curSharedStateKey;
-      if (oldKey === key && sharedState[oldKey] === val) {
-        toast.success('数据未更改');
-        return;
-      }
       set(sharedState, key, val);
       if (oldKey !== key) {
         delete sharedState[oldKey];

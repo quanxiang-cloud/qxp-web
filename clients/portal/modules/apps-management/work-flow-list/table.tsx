@@ -10,7 +10,6 @@ import Table from '@c/table';
 import Modal from '@c/modal';
 import toast from '@lib/toast';
 import ErrorTips from '@c/error-tips';
-import Pagination from '@c/pagination';
 import TableMoreFilterMenu from '@c/more-menu/table-filter';
 
 import { deleteFlow, getFlowList } from './api';
@@ -45,16 +44,13 @@ function WorkFlowTable({ type, searchInput }: Props): JSX.Element {
     currentDeleteWorkFlow: null,
   });
   const [statusFilter, setStatusFilter] = useState('');
-  const [pagination, setPagination] = useState({
-    current: 1,
-    pageSize: 20,
-  });
+  const [currentPageNumber, setCurrentPageNumber] = useState(1);
   const { data, isLoading, isError, refetch } = useQuery(
-    ['GET_FLOW_LIST', type, pagination, appID],
+    ['GET_FLOW_LIST', type, currentPageNumber, appID],
     () => getFlowList({
       appId: appID,
-      page: pagination.current,
-      size: pagination.pageSize,
+      page: currentPageNumber,
+      size: 500,
       triggerMode: type ? type : undefined,
     }),
   );
@@ -194,7 +190,7 @@ function WorkFlowTable({ type, searchInput }: Props): JSX.Element {
   function filterFlowOfName(): Flow[] {
     return filteredData?.filter(({ name }) => {
       if (searchInput) {
-        return name.match(searchInput);
+        return name.indexOf(searchInput) !== -1;
       }
 
       return true;
@@ -245,14 +241,6 @@ function WorkFlowTable({ type, searchInput }: Props): JSX.Element {
       )}
       {isError && (
         <ErrorTips desc="something wrong..."/>
-      )}
-      {!isLoading && hasData && !!filteredData?.length && (
-        <Pagination
-          {...pagination}
-          total={data?.total}
-          renderTotalTip={() => `共 ${data?.total || 0} 条数据`}
-          onChange={(current, pageSize) => setPagination({ current, pageSize })}
-        />
       )}
       {!!state.currentDeleteWorkFlow && state.currentDeleteWorkFlow.status === 'DISABLE' && (
         <Modal

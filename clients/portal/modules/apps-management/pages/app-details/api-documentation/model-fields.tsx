@@ -74,7 +74,10 @@ export default function ModelFields({ appID, tableID }: Props): JSX.Element {
     setLoading(true);
     if (appID && tableID) {
       getTableSchema(appID, tableID).then((res) => {
-        !isUnmount && setFields(schemaToFields(res?.schema) as ModelField[]);
+        if (!isUnmount) {
+          const _fields = schemaToFields(res?.schema) as ModelField[];
+          setFields(_fields);
+        }
       }).catch((err) => {
         toast.error(err);
       }).finally(() => {

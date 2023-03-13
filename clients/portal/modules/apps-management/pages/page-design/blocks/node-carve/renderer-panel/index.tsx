@@ -109,6 +109,7 @@ function RendererPanel(): JSX.Element {
             ',',
           );
           const toProps = get(child, 'toProps', {});
+          // @ts-ignore
           const { type, args, body } = toProps;
           set(child, 'toProps', {
             type: type || 'to_props_function_spec',
