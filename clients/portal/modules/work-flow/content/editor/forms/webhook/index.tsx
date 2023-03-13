@@ -141,10 +141,13 @@ export default function WebhookConfig(
     const directExprArr = window.CONFIG.WebhookPathTreeValue;
     let directexprTypeArr: any = [];
     directExprArr.forEach((item: any)=>{
-      const { name, data } = item;
-      directexprTypeArr = [...directexprTypeArr, ...data.map((item: any)=>`$${name}.${item.name}`)];
+      const { name, data, descPath } = item;
+      directexprTypeArr = [...directexprTypeArr, ...data.map((item: any)=>({
+        name: `$${name}.${item.name}`,
+        descPath,
+      }))];
     });
-    return directexprTypeArr.find((item: string)=>val.includes(item)) ? 'direct_expr' : 'string';
+    return directexprTypeArr.find((item: any)=>(val.includes(item.name) || val.includes(item.descPath))) ? 'direct_expr' : 'string';
   };
 
   const getField = (val: string, type: FieldType): string=>{
@@ -193,7 +196,7 @@ export default function WebhookConfig(
       const val = String(item.data)?.trim();
       return {
         ...formatData(item),
-        type: item?.type === 'direct_expr' ? item?.type : getType(val),
+        type: getType(val),
         fieldType: item?.fieldType || getField(val, FieldType.fieldType),
         fieldName: item?.fieldName || getField(val, FieldType.fieldName),
         tableID: item?.tableID || getField(val, FieldType.tableID),
