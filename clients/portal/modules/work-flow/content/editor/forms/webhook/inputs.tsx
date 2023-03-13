@@ -99,6 +99,7 @@ function Inputs({ value, onChange, values, error }: Props): JSX.Element | null {
               initValue={initInputsValue}
               customRules={customRules!}
               validating={!isUndefined(error)}
+              isWebhook={true}
             />
           )}
         </div>)}

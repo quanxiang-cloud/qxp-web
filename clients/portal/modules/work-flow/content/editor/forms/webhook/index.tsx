@@ -186,11 +186,14 @@ export default function WebhookConfig(
     return result;
   };
   const handleSubmit = useCallback(({ type, ...config }: LocalValue) => {
+    if (type === 'request') {
+      return onSubmit({ type, config } as WebhookData);
+    }
     config.inputs = config.inputs.map((item: any)=>{
       const val = String(item.data)?.trim();
       return {
         ...formatData(item),
-        type: getType(val),
+        type: item?.type === 'direct_expr' ? item?.type : getType(val),
         fieldType: item?.fieldType || getField(val, FieldType.fieldType),
         fieldName: item?.fieldName || getField(val, FieldType.fieldName),
         tableID: item?.tableID || getField(val, FieldType.tableID),
