@@ -76,6 +76,7 @@ function ConfigItemBind({
     } else if (isComposedNode) {
       onArteryChange(unsetComposedNode(activeNode, artery));
     } else {
+      // @ts-ignore
       const { fallback } = get(activeNode, __path, {});
       onArteryChange(
         updateNodeProperty(

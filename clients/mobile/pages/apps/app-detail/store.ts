@@ -89,6 +89,7 @@ class UserAppsStore {
     fetchPageListSchema(appID, ARTERY_KEY_VERSION).then((res) => {
       const pathList = linkPath ? linkPath.split('/') : this.app?.accessURL?.split('/') || [];
       const path = pathList[pathList.length - 1];
+      // @ts-ignore
       const node = get(res, 'artery.node.node.children')?.filter((item: any)=>item?.path === path) || [];
       const tableID = get(node[0], 'node.props.tableID.value') || '';
       let _node = [];
@@ -96,6 +97,7 @@ class UserAppsStore {
       try {
         const nodeList = get(res, 'artery.node.node.children');
         let newNodeList: any = [];
+        // @ts-ignore
         nodeList.forEach((item: any)=>{
           if (item.children) {
             newNodeList = [...newNodeList, ...item.children];
@@ -117,12 +119,14 @@ class UserAppsStore {
       const menuArteryID = get(res, 'artery.node.node.children[0].children[0].arteryID') || '';
 
       getPageMenuSchema(menuArteryID, ARTERY_KEY_VERSION).then((res)=>{
+        // @ts-ignore
         const NavigateMenuNode = get(res, 'artery.node.children')?.filter(
           (item: any)=>item.exportName === 'NavigateMenu',
         )[0] || {};
         const menus = get(NavigateMenuNode, 'props.menus.value') || [];
         this.menu = menus;
         this.goLink = get(res, 'artery.node.children[0].props.goLink') || {
+          // @ts-ignore
           type: 'functional_property',
           func: {
             type: 'raw',
