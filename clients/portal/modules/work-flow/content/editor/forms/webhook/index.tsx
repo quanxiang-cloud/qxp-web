@@ -190,18 +190,32 @@ export default function WebhookConfig(
   };
   const handleSubmit = useCallback(({ type, ...config }: LocalValue) => {
     if (type === 'request') {
-      return onSubmit({ type, config } as WebhookData);
+      config.inputs = config.inputs?.map((item: any)=>({
+        ...item,
+        data: item?.data?.map((item: any)=>{
+          const val = String(item.data)?.trim();
+          return {
+            ...formatData(item),
+            type: getType(val),
+            fieldType: item?.fieldType || getField(val, FieldType.fieldType),
+            fieldName: item?.fieldName || getField(val, FieldType.fieldName),
+            tableID: item?.tableID || getField(val, FieldType.tableID),
+          };
+        }),
+      }));
+    } else {
+      config.inputs = config.inputs.map((item: any)=>{
+        const val = String(item.data)?.trim();
+        return {
+          ...formatData(item),
+          type: getType(val),
+          fieldType: item?.fieldType || getField(val, FieldType.fieldType),
+          fieldName: item?.fieldName || getField(val, FieldType.fieldName),
+          tableID: item?.tableID || getField(val, FieldType.tableID),
+        };
+      });
     }
-    config.inputs = config.inputs.map((item: any)=>{
-      const val = String(item.data)?.trim();
-      return {
-        ...formatData(item),
-        type: getType(val),
-        fieldType: item?.fieldType || getField(val, FieldType.fieldType),
-        fieldName: item?.fieldName || getField(val, FieldType.fieldName),
-        tableID: item?.tableID || getField(val, FieldType.tableID),
-      };
-    });
+
     onSubmit({ type, config } as WebhookData);
   }, [onSubmit]);
 
@@ -212,7 +226,6 @@ export default function WebhookConfig(
 
   const shouldRePadding = useCallback(() => !!outputsRef.current?.length, [outputsRef.current?.length]);
   useDrawerContainerPadding(102, shouldRePadding);
-
   return (
     <>
       <SchemaForm<LocalValue>
