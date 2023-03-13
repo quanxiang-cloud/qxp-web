@@ -16,6 +16,7 @@ export function transformType(artery: PageNode | LoopNode): string | React.Compo
   }
   if (type === 'loop-container') {
     const nodeType = get(artery, 'node.exportName');
+    // @ts-ignore
     return registry.elementMap[nodeType]?.component;
   }
   if (type === 'html-element') {

@@ -232,6 +232,7 @@ function NodeRender({ schema }: Props): JSX.Element | null {
     }
     if (type === 'loop-container') {
       const nodeType = get(schema, 'node.exportName');
+      // @ts-ignore
       return registry.elementMap[nodeType]?.component;
     }
     if (type === 'html-element') {

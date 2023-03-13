@@ -122,6 +122,7 @@ export function convertSchemaTree(
 
 // get fieldId
 export function getFieldId(field: ISchema): string {
+  // @ts-ignore
   return get(field, 'x-internal.fieldId') || get(field, 'fieldName');
 }
 
