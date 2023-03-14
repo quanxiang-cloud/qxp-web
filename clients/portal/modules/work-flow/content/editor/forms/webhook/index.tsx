@@ -141,10 +141,13 @@ export default function WebhookConfig(
     const directExprArr = window.CONFIG.WebhookPathTreeValue;
     let directexprTypeArr: any = [];
     directExprArr.forEach((item: any)=>{
-      const { name, data } = item;
-      directexprTypeArr = [...directexprTypeArr, ...data.map((item: any)=>`$${name}.${item.name}`)];
+      const { name, data, descPath } = item;
+      directexprTypeArr = [...directexprTypeArr, ...data.map((item: any)=>({
+        name: `$${name}.${item.name}`,
+        descPath,
+      }))];
     });
-    return directexprTypeArr.find((item: string)=>val.includes(item)) ? 'direct_expr' : 'string';
+    return directexprTypeArr.find((item: any)=>(val.includes(item.name) || val.includes(item.descPath))) ? 'direct_expr' : 'string';
   };
 
   const getField = (val: string, type: FieldType): string=>{
@@ -186,18 +189,36 @@ export default function WebhookConfig(
     return result;
   };
   const handleSubmit = useCallback(({ type, ...config }: LocalValue) => {
-    window.test = config.inputs;
-    config.inputs = config.inputs.map((item: any)=>{
-      const val = String(item.data)?.trim();
-      formatData(item);
-      return {
-        ...formatData(item),
-        type: getType(val),
-        fieldType: getField(val, FieldType.fieldType),
-        fieldName: getField(val, FieldType.fieldName),
-        tableID: getField(val, FieldType.tableID),
-      };
-    });
+    try {
+      if (type === 'request') {
+        config.inputs = config.inputs?.map((item: any)=>({
+          ...item,
+          data: item?.data?.map((item: any)=>{
+            const val = String(item.data)?.trim();
+            return {
+              ...formatData(item),
+              type: getType(val),
+              fieldType: item?.fieldType || getField(val, FieldType.fieldType),
+              fieldName: item?.fieldName || getField(val, FieldType.fieldName),
+              tableID: item?.tableID || getField(val, FieldType.tableID),
+            };
+          }),
+        }));
+      } else {
+        config.inputs = config.inputs.map((item: any)=>{
+          const val = String(item.data)?.trim();
+          return {
+            ...formatData(item),
+            type: getType(val),
+            fieldType: item?.fieldType || getField(val, FieldType.fieldType),
+            fieldName: item?.fieldName || getField(val, FieldType.fieldName),
+            tableID: item?.tableID || getField(val, FieldType.tableID),
+          };
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
     onSubmit({ type, config } as WebhookData);
   }, [onSubmit]);
 
@@ -208,7 +229,6 @@ export default function WebhookConfig(
 
   const shouldRePadding = useCallback(() => !!outputsRef.current?.length, [outputsRef.current?.length]);
   useDrawerContainerPadding(102, shouldRePadding);
-
   return (
     <>
       <SchemaForm<LocalValue>

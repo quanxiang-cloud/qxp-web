@@ -15,6 +15,7 @@ type Props = {
   customRules: CustomRule[];
   validating?: boolean;
   initValue?: POLY_API.PolyNodeInput[];
+  isWebhook?: boolean;
 }
 
 export type RefType = {
@@ -23,7 +24,7 @@ export type RefType = {
 }
 
 function ApiParamsConfig(
-  { value, onChange, customRules, url, validating, initValue }: Props,
+  { value, onChange, customRules, url, validating, initValue, isWebhook }: Props,
   ref: ForwardedRef<RefType | undefined>,
 ): JSX.Element {
   const formulaRefs = useRef<Record<string, RefProps>>({});
@@ -169,6 +170,7 @@ function ApiParamsConfig(
                         className="node-formula-editor"
                         onChange={handleFormulaChange(path, name, !!required, data)}
                         onBlur={handleFormulaBlur(path, name, !!required, data)}
+                        isWebhook={isWebhook}
                       />
                       {errorsRef.current[path] && (changedRef.current[path] || validating) && (
                         <span className="text-red-600 px-3 pb-3">{errorsRef.current[path]}</span>

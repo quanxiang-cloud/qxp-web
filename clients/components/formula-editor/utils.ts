@@ -12,11 +12,15 @@ function formatValue(value: string): string {
   const pathTreeValue = window.CONFIG.WebhookPathTreeValue;
   pathTreeValue.forEach((item: any)=>{
     const { name, data, desc } = item;
-    data.forEach((item: { value: string; name: any; descPath: string; desc: any; })=>{
-      item.value = `$${name}.${item.name}`;
-      item.descPath = `${desc}.${item.desc}`;
-    });
-    list = [...list, ...data];
+    if (data?.length) {
+      data.forEach((item: { value: string; name: any; descPath: string; desc: any; })=>{
+        item.value = `$${name}.${item.name}`;
+        item.descPath = `${desc}.${item.desc}`;
+      });
+      list = [...list, ...data];
+    } else {
+      list = [...list, { ...item, value: `$${item.name}`, descPath: item?.desc }];
+    }
   });
   list.find((item: { value: string; descPath: string; })=>{
     if (typeof value === 'string' && value?.includes(item.value)) {
