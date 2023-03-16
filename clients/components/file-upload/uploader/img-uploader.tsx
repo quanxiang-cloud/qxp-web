@@ -47,6 +47,7 @@ function ImgUploader({
     abortAllFiles,
     clearUploadFiles,
     removeUploadFile,
+    setUploadedFiles,
   } = fileStore;
 
   useEffect(() => {
@@ -55,6 +56,10 @@ function ImgUploader({
       clearUploadFiles();
     };
   }, []);
+
+  useEffect(()=> {
+    setUploadedFiles(fileData);
+  }, [fileData]);
 
   function deleteFileItem(deleteFile: QXPUploadFileTask): void {
     deleteFile.state === 'success' || !deleteFile.state ?
@@ -126,7 +131,7 @@ function ImgUploader({
             disabled={disabled || (!multiple && !!storeFiles.length)}
             description={uploaderDescription || '上传图片'}
             onSelectFiles={(files) => {
-              files.every((file) => beforeUpload(file, files, storeFiles)) && prepareFilesUpload(files);
+              files.every((file)=> beforeUpload(file, files, storeFiles)) && prepareFilesUpload(files);
             }}
           />
         )

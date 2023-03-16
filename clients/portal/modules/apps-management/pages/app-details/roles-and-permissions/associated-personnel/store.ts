@@ -102,7 +102,7 @@ class RoleAssociateStore {
   @action
   fetchDeptScope = (): void => {
     this.isLoadingAll = true;
-    fetchRoleDept(this.appID, this.currentRoleID, { type: SCOPE.DEP })
+    this.appID && fetchRoleDept(this.appID, this.currentRoleID, { type: SCOPE.DEP })
       .then((res: any)=>{
         this.deptScopes = res?.list || [];
       })

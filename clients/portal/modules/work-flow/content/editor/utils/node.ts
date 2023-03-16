@@ -275,8 +275,8 @@ function updateParentAndChildNodeElementRelationship(
       return element;
     }
     const nodeData = element.data?.nodeData;
-    const isParentElement = nodeData?.childrenID?.includes(elementToRemove.id);
-    const isChildrenElement = elementToRemove.data?.nodeData.childrenID?.includes(element.id);
+    const isParentElement = nodeData?.childrenID?.includes(elementToRemove?.id);
+    const isChildrenElement = elementToRemove?.data?.nodeData.childrenID?.includes(element.id);
 
     const isProcessBranchSource = element.type === 'processBranchSource';
     const childrenCount = nodeData?.childrenID?.filter(branchSourceChildIdFilter)?.length;
@@ -285,7 +285,7 @@ function updateParentAndChildNodeElementRelationship(
     if (isParentElement && isProcessBranchSource) {
       if (lastBranchElementNeedRemove) {
         lastBranchElementID = nodeData?.childrenID?.filter(branchSourceChildIdFilter)?.find((id) => {
-          return id !== elementToRemove.id;
+          return id !== elementToRemove?.id;
         });
       }
       if (isProcessBranchSourceOnlyOneChildLeft) {
@@ -295,11 +295,11 @@ function updateParentAndChildNodeElementRelationship(
 
     if (isParentElement && nodeData?.childrenID) {
       nodeData.childrenID = [...new Set([...nodeData.childrenID, ...(childrenID || [])])] as string[];
-      nodeData.childrenID = nodeData.childrenID.filter((id) => id !== elementToRemove.id);
+      nodeData.childrenID = nodeData.childrenID.filter((id) => id !== elementToRemove?.id);
     }
     if (isChildrenElement && nodeData?.parentID) {
       nodeData.parentID = [...new Set([...nodeData.parentID, ...(parentID || [])])] as string[];
-      nodeData.parentID = nodeData.parentID.filter((id) => id !== elementToRemove.id);
+      nodeData.parentID = nodeData.parentID.filter((id) => id !== elementToRemove?.id);
     }
     return element;
   });
@@ -313,7 +313,7 @@ function updateParentAndChildNodeElementRelationship(
     newElements = onRemoveNode((branchToRemove.source as FlowElement<Data>).id, newElements);
     newElements = onRemoveNode((branchToRemoveTarget as FlowElement<Data>).id, newElements);
   } else if (elementToRemove.type === 'processBranch' && !isRemoveLastBranch) {
-    const branchNodes = getBranchNodes(elementToRemove.id, newElements);
+    const branchNodes = getBranchNodes(elementToRemove?.id, newElements);
     branchNodes.forEach((node) => {
       removedElementsID.push(node.id);
       newElements = onRemoveNode(node.id, newElements);

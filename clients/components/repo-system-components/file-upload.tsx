@@ -16,18 +16,14 @@ export interface Props {
   onFileSuccess?: (file: QXPUploadFileBaseProps) => void;
 }
 
-function FileUpload({ accept, filesSourceUrl, ...rest }: Props): JSX.Element {
+function FileUpload({ accept, filesSourceUrl, ...rest }: Props, ref: React.Ref<HTMLDivElement>): JSX.Element {
   const uploaderRef = useRef<any>(null);
-  const controller = new AbortController();
-  const { signal } = controller;
 
-  // The file list json which fetch from url should be like type QXPUploadFileBaseProps
   async function fetchUrlFiles(url: string): Promise<QXPUploadFileBaseProps[]> {
     const response = await fetch(url, {
       headers: {
         'Content-Type': 'application/json',
       },
-      signal,
     });
     const data = await response.json();
     return data as QXPUploadFileBaseProps[];
@@ -36,17 +32,20 @@ function FileUpload({ accept, filesSourceUrl, ...rest }: Props): JSX.Element {
     if (filesSourceUrl) {
       fetchUrlFiles(filesSourceUrl).then((files) => {
         uploaderRef.current.setFiles(files);
-      }).catch((e) => {
-        if (e.name === 'AbortError') {
-          return;
-        }
-        toast.error('Url外部文件列表获取失败');
+      }).catch(() => {
+        toast.error('Url文件获取错误');
       });
+      // line 27, The files which fetch from url api should be like this below format
+      // make sure the files
+      //   const files = [
+      //     {
+      //       name: 'xxxxxx',
+      //       uid: 'xxxxxxxxxxxxxx',
+      //       type: 'xxxxxxx',
+      //       size: xxxxx,
+      //     },
+      //   ];
     }
-
-    return () => {
-      controller.abort();
-    };
   }, []);
 
   return (
