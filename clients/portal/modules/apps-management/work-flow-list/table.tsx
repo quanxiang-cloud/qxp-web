@@ -45,16 +45,13 @@ function WorkFlowTable({ type, searchInput }: Props): JSX.Element {
     currentDeleteWorkFlow: null,
   });
   const [statusFilter, setStatusFilter] = useState('');
-  const [pagination, setPagination] = useState({
-    current: 1,
-    pageSize: 20,
-  });
+  const [currentPageNumber, setCurrentPageNumber] = useState(1);
   const { data, isLoading, isError, refetch } = useQuery(
-    ['GET_FLOW_LIST', type, pagination, appID],
+    ['GET_FLOW_LIST', type, currentPageNumber, appID],
     () => getFlowList({
       appId: appID,
-      page: pagination.current,
-      size: pagination.pageSize,
+      page: currentPageNumber,
+      size: 100,
       triggerMode: type ? type : undefined,
     }),
   );
@@ -194,7 +191,7 @@ function WorkFlowTable({ type, searchInput }: Props): JSX.Element {
   function filterFlowOfName(): Flow[] {
     return filteredData?.filter(({ name }) => {
       if (searchInput) {
-        return name.match(searchInput);
+        return name.indexOf(searchInput) !== -1;
       }
 
       return true;
@@ -248,10 +245,12 @@ function WorkFlowTable({ type, searchInput }: Props): JSX.Element {
       )}
       {!isLoading && hasData && !!filteredData?.length && (
         <Pagination
-          {...pagination}
+          current={currentPageNumber}
+          pageSize={100}
           total={data?.total}
+          pageSizeOptions={[100]}
           renderTotalTip={() => `共 ${data?.total || 0} 条数据`}
-          onChange={(current, pageSize) => setPagination({ current, pageSize })}
+          onChange={(current) => setCurrentPageNumber(current)}
         />
       )}
       {!!state.currentDeleteWorkFlow && state.currentDeleteWorkFlow.status === 'DISABLE' && (
