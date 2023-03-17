@@ -46,7 +46,7 @@ function SimulatorBlock(props: BlockItemProps<BlocksCommunicationType>): JSX.Ele
         props.onSharedStateChange('activeModalLayer', activeModalLayer);
       }}
       activeOverLayerNodeID={props.sharedState.activeModalLayer}
-      cssURLs={[window.PERSONALIZED_CONFIG.styleCssUrl]}
+      cssURLs={[window.PERSONALIZED_CONFIG.styleCssUrl, '/dist/css/antd.css']}
       overLayerComponents={__OVER_LAYER_COMPONENTS}
     />
   );
