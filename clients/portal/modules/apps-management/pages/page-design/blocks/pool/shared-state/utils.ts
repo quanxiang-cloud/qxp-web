@@ -2,8 +2,8 @@ import { SharedStatesSpec, Artery } from '@one-for-all/artery';
 
 export function mapShareState(states: Record<string, string>): SharedStatesSpec {
   return Object.entries(states)?.reduce((memo: Record<string, any>, [k, v]: [string, string]) => {
-    const parsedVal: { val: any } = JSON.parse(v);
-    memo[k] = { initial: JSON.parse(parsedVal.val) };
+    const parsedVal: { val: any, desc?: string } = JSON.parse(v);
+    memo[k] = { initial: JSON.parse(parsedVal.val), desc: parsedVal.desc || '' };
     return memo;
   }, {});
 }
