@@ -152,6 +152,7 @@ export function buildWorkFlowSaveData(
   } = store.value;
 
   const newcron = (saveData as Partial<DelayedData>).timer || cron || '';
+  store.next({ ...store.value, cron: newcron });
   return {
     bpmnText: buildBpmnText(version, nodeIdForDrawerForm, saveData),
     name: name as string,
