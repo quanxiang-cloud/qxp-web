@@ -59,7 +59,7 @@ export function updateLabelsOnMultipleEdit(actions: ISchemaFormActions): void {
   ).subscribe(({ value }) => {
     const availableOptions = getFieldValue('availableOptions');
     setFieldValue('availableOptions', value?.map((op: string, index: number) => {
-      if (index >= availableOptions.length) {
+      if (index >= (availableOptions || []).length) {
         return { label: op, isDefault: false };
       }
 

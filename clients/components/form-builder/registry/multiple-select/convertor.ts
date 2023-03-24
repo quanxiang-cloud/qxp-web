@@ -79,7 +79,6 @@ export function toConfig(schema: ISchema): MultipleSelectConfig {
     datasetId: schema['x-component-props']?.datasetId,
     formApi: schema['x-component-props']?.formApi,
     sendUserData: schema['x-component-props']?.sendUserData,
-
     availableOptions: schema.enum?.map((label) => {
       return {
         label: label,
