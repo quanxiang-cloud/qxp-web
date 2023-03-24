@@ -10,7 +10,6 @@ import Table from '@c/table';
 import Modal from '@c/modal';
 import toast from '@lib/toast';
 import ErrorTips from '@c/error-tips';
-import Pagination from '@c/pagination';
 import TableMoreFilterMenu from '@c/more-menu/table-filter';
 
 import { deleteFlow, getFlowList } from './api';
@@ -51,7 +50,7 @@ function WorkFlowTable({ type, searchInput }: Props): JSX.Element {
     () => getFlowList({
       appId: appID,
       page: currentPageNumber,
-      size: 100,
+      size: 500,
       triggerMode: type ? type : undefined,
     }),
   );
@@ -242,16 +241,6 @@ function WorkFlowTable({ type, searchInput }: Props): JSX.Element {
       )}
       {isError && (
         <ErrorTips desc="something wrong..."/>
-      )}
-      {!isLoading && hasData && !!filteredData?.length && (
-        <Pagination
-          current={currentPageNumber}
-          pageSize={100}
-          total={data?.total}
-          pageSizeOptions={[100]}
-          renderTotalTip={() => `共 ${data?.total || 0} 条数据`}
-          onChange={(current) => setCurrentPageNumber(current)}
-        />
       )}
       {!!state.currentDeleteWorkFlow && state.currentDeleteWorkFlow.status === 'DISABLE' && (
         <Modal
