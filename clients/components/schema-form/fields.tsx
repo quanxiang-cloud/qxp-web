@@ -50,13 +50,13 @@ export default function Fields({ register, fields, control, errors, values, setV
                   name={name}
                   rules={rules}
                   render={({ field, fieldState }) => {
-                    Object.assign(fieldState, {
+                    const newState = Object.assign({}, fieldState, {
                       error: isString(fieldState.error) ? fieldState.error : fieldState.error?.message,
                     });
                     return (
                       <Component
                         {...omit(['ref'], field)}
-                        {...fieldState}
+                        {...newState}
                         values={values}
                         setFormValue={setValue}
                       />
