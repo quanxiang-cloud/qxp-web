@@ -95,6 +95,14 @@ const schema: ISchema = {
               label: 'API',
               value: 'api',
             },
+            // {
+            //   label: '关联已有数据',
+            //   value: 'linkage',
+            // },
+            // {
+            //   label: '通过公式计算',
+            //   value: 'formula',
+            // },
           ],
           'x-component': 'select',
           'x-mega-props': {
@@ -115,6 +123,18 @@ const schema: ISchema = {
               condition: '{{ $value === "customized" }}',
             },
             {
+              type: 'value:state',
+              target: 'add',
+              state: {
+                display: '{{ $value === "customized" }}',
+              },
+            },
+            {
+              type: 'value:visible',
+              target: 'linkageConfig',
+              condition: '{{ $value === "linkage" }}',
+            },
+            {
               type: 'value:visible',
               target: 'datasetId',
               condition: '{{ $value === "dataset" }}',
@@ -130,6 +150,13 @@ const schema: ISchema = {
               condition: '{{ $value === "api" }}',
             },
           ],
+        },
+        linkageConfig: {
+          'x-component': 'DefaultValueLinkageConfigBtn',
+          'x-component-props': {
+            value: '设置数据联动',
+          },
+          'x-index': 9,
         },
         availableOptions: {
           'x-component': 'OptionsConfig',
@@ -157,7 +184,7 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 9,
+          'x-index': 12,
         },
         formApi: {
           title: 'API:',
@@ -167,13 +194,13 @@ const schema: ISchema = {
             message: '请选择API',
           },
           'x-component': 'FormApi',
-          'x-index': 10,
+          'x-index': 13,
         },
         sendUserData: {
           title: '允许发送用户信息',
           default: false,
           'x-component': 'Switch',
-          'x-index': 11,
+          'x-index': 14,
         },
         defaultValue: {
           type: 'string',
@@ -185,7 +212,7 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 13,
+          'x-index': 15,
         },
       },
     },
