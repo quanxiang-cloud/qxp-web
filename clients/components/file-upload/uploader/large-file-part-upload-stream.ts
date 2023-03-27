@@ -66,7 +66,8 @@ export default function fileMultiPartUpload({
   }).then(() => {
     return httpClient(FINISH_FILE_UPLOAD_API, { path });
   }).then(() => {
-    onSuccess?.(file);
+    const fileDownloadURL = `${window.location.protocol}//${window.CONFIG.oss_config.readable}.${window.location.host}/${file.uid}`;
+    onSuccess?.({ ...file, downLoadURL: fileDownloadURL });
   }).catch((error) => {
     onError?.(error, file);
   });

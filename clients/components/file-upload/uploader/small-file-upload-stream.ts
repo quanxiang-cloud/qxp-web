@@ -45,7 +45,8 @@ export default function smallFileUploadRequest({
   }).then(() => {
     return httpClient(FINISH_FILE_UPLOAD_API, { path: `${fileBucket}/${file.uid}` });
   }).then(() => {
-    onSuccess?.(file);
+    const fileDownloadURL = `${window.location.protocol}//${window.CONFIG.oss_config.readable}.${window.location.host}/${file.uid}`;
+    onSuccess?.({ ...file, downLoadURL: fileDownloadURL });
   }).catch((reason) => {
     onError?.(reason, file);
   });
