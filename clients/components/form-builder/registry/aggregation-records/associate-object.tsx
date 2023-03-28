@@ -39,6 +39,7 @@ const getTargetTableOptions = (fieldName: string, schema: ISchema): Promise<Asso
   if (compName === 'SubTable') {
     const subordination = get(compProps, 'subordination', '');
 
+    // @ts-ignore
     if (subordination === 'sub_table') {
       const subTableSchema = get(fieldSchema, 'items.properties', {});
       return Promise.resolve({
@@ -47,12 +48,14 @@ const getTargetTableOptions = (fieldName: string, schema: ISchema): Promise<Asso
       });
     }
 
+    // @ts-ignore
     if (subordination === 'foreign_table') {
       const appId = get(compProps, 'appID', '');
       const targetTableFields = get(compProps, 'columns', []);
       return getTableSchema(appId, targetTableId).then((res) => {
         const targetTableSchema = res?.schema.properties || {};
         const filterTargetTableFields = Object.entries(targetTableSchema).map(([key, fieldSchema]) => {
+          // @ts-ignore
           if (targetTableFields.includes(key) && fieldSchema.type === 'number') {
             return { label: fieldSchema.title, value: key };
           }

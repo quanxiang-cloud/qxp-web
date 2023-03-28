@@ -28,7 +28,9 @@ function convertNodeToLayout(node: Node): Layout {
   return {
     id: node.id as string,
     name: node.label || '未命名布局',
+    // @ts-ignore
     type: get(node, 'props.data-layout-type.value'),
+    // @ts-ignore
     description: get(node, 'props.data-layout-description.value'),
     subViews: getLayoutSubViews(node),
     refSchemaID: getRefSchemaID(node),

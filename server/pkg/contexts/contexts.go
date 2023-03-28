@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	_log "qxp-web/server/pkg/contexts/log"
 
@@ -109,7 +110,15 @@ func SetupContext(configFile string, sessionCookieName string, appName string) (
 	// }
 
 	// init OSSConfig
-	Config.ClientConfig.OSSConfig = getOSSConfig()
+	for {
+		ossConf := getOSSConfig()
+		if ossConf.Domain == "" {
+			time.Sleep(time.Second * 1)
+			continue
+		}
+		Config.ClientConfig.OSSConfig = ossConf
+		break
+	}
 
 	return nil
 }

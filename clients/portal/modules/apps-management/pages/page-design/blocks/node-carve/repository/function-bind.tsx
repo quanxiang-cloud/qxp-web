@@ -26,7 +26,7 @@ export function generateInitFunString({ name = '', args = '', notes = '', body =
   const userNotes = notes ? `// ${notes}` : '';
   if (args === '...args') {
     defaultNotes =
-`/** 
+`/**
   * 如果在事件属性描述中没有传递 \`args\` 变量对函数参数进行描述的话
   * 会默认使用 \`...args\` 作为函数参数
   * 这样的目的是为了避免需要用到函数参数却没有声明的情况
@@ -99,6 +99,18 @@ function FunctionBind({
   const fullPath = `${__path}.${bodyPath}`;
   useEffect(() => {
     setHasBound(!!get(activeNode, fullPath));
+
+    if (!activeNode || !artery) {
+      return;
+    }
+
+    const node = findNode(artery.node, activeNode.id);
+    setFnString(generateInitFunString({
+      name: name || __path.split('.').pop() || 'func',
+      args,
+      notes,
+      body: get(node, fullPath, ''),
+    }));
   }, [activeNode]);
 
   function onEdit(): void {

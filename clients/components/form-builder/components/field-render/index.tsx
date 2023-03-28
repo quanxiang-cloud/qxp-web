@@ -33,12 +33,14 @@ function FieldRender({ schema }: Props): JSX.Element {
     let style = {};
     const pid = get(field, 'x-internal.parentFieldId');
     const fieldCompName = get(field, 'x-component') || '';
+    // @ts-ignore
     const copName = get(store.flattenFieldsMap[pid], 'componentName') || '';
 
     const shouldFullRow = copName?.toLowerCase() === 'layoutgrid' &&
       FULL_ROW.includes(fieldCompName?.toLocaleLowerCase());
 
     if (shouldFullRow) {
+      // @ts-ignore
       const col = get(store.flattenFieldsMap[pid], 'configValue.columns');
       style = {
         gridColumnStart: 1,
