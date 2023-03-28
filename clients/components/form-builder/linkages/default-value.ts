@@ -45,8 +45,8 @@ function fetchLinkedTableData$(
   return from(
     fetchFormDataList(linkage.linkedAppID, linkage.linkedTable.id, {
       sort: (linkage.linkedTableSortRules || []).filter(Boolean),
-      query: setESQueryParams(mergeDeepRight(linkageRule, filterRule) as QueryParamsType),
       size: 999,
+      query: setESQueryParams(mergeDeepRight(linkageRule, filterRule) as QueryParamsType),
     }),
   ).pipe(
     catchError(() => of({ entities: [], total: 0 })),
