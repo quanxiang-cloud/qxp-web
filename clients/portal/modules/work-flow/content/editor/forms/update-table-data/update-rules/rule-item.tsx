@@ -23,6 +23,8 @@ interface Props {
   rule: Rule;
   onRemove: () => void;
   onChange: (data: Partial<Rule>) => void;
+  formType?: any;
+  tableId?: any;
 }
 
 const excludeComps = ['serial', 'aggregationrecords', 'associatedrecords', 'associateddata', 'subtable'];
@@ -281,6 +283,8 @@ function RuleItem(props: Props): JSX.Element {
           onSave={saveFormula}
           defaultValue={item.valueOf as string}
           targetSchema={props.targetSchema}
+          formType={props.formType}
+          tableId={props.tableId}
         />
       )}
     </div>

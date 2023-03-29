@@ -12,6 +12,7 @@ interface Props {
   tableId: string;
   children?: React.ReactNode;
   defaultValue: Rule[];
+  formType?: any;
 }
 
 export type FormulaFields=Record<string, string>; // field id => value path
@@ -23,7 +24,7 @@ export type Rule = {
 }
 export type RefType = { getValues: () => any }
 
-function UpdateRules({ appId, tableId, defaultValue }: Props, ref: React.Ref<RefType>): JSX.Element {
+function UpdateRules({ appId, tableId, defaultValue, formType }: Props, ref: React.Ref<RefType>): JSX.Element {
   const { data } = useContext(Context);
   const [rules, setRules] = useState<Array<Rule>>(defaultValue || []);
   const { data: targetSchema } = useQuery(['GET_TARGET_TABLE_SCHEMA', tableId, appId], getFormFieldSchema, {
@@ -68,6 +69,8 @@ function UpdateRules({ appId, tableId, defaultValue }: Props, ref: React.Ref<Ref
               onRemove={() => onRemove(idx)}
               onChange={(data) => onChange(data, idx)}
               rule={rule}
+              formType={formType}
+              tableId={tableId}
             />),
           )}
         </div>
