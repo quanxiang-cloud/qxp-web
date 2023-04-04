@@ -21,6 +21,8 @@ const approvalStatus: Status = {
   CANCEL: { style: { color: 'text-red-600', bgColor: 'bg-red-100' }, text: '撤销' },
   RE_SUBMIT: { style: { color: 'text-red-600', bgColor: 'bg-red-100' }, text: '再次提交' },
   CC: { style: { color: 'text-red-600', bgColor: 'bg-red-100' }, text: '抄送' },
+  AUTO_AGREE: { style: { color: 'text-green-600', bgColor: 'bg-green-100' }, text: '审批通过' },
+  AUTO_REFUSE: { style: { color: 'text-red-600', bgColor: 'bg-red-100' }, text: '审批拒绝' },
 };
 
 interface Props {
@@ -28,10 +30,7 @@ interface Props {
 }
 
 export default function ApprovalStatus({ status }: Props): JSX.Element {
-  let value = approvalStatus[status] || { style: { color: '', bgColor: '', text: '' } };
-  if (status === 'AUTO_REVIEW') {
-    value = approvalStatus.AGREE;
-  }
+  const value = approvalStatus[status] || { style: { color: '', bgColor: '', text: '' } };
 
   return (
     <div className={classNames('text-center leading-24 cursor-pointer text-12 px-6 corner-4-0-4-0',
