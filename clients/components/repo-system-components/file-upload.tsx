@@ -11,47 +11,56 @@ export interface Props {
   className?: string;
   maxFileSize?: number;
   uploaderDescription?: string;
-  filesSourceUrl: string
+  uploadedFilesJson: string;
   style?: React.CSSProperties;
   onFileSuccess?: (file: QXPUploadFileBaseProps) => void;
 }
 
-function FileUpload({ accept, filesSourceUrl, ...rest }: Props, ref: React.Ref<HTMLDivElement>): JSX.Element {
-  const uploaderRef = useRef<any>(null);
+const PATTERN = /(?<fileName>[\w\d-_.\s@%+]+)\.(?<type>\w+)$/;
 
-  async function fetchUrlFiles(url: string): Promise<QXPUploadFileBaseProps[]> {
-    const response = await fetch(url, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    const data = await response.json();
-    return data as QXPUploadFileBaseProps[];
+function validateJson(json: string): string[] | null {
+  try {
+    const jsonObj = JSON.parse(json);
+    return jsonObj;
+  } catch (error) {
+    return null;
   }
+}
+
+function FileUpload({ accept, uploadedFilesJson, ...rest }: Props): JSX.Element {
+  const uploaderRef = useRef<any>(null);
   useEffect(() => {
-    if (filesSourceUrl) {
-      fetchUrlFiles(filesSourceUrl).then((files) => {
-        uploaderRef.current.setFiles(files);
-      }).catch(() => {
-        toast.error('Url文件获取错误');
-      });
-      // line 27, The files which fetch from url api should be like this below format
-      // make sure the files
-      //   const files = [
-      //     {
-      //       name: 'xxxxxx',
-      //       uid: 'xxxxxxxxxxxxxx',
-      //       type: 'xxxxxxx',
-      //       size: xxxxx,
-      //     },
-      //   ];
+    const fileUrlArr = validateJson(uploadedFilesJson || '[]');
+
+    if (!fileUrlArr) {
+      toast.error('文件列表JSON不合法');
+      return;
     }
-  }, []);
+    const fileBaseInfoList = fileUrlArr?.map((downLoadURL) => {
+      const match = PATTERN.exec(downLoadURL);
+      let name = '';
+      let type = '';
+      if (match) {
+        name = match.groups?.fileName || '';
+        type = match.groups?.type || '';
+      }
+
+      return {
+        name: `${name}.${type}`,
+        type,
+        uid: `${name}.${type}`,
+        size: 0,
+        downLoadURL,
+      };
+    });
+
+    uploaderRef.current.setFiles(fileBaseInfoList);
+  }, [uploadedFilesJson]);
 
   return (
     <FileUploader {...rest} ref={uploaderRef} accept={accept ? accept?.split(',') : undefined} />
   );
 }
 
-export default React.forwardRef(FileUpload);
+export default FileUpload;
 
