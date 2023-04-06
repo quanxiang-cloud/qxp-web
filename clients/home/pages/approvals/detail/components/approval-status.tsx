@@ -21,8 +21,8 @@ const approvalStatus: Status = {
   CANCEL: { style: { color: 'text-red-600', bgColor: 'bg-red-100' }, text: '撤销' },
   RE_SUBMIT: { style: { color: 'text-red-600', bgColor: 'bg-red-100' }, text: '再次提交' },
   CC: { style: { color: 'text-red-600', bgColor: 'bg-red-100' }, text: '抄送' },
-  AUTO_AGREE: { style: { color: 'text-green-600', bgColor: 'bg-green-100' }, text: '审批通过' },
-  AUTO_REFUSE: { style: { color: 'text-red-600', bgColor: 'bg-red-100' }, text: '审批拒绝' },
+  AUTO_AGREE: { style: { color: 'text-green-600', bgColor: 'bg-green-100' }, text: '自动审批通过' },
+  AUTO_REFUSE: { style: { color: 'text-red-600', bgColor: 'bg-red-100' }, text: '自动审批拒绝' },
 };
 
 interface Props {
