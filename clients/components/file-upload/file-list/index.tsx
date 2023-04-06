@@ -38,9 +38,14 @@ export default function FileList({
     if (!canDownload) return;
 
     if (file.state === 'success' || !file.state) {
-      const { uid } = file;
+      const { uid, downLoadURL } = file;
 
-      if (!OSS_PUBLIC_BUCKET_NAME || !OSS_PRIVATE_BUCKET_NAME || !OSS_DOMAIN ) {
+      if (downLoadURL) {
+        window.open(downLoadURL, '_blank');
+        return;
+      }
+
+      if (!OSS_PUBLIC_BUCKET_NAME || !OSS_PRIVATE_BUCKET_NAME || !OSS_DOMAIN) {
         toast.error('QXP Uploader : Bucket or domain is not provided for file signature');
         return;
       }

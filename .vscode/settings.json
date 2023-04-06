@@ -1,13 +1,8 @@
 {
   "css.validate": false,
-  "cSpell.words": [
-    "antd",
-    "arrowclosed",
-    "export",
-    "formily",
-  ],
+  "cSpell.words": ["antd", "arrowclosed", "export", "formily"],
   "files.eol": "\n",
   "svg.preview.background": "white",
   "go.lintTool": "golint",
-  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
