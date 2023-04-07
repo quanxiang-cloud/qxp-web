@@ -490,6 +490,7 @@ export interface RequestConfig {
   url: string; // 可选
   method: HTTPMethod; // 可选
   outputs?: Input[]; // API 定义的输出(可选)
+  sendUrl?: string; // 可选
 }
 
 export interface SendConfig {

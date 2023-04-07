@@ -83,6 +83,20 @@ function Inputs({ value, onChange, values, error }: Props): JSX.Element | null {
     refEditor.current?.onInsertText(val);
   };
 
+  const formatValue = (value: any)=>{
+    return value?.map((item: any)=>{
+      const { data } = item;
+      return {
+        ...item,
+        data: data?.map((child: any)=>{
+          return {
+            ...child,
+            data: (child.type === 'number' ) ? String(child.data === null ? '' : child.data) : child.data,
+          };
+        }),
+      };
+    });
+  };
   return (
     <div className="webhook-request-inputs">
       {triggerType === 'request' && (
@@ -94,7 +108,7 @@ function Inputs({ value, onChange, values, error }: Props): JSX.Element | null {
             <ApiParamsConfig
               onChange={onChange}
               ref={formulaEditorRef}
-              value={value}
+              value={formatValue(value)}
               url={values.url}
               initValue={initInputsValue}
               customRules={customRules!}

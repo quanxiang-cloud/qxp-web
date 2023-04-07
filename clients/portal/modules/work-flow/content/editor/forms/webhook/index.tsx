@@ -219,7 +219,14 @@ export default function WebhookConfig(
     } catch (error) {
       console.log(error);
     }
-    onSubmit({ type, config } as WebhookData);
+    const _config: any = { ...config };
+    if (type === 'request') {
+      _config.sendUrl = _config.url;
+      _config.sendMethod = _config.method;
+      delete _config.url;
+      delete _config.method;
+    }
+    onSubmit({ type, config: _config } as WebhookData);
   }, [onSubmit]);
 
   const handleChange = useCallback(({ type, ...config }) => {
