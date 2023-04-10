@@ -54,7 +54,7 @@ function AssociatedRecordsValueRender({ value, schema, className }: ValueRendere
 }
 
 function numberPickerValueRender({ schema, value }: ValueRendererProps): string {
-  return Number(value).toFixed(schema?.['x-component-props']?.precision || 0);
+  return !isNaN(value as any) ? (Number(value).toFixed(schema?.['x-component-props']?.precision || 0)) : '';
 }
 
 export function labelValueRenderer(value: FormDataValue): string {

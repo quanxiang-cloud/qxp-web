@@ -56,7 +56,7 @@ export default function GlobalConfig(): JSX.Element | null {
       const schema = await getFormFieldSchema({ queryKey, meta });
       const schemaFields = schemaToFields(schema);
       return schemaFields.filter((fieldSchema) => {
-        return fieldSchema.id !== '_id' && !['subtable', 'associatedrecords', 'aggregationrecords'].includes(
+        return fieldSchema.id !== '_id' && !['subtable', 'associatedrecords', 'aggregationrecords', 'imageupload', 'fileupload'].includes(
           fieldSchema.componentName);
       }).map((fieldSchema) => ({
         label: fieldSchema.title,
