@@ -73,7 +73,7 @@ export default function useElkLayout(elements: Elements, direction: 'right' | 'b
   const getNodeSizeById = useGetNodeSize(nodesStates);
 
   const { nodes: _nodes = [], edges: _edges = [] } = useMemo(
-    () => groupBy((el) => isNode(el) ? 'nodes' : 'edges', elements), [elements.length],
+    () => groupBy((el) => isNode(el) ? 'nodes' : 'edges', elements), [JSON.stringify(elements).length],
   );
   const nodes = _nodes as Node[];
   const edges = _edges as Edge[];

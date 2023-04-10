@@ -45,6 +45,7 @@ export default function Detail(): JSX.Element {
 
   const { data, isLoading, isError, refetch } = useQuery(['GET_WORK_FLOW_INFO', flowID], getWorkFlowInfo, {
     enabled: !!flowID,
+    cacheTime: 0,
   });
 
   useEffect(() => {
