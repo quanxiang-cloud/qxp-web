@@ -28,7 +28,7 @@ export function ImgList({
   style,
   className,
   fileBucket,
-  canDownload,
+  canDownload = true,
   handleDownload,
   deleteFileItem,
   originalThumbnail,
@@ -121,15 +121,11 @@ export function ImgList({
                       )}
                     >
                       <EyeOutlined className='img-icon-eye' onClick={()=>handlePreview(index)}/>
-
-                      {
-                        canDownload && (
-                          <Icon
-                            {...FILE_LIST_ICON['download']}
-                            clickable
-                            onClick={() => handleDownload?.(file)}
-                          />)
-                      }
+                      <Icon
+                        {...FILE_LIST_ICON['download']}
+                        clickable
+                        onClick={() => handleDownload?.(file)}
+                      />
                       {
                         deleteFileItem && (
                           <span className="">

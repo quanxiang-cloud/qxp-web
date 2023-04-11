@@ -35,7 +35,7 @@ export default function FileList({
   onRetryFileUpload,
 }: FileListProps): JSX.Element | null {
   function handleSingleFileDownload(file: QXPUploadFileTask): void {
-    if (!canDownload) return;
+    // if (!canDownload) return;
 
     if (file.state === 'success' || !file.state) {
       const { uid, downLoadURL } = file;
