@@ -198,6 +198,11 @@ body {
 .previewMsg {
   width: 100%;
 
+  a {
+    color: blue;
+    text-decoration: underline;
+  }
+
   .pre_receivers {
     padding: 12px 0;
     border-top: 1px solid #E2E8F0;
