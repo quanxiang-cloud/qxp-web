@@ -14,7 +14,7 @@ export function mapSharedStateSpec(artery: Artery): Record<string, any> {
       const conf = {
         name: k,
         val: JSON.stringify(v.initial),
-        desc: '',
+        desc: v.desc || '',
       };
       acc[k] = JSON.stringify(conf);
       return acc;
