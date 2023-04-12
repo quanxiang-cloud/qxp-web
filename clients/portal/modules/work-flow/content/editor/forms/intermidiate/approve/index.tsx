@@ -11,6 +11,7 @@ import { DeadLine, WhenTimeout } from '@flow/content/editor/type';
 
 import BasicConfig from '../components/basic-config';
 import FieldPermission from '../components/field-permission';
+import OperatorPermission from '../components/operator-permission';
 
 interface Props {
   defaultValue: FillInData;
@@ -88,6 +89,16 @@ export default function ApproveForm({
             <FieldPermission
               value={value.fieldPermission}
               onChange={handleChange}
+            />
+          ),
+        }, {
+          id: 'operatorPermission',
+          name: '操作权限',
+          content: (
+            <OperatorPermission
+              value={value.operatorPermission}
+              onChange={handleChange}
+              type={nodeType}
             />
           ),
         }]}

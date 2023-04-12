@@ -161,10 +161,6 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
                 <span className="mr-8">为字段赋值</span>
                 <Toggle defaultChecked={editable} onChange={handleEditableChange} />
               </div>
-              <div className="flex items-center">
-                <span className="mr-8">数据权限修改</span>
-                <Toggle defaultChecked={dataPermEditable} onChange={handleDataPermEditableChange} />
-              </div>
             </div>
           </header>
           <CustomFieldTable
