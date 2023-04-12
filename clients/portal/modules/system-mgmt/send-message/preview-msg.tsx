@@ -20,6 +20,7 @@ const PreviewMsg = ({
   prevData,
   hideReceivers,
   className,
+  isPreview,
 }: Props): JSX.Element => {
   if (!prevData) {
     return (
@@ -48,12 +49,14 @@ const PreviewMsg = ({
     dayjs(createdAt).format('YYYY-MM-DD HH:mm:ss'), txt, creatorName || window.USER.name,
   ].join(' · ');
 
+  const _content = !isPreview ? content : content.replace('contenteditable="true"', '');
+
   return (
     <div className={cs(styles.previewMsg, className)}>
       <div className={styles.previewMsgContent}>
         <div className={styles.title}>{title}</div>
         <div className={styles.info}>{infoText}</div>
-        <div dangerouslySetInnerHTML={{ __html: content }} />
+        <div dangerouslySetInnerHTML={{ __html: _content }} />
         <FileList
           files={fileList}
           canDownload={true}
