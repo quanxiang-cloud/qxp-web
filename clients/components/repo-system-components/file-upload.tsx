@@ -14,6 +14,9 @@ export interface Props {
   uploadedFilesJson: string;
   style?: React.CSSProperties;
   onFileSuccess?: (file: QXPUploadFileBaseProps) => void;
+  onFileDelete?: (file: QXPUploadFileBaseProps) => void;
+  onFileError?: (err: Error, file: QXPUploadFileBaseProps) => void;
+  onFileAbort?: (file: QXPUploadFileBaseProps | QXPUploadFileBaseProps[]) => void;
 }
 
 const PATTERN = /(?<fileName>[\w\d-_.\s@%+]+)\.(?<type>\w+)$/;
