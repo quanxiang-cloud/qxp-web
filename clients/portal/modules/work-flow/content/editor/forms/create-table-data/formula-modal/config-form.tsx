@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, { useState, useRef, useEffect, useCallback, useMemo, useContext } from 'react';
 import { mergeRight } from 'ramda';
 import { useQuery } from 'react-query';
@@ -88,7 +89,7 @@ function ConfigForm({ value, onChange }: Props): JSX.Element {
         <PathTree
           className="h-full bg-white overflow-auto"
           onChange={onSelectVariable}
-          onRulesChange={setCustomRules}
+          onRulesChange={(rules)=> setCustomRules(rules?.map((item: any)=>({ ...item, key: `[${item?.key}]` })))}
           value={pathTreeValue}
         />
       </div>

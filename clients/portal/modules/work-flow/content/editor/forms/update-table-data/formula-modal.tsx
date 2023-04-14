@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import React, { useContext, useMemo, useRef } from 'react';
 
 import Modal from '@c/modal';
@@ -13,14 +15,17 @@ interface Props {
   onSave: (rule: string, formulaFields: FormulaFields) => void;
   defaultValue?: string;
   targetSchema?: ISchema;
+  formType?: any;
+  tableId?: any;
 }
 
 function FormulaModal(props: Props): JSX.Element | null {
   const formulaRef = useRef<RefProps>();
-  const { tableSchema: sourceSchema } = useContext(FlowTableContext);
+  const { tableSchema: sourceSchema, tableID: sourceTableId } = useContext(FlowTableContext);
+  const { tableId: targetTableId, formType } = props;
   const targetSchemaFields = useMemo(()=> schemaToFields(props.targetSchema), []);
-  const targetFields = getSchemaFields(targetSchemaFields);
-  const sourceFields = getSchemaFields(sourceSchema);
+  const targetFields = getSchemaFields(targetSchemaFields).map((item)=>({ ...item, tableId: targetTableId }));
+  const sourceFields = getSchemaFields(sourceSchema).map((item)=>({ ...item, tableId: sourceTableId }));
   const allFields = useMemo(()=> [...targetFields, ...sourceFields], [targetFields, sourceFields]);
   const formulaFields = useMemo(()=> allFields.filter(({ value })=> {
     return !SYSTEM_FIELDS.includes(value);
@@ -33,8 +38,8 @@ function FormulaModal(props: Props): JSX.Element | null {
     return acc;
   }, {}), [allFields]);
 
-  const formulaCustomRules: CustomRule[] = allFields.map(({ label, value }) => ({
-    key: '$' + value,
+  const formulaCustomRules: CustomRule[] = allFields.map(({ label, value, tableId }) => ({
+    key: `[$field_${tableId}.${value}]`,
     name: label,
     type: 'field',
   }));
@@ -46,6 +51,28 @@ function FormulaModal(props: Props): JSX.Element | null {
   function addField(entityData: { name: string, key: string }): void {
     formulaRef.current?.insertEntity(entityData);
   }
+
+  const getFields = (name: string, fields: any[], className = 'target-table-fields')=>{
+    return (
+      <div className="flex flex-col mb-20">
+        <div>{name}</div>
+        <div className={className}>
+          {fields.map((item: any) => {
+            const { label, value, tableId } = item;
+            return (
+              <span
+                key={value}
+                onClick={() => addField({ key: `[$field_${tableId}.${value}]`, name: label })}
+                className="inline-block mb-8 p-2 bg-gray-100 mr-4 border border-gray-300 cursor-pointer"
+              >
+                {label}
+              </span>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <Modal
@@ -70,20 +97,7 @@ function FormulaModal(props: Props): JSX.Element | null {
     >
       <div className="p-20">
         <div className="flex flex-col mb-20" style={{ display: 'none' }}>
-          <div>目标表单字段</div>
-          <div className="target-table-fields">
-            {targetFields.map(({ label, value }) => {
-              return (
-                <span
-                  key={value}
-                  onClick={() => addField({ key: `$${value}`, name: label })}
-                  className="inline-block mb-8 p-2 bg-gray-100 mr-4 border border-gray-300 cursor-pointer"
-                >
-                  {label}
-                </span>
-              );
-            })}
-          </div>
+          {getFields('目标表单字段', targetFields)}
         </div>
         <div className="flex flex-col mb-20">
           <div>集合操作符</div>
@@ -116,22 +130,8 @@ function FormulaModal(props: Props): JSX.Element | null {
             ))}
           </div>
         </div>
-        <div className="flex flex-col mb-20">
-          <div>当前表单字段</div>
-          <div className="source-table-fields">
-            {sourceFields.map(({ label, value }) => {
-              return (
-                <span
-                  key={value}
-                  onClick={() => addField({ key: `$${value}`, name: label })}
-                  className="inline-block mb-8 p-2 bg-gray-100 mr-4 border border-gray-300 cursor-pointer"
-                >
-                  {label}
-                </span>
-              );
-            })}
-          </div>
-        </div>
+        <div className="flex flex-col mb-20"> {getFields('当前表单字段', sourceFields, 'source-table-fields')} </div>
+        { formType === 'others' && <div className="flex flex-col mb-20"> {getFields('目标表单字段', targetFields)} </div> }
         <div>
           <div>计算公式</div>
           <FormulaEditor

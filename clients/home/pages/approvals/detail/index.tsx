@@ -124,16 +124,30 @@ function ApprovalDetail(): JSX.Element {
     if (count > 0) {
       const { value, currTask, reasonRequired } = actionParams;
       validate ? store.handleClickAction(value, currTask, reasonRequired) : toast.error('必填项未填写完整');
-      console.log('validate', validate, value, currTask, reasonRequired, count);
     }
   }, [count]);
+
+  const formatProperties = (data: any)=>{
+    for (const key in data) {
+      if (data[key].type === 'object') {
+        formatProperties(data[key].properties);
+      } else {
+        data[key]?.description && (data[key].description = '');
+      }
+    }
+  };
+
+  const formatFormSchema = (formSchema: any)=>{
+    formSchema && formatProperties(formSchema.properties);
+    return formSchema;
+  };
 
   const renderSchemaForm = (task: any): JSX.Element | null => {
     return (
       <div className='task-form overflow-auto px-24'>
         <FormRenderer
           value={formData}
-          schema={task.formSchema || {}}
+          schema={formatFormSchema(task.formSchema) || {}}
           onFormValueChange={setFormValues}
           readOnly={taskEnd || type === 'APPLY_PAGE' || type === 'HANDLED_PAGE' }
           usePermission

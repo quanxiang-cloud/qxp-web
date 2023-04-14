@@ -116,7 +116,7 @@ function FormDataDetailsCard({
           key: fieldKey,
           value: hasValue ? (
             <FormDataValueRenderer schema={fieldSchema as ISchema} value={record?.[fieldKey]} />
-          ) : <span className='text-gray-900'>—</span>,
+          ) : <span className='text-gray-900 break-all'>—</span>,
           fieldSchema,
         },
       });
