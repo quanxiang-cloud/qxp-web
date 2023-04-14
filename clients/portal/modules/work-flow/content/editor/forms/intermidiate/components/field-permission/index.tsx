@@ -32,9 +32,10 @@ import './style.scss';
 interface Props {
   value: FieldPermissionType | NewFieldPermission;
   onChange: (value: Partial<FillInData>) => void;
+  nodeType?: string;
 }
 
-export default function FieldPermission({ value, onChange: _onChange }: Props): JSX.Element {
+export default function FieldPermission({ value, onChange: _onChange, nodeType }: Props): JSX.Element {
   const { appID } = useContext(FlowContext);
   const [editable, setEditable] = useState(false);
   const [dataPermEditable, setDataPermEditable] = useState(false);
@@ -156,16 +157,19 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
         <section className="mt-14">
           <header className="flex justify-between items-center mb-10">
             <div className="text-caption-no-color text-gray-400">自定义字段</div>
-            <div className="flex justify-between items-center">
-              <div className="flex items-center mr-10">
-                <span className="mr-8">为字段赋值</span>
-                <Toggle defaultChecked={editable} onChange={handleEditableChange} />
-              </div>
-              <div className="flex items-center">
-                <span className="mr-8">数据权限修改</span>
-                <Toggle defaultChecked={dataPermEditable} onChange={handleDataPermEditableChange} />
-              </div>
-            </div>
+            {
+              nodeType !== 'fillIn' &&
+              (<div className="flex justify-between items-center">
+                <div className="flex items-center mr-10">
+                  <span className="mr-8">为字段赋值</span>
+                  <Toggle defaultChecked={editable} onChange={handleEditableChange} />
+                </div>
+                <div className="flex items-center">
+                  <span className="mr-8">数据权限修改</span>
+                  <Toggle defaultChecked={dataPermEditable} onChange={handleDataPermEditableChange} />
+                </div>
+              </div>)
+            }
           </header>
           <CustomFieldTable
             editable={editable}
@@ -173,6 +177,7 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
             fields={mergedFieldPermissions.custom}
             schema={schema}
             updateFields={onUpdateFields('custom')}
+            nodeType={nodeType}
           />
         </section>
       )}

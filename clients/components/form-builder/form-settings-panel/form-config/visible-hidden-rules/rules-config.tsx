@@ -48,6 +48,9 @@ const DISABLE_FIELD: Array<string> = [
   'OrganizationPicker',
   'FileUpload',
   'ImageUpload',
+  'AssociatedData',
+  'AggregationRecords',
+  'Serial',
 ];
 
 type Props = {
@@ -100,8 +103,11 @@ function RulesConfig({ mode, onClose, linkageKey, onSubmit }: Props): JSX.Elemen
     const currentSourceKeyFieldComponent = sourceKeySchema?.['x-component'];
     const currentSourceKeyFieldProps = sourceKeySchema?.['x-component-props'];
     const compareValuePath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.compareValue`);
-    const currentCompareValue = getFieldValue(compareValuePath);
-    setFieldState(compareValuePath, (state) => {
+    // const currentCompareValue = getFieldValue(compareValuePath);
+    const index = FormPath.transform(name, /\d/, ($1) => Number($1));
+    const rules = getFieldValue('rules');
+    const currentCompareValue = rules[index].compareValue;
+    setFieldState(compareValuePath, (state: any) => {
       const selectTypeComponent = ['CheckboxGroup', 'MultipleSelect', 'Select', 'RadioGroup'];
       if (selectTypeComponent.includes(currentSourceKeyFieldComponent || '')) {
         state.props['x-component'] = 'AntdSelect';
@@ -111,7 +117,11 @@ function RulesConfig({ mode, onClose, linkageKey, onSubmit }: Props): JSX.Elemen
         state.props.enum = undefined;
       }
       state.props['x-component-props'] = currentSourceKeyFieldProps;
+      state.props['x-component-props'].defaultValue = currentCompareValue;
 
+      if (currentSourceKeyFieldComponent === 'MultipleSelect') {
+        state.props['x-component-props'].mode = 'multiple';
+      }
       if (currentSourceKeyFieldProps?.mode === 'multiple' && currentCompareValue === '') {
         state.value = undefined;
       }
@@ -138,12 +148,16 @@ function RulesConfig({ mode, onClose, linkageKey, onSubmit }: Props): JSX.Elemen
     const sourceKeyFieldComponent = sourceKeyEnum.find((sourceKeyOption) => sourceKeyOption.value === value);
     const operators = OperatorOptions[sourceKeyFieldComponent?.xComponent as string];
     const compareOperatorPath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.compareOperator`);
-    const currentOperator = getFieldValue(compareOperatorPath);
-    const shouldReset = !operators.includes(currentOperator);
+    // const currentOperator = getFieldValue(compareOperatorPath);
+    // const shouldReset = !operators.includes(currentOperator);
 
+    const index = FormPath.transform(name, /\d/, ($1) => Number($1));
+    const rules = getFieldValue('rules');
+    const currentOperator = rules[index].compareOperator;
+    const shouldReset = !JSON.stringify(operators)?.includes(currentOperator);
     setFieldState(compareOperatorPath, (state) => {
       state.props.enum = operators;
-      if (shouldReset) {
+      if (shouldReset || !currentOperator) {
         state.value = operators[0].value;
       }
     });

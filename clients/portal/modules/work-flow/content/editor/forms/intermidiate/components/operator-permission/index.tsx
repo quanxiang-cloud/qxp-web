@@ -90,12 +90,12 @@ export default function OperatorPermission({ value, onChange, type }: Props): JS
         type="system"
         onChange={onChange}
       />
-      <PermissionList
+      {/* <PermissionList
         label="自定义操作"
         operationData={mergedOperations}
         type="custom"
         onChange={onChange}
-      />
+      /> */}
     </>
   );
 }

@@ -309,10 +309,10 @@ function updateParentAndChildNodeElementRelationship(
     const branchToRemoveTarget = newElements.find((element) => {
       return element.id === branchToRemoveTargetID;
     }) as FlowElement<Data>;
-    removedElementsID.push(branchToRemove.source.id, branchToRemoveTarget.id);
+    removedElementsID.push(branchToRemove.source.id, branchToRemoveTarget?.id);
     newElements = onRemoveNode((branchToRemove.source as FlowElement<Data>).id, newElements);
     newElements = onRemoveNode((branchToRemoveTarget as FlowElement<Data>).id, newElements);
-  } else if (elementToRemove.type === 'processBranch' && !isRemoveLastBranch) {
+  } else if (elementToRemove?.type === 'processBranch' && !isRemoveLastBranch) {
     const branchNodes = getBranchNodes(elementToRemove?.id, newElements);
     branchNodes.forEach((node) => {
       removedElementsID.push(node.id);

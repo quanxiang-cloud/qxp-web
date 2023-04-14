@@ -64,7 +64,7 @@ export function request<TData>(path: string, method: METHOD, body?: unknown): Pr
       return data;
     })
     .catch((err) => {
-      if (err.response?.status === 401) {
+      if (err.response?.status === 401 || err.message === 'Unauthorized') {
         if (!alreadyAlertUnauthorizedError) {
           alreadyAlertUnauthorizedError = true;
           alert('当前会话已失效，请重新登录!');
@@ -116,7 +116,10 @@ export function getCustomPageInfo(appID: string, menuId: string): Promise<Custom
 
 export const fetchPageList = async (appID: string): Promise<fetchPageListRes> => {
   const side = window.SIDE === 'portal' ? 'm' : 'home';
-  return await httpClient(`/api/v1/form/${appID}/${side}/menu/list`, { appID });
+  return await new Promise((_, reject) => {
+    reject(new Error);
+  });
+  // return await httpClient(`/api/v1/form/${appID}/${side}/menu/list`, { appID });
 };
 
 export function fetchPageListSchema(

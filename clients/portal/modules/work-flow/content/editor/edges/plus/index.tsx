@@ -115,7 +115,8 @@ export default function PlusEdge({
             x={centerX}
             y={centerY}
             onDragOver={onDragOver}
-            label={label}
+            // label={label}
+            label={'+'}
             onClick={onShowComponentSelector}
             labelBgBorderRadius={14}
             width="28"

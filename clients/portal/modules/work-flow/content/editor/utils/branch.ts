@@ -42,7 +42,7 @@ export function buildBranchNodes(
   const branchTargetElementID = `processBranchTarget${uuid()}`;
   const branchSourceElement = nodeBuilder(
     branchSourceElementID, 'processBranchSource', '分流', {
-      position: { x: position.x - 20, y: position.y - 72 - 20 },
+      // position: { x: position.x - 20, y: position.y - 72 - 20 },
       width: 50,
       height: 25,
       parentID: [source],
@@ -83,7 +83,7 @@ export function buildBranchNodes(
   );
   const branchTargetElement = nodeBuilder(
     branchTargetElementID, 'processBranchTarget', '合流', {
-      position: { x: position.x - 20, y: position.y + 72 - 20 },
+      // position: { x: position.x - 20, y: position.y + 72 - 20 },
       width: 50,
       height: 25,
       parentID: [branchRightFilterElementID, branchLeftFilterElementID],

@@ -1,6 +1,6 @@
 import type { FieldOperatorOptions } from '@flow/content/editor/type';
 
-export const CURRENT_WORK_FLOW_VERSION = '0.2';
+export const CURRENT_WORK_FLOW_VERSION = '0.3';
 
 export const SYSTEM_OPERATOR_PERMISSION = [
   {
@@ -98,12 +98,12 @@ export const nodeMenu: Record<string, string[]> = {
 };
 
 export const nodeLists = [{
-  text: '填写',
-  type: 'fillIn',
-  iconName: 'edit',
-  iconClassName: 'bg-teal-500',
-  groupType: 'manual',
-}, {
+//   text: '填写',
+//   type: 'fillIn',
+//   iconName: 'edit',
+//   iconClassName: 'bg-teal-500',
+//   groupType: 'manual',
+// }, {
   text: '审批',
   type: 'approve',
   iconName: 'approves',
@@ -140,18 +140,18 @@ export const nodeLists = [{
   iconClassName: 'bg-teal-500',
   groupType: 'message',
 }, {
-  text: '站内信',
-  type: 'letter',
-  iconName: 'message',
-  iconClassName: 'bg-indigo-500',
-  groupType: 'message',
-}, {
-  text: '抄送',
-  type: 'autocc',
-  iconName: 'info',
-  iconClassName: 'bg-teal-500',
-  groupType: 'message',
-}, {
+//   text: '站内信',
+//   type: 'letter',
+//   iconName: 'message',
+//   iconClassName: 'bg-indigo-500',
+//   groupType: 'message',
+// }, {
+//   text: '抄送',
+//   type: 'autocc',
+//   iconName: 'info',
+//   iconClassName: 'bg-teal-500',
+//   groupType: 'message',
+// }, {
   text: 'Webhook',
   type: 'webhook',
   iconName: 'code',

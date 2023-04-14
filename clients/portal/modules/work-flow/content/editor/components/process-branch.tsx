@@ -11,7 +11,7 @@ export default function ProcessBranchNodeComponent(props: Props): JSX.Element {
       {rule && (
         <div className="text-caption-no-color px-4 bg-gray-100 rounded-4 w-full">
           <span className="text-gray-400">公式: </span>
-          <span className="text-gray-600">{rule}</span>
+          <span className="text-gray-600 break-all">{rule}</span>
         </div>
       )}
       {ignore && (

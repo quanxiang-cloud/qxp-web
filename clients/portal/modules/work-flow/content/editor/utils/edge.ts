@@ -1,6 +1,5 @@
 import { flattenDeep, isString, isArray, isEmpty } from 'lodash';
-import {
-  ArrowHeadType, Edge, XYPosition, Position, Elements, isNode, isEdge,
+import { Edge, XYPosition, Position, Elements, isNode, isEdge,
 } from 'react-flow-renderer';
 
 import { getNodeElementById } from '../store';
@@ -19,8 +18,8 @@ export function edgeBuilder<T extends string | string[]>(
       type,
       source: startID as string,
       target: endID as string,
-      label,
-      arrowHeadType: ArrowHeadType.ArrowClosed,
+      // label,
+      // arrowHeadType: ArrowHeadType.ArrowClosed,
     }];
   }
 

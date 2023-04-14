@@ -46,8 +46,8 @@ export default function ApproveNodeComponent({ data, id, xPos, yPos, isDragging 
   }
 
   const hasApproveRule = !!basicConfig.multiplePersonWay;
-  const hasApprovePerson = !!basicConfig.approvePersons.departments.length ||
-    !!basicConfig.approvePersons.users.length || basicConfig.approvePersons.type !== 'person';
+  const hasApprovePerson = !!basicConfig?.approvePersons?.departments?.length ||
+    !!basicConfig?.approvePersons?.users?.length || basicConfig?.approvePersons?.type !== 'person';
 
   const hasError = id === errors?.publish?.data?.id;
 
