@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"net/http"
-	"path"
 	"qxp-web/server/pkg/contexts"
 
 	"github.com/gorilla/mux"
@@ -18,23 +17,23 @@ func AppLandHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if isMobile(r) {
-		http.Redirect(w, r, path.Join("/mobile", r.URL.Path), http.StatusFound)
-		return
-	}
+	// if isMobile(r) {
+	// 	http.Redirect(w, r, path.Join("/mobile", r.URL.Path), http.StatusFound)
+	// 	return
+	// }
 
 	adminUserFuncTags := getAdminUserFuncTags(r)
 	userAdminRoles := getUserAdminRoles(r)
 	personalizedConfig := getPersonalizedConfig(r, "")
 
 	renderWebAppPage(w, "appLand.html", map[string]interface{}{
-		"user":              user,
-		"adminUserFuncTags": adminUserFuncTags,
-		"userAdminRoles":    userAdminRoles,
+		"user":               user,
+		"adminUserFuncTags":  adminUserFuncTags,
+		"userAdminRoles":     userAdminRoles,
 		"personalizedConfig": personalizedConfig,
-		"debugMode":         contexts.Config.DevMode,
-		"CONFIG":            contexts.Config.ClientConfig,
-		"appID":             appID,
-		"vendorPrefix":      contexts.Config.ClientConfig.VendorPrefix,
+		"debugMode":          contexts.Config.DevMode,
+		"CONFIG":             contexts.Config.ClientConfig,
+		"appID":              appID,
+		"vendorPrefix":       contexts.Config.ClientConfig.VendorPrefix,
 	})
 }
