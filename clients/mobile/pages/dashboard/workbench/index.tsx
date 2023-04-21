@@ -7,7 +7,6 @@ import store from '@home/pages/store';
 import HomeCard from '../home-card';
 import Empty from '@m/qxp-ui-mobile/empty';
 import AppItem, { NewAppInfo } from '@m/components/app-item';
-import { pathPrefix } from '@m/constant';
 import appsStore from '@m/pages/apps/app-detail/store';
 
 import { parseAppIcon } from './utils';
@@ -23,7 +22,10 @@ const Workbench: React.FC<HomePageProps> = (props) => {
 
   function onClick(appInfo: NewAppInfo): void {
     appsStore.init({ name: appInfo.appName, color: appInfo.appIcon.bgColor, id: appInfo.id });
-    history.push(`${pathPrefix}/apps/${appInfo.id}`);
+    // history.push(`${pathPrefix}/apps/${appInfo.id}`);
+    if (appInfo.accessURL) {
+      window.location.href = appInfo.accessURL;
+    }
   }
 
   return (
