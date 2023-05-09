@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, { useState } from 'react';
 import { cond, equals, always, T } from 'ramda';
 
@@ -19,10 +20,11 @@ interface Props {
   value: ApprovePerson;
   typeText?: string;
   onChange?: (data: ApprovePerson) => void;
+  nodeType?: string;
 }
 
-export default function PersonPicker({ value, typeText, onChange }: Props): JSX.Element {
-  const { users: employees, departments, type = 'person', positions = [], variablePath } = value;
+export default function PersonPicker({ value, typeText, onChange, nodeType }: Props): JSX.Element {
+  const { users: employees = [], departments = [], type = 'person', positions = [], variablePath } = value || {};
   const { validating } = useObservable<StoreValue>(store);
   const [showAddPersonModal, setShowAddPersonModal] = useState(false);
 
@@ -125,7 +127,12 @@ export default function PersonPicker({ value, typeText, onChange }: Props): JSX.
       </div>
       <div className="grid grid-rows-2 grid-cols-2 mb-10">
         <RadioGroup onChange={handleTypeChange}>
-          {personTypeOptions.map(({ label, value: val }) => (
+          {personTypeOptions.filter((item)=>{
+            if (nodeType === 'fillIn' && item.value === 'processVariable') {
+              return false;
+            }
+            return true;
+          }).map(({ label, value: val }) => (
             <Radio
               key={val}
               className="mr-16"

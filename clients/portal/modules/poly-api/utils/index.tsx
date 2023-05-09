@@ -35,7 +35,7 @@ function buildEdge(
       id: `e${source}-${target}-${nanoid()}`, source, target,
       type: POLY_DESIGN_CONFIG.EDGE_TYPE,
       style: { stroke: POLY_DESIGN_CONFIG.EDGE_COLOR },
-      arrowHeadType: POLY_DESIGN_CONFIG.ARROW_HEAD_TYPE,
+      // arrowHeadType: POLY_DESIGN_CONFIG.ARROW_HEAD_TYPE,
       sourceHandle: sourceHandleI,
       targetHandle: targetHandleI,
     };

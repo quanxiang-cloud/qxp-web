@@ -41,13 +41,15 @@ export default function requiredLinkageEffect(
     pairs.forEach(([comparator, targetKeys, isRequired]) => {
       const _isRequired = isRequired ? comparator(values) : !comparator(values);
       targetKeys.map((targetKey)=>{
-        if (!fieldObj[targetKey]) {
-          fieldObj[targetKey] = _isRequired;
-        }
+        // if (!fieldObj[targetKey]) {
+        //   fieldObj[targetKey] = _isRequired;
+        // }
+        fieldObj[targetKey] = !fieldObj[targetKey] ? [_isRequired] : [...fieldObj[targetKey], _isRequired];
       });
     });
     for (const key in fieldObj) {
-      setFieldState( `*(${key})`, (state) => state.required = fieldObj[key]);
+      // setFieldState( `*(${key})`, (state) => state.required = fieldObj[key]);
+      setFieldState( `*(${key})`, (state) => state.required = fieldObj[key].includes(true));
     }
   });
 
@@ -56,13 +58,15 @@ export default function requiredLinkageEffect(
     pairs.forEach(([comparator, targetKeys, isRequired]) => {
       const _isRequired = isRequired ? comparator(values) : !comparator(values);
       targetKeys.map((targetKey)=>{
-        if (!fieldObj[targetKey]) {
-          fieldObj[targetKey] = _isRequired;
-        }
+        // if (!fieldObj[targetKey]) {
+        //   fieldObj[targetKey] = _isRequired;
+        // }
+        fieldObj[targetKey] = !fieldObj[targetKey] ? [_isRequired] : [...fieldObj[targetKey], _isRequired];
       });
     });
     for (const key in fieldObj) {
-      setFieldState( `*(${key})`, (state) => state.required = fieldObj[key]);
+      // setFieldState( `*(${key})`, (state) => state.required = fieldObj[key]);
+      setFieldState( `*(${key})`, (state) => state.required = fieldObj[key].includes(true));
     }
   });
 }

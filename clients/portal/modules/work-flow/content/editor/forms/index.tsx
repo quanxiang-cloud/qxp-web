@@ -140,7 +140,10 @@ export default function NodeFormWrapper(): JSX.Element | null {
       <div className="flex-1 flex flex-col justify-between h-full">
         <Form
           workForm={getWorkFormValue()}
-          defaultValue={formData}
+          defaultValue={{
+            ...formData,
+            type: currentNodeElement?.type,
+          } as any}
           onSubmit={onSubmit}
           onCancel={closePanel}
           onChange={handleChange}

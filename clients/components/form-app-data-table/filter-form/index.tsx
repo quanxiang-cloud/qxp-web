@@ -1,3 +1,4 @@
+/* eslint-disable no-empty */
 import React, { useImperativeHandle, useContext, useEffect } from 'react';
 import { toJS } from 'mobx';
 import { observer } from 'mobx-react';
@@ -18,7 +19,7 @@ type Props = {
 function FilterForm({ search, showMoreFilter }: Props, ref?: React.Ref<any>): JSX.Element {
   const store = useContext(StoreContext);
   const { filters } = store;
-  const fieldMaps = schemaToMap(toJS(store.schema)) || {};
+  const fieldMaps: any = schemaToMap(toJS(store.schema)) || {};
   const { getValues, control, setValue } = useForm();
 
   useEffect(() => {
@@ -66,6 +67,12 @@ function FilterForm({ search, showMoreFilter }: Props, ref?: React.Ref<any>): JS
             name={key}
             control={control}
             render={({ field }) => {
+              try {
+                fieldMaps[key]['x-component-props'].optionalRange = 'all';
+                fieldMaps[key]['x-component-props'].multiple = 'multiple';
+              } catch (error) {
+              }
+
               return (
                 <FieldSwitch
                   className='flex-1'

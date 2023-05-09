@@ -41,13 +41,15 @@ export default function visibleHiddenLinkageEffect(
     pairs.forEach(([comparator, targetKeys, isShow]) => {
       const isVisible = isShow ? comparator(values) : !comparator(values);
       targetKeys.map((targetKey)=>{
-        if (!fieldObj[targetKey]) {
-          fieldObj[targetKey] = isVisible;
-        }
+        // if (!fieldObj[targetKey]) {
+        //   fieldObj[targetKey] = isVisible;
+        // }
+        fieldObj[targetKey] = !fieldObj[targetKey] ? [isVisible] : [...fieldObj[targetKey], isVisible];
       });
     });
     for (const key in fieldObj) {
-      setFieldState( `*(${key})`, (state) => state.visible = fieldObj[key]);
+      // setFieldState( `*(${key})`, (state) => state.visible = fieldObj[key]);
+      setFieldState( `*(${key})`, (state) => state.visible = !fieldObj[key].includes(false));
     }
   });
 
@@ -56,13 +58,14 @@ export default function visibleHiddenLinkageEffect(
     pairs.forEach(([comparator, targetKeys, isShow]) => {
       const isVisible = isShow ? comparator(values) : !comparator(values);
       targetKeys.map((targetKey)=>{
-        if (!fieldObj[targetKey]) {
-          fieldObj[targetKey] = isVisible;
-        }
+        // if (!fieldObj[targetKey]) {
+        //   // fieldObj[targetKey] = isVisible;
+        // }
+        fieldObj[targetKey] = !fieldObj[targetKey] ? [isVisible] : [...fieldObj[targetKey], isVisible];
       });
     });
     for (const key in fieldObj) {
-      setFieldState( `*(${key})`, (state) => state.visible = fieldObj[key]);
+      setFieldState( `*(${key})`, (state) => state.visible = !fieldObj[key].includes(false));
     }
   });
 }
