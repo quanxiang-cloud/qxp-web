@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import cs from 'classnames';
 import { Select, SelectProps } from 'antd';
-import { debounce, omit } from 'lodash';
+import { debounce, isArray, omit } from 'lodash';
 
 import { getNoLabelValues } from '@c/form-builder/utils';
 import { labelValueRenderer } from '@c/form-data-value-renderer';
@@ -80,7 +80,8 @@ const UserPicker = ({
   const handleChange = (_selected: LabelValue | LabelValue[]): void => {
     let selectedValues: LabelValue[] = _selected ? ([] as LabelValue[]).concat(_selected) : [];
     selectedValues = selectedValues.map(({ label, value: selectedValue }) => {
-      const oldValue = value?.find((val: LabelValue) => val.value === selectedValue);
+      const _value = isArray(value) ? value : [];
+      const oldValue = _value?.find((val: LabelValue) => val.value === selectedValue);
       if (oldValue) {
         return oldValue;
       }
