@@ -1,3 +1,4 @@
+/* eslint-disable no-empty */
 /* eslint-disable max-len */
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { useForm, Controller } from 'react-hook-form';
@@ -215,113 +216,126 @@ function DataFilter({
         条件的数据
       </div>
       <div className='qxp-data-filter-box overflow-hidden'>
-        {conditions.map((condition) => (
-          <div
-            key={condition.id}
-            className={`flex gap-x-8 mt-8 items-center px-8 h-64 w-full rounded-8 bg-gray-100 overflow-auto ${window?.isMobile ? 'qxp-data-filter-box-wrap-is-mobile' : ''}`}
-          >
-            <div>
-              <Controller
-                name={'field-' + condition.id}
-                control={control}
-                defaultValue={condition.key}
-                rules={{ required: true }}
-                render={({ field }) => {
-                  return (
-                    <FormFieldSelect
-                      style={{ width: '170px' }}
-                      error={errors['field-' + condition.id]}
-                      register={{ name: field.name, value: field.value }}
-                      options={fieldOption}
-                      onChange={(_field: string) => {
-                        handleFieldChange(condition.id, _field);
-                        field.onChange(_field);
-                      }}
-                    />
-                  );
-                }}
-              />
-            </div>
-            {condition.filter ? (
-              <>
-                <div>
-                  <Controller
-                    name={'operators-' + condition.id}
-                    control={control}
-                    defaultValue={condition.op || 'eq'}
-                    rules={{ required: true }}
-                    render={({ field }) => (
+        {conditions.map((condition: any) => {
+          try {
+            condition.filter.optionalRange = 'all';
+            condition.filter.multiple = 'multiple';
+            condition.filter['x-component-props'].optionalRange = 'all';
+            condition.filter['x-component-props'].multiple = 'multiple';
+            if (condition.filter.componentName === 'userpicker') {
+              condition.filter.defaultValue = [];
+              condition.filter['x-component-props'].defaultValue = [];
+            }
+          } catch (error) {
+          }
+          return (
+            <div
+              key={condition.id}
+              className={`flex gap-x-8 mt-8 items-center px-8 h-64 w-full rounded-8 bg-gray-100 overflow-auto ${window?.isMobile ? 'qxp-data-filter-box-wrap-is-mobile' : ''}`}
+            >
+              <div>
+                <Controller
+                  name={'field-' + condition.id}
+                  control={control}
+                  defaultValue={condition.key}
+                  rules={{ required: true }}
+                  render={({ field }) => {
+                    return (
                       <FormFieldSelect
-                        style={{ width: '95px' }}
-                        error={errors['operators-' + condition.id]}
-                        register={field}
-                        options={getOperators(condition.filter?.type || '', condition.filter?.enum)}
+                        style={{ width: '170px' }}
+                        error={errors['field-' + condition.id]}
+                        register={{ name: field.name, value: field.value }}
+                        options={fieldOption}
+                        onChange={(_field: string) => {
+                          handleFieldChange(condition.id, _field);
+                          field.onChange(_field);
+                        }}
                       />
-                    )
-                    }
-                  />
-                </div>
-                {associationFields.length !== 0 && (
+                    );
+                  }}
+                />
+              </div>
+              {condition.filter ? (
+                <>
                   <div>
                     <Controller
-                      name={'valueFrom-' + condition.id}
+                      name={'operators-' + condition.id}
                       control={control}
-                      defaultValue={condition.valueFrom || 'fixedValue'}
+                      defaultValue={condition.op || 'eq'}
                       rules={{ required: true }}
                       render={({ field }) => (
                         <FormFieldSelect
                           style={{ width: '95px' }}
-                          error={errors['valueFrom-' + condition.id]}
+                          error={errors['operators-' + condition.id]}
                           register={field}
-                          options={VALUE_FROM}
-                          onChange={(valueFrom: string) => {
-                            handleValueFromChange(condition.id, valueFrom);
-                            field.onChange(valueFrom);
-                          }}
+                          options={getOperators(condition.filter?.type || '', condition.filter?.enum)}
                         />
                       )
                       }
                     />
                   </div>
-                )}
-                <div>
-                  <Controller
-                    name={'condition-' + condition.id}
-                    control={control}
-                    defaultValue={condition.value}
-                    rules={{ required: true }}
-                    render={({ field }) => (
-                      condition.valueFrom === 'form' ? (
-                        <FormFieldSelect
-                          style={{ width: '280px' }}
-                          error={errors['condition-' + condition.id]}
-                          register={field}
-                          options={condition.associationFieldsOptions || []}
-                        />
-                      ) : (
-                        <FormFieldSwitch
-                          error={errors['condition-' + condition.id]}
-                          register={{ ...field, value: field.value ? field.value : '' }}
-                          field={condition.filter}
-                          style={{ width: '280px' }}
-                        />
+                  {associationFields.length !== 0 && (
+                    <div>
+                      <Controller
+                        name={'valueFrom-' + condition.id}
+                        control={control}
+                        defaultValue={condition.valueFrom || 'fixedValue'}
+                        rules={{ required: true }}
+                        render={({ field }) => (
+                          <FormFieldSelect
+                            style={{ width: '95px' }}
+                            error={errors['valueFrom-' + condition.id]}
+                            register={field}
+                            options={VALUE_FROM}
+                            onChange={(valueFrom: string) => {
+                              handleValueFromChange(condition.id, valueFrom);
+                              field.onChange(valueFrom);
+                            }}
+                          />
+                        )
+                        }
+                      />
+                    </div>
+                  )}
+                  <div>
+                    <Controller
+                      name={'condition-' + condition.id}
+                      control={control}
+                      defaultValue={condition.value}
+                      rules={{ required: true }}
+                      render={({ field }) => (
+                        condition.valueFrom === 'form' ? (
+                          <FormFieldSelect
+                            style={{ width: '280px' }}
+                            error={errors['condition-' + condition.id]}
+                            register={field}
+                            options={condition.associationFieldsOptions || []}
+                          />
+                        ) : (
+                          <FormFieldSwitch
+                            error={errors['condition-' + condition.id]}
+                            register={{ ...field, value: field.value ? field.value : '' }}
+                            field={condition.filter}
+                            style={{ width: '280px' }}
+                          />
+                        )
                       )
-                    )
-                    }
-                  />
-                </div>
-              </>
-            ) : null}
-            <Icon
-              style={{ minWidth: '19px' }}
-              clickable
-              changeable
-              onClick={() => handleRemove(condition.id)}
-              name='delete'
-              size={20}
-            />
-          </div>
-        ))}
+                      }
+                    />
+                  </div>
+                </>
+              ) : null}
+              <Icon
+                style={{ minWidth: '19px' }}
+                clickable
+                changeable
+                onClick={() => handleRemove(condition.id)}
+                name='delete'
+                size={20}
+              />
+            </div>
+          );
+        })}
       </div>
       <div className='mt-24'>
         <span onClick={addCondition} className='text-btn'><Icon name='add' className='text-btn'/>
