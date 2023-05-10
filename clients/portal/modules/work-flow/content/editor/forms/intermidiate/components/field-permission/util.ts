@@ -113,7 +113,7 @@ export function fieldPermissionDecoder(
   const convertor: (value: NewFieldPermission) => FieldPermissionMergeType[] | void = pipe(
     entries,
     map(([fieldID, fieldValue]: [string, NewFieldPermissionValue]): FieldPermissionMergeType | null => {
-      const permission = fieldValue?.['x-internal'].permission;
+      const permission = fieldValue?.['x-internal']?.permission;
       const targetSchema = schemaIDToSchemaMap[fieldID];
       if (!targetSchema) {
         return null;

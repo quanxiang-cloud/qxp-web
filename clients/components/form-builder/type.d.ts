@@ -43,6 +43,8 @@ type DragPosition = 'up' | 'down' | 'left' | 'right';
 type FilterConfig = {
   condition: Condition[];
   tag: FilterTag;
+  showSelectAll?: boolean;
+  selectAll?: boolean;
 }
 
 type FilterTag = 'should' | 'must';
@@ -52,6 +54,7 @@ type IteratISchema = ISchema & { id: string; componentName?: string; }
 type LabelValue = {
   label: string;
   value: string;
+  count?: number;
 }
 
 type FormDataValue =

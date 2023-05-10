@@ -18,6 +18,7 @@ type Status = Record<string, StatusStyle>;
 
 const approvalStatus: Status = {
   FILL_IN: { style: { color: 'text-blue-600', bgColor: 'bg-blue-100' }, text: '完成填写' },
+  FILL: { style: { color: 'text-blue-600', bgColor: 'bg-blue-100' }, text: '完成填写' },
   AGREE: { style: { color: 'text-green-600', bgColor: 'bg-green-100' }, text: '审批通过' },
   REFUSE: { style: { color: 'text-red-600', bgColor: 'bg-red-100' }, text: '审批拒绝' },
   SEND_BACK: { style: { color: 'text-yellow-600', bgColor: 'bg-yellow-100' }, text: '打回重填' },

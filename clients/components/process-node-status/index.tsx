@@ -1,3 +1,4 @@
+/* eslint-disable quote-props */
 import React from 'react';
 import cs from 'classnames';
 
@@ -14,6 +15,8 @@ interface Props {
 }
 
 const statusMap = {
+  Pending: '进行中',
+  Finish: '已完成',
   REVIEW: '进行中',
   IN_REVIEW: '进行中',
   AGREE: '通过',
@@ -30,6 +33,7 @@ const statusMap = {
   'REVIEW-READ': '待阅示',
   'IN_REVIEW-READ': '待阅示',
   'SEND_BACK-SEND_BACK': '待补充',
+  'TODO_FILL_IN': '待填写',
 };
 
 function Status({ label, value, className }: Props): JSX.Element {

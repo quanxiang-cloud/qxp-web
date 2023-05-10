@@ -80,6 +80,24 @@ function CreateDataForm({ appID, pageID, rowID, onCancel }: Props): JSX.Element 
     });
   };
 
+  const formatProperties = (data: any)=>{
+    for (const key in data) {
+      if (data[key].type === 'object') {
+        formatProperties(data[key].properties);
+      } else {
+        try {
+          !defaultValues && (data[key]['x-component-props'].isNew = true);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    }
+  };
+
+  const formatFormSchema = (formSchema: any)=>{
+    formSchema && formatProperties(formSchema.properties);
+    return formSchema;
+  };
   return (
     <div className='flex flex-col flex-1 px-20 pt-20 h-full'>
       <div className='user-app-schema-form'>
@@ -87,7 +105,7 @@ function CreateDataForm({ appID, pageID, rowID, onCancel }: Props): JSX.Element 
           className='pt-20 px-40'
           onSubmit={handleSubmit}
           defaultValue={toJS(defaultValues)}
-          schema={schema as ISchema}
+          schema={formatFormSchema(schema) as ISchema}
           usePermission
         >
           <FormButtonGroup className={`flex justify-end bg-white sticky bottom-0 ${window?.isMobile ? 'is-mobile-btn-group' : ''}`}>

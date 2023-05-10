@@ -10,7 +10,7 @@ import CCToMeApprovals from './cc-to-me-approvals';
 import MyApplyApprovals from './my-applies';
 import DoneApprovals from './done-approvals';
 import AllApprovals from './all-approvals';
-import { getFlowInstanceCount } from './api';
+import { getFlowInstanceCount, getTodoFillInCount } from './api';
 
 type ListType = 'todo' | 'done' | 'cc_to_me' | 'my_applies' | 'all';
 
@@ -30,6 +30,7 @@ type ApprovalTypeListProps = {
   listType: ListType;
   onClick: (catalog: ListType) => void;
   countMap: Record<string, number | undefined>;
+  fillInCount?: any;
 }
 
 const typeIconMap = {
@@ -40,11 +41,13 @@ const typeIconMap = {
   all: 'format_align_justify',
 };
 
-function ApprovalTypeList({ listType, countMap, onClick }: ApprovalTypeListProps): JSX.Element {
+function ApprovalTypeList({ listType, countMap, onClick, fillInCount = 0 }: ApprovalTypeListProps): JSX.Element {
   const renderCount = (type: ListType): JSX.Element | void => {
     let count = 0;
     if (type === 'todo') {
-      count = countMap.waitHandleCount || 0;
+      count = (countMap.waitHandleCount + fillInCount) || 0;
+      sessionStorage.setItem('todo_approvelCount', countMap?.waitHandleCount || 0 as any);
+      sessionStorage.setItem('todo_fillInCount', fillInCount || 0);
     }
     if (type === 'cc_to_me') {
       count = countMap.ccToMeCount || 0;
@@ -95,6 +98,10 @@ function Approvals(): JSX.Element {
     return await getFlowInstanceCount({});
   });
 
+  const { data: fillInCount } = useQuery(['fill-in-count'], async () => {
+    return await getTodoFillInCount({});
+  });
+
   function handleChangeList(toList: string): void {
     setSearch({ list: toList });
   }
@@ -105,6 +112,7 @@ function Approvals(): JSX.Element {
         listType={listType as ListType}
         onClick={handleChangeList}
         countMap={flowInstCount || {}}
+        fillInCount= {fillInCount?.total || 0}
       />
       <div className="px-20 pt-20 overflow-auto flex-grow">
         {listType === 'todo' && (<TodoApprovals />)}

@@ -10,6 +10,7 @@ import React, {
 import cs from 'classnames';
 
 import { uuid } from '@lib/utils';
+import BtnBadge from '@c/btn-badge';
 
 export type Props = DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> & {
   onChange?: (value: string | number | boolean) => void;
@@ -19,11 +20,12 @@ export type Props = DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTM
   disabled?: boolean;
   radioClass?: string;
   className?: string;
+  count?: number ;
 };
 
 function InternalRadio(props: Props, ref?: Ref<HTMLInputElement>): JSX.Element {
   const {
-    defaultChecked, error, className, radioClass, onChange, label, checked: isChecked, disabled, ...inputProps
+    defaultChecked, error, className, radioClass, onChange, label, checked: isChecked, disabled, count, ...inputProps
   } = props;
   const [checked, setChecked] = useState(defaultChecked);
   const id = uuid();
@@ -85,6 +87,10 @@ function InternalRadio(props: Props, ref?: Ref<HTMLInputElement>): JSX.Element {
           'cursor-not-allowed': disabled,
         })
       }>{label}</label>
+      {
+        !!count &&
+        <BtnBadge count={count} className="radio-btnBadge relative text-white" />
+      }
     </div>
   );
 }

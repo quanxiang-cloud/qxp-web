@@ -30,6 +30,8 @@ export const allStatus: {
   // Add custom status for flow status detail page
   UNTREATED: '待处理',
   UNREAD: '待阅示',
+  Finish: '已完成',
+
 };
 
 export interface FlowStatusProps extends Props {

@@ -1,5 +1,6 @@
+/* eslint-disable no-empty */
 /* eslint-disable guard-for-in */
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { useUpdateEffect } from 'react-use';
 import { pipe, some, every, get, map, values, pick } from 'lodash/fp';
 
@@ -12,8 +13,6 @@ import { DeadLine, WhenTimeout } from '@flow/content/editor/type';
 
 import BasicConfig from '../components/basic-config';
 import FieldPermission from '../components/field-permission';
-import FlowTableContext from '@flow/content/editor/forms/flow-source-table';
-import { isObj } from '@formily/antd/esm/shared';
 
 interface Props {
   defaultValue: FillInData;
@@ -26,40 +25,34 @@ interface Props {
 export default function FillInForm({
   defaultValue, onSubmit, onCancel, nodeType, onChange,
 }: Props): JSX.Element {
-  const { tableSchema } = useContext(FlowTableContext);
-
-  const formatFieldPermission = (node: FillInData): FillInData=>{
-    const data = JSON.parse(JSON.stringify(node));
-    const fieldPermission: any = data.fieldPermission;
-    for ( const key in fieldPermission) {
-      const value = fieldPermission[key];
-      !isObj(value) && (fieldPermission[key] = {
-        fieldName: tableSchema.find(({ id })=> id === key)?.title,
-        initialValue: {
-          variable: '',
-          staticValue: '',
-        },
-        submitValue: {
-          variable: '',
-          staticValue: '',
-        },
-        'x-internal': {
-          permission: value,
-        },
-      });
-    }
-    return data;
-  };
-
-  const [value, setValue] = useState<FillInData>(formatFieldPermission(defaultValue) || {});
+  const [value, setValue] = useState<FillInData>(defaultValue || {});
   const [tabKey, setTabKey] = useState('basicConfig');
+  const [falg, setFlag] = useState(true);
 
   useUpdateEffect(() => {
     onChange(value);
   }, [value]);
 
+  const formatVal = (val: any)=>{
+    const _defaultValue: any = defaultValue;
+    const _val = JSON.parse(JSON.stringify(val));
+    try {
+      if (falg) {
+        for (const key in _val?.fieldPermission) {
+          if (_defaultValue.fieldPermission[key]) {
+            _val.fieldPermission[key]['x-internal'].permission = _defaultValue.fieldPermission[key];
+          }
+        }
+        setFlag(false);
+      }
+    } catch (error) {
+    }
+    return _val;
+  };
   function handleChange(val: Partial<FillInData>): void {
-    setValue((v) => ({ ...v, ...val }));
+    setValue((v) => {
+      return ({ ...v, ...formatVal(val) });
+    });
   }
 
   function onSave(): void {

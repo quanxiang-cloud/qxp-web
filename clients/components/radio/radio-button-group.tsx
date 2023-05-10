@@ -24,7 +24,7 @@ export default function RadioButtonGroup(
         onChange={onChange}
       >
         {
-          listData?.map(({ label, value }) => (
+          listData?.map(({ label, value, count }) => (
             <Radio
               disabled={disabled}
               key={value}
@@ -41,6 +41,7 @@ export default function RadioButtonGroup(
                 radioBtnClass,
               )}
               defaultChecked={currentValue === value}
+              count={count}
             />
           ))}
       </RadioGroup>

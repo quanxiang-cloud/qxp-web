@@ -39,7 +39,7 @@ type FieldCondition = {
 
 export type RefProps = {
   empty: () => void;
-  getDataValues: () => FilterConfig;
+  getDataValues: (data?: any) => FilterConfig;
   validate: () => Promise<boolean>;
 }
 
@@ -158,9 +158,9 @@ function DataFilter({
     setConditions(conditions.filter(({ id }) => _id !== id));
   };
 
-  const getDataValues = (): FilterConfig => {
+  const getDataValues = (data = {}): FilterConfig => {
     if (conditions.length === 0) {
-      return { condition: [], tag };
+      return { condition: [], tag, ...data };
     }
 
     const formData = getValues();
@@ -191,6 +191,7 @@ function DataFilter({
     return {
       condition: _conditions,
       tag,
+      ...data,
     };
   };
 

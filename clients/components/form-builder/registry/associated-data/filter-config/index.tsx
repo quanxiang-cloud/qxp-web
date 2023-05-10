@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 
 import Modal from '@c/modal';
 import Button from '@c/button';
+import Checkbox from '@c/checkbox';
 import PageLoading from '@c/page-loading';
 import DataFilter, { RefProps } from '@c/data-filter';
 import { FILTER_FIELD } from '@c/data-filter/utils';
@@ -18,6 +19,7 @@ type Props = {
   currentFormSchema?: ISchema;
   customSchemaFields?: SchemaFieldItem[];
   filterFunc?: (field: SchemaFieldItem) => boolean;
+  showSelectAll?: any;
 }
 
 type FieldsProps = {
@@ -56,13 +58,13 @@ function FilterConfig({
   const [schemaFields, setSchemaFields] = useState<SchemaFieldItem[]>([]);
   const [currentFields, setCurrentFields] = useState<SchemaFieldItem[]>([]);
   const dataFilterRef = useRef<RefProps>(null);
-
+  const [selectAll, setSelectAll] = useState(value?.selectAll);
   const allowSelect = (!!tableID && !!appID) || (customSchemaFields && customSchemaFields.length);
 
   const handleSave = (): void => {
     dataFilterRef.current?.validate().then((flag) => {
       if (flag) {
-        onChange(dataFilterRef.current?.getDataValues() as FilterConfig);
+        onChange(dataFilterRef.current?.getDataValues({ selectAll }) as FilterConfig);
         setVisible(false);
       }
     });
@@ -92,6 +94,10 @@ function FilterConfig({
     }
   }, [allowSelect, visible, customSchemaFields]);
 
+  const handleSelectAll = ()=>{
+    setSelectAll(!selectAll);
+  };
+
   return (
     <>
       <Button onClick={() => setVisible(true)}>设置过滤规则</Button>
@@ -119,6 +125,17 @@ function FilterConfig({
           <div className='p-20'>
             {!allowSelect && (<div>请选择关联表</div>)}
             {loading && allowSelect && (<PageLoading />)}
+            {
+              value?.showSelectAll &&
+              (<div className='flex mb-10'>
+                <Checkbox
+                  checked={selectAll}
+                  onChange={handleSelectAll}
+                  onClick={(e) => e.stopPropagation()}
+                />
+                <span className='ml-6'>默认选择全部</span>
+              </div>)
+            }
             {!loading && allowSelect && (
               <DataFilter
                 initConditions={value?.condition}

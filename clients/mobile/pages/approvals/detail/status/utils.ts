@@ -58,7 +58,7 @@ export function mapStatusData(histories: ProcessHistory[]): StatusData[] {
       const { taskName, taskType, modifyTime, operationRecords, status, creatorName, flowName } = history;
       const isHandle = ['REVIEW', 'IN_REVIEW'].includes(status);
       const isSingle = operationRecords?.length === 1;
-      const isApproval = ['OR_APPROVAL', 'AND_APPROVAL', 'OR_FILLIN', 'AND_FILLIN'].includes(taskType);
+      const isApproval = ['OR_APPROVAL', 'AND_APPROVAL', 'OR_FILLIN', 'AND_FILLIN', 'FILL'].includes(taskType);
 
       const username = isApproval && isSingle ? operationRecords[0]?.creatorName : creatorName;
 
@@ -133,7 +133,9 @@ export function mapStatusData(histories: ProcessHistory[]): StatusData[] {
         if (isHandle) {
           const handleText = NoOperationValue[taskType];
           avatarNameRow.text = [{
-            text: `${taskName}（${length}人处理中${handleText ? ' · ' + handleText : ''}）`,
+            text: taskType !== 'FILL' ?
+              `${taskName}（${length}人处理中${handleText ? ' · ' + handleText : ''}）` :
+              `${taskName}（处理中${handleText ? ' · ' + handleText : ''}）`,
           }];
         } else {
           const text: RichText[] = [];

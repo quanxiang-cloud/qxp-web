@@ -7,16 +7,18 @@ import dayjs from 'dayjs';
 import { map, get } from 'lodash';
 import duration from 'dayjs/plugin/duration';
 
-import Status, { StatusValue } from '@c/process-node-status';
+import Status from '@c/process-node-status';
 import Icon from '@c/icon';
 import { getBasicValue } from '@c/form-data-value-renderer';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import Avatar from '../avatar';
 import './index.scss';
+import { FILL_IN } from '../constant';
 
 interface Props {
   task: ApprovalTask;
   type: 'APPLY_PAGE' | 'WAIT_HANDLE_PAGE' | 'HANDLED_PAGE' | 'CC_PAGE' | 'ALL_PAGE';
+  taskType?: any;
 }
 
 dayjs.extend(duration);
@@ -40,7 +42,7 @@ function formatOverTime(dueDate?: string): string {
   ].filter(([length]) => !!length).map(([length, unit]) => `${length}${unit}`).join('');
 }
 
-export default function TaskCard({ task, type }: Props): JSX.Element {
+export default function TaskCard({ task, type, taskType }: Props): JSX.Element {
   const history = useHistory();
   const multiTask = ['ALL_PAGE', 'APPLY_PAGE', 'HANDLED_PAGE'].includes(type);
   const isWaitHandlePage = type === 'WAIT_HANDLE_PAGE';
@@ -48,8 +50,10 @@ export default function TaskCard({ task, type }: Props): JSX.Element {
   const [showAllTaskKeyFields, setShowAllTaskKeyFields] = useState<boolean>(false);
 
   const handleClick = (): void => {
+    sessionStorage.setItem('fillInTaskCardName', task?.name);
     const procInstId = multiTask ? task.processInstanceId : task.flowInstanceEntity.processInstanceId;
-    history.push(`/approvals/${procInstId}/${task.id}/${type}`);
+    // history.push(`/approvals/${procInstId}/${task.id}/${type}`);
+    history.push(`/approvals/${procInstId}/${task.id}/${type}/${taskType}`);
   };
 
   const getCurTaskName = (): string => {
@@ -110,6 +114,7 @@ export default function TaskCard({ task, type }: Props): JSX.Element {
       );
     });
   };
+  const isTodoFillIn = type === 'WAIT_HANDLE_PAGE' && taskType === FILL_IN;
   return (
     <div className="corner-2-8-8-8 bg-white mb-16 approval-card">
       <div className="flex">
@@ -130,7 +135,8 @@ export default function TaskCard({ task, type }: Props): JSX.Element {
                 </div>
               </div>
               <Status
-                value={(multiTask ? status : _status) as StatusValue}
+                label = {taskType === FILL_IN && !status && '已完成' as any}
+                value={isTodoFillIn ? 'TODO_FILL_IN' : (multiTask ? status : _status) as any}
                 className='task-status'
               />
             </div>

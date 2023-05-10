@@ -107,15 +107,20 @@ export default function BasicConfig({ type, value, onChange: _onChange }: Props)
         onChange={(value) => onUpdate('approvePersons', value)}
         nodeType={type}
       />
-      <div className="text-body2-no-color text-gray-600 mb-8">
-        <span className="text-red-600">*</span>多人{typeText}时
-      </div>
-      <div className={cs('flex items-center mb-24')}>
-        <RadioGroup onChange={(v) => onUpdate('multiplePersonWay', v)}>
-          {multiplePersonBuilder(type === 'approve' ? '或签' : '任填', 'or')}
-          {multiplePersonBuilder(type === 'approve' ? '会签' : '全填', 'and')}
-        </RadioGroup>
-      </div>
+      {
+        type === 'approve' &&
+        (<>
+          <div className="text-body2-no-color text-gray-600 mb-8">
+            <span className="text-red-600">*</span>多人{typeText}时
+          </div>
+          <div className={cs('flex items-center mb-24')}>
+            <RadioGroup onChange={(v) => onUpdate('multiplePersonWay', v)}>
+              {multiplePersonBuilder(type === 'approve' ? '或签' : '任填', 'or')}
+              {multiplePersonBuilder(type === 'approve' ? '会签' : '全填', 'and')}
+            </RadioGroup>
+          </div>
+        </>)
+      }
       {
         type === 'approve' &&
         (<>

@@ -25,11 +25,12 @@ const Picker = ({ value = [], onChange, isMy, rangeList }: Props) => {
 
   const handleChange = useCallback((list: EmployeeOrDepartmentOfRole[]) => {
     valueListRef.current = list;
-    onChange(list);
+    // onChange(list);
   }, [onChange]);
 
   const handleSubmit = useCallback(() => {
-    onChange(valueListRef.current);
+    const list = JSON.parse(JSON.stringify(valueListRef.current));
+    onChange(list);
     setDefaultValue(valueListRef.current);
     close();
   }, [onChange, close]);

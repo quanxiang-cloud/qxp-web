@@ -1,7 +1,7 @@
 import toast from '@lib/toast';
 import { action, computed, observable, reaction } from 'mobx';
 import Store from '../base-store';
-import { getCCToMeList } from '../api';
+import { getCCToMeList, getMyApplyFillInList } from '../api';
 
 class TodoApprovalStore extends Store {
   @observable approvals: ApprovalTask[] = [];
@@ -37,6 +37,21 @@ class TodoApprovalStore extends Store {
     try {
       const { dataList = [], total } = await getCCToMeList(this.query);
       this.approvals = dataList;
+      this.total = total;
+      this.loading = false;
+    } catch (err) {
+      toast.error(err);
+    }
+  };
+
+  // 填写节点任务集合
+  @action
+  fetchFillInAll = async () => {
+    this.loading = true;
+    try {
+      const { list, total } = await getMyApplyFillInList('CC_PAGE', this.query);
+      // filter item without id
+      this.approvals = list.filter((item: ApprovalTask) => item.id);
       this.total = total;
       this.loading = false;
     } catch (err) {

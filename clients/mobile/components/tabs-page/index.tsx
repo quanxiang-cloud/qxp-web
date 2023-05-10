@@ -21,6 +21,7 @@ export interface TabsPageProps extends Props {
   renderTab?: (tab: TabTitle, index: number) => React.ReactNode;
   absolute?: boolean;
   useTabName?: boolean;
+  isApply?: boolean;
 }
 
 export default function TabsPage(props: TabsPageProps): JSX.Element {

@@ -5,7 +5,7 @@
 import { BehaviorSubject } from 'rxjs6';
 import { FlowElement, isNode } from 'react-flow-renderer';
 import { uuid } from '@lib/utils';
-import { update, omit } from 'lodash';
+import { update, omit, isArray } from 'lodash';
 import moment from 'moment';
 
 import { SaveWorkFlowParamsType } from '@flow/api';
@@ -227,6 +227,9 @@ function buildBpmnText(
         const _data = JSON.parse(JSON.stringify(data));
         try {
           _data.data.businessData.basicConfig.fillInPersons = _data.data.businessData.basicConfig.approvePersons;
+          if (_data.data.businessData.basicConfig.fillInPersons.type !== 'person') {
+            _data.data.businessData.basicConfig.fillInPersons.users = [];
+          }
           delete _data?.data?.businessData?.events;
           delete _data?.data?.businessData?.operatorPermission;
           delete _data?.data?.businessData?.basicConfig?.autoRules;
@@ -234,13 +237,17 @@ function buildBpmnText(
           delete _data?.data?.businessData?.basicConfig?.whenNoPerson;
           delete _data?.data?.businessData?.basicConfig?.approvePersons;
           delete _data?.data?.businessData?.basicConfig?.fillInPersons?.departments;
+          delete _data?.data?.businessData?.basicConfig?.multiplePersonWay;
           const fieldPermission = _data?.data?.businessData?.fieldPermission || {};
           for (const key in fieldPermission) {
             fieldPermission[key] = fieldPermission[key]?.['x-internal']?.permission;
           }
-          _data.data.businessData.basicConfig.fillInPersons.users = _data?.data?.businessData?.basicConfig?.fillInPersons?.users?.filter((item: any)=>!!item)?.map((item: any)=>{
-            return item?.id ? item?.id : item;
-          });
+          if (isArray(_data?.data?.businessData?.basicConfig?.fillInPersons?.users)) {
+            _data.data.businessData.basicConfig.fillInPersons.users = _data?.data?.businessData?.basicConfig?.fillInPersons?.users?.filter((item: any)=>!!item)?.map((item: any)=>{
+              // return item?.id ? item?.id : item;
+              return { id: item?.id };
+            });
+          }
           return { ..._data, data: omit(_data.data, ['type']) };
         } catch (error) {
           console.log(error);

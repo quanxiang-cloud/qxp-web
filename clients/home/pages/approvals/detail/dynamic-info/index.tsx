@@ -14,7 +14,7 @@ export default function Index({ workData, returnFlowPage }: Props): JSX.Element 
   const { taskType } = workData;
 
   function handleShow(): JSX.Element {
-    if (['OR_APPROVAL', 'AND_APPROVAL'].includes(taskType)) {
+    if (['OR_APPROVAL', 'AND_APPROVAL', 'FILL'].includes(taskType)) {
       return <ApprovalInfo workData={workData} returnFlowPage={returnFlowPage} />;
     }
 

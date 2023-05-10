@@ -25,7 +25,7 @@ export interface StatusDetailData {
 export function mapStatusDetail(history: ProcessHistory): StatusDetailData {
   const { taskType, taskName, status, operationRecords } = history;
   const data: StatusDetailData = { title: '' };
-  const isApproval = ['OR_APPROVAL', 'AND_APPROVAL', 'OR_FILLIN', 'AND_FILLIN'].includes(taskType || '');
+  const isApproval = ['OR_APPROVAL', 'AND_APPROVAL', 'OR_FILLIN', 'AND_FILLIN', 'FILL'].includes(taskType || '');
   const isHandle = ['REVIEW', 'IN_REVIEW'].includes(status);
 
   const { untreatedList, treatedList } = mapList(taskType, status, operationRecords);

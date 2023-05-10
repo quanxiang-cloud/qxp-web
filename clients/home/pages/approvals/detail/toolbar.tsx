@@ -11,6 +11,7 @@ import Button from '@c/button';
 
 import { handleReadTask } from '../api';
 import actionMap from './action-map';
+import { FILL_IN } from '../constant';
 
 const { TextArea } = Input;
 interface Props {
@@ -23,6 +24,7 @@ interface Props {
   workFlowType?: string;
   schema: ISchema;
   formData: Record<string, unknown>;
+  taskType?: string;
 }
 
 const moreActions = [
@@ -36,7 +38,7 @@ const getIconByAction = (action: string): string => {
 };
 
 function Toolbar({
-  currTask, permission, onClickAction, globalActions, workFlowType, schema, formData,
+  currTask, permission, onClickAction, globalActions, workFlowType, schema, formData, taskType,
   onSubmitClick,
 }: Props): JSX.Element {
   const { processInstanceID, taskID } = useParams<{ processInstanceID: string; taskID: string }>();
@@ -116,7 +118,8 @@ function Toolbar({
               <Button
                 iconName={getIconByAction(value)}
                 modifier={value === 'REFUSE' ? 'danger' : 'primary'}
-                className={cs(value === 'AGREE' && 'btn-item-done')}
+                // className={cs(value === 'AGREE' && 'btn-item-done')}
+                className={cs(value === 'AGREE' && 'btn-item-done', value === 'FILL_IN' && 'btn-item-submit')}
                 onClick={()=>onSubmitClick(value, currTask, reasonRequired)}
                 // onClick={async () => {
                 //   const isValidate = await validateTaskFrom(schema, formData);
@@ -130,6 +133,7 @@ function Toolbar({
           })
         }
         {
+          taskType !== FILL_IN &&
           Object.entries(globalActions).map(([action, enabled], idx) => {
             if (!enabled) {
               return null;

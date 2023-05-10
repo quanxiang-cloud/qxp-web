@@ -25,6 +25,7 @@ export default function Approval({ workData, clickHandle }: Props): JSX.Element 
   const { taskName, taskType, modifyTime, operationRecords, status } = workData;
 
   function goLeaderHandle(): void {
+    if (taskType === 'FILL') return;
     clickHandle(workData);
   }
 
@@ -56,20 +57,29 @@ export default function Approval({ workData, clickHandle }: Props): JSX.Element 
   const username = operationRecords ? get(operationRecords, '[0].creatorName', '') : '';
   const isHandle = ['REVIEW', 'IN_REVIEW'].includes(status);
   const isSingle = operationRecords?.length === 1;
+  const isFill = taskType === 'FILL';
+
   const confirmBack = ['REFUSE', 'SEND_BACK', 'READ', 'DELIVER', 'STEP_BACK'].includes(status);
 
+  const renderNumUser = ()=>{
+    return (
+      <>
+    （{operationRecords.length}人处理中 · {NoOperationValue[taskType]}）
+      </>
+    );
+  };
   return (
     <div className="flex w-full">
-      {isHandle && <CustomAvatar name="hourglass_empty" />}
-      { (!isHandle && isSingle) && <Avatar username={username.substring(0, 1)} />}
+      {(isHandle) && <CustomAvatar name="hourglass_empty" />}
+      { ((!isHandle && isSingle )) && <Avatar username={username.substring(0, 1)} />}
       { (!isHandle && !isSingle) && <CustomAvatar name="approval" color="bg-indigo-500" />}
       <div className="ml-8 flex-1">
         {
-          isHandle ? (
+          (isHandle) ? (
             <div className="h-24 flex items-center justify-between">
               {isHandle &&
               (<div className="text-gray-600 mb-8">
-                {taskName}（{operationRecords.length}人处理中 · {NoOperationValue[taskType]}）
+                {taskName} {isFill ? '(处理中)' : renderNumUser()}
               </div>)
               }
             </div>
@@ -85,7 +95,9 @@ export default function Approval({ workData, clickHandle }: Props): JSX.Element 
         }
         {
           (!isSingle || (isSingle && isHandle) || (status === 'AUTO_REVIEW')) && operationRecords && (
-            <UserList userList={operationRecords} clickHandle={goLeaderHandle} />
+            <UserList userList={operationRecords} clickHandle={goLeaderHandle}
+              showName={isFill ? true : false}
+              showIcon={isFill ? false : true} />
           )
         }
         {
