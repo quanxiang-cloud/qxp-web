@@ -61,10 +61,22 @@ function AssociatedRecordsConfig({ initialValue, onChange }: Props): JSX.Element
 
   return (
     <SchemaForm
-      initialValues={initialValue}
+      initialValues={{
+        ...initialValue,
+        filterConfig: {
+          ...initialValue.filterConfig,
+          showSelectAll: true,
+        },
+      }}
       actions={actions}
       effects={formModelEffect}
-      onChange={(values) => onChange({ ...initialValue, ...values })}
+      onChange={(values) => {
+        const _initialValue = JSON.parse(JSON.stringify(initialValue));
+        const _values = JSON.parse(JSON.stringify(values));
+        delete _initialValue?.filterConfig?.showSelectAll;
+        delete _values?.filterConfig?.showSelectAll;
+        onChange({ ..._initialValue, ..._values });
+      }}
       components={COMPONENTS}
       schema={configSchema}
     />

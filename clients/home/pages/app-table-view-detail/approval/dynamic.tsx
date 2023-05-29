@@ -1,43 +1,25 @@
-import React, { useEffect } from 'react';
-import { useParams } from 'react-router';
-import { useQuery } from 'react-query';
+import React from 'react';
 
-import Loading from '@c/loading';
 import Timeline from '@c/timeline';
-import ErrorTips from '@c/error-tips';
 
-import NoApprovalStatus from './no-approval-status';
-import Approval from './approval';
-import Fill from './fill';
-import DirectLeaderApproval from '../dynamic-info';
-import Deliver from './deliver';
-import Reading from './reading';
-import CarbonCopy from './carbon-copy';
-import WarnTips from '../components/warn-tips';
-import * as apis from '../../api';
+import DirectLeaderApproval from '@home/pages/approvals/detail/dynamic-info';
+import WarnTips from '@home/pages/approvals/detail/components/warn-tips';
+import CarbonCopy from '@home/pages/approvals/detail/dynamic/carbon-copy';
+import Approval from '@home/pages/approvals/detail/dynamic/approval';
+import Fill from '@home/pages/approvals/detail/dynamic/fill';
+import Deliver from '@home/pages/approvals/detail/dynamic/deliver';
+import Reading from '@home/pages/approvals/detail/dynamic/reading';
+import NoApprovalStatus from '@home/pages/approvals/detail/dynamic/no-approval-status';
 
 interface Props {
-  onTaskEnd: (end: boolean) => void;
+  data: any;
+  onTaskEnd?: (end: boolean) => void;
 }
 
 export default function ProcessHistory(props: Props) {
-  const { processInstanceID } = useParams<{ processInstanceID: string }>();
+  const { data } = props;
   const [showType, setShowType] = React.useState<'list' | 'detail'>('list');
   const [currWork, setCurrWork] = React.useState<any>({});
-
-  const {
-    isLoading, data = [], isError,
-  } = useQuery<any, Error>(
-    [processInstanceID, 'GET_PROCESS_HISTORIES'],
-    () => apis.getProcessHistories(processInstanceID),
-  );
-
-  useEffect(() => {
-    if (Array.isArray(data) &&
-      data.some((v: { taskType: string, status: string }) => v.taskType === 'END' && v.status === 'END')) {
-      props.onTaskEnd(true);
-    }
-  }, [data]);
 
   function changeType(type: 'list' | 'detail'): void {
     setShowType(type);
@@ -76,14 +58,6 @@ export default function ProcessHistory(props: Props) {
     }
 
     return <NoApprovalStatus workData={flow} />;
-  }
-
-  if (isLoading) {
-    return <Loading />;
-  }
-
-  if (isError) {
-    return <ErrorTips desc='获取数据失败' />;
   }
 
   return (

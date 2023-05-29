@@ -56,7 +56,7 @@ export function getPersonByIds(item: ApprovePerson, callBack: any) {
   if (personTitle) {
     return callBack(personTitle);
   }
-  let _users: any = JSON.parse(JSON.stringify(users));
+  let _users: any = JSON.parse(JSON.stringify(users))?.map((item: any)=>item?.id);
   if (_users?.length && isString(_users?.[0])) {
     getUserDetail(_users as any)
       .then((res: any)=>{

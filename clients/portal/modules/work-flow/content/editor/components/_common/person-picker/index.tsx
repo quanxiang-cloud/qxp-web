@@ -124,6 +124,10 @@ export default function PersonPicker({ value, typeText, onChange, nodeType }: Pr
       )}
       <div className="text-body2-no-color text-gray-600 mb-10">
         <span className="text-red-600">*</span>{typeText}
+        {
+          nodeType === 'fillIn' &&
+          <div className='text-caption'>请选择一位填写人，若存在多位填写人时，系统默认选择第一位作为填写人。</div>
+        }
       </div>
       <div className="grid grid-rows-2 grid-cols-2 mb-10">
         <RadioGroup onChange={handleTypeChange}>

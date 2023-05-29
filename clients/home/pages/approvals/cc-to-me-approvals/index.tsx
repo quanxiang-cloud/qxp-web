@@ -2,13 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { observer } from 'mobx-react';
 
-import Search from '@c/search';
 import Pagination from '@c/pagination';
 import Button from '@c/button';
 import Modal from '@c/modal';
 import toast from '@lib/toast';
-import Select from '@c/select';
-import IconBtn from '@c/icon-btn';
 import RadioButtonGroup from '@c/radio/radio-button-group';
 
 import store from './store';
@@ -66,8 +63,8 @@ function TodoApprovals(): JSX.Element {
             currentValue={store.status}
           />
         </div>
-        <Search className="w-259 mr-16" placeholder="搜索流程、发起人、应用" value={store.keyword}
-          onChange={store.changeKeyword} />
+        {/* <Search className="w-259 mr-16" placeholder="搜索流程、发起人、应用" value={store.keyword}
+          onChange={store.changeKeyword} /> */}
         <Button
           className="bg-gray-700 mr-16"
           onClick={() => setOpenReadFlow(true)}
@@ -76,7 +73,7 @@ function TodoApprovals(): JSX.Element {
         >
           全部标为已读
         </Button>
-        <Select multiple={false} options={sortOptions} onChange={store.changeOrderType} value={store.orderType}>
+        {/* <Select multiple={false} options={sortOptions} onChange={store.changeOrderType} value={store.orderType}>
           <IconBtn
             iconName="import_export"
             className="border-none hover:bg-gray-100"
@@ -85,7 +82,7 @@ function TodoApprovals(): JSX.Element {
               type: 'primary',
             }}
           />
-        </Select>
+        </Select> */}
       </div>
       <TaskList tasks={store.approvals} store={store} taskType='cc_to_me' type='CC_PAGE' />
       <Pagination

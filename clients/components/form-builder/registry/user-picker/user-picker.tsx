@@ -121,12 +121,22 @@ const UserPicker = ({
 
   const { options } = componentsProps;
 
+  const handleValue = ()=>{
+    const data = value?.filter((item: any)=>{
+      return options?.find((option: any)=>option.value === item.value);
+    });
+    if (!data?.length) {
+      onChange && onChange(data);
+    }
+    return data;
+  };
+
   return (
     <Select
       {...componentsProps}
       labelInValue
       allowClear
-      value={value}
+      value={handleValue()}
       options={undefined}
       disabled={!editable}
       onChange={handleChange}

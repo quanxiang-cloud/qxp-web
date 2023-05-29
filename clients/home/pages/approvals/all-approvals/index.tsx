@@ -1,12 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
-import Search from '@c/search';
 import Pagination from '@c/pagination';
-import Select from '@c/select';
-import IconBtn from '@c/icon-btn';
 
 import store from './store';
 import TaskList from '../task-list';
+import RadioButtonGroup from '@c/radio/radio-button-group';
+import { APPROVAL, FILL_IN, listData } from '../constant';
 
 const sortOptions = [
   { value: 'DESC', label: '最新的代办优先' },
@@ -14,20 +13,48 @@ const sortOptions = [
 ];
 
 function AllApprovals(): JSX.Element {
+  const [currentValue, setCurrentValue] = useState(APPROVAL);
+
   useEffect(() => {
     document.title = '我的流程 - 全部';
-    store.fetchAll();
+    // store.fetchAll();
 
     return () => {
       store.reset();
     };
   }, []);
 
+  useEffect(()=>{
+    store.query.page = 1;
+    switch (currentValue) {
+    case FILL_IN:
+      store.type = FILL_IN;
+      store.fetchFillInAll();
+      break;
+    default:
+      store.type = APPROVAL;
+      store.fetchAll();
+      break;
+    }
+  }, [currentValue]);
+
+  const handleChange = (val: any)=>{
+    setCurrentValue(val);
+  };
+
   return (
     <div>
       <div className="flex justify-between items-center mb-16">
-        <div className="flex flex-1" />
-        <Search
+        <div className="flex flex-1" >
+          <RadioButtonGroup
+            className="mr-16"
+            radioBtnClass="bg-white"
+            onChange={handleChange}
+            currentValue={currentValue}
+            listData={listData}
+          />
+        </div>
+        {/* <Search
           className="w-259 mr-16"
           placeholder="搜索流程、发起人、应用"
           value={store.keyword}
@@ -47,7 +74,7 @@ function AllApprovals(): JSX.Element {
               type: 'primary',
             }}
           />
-        </Select>
+        </Select> */}
       </div>
       <TaskList tasks={store.approvals} store={store} taskType='all' type="ALL_PAGE" />
       <Pagination

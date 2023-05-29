@@ -13,7 +13,7 @@ export default function ApprovalRoutes(): JSX.Element {
       <GlobalHeader />
       <Switch>
         <Route exact path="/approvals" component={Approvals} />
-        <Route path="/approvals/:processInstanceID/:taskID/:type" component={ApprovalDetail} />
+        <Route path="/approvals/:processInstanceID/:taskID/:type/:taskType" component={ApprovalDetail} />
         <Route component={() => <NotFoundError url='/approvals' classnames='main-content'/>}/>
       </Switch>
     </>

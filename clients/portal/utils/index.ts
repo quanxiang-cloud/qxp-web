@@ -89,6 +89,7 @@ export const parseElements = (bpmn: WorkFlow): FlowElement<Data>[] =>{
               value: '',
             },
           },
+          basicConfig.multiplePersonWay = 'or';
           basicConfig.whenNoPerson = 'transferAdmin';
           basicConfig.approvePersons = basicConfig.fillInPersons;
           basicConfig?.approvePersons?.departments && (basicConfig.approvePersons.departments = []);

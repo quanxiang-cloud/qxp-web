@@ -46,7 +46,6 @@ const TodoTaskCard: React.FC<HomePageProps> = (props) => {
       </div>
       ),
     );
-
     return spacer(
       todos,
       (i) => (<Divider

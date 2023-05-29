@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+import React, { useEffect, useState } from 'react';
 import { Column } from 'react-table';
 import { get } from 'lodash';
 import cs from 'classnames';
@@ -13,6 +14,8 @@ import { schemaToMap } from '@lib/schema-convert';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import SelectRecordsModal from './select-records-modal';
+import { fetchFormDataList } from '@lib/http-client-form';
+import { toEs } from '@c/data-filter/utils';
 
 type Props = {
   defaultValues: Record<string, any>[];
@@ -60,9 +63,12 @@ function AssociatedRecords({
   readOnly,
   className,
 }: Props): JSX.Element {
+  const { selectAll = false } = filterConfig || {};
   const [showSelectModal, setShowSelectModal] = useState(false);
-  const [selectedValue, setSelectValue] = useState(multiple ? '' : defaultValues[0]?._id);
+  const [index, setIndex] = useState(0);
+  const [selectedValue, setSelectValue] = useState((multiple || selectAll) ? '' : defaultValues[0]?._id);
   const tableColumns = computeTableColumns(associatedTable, columns);
+
   !readOnly && tableColumns.push({
     id: 'remove',
     Header: '操作',
@@ -81,6 +87,14 @@ function AssociatedRecords({
       );
     },
   });
+
+  useEffect(()=>{
+    if (index > 1) return;
+    if (selectAll && index === 1) {
+      onChange(value);
+    }
+    setIndex(index + 1);
+  }, [JSON.stringify(value)]);
 
   return (
     <div className={cs('w-full', className)}>
@@ -102,12 +116,12 @@ function AssociatedRecords({
           appID={appID}
           tableID={tableID}
           filterConfig={filterConfig}
-          multiple={multiple}
+          multiple={multiple || selectAll}
           associatedTable={associatedTable}
           columns={columns}
           selectedValue={selectedValue}
           onSubmit={(newSelectedRecords) => {
-            if (multiple) {
+            if (multiple || selectAll) {
               const selecteds = value.concat(
                 newSelectedRecords.filter(({ _id }) => value.findIndex(({ _id: id }) => _id === id) < 0),
               );
@@ -127,20 +141,45 @@ function AssociatedRecords({
 function AssociatedRecordsFields(props: Partial<ISchemaFieldComponentProps>): JSX.Element {
   const componentProps = props.props['x-component-props'];
   // todo handle error case
+  const [selectAllData, setSelectAllData] = useState<any>([]);
+  const [hasChanged, setHasChanged] = useState<any>(false);
+  const { selectAll = false } = componentProps?.filterConfig || {};
+  const { appID, tableID, isNew } = componentProps;
+  const { condition = [], tag = 'must' } = componentProps.filterConfig || {};
+  const getSelectAllData = async ()=>{
+    const res = await fetchFormDataList(appID, tableID, {
+      sort: ['-created_at'],
+      page: 1,
+      size: 1000,
+      query: toEs({ tag, condition: [...condition] }),
+    }).catch((e) => {
+      console.log(e);
+    });
+    setSelectAllData(res?.entities || []);
+  };
+
+  useEffect(()=>{
+    selectAll && getSelectAllData();
+  }, []);
 
   return (
     <AssociatedRecords
       className={props.props.className}
-      defaultValues={props.value || []}
+      defaultValues={(selectAll && !hasChanged && isNew) ? selectAllData : (props.value || [])}
+      // defaultValues={props.value || []}
       readOnly={props.props.readOnly}
       appID={componentProps.appID}
       tableID={componentProps.tableID}
       columns={componentProps.columns || []}
       multiple={componentProps.multiple || false}
       filterConfig={componentProps.filterConfig}
-      value={props.value}
+      value={(selectAll && !hasChanged && isNew) ? selectAllData : props.value}
+      // value={props.value}
       associatedTable={componentProps.associatedTable}
-      onChange={(selectedKeys) => props?.mutators?.change(selectedKeys)}
+      onChange={(selectedKeys) => {
+        setHasChanged(true);
+        props?.mutators?.change(selectedKeys);
+      }}
     />
   );
 }

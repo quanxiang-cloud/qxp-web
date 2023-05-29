@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 // flow instance apis
 import httpClient from '@lib/http-client';
 
@@ -14,6 +15,26 @@ export const getMyReviewedList = async (params: Record<string, any>): Promise<{ 
 // 分页查询我申请的流程
 export const getMyApplyList = async (params: Record<string, any>): Promise<{ dataList: any, total: number }> => {
   return await httpClient('/api/v1/flow/instance/myApplyList', params);
+};
+
+// 分页查询我申请的填写流程
+export const getMyApplyFillInList = async (type: string, params: Record<string, any>): Promise<any> => {
+  return await httpClient(`/api/v1/flow/fill/list/${type}`, params);
+};
+
+// 分页查询我申请的填写流程
+export const getMobileMyApplyFillInList = async (params: any, type: string): Promise<any> => {
+  return await httpClient(`/api/v1/flow/fill/list/${type}`, params);
+};
+
+// 获取待填写的总数
+export const getTodoFillInCount = async (params: Record<string, any>): Promise<any> => {
+  return await httpClient('/api/v1/flow/fill/pending/count', params);
+};
+
+// 获取填写节点详情
+export const getFillInDetail = async (type: string, taskID: string, params: Record<string, any>): Promise<any> => {
+  return await httpClient(`/api/v1/flow/fill/${type}/${taskID}`, params);
 };
 
 // 分页查询抄送给我的流程
@@ -86,6 +107,10 @@ export const reviewTask = async (processInstanceId: string, taskId: string, para
   return await httpClient(`/api/v1/flow/instance/reviewTask/${processInstanceId}/${taskId}`, params);
 };
 
+// 提交填写
+export const submitFillTask = async ( params: { id: string; formData: any, [key: string]: any }): Promise<{ data: any }> => {
+  return await httpClient('/api/v1/flow/fill', params);
+};
 // 加签
 export const signTask = async (processInstanceId: string, taskID: string, params: Record<string, any>) => {
   return await httpClient(`/api/v1/flow/instance/addSign/${processInstanceId}/${taskID}`, params);

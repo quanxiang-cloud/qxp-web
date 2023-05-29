@@ -25,11 +25,11 @@ export default function SelectRecordsModal({
   const tableRef: React.Ref<any> = useRef<Ref>();
   const [selected, setSelected] = useState<Record<string, any>[]>(defaultValues || []);
   const defaultSelectIDs = selected.map(({ _id }) => _id);
+
   const handleSubmit = (): void => {
     if (!tableRef.current) {
       return;
     }
-
     onSubmit(selected);
   };
 

@@ -98,12 +98,12 @@ export const nodeMenu: Record<string, string[]> = {
 };
 
 export const nodeLists = [{
-//   text: '填写',
-//   type: 'fillIn',
-//   iconName: 'edit',
-//   iconClassName: 'bg-teal-500',
-//   groupType: 'manual',
-// }, {
+  text: '填写',
+  type: 'fillIn',
+  iconName: 'edit',
+  iconClassName: 'bg-teal-500',
+  groupType: 'manual',
+}, {
   text: '审批',
   type: 'approve',
   iconName: 'approves',

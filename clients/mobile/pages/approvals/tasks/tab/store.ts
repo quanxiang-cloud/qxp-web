@@ -7,11 +7,13 @@ import {
   getMyApplyList,
   getMyReviewedList,
   getWaitReviewList,
+  getMobileMyApplyFillInList,
 } from '@home/pages/approvals/api';
 import { getFlowSummary } from '@m/lib/value-render';
 import { NumberString } from '@m/qxp-ui-mobile';
+import { FILL_IN } from '@home/pages/approvals/constant';
 
-type RequestType = (params: Record<string, any>) => Promise<TasksResponse>;
+type RequestType = (params: Record<string, any>, type?: string) => Promise<TasksResponse>;
 
 export interface LoadApprovalsProps {
   pageKey: number;
@@ -27,12 +29,14 @@ function filterCheck(filterKey?: string, filterValue?: NumberString): boolean {
 }
 
 class ApprovalsStore {
-  private readonly request: RequestType;
+  private readonly request: RequestType| any;
   private readonly type: FlowType;
+  private readonly taskType?: string;
 
-  constructor(type: FlowType, request: RequestType) {
+  constructor(type: FlowType, request: RequestType| any, taskType?: string) {
     this.type = type;
     this.request = request;
+    this.taskType = taskType;
   }
 
   @observable list: Task[] = [];
@@ -51,10 +55,15 @@ class ApprovalsStore {
     }
     if (tagType) params.tagType = tagType;
     try {
-      const res = await this.request(params);
-      let data = res?.dataList;
+      let res;
+      if (this.taskType === FILL_IN) {
+        res = await this.request(params, this.type);
+      } else {
+        res = await this.request(params);
+      }
+      let data = res?.dataList || res?.list || [];
       if (data && data.length > 0) {
-        data = data.map((task) => {
+        data = data.map((task: any) => {
           let taskResult: Task;
           if (task.flowInstanceEntity) {
             taskResult = { ...task, ...task.flowInstanceEntity, nodeName: task.name, taskId: task.id };
@@ -81,10 +90,10 @@ class ApprovalsStore {
       }
       this.page = pageKey;
       this.finished = data.length < limit;
-      data = data.filter((itm) => !itm.isDeleted);
+      data = data.filter((itm: { isDeleted: any; }) => !itm.isDeleted);
 
       if (this.type === 'CC_PAGE') {
-        this.readAllEnabled = data.find((itm) => itm.handled === 'ACTIVE') !== undefined;
+        this.readAllEnabled = data.find((itm: { handled: string; }) => itm.handled === 'ACTIVE') !== undefined;
       }
       if (pageKey < 2) {
         this.list = data;
@@ -115,6 +124,10 @@ const ccToMe = new ApprovalsStore('CC_PAGE', getCCToMeList);
 const todo = new ApprovalsStore('WAIT_HANDLE_PAGE', getWaitReviewList);
 const overtime = new ApprovalsStore('WAIT_HANDLE_PAGE', getWaitReviewList);
 const urge = new ApprovalsStore('WAIT_HANDLE_PAGE', getWaitReviewList);
+// 填写
+const myAppliesFillIn = new ApprovalsStore('APPLY_PAGE', getMobileMyApplyFillInList, FILL_IN);
+const doneFillIn = new ApprovalsStore('HANDLED_PAGE', getMobileMyApplyFillInList, FILL_IN);
+const todoFillIn = new ApprovalsStore('WAIT_HANDLE_PAGE', getMobileMyApplyFillInList, FILL_IN);
 
 export const store: Record<string, ApprovalsStore> = {
   APPLY_PAGE: myApplies,
@@ -123,4 +136,7 @@ export const store: Record<string, ApprovalsStore> = {
   WAIT_HANDLE_PAGE: todo,
   WAIT_HANDLE_PAGE_OVERTIME: overtime,
   WAIT_HANDLE_PAGE_URGE: urge,
+  FILL_IN_APPLY_PAGE: myAppliesFillIn,
+  FILL_IN_HANDLED_PAGE: doneFillIn,
+  FILL_IN_WAIT_HANDLE_PAGE: todoFillIn,
 };

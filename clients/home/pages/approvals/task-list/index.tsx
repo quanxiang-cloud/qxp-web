@@ -8,7 +8,7 @@ import NoData from './no-data';
 
 interface Props {
   className?: string;
-  store: Store;
+  store: Store | any;
   tasks: Array<ApprovalTask>;
   taskType: 'my_applies' | 'todo' | 'done' | 'cc_to_me' | 'all',
   type: 'APPLY_PAGE' | 'WAIT_HANDLE_PAGE' | 'HANDLED_PAGE' | 'CC_PAGE' | 'ALL_PAGE'
@@ -34,7 +34,7 @@ function TaskList({ tasks, type, store, className, taskType }: Props): JSX.Eleme
   return (
     <div className={className}>
       {tasks.map((task, idx) => {
-        return (<TaskCard key={[task.id, idx].join('-')} task={task} type={type} />);
+        return (<TaskCard key={[task.id, idx].join('-')} task={task} type={type} taskType={store?.type}/>);
       })}
     </div>
   );
