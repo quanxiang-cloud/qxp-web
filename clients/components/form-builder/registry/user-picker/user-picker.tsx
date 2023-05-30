@@ -125,7 +125,8 @@ const UserPicker = ({
     const data = value?.filter((item: any)=>{
       return options?.find((option: any)=>option.value === item.value);
     });
-    if (!data?.length) {
+
+    if (!data?.length && JSON.stringify(data) !== JSON.stringify(value)) {
       onChange && onChange(data);
     }
     return data;
