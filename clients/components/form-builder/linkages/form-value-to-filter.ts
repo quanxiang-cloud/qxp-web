@@ -36,7 +36,11 @@ function getNewCondition(
       return acc.concat({ ...conditionItem, value: [].concat(value) });
     }
 
-    if (conditionItem.valueFrom !== 'form') {
+    if ((conditionItem.valueFrom === 'parentForm') && value) {
+      return acc.concat({ ...conditionItem, value: [].concat(value) });
+    }
+
+    if (conditionItem.valueFrom !== 'form' && conditionItem.valueFrom !== 'parentForm') {
       return acc.concat(conditionItem);
     }
 
@@ -60,6 +64,10 @@ function findLinkagesFilterComp(schema: ISchema, precedingPath = ''): LinkedFilt
           if (condition.valueFrom === 'form') {
             targetFieldsAcc.push(precedingPath + condition.value?.toString() || '');
             condition.path = precedingPath + condition.value?.toString() || '';
+          }
+          if (condition.valueFrom === 'parentForm' ) {
+            targetFieldsAcc.push(condition.value?.toString() || '');
+            condition.path = condition.value?.toString() || '';
           }
 
           return targetFieldsAcc;

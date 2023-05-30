@@ -7,7 +7,7 @@ import Icon from '@c/icon';
 import { RoundMethod } from '@c/form-builder/registry/aggregation-records/convertor';
 import { FileList } from '@c/file-upload';
 import { QxpFileFormData } from '@c/form-builder/registry/file-upload/uploader';
-import { isEmpty } from 'lodash';
+import { isEmpty, isNumber } from 'lodash';
 import { isMeanless } from '@lib/utils';
 
 const ReadOnlySubTable = React.lazy(
@@ -66,6 +66,7 @@ export function labelValueRenderer(value: FormDataValue): string {
   return (value as FormBuilder.Option)?.label;
 }
 
+// 统计
 function statisticValueRender({ schema, value }: ValueRendererProps): string {
   const { decimalPlaces, roundDecimal, displayFieldNull } = schema['x-component-props'] as {
     decimalPlaces: number, roundDecimal: RoundMethod, displayFieldNull: string
@@ -76,7 +77,13 @@ function statisticValueRender({ schema, value }: ValueRendererProps): string {
   } else if (roundDecimal === 'round-down') {
     method = Math.floor;
   }
-  return method(parseFloat(value as string)).toFixed(decimalPlaces) + '' || displayFieldNull;
+
+  if (decimalPlaces === 0) {
+    return method(parseFloat(value as string)).toFixed(decimalPlaces) + '' || displayFieldNull;
+  } else {
+    return isNumber(value) ? value.toFixed(decimalPlaces) : displayFieldNull;
+  }
+  // return method(parseFloat(value as string)).toFixed(decimalPlaces) + '' || displayFieldNull;
 }
 
 function stringListValue({ value }: ValueRendererProps): string {

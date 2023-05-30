@@ -20,6 +20,8 @@ type Props = {
   customSchemaFields?: SchemaFieldItem[];
   filterFunc?: (field: SchemaFieldItem) => boolean;
   showSelectAll?: any;
+  parentFormSchema?: ISchema;
+  disFilterField?: any;
 }
 
 type FieldsProps = {
@@ -51,12 +53,16 @@ function FilterConfig({
   value,
   currentFormSchema,
   customSchemaFields,
+  parentFormSchema,
   filterFunc,
+  disFilterField,
 }: Props): JSX.Element {
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [schemaFields, setSchemaFields] = useState<SchemaFieldItem[]>([]);
   const [currentFields, setCurrentFields] = useState<SchemaFieldItem[]>([]);
+  const [parentFields, setParentFields] = useState<SchemaFieldItem[]>([]);
+
   const dataFilterRef = useRef<RefProps>(null);
   const [selectAll, setSelectAll] = useState(value?.selectAll);
   const allowSelect = (!!tableID && !!appID) || (customSchemaFields && customSchemaFields.length);
@@ -75,6 +81,11 @@ function FilterConfig({
       setCurrentFields(
         getFields({ schema: currentFormSchema, excludedSystemField: true }),
       );
+      if (parentFormSchema) {
+        setParentFields(
+          getFields({ schema: parentFormSchema, excludedSystemField: true }),
+        );
+      }
     }
   }, [currentFormSchema]);
 
@@ -96,6 +107,31 @@ function FilterConfig({
 
   const handleSelectAll = ()=>{
     setSelectAll(!selectAll);
+  };
+
+  const getFormOptions = (currentFields: any, parentFields: any)=>{
+    const arr = [
+      {
+        label: '固定值',
+        value: 'fixedValue',
+      },
+    ];
+    if (currentFields?.length) {
+      arr.push( {
+        label: '表单值',
+        value: 'form',
+      });
+    }
+    // TODO:
+    // if (parentFields?.length) {
+    //   arr.push(
+    //     {
+    //       label: '主表单值',
+    //       value: 'parentForm',
+    //     },
+    //   );
+    // }
+    return arr;
   };
 
   return (
@@ -141,8 +177,11 @@ function FilterConfig({
                 initConditions={value?.condition}
                 initTag={value?.tag}
                 associationFields={currentFields}
+                associationParentFields={parentFields}
                 ref={dataFilterRef}
                 fields={schemaFields}
+                formOptions={getFormOptions(currentFields, parentFields)}
+                disFilterField={disFilterField}
               />
             )}
           </div>

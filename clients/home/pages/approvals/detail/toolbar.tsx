@@ -48,9 +48,9 @@ function Toolbar({
   const { custom = [], system = [] } = permission;
 
   function handleReadOk(): Promise<never> | undefined {
-    if (comment && comment.length > 100) {
-      toast.error('字数不能超过100字');
-      return Promise.reject(new Error('字数不能超过100字'));
+    if (comment && comment.length > 1000) {
+      toast.error('字数不能超过1000字');
+      return Promise.reject(new Error('字数不能超过1000字'));
     }
     handleReadTask(processInstanceID, taskID, comment || '').then((data) => {
       if (data) {

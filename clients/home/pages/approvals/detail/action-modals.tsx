@@ -63,8 +63,8 @@ function ActionModals({
 
   const handleTaskMutation = useMutation((): Promise<any> => {
     if (modalInfo.payload.remark !== undefined) {
-      if (modalInfo.payload.remark.length > 100) {
-        return Promise.reject(new Error('字数不能超过100字'));
+      if (modalInfo.payload.remark.length > 1000) {
+        return Promise.reject(new Error('字数不能超过1000字'));
       }
     }
     if ([

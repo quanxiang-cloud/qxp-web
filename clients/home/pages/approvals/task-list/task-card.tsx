@@ -50,10 +50,12 @@ export default function TaskCard({ task, type, taskType }: Props): JSX.Element {
   const [showAllTaskKeyFields, setShowAllTaskKeyFields] = useState<boolean>(false);
 
   const handleClick = (): void => {
-    sessionStorage.setItem('fillInTaskCardName', task?.name);
     const procInstId = multiTask ? task.processInstanceId : task.flowInstanceEntity.processInstanceId;
-    // history.push(`/approvals/${procInstId}/${task.id}/${type}`);
-    history.push(`/approvals/${procInstId}/${task.id}/${type}/${taskType}`);
+    if (taskType === 'approval') {
+      history.push(`/approvals/${procInstId}/${task.id}/${type}`);
+    } else {
+      history.push(`/approvals/${procInstId}/${task.id}/${type}/${taskType}`);
+    }
   };
 
   const getCurTaskName = (): string => {

@@ -91,7 +91,7 @@ declare global {
 
   type Filters = string[];
 
-  type ValueFrom = 'form' | 'fixedValue';
+  type ValueFrom = 'form' | 'fixedValue' | 'parentForm';
 
   type Condition = {
     key?: string;

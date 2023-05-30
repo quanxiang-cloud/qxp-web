@@ -13,9 +13,9 @@ import {
   CONDITION,
   getOperators,
   FILTER_FIELD,
-  VALUE_FROM,
   setValueFormCondition,
   getValue,
+  VALUE_FROM,
 } from './utils';
 import './index.scss';
 
@@ -25,6 +25,9 @@ type Props = {
   initTag?: FilterTag;
   className?: string;
   associationFields?: SchemaFieldItem[];
+  associationParentFields?: SchemaFieldItem[];
+  formOptions?: any[];
+  disFilterField?: any[];
 }
 
 type FieldCondition = {
@@ -35,6 +38,7 @@ type FieldCondition = {
   filter?: SchemaFieldItem;
   valueFrom?: 'fixedValue' | 'form';
   associationFieldsOptions?: LabelValue[];
+  associationParentFieldsOptions?: LabelValue[];
 }
 
 export type RefProps = {
@@ -49,14 +53,16 @@ const FormFieldSelect = formFieldWrap({ FieldFC: Select });
 function DataFilter({
   fields,
   associationFields = [],
+  associationParentFields = [],
   className = '',
   initConditions,
   initTag = 'must',
+  formOptions,
+  disFilterField = [],
 }: Props, ref: React.Ref<RefProps>): JSX.Element {
   const [conditions, setConditions] = useState<FieldCondition[]>([]);
   const [tag, setTag] = useState<FilterTag>(initTag);
   const { trigger, control, setValue, getValues, unregister, formState: { errors } } = useForm();
-
   useImperativeHandle(ref, () => ({
     getDataValues: getDataValues,
     empty: () => setConditions([]),
@@ -81,6 +87,7 @@ function DataFilter({
           valueFrom: condition.valueFrom,
           value: getValue(filter, condition.value, condition.valueFrom),
           associationFieldsOptions: condition.valueFrom === 'form' ? getAssociationOptions(filter) : [],
+          associationParentFieldsOptions: condition.valueFrom === 'parentForm' ? getAssociationParentOptions(filter) : [],
           key: condition.key as string,
           filter,
         });
@@ -90,7 +97,7 @@ function DataFilter({
   }, [initConditions]);
 
   const fieldOption = fields.filter((field) => {
-    return FILTER_FIELD.includes(field['x-component'] as string) && field.id !== '_id';
+    return FILTER_FIELD.filter((field)=> !disFilterField?.find((disField)=>disField === field))?.includes(field['x-component'] as string) && field.id !== '_id';
   }).map((field) => ({
     value: field.id,
     label: field.title,
@@ -109,21 +116,41 @@ function DataFilter({
     }, [] as LabelValue[]);
   };
 
+  const getAssociationParentOptions = (curField: ISchema | undefined): LabelValue[] => {
+    if (!curField) {
+      return [];
+    }
+
+    return associationParentFields?.reduce((acc, fields) => {
+      if (fields['x-component'] === curField?.['x-component']) {
+        return acc.concat({ label: fields.title as string, value: fields.id });
+      }
+      return acc;
+    }, [] as LabelValue[]);
+  };
+
   const handleFieldChange = (rowID: string, field: string) => {
+    let valueFrom = 'fixedValue';
+    const componentName = fields?.find((item)=>item?.id === field)?.componentName;
+    if (componentName === 'associateddata') {
+      valueFrom = 'form';
+    }
     setConditions(conditions.map((condition) => {
       if (condition.id === rowID) {
         return {
           ...condition,
-          valueFrom: 'fixedValue',
+          valueFrom,
           filter: fields.find(({ id }) => id === field),
           associationFieldsOptions: [],
+          associationParentFieldsOptions: [],
         } as FieldCondition;
       }
       return condition;
     }));
+
     setValue('operators-' + rowID, '');
     setValue('condition-' + rowID, '');
-    setValue('valueFrom-' + rowID, 'fixedValue');
+    setValue('valueFrom-' + rowID, valueFrom);
   };
 
   const handleValueFromChange = (rowID: string, valueFrom: string) => {
@@ -144,6 +171,7 @@ function DataFilter({
         ...condition,
         valueFrom,
         associationFieldsOptions: getAssociationOptions(condition.filter),
+        associationParentFieldsOptions: getAssociationParentOptions(condition.filter),
       } as FieldCondition;
     }));
     setValue('condition-' + rowID, '');
@@ -229,6 +257,11 @@ function DataFilter({
             }
           } catch (error) {
           }
+          const componentName = condition?.filter?.componentName;
+          let options = formOptions || VALUE_FROM;
+          if (componentName === 'associateddata') {
+            options = options.filter((item)=>item.value !== 'fixedValue');
+          }
           return (
             <div
               key={condition.id}
@@ -275,7 +308,7 @@ function DataFilter({
                       }
                     />
                   </div>
-                  {associationFields.length !== 0 && (
+                  {(associationFields.length !== 0 || associationParentFields?.length !== 0) && (
                     <div>
                       <Controller
                         name={'valueFrom-' + condition.id}
@@ -287,7 +320,7 @@ function DataFilter({
                             style={{ width: '95px' }}
                             error={errors['valueFrom-' + condition.id]}
                             register={field}
-                            options={VALUE_FROM}
+                            options={options}
                             onChange={(valueFrom: string) => {
                               handleValueFromChange(condition.id, valueFrom);
                               field.onChange(valueFrom);
@@ -304,23 +337,46 @@ function DataFilter({
                       control={control}
                       defaultValue={condition.value}
                       rules={{ required: true }}
-                      render={({ field }) => (
-                        condition.valueFrom === 'form' ? (
-                          <FormFieldSelect
-                            style={{ width: '280px' }}
-                            error={errors['condition-' + condition.id]}
-                            register={field}
-                            options={condition.associationFieldsOptions || []}
-                          />
-                        ) : (
-                          <FormFieldSwitch
-                            error={errors['condition-' + condition.id]}
-                            register={{ ...field, value: field.value ? field.value : '' }}
-                            field={condition.filter}
-                            style={{ width: '280px' }}
-                          />
-                        )
-                      )
+                      render={({ field }) => {
+                        let res;
+                        const { filter: { componentName } } = condition;
+                        if (componentName === 'associateddata') {
+                          condition.associationFieldsOptions = getAssociationOptions(condition.filter);
+                        }
+                        switch (condition.valueFrom) {
+                        case 'form':
+                          res = (
+                            <FormFieldSelect
+                              style={{ width: '280px' }}
+                              error={errors['condition-' + condition.id]}
+                              register={field}
+                              options={condition.associationFieldsOptions || []}
+                            />
+                          );
+                          break;
+                        case 'parentForm':
+                          res = (
+                            <FormFieldSelect
+                              style={{ width: '280px' }}
+                              error={errors['condition-' + condition.id]}
+                              register={field}
+                              options={condition.associationParentFieldsOptions || []}
+                            />
+                          );
+                          break;
+                        default:
+                          res = (
+                            <FormFieldSwitch
+                              error={errors['condition-' + condition.id]}
+                              register={{ ...field, value: field.value ? field.value : '' }}
+                              field={condition.filter}
+                              style={{ width: '280px' }}
+                            />
+                          );
+                          break;
+                        }
+                        return res;
+                      }
                       }
                     />
                   </div>

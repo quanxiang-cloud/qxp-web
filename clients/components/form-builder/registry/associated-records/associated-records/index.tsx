@@ -27,6 +27,7 @@ type Props = {
   associatedTable: ISchema;
   onChange: (value: Record<string, any>[]) => void;
   filterConfig?: FilterConfig;
+  mergeConfig?: any;
   readOnly?: boolean;
   className?: string;
 }
@@ -60,14 +61,17 @@ function AssociatedRecords({
   multiple,
   onChange,
   filterConfig,
+  mergeConfig,
   readOnly,
   className,
 }: Props): JSX.Element {
   const { selectAll = false } = filterConfig || {};
   const [showSelectModal, setShowSelectModal] = useState(false);
-  const [index, setIndex] = useState(0);
+  // const [index, setIndex] = useState(0);
   const [selectedValue, setSelectValue] = useState((multiple || selectAll) ? '' : defaultValues[0]?._id);
   const tableColumns = computeTableColumns(associatedTable, columns);
+
+  const showFields = tableColumns.filter((item: any)=>item.id !== 'remove')?.map((item: any)=>item.id);
 
   !readOnly && tableColumns.push({
     id: 'remove',
@@ -80,6 +84,10 @@ function AssociatedRecords({
           size={24}
           name="delete"
           onClick={() => {
+            // onChange(value.filter(({ _id }) => {
+            //   const rowId = row._id;
+            //   return isArray(rowId) ? !rowId.includes(_id) : _id !== row._id;
+            // }));
             onChange(value.filter(({ _id }) => _id !== row._id));
             setSelectValue('');
           }}
@@ -89,12 +97,18 @@ function AssociatedRecords({
   });
 
   useEffect(()=>{
-    if (index > 1) return;
-    if (selectAll && index === 1) {
-      onChange(value);
-    }
-    setIndex(index + 1);
+    onChange(value);
   }, [JSON.stringify(value)]);
+
+  const mergedArr = Object.values(value.reduce((acc, cur) => {
+    const key = showFields.map((item)=>cur[item]).join('-');
+    if (!acc[key]) {
+      acc[key] = { ...cur };
+    } else {
+      acc[key]._id = [acc[key]._id, cur._id].flat();
+    }
+    return acc;
+  }, {}));
 
   return (
     <div className={cs('w-full', className)}>
@@ -102,6 +116,7 @@ function AssociatedRecords({
         className="mb-16"
         rowKey="_id"
         columns={tableColumns}
+        // data={mergeConfig ? mergedArr : value}
         data={value}
         emptyTips="没有关联记录"
         style={{ maxHeight: 300 }}
@@ -140,32 +155,62 @@ function AssociatedRecords({
 
 function AssociatedRecordsFields(props: Partial<ISchemaFieldComponentProps>): JSX.Element {
   const componentProps = props.props['x-component-props'];
+
   // todo handle error case
   const [selectAllData, setSelectAllData] = useState<any>([]);
   const [hasChanged, setHasChanged] = useState<any>(false);
   const { selectAll = false } = componentProps?.filterConfig || {};
   const { appID, tableID, isNew } = componentProps;
   const { condition = [], tag = 'must' } = componentProps.filterConfig || {};
+  const [filterConfigIndex, setFilterConfigIndex] = useState(0);
   const getSelectAllData = async ()=>{
-    const res = await fetchFormDataList(appID, tableID, {
+    await fetchFormDataList(appID, tableID, {
       sort: ['-created_at'],
       page: 1,
       size: 1000,
       query: toEs({ tag, condition: [...condition] }),
+    }).then((res: any)=>{
+      setSelectAllData(res?.entities || []);
+      setHasChanged(false);
     }).catch((e) => {
       console.log(e);
     });
-    setSelectAllData(res?.entities || []);
   };
+
+  // useEffect(()=>{
+  //   setFilterConfigIndex(filterConfigIndex + 1);
+  //   selectAll && getSelectAllData();
+  // }, [JSON.stringify(componentProps?.filterConfig?.condition)]);
 
   useEffect(()=>{
     selectAll && getSelectAllData();
   }, []);
 
+  const getValue = ()=>{
+    // if (props.props.readOnly) {
+    //   return props.value || [];
+    // }
+    // if (selectAll && !hasChanged ) {
+    //   if (isNew) {
+    //     return selectAllData;
+    //   } else {
+    //     // 修改时初始值bug
+    //     if (filterConfigIndex > 2) {
+    //       return selectAllData;
+    //     } else {
+    //       return props.value || [];
+    //     }
+    //   }
+    // } else {
+    //   return props.value || [];
+    // }
+    return (selectAll && !hasChanged && isNew) ? selectAllData : (props.value || []);
+  };
+
   return (
     <AssociatedRecords
       className={props.props.className}
-      defaultValues={(selectAll && !hasChanged && isNew) ? selectAllData : (props.value || [])}
+      defaultValues={getValue()}
       // defaultValues={props.value || []}
       readOnly={props.props.readOnly}
       appID={componentProps.appID}
@@ -173,7 +218,8 @@ function AssociatedRecordsFields(props: Partial<ISchemaFieldComponentProps>): JS
       columns={componentProps.columns || []}
       multiple={componentProps.multiple || false}
       filterConfig={componentProps.filterConfig}
-      value={(selectAll && !hasChanged && isNew) ? selectAllData : props.value}
+      // mergeConfig={componentProps?.mergeConfig}
+      value={getValue()}
       // value={props.value}
       associatedTable={componentProps.associatedTable}
       onChange={(selectedKeys) => {

@@ -16,6 +16,7 @@ import AssociatedTableColumnsPicker from './associated-table-columns-picker';
 import FilterConfigBtn from './filter-config-btn';
 import configSchema from './config-schema';
 import { AssociatedRecordsConfig } from './convertor';
+import MergeConfig from './merge-config';
 
 interface Props {
   initialValue: AssociatedRecordsConfig;
@@ -31,6 +32,7 @@ const COMPONENTS = {
   DefaultValueLinkageConfigBtn,
   FilterConfigBtn,
   FilterConfig,
+  MergeConfig,
 };
 
 const { onFieldInputChange$ } = FormEffectHooks;
