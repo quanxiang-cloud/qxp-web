@@ -108,7 +108,7 @@ function AssociatedRecordsFields(props: Partial<ISchemaFieldComponentProps>): JS
       columns={componentProps.columns || []}
       multiple={componentProps.multiple || false}
       filterConfig={componentProps.filterConfig}
-      // mergeConfig={componentProps.mergeConfig}
+      mergeConfig={componentProps.mergeConfig}
       selected={selected}
       associatedTable={componentProps.associatedTable}
       onChange={(selectedKeys) => props?.mutators?.change(selectedKeys)}

@@ -115,8 +115,7 @@ function AssociatedRecords({
         className="mb-16"
         rowKey="_id"
         columns={tableColumns}
-        // data={mergeConfig ? mergedArr : value}
-        data={value}
+        data={mergeConfig ? mergedArr : value}
         emptyTips="没有关联记录"
         style={{ maxHeight: 300 }}
       />
@@ -205,7 +204,7 @@ function AssociatedRecordsFields(props: Partial<ISchemaFieldComponentProps>): JS
       columns={componentProps.columns || []}
       multiple={componentProps.multiple || false}
       filterConfig={componentProps.filterConfig}
-      // mergeConfig={componentProps?.mergeConfig}
+      mergeConfig={componentProps?.mergeConfig}
       value={getValue()}
       // value={props.value}
       associatedTable={componentProps.associatedTable}

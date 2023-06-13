@@ -54,7 +54,7 @@ export function toSchema(value: AssociatedRecordsConfig): ISchema {
       columns: value.columns || [],
       associatedTable: value.linkedTable?.associatedTable,
       filterConfig: value.filterConfig || null,
-      // mergeConfig: value.mergeConfig || null,
+      mergeConfig: value.mergeConfig || null,
     },
     ['x-internal']: {
       permission: getSchemaPermissionFromSchemaConfig(value),
@@ -81,7 +81,7 @@ export function toConfig(schema: ISchema): AssociatedRecordsConfig {
     columns: schema['x-component-props']?.columns || [],
     required: !!schema.required,
     filterConfig: schema['x-component-props']?.filterConfig || null,
-    // mergeConfig: schema['x-component-props']?.mergeConfig || null,
+    mergeConfig: schema['x-component-props']?.mergeConfig || null,
     defaultValueLinkage: schema['x-internal']?.defaultValueLinkage,
   };
 }
