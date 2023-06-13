@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import React, { useEffect, useState } from 'react';
 import { Column } from 'react-table';
-import { get } from 'lodash';
+import { get, isArray } from 'lodash';
 import cs from 'classnames';
 
 import Table from '@c/table';
@@ -84,11 +84,10 @@ function AssociatedRecords({
           size={24}
           name="delete"
           onClick={() => {
-            // onChange(value.filter(({ _id }) => {
-            //   const rowId = row._id;
-            //   return isArray(rowId) ? !rowId.includes(_id) : _id !== row._id;
-            // }));
-            onChange(value.filter(({ _id }) => _id !== row._id));
+            onChange(value.filter(({ _id }) => {
+              const rowId = row._id;
+              return isArray(rowId) ? !rowId.includes(_id) : _id !== row._id;
+            }));
             setSelectValue('');
           }}
         />
@@ -161,6 +160,7 @@ function AssociatedRecordsFields(props: Partial<ISchemaFieldComponentProps>): JS
   const [hasChanged, setHasChanged] = useState<any>(false);
   const { selectAll = false } = componentProps?.filterConfig || {};
   const { appID, tableID, isNew } = componentProps;
+  const [updateFlag, setUpdateFlag] = useState(!isNew);
   const { condition = [], tag = 'must' } = componentProps.filterConfig || {};
   const [filterConfigIndex, setFilterConfigIndex] = useState(0);
   const getSelectAllData = async ()=>{
@@ -172,39 +172,26 @@ function AssociatedRecordsFields(props: Partial<ISchemaFieldComponentProps>): JS
     }).then((res: any)=>{
       setSelectAllData(res?.entities || []);
       setHasChanged(false);
+      filterConfigIndex >= 2 && setUpdateFlag(false);
     }).catch((e) => {
       console.log(e);
     });
   };
 
-  // useEffect(()=>{
-  //   setFilterConfigIndex(filterConfigIndex + 1);
-  //   selectAll && getSelectAllData();
-  // }, [JSON.stringify(componentProps?.filterConfig?.condition)]);
+  useEffect(()=>{
+    setFilterConfigIndex(filterConfigIndex + 1);
+    selectAll && getSelectAllData();
+  }, [JSON.stringify(componentProps?.filterConfig?.condition)]);
 
   useEffect(()=>{
-    selectAll && getSelectAllData();
-  }, []);
-
+    console.log('updateFlag', updateFlag);
+    console.log('filterConfigIndex', filterConfigIndex);
+  }, [updateFlag]);
   const getValue = ()=>{
-    // if (props.props.readOnly) {
-    //   return props.value || [];
-    // }
-    // if (selectAll && !hasChanged ) {
-    //   if (isNew) {
-    //     return selectAllData;
-    //   } else {
-    //     // 修改时初始值bug
-    //     if (filterConfigIndex > 2) {
-    //       return selectAllData;
-    //     } else {
-    //       return props.value || [];
-    //     }
-    //   }
-    // } else {
-    //   return props.value || [];
-    // }
-    return (selectAll && !hasChanged && isNew) ? selectAllData : (props.value || []);
+    if (props.props.readOnly || !selectAll || hasChanged || updateFlag ) {
+      return props.value || [];
+    }
+    return selectAllData;
   };
 
   return (
