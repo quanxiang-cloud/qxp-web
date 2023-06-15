@@ -1,3 +1,4 @@
+/* eslint-disable guard-for-in */
 /* eslint-disable max-len */
 import React, { useState } from 'react';
 import { FormButtonGroup, setValidationLanguage } from '@formily/antd';
@@ -84,12 +85,11 @@ function CreateDataForm({ appID, pageID, rowID, onCancel }: Props): JSX.Element 
     for (const key in data) {
       if (data[key].type === 'object') {
         formatProperties(data[key].properties);
-      } else {
-        try {
-          !defaultValues && (data[key]['x-component-props'].isNew = true);
-        } catch (error) {
-          console.log(error);
-        }
+      }
+      try {
+        !defaultValues && (data[key]['x-component-props'].isNew = true);
+      } catch (error) {
+        console.log(error);
       }
     }
   };

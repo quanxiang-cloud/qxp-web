@@ -123,14 +123,14 @@ function FilterConfig({
       });
     }
     // TODO:
-    // if (parentFields?.length) {
-    //   arr.push(
-    //     {
-    //       label: '主表单值',
-    //       value: 'parentForm',
-    //     },
-    //   );
-    // }
+    if (parentFields?.length) {
+      arr.push(
+        {
+          label: '主表单值',
+          value: 'parentForm',
+        },
+      );
+    }
     return arr;
   };
 

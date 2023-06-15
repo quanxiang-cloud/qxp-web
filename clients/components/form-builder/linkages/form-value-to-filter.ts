@@ -1,3 +1,4 @@
+/* eslint-disable guard-for-in */
 import {
   FormEffectHooks,
   ISchemaFormActions,
@@ -7,7 +8,7 @@ import { debounceTime } from 'rxjs6/operators';
 
 const SUPPORT_FILTER_COMP = ['AssociatedData', 'AssociatedRecords'];
 
-const { onFieldValueChange$, onFieldMount$ } = FormEffectHooks;
+const { onFieldValueChange$, onFieldMount$, onFormValuesChange$ } = FormEffectHooks;
 
 type LinkedFilterConfig = {
   field: string;
@@ -107,6 +108,19 @@ export default function formValueToFilter(
           },
         });
       });
+      if (field?.indexOf('.*.') > -1) {
+        console.log('getNewCondition(xComp.filterConfig.condition, getFieldValue, rowIdxStr)', getNewCondition(xComp.filterConfig.condition, getFieldValue, rowIdxStr));
+        const subTableField = field.split('.')?.[0];
+        setFieldState(subTableField, (state) => {
+          set(state, 'props.x-component-props', {
+            ...state?.props?.['x-component-props'],
+            filterConfig: {
+              ...xComp.filterConfig,
+              condition: getNewCondition(xComp.filterConfig.condition, getFieldValue, rowIdxStr),
+            },
+          });
+        });
+      }
     }
   }
 

@@ -24,7 +24,13 @@ export function useExtendColumns<T = any>(
   showCheckbox?: boolean,
 ): UnionColumn<T>[] {
   return useMemo(() => {
-    const _originalColumns = originalColumns.map((col) => {
+    const uniqueArr = originalColumns.reduce((acc: any, curr: any) => {
+      if (!acc.find((item: any) => item.id === curr.id)) {
+        acc.push(curr);
+      }
+      return acc;
+    }, []);
+    const _originalColumns = uniqueArr?.map((col: any) => {
       if (col.width) {
         return col;
       }

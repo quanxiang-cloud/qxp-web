@@ -83,7 +83,7 @@ export function AssociatedData({
 }
 
 export default function AssociatedDataWrap(p: ISchemaFieldComponentProps): JSX.Element {
-  const [selectedValue, setSelectedValue] = useState(p?.initialValue?.value);
+  const [selectedValue, setSelectedValue] = useState(p?.initialValue?.value || p?.value?.value);
   if (p.props.readOnly) {
     return <FormDataValueRenderer value={p.value} schema={p.schema} />;
   }

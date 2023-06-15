@@ -8,7 +8,7 @@ import {
 import { StoreContext } from '@c/form-builder/context';
 import { FieldConfigContext } from '@c/form-builder/form-settings-panel/form-field-config/context';
 
-import configSchema from './config-schema';
+import { getSchema } from './config-schema';
 import { SubTableConfig } from '../convertor';
 import SubTableSchemaConfig from './sub-table-schema-config';
 import { COMPONENTS, CONFIG_COMPONENTS, KeyOfConfigComponent } from './constants';
@@ -20,8 +20,10 @@ interface Props {
 
 const { onFieldValueChange$ } = FormEffectHooks;
 
-export default function ConfigForm({ onChange, initialValue: _initValue }: Props): JSX.Element {
+export default function ConfigForm(props: Props): JSX.Element {
+  const { onChange, initialValue: _initValue } = props;
   const [currentFieldKey, setCurrenFieldKey] = useState('');
+  const [hasAssociatedData, setHasAssociatedData] = useState(false);
   const { actions } = useContext(FieldConfigContext);
   const { appID } = useContext(StoreContext);
   const subRef = useRef<Subscription>();
@@ -65,13 +67,31 @@ export default function ConfigForm({ onChange, initialValue: _initValue }: Props
   const currentSubSchema = initialValue.subTableSchema?.properties?.[currentFieldKey];
   const currentSchemaType = currentSubSchema?.['x-component']?.toLowerCase() as KeyOfConfigComponent;
 
+  useEffect(()=>{
+    getAssociatedData();
+  }, [initialValue.subTableSchema?.properties]);
+
+  const getAssociatedData = ()=>{
+    let num = 0;
+    const subTableSchemaProperties = initialValue.subTableSchema?.properties || {};
+    for (const key in subTableSchemaProperties) {
+      if (subTableSchemaProperties[key]['x-component'] === 'AssociatedData') {
+        num = num + 1;
+      }
+    }
+    setHasAssociatedData( num === 1);
+  };
+
   return (
     <FieldConfigContext.Provider value={{ actions }}>
       <SchemaForm
         initialValues={initialValue}
         components={COMPONENTS}
         onChange={(value) => handleChange(value)}
-        schema={configSchema}
+        // schema={configSchema}
+        schema={getSchema({
+          showDefaultAddAllAssociatedData: hasAssociatedData,
+        })}
         actions={actions}
         hidden={!!currentSubSchema}
         effects={effects}
