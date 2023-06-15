@@ -118,18 +118,18 @@ const schema: ISchema = {
           },
           'x-index': 7,
         },
+        mergeConfig: {
+          title: '去重显示',
+          default: false,
+          'x-component': 'Switch',
+          'x-index': 8,
+        },
         filterConfig: {
           title: '',
           'x-component': 'FilterConfig',
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 8,
-        },
-        mergeConfig: {
-          title: '去重显示',
-          default: false,
-          'x-component': 'Switch',
           'x-index': 9,
         },
       },
