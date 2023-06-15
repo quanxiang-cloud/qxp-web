@@ -29,6 +29,7 @@ type Props = {
   onChange: (value: Record<string, any>[]) => void;
   filterConfig?: FilterConfig;
   mergeConfig?: any;
+  addNewRecords?: boolean;
   readOnly?: boolean;
   className?: string;
 }
@@ -52,26 +53,29 @@ function computeTableColumns(schema: ISchema, columns: string[]): Column<Record<
   }).filter(({ id }) => id !== '_id');
 }
 
-function AssociatedRecords({
-  defaultValues,
-  associatedTable,
-  columns,
-  value,
-  appID,
-  tableID,
-  multiple,
-  onChange,
-  filterConfig,
-  mergeConfig,
-  readOnly,
-  className,
-}: Props): JSX.Element {
+function AssociatedRecords(props: Props): JSX.Element {
+  const {
+    defaultValues,
+    associatedTable,
+    columns,
+    value,
+    appID,
+    tableID,
+    multiple,
+    onChange,
+    filterConfig,
+    mergeConfig,
+    addNewRecords,
+    readOnly,
+    className,
+  } = props;
   const { selectAll = false } = filterConfig || {};
   const [showSelectModal, setShowSelectModal] = useState(false);
   // const [index, setIndex] = useState(0);
   const [selectedValue, setSelectValue] = useState((multiple || selectAll) ? '' : defaultValues[0]?._id);
   const tableColumns = computeTableColumns(associatedTable, columns);
 
+  const { jumpToHome } = associatedTable?.['x-props'] || {};
   const showFields = tableColumns.filter((item: any)=>item.id !== 'remove')?.map((item: any)=>item.id);
 
   !readOnly && tableColumns.push({
@@ -126,6 +130,10 @@ function AssociatedRecords({
     return acc;
   }, {}));
 
+  const addNewRecord = ()=>{
+    window.open(`/_jump_to_home?to=${jumpToHome}`);
+  };
+
   return (
     <div className={cs('w-full', className)}>
       <Table
@@ -139,6 +147,10 @@ function AssociatedRecords({
       {!readOnly && (
         <Button type="button" onClick={() => setShowSelectModal(true)}>选择关联记录</Button>
       )}
+      {
+        addNewRecords && jumpToHome &&
+        <Button className='ml-10' type="button" onClick={() => addNewRecord()}>新建关联记录</Button>
+      }
       {showSelectModal && (
         <SelectRecordsModal
           defaultValues={defaultValues}
@@ -218,6 +230,7 @@ function AssociatedRecordsFields(props: Partial<ISchemaFieldComponentProps>): JS
       multiple={componentProps.multiple || false}
       filterConfig={componentProps.filterConfig}
       mergeConfig={componentProps?.mergeConfig}
+      addNewRecords={componentProps?.addNewRecords}
       value={getValue()}
       // value={props.value}
       associatedTable={componentProps.associatedTable}

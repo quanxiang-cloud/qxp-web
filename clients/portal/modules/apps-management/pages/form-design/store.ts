@@ -28,6 +28,7 @@ class FormDesignStore {
   destroySetSchema: IReactionDisposer;
   @observable pageID = '';
   @observable pageName = '';
+  @observable jump_to_home = '';
   @observable appID = '';
   @observable saveSchemeLoading = false;
   @observable appPageStore = new AppPageDataStore({ schema: {} });
@@ -73,6 +74,9 @@ class FormDesignStore {
     };
     return {
       ...this.formStore?.schema,
+      'x-props': {
+        jumpToHome: this?.jump_to_home,
+      },
       title: this.pageName,
       properties: {
         ...this.formStore?.schema?.properties,

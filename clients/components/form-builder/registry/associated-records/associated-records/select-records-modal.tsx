@@ -17,6 +17,7 @@ type Props = {
   columns: string[];
   filterConfig?: FilterConfig;
   mergeConfig?: any;
+  addNewRecords?: boolean;
   selectedValue?: string;
 }
 
