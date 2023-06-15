@@ -16,6 +16,7 @@ import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import SelectRecordsModal from './select-records-modal';
 import { fetchFormDataList } from '@lib/http-client-form';
 import { toEs } from '@c/data-filter/utils';
+import moment from 'moment';
 
 type Props = {
   defaultValues: Record<string, any>[];
@@ -100,7 +101,23 @@ function AssociatedRecords({
   }, [JSON.stringify(value)]);
 
   const mergedArr = Object.values(value.reduce((acc, cur) => {
-    const key = showFields.map((item)=>cur[item]).join('-');
+    let key = showFields.map((item)=>cur[item]).join('-');
+    tableColumns?.forEach((column: any)=>{
+      if (column.id !== 'remove') {
+        const cell: any = column.accessor(cur);
+        const { schema = {}, value = '' } = cell?.props || {};
+        const { componentName, fieldName } = schema;
+        if (componentName === 'datepicker') {
+          const { format } = schema?.['x-component-props'] || {};
+          if (format) {
+            const _val = moment(value).utc().format(format);
+            key = showFields.map((item)=>{
+              return fieldName === item ? _val : cur[item];
+            }).join('-');
+          }
+        }
+      }
+    });
     if (!acc[key]) {
       acc[key] = { ...cur };
     } else {
@@ -182,10 +199,6 @@ function AssociatedRecordsFields(props: Partial<ISchemaFieldComponentProps>): JS
     selectAll && getSelectAllData();
   }, [JSON.stringify(componentProps?.filterConfig?.condition)]);
 
-  useEffect(()=>{
-    console.log('updateFlag', updateFlag);
-    console.log('filterConfigIndex', filterConfigIndex);
-  }, [updateFlag]);
   const getValue = ()=>{
     if (props.props.readOnly || !selectAll || hasChanged || updateFlag ) {
       return props.value || [];
