@@ -28,6 +28,7 @@ type Props = {
   associationParentFields?: SchemaFieldItem[];
   formOptions?: any[];
   disFilterField?: any[];
+  isAdvancedQuery?: boolean;
 }
 
 type FieldCondition = {
@@ -50,16 +51,19 @@ export type RefProps = {
 const FormFieldSwitch = formFieldWrap({ FieldFC: FieldSwitch });
 const FormFieldSelect = formFieldWrap({ FieldFC: Select });
 
-function DataFilter({
-  fields,
-  associationFields = [],
-  associationParentFields = [],
-  className = '',
-  initConditions,
-  initTag = 'must',
-  formOptions,
-  disFilterField = [],
-}: Props, ref: React.Ref<RefProps>): JSX.Element {
+function DataFilter(props: Props, ref: React.Ref<RefProps>): JSX.Element {
+  const {
+    fields,
+    associationFields = [],
+    associationParentFields = [],
+    className = '',
+    initConditions,
+    initTag = 'must',
+    formOptions,
+    disFilterField = [],
+    isAdvancedQuery = false,
+  } = props;
+
   const [conditions, setConditions] = useState<FieldCondition[]>([]);
   const [tag, setTag] = useState<FilterTag>(initTag);
   const { trigger, control, setValue, getValues, unregister, formState: { errors } } = useForm();
@@ -194,7 +198,9 @@ function DataFilter({
     const formData = getValues();
     const _conditions: Condition[] = [];
     conditions.forEach((condition) => {
-      const value = formData[`condition-${condition.id}`];
+      const value: any = formData[`condition-${condition.id}`];
+      const componentName = condition?.filter?.componentName;
+
       if (
         formData[`field-${condition.id}`] &&
         formData[`operators-${condition.id}`] &&
@@ -203,13 +209,21 @@ function DataFilter({
         if (Array.isArray(value) && value.length === 0) {
           return;
         }
-
+        const getValue = ()=>{
+          if (componentName === 'associateddata') {
+            return {
+              ...formData[`condition-${condition.id}`],
+              value: formData[`condition-${condition.id}`]._id,
+            };
+          }
+          return formData[`condition-${condition.id}`];
+        };
         _conditions.push(
           setValueFormCondition({
             valueFrom: formData[`valueFrom-${condition.id}`] || 'fixedValue',
             key: condition.filter.id,
             op: formData[`operators-${condition.id}`],
-            value: formData[`condition-${condition.id}`],
+            value: getValue(),
             schema: condition.filter,
           }),
         );
@@ -345,14 +359,25 @@ function DataFilter({
                         }
                         switch (condition.valueFrom) {
                         case 'form':
-                          res = (
-                            <FormFieldSelect
-                              style={{ width: '280px' }}
-                              error={errors['condition-' + condition.id]}
-                              register={field}
-                              options={condition.associationFieldsOptions || []}
-                            />
-                          );
+                          if (isAdvancedQuery && componentName === 'associateddata') {
+                            res = (
+                              <FormFieldSwitch
+                                error={errors['condition-' + condition.id]}
+                                register={{ ...field, value: field.value ? field.value : '' }}
+                                field={condition.filter}
+                                style={{ width: '280px' }}
+                              />
+                            );
+                          } else {
+                            res = (
+                              <FormFieldSelect
+                                style={{ width: '280px' }}
+                                error={errors['condition-' + condition.id]}
+                                register={field}
+                                options={condition.associationFieldsOptions || []}
+                              />
+                            );
+                          }
                           break;
                         case 'parentForm':
                           res = (

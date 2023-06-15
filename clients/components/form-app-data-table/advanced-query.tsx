@@ -43,6 +43,7 @@ function AdvancedQuery({ fields, search, tag }: Props): JSX.Element {
           initTag={tag}
           ref={dataFilterRef}
           fields={fields}
+          isAdvancedQuery = {true}
         />
         <div className='mt-20 flex justify-end gap-x-16'>
           <Button onClick={handleEmpty} iconName='clear'>清空</Button>
