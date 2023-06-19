@@ -124,13 +124,13 @@ const schema: ISchema = {
           'x-component': 'Switch',
           'x-index': 8,
         },
-        addNewRecords: {
-          title: '新建关联记录',
-          default: false,
-          visible: false,
-          'x-component': 'Switch',
-          'x-index': 9,
-        },
+        // addNewRecords: {
+        //   title: '新建关联记录',
+        //   default: false,
+        //   visible: false,
+        //   'x-component': 'Switch',
+        //   'x-index': 9,
+        // },
         filterConfig: {
           title: '',
           'x-component': 'FilterConfig',
