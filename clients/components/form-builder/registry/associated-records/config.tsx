@@ -1,3 +1,4 @@
+/* eslint-disable no-empty */
 import React, { useContext, useEffect } from 'react';
 import {
   SchemaForm,
@@ -62,8 +63,11 @@ function AssociatedRecordsConfig({ initialValue, onChange }: Props): JSX.Element
   };
   const search = window.location.search;
   if (search.indexOf('jump_to_home') > -1) {
-    if (configSchema.properties?.Fields?.properties?.addNewRecords?.visible) {
-      configSchema.properties.Fields.properties.addNewRecords.visible = true;
+    if (configSchema.properties?.Fields?.properties?.addNewRecords) {
+      try {
+        configSchema.properties.Fields.properties.addNewRecords.visible = true;
+      } catch (error) {
+      }
     }
   }
   return (
