@@ -210,7 +210,7 @@ function DataFilter(props: Props, ref: React.Ref<RefProps>): JSX.Element {
           return;
         }
         const getValue = ()=>{
-          if (componentName === 'associateddata') {
+          if (componentName === 'associateddata' && isAdvancedQuery) {
             return {
               ...formData[`condition-${condition.id}`],
               value: formData[`condition-${condition.id}`]._id,
