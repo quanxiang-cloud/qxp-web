@@ -129,7 +129,7 @@ const formatProperties = (data: any, fieldPermission?: any)=>{
           if (isNumber(fieldPermission[key])) {
             data[key]['x-internal'].permission = fieldPermission[key];
           } else {
-            data[key]['x-internal'].permission = fieldPermission[key]['x-internal'].permission;
+            data[key]['x-internal'].permission = fieldPermission[key]?.['x-internal']?.permission;
           }
         }
       } catch (error) {

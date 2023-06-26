@@ -5,6 +5,7 @@ export const messageDetailPath = `${pathPrefix}/messages/:messageId`;
 
 export const approvalsPath = `${pathPrefix}/approvals`;
 export const approvalDetailPath = `${pathPrefix}/approvals/:processInstanceID/:taskID/:type/:taskType`;
+export const approvalDetailPathApproval = `${pathPrefix}/approvals/:processInstanceID/:taskID/:type`;
 export const approvalActionPath = `${pathPrefix}/approvals/:processInstanceID/:taskID/:type/actions`;
 export const approvalStatusPath = `${pathPrefix}/approvals/:processInstanceID/:taskID/:type/status`;
 
