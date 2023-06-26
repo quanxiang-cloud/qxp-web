@@ -50,6 +50,9 @@ function ApprovalTypeList({ listType, countMap, todoTotal, onClick }: ApprovalTy
     if (type === 'cc_to_me') {
       count = countMap.ccToMeCount || 0;
     }
+    console.log('todoTotal', todoTotal);
+    console.log('type', type);
+
     if (count > 0) {
       return <BtnBadge count={count} className="relative text-white" />;
     }
@@ -113,7 +116,9 @@ function Approvals(): JSX.Element {
   }, [JSON.stringify(flowInstCount), fillCount]);
 
   useEffect(()=>{
-    approvelCount && fillCount && setTodoTotal(approvelCount + fillCount);
+    const _approvelCount = approvelCount || 0;
+    const _fillCount = fillCount || 0;
+    setTodoTotal(approvelCount + fillCount);
   }, [approvelCount, fillCount]);
 
   function handleChangeList(toList: string): void {
