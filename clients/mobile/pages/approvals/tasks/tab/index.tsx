@@ -11,7 +11,7 @@ import TaskCard from '@m/components/task-card';
 import List from '@m/qxp-ui-mobile/list';
 import { Empty } from '@m/qxp-ui-mobile/empty';
 import { readAll } from '@home/pages/approvals/api';
-import { approvalDetailPath } from '@m/constant';
+import { approvalDetailPath, approvalDetailPathApproval } from '@m/constant';
 import detailStore from '@m/pages/approvals/detail/store';
 
 import { Filter } from './filter';
@@ -79,11 +79,18 @@ const ApprovalsTab = (props: ApprovalsTabProps): JSX.Element => {
         break;
       }
     }
-    const path = approvalDetailPath.replace(':processInstanceID', task.processInstanceId)
-      .replace(':taskID', task.taskId ?? task.id ?? '')
-      .replace(':type', type)
-      .replace(':taskType', _taskType ?? '');
-    history.push(path);
+    if (_taskType === 'approval') {
+      const path = approvalDetailPathApproval.replace(':processInstanceID', task.processInstanceId)
+        .replace(':taskID', task.taskId ?? task.id ?? '')
+        .replace(':type', type);
+      history.push(path);
+    } else {
+      const path = approvalDetailPath.replace(':processInstanceID', task.processInstanceId)
+        .replace(':taskID', task.taskId ?? task.id ?? '')
+        .replace(':type', type)
+        .replace(':taskType', _taskType ?? '');
+      history.push(path);
+    }
   }
 
   async function ccReadAll(): Promise<boolean> {

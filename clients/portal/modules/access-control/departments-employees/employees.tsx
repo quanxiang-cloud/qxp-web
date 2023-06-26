@@ -1,3 +1,4 @@
+/* eslint-disable no-empty */
 import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
 // import { omit } from 'ramda';
@@ -124,20 +125,14 @@ export default function Employees({
   }
 
   function openExportModal(): void {
-    const queryGraphQL = `query(
-      name:"",
-      jobNumber:"",
-      phone:"",
-      email:"",
-      useStatus:0,
-      gender:"",
-      position:"",
-      roleName:"",
-      departmentID:"${department.id}",
-      departmentName:"",
-      page:0,
-      size:999
-      )`;
+    const size = 1000;
+    let pageNum: any = 1;
+    try {
+      pageNum = employeesList && Math.ceil(employeesList?.total / size);
+    } catch (error) {
+    }
+    const allUsers: any = [];
+    const userInfoArr: any = [];
     const userGraphQL = `{users{
       id,
       email,
@@ -150,24 +145,66 @@ export default function Employees({
       leaders{id,name}},
       total}}`;
 
-    getUserAdminInfo({
-      query: `{${queryGraphQL}${userGraphQL}`,
-    }).then((res: any) => {
-      const { users } = res;
-      users.map((item: any)=>{
-        let department = '';
-        const departments = [...JSON.parse(JSON.stringify(item.departments))][0];
-        departments && departments.reverse();
-        departments && departments.map((item: { name: string; }, index: number)=>{
-          department += '/' + item.name;
+    for (let i = 1; i <= pageNum; i = i + 1 ) {
+      const queryGraphQL = `query(
+        name:"",
+        jobNumber:"",
+        phone:"",
+        email:"",
+        useStatus:0,
+        gender:"",
+        position:"",
+        roleName:"",
+        departmentID:"${department.id}",
+        departmentName:"",
+        page: ${i},
+        size:${size}
+        )`;
+
+      userInfoArr.push(getUserAdminInfo({
+        query: `{${queryGraphQL}${userGraphQL}`,
+      }).then((res: any) => {
+        const { users } = res;
+        users.map((item: any)=>{
+          let department = '';
+          const departments = [...JSON.parse(JSON.stringify(item.departments))][0];
+          departments && departments.reverse();
+          departments && departments.map((item: { name: string; }, index: number)=>{
+            department += '/' + item.name;
+          });
+          item.department = department;
+          item.leader = item?.leaders?.[0]?.[0]?.name;
         });
-        item.department = department;
-        item.leader = item?.leaders?.[0]?.[0]?.name;
-      });
-      exportEmployees(users);
-    }).catch((error)=>{
-      toast.error(error);
+        return allUsers.push(users);
+      }).catch((error)=>{
+        toast.error(error);
+      }));
+    }
+
+    Promise.all([...userInfoArr]).then((res)=>{
+      exportEmployees(allUsers?.reverse()?.flat());
+    }).catch((err)=>{
+      console.log(err);
     });
+
+    // getUserAdminInfo({
+    //   query: `{${queryGraphQL}${userGraphQL}`,
+    // }).then((res: any) => {
+    //   const { users } = res;
+    //   users.map((item: any)=>{
+    //     let department = '';
+    //     const departments = [...JSON.parse(JSON.stringify(item.departments))][0];
+    //     departments && departments.reverse();
+    //     departments && departments.map((item: { name: string; }, index: number)=>{
+    //       department += '/' + item.name;
+    //     });
+    //     item.department = department;
+    //     item.leader = item?.leaders?.[0]?.[0]?.name;
+    //   });
+    //   exportEmployees(users);
+    // }).catch((error)=>{
+    //   toast.error(error);
+    // });
   }
 
   // 导出数据

@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 import React from 'react';
 import zhCN from 'antd/lib/date-picker/locale/zh_CN';
 import { omit } from 'lodash';
@@ -12,6 +13,7 @@ import CascadeSelector, {
 } from '@c/form-builder/registry/cascade-selector/cascade-selector';
 
 import SelectField from './select-field';
+import { AssociatedData } from '@c/form-builder/registry/associated-data/associated-data';
 
 type Props<T> = {
   field: ISchema;
@@ -92,6 +94,20 @@ function FieldSwitch({ field, className = '', ...otherProps }: Props<any>, ref: 
         options={field.enum as Option[]}
         mode={field['x-component-props']?.multiple}
         optionalRange={field['x-component-props']?.optionalRange}
+      />
+    );
+  case 'AssociatedData':
+    const { fieldName } = field?.['x-component-props'] || {};
+    const { value, onChange } = otherProps || {};
+    const _value = value ? {
+      label: value[fieldName],
+      value: value._id,
+    } : value;
+    return (
+      <AssociatedData
+        {...field['x-component-props']}
+        {...otherProps}
+        value={_value}
       />
     );
   default:

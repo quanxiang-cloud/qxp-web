@@ -15,6 +15,7 @@ import requiredLinkageEffect from './linkages/required';
 import defaultValueLinkageEffect from './linkages/default-value';
 import formValueToFilter from './linkages/form-value-to-filter';
 import calculationFormulaEffect from './linkages/calculation-formula';
+import statisticalAssociationEffect from './linkages/statistical-association';
 import { wrapSchemaByMegaLayout, schemaPermissionTransformer } from './utils';
 import { INVALID_READONLY_LEGACY, INVISIBLE_NO_WRITE, PERMISSION, READONLY_NO_WRITE } from './constants';
 
@@ -141,6 +142,7 @@ function FormRenderer({
             const _schema = { ...schema, properties: schemaToMap(schema) };
             defaultValueLinkageEffect(_schema, actions);
             calculationFormulaEffect(_schema, actions);
+            statisticalAssociationEffect(_schema, actions);
             formValueToFilter(_schema, actions);
           }}
         >

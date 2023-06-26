@@ -20,6 +20,8 @@ type Props = {
   onChange: (selectedKeys: string[]) => void;
   readOnly: boolean;
   filterConfig?: FilterConfig;
+  mergeConfig?: any;
+  addNewRecords?: boolean;
 }
 
 function computeTableColumns(schema: ISchema, columns: string[]): Column<Record<string, any>>[] {
@@ -107,6 +109,8 @@ function AssociatedRecordsFields(props: Partial<ISchemaFieldComponentProps>): JS
       columns={componentProps.columns || []}
       multiple={componentProps.multiple || false}
       filterConfig={componentProps.filterConfig}
+      mergeConfig={componentProps.mergeConfig}
+      addNewRecords={componentProps.addNewRecords}
       selected={selected}
       associatedTable={componentProps.associatedTable}
       onChange={(selectedKeys) => props?.mutators?.change(selectedKeys)}

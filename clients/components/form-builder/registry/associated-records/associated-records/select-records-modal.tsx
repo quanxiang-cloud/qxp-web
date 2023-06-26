@@ -16,6 +16,8 @@ type Props = {
   associatedTable: ISchema;
   columns: string[];
   filterConfig?: FilterConfig;
+  mergeConfig?: any;
+  addNewRecords?: boolean;
   selectedValue?: string;
 }
 

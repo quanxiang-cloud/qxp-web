@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
-import { useQuery } from 'react-query';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 import Pagination from '@c/pagination';
 import RadioButtonGroup from '@c/radio/radio-button-group';
 
 import store from './store';
 import TaskList from '../task-list';
-import { getFlowInstanceCount } from '../api';
 import { APPROVAL, FILL_IN, listData } from '../constant';
 
 const status = [
@@ -30,15 +28,11 @@ const sortOptions = [
   { value: 'ASC', label: '最早的代办优先' },
 ];
 
-function TodoApprovals(): JSX.Element {
+function TodoApprovals(props: any): JSX.Element {
+  const { approvelCount = 0, fillInCount = 0 } = props;
   const [currentValue, setCurrentValue] = useState(APPROVAL);
   const { search, pathname } = useLocation();
   const searchParams = new URLSearchParams(search);
-  const history = useHistory();
-  const { data: flowInstCount } = useQuery(['flow-instance-count'], async () => {
-    return await getFlowInstanceCount({});
-  });
-
   useEffect(() => {
     document.title = '我的流程 - 待处理列表'; // todo
     store.tagType = searchParams.get('tagType') || '';
@@ -78,9 +72,13 @@ function TodoApprovals(): JSX.Element {
             listData={listData.map((item: any)=>{
               switch (item?.value) {
               case 'fillIn':
-                return { ...item, count: Number(sessionStorage.getItem('todo_fillInCount')) };
+                return { ...item,
+                  count: fillInCount,
+                };
               case 'approval':
-                return { ...item, count: Number(sessionStorage.getItem('todo_approvelCount')) };
+                return { ...item,
+                  count: approvelCount,
+                };
               }
             })}
           />

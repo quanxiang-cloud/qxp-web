@@ -23,6 +23,7 @@ export interface AggregationRecordsConfig {
   displayFieldNull: '0' | '-';
   dataRange: 'all' | 'part';
   condition: ESParameter,
+  linkStatistics?: boolean,
 }
 
 export const defaultConfig: AggregationRecordsConfig = {
@@ -45,6 +46,7 @@ export const defaultConfig: AggregationRecordsConfig = {
       must: [],
     },
   },
+  linkStatistics: false,
 };
 
 export function toSchema(value: AggregationRecordsConfig): ISchema {
@@ -66,6 +68,7 @@ export function toSchema(value: AggregationRecordsConfig): ISchema {
       displayFieldNull: value.displayFieldNull,
       dataRange: value.dataRange,
       condition: value.condition,
+      linkStatistics: value?.linkStatistics,
     },
     ['x-internal']: {
       permission: getSchemaPermissionFromSchemaConfig(value),
@@ -90,6 +93,7 @@ export function toConfig(schema: ISchema): AggregationRecordsConfig {
     displayFieldNull: schema['x-component-props']?.displayFieldNull,
     dataRange: schema['x-component-props']?.dataRange,
     condition: schema['x-component-props']?.condition,
+    linkStatistics: schema['x-component-props']?.linkStatistics,
   };
 }
 

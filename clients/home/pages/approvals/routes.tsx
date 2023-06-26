@@ -14,6 +14,7 @@ export default function ApprovalRoutes(): JSX.Element {
       <Switch>
         <Route exact path="/approvals" component={Approvals} />
         <Route path="/approvals/:processInstanceID/:taskID/:type/:taskType" component={ApprovalDetail} />
+        <Route path="/approvals/:processInstanceID/:taskID/:type" component={ApprovalDetail} />
         <Route component={() => <NotFoundError url='/approvals' classnames='main-content'/>}/>
       </Switch>
     </>

@@ -49,6 +49,8 @@ const UserPicker = ({
     email: window.USER.email,
   };
 
+  const [currentUserOption, setCurrentUserOption] = useState<any>();
+
   useEffect(() => {
     const noLabelValues = getNoLabelValues(value);
     if (noLabelValues.length) {
@@ -91,9 +93,30 @@ const UserPicker = ({
     onChange && onChange(selectedValues);
   };
 
-  if (optionalRange === 'currentUser') {
-    componentsProps.options = [currentUser];
-  }
+  useEffect(()=>{
+    if (optionalRange === 'currentUser') {
+      const valueUser = value?.[0];
+      if (valueUser?.value) {
+        getUserDetail([valueUser?.value]).then((res: any) => {
+          const { users } = res || {};
+          setCurrentUserOption([
+            {
+              label: users?.[0]?.name,
+              value: users?.[0]?.value,
+              email: users?.[0]?.email,
+            },
+          ]);
+          componentsProps.options = [{
+            label: users?.[0]?.name,
+            value: users?.[0]?.value,
+            email: users?.[0]?.email,
+          }];
+        });
+      } else {
+        componentsProps.options = [currentUser];
+      }
+    }
+  }, [value?.[0]?.value]);
 
   if (!editable) {
     return (
@@ -122,13 +145,17 @@ const UserPicker = ({
   const { options } = componentsProps;
 
   const handleValue = ()=>{
-    const data = value?.filter((item: any)=>{
-      return options?.find((option: any)=>option.value === item.value);
-    });
-    if (!data?.length) {
-      onChange && onChange(data);
+    if (optionalRange === 'customize') {
+      const data = value?.filter((item: any)=>{
+        return options?.find((option: any)=>option.value === item.value);
+      });
+
+      if (!data?.length && JSON.stringify(data) !== JSON.stringify(value)) {
+        onChange && onChange(data);
+      }
+      return data;
     }
-    return data;
+    return value;
   };
 
   return (
@@ -143,11 +170,17 @@ const UserPicker = ({
       className={cs('user-selector', componentsProps.className || '')}
     >
       {
-        options?.map((opt) => (
-          <SelectOption key={opt.value} value={opt.value}>
-            {opt.label}({opt.email})
-          </SelectOption>
-        ))
+        optionalRange === 'currentUser' ?
+          currentUserOption?.map((opt: any) => (
+            <SelectOption key={opt.value} value={opt.value}>
+              {opt.label}({opt.email})
+            </SelectOption>
+          )) :
+          options?.map((opt) => (
+            <SelectOption key={opt.value} value={opt.value}>
+              {opt.label}({opt.email})
+            </SelectOption>
+          ))
       }
     </Select>
   );

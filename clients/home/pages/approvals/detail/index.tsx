@@ -97,7 +97,7 @@ function ApprovalDetail(): JSX.Element {
   });
 
   const task = useMemo(() => {
-    const taskDetailData = get(data, 'taskDetailModels', []).find(
+    const taskDetailData = get(data, 'taskDetailModels', [])?.find(
       (taskItem: Record<string, any>) => taskItem?.formSchema !== null,
     );
     return taskDetailData ? taskDetailData : get(data, 'taskDetailModels[0]', {});
@@ -138,9 +138,7 @@ function ApprovalDetail(): JSX.Element {
           ],
         };
       }
-
       res.taskDetailModels = [JSON.parse(JSON.stringify(res))];
-      !res?.flowName && (res.flowName = sessionStorage.getItem('fillInTaskCardName'));
       if (!currentTaskId) {
         setCurrentTaskId(get(res, 'taskDetailModels[0].taskId', '').toString());
       }

@@ -15,12 +15,14 @@ import './index.scss';
 
 function FormDesign() {
   const { pageType, pageId, appID } = useParams<FormDesignParams>();
-  const { pageName } = getQuery<{ pageName: string }>();
+  const { pageName, jump_to_home } = getQuery<{ pageName: string, jump_to_home: string }>();
 
   useEffect(() => {
     store.setAppID(appID);
     store.setPageID(pageId);
     store.pageName = pageName;
+    store.jump_to_home = jump_to_home;
+
     return () => {
       store.clear();
     };

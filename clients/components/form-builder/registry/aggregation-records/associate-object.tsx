@@ -1,3 +1,4 @@
+/* eslint-disable no-empty */
 import React, { useContext, useEffect } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { get } from 'lodash';
@@ -18,7 +19,17 @@ export type AssociateTableOptions = {
 }
 
 const getNumericFields = (properties: Record<string, ISchema>): LabelValue[] => {
-  return Object.entries(properties).map(([key, fieldSchema]) => {
+  const newProperties: any = JSON.parse(JSON.stringify(properties));
+  let obj: any = { ...newProperties };
+  try {
+    Object.entries(newProperties).map(([key, fieldSchema]: any) => {
+      if (fieldSchema?.type === 'object') {
+        obj = { ...obj, ...fieldSchema?.properties };
+      }
+    });
+  } catch (error) {
+  }
+  return Object.entries(obj).map(([key, fieldSchema]: any) => {
     if (fieldSchema.type === 'number') {
       return { label: fieldSchema.title, value: key };
     }

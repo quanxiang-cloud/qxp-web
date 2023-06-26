@@ -14,8 +14,10 @@ import { getTableSchema } from '@lib/http-client-form';
 import { getDefaultValue, schemaRulesTransform } from './utils';
 import SubTableList from './list';
 import { components } from './components';
+import { fetchFormDataList } from '@lib/http-client-form';
 
 import './style.scss';
+import { toEs } from '@c/data-filter/utils';
 
 export type Rules = (ValidatePatternRules | ValidatePatternRules[]) & Rule[];
 export type Column = {
@@ -52,7 +54,9 @@ function SubTable({
 
   const {
     subordination, columns, appID, tableID, rowLimit, layout,
+    defaultAddAllAssociatedData, filterConfig, isNew,
   } = definedSchema?.['x-component-props'] || {};
+
   let schema = definedSchema?.items as ISchema | undefined;
   const isFromForeign = subordination === 'foreign_table';
   const { data } = useQuery(
@@ -87,6 +91,51 @@ function SubTable({
       delete window[`schema-${definedSchema?.key}`];
     };
   }, [schema, columns]);
+
+  const addAllAssociatedData = ()=>{
+    if (defaultAddAllAssociatedData) {
+      const schema: any = definedSchema?.items || {};
+      let _filterConfig: any = {};
+      let fieldName: any = '';
+      let appID; let associationTableID; let associateddataKey: any;
+      for (const key in schema?.properties) {
+        if (schema?.properties[key]['x-component'] === 'associateddata') {
+          associateddataKey = key;
+          _filterConfig = filterConfig || schema?.properties[key]['x-component-props'].filterConfig || {};
+          fieldName = schema?.properties[key]['x-component-props'].fieldName || '';
+          appID = schema?.properties[key]['x-component-props'].appID;
+          associationTableID = schema?.properties[key]['x-component-props'].associationTableID;
+        }
+      }
+      const { condition = [], tag = 'must' } = _filterConfig;
+      fetchFormDataList(appID, associationTableID, {
+        query: toEs({ tag, condition }),
+        sort: [],
+        size: 1000,
+      }).then((res) => {
+        const list = res?.entities || [];
+        if (list?.length) {
+          mutators?.change([]);
+          list.forEach((item, index)=>{
+            const _rowPlaceHolder = JSON.parse(JSON.stringify(rowPlaceHolder));
+            _rowPlaceHolder[associateddataKey] = {
+              label: item?.[fieldName],
+              value: item?._id,
+            };
+            setTimeout(()=>{
+              mutators?.push(_rowPlaceHolder);
+            });
+          });
+        }
+      }).catch((err) => {
+        console.log(err);
+      });
+    }
+  };
+
+  useEffect(()=>{
+    isNew && addAllAssociatedData();
+  }, [JSON.stringify(filterConfig)]);
 
   function buildColumnFromSchema(dataIndex: string, sc: ISchema): Column | null {
     const componentName = sc['x-component']?.toLowerCase() as keyof Components;
