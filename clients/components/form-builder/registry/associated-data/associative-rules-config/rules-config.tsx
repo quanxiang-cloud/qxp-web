@@ -58,7 +58,11 @@ function Rules({
     const sourceType = sourceTableFields.find(({ fieldName }) => fieldName === value)?.componentName;
     const targetPath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.dataTarget`);
     setFieldState(targetPath, (state) => {
-      state.props.enum = formatFieldInputAndOption(sourceType || '');
+      if (sourceType === 'select') {// 支持下拉单选框关联赋值给input
+        state.props.enum = formatFieldInputAndOption('input');
+      } else {
+        state.props.enum = formatFieldInputAndOption(sourceType || '');
+      }
     });
   }
 
