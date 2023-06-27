@@ -131,8 +131,16 @@ const schema: ISchema = {
         //   'x-component': 'Switch',
         //   'x-index': 9,
         // },
+        associativeConfig: {
+          title: '关联赋值',
+          'x-component': 'AssociativeConfig',
+          'x-mega-props': {
+            labelAlign: 'top',
+          },
+          'x-index': 9,
+        },
         filterConfig: {
-          title: '',
+          title: '数据过滤',
           'x-component': 'FilterConfig',
           'x-mega-props': {
             labelAlign: 'top',

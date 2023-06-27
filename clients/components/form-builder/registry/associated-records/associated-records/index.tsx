@@ -28,6 +28,7 @@ type Props = {
   associatedTable: ISchema;
   onChange: (value: Record<string, any>[]) => void;
   filterConfig?: FilterConfig;
+  associativeConfig?: any;
   mergeConfig?: any;
   addNewRecords?: boolean;
   readOnly?: boolean;
@@ -64,6 +65,7 @@ function AssociatedRecords(props: Props): JSX.Element {
     multiple,
     onChange,
     filterConfig,
+    associativeConfig,
     mergeConfig,
     addNewRecords,
     readOnly,
@@ -218,6 +220,23 @@ function AssociatedRecordsFields(props: Partial<ISchemaFieldComponentProps>): JS
     return selectAllData;
   };
 
+  function executeAssignMent(dataRows: any): void {
+    const p: any = props;
+    const { setFieldState } = p?.form ?? {};
+    const associativeConfig = p['x-component-props']?.associativeConfig ||
+    p.props['x-component-props'].associativeConfig;
+    associativeConfig && associativeConfig.rules.forEach((
+      { dataSource, dataTarget }: FormBuilder.DataAssignment,
+    ) => {
+      const fullPath = p?.path.split('.');
+      const relativePath = fullPath.slice(0, fullPath.length - 1).join('.');
+
+      setFieldState(`${relativePath}.${dataTarget}`, (state) => {
+        state.value = [...new Set(dataRows.map((item: any)=>item?.[dataSource]))]?.join(',');
+      });
+    });
+  }
+
   return (
     <AssociatedRecords
       className={props.props.className}
@@ -229,6 +248,7 @@ function AssociatedRecordsFields(props: Partial<ISchemaFieldComponentProps>): JS
       columns={componentProps.columns || []}
       multiple={componentProps.multiple || false}
       filterConfig={componentProps.filterConfig}
+      associativeConfig={componentProps?.associativeConfig}
       mergeConfig={componentProps?.mergeConfig}
       addNewRecords={componentProps?.addNewRecords}
       value={getValue()}
@@ -237,6 +257,7 @@ function AssociatedRecordsFields(props: Partial<ISchemaFieldComponentProps>): JS
       onChange={(selectedKeys) => {
         setHasChanged(true);
         props?.mutators?.change(selectedKeys);
+        executeAssignMent(selectedKeys);
       }}
     />
   );
