@@ -58,7 +58,11 @@ function Rules({
     const sourceType = sourceTableFields.find(({ fieldName }) => fieldName === value)?.componentName;
     const targetPath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.dataTarget`);
     setFieldState(targetPath, (state) => {
-      state.props.enum = formatFieldInputAndOption(sourceType || '');
+      if (sourceType === 'serial') {// 支持流水号关联赋值给input
+        state.props.enum = formatFieldInputAndOption('input');
+      } else {
+        state.props.enum = formatFieldInputAndOption(sourceType || '');
+      }
     });
   }
 
