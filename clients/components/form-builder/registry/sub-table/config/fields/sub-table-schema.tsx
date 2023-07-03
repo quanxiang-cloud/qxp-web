@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+/* eslint-disable no-param-reassign */
 import React, { useContext, useState, Ref, CSSProperties, useEffect } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { usePopper } from 'react-popper';
@@ -16,6 +18,10 @@ import { generateRandomFormFieldID, numberTransform } from '@c/form-builder/util
 import { FieldConfigContext } from '@c/form-builder/form-settings-panel/form-field-config/context';
 
 import { SUB_TABLE_TYPES_SCHEMA_MAP, SUB_TABLE_TYPES } from '../constants';
+import schemaToFields from '@lib/schema-convert';
+import { getTableSchema } from '@lib/http-client-form';
+import { Cascader } from 'antd';
+import Toggle from '@c/toggle';
 
 const { onFieldValueChange$ } = FormEffectHooks;
 
@@ -51,10 +57,29 @@ function SubTableSchema(props: ISchemaFieldComponentProps): JSX.Element {
     placement: 'bottom-start',
   });
 
+  const { schema } = useContext(StoreContext);
+  const {
+    subOptionsSchema: _subOptionsSchema,
+    subAssociatedFields: _subAssociatedFields,
+    subOptionsChecked: _subOptionsChecked,
+    subSchemaOptions: _subSchemaOptions,
+    associatedFieldID: _associatedFieldID,
+    subTableID: _subTableID,
+  } = props?.initialValue?.['x-component-props'] || {};
+  const [associatedFields, setAssociatedFields] = useState<any>([]);
+  const [subOptionsSchema, setSubOptionsSchema] = useState<any>(_subOptionsSchema || {});
+  const [subSchemaOptions, setSubSchemaOptions] = useState<any>(_subSchemaOptions || []);
+  const [subOptionsChecked, setSubOptionsChecked] = useState<any>(_subOptionsChecked || {});
+  const [subAssociatedFields, setSubAssociatedFields] = useState<any>(_subAssociatedFields || []);
+  const [associatedFieldID, setAssociatedFieldID] = useState(_associatedFieldID || undefined);
+  const [subTableID, setSubTableID] = useState<any>( _subTableID || undefined);
+  const [initAssociatedFieldsFlag, setInitAssociatedFieldsFlag] = useState(false);
+
   useEffect(() => {
     actions.getFieldState('rowLimit', (state) => {
       setRowLimit(state.value);
     });
+    getAssociatedTable();
   }, []);
 
   useEffect(() => {
@@ -117,6 +142,15 @@ function SubTableSchema(props: ISchemaFieldComponentProps): JSX.Element {
           };
           return cur;
         }, {}),
+      },
+      'x-component-props': {
+        associatedFields,
+        subOptionsSchema,
+        subSchemaOptions,
+        subOptionsChecked,
+        subAssociatedFields,
+        subTableID,
+        associatedFieldID,
       },
     };
     props.mutators.change(newValue);
@@ -187,104 +221,255 @@ function SubTableSchema(props: ISchemaFieldComponentProps): JSX.Element {
     });
   });
 
+  // 获取关联表
+  const getAssociatedTable = ()=>{
+    const fields = schemaToFields(schema) || [];
+    // const _associatedFields = fields?.filter((item)=>(item.componentName === 'associateddata' || item.componentName === 'aggregationrecords'));
+    const _associatedFields = fields?.filter((item)=>(item.componentName === 'associateddata'));
+    if (_associatedFields?.length === 0) {
+      return setAssociatedFields([]);
+    }
+    // 获取关联表下子表
+    const arr: any = [];
+    _associatedFields?.forEach((item: any)=>{
+      const { appID, associationTableID } = item?.['x-component-props'] || {};
+      getTableSchema(appID, associationTableID).then((res: any)=>{
+        const { schema } = res;
+        const subTableFields = schema ?
+          schemaToFields(schema)?.filter((item: any)=>item?.componentName === 'subtable') :
+          [];
+        if (subTableFields.length) {
+          item = {
+            ...item,
+            subTableFields,
+          };
+          arr.push(item);
+          setAssociatedFields([...arr]);
+        }
+      });
+    });
+  };
+
+  const getAssociatedFieldsOptions = ()=>{
+    const arr = associatedFields.map((item: any)=>{
+      const { subTableFields = [] } = item || {};
+      return {
+        value: item?.['x-component-props']?.associationTableID,
+        label: item?.title,
+        children: subTableFields.map((item: any)=>{
+          const { subordination } = item?.['x-component-props'] || {};
+          return (
+            subordination === 'sub_table' &&
+              {
+                value: item?.['x-component-props']?.tableID,
+                label: item?.title,
+              }
+          );
+        })?.filter((item: any)=>!!item),
+      };
+    });
+
+    const res = arr?.filter(({ children }: any)=>!!children.length);
+    return res;
+  };
+
+  const handleAssociatedFieldsOptionsChange = (value: string[]) => {
+    setSubAssociatedFields(value);
+    const subOptions: any = [];
+    associatedFields?.forEach((item: any)=>{
+      item?.subTableFields?.forEach((child: any)=>{
+        if (item?.['x-component-props']?.associationTableID === value?.[0] &&
+        child?.['x-component-props']?.tableID === value?.[1]) {
+          const subOptionsObj = child?.items?.properties;
+          setSubOptionsSchema(subOptionsObj);
+          setSubTableID(child?.id);
+          setAssociatedFieldID(item?.id);
+          for (const key in subOptionsObj) {
+            if (key !== '_id') {
+              subOptions.push({
+                label: subOptionsObj[key]?.title,
+                value: key,
+              });
+            }
+          }
+        }
+      });
+    });
+    setSubSchemaOptions(subOptions);
+  };
+
+  useEffect(()=>{
+    if (!subAssociatedFields?.length) {
+      // setAssociatedFields([]);
+      setSubOptionsSchema({});
+      setSubSchemaOptions([]);
+      setSubOptionsChecked({});
+      setSubTableID(undefined);
+      setAssociatedFieldID(undefined);
+    }
+  }, [subAssociatedFields]);
+
+  const onToggleColumn = (key: string, checked: boolean)=> {
+    setSubOptionsChecked({
+      ...subOptionsChecked,
+      [key]: checked,
+    });
+  };
+
+  useEffect(()=>{
+    onUpdateFields(schemaList);
+  }, [subAssociatedFields, subSchemaOptions, subOptionsChecked, associatedFieldID]);
+
+  useEffect(()=>{
+    !initAssociatedFieldsFlag && setInitAssociatedFieldsFlag(true);
+    if (initAssociatedFieldsFlag && subAssociatedFields?.length) {
+      const options = getAssociatedFieldsOptions();
+      const item = options?.find((itm: any)=>itm?.value === subAssociatedFields?.[0]);
+      const child = item?.children?.find((chil: any)=>chil?.value === subAssociatedFields?.[1]);
+      if (!child) {
+        handleAssociatedFieldsOptionsChange([]);
+      }
+    }
+  }, [associatedFields]);
+
   return (
-    <div>
-      <header className="flex justify-between items-center bg-gray-50 mb-16">
-        <div className="mr-10">子表字段</div>
-        <div
-          className="flex-1 flex justify-between items-center px-16 border rounded cursor-pointer"
-          ref={setReferenceElRef as Ref<HTMLDivElement>}
-          onClick={() => setFieldSelectorShow((show) => !show)}
-        >
-          <span>{currentFieldLabel}</span>
-          <Icon name="expand_more"/>
-        </div>
-        {fieldSelectorShow && (
-          <ul
-            {...popperRef.attributes.popper}
-            style={{
-              ...popperRef.styles.popper,
-              boxShadow: '0 0 30px rgba(200, 200, 200, .7)',
-              backgroundColor: '#fff',
-              zIndex: 1,
-              width: referenceElRef ? getComputedStyle(referenceElRef).width : 'auto',
-            }}
-            className="max-h-200 overflow-auto"
-            ref={setPopperElRef as Ref<HTMLUListElement>}
+    <>
+      <div>
+        <header className="flex justify-between items-center bg-gray-50 mb-16">
+          <div className="mr-10">子表字段</div>
+          <div
+            className="flex-1 flex justify-between items-center px-16 border rounded cursor-pointer"
+            ref={setReferenceElRef as Ref<HTMLDivElement>}
+            onClick={() => setFieldSelectorShow((show) => !show)}
           >
-            {currentOptions.filter(
-              ({ value }) => {
-                if ((rowLimit === 'multiple' && value === 'aggregationrecords')) {
-                  return false;
-                }
-                return !INTERNAL_FIELD_NAMES.includes(value);
-              },
-            ).map(
-              ({ label, value }) => {
+            <span>{currentFieldLabel}</span>
+            <Icon name="expand_more"/>
+          </div>
+          {fieldSelectorShow && (
+            <ul
+              {...popperRef.attributes.popper}
+              style={{
+                ...popperRef.styles.popper,
+                boxShadow: '0 0 30px rgba(200, 200, 200, .7)',
+                backgroundColor: '#fff',
+                zIndex: 1,
+                width: referenceElRef ? getComputedStyle(referenceElRef).width : 'auto',
+              }}
+              className="max-h-200 overflow-auto"
+              ref={setPopperElRef as Ref<HTMLUListElement>}
+            >
+              {currentOptions.filter(
+                ({ value }) => {
+                  if ((rowLimit === 'multiple' && value === 'aggregationrecords')) {
+                    return false;
+                  }
+                  return !INTERNAL_FIELD_NAMES.includes(value);
+                },
+              ).map(
+                ({ label, value }) => {
+                  return (
+                    <li
+                      className="px-16 cursor-pointer hover:bg-gray-1000"
+                      key={value}
+                      onClick={() => onAddFields(label, value)}
+                    >
+                      {label}
+                    </li>
+                  );
+                })
+              }
+            </ul>
+          )}
+        </header>
+        <DragDropContext onDragEnd={handleOnDragEnd}>
+          <Droppable droppableId="sub-table-sub-fields">
+            {(dropProvided) => (
+              <section
+                {...dropProvided.droppableProps}
+                className="border-l border-t border-r"
+                ref={dropProvided.innerRef}
+              >
+                {schemaList.map((field, index) => (
+                  <Draggable draggableId={field.value} key={field.value} index={index}>
+                    {(dragProvided) => (
+                      <div
+                        {...dragProvided.draggableProps}
+                        {...dragProvided.dragHandleProps}
+                        className="grid grid-cols-3 content-center items-center grid-flow-col"
+                        ref={dragProvided.innerRef}
+                        style={getItemStyle(dragProvided.draggableProps.style)}
+                      >
+                        <div className="border-b border-r flex justify-center items-center h-full">
+                          <Icon name="drag_indicator" size={20} className="cursor-move justify-self-start" />
+                        </div>
+                        <div
+                          key={field.value}
+                          className="truncate border-b border-r px-6 cursor-pointer"
+                          title={field.label}
+                          onClick={() => {
+                            store.activeSubtableFieldId = field.value;
+                            onShowSubTableConfig(field.value);
+                          }}
+                        >
+                          {field.label}
+                        </div>
+                        <div className="border-b border-r flex items-center justify-end h-full pr-6">
+                          <Icon
+                            name="delete"
+                            size={20}
+                            className="cursor-pointer justify-self-end"
+                            onClick={() => onRemove(index)}
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+                {dropProvided.placeholder}
+              </section>
+            )}
+          </Droppable>
+        </DragDropContext>
+      </div>
+      {
+        !!schemaList?.length &&
+        (<div className=''>
+          <div className='px-8 border  corner-2-8-8-8 mt-24  bg-gray-100 mb-16 py-8'>
+            <div className="flex items-center">
+              <Icon name="article" size={20} className="mr-8" />
+              <span className="text-body2">选择关联数据表子表:</span>
+            </div>
+            <div>
+              <Cascader
+                defaultValue={subAssociatedFields}
+                value={subAssociatedFields}
+                options={getAssociatedFieldsOptions()}
+                onChange={handleAssociatedFieldsOptionsChange} />
+              <div className='text-caption pl-4'>仅支持关联数据表下从空白创建的子表</div>
+            </div>
+          </div>
+
+          <header className="flex justify-between items-center bg-gray-50 mb-16">
+            <div className="mr-10">关联数据表子表字段</div>
+          </header>
+          {!!subSchemaOptions.length && (
+            <ul className="flex w-full flex-col py-12 px-28 border rounded">
+              {subSchemaOptions.map(({ label, value }: any) => {
                 return (
-                  <li
-                    className="px-16 cursor-pointer hover:bg-gray-1000"
-                    key={value}
-                    onClick={() => onAddFields(label, value)}
-                  >
-                    {label}
+                  <li key={value} className="flex justify-between items-center my-5">
+                    <span className="mr-7">{label}</span>
+                    <Toggle
+                      defaultChecked={subOptionsChecked?.[value] || false}
+                      onChange={(isOpen) => onToggleColumn(value, isOpen)}
+                    />
                   </li>
                 );
-              })
-            }
-          </ul>
-        )}
-      </header>
-      <DragDropContext onDragEnd={handleOnDragEnd}>
-        <Droppable droppableId="sub-table-sub-fields">
-          {(dropProvided) => (
-            <section
-              {...dropProvided.droppableProps}
-              className="border-l border-t border-r"
-              ref={dropProvided.innerRef}
-            >
-              {schemaList.map((field, index) => (
-                <Draggable draggableId={field.value} key={field.value} index={index}>
-                  {(dragProvided) => (
-                    <div
-                      {...dragProvided.draggableProps}
-                      {...dragProvided.dragHandleProps}
-                      className="grid grid-cols-3 content-center items-center grid-flow-col"
-                      ref={dragProvided.innerRef}
-                      style={getItemStyle(dragProvided.draggableProps.style)}
-                    >
-                      <div className="border-b border-r flex justify-center items-center h-full">
-                        <Icon name="drag_indicator" size={20} className="cursor-move justify-self-start" />
-                      </div>
-                      <div
-                        key={field.value}
-                        className="truncate border-b border-r px-6 cursor-pointer"
-                        title={field.label}
-                        onClick={() => {
-                          store.activeSubtableFieldId = field.value;
-                          onShowSubTableConfig(field.value);
-                        }}
-                      >
-                        {field.label}
-                      </div>
-                      <div className="border-b border-r flex items-center justify-end h-full pr-6">
-                        <Icon
-                          name="delete"
-                          size={20}
-                          className="cursor-pointer justify-self-end"
-                          onClick={() => onRemove(index)}
-                        />
-                      </div>
-                    </div>
-                  )}
-                </Draggable>
-              ))}
-              {dropProvided.placeholder}
-            </section>
+              })}
+            </ul>
           )}
-        </Droppable>
-      </DragDropContext>
-    </div>
+        </div>)
+      }
+    </>
   );
 }
 

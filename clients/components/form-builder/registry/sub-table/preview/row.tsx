@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React from 'react';
 import cs from 'classnames';
 import { isArray } from 'lodash';
@@ -11,6 +12,7 @@ import type { Column } from './index';
 import type { Layout } from '../convertor';
 import ColumnLayout from './column-layout';
 import { omitParentFromSchema } from './utils';
+import { FormDataSubTableValueRenderer } from '@c/form-data-value-renderer';
 
 interface Props {
   index: number;
@@ -21,12 +23,18 @@ interface Props {
   layout: Layout;
   name?: string;
   removeAble?: boolean;
+  linkSubTableComponentProps?: any;
+  subOptionsSchema?: any;
+  subTableList?: any;
+  onRemove?: any;
 }
 
 export default function SubTableRow({
   index, item, componentColumns, name, form, mutators, layout, removeAble = true,
+  linkSubTableComponentProps, subOptionsSchema, subTableList, onRemove,
 }: Props): JSX.Element {
   function onRemoveRow(mutators: IMutators, index: number): void {
+    onRemove && onRemove(item, index);
     mutators.remove(index);
   }
 
@@ -43,6 +51,7 @@ export default function SubTableRow({
       <ColumnLayout
         layout={layout}
         componentColumns={componentColumns}
+        componentProps={componentProps}
         name={name}
         item={item}
         onChange={onChange}
@@ -52,6 +61,28 @@ export default function SubTableRow({
     );
   }
 
+  const { subAssociatedFields = [], subOptionsChecked = {}, subSchemaOptions = [] } = linkSubTableComponentProps || {};
+  const shouLinkSubColumnsLen = (()=>{
+    let num = 0;
+    for (const key in subOptionsChecked) {
+      if (subOptionsChecked[key]) {
+        num = num + 1;
+      }
+    }
+    return num;
+  })();
+
+  const totalColLen = componentColumns.length + shouLinkSubColumnsLen;
+
+  const getSubTableValue = ({ linkedSubTableSelectedID, itm }: any)=>{
+    const res = subTableList?.find((item: any)=>(item?._id === linkedSubTableSelectedID)) || {};
+    return (
+      <FormDataSubTableValueRenderer
+        value={res?.[itm?.value]}
+        schema={subOptionsSchema?.[itm?.value]}/>
+    );
+  };
+
   return (
     <div>
       {index === 0 && (
@@ -59,12 +90,12 @@ export default function SubTableRow({
           <div
             className="flex-1 grid"
             style={{
-              gridTemplateColumns: `repeat(${componentColumns.length}, minmax(120px, 1fr))`,
+              gridTemplateColumns: `repeat(${totalColLen}, minmax(120px, 1fr))`,
             }}
           >
             {componentColumns.map(({ title, required }, idx) => (
               <div key={idx} className={cs('text-center', {
-                'border-r-1 border-gray-300': idx < componentColumns.length,
+                'border-r-1 border-gray-300': idx < totalColLen,
               })}>
                 {required ? (
                   <span className="mr-5" style={{ color: '#a87366' }}>*</span>
@@ -72,6 +103,15 @@ export default function SubTableRow({
                 {title}
               </div>
             ))}
+            {!!subAssociatedFields?.length && subSchemaOptions?.map((item: any, idx: any) => {
+              return subOptionsChecked[item?.value] && (
+                <div key={idx} className={cs('text-center', {
+                  'border-r-1 border-gray-300': (idx + componentColumns.length) < totalColLen,
+                })}>
+                  {item?.label}
+                </div>
+              );
+            })}
           </div>
           <div className="px-22 text-center w-72">
             操作
@@ -82,7 +122,7 @@ export default function SubTableRow({
         <div
           className="flex-1 grid border-gray-300 border-t-1"
           style={{
-            gridTemplateColumns: `repeat(${componentColumns.length}, minmax(120px, 1fr))`,
+            gridTemplateColumns: `repeat(${totalColLen}, minmax(120px, 1fr))`,
           }}
         >
           {componentColumns.map(({
@@ -131,6 +171,26 @@ export default function SubTableRow({
                         ({ value }) => render?.(value) || null : component
                     }
                   />
+                </MegaLayout>
+              </div>
+            );
+          })}
+          {!!subAssociatedFields?.length && subSchemaOptions?.map((itm: any, idx: any) => {
+            const { linkedSubTableSelectedID } = item || {};
+            return subOptionsChecked[itm?.value] && (
+              <div
+                key={idx}
+                style={{ minHeight: 32 }}
+                className={cs(
+                  {
+                    'border-r-1 border-gray-300': (idx + componentColumns.length) < totalColLen,
+                  }, 'flex items-center justify-center subtable-column-default-item',
+                )}
+              >
+                <MegaLayout wrapperCol={24}>
+                  <span className='whitespace-nowrap' key={itm?.value}>
+                    {getSubTableValue({ itm, linkedSubTableSelectedID })}
+                  </span>
                 </MegaLayout>
               </div>
             );

@@ -8,7 +8,7 @@ import {
 import { StoreContext } from '@c/form-builder/context';
 import { FieldConfigContext } from '@c/form-builder/form-settings-panel/form-field-config/context';
 
-import { getSchema } from './config-schema';
+import configSchema from './config-schema';
 import { SubTableConfig } from '../convertor';
 import SubTableSchemaConfig from './sub-table-schema-config';
 import { COMPONENTS, CONFIG_COMPONENTS, KeyOfConfigComponent } from './constants';
@@ -20,7 +20,7 @@ interface Props {
 
 const { onFieldValueChange$ } = FormEffectHooks;
 
-export default function ConfigForm(props: Props): JSX.Element {
+function ConfigForm(props: Props): JSX.Element {
   const { onChange, initialValue: _initValue } = props;
   const [currentFieldKey, setCurrenFieldKey] = useState('');
   const [hasAssociatedData, setHasAssociatedData] = useState(false);
@@ -88,10 +88,7 @@ export default function ConfigForm(props: Props): JSX.Element {
         initialValues={initialValue}
         components={COMPONENTS}
         onChange={(value) => handleChange(value)}
-        // schema={configSchema}
-        schema={getSchema({
-          showDefaultAddAllAssociatedData: hasAssociatedData,
-        })}
+        schema={configSchema}
         actions={actions}
         hidden={!!currentSubSchema}
         effects={effects}
@@ -105,3 +102,7 @@ export default function ConfigForm(props: Props): JSX.Element {
     </FieldConfigContext.Provider>
   );
 }
+
+ConfigForm.isFieldComponent = true;
+
+export default ConfigForm;
