@@ -16,6 +16,7 @@ interface Props {
   currentSchemaType?: KeyOfConfigComponent;
   onChange: (value: any) => void;
   subTableSchema: ISchema;
+  associatedFields?: any;
 }
 
 function SubTableSchemaConfig({
