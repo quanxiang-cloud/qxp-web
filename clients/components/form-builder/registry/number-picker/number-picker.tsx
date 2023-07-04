@@ -7,7 +7,7 @@ type Props = Omit<InputNumberProps, 'onChange'> & {
 
 function NumberPicker({ defaultValue, ...other }: Props): JSX.Element {
   useEffect(() => {
-    if (other.value || defaultValue === undefined) {
+    if (other.value || other.value === 0 || defaultValue === undefined) {
       return;
     }
 
