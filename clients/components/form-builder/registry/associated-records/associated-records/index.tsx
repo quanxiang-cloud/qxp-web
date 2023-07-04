@@ -232,7 +232,9 @@ function AssociatedRecordsFields(props: Partial<ISchemaFieldComponentProps>): JS
       const relativePath = fullPath.slice(0, fullPath.length - 1).join('.');
 
       setFieldState(`${relativePath}.${dataTarget}`, (state) => {
-        state.value = [...new Set(dataRows.map((item: any)=>item?.[dataSource]))]?.join(',');
+        // 是否去重 ？？？
+        // state.value = [...new Set(dataRows.map((item: any)=>item?.[dataSource]))]?.join(',');
+        state.value = dataRows.map((item: any)=>item?.[dataSource])?.join(',');
       });
     });
   }
