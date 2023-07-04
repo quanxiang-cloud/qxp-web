@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   FormPath,
   SchemaForm,
@@ -15,6 +15,7 @@ import Button from '@c/button';
 import { RulesList } from '@c/form-builder/customized-fields';
 
 import { SCHEMA } from './schema';
+import Checkbox from '@c/checkbox';
 
 type Props = {
   onClose: () => void,
@@ -32,7 +33,7 @@ function Rules({
 }: Props): JSX.Element {
   const actions = createFormActions();
   const { setFieldState, getFieldValue } = actions;
-
+  const [uniqueShow, setUniqueShow] = useState<any>(!!defaultValue?.uniqueShow || false);
   useEffect(() => {
     setFieldState('rules.*.dataTarget', ({ value, props }) => {
       const sourceType = currentFormFields?.find(({ fieldName }) => fieldName === value)?.type;
@@ -86,6 +87,17 @@ function Rules({
     });
   }
 
+  const handleUniqueShow = (val)=>{
+    setUniqueShow(!uniqueShow);
+  };
+
+  const handleSubmit = (val)=>{
+    onSubmit({
+      ...val,
+      uniqueShow,
+    });
+  };
+
   return (
     <Modal
       title="设置关联赋值规则"
@@ -93,6 +105,14 @@ function Rules({
       onClose={onClose}
     >
       <div className="p-20">
+        <div className='flex mb-20'>
+          <Checkbox
+            checked={uniqueShow}
+            onChange={handleUniqueShow}
+            onClick={(e) => e.stopPropagation()}
+          />
+          <span className='ml-6'>去重显示关联赋值</span>
+        </div>
         <div className="flex text-14 mb-20">
           <span>关联表单字段</span>
           <span className="ml-100">当前表单字段</span>
@@ -103,7 +123,7 @@ function Rules({
           defaultValue={defaultValue}
           components={COMPONENTS}
           effects={formEffect}
-          onSubmit={onSubmit}
+          onSubmit={handleSubmit}
         >
           <FormButtonGroup offset={8}>
             <Button type="submit" modifier="primary">保存</Button>

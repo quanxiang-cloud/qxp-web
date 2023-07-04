@@ -225,16 +225,16 @@ function AssociatedRecordsFields(props: Partial<ISchemaFieldComponentProps>): JS
     const { setFieldState } = p?.form ?? {};
     const associativeConfig = p['x-component-props']?.associativeConfig ||
     p.props['x-component-props'].associativeConfig;
-    associativeConfig && associativeConfig.rules.forEach((
+    associativeConfig && associativeConfig?.rules?.forEach((
       { dataSource, dataTarget }: FormBuilder.DataAssignment,
     ) => {
+      const { uniqueShow } = associativeConfig || {};
       const fullPath = p?.path.split('.');
       const relativePath = fullPath.slice(0, fullPath.length - 1).join('.');
-
-      setFieldState(`${relativePath}.${dataTarget}`, (state) => {
-        // 是否去重 ？？？
-        // state.value = [...new Set(dataRows.map((item: any)=>item?.[dataSource]))]?.join(',');
-        state.value = dataRows.map((item: any)=>item?.[dataSource])?.join(',');
+      setFieldState(`${relativePath}.${dataTarget}`, (state: any) => {
+        state.value = uniqueShow ?
+          [...new Set(dataRows.map((item: any)=>item?.[dataSource]))]?.join(',') :
+          state.value = dataRows.map((item: any)=>item?.[dataSource])?.join(',');
       });
     });
   }
