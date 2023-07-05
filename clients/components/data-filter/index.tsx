@@ -113,7 +113,7 @@ function DataFilter(props: Props, ref: React.Ref<RefProps>): JSX.Element {
     }
 
     return associationFields?.reduce((acc, fields) => {
-      if (fields['x-component'] === curField?.['x-component']) {
+      if (fields['x-component'] === curField?.['x-component'] || (fields['x-component'] === 'Input' && curField?.['x-component'] === 'Serial')) {
         return acc.concat({ label: fields.title as string, value: fields.id });
       }
       return acc;
@@ -126,7 +126,7 @@ function DataFilter(props: Props, ref: React.Ref<RefProps>): JSX.Element {
     }
 
     return associationParentFields?.reduce((acc, fields) => {
-      if (fields['x-component'] === curField?.['x-component']) {
+      if (fields['x-component'] === curField?.['x-component'] || (fields['x-component'] === 'Input' && curField?.['x-component'] === 'Serial')) {
         return acc.concat({ label: fields.title as string, value: fields.id });
       }
       return acc;
