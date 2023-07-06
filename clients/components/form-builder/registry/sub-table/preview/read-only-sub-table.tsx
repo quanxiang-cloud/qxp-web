@@ -101,7 +101,7 @@ function ReadOnlySubTable({ value, schema: definedSchema, className }: Props): J
         });
       }
     }
-    setLinkedTableColumns([...componentColumns, ...arr]);
+    setLinkedTableColumns([...arr, ...componentColumns]);
   };
 
   // 获取关联子表数据

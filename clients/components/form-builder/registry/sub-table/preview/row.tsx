@@ -93,6 +93,15 @@ export default function SubTableRow({
               gridTemplateColumns: `repeat(${totalColLen}, minmax(120px, 1fr))`,
             }}
           >
+            {!!subAssociatedFields?.length && subSchemaOptions?.map((item: any, idx: any) => {
+              return subOptionsChecked[item?.value] && (
+                <div key={idx} className={cs('text-center', {
+                  'border-r-1 border-gray-300': (idx + componentColumns.length) < totalColLen,
+                })}>
+                  {item?.label}
+                </div>
+              );
+            })}
             {componentColumns.map(({ title, required }, idx) => (
               <div key={idx} className={cs('text-center', {
                 'border-r-1 border-gray-300': idx < totalColLen,
@@ -125,6 +134,26 @@ export default function SubTableRow({
             gridTemplateColumns: `repeat(${totalColLen}, minmax(120px, 1fr))`,
           }}
         >
+          {!!subAssociatedFields?.length && subSchemaOptions?.map((itm: any, idx: any) => {
+            const { linkedSubTableSelectedID } = item || {};
+            return subOptionsChecked[itm?.value] && (
+              <div
+                key={idx}
+                style={{ minHeight: 32 }}
+                className={cs(
+                  {
+                    'border-r-1 border-gray-300': (idx + componentColumns.length) < totalColLen,
+                  }, 'flex items-center justify-center subtable-column-default-item',
+                )}
+              >
+                <MegaLayout wrapperCol={24}>
+                  <span className='whitespace-nowrap' key={itm?.value}>
+                    {getSubTableValue({ itm, linkedSubTableSelectedID })}
+                  </span>
+                </MegaLayout>
+              </div>
+            );
+          })}
           {componentColumns.map(({
             dataIndex, component, props: prs, dataSource, required, rules, schema, readOnly, render, componentName,
           }, idx) => {
