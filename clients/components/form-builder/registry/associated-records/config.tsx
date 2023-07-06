@@ -71,13 +71,16 @@ const SUPPORT_COMPONENT = [
   'Select',
   'MultipleSelect',
   'DatePicker',
-  'ImageUpload',
+  // 'ImageUpload',
   'CascadeSelector',
   'UserPicker',
   'OrganizationPicker',
   'Serial',
+]; // 关联记录表下支持关联表白名单
+const WHITE_LIST = [
+  'input',
+// 'numberpicker', 'userpicker', 'datepicker', 'select'
 ];
-const WHITE_LIST = ['input', 'numberpicker', 'userpicker', 'datepicker', 'select'];
 
 function AssociatedRecordsConfig({ initialValue, onChange }: Props): JSX.Element {
   const { appID, schema, setFieldConfigValidator } = useContext(StoreContext);
@@ -94,7 +97,7 @@ function AssociatedRecordsConfig({ initialValue, onChange }: Props): JSX.Element
   };
 
   const setTableFieldOptions = (
-    tableID: string, associativeRules?: FormBuilder.DataAssignment[], clearValue?: boolean,
+    tableID: string, associativeRules?: FormBuilder.DataAssignment[],
   ): void => {
     getTableFieldsToOptions(appID, tableID, SUPPORT_COMPONENT).then((fields) => {
       setFieldState('associativeConfig', (state) => {

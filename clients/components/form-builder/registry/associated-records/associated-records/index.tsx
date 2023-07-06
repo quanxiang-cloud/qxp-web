@@ -1,7 +1,9 @@
+/* eslint-disable no-empty */
+/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import React, { useEffect, useState } from 'react';
 import { Column } from 'react-table';
-import { get, isArray } from 'lodash';
+import { get, isArray, isObject } from 'lodash';
 import cs from 'classnames';
 
 import Table from '@c/table';
@@ -10,7 +12,7 @@ import Icon from '@c/icon';
 
 import FormDataValueRenderer from '@c/form-data-value-renderer';
 import { isMeanless } from '@lib/utils';
-import { schemaToMap } from '@lib/schema-convert';
+import schemaToFields, { schemaToMap } from '@lib/schema-convert';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import SelectRecordsModal from './select-records-modal';
@@ -65,7 +67,6 @@ function AssociatedRecords(props: Props): JSX.Element {
     multiple,
     onChange,
     filterConfig,
-    associativeConfig,
     mergeConfig,
     addNewRecords,
     readOnly,
@@ -228,14 +229,37 @@ function AssociatedRecordsFields(props: Partial<ISchemaFieldComponentProps>): JS
     associativeConfig && associativeConfig?.rules?.forEach((
       { dataSource, dataTarget }: FormBuilder.DataAssignment,
     ) => {
-      const { uniqueShow } = associativeConfig || {};
-      const fullPath = p?.path.split('.');
-      const relativePath = fullPath.slice(0, fullPath.length - 1).join('.');
-      setFieldState(`${relativePath}.${dataTarget}`, (state: any) => {
-        state.value = uniqueShow ?
-          [...new Set(dataRows.map((item: any)=>item?.[dataSource]))]?.join(',') :
-          state.value = dataRows.map((item: any)=>item?.[dataSource])?.join(',');
-      });
+      try {
+        const { uniqueShow } = associativeConfig || {};
+        const fullPath = p?.path?.split('.');
+        const relativePath = fullPath?.slice(0, fullPath.length - 1).join('.');
+        setFieldState(`${relativePath}.${dataTarget}`, (state: any) => {
+          const associatedTable = p['x-component-props']?.associatedTable ||
+        p.props['x-component-props'].associatedTable;
+          const _fields = schemaToFields(associatedTable);
+          const dateSourceSchema = _fields?.find(({ id }: any)=>id === dataSource);
+          let arr = dataRows.map((item: any)=>{
+            let val: any = item?.[dataSource];
+            if (isObject(val) && !isArray(val)) {
+              val = val?.label;
+            }
+            if (isArray(val)) {
+              val = val?.map((item: any)=>{
+                const { label } = item || {};
+                return label || item;
+              })?.filter((item: any)=>!!item);
+            }
+            if (dateSourceSchema?.componentName === 'datepicker') {
+              const { format } = dateSourceSchema?.['x-component-props'] || {};
+              val = moment(val).format(format);
+            }
+            return val;
+          })?.filter((item: any)=>!!item);
+          arr = arr.flat();
+          state.value = uniqueShow ? [...new Set([...arr])]?.join(',') : arr?.join(',');
+        });
+      } catch (error) {
+      }
     });
   }
 

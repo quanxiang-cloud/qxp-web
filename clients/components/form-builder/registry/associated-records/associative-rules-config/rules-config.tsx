@@ -56,13 +56,16 @@ function Rules({
   }
 
   function initDataTargetEnum({ value, name }: IFieldState): void {
-    const sourceType = sourceTableFields?.find(({ fieldName }) => fieldName === value)?.componentName;
+    const sourceType = sourceTableFields?.find(({ fieldName }) => fieldName === value)?.componentName || '';
     const targetPath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.dataTarget`);
     setFieldState(targetPath, (state) => {
-      if (sourceType === 'select') {// 支持下拉单选框关联赋值给input
+      const WHITE_LIST = [
+        'input', 'numberpicker', 'userpicker', 'datepicker', 'select',
+        'serial', 'cascadeselector', 'organizationpicker', 'multipleselect',
+        'checkboxgroup', 'radiogroup', 'textarea',
+      ];
+      if (WHITE_LIST.includes(sourceType)) {
         state.props.enum = formatFieldInputAndOption('input');
-      } else {
-        state.props.enum = formatFieldInputAndOption(sourceType || '');
       }
     });
   }
@@ -87,7 +90,7 @@ function Rules({
     });
   }
 
-  const handleUniqueShow = (val)=>{
+  const handleUniqueShow = ()=>{
     setUniqueShow(!uniqueShow);
   };
 
