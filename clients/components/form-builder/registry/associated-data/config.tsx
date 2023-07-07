@@ -45,7 +45,7 @@ const SUPPORT_COMPONENT = [
   'OrganizationPicker',
   'Serial',
 ];
-const WHITE_LIST = ['input', 'numberpicker', 'userpicker', 'datepicker'];
+const WHITE_LIST = ['input', 'numberpicker', 'userpicker', 'datepicker', 'select'];
 
 async function getTableFieldsToOptions(
   appID: string,

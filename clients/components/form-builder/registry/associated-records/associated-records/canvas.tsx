@@ -20,6 +20,7 @@ type Props = {
   onChange: (selectedKeys: string[]) => void;
   readOnly: boolean;
   filterConfig?: FilterConfig;
+  associativeConfig?: any;
   mergeConfig?: any;
   addNewRecords?: boolean;
 }
@@ -109,6 +110,7 @@ function AssociatedRecordsFields(props: Partial<ISchemaFieldComponentProps>): JS
       columns={componentProps.columns || []}
       multiple={componentProps.multiple || false}
       filterConfig={componentProps.filterConfig}
+      associativeConfig={componentProps?.associativeConfig}
       mergeConfig={componentProps.mergeConfig}
       addNewRecords={componentProps.addNewRecords}
       selected={selected}
