@@ -59,7 +59,7 @@ function CreateDataForm({ appID, pageID, rowID, onCancel }: Props): JSX.Element 
           appID,
           pageID,
           rowID,
-          buildFormDataReqParams(schema, 'updated', newValue),
+          buildFormDataReqParams(schema, 'updated', newValue, appID),
         ).then(() => {
           toast.success('修改成功');
         });
@@ -67,7 +67,7 @@ function CreateDataForm({ appID, pageID, rowID, onCancel }: Props): JSX.Element 
         return createFormDataRequest(
           appID,
           pageID,
-          buildFormDataReqParams(schema, 'create', currentValue),
+          buildFormDataReqParams(schema, 'create', currentValue, appID),
         ).then(() => {
           toast.success('保存成功');
         });

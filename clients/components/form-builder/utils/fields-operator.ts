@@ -10,7 +10,7 @@ export const findIndex = (id: string, arr: FormItem[]): number => {
 };
 
 // Deal with field by config
-export function formatFieldWithConfig(currentField: Record<string, any>): FormItem | null {
+export function formatFieldWithConfig(currentField: Record<string, any>, appID?: any): FormItem | null {
   if (!currentField) return null;
   const componentName = (currentField['x-component'] || currentField['componentName'])?.toLowerCase();
   if (!componentName || !registry.elements[componentName]) {
@@ -18,7 +18,7 @@ export function formatFieldWithConfig(currentField: Record<string, any>): FormIt
     return null;
   }
 
-  const configValue = registry.elements[componentName].toConfig(currentField);
+  const configValue = registry.elements[componentName].toConfig(currentField, appID);
   const xInternal = currentField?.['x-internal'] || {};
   const xIndex = currentField?.['x-index'];
 
@@ -126,14 +126,14 @@ export function getFieldId(field: ISchema): string {
   return get(field, 'x-internal.fieldId') || get(field, 'fieldName');
 }
 
-export function flattenSchemaToFields(schema: ISchema): FormItem[] {
+export function flattenSchemaToFields(schema: ISchema, appID?: any): FormItem[] {
   const fieldsArr: FormItem[] = [];
   const recu = ({ properties }: ISchema, pid?: string): void => {
     if (isEmpty(properties)) return;
     Object.keys(properties || {}).forEach((key: string) => {
       const _field = properties?.[key] || {};
       if (get(_field, 'x-internal.isSystem')) return;
-      const field = formatFieldWithConfig(_field);
+      const field = formatFieldWithConfig(_field, appID);
       const currentField = omit(cloneDeep(field), 'properties');
 
       // fallback: will remove this code!

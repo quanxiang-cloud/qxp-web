@@ -172,6 +172,7 @@ function buildRef(
   schema: ISchema,
   type: string,
   values?: Record<string, any>,
+  appID?: any,
 ): [FormDataRequestUpdateParamsRef, string[]] {
   const ref: FormDataRequestUpdateParamsRef = {};
   const refFields = schemaToFields(schema, (schemaField) => {
@@ -182,7 +183,7 @@ function buildRef(
     refFields.forEach(async (field) => {
       switch (field['x-component']) {
       case 'SubTable': {
-        const { subordination, appID, tableID } = field?.['x-component-props'] || {};
+        const { subordination, appID: subtableAppID, tableID } = field?.['x-component-props'] || {};
         const [subRef] = buildRef(subordination === 'foreign_table' ?
           window[`schema-${field.id}`] : field.items as ISchema, 'create');
         const _ref = subRef;
@@ -190,7 +191,7 @@ function buildRef(
         if (values?.[field.id]?.length || !isEmpty(_ref)) {
           ref[field.id] = {
             type: subordination || 'sub_table',
-            appID,
+            appID: appID || subtableAppID,
             tableID,
             ...buildSubTableParams(type, values?.[field.id] || [{}], _ref),
           };
@@ -237,8 +238,9 @@ export function buildFormDataReqParams(
   schema: ISchema,
   type: string,
   values?: Record<string, any>,
+  appID?: any,
 ): FormDataBody {
-  const [ref, omitFields] = buildRef(schema, type, values);
+  const [ref, omitFields] = buildRef(schema, type, values, appID);
 
   const formDataResBody: FormDataBody = {};
 

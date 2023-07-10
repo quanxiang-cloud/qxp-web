@@ -74,7 +74,7 @@ export function toSchema(value: SubTableConfig): ISchema {
   };
 }
 
-export function toConfig(schema: ISchema): SubTableConfig {
+export function toConfig(schema: ISchema, appID?: any): SubTableConfig {
   const isFromLinkedTable = schema?.['x-component-props']?.subordination === 'foreign_table';
   const tableID = schema['x-component-props']?.tableID;
   return {
@@ -87,7 +87,7 @@ export function toConfig(schema: ISchema): SubTableConfig {
     subTableSchema: schema.items as ISchema,
     required: !!schema.required,
     linkedTable: {
-      appID: schema['x-component-props']?.appID,
+      appID: appID || schema['x-component-props']?.appID,
       tableID: isFromLinkedTable ? tableID : '',
       tableName: schema['x-component-props']?.tableName,
     },
