@@ -87,7 +87,11 @@ function CreateDataForm({ appID, pageID, rowID, onCancel }: Props): JSX.Element 
         formatProperties(data[key].properties);
       }
       try {
-        !defaultValues && (data[key]['x-component-props'].isNew = true);
+        if (!defaultValues) {
+          (data[key]['x-component-props'].isNew = true);
+        } else {
+          ( data[key]?.['x-component'] === 'AssociatedRecords') && (data[key]['x-component-props'].isNew = false);
+        }
       } catch (error) {
         console.log(error);
       }

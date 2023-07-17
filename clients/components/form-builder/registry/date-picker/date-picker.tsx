@@ -64,12 +64,16 @@ function DatePicker(props: ISchemaFieldComponentProps): JSX.Element {
   const componentProps = props.props?.['x-component-props'];
   const { defaultValue, format, isNow, ...restComponentProps } = componentProps;
 
+  const isDate = (value: any)=>{
+    const date: any = new Date(value);
+    return date instanceof Date && !isNaN(date as any);
+  };
+
   useEffect(() => {
     if (isNow) {
       props.mutators.change(getDateStr('', format, isNow ));
     }
-
-    defaultValue && props.mutators.change(getDateStr(defaultValue, format));
+    defaultValue && props.mutators.change(getDateStr(isDate(defaultValue) ? defaultValue : '', format));
   }, []);
 
   const handleChange = (_: Moment | null, dateString: string): void => {
@@ -88,7 +92,7 @@ function DatePicker(props: ISchemaFieldComponentProps): JSX.Element {
       onChange={handleChange}
       getPopupContainer={(triggerNode) => triggerNode.parentNode as HTMLElement}
       value={props.value && moment(props.value)}
-      defaultValue={defaultValue && moment(defaultValue)}
+      defaultValue={isDate(defaultValue) ? (defaultValue && moment(defaultValue) ) : ''}
     />
   );
 }

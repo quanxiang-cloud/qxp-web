@@ -147,6 +147,14 @@ const schema: ISchema = {
           },
           'x-index': 10,
         },
+        selectAllConfig: {
+          title: '选择全部数据',
+          'x-component': 'SelectAllConfig',
+          'x-mega-props': {
+            labelAlign: 'top',
+          },
+          'x-index': 11,
+        },
       },
     },
   },

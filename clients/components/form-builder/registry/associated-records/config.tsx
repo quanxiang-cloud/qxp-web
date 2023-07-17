@@ -22,6 +22,7 @@ import AssociativeConfig from './associative-rules-config';
 import { getTableSchema } from '@lib/http-client-form';
 import schemaToFields, { schemaToMap } from '@lib/schema-convert';
 import { toJS } from 'mobx';
+import SelectAllConfig from './select-all-config';
 
 interface Props {
   initialValue: AssociatedRecordsConfig;
@@ -39,6 +40,7 @@ const COMPONENTS = {
   FilterConfig,
   MergeConfig,
   AssociativeConfig,
+  SelectAllConfig,
 };
 
 const { onFieldInputChange$ } = FormEffectHooks;

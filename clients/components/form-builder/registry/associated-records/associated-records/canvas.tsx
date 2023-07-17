@@ -21,6 +21,7 @@ type Props = {
   readOnly: boolean;
   filterConfig?: FilterConfig;
   associativeConfig?: any;
+  selectAllConfig?: any;
   mergeConfig?: any;
   addNewRecords?: boolean;
 }
@@ -111,6 +112,7 @@ function AssociatedRecordsFields(props: Partial<ISchemaFieldComponentProps>): JS
       multiple={componentProps.multiple || false}
       filterConfig={componentProps.filterConfig}
       associativeConfig={componentProps?.associativeConfig}
+      selectAllConfig={componentProps?.selectAllConfig}
       mergeConfig={componentProps.mergeConfig}
       addNewRecords={componentProps.addNewRecords}
       selected={selected}

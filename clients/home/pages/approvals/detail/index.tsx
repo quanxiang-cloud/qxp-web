@@ -201,6 +201,10 @@ function ApprovalDetail(): JSX.Element {
               fieldPermission?.[key]?.['x-internal']?.permission && (data[key]['x-internal'].permission = fieldPermission[key]['x-internal'].permission);
             }
           }
+          if (data[key]?.['x-component'] === 'AssociatedRecords') {
+            const componentProps: any = data[key]['x-component-props'];
+            componentProps['isNew'] = false;
+          }
         } catch (error) {
           console.log(error);
         }

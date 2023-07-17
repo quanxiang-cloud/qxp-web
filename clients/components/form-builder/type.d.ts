@@ -144,6 +144,12 @@ declare namespace FormBuilder {
     isRequired: boolean;
   }
 
+  type SelectAllLinkage = {
+    key: string;
+    ruleJoinOperator: 'every' | 'some';
+    rules: CompareRule[];
+  }
+
   type Comparator = (values: Record<string, any>) => boolean;
 
   // todo move this to global.d.ts
