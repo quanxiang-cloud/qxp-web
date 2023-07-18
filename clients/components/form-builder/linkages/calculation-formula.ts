@@ -87,8 +87,7 @@ function executeFormula({ rawFormula, formActions, targetField }: ExecuteFormula
         ));
       };
       const condition = ifElse(
-        () => isUndefined(fieldValue) || isNull(fieldValue) ||
-          (isArray(fieldValue) && fieldValue.every(isEmpty)),
+        () =>(isArray(fieldValue) && fieldValue.every(isEmpty)), // isUndefined(fieldValue) || isNull(fieldValue) ||
         () => missingValueField = true,
         () => valuesAcc.values[fieldPath] = fieldValueFilter(fieldValue),
       );
@@ -127,7 +126,13 @@ function executeFormula({ rawFormula, formActions, targetField }: ExecuteFormula
     const subTableFieldKey = lineNumber ? undefined : Object.keys(values).find((key) => isArray(values[key]));
     function assignValue(values: Record<string, any>, path: string): void {
       try {
-        const resultValue = resolve(ast, values);
+        let hasEmpty = false;
+        for (const key in values) {
+          if (!hasEmpty) {
+            hasEmpty = isUndefined(values[key]) || isNull(values[key]);
+          }
+        }
+        const resultValue = hasEmpty ? null : resolve(ast, values);
         setFieldState(path, (state) => state.value = resultValue);
       } catch (err: any) {
         logger.debug('execute calculation formula on form field', 'todo');
