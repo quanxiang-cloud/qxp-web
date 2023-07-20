@@ -15,6 +15,7 @@ interface Props {
   form: IForm;
   blackList: string[];
   name?: string;
+  componentProps?: any;
 }
 
 const layoutColumnMap = {
@@ -25,7 +26,7 @@ const layoutColumnMap = {
 };
 
 export default function ColumnLayout({
-  layout, componentColumns, name, item, onChange, form, blackList,
+  layout, componentColumns, name, item, onChange, form, blackList, componentProps,
 }: Props): JSX.Element {
   const subTableColumnLayoutStyle = {
     gridTemplateColumns: `repeat(${layoutColumnMap[layout]}, minmax(120px, 1fr))`,

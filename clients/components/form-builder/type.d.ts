@@ -92,7 +92,7 @@ declare namespace FormBuilder {
     defaultConfig: T;
     // transform configuration to the node of schema used by SchemaForm
     toSchema: (value: T) => ISchema;
-    toConfig: (schema: ISchema) => T;
+    toConfig: (schema: ISchema, appID?: any) => T;
     configDependencies?: Record<string, React.JSXElementConstructor<any>>;
     compareOperators?: CompareOperator[];
     placeholderComponent?: React.JSXElementConstructor<any>;
@@ -142,6 +142,12 @@ declare namespace FormBuilder {
     rules: CompareRule[];
     targetKeys: string[];
     isRequired: boolean;
+  }
+
+  type SelectAllLinkage = {
+    key: string;
+    ruleJoinOperator: 'every' | 'some';
+    rules: CompareRule[];
   }
 
   type Comparator = (values: Record<string, any>) => boolean;

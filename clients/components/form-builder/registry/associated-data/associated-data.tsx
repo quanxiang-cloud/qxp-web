@@ -96,8 +96,8 @@ export default function AssociatedDataWrap(p: ISchemaFieldComponentProps): JSX.E
     associativeConfig && associativeConfig.rules.forEach((
       { dataSource, dataTarget }: FormBuilder.DataAssignment,
     ) => {
-      const fullPath = p?.path.split('.');
-      const relativePath = fullPath.slice(0, fullPath.length - 1).join('.');
+      const fullPath = p?.path?.split('.');
+      const relativePath = fullPath?.slice(0, fullPath.length - 1).join('.');
 
       setFieldState(`${relativePath}.${dataTarget}`, (state) => {
         state.value = dataRow[dataSource];

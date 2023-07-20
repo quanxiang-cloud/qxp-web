@@ -1,7 +1,10 @@
+/* eslint-disable max-len */
+/* eslint-disable no-empty */
+/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import React, { useEffect, useState } from 'react';
 import { Column } from 'react-table';
-import { get, isArray } from 'lodash';
+import { get, isArray, isObject } from 'lodash';
 import cs from 'classnames';
 
 import Table from '@c/table';
@@ -10,13 +13,15 @@ import Icon from '@c/icon';
 
 import FormDataValueRenderer from '@c/form-data-value-renderer';
 import { isMeanless } from '@lib/utils';
-import { schemaToMap } from '@lib/schema-convert';
+import schemaToFields, { schemaToMap } from '@lib/schema-convert';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import SelectRecordsModal from './select-records-modal';
 import { fetchFormDataList } from '@lib/http-client-form';
 import { toEs } from '@c/data-filter/utils';
 import moment from 'moment';
+import { useFormEffects } from '@formily/antd';
+import selectAllLinkageEffect from '../select-all-config/linkage';
 
 type Props = {
   defaultValues: Record<string, any>[];
@@ -28,10 +33,13 @@ type Props = {
   associatedTable: ISchema;
   onChange: (value: Record<string, any>[]) => void;
   filterConfig?: FilterConfig;
+  associativeConfig?: any;
+  selectAllConfig?: any;
   mergeConfig?: any;
   addNewRecords?: boolean;
   readOnly?: boolean;
   className?: string;
+  defaultSelectAll?: boolean;
 }
 
 function computeTableColumns(schema: ISchema, columns: string[]): Column<Record<string, any>>[] {
@@ -68,11 +76,11 @@ function AssociatedRecords(props: Props): JSX.Element {
     addNewRecords,
     readOnly,
     className,
+    defaultSelectAll,
   } = props;
-  const { selectAll = false } = filterConfig || {};
   const [showSelectModal, setShowSelectModal] = useState(false);
   // const [index, setIndex] = useState(0);
-  const [selectedValue, setSelectValue] = useState((multiple || selectAll) ? '' : defaultValues[0]?._id);
+  const [selectedValue, setSelectValue] = useState((multiple || defaultSelectAll) ? '' : defaultValues[0]?._id);
   const tableColumns = computeTableColumns(associatedTable, columns);
 
   const { jumpToHome } = associatedTable?.['x-props'] || {};
@@ -158,12 +166,12 @@ function AssociatedRecords(props: Props): JSX.Element {
           appID={appID}
           tableID={tableID}
           filterConfig={filterConfig}
-          multiple={multiple || selectAll}
+          multiple={multiple || defaultSelectAll}
           associatedTable={associatedTable}
           columns={columns}
           selectedValue={selectedValue}
           onSubmit={(newSelectedRecords) => {
-            if (multiple || selectAll) {
+            if (multiple || defaultSelectAll) {
               const selecteds = value.concat(
                 newSelectedRecords.filter(({ _id }) => value.findIndex(({ _id: id }) => _id === id) < 0),
               );
@@ -182,21 +190,20 @@ function AssociatedRecords(props: Props): JSX.Element {
 
 function AssociatedRecordsFields(props: Partial<ISchemaFieldComponentProps>): JSX.Element {
   const componentProps = props.props['x-component-props'];
-
   // todo handle error case
   const [selectAllData, setSelectAllData] = useState<any>([]);
   const [hasChanged, setHasChanged] = useState<any>(false);
-  const { selectAll = false } = componentProps?.filterConfig || {};
   const { appID, tableID, isNew } = componentProps;
   const [updateFlag, setUpdateFlag] = useState(!isNew);
   const { condition = [], tag = 'must' } = componentProps.filterConfig || {};
   const [filterConfigIndex, setFilterConfigIndex] = useState(0);
+  const [defaultSelectAll, setDefaultSelectAll] = useState(false);
   const getSelectAllData = async ()=>{
     await fetchFormDataList(appID, tableID, {
       sort: ['-created_at'],
       page: 1,
       size: 1000,
-      query: toEs({ tag, condition: [...condition] }),
+      query: condition?.length ? toEs({ tag, condition: [...condition] }) : {},
     }).then((res: any)=>{
       setSelectAllData(res?.entities || []);
       setHasChanged(false);
@@ -207,36 +214,88 @@ function AssociatedRecordsFields(props: Partial<ISchemaFieldComponentProps>): JS
   };
 
   useEffect(()=>{
-    setFilterConfigIndex(filterConfigIndex + 1);
-    selectAll && getSelectAllData();
-  }, [JSON.stringify(componentProps?.filterConfig?.condition)]);
+    componentProps?.filterConfig?.condition?.length && setFilterConfigIndex(filterConfigIndex + 1);
+    defaultSelectAll && getSelectAllData();
+  }, [defaultSelectAll, JSON.stringify(componentProps?.filterConfig?.condition)]);
+
+  try {
+    useFormEffects(() => {
+      const selectAllConfig = componentProps?.selectAllConfig;
+      selectAllLinkageEffect(selectAllConfig, setDefaultSelectAll);
+    });
+  } catch (error) {
+  }
 
   const getValue = ()=>{
-    if (props.props.readOnly || !selectAll || hasChanged || updateFlag ) {
+    if (props.props.readOnly || !defaultSelectAll || hasChanged || updateFlag ) {
       return props.value || [];
     }
     return selectAllData;
   };
 
+  function executeAssignMent(dataRows: any): void {
+    const p: any = props;
+    const { setFieldState } = p?.form ?? {};
+    const associativeConfig = p['x-component-props']?.associativeConfig ||
+    p.props['x-component-props'].associativeConfig;
+    associativeConfig && associativeConfig?.rules?.forEach((
+      { dataSource, dataTarget }: FormBuilder.DataAssignment,
+    ) => {
+      try {
+        const { uniqueShow } = associativeConfig || {};
+        const fullPath = p?.path?.split('.');
+        const relativePath = fullPath?.slice(0, fullPath.length - 1).join('.');
+        setFieldState(`${relativePath}.${dataTarget}`, (state: any) => {
+          const associatedTable = p['x-component-props']?.associatedTable ||
+        p.props['x-component-props'].associatedTable;
+          const _fields = schemaToFields(associatedTable);
+          const dateSourceSchema = _fields?.find(({ id }: any)=>id === dataSource);
+          let arr = dataRows.map((item: any)=>{
+            let val: any = item?.[dataSource];
+            if (isObject(val) && !isArray(val)) {
+              val = val?.label;
+            }
+            if (isArray(val)) {
+              val = val?.map((item: any)=>{
+                const { label } = item || {};
+                return label || item;
+              })?.filter((item: any)=>!!item);
+            }
+            if (dateSourceSchema?.componentName === 'datepicker') {
+              const { format } = dateSourceSchema?.['x-component-props'] || {};
+              val = moment(val).format(format);
+            }
+            return val;
+          })?.filter((item: any)=>!!item);
+          arr = arr.flat();
+          state.value = uniqueShow ? [...new Set([...arr])]?.join(',') : arr?.join(',');
+        });
+      } catch (error) {
+      }
+    });
+  }
+
   return (
     <AssociatedRecords
       className={props.props.className}
       defaultValues={getValue()}
-      // defaultValues={props.value || []}
       readOnly={props.props.readOnly}
       appID={componentProps.appID}
       tableID={componentProps.tableID}
       columns={componentProps.columns || []}
       multiple={componentProps.multiple || false}
       filterConfig={componentProps.filterConfig}
+      associativeConfig={componentProps?.associativeConfig}
+      selectAllConfig={componentProps?.selectAllConfig}
+      defaultSelectAll = {defaultSelectAll}
       mergeConfig={componentProps?.mergeConfig}
       addNewRecords={componentProps?.addNewRecords}
       value={getValue()}
-      // value={props.value}
       associatedTable={componentProps.associatedTable}
       onChange={(selectedKeys) => {
         setHasChanged(true);
         props?.mutators?.change(selectedKeys);
+        executeAssignMent(selectedKeys);
       }}
     />
   );

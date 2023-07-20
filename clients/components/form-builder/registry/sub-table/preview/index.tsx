@@ -47,6 +47,7 @@ function SubTable({
   name,
   mutators,
   props,
+  form,
 }: Partial<ISchemaFieldComponentProps>): JSX.Element | null {
   const [{ componentColumns, rowPlaceHolder }, setSubTableState] = useState<SubTableState>({
     componentColumns: [], rowPlaceHolder: {},
@@ -67,6 +68,7 @@ function SubTable({
   const isInitialValueEmpty = value?.every((v: Record<string, unknown>) => isMeanless(v));
   schema = isFromForeign ? data?.schema : schema;
 
+  const { subAssociatedFields = [] } = definedSchema?.items?.['x-component-props'] || {};
   useEffect(() => {
     if (!schema) {
       return;
@@ -86,7 +88,9 @@ function SubTable({
       return acc;
     }, []);
     setSubTableState({ componentColumns, rowPlaceHolder });
-    isInitialValueEmpty && mutators?.change([rowPlaceHolder]);
+    if (!subAssociatedFields || subAssociatedFields?.length === 0) {
+      isInitialValueEmpty && mutators?.change([rowPlaceHolder]);
+    }
     return () => {
       delete window[`schema-${definedSchema?.key}`];
     };
@@ -194,6 +198,10 @@ function SubTable({
       isFromForeign={isFromForeign}
       columns={columns}
       schema={schema}
+      definedSchema={definedSchema}
+      mutators={mutators}
+      rowPlaceHolder={rowPlaceHolder}
+      form={form}
     />
   );
 }

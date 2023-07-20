@@ -76,6 +76,26 @@ function JoinOperatorSelect(props: ISchemaFieldComponentProps): JSX.Element {
 
 JoinOperatorSelect.isFieldComponent = true;
 
+function JoinOperatorSelectAll(props: ISchemaFieldComponentProps): JSX.Element {
+  return (
+    <div className="flex items-center">
+      满足以下
+      <Select
+        className='mx-4 w-40'
+        value={props.value}
+        onChange={(value: string) => props.mutators.change(value)}
+        options={[
+          { label: '所有', value: 'every' },
+          { label: '任一', value: 'some' },
+        ]}
+      />
+      条件时选择全部数据:
+    </div>
+  );
+}
+
+JoinOperatorSelectAll.isFieldComponent = true;
+
 type RulesFieldFragmentProps = {
   linkedTableFields: Array<{ label: string; value: any; }>;
   currentFormFields: Array<{ label: string; value: any; }>;
@@ -135,4 +155,4 @@ function FormDataFilterRuleFieldFragments(
   );
 }
 
-export { RulesList, JoinOperatorSelect, FormDataFilterRuleFieldFragments };
+export { RulesList, JoinOperatorSelect, FormDataFilterRuleFieldFragments, JoinOperatorSelectAll };

@@ -3,7 +3,7 @@ import schemaToFields from '@lib/schema-convert';
 import type { ESParameter } from '@c/data-filter/utils';
 import httpClient from './http-client';
 
-export function buildQueryRef(schema: ISchema): FormDataRequestUpdateParamsRef {
+export function buildQueryRef(schema: ISchema, appID?: any): FormDataRequestUpdateParamsRef {
   const refFields = schemaToFields(schema, (schemaField) => {
     return ['SubTable', 'AggregationRecords', 'AssociatedRecords'].includes(schemaField['x-component'] || '');
   });
@@ -13,10 +13,10 @@ export function buildQueryRef(schema: ISchema): FormDataRequestUpdateParamsRef {
     refFields.forEach((field) => {
       switch (field.componentName) {
       case 'subtable': {
-        const { subordination, appID, tableID } = field?.['x-component-props'] || {};
+        const { subordination, appID: subtableAppID, tableID } = field?.['x-component-props'] || {};
         ref[field.id] = {
           type: subordination || 'sub_table',
-          appID,
+          appID: appID || subtableAppID,
           tableID,
         };
         break;
@@ -66,7 +66,7 @@ export function findOneFormDataRequest(
   return httpClient<FormDataResponse>(
     `/api/v1/form/${appID}/home/form/${tableID}/get`,
     {
-      ref: buildQueryRef(schema),
+      ref: buildQueryRef(schema, appID),
       query: {
         term: { _id: rowID },
       },

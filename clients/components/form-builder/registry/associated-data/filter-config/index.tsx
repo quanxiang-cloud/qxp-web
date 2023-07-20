@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 
 import Modal from '@c/modal';
 import Button from '@c/button';
-import Checkbox from '@c/checkbox';
 import PageLoading from '@c/page-loading';
 import DataFilter, { RefProps } from '@c/data-filter';
 import { FILTER_FIELD } from '@c/data-filter/utils';
@@ -161,7 +160,7 @@ function FilterConfig({
           <div className='p-20'>
             {!allowSelect && (<div>请选择关联表</div>)}
             {loading && allowSelect && (<PageLoading />)}
-            {
+            {/* {
               value?.showSelectAll &&
               (<div className='flex mb-10'>
                 <Checkbox
@@ -171,7 +170,7 @@ function FilterConfig({
                 />
                 <span className='ml-6'>默认选择全部</span>
               </div>)
-            }
+            } */}
             {!loading && allowSelect && (
               <DataFilter
                 initConditions={value?.condition}

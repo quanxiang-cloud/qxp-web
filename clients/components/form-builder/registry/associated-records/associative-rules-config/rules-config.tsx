@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   FormPath,
   SchemaForm,
@@ -15,6 +15,7 @@ import Button from '@c/button';
 import { RulesList } from '@c/form-builder/customized-fields';
 
 import { SCHEMA } from './schema';
+import Checkbox from '@c/checkbox';
 
 type Props = {
   onClose: () => void,
@@ -32,22 +33,22 @@ function Rules({
 }: Props): JSX.Element {
   const actions = createFormActions();
   const { setFieldState, getFieldValue } = actions;
-
+  const [uniqueShow, setUniqueShow] = useState<any>(!!defaultValue?.uniqueShow || false);
   useEffect(() => {
     setFieldState('rules.*.dataTarget', ({ value, props }) => {
-      const sourceType = currentFormFields.find(({ fieldName }) => fieldName === value)?.type;
+      const sourceType = currentFormFields?.find(({ fieldName }) => fieldName === value)?.type;
       props.enum = formatFieldInputAndOption(sourceType || '');
     });
 
     setFieldState('rules.*.dataSource', (state) => {
-      state.props.enum = sourceTableFields.map(({ title, id }) => {
+      state.props.enum = sourceTableFields?.map(({ title, id }) => {
         return { label: title, value: id };
       });
     });
   }, []);
 
   function formatFieldInputAndOption(filterComponentName: string): LabelValue[] {
-    return currentFormFields.filter(({ componentName }) =>{
+    return currentFormFields?.filter(({ componentName }) =>{
       return componentName === filterComponentName;
     }).map(({ fieldName, title }: SchemaFieldItem) => {
       return { label: title as string, value: fieldName };
@@ -55,13 +56,16 @@ function Rules({
   }
 
   function initDataTargetEnum({ value, name }: IFieldState): void {
-    const sourceType = sourceTableFields.find(({ fieldName }) => fieldName === value)?.componentName;
+    const sourceType = sourceTableFields?.find(({ fieldName }) => fieldName === value)?.componentName || '';
     const targetPath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.dataTarget`);
     setFieldState(targetPath, (state) => {
-      if (sourceType === 'select' || sourceType === 'serial') {// 支持下拉单选框关联赋值给input, 支持流水号关联赋值给input
+      const WHITE_LIST = [
+        'input', 'numberpicker', 'userpicker', 'datepicker', 'select',
+        'serial', 'cascadeselector', 'organizationpicker', 'multipleselect',
+        'checkboxgroup', 'radiogroup', 'textarea',
+      ];
+      if (WHITE_LIST.includes(sourceType)) {
         state.props.enum = formatFieldInputAndOption('input');
-      } else {
-        state.props.enum = formatFieldInputAndOption(sourceType || '');
       }
     });
   }
@@ -74,8 +78,8 @@ function Rules({
     ).subscribe(({ name, value }) => {
       const targetPath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.dataTarget`);
       const targetCurrentValue = getFieldValue(targetPath);
-      const sourceType = sourceTableFields.find(({ fieldName }) => fieldName === value)?.componentName;
-      const targeType = currentFormFields.find(
+      const sourceType = sourceTableFields?.find(({ fieldName }) => fieldName === value)?.componentName;
+      const targeType = currentFormFields?.find(
         ({ fieldName }) => fieldName === targetCurrentValue,
       )?.componentName;
       const shouldReset = sourceType !== targeType;
@@ -86,6 +90,17 @@ function Rules({
     });
   }
 
+  const handleUniqueShow = ()=>{
+    setUniqueShow(!uniqueShow);
+  };
+
+  const handleSubmit = (val)=>{
+    onSubmit({
+      ...val,
+      uniqueShow,
+    });
+  };
+
   return (
     <Modal
       title="设置关联赋值规则"
@@ -93,6 +108,14 @@ function Rules({
       onClose={onClose}
     >
       <div className="p-20">
+        <div className='flex mb-20'>
+          <Checkbox
+            checked={uniqueShow}
+            onChange={handleUniqueShow}
+            onClick={(e) => e.stopPropagation()}
+          />
+          <span className='ml-6'>去重显示关联赋值</span>
+        </div>
         <div className="flex text-14 mb-20">
           <span>关联表单字段</span>
           <span className="ml-100">当前表单字段</span>
@@ -103,7 +126,7 @@ function Rules({
           defaultValue={defaultValue}
           components={COMPONENTS}
           effects={formEffect}
-          onSubmit={onSubmit}
+          onSubmit={handleSubmit}
         >
           <FormButtonGroup offset={8}>
             <Button type="submit" modifier="primary">保存</Button>

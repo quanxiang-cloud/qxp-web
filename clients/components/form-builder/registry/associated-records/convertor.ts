@@ -19,6 +19,8 @@ export interface AssociatedRecordsConfig {
   columns: string[];
   required: boolean;
   filterConfig?: FilterConfig;
+  associativeConfig?: any;
+  selectAllConfig?: any;
   mergeConfig?: any;
   addNewRecords?: boolean;
   defaultValueLinkage?: FormBuilder.DefaultValueLinkage;
@@ -55,6 +57,8 @@ export function toSchema(value: AssociatedRecordsConfig): ISchema {
       columns: value.columns || [],
       associatedTable: value.linkedTable?.associatedTable,
       filterConfig: value.filterConfig || null,
+      associativeConfig: value?.associativeConfig || null,
+      selectAllConfig: value?.selectAllConfig || null,
       mergeConfig: value.mergeConfig || null,
       addNewRecords: !!value?.addNewRecords,
     },
@@ -83,6 +87,8 @@ export function toConfig(schema: ISchema): AssociatedRecordsConfig {
     columns: schema['x-component-props']?.columns || [],
     required: !!schema.required,
     filterConfig: schema['x-component-props']?.filterConfig || null,
+    associativeConfig: schema['x-component-props']?.associativeConfig || null,
+    selectAllConfig: schema['x-component-props']?.selectAllConfig || null,
     mergeConfig: schema['x-component-props']?.mergeConfig || null,
     addNewRecords: !!schema['x-component-props']?.addNewRecords,
     defaultValueLinkage: schema['x-internal']?.defaultValueLinkage,

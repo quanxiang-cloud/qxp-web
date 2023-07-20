@@ -18,6 +18,11 @@ import FilterConfigBtn from './filter-config-btn';
 import configSchema from './config-schema';
 import { AssociatedRecordsConfig } from './convertor';
 import MergeConfig from './merge-config';
+import AssociativeConfig from './associative-rules-config';
+import { getTableSchema } from '@lib/http-client-form';
+import schemaToFields, { schemaToMap } from '@lib/schema-convert';
+import { toJS } from 'mobx';
+import SelectAllConfig from './select-all-config';
 
 interface Props {
   initialValue: AssociatedRecordsConfig;
@@ -34,20 +39,88 @@ const COMPONENTS = {
   FilterConfigBtn,
   FilterConfig,
   MergeConfig,
+  AssociativeConfig,
+  SelectAllConfig,
 };
 
 const { onFieldInputChange$ } = FormEffectHooks;
 const actions = createFormActions();
 
+async function getTableFieldsToOptions(
+  appID: string,
+  tableID: string,
+  filterArr?: string[],
+): Promise<SchemaFieldItem[]> {
+  const res = await getTableSchema(appID, tableID);
+  if (res?.schema.properties) {
+    return schemaToFields(res.schema).filter((field) => {
+      if (!filterArr?.includes(field['x-component'] || '') || field.id === '_id') {
+        return false;
+      }
+
+      return field;
+    });
+  }
+  return [];
+}
+
+const SUPPORT_COMPONENT = [
+  'Input',
+  'NumberPicker',
+  'Textarea',
+  'RadioGroup',
+  'CheckboxGroup',
+  'Select',
+  'MultipleSelect',
+  'DatePicker',
+  // 'ImageUpload',
+  'CascadeSelector',
+  'UserPicker',
+  'OrganizationPicker',
+  'Serial',
+]; // 关联记录表下支持关联表白名单
+const WHITE_LIST = [
+  'input',
+// 'numberpicker', 'userpicker', 'datepicker', 'select'
+];
+
 function AssociatedRecordsConfig({ initialValue, onChange }: Props): JSX.Element {
   const { appID, schema, setFieldConfigValidator } = useContext(StoreContext);
+  const { setFieldState } = actions;
 
+  const getSupportFieldsToOptions = (): SchemaFieldItem[] => {
+    const _schema = { ...schema, properties: schemaToMap(schema) };
+    const _fields = schemaToFields(_schema);
+    const supportFields = toJS(_fields).filter(({ componentName }) => {
+      return WHITE_LIST.includes(componentName);
+    });
+
+    return supportFields;
+  };
+
+  const setTableFieldOptions = (
+    tableID: string, associativeRules?: FormBuilder.DataAssignment[],
+  ): void => {
+    getTableFieldsToOptions(appID, tableID, SUPPORT_COMPONENT).then((fields) => {
+      setFieldState('associativeConfig', (state) => {
+        state.props['x-component-props'] = {
+          sourceTableFields: fields,
+          currentFormFields: getSupportFieldsToOptions(),
+          associativeRules: associativeRules,
+        };
+      });
+    });
+  };
   useEffect(() => {
     actions.setFieldState('filterConfig', (state) => {
       state.props['x-component-props'] = {
         appID, tableID: initialValue.linkedTable?.tableID, currentFormSchema: schema,
       };
     });
+    if (initialValue?.linkedTable) {
+      const { tableID } = initialValue.linkedTable || {};
+      tableID && setTableFieldOptions(tableID, initialValue?.associativeConfig?.rules);
+    }
   }, [appID, initialValue.linkedTable]);
 
   useEffect(() => {

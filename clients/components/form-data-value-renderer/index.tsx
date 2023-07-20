@@ -95,7 +95,7 @@ function stringListValue({ value }: ValueRendererProps): string {
 }
 
 export default function FormDataValueRenderer({ value, schema, className }: Props): JSX.Element {
-  if (!value) {
+  if (!value && value !== 0) {
     return <></>;
   }
   switch (schema['x-component']?.toLowerCase()) {
