@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { SchemaForm, setValidationLanguage, IForm, createFormActions, IFormValidateResult } from '@formily/antd';
 import { ConfigProvider } from 'antd';
 import zhCN from 'antd/lib/locale/zh_CN';
-import { parse, resolve, findVariables } from 'qxp-formula';
+import { parse, findVariables } from 'qxp-formula';
 import { omit } from 'ramda';
 
 import logger from '@lib/logger';
@@ -18,6 +18,7 @@ import calculationFormulaEffect from './linkages/calculation-formula';
 import statisticalAssociationEffect from './linkages/statistical-association';
 import { wrapSchemaByMegaLayout, schemaPermissionTransformer } from './utils';
 import { INVALID_READONLY_LEGACY, INVISIBLE_NO_WRITE, PERMISSION, READONLY_NO_WRITE } from './constants';
+import resolve from './resolve';
 
 setValidationLanguage('zh');
 
