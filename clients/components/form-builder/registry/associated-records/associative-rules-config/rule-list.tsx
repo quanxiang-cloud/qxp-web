@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
 
 type Props = {
   associativeRules: FormBuilder.DataAssignment[],
+  rulesOptions: any,
 }
 
 function LinkText({ text }: { text: string | undefined }): JSX.Element {
@@ -13,7 +14,24 @@ function LinkText({ text }: { text: string | undefined }): JSX.Element {
   );
 }
 
-function AssociativeRuleList({ associativeRules }: Props): JSX.Element {
+function AssociativeRuleList(props: Props): JSX.Element {
+  const { associativeRules, rulesOptions } = props;
+
+  const [dataList, setDataList] = useState<any>([]);
+
+  useEffect(()=>{
+    const _dataList = associativeRules.map(({ dataTarget, match, dataSource, dataSourceID }: any) => {
+      const _arr = dataSourceID.split('.');
+      const item = rulesOptions?.find(({ value }: any) => value === _arr?.[0]);
+      const child = item?.children?.find(({ value }: any) => value === _arr?.[1]);
+      const dataSourceText = [item?.label, child?.label]?.join('/');
+      return {
+        dataTarget, match, dataSource, dataSourceID, dataSourceText,
+      };
+    });
+    setDataList(_dataList);
+  }, [associativeRules, rulesOptions]);
+
   return (
     <div className="my-8 w-full">
       <div className="flex">
@@ -21,14 +39,14 @@ function AssociativeRuleList({ associativeRules }: Props): JSX.Element {
         <span className="text-center mx-8 match-icon">{'=>'}</span>
         <span className="text-center flex-1">当前表单字段</span>
       </div>
-      <div className="max-h-100 overflow-auto mt-8">
-        {associativeRules.map(({ dataTarget, match, dataSource }) => {
+      <div className="overflow-auto mt-8">
+        {dataList.map(({ dataTarget, match, dataSource, dataSourceText }: any) => {
           return (
             <div
               className="my-4 flex"
               key={`${dataSource}_${match}_${dataTarget}`}
             >
-              <LinkText text={dataSource} />
+              <LinkText text={dataSource || dataSourceText} />
               <span className="text-center mx-8 match-icon">{'=>'}</span>
               <LinkText text={dataTarget} />
 

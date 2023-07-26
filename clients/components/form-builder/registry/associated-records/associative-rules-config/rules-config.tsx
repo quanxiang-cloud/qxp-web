@@ -8,7 +8,7 @@ import {
   createFormActions,
 } from '@formily/antd';
 import { tap, skip, filter } from 'rxjs6/operators';
-import { Input, Switch, Select, Radio } from '@formily/antd-components';
+import { Input, Select, Switch, Radio } from '@formily/antd-components';
 
 import Modal from '@c/modal';
 import Button from '@c/button';
@@ -16,6 +16,7 @@ import { RulesList } from '@c/form-builder/customized-fields';
 
 import { SCHEMA } from './schema';
 import Checkbox from '@c/checkbox';
+import DataSelect from './dataSelect';
 
 type Props = {
   onClose: () => void,
@@ -23,13 +24,14 @@ type Props = {
   defaultValue: Record<string, FormBuilder.DataAssignment[]>,
   currentFormFields: SchemaFieldItem[],
   sourceTableFields: SchemaFieldItem[],
+  rulesOptions?: any,
 }
 
-const COMPONENTS = { Input, Select, Switch, RadioGroup: Radio.Group, RulesList };
+const COMPONENTS = { Input, Select, DataSelect, Switch, RadioGroup: Radio.Group, RulesList };
 const { onFieldValueChange$ } = FormEffectHooks;
 
 function Rules({
-  onClose, onSubmit, defaultValue, currentFormFields, sourceTableFields,
+  onClose, onSubmit, defaultValue, currentFormFields, sourceTableFields, rulesOptions,
 }: Props): JSX.Element {
   const actions = createFormActions();
   const { setFieldState, getFieldValue } = actions;
@@ -39,11 +41,19 @@ function Rules({
       const sourceType = currentFormFields?.find(({ fieldName }) => fieldName === value)?.type;
       props.enum = formatFieldInputAndOption(sourceType || '');
     });
-
     setFieldState('rules.*.dataSource', (state) => {
-      state.props.enum = sourceTableFields?.map(({ title, id }) => {
-        return { label: title, value: id };
+      state.props.enum = sourceTableFields?.map((item: any, index) => {
+        const { title, id, componentName } = item;
+        const { appID, associationTableID: tableID } = item?.['x-component-props'] || {};
+        return { label: title, value: id, componentName, appID, tableID, rulesOptions };
       });
+      state.props = {
+        ...state.props,
+        'x-component-props': {
+          ...state.props?.['x-component-props'],
+          rulesOptions,
+        },
+      };
     });
   }, []);
 
@@ -56,9 +66,11 @@ function Rules({
   }
 
   function initDataTargetEnum({ value, name }: IFieldState): void {
-    const sourceType = sourceTableFields?.find(({ fieldName }) => fieldName === value)?.componentName || '';
+    const _value = value?.split('.');
+    const sourceType = sourceTableFields?.find(({ fieldName }) => fieldName === _value?.[0])?.componentName || '';
     const targetPath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.dataTarget`);
     setFieldState(targetPath, (state) => {
+      state.props.enum = formatFieldInputAndOption('input');
       const WHITE_LIST = [
         'input', 'numberpicker', 'userpicker', 'datepicker', 'select',
         'serial', 'cascadeselector', 'organizationpicker', 'multipleselect',
@@ -118,7 +130,7 @@ function Rules({
         </div>
         <div className="flex text-14 mb-20">
           <span>关联表单字段</span>
-          <span className="ml-100">当前表单字段</span>
+          <span className="ml-210">当前表单字段</span>
         </div>
         <SchemaForm
           actions={actions}

@@ -14,13 +14,13 @@ const INIT_VALUE: Record<string, string| number | Array<string | number>> = {
 
 export function getSelectAllComparator(linkage: FormBuilder.SelectAllLinkage): FormBuilder.Comparator {
   return (values: Record<string, any>): boolean => {
-    const pairs: Array<[any, FormBuilder.CompareOperator, any]> = linkage.rules.map(({
+    const pairs: Array<[any, FormBuilder.CompareOperator, any]> = linkage?.rules.map(({
       sourceKey, compareOperator, compareValue,
     }) => {
       return [values[sourceKey], compareOperator, compareValue];
     });
 
-    return pairs[linkage.ruleJoinOperator].call(pairs, ([value, compareOperator, compareValue]) => {
+    return linkage?.ruleJoinOperator && pairs[linkage.ruleJoinOperator].call(pairs, ([value, compareOperator, compareValue]) => {
       const executor = compareOperatorMap[compareOperator]?.comparator;
       const leftValue = new Date(value);
       const rightValue = new Date(compareValue);
@@ -49,6 +49,5 @@ export default function selectAllLinkageEffect(
   onFormValuesChange$().subscribe(({ values }) => {
     const isSelectAll = comparator(values) && !!rules?.length;
     callBack && callBack(!!isSelectAll);
-    console.log('onFormValuesChange isSelectAll===', isSelectAll);
   });
 }

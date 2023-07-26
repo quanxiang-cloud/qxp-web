@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable max-len */
 /* eslint-disable no-empty */
 /* eslint-disable no-console */
@@ -17,7 +18,7 @@ import schemaToFields, { schemaToMap } from '@lib/schema-convert';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import SelectRecordsModal from './select-records-modal';
-import { fetchFormDataList } from '@lib/http-client-form';
+import { fetchFormDataList, fetchOneFormDataWithSchema } from '@lib/http-client-form';
 import { toEs } from '@c/data-filter/utils';
 import moment from 'moment';
 import { useFormEffects } from '@formily/antd';
@@ -249,9 +250,15 @@ function AssociatedRecordsFields(props: Partial<ISchemaFieldComponentProps>): JS
           const associatedTable = p['x-component-props']?.associatedTable ||
         p.props['x-component-props'].associatedTable;
           const _fields = schemaToFields(associatedTable);
-          const dateSourceSchema = _fields?.find(({ id }: any)=>id === dataSource);
-          let arr = dataRows.map((item: any)=>{
-            let val: any = item?.[dataSource];
+          const _dataSourceArr = dataSource.split('.');
+          const dateSourceSchema = _dataSourceArr?.length > 1 ?
+            _fields?.find(({ id }: any)=>id === _dataSourceArr?.[0]) :
+            _fields?.find(({ id }: any)=>id === dataSource);
+          // 关联记录
+          const componentProps = dateSourceSchema?.['x-component-props'];
+          const { appID, associationTableID } = componentProps || {};
+          let arr: any = [];
+          const formatVal = (val: any)=>{
             if (isObject(val) && !isArray(val)) {
               val = val?.label;
             }
@@ -266,9 +273,29 @@ function AssociatedRecordsFields(props: Partial<ISchemaFieldComponentProps>): JS
               val = moment(val).format(format);
             }
             return val;
-          })?.filter((item: any)=>!!item);
-          arr = arr.flat();
-          state.value = uniqueShow ? [...new Set([...arr])]?.join(',') : arr?.join(',');
+          };
+          if (associationTableID) {
+            const arrAll: any = [];
+            dataRows?.map(async (item: any)=>{
+              arrAll.push(()=>{
+                return fetchOneFormDataWithSchema(appID, associationTableID, item?.[_dataSourceArr?.[0]]?.value);
+              });
+            });
+            Promise.all(dataRows?.map((item: any) => {
+              return fetchOneFormDataWithSchema(appID, associationTableID, item?.[_dataSourceArr?.[0]]?.value).then(({ record }: any)=>formatVal(record?.[_dataSourceArr?.[1]]));
+            }) || [])?.then((res)=>{
+              arr = res?.flat()?.filter((item)=>!!item);
+              setFieldState(`${relativePath}.${dataTarget}`, (state: any) => {
+                state.value = uniqueShow ? [...new Set([...arr])]?.join(',') : arr?.join(',');
+              });
+            }).catch((err)=>{});
+          } else {
+            arr = dataRows.map((item: any)=>{
+              return formatVal(item?.[dataSource]);
+            })?.filter((item: any)=>!!item);
+            arr = arr.flat();
+            state.value = uniqueShow ? [...new Set([...arr])]?.join(',') : arr?.join(',');
+          }
         });
       } catch (error) {
       }

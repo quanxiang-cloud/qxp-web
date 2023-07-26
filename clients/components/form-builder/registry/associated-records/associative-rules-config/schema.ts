@@ -17,7 +17,7 @@ export const SCHEMA: ISchema = {
             properties: {
               dataSource: {
                 type: 'string',
-                'x-component': 'Select',
+                'x-component': 'DataSelect',
               },
               match: {
                 type: 'string',
