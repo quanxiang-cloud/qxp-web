@@ -45,8 +45,14 @@ function resolveBinaryExpression({ left, right, operator }: ResolveBinaryExpress
   case '>':
     return resolvedLeft > resolvedRight;
   case '==':
+    if (!isNaN(Number(resolvedLeft)) && !isNaN(Number(resolvedRight)) ) {
+      return Number(resolvedLeft) === Number(resolvedRight);
+    }
     return resolvedLeft === resolvedRight;
   case '!=':
+    if (!isNaN(Number(resolvedLeft)) && !isNaN(Number(resolvedRight)) ) {
+      return Number(resolvedLeft) !== Number(resolvedRight);
+    }
     return resolvedLeft !== resolvedRight;
   case '+':
     return Number(resolvedLeft) + Number(resolvedRight);
@@ -124,7 +130,7 @@ function resolveOperand(operand: StringLiteral | NumberLiteral | Variable | Bina
     if (value === undefined || value === null) {
       throw new Error(`variable name [${operand.name}] undefined`);
     }
-    return Number(value);
+    return value;
   }
 
   if (operand.type === 'NumberLiteral') {
