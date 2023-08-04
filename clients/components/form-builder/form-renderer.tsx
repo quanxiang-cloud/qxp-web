@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { SchemaForm, setValidationLanguage, IForm, createFormActions, IFormValidateResult } from '@formily/antd';
 import { ConfigProvider } from 'antd';
 import zhCN from 'antd/lib/locale/zh_CN';
-import { parse, resolve, findVariables } from 'qxp-formula';
+import { parse, findVariables } from 'qxp-formula';
 import { omit } from 'ramda';
 
 import logger from '@lib/logger';
@@ -18,6 +18,8 @@ import calculationFormulaEffect from './linkages/calculation-formula';
 import statisticalAssociationEffect from './linkages/statistical-association';
 import { wrapSchemaByMegaLayout, schemaPermissionTransformer } from './utils';
 import { INVALID_READONLY_LEGACY, INVISIBLE_NO_WRITE, PERMISSION, READONLY_NO_WRITE } from './constants';
+import resolve from './resolve';
+import { toast } from '@one-for-all/ui';
 
 setValidationLanguage('zh');
 
@@ -73,19 +75,22 @@ function FormRenderer({
 
         if (missingValueField) {
           actions.getFieldState(missingValueField, (state) => {
-            setErrorMessage(`字段 ${state.props.title} 必填。`);
+            // setErrorMessage(`字段 ${state.props.title} 必填。`);
+            toast.error(`字段 ${state.props.title} 必填。`);
           });
           return false;
         }
 
         const isValid = resolve(ast, values);
         if (!isValid) {
-          setErrorMessage(message || '校验不通过，请修改。');
+          // setErrorMessage(message || '校验不通过，请修改。');
+          toast.error(message || '校验不通过，请修改。');
           logger.debug('get false result of formula:', formula, 'with values:', values);
           return false;
         }
       } catch (err) {
-        setErrorMessage('表单校验失败，请修改表单值或联系管理员。');
+        // setErrorMessage('表单校验失败，请修改表单值或联系管理员。');
+        toast.error('表单校验失败，请修改表单值或联系管理员。');
         logger.warn('failed to resolve formula:', err);
         return false;
       }

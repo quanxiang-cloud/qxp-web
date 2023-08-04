@@ -46,7 +46,7 @@ const COMPONENTS = {
 const { onFieldInputChange$ } = FormEffectHooks;
 const actions = createFormActions();
 
-async function getTableFieldsToOptions(
+export async function getTableFieldsToOptions(
   appID: string,
   tableID: string,
   filterArr?: string[],
@@ -64,7 +64,7 @@ async function getTableFieldsToOptions(
   return [];
 }
 
-const SUPPORT_COMPONENT = [
+export const SUPPORT_COMPONENT = [
   'Input',
   'NumberPicker',
   'Textarea',
@@ -78,6 +78,7 @@ const SUPPORT_COMPONENT = [
   'UserPicker',
   'OrganizationPicker',
   'Serial',
+  'AssociatedData',
 ]; // 关联记录表下支持关联表白名单
 const WHITE_LIST = [
   'input',
