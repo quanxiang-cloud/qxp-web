@@ -449,23 +449,25 @@ function SubTableSchema(props: ISchemaFieldComponentProps): JSX.Element {
             </div>
           </div>
 
-          <header className="flex justify-between items-center bg-gray-50 mb-16">
-            <div className="mr-10">关联数据表子表字段</div>
-          </header>
           {!!subSchemaOptions.length && (
-            <ul className="flex w-full flex-col py-12 px-28 border rounded">
-              {subSchemaOptions.map(({ label, value }: any) => {
-                return (
-                  <li key={value} className="flex justify-between items-center my-5">
-                    <span className="mr-7">{label}</span>
-                    <Toggle
-                      defaultChecked={subOptionsChecked?.[value] || false}
-                      onChange={(isOpen) => onToggleColumn(value, isOpen)}
-                    />
-                  </li>
-                );
-              })}
-            </ul>
+            <>
+              <header className="flex justify-between items-center bg-gray-50 mb-16">
+                <div className="mr-10">关联数据表子表字段</div>
+              </header>
+              <ul className="flex w-full flex-col py-12 px-28 border rounded">
+                {subSchemaOptions.map(({ label, value }: any) => {
+                  return (
+                    <li key={value} className="flex justify-between items-center my-5">
+                      <span className="mr-7">{label}</span>
+                      <Toggle
+                        defaultChecked={subOptionsChecked?.[value] || false}
+                        onChange={(isOpen) => onToggleColumn(value, isOpen)}
+                      />
+                    </li>
+                  );
+                })}
+              </ul>
+            </>
           )}
         </div>)
       }
