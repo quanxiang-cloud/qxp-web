@@ -20,12 +20,12 @@ import { getTaskFormById } from '../approvals/api';
 import { FILL_IN } from '../approvals/constant';
 
 type Props = {
-  onCancel: () => void;
-  goEdit: (rowID: string) => void;
-  delData: (rowIDs: string[]) => Promise<unknown>;
-  setOperationType: ( type: string ) => void;
+  onCancel?: () => void;
+  goEdit?: (rowID: string) => void;
+  delData?: (rowIDs: string[]) => Promise<unknown>;
+  setOperationType?: ( type: string ) => void;
   rowID: string;
-  tableName: string;
+  tableName?: string;
   tableID: string;
   authority: Record<string, boolean>;
   appID: string;
@@ -48,12 +48,12 @@ function DetailsDrawer(
     setBeganClose(true);
     setTimeout(() => {
       setVisible(true);
-      onCancel();
+      onCancel && onCancel();
     }, 300);
   };
 
   const handelDelete = (): void => {
-    delData([rowID]).then(() => {
+    delData && delData([rowID]).then(() => {
       handleCancel();
     }).catch((err) => {
       toast.error(err);
@@ -129,8 +129,8 @@ function DetailsDrawer(
               <span
                 className='icon-text-btn'
                 onClick={() => {
-                  setOperationType('修改');
-                  goEdit(rowID);
+                  setOperationType && setOperationType('修改');
+                  goEdit && goEdit(rowID);
                 }}
               >
                 <Icon size={20} name='edit' />
