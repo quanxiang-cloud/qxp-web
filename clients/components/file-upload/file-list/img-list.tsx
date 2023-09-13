@@ -34,15 +34,17 @@ export function ImgList({
   originalThumbnail,
   uploadProgressRender,
 }: Props): JSX.Element {
+  const _files = JSON.parse(JSON.stringify(files || []));
   const [fileImgObj, setFileImgObj] = useState([]);
 
   const handleFileSrc = (file: any, index: any)=>{
-    const _fileImgObj: any = [...fileImgObj];
+    const _fileImgObj = JSON.parse(JSON.stringify(fileImgObj));
     if (file.state === 'success' || !file.state) {
       const { uid } = file;
       if (!(fileBucket === OSS_PRIVATE_BUCKET_NAME)) {
         _fileImgObj[index] = `${window.location.protocol}//${OSS_PUBLIC_BUCKET_NAME}.${OSS_DOMAIN}/${uid}`;
         setFileImgObj(_fileImgObj);
+        _files[index].url = `${window.location.protocol}//${OSS_PUBLIC_BUCKET_NAME}.${OSS_DOMAIN}/${uid}`;
         return;
       }
 
@@ -52,7 +54,9 @@ export function ImgList({
       })
         .then(({ url }) => {
           _fileImgObj[index] = url;
-          setFileImgObj(_fileImgObj);
+          _files[index].url = url;
+        }).catch((err: any)=>{
+          console.log('handleFileSrc err', err);
         });
     }
   };
@@ -68,7 +72,7 @@ export function ImgList({
       className: 'preview-img-modal',
       content: (
         <div>
-          <img width={'auto'} height={'auto'} src={fileImgObj[index]} />
+          <img width={'auto'} height={'auto'} src={_files[index].url} />
         </div>
       ),
     });
