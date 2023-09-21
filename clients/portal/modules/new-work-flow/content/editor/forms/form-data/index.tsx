@@ -17,7 +17,6 @@ import type {
 } from '@newFlow/content/editor/type';
 
 import TriggerWay from './basic-config/trigger-way';
-import TriggerCondition from './basic-config/trigger-condition';
 import { getFormFieldOptions } from '../api';
 import { excludeComps } from '../utils';
 
@@ -125,13 +124,13 @@ export default function FormDataForm({ defaultValue, onSubmit, onCancel, onChang
                   whenAlterFields: value.whenAlterFields,
                 }}
               />
-              <TriggerCondition
+              {/* <TriggerCondition
                 validating={validating}
                 formFieldOptions={filteredConditionOptions}
                 schemaMap={schemaMap}
                 onChange={handleChange}
                 value={value.triggerCondition}
-              />
+              /> */}
             </div>
           ),
         }]}

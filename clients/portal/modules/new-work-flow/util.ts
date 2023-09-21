@@ -160,6 +160,19 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
         },
       ];
       // TODO: 添加工作流变量
+      const flowVars: any = window.PipelineFlowData?.variable || [];
+      for (let k1 = 0; k1 < flowVars?.length; k1++) {
+        if (flowVars?.[k1].name === 'SYS_AUDIT_BOOL') {
+          pn.spec.params.push({
+            key: 'SYS_AUDIT_BOOL',
+            value: flowVars?.[k1].code,
+          });
+        }
+        pn.spec.params.push({
+          key: flowVars?.[k1].code,
+          value: `$(communal.${flowVars?.[k1].code})`,
+        });
+      }
       const dealUsers = [];
       if (node?.data?.businessData?.basicConfig !== undefined && typeof node?.data?.businessData?.basicConfig === 'object') {
         pn.spec.params.push({
@@ -269,14 +282,27 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
       const rule = node?.data?.businessData?.rule;
 
       if (typeof rule === 'string') {
-        rule.split(' ').forEach((expr) => {
-          if (expr.startsWith('$flowVar_')) {
-            pn.spec.params.push({
-              key: expr.slice(1),
-              value: `$(communal.${expr.slice(1)})`,
-            });
-          }
-        });
+        const flowVars: any = window.PipelineFlowData?.variable || [];
+        for (let k1 = 0; k1 < flowVars?.length; k1++) {
+          // if (flowVars?.[k1].name === 'SYS_AUDIT_BOOL') {
+          //   pn.spec.params.push({
+          //     key: 'SYS_AUDIT_BOOL',
+          //     value: flowVars?.[k1].code,
+          //   });
+          // }
+          pn.spec.params.push({
+            key: flowVars?.[k1].code,
+            value: `$(communal.${flowVars?.[k1].code})`,
+          });
+        }
+        // rule.split(' ').forEach((expr) => {
+        //   if (expr.indexOf('$flowVar_') > -1) {
+        //     pn.spec.params.push({
+        //       key: expr.slice(1),
+        //       value: `$(communal.${expr.slice(1)})`,
+        //     });
+        //   }
+        // });
       }
 
       if (node?.data?.businessData?.ignore) {
@@ -303,12 +329,12 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
         });
       }
 
-      const formulaFields = node?.data?.businessData?.formulaFields;
-      const vByte = JSON.stringify(formulaFields || '');
-      pn.spec.params.push({
-        key: 'formulaFields',
-        value: vByte,
-      });
+      // const formulaFields = node?.data?.businessData?.formulaFields;
+      // const vByte = JSON.stringify(formulaFields || '');
+      // pn.spec.params.push({
+      //   key: 'formulaFields',
+      //   value: vByte,
+      // });
 
       pn.spec.params.push({
         key: 'ignore',
@@ -937,7 +963,7 @@ const generageBpmnNode = async (node: any, params: any)=>{
             value: formNodeData?.default,
           },
           triggerWay: window?.PipelineWorkflow?.troggerWayList || [],
-          whenAlterFields: [],
+          whenAlterFields: window?.PipelineWorkflow?.whenAlterFields || [],
           triggerCondition: { op: '', expr: [] },
           events: {},
         };
@@ -1098,7 +1124,9 @@ const getUserInfo = async (item: any) => {
   const queryGraphQL = buildGraphQLQuery(params);
   const userGraphQL = '{users{id,phone,useStatus,email,name,useStatus,departments{id,name},leaders{id,name}},total}';
   return searchUser({ query: `{${queryGraphQL}${userGraphQL}}` }).then((res: any) => {
-    const user = res?.users?.[0] || {};
+    const user = res?.users?.find((item: any)=>{
+      return item?.useStatus === 1;
+    }) || {};
     const dep = user?.departments?.[0] || {};
     return {
       type: 1,
@@ -1133,6 +1161,7 @@ export const getTriggersData = (flowData: any)=>{
         'app_id': flowData?.appId,
         'table_id': formData?.businessData?.form?.value,
         'type': type,
+        filters: formData?.businessData?.whenAlterFields || [],
       },
     };
   });
@@ -1217,6 +1246,8 @@ export const getPipelineWorkFlowParams = (flowData: any)=>{
     window.PipelineWorkflow = window.PipelineWorkflow || {};
   }
   window.PipelineWorkflow.troggerWayList = formData?.businessData?.triggerWay || [];
+  window.PipelineWorkflow.whenAlterFields = formData?.businessData?.whenAlterFields || [];
+
   window.PipelineFlowData = res;
   // 查询 保存 删除 trigger
   handleTrigger(appID, tableID, pipelineName);
@@ -1231,10 +1262,12 @@ export const pipelineTobpmnFlow = async (pipelineObj: any)=>{
   window.PipelineFlowData.display_name = window.PipelineFlowData.displayName;
   const troggerWayList = [];
   const createRes = await httpClient.get(`/api/v1/trigger/form/${pipelineObj?.name}_CREATE`);
-  const updateRes = await httpClient.get(`/api/v1/trigger/form/${pipelineObj?.name}_UPDATE`);
+  const updateRes: any = await httpClient.get(`/api/v1/trigger/form/${pipelineObj?.name}_UPDATE`);
   createRes && troggerWayList.push('whenAdd');
   updateRes && troggerWayList.push('whenAlter');
   window.PipelineWorkflow.troggerWayList = troggerWayList;
+  window.PipelineWorkflow.whenAlterFields = updateRes?.filters || [];
+
   const triggerrArr = [createRes, updateRes]?.filter((item: any)=>!!item);
   const hasOnTrigger = !!triggerrArr?.find((item: any)=> item?.status === 'on');
   const _status = hasOnTrigger ? 'ENABLE' : 'DISABLE';
@@ -1276,12 +1309,12 @@ export const pipelineTobpmnFlow = async (pipelineObj: any)=>{
   };
 
   // 查询 保存 删除 trigger
-  handleTrigger(appID, tableID, pipelineObj?.name);
+  handleTrigger(appID, tableID, pipelineObj?.name, false);
 
   return data;
 };
 
-const handleTrigger = (appID: any, tableID: any, pipelineName: any)=>{
+const handleTrigger = (appID: any, tableID: any, pipelineName: any, del = true)=>{
   if (!pipelineName) {
     return;
   }
@@ -1302,10 +1335,23 @@ const handleTrigger = (appID: any, tableID: any, pipelineName: any)=>{
               'app_id': appID,
               'table_id': tableID,
               'type': item,
+              filters: item === 'UPDATE' ? window?.PipelineWorkflow?.whenAlterFields : [],
             },
           });
-        }
-        if (res && !troggerWayList?.includes(mapType?.[item])) {
+        } else if (item === 'UPDATE' && res && res.filters !== window?.PipelineWorkflow?.whenAlterFields) {
+          deleteTrigger(`${name}_${item}`).then((res)=>{
+            createTrigger({
+              'name': `${name}_${item}`,
+              'pipelineName': name,
+              'data': {
+                'app_id': appID,
+                'table_id': tableID,
+                'type': item,
+                filters: item === 'UPDATE' ? window?.PipelineWorkflow?.whenAlterFields : [],
+              },
+            });
+          });
+        } else if (res && !troggerWayList?.includes(mapType?.[item])) {
           deleteTrigger(`${name}_${item}`);
         }
       });
@@ -1324,3 +1370,66 @@ const trimASCII9193 = (expr: any) => {
   }
   return expr;
 };
+
+// const addVariables = (flowVars: any, pn: any)=>{
+// let recallFlowVarBool = false;
+
+// for (let k1 = 0; k1 < flowVars?.length; k1++) {
+//   if (flowVars.List[k1].Name === 'RECALL_' + node.ID) {
+//     recallFlowVarBool = true;
+//     pn.Spec.Params.push({
+//       Key: flowVars.List[k1].Name,
+//       Value: flowVars.List[k1].Code,
+//     });
+
+//     pn.Spec.Params.push({
+//       Key: flowVars.List[k1].Code,
+//       Value: `$(communal.${flowVars.List[k1].Code})`,
+//     });
+//   }
+// }
+
+// if (!recallFlowVarBool) {
+//   const varResp = await s.SaveFlowSysVariable(ctx, {
+//     FlowID: flowID,
+//     Name: 'RECALL_' + node.ID,
+//     Type: 'SYSTEM',
+//     FieldType: 'boolean',
+//     DefaultValue: 'false',
+//     Desc: '系统初始化变量，不可修改',
+//     UserID: flowCreatedBy,
+//   });
+
+//   if (varResp.error) {
+//     return new Error('save flow create sys recall var');
+//   }
+
+//   pn.Spec.Params.push({
+//     Key: varResp.Name,
+//     Value: varResp.Code,
+//   });
+
+//   pn.Spec.Params.push({
+//     Key: varResp.Code,
+//     Value: `$(communal.${varResp.Code})`,
+//   });
+// }
+
+// delete varsMap['RECALL_' + node.ID];
+
+// for (let k1 = 0; k1 < flowVars.List.length; k1++) {
+//   if (flowVars.List[k1].Name === 'SYS_AUDIT_BOOL') {
+//     pn.Spec.Params.push({
+//       Key: 'SYS_AUDIT_BOOL',
+//       Value: flowVars.List[k1].Code,
+//     });
+
+//     pn.Spec.Params.push({
+//       Key: flowVars.List[k1].Code,
+//       Value: `$(communal.${flowVars.List[k1].Code})`,
+//     });
+
+//     break;
+//   }
+// }
+// };
