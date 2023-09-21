@@ -1,9 +1,9 @@
-import { useEffect, useMemo } from 'react';
+/* eslint-disable max-len */
+import { useEffect, useMemo, useState } from 'react';
 import { default as ELK, ElkExtendedEdge, ElkNode, ElkLayoutArguments } from 'elkjs';
 import { Elements, isNode, Node, Edge, useStoreState } from 'react-flow-renderer';
 import { groupBy, prop } from 'ramda';
 
-import useAsync from '@lib/hooks/use-async';
 import toast from '@lib/toast';
 
 import { LAYOUT_DIRECTION_MAP } from '../constants';
@@ -67,9 +67,11 @@ function hasNodeSize(node: Node): boolean {
 
 export default function useElkLayout(elements: Elements, direction: 'right' | 'bottom'): POLY_API.Element[] {
   const nodesStates = useStoreState(prop('nodes'));
+  const [newGraph, setNewGraph] = useState<any>();
+  const [error, setError] = useState<any>();
+
   const isAllNodeRendered = !!nodesStates.length && nodesStates.every(hasNodeSize);
   const elk = new ELK();
-
   const getNodeSizeById = useGetNodeSize(nodesStates);
 
   const { nodes: _nodes = [], edges: _edges = [] } = useMemo(
@@ -81,14 +83,24 @@ export default function useElkLayout(elements: Elements, direction: 'right' | 'b
   const elkEdges = edges.map(flowEdgeToElkEdge);
 
   const rankdir = layoutMap[direction] ?? layoutMap.nomatch;
-  function layoutRunner(): Promise<ElkNode> {
-    return elk.layout({ id: 'root', children: elkNodes, edges: elkEdges }, getLayoutArguments(rankdir));
-  }
-  const { value: newGraph, error } = useAsync<ElkNode>(layoutRunner, [nodes, edges, isAllNodeRendered]);
+
+  // function layoutRunner(): Promise<ElkNode> {
+  //   return elk.layout({ id: 'root', children: elkNodes, edges: elkEdges }, getLayoutArguments(rankdir));
+  // }
+  // const { value: newGraph, error } = useAsync<ElkNode>(layoutRunner, [nodes, edges, isAllNodeRendered]);
+
+  useEffect(()=>{
+    nodes?.length && elk.layout({ id: 'root', children: elkNodes, edges: elkEdges }, getLayoutArguments(rankdir))
+      .then((res: any)=>{
+        setNewGraph(res);
+      })
+      .catch((err: any)=>{
+        setError(err);
+      });
+  }, [JSON.stringify(elkNodes), nodes, edges, isAllNodeRendered]);
 
   useEffect(() => {
     error && toast.error(error);
   }, [error]);
-
   return useMemo(() => newGraph ? getElements(nodes, edges, newGraph) : [], [newGraph]);
 }

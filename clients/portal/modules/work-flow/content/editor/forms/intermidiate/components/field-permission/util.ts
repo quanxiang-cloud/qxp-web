@@ -105,7 +105,7 @@ function getPermission(permission?: PERMISSION, isLayoutComponent?: boolean): PE
 export function fieldPermissionDecoder(
   value: FieldPermission | NewFieldPermission, schema: ISchema,
 ): FieldPermission | void {
-  if (value.custom || value.system) {
+  if (value?.custom || value?.system) {
     return value as FieldPermission;
   }
   const schemaIDToSchemaMap = getSchemaIDToSchemaMap(schema);

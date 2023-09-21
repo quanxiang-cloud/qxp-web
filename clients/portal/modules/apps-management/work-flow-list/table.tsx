@@ -53,6 +53,7 @@ function WorkFlowTable({ type, searchInput }: Props): JSX.Element {
       size: 500,
       triggerMode: type ? type : undefined,
     }),
+
   );
   const deleteFlowMutation = useMutation('DELETE_FLOW', deleteFlow, {
     onSuccess: (ok) => {
@@ -66,8 +67,33 @@ function WorkFlowTable({ type, searchInput }: Props): JSX.Element {
       toast.error(typeof err === 'string' ? err : err.message);
     },
   });
-  const hasData = !!data?.dataList.length;
-  const filteredData = data?.dataList.filter(({ status }) => {
+
+  // TODO: pipepline workflow
+  // const { data, isLoading, isError, refetch } = useQuery(
+  //   ['GET_FLOW_LIST', type, currentPageNumber, appID],
+  //   () => getPipelineFlowList({
+  //     appId: appID,
+  //     page: currentPageNumber,
+  //     size: 500,
+  //     triggerMode: type ? type : undefined,
+  //   }),
+
+  // );
+  // const deleteFlowMutation = useMutation('DELETE_FLOW', deletePipelineFlow, {
+  //   onSuccess: (ok) => {
+  //     if (!ok) {
+  //       return;
+  //     }
+  //     refetch();
+  //     setState((s) => ({ ...s, currentDeleteWorkFlow: null }));
+  //   },
+  //   onError: (err: Error | string) => {
+  //     toast.error(typeof err === 'string' ? err : err.message);
+  //   },
+  // });
+
+  const hasData = !!data?.dataList?.length;
+  const filteredData = data?.dataList?.filter(({ status }) => {
     if (!statusFilter || statusFilter === status) {
       return true;
     }
@@ -100,7 +126,7 @@ function WorkFlowTable({ type, searchInput }: Props): JSX.Element {
             onChange={setStatusFilter}
           >
             <div className={cs('flex items-center cursor-pointer', {
-              'pointer-events-none': !data?.dataList.length,
+              'pointer-events-none': !data?.dataList?.length,
             })}>
               <span className="mr-4">状态</span>
               <Icon name="funnel" />

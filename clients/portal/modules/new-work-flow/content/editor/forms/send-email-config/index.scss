@@ -1,0 +1,19 @@
+.send-email-editor {
+  border: 1px solid #d5dee7;
+}
+
+.dropdown-options {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.editor-size{
+  color:var(--gray-600);
+  font-size: 12px;
+  line-height: 20px;
+  margin-left: 10px;
+  em{
+    color: var(--rose-600);
+    font-style: normal;
+  }
+}

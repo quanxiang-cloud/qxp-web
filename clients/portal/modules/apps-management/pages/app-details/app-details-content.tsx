@@ -20,7 +20,9 @@ import VersionDetails from './faas/func/version-details';
 
 import './index.scss';
 
-const WorkFlows = lazy(() => import('../../work-flow-list'));
+// const WorkFlows = lazy(() => import('../../work-flow-list'));
+const WorkFlows = lazy(() => import('../../new-work-flow-list'));
+
 const ApiProxy = lazy(() => import('./api-proxy'));
 const AppControl = lazy(()=> import('./app-control'));
 const OrchestrationAPI = React.lazy(() => import('./orchestration-api'));

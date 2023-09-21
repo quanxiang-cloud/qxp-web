@@ -1,0 +1,12 @@
+.custom-field__value {
+  > div {
+    min-width: 120px;
+    margin-bottom: 0;
+  }
+
+  &.xl-width {
+    > div {
+      min-width: 240px;
+    }
+  }
+}

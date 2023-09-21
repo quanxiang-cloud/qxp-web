@@ -10,6 +10,7 @@ import Thumbnail from './thumbnail';
 import { FILE_DOWNLOAD_INFO_API, FILE_LIST_ICON, OSS_DOMAIN, OSS_PRIVATE_BUCKET_NAME, OSS_PUBLIC_BUCKET_NAME, THUMBNAIL_SIZE } from '../constants';
 import { Modal } from 'antd';
 import httpClient from '@lib/http-client';
+import PopConfirm from '@c/pop-confirm';
 
 type Props = {
   files: QXPUploadFileTask[];
@@ -78,6 +79,9 @@ export function ImgList({
     });
   };
 
+  const handleDeleteFileItem = (file: any) => {
+    deleteFileItem?.(file);
+  };
   return (
     <>
       {files.map((file, index) => {
@@ -136,13 +140,21 @@ export function ImgList({
                       } */}
                       {
                         deleteFileItem && (
-                          <span className="">
-                            <Icon
-                              {...FILE_LIST_ICON['delete']}
-                              clickable
-                              onClick={() => deleteFileItem?.(file)}
-                            />
-                          </span>)
+                          <PopConfirm
+                            key={index}
+                            content={'确定删除该图片？'}
+                            onOk={() => {
+                              handleDeleteFileItem(file);
+                            }}
+                          >
+                            <span className="">
+                              <Icon
+                                {...FILE_LIST_ICON['delete']}
+                                clickable
+                              />
+                            </span>
+                          </PopConfirm>
+                        )
                       }
                     </div>
                   </>

@@ -21,7 +21,6 @@ export default function TaskCard(props: TaskCardProps): JSX.Element | null {
   const { task, type, taskType, isApply } = props;
   const [taskTag, setTaskTag] = useState<TaskTag>({});
   const [deleted, setDeleted] = useState(false);
-
   useEffect(() => {
     setTaskTag(computeTaskTag(task));
     setDeleted(!!task.isDeleted);
@@ -47,7 +46,7 @@ export default function TaskCard(props: TaskCardProps): JSX.Element | null {
           status={(taskType === FILL_IN && !task.status) ? 'Finish' : task.status}/>)}
       </div>
 
-      {!!task.nodeName && (<div className='task-node-row body1 text-placeholder mt-8'>
+      {!!task.nodeName && type === 'WAIT_HANDLE_PAGE' && (<div className='task-node-row body1 text-placeholder mt-8'>
         当前节点：
         <span className='text-secondary'>{task.nodeName}</span>
       </div>)}

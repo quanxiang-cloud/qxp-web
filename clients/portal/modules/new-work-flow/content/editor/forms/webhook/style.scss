@@ -1,0 +1,81 @@
+.webhook-api-select {
+  padding: 0;
+
+  .poly-api-selector {
+    width: 100%;
+
+    label {
+      @apply block my-8;
+
+      &+span {
+        @apply w-full;
+
+        input {
+          border-radius: 2px 8px 8px 8px;
+        }
+      }
+    }
+  }
+}
+
+.webhook-request-inputs {
+  max-height: 400px;
+  @apply flex relative mt-8 h-full overflow-hidden;
+
+  &>div:first-child {
+    padding: 0 8px 0 0;
+    background: #fff;
+    &.config-params-container {
+      padding-bottom: 12px;
+    }
+    &>div:not(.webhook-send-block) {
+      &>div:first-child {
+        margin: 8px 0 0 0;
+      }
+    }
+  }
+
+  &::before {
+    content: '';
+    width: calc(100% + 48px);
+    background: rgb(226, 232, 240);
+    left: -24px;
+    height: 0.5px;
+    @apply absolute top-0;
+  }
+
+  .cm-theme-light {
+    flex: 1;
+    overflow: auto;
+    height: 100%;
+    .cm-editor {
+      height: 100%;
+    }
+  }
+}
+
+.outputs-header {
+  &:not(:nth-child(3)) {
+    @apply border-r-1 border-b-1;
+  }
+
+  &:nth-child(3) {
+    @apply border-b-1;
+  }
+}
+
+.outputs-body {
+  &:not(:nth-child(3n)) {
+    @apply border-r-1 border-b-1;
+  }
+
+  &:nth-child(3n) {
+    @apply border-b-1;
+  }
+
+  &:nth-last-child(1),
+  &:nth-last-child(2),
+  &:nth-last-child(3) {
+    border-bottom: none;
+  }
+}
