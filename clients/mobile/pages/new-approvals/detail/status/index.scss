@@ -1,0 +1,26 @@
+.status-container {
+  padding: .24rem .12rem .24rem .24rem;
+}
+
+.flow-status-bottom {
+  height: calc(0.08rem + env(safe-area-inset-bottom));
+}
+
+.status-item-wrapper {
+  position: relative;
+}
+
+.timeline-status-dot {
+  position: absolute;
+  top: .06rem;
+  left: -0.12rem;
+}
+
+.timeline-line {
+  position: absolute;
+  top: .2rem;
+  left: -0.06rem;
+  height: 100%;
+  width: 2px;
+  background-color: var(--gray-200);
+}

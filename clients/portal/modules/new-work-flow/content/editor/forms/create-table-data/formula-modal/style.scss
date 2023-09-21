@@ -1,0 +1,9 @@
+.webhook-formula-modal-wrapper {
+  &>div:last-child {
+    min-height: 70%;
+    min-width: 70%;
+    &>div.md-body:nth-child(2) {
+      @apply flex-1 overflow-hidden;
+    }
+  }
+}

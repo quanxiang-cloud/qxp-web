@@ -1,0 +1,127 @@
+.approval-detail {
+  &-toolbar {
+    position: sticky;
+    top: 0;
+    box-shadow: inset 0px -1px 0px #E2E8F0;
+    background: white;
+    z-index: 1;
+
+    .left-btns {
+      > span{
+        margin-right: 20px;
+        cursor: pointer;
+        padding: 5px;
+
+        &:hover {
+          background: #F0F6FF;
+          border-radius: 8px 8px 8px 2px;
+        }
+      }
+    }
+
+    .right-btns {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      > button {
+        border: none;
+        &:last-child {
+          margin-right: 0;
+        }
+
+        &.btn-item-done {
+          background: #16A34A;
+        }
+
+        &.btn-item-submit {
+          color: #ddd;
+          background: var(--blue-700);
+          &:hover{
+            color: #fff;
+          }
+        }
+
+      }
+    }
+  }
+
+  // schema form
+  // .task-form {
+  //   form {
+  //     display: grid;
+  //     grid-template-columns: repeat(2, 1fr);
+  //     grid-row-gap: 24px;
+  //     grid-column-gap: 20px;
+  //   }
+  // }
+
+  &-tab {
+    width: 400px;
+    box-shadow: inset 1px 0px 0px #E2E8F0;
+  }
+}
+
+.approval-panel {
+  border-radius: 12px;
+  height: calc(100vh - 100px);
+  overflow: hidden;
+}
+
+@media  print{
+  * {
+    -webkit-print-color-adjust: exact;
+  }
+
+  #root > :not(.approval-detail) {
+    display: none;
+  }
+
+  body {
+    background-color: #fff;
+  }
+
+  .approval-detail {
+    display: block;
+    padding: 0;
+    border: 1px solid #ccc;
+
+    .approval-detail-toolbar {
+      display: none;
+    }
+
+    .task-form {
+      padding: 10px 24px 0 0;
+    }
+
+    .tab-navs {
+      display: none;
+    }
+
+    .approval-panel {
+      height: fit-content;
+    }
+
+    .approval-detail-tab {
+      margin-left: 12%;
+      background-color: #fff;
+      box-shadow: none;
+    }
+
+    .flow-name {
+      display: block;
+      border-bottom: 1px solid #ccc;
+      padding: 10px;
+    }
+
+    .approval-detail-tab-name {
+      display: block;
+      border-top: 1px solid #ccc;
+      border-bottom: 1px solid #ccc;
+      padding: 10px;
+    }
+
+    .ant-row {
+      break-inside: avoid;
+    }  
+  }
+}

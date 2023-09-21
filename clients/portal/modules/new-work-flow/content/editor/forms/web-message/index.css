@@ -1,0 +1,13 @@
+.web-message-editor-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 250px;
+  background: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  box-sizing: border-box;
+  border-radius: 2px 8px 8px 8px;
+}
+
+.web-message-editor {
+  flex: 1;
+}

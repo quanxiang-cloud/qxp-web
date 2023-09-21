@@ -15,10 +15,14 @@ import notifier from './plugins/rollup-plugin-notifier';
 import esbuildConfig from './esbuild-config';
 // import dll from './plugins/rollup-plugin-dll';
 
+import livereload from 'rollup-plugin-livereload';
+
 import { isProduction } from './env';
 
 const output = {
   format: 'system',
+  // entryFileNames: isProduction ? '[name]-[hash].js' : '[name]-[hash].js',
+  // chunkFileNames: isProduction ? 'chunk-[name]-[hash].js' : 'chunk-[name]-[hash].js',
   entryFileNames: isProduction ? '[name]-[hash].js' : '[name].js',
   chunkFileNames: isProduction ? 'chunk-[name]-[hash].js' : 'chunk-[name].js',
   dir: 'dist',
@@ -78,6 +82,7 @@ const config = {
   ],
 
   plugins: [
+    // livereload(),
     webWorkerLoader({
       // todo output file name has no hash
       targetPlatform: 'browser',
@@ -126,6 +131,7 @@ const mobileConfig = Object.assign(
   {
     input: mobileInput,
     output: Object.assign({}, output, {
+      // chunkFileNames: isProduction ? 'mobile-chunk-[name]-[hash].js' : 'mobile-chunk-[name]-[hash].js',
       chunkFileNames: isProduction ? 'mobile-chunk-[name]-[hash].js' : 'mobile-chunk-[name].js',
     }),
     plugins: [

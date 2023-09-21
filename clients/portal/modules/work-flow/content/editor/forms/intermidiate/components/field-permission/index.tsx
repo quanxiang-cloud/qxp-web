@@ -70,7 +70,7 @@ export default function FieldPermission({ value, onChange: _onChange, nodeType }
 
   useUpdateEffect(() => {
     const defaultPermissionChanged = !isEqual(fieldPermissionDecoder(value, schema), mergedFieldPermissions);
-    const isPermissionOldFormat = value.custom || value.system;
+    const isPermissionOldFormat = value?.custom || value?.system;
     const shouldSetLatestPermission = defaultPermissionChanged || isPermissionOldFormat;
     shouldSetLatestPermission && onChange(mergedFieldPermissions);
   }, [mergedFieldPermissions]);

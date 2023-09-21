@@ -1,8 +1,9 @@
+/* eslint-disable max-len */
 import { observable, action } from 'mobx';
 import toast from '@lib/toast';
 
 import { fetchUserList } from '../lib/api';
-import { getFlowInstanceCount, getTodoFillInCount } from './approvals/api';
+import { getPipelineTodoApprovalCount, getPipelineTodoFillInCount } from './new-approvals/api';
 
 class UserAppStore {
   @observable appList: Array<AppInfo> = [];
@@ -33,18 +34,27 @@ class UserAppStore {
   @action
   fetchTodoList = async () => {
     try {
-      const {
-        overTimeCount = 0,
-        urgeCount = 0,
-        waitHandleCount = 0,
-        ccToMeCount = 0,
-      } = await getFlowInstanceCount({ 'User-Id': window.USER.id });
+      // const {
+      //   overTimeCount = 0,
+      //   urgeCount = 0,
+      //   waitHandleCount = 0,
+      //   ccToMeCount = 0,
+      // } = await getFlowInstanceCount({ 'User-Id': window.USER.id });
+      // const { total: fillInCount = 0 } = await getTodoFillInCount({});
+      // this.TODO_LIST[0].value = overTimeCount;
+      // this.TODO_LIST[1].value = urgeCount;
+      // this.TODO_LIST[2].value = waitHandleCount + fillInCount;
+      // this.HANDLE_LIST[2].count = ccToMeCount;
 
-      const { total: fillInCount = 0 } = await getTodoFillInCount({});
-
+      // 分别获取pipeline 审批、填写 代办数量
+      const overTimeCount = 0;
+      const urgeCount = 0;
+      const ccToMeCount = 0;
+      const { total: approvalCount = 0 } = await getPipelineTodoApprovalCount();
+      const { total: fillInCount = 0 } = await getPipelineTodoFillInCount();
       this.TODO_LIST[0].value = overTimeCount;
       this.TODO_LIST[1].value = urgeCount;
-      this.TODO_LIST[2].value = waitHandleCount + fillInCount;
+      this.TODO_LIST[2].value = approvalCount + fillInCount;
       this.HANDLE_LIST[2].count = ccToMeCount;
     } catch (err) {
       toast.error(err);

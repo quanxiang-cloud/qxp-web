@@ -18,8 +18,12 @@ const Messages = lazy(
   () => import('./pages/msg-center/routes'),
 );
 
+// const Approvals = lazy(
+//   () => import('./pages/approvals/routes'),
+// );
+
 const Approvals = lazy(
-  () => import('./pages/approvals/routes'),
+  () => import('./pages/new-approvals/routes'),
 );
 
 const Account = lazy(

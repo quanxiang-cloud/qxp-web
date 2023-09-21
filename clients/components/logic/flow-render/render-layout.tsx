@@ -1,4 +1,4 @@
-import React, { Fragment, DragEvent, useRef, useEffect } from 'react';
+import React, { Fragment, DragEvent, useRef, useEffect, useState } from 'react';
 import cs from 'classnames';
 import { prop, cond, equals, always, T } from 'ramda';
 import ReactFlow, { ReactFlowProps, OnLoadParams, useStoreState } from 'react-flow-renderer';
@@ -27,6 +27,7 @@ export default function RenderLayout({
   const fitView = useFitView(config?.control?.fitViewParams);
   const callOnLoad = useRef<() => void>(() => undefined);
   const isHide = nodes.some((node) => !node.position.x || !node.position.y);
+  const [initFitView, setInitFitView] = useState(false);
 
   const getLayoutedElements = cond([
     [equals('dagre'), always(layoutedDagreElements)],
@@ -55,7 +56,10 @@ export default function RenderLayout({
     if (!nodes.length) {
       return;
     }
-    fitView();
+    if (!initFitView) {
+      fitView();
+      setInitFitView(true);
+    }
     callOnLoad.current();
   }
 
@@ -83,6 +87,7 @@ export default function RenderLayout({
           className={distClassName}
           snapGrid={snapGrid}
           snapToGrid={snapToGrid}
+          panOnScroll={true}
         >
           <RenderConfig {...config} />
         </ReactFlow>

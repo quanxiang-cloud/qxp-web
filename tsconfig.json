@@ -51,6 +51,7 @@
       "@c/*": ["./clients/components/*"],
       "@lib/*": ["./clients/lib/*"],
       "@flow/*": ["./clients/portal/modules/work-flow/*"],
+      "@newFlow/*": ["./clients/portal/modules/new-work-flow/*"],
       "@orchestrationAPI/*": ["clients/portal/modules/apps-management/pages/app-details/orchestration-api/*"],
       "@polyApi/*": ["clients/portal/modules/poly-api/*"],
       "@m/*": ["./clients/mobile/*"],
@@ -77,7 +78,7 @@
     /* Advanced Options */
     "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */
   },
-  "include": ["**/*.ts", "**/*.tsx"],
+  "include": ["**/*.ts", "**/*.tsx", "clients/portal/modules/new-work-flow/test.js"],
   "exclude": ["./dist/"],
   "plugins": [
     {

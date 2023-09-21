@@ -50,8 +50,6 @@ function ApprovalTypeList({ listType, countMap, todoTotal, onClick }: ApprovalTy
     if (type === 'cc_to_me') {
       count = countMap.ccToMeCount || 0;
     }
-    console.log('todoTotal', todoTotal);
-    console.log('type', type);
 
     if (count > 0) {
       return <BtnBadge count={count} className="relative text-white" />;

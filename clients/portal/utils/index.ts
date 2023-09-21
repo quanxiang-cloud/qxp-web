@@ -59,7 +59,8 @@ export const parseElements = (bpmn: WorkFlow): FlowElement<Data>[] =>{
       if (item.type === 'fillIn') {
         try {
           const { businessData } = item.data;
-          const { basicConfig } = businessData;
+          let { basicConfig } = businessData;
+          basicConfig = basicConfig || {};
           businessData.events = {};
           businessData.operatorPermission = {
             custom: [],

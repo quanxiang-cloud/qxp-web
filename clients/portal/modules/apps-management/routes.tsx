@@ -7,7 +7,8 @@ import GlobalHeader from '@portal/global-header';
 const AppsIndex = React.lazy(() => import('./index'));
 const AppDetails = React.lazy(() => import('./pages/app-details'));
 const FormDesign = React.lazy(() => import('./pages/form-design'));
-const FlowDetail = React.lazy(() => import('../work-flow'));
+// const FlowDetail = React.lazy(() => import('../work-flow'));
+const FlowDetail = React.lazy(() => import('../new-work-flow'));
 const PageDesign = React.lazy(()=> import('./pages/page-design'));
 const PagePreview = React.lazy(()=> import('./pages/page-design/page-preview'));
 

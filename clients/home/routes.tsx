@@ -12,7 +12,8 @@ const AppDetails = lazy(
   () => import('./pages/app-details'),
 );
 
-const Approvals = lazy(() => import('./pages/approvals/routes'));
+// const Approvals = lazy(() => import('./pages/approvals/routes'));
+const Approvals = lazy(() => import('./pages/new-approvals/routes'));
 
 export default (
   <Suspense fallback={(<PageLoading />)}>
