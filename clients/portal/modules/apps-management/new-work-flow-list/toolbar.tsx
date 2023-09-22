@@ -58,7 +58,7 @@ export default function({ onSearchInputChange }: Props): JSX.Element {
               size={24}
             />
           </div>
-          <div
+          {/* <div
             key="FORM_TIME"
             className="flex cursor-pointer items-center justify-between px-16 py-12 create-flow-menu-group"
             onClick={() => newWorkFlow('time-flow')}
@@ -76,7 +76,7 @@ export default function({ onSearchInputChange }: Props): JSX.Element {
               className="ml-80 transition-all"
               size={24}
             />
-          </div>
+          </div> */}
         </div>
       </Popper>
       <Search

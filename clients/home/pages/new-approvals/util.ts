@@ -1,5 +1,5 @@
 /* eslint-disable guard-for-in */
-import { getMyApplyPipelineFillInList, getMyApplyPipelineList, getPipelineAllFillInList, getPipelineAllList, getPipelineAppInfo, getPipelineFillInFormInfo, getPipelineFormInfo, getPipelineFormSchemaInfo, getPipelineInfo, getPipelineMyReviewedFillInList, getPipelineMyReviewedList, getPipelineTodoFillInList, getPipelineUserInfo, getPipelineWaitReviewList } from './api';
+import { getMyApplyPipelineFillInList, getMyApplyPipelineList, getPipelineAllFillInList, getPipelineAllList, getPipelineAppInfo, getPipelineFormData, getPipelineFormSchemaInfo, getPipelineInfo, getPipelineMyReviewedFillInList, getPipelineMyReviewedList, getPipelineTodoFillInList, getPipelineUserInfo, getPipelineWaitReviewList } from './api';
 
 const getAppName = (data: any)=>{
   return getPipelineAppInfo(data?.map((item: any)=>item?.appID))
@@ -39,21 +39,38 @@ const getPipelineInfoList = (data: any)=>{
 
 const getPipelineFormInfoList = (data: any, type: any)=>{
   return Promise.all(data?.map((item: any)=>{
-    const apiList: any = {
-      approval: getPipelineFormInfo,
-      fillIn: getPipelineFillInFormInfo,
-    };
-    return apiList?.[type]({ id: item?.id })
-      .then((res: any)=>{
-        try {
-          return { ...res, ID: item?.id };
-        } catch (error) {
-          return res;
-        }
-      })
-      .catch((err)=>{
-        return null;
-      });
+    return getPipelineFormData(
+      item?.appID,
+      item?.formTableID,
+      {
+        query: {
+          term: {
+            _id: item?.formDataID,
+          },
+        },
+        ref: {},
+      },
+    ).then((res: any)=>{
+      return res?.entity;
+    }).catch((err) => {
+      return null;
+    });
+
+    // const apiList: any = {
+    //   approval: getPipelineFormInfo,
+    //   fillIn: getPipelineFillInFormInfo,
+    // };
+    // return apiList?.[type]({ id: item?.id })
+    //   .then((res: any)=>{
+    //     try {
+    //       return { ...res, ID: item?.id };
+    //     } catch (error) {
+    //       return res;
+    //     }
+    //   })
+    //   .catch((err)=>{
+    //     return null;
+    //   });
   }));
 };
 
@@ -114,7 +131,7 @@ const formatData = (data: any, res: any, pipelineType: any, type: any)=>{
     })?.config?.keyFields?.split(',');
 
     const formData = pipelineFormInfo?.find((item: any)=>{
-      return item?.ID === id;
+      return item?._id === formDataID;
     });
 
     const formSchema = pipelineFormSchemaInfo?.find((item: any)=>{
