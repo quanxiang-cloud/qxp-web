@@ -49,7 +49,7 @@ export default function CustomFieldTable({
     code: number;
     data: ProcessVariable[];
     msg: string;
-  }>(`/api/v1/flow/getVariableList?id=${window?.Pipeline_StoreValue?.id}`, {
+  }>(`/api/v1/flow/getVariableList?id=${flowId}`, {
     method: 'POST',
     credentials: 'same-origin',
   });

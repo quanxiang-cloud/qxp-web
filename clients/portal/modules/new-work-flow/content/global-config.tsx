@@ -64,13 +64,6 @@ export default function GlobalConfig(): JSX.Element | null {
     },
     { refetchOnWindowFocus: false },
   );
-  // const variables = window.PipelineFlowData?.variable?.map((item: any) => {
-  //   const { code, name } = item;
-  //   return {
-  //     key: '$' + code,
-  //     name,
-  //   };
-  // }) || [];
 
   const { data: variables, isLoading: varLoading } = useQuery(
     ['GET_VARIABLES'],

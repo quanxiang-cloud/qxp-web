@@ -13,7 +13,7 @@ import toast from '@lib/toast';
 import ActionButtonGroup from '../content/editor/components/_common/action-button-group';
 import type { StoreValue } from '../content/editor/type';
 import store, { updateStore, updateStoreByKey } from '../content/editor/store';
-import { deletePipelineFlow, toggleWorkFlow, updateStatus } from '../api';
+import { deletePipelineFlow, toggleWorkFlow } from '../api';
 import { POPPER_PARAMS } from './constants';
 import ActionButtons from './action-buttons';
 import { useHistory, useParams } from 'react-router-dom';
@@ -30,11 +30,6 @@ export default function FlowHeaderActions(): JSX.Element {
     onSuccess: () => {
       toast.success(status === 'ENABLE' ? '工作流下架成功' : '工作流发布成功');
       const _status = status === 'DISABLE' ? 'ENABLE' : 'DISABLE';
-      try {
-        window.PipelineFlowData.config.status = _status;
-        updateStatus(window.PipelineFlowData);
-      } catch (error) {
-      }
       updateStore((s) => ({
         ...s,
         status: _status,
@@ -58,8 +53,7 @@ export default function FlowHeaderActions(): JSX.Element {
     },
   });
 
-  const { flowID, appID, pID } = useParams<{ flowID: string; type: string; appID: string }>();
-  const [pipelineStatus, setPipelineStatus] = useState('DISABLE');
+  const { flowID, appID } = useParams<{ flowID: string; type: string; appID: string }>();
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const history = useHistory();

@@ -76,9 +76,8 @@ export function getVariableList(flowId: string) {
   return httpClient.get<WorkFlowData>(`/api/v1/pipeline/${flowId}`);
 }
 
-export function saveFlowVariable(values: Omit<ProcessVariable, 'desc' | 'code'>): Promise<void> {
-  const variable = window.PipelineFlowData?.variable || [];
-  const { displayName: display_name, appID, name, spec, config } = window.PipelineFlowData || {};
+export function saveFlowVariable(values: Omit<ProcessVariable, 'desc' | 'code'>, variableList: any, flowData: any): Promise<void> {
+  const variable = variableList || [];
   const hasValue = variable?.find((item: any)=>item?.id === values?.id);
   !hasValue && variable.push(values);
   const _variable = variable?.map((item: any)=>{
@@ -88,34 +87,19 @@ export function saveFlowVariable(values: Omit<ProcessVariable, 'desc' | 'code'>)
       return item;
     }
   });
-  const pipelineFlowData = {
-    display_name,
-    appID,
-    name,
-    spec,
-    config,
-    variable: _variable,
-  };
+  const pipelineFlowData = getPipelineWorkFlowParams(flowData);
+  pipelineFlowData.variable = _variable;
   return httpClient('/api/v1/pipeline/node', pipelineFlowData).then((res: any)=>{
-    window.PipelineFlowData.variable = _variable;
     return res;
   });
 }
 
-export function deleteFlowVariable(id: string): Promise<void> {
-  let variable = window.PipelineFlowData?.variable || [];
-  const { displayName: display_name, appID, name, spec, config } = window.PipelineFlowData || {};
+export function deleteFlowVariable(id: string, variableList: any, flowData: any): Promise<void> {
+  let variable = variableList;
   variable = variable.filter((item: any)=>item.id !== id);
-  const pipelineFlowData = {
-    display_name,
-    appID,
-    name,
-    spec,
-    config,
-    variable,
-  };
+  const pipelineFlowData = getPipelineWorkFlowParams(flowData);
+  pipelineFlowData.variable = variable;
   return httpClient('/api/v1/pipeline/node', pipelineFlowData).then((res: any)=>{
-    window.PipelineFlowData.variable = variable;
     return res;
   });
 }

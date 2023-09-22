@@ -11,10 +11,10 @@ import { deleteFlowVariable, getVariableList } from '@newFlow/api';
 import EditVariableModal from './edit-variable-modal';
 
 import { useParams } from 'react-router-dom';
+import { buildWorkFlowSaveData } from '../editor/store';
 
 export default function Variables(): JSX.Element {
-  // const { flowID: flowId } = useContext(flowContext);
-  const { flowID: flowId } = useParams<{ flowID: string; type: string; appID: string }>();
+  const { flowID: flowId, appID } = useParams<{ flowID: string; type: string; appID: string }>();
 
   const initVariableInfo: ProcessVariable = {
     flowId,
@@ -91,7 +91,8 @@ export default function Variables(): JSX.Element {
   }
 
   function handleDeleteSubmit(): void {
-    deleteFlowVariable(currentVariable.id).then((res) => {
+    const flowData = buildWorkFlowSaveData(appID);
+    deleteFlowVariable(currentVariable.id, data?.variable || [], flowData).then((res) => {
       toast.success('删除成功');
       refetch();
       handleCloseModal();
@@ -182,6 +183,7 @@ export default function Variables(): JSX.Element {
       {(currentAction === 'edit' || currentAction === 'add') && (
         <EditVariableModal
           variable={currentVariable}
+          variableList = {data?.variable || []}
           closeModal={handleCloseModal}
           onAdded={handleAddSubmit}
         />

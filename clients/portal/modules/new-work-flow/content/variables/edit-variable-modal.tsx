@@ -10,6 +10,8 @@ import { saveFlowVariable } from '@newFlow/api';
 import { FLOW_VARIABLE_FIELD_TYPES } from '../editor/utils/constants';
 import DatePicker from '@c/form-builder/registry/date-picker/date-picker';
 import { uuid } from '@lib/utils';
+import { buildWorkFlowSaveData } from '../editor/store';
+import { useParams } from 'react-router-dom';
 
 const FIELD_FORM_SCHEMA = {
   type: 'object',
@@ -68,6 +70,7 @@ const FIELD_FORM_SCHEMA = {
 
 interface Props {
   variable: ProcessVariable;
+  variableList: any;
   closeModal(): void;
   onAdded(): void;
 }
@@ -75,7 +78,9 @@ interface Props {
 const actions = createFormActions();
 const { onFieldValueChange$ } = FormEffectHooks;
 
-export default function EditVariableModal({ variable, closeModal, onAdded }: Props): JSX.Element {
+export default function EditVariableModal({ variable, variableList, closeModal, onAdded }: Props): JSX.Element {
+  const { appID } = useParams<{ flowID: string; type: string; appID: string }>();
+
   const titleText = `${variable.id ? '修改' : '添加'}`;
   const staffMutation = useMutation(
     (values: Omit<ProcessVariable, 'desc' | 'code'>) => {
@@ -89,6 +94,7 @@ export default function EditVariableModal({ variable, closeModal, onAdded }: Pro
         desc,
       } = values as any;
       const _id = uuid();
+      const flowData = buildWorkFlowSaveData(appID);
       return saveFlowVariable({
         id: id || _id,
         code: code || `flowVar_${_id}`,
@@ -97,7 +103,7 @@ export default function EditVariableModal({ variable, closeModal, onAdded }: Pro
         fieldType,
         defaultValue,
         desc,
-      } as any);
+      } as any, variableList, flowData);
     },
     {
       onSuccess: () => {
@@ -114,7 +120,7 @@ export default function EditVariableModal({ variable, closeModal, onAdded }: Pro
     initialValues: variable,
     onSubmit: (formData) => {
       staffMutation.mutate({
-        flowId: window?.Pipeline_StoreValue?.id,
+        flowId: variable.flowId,
         id: variable?.id || '',
         type: 'CUSTOM',
         ...formData,

@@ -20,17 +20,6 @@ const ProcessBranch = 'process-branch';
 const ProcessSource = 'process-source';
 const ProcessTarget = 'process-target';
 
-// window.PipelineFlowData = {
-//   variable,
-//   display_name,
-//   displayName,
-// };
-// window.PipelineWorkflow = {
-//   triggerWay,
-//   whenAlterFields,
-//   name,
-// };
-
 // 获取 tableID
 const getTableID = (data: Array<any>)=>{
   return data?.filter((item: any)=>item?.type === 'formData')?.[0]?.data?.businessData?.form?.value;

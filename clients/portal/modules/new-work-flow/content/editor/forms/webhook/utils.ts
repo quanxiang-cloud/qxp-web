@@ -13,7 +13,7 @@ function getElementParents(element: Node<Data>): string[] {
 }
 
 export function getWebhookPathTreeValue(
-  tableSchema: SchemaFieldItem[], variables: ProcessVariable[] = [],
+  tableSchema: SchemaFieldItem[], variables: ProcessVariable[] | any = [],
 ): POLY_API.PolyNodeInput[] {
   const { nodeIdForDrawerForm, elements } = store.getValue();
   const currentElement = getNodeElementById(nodeIdForDrawerForm);
@@ -116,10 +116,9 @@ export function getWebhookPathTreeValue(
     return false;
   }).filter((source): source is POLY_API.PolyNodeInput => !!source);
 
-  const varialbe = window?.PipelineFlowData?.variable || [];
   return sourceFromElements.concat({
     type: 'object',
-    data: varialbe?.map((variable: ProcessVariable): POLY_API.PolyNodeInput => {
+    data: (variables?.variable || [])?.map((variable: ProcessVariable): POLY_API.PolyNodeInput => {
       return {
         type: variable.type as POLY_API.API_FIELD_TYPE,
         in: '',

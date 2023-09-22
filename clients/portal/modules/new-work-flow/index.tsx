@@ -46,9 +46,6 @@ export default function Detail(): JSX.Element {
   }, []);
 
   const isEmptyWorkFlow = !id;
-  if (!flowID && window?.PipelineWorkflow?.name) {
-    window.PipelineWorkflow.name = '';
-  }
   const saver = useSaver(appID, flowID);
   const { data, isLoading, isError, refetch } = useQuery(['GET_WORK_FLOW_INFO', flowID], getPipelineWorkFlowInfo, {
     enabled: !!flowID,
