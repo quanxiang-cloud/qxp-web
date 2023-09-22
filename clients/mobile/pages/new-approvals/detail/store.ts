@@ -17,7 +17,6 @@ const formatPipelineDetail = async (processInstanceId: any, { type, taskId, task
   const nodeData = data?.find((item: any)=>{
     return item?.id === taskId;
   });
-  console.log('nodeData===', nodeData);
   const flowID = nodeData?.flowID || nodeData?.flowIDd;
   const pipelineInfo: any = await getPipelineInfo(flowID);
   if (pipelineInfo) {

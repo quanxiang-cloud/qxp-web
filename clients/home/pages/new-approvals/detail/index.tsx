@@ -156,6 +156,11 @@ function ApprovalDetail(): JSX.Element {
             },
           ],
         };
+
+        if (type === 'APPLY_PAGE' && isFinish) {
+          btnObj.hasCancelBtn = false;
+          btnObj.hasUrgeBtn = false;
+        }
         const _data: any = {
           appId: appID,
           canMsg: config?.canMsg === 1,
@@ -172,6 +177,7 @@ function ApprovalDetail(): JSX.Element {
           operatorPermission: !isFinish && (taskType === 'fillIn' ? fillInOperatorPermission : operatorPermission),
           taskType: isFinish ? 'Finish' : 'REVIEW',
           taskName: '',
+          ...btnObj,
         };
         _data.taskDetailModels = [taskDetailModelsObj];
         setData(_data);
