@@ -32,11 +32,11 @@ export default function NodeComponentWrapper(props: Props): JSX.Element {
 
   usePositionChange({ xPos, yPos, id }, isDragging);
 
-  const { nodeData } = data;
+  const { nodeData, type } = data;
 
   function onMouseUp(): void {
     if (+new Date - lastTime.current < 200) {
-      switcher(id);
+      type !== 'processBranchTarget' && switcher(id);
     }
   }
 
