@@ -79,7 +79,8 @@ export function getVariableList(flowId: string) {
 export function saveFlowVariable(values: Omit<ProcessVariable, 'desc' | 'code'>): Promise<void> {
   const variable = window.PipelineFlowData?.variable || [];
   const { displayName: display_name, appID, name, spec, config } = window.PipelineFlowData || {};
-  variable.push(values);
+  const hasValue = variable?.find((item: any)=>item?.id === values?.id);
+  !hasValue && variable.push(values);
   const _variable = variable?.map((item: any)=>{
     if (item.id === values.id) {
       return values;
@@ -96,10 +97,9 @@ export function saveFlowVariable(values: Omit<ProcessVariable, 'desc' | 'code'>)
     variable: _variable,
   };
   return httpClient('/api/v1/pipeline/node', pipelineFlowData).then((res: any)=>{
-    window.PipelineFlowData.variable = variable;
+    window.PipelineFlowData.variable = _variable;
     return res;
   });
-  // return httpClient('/api/v1/flow/saveFlowVariable', values);
 }
 
 export function deleteFlowVariable(id: string): Promise<void> {
@@ -118,7 +118,6 @@ export function deleteFlowVariable(id: string): Promise<void> {
     window.PipelineFlowData.variable = variable;
     return res;
   });
-  // return httpClient(`/api/v1/flow/deleteFlowVariable/${id}`);
 }
 
 // 删除流程

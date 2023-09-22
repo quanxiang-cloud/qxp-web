@@ -17,7 +17,6 @@ export default function usePositionChange({ xPos, yPos, id }: Props, isDragging:
 
   useEffect(() => {
     if (previousDragging && !isDragging) {
-      console.log('saveWorkFlow previousDragging');
       saveWorkFlow();
     }
   }, [isDragging]);

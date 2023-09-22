@@ -20,6 +20,17 @@ const ProcessBranch = 'process-branch';
 const ProcessSource = 'process-source';
 const ProcessTarget = 'process-target';
 
+// window.PipelineFlowData = {
+//   variable,
+//   display_name,
+//   displayName,
+// };
+// window.PipelineWorkflow = {
+//   triggerWay,
+//   whenAlterFields,
+//   name,
+// };
+
 // 获取 tableID
 const getTableID = (data: Array<any>)=>{
   return data?.filter((item: any)=>item?.type === 'formData')?.[0]?.data?.businessData?.form?.value;
@@ -30,6 +41,35 @@ const getNode = (data: any, id: string) => {
   return data?.shapes?.filter((item: any)=>{
     return item?.id === id;
   })?.[0];
+};
+
+// 获取用户信息
+const getUserInfo = async (item: any) => {
+  const email = item.replace('email.', '');
+  const params = {
+    email: email || '',
+    page: 1,
+    size: 999,
+  };
+  const queryGraphQL = buildGraphQLQuery(params);
+  const userGraphQL = '{users{id,phone,useStatus,email,name,useStatus,departments{id,name},leaders{id,name}},total}';
+  return searchUser({ query: `{${queryGraphQL}${userGraphQL}}` }).then((res: any) => {
+    const user = res?.users?.find((item: any)=>{
+      return item?.useStatus === 1;
+    }) || {};
+    const dep = user?.departments?.[0] || {};
+    return {
+      type: 1,
+      ownerID: user.id,
+      ownerName: user.name,
+      phone: user.phone,
+      email: user.email,
+      departmentName: dep.name,
+      createdAt: -1,
+      id: user.id,
+      departmentID: dep.id,
+    };
+  });
 };
 
 // 获取 pepeline nodes
@@ -284,25 +324,11 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
       if (typeof rule === 'string') {
         const flowVars: any = window.PipelineFlowData?.variable || [];
         for (let k1 = 0; k1 < flowVars?.length; k1++) {
-          // if (flowVars?.[k1].name === 'SYS_AUDIT_BOOL') {
-          //   pn.spec.params.push({
-          //     key: 'SYS_AUDIT_BOOL',
-          //     value: flowVars?.[k1].code,
-          //   });
-          // }
           pn.spec.params.push({
             key: flowVars?.[k1].code,
             value: `$(communal.${flowVars?.[k1].code})`,
           });
         }
-        // rule.split(' ').forEach((expr) => {
-        //   if (expr.indexOf('$flowVar_') > -1) {
-        //     pn.spec.params.push({
-        //       key: expr.slice(1),
-        //       value: `$(communal.${expr.slice(1)})`,
-        //     });
-        //   }
-        // });
       }
 
       if (node?.data?.businessData?.ignore) {
@@ -1114,64 +1140,57 @@ const generageBpmnNode = async (node: any, params: any)=>{
   return bpmnNode;
 };
 
-const getUserInfo = async (item: any) => {
-  const email = item.replace('email.', '');
-  const params = {
-    email: email || '',
-    page: 1,
-    size: 999,
-  };
-  const queryGraphQL = buildGraphQLQuery(params);
-  const userGraphQL = '{users{id,phone,useStatus,email,name,useStatus,departments{id,name},leaders{id,name}},total}';
-  return searchUser({ query: `{${queryGraphQL}${userGraphQL}}` }).then((res: any) => {
-    const user = res?.users?.find((item: any)=>{
-      return item?.useStatus === 1;
-    }) || {};
-    const dep = user?.departments?.[0] || {};
-    return {
-      type: 1,
-      ownerID: user.id,
-      ownerName: user.name,
-      phone: user.phone,
-      email: user.email,
-      departmentName: dep.name,
-      createdAt: -1,
-      id: user.id,
-      departmentID: dep.id,
-    };
-  });
-};
-
-// trigger 获取触发器
-export const getTriggersData = (flowData: any)=>{
-  const bpmn = JSON.parse(flowData?.bpmnText || '');
-  const formData = bpmn?.shapes?.filter((item: any)=>item?.type === 'formData')?.[0]?.data;
-  const { triggerWay } = formData?.businessData || {};
-  const pipelineName = window?.PipelineWorkflow?.name;
+// 触发器 查询 保存 删除
+const handleTrigger = (appID: any, tableID: any, pipelineName: any, del = true)=>{
+  if (!pipelineName) {
+    return;
+  }
+  const triggerType = ['CREATE', 'UPDATE'];
   const mapType: any = {
-    whenAdd: 'CREATE',
-    whenAlter: 'UPDATE',
+    CREATE: 'whenAdd',
+    UPDATE: 'whenAlter',
   };
-  const triggerList = triggerWay?.map((item: string)=>{
-    const type = mapType?.[item];
-    return {
-      'name': `${pipelineName}_${type}`,
-      'pipelineName': pipelineName,
-      'data': {
-        'app_id': flowData?.appId,
-        'table_id': formData?.businessData?.form?.value,
-        'type': type,
-        filters: formData?.businessData?.whenAlterFields || [],
-      },
-    };
+  const { name, troggerWayList } = window.PipelineWorkflow || {};
+  triggerType?.forEach((item: any)=>{
+    name && getTriggerInfo(`${name}_${item}`)
+      .then((res: any)=>{
+        if (!res && troggerWayList?.includes(mapType?.[item])) {
+          createTrigger({
+            'name': `${name}_${item}`,
+            'pipelineName': name,
+            'data': {
+              'app_id': appID,
+              'table_id': tableID,
+              'type': item,
+              filters: item === 'UPDATE' ? window?.PipelineWorkflow?.whenAlterFields : [],
+            },
+          });
+        } else if (item === 'UPDATE' && res && res.filters !== window?.PipelineWorkflow?.whenAlterFields) {
+          deleteTrigger(`${name}_${item}`).then((res)=>{
+            createTrigger({
+              'name': `${name}_${item}`,
+              'pipelineName': name,
+              'data': {
+                'app_id': appID,
+                'table_id': tableID,
+                'type': item,
+                filters: item === 'UPDATE' ? window?.PipelineWorkflow?.whenAlterFields : [],
+              },
+            });
+          });
+        } else if (res && !troggerWayList?.includes(mapType?.[item])) {
+          deleteTrigger(`${name}_${item}`);
+        }
+      });
   });
-  return pipelineName ? triggerList : null;
 };
-
-// get 新工作流params
+// 获取 新工作流params
 export const getPipelineWorkFlowParams = (flowData: any)=>{
   const { appId: appID, id: flowId, name: display_name, pipelineName,
     canCancel, canCancelNodes, canCancelType, canMsg, canUrge, canViewStatusMsg, cron, instanceName, keyFields, triggerMode, status } = flowData;
+  if (!flowId) {
+    window.PipelineFlowData = {};
+  }
   const bpmn = JSON.parse(flowData?.bpmnText || '');
   const tableID = getTableID(bpmn?.shapes);
   const formData = bpmn?.shapes?.filter((item: any)=>item?.type === 'formData')?.[0]?.data;
@@ -1230,9 +1249,6 @@ export const getPipelineWorkFlowParams = (flowData: any)=>{
     canViewStatusMsg,
     keyFields,
     instanceName,
-    // cron,
-    // triggerMode,
-    // status,
   };
   const res = {
     display_name,
@@ -1314,122 +1330,29 @@ export const pipelineTobpmnFlow = async (pipelineObj: any)=>{
   return data;
 };
 
-const handleTrigger = (appID: any, tableID: any, pipelineName: any, del = true)=>{
-  if (!pipelineName) {
-    return;
-  }
-  const triggerType = ['CREATE', 'UPDATE'];
+// trigger 获取触发器
+export const getTriggersData = (flowData: any)=>{
+  const bpmn = JSON.parse(flowData?.bpmnText || '');
+  const formData = bpmn?.shapes?.filter((item: any)=>item?.type === 'formData')?.[0]?.data;
+  const { triggerWay } = formData?.businessData || {};
+  const pipelineName = window?.PipelineWorkflow?.name;
   const mapType: any = {
-    CREATE: 'whenAdd',
-    UPDATE: 'whenAlter',
+    whenAdd: 'CREATE',
+    whenAlter: 'UPDATE',
   };
-  const { name, troggerWayList } = window.PipelineWorkflow || {};
-  triggerType?.forEach((item: any)=>{
-    name && getTriggerInfo(`${name}_${item}`)
-      .then((res: any)=>{
-        if (!res && troggerWayList?.includes(mapType?.[item])) {
-          createTrigger({
-            'name': `${name}_${item}`,
-            'pipelineName': name,
-            'data': {
-              'app_id': appID,
-              'table_id': tableID,
-              'type': item,
-              filters: item === 'UPDATE' ? window?.PipelineWorkflow?.whenAlterFields : [],
-            },
-          });
-        } else if (item === 'UPDATE' && res && res.filters !== window?.PipelineWorkflow?.whenAlterFields) {
-          deleteTrigger(`${name}_${item}`).then((res)=>{
-            createTrigger({
-              'name': `${name}_${item}`,
-              'pipelineName': name,
-              'data': {
-                'app_id': appID,
-                'table_id': tableID,
-                'type': item,
-                filters: item === 'UPDATE' ? window?.PipelineWorkflow?.whenAlterFields : [],
-              },
-            });
-          });
-        } else if (res && !troggerWayList?.includes(mapType?.[item])) {
-          deleteTrigger(`${name}_${item}`);
-        }
-      });
+  const triggerList = triggerWay?.map((item: string)=>{
+    const type = mapType?.[item];
+    return {
+      'name': `${pipelineName}_${type}`,
+      'pipelineName': pipelineName,
+      'data': {
+        'app_id': flowData?.appId,
+        'table_id': formData?.businessData?.form?.value,
+        'type': type,
+        filters: formData?.businessData?.whenAlterFields || [],
+      },
+    };
   });
+  return pipelineName ? triggerList : null;
 };
 
-const trimASCII9193 = (expr: any) => {
-  if (expr.includes('[')) {
-    expr = expr.substring(0, expr.indexOf('[')) + expr.substring(expr.indexOf('[') + 1);
-  }
-  if (expr.includes(']')) {
-    expr = expr.substring(0, expr.indexOf(']')) + expr.substring(expr.indexOf(']') + 1);
-  }
-  if (expr.includes('[') || expr.includes(']')) {
-    expr = trimASCII9193(expr);
-  }
-  return expr;
-};
-
-// const addVariables = (flowVars: any, pn: any)=>{
-// let recallFlowVarBool = false;
-
-// for (let k1 = 0; k1 < flowVars?.length; k1++) {
-//   if (flowVars.List[k1].Name === 'RECALL_' + node.ID) {
-//     recallFlowVarBool = true;
-//     pn.Spec.Params.push({
-//       Key: flowVars.List[k1].Name,
-//       Value: flowVars.List[k1].Code,
-//     });
-
-//     pn.Spec.Params.push({
-//       Key: flowVars.List[k1].Code,
-//       Value: `$(communal.${flowVars.List[k1].Code})`,
-//     });
-//   }
-// }
-
-// if (!recallFlowVarBool) {
-//   const varResp = await s.SaveFlowSysVariable(ctx, {
-//     FlowID: flowID,
-//     Name: 'RECALL_' + node.ID,
-//     Type: 'SYSTEM',
-//     FieldType: 'boolean',
-//     DefaultValue: 'false',
-//     Desc: '系统初始化变量，不可修改',
-//     UserID: flowCreatedBy,
-//   });
-
-//   if (varResp.error) {
-//     return new Error('save flow create sys recall var');
-//   }
-
-//   pn.Spec.Params.push({
-//     Key: varResp.Name,
-//     Value: varResp.Code,
-//   });
-
-//   pn.Spec.Params.push({
-//     Key: varResp.Code,
-//     Value: `$(communal.${varResp.Code})`,
-//   });
-// }
-
-// delete varsMap['RECALL_' + node.ID];
-
-// for (let k1 = 0; k1 < flowVars.List.length; k1++) {
-//   if (flowVars.List[k1].Name === 'SYS_AUDIT_BOOL') {
-//     pn.Spec.Params.push({
-//       Key: 'SYS_AUDIT_BOOL',
-//       Value: flowVars.List[k1].Code,
-//     });
-
-//     pn.Spec.Params.push({
-//       Key: flowVars.List[k1].Code,
-//       Value: `$(communal.${flowVars.List[k1].Code})`,
-//     });
-
-//     break;
-//   }
-// }
-// };

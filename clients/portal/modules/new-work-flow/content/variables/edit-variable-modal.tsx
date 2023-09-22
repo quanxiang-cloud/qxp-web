@@ -114,7 +114,6 @@ export default function EditVariableModal({ variable, closeModal, onAdded }: Pro
     initialValues: variable,
     onSubmit: (formData) => {
       staffMutation.mutate({
-        // flowId: variable.flowId,
         flowId: window?.Pipeline_StoreValue?.id,
         id: variable?.id || '',
         type: 'CUSTOM',

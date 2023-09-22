@@ -63,7 +63,7 @@ export default function AssignmentConfig({ defaultValue, onSubmit, onCancel }: P
     }
 
     setFieldState('assignmentRules.*.variableName', (state) => {
-      state.props.enum = variables.map(({ code, name }) => ({ label: name, value: code }));
+      state.props.enum = variables?.map(({ code, name }) => ({ label: name, value: code }));
     });
   }, [variables]);
 
