@@ -74,12 +74,17 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
       continue;
     }
     nodeID[node?.id] = {};
-
     const pn: any = {
       name: node?.id,
       Metadata: {
         Annotations: {
           'web.pipelineNode/name': node?.data?.nodeData?.name,
+          'web.pipelineNode/newWorkflow': 'true',
+          'web.pipelineNode/branchTargetElementID': node?.data?.nodeData?.branchTargetElementID,
+          'web.pipelineNode/parentID': JSON.stringify(node?.data?.nodeData?.parentID),
+          'web.pipelineNode/childrenID': JSON.stringify(node?.data?.nodeData?.childrenID),
+          'web.pipelineNode/branchID': node?.data?.nodeData?.branchID,
+          'web.pipelineNode/parentBranchTargetElementID': node?.data?.nodeData?.parentBranchTargetElementID,
         },
       },
       spec: {
@@ -356,8 +361,6 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
         value: String(!!node?.data?.businessData?.ignore),
       });
 
-      pn.Metadata.Annotations['web.pipelineNode/branchTargetElementID'] = node?.data?.nodeData?.branchTargetElementID;
-
       // pn.spec.params.push({
       //   key: 'branchTargetElementID',
       //   value: node?.data?.nodeData?.branchTargetElementID,
@@ -519,13 +522,15 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
     }
 
     if (node?.data?.nodeData?.branchID) {
-      pn.spec.when = [
-        {
-          input: `$(task.${node?.data?.nodeData?.branchID}.output.ok)`,
-          operator: 'eq',
-          values: ['true'],
-        },
-      ];
+      if (nodesList?.find((item: any)=>item?.id === node?.data?.nodeData?.branchID)) {
+        pn.spec.when = [
+          {
+            input: `$(task.${node?.data?.nodeData?.branchID}.output.ok)`,
+            operator: 'eq',
+            values: ['true'],
+          },
+        ];
+      }
     }
 
     if (pn.spec.type) {
@@ -596,8 +601,6 @@ const getMainNodes = (pipelineNode: any)=>{
     if (curType === ProcessBranch && preType === ProcessBranch && !pipelineNode[i]?.spec?.when?.length) {
       const curBranchTargetElementID = pipelineNode[i]?.Metadata.Annotations?.['web.pipelineNode/branchTargetElementID'];
       const preBranchTargetElementID = pipelineNode[i - 1]?.Metadata.Annotations?.['web.pipelineNode/branchTargetElementID'];
-      // const curBranchTargetElementID = pipelineNode[i]?.spec?.params?.find(({ key }: any)=>key === 'branchTargetElementID')?.value;
-      // const preBranchTargetElementID = pipelineNode[i - 1]?.spec?.params?.find(({ key }: any)=>key === 'branchTargetElementID')?.value;
       if (curBranchTargetElementID && preBranchTargetElementID &&
         curBranchTargetElementID !== preBranchTargetElementID
       ) {
@@ -799,6 +802,16 @@ const addProcessBranchNodesIDS = (newMainNodesList: any, newBranchNodesObj: any)
                 return node.name === key;
               });
             });
+            if (!branchPipelineParentNode && newBranchNodesObj[key]) {
+              for (const k in newBranchNodesObj) {
+                newBranchNodesObj?.[k]?.[0].find((node: any)=>{
+                  if (node?.name === key) {
+                    branchPipelineParentNode = node;
+                  }
+                  return node?.name === key;
+                });
+              }
+            }
             node.childrenID = [branchPipelineParentNode?.branchTargetElementID];
           } else {
             node.childrenID = [branchPipeline[index + 1]?.[0]?.name];
@@ -876,7 +889,6 @@ const addProcessBranchNodesIDS = (newMainNodesList: any, newBranchNodesObj: any)
       });
     });
   }
-
   // 给主干下合流添加parentID
   const mainBranchTargetObj: any = {};
   newMainNodesList?.forEach((item: any)=>{
