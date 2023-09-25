@@ -92,7 +92,7 @@ class ApprovalsStore {
       data = data.filter((itm: { isDeleted: any; }) => !itm.isDeleted);
 
       if (this.type === 'CC_PAGE') {
-        this.readAllEnabled = data.find((itm: { handled: string; }) => itm.handled === 'ACTIVE') !== undefined;
+        this.readAllEnabled = data?.find((itm: { handled: string; }) => itm.handled === 'ACTIVE') !== undefined;
       }
       if (pageKey < 2) {
         this.list = data;
