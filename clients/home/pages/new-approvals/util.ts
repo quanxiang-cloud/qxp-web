@@ -301,6 +301,7 @@ export const getAllPipelineProcess = async (approvalProcess: any, fillInProcess:
 
     const getFormatData = (items: any, type: any, operationRecordsObj: any)=>{
       const item = items?.[0];
+      const nodeInfo = JSON.parse(operationRecordsObj?.[item?.nodeDefKey]?.[0]?.nodeInfo || null);
       const operationRecords = operationRecordsObj?.[item?.nodeDefKey]?.map((item: any)=>{
         const opCreatorId = userInfo?.find((user: any)=>user?.id === item?.userID)?.id;
         const opCreatorName = userInfo?.find((user: any)=>user?.id === item?.userID)?.name;
@@ -318,11 +319,13 @@ export const getAllPipelineProcess = async (approvalProcess: any, fillInProcess:
       });
       const _result = items?.find((itm: any)=>itm?.result)?.result;
       const _modifyTime = items?.find((itm: any)=>itm?.updatedAt)?.updatedAt;
+      const taskName = nodeInfo?.data?.nodeData?.name;
       return {
         ...item,
         flowName,
         creatorName: userInfo?.find((user: any)=>user?.id === item?.createdBy)?.name,
-        taskName: type === 'approval' ? '审批' : '填写',
+        // taskName: type === 'approval' ? '审批' : '填写',
+        taskName: taskName || (type === 'approval' ? '审批' : '填写'),
         taskType: type === 'approval' ? mapTaskType?.[item?.examineType] : 'FILL',
         operationRecords,
         status: mapStatus?.[_result] || 'REVIEW',
