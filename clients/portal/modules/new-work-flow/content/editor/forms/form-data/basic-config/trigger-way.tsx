@@ -27,7 +27,7 @@ export default forwardRef(function TriggerWay(
     return (e: ChangeEvent<HTMLInputElement>) => {
       const { checked } = e.target;
       let newTriggerWay = triggerWay;
-      if (checked && !triggerWay.includes(name)) {
+      if (checked && !triggerWay?.includes(name)) {
         newTriggerWay = [...triggerWay, name];
       }
       if (!checked) {
@@ -53,11 +53,11 @@ export default forwardRef(function TriggerWay(
           type="checkbox"
           value="whenAdd"
           onChange={onTypeChange('whenAdd')}
-          checked={triggerWay.includes('whenAdd')}
+          checked={triggerWay?.includes('whenAdd')}
         />
           新增数据时
       </label>
-      {triggerWay.includes('whenAdd') && (
+      {triggerWay?.includes('whenAdd') && (
         <span className="pl-22 mb-8">新增工作表时，触发工作流</span>
       )}
       {!!formFieldOptions.length && (
@@ -72,11 +72,11 @@ export default forwardRef(function TriggerWay(
               type="checkbox"
               value="whenAlter"
               onChange={onTypeChange('whenAlter')}
-              checked={triggerWay.includes('whenAlter')}
+              checked={triggerWay?.includes('whenAlter')}
             />
           修改数据时
           </label>
-          {triggerWay.includes('whenAlter') && (
+          {triggerWay?.includes('whenAlter') && (
             <>
               <Select<string>
                 placeholder="选择工作表中的字段"

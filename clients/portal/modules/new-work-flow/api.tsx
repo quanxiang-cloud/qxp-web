@@ -6,7 +6,7 @@ import { QueryFunctionContext } from 'react-query';
 
 import httpClient from '@lib/http-client';
 import { WorkFlowData } from '@newFlow/content/editor/type';
-import { getPipelineWorkFlowParams } from './util';
+import { getPipelineWorkFlowParams, saveTrigger } from './util';
 
 export function getWorkFlowInfo({ queryKey }: QueryFunctionContext): Promise<WorkFlowData> {
   return httpClient<WorkFlowData>(`/api/v1/flow/flowInfo/${queryKey[1] as string}`);
@@ -37,7 +37,10 @@ export type SaveWorkFlowParamsType = {
 // 创建/修改流程
 export function saveWorkFlow(flowData: SaveWorkFlowParamsType): Promise<WorkFlowData> {
   const pipelineFlowData = getPipelineWorkFlowParams(flowData);
-  return httpClient<WorkFlowData>('/api/v1/pipeline/node', pipelineFlowData);
+  return httpClient<WorkFlowData>('/api/v1/pipeline/node', pipelineFlowData).then((res)=>{
+    saveTrigger(flowData, res);
+    return res;
+  });
 }
 
 export function toggleWorkFlow(data: any): Promise<unknown> {

@@ -1130,7 +1130,7 @@ const generageBpmnNode = async (node: any, params: any)=>{
 };
 
 // 触发器 查询 保存 删除
-const handleTrigger = (appID: any, tableID: any, pipelineName: any, del = true)=>{
+export const handleTrigger = (appID: any, tableID: any, pipelineName: any)=>{
   if (!pipelineName) {
     return;
   }
@@ -1142,6 +1142,55 @@ const handleTrigger = (appID: any, tableID: any, pipelineName: any, del = true)=
   const { name, troggerWayList } = window.PipelineWorkflow || {};
   triggerType?.forEach((item: any)=>{
     name && getTriggerInfo(`${name}_${item}`)
+      .then((res: any)=>{
+        if (!res && troggerWayList?.includes(mapType?.[item])) {
+          createTrigger({
+            'name': `${name}_${item}`,
+            'pipelineName': name,
+            'data': {
+              'app_id': appID,
+              'table_id': tableID,
+              'type': item,
+              filters: item === 'UPDATE' ? window?.PipelineWorkflow?.whenAlterFields : [],
+            },
+          });
+        } else if (item === 'UPDATE' && res && res.filters !== window?.PipelineWorkflow?.whenAlterFields) {
+          deleteTrigger(`${name}_${item}`).then((res)=>{
+            createTrigger({
+              'name': `${name}_${item}`,
+              'pipelineName': name,
+              'data': {
+                'app_id': appID,
+                'table_id': tableID,
+                'type': item,
+                filters: item === 'UPDATE' ? window?.PipelineWorkflow?.whenAlterFields : [],
+              },
+            });
+          });
+        } else if (res && !troggerWayList?.includes(mapType?.[item])) {
+          deleteTrigger(`${name}_${item}`);
+        }
+      });
+  });
+};
+
+export const saveTrigger = (flowData: any, res: any)=>{
+  const { name } = res;
+  if (!name) {
+    return;
+  }
+  const { appId: appID } = flowData;
+  const bpmn = JSON.parse(flowData?.bpmnText || '');
+  const formData = bpmn?.shapes?.filter((item: any)=>item?.type === 'formData')?.[0]?.data;
+  const tableID = formData?.businessData?.form?.value;
+  const troggerWayList = formData?.businessData?.triggerWay || [];
+  const triggerType = ['CREATE', 'UPDATE'];
+  const mapType: any = {
+    CREATE: 'whenAdd',
+    UPDATE: 'whenAlter',
+  };
+  triggerType?.forEach((item: any)=>{
+    getTriggerInfo(`${name}_${item}`)
       .then((res: any)=>{
         if (!res && troggerWayList?.includes(mapType?.[item])) {
           createTrigger({
@@ -1255,7 +1304,7 @@ export const getPipelineWorkFlowParams = (flowData: any)=>{
 
   window.PipelineFlowData = res;
   // 查询 保存 删除 trigger
-  handleTrigger(appID, tableID, pipelineName);
+  // handleTrigger(appID, tableID, pipelineName);
   return res;
 };
 
@@ -1314,7 +1363,7 @@ export const pipelineTobpmnFlow = async (pipelineObj: any)=>{
   };
 
   // 查询 保存 删除 trigger
-  handleTrigger(appID, tableID, pipelineObj?.name, false);
+  // handleTrigger(appID, tableID, pipelineObj?.name);
 
   return data;
 };

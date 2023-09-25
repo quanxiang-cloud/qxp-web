@@ -116,12 +116,12 @@ export const nodeLists = [{
   iconClassName: 'bg-teal-500',
   groupType: 'condition',
 }, {
-  text: '变更流程参数',
-  type: 'processVariableAssignment',
-  iconName: 'assignment',
-  iconClassName: 'bg-indigo-500',
-  groupType: 'manual',
-}, {
+//   text: '变更流程参数',
+//   type: 'processVariableAssignment',
+//   iconName: 'assignment',
+//   iconClassName: 'bg-indigo-500',
+//   groupType: 'manual',
+// }, {
   text: '数据新增',
   type: 'tableDataCreate',
   iconName: 'create_new_folder',
