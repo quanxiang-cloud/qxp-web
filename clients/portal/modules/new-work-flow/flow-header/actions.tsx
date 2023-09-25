@@ -65,6 +65,9 @@ export default function FlowHeaderActions(): JSX.Element {
       whenAdd: 'CREATE',
       whenAlter: 'UPDATE',
     };
+    if (!triggerWay?.length) {
+      toast.error('请在工作表触发中至少选择一种触发方式');
+    }
     triggerWay.forEach((item: any)=>{
       const type = mapType?.[item];
       if (status === 'DISABLE' ) { // 创建trigger
