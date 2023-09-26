@@ -74,7 +74,7 @@ export default function Detail(): JSX.Element {
       isFirstLoad.current = false;
       return;
     }
-    if (previousElementsLength !== elements?.length && !isEmptyWorkFlow) {
+    if (previousElementsLength !== elements?.length && !isEmptyWorkFlow && previousElementsLength !== 0) {
       saveWorkFlow();
     }
   }, [elements?.length, apiFetched]);
