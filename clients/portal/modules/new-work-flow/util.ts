@@ -1,3 +1,4 @@
+/* eslint-disable no-empty */
 /* eslint-disable no-param-reassign */
 /* eslint-disable quote-props */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
@@ -61,7 +62,7 @@ const getUserInfo = async (item: any) => {
   });
 };
 
-// 获取 pepeline nodes
+// 获取 pepeline nodes bpmn转换成pipeline
 const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
   const nodesList = data?.shapes || [];
   const firstNode = nodesList?.filter((item: any)=>item?.type === 'formData')?.[0];
@@ -312,6 +313,34 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
       pn.spec.params = [
         ...commonParams,
       ];
+      // if (nodes?.[index - 1]?.type === 'processBranch') {
+      //   // processBranchSource
+      //   const sourceNode = nodesList?.find((item: any)=>item?.id === node?.data?.nodeData?.parentID?.[0]);
+      //   const { branchTargetElementID, childrenID, parentID, branchID, parentBranchTargetElementID } = sourceNode?.data?.nodeData || {};
+      //   const nodeInfo: any = {
+      //     branchID,
+      //     parentID,
+      //     childrenID,
+      //     branchTargetElementID,
+      //     parentBranchTargetElementID,
+      //     name: sourceNode?.id,
+      //   };
+      //   pn.Metadata.Annotations['web.pipelineNode/processBranchSource'] = JSON.stringify(nodeInfo);
+      // }
+      // if (nodes?.[index + 1]?.type === 'processBranch') {
+      //   // processBranchTarget
+      //   const targetNode = nodesList?.find((item: any)=>item?.id === node?.data?.nodeData?.branchTargetElementID);
+      //   const { branchTargetElementID, childrenID, parentID, branchID, parentBranchTargetElementID } = targetNode?.data?.nodeData || {};
+      //   const nodeInfo: any = {
+      //     branchID,
+      //     parentID,
+      //     childrenID,
+      //     branchTargetElementID,
+      //     parentBranchTargetElementID,
+      //     name: targetNode?.id,
+      //   };
+      //   pn.Metadata.Annotations['web.pipelineNode/processBranchTarget'] = JSON.stringify(nodeInfo);
+      // }
 
       const rule = node?.data?.businessData?.rule;
 
@@ -541,7 +570,136 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
       nodes.push(getNode(data, childID));
     });
   }
+  // pipelineNode.forEach((node: any, index: any)=>{
+  //   if (node?.spec?.type === 'process-branch') {
+  //     if (pipelineNode?.[index - 1]?.spec?.type !== 'process-branch') {
+  //       // processBranchSource
+  //       const sourceNode = nodesList?.find((item: any)=>item?.id === JSON.parse(node?.Metadata?.Annotations?.['web.pipelineNode/parentID'] || null)?.[0]);
+  //       const { branchTargetElementID, childrenID = [], parentID = [], branchID, parentBranchTargetElementID } = sourceNode?.data?.nodeData || {};
+  //       const nodeInfo: any = {
+  //         branchID,
+  //         parentID,
+  //         childrenID,
+  //         branchTargetElementID,
+  //         parentBranchTargetElementID,
+  //         name: sourceNode?.id,
+  //       };
+  //       node.Metadata.Annotations['web.pipelineNode/processBranchSource'] = JSON.stringify(nodeInfo);
+  //     }
+  //     if (pipelineNode?.[index + 1]?.spec?.type !== 'process-branch' ) {
+  //       // processBranchTarget
+  //       const targetNode = nodesList?.find((item: any)=>item?.id === node?.Metadata?.Annotations?.['web.pipelineNode/branchTargetElementID']);
+  //       const { branchTargetElementID, childrenID, parentID, branchID, parentBranchTargetElementID } = targetNode?.data?.nodeData || {};
+  //       const nodeInfo: any = {
+  //         branchID,
+  //         parentID,
+  //         childrenID,
+  //         branchTargetElementID,
+  //         parentBranchTargetElementID,
+  //         name: targetNode?.id,
+  //       };
+  //       node.Metadata.Annotations['web.pipelineNode/processBranchTarget'] = JSON.stringify(nodeInfo);
+  //     }
+  //   }
+  // });
+
   return pipelineNode;
+};
+
+// 将新生成的pipeline nodes 转换成 bpmn的 nodes
+const pipelineNodesToBpmnNodes = async (pipelineNode: any, params: any)=>{
+  // 新工作流新数据
+  // const isNewWorkflowData = pipelineNode?.[0]?.Metadata?.Annotations?.['web.pipelineNode/newWorkflow'] === 'true';
+  // let newPepelineNodes: any = [];
+  // if (isNewWorkflowData) {
+  //   newPepelineNodes = getNewWorkflowNodes(pipelineNode); // 根据新工作流生成nodes
+  //   // getNewWorkflowNodes(pipelineNode);
+  // } else {
+  //   newPepelineNodes = getNewPipelineNodes(pipelineNode); // 兼容老工作留的数据
+  // }
+  const newPepelineNodes = getNewPipelineNodes(pipelineNode); // 兼容老工作留的数据
+
+  const bpmnNodes: any = [];
+
+  for (const item of newPepelineNodes) {
+    const result = await generageBpmnNode(item, params);
+    bpmnNodes.push(result);
+  }
+  return bpmnNodes;
+};
+
+// TODO: 根据新工作流生成nodes
+const getNewWorkflowNodes = (pipelineNode: any)=>{
+  const allNodeList: any = [];
+  // 根据pipelineNode添加分流 合流 节点 和 nodeData
+  pipelineNode?.forEach((item: any)=>{
+    const { Annotations } = item?.Metadata || {};
+    const processBranchSource = JSON.parse(Annotations?.['web.pipelineNode/processBranchSource'] || null);
+    const processBranchTarget = JSON.parse(Annotations?.['web.pipelineNode/processBranchTarget'] || null);
+    const childrenID = JSON.parse(Annotations?.['web.pipelineNode/childrenID'] || []);
+    const parentID = JSON.parse(Annotations?.['web.pipelineNode/parentID'] || []);
+    const branchID = Annotations?.['web.pipelineNode/branchID'];
+    const branchTargetElementID = Annotations?.['web.pipelineNode/branchTargetElementID'];
+    const parentBranchTargetElementID = Annotations?.['web.pipelineNode/parentBranchTargetElementID'];
+    if (processBranchSource) {
+      allNodeList.push({
+        name: processBranchSource?.name,
+        spec: {
+          type: ProcessSource,
+        },
+        branchID: processBranchSource?.branchID,
+        parentID: processBranchSource?.parentID,
+        childrenID: processBranchSource?.childrenID,
+        branchTargetElementID: processBranchSource?.branchTargetElementID,
+        parentBranchTargetElementID: processBranchSource?.parentBranchTargetElementID,
+      });
+    }
+    allNodeList.push({
+      ...item,
+      branchID,
+      parentID,
+      childrenID,
+      branchTargetElementID,
+      parentBranchTargetElementID,
+    });
+    if (processBranchTarget) {
+      allNodeList.push({
+        name: processBranchTarget?.name,
+        spec: {
+          type: ProcessTarget,
+        },
+        branchID: processBranchTarget?.branchID,
+        parentID: processBranchTarget?.parentID,
+        childrenID: processBranchTarget?.childrenID,
+        branchTargetElementID: processBranchTarget?.branchTargetElementID,
+        parentBranchTargetElementID: processBranchTarget?.parentBranchTargetElementID,
+      });
+    }
+  });
+
+  const formDataNode = {
+    name: allNodeList?.[0]?.parentID?.[0],
+    spec: {
+      type: 'form-data',
+      params: [],
+      output: [],
+      when: [],
+    },
+    parentID: [],
+    childrenID: [allNodeList?.[0]?.name],
+  };
+  const endNode = {
+    name: allNodeList?.[allNodeList?.length - 1]?.childrenID?.[0],
+    spec: {
+      type: 'end',
+      params: [],
+      output: [],
+      when: [],
+    },
+    parentID: [allNodeList?.[allNodeList?.length - 1]?.name],
+    childrenID: [],
+  };
+  return [formDataNode, ...allNodeList, endNode];
 };
 
 // 生成pipeline node
@@ -586,6 +744,7 @@ const getNewPipelineNodes = (pipelineNode: any)=>{
   newMainNodesList = addMainNodesIDs(newMainNodesList, newBranchNodesObj);
   //  给 分支 添加 parentId  childrenID
   const allNodeList = addProcessBranchNodesIDS(newMainNodesList, newBranchNodesObj);
+
   return allNodeList;
 };
 
@@ -804,11 +963,13 @@ const addProcessBranchNodesIDS = (newMainNodesList: any, newBranchNodesObj: any)
             });
             if (!branchPipelineParentNode && newBranchNodesObj[key]) {
               for (const k in newBranchNodesObj) {
-                newBranchNodesObj?.[k]?.[0].find((node: any)=>{
-                  if (node?.name === key) {
-                    branchPipelineParentNode = node;
-                  }
-                  return node?.name === key;
+                newBranchNodesObj?.[k]?.forEach((item: any)=>{
+                  item.find((node: any)=>{
+                    if (node?.name === key) {
+                      branchPipelineParentNode = node;
+                    }
+                    return node?.name === key;
+                  });
                 });
               }
             }
@@ -909,18 +1070,6 @@ const addProcessBranchNodesIDS = (newMainNodesList: any, newBranchNodesObj: any)
     }
   }));
   return allNodesList;
-};
-
-// 将新生成的pipeline nodes 转换成 bpmn的 nodes
-const pipelineNodesToBpmnNodes = async (pipelineNode: any, params: any)=>{
-  const newPepelineNodes = getNewPipelineNodes(pipelineNode);
-  const bpmnNodes: any = [];
-
-  for (const item of newPepelineNodes) {
-    const result = await generageBpmnNode(item, params);
-    bpmnNodes.push(result);
-  }
-  return bpmnNodes;
 };
 
 // 根据 type 生成对应的 bpmn node
@@ -1135,7 +1284,6 @@ const generageBpmnNode = async (node: any, params: any)=>{
       break;
     }
   } catch (error) {
-    console.log('BpmnNodeerror', error);
   }
 
   return bpmnNode;
