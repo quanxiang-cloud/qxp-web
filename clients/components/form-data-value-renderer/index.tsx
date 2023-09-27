@@ -9,6 +9,7 @@ import { FileList } from '@c/file-upload';
 import { QxpFileFormData } from '@c/form-builder/registry/file-upload/uploader';
 import { isEmpty, isNumber } from 'lodash';
 import { isMeanless } from '@lib/utils';
+import AssociatedTableValueRender from '@c/form-builder/registry/associated-table/associated-table-value-render';
 
 const ReadOnlySubTable = React.lazy(
   () => import('@c/form-builder/registry/sub-table/preview/read-only-sub-table'),
@@ -22,6 +23,7 @@ type Props = {
   value?: FormDataValue;
   className?: string;
   schema: ISchema;
+  rowData?: object;
 }
 
 function datetimeValueRenderer({ value, schema }: ValueRendererProps): string {
@@ -94,7 +96,7 @@ function stringListValue({ value }: ValueRendererProps): string {
   return value.join(', ');
 }
 
-export default function FormDataValueRenderer({ value, schema, className }: Props): JSX.Element {
+export default function FormDataValueRenderer({ value, schema, className, rowData }: Props): JSX.Element {
   if (!value && value !== 0) {
     return <></>;
   }
@@ -105,6 +107,8 @@ export default function FormDataValueRenderer({ value, schema, className }: Prop
     return (<AssociatedRecordsValueRender schema={schema} value={value} />);
   case 'associateddata':
     return (<AssociatedDataValueRender schema={schema} value={value as LabelValue} />);
+  case 'associatedtable':
+    return (<AssociatedTableValueRender schema={schema} value={value as LabelValue} rowData={rowData} />);
   case 'imageupload': {
     return (
       <div className="flex flex-wrap gap-4 w-full max-h-144 overflow-auto">

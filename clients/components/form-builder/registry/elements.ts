@@ -19,6 +19,8 @@ import LayoutGrid from './layout-grid';
 import LayoutCard from './layout-card';
 import LayoutTabs from './layout-tabs';
 import AssociatedData from './associated-data';
+import AssociatedTable from './associated-table';
+// import TableDataCreate from './table-data-create';
 
 const availableElements = [
   Input,
@@ -42,6 +44,8 @@ const availableElements = [
   LayoutCard,
   LayoutTabs,
   AssociatedData,
+  AssociatedTable,
+  // TableDataCreate,
 ];
 
 export type Elements = { [key: string]: FormBuilder.SourceElement<any> };

@@ -32,6 +32,7 @@ export const SHOW_FIELD = [
   'AssociatedData',
   'Serial',
   'Textarea',
+  'AssociatedTable',
 ];
 
 function addFixedParameters(
@@ -93,8 +94,7 @@ export function getPageDataSchema(
         if (data[id] === undefined || data[id] === null || data[id] === '') {
           return <span className='text-gray-300'>——</span>;
         }
-
-        return <FormDataValueRenderer value={data[id]} schema={fieldsMap[id]} />;
+        return <FormDataValueRenderer value={data[id]} schema={fieldsMap[id]} rowData={data}/>;
       },
     };
   });

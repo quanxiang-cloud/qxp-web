@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import React, { useState } from 'react';
 import { SchemaForm, setValidationLanguage, IForm, createFormActions, IFormValidateResult } from '@formily/antd';
 import { ConfigProvider } from 'antd';
@@ -6,7 +7,7 @@ import { parse, findVariables } from 'qxp-formula';
 import { omit } from 'ramda';
 
 import logger from '@lib/logger';
-import { schemaToMap } from '@lib/schema-convert';
+import schemaToFields, { schemaToMap } from '@lib/schema-convert';
 import treeUtil from '@lib/tree';
 
 import registry from './registry';
@@ -62,6 +63,16 @@ function FormRenderer({
     return fields;
   }, 'properties', [], schema);
 
+  function getAssociatedTableFields() {
+    const obj: any = {};
+    schemaToFields(schema)?.map((item: any)=>{
+      if (item?.componentName === 'associatedtable') {
+        obj[item.id] = [{}];
+      }
+    });
+    return obj;
+  }
+
   function handleSubmit(values: any): void {
     onValidate && onValidate(true);
     const validations = schema['x-internal']?.validations || [];
@@ -97,9 +108,14 @@ function FormRenderer({
 
       return true;
     });
+    const associatedTableFields = getAssociatedTableFields();
+    const _values: any = {
+      ...associatedTableFields,
+      ...values,
+    };
 
     if (valid) {
-      onSubmit?.(omit(fieldsToOmit, values));
+      onSubmit?.(omit(fieldsToOmit, _values));
     }
   }
 
