@@ -104,7 +104,10 @@ export default function UpdateTableData({
     }
     const filterRule = filterRef.current?.getValues();
     const updateRule = updateRef.current?.getValues();
-
+    if (!filterRule?.conditions?.length) {
+      toast.error('过滤条件不能为空');
+      return;
+    }
     // filter rule is optional
     if (filterRule) {
       if (filterRule.conditions.length && !every(filterRule.conditions, (v) => !!v.fieldName)) {
