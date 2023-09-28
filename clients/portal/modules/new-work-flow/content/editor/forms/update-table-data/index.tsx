@@ -104,7 +104,7 @@ export default function UpdateTableData({
     }
     const filterRule = filterRef.current?.getValues();
     const updateRule = updateRef.current?.getValues();
-    if (!filterRule?.conditions?.length) {
+    if (!filterRule?.conditions?.length && formType === 'others') {
       toast.error('过滤条件不能为空');
       return;
     }
