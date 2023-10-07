@@ -16,7 +16,6 @@ import DetailsApproval from './approval';
 import { getAllProcess } from './approval/api';
 import { isArray } from 'lodash';
 import Button from '@c/button';
-import { getTaskFormById } from '../approvals/api';
 import { FILL_IN } from '../approvals/constant';
 import { getAllPipelineProcess } from '../new-approvals/util';
 import { getAllProcessInfo } from '../new-approvals/api';
@@ -102,16 +101,17 @@ function DetailsDrawer(
       // window.location = `/approvals/${processInstanceId}/${operationRecords?.[0]?.taskId}/ALL_PAGE/${_taskType}` as any;
       window.location = `/approvals/${taskID}/${id}/ALL_PAGE/${_taskType}` as any;
     } else {
-      getTaskFormById(processInstanceId, { type: 'ALL_PAGE', taskId: '' })
-        .then((res: any)=>{
-          const { taskDetailModels } = res || {};
-          const { taskId } = taskDetailModels?.[0] || {};
-          // window.location = `/approvals/${processInstanceId}/${taskId}/ALL_PAGE/${_taskType}` as any;
-          window.location = `/approvals/${taskID}/${id}/ALL_PAGE/${_taskType}` as any;
-        })
-        .catch((err)=>{
-        // window.open(`/approvals/${processInstanceId}/${id}/ALL_PAGE`);
-        });
+      // getTaskFormById(processInstanceId, { type: 'ALL_PAGE', taskId: '' })
+      //   .then((res: any)=>{
+      //     const { taskDetailModels } = res || {};
+      //     const { taskId } = taskDetailModels?.[0] || {};
+      //     // window.location = `/approvals/${processInstanceId}/${taskId}/ALL_PAGE/${_taskType}` as any;
+      //     window.location = `/approvals/${taskID}/${id}/ALL_PAGE/${_taskType}` as any;
+      //   })
+      //   .catch((err)=>{
+      //   // window.open(`/approvals/${processInstanceId}/${id}/ALL_PAGE`);
+      //   });
+      window.location = `/approvals/${taskID}/${id}/ALL_PAGE/${_taskType}` as any;
     }
   };
 

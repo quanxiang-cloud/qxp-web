@@ -51,7 +51,8 @@ const getPipelineFormInfoList = (data: any, type: any)=>{
         ref: {},
       },
     ).then((res: any)=>{
-      return res?.entity;
+      // return res?.entity;
+      return res;
     }).catch((err) => {
       return null;
     });

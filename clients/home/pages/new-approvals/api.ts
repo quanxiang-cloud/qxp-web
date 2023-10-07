@@ -365,8 +365,12 @@ export const submitPipelineFillTask = async ( params: { id: string; forMData: an
   return await httpClient('/api/v1/fill/fill', params);
 };
 
+// export const getPipelineFormData = async (appID: any, tableID: any, params: Record<string, any>): Promise<any> => {
+//   return await httpClient(`/api/v1/form/${appID}/home/form/${tableID}/get`, params);
+// };
+
 export const getPipelineFormData = async (appID: any, tableID: any, params: Record<string, any>): Promise<any> => {
-  return await httpClient(`/api/v1/form/${appID}/home/form/${tableID}/get`, params);
+  return await httpClient('/api/v1/examine/getFormData', { appID, tableID, dataID: params?.query?.term?._id, ref: params?.ref });
 };
 
 // 获取审批动态 taskID

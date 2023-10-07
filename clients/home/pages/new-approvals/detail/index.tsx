@@ -202,7 +202,8 @@ function ApprovalDetail(): JSX.Element {
       },
 
     ).then((res: any)=>{
-      setFormData(res?.entity);
+      // setFormData(res?.entity);
+      setFormData(res);
     }).catch((err) => {
       toast.error(err);
     });
@@ -263,11 +264,12 @@ function ApprovalDetail(): JSX.Element {
     formSchema && formatProperties(formSchema.properties, fieldPermission);
     return formSchema;
   };
-
   const renderSchemaForm = (task: any): JSX.Element | null => {
     return (
       <div className='task-form overflow-auto px-24'>
-        <FormRenderer
+        {
+          task?.formSchema &&
+        (<FormRenderer
           value={formData}
           schema={formatFormSchema(task.formSchema, task?.fieldPermission) || {}}
           onFormValueChange={setFormValues}
@@ -279,7 +281,9 @@ function ApprovalDetail(): JSX.Element {
           }}
         >
           <Button style={{ display: 'none' }} ref={submitRef} type="submit" modifier="primary">submit</Button>
-        </FormRenderer>
+        </FormRenderer>)
+        }
+
       </div>
     );
   };
