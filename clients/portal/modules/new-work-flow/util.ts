@@ -86,6 +86,7 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
           'web.pipelineNode/childrenID': JSON.stringify(node?.data?.nodeData?.childrenID),
           'web.pipelineNode/branchID': node?.data?.nodeData?.branchID,
           'web.pipelineNode/parentBranchTargetElementID': node?.data?.nodeData?.parentBranchTargetElementID,
+          'web.pipelineNode/formDataID': firstNode?.id,
         },
       },
       spec: {
@@ -725,6 +726,10 @@ const generatePipelineNode = (type: string)=>{
 const getNewPipelineNodes = (pipelineNode: any)=>{
   const formData = generatePipelineNode('formData');
   const end = generatePipelineNode('end');
+  const formDataID = pipelineNode?.[0]?.Metadata?.Annotations?.['web.pipelineNode/formDataID'];
+  if (formDataID) {
+    formData.name = formDataID;
+  }
   // 主干====================
   // 提取主干节点
   // const mainNodesList = [[formData], ...getMainNodes(pipelineNode), [end]];
