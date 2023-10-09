@@ -132,7 +132,10 @@ export default function PersonPicker({ value, typeText, onChange, nodeType }: Pr
       <div className="grid grid-rows-2 grid-cols-2 mb-10">
         <RadioGroup onChange={handleTypeChange}>
           {personTypeOptions.filter((item)=>{
-            if ((nodeType === 'fillIn' || nodeType === 'approve') && item.value === 'processVariable') {
+            // if ((nodeType === 'fillIn' || nodeType === 'approve') && item.value === 'processVariable') {
+            //   return false;
+            // }
+            if (item.value === 'processVariable') {
               return false;
             }
             return true;
