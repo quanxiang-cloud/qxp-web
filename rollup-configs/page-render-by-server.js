@@ -36,8 +36,8 @@ export default inputs.map(([name, filePath]) => {
     input: filePath,
     output: {
       format: 'iife',
-      entryFileNames: isProduction ? `${name}-[hash].js` : `${name}.js`,
-      chunkFileNames: isProduction ? `${name}-[hash].js` : `${name}.js`,
+      entryFileNames: isProduction ? `${name}-[hash].js` : `${name}-[hash].js`,
+      chunkFileNames: isProduction ? `${name}-[hash].js` : `${name}-[hash].js`,
       dir: 'dist',
     },
 
