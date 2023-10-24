@@ -1,14 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import '../components/patch-moment-lang';
 import AppLand from './app-land';
+import { registerValidationFormats, setValidationLocale } from '@formily/antd';
 
 import '../styles/reset.css';
 import '../styles/variables/global.css';
 import './index.scss';
 import '../portal/scss/index.scss';
-
-import { registerValidationFormats, setValidationLocale } from '@formily/antd';
 
 registerValidationFormats({
   post_code: /^[1-9]\d{5}$/g,

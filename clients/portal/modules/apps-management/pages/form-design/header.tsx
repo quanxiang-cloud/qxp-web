@@ -63,6 +63,25 @@ function FormDesignHeader(): JSX.Element {
     history.push(`/apps/details/${appID}/views`);
   };
 
+  const formatProperties = (data: any)=>{
+    for (const key in data) {
+      if (data[key].type === 'object') {
+        formatProperties(data[key].properties);
+      } else {
+        try {
+          (data[key]['x-component-props'].isNew = true);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    }
+  };
+
+  const formatFormSchema = (formSchema: any)=>{
+    formSchema && formatProperties(formSchema.properties);
+    return formSchema;
+  };
+
   return (
     <>
       <div className='form-design-header header-background-image h-56'>
@@ -80,7 +99,7 @@ function FormDesignHeader(): JSX.Element {
         <Tab onChange={tabChange} activeTab={pageType} tabs={TABS} />
         <div
           className='flex justify-end cursor-pointer'
-          onClick={() => InsideDocsPortal.show({ targetUrl: `https://${window.CONFIG.docs_hostname}/manual/form/new/` })}
+          onClick={() => InsideDocsPortal.show({ targetUrl: `//${window.CONFIG.docs_hostname}/manual/form/new/` })}
         >
           <Icon size={20} className='mr-4 app-icon-color-inherit' name="book" />
             帮助文档
@@ -125,7 +144,7 @@ function FormDesignHeader(): JSX.Element {
         <Modal title="预览表单" onClose={() => setPreviewModalVisible(false)}>
           <FormRenderer
             className={cs('w-800 p-20 previewTable', formClassName)}
-            schema={store.formStore?.schema as ISchema}
+            schema={formatFormSchema(store.formStore?.schema) as ISchema}
             onSubmit={(value) => toast.success('提交表单：' + JSON.stringify(value))}
           >
             <FormButtonGroup offset={8}>

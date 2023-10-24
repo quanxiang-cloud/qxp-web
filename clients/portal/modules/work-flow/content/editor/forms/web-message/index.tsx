@@ -52,7 +52,8 @@ function WebMessage({ defaultValue, onSubmit, onCancel, onChange }: Props): JSX.
   }, [allFields]);
 
   const handleSave = (data: any): void => {
-    const content = quillRef.current?.getContent();
+    // const content = quillRef.current?.getContent();
+    const content = quillRef.current?.getInnerHTML();
     onSubmit({ ...data, content });
   };
 

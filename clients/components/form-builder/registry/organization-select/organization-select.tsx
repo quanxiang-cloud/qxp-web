@@ -67,7 +67,7 @@ const OrganizationPicker = ({
 }: Props): JSX.Element => {
   useEffect(() => {
     const { id, name } = getUserDepartment(window.USER);
-    if (value.length) {
+    if (value?.length) {
       return;
     }
 
@@ -109,7 +109,7 @@ const OrganizationPicker = ({
       }
 
       const fullPaths: string[] = [];
-      const visibleParentNodes: string[] = rangeList.reduce((acc, { value }) => {
+      const visibleParentNodes: string[] = rangeList?.reduce((acc, { value }) => {
         const nodeTmp = treeDataTmp?.find(({ id }) => id === value);
         if (nodeTmp) {
           fullPaths.push(nodeTmp.fullPath);
@@ -165,7 +165,7 @@ const OrganizationPicker = ({
     );
   }
 
-  const selected = otherProps.multiple ? value : [...value].shift();
+  const selected = otherProps.multiple ? (value || []) : [...value].shift();
 
   return (
     <TreeSelect

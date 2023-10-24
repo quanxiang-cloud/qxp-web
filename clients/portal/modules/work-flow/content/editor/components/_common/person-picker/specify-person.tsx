@@ -18,16 +18,15 @@ interface Props {
 
 export default function SpecifyPerson(props: Props): null | JSX.Element {
   const { onDelete, validating, value, typeText, onAdd } = props;
-  const { departments, users: employees } = value;
+  const { departments = [], users: employees = [] } = value || {};
 
-  const members = departments.concat(employees);
-
+  const members = departments.concat(employees).filter((item)=>!!item);
   return (
     <Fragment>
       {!!members.length && (
         <div className="mt-8 mb-12 py-8 px-12 border border-gray-300 corner-2-8-8-8">
-          {members.map((member: MemberProps) => {
-            return <Member member={member} key={member.id} onDelete={onDelete} />;
+          {members?.map((member: MemberProps) => {
+            return <Member member={member} key={member?.id} onDelete={onDelete} />;
           })}
         </div>
       )}

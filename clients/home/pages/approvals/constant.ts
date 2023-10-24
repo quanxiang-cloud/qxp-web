@@ -19,3 +19,16 @@ export enum TaskHandleType {
   hasResubmitBtn = 'hasResubmitBtn',
   hasUrgeBtn = 'hasUrgeBtn',
 }
+
+export const APPROVAL = 'approval';
+export const FILL_IN = 'fillIn';
+export const listData = [
+  {
+    label: '审批',
+    value: 'approval',
+  },
+  {
+    label: '填写',
+    value: 'fillIn',
+  },
+];

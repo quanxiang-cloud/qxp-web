@@ -192,6 +192,7 @@ export default function UpdateTableData({
         />
         <UpdateRules
           appId={appID}
+          formType={formType}
           tableId={value.targetTableId}
           defaultValue={value.updateRule}
           ref={updateRef}

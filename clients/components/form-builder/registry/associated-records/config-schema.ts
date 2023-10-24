@@ -118,13 +118,42 @@ const schema: ISchema = {
           },
           'x-index': 7,
         },
+        mergeConfig: {
+          title: '去重显示',
+          default: false,
+          'x-component': 'Switch',
+          'x-index': 8,
+        },
+        // addNewRecords: {
+        //   title: '新建关联记录',
+        //   default: false,
+        //   visible: false,
+        //   'x-component': 'Switch',
+        //   'x-index': 9,
+        // },
+        associativeConfig: {
+          title: '关联赋值',
+          'x-component': 'AssociativeConfig',
+          'x-mega-props': {
+            labelAlign: 'top',
+          },
+          'x-index': 9,
+        },
         filterConfig: {
-          title: '',
+          title: '数据过滤',
           'x-component': 'FilterConfig',
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 8,
+          'x-index': 10,
+        },
+        selectAllConfig: {
+          title: '选择全部数据',
+          'x-component': 'SelectAllConfig',
+          'x-mega-props': {
+            labelAlign: 'top',
+          },
+          'x-index': 11,
         },
       },
     },

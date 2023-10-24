@@ -3,10 +3,10 @@ import useObservable from '@lib/hooks/use-observable';
 import store, { updateStore, toggleNodeForm } from '@flow/content/editor/store';
 import type { StoreValue } from '@flow/content/editor/type';
 
-export default function useNodeSwitch(): (id: string) => void {
+export default function useNodeSwitch(): (id: string, fillInPersons?: any) => void {
   const { errors, readonly } = useObservable<StoreValue>(store);
 
-  return (id: string) => {
+  return (id: string, fillInPersons?: any) => {
     if (readonly) {
       return;
     }
@@ -23,6 +23,6 @@ export default function useNodeSwitch(): (id: string) => void {
         currentDataNotSaveConfirmCallback: () => toggleNodeForm(id),
       }));
     }
-    toggleNodeForm(id);
+    toggleNodeForm(id, fillInPersons);
   };
 }

@@ -1,4 +1,4 @@
-import { isString, flattenDeep, isArray } from 'lodash';
+import { isString, flattenDeep, isArray, isObject } from 'lodash';
 import { Node, isNode } from 'react-flow-renderer';
 import { mergeLeft, flatten } from 'ramda';
 
@@ -18,10 +18,12 @@ export function getWebhookPathTreeValue(
   const { nodeIdForDrawerForm, elements } = store.getValue();
   const currentElement = getNodeElementById(nodeIdForDrawerForm);
   const currentElementParents: string[] = getElementParents(currentElement);
-
   const sourceFromElements = elements.map((item): POLY_API.PolyNodeInput | false => {
     if (!isNode(item) || item === currentElement) {
       return false;
+    }
+    if (item.data && isObject(item.data) && !item.data?.type) {
+      item.data.type = item?.type;
     }
     if (item.data?.type === 'formData') {
       return {

@@ -120,7 +120,7 @@ function ViewInfo({ view, openModal }: Props): JSX.Element {
   }
 
   function goFormBuild(): void {
-    history.push(`/apps/formDesign/formBuild/${(view as TableSchemaView).tableID}/${appID}?pageName=${view.name}`);
+    history.push(`/apps/formDesign/formBuild/${(view as TableSchemaView).tableID}/${appID}?pageName=${view.name}&jump_to_home=${view.url}`);
   }
 
   function handleBtnClick(): void {

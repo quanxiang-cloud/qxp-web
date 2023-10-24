@@ -8,8 +8,9 @@ import store from '../store';
 import NodeHeader from './_common/node-header';
 import NodeRemover from './_common/node-remover';
 import useNodeSwitch from './hooks/use-node-switch';
-import { getPerson, getRule } from './_common/utils';
+import { getPersonByIds, getRule } from './_common/utils';
 import usePositionChange from './hooks/use-node-position-change';
+import { isArray } from 'lodash';
 
 interface Props {
   data: Data;
@@ -33,9 +34,15 @@ export default function FillInNodeComponent({ data, id, xPos, yPos, isDragging }
 
   const { basicConfig } = businessData as FillInData;
 
+  const [fillInPersons, setFillInPersons] = useState<any>();
+
+  useEffect(()=>{
+    getPersonByIds(basicConfig.approvePersons, setFillInPersons);
+  }, [basicConfig.approvePersons]);
+
   function onMouseUp(): void {
     if (+new Date - lastTime.current < 200) {
-      switcher(id);
+      switcher(id, fillInPersons);
     }
   }
 
@@ -48,11 +55,11 @@ export default function FillInNodeComponent({ data, id, xPos, yPos, isDragging }
   }
 
   const hasFillInRule = !!basicConfig.multiplePersonWay;
-  const hasFillInPerson = !!basicConfig.approvePersons.departments.length ||
-    !!basicConfig.approvePersons.users.length || basicConfig.approvePersons.type !== 'person';
+  const hasFillInPerson = !!basicConfig.approvePersons?.departments?.length ||
+    !!basicConfig.approvePersons?.users?.length || basicConfig.approvePersons?.type !== 'person';
 
   const hasError = id === errors?.publish?.data?.id;
-
+  const { departments } = basicConfig?.approvePersons || [];
   return (
     <div
       className={cs(
@@ -104,7 +111,16 @@ export default function FillInNodeComponent({ data, id, xPos, yPos, isDragging }
             )}
             {hasFillInPerson && (
               <div className="text-caption-no-color text-gray-400">
-                填写人: <span className="text-gray-600">{getPerson(basicConfig.approvePersons)}</span>
+                填写人: <span className="text-gray-600 break-all">{
+                  isArray(fillInPersons) ?
+                    fillInPersons
+                      .concat(departments)
+                      .map((item: any) => {
+                        const { ownerName, departmentName } = item || {};
+                        return ownerName || departmentName;
+                      })
+                      .join('; ') :
+                    fillInPersons}</span>
               </div>
             )}
           </div>

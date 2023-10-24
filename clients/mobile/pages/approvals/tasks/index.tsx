@@ -1,11 +1,13 @@
+/* eslint-disable no-case-declarations */
 import React, { MutableRefObject, useEffect, useMemo, useRef, useState } from 'react';
 import { useSetState } from 'react-use';
 import cs from 'classnames';
 
 import {
-  allList, allTabs, allTags, ApplyStatus,
-  CCStatus, emptyFilter, HandleTypes,
+  allList, allTabs, ApplyStatus,
+  CCStatus, emptyFilter, FillInApplyStatus, HandleTypes,
   TitleOptions,
+  todlAllTags,
 } from '../utils';
 import { useURLSearch } from '@m/lib/hooks/use-url-search';
 import TabsPage, { TabTitle } from '@m/components/tabs-page';
@@ -16,6 +18,7 @@ import { NumberString } from '@m/qxp-ui-mobile';
 import { FlowType, ApprovalSearch, ApprovalTab, ApprovalFilter } from '../types';
 
 import ApprovalsTab from './tab';
+import { FILL_IN } from '@home/pages/approvals/constant';
 
 function getFilterType(isApply: boolean, index: number): FlowType {
   if (isApply) {
@@ -45,7 +48,8 @@ export default function Approvals(): JSX.Element {
   });
 
   const [state, setState] = useSetState<ApprovalTab>({
-    tabs: allTags,
+    // tabs: allTags,
+    tabs: todlAllTags,
     active: 0,
     isApply: true,
     title: '',
@@ -55,8 +59,16 @@ export default function Approvals(): JSX.Element {
   const [show, setShow] = useState(false);
   const [titleShow, setTitleShow] = useState(false);
 
+  const [currentTaskType, setCurrentValue] = useState();
+  const [tabType, setTabType] = useState();
+
   const titleDropdown = useRef<DropdownMenuInstance>() as MutableRefObject<DropdownMenuInstance>;
   const filterDropdown = useRef<DropdownMenuInstance>() as MutableRefObject<DropdownMenuInstance>;
+
+  const handleApprovalsTabClick = (val: any)=>{
+    setCurrentValue(val);
+    setTabType(val);
+  };
 
   function onFilterClick(): void {
     filterDropdown?.current?.toggle();
@@ -71,12 +83,15 @@ export default function Approvals(): JSX.Element {
     case 'WAIT_HANDLE_PAGE':
       return HandleTypes;
     case 'APPLY_PAGE':
+      if (currentTaskType === FILL_IN) {
+        return FillInApplyStatus;
+      }
       return ApplyStatus;
     case 'CC_PAGE':
       return CCStatus;
     }
     return [];
-  }, [state.type]);
+  }, [state.type, currentTaskType]);
 
   useEffect(() => {
     const listType = search.get('list');
@@ -104,8 +119,10 @@ export default function Approvals(): JSX.Element {
 
     const isApply = index > -1;
     if (!isApply) {
-      index = allTags.findIndex((itm) => itm.key === tagType);
-      tabs = allTags;
+      // index = allTags.findIndex((itm) => itm.key === tagType);
+      // tabs = allTags;
+      index = todlAllTags.findIndex((itm) => itm.key === tagType);
+      tabs = todlAllTags;
     }
 
     const title = TitleOptions[isApply ? 1 : 0].label;
@@ -141,6 +158,10 @@ export default function Approvals(): JSX.Element {
         filter={filter[approvalsTab.type]}
         onFilterClick={onFilterClick}
         filterShow={show}
+        onTabClick = {handleApprovalsTabClick}
+        isApply = {state.isApply}
+        taskType={tab.key as any}
+        tabType = {tabType}
       />
     );
   }
@@ -155,7 +176,6 @@ export default function Approvals(): JSX.Element {
       </div>
     );
   }
-
   return (
     <>
       <TabsPage
@@ -164,6 +184,7 @@ export default function Approvals(): JSX.Element {
         title={renderTitle()}
         renderTab={renderTab}
         onChange={onActiveChange}
+        isApply={state.isApply}
         navBottom={<Divider color='var(--gray-200)'/>}
       />
       {(show || titleShow) && (
@@ -183,7 +204,6 @@ export default function Approvals(): JSX.Element {
         onChange={
           (label, value) => onTitleChange(value)
         }/>
-
       <DropdownMenu
         options={filters}
         value={filter[state.type].value}
@@ -196,6 +216,7 @@ export default function Approvals(): JSX.Element {
         onChange={
           (label, value) => setFilter({ [state.type]: { label, value } })
         }/>
+
     </>
   );
 }

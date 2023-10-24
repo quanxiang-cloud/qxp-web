@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import cs from 'classnames';
 import { useQuery } from 'react-query';
 
@@ -10,7 +10,7 @@ import CCToMeApprovals from './cc-to-me-approvals';
 import MyApplyApprovals from './my-applies';
 import DoneApprovals from './done-approvals';
 import AllApprovals from './all-approvals';
-import { getFlowInstanceCount } from './api';
+import { getFlowInstanceCount, getTodoFillInCount } from './api';
 
 type ListType = 'todo' | 'done' | 'cc_to_me' | 'my_applies' | 'all';
 
@@ -30,6 +30,7 @@ type ApprovalTypeListProps = {
   listType: ListType;
   onClick: (catalog: ListType) => void;
   countMap: Record<string, number | undefined>;
+  todoTotal?: number;
 }
 
 const typeIconMap = {
@@ -40,15 +41,18 @@ const typeIconMap = {
   all: 'format_align_justify',
 };
 
-function ApprovalTypeList({ listType, countMap, onClick }: ApprovalTypeListProps): JSX.Element {
+function ApprovalTypeList({ listType, countMap, todoTotal, onClick }: ApprovalTypeListProps): JSX.Element {
   const renderCount = (type: ListType): JSX.Element | void => {
     let count = 0;
     if (type === 'todo') {
-      count = countMap.waitHandleCount || 0;
+      count = todoTotal || 0;
     }
     if (type === 'cc_to_me') {
       count = countMap.ccToMeCount || 0;
     }
+    console.log('todoTotal', todoTotal);
+    console.log('type', type);
+
     if (count > 0) {
       return <BtnBadge count={count} className="relative text-white" />;
     }
@@ -90,10 +94,32 @@ function ApprovalTypeList({ listType, countMap, onClick }: ApprovalTypeListProps
 function Approvals(): JSX.Element {
   const [search, setSearch] = useURLSearch();
   const listType = search.get('list') || 'todo';
+  const [approvelCount, setApprovelCount] = useState<any>(0);
+  const [fillCount, setFillCount] = useState<any>(0);
+  const [countMap, setCountMap] = useState<any>({});
+  const [todoTotal, setTodoTotal] = useState<any>(0);
 
-  const { data: flowInstCount } = useQuery(['flow-instance-count'], async () => {
+  const { data: flowInstCount } = useQuery(['flow-instance-count', listType], async () => {
     return await getFlowInstanceCount({});
+  }, {
+    onSuccess: (data) => setApprovelCount(data?.waitHandleCount || 0),
   });
+
+  const { data: fillInCount } = useQuery(['fill-in-count', listType], async () => {
+    return await getTodoFillInCount({});
+  }, {
+    onSuccess: (data) => setFillCount(data?.total || 0),
+  });
+
+  useEffect(()=>{
+    flowInstCount && setCountMap(flowInstCount);
+  }, [JSON.stringify(flowInstCount), fillCount]);
+
+  useEffect(()=>{
+    const _approvelCount = approvelCount || 0;
+    const _fillCount = fillCount || 0;
+    setTodoTotal(approvelCount + fillCount);
+  }, [approvelCount, fillCount]);
 
   function handleChangeList(toList: string): void {
     setSearch({ list: toList });
@@ -104,10 +130,14 @@ function Approvals(): JSX.Element {
       <ApprovalTypeList
         listType={listType as ListType}
         onClick={handleChangeList}
-        countMap={flowInstCount || {}}
+        countMap={countMap}
+        todoTotal={todoTotal}
       />
       <div className="px-20 pt-20 overflow-auto flex-grow">
-        {listType === 'todo' && (<TodoApprovals />)}
+        {listType === 'todo' && (<TodoApprovals
+          approvelCount={approvelCount}
+          fillInCount={fillCount}
+        />)}
         {listType === 'my_applies' && <MyApplyApprovals />}
         {listType === 'cc_to_me' && <CCToMeApprovals />}
         {listType === 'done' && <DoneApprovals />}

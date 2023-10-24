@@ -196,6 +196,14 @@ const schema: ISchema = {
           'x-component': 'Switch',
           'x-index': 10,
         },
+        defaultAddAllAssociatedData: {
+          title: '默认添加全部关联数据项',
+          // visible: data?.showDefaultAddAllAssociatedData,
+          visible: false,
+          default: false,
+          'x-component': 'Switch',
+          'x-index': 11,
+        },
         tableID: {
           type: 'string',
           'x-component': 'Input',
@@ -203,7 +211,7 @@ const schema: ISchema = {
             className: 'hidden',
           },
           default: '',
-          'x-index': 11,
+          'x-index': 12,
         },
       },
     },

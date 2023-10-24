@@ -27,6 +27,7 @@ import {
 } from './api';
 
 import './index.scss';
+import { submitFillTask } from '@home/pages/approvals/api';
 
 const REQUIRED_PROCESS_INSTANCE = ['DELIVER', 'READ', 'CC'];
 
@@ -115,7 +116,11 @@ function ApprovalsActions(): JSX.Element {
     case 'hasResubmitBtn':
       return resubmit(processInstanceID, formValues);
     case 'FILL_IN':
-      return reviewTask('FILL_IN', processInstanceID, taskID, remark, formValues);
+      // reviewTask('FILL_IN', processInstanceID, taskID, remark, formValues);
+      return submitFillTask({
+        id: taskID,
+        formData: formValues,
+      });
     case 'hasReadHandleBtn':
       if (!remark) return;
       return readHandle(processInstanceID, taskID, remark);
@@ -156,7 +161,6 @@ function ApprovalsActions(): JSX.Element {
     }
     return undefined;
   }
-
   return (
     <NavPage title={title} absolute className='flex flex-col'>
       <div className='flex-1 mt-16 mx-12'>
@@ -286,7 +290,13 @@ function ApprovalsActions(): JSX.Element {
             {actionStore.multiplePersonWayError && <div className='error-text caption'>请选择处理方式</div>}
           </>
         )}
-        {('FILL_IN' === action || 'hasResubmitBtn' === action) && (
+        {('FILL_IN' === action) && (
+          <>
+            <div className='mb-8'>提交</div>
+            <div>是否确定提交？</div>
+          </>
+        )}
+        {('hasResubmitBtn' === action) && (
           <>
             <div className='mb-8'>意见</div>
             <TextArea

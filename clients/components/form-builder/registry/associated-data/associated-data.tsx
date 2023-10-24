@@ -83,7 +83,7 @@ export function AssociatedData({
 }
 
 export default function AssociatedDataWrap(p: ISchemaFieldComponentProps): JSX.Element {
-  const [selectedValue, setSelectedValue] = useState(p?.initialValue?.value);
+  const [selectedValue, setSelectedValue] = useState(p?.initialValue?.value || p?.value?.value);
   if (p.props.readOnly) {
     return <FormDataValueRenderer value={p.value} schema={p.schema} />;
   }
@@ -96,8 +96,8 @@ export default function AssociatedDataWrap(p: ISchemaFieldComponentProps): JSX.E
     associativeConfig && associativeConfig.rules.forEach((
       { dataSource, dataTarget }: FormBuilder.DataAssignment,
     ) => {
-      const fullPath = p?.path.split('.');
-      const relativePath = fullPath.slice(0, fullPath.length - 1).join('.');
+      const fullPath = p?.path?.split('.');
+      const relativePath = fullPath?.slice(0, fullPath.length - 1).join('.');
 
       setFieldState(`${relativePath}.${dataTarget}`, (state) => {
         state.value = dataRow[dataSource];

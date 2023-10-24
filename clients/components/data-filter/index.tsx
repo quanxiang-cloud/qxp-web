@@ -1,3 +1,4 @@
+/* eslint-disable no-empty */
 /* eslint-disable max-len */
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { useForm, Controller } from 'react-hook-form';
@@ -12,9 +13,9 @@ import {
   CONDITION,
   getOperators,
   FILTER_FIELD,
-  VALUE_FROM,
   setValueFormCondition,
   getValue,
+  VALUE_FROM,
 } from './utils';
 import './index.scss';
 
@@ -24,6 +25,10 @@ type Props = {
   initTag?: FilterTag;
   className?: string;
   associationFields?: SchemaFieldItem[];
+  associationParentFields?: SchemaFieldItem[];
+  formOptions?: any[];
+  disFilterField?: any[];
+  isAdvancedQuery?: boolean;
 }
 
 type FieldCondition = {
@@ -34,28 +39,34 @@ type FieldCondition = {
   filter?: SchemaFieldItem;
   valueFrom?: 'fixedValue' | 'form';
   associationFieldsOptions?: LabelValue[];
+  associationParentFieldsOptions?: LabelValue[];
 }
 
 export type RefProps = {
   empty: () => void;
-  getDataValues: () => FilterConfig;
+  getDataValues: (data?: any) => FilterConfig;
   validate: () => Promise<boolean>;
 }
 
 const FormFieldSwitch = formFieldWrap({ FieldFC: FieldSwitch });
 const FormFieldSelect = formFieldWrap({ FieldFC: Select });
 
-function DataFilter({
-  fields,
-  associationFields = [],
-  className = '',
-  initConditions,
-  initTag = 'must',
-}: Props, ref: React.Ref<RefProps>): JSX.Element {
+function DataFilter(props: Props, ref: React.Ref<RefProps>): JSX.Element {
+  const {
+    fields,
+    associationFields = [],
+    associationParentFields = [],
+    className = '',
+    initConditions,
+    initTag = 'must',
+    formOptions,
+    disFilterField = [],
+    isAdvancedQuery = false,
+  } = props;
+
   const [conditions, setConditions] = useState<FieldCondition[]>([]);
   const [tag, setTag] = useState<FilterTag>(initTag);
   const { trigger, control, setValue, getValues, unregister, formState: { errors } } = useForm();
-
   useImperativeHandle(ref, () => ({
     getDataValues: getDataValues,
     empty: () => setConditions([]),
@@ -80,6 +91,7 @@ function DataFilter({
           valueFrom: condition.valueFrom,
           value: getValue(filter, condition.value, condition.valueFrom),
           associationFieldsOptions: condition.valueFrom === 'form' ? getAssociationOptions(filter) : [],
+          associationParentFieldsOptions: condition.valueFrom === 'parentForm' ? getAssociationParentOptions(filter) : [],
           key: condition.key as string,
           filter,
         });
@@ -89,7 +101,7 @@ function DataFilter({
   }, [initConditions]);
 
   const fieldOption = fields.filter((field) => {
-    return FILTER_FIELD.includes(field['x-component'] as string) && field.id !== '_id';
+    return FILTER_FIELD.filter((field)=> !disFilterField?.find((disField)=>disField === field))?.includes(field['x-component'] as string) && field.id !== '_id';
   }).map((field) => ({
     value: field.id,
     label: field.title,
@@ -100,8 +112,21 @@ function DataFilter({
       return [];
     }
 
-    return associationFields.reduce((acc, fields) => {
-      if (fields['x-component'] === curField?.['x-component']) {
+    return associationFields?.reduce((acc, fields) => {
+      if (fields['x-component'] === curField?.['x-component'] || (fields['x-component'] === 'Input' && curField?.['x-component'] === 'Serial')) {
+        return acc.concat({ label: fields.title as string, value: fields.id });
+      }
+      return acc;
+    }, [] as LabelValue[]);
+  };
+
+  const getAssociationParentOptions = (curField: ISchema | undefined): LabelValue[] => {
+    if (!curField) {
+      return [];
+    }
+
+    return associationParentFields?.reduce((acc, fields) => {
+      if (fields['x-component'] === curField?.['x-component'] || (fields['x-component'] === 'Input' && curField?.['x-component'] === 'Serial')) {
         return acc.concat({ label: fields.title as string, value: fields.id });
       }
       return acc;
@@ -109,20 +134,27 @@ function DataFilter({
   };
 
   const handleFieldChange = (rowID: string, field: string) => {
+    let valueFrom = 'fixedValue';
+    const componentName = fields?.find((item)=>item?.id === field)?.componentName;
+    if (componentName === 'associateddata') {
+      valueFrom = 'form';
+    }
     setConditions(conditions.map((condition) => {
       if (condition.id === rowID) {
         return {
           ...condition,
-          valueFrom: 'fixedValue',
+          valueFrom,
           filter: fields.find(({ id }) => id === field),
           associationFieldsOptions: [],
+          associationParentFieldsOptions: [],
         } as FieldCondition;
       }
       return condition;
     }));
+
     setValue('operators-' + rowID, '');
     setValue('condition-' + rowID, '');
-    setValue('valueFrom-' + rowID, 'fixedValue');
+    setValue('valueFrom-' + rowID, valueFrom);
   };
 
   const handleValueFromChange = (rowID: string, valueFrom: string) => {
@@ -143,6 +175,7 @@ function DataFilter({
         ...condition,
         valueFrom,
         associationFieldsOptions: getAssociationOptions(condition.filter),
+        associationParentFieldsOptions: getAssociationParentOptions(condition.filter),
       } as FieldCondition;
     }));
     setValue('condition-' + rowID, '');
@@ -157,15 +190,17 @@ function DataFilter({
     setConditions(conditions.filter(({ id }) => _id !== id));
   };
 
-  const getDataValues = (): FilterConfig => {
+  const getDataValues = (data = {}): FilterConfig => {
     if (conditions.length === 0) {
-      return { condition: [], tag };
+      return { condition: [], tag, ...data };
     }
 
     const formData = getValues();
     const _conditions: Condition[] = [];
     conditions.forEach((condition) => {
-      const value = formData[`condition-${condition.id}`];
+      const value: any = formData[`condition-${condition.id}`];
+      const componentName = condition?.filter?.componentName;
+
       if (
         formData[`field-${condition.id}`] &&
         formData[`operators-${condition.id}`] &&
@@ -174,13 +209,21 @@ function DataFilter({
         if (Array.isArray(value) && value.length === 0) {
           return;
         }
-
+        const getValue = ()=>{
+          if (componentName === 'associateddata' && isAdvancedQuery) {
+            return {
+              ...formData[`condition-${condition.id}`],
+              value: formData[`condition-${condition.id}`]._id,
+            };
+          }
+          return formData[`condition-${condition.id}`];
+        };
         _conditions.push(
           setValueFormCondition({
             valueFrom: formData[`valueFrom-${condition.id}`] || 'fixedValue',
             key: condition.filter.id,
             op: formData[`operators-${condition.id}`],
-            value: formData[`condition-${condition.id}`],
+            value: getValue(),
             schema: condition.filter,
           }),
         );
@@ -190,6 +233,7 @@ function DataFilter({
     return {
       condition: _conditions,
       tag,
+      ...data,
     };
   };
 
@@ -215,113 +259,165 @@ function DataFilter({
         条件的数据
       </div>
       <div className='qxp-data-filter-box overflow-hidden'>
-        {conditions.map((condition) => (
-          <div
-            key={condition.id}
-            className={`flex gap-x-8 mt-8 items-center px-8 h-64 w-full rounded-8 bg-gray-100 overflow-auto ${window?.isMobile ? 'qxp-data-filter-box-wrap-is-mobile' : ''}`}
-          >
-            <div>
-              <Controller
-                name={'field-' + condition.id}
-                control={control}
-                defaultValue={condition.key}
-                rules={{ required: true }}
-                render={({ field }) => {
-                  return (
-                    <FormFieldSelect
-                      style={{ width: '170px' }}
-                      error={errors['field-' + condition.id]}
-                      register={{ name: field.name, value: field.value }}
-                      options={fieldOption}
-                      onChange={(_field: string) => {
-                        handleFieldChange(condition.id, _field);
-                        field.onChange(_field);
-                      }}
-                    />
-                  );
-                }}
-              />
-            </div>
-            {condition.filter ? (
-              <>
-                <div>
-                  <Controller
-                    name={'operators-' + condition.id}
-                    control={control}
-                    defaultValue={condition.op || 'eq'}
-                    rules={{ required: true }}
-                    render={({ field }) => (
+        {conditions.map((condition: any) => {
+          try {
+            condition.filter.optionalRange = 'all';
+            condition.filter.multiple = 'multiple';
+            condition.filter['x-component-props'].optionalRange = 'all';
+            condition.filter['x-component-props'].multiple = 'multiple';
+            if (condition.filter.componentName === 'userpicker') {
+              condition.filter.defaultValue = [];
+              condition.filter['x-component-props'].defaultValue = [];
+            }
+          } catch (error) {
+          }
+          const componentName = condition?.filter?.componentName;
+          let options = formOptions || VALUE_FROM;
+          if (componentName === 'associateddata') {
+            options = options.filter((item)=>item.value !== 'fixedValue');
+          }
+          return (
+            <div
+              key={condition.id}
+              className={`flex gap-x-8 mt-8 items-center px-8 h-64 w-full rounded-8 bg-gray-100 overflow-auto ${window?.isMobile ? 'qxp-data-filter-box-wrap-is-mobile' : ''}`}
+            >
+              <div>
+                <Controller
+                  name={'field-' + condition.id}
+                  control={control}
+                  defaultValue={condition.key}
+                  rules={{ required: true }}
+                  render={({ field }) => {
+                    return (
                       <FormFieldSelect
-                        style={{ width: '95px' }}
-                        error={errors['operators-' + condition.id]}
-                        register={field}
-                        options={getOperators(condition.filter?.type || '', condition.filter?.enum)}
+                        style={{ width: '170px' }}
+                        error={errors['field-' + condition.id]}
+                        register={{ name: field.name, value: field.value }}
+                        options={fieldOption}
+                        onChange={(_field: string) => {
+                          handleFieldChange(condition.id, _field);
+                          field.onChange(_field);
+                        }}
                       />
-                    )
-                    }
-                  />
-                </div>
-                {associationFields.length !== 0 && (
+                    );
+                  }}
+                />
+              </div>
+              {condition.filter ? (
+                <>
                   <div>
                     <Controller
-                      name={'valueFrom-' + condition.id}
+                      name={'operators-' + condition.id}
                       control={control}
-                      defaultValue={condition.valueFrom || 'fixedValue'}
+                      defaultValue={condition.op || 'eq'}
                       rules={{ required: true }}
                       render={({ field }) => (
                         <FormFieldSelect
                           style={{ width: '95px' }}
-                          error={errors['valueFrom-' + condition.id]}
+                          error={errors['operators-' + condition.id]}
                           register={field}
-                          options={VALUE_FROM}
-                          onChange={(valueFrom: string) => {
-                            handleValueFromChange(condition.id, valueFrom);
-                            field.onChange(valueFrom);
-                          }}
+                          options={getOperators(condition.filter?.type || '', condition.filter?.enum)}
                         />
                       )
                       }
                     />
                   </div>
-                )}
-                <div>
-                  <Controller
-                    name={'condition-' + condition.id}
-                    control={control}
-                    defaultValue={condition.value}
-                    rules={{ required: true }}
-                    render={({ field }) => (
-                      condition.valueFrom === 'form' ? (
-                        <FormFieldSelect
-                          style={{ width: '280px' }}
-                          error={errors['condition-' + condition.id]}
-                          register={field}
-                          options={condition.associationFieldsOptions || []}
-                        />
-                      ) : (
-                        <FormFieldSwitch
-                          error={errors['condition-' + condition.id]}
-                          register={{ ...field, value: field.value ? field.value : '' }}
-                          field={condition.filter}
-                          style={{ width: '280px' }}
-                        />
-                      )
-                    )
-                    }
-                  />
-                </div>
-              </>
-            ) : null}
-            <Icon
-              style={{ minWidth: '19px' }}
-              clickable
-              changeable
-              onClick={() => handleRemove(condition.id)}
-              name='delete'
-              size={20}
-            />
-          </div>
-        ))}
+                  {(associationFields.length !== 0 || associationParentFields?.length !== 0) && (
+                    <div>
+                      <Controller
+                        name={'valueFrom-' + condition.id}
+                        control={control}
+                        defaultValue={condition.valueFrom || 'fixedValue'}
+                        rules={{ required: true }}
+                        render={({ field }) => (
+                          <FormFieldSelect
+                            style={{ width: '95px' }}
+                            error={errors['valueFrom-' + condition.id]}
+                            register={field}
+                            options={options}
+                            onChange={(valueFrom: string) => {
+                              handleValueFromChange(condition.id, valueFrom);
+                              field.onChange(valueFrom);
+                            }}
+                          />
+                        )
+                        }
+                      />
+                    </div>
+                  )}
+                  <div>
+                    <Controller
+                      name={'condition-' + condition.id}
+                      control={control}
+                      defaultValue={condition.value}
+                      rules={{ required: true }}
+                      render={({ field }) => {
+                        let res;
+                        const { filter: { componentName } } = condition;
+                        if (componentName === 'associateddata') {
+                          condition.associationFieldsOptions = getAssociationOptions(condition.filter);
+                        }
+                        switch (condition.valueFrom) {
+                        case 'form':
+                          if (isAdvancedQuery && componentName === 'associateddata') {
+                            res = (
+                              <FormFieldSwitch
+                                error={errors['condition-' + condition.id]}
+                                register={{ ...field, value: field.value ? field.value : '' }}
+                                field={condition.filter}
+                                style={{ width: '280px' }}
+                              />
+                            );
+                          } else {
+                            res = (
+                              <FormFieldSelect
+                                style={{ width: '280px' }}
+                                error={errors['condition-' + condition.id]}
+                                register={field}
+                                options={condition.associationFieldsOptions || []}
+                              />
+                            );
+                          }
+                          break;
+                        case 'parentForm':
+                          res = (
+                            <FormFieldSelect
+                              style={{ width: '280px' }}
+                              error={errors['condition-' + condition.id]}
+                              register={field}
+                              options={condition.associationParentFieldsOptions || []}
+                            />
+                          );
+                          break;
+                        default:
+                          res = (
+                            <FormFieldSwitch
+                              error={errors['condition-' + condition.id]}
+                              register={{ ...field, value: field.value ? field.value : '' }}
+                              field={condition.filter}
+                              style={{ width: '280px' }}
+                            />
+                          );
+                          break;
+                        }
+                        return res;
+                      }
+                      }
+                    />
+                  </div>
+                </>
+              ) : null}
+              <Icon
+                style={{ minWidth: '19px' }}
+                clickable
+                changeable
+                onClick={() => handleRemove(condition.id)}
+                name='delete'
+                size={20}
+              />
+            </div>
+          );
+        })}
       </div>
       <div className='mt-24'>
         <span onClick={addCondition} className='text-btn'><Icon name='add' className='text-btn'/>

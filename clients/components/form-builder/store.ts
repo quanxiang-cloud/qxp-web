@@ -64,7 +64,7 @@ export default class FormBuilderStore {
   @observable getFieldValueFunc?: any;
 
   constructor({ schema, appID, pageID }: Props) {
-    this.flattenFields = flattenSchemaToFields(schema);
+    this.flattenFields = flattenSchemaToFields(schema, appID);
     this.internalFields = INTERNAL_FIELDS;
     this.appID = appID;
     this.pageID = pageID;
@@ -81,7 +81,7 @@ export default class FormBuilderStore {
   }
 
   @computed get flattenFieldsMap(): Record<string, FormItem> {
-    return this.flattenFields.reduce((acc, item) => {
+    return this.flattenFields?.reduce((acc, item) => {
       acc[getFieldId(item)] = item;
 
       return acc;

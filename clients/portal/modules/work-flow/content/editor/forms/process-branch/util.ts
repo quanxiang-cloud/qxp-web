@@ -4,7 +4,7 @@ import type { CustomRule } from '@c/formula-editor';
 export function variableToRule({ name, code, fieldType }: ProcessVariable): CustomRule {
   return {
     name,
-    key: '$' + code,
+    key: `[$${code}]`,
     type: fieldType?.toLowerCase(),
   };
 }
@@ -16,7 +16,7 @@ export function tableSchemaFilter(schema: SchemaFieldItem): boolean {
 export function tableSchemaToRule(schema: SchemaFieldItem): CustomRule {
   return {
     name: schema.title as string,
-    key: '$' + schema.id,
+    key: `[$${schema.id}]`,
     type: schema.type ?? '',
   };
 }

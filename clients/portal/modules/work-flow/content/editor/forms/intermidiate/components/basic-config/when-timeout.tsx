@@ -95,7 +95,7 @@ export default function WhenTimeout({ defaultValue, onChange }: Props): JSX.Elem
                   'border-red-600': validating && !timeoutData.value,
                   'border-gray-300': !validating || timeoutData.value,
                 })}
-              options={elements.reduce(
+              options={elements?.reduce(
                 (cur: {label: string; value: string;}[], next) => {
                   if (next.id !== nodeIdForDrawerForm && next.data) {
                     cur.push({

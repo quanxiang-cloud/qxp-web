@@ -9,6 +9,8 @@ import {
   FILE_PART_SIGN_API,
   COMPLETE_MULTIPART_API,
   FINISH_FILE_UPLOAD_API,
+  OSS_PUBLIC_BUCKET_NAME,
+  OSS_DOMAIN,
 } from '../constants';
 
 export type FileUploadStreamProps = {
@@ -58,7 +60,7 @@ export default function fileMultiPartUpload({
     const fileChunksPromise = unUploadChunks.map((chunk) => generatePartUploadTask(chunk.partNumber, chunk));
 
     return createQueue(fileChunksPromise, PARALLEL_UPLOAD_SIZE);
-  }).then(()=> {
+  }).then(() => {
     return httpClient(COMPLETE_MULTIPART_API, {
       uploadID,
       path,
@@ -66,7 +68,9 @@ export default function fileMultiPartUpload({
   }).then(() => {
     return httpClient(FINISH_FILE_UPLOAD_API, { path });
   }).then(() => {
-    onSuccess?.(file);
+    const fileDownloadURL = `${window.location.protocol}//${OSS_PUBLIC_BUCKET_NAME}.${OSS_DOMAIN}/${file.uid}`;
+    const isPublic = fileBucket === OSS_PUBLIC_BUCKET_NAME;
+    onSuccess?.({ ...file, ...(isPublic && { downLoadURL: fileDownloadURL }) });
   }).catch((error) => {
     onError?.(error, file);
   });

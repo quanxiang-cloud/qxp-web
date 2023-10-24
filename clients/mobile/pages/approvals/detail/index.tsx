@@ -18,7 +18,7 @@ import statusStore from './status/store';
 import topicStore from './topic/store';
 
 export default function ApprovalDetail(): JSX.Element {
-  const { processInstanceID, taskID, type } = useParams<ApprovalDetailParams>();
+  const { processInstanceID, taskID, type, taskType } = useParams<ApprovalDetailParams>();
 
   const [state, setState] = useSetState<ApprovalDetailTab>({
     tabs: [],
@@ -38,6 +38,7 @@ export default function ApprovalDetail(): JSX.Element {
 
   useEffect(() => {
     const tabs: TabTitle[] = [];
+
     if (store.taskDetails?.length) {
       const titles = store.taskDetails.map((task, index) => ({
         key: (task.taskId ?? '') + index,
@@ -56,7 +57,7 @@ export default function ApprovalDetail(): JSX.Element {
 
   function init(): void {
     setState({ loading: true, error: false });
-    store.initForm(0, processInstanceID, type, taskID).then((res) => {
+    store.initForm(0, processInstanceID, type, taskID, taskType).then((res) => {
       setState({ loading: false, error: !res });
     });
   }
@@ -76,7 +77,7 @@ export default function ApprovalDetail(): JSX.Element {
     case 'topic':
       return <ApprovalsTopicTab height={height} active={active}/>;
     }
-    return <ApprovalsDetailTab height={height} index={index} active={active}/>;
+    return <ApprovalsDetailTab height={height} index={index} active={active} />;
   }
 
   return (

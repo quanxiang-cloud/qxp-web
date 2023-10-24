@@ -8,10 +8,15 @@ export interface ApprovalsTabProps {
   filterKey?: string;
   empty: EmptyProps;
   type: FlowType;
-  tagType?: 'OVERTIME' | 'URGE';
+  tagType?: 'OVERTIME' | 'URGE' | 'approval' | 'fillIn' ;
   filter?: ApprovalFilter;
   onFilterClick?: () => void;
   filterShow?: boolean;
+  onTabClick?: (val: string) => void;
+  isApply?: boolean;
+  isTodo?: boolean;
+  taskType?: string;
+  [key: string]: any;
 }
 
 export interface Pair {
@@ -139,6 +144,7 @@ export interface FlowInstanceFormResponse {
   canViewStatusAndMsg: boolean;
   canMsg: boolean;
   taskDetailModels: TaskDetailModel[];
+  [key: string]: any;
 }
 
 export interface FlowAction {
@@ -225,4 +231,5 @@ export interface ApprovalDetailParams {
   processInstanceID: string;
   taskID: string;
   type: string;
+  taskType: string;
 }

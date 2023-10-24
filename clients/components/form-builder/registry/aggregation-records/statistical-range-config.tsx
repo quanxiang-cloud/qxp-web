@@ -47,6 +47,7 @@ function StatisticalRangeConfig(props: Props): JSX.Element {
       onChange={props.onChange}
       value={props.value}
       customSchemaFields={customSchemaFields}
+      disFilterField = {['AssociatedData']}
     />
   );
 }

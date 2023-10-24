@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
@@ -87,7 +88,12 @@ function AppActions({ openModal, appInfo }: Props): JSX.Element {
       history.push(`/apps/details/${appInfo.id}/setting/info`);
       break;
     case 'visit':
-      window.open(`//${window.CONFIG.home_hostname}/apps/` + appInfo.id);
+      const path = appInfo?.accessURL;
+      if (path) {
+        window.open(`/_jump_to_home?to=${path}`);
+      } else {
+        toast.error('该应用未配置主页，无法访问');
+      }
       break;
     case 'exportApp':
       exportAppAndCreateTask({

@@ -25,7 +25,9 @@
         @extend %text-overflow;
       }
       &:last-child {
-        max-width: 20rem;
+        // max-width: 20rem;
+        max-width: 230px;
+        display: inline-block;
       }
     }
 
@@ -113,4 +115,37 @@
   border-radius: 4px 0px;
   padding: 0 6px;
   margin-right: 8px;
+}
+
+.pr10{
+  padding-right: 10px;
+}
+
+.nowrap{
+  white-space: nowrap;
+}
+
+.text-ellipsis{
+  text-overflow: ellipsis;
+}
+
+.inline-block{
+  display: inline-block;
+}
+
+.flex1{
+  flex: 1;
+}
+
+.fields-arrow-wrapper{
+  display: flex;
+  span{
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    &:hover{
+      color: #638aff;
+    }
+  }
 }

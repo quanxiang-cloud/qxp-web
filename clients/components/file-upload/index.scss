@@ -61,3 +61,23 @@
   background-color: var(--yellow-600);
 }
 
+
+.img-icon-eye{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.preview-img-modal{
+  .ant-modal-confirm-btns{
+    display: none;
+  }
+}
+
+.space-evenly{
+  justify-content: space-evenly;
+}

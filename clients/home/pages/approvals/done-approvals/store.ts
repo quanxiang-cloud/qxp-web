@@ -1,14 +1,17 @@
 import toast from '@lib/toast';
 import { action, computed, observable, reaction } from 'mobx';
 import Store from '../base-store';
-import { getMyReviewedList } from '../api';
+import { getMyApplyFillInList, getMyReviewedList } from '../api';
+import { FILL_IN } from '../constant';
 
 class DoneApprovalStore extends Store {
   @observable approvals: ApprovalTask[] = [];
+  @observable fillIn: any[] = [];
+  @observable type = '';
 
   constructor() {
     super();
-    reaction(() => this.query, this.fetchAll);
+    reaction(() => this.query, this.getFetch);
   }
 
   @computed get query(): Record<string, any> {
@@ -21,11 +24,41 @@ class DoneApprovalStore extends Store {
   }
 
   @action
+  getFetch = ()=>{
+    switch (this.type) {
+    case FILL_IN:
+      this.fetchFillInAll();
+      break;
+    default:
+      this.fetchAll();
+      break;
+    }
+  };
+
+  @action
   fetchAll = async () => {
     this.loading = true;
     try {
       const { dataList = [], total } = await getMyReviewedList(this.query);
       this.approvals = dataList;
+      this.total = total;
+      this.loading = false;
+    } catch (err) {
+      toast.error(err);
+    }
+  };
+
+  // 填写节点任务集合
+  @action
+  fetchFillInAll = async () => {
+    this.loading = true;
+    try {
+      const { list, total } = await getMyApplyFillInList('HANDLED_PAGE', {
+        page: this.query.page,
+        limit: this.query.size,
+      });
+      // filter item without id
+      this.approvals = list.filter((item: ApprovalTask) => item.id);
       this.total = total;
       this.loading = false;
     } catch (err) {

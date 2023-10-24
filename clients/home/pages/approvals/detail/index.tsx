@@ -1,9 +1,12 @@
+/* eslint-disable no-empty */
+/* eslint-disable guard-for-in */
+/* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useParams, useHistory } from 'react-router';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
-import { pick, get } from 'lodash';
+import { pick, get, isNumber } from 'lodash';
 
 import Breadcrumb from '@c/breadcrumb';
 import RadioButtonGroup from '@c/radio/radio-button-group';
@@ -22,11 +25,12 @@ import Toolbar from './toolbar';
 import Dynamic from './dynamic';
 import Discuss from './discuss';
 import ActionModals from './action-modals';
-import { getTaskFormById } from '../api';
+import { getFillInDetail, getTaskFormById } from '../api';
 import store from './store';
 
 import './index.scss';
 import Button from '@c/button';
+import { FILL_IN } from '../constant';
 
 const globalActionKeys = [
   'canMsg', 'canViewStatusAndMsg', 'hasCancelBtn',
@@ -41,16 +45,20 @@ function ApprovalDetail(): JSX.Element {
   const [showSwitch, setShowSwitch] = useState<boolean>(false);
   const [taskEnd, setTaskEnd] = useState<boolean>(false);
   const [count, setCount] = useState<number>(0);
+  const [fillTask, setFillTask] = useState<any>({});
 
   const [validate, setValidate] = useState<boolean>(false);
   const [actionParams, setActionParams] = useState<any>({});
   const submitRef = useRef<any>();
 
   const listType = search.get('list') || 'todo';
-  const { processInstanceID, type } = useParams<{
+  const { processInstanceID, type, taskID, taskType } = useParams<{
     processInstanceID: string;
-    type: string
+    taskID: string;
+    type: string;
+    taskType: string;
   }>();
+
   const history = useHistory();
   const queryRelationKey = showSwitch ? [processInstanceID, type, currentTaskId] : [processInstanceID, type];
 
@@ -58,7 +66,79 @@ function ApprovalDetail(): JSX.Element {
     isLoading, data, isError, error,
   } = useQuery<any, Error>(
     queryRelationKey,
-    () => getTaskFormById(processInstanceID, { type, taskId: currentTaskId }).then((res) => {
+    ()=>{
+      if (taskType === FILL_IN) {
+        return getFillIn();
+      }
+      return getApprovel();
+    },
+  );
+
+  const getApprovel = () => getTaskFormById(processInstanceID, { type, taskId: currentTaskId }).then((res) => {
+    if (!currentTaskId) {
+      setCurrentTaskId(get(res, 'taskDetailModels[0].taskId', '').toString());
+    }
+
+    if (type === 'HANDLED_PAGE') {
+      const taskDetailModels = get(res, 'taskDetailModels', []);
+      if (taskDetailModels.length > 1) {
+        setShowSwitch(true);
+        const status = taskDetailModels.map(({ taskName, taskId }: Record<string, string>) => {
+          return {
+            label: taskName,
+            value: taskId,
+          };
+        });
+        setStatus(status);
+      }
+    }
+
+    return res;
+  });
+
+  const task = useMemo(() => {
+    const taskDetailData = get(data, 'taskDetailModels', [])?.find(
+      (taskItem: Record<string, any>) => taskItem?.formSchema !== null,
+    );
+    return taskDetailData ? taskDetailData : get(data, 'taskDetailModels[0]', {});
+  }, [data]);
+
+  const {
+    data: formData,
+  } = useQuery<any, Error>(
+    [processInstanceID, currentTaskId, task?.taskId],
+    () => {
+      if (!currentTaskId || !task?.formSchema) {
+        return Promise.resolve({});
+      }
+      return getFlowFormData(
+        processInstanceID,
+        currentTaskId,
+        buildQueryRef(task.formSchema),
+      ).catch((err) => {
+        toast.error(err);
+      });
+    },
+  );
+
+  const getFillIn = () => {
+    return getFillInDetail(type, taskID, { ref: buildQueryRef(task?.formSchema) }).then((res) => {
+      if (res?.taskType && res.taskType === 'Pending') {
+        res.operatorPermission = {
+          custom: null,
+          system: [
+            {
+              enabled: true,
+              changeable: false,
+              name: '提交',
+              text: '提交',
+              value: 'FILL_IN',
+              only: 'filIn',
+            },
+          ],
+        };
+      }
+      res.taskDetailModels = [JSON.parse(JSON.stringify(res))];
       if (!currentTaskId) {
         setCurrentTaskId(get(res, 'taskDetailModels[0].taskId', '').toString());
       }
@@ -76,36 +156,16 @@ function ApprovalDetail(): JSX.Element {
           setStatus(status);
         }
       }
-
+      setFillTask(res);
       return res;
-    }),
-  );
+    });
+  };
 
-  const task = useMemo(() => {
-    const taskDetailData = get(data, 'taskDetailModels', []).find(
-      (taskItem: Record<string, any>) => taskItem?.formSchema !== null,
-    );
-    return taskDetailData ? taskDetailData : get(data, 'taskDetailModels[0]', {});
-  }, [data]);
-
-  const {
-    data: formData,
-  } = useQuery<any, Error>(
-    [processInstanceID, currentTaskId, task?.taskId],
-    () => {
-      if (!currentTaskId || !task?.formSchema) {
-        return Promise.resolve({});
-      }
-
-      return getFlowFormData(
-        processInstanceID,
-        currentTaskId,
-        buildQueryRef(task.formSchema),
-      ).catch((err) => {
-        toast.error(err);
-      });
-    },
-  );
+  useEffect(()=>{
+    if (task.formSchema) {
+      getFillIn();
+    }
+  }, [JSON.stringify(buildQueryRef(task.formSchema))]);
 
   useEffect(() => {
     setFormValues(formData);
@@ -124,18 +184,51 @@ function ApprovalDetail(): JSX.Element {
     if (count > 0) {
       const { value, currTask, reasonRequired } = actionParams;
       validate ? store.handleClickAction(value, currTask, reasonRequired) : toast.error('必填项未填写完整');
-      console.log('validate', validate, value, currTask, reasonRequired, count);
     }
   }, [count]);
 
+  const formatProperties = (data: any, fieldPermission?: any)=>{
+    for (const key in data) {
+      if (data[key].type === 'object') {
+        formatProperties(data[key].properties);
+      } else {
+        data[key]?.description && (data[key].description = '');
+        try {
+          if (fieldPermission && taskType === FILL_IN) {
+            if (isNumber(fieldPermission[key])) {
+              data[key]['x-internal'].permission = fieldPermission[key];
+            } else {
+              fieldPermission?.[key]?.['x-internal']?.permission && (data[key]['x-internal'].permission = fieldPermission[key]['x-internal'].permission);
+            }
+          }
+          if (data[key]?.['x-component'] === 'AssociatedRecords') {
+            const componentProps: any = data[key]['x-component-props'];
+            componentProps['isNew'] = false;
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    }
+  };
+
+  const formatFormSchema = (formSchema: any, fieldPermission?: any)=>{
+    formSchema && formatProperties(formSchema.properties, fieldPermission);
+    return formSchema;
+  };
+
   const renderSchemaForm = (task: any): JSX.Element | null => {
+    let _formData = formData;
+    if (taskType === FILL_IN) {
+      _formData = fillTask?.FormData;
+    }
     return (
       <div className='task-form overflow-auto px-24'>
         <FormRenderer
-          value={formData}
-          schema={task.formSchema || {}}
+          value={_formData}
+          schema={formatFormSchema(task.formSchema, task?.fieldPermission) || {}}
           onFormValueChange={setFormValues}
-          readOnly={taskEnd || type === 'APPLY_PAGE' || type === 'HANDLED_PAGE' }
+          readOnly={taskEnd || type === 'APPLY_PAGE' || type === 'HANDLED_PAGE' || task?.taskType === 'Finish' }
           usePermission
           onValidate={(value) => {
             setValidate(value);
@@ -158,6 +251,8 @@ function ApprovalDetail(): JSX.Element {
   }
   const appID = get(data, 'appId');
   const tableID = get(data, 'tableId');
+
+  const listText = taskType === FILL_IN ? '填写列表' : '审批列表';
   return (
     <>
       <Breadcrumb
@@ -169,7 +264,7 @@ function ApprovalDetail(): JSX.Element {
               </span>
             ),
           },
-          { key: 'list', text: '审批列表', path: `/approvals?list=${listType}` },
+          // { key: 'list', text: listText, path: `/approvals?list=${listType}` },
           { key: 'current', text: data?.flowName },
         ]}
         className="px-24 py-10"
@@ -198,6 +293,7 @@ function ApprovalDetail(): JSX.Element {
                 schema={task?.formSchema}
                 formData={formValues}
                 onSubmitClick={onSubmitClick}
+                taskType = {taskType}
               />
               <div className='flow-name hidden'>{data?.flowName}</div>
               {renderSchemaForm(task)}
@@ -206,6 +302,7 @@ function ApprovalDetail(): JSX.Element {
 
         </Panel>
         {
+          // taskType !== FILL_IN &&
           data.canViewStatusAndMsg && (
             <>
               <div className='approval-detail-tab-name hidden'>审批详情</div>
@@ -230,7 +327,7 @@ function ApprovalDetail(): JSX.Element {
           )
         }
       </div>
-      {appID && (
+      {(appID || taskType === FILL_IN) && (
         <ActionModals
           flowName={data?.flowName}
           formData={formValues}

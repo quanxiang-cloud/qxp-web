@@ -2,7 +2,8 @@ import toast from '@lib/toast';
 import { action, computed, observable, reaction } from 'mobx';
 import day from 'dayjs';
 import Store from '../base-store';
-import { getMyApplyList } from '../api';
+import { getMyApplyFillInList, getMyApplyList } from '../api';
+import { FILL_IN } from '../constant';
 
 // default query recent 7 days
 const beginDay = day().subtract(7, 'day').format('YYYY-MM-DD');
@@ -10,14 +11,15 @@ const endDay = day().format('YYYY-MM-DD');
 
 class MyAppliedApprovalStore extends Store {
   @observable approvals: ApprovalTask[] = [];
+  @observable fillIn: any[] = [];
   @observable status = '';
   @observable beginDate = beginDay;
   @observable endDate = endDay;
   @observable readableDate = 'customized:recent_seven_days';
-
+  @observable type = '';
   constructor() {
     super();
-    reaction(() => this.query, this.fetchAll);
+    reaction(() => this.query, this.getFetch);
   }
 
   @computed get query(): Record<string, any> {
@@ -39,6 +41,18 @@ class MyAppliedApprovalStore extends Store {
   };
 
   @action
+  getFetch = ()=>{
+    switch (this.type) {
+    case FILL_IN:
+      this.fetchFillInAll();
+      break;
+    default:
+      this.fetchAll();
+      break;
+    }
+  };
+
+  @action
   fetchAll = async () => {
     this.loading = true;
     try {
@@ -46,6 +60,27 @@ class MyAppliedApprovalStore extends Store {
       // filter item without id
       this.approvals = dataList.filter((item: ApprovalTask) => item.id);
       this.total = total - (dataList.length - this.approvals.length);
+      this.loading = false;
+    } catch (err) {
+      toast.error(err);
+    }
+  };
+
+  // 填写节点任务集合
+  @action
+  fetchFillInAll = async () => {
+    this.loading = true;
+    try {
+      const { list, total } = await getMyApplyFillInList('APPLY_PAGE', {
+        page: this.query.page,
+        limit: this.query.size,
+        status: this.query.status,
+        beginDate: this.query.beginDate,
+        endDate: this.query.endDate,
+      });
+      // filter item without id
+      this.approvals = list.filter((item: ApprovalTask) => item.id);
+      this.total = total;
       this.loading = false;
     } catch (err) {
       toast.error(err);

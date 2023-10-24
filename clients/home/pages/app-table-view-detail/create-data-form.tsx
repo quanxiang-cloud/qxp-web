@@ -1,3 +1,4 @@
+/* eslint-disable guard-for-in */
 /* eslint-disable max-len */
 import React, { useState } from 'react';
 import { FormButtonGroup, setValidationLanguage } from '@formily/antd';
@@ -58,7 +59,7 @@ function CreateDataForm({ appID, pageID, rowID, onCancel }: Props): JSX.Element 
           appID,
           pageID,
           rowID,
-          buildFormDataReqParams(schema, 'updated', newValue),
+          buildFormDataReqParams(schema, 'updated', newValue, appID),
         ).then(() => {
           toast.success('修改成功');
         });
@@ -66,7 +67,7 @@ function CreateDataForm({ appID, pageID, rowID, onCancel }: Props): JSX.Element 
         return createFormDataRequest(
           appID,
           pageID,
-          buildFormDataReqParams(schema, 'create', currentValue),
+          buildFormDataReqParams(schema, 'create', currentValue, appID),
         ).then(() => {
           toast.success('保存成功');
         });
@@ -80,6 +81,27 @@ function CreateDataForm({ appID, pageID, rowID, onCancel }: Props): JSX.Element 
     });
   };
 
+  const formatProperties = (data: any)=>{
+    for (const key in data) {
+      if (data[key].type === 'object') {
+        formatProperties(data[key].properties);
+      }
+      try {
+        if (!defaultValues) {
+          (data[key]['x-component-props'].isNew = true);
+        } else {
+          ( data[key]?.['x-component'] === 'AssociatedRecords') && (data[key]['x-component-props'].isNew = false);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
+  const formatFormSchema = (formSchema: any)=>{
+    formSchema && formatProperties(formSchema.properties);
+    return formSchema;
+  };
   return (
     <div className='flex flex-col flex-1 px-20 pt-20 h-full'>
       <div className='user-app-schema-form'>
@@ -87,7 +109,7 @@ function CreateDataForm({ appID, pageID, rowID, onCancel }: Props): JSX.Element 
           className='pt-20 px-40'
           onSubmit={handleSubmit}
           defaultValue={toJS(defaultValues)}
-          schema={schema as ISchema}
+          schema={formatFormSchema(schema) as ISchema}
           usePermission
         >
           <FormButtonGroup className={`flex justify-end bg-white sticky bottom-0 ${window?.isMobile ? 'is-mobile-btn-group' : ''}`}>

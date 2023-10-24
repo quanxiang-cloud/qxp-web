@@ -8,6 +8,7 @@ interface QXPUploadFileBaseProps {
   type: string;
   name: string;
   size: number;
+  downLoadURL?: string;
 }
 
 interface QXPUploadFileTask extends QXPUploadFileBaseProps {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { observer } from 'mobx-react';
 import { useMutation } from 'react-query';
 import { useHistory, useParams } from 'react-router-dom';
@@ -27,8 +27,8 @@ interface Props {
   schema: ISchema;
   formData: Record<string, unknown>;
   defaultValue: Record<string, unknown>;
-  appID: string;
-  tableID: string;
+  appID?: string;
+  tableID?: string;
 }
 
 function ActionModals({
@@ -44,6 +44,12 @@ function ActionModals({
   const [addSignType, setAddSignType] = useState('');
   const [addSignValue, setAddSignValue] = useState('');
 
+  const formRef = useRef<any>();
+
+  useEffect(()=>{
+    formRef?.current && handleSubmit();
+  }, [formRef?.current]);
+
   function handleSubmit(): void {
     form.submit();
   }
@@ -57,14 +63,14 @@ function ActionModals({
 
   const handleTaskMutation = useMutation((): Promise<any> => {
     if (modalInfo.payload.remark !== undefined) {
-      if (modalInfo.payload.remark.length > 100) {
-        return Promise.reject(new Error('字数不能超过100字'));
+      if (modalInfo.payload.remark.length > 1000) {
+        return Promise.reject(new Error('字数不能超过1000字'));
       }
     }
     if ([
       TaskHandleType.agree,
       TaskHandleType.refuse,
-      TaskHandleType.fill_in,
+      // TaskHandleType.fill_in,
     ].includes(action as TaskHandleType)) {
       let _formData = {};
       if (isEmpty(defaultValue)) {
@@ -77,6 +83,23 @@ function ActionModals({
       return apis.reviewTask(processInstanceID, taskID, {
         handleType: action,
         remark: modalInfo.payload.remark || '',
+        formData: _formData,
+      });
+    }
+
+    if ([
+      TaskHandleType.fill_in,
+    ].includes(action as TaskHandleType)) {
+      let _formData = {};
+      if (isEmpty(defaultValue)) {
+        _formData = buildFormDataReqParams(schema, 'create', formData);
+      } else {
+        const newValue = formDataDiff(formData, defaultValue, schema);
+        _formData = buildFormDataReqParams(schema, 'updated', newValue);
+      }
+
+      return apis.submitFillTask({
+        id: taskID,
         formData: _formData,
       });
     }
@@ -215,8 +238,7 @@ function ActionModals({
     const { payload } = store.modalInfo;
     if ([
       TaskHandleType.agree,
-      TaskHandleType.refuse,
-      TaskHandleType.fill_in].includes(action as TaskHandleType)
+      TaskHandleType.refuse].includes(action as TaskHandleType)
     ) {
       return (
         <Form.Item
@@ -438,6 +460,13 @@ function ActionModals({
     if (action === TaskHandleType.hasUrgeBtn) {
       return (
         <div>是否对流程进行催办？</div>
+      );
+    }
+
+    // 填写
+    if (action === TaskHandleType.fill_in) {
+      return (
+        <div>是否确定提交？</div>
       );
     }
   };

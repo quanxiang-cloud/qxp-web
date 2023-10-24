@@ -20,8 +20,10 @@ interface Props {
 
 const { onFieldValueChange$ } = FormEffectHooks;
 
-export default function ConfigForm({ onChange, initialValue: _initValue }: Props): JSX.Element {
+function ConfigForm(props: Props): JSX.Element {
+  const { onChange, initialValue: _initValue } = props;
   const [currentFieldKey, setCurrenFieldKey] = useState('');
+  const [hasAssociatedData, setHasAssociatedData] = useState(false);
   const { actions } = useContext(FieldConfigContext);
   const { appID } = useContext(StoreContext);
   const subRef = useRef<Subscription>();
@@ -65,6 +67,21 @@ export default function ConfigForm({ onChange, initialValue: _initValue }: Props
   const currentSubSchema = initialValue.subTableSchema?.properties?.[currentFieldKey];
   const currentSchemaType = currentSubSchema?.['x-component']?.toLowerCase() as KeyOfConfigComponent;
 
+  useEffect(()=>{
+    getAssociatedData();
+  }, [initialValue.subTableSchema?.properties]);
+
+  const getAssociatedData = ()=>{
+    let num = 0;
+    const subTableSchemaProperties = initialValue.subTableSchema?.properties || {};
+    for (const key in subTableSchemaProperties) {
+      if (subTableSchemaProperties[key]['x-component'] === 'AssociatedData') {
+        num = num + 1;
+      }
+    }
+    setHasAssociatedData( num === 1);
+  };
+
   return (
     <FieldConfigContext.Provider value={{ actions }}>
       <SchemaForm
@@ -85,3 +102,7 @@ export default function ConfigForm({ onChange, initialValue: _initValue }: Props
     </FieldConfigContext.Provider>
   );
 }
+
+ConfigForm.isFieldComponent = true;
+
+export default ConfigForm;

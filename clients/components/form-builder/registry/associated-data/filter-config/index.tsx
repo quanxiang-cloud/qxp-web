@@ -18,6 +18,9 @@ type Props = {
   currentFormSchema?: ISchema;
   customSchemaFields?: SchemaFieldItem[];
   filterFunc?: (field: SchemaFieldItem) => boolean;
+  showSelectAll?: any;
+  parentFormSchema?: ISchema;
+  disFilterField?: any;
 }
 
 type FieldsProps = {
@@ -49,20 +52,24 @@ function FilterConfig({
   value,
   currentFormSchema,
   customSchemaFields,
+  parentFormSchema,
   filterFunc,
+  disFilterField,
 }: Props): JSX.Element {
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [schemaFields, setSchemaFields] = useState<SchemaFieldItem[]>([]);
   const [currentFields, setCurrentFields] = useState<SchemaFieldItem[]>([]);
-  const dataFilterRef = useRef<RefProps>(null);
+  const [parentFields, setParentFields] = useState<SchemaFieldItem[]>([]);
 
+  const dataFilterRef = useRef<RefProps>(null);
+  const [selectAll, setSelectAll] = useState(value?.selectAll);
   const allowSelect = (!!tableID && !!appID) || (customSchemaFields && customSchemaFields.length);
 
   const handleSave = (): void => {
     dataFilterRef.current?.validate().then((flag) => {
       if (flag) {
-        onChange(dataFilterRef.current?.getDataValues() as FilterConfig);
+        onChange(dataFilterRef.current?.getDataValues({ selectAll }) as FilterConfig);
         setVisible(false);
       }
     });
@@ -73,6 +80,11 @@ function FilterConfig({
       setCurrentFields(
         getFields({ schema: currentFormSchema, excludedSystemField: true }),
       );
+      if (parentFormSchema) {
+        setParentFields(
+          getFields({ schema: parentFormSchema, excludedSystemField: true }),
+        );
+      }
     }
   }, [currentFormSchema]);
 
@@ -91,6 +103,35 @@ function FilterConfig({
       });
     }
   }, [allowSelect, visible, customSchemaFields]);
+
+  const handleSelectAll = ()=>{
+    setSelectAll(!selectAll);
+  };
+
+  const getFormOptions = (currentFields: any, parentFields: any)=>{
+    const arr = [
+      {
+        label: '固定值',
+        value: 'fixedValue',
+      },
+    ];
+    if (currentFields?.length) {
+      arr.push( {
+        label: '表单值',
+        value: 'form',
+      });
+    }
+    // TODO:
+    if (parentFields?.length) {
+      arr.push(
+        {
+          label: '主表单值',
+          value: 'parentForm',
+        },
+      );
+    }
+    return arr;
+  };
 
   return (
     <>
@@ -119,13 +160,27 @@ function FilterConfig({
           <div className='p-20'>
             {!allowSelect && (<div>请选择关联表</div>)}
             {loading && allowSelect && (<PageLoading />)}
+            {/* {
+              value?.showSelectAll &&
+              (<div className='flex mb-10'>
+                <Checkbox
+                  checked={selectAll}
+                  onChange={handleSelectAll}
+                  onClick={(e) => e.stopPropagation()}
+                />
+                <span className='ml-6'>默认选择全部</span>
+              </div>)
+            } */}
             {!loading && allowSelect && (
               <DataFilter
                 initConditions={value?.condition}
                 initTag={value?.tag}
                 associationFields={currentFields}
+                associationParentFields={parentFields}
                 ref={dataFilterRef}
                 fields={schemaFields}
+                formOptions={getFormOptions(currentFields, parentFields)}
+                disFilterField={disFilterField}
               />
             )}
           </div>

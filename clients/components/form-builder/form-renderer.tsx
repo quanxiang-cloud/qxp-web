@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { SchemaForm, setValidationLanguage, IForm, createFormActions, IFormValidateResult } from '@formily/antd';
 import { ConfigProvider } from 'antd';
 import zhCN from 'antd/lib/locale/zh_CN';
-import { parse, resolve, findVariables } from 'qxp-formula';
+import { parse, findVariables } from 'qxp-formula';
 import { omit } from 'ramda';
 
 import logger from '@lib/logger';
@@ -15,8 +15,11 @@ import requiredLinkageEffect from './linkages/required';
 import defaultValueLinkageEffect from './linkages/default-value';
 import formValueToFilter from './linkages/form-value-to-filter';
 import calculationFormulaEffect from './linkages/calculation-formula';
+import statisticalAssociationEffect from './linkages/statistical-association';
 import { wrapSchemaByMegaLayout, schemaPermissionTransformer } from './utils';
 import { INVALID_READONLY_LEGACY, INVISIBLE_NO_WRITE, PERMISSION, READONLY_NO_WRITE } from './constants';
+import resolve from './resolve';
+import { toast } from '@one-for-all/ui';
 
 setValidationLanguage('zh');
 
@@ -50,7 +53,7 @@ function FormRenderer({
   const [errorMessage, setErrorMessage] = useState('');
   const actions = createFormActions();
   const schema = usePermission ? schemaPermissionTransformer(inputSchema, readOnly) : inputSchema;
-  const fieldsToOmit = treeUtil.reduce((fields: string[], schema: ISchema, fieldId?: string | number) => {
+  const fieldsToOmit = treeUtil?.reduce((fields: string[], schema: ISchema, fieldId?: string | number) => {
     if ([INVISIBLE_NO_WRITE, READONLY_NO_WRITE, INVALID_READONLY_LEGACY].includes(
       schema?.['x-internal']?.permission as PERMISSION,
     )) {
@@ -72,19 +75,22 @@ function FormRenderer({
 
         if (missingValueField) {
           actions.getFieldState(missingValueField, (state) => {
-            setErrorMessage(`字段 ${state.props.title} 必填。`);
+            // setErrorMessage(`字段 ${state.props.title} 必填。`);
+            toast.error(`字段 ${state.props.title} 必填。`);
           });
           return false;
         }
 
         const isValid = resolve(ast, values);
         if (!isValid) {
-          setErrorMessage(message || '校验不通过，请修改。');
+          // setErrorMessage(message || '校验不通过，请修改。');
+          toast.error(message || '校验不通过，请修改。');
           logger.debug('get false result of formula:', formula, 'with values:', values);
           return false;
         }
       } catch (err) {
-        setErrorMessage('表单校验失败，请修改表单值或联系管理员。');
+        // setErrorMessage('表单校验失败，请修改表单值或联系管理员。');
+        toast.error('表单校验失败，请修改表单值或联系管理员。');
         logger.warn('failed to resolve formula:', err);
         return false;
       }
@@ -141,6 +147,7 @@ function FormRenderer({
             const _schema = { ...schema, properties: schemaToMap(schema) };
             defaultValueLinkageEffect(_schema, actions);
             calculationFormulaEffect(_schema, actions);
+            statisticalAssociationEffect(_schema, actions);
             formValueToFilter(_schema, actions);
           }}
         >

@@ -135,6 +135,7 @@ export const FILTER_FIELD = [
   'CascadeSelector',
   'OrganizationPicker',
   'Serial',
+  'AssociatedData',
 ];
 
 function getDateType(format: string): unitOfTime.StartOf {
@@ -217,6 +218,14 @@ export function setValueFormCondition({ valueFrom, key, op, value, schema }: Val
       valueFrom,
     };
   }
+  if (valueFrom === 'parentForm') {
+    return {
+      key,
+      op,
+      value: value?.toString().split(',') || [],
+      valueFrom,
+    };
+  }
 
   return {
     ...getCondition(
@@ -239,6 +248,10 @@ export function getValue(
   }
 
   if (valueFrom === 'form') {
+    return initValue.toString();
+  }
+
+  if (valueFrom === 'parentForm') {
     return initValue.toString();
   }
 

@@ -23,6 +23,7 @@ interface Props {
   editable: boolean;
   dataPermEditable: boolean;
   schema: ISchema;
+  nodeType?: string;
 }
 
 export default function CustomFieldTable({
@@ -31,11 +32,12 @@ export default function CustomFieldTable({
   fields,
   updateFields: _updateFields,
   schema,
+  nodeType,
 }: Props): JSX.Element {
   const { flowID: flowId } = useContext(flowContext);
   const schemaMap = schemaToMap(schema, null, { keepLayout: true, parseSubTable: true });
   const layoutFields = schemaToArray(schema, { parseSubTable: true, keepLayout: true })
-    .reduce((layoutFields: string[], schema) => {
+    ?.reduce((layoutFields: string[], schema) => {
       const internal = schema['x-internal'];
       if (internal?.isLayoutComponent && internal.fieldId) {
         layoutFields.push(internal.fieldId);
@@ -310,6 +312,7 @@ export default function CustomFieldTable({
           Cell: (model: any) => getCell(model, 'write'),
           width: 80,
         } : null,
+        nodeType !== 'fillIn' &&
         {
           Header: () => getValueHeader('初始值', '该节点初次打开工作表时对应字段呈现初始值'),
           id: 'initialValue',
@@ -321,6 +324,7 @@ export default function CustomFieldTable({
             return getValueCell(model, 'initialValue', editable);
           },
         },
+        nodeType !== 'fillIn' &&
         {
           Header: () => getValueHeader('提交值', '该节点提交工作表后对应字段呈现提交值'),
           id: 'submitValue',

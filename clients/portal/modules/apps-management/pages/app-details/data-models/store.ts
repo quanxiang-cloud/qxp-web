@@ -9,6 +9,14 @@ import { deleteSchema, modelDuplicate, saveTableSchema } from './api';
 import { fetchDataModels } from '../api';
 import { INIT_MODEL_SCHEMA } from '../utils';
 
+const xComponentMap: Record<string, string> = {
+  string: 'Input',
+  datetime: 'DatePicker',
+  array: 'Input',
+  number: 'NumberPicker',
+  boolean: 'Switch',
+};
+
 class AppModelStore {
   constructor() {
     reaction(() => this.curDataModel?.tableID, this.fetchSchema);
@@ -225,11 +233,12 @@ class AppModelStore {
 
   @action
   addModelField = (field: ModelField): void => {
-    this.dataModelSchema.schema.properties;
+    const componentToRender = xComponentMap[field.type as string] || 'Input';
+
     this.dataModelSchema = set(
       this.dataModelSchema,
       `schema.properties.${field.id}`,
-      { ...field, 'x-index': this.fields.length },
+      { ...field, 'x-index': this.fields.length, 'x-component': componentToRender },
     );
   };
 

@@ -13,6 +13,7 @@ const FULL_COMP = ['AssociatedRecords', 'SubTable', 'ImageUpload', 'FileUpload']
 
 export function InfoCard({ list }: {list: FormInfoCardDataProp}): JSX.Element {
   const { label, value, key, fieldSchema } = list;
+  const { display } = fieldSchema;
   return (
     <div
       key={key}
@@ -26,7 +27,7 @@ export function InfoCard({ list }: {list: FormInfoCardDataProp}): JSX.Element {
     >
       <div className='text-gray-600 flex-shrink-0'>{label}：</div>
       <div className={cs(
-        'text-gray-900 flex-1 card-value',
+        'text-gray-900 flex-1 card-value break-all',
         {
           'overflow-x-auto': FULL_COMP.includes(fieldSchema['x-component'] as string),
         },

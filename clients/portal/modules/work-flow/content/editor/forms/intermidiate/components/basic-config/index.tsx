@@ -105,25 +105,36 @@ export default function BasicConfig({ type, value, onChange: _onChange }: Props)
         typeText={`${typeText}人`}
         value={value.approvePersons}
         onChange={(value) => onUpdate('approvePersons', value)}
+        nodeType={type}
       />
-      <div className="text-body2-no-color text-gray-600 mb-8">
-        <span className="text-red-600">*</span>多人{typeText}时
-      </div>
-      <div className={cs('flex items-center mb-24')}>
-        <RadioGroup onChange={(v) => onUpdate('multiplePersonWay', v)}>
-          {multiplePersonBuilder(type === 'approve' ? '或签' : '任填', 'or')}
-          {multiplePersonBuilder(type === 'approve' ? '会签' : '全填', 'and')}
-        </RadioGroup>
-      </div>
-      <div className="text-body2-no-color text-gray-600 mb-8">
-        <span className="text-red-600">*</span>无{typeText}人时
-      </div>
-      <div className="flex items-center mb-24">
-        <RadioGroup onChange={(v) => onUpdate('whenNoPerson', v)}>
-          {noPersonBuilder('自动跳过该节点', 'skip')}
-          {noPersonBuilder('转交给管理员', 'transferAdmin')}
-        </RadioGroup>
-      </div>
+      {
+        type === 'approve' &&
+        (<>
+          <div className="text-body2-no-color text-gray-600 mb-8">
+            <span className="text-red-600">*</span>多人{typeText}时
+          </div>
+          <div className={cs('flex items-center mb-24')}>
+            <RadioGroup onChange={(v) => onUpdate('multiplePersonWay', v)}>
+              {multiplePersonBuilder(type === 'approve' ? '或签' : '任填', 'or')}
+              {multiplePersonBuilder(type === 'approve' ? '会签' : '全填', 'and')}
+            </RadioGroup>
+          </div>
+        </>)
+      }
+      {
+        type === 'approve' &&
+        (<>
+          <div className="text-body2-no-color text-gray-600 mb-8">
+            <span className="text-red-600">*</span>无{typeText}人时
+          </div>
+          <div className="flex items-center mb-24">
+            <RadioGroup onChange={(v) => onUpdate('whenNoPerson', v)}>
+              {noPersonBuilder('自动跳过该节点', 'skip')}
+              {noPersonBuilder('转交给管理员', 'transferAdmin')}
+            </RadioGroup>
+          </div>
+        </>)
+      }
       {type === 'approve' && (
         <>
           <div className="text-body2-no-color text-gray-600 mb-8">自动审批通过规则</div>
@@ -134,58 +145,63 @@ export default function BasicConfig({ type, value, onChange: _onChange }: Props)
           </div>
         </>
       )}
-      <div className="flex items-center justify-between mb-16 mt-24">
-        <div>
-          <div className="text-body2">{typeText}用时限制</div>
-          <span className="text-caption">{
-            type === 'approve' ?
-              '设置审批超时规则，满足条件后可进行催办、按需处理等' :
-              '限制该节点填写所需要的时间，满足条件后可进行催办、按需处理等'
-          }</span>
-        </div>
-        <Toggle
-          onChange={onTimeRuleUpdate('enabled')}
-          defaultChecked={timeRule?.enabled}
-        />
-      </div>
-      <div className={cs('transition overflow-hidden pb-200', {
-        visible: timeRule?.enabled,
-        invisible: !timeRule?.enabled,
-        'h-0': !timeRule?.enabled,
-        'h-auto': timeRule?.enabled,
-        'opacity-0': !timeRule?.enabled,
-        'opacity-1': timeRule?.enabled,
-      })}>
-        <div className="bg-gray-100 p-16 corner-2-8-8-8 mb-16">
-          <div className="text-body2 mb-8">负责人需在以下时间内处理：</div>
-          <RadioGroup onChange={onTimeRuleUpdate('deadLine.breakPoint')}>
-            {breakPointBuilder('进入该节点后', 'entry')}
-            {breakPointBuilder('首次进入该节点后', 'firstEntry')}
-            {breakPointBuilder('工作流开始后', 'flowWorked')}
-          </RadioGroup>
-          {validating && !deadLine.breakPoint && (
-            <div className={'text-red-600'}>
-              请设置处理节点
+      {
+        type === 'approve' &&
+        (<>
+          <div className="flex items-center justify-between mb-16 mt-24">
+            <div>
+              <div className="text-body2">{typeText}用时限制</div>
+              <span className="text-caption">{
+                type === 'approve' ?
+                  '设置审批超时规则，满足条件后可进行催办、按需处理等' :
+                  '限制该节点填写所需要的时间，满足条件后可进行催办、按需处理等'
+              }</span>
             </div>
-          )}
-          <TimerSelector
-            onDayChange={onTimeRuleUpdate('deadLine.day')}
-            onHoursChange={onTimeRuleUpdate('deadLine.hours')}
-            onMinutesChange={onTimeRuleUpdate('deadLine.minutes')}
-            defaultDay={deadLine.day}
-            defaultHours={deadLine.hours}
-            defaultMinutes={deadLine.minutes}
-          />
-          <Urge
-            onSave={onTimeRuleUpdate('deadLine.urge')}
-            defaultValue={deadLine.urge}
-          />
-        </div>
-        <WhenTimeout
-          onChange={onTimeRuleUpdate('whenTimeout')}
-          defaultValue={whenTimeout}
-        />
-      </div>
+            <Toggle
+              onChange={onTimeRuleUpdate('enabled')}
+              defaultChecked={timeRule?.enabled}
+            />
+          </div>
+          <div className={cs('transition overflow-hidden pb-200', {
+            visible: timeRule?.enabled,
+            invisible: !timeRule?.enabled,
+            'h-0': !timeRule?.enabled,
+            'h-auto': timeRule?.enabled,
+            'opacity-0': !timeRule?.enabled,
+            'opacity-1': timeRule?.enabled,
+          })}>
+            <div className="bg-gray-100 p-16 corner-2-8-8-8 mb-16">
+              <div className="text-body2 mb-8">负责人需在以下时间内处理：</div>
+              <RadioGroup onChange={onTimeRuleUpdate('deadLine.breakPoint')}>
+                {breakPointBuilder('进入该节点后', 'entry')}
+                {breakPointBuilder('首次进入该节点后', 'firstEntry')}
+                {breakPointBuilder('工作流开始后', 'flowWorked')}
+              </RadioGroup>
+              {validating && !deadLine.breakPoint && (
+                <div className={'text-red-600'}>
+              请设置处理节点
+                </div>
+              )}
+              <TimerSelector
+                onDayChange={onTimeRuleUpdate('deadLine.day')}
+                onHoursChange={onTimeRuleUpdate('deadLine.hours')}
+                onMinutesChange={onTimeRuleUpdate('deadLine.minutes')}
+                defaultDay={deadLine.day}
+                defaultHours={deadLine.hours}
+                defaultMinutes={deadLine.minutes}
+              />
+              <Urge
+                onSave={onTimeRuleUpdate('deadLine.urge')}
+                defaultValue={deadLine.urge}
+              />
+            </div>
+            <WhenTimeout
+              onChange={onTimeRuleUpdate('whenTimeout')}
+              defaultValue={whenTimeout}
+            />
+          </div>
+        </>)
+      }
     </div>
   );
 }

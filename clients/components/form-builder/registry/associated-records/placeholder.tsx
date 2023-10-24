@@ -24,7 +24,7 @@ function Placeholder({ props }: any): JSX.Element {
       getTableSchema(appID, tableID).then((res) => {
         if (!res) return;
         const flattenTableMap = schemaToFields(res.schema)
-          .reduce((acc: Record<string, any>, { fieldName: key, title }) => {
+          ?.reduce((acc: Record<string, any>, { fieldName: key, title }) => {
             if (key && title) acc[key] = title as string;
             return acc;
           }, {});
@@ -33,7 +33,7 @@ function Placeholder({ props }: any): JSX.Element {
           return !EXCLUDE_FIELDS.includes(v) && flattenTableMap[v];
         });
 
-        const _cols = availableCols.reduce((acc: UnionColumn<any>[], id: string) => {
+        const _cols = availableCols?.reduce((acc: UnionColumn<any>[], id: string) => {
           acc.push({ id, Header: flattenTableMap[id], accessor: () => <span>--</span> });
           return acc;
         }, []);

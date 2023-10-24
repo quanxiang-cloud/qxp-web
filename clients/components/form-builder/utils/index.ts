@@ -323,13 +323,14 @@ export function validateDatasetElement<T>(value: T, schema?: ISchema): boolean {
 
     const val = get(value, key);
     const checkedValueFrom = get(value, 'defaultValueFrom');
+    // @ts-ignore
     if (checkedValueFrom === 'customized') {
       if (key !== 'datasetId' && !val) {
         toast.error(rules?.message);
         return false;
       }
     }
-
+    // @ts-ignore
     if (checkedValueFrom === 'dataset') {
       if (!val) {
         toast.error(rules?.message);
@@ -357,12 +358,14 @@ export function getSchemaPermissionFromSchemaConfig(
 
 export function getDisplayModifierFromSchema(schema: ISchema): FormBuilder.DisplayModifier {
   const permission = get(schema, 'x-internal.permission');
+  // @ts-ignore
   if (isPermissionReadOnly(permission)) {
     return 'readonly';
   }
   if (isPermissionInvisible(permission)) {
     return 'hidden';
   }
+  // @ts-ignore
   if (isPermissionNormal(permission)) {
     return 'normal';
   }
@@ -419,7 +422,7 @@ export function calculateFieldPermission(
 ): PERMISSION {
   const permissions = [0b1000, 0b0100, 0b0010, 0b0001];
   const options = [editable, invisible, writeable, readable];
-  const permission = permissions.reduce((acc, permission, index) => {
+  const permission = permissions?.reduce((acc, permission, index) => {
     return acc + (options[index] ? permission : 0b0000);
   }, 0b0000) as PERMISSION;
   const availablePermisssions = [0, 1, 3, 5, 7, 11];
@@ -454,7 +457,7 @@ export const placeholderSchema = {
 
 // tips, sort Obj
 export function sortProperties(properties: ISchema[] = []): Record<string, ISchema> {
-  return values(properties).reduce((acc, item) => {
+  return values(properties)?.reduce((acc, item) => {
     const xIndex = item['x-index'] || 0;
     acc[xIndex] = item;
     return acc;
@@ -485,7 +488,7 @@ export function convertSingleSelectDefault(defaultOption: Record<string, string 
 }
 
 export function getNoLabelValues(value: LabelValue[]): string[] {
-  return ((value || []) as LabelValue[]).reduce<string[]>((acc, val) => {
+  return ((value || []) as LabelValue[])?.reduce<string[]>((acc, val) => {
     // Es object conversion label is missing
     if (val.value && !val.label) {
       return [...acc, val.value];

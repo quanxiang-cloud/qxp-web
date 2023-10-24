@@ -36,7 +36,8 @@ function getVariables(schema: ISchema): Array<{ fieldName: string; title: string
     }
     const { componentName } = field;
 
-    return componentName === 'input' || componentName === 'numberpicker';
+    return componentName === 'input' || componentName === 'numberpicker' ||
+    componentName === 'aggregationrecords';
   }).sort((currentField, nextField) => {
     return numberTransform(currentField) - numberTransform(nextField);
   }).map((field) => ({ fieldName: field.id, title: field.title as string }));

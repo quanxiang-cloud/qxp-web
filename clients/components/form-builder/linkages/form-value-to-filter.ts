@@ -1,3 +1,4 @@
+/* eslint-disable guard-for-in */
 import {
   FormEffectHooks,
   ISchemaFormActions,
@@ -7,7 +8,7 @@ import { debounceTime } from 'rxjs6/operators';
 
 const SUPPORT_FILTER_COMP = ['AssociatedData', 'AssociatedRecords'];
 
-const { onFieldValueChange$, onFieldMount$ } = FormEffectHooks;
+const { onFieldValueChange$, onFieldMount$, onFormValuesChange$ } = FormEffectHooks;
 
 type LinkedFilterConfig = {
   field: string;
@@ -27,7 +28,7 @@ function getNewCondition(
   getFieldValue: (path: string) => any,
   rowIdxStr: string,
 ): Condition[] {
-  return initConditions.reduce((acc, conditionItem) => {
+  return initConditions?.reduce((acc, conditionItem) => {
     const value = getFieldValue(getFieldRealPath(conditionItem.path || '', rowIdxStr));
 
     if (
@@ -36,7 +37,11 @@ function getNewCondition(
       return acc.concat({ ...conditionItem, value: [].concat(value) });
     }
 
-    if (conditionItem.valueFrom !== 'form') {
+    if ((conditionItem.valueFrom === 'parentForm') && value) {
+      return acc.concat({ ...conditionItem, value: [].concat(value) });
+    }
+
+    if (conditionItem.valueFrom !== 'form' && conditionItem.valueFrom !== 'parentForm') {
       return acc.concat(conditionItem);
     }
 
@@ -45,7 +50,7 @@ function getNewCondition(
 }
 
 function findLinkagesFilterComp(schema: ISchema, precedingPath = ''): LinkedFilterConfig[] {
-  return Object.entries(schema.properties || {}).reduce((
+  return Object.entries(schema.properties || {})?.reduce((
     acc,
     [fieldName, fieldSchema]: [string, ISchema],
   ) => {
@@ -56,10 +61,14 @@ function findLinkagesFilterComp(schema: ISchema, precedingPath = ''): LinkedFilt
     if (SUPPORT_FILTER_COMP.includes(fieldSchema['x-component'] as string)) {
       const { filterConfig } = fieldSchema['x-component-props'] || {};
       if (filterConfig && filterConfig.condition && filterConfig.condition.length !== 0) {
-        const targetFields = (filterConfig as FilterConfig).condition.reduce((targetFieldsAcc, condition) => {
+        const targetFields = (filterConfig as FilterConfig).condition?.reduce((targetFieldsAcc, condition) => {
           if (condition.valueFrom === 'form') {
             targetFieldsAcc.push(precedingPath + condition.value?.toString() || '');
             condition.path = precedingPath + condition.value?.toString() || '';
+          }
+          if (condition.valueFrom === 'parentForm' ) {
+            targetFieldsAcc.push(condition.value?.toString() || '');
+            condition.path = condition.value?.toString() || '';
           }
 
           return targetFieldsAcc;
@@ -99,6 +108,19 @@ export default function formValueToFilter(
           },
         });
       });
+      if (field?.indexOf('.*.') > -1) {
+        console.log('getNewCondition(xComp.filterConfig.condition, getFieldValue, rowIdxStr)', getNewCondition(xComp.filterConfig.condition, getFieldValue, rowIdxStr));
+        const subTableField = field.split('.')?.[0];
+        setFieldState(subTableField, (state) => {
+          set(state, 'props.x-component-props', {
+            ...state?.props?.['x-component-props'],
+            filterConfig: {
+              ...xComp.filterConfig,
+              condition: getNewCondition(xComp.filterConfig.condition, getFieldValue, rowIdxStr),
+            },
+          });
+        });
+      }
     }
   }
 

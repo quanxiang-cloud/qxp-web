@@ -2,6 +2,7 @@ import { TabTitle } from '@m/components/tabs-page';
 import { EmptyProps } from '@m/qxp-ui-mobile/empty';
 
 import { ApprovalFilter, ApprovalsTabProps } from './types';
+import { APPROVAL, FILL_IN } from '@home/pages/approvals/constant';
 
 export const allList: TabTitle[] = [
   { key: 'my_applies', label: '我发起的' },
@@ -13,6 +14,12 @@ export const allTags: TabTitle[] = [
   { key: '', label: '全部' },
   { key: 'OVERTIME', label: '已超时' },
   { key: 'URGE', label: '催办' },
+];
+
+export const todlAllTags: TabTitle[] = [
+  // { key: '', label: '全部' },
+  { key: APPROVAL, label: '审批' },
+  { key: FILL_IN, label: '填写' },
 ];
 
 const ApplyFlowsEmpty: EmptyProps = {
@@ -50,6 +57,8 @@ export const allTabs: Record<string, ApprovalsTabProps> = {
   '': todoTab,
   OVERTIME: { ...todoTab, tagType: 'OVERTIME' },
   URGE: { ...todoTab, tagType: 'URGE' },
+  approval: todoTab,
+  fillIn: todoTab,
 };
 
 export const emptyFilter: ApprovalFilter = { label: '', value: '' };
@@ -69,6 +78,12 @@ export const ApplyStatus: ApprovalFilter[] = [
   { label: '已拒绝', value: 'REFUSE' },
   { label: '已通过', value: 'AGREE' },
   { label: '已撤销', value: 'CANCEL' },
+];
+
+export const FillInApplyStatus: ApprovalFilter[] = [
+  { label: '全部', value: '' },
+  { label: '进行中', value: 'Pending' },
+  { label: '已完成', value: 'Finsih' },
 ];
 
 export const CCStatus: ApprovalFilter[] = [

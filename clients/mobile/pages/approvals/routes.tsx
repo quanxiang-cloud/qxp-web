@@ -1,7 +1,7 @@
 import React from 'react';
 
 import SubRoutePage from '@m/components/sub-route-page';
-import { approvalActionPath, approvalDetailPath, approvalStatusPath } from '@m/constant';
+import { approvalActionPath, approvalDetailPath, approvalDetailPathApproval, approvalStatusPath } from '@m/constant';
 import ApprovalsActions from '@m/pages/approvals/detail/actions';
 import { SubRoute } from '@m/lib/hooks/use-sub-route';
 
@@ -24,7 +24,10 @@ function DetailRoute(): JSX.Element {
 
 export default function Routes(): JSX.Element {
   return (
-    <SubRoutePage subRoutes={{ path: approvalDetailPath, component: DetailRoute, exact: false }}>
+    <SubRoutePage subRoutes={[
+      { path: approvalDetailPath, component: DetailRoute },
+      { path: approvalDetailPathApproval, component: DetailRoute },
+    ]}>
       <Approvals />
     </SubRoutePage>
   );

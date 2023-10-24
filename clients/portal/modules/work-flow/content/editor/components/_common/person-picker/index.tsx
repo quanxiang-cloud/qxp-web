@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, { useState } from 'react';
 import { cond, equals, always, T } from 'ramda';
 
@@ -19,10 +20,11 @@ interface Props {
   value: ApprovePerson;
   typeText?: string;
   onChange?: (data: ApprovePerson) => void;
+  nodeType?: string;
 }
 
-export default function PersonPicker({ value, typeText, onChange }: Props): JSX.Element {
-  const { users: employees, departments, type = 'person', positions = [], variablePath } = value;
+export default function PersonPicker({ value, typeText, onChange, nodeType }: Props): JSX.Element {
+  const { users: employees = [], departments = [], type = 'person', positions = [], variablePath } = value || {};
   const { validating } = useObservable<StoreValue>(store);
   const [showAddPersonModal, setShowAddPersonModal] = useState(false);
 
@@ -122,10 +124,19 @@ export default function PersonPicker({ value, typeText, onChange }: Props): JSX.
       )}
       <div className="text-body2-no-color text-gray-600 mb-10">
         <span className="text-red-600">*</span>{typeText}
+        {
+          nodeType === 'fillIn' &&
+          <div className='text-caption'>请选择一位填写人，若存在多位填写人时，系统默认选择第一位作为填写人。</div>
+        }
       </div>
       <div className="grid grid-rows-2 grid-cols-2 mb-10">
         <RadioGroup onChange={handleTypeChange}>
-          {personTypeOptions.map(({ label, value: val }) => (
+          {personTypeOptions.filter((item)=>{
+            if (nodeType === 'fillIn' && item.value === 'processVariable') {
+              return false;
+            }
+            return true;
+          }).map(({ label, value: val }) => (
             <Radio
               key={val}
               className="mr-16"

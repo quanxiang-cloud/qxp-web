@@ -59,7 +59,6 @@ class TaskDetailStore {
       toast.error(`action=${action} 未定义的操作`);
       return;
     }
-
     this.setTaskItem(task);
     this.setAction(action);
     this.openModal(true);

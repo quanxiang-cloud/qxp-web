@@ -259,7 +259,7 @@ function Tabs(props: TabsProps, ref: ForwardedRef<TabsInstance>): JSX.Element {
         >
           {renderNav()}
           <div className='tabs__line' style={state.lineStyle}>
-            {childrenList[state.currentIndex > -1 ? state.currentIndex : 0].title}
+            {childrenList[state.currentIndex > -1 ? state.currentIndex : 0]?.title}
           </div>
         </div>
       </div>

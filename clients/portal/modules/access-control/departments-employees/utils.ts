@@ -83,7 +83,7 @@ export const exportEmployees = (data: Employee[]): void => {
         },
       ),
     )
-    .reduce(
+    ?.reduce(
       (prev: any, next: any) =>
         Object.assign({}, prev, {
           [next.position]: { key: next.key, v: next.title },
@@ -103,8 +103,8 @@ export const exportEmployees = (data: Employee[]): void => {
         ),
       ),
     )
-    .reduce((prev: any, next: any) => prev.concat(next))
-    .reduce(
+    ?.reduce((prev: any, next: any) => prev.concat(next))
+    ?.reduce(
       (prev: any, next: any) => Object.assign({}, prev, { [next.position]: { v: next.content } }),
       {},
     );
@@ -142,7 +142,7 @@ export function exportEmployeesFail(
         },
       ),
     )
-    .reduce(
+    ?.reduce(
       (prev: any, next: any) =>
         Object.assign({}, prev, {
           [next.position]: { key: next.key, v: next.title },
@@ -162,8 +162,8 @@ export function exportEmployeesFail(
         ),
       ),
     )
-    .reduce((prev: any, next: any) => prev.concat(next))
-    .reduce(
+    ?.reduce((prev: any, next: any) => prev.concat(next))
+    ?.reduce(
       (prev: any, next: any) =>
         Object.assign({}, prev, { [next.position]: { v: next.content } }),
       {},

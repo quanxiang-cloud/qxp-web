@@ -1,6 +1,6 @@
 import httpClient from '@lib/http-client';
 
-import { FINISH_FILE_UPLOAD_API } from '../constants';
+import { FINISH_FILE_UPLOAD_API, OSS_PUBLIC_BUCKET_NAME, OSS_DOMAIN } from '../constants';
 
 import type { FileUploadStreamProps } from './large-file-part-upload-stream';
 
@@ -45,7 +45,9 @@ export default function smallFileUploadRequest({
   }).then(() => {
     return httpClient(FINISH_FILE_UPLOAD_API, { path: `${fileBucket}/${file.uid}` });
   }).then(() => {
-    onSuccess?.(file);
+    const fileDownloadURL = `${window.location.protocol}//${OSS_PUBLIC_BUCKET_NAME}.${OSS_DOMAIN}/${file.uid}`;
+    const isPublic = fileBucket === OSS_PUBLIC_BUCKET_NAME;
+    onSuccess?.({ ...file, ...(isPublic && { downLoadURL: fileDownloadURL }) });
   }).catch((reason) => {
     onError?.(reason, file);
   });

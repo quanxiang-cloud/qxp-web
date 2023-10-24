@@ -26,7 +26,7 @@ export default function ProcessHistory(props: Props) {
   const [currWork, setCurrWork] = React.useState<any>({});
 
   const {
-    isLoading, data, isError,
+    isLoading, data = [], isError,
   } = useQuery<any, Error>(
     [processInstanceID, 'GET_PROCESS_HISTORIES'],
     () => apis.getProcessHistories(processInstanceID),
@@ -51,7 +51,7 @@ export default function ProcessHistory(props: Props) {
   function handleContent(flow: FlowItem): JSX.Element {
     const { taskType } = flow;
 
-    if (['OR_APPROVAL', 'AND_APPROVAL'].includes(taskType)) {
+    if (['OR_APPROVAL', 'AND_APPROVAL', 'FILL'].includes(taskType)) {
       return <Approval workData={flow} clickHandle={clickHandle} />;
     }
 
@@ -92,7 +92,7 @@ export default function ProcessHistory(props: Props) {
         showType === 'list' && (
           <Timeline>
             {
-              data.map((flow: FlowItem, index: number) => {
+              data?.map((flow: FlowItem, index: number) => {
                 const { taskType } = flow;
                 let color = '';
                 if (index === 0) {

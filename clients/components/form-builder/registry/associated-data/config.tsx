@@ -45,7 +45,7 @@ const SUPPORT_COMPONENT = [
   'OrganizationPicker',
   'Serial',
 ];
-const WHITE_LIST = ['input', 'numberpicker', 'userpicker', 'datepicker'];
+const WHITE_LIST = ['input', 'numberpicker', 'userpicker', 'datepicker', 'select'];
 
 async function getTableFieldsToOptions(
   appID: string,
@@ -67,7 +67,7 @@ async function getTableFieldsToOptions(
 
 function AssociatedDataConfig({ initialValue, onChange, subTableSchema }: Props): JSX.Element {
   const { appID, pageID, schema: _schema, setFieldConfigValidator } = useContext(StoreContext);
-  const schema = subTableSchema || _schema;
+  const schema: any = subTableSchema || _schema;
   const actions = createAsyncFormActions();
   const { setFieldState } = actions;
 
@@ -75,7 +75,8 @@ function AssociatedDataConfig({ initialValue, onChange, subTableSchema }: Props)
     tableID: string, associativeRules?: FormBuilder.DataAssignment[], clearValue?: boolean,
   ): void => {
     setFieldState('filterConfig', (state) => {
-      state.props['x-component-props'] = { appID, tableID, currentFormSchema: schema };
+      state.props['x-component-props'] = { appID, tableID, currentFormSchema: schema,
+        parentFormSchema: subTableSchema && _schema };
     });
 
     getTableFieldsToOptions(appID, tableID, SUPPORT_COMPONENT).then((fields) => {

@@ -8,14 +8,17 @@ import { FlowType, Task } from '@m/pages/approvals/types';
 
 import { computeTaskTag, TaskTag } from './utils';
 import './index.scss';
+import { FILL_IN } from '@home/pages/approvals/constant';
 
 export interface TaskCardProps extends Props {
   task: Task;
   type?: FlowType;
+  taskType?: string;
+  isApply?: boolean;
 }
 
 export default function TaskCard(props: TaskCardProps): JSX.Element | null {
-  const { task, type } = props;
+  const { task, type, taskType, isApply } = props;
   const [taskTag, setTaskTag] = useState<TaskTag>({});
   const [deleted, setDeleted] = useState(false);
 
@@ -39,9 +42,9 @@ export default function TaskCard(props: TaskCardProps): JSX.Element | null {
         <div className='flex-1 title3 text-black truncate ml-8 mr-8'>
           {task.creatorName ? `${task.creatorName}${task.name ? ' · ' + task.name : ''}` : task.name}
         </div>
-        {!!task.status && (<FlowStatus
+        {(!!task.status || taskType === FILL_IN) && (<FlowStatus
           desc={type === 'WAIT_HANDLE_PAGE' ? task.description : undefined}
-          status={task.status}/>)}
+          status={(taskType === FILL_IN && !task.status) ? 'Finish' : task.status}/>)}
       </div>
 
       {!!task.nodeName && (<div className='task-node-row body1 text-placeholder mt-8'>

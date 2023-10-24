@@ -47,7 +47,6 @@ function ImgUploader({
     abortAllFiles,
     clearUploadFiles,
     removeUploadFile,
-    setUploadedFiles,
   } = fileStore;
 
   useEffect(() => {
@@ -56,10 +55,6 @@ function ImgUploader({
       clearUploadFiles();
     };
   }, []);
-
-  useEffect(()=> {
-    setUploadedFiles(fileData);
-  }, [fileData]);
 
   function deleteFileItem(deleteFile: QXPUploadFileTask): void {
     deleteFile.state === 'success' || !deleteFile.state ?
@@ -87,8 +82,8 @@ function ImgUploader({
     }
 
     if (multiple) {
-      const preUploadTotalSize = files.reduce((total, currFile) => (total + currFile.size), 0);
-      const uploadedTotalSize = storeFiles.reduce((total: number, currFile: { size: number; }) =>
+      const preUploadTotalSize = files?.reduce((total, currFile) => (total + currFile.size), 0);
+      const uploadedTotalSize = storeFiles?.reduce((total: number, currFile: { size: number; }) =>
         (total + currFile.size), preUploadTotalSize);
       if (maxSize && uploadedTotalSize > maxSize) {
         toast.error(`图片总大小不能超过${maxFileSize}MB`);
@@ -131,7 +126,7 @@ function ImgUploader({
             disabled={disabled || (!multiple && !!storeFiles.length)}
             description={uploaderDescription || '上传图片'}
             onSelectFiles={(files) => {
-              files.every((file)=> beforeUpload(file, files, storeFiles)) && prepareFilesUpload(files);
+              files.every((file) => beforeUpload(file, files, storeFiles)) && prepareFilesUpload(files);
             }}
           />
         )

@@ -19,6 +19,7 @@ import ProcessBranch from './process-branch';
 import Delayed from './timer-start';
 import ProcessBranchTarget from './process-branch-target';
 import WebHookConfig from './webhook';
+import FillInForm from './intermidiate/fillIn';
 
 interface Props {
   workForm: NodeWorkForm | string
@@ -62,7 +63,7 @@ function useTableSchema(
 const components: Record<string, JSXElementConstructor<any>> = {
   formData: FormDataForm,
   approve: ApproveForm,
-  fillIn: ApproveForm,
+  fillIn: FillInForm,
   processBranch: ProcessBranch,
   processBranchTarget: ProcessBranchTarget,
   processVariableAssignment: ProcessVariableAssignmentConfig,

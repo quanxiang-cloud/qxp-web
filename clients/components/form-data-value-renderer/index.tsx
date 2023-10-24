@@ -7,7 +7,7 @@ import Icon from '@c/icon';
 import { RoundMethod } from '@c/form-builder/registry/aggregation-records/convertor';
 import { FileList } from '@c/file-upload';
 import { QxpFileFormData } from '@c/form-builder/registry/file-upload/uploader';
-import { isEmpty } from 'lodash';
+import { isEmpty, isNumber } from 'lodash';
 import { isMeanless } from '@lib/utils';
 
 const ReadOnlySubTable = React.lazy(
@@ -54,7 +54,7 @@ function AssociatedRecordsValueRender({ value, schema, className }: ValueRendere
 }
 
 function numberPickerValueRender({ schema, value }: ValueRendererProps): string {
-  return Number(value).toFixed(schema?.['x-component-props']?.precision || 0);
+  return !isNaN(value as any) ? (Number(value).toFixed(schema?.['x-component-props']?.precision || 0)) : '';
 }
 
 export function labelValueRenderer(value: FormDataValue): string {
@@ -66,6 +66,7 @@ export function labelValueRenderer(value: FormDataValue): string {
   return (value as FormBuilder.Option)?.label;
 }
 
+// 统计
 function statisticValueRender({ schema, value }: ValueRendererProps): string {
   const { decimalPlaces, roundDecimal, displayFieldNull } = schema['x-component-props'] as {
     decimalPlaces: number, roundDecimal: RoundMethod, displayFieldNull: string
@@ -76,7 +77,13 @@ function statisticValueRender({ schema, value }: ValueRendererProps): string {
   } else if (roundDecimal === 'round-down') {
     method = Math.floor;
   }
-  return method(parseFloat(value as string)).toFixed(decimalPlaces) + '' || displayFieldNull;
+
+  if (decimalPlaces === 0) {
+    return method(parseFloat(value as string)).toFixed(decimalPlaces) + '' || displayFieldNull;
+  } else {
+    return isNumber(value) ? value.toFixed(decimalPlaces) : displayFieldNull;
+  }
+  // return method(parseFloat(value as string)).toFixed(decimalPlaces) + '' || displayFieldNull;
 }
 
 function stringListValue({ value }: ValueRendererProps): string {
@@ -88,7 +95,7 @@ function stringListValue({ value }: ValueRendererProps): string {
 }
 
 export default function FormDataValueRenderer({ value, schema, className }: Props): JSX.Element {
-  if (!value) {
+  if (!value && value !== 0) {
     return <></>;
   }
   switch (schema['x-component']?.toLowerCase()) {
@@ -184,7 +191,8 @@ export function FormDataSubTableValueRenderer({ value, schema, className }: Prop
         {!isEmpty(value) ? (
           <div className="flex flex-nowrap gap-4">
             <FileList
-              canDownload
+              imgOnly
+              canDownload={false}
               files={(value as QxpFileFormData[]).map((file) => ({
                 name: file.label,
                 uid: file.value,

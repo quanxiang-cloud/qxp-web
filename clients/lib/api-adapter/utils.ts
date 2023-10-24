@@ -25,7 +25,7 @@ export function indexOperation(spec: Spec): Record<string, Operation> {
 // copied from https://gist.github.com/creationix/7435851#gistcomment-3698888
 // return an absolute path
 export function join(...segments: string[]): string {
-  const parts = segments.reduce<string[]>((parts, segment) => {
+  const parts = segments?.reduce<string[]>((parts, segment) => {
     // Remove leading slashes from non-first part.
     // Remove trailing slashes.
     const fragment = segment.replace(/^\//, '').replace(/\/$/, '');

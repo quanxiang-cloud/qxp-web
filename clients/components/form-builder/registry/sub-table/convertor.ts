@@ -18,6 +18,7 @@ export type SubTableConfig = {
   }
   subTableColumns?: string[];
   tableID?: string;
+  defaultAddAllAssociatedData?: boolean;
 }
 
 export const defaultConfig: SubTableConfig = {
@@ -39,6 +40,7 @@ export const defaultConfig: SubTableConfig = {
   },
   subTableColumns: undefined,
   tableID: '',
+  defaultAddAllAssociatedData: false,
 };
 
 export function toSchema(value: SubTableConfig): ISchema {
@@ -63,6 +65,7 @@ export function toSchema(value: SubTableConfig): ISchema {
       tableName: value.linkedTable?.tableName,
       rowLimit: value.rowLimit,
       layout: value.layout,
+      defaultAddAllAssociatedData: value.defaultAddAllAssociatedData,
     },
     ['x-internal']: {
       permission: getSchemaPermissionFromSchemaConfig(value),
@@ -71,7 +74,7 @@ export function toSchema(value: SubTableConfig): ISchema {
   };
 }
 
-export function toConfig(schema: ISchema): SubTableConfig {
+export function toConfig(schema: ISchema, appID?: any): SubTableConfig {
   const isFromLinkedTable = schema?.['x-component-props']?.subordination === 'foreign_table';
   const tableID = schema['x-component-props']?.tableID;
   return {
@@ -84,11 +87,12 @@ export function toConfig(schema: ISchema): SubTableConfig {
     subTableSchema: schema.items as ISchema,
     required: !!schema.required,
     linkedTable: {
-      appID: schema['x-component-props']?.appID,
+      appID: appID || schema['x-component-props']?.appID,
       tableID: isFromLinkedTable ? tableID : '',
       tableName: schema['x-component-props']?.tableName,
     },
     subTableColumns: schema['x-component-props']?.columns,
     tableID: !isFromLinkedTable ? tableID : '',
+    defaultAddAllAssociatedData: schema['x-component-props']?.defaultAddAllAssociatedData,
   };
 }

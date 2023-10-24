@@ -21,7 +21,7 @@ export function resolveTokenValues<T extends Token>(
       if (['typography', 'boxShadow'].includes(t.type)) {
         if (Array.isArray(t.value)) {
           resolvedValue = t.value.map((item) =>
-            Object.entries(item).reduce<Record<string, string | null>>(
+            Object.entries(item)?.reduce<Record<string, string | null>>(
               (acc, [key, value]: [string, Token['value']]) => {
                 acc[key] = getAliasValue(value, tokensInProgress);
                 return acc;
@@ -30,7 +30,7 @@ export function resolveTokenValues<T extends Token>(
             ),
           );
         } else {
-          resolvedValue = Object.entries(t.value).reduce<Record<string, string | null>>(
+          resolvedValue = Object.entries(t.value)?.reduce<Record<string, string | null>>(
             (acc, [key, value]: [string, Token['value']]) => {
               acc[key] = getAliasValue(value, tokensInProgress);
               return acc;

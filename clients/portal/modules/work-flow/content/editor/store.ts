@@ -1,7 +1,11 @@
+/* eslint-disable no-console */
+/* eslint-disable no-empty */
+/* eslint-disable guard-for-in */
+/* eslint-disable max-len */
 import { BehaviorSubject } from 'rxjs6';
-import { FlowElement } from 'react-flow-renderer';
+import { FlowElement, isNode } from 'react-flow-renderer';
 import { uuid } from '@lib/utils';
-import { update, omit } from 'lodash';
+import { update, omit, isArray } from 'lodash';
 import moment from 'moment';
 
 import { SaveWorkFlowParamsType } from '@flow/api';
@@ -9,6 +13,7 @@ import { SaveWorkFlowParamsType } from '@flow/api';
 import { edgeBuilder, nodeBuilder } from './utils';
 import type { StoreValue, BusinessData, CurrentElement, Data, FormDataElement, DelayedData } from './type';
 import { CURRENT_WORK_FLOW_VERSION } from './utils/constants';
+import { groupBy } from 'ramda';
 
 const getStoreInitialData = (triggerMethod: string): StoreValue => {
   const startID = (triggerMethod === 'form-data' ? 'formData' : 'FORM_TIME') + uuid();
@@ -145,13 +150,22 @@ function numberTransform(keys: string[], data: any): any {
 
 export function buildWorkFlowSaveData(
   appID: string, saveData: Partial<BusinessData> = {},
-): SaveWorkFlowParamsType {
+): SaveWorkFlowParamsType| any {
   const {
     version, nodeIdForDrawerForm, name, triggerMode, cancelable, urgeable, nodeAdminMsg,
     seeStatusAndMsg, keyFields, instanceName, canCancelNodes, canCancelType, cron,
   } = store.value;
-
   const newcron = (saveData as Partial<DelayedData>).timer || cron || '';
+  store.next({ ...store.value, cron: newcron });
+
+  const _elements = store.value.elements.map((el)=>{
+    const _el = JSON.parse(JSON.stringify(el));
+    delete _el?.position;
+    delete _el?.data?.nodeData?.width;
+    delete _el?.data?.nodeData?.height;
+    return _el;
+  });
+
   return {
     bpmnText: buildBpmnText(version, nodeIdForDrawerForm, saveData),
     name: name as string,
@@ -174,9 +188,22 @@ function buildBpmnText(
   nodeID: string,
   newBusinessData: Partial<BusinessData>,
 ): string {
+  let ele = store.value.elements;
+  if (parseFloat(version) >= 0.3) {
+    const _elements = store.value.elements.map((el)=>{
+      const _el = JSON.parse(JSON.stringify(el));
+      delete _el?.position;
+      delete _el?.data?.nodeData?.width;
+      delete _el?.data?.nodeData?.height;
+      return _el;
+    });
+    const { nodes: _nodes = [] } = groupBy((el) => (isNode(el) ? 'nodes' : 'edges'), _elements);
+    ele = _nodes;
+  }
+
   return JSON.stringify({
     version,
-    shapes: store.value.elements.map((el) => {
+    shapes: ele.map((el) => {
       let data: any = el;
       if (el.id === nodeID) {
         data = {
@@ -189,6 +216,42 @@ function buildBpmnText(
       }
       if (!['approve', 'fillIn'].includes(data.type as string)) {
         return data;
+      }
+
+      if (data.type === 'approve') {
+        delete data?.data?.businessData?.events;
+        delete data?.data?.businessData?.operatorPermission?.custom;
+      }
+
+      if (data.type === 'fillIn') {
+        const _data = JSON.parse(JSON.stringify(data));
+        try {
+          _data.data.businessData.basicConfig.fillInPersons = _data.data.businessData.basicConfig.approvePersons;
+          if (_data.data.businessData.basicConfig.fillInPersons.type !== 'person') {
+            _data.data.businessData.basicConfig.fillInPersons.users = [];
+          }
+          delete _data?.data?.businessData?.events;
+          delete _data?.data?.businessData?.operatorPermission;
+          delete _data?.data?.businessData?.basicConfig?.autoRules;
+          delete _data?.data?.businessData?.basicConfig?.timeRule;
+          delete _data?.data?.businessData?.basicConfig?.whenNoPerson;
+          delete _data?.data?.businessData?.basicConfig?.approvePersons;
+          delete _data?.data?.businessData?.basicConfig?.fillInPersons?.departments;
+          delete _data?.data?.businessData?.basicConfig?.multiplePersonWay;
+          const fieldPermission = _data?.data?.businessData?.fieldPermission || {};
+          for (const key in fieldPermission) {
+            fieldPermission[key] = fieldPermission[key]?.['x-internal']?.permission;
+          }
+          if (isArray(_data?.data?.businessData?.basicConfig?.fillInPersons?.users)) {
+            _data.data.businessData.basicConfig.fillInPersons.users = _data?.data?.businessData?.basicConfig?.fillInPersons?.users?.filter((item: any)=>!!item)?.map((item: any)=>{
+              // return item?.id ? item?.id : item;
+              return { id: item?.id };
+            });
+          }
+          return { ..._data, data: omit(_data.data, ['type']) };
+        } catch (error) {
+          console.log(error);
+        }
       }
       return numberTransform([
         'data.businessData.basicConfig.timeRule.deadLine.day',
@@ -205,16 +268,28 @@ function buildBpmnText(
   });
 }
 
-export function toggleNodeForm(id: string): void {
-  updateStore((s) => ({
-    ...s,
-    nodeIdForDrawerForm: id,
-    showDataNotSaveConfirm: false,
-    errors: {
-      ...s.errors,
-      dataNotSaveMap: new Map(),
-    },
-  }));
+export function toggleNodeForm(id: string, fillInPersons?: any): void {
+  updateStore((s) => {
+    const _elements = s.elements.map((item: any)=>{
+      try {
+        if (fillInPersons && item.id === id && item?.data?.businessData?.basicConfig?.approvePersons?.users) {
+          item.data.businessData.basicConfig.approvePersons.users = fillInPersons;
+        }
+      } catch (error) {
+      }
+      return item;
+    });
+    return {
+      ...s,
+      elements: _elements,
+      nodeIdForDrawerForm: id,
+      showDataNotSaveConfirm: false,
+      errors: {
+        ...s.errors,
+        dataNotSaveMap: new Map(),
+      },
+    };
+  });
 }
 
 export default store;

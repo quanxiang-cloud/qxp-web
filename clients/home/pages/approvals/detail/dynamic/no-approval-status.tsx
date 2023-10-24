@@ -37,7 +37,7 @@ export default function RevokeWork({ workData }: Props): JSX.Element {
           </>)}
         </div>
         <div className="text-12 text-gray-400 mt-4">
-          {dayjs(workData.createTime).format('YYYY-MM-DD HH:mm')}
+          {workData.createTime && dayjs(workData.createTime).format('YYYY-MM-DD HH:mm')}
         </div>
       </div>
     </div>

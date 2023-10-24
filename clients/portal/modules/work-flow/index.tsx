@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
-import { FlowElement, isNode, ReactFlowProvider } from 'react-flow-renderer';
+import { ReactFlowProvider } from 'react-flow-renderer';
 
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
@@ -9,13 +9,12 @@ import toast from '@lib/toast';
 import Modal from '@c/modal';
 import useObservable from '@lib/hooks/use-observable';
 import usePrevious from '@lib/hooks/use-previous';
-import dataTransfer from '@flow/content/editor/utils/data-transfer';
 
 import Header from './flow-header';
 import AsideMenu from './aside-menu';
 import Content from './content';
 import { getWorkFlowInfo } from './api';
-import type { Data, StoreValue, WorkFlow } from './content/editor/type';
+import type { StoreValue, WorkFlow } from './content/editor/type';
 import FlowContext from './flow-context';
 import useSaver from './content/editor/forms/hooks/use-save';
 import { CURRENT_WORK_FLOW_VERSION } from './content/editor/utils/constants';
@@ -27,6 +26,7 @@ import store, {
 } from './content/editor/store';
 
 import './style.scss';
+import { parseElements } from '@portal/utils';
 
 type OperateType = 'edit' | 'settings' | 'variables';
 
@@ -45,6 +45,7 @@ export default function Detail(): JSX.Element {
 
   const { data, isLoading, isError, refetch } = useQuery(['GET_WORK_FLOW_INFO', flowID], getWorkFlowInfo, {
     enabled: !!flowID,
+    cacheTime: 0,
   });
 
   useEffect(() => {
@@ -73,16 +74,6 @@ export default function Detail(): JSX.Element {
       saveWorkFlow();
     }
   }, [elements?.length, apiFetched]);
-
-  function parseElements(bpmn: WorkFlow): FlowElement<Data>[] {
-    const elements = bpmn.shapes.filter(Boolean).map((element: FlowElement<Data>) => {
-      if (isNode(element)) {
-        Object.assign(element.data, { type: element.type });
-      }
-      return element;
-    });
-    return dataTransfer({ version: bpmn.version, shapes: elements }).shapes;
-  }
 
   useEffect(() => {
     if (!data) {

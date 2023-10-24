@@ -63,9 +63,12 @@ export function useOutlineRootNode(
       return onChange({ ...artery, node: { ...artery.node, children: firstLevelChildren } });
     }
 
-    (node as HTMLNode | ReactComponentNode).children?.concat(modalLayerRoots);
+    const _node = {
+      ...node,
+      children: (node as HTMLNode | ReactComponentNode).children?.concat(modalLayerRoots),
+    };
 
-    onChange({ ...artery, node });
+    onChange({ ...artery, node: _node });
   }, [activeOverLayerNodeID, artery]);
 
   return { rootNode, onChangeNode };

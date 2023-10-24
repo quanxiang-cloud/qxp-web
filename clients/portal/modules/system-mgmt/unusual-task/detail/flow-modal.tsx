@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
-import { FlowElement, isNode, ReactFlowProvider } from 'react-flow-renderer';
+import { ReactFlowProvider } from 'react-flow-renderer';
 import { cond, or, always } from 'ramda';
 
 import Modal from '@c/modal';
@@ -8,11 +8,10 @@ import toast from '@lib/toast';
 import Loading from '@c/loading';
 import useObservable from '@lib/hooks/use-observable';
 import ErrorTips from '@c/error-tips';
-import dataTransfer from '@flow/content/editor/utils/data-transfer';
 import FlowRender from '@c/logic/flow-render';
 import nodeTypes from '@flow/content/editor/nodes';
 import edgeTypes from '@flow/content/editor/edges';
-import type { Data, WorkFlow, StoreValue } from '@flow/content/editor/type';
+import type { WorkFlow, StoreValue } from '@flow/content/editor/type';
 import { CURRENT_WORK_FLOW_VERSION } from '@flow/content/editor/utils/constants';
 import store, {
   updateStore,
@@ -23,6 +22,7 @@ import { getFlowInfo } from '../api';
 // rollup can not resolve this path
 // import '@flow/style.scss';
 import '../../../work-flow/style.scss';
+import { parseElements } from '@portal/utils';
 
 interface Props {
   processInstanceId: string;
@@ -66,16 +66,6 @@ function FlowModal({ processInstanceId, closeModal }: Props): JSX.Element | null
       toast.error('bpmn 数据格式解析错误!');
     }
   }, [data]);
-
-  function parseElements(bpmn: WorkFlow): FlowElement<Data>[] {
-    const elements = bpmn.shapes.filter(Boolean).map((element: FlowElement<Data>) => {
-      if (isNode(element)) {
-        Object.assign(element.data, { type: element.type });
-      }
-      return element;
-    });
-    return dataTransfer({ version: bpmn.version, shapes: elements }).shapes;
-  }
 
   const Error = cond([
     [() => isLoading, always(<Loading desc="加载中..." />)],

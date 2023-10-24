@@ -2,7 +2,7 @@ import { observable, action } from 'mobx';
 import toast from '@lib/toast';
 
 import { fetchUserList } from '../lib/api';
-import { getFlowInstanceCount } from './approvals/api';
+import { getFlowInstanceCount, getTodoFillInCount } from './approvals/api';
 
 class UserAppStore {
   @observable appList: Array<AppInfo> = [];
@@ -39,9 +39,12 @@ class UserAppStore {
         waitHandleCount = 0,
         ccToMeCount = 0,
       } = await getFlowInstanceCount({ 'User-Id': window.USER.id });
+
+      const { total: fillInCount = 0 } = await getTodoFillInCount({});
+
       this.TODO_LIST[0].value = overTimeCount;
       this.TODO_LIST[1].value = urgeCount;
-      this.TODO_LIST[2].value = waitHandleCount;
+      this.TODO_LIST[2].value = waitHandleCount + fillInCount;
       this.HANDLE_LIST[2].count = ccToMeCount;
     } catch (err) {
       toast.error(err);

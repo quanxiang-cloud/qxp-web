@@ -205,6 +205,24 @@ const schema: ISchema = {
           },
           'x-index': 8,
         },
+        linkStatistics: {
+          title: '实时统计',
+          default: false,
+          'x-component': 'Switch',
+          'x-index': 9,
+          'x-linkages': [
+            {
+              type: 'value:visible',
+              target: 'dataRange',
+              condition: '{{ $value !== true }}',
+            },
+            {
+              type: 'value:visible',
+              target: 'dataRange1',
+              condition: '{{ $value === true }}',
+            },
+          ],
+        },
         dataRange: {
           type: 'string',
           title: '统计数据范围',
@@ -227,12 +245,32 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 9,
+          'x-index': 10,
           'x-linkages': [{
             type: 'value:visible',
             target: 'condition',
             condition: '{{ $value === "part" }}',
           }],
+        },
+        dataRange1: {
+          type: 'string',
+          title: '统计数据范围',
+          default: 'all',
+          enum: [
+            {
+              label: '全部',
+              value: 'all',
+            },
+          ],
+          'x-rules': {
+            required: true,
+            message: '请选择统计数据范围',
+          },
+          'x-component': 'RadioGroup',
+          'x-mega-props': {
+            labelAlign: 'top',
+          },
+          'x-index': 11,
         },
         condition: {
           title: '',

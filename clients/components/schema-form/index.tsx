@@ -59,7 +59,7 @@ function SchemaForm<T extends Record<string, any>>({
 
   const values = watch(watchFields);
 
-  const watchValues: any = watchFields.reduce((acc: Record<string, any>, key, index) => {
+  const watchValues: any = watchFields?.reduce((acc: Record<string, any>, key, index) => {
     acc[key] = values[index];
     return acc;
   }, {});

@@ -26,7 +26,7 @@ export default function WarnTips({ workData }: Props): JSX.Element {
           </div>
         </div>
         <div className="text-12 text-gray-400 mt-4">
-          {dayjs(modifyTime).format('YYYY-MM-DD HH:mm')}
+          {modifyTime && dayjs(modifyTime).format('YYYY-MM-DD HH:mm')}
         </div>
       </div>
     </div>
