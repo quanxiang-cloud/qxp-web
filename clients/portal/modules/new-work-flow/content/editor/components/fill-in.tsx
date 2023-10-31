@@ -37,8 +37,8 @@ export default function FillInNodeComponent({ data, id, xPos, yPos, isDragging }
   const [fillInPersons, setFillInPersons] = useState<any>();
 
   useEffect(()=>{
-    getPersonByIds(basicConfig.approvePersons, setFillInPersons);
-  }, [basicConfig.approvePersons]);
+    basicConfig?.approvePersons && getPersonByIds(basicConfig?.approvePersons, setFillInPersons);
+  }, [basicConfig?.approvePersons]);
 
   function onMouseUp(): void {
     if (+new Date - lastTime.current < 200) {
@@ -54,9 +54,9 @@ export default function FillInNodeComponent({ data, id, xPos, yPos, isDragging }
     setShowRemover(false);
   }
 
-  const hasFillInRule = !!basicConfig.multiplePersonWay;
-  const hasFillInPerson = !!basicConfig.approvePersons?.departments?.length ||
-    !!basicConfig.approvePersons?.users?.length || basicConfig.approvePersons?.type !== 'person';
+  const hasFillInRule = !!basicConfig?.multiplePersonWay;
+  const hasFillInPerson = !!basicConfig?.approvePersons?.departments?.length ||
+    !!basicConfig?.approvePersons?.users?.length || basicConfig?.approvePersons?.type !== 'person';
 
   const hasError = id === errors?.publish?.data?.id;
   const { departments } = basicConfig?.approvePersons || [];

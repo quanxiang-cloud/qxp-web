@@ -24,7 +24,10 @@ export default function FlowHeader(): JSX.Element {
   const { type } = useParams<{ type: 'form-data' | 'form-time'; }>();
 
   useEffect(() => {
-    if (name && !workFlowName) {
+    // if (name && !workFlowName) {
+    //   setWorkFlowName(name);
+    // }
+    if (name) {
       setWorkFlowName(name);
     }
   }, [name]);
@@ -40,6 +43,7 @@ export default function FlowHeader(): JSX.Element {
   }
 
   function onGoBack(e: MouseEvent): void {
+    updateStore((s) => ({ ...s, nodeIdForDrawerForm: '', name: '' }));
     e.stopPropagation();
     history.goBack();
   }

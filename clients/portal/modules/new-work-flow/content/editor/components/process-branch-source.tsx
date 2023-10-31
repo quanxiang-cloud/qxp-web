@@ -15,7 +15,7 @@ export default function ProcessBranchSourceNodeComponent(props: Props): JSX.Elem
 
   function onAddBranch(): void {
     const elements = deepClone(store.value.elements) as FlowElement<Data>[];
-    const { branchTargetElementID } = nodeData;
+    const { branchTargetElementID, branchID } = nodeData;
     if (!branchTargetElementID) {
       return;
     }
@@ -24,6 +24,7 @@ export default function ProcessBranchSourceNodeComponent(props: Props): JSX.Elem
       parentID: [id],
       childrenID: [branchTargetElementID],
       branchTargetElementID,
+      branchID,
     });
     const sourceElement = elements.find((el) => el.id === id);
     const targetElement = elements.find((el) => el.id === branchTargetElementID);

@@ -1,4 +1,6 @@
-import React, { useContext, useState } from 'react';
+/* eslint-disable no-empty */
+/* eslint-disable guard-for-in */
+import React, { useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useUpdateEffect } from 'react-use';
 import { get } from 'lodash';
@@ -10,18 +12,24 @@ import { getFormDataMenuList } from '@c/form-table-selector/api';
 import FlowContext from '@newFlow/flow-context';
 import toast from '@lib/toast';
 import Modal from '@c/modal';
-import { BusinessData, TableDataCreateData } from '@newFlow/content/editor/type';
+import { BusinessData, StoreValue, TableDataCreateData } from '@newFlow/content/editor/type';
 import { ValueRuleVal } from '@newFlow/content/editor/type';
 import FlowTableContext from '@newFlow/content/editor/forms/flow-source-table';
 
 import TargetTableFields from './target-table-fields';
 import Context from './context';
+import store from '../../store';
+import useObservable from '@lib/hooks/use-observable';
+import { getElementParents } from '../webhook/utils';
+import { getFieldSchema } from '../api';
+import schemaToFields from '@lib/schema-convert';
 
 interface Props {
   defaultValue: TableDataCreateData;
   onSubmit: (data: BusinessData) => void;
   onChange: (data: BusinessData) => void;
   onCancel: () => void;
+  currentNodeElement?: any;
 }
 
 const initialValue = {
@@ -29,17 +37,124 @@ const initialValue = {
   silent: true,
   createRule: {},
   ref: {},
+  queryNodeId: '',
 };
 
-function FormCreateTableData({ defaultValue, onSubmit, onCancel, onChange: _onChange }: Props): JSX.Element {
+function FormCreateTableData({ defaultValue, onSubmit, onCancel, onChange: _onChange, currentNodeElement }: Props): JSX.Element {
   const { appID } = useContext(FlowContext);
   const { tableID } = useContext(FlowTableContext);
-  const [value, setValue] = useState<TableDataCreateData>(defaultValue || {});
+  const [value, setValue] = useState<TableDataCreateData| any>(defaultValue || {});
   const [nextTable, setNextTable] = useState<string>('');
   const [switchTableModal, setSwitchTableModal] = useState(false);
 
+  const [showError, setShowError] = useState(false);
+
+  const { elements = [] } = useObservable<StoreValue>(store);
+  const [nodesOutputOptions, setNodesOutputOptions] = useState(null);
+
+  const getNodesOutputOptions = ()=>{
+    const options: any = [];
+    if (elements?.length) {
+      const currentElementParents = getElementParents(currentNodeElement);
+      const allArr: any = [];
+      elements?.forEach(async (item: any)=>{
+        // if (item.data?.type === 'approve' && currentElementParents.includes(item.id)) {
+        //   const nodeDataName = item?.data?.nodeData?.name;
+        //   options?.push({
+        //     label: nodeDataName,
+        //     value: `$(task.${item?.id}.output.agree`,
+        //   });
+        // }
+        // if (item.data?.type === 'fill' && currentElementParents.includes(item.id)) {
+        //   const nodeDataName = item?.data?.nodeData?.name;
+        //   options?.push({
+        //     label: nodeDataName,
+        //     value: `$(task.${item?.id}.output.agree`,
+        //   });
+        // }
+        if (item.data?.type === 'tableDataQuery' && currentElementParents.includes(item.id)) {
+          const tableID = item?.data?.businessData?.targetTableId;
+          allArr.push(()=>{
+            const nodeDataName = item?.data?.nodeData?.name;
+            const queryList = item?.data?.businessData?.queryList || [];
+            return getFieldSchema({ appID, tableID })
+              .then((res: any)=>{
+                const schemaFields = schemaToFields(res);
+                const normalFields = schemaFields?.filter((fieldSchema) => {
+                  return fieldSchema.componentName !== 'subtable';
+                }).map((fieldSchema) => ({
+                  label: fieldSchema.title,
+                  value: fieldSchema.id,
+                }));
+                queryList?.forEach((child: any)=>{
+                  const lable = normalFields?.find((item: any)=>item?.value === child?.value?.[0])?.label;
+                  if (lable) {
+                    options?.push({
+                      label: nodeDataName + '.' + lable,
+                      value: `$(task.${item?.id}.output.${child?.queryVal})`,
+                      nodeID: item?.id,
+                    });
+                  }
+                });
+                return res;
+              });
+          });
+        }
+      });
+
+      Promise.all(allArr?.map((item: any)=>item()))
+        .then(()=>{
+          setNodesOutputOptions(options);
+        });
+    }
+  };
+
+  useEffect( ()=>{
+    getNodesOutputOptions();
+  }, [elements?.length]);
+
   useUpdateEffect(() => {
     _onChange(value);
+  }, [value]);
+
+  useEffect(()=>{
+    const { createRule, ref } = value || {};
+    const obj: any = {};
+    for (const key in createRule) {
+      const item = createRule[key];
+      if (item?.valueFrom === 'task.xx.output.xxx' && item?.key) {
+        if (obj?.[item?.key]) {
+          obj[item?.key] = obj[item?.key] + 1;
+        } else {
+          obj[item?.key] = 1;
+        }
+      }
+    }
+    try {
+      for (const key in ref) {
+        const createRules = ref[key]?.createRules?.[0] || [];
+        for (const k in createRules) {
+          const item = createRules[k];
+          if (item?.valueFrom === 'task.xx.output.xxx' && item?.key) {
+            if (obj?.[item?.key]) {
+              obj[item?.key] = obj[item?.key] + 1;
+            } else {
+              obj[item?.key] = 1;
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.log('error', error);
+    }
+
+    let flag = false;
+    for (const key in obj) {
+      if (obj[key] > 1) {
+        flag = true;
+      }
+    }
+    setShowError(flag);
   }, [value]);
 
   const {
@@ -81,6 +196,39 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel, onChange: _onCh
       toast.error('请选择目标数据表');
       return;
     }
+    if (showError) {
+      toast.error('节点输出key不能重复');
+      return;
+    }
+
+    let isNull = false;
+    const { createRule, ref } = value;
+    for (const key in createRule) {
+      const item = createRule[key];
+      if (item?.valueFrom === 'task.xx.output.xxx') {
+        if (!item?.key) {
+          isNull = true;
+        }
+      }
+    }
+    try {
+      for (const key in ref) {
+        const createRules = ref[key]?.createRules?.[0] || [];
+        for (const k in createRules) {
+          const item = createRules[k];
+          if (item?.valueFrom === 'task.xx.output.xxx') {
+            if (!item?.key) {
+              isNull = true;
+            }
+          }
+        }
+      }
+    } catch (error) {
+    }
+    if (isNull) {
+      toast.error('节点输出key不能为空');
+      return;
+    }
     onSubmit(value);
   };
 
@@ -103,6 +251,10 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel, onChange: _onCh
     }
   };
 
+  const onChangeQueryNodeId = (nodeId: string)=>{
+    setValue({ ...value, queryNodeId: nodeId }); // reset value
+  };
+
   if (isLoading) {
     return (
       <div>Loading..</div>
@@ -117,8 +269,18 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel, onChange: _onCh
 
   const isSelfForm = value.targetTableId === tableID;
 
+  const getTableQueryOptions = ()=>{
+    const options = elements?.filter((item: any)=>item?.type === 'tableDataQuery')?.map((item: any)=>{
+      return {
+        label: item?.data?.nodeData?.name,
+        value: item?.id,
+      };
+    }) || [];
+    return options;
+  };
+
   return (
-    <Context.Provider value={{ data: value, setData: onChange }}>
+    <Context.Provider value={{ data: value, setData: onChange, currentNodeElement, nodesOutputOptions } as any}>
       <div className="flex flex-col overflow-auto flex-1 py-24">
         <div className="inline-flex items-center">
           <span className="text-body mr-10">目标数据表:</span>
@@ -143,6 +305,7 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel, onChange: _onCh
           </div>
         )}
         <TargetTableFields
+          key={nodesOutputOptions?.length}
           appId={appID}
           tableId={value.targetTableId}
         />

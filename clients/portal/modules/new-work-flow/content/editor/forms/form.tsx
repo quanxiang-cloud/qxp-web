@@ -20,6 +20,7 @@ import Delayed from './timer-start';
 import ProcessBranchTarget from './process-branch-target';
 import WebHookConfig from './webhook';
 import FillInForm from './intermidiate/fillIn';
+import QueryTableData from './query-table-data';
 
 interface Props {
   workForm: NodeWorkForm | string
@@ -27,6 +28,7 @@ interface Props {
   onSubmit: (data: BusinessData) => void;
   onCancel: () => void;
   onChange: (data: BusinessData) => void;
+  currentNodeElement?: any;
 }
 
 function useTableSchema(
@@ -74,11 +76,13 @@ const components: Record<string, JSXElementConstructor<any>> = {
   letter: WebMessage,
   tableDataUpdate: UpdateTableData,
   webhook: WebHookConfig,
+  tableDataQuery: QueryTableData,
 };
 
 export default function Form({
   workForm,
   defaultValue,
+  currentNodeElement,
   onSubmit,
   onCancel,
   onChange,
@@ -91,6 +95,7 @@ export default function Form({
       onCancel,
       onChange,
       nodeType: defaultValue.type,
+      currentNodeElement,
     });
   }
   const { appID } = useContext(FlowContext);

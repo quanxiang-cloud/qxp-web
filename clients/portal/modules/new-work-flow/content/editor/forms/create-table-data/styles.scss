@@ -9,4 +9,14 @@
       min-width: 240px;
     }
   }
+
+  .noWrap {
+    white-space: nowrap;
+  }
+  .selecy{
+    border-top-left-radius: 2px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+  }
 }

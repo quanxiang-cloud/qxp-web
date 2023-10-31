@@ -7,7 +7,7 @@ import Icon from '@c/icon';
 import store, { updateStore } from '@newFlow/content/editor/store';
 import type { StoreValue } from '@newFlow/content/editor/type';
 import useObservable from '@lib/hooks/use-observable';
-import { onRemoveNode } from '@newFlow/content/editor/utils';
+import { onNewRemoveNode } from '@newFlow/content/editor/utils';
 
 import ActionButtonGroup from './action-button-group';
 
@@ -34,8 +34,9 @@ export default function NodeRemover({
   }, ['mousedown', 'touchstart', 'click']);
 
   function handleOnSubmitRemoveNode(): void {
-    const newElements = onRemoveNode(id, elements);
-    updateStore((s) => ({ ...s, elements: newElements, needSaveFlow: true }));
+    // const newElements = onRemoveNode(id, elements);
+    const _newElements = onNewRemoveNode(id, elements);
+    updateStore((s) => ({ ...s, elements: _newElements, needSaveFlow: true }));
   }
 
   function onMouseDown(e: MouseEvent): void {

@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React, { useContext, useMemo } from 'react';
 import {
   createFormActions,
@@ -58,6 +59,36 @@ const formSchema: ISchema = {
   },
 };
 
+const noElseFormSchema: ISchema = {
+  type: 'object',
+  properties: {
+    ignore: {
+      type: 'boolean',
+      ['x-component']: 'Select',
+      'x-rules': {
+        required: true,
+        message: '请选择筛选条件',
+      },
+      default: false,
+      enum: [{
+        label: '自定义条件',
+        value: false,
+      }],
+      'x-linkages': [
+        {
+          type: 'value:visible',
+          target: 'rule',
+          condition: '{{ $value === false }}',
+        },
+      ],
+    },
+    rule: {
+      type: 'string',
+      ['x-component']: 'FilterRule',
+      default: '',
+    },
+  },
+};
 const actions = createFormActions();
 
 const components = {
@@ -68,8 +99,17 @@ const components = {
 
 export default function ProcessBranch({ defaultValue, onSubmit, onCancel, onChange }: Props): JSX.Element {
   const { tableSchema } = useContext(FlowTableContext);
-  const { elements } = useObservable<StoreValue>(store);
-
+  const { elements, nodeIdForDrawerForm } = useObservable<StoreValue>(store);
+  const curNode = elements?.find((item: any)=>item?.id === nodeIdForDrawerForm);
+  const parentNode = elements?.find((item: any)=>item?.id === curNode?.data?.nodeData?.parentID?.[0]);
+  const siblingsNodeID = parentNode?.data?.nodeData?.childrenID;
+  const siblingsNode = elements?.filter((item: any)=>siblingsNodeID?.includes(item?.id));
+  let hasElseBranch = false;
+  siblingsNode?.forEach((item: any)=>{
+    if (item?.data?.businessData?.ignore) {
+      hasElseBranch = true;
+    }
+  });
   const formulaFields = useMemo(()=> tableSchema.filter((schema) => {
     return !SYSTEM_FIELDS.includes(schema.fieldName);
   })?.reduce((acc: Record<string, string>, field) => {
@@ -92,7 +132,6 @@ export default function ProcessBranch({ defaultValue, onSubmit, onCancel, onChan
   }
 
   const handleChange = (values: any) => {
-    console.log('defaultValue', { defaultValue, elements });
     onChange(values);
   };
 
@@ -108,7 +147,7 @@ export default function ProcessBranch({ defaultValue, onSubmit, onCancel, onChan
               <SchemaForm
                 actions={actions}
                 initialValues={defaultValue}
-                schema={formSchema}
+                schema={hasElseBranch ? (defaultValue?.ignore ? formSchema : noElseFormSchema) : formSchema}
                 components={components}
                 onChange={handleChange}
               />

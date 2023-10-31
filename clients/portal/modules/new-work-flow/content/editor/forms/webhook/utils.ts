@@ -5,7 +5,7 @@ import { mergeLeft, flatten } from 'ramda';
 import store, { getNodeElementById } from '@newFlow/content/editor/store';
 import { Data, Input } from '@newFlow/content/editor/type';
 
-function getElementParents(element: Node<Data>): string[] {
+export function getElementParents(element: Node<Data>): string[] {
   return flattenDeep(element?.data?.nodeData.parentID?.map((id) => {
     const cur = getNodeElementById(id);
     return cur ? [...getElementParents(cur), id] : id;
@@ -18,7 +18,7 @@ export function getWebhookPathTreeValue(
   const { nodeIdForDrawerForm, elements } = store.getValue();
   const currentElement = getNodeElementById(nodeIdForDrawerForm);
   const currentElementParents: string[] = getElementParents(currentElement);
-  const sourceFromElements = elements.map((item): POLY_API.PolyNodeInput | false => {
+  const sourceFromElements = elements.map((item: any): POLY_API.PolyNodeInput | false => {
     if (!isNode(item) || item === currentElement) {
       return false;
     }

@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-empty */
 /* eslint-disable no-param-reassign */
 /* eslint-disable quote-props */
@@ -9,13 +10,14 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable no-plusplus */
-import { isArray, isString } from 'lodash';
+import { isArray, isString, cloneDeep } from 'lodash';
 import { createTrigger, deleteTrigger, getTriggerInfo } from './api';
 import { uuid } from '@lib/utils';
 import { buildGraphQLQuery } from '../access-control/departments-employees/utils';
 import { searchUser } from '@c/form-builder/registry/user-picker/messy/api';
 import httpClient from '@lib/http-client';
 import { CURRENT_WORK_FLOW_VERSION } from './content/editor/utils/constants';
+import { toEs } from './content/editor/forms/query-table-data/data-filter/utils';
 
 const ProcessBranch = 'process-branch';
 const ProcessSource = 'process-source';
@@ -27,7 +29,7 @@ const getTableID = (data: Array<any>)=>{
 };
 
 //  get node
-const getNode = (data: any, id: string) => {
+export const getNode = (data: any, id: string) => {
   return data?.shapes?.filter((item: any)=>{
     return item?.id === id;
   })?.[0];
@@ -62,16 +64,34 @@ const getUserInfo = async (item: any) => {
   });
 };
 
+export const preconditions = (targets: any, sources: any)=>{
+  if (targets?.length === 0) {
+    return true;
+  }
+  let counter = 0;
+  targets?.forEach((item: any)=>{
+    if (sources[item]) {
+      counter++;
+    }
+  });
+  return counter === targets?.length;
+};
 // 获取 pepeline nodes bpmn转换成pipeline
 const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
   const nodesList = data?.shapes || [];
   const firstNode = nodesList?.filter((item: any)=>item?.type === 'formData')?.[0];
-  const nodes = [firstNode];
+  let nodes = [firstNode];
   const nodeID: any = {};
   const pipelineNode: any = [];
+
   for (let index = 0; index < nodes.length; index++) {
     const node = nodes[index];
     if (nodeID[node?.id]) {
+      continue;
+    }
+
+    if (!preconditions(node?.data?.nodeData?.parentID, nodeID)) {
+      nodes = [...nodes, node];
       continue;
     }
     nodeID[node?.id] = {};
@@ -80,13 +100,6 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
       Metadata: {
         Annotations: {
           'web.pipelineNode/name': node?.data?.nodeData?.name,
-          'web.pipelineNode/newWorkflow': 'true',
-          'web.pipelineNode/branchTargetElementID': node?.data?.nodeData?.branchTargetElementID,
-          'web.pipelineNode/parentID': JSON.stringify(node?.data?.nodeData?.parentID),
-          'web.pipelineNode/childrenID': JSON.stringify(node?.data?.nodeData?.childrenID),
-          'web.pipelineNode/branchID': node?.data?.nodeData?.branchID,
-          'web.pipelineNode/parentBranchTargetElementID': node?.data?.nodeData?.parentBranchTargetElementID,
-          'web.pipelineNode/formDataID': firstNode?.id,
         },
       },
       spec: {
@@ -96,6 +109,10 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
         when: [],
       },
     };
+
+    if (node?.data?.nodeData?.branchTargetElementID) {
+      pn.Metadata.Annotations['web.pipelineNode/branchTargetElementID'] = node?.data?.nodeData?.branchTargetElementID;
+    }
     const commonParams = [
       {
         key: 'appID',
@@ -110,6 +127,16 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
         value: '$(params.dataID)',
       },
     ];
+
+    const addQueryData = (data: any)=>{
+      const { valueOf, key } = data || {};
+      if (isString(valueOf) && valueOf?.includes('.output.')) {
+        pn.spec.params.push({
+          'key': key,
+          value: valueOf,
+        });
+      }
+    };
     switch (node?.type) {
     case 'end':
       if (nodes.length === 1) {
@@ -253,6 +280,14 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
         key: 'nodeInfo',
         value: JSON.stringify(node),
       });
+      const variablePath = node?.data?.businessData?.basicConfig?.approvePersons?.variablePath || '';
+      if (variablePath?.includes('$tableDataQuery')) {
+        const arr = variablePath?.split('.');
+        pn.spec.params.push({
+          key: arr[1],
+          value: `$(tasks.query.output.${arr[1]})`,
+        });
+      }
       break;
     case 'fillIn':
       pn.spec.type = 'fill';
@@ -314,37 +349,7 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
       pn.spec.params = [
         ...commonParams,
       ];
-      // if (nodes?.[index - 1]?.type === 'processBranch') {
-      //   // processBranchSource
-      //   const sourceNode = nodesList?.find((item: any)=>item?.id === node?.data?.nodeData?.parentID?.[0]);
-      //   const { branchTargetElementID, childrenID, parentID, branchID, parentBranchTargetElementID } = sourceNode?.data?.nodeData || {};
-      //   const nodeInfo: any = {
-      //     branchID,
-      //     parentID,
-      //     childrenID,
-      //     branchTargetElementID,
-      //     parentBranchTargetElementID,
-      //     name: sourceNode?.id,
-      //   };
-      //   pn.Metadata.Annotations['web.pipelineNode/processBranchSource'] = JSON.stringify(nodeInfo);
-      // }
-      // if (nodes?.[index + 1]?.type === 'processBranch') {
-      //   // processBranchTarget
-      //   const targetNode = nodesList?.find((item: any)=>item?.id === node?.data?.nodeData?.branchTargetElementID);
-      //   const { branchTargetElementID, childrenID, parentID, branchID, parentBranchTargetElementID } = targetNode?.data?.nodeData || {};
-      //   const nodeInfo: any = {
-      //     branchID,
-      //     parentID,
-      //     childrenID,
-      //     branchTargetElementID,
-      //     parentBranchTargetElementID,
-      //     name: targetNode?.id,
-      //   };
-      //   pn.Metadata.Annotations['web.pipelineNode/processBranchTarget'] = JSON.stringify(nodeInfo);
-      // }
-
       const rule = node?.data?.businessData?.rule;
-
       if (typeof rule === 'string') {
         const flowVars: any = window.PipelineFlowData?.variable || [];
         for (let k1 = 0; k1 < flowVars?.length; k1++) {
@@ -357,17 +362,17 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
 
       if (node?.data?.businessData?.ignore) {
         pn.Metadata.Annotations['web.pipelineNode/isElseBranch'] = 'true';
-        pn.spec.params.push({
-          key: 'else',
-          value: `$(task.${nodes[index - 1].id}.output.ok)`,
-        });
         const nodeParentID = node?.data?.nodeData?.parentID?.[0];
         const sibNodes = nodesList?.filter((item: any)=>{
           return item?.data?.nodeData?.parentID?.[0] === nodeParentID && item?.id !== node?.id;
         });
         const rule = sibNodes?.map((item: any)=>{
-          return `[${item?.id}] == false`;
-        })?.join(' && ');
+          pn.spec.params.push({
+            key: item?.id,
+            value: `$(task.${item?.id}.output.ok)`,
+          });
+          return `[${item?.id}]==false`;
+        })?.join('&&');
         pn.spec.params.push({
           key: 'rule',
           value: rule || '',
@@ -379,22 +384,8 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
         });
       }
 
-      // const formulaFields = node?.data?.businessData?.formulaFields;
-      // const vByte = JSON.stringify(formulaFields || '');
-      // pn.spec.params.push({
-      //   key: 'formulaFields',
-      //   value: vByte,
-      // });
+      pn.spec.output = ['ok'];
 
-      pn.spec.params.push({
-        key: 'ignore',
-        value: String(!!node?.data?.businessData?.ignore),
-      });
-
-      // pn.spec.params.push({
-      //   key: 'branchTargetElementID',
-      //   value: node?.data?.nodeData?.branchTargetElementID,
-      // });
       break;
     case 'tableDataCreate':
       pn.spec.type = 'form-create-data';
@@ -405,10 +396,22 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
           value: node?.data?.businessData?.['targetTableId'],
         },
       ];
-
       if (node?.data?.businessData?.createRule) {
         const rule = node?.data?.businessData?.createRule;
-        const vByte = JSON.stringify(rule);
+
+        for (const key in rule) {
+          addQueryData(rule[key]);
+        }
+        const _rule: any = JSON.parse(JSON.stringify(rule));
+        for (const k in _rule) {
+          const { valueOf, key } = _rule[k];
+          if (isString(valueOf) && valueOf?.includes('.output.')) {
+            const _valueOf = `$(local.${key})`;
+            _rule[k].valueOf = _valueOf;
+            _rule[k].valueFrom = valueOf?.replace('$', '')?.replace('(', '')?.replace(')', '');
+          }
+        }
+        const vByte = JSON.stringify(_rule);
         pn.spec.params.push({
           key: 'createRule',
           value: vByte,
@@ -416,7 +419,24 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
       }
       if (node?.data?.businessData?.ref) {
         const ref = node?.data?.businessData?.ref;
-        const vByte = JSON.stringify(ref);
+        const _ref: any = JSON.parse(JSON.stringify(ref));
+        // for (const key in ref) {
+        //   const rule = ref[key]?.createRules?.[0];
+        //   for (const key in rule) {
+        //     addQueryData(rule[key]);
+        //   }
+        // }
+        // for (const key in _ref) {
+        //   const rule = _ref[key]?.createRules?.[0];
+        //   for (const k in rule) {
+        //     const { valueOf, key } = rule[k];
+        //     if (isString(valueOf) && valueOf?.includes('.output.')) {
+        //       const _valueOf = `$(local.${key})`;
+        //       rule[k].valueOf = _valueOf;
+        //     }
+        //   }
+        // }
+        const vByte = JSON.stringify(_ref);
         pn.spec.params.push({
           key: 'ref',
           value: vByte,
@@ -549,6 +569,118 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
         }
       }
       break;
+    case 'tableDataQuery':
+      pn.spec.type = 'form-query-data';
+      pn.spec.params = [
+        {
+          key: 'appID',
+          value: '$(params.appID)',
+        },
+      ];
+      if (node?.data?.businessData?.['targetTableId']) {
+        pn.spec.params.push( {
+          key: 'targetTableID',
+          value: node?.data?.businessData?.['targetTableId'],
+        });
+      }
+      const formType = node?.data?.businessData?.formType;
+      pn.Metadata.Annotations['web.pipelineNode/formType'] = node?.data?.businessData?.formType;
+      if (formType === 'work-form') {
+        pn.spec.params.push({
+          key: 'dataID',
+          value: '$(params.dataID)',
+        });
+        // const localID = '{{ if eq (printf "%T" .Local.dataID) "string" }}"{{ .Local.dataID }}"{{ else }}{{ .Local.dataID }}{{ end }}';
+        const localID = '{{.Local.dataID}}';
+
+        pn.spec.params.push({
+          key: 'query',
+          value: `{"bool":{"must":[{"term":{"_id":${localID}}}]}}`,
+        });
+        pn.spec.params.push({
+          key: 'size',
+          value: '1',
+        });
+      } else {
+        if (node?.data?.businessData?.query) {
+          const rule = node?.data?.businessData?.query;
+          const { size, sort, tag, conditions, sizeKey, sizeNodeID } = rule;
+          if (sizeKey && isString(size) && size?.includes('.output.')) {
+            pn.spec.params.push({
+              key: sizeKey,
+              value: size,
+            });
+          }
+          pn.spec.params.push({
+            key: 'sort',
+            value: sort?.[0],
+          });
+          if (sizeKey && size?.includes('.output.')) {
+            // const _sizeStr = `{{ if eq (printf "%T" .Local.${sizeKey}) "string" }}"{{ .Local.${sizeKey} }}"{{ else }}{{ .Local.${sizeKey} }}{{ end }}`;
+            const _sizeStr = `{{.Local.${sizeKey}}}`;
+
+            pn.spec.params.push({
+              key: 'size',
+              value: (formType === 'work-form') ? '1' : _sizeStr,
+            });
+          } else {
+            pn.spec.params.push({
+              key: 'size',
+              value: (formType === 'work-form') ? '1' : String(size),
+            });
+          }
+          let _query = {};
+          try {
+            const _conditions = conditions?.map((item: any)=>{
+              if (item?.value.includes('.output.')) {
+                // const _valueStr = `{{ if eq (printf "%T" .Local.${item?.outputKey}) "string" }}"{{ .Local.${item?.outputKey} }}"{{ else }}{{ .Local.${item?.outputKey} }}{{ end }}`;
+                const _valueStr = `{{.Local.${item?.outputKey}}}`;
+                return item?.outputKey ? {
+                  ...item,
+                  value: _valueStr,
+                } : null;
+              } else {
+                return item;
+              }
+            })?.filter((item: any)=>!!item);
+            _query = toEs({ tag, condition: [..._conditions] });
+          } catch (error) {
+            _query = toEs({ tag, condition: [] });
+          }
+          const _queryStr: any = JSON.stringify(_query);
+
+          // 使用正则表达式替换字符串
+          const outputString = _queryStr.replace(/"{{(.+?)}}"/g, '{{$1}}');
+          pn.spec.params.push({
+            key: 'query',
+            value: outputString,
+          });
+          try {
+            conditions?.forEach((item: any)=>{
+              const { value, outputKey } = item;
+              if (item?.value?.includes('.output.') && outputKey && value) {
+                pn.spec.params.push({
+                  key: outputKey,
+                  value: value,
+                });
+              }
+            });
+          } catch (error) {
+          }
+        }
+      }
+
+      if (node?.data?.businessData?.queryList) {
+        const rule = node?.data?.businessData?.queryList;
+        rule?.forEach((item: any)=>{
+          pn.spec.params.push({
+            key: `schema.${item?.value}`,
+            value: `${item?.queryVal}`,
+          });
+        });
+        pn.spec.output = rule?.map((item: any)=>`${item?.queryVal}`);
+      }
+      break;
     }
 
     if (node?.data?.nodeData?.branchID) {
@@ -567,57 +699,47 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
       pipelineNode.push(pn);
     }
 
+    const tmpNodes: any = [];
     node?.data?.nodeData?.childrenID?.forEach((childID: any)=>{
-      nodes.push(getNode(data, childID));
+      tmpNodes.push(getNode(data, childID));
+    });
+    nodes = [...nodes, ...tmpNodes];
+  }
+  const _pipelineNode: any = [];
+  if (pipelineNode?.length) {
+    pipelineNode?.forEach((item: any)=>{
+      if (item?.spec?.type === 'process-branch') {
+        const last = _pipelineNode[_pipelineNode?.length - 1];
+        if (last?.length && last?.[0]?.spec?.type === 'process-branch') {
+          _pipelineNode[_pipelineNode?.length - 1].push(item);
+        } else {
+          _pipelineNode.push([item]);
+        }
+      } else {
+        _pipelineNode.push([item]);
+      }
     });
   }
-  // pipelineNode.forEach((node: any, index: any)=>{
-  //   if (node?.spec?.type === 'process-branch') {
-  //     if (pipelineNode?.[index - 1]?.spec?.type !== 'process-branch') {
-  //       // processBranchSource
-  //       const sourceNode = nodesList?.find((item: any)=>item?.id === JSON.parse(node?.Metadata?.Annotations?.['web.pipelineNode/parentID'] || null)?.[0]);
-  //       const { branchTargetElementID, childrenID = [], parentID = [], branchID, parentBranchTargetElementID } = sourceNode?.data?.nodeData || {};
-  //       const nodeInfo: any = {
-  //         branchID,
-  //         parentID,
-  //         childrenID,
-  //         branchTargetElementID,
-  //         parentBranchTargetElementID,
-  //         name: sourceNode?.id,
-  //       };
-  //       node.Metadata.Annotations['web.pipelineNode/processBranchSource'] = JSON.stringify(nodeInfo);
-  //     }
-  //     if (pipelineNode?.[index + 1]?.spec?.type !== 'process-branch' ) {
-  //       // processBranchTarget
-  //       const targetNode = nodesList?.find((item: any)=>item?.id === node?.Metadata?.Annotations?.['web.pipelineNode/branchTargetElementID']);
-  //       const { branchTargetElementID, childrenID, parentID, branchID, parentBranchTargetElementID } = targetNode?.data?.nodeData || {};
-  //       const nodeInfo: any = {
-  //         branchID,
-  //         parentID,
-  //         childrenID,
-  //         branchTargetElementID,
-  //         parentBranchTargetElementID,
-  //         name: targetNode?.id,
-  //       };
-  //       node.Metadata.Annotations['web.pipelineNode/processBranchTarget'] = JSON.stringify(nodeInfo);
-  //     }
-  //   }
-  // });
 
-  return pipelineNode;
+  const newPipelineNode = _pipelineNode?.map((item: any)=>{
+    if (item?.[0]?.spec?.type === 'process-branch') {
+      const elseNodes = item?.filter((child: any)=>(child?.Metadata?.Annotations?.['web.pipelineNode/isElseBranch'] === 'true'));
+      const normalNodes = item?.filter((child: any)=>(child?.Metadata?.Annotations?.['web.pipelineNode/isElseBranch'] !== 'true'));
+      return [
+        ...normalNodes,
+        ...elseNodes,
+      ];
+    } else {
+      return item;
+    }
+  }) || [];
+  const lastPipelineNodes: any = newPipelineNode?.flat();
+  return lastPipelineNodes;
 };
 
 // 将新生成的pipeline nodes 转换成 bpmn的 nodes
 const pipelineNodesToBpmnNodes = async (pipelineNode: any, params: any)=>{
   // 新工作流新数据
-  // const isNewWorkflowData = pipelineNode?.[0]?.Metadata?.Annotations?.['web.pipelineNode/newWorkflow'] === 'true';
-  // let newPepelineNodes: any = [];
-  // if (isNewWorkflowData) {
-  //   newPepelineNodes = getNewWorkflowNodes(pipelineNode); // 根据新工作流生成nodes
-  //   // getNewWorkflowNodes(pipelineNode);
-  // } else {
-  //   newPepelineNodes = getNewPipelineNodes(pipelineNode); // 兼容老工作留的数据
-  // }
   const newPepelineNodes = getNewPipelineNodes(pipelineNode); // 兼容老工作留的数据
 
   const bpmnNodes: any = [];
@@ -627,80 +749,6 @@ const pipelineNodesToBpmnNodes = async (pipelineNode: any, params: any)=>{
     bpmnNodes.push(result);
   }
   return bpmnNodes;
-};
-
-// TODO: 根据新工作流生成nodes
-const getNewWorkflowNodes = (pipelineNode: any)=>{
-  const allNodeList: any = [];
-  // 根据pipelineNode添加分流 合流 节点 和 nodeData
-  pipelineNode?.forEach((item: any)=>{
-    const { Annotations } = item?.Metadata || {};
-    const processBranchSource = JSON.parse(Annotations?.['web.pipelineNode/processBranchSource'] || null);
-    const processBranchTarget = JSON.parse(Annotations?.['web.pipelineNode/processBranchTarget'] || null);
-    const childrenID = JSON.parse(Annotations?.['web.pipelineNode/childrenID'] || []);
-    const parentID = JSON.parse(Annotations?.['web.pipelineNode/parentID'] || []);
-    const branchID = Annotations?.['web.pipelineNode/branchID'];
-    const branchTargetElementID = Annotations?.['web.pipelineNode/branchTargetElementID'];
-    const parentBranchTargetElementID = Annotations?.['web.pipelineNode/parentBranchTargetElementID'];
-    if (processBranchSource) {
-      allNodeList.push({
-        name: processBranchSource?.name,
-        spec: {
-          type: ProcessSource,
-        },
-        branchID: processBranchSource?.branchID,
-        parentID: processBranchSource?.parentID,
-        childrenID: processBranchSource?.childrenID,
-        branchTargetElementID: processBranchSource?.branchTargetElementID,
-        parentBranchTargetElementID: processBranchSource?.parentBranchTargetElementID,
-      });
-    }
-    allNodeList.push({
-      ...item,
-      branchID,
-      parentID,
-      childrenID,
-      branchTargetElementID,
-      parentBranchTargetElementID,
-    });
-    if (processBranchTarget) {
-      allNodeList.push({
-        name: processBranchTarget?.name,
-        spec: {
-          type: ProcessTarget,
-        },
-        branchID: processBranchTarget?.branchID,
-        parentID: processBranchTarget?.parentID,
-        childrenID: processBranchTarget?.childrenID,
-        branchTargetElementID: processBranchTarget?.branchTargetElementID,
-        parentBranchTargetElementID: processBranchTarget?.parentBranchTargetElementID,
-      });
-    }
-  });
-
-  const formDataNode = {
-    name: allNodeList?.[0]?.parentID?.[0],
-    spec: {
-      type: 'form-data',
-      params: [],
-      output: [],
-      when: [],
-    },
-    parentID: [],
-    childrenID: [allNodeList?.[0]?.name],
-  };
-  const endNode = {
-    name: allNodeList?.[allNodeList?.length - 1]?.childrenID?.[0],
-    spec: {
-      type: 'end',
-      params: [],
-      output: [],
-      when: [],
-    },
-    parentID: [allNodeList?.[allNodeList?.length - 1]?.name],
-    childrenID: [],
-  };
-  return [formDataNode, ...allNodeList, endNode];
 };
 
 // 生成pipeline node
@@ -726,20 +774,16 @@ const generatePipelineNode = (type: string)=>{
 const getNewPipelineNodes = (pipelineNode: any)=>{
   const formData = generatePipelineNode('formData');
   const end = generatePipelineNode('end');
-  const formDataID = pipelineNode?.[0]?.Metadata?.Annotations?.['web.pipelineNode/formDataID'];
-  if (formDataID) {
-    formData.name = formDataID;
-  }
   // 主干====================
   // 提取主干节点
-  // const mainNodesList = [[formData], ...getMainNodes(pipelineNode), [end]];
-  const _pipelineNode = isArray(pipelineNode) ? pipelineNode : [];
+  const _pipelineNode = isArray(pipelineNode) ? cloneDeep(pipelineNode) : [];
   const mainNodesList = [...getMainNodes([formData, ..._pipelineNode, end])];
   //  给主干 添加 分流 合流 节点
   let newMainNodesList = addMainBranchNodes(mainNodesList);
   // 分支====================
   //  提取分支节点
   const branchNodesObj = getBranchNodes(_pipelineNode);
+
   // 将分支节点切分
   let newBranchNodesObj: any = formatBranchNodes(branchNodesObj);
   // 给分支节点添加 分流 合流 节点
@@ -754,7 +798,7 @@ const getNewPipelineNodes = (pipelineNode: any)=>{
 };
 
 // 提取主干节点
-const getMainNodes = (pipelineNode: any)=>{
+export const getMainNodes = (pipelineNode: any)=>{
   const mainNodesList: any = [];
   for (let i = 0; i < pipelineNode?.length; i++) {
     if (!pipelineNode[i]?.spec?.when?.length) {
@@ -781,7 +825,8 @@ const getMainNodes = (pipelineNode: any)=>{
 };
 
 // 给主干节点添加分流 合流节点
-const addMainBranchNodes = (mainNodesList: any)=>{
+const addMainBranchNodes = (mainNodeList: any)=>{
+  const mainNodesList = cloneDeep(mainNodeList);
   const newMainNodesList: any = [];
   mainNodesList.forEach((item: any, index: any)=>{
     if (item.length > 1) {
@@ -811,7 +856,7 @@ const addMainBranchNodes = (mainNodesList: any)=>{
 };
 
 // 提取分支节点 (可能是主干下分流的分支， 也有可能是分流下分支的分支)
-const getBranchNodes = (pipelineNode: any)=>{
+export const getBranchNodes = (pipelineNode: any)=>{
   const branchNodesObj: any = {};
   for (let i = 0; i < pipelineNode.length; i++) {
     if (pipelineNode[i]?.spec?.when?.length) {
@@ -837,8 +882,6 @@ const formatBranchNodes = (branchNodesObj: any)=>{
       if (pipelineNode[i]?.spec?.type === ProcessBranch &&
           pipelineNode[i - 1]?.spec?.type === ProcessBranch
       ) {
-        // const curBranchTargetElementID = pipelineNode[i]?.spec?.params?.find(({ key }: any)=>key === 'branchTargetElementID')?.value;
-        // const preBranchTargetElementID = pipelineNode[i - 1]?.spec?.params?.find(({ key }: any)=>key === 'branchTargetElementID')?.value;
         const curBranchTargetElementID = pipelineNode[i]?.Metadata.Annotations?.['web.pipelineNode/branchTargetElementID'];
         const preBranchTargetElementID = pipelineNode[i - 1]?.Metadata.Annotations?.['web.pipelineNode/branchTargetElementID'];
         if (curBranchTargetElementID && preBranchTargetElementID && curBranchTargetElementID !== preBranchTargetElementID) {
@@ -902,22 +945,22 @@ const addMainNodesIDs = (newMainNodesList: any, newBranchNodesObj: any)=>{
         node.childrenID = [newMainNodesList[index + 1]?.[0].name];
       });
     } else {
-      if (item[0].spec.type !== ProcessTarget && item[0].spec.type !== ProcessSource && item[0].spec.type !== ProcessBranch) {// 非分流，合流 分支node
+      if (item[0].spec?.type !== ProcessTarget && item[0].spec.type !== ProcessSource && item[0].spec.type !== ProcessBranch) {// 非分流，合流 分支node
         item.forEach((node: any)=>{
           node.parentID = [newMainNodesList[index - 1]?.[0]?.name];
           node.childrenID = [newMainNodesList?.[index + 1]?.[0].name];
         });
       }
-      if (item[0].spec.type === ProcessBranch) {// 分支node
+      if (item[0].spec?.type === ProcessBranch) {// 分支node
         item.forEach((node: any)=>{
           node.parentID = [newMainNodesList[index - 1]?.[0]?.name];
           node.childrenID = [newBranchNodesObj[node?.name]?.[0]?.[0]?.name]; // 分支的child
         });
       }
-      if (item[0].spec.type === ProcessSource) {// 分流node
+      if (item[0].spec?.type === ProcessSource) {// 分流node
         item[0].parentID = [newMainNodesList[index - 1]?.[0].name];
       }
-      if (item[0].spec.type === ProcessTarget) {// 合流node
+      if (item[0].spec?.type === ProcessTarget) {// 合流node
         item[0].childrenID = [newMainNodesList[index + 1]?.[0]?.name];
         // 最后 找出合流的parentID
         item[0].parentID = [];
@@ -1088,6 +1131,7 @@ const generageBpmnNode = async (node: any, params: any)=>{
     'form-data': 'formData',
     'form-update-data': 'tableDataUpdate',
     'form-create-data': 'tableDataCreate',
+    'form-query-data': 'tableDataQuery',
     'process-branch': 'processBranch',
     'process-source': 'processBranchSource',
     'process-target': 'processBranchTarget',
@@ -1164,7 +1208,6 @@ const generageBpmnNode = async (node: any, params: any)=>{
       break;
     case 'process-branch':
       const isElseBranch = node?.Metadata?.Annotations?.['web.pipelineNode/isElseBranch'];
-      // const ignore = nodeParams.find((item: any)=>item.key === 'ignore')?.value === 'true' ? true : false;
       let ignore = isElseBranch ? true : false;
       let rule = isElseBranch ? '' : nodeParams.find((item: any)=>item.key === 'rule')?.value;
       let formulaFields = isElseBranch ? '' : nodeParams.find((item: any)=>item.key === 'formulaFields')?.value;
@@ -1253,14 +1296,56 @@ const generageBpmnNode = async (node: any, params: any)=>{
       };
       break;
     case 'form-create-data':
-      const { targetTableID: createTargetTableID, createRule, ref, normalRequiredField, subTableRequiredField } = businessDataObj || {};
+      const { targetTableID: createTargetTableID, createRule, ref, normalRequiredField, subTableRequiredField, queryNodeId } = businessDataObj || {};
+      const getNewRule = (rule: any)=>{
+        const _createRule = rule ? JSON.parse(rule) : {};
+        for (const key in _createRule) {
+          const { valueFrom, valueOf } = _createRule[key];
+          if (valueFrom?.includes('.output.') && isString(valueOf) && valueOf?.includes('local.')) {
+            const _valueKey = valueOf?.replace('$(local.', '')?.replace(')', '');
+            const _value = businessDataObj?.[_valueKey];
+            _createRule[key].valueOf = _value;
+            _createRule[key].valueFrom = 'task.xx.output.xxx';
+          }
+        }
+        return _createRule;
+      };
+      const _createRule = getNewRule(createRule);
+
+      const getNewRef = (ref: any)=>{
+        const newRef = JSON.parse(JSON.stringify(ref));
+        const getNewRule = (rule: any)=>{
+          const _createRule = rule ? rule : [];
+          _createRule.forEach((item: any)=>{
+            for ( const k in item) {
+              const { valueFrom, valueOf, key } = item[k] || {};
+              if (valueFrom === 'task.xx.output.xxx' && isString(valueOf) && valueOf?.includes('local.')) {
+                const _value = businessDataObj?.[key];
+                item[k].valueOf = _value;
+              }
+            }
+          });
+          return _createRule;
+        };
+        for (const key in newRef) {
+          const _createRules = newRef?.[key]?.createRules;
+          const _newRules = getNewRule(_createRules);
+          newRef[key].createRules = _newRules;
+        }
+        return newRef;
+      };
+
+      const _ref = ref ? JSON.parse(ref) : {};
       bpmnNode.data.businessData = {
         targetTableId: createTargetTableID,
-        createRule: createRule ? JSON.parse(createRule) : {},
-        ref: ref ? JSON.parse(ref) : {},
+        // createRule: createRule ? JSON.parse(createRule) : {},
+        createRule: _createRule,
+        // ref: ref ? JSON.parse(ref) : {},
+        ref: ref ? getNewRef(_ref) : {},
         normalRequiredField: normalRequiredField ? JSON.parse(normalRequiredField) : [],
         subTableRequiredField: subTableRequiredField ? JSON.parse(subTableRequiredField) : [],
         silent: formTableID === createTargetTableID ? false : true,
+        queryNodeId,
       };
       break;
     case 'form-update-data':
@@ -1276,6 +1361,90 @@ const generageBpmnNode = async (node: any, params: any)=>{
         selectFieldType: '',
         selectFieldTableId: '',
       };
+      break;
+    case 'form-query-data':
+      const { targetTableID: targetTableId, query, sort, size } = businessDataObj || {};
+      const _formType = node?.Metadata?.Annotations?.['web.pipelineNode/formType'];
+      const queryList: any = [];
+      for (const key in businessDataObj) {
+        if (key.startsWith('schema.')) {
+          queryList.push({
+            id: 'tableDataQuery' + uuid(),
+            value: key.replace('schema.', '')?.split(','),
+            queryVal: businessDataObj[key]?.replace(`${node?.name}_`, ''),
+            descrption: businessDataObj[key]?.description,
+          });
+        }
+      }
+      let _query = null;
+      try {
+        if (_formType === 'others' && query) {
+          let tag = 'must';
+          // const queryStr = query.replace(/{{\s*if\s+eq\s.*?{{\s*end\s*}}/g, function(match: any) {
+          //   return '"' + match + '"';
+          // });
+          const queryStr = query.replace(/{{\.Local\.[^}]+}}/g, function(match: any) {
+            return '"' + match + '"';
+          });
+          const queryObj = query ? JSON.parse(queryStr) : {};
+          for (const key in queryObj) {
+            if (key === 'bool') {
+              const tempObj = queryObj[key];
+              for (const k in tempObj) {
+                tag = k;
+              }
+            }
+          }
+          const formatData = formatQuery(query ? queryObj : {}, businessDataObj);
+          const _conditions = formatData?.conditions?.map((item: any)=>{
+            if (isString(item?.value) && item.value?.includes('.Local.')) {
+              let _valueKey = '';
+              item.value?.replace(/{{\.Local\.[^}]+}}/g, function(match: any) {
+                _valueKey = match;
+                return match?.replace('{{', '')?.replace('}}', '')?.replace('.Local.', '');
+              });
+              const _outputKey = _valueKey?.replace('{{', '').replace('}}', '').replace('.Local.', '').trim();
+              const _value = businessDataObj?.[_outputKey];
+              const _outputNodeID = _value?.replace('$(task.', '')?.split('.')?.[0];
+              return {
+                ...item,
+                value: _value,
+                outputKey: _outputKey,
+                outputNodeID: _outputNodeID,
+              };
+            } else {
+              return item;
+            }
+          }) || [];
+          _query = {
+            tag: formatData?.tag || 'must',
+            conditions: _conditions || [],
+            size: size ? size : undefined,
+            sort: sort ? [sort] : ['-created_at'],
+            sizeKey: '',
+          };
+          if (isString(size) && size?.includes('.Local.')) {
+            let _sizeKey = '';
+            size?.replace(/{{\.Local\.[^}]+}}/g, function(match: any) {
+              _sizeKey = match;
+              return match?.replace('{{', '')?.replace('}}', '')?.replace('.Local.', '');
+            });
+            _sizeKey = _sizeKey?.replace('{{', '').replace('}}', '').replace('.Local.', '').trim();
+            const sizeValue = businessDataObj?.[_sizeKey];
+            _query.size = sizeValue;
+            _query.sizeKey = _sizeKey;
+          }
+        }
+      } catch (error) {
+        console.log('error', error);
+      }
+      bpmnNode.data.businessData = {
+        targetTableId,
+        queryList,
+        query: _query,
+        formType: _formType || 'others',
+      };
+
       break;
     case 'approve':
       const { nodeInfo: approveNodeInfo } = businessDataObj;
@@ -1395,22 +1564,23 @@ export const getPipelineWorkFlowParams = (flowData: any)=>{
     window.PipelineFlowData = {};
   }
   const bpmn = JSON.parse(flowData?.bpmnText || '');
+
   const tableID = getTableID(bpmn?.shapes);
   const formData = bpmn?.shapes?.filter((item: any)=>item?.type === 'formData')?.[0]?.data;
   const params = [
     {
       name: 'appID',
       default: appID,
-      description: 'lowcodeapplicationid',
+      description: 'lowcode application id',
     },
     {
       name: 'tableID',
       default: tableID,
-      description: 'lowcodetableid',
+      description: 'lowcode table id',
     },
     {
       name: 'dataID',
-      description: 'lowcodeformdataid',
+      description: 'lowcode formdata id',
     },
   ];
   const variable: any = window.PipelineFlowData?.variable || [];
@@ -1437,6 +1607,7 @@ export const getPipelineWorkFlowParams = (flowData: any)=>{
     });
   });
   const nodes: any = bpmnToPipepline(bpmn, flowData, communal);
+
   const spec = {
     params: params,
     nodes,
@@ -1470,6 +1641,7 @@ export const getPipelineWorkFlowParams = (flowData: any)=>{
   window.PipelineFlowData = res;
   // 查询 保存 删除 trigger
   // handleTrigger(appID, tableID, pipelineName);
+
   return res;
 };
 
@@ -1498,6 +1670,7 @@ export const pipelineTobpmnFlow = async (pipelineObj: any)=>{
   const { config } = pipelineObj || {};
 
   // 查询 保存 删除 trigger
+
   const shapes = await pipelineNodesToBpmnNodes(pipelineNode, params);
   const bpmn = {
     version: CURRENT_WORK_FLOW_VERSION,
@@ -1526,10 +1699,6 @@ export const pipelineTobpmnFlow = async (pipelineObj: any)=>{
     'instanceName': instanceName,
     'keyFields': keyFields,
   };
-
-  // 查询 保存 删除 trigger
-  // handleTrigger(appID, tableID, pipelineObj?.name);
-
   return data;
 };
 
@@ -1559,3 +1728,57 @@ export const getTriggersData = (flowData: any)=>{
   return pipelineName ? triggerList : null;
 };
 
+function reverseOperatorESParameter(esParameter: any): any | null {
+  // Implement the reverse logic for each Elasticsearch parameter type.
+  if (esParameter.term) {
+    const key = Object.keys(esParameter.term)[0];
+    return { key, op: 'eq', value: esParameter.term[key] };
+  } else if (esParameter.range) {
+    const key = Object.keys(esParameter.range)[0];
+    const range = esParameter.range[key];
+    const start = range.gte;
+    const end = range.lt;
+    return { key, op: 'range', value: [start, end] };
+  } else if (esParameter.bool) {
+    if (esParameter.bool.must) {
+      const subconditions = esParameter.bool.must.map((mustItem: any) => reverseOperatorESParameter(mustItem));
+      return { key: '', op: 'fullSubset', value: subconditions };
+    } else if (esParameter.bool.must_not) {
+      const mustNotItem = esParameter.bool.must_not[0];
+      if (mustNotItem.term) {
+        const key = Object.keys(mustNotItem.term)[0];
+        return { key, op: 'ne', value: mustNotItem.term[key] };
+      } else if (mustNotItem.terms) {
+        const key = Object.keys(mustNotItem.terms)[0];
+        return { key, op: 'exclude', value: mustNotItem.terms[key] };
+      }
+    }
+  } else if (esParameter.terms) {
+    const key = Object.keys(esParameter.terms)[0];
+    return { key, op: 'intersection', value: esParameter.terms[key] };
+  } else if (esParameter.match) {
+    const key = Object.keys(esParameter.match)[0];
+    return { key, op: 'like', value: esParameter.match[key] };
+  }
+  return null;
+}
+
+const formatQuery = (query: any, businessDataObj: any)=>{
+  const tag = query?.bool ? Object.keys(query.bool)[0] : 'must';
+  const conditions: any = [];
+  const dataList = query?.bool?.[tag];
+  dataList?.forEach((queryItem: any)=>{
+    const condition = reverseOperatorESParameter(queryItem);
+    if (condition) {
+      const item = {
+        ...condition,
+        valueFrom: 'fixedValue',
+      };
+      conditions.push(item);
+    }
+  });
+  return {
+    tag,
+    conditions,
+  };
+};

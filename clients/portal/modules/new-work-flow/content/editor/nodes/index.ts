@@ -9,6 +9,7 @@ import ProcessBranchTargetNode from './process-branch-target';
 import ProcessVariableAssignmentNode from './process-variable-assignment';
 import TableDataCreateNode from './table-data-create';
 import TableDataUpdateNode from './table-data-update';
+import TableDataQueryNode from './table-data-query';
 import SendEmailNode from './send-email';
 import WebMessage from './web-message';
 import CCNode from './cc';
@@ -24,6 +25,7 @@ const nodeTypes = {
   processVariableAssignment: ProcessVariableAssignmentNode,
   tableDataCreate: TableDataCreateNode,
   tableDataUpdate: TableDataUpdateNode,
+  tableDataQuery: TableDataQueryNode,
   email: SendEmailNode,
   letter: WebMessage,
   autocc: CCNode,

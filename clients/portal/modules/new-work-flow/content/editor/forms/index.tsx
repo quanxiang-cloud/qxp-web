@@ -29,6 +29,7 @@ const drawerTitleMap = {
   processVariableAssignment: '变更流程参数',
   tableDataCreate: '数据新增',
   tableDataUpdate: '数据更新',
+  tableDataQuery: '数据查询',
   autocc: '抄送',
   FORM_TIME: '定时',
   email: '发送邮件',
@@ -144,6 +145,7 @@ export default function NodeFormWrapper(): JSX.Element | null {
             ...formData,
             type: currentNodeElement?.type,
           } as any}
+          currentNodeElement={currentNodeElement}
           onSubmit={onSubmit}
           onCancel={closePanel}
           onChange={handleChange}

@@ -406,7 +406,7 @@ export type Data = CCNodeData | WebMessageNodeData | SendEmailNodeData | TableDa
 
 export type NodeType = 'formData' | 'fillIn' | 'approve' | 'end' | 'processBranch' |
 'processVariableAssignment' | 'tableDataCreate' | 'tableDataUpdate' | 'FORM_TIME' | 'email' |
-  'letter' | 'autocc' | 'processBranchSource' | 'processBranchTarget' | 'webhook';
+  'letter' | 'autocc' | 'processBranchSource' | 'processBranchTarget' | 'webhook' | 'tableDataQuery';
 export interface CurrentElement {
   id: string;
   type: NodeType;

@@ -36,6 +36,12 @@ export async function getFormFieldSchema({ queryKey }: QueryFunctionContext): Pr
   return data?.schema ?? {};
 }
 
+export async function getFieldSchema({ appID, tableID }: any): Promise<ISchema> {
+  const data = await httpClient<SchemaResponse | null>(
+    `/api/v1/form/${appID}/m/table/getByID`, { tableID });
+  return data?.schema ?? {};
+}
+
 async function rebuildSchema(_schema: ISchema): Promise<ISchema> {
   const isSubTable = _schema['x-component'] === 'SubTable';
   const props = _schema['x-component-props'];

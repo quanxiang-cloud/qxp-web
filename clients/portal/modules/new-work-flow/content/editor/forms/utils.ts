@@ -183,6 +183,68 @@ export const transformSchema = (
   };
 };
 
+export const transformSchemaTableDataQuery = (
+  schema: TransformSchemaSchema,
+  options: { filterSubTable?: boolean } = {},
+  mergeData: Record<string, any> = {},
+): ISchema => {
+  const mappedProps = mapSchemaProps(cloneDeep(schema).properties, (field) => {
+    if (options.filterSubTable) {
+      return field?.componentName === 'subtable';
+    }
+    return field?.componentName !== 'subtable';
+  }, (key, field, acc) => {
+    const innerFieldProps = cloneDeep(field);
+    const compName = field.componentName;
+
+    if (compName === 'subtable') {
+      const subProps = get(field, 'items.properties', {});
+      const parentTableId = innerFieldProps?.['x-component-props']?.tableID;
+      Object.assign(acc, {
+        [key]: {
+          type: 'object',
+          'x-component': 'SubTableFields',
+          'x-component-props': innerFieldProps,
+          properties: mapSchemaProps(subProps,
+            (f) => f?.componentName !== 'subtable',
+            (subKey, field, acc) => {
+              const curRules = get(mergeData, `${key}.createRules[0]`, {});
+              const defaultVal = getCompDefaultValFromData(compName, curRules, subKey);
+              Object.assign(acc, {
+                [[key, subKey].join('@')]: {
+                  type: 'object',
+                  'x-component': 'CustomField',
+                  'x-component-props': { ...field, parentTableId },
+                  properties: {
+                    [[key, subKey].join('@')]: { ...field, title: '', ...defaultVal },
+                  },
+                },
+              });
+            }),
+        },
+      });
+    } else if (compName) {
+      const defaultVal = getCompDefaultValFromData(compName, mergeData, key);
+      Object.assign(acc, {
+        [key]: {
+          type: 'object',
+          'x-component': 'CustomField',
+          'x-component-props': innerFieldProps,
+          properties: {
+            [key]: { ...field, title: '', ...defaultVal }, // merge default value
+          },
+        },
+      });
+    }
+    return;
+  });
+
+  return {
+    ...schema,
+    properties: mappedProps,
+  };
+};
+
 /*
 when compare field value in condition, value path should given
 example:

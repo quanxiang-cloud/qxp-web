@@ -21,8 +21,10 @@ import { isProduction } from './env';
 
 const output = {
   format: 'system',
-  entryFileNames: isProduction ? '[name]-[hash].js' : '[name]-[hash].js',
-  chunkFileNames: isProduction ? 'chunk-[name]-[hash].js' : 'chunk-[name]-[hash].js',
+  // entryFileNames: isProduction ? '[name]-[hash].js' : '[name]-[hash].js',
+  // chunkFileNames: isProduction ? 'chunk-[name]-[hash].js' : 'chunk-[name]-[hash].js',
+  entryFileNames: isProduction ? '[name]-[hash].js' : '[name].js',
+  chunkFileNames: isProduction ? 'chunk-[name]-[hash].js' : 'chunk-[name].js',
   dir: 'dist',
   sourcemap: isProduction ? false : 'inline',
   plugins: [
@@ -80,7 +82,7 @@ const config = {
   ],
 
   plugins: [
-    livereload(),
+    // livereload(),
     webWorkerLoader({
       // todo output file name has no hash
       targetPlatform: 'browser',
@@ -129,7 +131,8 @@ const mobileConfig = Object.assign(
   {
     input: mobileInput,
     output: Object.assign({}, output, {
-      chunkFileNames: isProduction ? 'mobile-chunk-[name]-[hash].js' : 'mobile-chunk-[name]-[hash].js',
+      // chunkFileNames: isProduction ? 'mobile-chunk-[name]-[hash].js' : 'mobile-chunk-[name]-[hash].js',
+      chunkFileNames: isProduction ? 'mobile-chunk-[name]-[hash].js' : 'mobile-chunk-[name].js',
     }),
     plugins: [
       ...config.plugins.filter((plugin) => {

@@ -13,7 +13,7 @@ import toast from '@lib/toast';
 import ActionButtonGroup from '../content/editor/components/_common/action-button-group';
 import type { StoreValue } from '../content/editor/type';
 import store, { updateStore, updateStoreByKey } from '../content/editor/store';
-import { deletePipelineFlow, toggleWorkFlow } from '../api';
+import { deletePipelineFlow, deleteTrigger, toggleWorkFlow } from '../api';
 import { POPPER_PARAMS } from './constants';
 import ActionButtons from './action-buttons';
 import { useHistory, useParams } from 'react-router-dom';
@@ -189,6 +189,12 @@ export default function FlowHeaderActions(): JSX.Element {
                     }).catch((err: any)=>{
                       toast.error(typeof err === 'string' ? err : err.message);
                     });
+
+                  // 删除trigger
+                  const triggerType = ['CREATE', 'UPDATE'];
+                  triggerType.forEach((item: any)=>{
+                    deleteTrigger(`${flowID}_${item}`);
+                  });
                   setShowDeleteModal(false);
                 },
               },
