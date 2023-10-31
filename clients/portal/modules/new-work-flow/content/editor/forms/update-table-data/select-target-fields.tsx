@@ -1,7 +1,6 @@
 import React, { useContext, useMemo, useEffect } from 'react';
 import { useQuery } from 'react-query';
 
-import Select from '@c/select';
 import FlowCtx from '@newFlow/flow-context';
 import { getFormFieldSchema } from '@newFlow/content/editor/forms/api';
 import { schemaToMap, schemaToFields } from '@lib/schema-convert';
@@ -41,13 +40,13 @@ function SelectTargetFields({ tableId, fieldId, onChangeField, onChangeSchema }:
 
   return (
     <div className="inline-flex items-center mt-20">
-      <span className="text-body mr-10">选择相关数据:</span>
+      {/* <span className="text-body mr-10">选择相关数据:</span>
       <Select
         options={fields}
         placeholder="选择字段"
         value={fieldId}
         onChange={onChangeField}
-      />
+      /> */}
     </div>
   );
 }

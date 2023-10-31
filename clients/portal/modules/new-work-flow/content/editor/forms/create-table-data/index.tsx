@@ -6,7 +6,6 @@ import { useUpdateEffect } from 'react-use';
 import { get } from 'lodash';
 
 import Select from '@c/select';
-import Toggle from '@c/toggle';
 import SaveButtonGroup from '@newFlow/content/editor/components/_common/action-save-button-group';
 import { getFormDataMenuList } from '@c/form-table-selector/api';
 import FlowContext from '@newFlow/flow-context';
@@ -291,7 +290,7 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel, onChange: _onCh
             onChange={onChangeTargetTable}
           />
         </div>
-        {value.targetTableId && (
+        {/* {value.targetTableId && (
           <div className="inline-flex items-center mt-10">
             <span className="text-body mr-10">表单数据是否触发工作流执行:</span>
             <Toggle
@@ -303,7 +302,7 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel, onChange: _onCh
             />
             <small className="ml-5 text-caption">新增本表数据时不支持再次触发工作流</small>
           </div>
-        )}
+        )} */}
         <TargetTableFields
           key={nodesOutputOptions?.length}
           appId={appID}

@@ -417,47 +417,47 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
           value: vByte,
         });
       }
-      if (node?.data?.businessData?.ref) {
-        const ref = node?.data?.businessData?.ref;
-        const _ref: any = JSON.parse(JSON.stringify(ref));
-        // for (const key in ref) {
-        //   const rule = ref[key]?.createRules?.[0];
-        //   for (const key in rule) {
-        //     addQueryData(rule[key]);
-        //   }
-        // }
-        // for (const key in _ref) {
-        //   const rule = _ref[key]?.createRules?.[0];
-        //   for (const k in rule) {
-        //     const { valueOf, key } = rule[k];
-        //     if (isString(valueOf) && valueOf?.includes('.output.')) {
-        //       const _valueOf = `$(local.${key})`;
-        //       rule[k].valueOf = _valueOf;
-        //     }
-        //   }
-        // }
-        const vByte = JSON.stringify(_ref);
-        pn.spec.params.push({
-          key: 'ref',
-          value: vByte,
-        });
-      }
-      if (node?.data?.businessData?.normalRequiredField) {
-        const normalRequiredField = node?.data?.businessData?.normalRequiredField;
-        const vByte = JSON.stringify(normalRequiredField);
-        pn.spec.params.push({
-          key: 'normalRequiredField',
-          value: vByte,
-        });
-      }
-      if (node?.data?.businessData?.subTableRequiredField) {
-        const subTableRequiredField = node?.data?.businessData?.subTableRequiredField;
-        const vByte = JSON.stringify(subTableRequiredField);
-        pn.spec.params.push({
-          key: 'subTableRequiredField',
-          value: vByte,
-        });
-      }
+      // if (node?.data?.businessData?.ref) {
+      //   const ref = node?.data?.businessData?.ref;
+      //   const _ref: any = JSON.parse(JSON.stringify(ref));
+      //   // for (const key in ref) {
+      //   //   const rule = ref[key]?.createRules?.[0];
+      //   //   for (const key in rule) {
+      //   //     addQueryData(rule[key]);
+      //   //   }
+      //   // }
+      //   // for (const key in _ref) {
+      //   //   const rule = _ref[key]?.createRules?.[0];
+      //   //   for (const k in rule) {
+      //   //     const { valueOf, key } = rule[k];
+      //   //     if (isString(valueOf) && valueOf?.includes('.output.')) {
+      //   //       const _valueOf = `$(local.${key})`;
+      //   //       rule[k].valueOf = _valueOf;
+      //   //     }
+      //   //   }
+      //   // }
+      //   const vByte = JSON.stringify(_ref);
+      //   pn.spec.params.push({
+      //     key: 'ref',
+      //     value: vByte,
+      //   });
+      // }
+      // if (node?.data?.businessData?.normalRequiredField) {
+      //   const normalRequiredField = node?.data?.businessData?.normalRequiredField;
+      //   const vByte = JSON.stringify(normalRequiredField);
+      //   pn.spec.params.push({
+      //     key: 'normalRequiredField',
+      //     value: vByte,
+      //   });
+      // }
+      // if (node?.data?.businessData?.subTableRequiredField) {
+      //   const subTableRequiredField = node?.data?.businessData?.subTableRequiredField;
+      //   const vByte = JSON.stringify(subTableRequiredField);
+      //   pn.spec.params.push({
+      //     key: 'subTableRequiredField',
+      //     value: vByte,
+      //   });
+      // }
       break;
     case 'tableDataUpdate':
       pn.spec.type = 'form-update-data';
@@ -476,26 +476,26 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
         });
       }
 
-      if (node?.data?.businessData?.selectField) {
-        pn.spec.params.push({
-          key: 'selectField',
-          value: node?.data?.businessData?.selectField,
-        });
-      }
+      // if (node?.data?.businessData?.selectField) {
+      //   pn.spec.params.push({
+      //     key: 'selectField',
+      //     value: node?.data?.businessData?.selectField,
+      //   });
+      // }
 
-      if (node?.data?.businessData?.selectFieldType) {
-        pn.spec.params.push({
-          key: 'selectFieldType',
-          value: node?.data?.businessData?.selectFieldType,
-        });
-      }
+      // if (node?.data?.businessData?.selectFieldType) {
+      //   pn.spec.params.push({
+      //     key: 'selectFieldType',
+      //     value: node?.data?.businessData?.selectFieldType,
+      //   });
+      // }
 
-      if (node?.data?.businessData?.selectFieldTableId) {
-        pn.spec.params.push({
-          key: 'selectFieldTableId',
-          value: node?.data?.businessData?.selectFieldTableId,
-        });
-      }
+      // if (node?.data?.businessData?.selectFieldTableId) {
+      //   pn.spec.params.push({
+      //     key: 'selectFieldTableId',
+      //     value: node?.data?.businessData?.selectFieldTableId,
+      //   });
+      // }
 
       if (node?.data?.businessData?.updateRule) {
         const rule = node?.data?.businessData?.updateRule;
@@ -519,14 +519,14 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
         }
       }
 
-      if (node?.data?.businessData?.formQueryRef) {
-        const formQueryRef = node?.data?.businessData?.formQueryRef;
-        const vByte = JSON.stringify(formQueryRef);
-        pn.spec.params.push({
-          key: 'formQueryRef',
-          value: vByte,
-        });
-      }
+      // if (node?.data?.businessData?.formQueryRef) {
+      //   const formQueryRef = node?.data?.businessData?.formQueryRef;
+      //   const vByte = JSON.stringify(formQueryRef);
+      //   pn.spec.params.push({
+      //     key: 'formQueryRef',
+      //     value: vByte,
+      //   });
+      // }
 
       break;
     case 'processVariableAssignment':

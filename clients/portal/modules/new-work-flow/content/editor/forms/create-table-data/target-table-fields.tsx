@@ -183,7 +183,7 @@ function TargetTableFields({ appId, tableId }: Props): JSX.Element {
   return (
     <div className="flex flex-col mt-20">
       {renderNormalFields()}
-      {renderSubTableFields()}
+      {/* {renderSubTableFields()} */}
     </div>
   );
 }
