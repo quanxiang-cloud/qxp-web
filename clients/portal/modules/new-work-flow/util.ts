@@ -175,11 +175,24 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
           pn.spec.params.push;
           break;
         case 'field':
-          for (const field of approvePersons.fields) {
-            pn.spec.params.push({
-              key: 'to',
-              value: `fields.${field}`,
-            });
+          // for (const field of approvePersons.fields) {
+          //   pn.spec.params.push({
+          //     key: 'to',
+          //     value: `fields.${field}`,
+          //   });
+          // }
+          // pn.spec.params.push({
+          //   key: 'to',
+          //   value: approvePersons?.fields?.map((field: any)=>`fields.${field}`)?.join(',') || '',
+          // });
+          for (let i = 0; i < approvePersons?.fields?.length; i++) {
+            const fields = approvePersons?.fields?.[i];
+            if (typeof fields === 'string') {
+              pn.spec.params.push({
+                key: 'to',
+                value: `fields.${fields}`,
+              });
+            }
           }
           break;
         case 'superior':
@@ -320,13 +333,6 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
             }
           }
           break;
-        case 'field':
-          if (Array.isArray(node?.data?.businessData?.basicConfig?.fillInPersons?.fields)) {
-            for (const k in node?.data?.businessData?.basicConfig?.fillInPersons?.fields) {
-              fillUsers.push('field.' + node?.data?.businessData?.basicConfig?.fillInPersons?.fields[k]);
-            }
-          }
-          break;
         case 'superior':
           fillUsers.push('leader');
           break;
@@ -335,14 +341,29 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
           break;
         }
       }
+      if (node?.data?.businessData?.basicConfig?.approvePersons !== undefined && typeof node?.data?.businessData?.basicConfig?.approvePersons === 'object') {
+        switch (node?.data?.businessData?.basicConfig?.approvePersons?.type) {
+        case 'field':
+          if (Array.isArray(node?.data?.businessData?.basicConfig?.approvePersons?.fields)) {
+            for (const k in node?.data?.businessData?.basicConfig?.approvePersons?.fields) {
+              fillUsers.push('field.' + node?.data?.businessData?.basicConfig?.approvePersons?.fields[k]);
+            }
+          }
+          break;
+        }
+      }
+      pn.spec.params.push({
+        key: 'fieldPermission',
+        value: JSON.stringify(node?.data?.businessData?.fieldPermission || {}),
+      });
       pn.spec.params.push({
         key: 'dealUsers',
         value: fillUsers.join(','),
       });
-      pn.spec.params.push({
-        key: 'nodeInfo',
-        value: JSON.stringify(node),
-      });
+      // pn.spec.params.push({
+      //   key: 'nodeInfo',
+      //   value: JSON.stringify(node),
+      // });
       break;
     case 'processBranch':
       pn.spec.type = 'process-branch';
@@ -470,10 +491,11 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
       ];
 
       if (node?.data?.businessData?.formType) {
-        pn.spec.params.push({
-          key: 'formType',
-          value: node?.data?.businessData?.formType,
-        });
+        pn.Metadata.Annotations['web.pipelineNode/updateFormType'] = node?.data?.businessData?.formType;
+        // pn.spec.params.push({
+        //   key: 'formType',
+        //   value: node?.data?.businessData?.formType,
+        // });
       }
 
       // if (node?.data?.businessData?.selectField) {
@@ -552,10 +574,11 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
       pn.spec.params = [
         ...commonParams,
       ];
-      pn.spec.params.push({
-        key: 'type',
-        value: node?.data?.businessData?.type,
-      });
+      pn.Metadata.Annotations['web.pipelineNode/webhookType'] = node?.data?.businessData?.type;
+      // pn.spec.params.push({
+      //   key: 'type',
+      //   value: node?.data?.businessData?.type,
+      // });
       if (node?.data?.businessData?.config) {
         const config = node?.data?.businessData?.config;
         try {
@@ -745,7 +768,7 @@ const pipelineNodesToBpmnNodes = async (pipelineNode: any, params: any)=>{
   const bpmnNodes: any = [];
 
   for (const item of newPepelineNodes) {
-    const result = await generageBpmnNode(item, params);
+    const result = await generageBpmnNode(item, params, newPepelineNodes);
     bpmnNodes.push(result);
   }
   return bpmnNodes;
@@ -1121,7 +1144,7 @@ const addProcessBranchNodesIDS = (newMainNodesList: any, newBranchNodesObj: any)
 };
 
 // 根据 type 生成对应的 bpmn node
-const generageBpmnNode = async (node: any, params: any)=>{
+const generageBpmnNode = async (node: any, params: any, newPepelineNodes?: any)=>{
   const mapType: any = {
     'end': 'end',
     'email': 'email',
@@ -1223,10 +1246,38 @@ const generageBpmnNode = async (node: any, params: any)=>{
       };
       break;
     case 'web-hook':
-      const { config, type: webhookType } = businessDataObj as any;
+      const { config } = businessDataObj as any;
+      const webhookType = node.Metadata.Annotations?.['web.pipelineNode/webhookType'];
+      const formDataID = newPepelineNodes?.find((item: any)=>item?.spec?.type === 'form-data')?.name;
+      const _config = JSON.parse(config || null);
+      if (formDataID && _config) {
+        if (webhookType === 'send') {
+          _config?.inputs?.forEach((item: any)=>{
+            const { type, data } = item || {};
+            if (type === 'direct_expr' && data?.startsWith('$formData')) {
+              const dataArr = data?.split('.');
+              const fieldKey = dataArr?.[1];
+              item.data = `$${formDataID}.${fieldKey}`;
+            }
+          });
+        } else {
+          _config?.inputs?.forEach((item: any)=>{
+            const { data } = item || {};
+            data?.forEach((child: any)=>{
+              const { type, data } = child;
+              if (type === 'direct_expr' && data?.startsWith('$formData')) {
+                const dataArr = data?.split('.');
+                const fieldKey = dataArr?.[1];
+                child.data = `$${formDataID}.${fieldKey}`;
+              }
+            });
+          });
+        }
+      }
       bpmnNode.data.businessData = {
         type: webhookType || 'request',
-        config: JSON.parse(config || null),
+        // config: JSON.parse(config || null),
+        config: _config || null,
       };
       break;
     case 'email':
@@ -1271,6 +1322,7 @@ const generageBpmnNode = async (node: any, params: any)=>{
         if (businessDataObj?.to?.indexOf('fields.') === 0) {
           type = 'field';
           variablePath = businessDataObj?.to;
+          fields = toVal?.split(',')?.map((item: any)=>item?.replace('fields.', ''));
         }
         businessDataObj.to === 'processInitiator' && (type = 'processInitiator');
         businessDataObj.to === 'superior' && (type = 'superior');
@@ -1349,7 +1401,8 @@ const generageBpmnNode = async (node: any, params: any)=>{
       };
       break;
     case 'form-update-data':
-      const { targetTableID: updateTargetTableID, updateRule, filterRule, formType, selectField } = businessDataObj || {};
+      const { targetTableID: updateTargetTableID, updateRule, filterRule, selectField } = businessDataObj || {};
+      const formType = node.Metadata.Annotations?.['web.pipelineNode/updateFormType'];
       bpmnNode.data.businessData = {
         targetTableId: updateTargetTableID,
         updateRule: updateRule ? JSON.parse(updateRule) : [],
@@ -1452,9 +1505,84 @@ const generageBpmnNode = async (node: any, params: any)=>{
       bpmnNode.data.businessData = _approveNodeInfo?.data?.businessData;
       break;
     case 'fill':
-      const { nodeInfo: fillInNodeInfo } = businessDataObj;
-      const _fillInNodeInfo = JSON.parse(fillInNodeInfo);
-      bpmnNode.data.businessData = _fillInNodeInfo?.data?.businessData;
+      const {
+        // nodeInfo: fillInNodeInfo,
+        fieldPermission,
+        dealUsers,
+      } = businessDataObj;
+      // const _fillInNodeInfo = JSON.parse(fillInNodeInfo);
+      // bpmnNode.data.businessData = _fillInNodeInfo?.data?.businessData;
+      const dealUsersArr = dealUsers?.split(',');
+      let _type: any = 'person';
+      const _users: any = [];
+      const _fields: any = [];
+      if (dealUsers?.startsWith('person.')) {
+        _type = 'person';
+        dealUsersArr?.forEach((item: any)=>{
+          _users.push({
+            id: item?.replace('person.', ''),
+          });
+        });
+      } else if (dealUsers?.startsWith('field.')) {
+        _type = 'field';
+        dealUsersArr?.forEach((item: any)=>{
+          _fields.push(item?.replace('field.', ''));
+        });
+      } else if (dealUsers === 'leader') {
+        _type = 'superior';
+      } else if (dealUsers === 'formApplyUserID') {
+        _type = 'processInitiator';
+      }
+      if (_type === 'field"') {
+        bpmnNode.data.businessData = {
+          basicConfig: {
+            'autoRules': [],
+            'timeRule': {
+              'enabled': false,
+              'deadLine': {
+                'breakPoint': '',
+                'day': 0,
+                'hours': 0,
+                'minutes': 0,
+                'urge': {
+                  'day': 0,
+                  'hours': 0,
+                  'minutes': 0,
+                  'repeat': {
+                    'day': 0,
+                    'hours': 0,
+                    'minutes': 0,
+                  },
+                },
+              },
+              'whenTimeout': {
+                'type': '',
+                'value': '',
+              },
+            },
+            'multiplePersonWay': 'or',
+            'whenNoPerson': 'transferAdmin',
+            'approvePersons': {
+              'type': 'field',
+              'users': [],
+              'fields': _fields,
+            },
+          },
+          fieldPermission: fieldPermission,
+        };
+      } else {
+        bpmnNode.data.businessData = {
+          basicConfig: {
+            fillInPersons: {
+              type: _type,
+              users: _users,
+              fields: _fields,
+            },
+          },
+          fieldPermission: fieldPermission,
+        };
+      }
+
       break;
     }
   } catch (error) {

@@ -10,7 +10,6 @@ import type {
   Attachment,
 } from '@newFlow/content/editor/type';
 import { SYSTEM_FIELDS } from '@c/form-builder/constants';
-import FileUploader from '@c/file-upload';
 
 import PersonPicker from '../../components/_common/person-picker';
 import { approvePersonEncoder } from '../../components/_common/utils';
@@ -251,7 +250,7 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
         </QuillEditor>
         {errorText && <div className="text-14 text-red-500">{errorText}</div>}
       </div>
-      <div style={{ display: 'block' }} className='form-field-label'>附件</div>
+      {/* <div style={{ display: 'block' }} className='form-field-label'>附件</div>
       <Controller
         name='mes_attachment'
         control={control}
@@ -269,7 +268,7 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
           );
         }
         }
-      />
+      /> */}
       <SaveButtonGroup onCancel={handleCancel} onSave={handleSubmit(handleSave)} />
     </div>
   );

@@ -251,7 +251,7 @@ function buildBpmnText(
           }
           return { ..._data, data: omit(_data.data, ['type']) };
         } catch (error) {
-          console.log(error);
+          // console.log(error);
         }
       }
       return numberTransform([
