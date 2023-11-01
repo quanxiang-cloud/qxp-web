@@ -5,7 +5,7 @@ import { FlowInstanceFormResponse, TaskDetail } from '../types';
 import toast from '@lib/toast';
 
 import { mapTaskDetail } from './utils';
-import { FILL_IN } from '@home/pages/approvals/constant';
+import { FILL_IN } from '@home/pages/new-approvals/constant';
 import { isNumber } from 'lodash';
 import { getPipelineApproveProcessInfo, getPipelineFillInProcessInfo, getPipelineFormData, getPipelineFormSchemaInfo, getPipelineInfo } from '@home/pages/new-approvals/api';
 import { buildQueryRef } from '@lib/http-client-form';
@@ -13,7 +13,7 @@ import { buildQueryRef } from '@lib/http-client-form';
 const formatPipelineDetail = async (processInstanceId: any, { type, taskId, taskType }: any)=>{
   const api = taskType === FILL_IN ? getPipelineFillInProcessInfo : getPipelineApproveProcessInfo;
   const pipelineProcess = await api(processInstanceId);
-  const data = pipelineProcess?.Data || pipelineProcess;
+  const data = taskType !== 'fillIn' ? (pipelineProcess?.Data || pipelineProcess) : (pipelineProcess?.data || pipelineProcess);
   const nodeData = data?.find((item: any)=>{
     return item?.id === taskId;
   });
@@ -50,8 +50,13 @@ const formatPipelineDetail = async (processInstanceId: any, { type, taskId, task
       },
 
     );
-
-    const nodeInfo = JSON.parse(curentNode?.spec?.params?.find((item: any)=>item?.key === 'nodeInfo')?.value || null);
+    // const nodeInfo = JSON.parse(curentNode?.spec?.params?.find((item: any)=>item?.key === 'nodeInfo')?.value || null);
+    let nodeInfo = null;
+    if (nodeData?.nodeDefKey === curentNode?.name) {
+      nodeInfo = JSON.parse(nodeData?.nodeInfo || null);
+    } else {
+      nodeInfo = JSON.parse(curentNode?.spec?.params?.find((item: any)=>item?.key === 'nodeInfo')?.value || null);
+    }
     const { fieldPermission, operatorPermission } = nodeInfo?.data?.businessData || {};
     const reaultList = ['agree', 'reject', 'recall'];
     const isFinish = !!reaultList?.includes(nodeData?.result);
@@ -86,12 +91,12 @@ const formatPipelineDetail = async (processInstanceId: any, { type, taskId, task
       FormData: pipelineFormData?.entity,
       formSchema: pipelineFormSchema?.schema,
       fieldPermission: fieldPermission,
-      operatorPermission: !isFinish && (taskType === 'fillIn' ? fillInOperatorPermission : operatorPermission),
+      // operatorPermission: !isFinish && (taskType === 'fillIn' ? fillInOperatorPermission : operatorPermission),
+      operatorPermission: (taskType === 'fillIn' ? fillInOperatorPermission : operatorPermission),
       taskType: isFinish ? 'Finish' : 'REVIEW',
       taskName: '',
     };
     data.taskDetailModels = [taskDetailModelsObj];
-    console.log('data====', data );
     return data;
   }
 };

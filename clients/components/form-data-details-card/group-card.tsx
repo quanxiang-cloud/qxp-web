@@ -27,7 +27,7 @@ export function InfoCard({ list }: {list: FormInfoCardDataProp}): JSX.Element {
     >
       <div className='text-gray-600 flex-shrink-0'>{label}：</div>
       <div className={cs(
-        'text-gray-900 flex-1 card-value break-all',
+        'text-gray-900 flex-1 card-value break-all pre-line pre-wrap',
         {
           'overflow-x-auto': FULL_COMP.includes(fieldSchema['x-component'] as string),
         },

@@ -49,7 +49,7 @@ export default function WebhookConfig(
   { onCancel, onSubmit, onChange, defaultValue }: Props,
 ): JSX.Element | null {
   const formRef = useRef<HTMLFormElement>(null);
-  const outputsRef = useRef<Input[]>(defaultValue.config.outputs ?? []);
+  const outputsRef = useRef<Input[]>(defaultValue?.config?.outputs ?? []);
 
   function onSave(): void {
     formRef.current?.submit();
@@ -217,7 +217,7 @@ export default function WebhookConfig(
         });
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
     const _config: any = { ...config };
     if (type === 'request') {
@@ -242,7 +242,7 @@ export default function WebhookConfig(
         ref={formRef}
         onSubmit={handleSubmit}
         onChange={handleChange}
-        defaultValue={{ type: defaultValue.type, ...defaultValue.config }}
+        defaultValue={{ type: defaultValue?.type, ...defaultValue?.config }}
         schema={schema}
         className="h-full flex flex-col"
       />

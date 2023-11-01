@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 /* eslint-disable no-console */
 /* eslint-disable no-empty */
 /* eslint-disable guard-for-in */
@@ -5,7 +6,7 @@
 import { BehaviorSubject } from 'rxjs6';
 import { FlowElement, isNode } from 'react-flow-renderer';
 import { uuid } from '@lib/utils';
-import { update, omit, isArray } from 'lodash';
+import { update, omit, isArray, isObject } from 'lodash';
 import moment from 'moment';
 
 import { SaveWorkFlowParamsType } from '@newFlow/api';
@@ -241,7 +242,7 @@ function buildBpmnText(
           delete _data?.data?.businessData?.basicConfig?.multiplePersonWay;
           const fieldPermission = _data?.data?.businessData?.fieldPermission || {};
           for (const key in fieldPermission) {
-            fieldPermission[key] = fieldPermission[key]?.['x-internal']?.permission;
+            fieldPermission[key] = isObject(fieldPermission[key]) ? fieldPermission[key]?.['x-internal']?.permission : fieldPermission[key];
           }
           if (isArray(_data?.data?.businessData?.basicConfig?.fillInPersons?.users)) {
             _data.data.businessData.basicConfig.fillInPersons.users = _data?.data?.businessData?.basicConfig?.fillInPersons?.users?.filter((item: any)=>!!item)?.map((item: any)=>{
@@ -251,7 +252,7 @@ function buildBpmnText(
           }
           return { ..._data, data: omit(_data.data, ['type']) };
         } catch (error) {
-          console.log(error);
+          // console.log(error);
         }
       }
       return numberTransform([

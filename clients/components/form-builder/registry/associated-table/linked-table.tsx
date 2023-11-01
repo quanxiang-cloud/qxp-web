@@ -19,6 +19,7 @@ function LinkedTable({ mutators, value }: ISchemaFieldComponentProps): JSX.Eleme
   const store = useContext(StoreContext);
   const [linkageTables, setLinkageTables] = useState<Array<Option>>([]);
   const [tableID, setTableID] = useState<string>(value?.tableID);
+  const [linkedTableFieldTables, setLinkedTableFieldTables] = useState<Array<Option>>([]);
 
   useEffect(() => {
     getFormDataMenuList(store.appID).then((options) => {
@@ -34,13 +35,41 @@ function LinkedTable({ mutators, value }: ISchemaFieldComponentProps): JSX.Eleme
     getLinkedTableFields();
   }, [tableID]);
 
+  useEffect(()=>{
+    const getLinkedTableField = async (tableID: any)=>{
+      const res = await getTableSchema(store.appID, tableID);
+      let fields: any = [];
+      if (res?.schema.properties) {
+        const fieldsArr = schemaToFields(res.schema)?.filter((item: any)=>{
+          const { associationTableID } = item?.['x-component-props'] || {};
+          return item?.componentName === 'associateddata' && associationTableID === store.pageID;
+        });
+        fields = fieldsArr?.map((item: any)=>{
+          return { label: item?.title, value: item?.id };
+        });
+      }
+      const linkedTableField = fields?.[0]?.value;
+      return { tableID, linkedTableField };
+    };
+    Promise.all([...linkageTables?.map(({ value }: any)=>{
+      return getLinkedTableField(value);
+    })]).then((res: any)=>{
+      const _linkedTableFieldTables = linkageTables?.filter(({ value }: any)=>{
+        const _option = res?.find((item: any)=>item?.tableID === value);
+        return !!_option?.linkedTableField;
+      });
+      setLinkedTableFieldTables(_linkedTableFieldTables);
+    }).catch((err: any)=>{
+    });
+  }, [linkageTables?.length]);
+
   // 获取table 关联本表的关联数据字段
   const getLinkedTableFields = async ()=>{
     const res = await getTableSchema(store.appID, tableID);
     let fields: any = [];
     if (res?.schema.properties) {
       const fieldsArr = schemaToFields(res.schema)?.filter((item: any)=>{
-        const { associationTableID } = item?.['x-component-props'];
+        const { associationTableID } = item?.['x-component-props'] || {};
         return item?.componentName === 'associateddata' && associationTableID === store.pageID;
       });
       fields = fieldsArr?.map((item: any)=>{
@@ -56,11 +85,10 @@ function LinkedTable({ mutators, value }: ISchemaFieldComponentProps): JSX.Eleme
       });
     });
   };
-
   return (
     <Select
       defaultValue={value?.tableID}
-      options={linkageTables}
+      options={linkedTableFieldTables}
       onChange={(tableID: string) => {
         setTableID(tableID);
       }}

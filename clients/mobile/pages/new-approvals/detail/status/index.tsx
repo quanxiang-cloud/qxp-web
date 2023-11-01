@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { observer } from 'mobx-react';
 import { useParams } from 'react-router';
 
-import { ApprovalDetailParams } from '@m/pages/approvals/types';
+import { ApprovalDetailParams } from '@m/pages/new-approvals/types';
 import Loading from '@m/qxp-ui-mobile/loading';
 import { Empty } from '@m/qxp-ui-mobile/empty';
 import AvatarNameRow from '@m/components/flow/avatar-name-row';

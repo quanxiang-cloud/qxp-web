@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 
-import { OperationRecordMobile, ProcessHistory } from '@m/pages/approvals/types';
-import { DescribeModel } from '@m/pages/approvals/detail/status/utils';
+import { OperationRecordMobile, ProcessHistory } from '@m/pages/new-approvals/types';
+import { DescribeModel } from '@m/pages/new-approvals/detail/status/utils';
 
 export interface DetailItem {
   id: string;

@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom';
 import cs from 'classnames';
 import { toJS } from 'mobx';
 
-import { ApprovalDetailParams } from '@m/pages/approvals/types';
+import { ApprovalDetailParams } from '@m/pages/new-approvals/types';
 import Loading from '@m/qxp-ui-mobile/loading';
 import { Empty } from '@m/qxp-ui-mobile/empty';
 import Icon from '@m/qxp-ui-mobile/icon';
@@ -28,7 +28,7 @@ export interface ApprovalsDetailTabProps {
 }
 
 function ApprovalsDetailTab(props: ApprovalsDetailTabProps): JSX.Element {
-  const { processInstanceID, taskID, type } = useParams<ApprovalDetailParams>();
+  const { processInstanceID, taskID, type, taskType } = useParams<ApprovalDetailParams>();
 
   const history = useHistory();
 
@@ -100,6 +100,32 @@ function ApprovalsDetailTab(props: ApprovalsDetailTabProps): JSX.Element {
       </div>
     );
   }
+  const _systemApproval: any = [
+    {
+      text: '拒绝',
+      icon: 'close',
+      style: 'light',
+      key: 'REFUSE',
+      reasonRequired: true,
+      className: 'body1 action-button__system1_1 action-button__light',
+    },
+    {
+      text: '通过',
+      icon: 'done',
+      style: 'dark',
+      key: 'AGREE',
+      reasonRequired: false,
+      className: 'body1 action-button__system1_2 action-button__dark',
+    },
+  ];
+
+  const _systemFill = [{
+    text: '提交',
+    icon: 'free_breakfast',
+    style: 'dark',
+    key: 'FILL_IN',
+    className: 'body1 action-button__system1 action-button__dark',
+  }];
 
   return (
     <>
@@ -158,7 +184,18 @@ function ApprovalsDetailTab(props: ApprovalsDetailTabProps): JSX.Element {
                   </div>
                 )}
 
-                {!!task.system?.length && task.system.map((item) => {
+                {/* {type === 'WAIT_HANDLE_PAGE' && !!task.system?.length && task.system.map((item) => {
+                  return (
+                    <div
+                      key={item.key}
+                      className={cs('action-button__system flex justify-center items-center', item.className)}
+                      onClick={() => onActionClick(item.key, item.reasonRequired)}>
+                      {!!item.icon && <Icon name={item.icon} size='.2rem' className='mr-4'/>}
+                      <div className='truncate'>{item.text}</div>
+                    </div>
+                  );
+                })} */}
+                {type === 'WAIT_HANDLE_PAGE' && (taskType === 'fillIn' ? _systemFill : _systemApproval).map((item: any) => {
                   return (
                     <div
                       key={item.key}

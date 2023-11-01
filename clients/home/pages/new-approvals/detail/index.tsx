@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-empty */
 /* eslint-disable guard-for-in */
 /* eslint-disable max-len */
@@ -27,7 +28,6 @@ import Button from '@c/button';
 import { FILL_IN } from '../constant';
 import Tab from '@c/tab';
 import Dynamic from './dynamic';
-import Discuss from './discuss';
 import ActionModals from './action-modals';
 
 const globalActionKeys = [
@@ -64,6 +64,12 @@ function ApprovalDetail(): JSX.Element {
 
   const history = useHistory();
   const queryRelationKey = showSwitch ? [processInstanceID, type, currentTaskId] : [processInstanceID, type];
+  const searchArr = window.location.search?.replace('?', '')?.split('&');
+  const searchObj: any = {};
+  searchArr?.forEach((item: any)=>{
+    const arr = item?.split('=');
+    searchObj[arr?.[0]] = arr?.[1];
+  });
 
   const getApprovel = () => {
     return getPipelineProcessHistories(processInstanceID as any).then((res)=>{
@@ -139,7 +145,13 @@ function ApprovalDetail(): JSX.Element {
       }
 
       getPipelineFormSchemaInfo(appID, tableID).then((res: any)=>{
-        const nodeInfo = JSON.parse(curentNode?.spec?.params?.find((item: any)=>item?.key === 'nodeInfo')?.value || null);
+        // const nodeInfo = JSON.parse(curentNode?.spec?.params?.find((item: any)=>item?.key === 'nodeInfo')?.value || null);
+        let nodeInfo = null;
+        if (nodeData?.nodeDefKey === curentNode?.name) {
+          nodeInfo = JSON.parse(nodeData?.nodeInfo || null);
+        } else {
+          nodeInfo = JSON.parse(curentNode?.spec?.params?.find((item: any)=>item?.key === 'nodeInfo')?.value || null);
+        }
         const { fieldPermission, operatorPermission } = nodeInfo?.data?.businessData || {};
         const reaultList = ['agree', 'reject', 'recall'];
         const isFinish = !!reaultList?.includes(nodeData?.result);
@@ -161,6 +173,9 @@ function ApprovalDetail(): JSX.Element {
           btnObj.hasCancelBtn = false;
           btnObj.hasUrgeBtn = false;
         }
+        if (type === 'ALL_PAGE' && searchObj?.finish === 'true') {
+          fillInOperatorPermission.system = [];
+        }
         const _data: any = {
           appId: appID,
           canMsg: config?.canMsg === 1,
@@ -174,7 +189,8 @@ function ApprovalDetail(): JSX.Element {
           taskDefKey: nodeData?.nodeDefKey,
           formSchema: res?.schema,
           fieldPermission: fieldPermission,
-          operatorPermission: !isFinish && (taskType === 'fillIn' ? fillInOperatorPermission : operatorPermission),
+          // operatorPermission: !isFinish && (taskType === 'fillIn' ? fillInOperatorPermission : operatorPermission),
+          operatorPermission: type === 'WAIT_HANDLE_PAGE' ? (taskType === 'fillIn' ? fillInOperatorPermission : operatorPermission) : (!isFinish && (taskType === 'fillIn' ? fillInOperatorPermission : operatorPermission)),
           taskType: isFinish ? 'Finish' : 'REVIEW',
           taskName: '',
           ...btnObj,
@@ -358,11 +374,11 @@ function ApprovalDetail(): JSX.Element {
                       name: '动态',
                       content: (<Dynamic onTaskEnd={setTaskEnd} detailData={data} />),
                     },
-                    {
-                      id: 'discuss',
-                      name: '讨论',
-                      content: (<Discuss showInput={data.canMsg} />),
-                    },
+                    // {
+                    //   id: 'discuss',
+                    //   name: '讨论',
+                    //   content: (<Discuss showInput={data.canMsg} />),
+                    // },
                   ]} />
               </Panel>
             </>

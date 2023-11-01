@@ -7,7 +7,7 @@ import TabsPage, { TabTitle } from '@m/components/tabs-page';
 import NavPage from '@m/components/nav-page';
 import Loading from '@m/qxp-ui-mobile/loading';
 import { Empty } from '@m/qxp-ui-mobile/empty';
-import { ApprovalDetailParams, ApprovalDetailTab } from '@m/pages/approvals/types';
+import { ApprovalDetailParams, ApprovalDetailTab } from '@m/pages/new-approvals/types';
 import { NumberString } from '@m/qxp-ui-mobile';
 
 import ApprovalsDetailTab from './tab';
@@ -49,9 +49,9 @@ export default function ApprovalDetail(): JSX.Element {
     if (store.canViewStatusAndMsg) {
       tabs.push({ key: 'status', label: '动态' });
     }
-    if (store.canMsg) {
-      tabs.push({ key: 'topic', label: '讨论' });
-    }
+    // if (store.canMsg) {
+    //   tabs.push({ key: 'topic', label: '讨论' });
+    // }
     setState({ tabs });
   }, [store.taskDetails, store.canViewStatusAndMsg, store.canMsg]);
 

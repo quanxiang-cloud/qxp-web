@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-empty */
 /* eslint-disable no-param-reassign */
@@ -113,6 +114,9 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
     if (node?.data?.nodeData?.branchTargetElementID) {
       pn.Metadata.Annotations['web.pipelineNode/branchTargetElementID'] = node?.data?.nodeData?.branchTargetElementID;
     }
+    if (node?.data?.nodeData?.branchID) {
+      pn.Metadata.Annotations['web.pipelineNode/branchID'] = node?.data?.nodeData?.branchID;
+    }
     const commonParams = [
       {
         key: 'appID',
@@ -175,11 +179,24 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
           pn.spec.params.push;
           break;
         case 'field':
-          for (const field of approvePersons.fields) {
-            pn.spec.params.push({
-              key: 'to',
-              value: `fields.${field}`,
-            });
+          // for (const field of approvePersons.fields) {
+          //   pn.spec.params.push({
+          //     key: 'to',
+          //     value: `fields.${field}`,
+          //   });
+          // }
+          // pn.spec.params.push({
+          //   key: 'to',
+          //   value: approvePersons?.fields?.map((field: any)=>`fields.${field}`)?.join(',') || '',
+          // });
+          for (let i = 0; i < approvePersons?.fields?.length; i++) {
+            const fields = approvePersons?.fields?.[i];
+            if (typeof fields === 'string') {
+              pn.spec.params.push({
+                key: 'to',
+                value: `fields.${fields}`,
+              });
+            }
           }
           break;
         case 'superior':
@@ -320,13 +337,6 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
             }
           }
           break;
-        case 'field':
-          if (Array.isArray(node?.data?.businessData?.basicConfig?.fillInPersons?.fields)) {
-            for (const k in node?.data?.businessData?.basicConfig?.fillInPersons?.fields) {
-              fillUsers.push('field.' + node?.data?.businessData?.basicConfig?.fillInPersons?.fields[k]);
-            }
-          }
-          break;
         case 'superior':
           fillUsers.push('leader');
           break;
@@ -335,14 +345,29 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
           break;
         }
       }
+      if (node?.data?.businessData?.basicConfig?.approvePersons !== undefined && typeof node?.data?.businessData?.basicConfig?.approvePersons === 'object') {
+        switch (node?.data?.businessData?.basicConfig?.approvePersons?.type) {
+        case 'field':
+          if (Array.isArray(node?.data?.businessData?.basicConfig?.approvePersons?.fields)) {
+            for (const k in node?.data?.businessData?.basicConfig?.approvePersons?.fields) {
+              fillUsers.push('field.' + node?.data?.businessData?.basicConfig?.approvePersons?.fields[k]);
+            }
+          }
+          break;
+        }
+      }
+      pn.spec.params.push({
+        key: 'fieldPermission',
+        value: JSON.stringify(node?.data?.businessData?.fieldPermission || {}),
+      });
       pn.spec.params.push({
         key: 'dealUsers',
         value: fillUsers.join(','),
       });
-      pn.spec.params.push({
-        key: 'nodeInfo',
-        value: JSON.stringify(node),
-      });
+      // pn.spec.params.push({
+      //   key: 'nodeInfo',
+      //   value: JSON.stringify(node),
+      // });
       break;
     case 'processBranch':
       pn.spec.type = 'process-branch';
@@ -470,10 +495,11 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
       ];
 
       if (node?.data?.businessData?.formType) {
-        pn.spec.params.push({
-          key: 'formType',
-          value: node?.data?.businessData?.formType,
-        });
+        pn.Metadata.Annotations['web.pipelineNode/updateFormType'] = node?.data?.businessData?.formType;
+        // pn.spec.params.push({
+        //   key: 'formType',
+        //   value: node?.data?.businessData?.formType,
+        // });
       }
 
       // if (node?.data?.businessData?.selectField) {
@@ -552,10 +578,11 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
       pn.spec.params = [
         ...commonParams,
       ];
-      pn.spec.params.push({
-        key: 'type',
-        value: node?.data?.businessData?.type,
-      });
+      pn.Metadata.Annotations['web.pipelineNode/webhookType'] = node?.data?.businessData?.type;
+      // pn.spec.params.push({
+      //   key: 'type',
+      //   value: node?.data?.businessData?.type,
+      // });
       if (node?.data?.businessData?.config) {
         const config = node?.data?.businessData?.config;
         try {
@@ -740,12 +767,38 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
 // 将新生成的pipeline nodes 转换成 bpmn的 nodes
 const pipelineNodesToBpmnNodes = async (pipelineNode: any, params: any)=>{
   // 新工作流新数据
-  const newPepelineNodes = getNewPipelineNodes(pipelineNode); // 兼容老工作留的数据
+
+  // const newPepelineNodes = getNewPipelineNodes(pipelineNode); // 兼容老工作留的数据
+  // const hasBranchID = !!pipelineNode?.find((item: any)=>!!item?.Metadata?.Annotations?.['web.pipelineNode/branchID']);
+  const hasBranchID = !!pipelineNode?.find((item: any)=>!!item?.Metadata?.Annotations?.hasOwnProperty('web.pipelineNode/branchID'));
+  const _pipelineNode = pipelineNode?.map((item: any)=>{
+    if (hasBranchID) {
+      if (item?.Metadata?.Annotations?.['web.pipelineNode/branchID']) {
+        const branchID = item?.Metadata?.Annotations?.['web.pipelineNode/branchID'];
+        const hasBranchID = pipelineNode?.find((item: any)=>item?.name === branchID);
+        if (!hasBranchID) {
+          item.Metadata.Annotations['web.pipelineNode/branchID'] = '';
+        }
+      }
+    } else {
+      if (item?.spec?.when?.length) {
+        const whenCondition = item.spec.when?.[0];
+        const branchID = whenCondition?.input?.match(/task\.(.*?)\.output/)[1];
+        const hasBranchID = pipelineNode?.find((item: any)=>item?.name === branchID);
+        if (!hasBranchID) {
+          item.spec.when = item?.spec?.when?.filter((item: any, index: any)=>index !== 0);
+        }
+      }
+    }
+
+    return item;
+  });
+  const newPepelineNodes = getNewPipelineNodes(_pipelineNode); // 兼容老工作留的数据
 
   const bpmnNodes: any = [];
 
   for (const item of newPepelineNodes) {
-    const result = await generageBpmnNode(item, params);
+    const result = await generageBpmnNode(item, params, newPepelineNodes);
     bpmnNodes.push(result);
   }
   return bpmnNodes;
@@ -800,25 +853,51 @@ const getNewPipelineNodes = (pipelineNode: any)=>{
 // 提取主干节点
 export const getMainNodes = (pipelineNode: any)=>{
   const mainNodesList: any = [];
-  for (let i = 0; i < pipelineNode?.length; i++) {
-    if (!pipelineNode[i]?.spec?.when?.length) {
-      mainNodesList.push([]);
-    }
-    const curType = pipelineNode[i]?.spec?.type;
-    const preType = pipelineNode[i - 1]?.spec?.type;
-    if (curType === ProcessBranch && preType === ProcessBranch && !pipelineNode[i]?.spec?.when?.length) {
-      const curBranchTargetElementID = pipelineNode[i]?.Metadata.Annotations?.['web.pipelineNode/branchTargetElementID'];
-      const preBranchTargetElementID = pipelineNode[i - 1]?.Metadata.Annotations?.['web.pipelineNode/branchTargetElementID'];
-      if (curBranchTargetElementID && preBranchTargetElementID &&
-        curBranchTargetElementID !== preBranchTargetElementID
-      ) {
-        //
-      } else {
-        (mainNodesList.pop());
+  // const hasBranchID = !!pipelineNode?.find((item: any)=>!!item?.Metadata?.Annotations?.['web.pipelineNode/branchID']);
+  const hasBranchID = !!pipelineNode?.find((item: any)=>!!item?.Metadata?.Annotations?.hasOwnProperty('web.pipelineNode/branchID'));
+  if (hasBranchID) {
+    for (let i = 0; i < pipelineNode?.length; i++) {
+      if (!pipelineNode[i]?.Metadata?.Annotations?.['web.pipelineNode/branchID']) {
+        mainNodesList.push([]);
+      }
+      const curType = pipelineNode[i]?.spec?.type;
+      const preType = pipelineNode[i - 1]?.spec?.type;
+      if (curType === ProcessBranch && preType === ProcessBranch && !pipelineNode[i]?.Metadata?.Annotations?.['web.pipelineNode/branchID']) {
+        const curBranchTargetElementID = pipelineNode[i]?.Metadata?.Annotations?.['web.pipelineNode/branchTargetElementID'];
+        const preBranchTargetElementID = pipelineNode[i - 1]?.Metadata?.Annotations?.['web.pipelineNode/branchTargetElementID'];
+        if (curBranchTargetElementID && preBranchTargetElementID &&
+          curBranchTargetElementID !== preBranchTargetElementID
+        ) {
+          //
+        } else {
+          (mainNodesList.pop());
+        }
+      }
+      if (!pipelineNode[i]?.Metadata?.Annotations?.['web.pipelineNode/branchID']) {
+        mainNodesList?.[mainNodesList.length - 1]?.push(pipelineNode?.[i]);
       }
     }
-    if (!pipelineNode[i]?.spec?.when?.length) {
-      mainNodesList?.[mainNodesList.length - 1]?.push(pipelineNode?.[i]);
+  } else {
+    for (let i = 0; i < pipelineNode?.length; i++) {
+      if (!pipelineNode[i]?.spec?.when?.length) {
+        mainNodesList.push([]);
+      }
+      const curType = pipelineNode[i]?.spec?.type;
+      const preType = pipelineNode[i - 1]?.spec?.type;
+      if (curType === ProcessBranch && preType === ProcessBranch && !pipelineNode[i]?.spec?.when?.length) {
+        const curBranchTargetElementID = pipelineNode[i]?.Metadata.Annotations?.['web.pipelineNode/branchTargetElementID'];
+        const preBranchTargetElementID = pipelineNode[i - 1]?.Metadata.Annotations?.['web.pipelineNode/branchTargetElementID'];
+        if (curBranchTargetElementID && preBranchTargetElementID &&
+          curBranchTargetElementID !== preBranchTargetElementID
+        ) {
+          //
+        } else {
+          (mainNodesList.pop());
+        }
+      }
+      if (!pipelineNode[i]?.spec?.when?.length) {
+        mainNodesList?.[mainNodesList.length - 1]?.push(pipelineNode?.[i]);
+      }
     }
   }
   return mainNodesList;
@@ -858,14 +937,28 @@ const addMainBranchNodes = (mainNodeList: any)=>{
 // 提取分支节点 (可能是主干下分流的分支， 也有可能是分流下分支的分支)
 export const getBranchNodes = (pipelineNode: any)=>{
   const branchNodesObj: any = {};
-  for (let i = 0; i < pipelineNode.length; i++) {
-    if (pipelineNode[i]?.spec?.when?.length) {
-      const whenCondition = pipelineNode[i].spec.when[0];
-      const parentID = whenCondition.input.match(/task\.(.*?)\.output/)[1];
-      if (!branchNodesObj[parentID]) {
-        branchNodesObj[parentID] = [];
+  // const hasBranchID = !!pipelineNode?.find((item: any)=>!!item?.Metadata?.Annotations?.['web.pipelineNode/branchID']);
+  const hasBranchID = !!pipelineNode?.find((item: any)=>!!item?.Metadata?.Annotations?.hasOwnProperty('web.pipelineNode/branchID'));
+  if (hasBranchID) {
+    for (let i = 0; i < pipelineNode.length; i++) {
+      if (pipelineNode[i]?.Metadata?.Annotations?.['web.pipelineNode/branchID']) {
+        const parentID = pipelineNode[i]?.Metadata?.Annotations?.['web.pipelineNode/branchID'];
+        if (!branchNodesObj[parentID]) {
+          branchNodesObj[parentID] = [];
+        }
+        branchNodesObj[parentID].push(pipelineNode[i]);
       }
-      branchNodesObj[parentID].push(pipelineNode[i]);
+    }
+  } else {
+    for (let i = 0; i < pipelineNode.length; i++) {
+      if (pipelineNode[i]?.spec?.when?.length) {
+        const whenCondition = pipelineNode[i].spec.when[0];
+        const parentID = whenCondition.input.match(/task\.(.*?)\.output/)[1];
+        if (!branchNodesObj[parentID]) {
+          branchNodesObj[parentID] = [];
+        }
+        branchNodesObj[parentID].push(pipelineNode[i]);
+      }
     }
   }
   return branchNodesObj;
@@ -882,8 +975,8 @@ const formatBranchNodes = (branchNodesObj: any)=>{
       if (pipelineNode[i]?.spec?.type === ProcessBranch &&
           pipelineNode[i - 1]?.spec?.type === ProcessBranch
       ) {
-        const curBranchTargetElementID = pipelineNode[i]?.Metadata.Annotations?.['web.pipelineNode/branchTargetElementID'];
-        const preBranchTargetElementID = pipelineNode[i - 1]?.Metadata.Annotations?.['web.pipelineNode/branchTargetElementID'];
+        const curBranchTargetElementID = pipelineNode[i]?.Metadata?.Annotations?.['web.pipelineNode/branchTargetElementID'];
+        const preBranchTargetElementID = pipelineNode[i - 1]?.Metadata?.Annotations?.['web.pipelineNode/branchTargetElementID'];
         if (curBranchTargetElementID && preBranchTargetElementID && curBranchTargetElementID !== preBranchTargetElementID) {
         //
         } else {
@@ -945,22 +1038,22 @@ const addMainNodesIDs = (newMainNodesList: any, newBranchNodesObj: any)=>{
         node.childrenID = [newMainNodesList[index + 1]?.[0].name];
       });
     } else {
-      if (item[0].spec?.type !== ProcessTarget && item[0].spec.type !== ProcessSource && item[0].spec.type !== ProcessBranch) {// 非分流，合流 分支node
+      if (item[0]?.spec?.type !== ProcessTarget && item[0].spec.type !== ProcessSource && item[0].spec.type !== ProcessBranch) {// 非分流，合流 分支node
         item.forEach((node: any)=>{
           node.parentID = [newMainNodesList[index - 1]?.[0]?.name];
           node.childrenID = [newMainNodesList?.[index + 1]?.[0].name];
         });
       }
-      if (item[0].spec?.type === ProcessBranch) {// 分支node
+      if (item[0]?.spec?.type === ProcessBranch) {// 分支node
         item.forEach((node: any)=>{
           node.parentID = [newMainNodesList[index - 1]?.[0]?.name];
           node.childrenID = [newBranchNodesObj[node?.name]?.[0]?.[0]?.name]; // 分支的child
         });
       }
-      if (item[0].spec?.type === ProcessSource) {// 分流node
+      if (item[0]?.spec?.type === ProcessSource) {// 分流node
         item[0].parentID = [newMainNodesList[index - 1]?.[0].name];
       }
-      if (item[0].spec?.type === ProcessTarget) {// 合流node
+      if (item[0]?.spec?.type === ProcessTarget) {// 合流node
         item[0].childrenID = [newMainNodesList[index + 1]?.[0]?.name];
         // 最后 找出合流的parentID
         item[0].parentID = [];
@@ -1121,7 +1214,7 @@ const addProcessBranchNodesIDS = (newMainNodesList: any, newBranchNodesObj: any)
 };
 
 // 根据 type 生成对应的 bpmn node
-const generageBpmnNode = async (node: any, params: any)=>{
+const generageBpmnNode = async (node: any, params: any, newPepelineNodes?: any)=>{
   const mapType: any = {
     'end': 'end',
     'email': 'email',
@@ -1223,10 +1316,38 @@ const generageBpmnNode = async (node: any, params: any)=>{
       };
       break;
     case 'web-hook':
-      const { config, type: webhookType } = businessDataObj as any;
+      const { config } = businessDataObj as any;
+      const webhookType = node.Metadata.Annotations?.['web.pipelineNode/webhookType'];
+      const formDataID = newPepelineNodes?.find((item: any)=>item?.spec?.type === 'form-data')?.name;
+      const _config = JSON.parse(config || null);
+      if (formDataID && _config) {
+        if (webhookType === 'send') {
+          _config?.inputs?.forEach((item: any)=>{
+            const { type, data } = item || {};
+            if (type === 'direct_expr' && data?.startsWith('$formData')) {
+              const dataArr = data?.split('.');
+              const fieldKey = dataArr?.[1];
+              item.data = `$${formDataID}.${fieldKey}`;
+            }
+          });
+        } else {
+          _config?.inputs?.forEach((item: any)=>{
+            const { data } = item || {};
+            data?.forEach((child: any)=>{
+              const { type, data } = child;
+              if (type === 'direct_expr' && data?.startsWith('$formData')) {
+                const dataArr = data?.split('.');
+                const fieldKey = dataArr?.[1];
+                child.data = `$${formDataID}.${fieldKey}`;
+              }
+            });
+          });
+        }
+      }
       bpmnNode.data.businessData = {
         type: webhookType || 'request',
-        config: JSON.parse(config || null),
+        // config: JSON.parse(config || null),
+        config: _config || null,
       };
       break;
     case 'email':
@@ -1271,6 +1392,7 @@ const generageBpmnNode = async (node: any, params: any)=>{
         if (businessDataObj?.to?.indexOf('fields.') === 0) {
           type = 'field';
           variablePath = businessDataObj?.to;
+          fields = toVal?.split(',')?.map((item: any)=>item?.replace('fields.', ''));
         }
         businessDataObj.to === 'processInitiator' && (type = 'processInitiator');
         businessDataObj.to === 'superior' && (type = 'superior');
@@ -1349,7 +1471,8 @@ const generageBpmnNode = async (node: any, params: any)=>{
       };
       break;
     case 'form-update-data':
-      const { targetTableID: updateTargetTableID, updateRule, filterRule, formType, selectField } = businessDataObj || {};
+      const { targetTableID: updateTargetTableID, updateRule, filterRule, selectField } = businessDataObj || {};
+      const formType = node.Metadata.Annotations?.['web.pipelineNode/updateFormType'];
       bpmnNode.data.businessData = {
         targetTableId: updateTargetTableID,
         updateRule: updateRule ? JSON.parse(updateRule) : [],
@@ -1452,9 +1575,83 @@ const generageBpmnNode = async (node: any, params: any)=>{
       bpmnNode.data.businessData = _approveNodeInfo?.data?.businessData;
       break;
     case 'fill':
-      const { nodeInfo: fillInNodeInfo } = businessDataObj;
-      const _fillInNodeInfo = JSON.parse(fillInNodeInfo);
-      bpmnNode.data.businessData = _fillInNodeInfo?.data?.businessData;
+      const {
+        // nodeInfo: fillInNodeInfo,
+        fieldPermission,
+        dealUsers,
+      } = businessDataObj;
+      const _fieldPermission = JSON.parse(fieldPermission);
+      const dealUsersArr = dealUsers?.split(',');
+      let _type: any = 'person';
+      const _users: any = [];
+      const _fields: any = [];
+      if (dealUsers?.startsWith('person.')) {
+        _type = 'person';
+        dealUsersArr?.forEach((item: any)=>{
+          _users.push({
+            id: item?.replace('person.', ''),
+          });
+        });
+      } else if (dealUsers?.startsWith('field.')) {
+        _type = 'field';
+        dealUsersArr?.forEach((item: any)=>{
+          _fields.push(item?.replace('field.', ''));
+        });
+      } else if (dealUsers === 'leader') {
+        _type = 'superior';
+      } else if (dealUsers === 'formApplyUserID') {
+        _type = 'processInitiator';
+      }
+      if (_type === 'field"') {
+        bpmnNode.data.businessData = {
+          basicConfig: {
+            'autoRules': [],
+            'timeRule': {
+              'enabled': false,
+              'deadLine': {
+                'breakPoint': '',
+                'day': 0,
+                'hours': 0,
+                'minutes': 0,
+                'urge': {
+                  'day': 0,
+                  'hours': 0,
+                  'minutes': 0,
+                  'repeat': {
+                    'day': 0,
+                    'hours': 0,
+                    'minutes': 0,
+                  },
+                },
+              },
+              'whenTimeout': {
+                'type': '',
+                'value': '',
+              },
+            },
+            'multiplePersonWay': 'or',
+            'whenNoPerson': 'transferAdmin',
+            'approvePersons': {
+              'type': 'field',
+              'users': [],
+              'fields': _fields,
+            },
+          },
+          fieldPermission: _fieldPermission,
+        };
+      } else {
+        bpmnNode.data.businessData = {
+          basicConfig: {
+            fillInPersons: {
+              type: _type,
+              users: _users,
+              fields: _fields,
+            },
+          },
+          fieldPermission: _fieldPermission,
+        };
+      }
+
       break;
     }
   } catch (error) {

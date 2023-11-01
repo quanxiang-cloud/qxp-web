@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import cs from 'classnames';
 
-import { FlowType, ApprovalFilter } from '@m/pages/approvals/types';
+import { FlowType, ApprovalFilter } from '@m/pages/new-approvals/types';
 import Icon from '@m/qxp-ui-mobile/icon';
 import AlertDialog from '@m/components/alert-dialog';
 

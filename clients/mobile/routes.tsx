@@ -30,8 +30,12 @@ const Account = lazy(
   () => import('./pages/account/routes'),
 );
 
+// const UserOrgPicker = lazy(
+//   () => import('./pages/approvals/detail/actions/user-org-picker'),
+// );
+
 const UserOrgPicker = lazy(
-  () => import('./pages/approvals/detail/actions/user-org-picker'),
+  () => import('./pages/new-approvals/detail/actions/user-org-picker'),
 );
 
 export default (

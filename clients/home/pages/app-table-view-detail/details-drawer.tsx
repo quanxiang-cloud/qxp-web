@@ -72,7 +72,7 @@ function DetailsDrawer(
             return item?.taskID;
           });
           if (taskID) {
-            getAllProcessInfo(taskID)
+            getAllProcessInfo(taskID, { readOnly: true })
               .then((res: any)=>{
                 getAllPipelineProcess(res?.[0]?.Data, res?.[1]?.data).then((res: any)=>{
                   setApproveProcessData(res);

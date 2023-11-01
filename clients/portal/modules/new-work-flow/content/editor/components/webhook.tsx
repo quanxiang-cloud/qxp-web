@@ -7,8 +7,8 @@ export default function WebhookNodeComponent(props: Props): JSX.Element {
   const { data } = props;
   const businessData = data.businessData as WebhookData;
 
-  const url = businessData.config.sendUrl;
-  const desc = businessData.type === 'request' ? '获取 ' : '推送 ';
+  const url = businessData?.config?.sendUrl;
+  const desc = businessData?.type === 'request' ? '获取 ' : '推送 ';
 
   return (
     <NodeComponentWrapper

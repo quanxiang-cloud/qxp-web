@@ -2,7 +2,7 @@ import { TabTitle } from '@m/components/tabs-page';
 import { EmptyProps } from '@m/qxp-ui-mobile/empty';
 
 import { ApprovalFilter, ApprovalsTabProps } from './types';
-import { APPROVAL, FILL_IN } from '@home/pages/approvals/constant';
+import { APPROVAL, FILL_IN } from '@home/pages/new-approvals/constant';
 
 export const allList: TabTitle[] = [
   { key: 'my_applies', label: '我发起的' },

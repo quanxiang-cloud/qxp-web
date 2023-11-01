@@ -4,11 +4,11 @@ import { useSearchParam, useSetState } from 'react-use';
 import { useParams } from 'react-router';
 
 import NavPage from '@m/components/nav-page';
-import store from '@m/pages/approvals/detail/status/store';
+import store from '@m/pages/new-approvals/detail/status/store';
 import { Empty } from '@m/qxp-ui-mobile/empty';
 import Icon from '@m/qxp-ui-mobile/icon';
 import DetailStatusRow from '@m/components/flow/detail-status-row';
-import { ApprovalDetailParams } from '@m/pages/approvals/types';
+import { ApprovalDetailParams } from '@m/pages/new-approvals/types';
 import Loading from '@m/qxp-ui-mobile/loading';
 
 import { mapStatusDetail, StatusDetailData } from './utils';

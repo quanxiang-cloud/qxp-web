@@ -33,19 +33,19 @@ export default function API(
 
   useEffect(() => {
     apiDocDetail?.doc.url && setFormValue('url', apiDocDetail.doc.url);
-    if (values.inputs.length && initload.current) {
+    if (values?.inputs?.length && initload?.current) {
       setFormValue('inputs', values.inputs);
     } else {
-      apiDocDetail?.doc.input.inputs && setFormValue(
+      apiDocDetail?.doc?.input?.inputs && setFormValue(
         'inputs', mergeInputs(values.inputs, filterPolyApiInputs(apiDocDetail.doc.input.inputs)),
       );
     }
 
-    apiDocDetail?.doc.method && setFormValue('method', apiDocDetail.doc.method);
+    apiDocDetail?.doc?.method && setFormValue('method', apiDocDetail.doc.method);
   }, [apiDocDetail?.doc]);
 
   useEffect(() => {
-    const output = apiDocDetail?.doc.output.doc?.[0]?.data;
+    const output = apiDocDetail?.doc?.output?.doc?.[0]?.data;
     output && setFormValue('outputs', output);
   }, [apiDocDetail?.doc.output.doc?.[0]?.data]);
 

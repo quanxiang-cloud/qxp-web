@@ -54,7 +54,11 @@ export default function TaskCard({ task, type, taskType }: Props): JSX.Element {
     if (taskType === 'approval') {
       history.push(`/approvals/${procInstId}/${task.id}/${type}`);
     } else {
-      history.push(`/approvals/${procInstId}/${task.id}/${type}/${taskType}`);
+      if (type === 'ALL_PAGE') {
+        history.push(`/approvals/${procInstId}/${task.id}/${type}/${taskType}?finish=${!status}`);
+      } else {
+        history.push(`/approvals/${procInstId}/${task.id}/${type}/${taskType}`);
+      }
     }
   };
 

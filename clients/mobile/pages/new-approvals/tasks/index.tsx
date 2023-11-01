@@ -18,7 +18,7 @@ import { NumberString } from '@m/qxp-ui-mobile';
 import { FlowType, ApprovalSearch, ApprovalTab, ApprovalFilter } from '../types';
 
 import ApprovalsTab from './tab';
-import { FILL_IN } from '@home/pages/approvals/constant';
+import { FILL_IN } from '@home/pages/new-approvals/constant';
 
 function getFilterType(isApply: boolean, index: number): FlowType {
   if (isApply) {
