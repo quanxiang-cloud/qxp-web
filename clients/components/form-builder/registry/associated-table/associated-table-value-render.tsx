@@ -10,7 +10,6 @@ type Props = {
 
 export default function AssociatedTableValueRender({ schema, value, rowData }: Props): JSX.Element {
   const [showTableModal, setShowTableModal] = useState(false);
-  console.log('schema, value, rowData', { schema, value, rowData });
   const { title } = schema || {};
   const componentProps = schema?.['x-component-props'] || {};
   const { defaultValue, linkedTableField } = componentProps;
