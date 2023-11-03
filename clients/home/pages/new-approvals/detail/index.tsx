@@ -27,7 +27,6 @@ import Button from '@c/button';
 import { FILL_IN } from '../constant';
 import Tab from '@c/tab';
 import Dynamic from './dynamic';
-import Discuss from './discuss';
 import ActionModals from './action-modals';
 
 const globalActionKeys = [
@@ -358,11 +357,11 @@ function ApprovalDetail(): JSX.Element {
                       name: '动态',
                       content: (<Dynamic onTaskEnd={setTaskEnd} detailData={data} />),
                     },
-                    {
-                      id: 'discuss',
-                      name: '讨论',
-                      content: (<Discuss showInput={data.canMsg} />),
-                    },
+                    // {
+                    //   id: 'discuss',
+                    //   name: '讨论',
+                    //   content: (<Discuss showInput={data.canMsg} />),
+                    // },
                   ]} />
               </Panel>
             </>
