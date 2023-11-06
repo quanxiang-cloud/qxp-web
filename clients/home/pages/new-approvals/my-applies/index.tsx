@@ -72,6 +72,7 @@ function TodoApprovals(): JSX.Element {
             onChange={handleChange}
             currentValue={currentValue}
             listData={listData}
+            disabled={store.loading}
           />
           {
             (<Select

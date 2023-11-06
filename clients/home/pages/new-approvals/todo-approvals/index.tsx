@@ -69,6 +69,7 @@ function TodoApprovals(props: any): JSX.Element {
             radioBtnClass="bg-white"
             onChange={handleChange}
             currentValue={currentValue}
+            disabled={store.loading}
             listData={listData.map((item: any)=>{
               switch (item?.value) {
               case 'fillIn':
