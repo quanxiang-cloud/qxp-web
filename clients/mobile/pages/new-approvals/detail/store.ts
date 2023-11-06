@@ -86,12 +86,12 @@ const formatPipelineDetail = async (processInstanceId: any, { type, taskId, task
       FormData: pipelineFormData?.entity,
       formSchema: pipelineFormSchema?.schema,
       fieldPermission: fieldPermission,
-      operatorPermission: !isFinish && (taskType === 'fillIn' ? fillInOperatorPermission : operatorPermission),
+      // operatorPermission: !isFinish && (taskType === 'fillIn' ? fillInOperatorPermission : operatorPermission),
+      operatorPermission: (taskType === 'fillIn' ? fillInOperatorPermission : operatorPermission),
       taskType: isFinish ? 'Finish' : 'REVIEW',
       taskName: '',
     };
     data.taskDetailModels = [taskDetailModelsObj];
-    console.log('data====', data );
     return data;
   }
 };

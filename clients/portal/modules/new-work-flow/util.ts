@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-empty */
 /* eslint-disable no-param-reassign */
@@ -112,6 +113,9 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
 
     if (node?.data?.nodeData?.branchTargetElementID) {
       pn.Metadata.Annotations['web.pipelineNode/branchTargetElementID'] = node?.data?.nodeData?.branchTargetElementID;
+    }
+    if (node?.data?.nodeData?.branchID) {
+      pn.Metadata.Annotations['web.pipelineNode/branchID'] = node?.data?.nodeData?.branchID;
     }
     const commonParams = [
       {
@@ -763,7 +767,33 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
 // 将新生成的pipeline nodes 转换成 bpmn的 nodes
 const pipelineNodesToBpmnNodes = async (pipelineNode: any, params: any)=>{
   // 新工作流新数据
-  const newPepelineNodes = getNewPipelineNodes(pipelineNode); // 兼容老工作留的数据
+
+  // const newPepelineNodes = getNewPipelineNodes(pipelineNode); // 兼容老工作留的数据
+  // const hasBranchID = !!pipelineNode?.find((item: any)=>!!item?.Metadata?.Annotations?.['web.pipelineNode/branchID']);
+  const hasBranchID = !!pipelineNode?.find((item: any)=>!!item?.Metadata?.Annotations?.hasOwnProperty('web.pipelineNode/branchID'));
+  const _pipelineNode = pipelineNode?.map((item: any)=>{
+    if (hasBranchID) {
+      if (item?.Metadata?.Annotations?.['web.pipelineNode/branchID']) {
+        const branchID = item?.Metadata?.Annotations?.['web.pipelineNode/branchID'];
+        const hasBranchID = pipelineNode?.find((item: any)=>item?.name === branchID);
+        if (!hasBranchID) {
+          item.Metadata.Annotations['web.pipelineNode/branchID'] = '';
+        }
+      }
+    } else {
+      if (item?.spec?.when?.length) {
+        const whenCondition = item.spec.when?.[0];
+        const branchID = whenCondition?.input?.match(/task\.(.*?)\.output/)[1];
+        const hasBranchID = pipelineNode?.find((item: any)=>item?.name === branchID);
+        if (!hasBranchID) {
+          item.spec.when = item?.spec?.when?.filter((item: any, index: any)=>index !== 0);
+        }
+      }
+    }
+
+    return item;
+  });
+  const newPepelineNodes = getNewPipelineNodes(_pipelineNode); // 兼容老工作留的数据
 
   const bpmnNodes: any = [];
 
@@ -823,25 +853,51 @@ const getNewPipelineNodes = (pipelineNode: any)=>{
 // 提取主干节点
 export const getMainNodes = (pipelineNode: any)=>{
   const mainNodesList: any = [];
-  for (let i = 0; i < pipelineNode?.length; i++) {
-    if (!pipelineNode[i]?.spec?.when?.length) {
-      mainNodesList.push([]);
-    }
-    const curType = pipelineNode[i]?.spec?.type;
-    const preType = pipelineNode[i - 1]?.spec?.type;
-    if (curType === ProcessBranch && preType === ProcessBranch && !pipelineNode[i]?.spec?.when?.length) {
-      const curBranchTargetElementID = pipelineNode[i]?.Metadata.Annotations?.['web.pipelineNode/branchTargetElementID'];
-      const preBranchTargetElementID = pipelineNode[i - 1]?.Metadata.Annotations?.['web.pipelineNode/branchTargetElementID'];
-      if (curBranchTargetElementID && preBranchTargetElementID &&
-        curBranchTargetElementID !== preBranchTargetElementID
-      ) {
-        //
-      } else {
-        (mainNodesList.pop());
+  // const hasBranchID = !!pipelineNode?.find((item: any)=>!!item?.Metadata?.Annotations?.['web.pipelineNode/branchID']);
+  const hasBranchID = !!pipelineNode?.find((item: any)=>!!item?.Metadata?.Annotations?.hasOwnProperty('web.pipelineNode/branchID'));
+  if (hasBranchID) {
+    for (let i = 0; i < pipelineNode?.length; i++) {
+      if (!pipelineNode[i]?.Metadata?.Annotations?.['web.pipelineNode/branchID']) {
+        mainNodesList.push([]);
+      }
+      const curType = pipelineNode[i]?.spec?.type;
+      const preType = pipelineNode[i - 1]?.spec?.type;
+      if (curType === ProcessBranch && preType === ProcessBranch && !pipelineNode[i]?.Metadata?.Annotations?.['web.pipelineNode/branchID']) {
+        const curBranchTargetElementID = pipelineNode[i]?.Metadata?.Annotations?.['web.pipelineNode/branchTargetElementID'];
+        const preBranchTargetElementID = pipelineNode[i - 1]?.Metadata?.Annotations?.['web.pipelineNode/branchTargetElementID'];
+        if (curBranchTargetElementID && preBranchTargetElementID &&
+          curBranchTargetElementID !== preBranchTargetElementID
+        ) {
+          //
+        } else {
+          (mainNodesList.pop());
+        }
+      }
+      if (!pipelineNode[i]?.Metadata?.Annotations?.['web.pipelineNode/branchID']) {
+        mainNodesList?.[mainNodesList.length - 1]?.push(pipelineNode?.[i]);
       }
     }
-    if (!pipelineNode[i]?.spec?.when?.length) {
-      mainNodesList?.[mainNodesList.length - 1]?.push(pipelineNode?.[i]);
+  } else {
+    for (let i = 0; i < pipelineNode?.length; i++) {
+      if (!pipelineNode[i]?.spec?.when?.length) {
+        mainNodesList.push([]);
+      }
+      const curType = pipelineNode[i]?.spec?.type;
+      const preType = pipelineNode[i - 1]?.spec?.type;
+      if (curType === ProcessBranch && preType === ProcessBranch && !pipelineNode[i]?.spec?.when?.length) {
+        const curBranchTargetElementID = pipelineNode[i]?.Metadata.Annotations?.['web.pipelineNode/branchTargetElementID'];
+        const preBranchTargetElementID = pipelineNode[i - 1]?.Metadata.Annotations?.['web.pipelineNode/branchTargetElementID'];
+        if (curBranchTargetElementID && preBranchTargetElementID &&
+          curBranchTargetElementID !== preBranchTargetElementID
+        ) {
+          //
+        } else {
+          (mainNodesList.pop());
+        }
+      }
+      if (!pipelineNode[i]?.spec?.when?.length) {
+        mainNodesList?.[mainNodesList.length - 1]?.push(pipelineNode?.[i]);
+      }
     }
   }
   return mainNodesList;
@@ -881,14 +937,28 @@ const addMainBranchNodes = (mainNodeList: any)=>{
 // 提取分支节点 (可能是主干下分流的分支， 也有可能是分流下分支的分支)
 export const getBranchNodes = (pipelineNode: any)=>{
   const branchNodesObj: any = {};
-  for (let i = 0; i < pipelineNode.length; i++) {
-    if (pipelineNode[i]?.spec?.when?.length) {
-      const whenCondition = pipelineNode[i].spec.when[0];
-      const parentID = whenCondition.input.match(/task\.(.*?)\.output/)[1];
-      if (!branchNodesObj[parentID]) {
-        branchNodesObj[parentID] = [];
+  // const hasBranchID = !!pipelineNode?.find((item: any)=>!!item?.Metadata?.Annotations?.['web.pipelineNode/branchID']);
+  const hasBranchID = !!pipelineNode?.find((item: any)=>!!item?.Metadata?.Annotations?.hasOwnProperty('web.pipelineNode/branchID'));
+  if (hasBranchID) {
+    for (let i = 0; i < pipelineNode.length; i++) {
+      if (pipelineNode[i]?.Metadata?.Annotations?.['web.pipelineNode/branchID']) {
+        const parentID = pipelineNode[i]?.Metadata?.Annotations?.['web.pipelineNode/branchID'];
+        if (!branchNodesObj[parentID]) {
+          branchNodesObj[parentID] = [];
+        }
+        branchNodesObj[parentID].push(pipelineNode[i]);
       }
-      branchNodesObj[parentID].push(pipelineNode[i]);
+    }
+  } else {
+    for (let i = 0; i < pipelineNode.length; i++) {
+      if (pipelineNode[i]?.spec?.when?.length) {
+        const whenCondition = pipelineNode[i].spec.when[0];
+        const parentID = whenCondition.input.match(/task\.(.*?)\.output/)[1];
+        if (!branchNodesObj[parentID]) {
+          branchNodesObj[parentID] = [];
+        }
+        branchNodesObj[parentID].push(pipelineNode[i]);
+      }
     }
   }
   return branchNodesObj;
@@ -905,8 +975,8 @@ const formatBranchNodes = (branchNodesObj: any)=>{
       if (pipelineNode[i]?.spec?.type === ProcessBranch &&
           pipelineNode[i - 1]?.spec?.type === ProcessBranch
       ) {
-        const curBranchTargetElementID = pipelineNode[i]?.Metadata.Annotations?.['web.pipelineNode/branchTargetElementID'];
-        const preBranchTargetElementID = pipelineNode[i - 1]?.Metadata.Annotations?.['web.pipelineNode/branchTargetElementID'];
+        const curBranchTargetElementID = pipelineNode[i]?.Metadata?.Annotations?.['web.pipelineNode/branchTargetElementID'];
+        const preBranchTargetElementID = pipelineNode[i - 1]?.Metadata?.Annotations?.['web.pipelineNode/branchTargetElementID'];
         if (curBranchTargetElementID && preBranchTargetElementID && curBranchTargetElementID !== preBranchTargetElementID) {
         //
         } else {
@@ -968,22 +1038,22 @@ const addMainNodesIDs = (newMainNodesList: any, newBranchNodesObj: any)=>{
         node.childrenID = [newMainNodesList[index + 1]?.[0].name];
       });
     } else {
-      if (item[0].spec?.type !== ProcessTarget && item[0].spec.type !== ProcessSource && item[0].spec.type !== ProcessBranch) {// 非分流，合流 分支node
+      if (item[0]?.spec?.type !== ProcessTarget && item[0].spec.type !== ProcessSource && item[0].spec.type !== ProcessBranch) {// 非分流，合流 分支node
         item.forEach((node: any)=>{
           node.parentID = [newMainNodesList[index - 1]?.[0]?.name];
           node.childrenID = [newMainNodesList?.[index + 1]?.[0].name];
         });
       }
-      if (item[0].spec?.type === ProcessBranch) {// 分支node
+      if (item[0]?.spec?.type === ProcessBranch) {// 分支node
         item.forEach((node: any)=>{
           node.parentID = [newMainNodesList[index - 1]?.[0]?.name];
           node.childrenID = [newBranchNodesObj[node?.name]?.[0]?.[0]?.name]; // 分支的child
         });
       }
-      if (item[0].spec?.type === ProcessSource) {// 分流node
+      if (item[0]?.spec?.type === ProcessSource) {// 分流node
         item[0].parentID = [newMainNodesList[index - 1]?.[0].name];
       }
-      if (item[0].spec?.type === ProcessTarget) {// 合流node
+      if (item[0]?.spec?.type === ProcessTarget) {// 合流node
         item[0].childrenID = [newMainNodesList[index + 1]?.[0]?.name];
         // 最后 找出合流的parentID
         item[0].parentID = [];
