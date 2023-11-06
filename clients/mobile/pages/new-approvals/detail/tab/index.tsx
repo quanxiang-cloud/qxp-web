@@ -158,7 +158,7 @@ function ApprovalsDetailTab(props: ApprovalsDetailTabProps): JSX.Element {
                   </div>
                 )}
 
-                {!!task.system?.length && task.system.map((item) => {
+                {type === 'WAIT_HANDLE_PAGE' && !!task.system?.length && task.system.map((item) => {
                   return (
                     <div
                       key={item.key}
