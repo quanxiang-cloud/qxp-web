@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-empty */
 /* eslint-disable guard-for-in */
 /* eslint-disable max-len */
@@ -174,7 +175,7 @@ function ApprovalDetail(): JSX.Element {
           formSchema: res?.schema,
           fieldPermission: fieldPermission,
           // operatorPermission: !isFinish && (taskType === 'fillIn' ? fillInOperatorPermission : operatorPermission),
-          operatorPermission: (taskType === 'fillIn' ? fillInOperatorPermission : operatorPermission),
+          operatorPermission: type === 'WAIT_HANDLE_PAGE' ? (taskType === 'fillIn' ? fillInOperatorPermission : operatorPermission) : (!isFinish && (taskType === 'fillIn' ? fillInOperatorPermission : operatorPermission)),
           taskType: isFinish ? 'Finish' : 'REVIEW',
           taskName: '',
           ...btnObj,
