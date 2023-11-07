@@ -1580,8 +1580,7 @@ const generageBpmnNode = async (node: any, params: any, newPepelineNodes?: any)=
         fieldPermission,
         dealUsers,
       } = businessDataObj;
-      // const _fillInNodeInfo = JSON.parse(fillInNodeInfo);
-      // bpmnNode.data.businessData = _fillInNodeInfo?.data?.businessData;
+      const _fieldPermission = JSON.parse(fieldPermission);
       const dealUsersArr = dealUsers?.split(',');
       let _type: any = 'person';
       const _users: any = [];
@@ -1638,7 +1637,7 @@ const generageBpmnNode = async (node: any, params: any, newPepelineNodes?: any)=
               'fields': _fields,
             },
           },
-          fieldPermission: fieldPermission,
+          fieldPermission: _fieldPermission,
         };
       } else {
         bpmnNode.data.businessData = {
@@ -1649,7 +1648,7 @@ const generageBpmnNode = async (node: any, params: any, newPepelineNodes?: any)=
               fields: _fields,
             },
           },
-          fieldPermission: fieldPermission,
+          fieldPermission: _fieldPermission,
         };
       }
 
