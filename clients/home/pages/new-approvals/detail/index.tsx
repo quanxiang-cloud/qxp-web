@@ -64,6 +64,12 @@ function ApprovalDetail(): JSX.Element {
 
   const history = useHistory();
   const queryRelationKey = showSwitch ? [processInstanceID, type, currentTaskId] : [processInstanceID, type];
+  const searchArr = window.location.search?.replace('?', '')?.split('&');
+  const searchObj: any = {};
+  searchArr?.forEach((item: any)=>{
+    const arr = item?.split('=');
+    searchObj[arr?.[0]] = arr?.[1];
+  });
 
   const getApprovel = () => {
     return getPipelineProcessHistories(processInstanceID as any).then((res)=>{
@@ -160,6 +166,9 @@ function ApprovalDetail(): JSX.Element {
         if (type === 'APPLY_PAGE' && isFinish) {
           btnObj.hasCancelBtn = false;
           btnObj.hasUrgeBtn = false;
+        }
+        if (type === 'ALL_PAGE' && searchObj?.finish === 'true') {
+          fillInOperatorPermission.system = [];
         }
         const _data: any = {
           appId: appID,
