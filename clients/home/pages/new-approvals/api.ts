@@ -374,16 +374,16 @@ export const getPipelineFormData = async (appID: any, tableID: any, params: Reco
 };
 
 // 获取审批动态 taskID
-export const getPipelineApproveProcessInfo = (runID: string) => {
-  return httpClient<any>('/api/v1/examine/getByTaskID', { taskID: runID });
+export const getPipelineApproveProcessInfo = (runID: string, params: any = {}) => {
+  return httpClient<any>('/api/v1/examine/getByTaskID', { taskID: runID, ...params });
 };
 
 // 获取填写动态 taskID
-export const getPipelineFillInProcessInfo = (runID: string) => {
-  return httpClient<any>('/api/v1/fill/getByRunID', { runID });
+export const getPipelineFillInProcessInfo = (runID: string, params: any = {}) => {
+  return httpClient<any>('/api/v1/fill/getByRunID', { runID, ...params });
 };
 
-export const getAllProcessInfo = (runID: string)=>{
+export const getAllProcessInfo = (runID: string, params: any = {})=>{
   const arr: any = [getPipelineApproveProcessInfo, getPipelineFillInProcessInfo];
-  return Promise.all(arr.map((item: any)=>item(runID)));
+  return Promise.all(arr.map((item: any)=>item(runID, params)));
 };
