@@ -145,7 +145,13 @@ function ApprovalDetail(): JSX.Element {
       }
 
       getPipelineFormSchemaInfo(appID, tableID).then((res: any)=>{
-        const nodeInfo = JSON.parse(curentNode?.spec?.params?.find((item: any)=>item?.key === 'nodeInfo')?.value || null);
+        // const nodeInfo = JSON.parse(curentNode?.spec?.params?.find((item: any)=>item?.key === 'nodeInfo')?.value || null);
+        let nodeInfo = null;
+        if (nodeData?.nodeDefKey === curentNode?.name) {
+          nodeInfo = JSON.parse(nodeData?.nodeInfo || null);
+        } else {
+          nodeInfo = JSON.parse(curentNode?.spec?.params?.find((item: any)=>item?.key === 'nodeInfo')?.value || null);
+        }
         const { fieldPermission, operatorPermission } = nodeInfo?.data?.businessData || {};
         const reaultList = ['agree', 'reject', 'recall'];
         const isFinish = !!reaultList?.includes(nodeData?.result);
