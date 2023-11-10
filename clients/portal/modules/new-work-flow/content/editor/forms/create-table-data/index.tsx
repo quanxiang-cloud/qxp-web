@@ -1,9 +1,10 @@
+/* eslint-disable max-len */
 /* eslint-disable no-empty */
 /* eslint-disable guard-for-in */
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useUpdateEffect } from 'react-use';
-import { get } from 'lodash';
+import { get, isString } from 'lodash';
 
 import Select from '@c/select';
 import SaveButtonGroup from '@newFlow/content/editor/components/_common/action-save-button-group';
@@ -19,12 +20,11 @@ import TargetTableFields from './target-table-fields';
 import Context from './context';
 import store from '../../store';
 import useObservable from '@lib/hooks/use-observable';
-import { getElementParents } from '../webhook/utils';
-import { getFieldSchema } from '../api';
-import schemaToFields from '@lib/schema-convert';
+import CreateNumber from './create-number';
+import { getNodesOutputOptions } from '@portal/modules/new-work-flow/util';
 
 interface Props {
-  defaultValue: TableDataCreateData;
+  defaultValue: TableDataCreateData | any;
   onSubmit: (data: BusinessData) => void;
   onChange: (data: BusinessData) => void;
   onCancel: () => void;
@@ -37,6 +37,8 @@ const initialValue = {
   createRule: {},
   ref: {},
   queryNodeId: '',
+  createNumber: undefined,
+  createNumberKey: undefined,
 };
 
 function FormCreateTableData({ defaultValue, onSubmit, onCancel, onChange: _onChange, currentNodeElement }: Props): JSX.Element {
@@ -51,65 +53,15 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel, onChange: _onCh
   const { elements = [] } = useObservable<StoreValue>(store);
   const [nodesOutputOptions, setNodesOutputOptions] = useState(null);
 
-  const getNodesOutputOptions = ()=>{
-    const options: any = [];
-    if (elements?.length) {
-      const currentElementParents = getElementParents(currentNodeElement);
-      const allArr: any = [];
-      elements?.forEach(async (item: any)=>{
-        // if (item.data?.type === 'approve' && currentElementParents.includes(item.id)) {
-        //   const nodeDataName = item?.data?.nodeData?.name;
-        //   options?.push({
-        //     label: nodeDataName,
-        //     value: `$(task.${item?.id}.output.agree`,
-        //   });
-        // }
-        // if (item.data?.type === 'fill' && currentElementParents.includes(item.id)) {
-        //   const nodeDataName = item?.data?.nodeData?.name;
-        //   options?.push({
-        //     label: nodeDataName,
-        //     value: `$(task.${item?.id}.output.agree`,
-        //   });
-        // }
-        if (item.data?.type === 'tableDataQuery' && currentElementParents.includes(item.id)) {
-          const tableID = item?.data?.businessData?.targetTableId;
-          allArr.push(()=>{
-            const nodeDataName = item?.data?.nodeData?.name;
-            const queryList = item?.data?.businessData?.queryList || [];
-            return getFieldSchema({ appID, tableID })
-              .then((res: any)=>{
-                const schemaFields = schemaToFields(res);
-                const normalFields = schemaFields?.filter((fieldSchema) => {
-                  return fieldSchema.componentName !== 'subtable';
-                }).map((fieldSchema) => ({
-                  label: fieldSchema.title,
-                  value: fieldSchema.id,
-                }));
-                queryList?.forEach((child: any)=>{
-                  const lable = normalFields?.find((item: any)=>item?.value === child?.value?.[0])?.label;
-                  if (lable) {
-                    options?.push({
-                      label: nodeDataName + '.' + lable,
-                      value: `$(task.${item?.id}.output.${child?.queryVal})`,
-                      nodeID: item?.id,
-                    });
-                  }
-                });
-                return res;
-              });
-          });
-        }
-      });
-
-      Promise.all(allArr?.map((item: any)=>item()))
-        .then(()=>{
-          setNodesOutputOptions(options);
-        });
-    }
-  };
+  const createNumberRef = useRef<any>(null);
 
   useEffect( ()=>{
-    getNodesOutputOptions();
+    getNodesOutputOptions({
+      elements,
+      currentNodeElement,
+      appID,
+      setNodesOutputOptions,
+    });
   }, [elements?.length]);
 
   useUpdateEffect(() => {
@@ -176,6 +128,7 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel, onChange: _onCh
   const onSave = (): void => {
     const subTableRequiredField = get(value, 'subTableRequiredField', []);
     const normalRequiredField = get(value, 'normalRequiredField', []);
+    const createNumberObj = createNumberRef?.current?.getValues();
 
     for (let index = 0; index < subTableRequiredField.length; index += 1) {
       const subFieldValue = get(value, `ref.${subTableRequiredField[index]}.valueOf`, '');
@@ -195,40 +148,103 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel, onChange: _onCh
       toast.error('请选择目标数据表');
       return;
     }
-    if (showError) {
-      toast.error('节点输出key不能重复');
-      return;
-    }
+    // if (showError) {
+    //   toast.error('节点输出key不能重复');
+    //   return;
+    // }
+    const checkKey = ()=>{
+      const { createRule, ref } = value || {};
 
-    let isNull = false;
-    const { createRule, ref } = value;
-    for (const key in createRule) {
-      const item = createRule[key];
-      if (item?.valueFrom === 'task.xx.output.xxx') {
-        if (!item?.key) {
-          isNull = true;
-        }
-      }
-    }
-    try {
-      for (const key in ref) {
-        const createRules = ref[key]?.createRules?.[0] || [];
-        for (const k in createRules) {
-          const item = createRules[k];
-          if (item?.valueFrom === 'task.xx.output.xxx') {
-            if (!item?.key) {
-              isNull = true;
-            }
+      const createNumberObj = createNumberRef?.current?.getValues();
+      const obj: any = {};
+      for (const key in createRule) {
+        const item = createRule[key];
+        if (item?.valueFrom === 'task.xx.output.xxx' && item?.key) {
+          if (obj?.[item?.key]) {
+            obj[item?.key] = obj[item?.key] + 1;
+          } else {
+            obj[item?.key] = 1;
           }
         }
       }
-    } catch (error) {
+
+      // try {
+      //   for (const key in ref) {
+      //     const createRules = ref[key]?.createRules?.[0] || [];
+      //     for (const k in createRules) {
+      //       const item = createRules[k];
+      //       if (item?.valueFrom === 'task.xx.output.xxx' && item?.key) {
+      //         if (obj?.[item?.key]) {
+      //           obj[item?.key] = obj[item?.key] + 1;
+      //         } else {
+      //           obj[item?.key] = 1;
+      //         }
+      //       }
+      //     }
+      //   }
+      // } catch (error) {
+      //   console.log('error', error);
+      // }
+
+      // if (isString(createNumberObj?.val) && createNumberObj?.val?.includes('.output.')) {
+      //   if (obj?.[createNumberObj?.key]) {
+      //     obj[createNumberObj?.key] = obj[createNumberObj?.key] + 1;
+      //   } else {
+      //     obj[createNumberObj?.key] = 1;
+      //   }
+      // }
+
+      let flag = false;
+      for (const key in obj) {
+        if (obj[key] > 1) {
+          flag = true;
+        }
+      }
+      if (flag) {
+        toast.error('节点输出key不能重复');
+        return false;
+      }
+
+      let isNull = false;
+      for (const key in createRule) {
+        const item = createRule[key];
+        if (item?.valueFrom === 'task.xx.output.xxx') {
+          if (!item?.key) {
+            isNull = true;
+          }
+        }
+      }
+      try {
+        for (const key in ref) {
+          const createRules = ref[key]?.createRules?.[0] || [];
+          for (const k in createRules) {
+            const item = createRules[k];
+            if (item?.valueFrom === 'task.xx.output.xxx') {
+              if (!item?.key) {
+                isNull = true;
+              }
+            }
+          }
+        }
+      } catch (error) {
+      }
+      if (isString(createNumberObj?.val) && createNumberObj?.val?.includes('.output.') && !createNumberObj?.key) {
+        isNull = true;
+      }
+      if (isNull) {
+        toast.error('节点输出key不能为空');
+        return false;
+      }
+      return true;
+    };
+
+    if (checkKey()) {
+      onSubmit({
+        ...value,
+        createNumber: createNumberObj?.val,
+        createNumberKey: createNumberObj?.key,
+      });
     }
-    if (isNull) {
-      toast.error('节点输出key不能为空');
-      return;
-    }
-    onSubmit(value);
   };
 
   const onClose = (): void => {
@@ -250,10 +266,6 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel, onChange: _onCh
     }
   };
 
-  const onChangeQueryNodeId = (nodeId: string)=>{
-    setValue({ ...value, queryNodeId: nodeId }); // reset value
-  };
-
   if (isLoading) {
     return (
       <div>Loading..</div>
@@ -265,19 +277,6 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel, onChange: _onCh
       <div>获取目标表失败</div>
     );
   }
-
-  const isSelfForm = value.targetTableId === tableID;
-
-  const getTableQueryOptions = ()=>{
-    const options = elements?.filter((item: any)=>item?.type === 'tableDataQuery')?.map((item: any)=>{
-      return {
-        label: item?.data?.nodeData?.name,
-        value: item?.id,
-      };
-    }) || [];
-    return options;
-  };
-
   return (
     <Context.Provider value={{ data: value, setData: onChange, currentNodeElement, nodesOutputOptions } as any}>
       <div className="flex flex-col overflow-auto flex-1 py-24">
@@ -303,6 +302,19 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel, onChange: _onCh
             <small className="ml-5 text-caption">新增本表数据时不支持再次触发工作流</small>
           </div>
         )} */}
+        {
+          value?.targetTableId &&
+          (<CreateNumber
+            key={nodesOutputOptions?.length}
+            defaultData = {{
+              value: defaultValue?.createNumber,
+              key: defaultValue?.createNumberKey,
+            } || {}}
+            nodesOutputOptions={nodesOutputOptions}
+            ref = {createNumberRef}
+          />)
+        }
+
         <TargetTableFields
           key={nodesOutputOptions?.length}
           appId={appID}

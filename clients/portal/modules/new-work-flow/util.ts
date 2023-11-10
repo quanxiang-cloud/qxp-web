@@ -1,3 +1,7 @@
+/* eslint-disable unused-imports/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-empty */
@@ -11,7 +15,7 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable no-plusplus */
-import { isArray, isString, cloneDeep } from 'lodash';
+import { isArray, isString, cloneDeep, isNumber } from 'lodash';
 import { createTrigger, deleteTrigger, getTriggerInfo } from './api';
 import { uuid } from '@lib/utils';
 import { buildGraphQLQuery } from '../access-control/departments-employees/utils';
@@ -19,6 +23,10 @@ import { searchUser } from '@c/form-builder/registry/user-picker/messy/api';
 import httpClient from '@lib/http-client';
 import { CURRENT_WORK_FLOW_VERSION } from './content/editor/utils/constants';
 import { toEs } from './content/editor/forms/query-table-data/data-filter/utils';
+import { getElementParents } from './content/editor/forms/webhook/utils';
+import { getFieldSchema } from './content/editor/forms/api';
+import schemaToFields, { schemaToMap } from '@lib/schema-convert';
+import { transformSchema } from './content/editor/forms/utils';
 
 const ProcessBranch = 'process-branch';
 const ProcessSource = 'process-source';
@@ -441,6 +449,28 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
           key: 'createRule',
           value: vByte,
         });
+
+        const { createNumber, createNumberKey } = node?.data?.businessData;
+        if (createNumber && isNumber(createNumber)) {
+          pn.spec.params.push({
+            key: 'repeat',
+            value: String(createNumber),
+          });
+        }
+        if (createNumber && isString(createNumber) && createNumber?.includes('.output.') && createNumberKey) {
+          pn.spec.params.push({
+            key: 'repeat',
+            // value: `$(local.${createNumberKey})`,
+            // value: `${createNumberKey}`,
+            value: `${createNumber}`,
+
+          });
+          // pn.spec.params.push({
+          //   key: createNumberKey,
+          //   value: createNumber,
+          // });
+          // pn.Metadata.Annotations['web.pipelineNode/createNumberKey'] = createNumberKey;
+        }
       }
       // if (node?.data?.businessData?.ref) {
       //   const ref = node?.data?.businessData?.ref;
@@ -642,7 +672,7 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
             key: 'sort',
             value: sort?.[0],
           });
-          if (sizeKey && size?.includes('.output.')) {
+          if (sizeKey && isString(size) && size?.includes('.output.')) {
             // const _sizeStr = `{{ if eq (printf "%T" .Local.${sizeKey}) "string" }}"{{ .Local.${sizeKey} }}"{{ else }}{{ .Local.${sizeKey} }}{{ end }}`;
             const _sizeStr = `{{.Local.${sizeKey}}}`;
 
@@ -706,6 +736,19 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
           });
         });
         pn.spec.output = rule?.map((item: any)=>`${item?.queryVal}`);
+      }
+      if (node?.data?.businessData?.ref) {
+        let keyNum = 0;
+        for (const key in node?.data?.businessData?.ref) {
+          keyNum = keyNum + 1;
+        }
+        const ref = node?.data?.businessData?.ref;
+        if (keyNum > 0) {
+          pn.spec.params.push({
+            key: 'ref',
+            value: JSON.stringify(ref),
+          });
+        }
       }
       break;
     }
@@ -1418,7 +1461,9 @@ const generageBpmnNode = async (node: any, params: any, newPepelineNodes?: any)=
       };
       break;
     case 'form-create-data':
-      const { targetTableID: createTargetTableID, createRule, ref, normalRequiredField, subTableRequiredField, queryNodeId } = businessDataObj || {};
+      const { targetTableID: createTargetTableID, createRule, ref,
+        normalRequiredField, subTableRequiredField, queryNodeId, repeat } = businessDataObj || {};
+      // const createNumberKey = node.Metadata.Annotations?.['web.pipelineNode/createNumberKey'];
       const getNewRule = (rule: any)=>{
         const _createRule = rule ? JSON.parse(rule) : {};
         for (const key in _createRule) {
@@ -1458,6 +1503,20 @@ const generageBpmnNode = async (node: any, params: any, newPepelineNodes?: any)=
       };
 
       const _ref = ref ? JSON.parse(ref) : {};
+
+      let _createNumber; let _createNumberKey;
+      // if (repeat?.includes('local.') ) {
+      //   _createNumberKey = repeat?.replace('$(local.', '')?.replace(')', '');
+      //   _createNumber = businessDataObj?.[_createNumberKey];
+      // } else {
+      //   _createNumber = Number(repeat);
+      // }
+      if (!Number(repeat) ) {
+        _createNumberKey = repeat;
+        _createNumber = businessDataObj?.[_createNumberKey];
+      } else {
+        _createNumber = Number(repeat);
+      }
       bpmnNode.data.businessData = {
         targetTableId: createTargetTableID,
         // createRule: createRule ? JSON.parse(createRule) : {},
@@ -1468,6 +1527,8 @@ const generageBpmnNode = async (node: any, params: any, newPepelineNodes?: any)=
         subTableRequiredField: subTableRequiredField ? JSON.parse(subTableRequiredField) : [],
         silent: formTableID === createTargetTableID ? false : true,
         queryNodeId,
+        createNumber: _createNumber,
+        createNumberKey: _createNumberKey,
       };
       break;
     case 'form-update-data':
@@ -1486,7 +1547,7 @@ const generageBpmnNode = async (node: any, params: any, newPepelineNodes?: any)=
       };
       break;
     case 'form-query-data':
-      const { targetTableID: targetTableId, query, sort, size } = businessDataObj || {};
+      const { targetTableID: targetTableId, query, sort, size, ref: queryDataRef } = businessDataObj || {};
       const _formType = node?.Metadata?.Annotations?.['web.pipelineNode/formType'];
       const queryList: any = [];
       for (const key in businessDataObj) {
@@ -1566,6 +1627,7 @@ const generageBpmnNode = async (node: any, params: any, newPepelineNodes?: any)=
         queryList,
         query: _query,
         formType: _formType || 'others',
+        ref: JSON.parse(queryDataRef || null),
       };
 
       break;
@@ -1978,4 +2040,75 @@ const formatQuery = (query: any, businessDataObj: any)=>{
     tag,
     conditions,
   };
+};
+
+export const getNodesOutputOptions = ({
+  elements,
+  currentNodeElement,
+  appID,
+  setNodesOutputOptions,
+}: any)=>{
+  const options: any = [];
+  if (elements?.length) {
+    const currentElementParents = getElementParents(currentNodeElement);
+    const allArr: any = [];
+    elements?.forEach(async (item: any, index: number)=>{
+      if (item.data?.type === 'tableDataQuery' && currentElementParents.includes(item.id)) {
+        const tableID = item?.data?.businessData?.targetTableId;
+        allArr.push(()=>{
+          const nodeDataName = item?.data?.nodeData?.name;
+          const queryList = item?.data?.businessData?.queryList || [];
+          return getFieldSchema({ appID, tableID })
+            .then((res: any)=>{
+              const schemaFields = schemaToFields(res);
+              const normalFields = schemaFields?.filter((fieldSchema) => {
+                return fieldSchema.componentName !== 'subtable';
+              }).map((fieldSchema) => {
+                return {
+                  label: fieldSchema.title,
+                  value: fieldSchema.id,
+                };
+              });
+
+              const tableSchemaMap = schemaToMap(res, (currentSchema: SchemaFieldItem) => {
+                return currentSchema.componentName !== 'associatedrecords';
+              });
+              const schemaToTransform = { ...res, properties: tableSchemaMap };
+              const subFields = transformSchema(schemaToTransform, { filterSubTable: true })?.properties;
+              const subtableFields: any = [];
+              for (const key in subFields) {
+                // const curentSubTableFields = subFields?.[key]?.properties;
+                // for (const k in curentSubTableFields) {
+                //   subtableFields.push({
+                //     label: `${subFields?.[key]?.['x-component-props']?.title}.${curentSubTableFields?.[k]?.['x-component-props']?.title }`,
+                //     value: `${k}`,
+                //   });
+                // }
+                subtableFields.push({
+                  label: `${subFields?.[key]?.['x-component-props']?.title}`,
+                  value: `${key}`,
+                });
+              }
+              queryList?.forEach((child: any)=>{
+                const lable = [...normalFields, ...subtableFields]?.find((item: any)=>item?.value === child?.value?.[0])?.label;
+                if (lable) {
+                  options?.push({
+                    label: nodeDataName + '.' + lable,
+                    value: `$(task.${item?.id}.output.${child?.queryVal})`,
+                    nodeID: item?.id,
+                  });
+                }
+              });
+              return res;
+            });
+        });
+      }
+    });
+
+    Promise.all(allArr?.map((item: any)=>item()))
+      .then((res: any)=>{
+        setNodesOutputOptions(options);
+      }).catch((err: any)=>{
+      });
+  }
 };
