@@ -676,9 +676,13 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
             // const _sizeStr = `{{ if eq (printf "%T" .Local.${sizeKey}) "string" }}"{{ .Local.${sizeKey} }}"{{ else }}{{ .Local.${sizeKey} }}{{ end }}`;
             const _sizeStr = `{{.Local.${sizeKey}}}`;
 
+            // pn.spec.params.push({
+            //   key: 'size',
+            //   value: (formType === 'work-form') ? '1' : _sizeStr,
+            // });
             pn.spec.params.push({
               key: 'size',
-              value: (formType === 'work-form') ? '1' : _sizeStr,
+              value: (formType === 'work-form') ? '1' : size,
             });
           } else {
             pn.spec.params.push({
@@ -1513,7 +1517,8 @@ const generageBpmnNode = async (node: any, params: any, newPepelineNodes?: any)=
       // }
       if (!Number(repeat) ) {
         _createNumberKey = repeat;
-        _createNumber = businessDataObj?.[_createNumberKey];
+        // _createNumber = businessDataObj?.[_createNumberKey];
+        _createNumber = repeat;
       } else {
         _createNumber = Number(repeat);
       }
@@ -1607,16 +1612,22 @@ const generageBpmnNode = async (node: any, params: any, newPepelineNodes?: any)=
             sort: sort ? [sort] : ['-created_at'],
             sizeKey: '',
           };
-          if (isString(size) && size?.includes('.Local.')) {
+          // if (isString(size) && size?.includes('.Local.')) {
+          //   let _sizeKey = '';
+          //   size?.replace(/{{\.Local\.[^}]+}}/g, function(match: any) {
+          //     _sizeKey = match;
+          //     return match?.replace('{{', '')?.replace('}}', '')?.replace('.Local.', '');
+          //   });
+          //   _sizeKey = _sizeKey?.replace('{{', '').replace('}}', '').replace('.Local.', '').trim();
+          //   const sizeValue = businessDataObj?.[_sizeKey];
+          //   _query.size = sizeValue;
+          //   _query.sizeKey = _sizeKey;
+          // }
+          if (isString(size) && size?.includes('.output.')) {
             let _sizeKey = '';
-            size?.replace(/{{\.Local\.[^}]+}}/g, function(match: any) {
-              _sizeKey = match;
-              return match?.replace('{{', '')?.replace('}}', '')?.replace('.Local.', '');
-            });
             _sizeKey = _sizeKey?.replace('{{', '').replace('}}', '').replace('.Local.', '').trim();
-            const sizeValue = businessDataObj?.[_sizeKey];
-            _query.size = sizeValue;
-            _query.sizeKey = _sizeKey;
+            _query.size = size;
+            _query.sizeKey = '';
           }
         }
       } catch (error) {

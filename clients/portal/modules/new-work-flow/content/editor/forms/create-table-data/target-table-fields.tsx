@@ -33,14 +33,16 @@ function TargetTableFields({ appId, tableId }: Props): JSX.Element {
   // set(data, 'subTableRequiredField', initSubTableRequiredFields);
   useEffect(()=>{
     const normalTableFieldsArr = [];
-    const _createRule = cloneDeep(data.createRule);
+    const _createRule: any = cloneDeep(data.createRule);
     for (const key in normalTableFields) {
       normalTableFieldsArr.push(key);
     }
     for (const key in _createRule) {
       if (!normalTableFieldsArr?.includes(key)) {
-        delete _createRule[key];
-        set(data, 'createRule', _createRule);
+        if (_createRule[key]['key']) {
+          _createRule[key]['key'] = '';
+        }
+        // set(data, 'createRule', _createRule);
       }
     }
   }, [normalTableFields]);

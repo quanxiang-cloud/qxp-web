@@ -18,7 +18,6 @@ import './styles.scss';
 import useObservable from '@lib/hooks/use-observable';
 import store from '../../store';
 import RadioButtonGroup from '@c/radio/radio-button-group';
-import { isString } from 'lodash';
 import { getNodesOutputOptions } from '@portal/modules/new-work-flow/util';
 
 interface Props {
@@ -130,16 +129,16 @@ function FormQueryTableData({ defaultValue, currentNodeElement, onSubmit, onCanc
           setShowErrorText('');
         }
 
-        if (isString(size) && size?.includes('.output.') && !sizeKey) {
-          setShowError(true);
-          // setShowErrorText('查询条数key不能为空');
-          toast.error('查询条数key不能为空');
+        // if (isString(size) && size?.includes('.output.') && !sizeKey) {
+        //   setShowError(true);
+        //   // setShowErrorText('查询条数key不能为空');
+        //   toast.error('查询条数key不能为空');
 
-          return;
-        } else {
-          setShowError(false);
-          setShowErrorText('');
-        }
+        //   return;
+        // } else {
+        //   setShowError(false);
+        //   setShowErrorText('');
+        // }
 
         const keyArr: any = [];
         sizeKey && keyArr?.push(sizeKey);

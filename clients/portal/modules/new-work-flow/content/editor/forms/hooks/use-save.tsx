@@ -17,7 +17,9 @@ export default function useSave(appID: string, id?: string): (
   const callback = useRef<{ onOk?: Noop; onError?: Noop }>();
   const saveMutation = useMutation(saveWorkFlow, {
     onSuccess: (respData: any) => {
-      toast.success('保存成功');
+      if (respData) {
+        toast.success('保存成功');
+      }
       callback.current?.onOk?.();
       if (appID && respData?.name && !id) {
         history.replace(`/apps/flow/${appID}/${respData?.name}`);
@@ -33,7 +35,7 @@ export default function useSave(appID: string, id?: string): (
     callback.current = {
       onOk, onError,
     };
-    const saveData: SaveWorkFlowParamsType = data;
+    const saveData: SaveWorkFlowParamsType | any = data;
     if (id) {
       saveData.id = id;
     }

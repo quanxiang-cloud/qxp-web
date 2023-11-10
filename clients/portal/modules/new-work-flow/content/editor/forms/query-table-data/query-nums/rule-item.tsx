@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { valueFromOptions } from '../context';
-import { Input, InputNumber, Select } from 'antd';
+import { InputNumber, Select } from 'antd';
 import { isArray, isString } from 'lodash';
 
 interface Props {
@@ -83,14 +83,14 @@ function RuleItem(props: any) {
             }}
             allowClear
           />
-          <div className='flex items-center ml-10'>
+          {/* <div className='flex items-center ml-10'>
             <span>key:</span>
             <Input value={key} onChange={(e)=>{
               const value = e.target.value;
               const filteredString = value?.replace(/[^0-9a-zA-Z_]/g, '');
               setKey(filteredString);
             }}></Input>
-          </div>
+          </div> */}
         </div>
       );
     }

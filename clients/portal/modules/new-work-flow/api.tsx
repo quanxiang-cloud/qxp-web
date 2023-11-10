@@ -35,12 +35,16 @@ export type SaveWorkFlowParamsType = {
 };
 
 // 创建/修改流程
-export function saveWorkFlow(flowData: SaveWorkFlowParamsType): Promise<WorkFlowData> {
-  const pipelineFlowData = getPipelineWorkFlowParams(flowData);
-  return httpClient<WorkFlowData>('/api/v1/pipeline/node', pipelineFlowData).then((res)=>{
-    saveTrigger(flowData, res);
-    return res;
-  });
+export function saveWorkFlow(flowData: SaveWorkFlowParamsType | any): Promise<WorkFlowData> | any {
+  if (flowData?.status !== 'ENABLE') {
+    const pipelineFlowData = getPipelineWorkFlowParams(flowData);
+    return httpClient<WorkFlowData>('/api/v1/pipeline/node', pipelineFlowData).then((res)=>{
+      saveTrigger(flowData, res);
+      return res;
+    });
+  } else {
+    return Promise.resolve();
+  }
 }
 
 export function toggleWorkFlow(data: any): Promise<unknown> {
