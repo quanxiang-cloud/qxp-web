@@ -41,6 +41,7 @@ class ApprovalsStore {
   @observable finished = false;
   @observable inited = false;
   @observable readAllEnabled = false;
+  @observable isRefresh = false;
 
   @action
   loadApprovals = async (props: LoadApprovalsProps): Promise<void> => {
@@ -105,6 +106,7 @@ class ApprovalsStore {
       throw e;
     }
     if (!this.inited) this.inited = true;
+    this.isRefresh = false;
   };
 
   @action
@@ -114,6 +116,7 @@ class ApprovalsStore {
     this.finished = false;
     this.inited = false;
     this.readAllEnabled = false;
+    this.isRefresh = false;
   };
 }
 

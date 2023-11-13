@@ -5,19 +5,19 @@ import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 
 import toast from '@lib/toast';
-import { ApprovalsTabProps, Task } from '@m/pages/approvals/types';
+import { ApprovalsTabProps, Task } from '@m/pages/new-approvals/types';
 import PullRefresh from '@m/qxp-ui-mobile/pull-refresh';
 import TaskCard from '@m/components/task-card';
 import List from '@m/qxp-ui-mobile/list';
 import { Empty } from '@m/qxp-ui-mobile/empty';
-import { readAll } from '@home/pages/approvals/api';
+import { readAll } from '@home/pages/new-approvals/api';
 import { approvalDetailPath, approvalDetailPathApproval } from '@m/constant';
-import detailStore from '@m/pages/approvals/detail/store';
+import detailStore from '@m/pages/new-approvals/detail/store';
 
 import { Filter } from './filter';
 import { store } from './store';
 import RadioButtonGroup from '@c/radio/radio-button-group';
-import { APPROVAL, FILL_IN, listData } from '@home/pages/approvals/constant';
+import { APPROVAL, FILL_IN, listData } from '@home/pages/new-approvals/constant';
 
 const mapPageKey: any = {
   APPLY_PAGE: 'FILL_IN_APPLY_PAGE',
@@ -46,14 +46,28 @@ const ApprovalsTab = (props: ApprovalsTabProps): JSX.Element => {
   }, [type, tagType]);
 
   function loadApprovals(pageKey: number): Promise<void> {
+    store[storeType].finished = false;
+    store[mapPageKey[storeType]].finished = false;
     if (mapPageKey[storeType]) {
-      store[mapPageKey[storeType]].loadApprovals({ pageKey, filter, filterKey, tagType });
+      store[mapPageKey[storeType]].loadApprovals({ pageKey, filter, filterKey, tagType })
+        .finally(()=>{
+          store[storeType].finished = true;
+          store[mapPageKey[storeType]].finished = true;
+          detailStore.isRefresh = false;
+        });
     }
-    return store[storeType].loadApprovals({ pageKey, filter, filterKey, tagType });
+    return store[storeType].loadApprovals({ pageKey, filter, filterKey, tagType })
+      .finally(()=>{
+        store[storeType].finished = true;
+        store[mapPageKey[storeType]].finished = true;
+        detailStore.isRefresh = false;
+      });
   }
 
   useEffect(() => {
     if (!store[storeType].inited) return;
+    store[storeType].clear();
+    store[mapPageKey[storeType]].clear();
     loadApprovals(1);
   }, [props.filter]);
 
@@ -61,8 +75,9 @@ const ApprovalsTab = (props: ApprovalsTabProps): JSX.Element => {
 
   useEffect(() => {
     if (detailStore.isRefresh) {
+      store[storeType].clear();
+      store[mapPageKey[storeType]].clear();
       loadApprovals(1);
-      detailStore.isRefresh = false;
     }
   }, [detailStore.isRefresh]);
 
@@ -166,7 +181,8 @@ const ApprovalsTab = (props: ApprovalsTabProps): JSX.Element => {
           (<PullRefresh
             onRefresh={() => loadApprovals(1)}
             className='flex-1'>
-            <List finished={store[storeType].finished}
+            <List
+              finished={store[storeType].finished}
               style={{ padding: '0 .16rem' }}
               onLoad={() => loadApprovals(store[storeType].page + 1)}
               className='h-full overflow-scroll safe-area-bottom'>
@@ -189,7 +205,8 @@ const ApprovalsTab = (props: ApprovalsTabProps): JSX.Element => {
           (<PullRefresh
             onRefresh={() => loadApprovals(1)}
             className='flex-1'>
-            <List finished={store[mapPageKey[storeType]].finished}
+            <List
+              finished={store[mapPageKey[storeType]].finished}
               style={{ padding: '0 .16rem' }}
               onLoad={() => loadApprovals(store[mapPageKey[storeType]].page + 1)}
               className='h-full overflow-scroll safe-area-bottom'>

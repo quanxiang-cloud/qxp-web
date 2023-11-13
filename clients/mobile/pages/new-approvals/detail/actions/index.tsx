@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+/* eslint-disable no-case-declarations */
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useSearchParam } from 'react-use';
@@ -20,11 +22,14 @@ import Warning from './warning';
 import { ApprovalDetailParams } from '../../types';
 import approvalDetailStore from '../store';
 import actionStore from './store';
+import detailStore from '@m/pages/new-approvals/detail/store';
 import {
   getStepBackActivityList, pipelineAgree, pipelineRecall, pipelineReject, pipelineUrge, submitPipelineFillTask,
 } from './api';
 
 import './index.scss';
+import { buildFormDataReqParams, formDataDiff } from '@home/utils';
+import { isEmpty } from 'lodash';
 
 const REQUIRED_PROCESS_INSTANCE = ['DELIVER', 'READ', 'CC'];
 
@@ -35,7 +40,7 @@ function ApprovalsActions(): JSX.Element {
   const action = useSearchParam('action') || '';
   const reasonRequired = useSearchParam('reasonRequired') || 0;
   const { remark, handleUserIds, taskDefKey, multiplePersonWay, type } = actionStore;
-  const { formValues } = approvalDetailStore;
+  const { formValues } = approvalDetailStore as any;
   const { title, actionName } = getAction(action, approvalDetailStore.title);
   const commonWords = ['我已阅示，非常赞同', '我已阅示，这个情况还是谨慎处理吧', '我已阅示'];
   const [loading, setLoading] = useState(false);
@@ -99,15 +104,23 @@ function ApprovalsActions(): JSX.Element {
       toast.success(`已${actionName}`);
       history.go(-2);
       approvalDetailStore.isRefresh = true;
+      detailStore.isRefresh = true;
     }).catch((err) => toast.error(err)).finally(() => setLoading(false));
   }
 
   function requestAction(): Promise<any> | undefined {
+    let _formData = {};
+    if (isEmpty(detailStore?.defaultValue)) {
+      _formData = buildFormDataReqParams(detailStore?.formSchema, 'create', formValues);
+    } else {
+      const newValue = formDataDiff(formValues, detailStore?.defaultValue, detailStore?.formSchema);
+      _formData = buildFormDataReqParams(detailStore?.formSchema, 'updated', newValue);
+    }
     const submitData = {
       examineID: taskID,
       taskID: processInstanceID,
       remark: remark || '',
-      formData: formValues,
+      formData: _formData,
     };
     switch (action) {
     case 'AGREE':
@@ -119,7 +132,7 @@ function ApprovalsActions(): JSX.Element {
     case 'FILL_IN':
       return submitPipelineFillTask({
         id: taskID,
-        forMData: formValues,
+        forMData: _formData,
       });
     case 'CANCEL':
       return pipelineRecall(processInstanceID);

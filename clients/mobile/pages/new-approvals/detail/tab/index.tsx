@@ -149,42 +149,55 @@ function ApprovalsDetailTab(props: ApprovalsDetailTabProps): JSX.Element {
                 className='h-full'
                 value={toJS(task.formData)}
                 schema={toJS(task.formSchema)}
-                onSubmit={(val) => store.formValues = val}
+                onSubmit={(val) =>{
+                  store.formValues = val;
+                }}
+                onFormValueChange={(values)=>{
+                  const _value: any = {};
+                  for (const key in values) {
+                    if (key?.startsWith('field')) {
+                      _value[key] = values[key];
+                    }
+                  }
+                  store.formValues = _value;
+                }}
                 readOnly={type === 'APPLY_PAGE' || type === 'HANDLED_PAGE' }
                 usePermission>
                 <button type='submit' ref={submitRef} className='hidden'/>
               </FormRenderer>
             </div>
 
-            {(!!task.custom?.length || !!task.system?.length) && (
-              <div className='flex justify-between action-buttons-container'>
-                {!!task.custom?.length && (
-                  <div className='action-button-custom-wrapper text-secondary'>
-                    {
-                      task.custom.map((item) => {
-                        return (
-                          <div
-                            key={item.key}
-                            className='action-button__custom flex justify-center items-center'
-                            ref={item.key === 'MORE' ? reference : undefined}
-                            onClick={
-                              item.key === 'MORE' ?
-                                undefined : () => onActionClick(item.key, item.reasonRequired)
-                            }
-                          >
-                            {!!item.icon && <Icon name={item.icon} size='.2rem' className='mb-4'/>}
-                            <div className='action-button__custom-text body2 truncate w-full'>
-                              {item.text}
+            {
+            // (!!task.custom?.length || !!task.system?.length) &&
+              (
+                <div className='flex justify-between action-buttons-container'>
+                  {!!task.custom?.length && (
+                    <div className='action-button-custom-wrapper text-secondary'>
+                      {
+                        task.custom.map((item) => {
+                          return (
+                            <div
+                              key={item.key}
+                              className='action-button__custom flex justify-center items-center'
+                              ref={item.key === 'MORE' ? reference : undefined}
+                              onClick={
+                                item.key === 'MORE' ?
+                                  undefined : () => onActionClick(item.key, item.reasonRequired)
+                              }
+                            >
+                              {!!item.icon && <Icon name={item.icon} size='.2rem' className='mb-4'/>}
+                              <div className='action-button__custom-text body2 truncate w-full'>
+                                {item.text}
+                              </div>
                             </div>
-                          </div>
-                        );
-                      })
-                    }
-                    {task.custom.length < 3 && <div style={{ flex: 3 - task.custom.length }}/>}
-                  </div>
-                )}
+                          );
+                        })
+                      }
+                      {task.custom.length < 3 && <div style={{ flex: 3 - task.custom.length }}/>}
+                    </div>
+                  )}
 
-                {/* {type === 'WAIT_HANDLE_PAGE' && !!task.system?.length && task.system.map((item) => {
+                  {/* {type === 'WAIT_HANDLE_PAGE' && !!task.system?.length && task.system.map((item) => {
                   return (
                     <div
                       key={item.key}
@@ -195,19 +208,19 @@ function ApprovalsDetailTab(props: ApprovalsDetailTabProps): JSX.Element {
                     </div>
                   );
                 })} */}
-                {type === 'WAIT_HANDLE_PAGE' && (taskType === 'fillIn' ? _systemFill : _systemApproval).map((item: any) => {
-                  return (
-                    <div
-                      key={item.key}
-                      className={cs('action-button__system flex justify-center items-center', item.className)}
-                      onClick={() => onActionClick(item.key, item.reasonRequired)}>
-                      {!!item.icon && <Icon name={item.icon} size='.2rem' className='mr-4'/>}
-                      <div className='truncate'>{item.text}</div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
+                  {type === 'WAIT_HANDLE_PAGE' && (taskType === 'fillIn' ? _systemFill : _systemApproval).map((item: any) => {
+                    return (
+                      <div
+                        key={item.key}
+                        className={cs('action-button__system flex justify-center items-center', item.className)}
+                        onClick={() => onActionClick(item.key, item.reasonRequired)}>
+                        {!!item.icon && <Icon name={item.icon} size='.2rem' className='mr-4'/>}
+                        <div className='truncate'>{item.text}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
 
             <div className='safe-area-bottom'/>
           </>
