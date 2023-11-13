@@ -5,6 +5,7 @@ import FormDataTable from '@c/form-app-data-table';
 import { Ref } from '@c/form-app-data-table/type';
 import Checkbox from '@c/checkbox';
 import Radio from '@c/radio';
+import { isArray } from 'lodash';
 
 type Props = {
   defaultValues: Record<string, any>[];
@@ -68,6 +69,24 @@ export default function SelectRecordsModal({
     },
   ];
 
+  const getFilterConfig = (filterConfig: any)=>{
+    const { condition } = filterConfig;
+    const _condition = condition?.filter((item: any)=>{
+      const { value } = item;
+      if (isArray(value) && value?.length === 0) {
+        return false;
+      }
+      if (!value) {
+        return false;
+      }
+      return true;
+    });
+    return {
+      ...filterConfig,
+      condition: _condition,
+    };
+  };
+
   return (
     <Modal
       title="选择关联记录"
@@ -81,7 +100,8 @@ export default function SelectRecordsModal({
         canAcrossPageChoose
         className="p-20"
         allowRequestData
-        filterConfig={filterConfig}
+        // filterConfig={filterConfig}
+        filterConfig={getFilterConfig(filterConfig)}
         showCheckbox={multiple}
         customColumns={[]}
         customColumnsBefore = {customColumnsBefore}
