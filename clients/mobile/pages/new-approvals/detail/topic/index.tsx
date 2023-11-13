@@ -7,7 +7,7 @@ import PullRefresh from '@m/qxp-ui-mobile/pull-refresh';
 import Loading from '@m/qxp-ui-mobile/loading';
 import { Empty } from '@m/qxp-ui-mobile/empty';
 import TopicNameRow from '@m/components/flow/topic-name-row';
-import { ApprovalDetailParams } from '@m/pages/approvals/types';
+import { ApprovalDetailParams } from '@m/pages/new-approvals/types';
 import FileList from '@m/components/file-list';
 import TopicTextArea from '@m/components/flow/topic-text-area';
 

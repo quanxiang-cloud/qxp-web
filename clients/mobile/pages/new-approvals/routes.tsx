@@ -2,7 +2,7 @@ import React from 'react';
 
 import SubRoutePage from '@m/components/sub-route-page';
 import { approvalActionPath, approvalDetailPath, approvalDetailPathApproval, approvalStatusPath } from '@m/constant';
-import ApprovalsActions from '@m/pages/approvals/detail/actions';
+import ApprovalsActions from '@m/pages/new-approvals/detail/actions';
 import { SubRoute } from '@m/lib/hooks/use-sub-route';
 
 import Detail from './detail';

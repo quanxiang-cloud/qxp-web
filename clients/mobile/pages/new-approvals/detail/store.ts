@@ -5,7 +5,7 @@ import { FlowInstanceFormResponse, TaskDetail } from '../types';
 import toast from '@lib/toast';
 
 import { mapTaskDetail } from './utils';
-import { FILL_IN } from '@home/pages/approvals/constant';
+import { FILL_IN } from '@home/pages/new-approvals/constant';
 import { isNumber } from 'lodash';
 import { getPipelineApproveProcessInfo, getPipelineFillInProcessInfo, getPipelineFormData, getPipelineFormSchemaInfo, getPipelineInfo } from '@home/pages/new-approvals/api';
 import { buildQueryRef } from '@lib/http-client-form';
@@ -13,7 +13,7 @@ import { buildQueryRef } from '@lib/http-client-form';
 const formatPipelineDetail = async (processInstanceId: any, { type, taskId, taskType }: any)=>{
   const api = taskType === FILL_IN ? getPipelineFillInProcessInfo : getPipelineApproveProcessInfo;
   const pipelineProcess = await api(processInstanceId);
-  const data = pipelineProcess?.Data || pipelineProcess;
+  const data = taskType !== 'fillIn' ? (pipelineProcess?.Data || pipelineProcess) : (pipelineProcess?.data || pipelineProcess);
   const nodeData = data?.find((item: any)=>{
     return item?.id === taskId;
   });

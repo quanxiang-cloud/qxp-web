@@ -1,7 +1,7 @@
 import { action, observable } from 'mobx';
 
 import toast from '@lib/toast';
-import { FlowType, Task, TasksResponse, ApprovalFilter } from '@m/pages/approvals/types';
+import { FlowType, Task, TasksResponse, ApprovalFilter } from '@m/pages/new-approvals/types';
 import { getFlowSummary } from '@m/lib/value-render';
 import { NumberString } from '@m/qxp-ui-mobile';
 import {

@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 
-import { AttachFile, OperationRecordMobile, ProcessHistory } from '@m/pages/approvals/types';
+import { AttachFile, OperationRecordMobile, ProcessHistory } from '@m/pages/new-approvals/types';
 import { FlowAvatarNames } from '@m/components/flow/avatar-name-row';
 
 const NoOperationValue: { [key: string]: string } = {

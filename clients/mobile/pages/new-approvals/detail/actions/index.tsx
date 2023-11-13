@@ -5,8 +5,7 @@ import { observer } from 'mobx-react';
 import cs from 'classnames';
 
 import NavPage from '@m/components/nav-page';
-import FileUploader, { FileUploaderInstance } from '@m/components/file-uploader';
-import { defaultMaxFileSize } from '@m/components/file-uploader/use-uploader';
+import { FileUploaderInstance } from '@m/components/file-uploader';
 import { TextArea, InputInstance } from '@m/qxp-ui-mobile/input';
 import { Button } from '@m/qxp-ui-mobile/button';
 import UserPicker from '@m/components/user-picker';
@@ -22,12 +21,10 @@ import { ApprovalDetailParams } from '../../types';
 import approvalDetailStore from '../store';
 import actionStore from './store';
 import {
-  reviewTask, resubmit, readHandle, ccFlow, stepBack, sendBack, inviteReadHandle, deliver, addSign,
-  getStepBackActivityList,
+  getStepBackActivityList, pipelineAgree, pipelineRecall, pipelineReject, pipelineUrge, submitPipelineFillTask,
 } from './api';
 
 import './index.scss';
-import { submitFillTask } from '@home/pages/approvals/api';
 
 const REQUIRED_PROCESS_INSTANCE = ['DELIVER', 'READ', 'CC'];
 
@@ -106,58 +103,75 @@ function ApprovalsActions(): JSX.Element {
   }
 
   function requestAction(): Promise<any> | undefined {
+    const submitData = {
+      examineID: taskID,
+      taskID: processInstanceID,
+      remark: remark || '',
+      formData: formValues,
+    };
     switch (action) {
     case 'AGREE':
       if (reasonRequired && !remark) return;
-      return reviewTask('AGREE', processInstanceID, taskID, remark, formValues);
+      return pipelineAgree(submitData);
     case 'REFUSE':
       if (reasonRequired && !remark) return;
-      return reviewTask('REFUSE', processInstanceID, taskID, remark);
-    case 'hasResubmitBtn':
-      return resubmit(processInstanceID, formValues);
+      return pipelineReject(submitData);
     case 'FILL_IN':
-      // reviewTask('FILL_IN', processInstanceID, taskID, remark, formValues);
-      return submitFillTask({
+      return submitPipelineFillTask({
         id: taskID,
-        formData: formValues,
+        forMData: formValues,
       });
-    case 'hasReadHandleBtn':
-      if (!remark) return;
-      return readHandle(processInstanceID, taskID, remark);
-    case 'STEP_BACK':
-      return stepBack('STEP_BACK', processInstanceID, taskID, remark, taskDefKey);
-    case 'SEND_BACK':
-      if (!remark) return;
-      return sendBack('SEND_BACK', processInstanceID, taskID, remark);
-    case 'CC':
-      return ccFlow('CC', processInstanceID, taskID, remark, handleUserIds);
-    case 'READ':
-      return inviteReadHandle('READ', processInstanceID, taskID, remark, handleUserIds);
-    case 'DELIVER':
-      return deliver('DELIVER', processInstanceID, taskID, remark, handleUserIds, formValues);
-    case 'ADD_SIGN':
-    {
-      let checkPassed = true;
-      if (!handleUserIds.length) {
-        actionStore.setIsValidate(false);
-        checkPassed = false;
-      }
-      if (!type) {
-        actionStore.typeError = true;
-        checkPassed = false;
-      }
-      if (handleUserIds.length > 1 && !multiplePersonWay) {
-        actionStore.multiplePersonWayError = true;
-        checkPassed = false;
-      }
-      if (!checkPassed) return;
-      const assignee = handleUserIds.map((user) => {
-        return {
-          id: user,
-        };
-      });
-      return addSign(processInstanceID, taskID, assignee, multiplePersonWay, type);
-    }
+    case 'CANCEL':
+      return pipelineRecall(processInstanceID);
+    case 'hasUrgeBtn':
+      return pipelineUrge(processInstanceID);
+      // case 'AGREE':
+      //   if (reasonRequired && !remark) return;
+      //   return reviewTask('AGREE', processInstanceID, taskID, remark, formValues);
+      // case 'REFUSE':
+      //   if (reasonRequired && !remark) return;
+      //   return reviewTask('REFUSE', processInstanceID, taskID, remark);
+      // case 'FILL_IN':
+      //   reviewTask('FILL_IN', processInstanceID, taskID, remark, formValues);
+      // case 'hasResubmitBtn':
+      //   return resubmit(processInstanceID, formValues);
+      // case 'hasReadHandleBtn':
+      //   if (!remark) return;
+      //   return readHandle(processInstanceID, taskID, remark);
+      // case 'STEP_BACK':
+      //   return stepBack('STEP_BACK', processInstanceID, taskID, remark, taskDefKey);
+      // case 'SEND_BACK':
+      //   if (!remark) return;
+      //   return sendBack('SEND_BACK', processInstanceID, taskID, remark);
+      // case 'CC':
+      //   return ccFlow('CC', processInstanceID, taskID, remark, handleUserIds);
+      // case 'READ':
+      //   return inviteReadHandle('READ', processInstanceID, taskID, remark, handleUserIds);
+      // case 'DELIVER':
+      //   return deliver('DELIVER', processInstanceID, taskID, remark, handleUserIds, formValues);
+      // case 'ADD_SIGN':
+      // {
+      //   let checkPassed = true;
+      //   if (!handleUserIds.length) {
+      //     actionStore.setIsValidate(false);
+      //     checkPassed = false;
+      //   }
+      //   if (!type) {
+      //     actionStore.typeError = true;
+      //     checkPassed = false;
+      //   }
+      //   if (handleUserIds.length > 1 && !multiplePersonWay) {
+      //     actionStore.multiplePersonWayError = true;
+      //     checkPassed = false;
+      //   }
+      //   if (!checkPassed) return;
+      //   const assignee = handleUserIds.map((user) => {
+      //     return {
+      //       id: user,
+      //     };
+      //   });
+      //   return addSign(processInstanceID, taskID, assignee, multiplePersonWay, type);
+      // }
     }
     return undefined;
   }
@@ -174,13 +188,13 @@ function ApprovalsActions(): JSX.Element {
               onChange={(val) => actionStore.setRemark(val)}
               validate={reasonRequired ? validate : undefined}
             />
-            <div className='mt-16 mb-8'>附件</div>
+            {/* <div className='mt-16 mb-8'>附件</div>
             <FileUploader
               multiple
               desc='点击上传附件，最大5MB'
               maxFileSize={defaultMaxFileSize}
               ref={uploaderRef}
-            />
+            /> */}
           </>
         )}
         {'CC' === action && <ActionItem approvalTitle='选择审批人' title='抄送给' actionName={actionName}/>}
@@ -198,12 +212,12 @@ function ApprovalsActions(): JSX.Element {
               defaultValue={actionStore.remark}
               onChange={(val) => actionStore.remark = val}
             />
-            <div className='mt-16 mb-8'>附件</div>
+            {/* <div className='mt-16 mb-8'>附件</div>
             <FileUploader
               multiple
               desc='点击上传附件，最大5MB'
               maxFileSize={defaultMaxFileSize}
-            />
+            /> */}
           </>
         )}
         {'STEP_BACK' === action && (

@@ -1,6 +1,6 @@
 import { action, observable } from 'mobx';
 
-import { getComments } from '@home/pages/approvals/api';
+import { getComments } from '@home/pages/new-approvals/api';
 import toast from '@lib/toast';
 import { formatRelativeTime } from '@m/lib/formatter';
 

@@ -1,10 +1,35 @@
 import httpClient from '@lib/http-client';
-import { AttachFile } from '@m/pages/approvals/types';
+import { AttachFile } from '@m/pages/new-approvals/types';
 
 type StepBack = {
   taskDefKey: string,
   taskName: string,
 }
+
+// 同意
+export const pipelineAgree = async (data: any): Promise<any> => {
+  return await httpClient('/api/v1/examine/agree', data);
+};
+
+// 拒绝
+export const pipelineReject = async (data: any): Promise<any> => {
+  return await httpClient('/api/v1/examine/reject', data);
+};
+
+// 撤回
+export const pipelineRecall = async (data: any): Promise<any> => {
+  return await httpClient('/api/v1/examine/recall', { taskID: data });
+};
+
+// 催办
+export const pipelineUrge = async (data: any): Promise<any> => {
+  return await httpClient('/api/v1/examine/urge', { taskID: data });
+};
+
+// 提交填写
+export const submitPipelineFillTask = async ( params: { id: string; forMData: any, [key: string]: any }): Promise<{ data: any }> => {
+  return await httpClient('/api/v1/fill/fill', params);
+};
 
 export function reviewTask(
   handleType: string,

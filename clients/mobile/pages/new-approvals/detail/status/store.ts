@@ -1,7 +1,7 @@
 import { action, observable } from 'mobx';
 
 import toast from '@lib/toast';
-import { ProcessHistory } from '@m/pages/approvals/types';
+import { ProcessHistory } from '@m/pages/new-approvals/types';
 import { isDef } from '@m/qxp-ui-mobile/utils';
 
 import { mapStatusData, StatusData } from './utils';
