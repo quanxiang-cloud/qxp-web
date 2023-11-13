@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+/* eslint-disable no-case-declarations */
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useSearchParam } from 'react-use';
@@ -25,6 +27,7 @@ import {
 } from './api';
 
 import './index.scss';
+import { buildFormDataReqParams } from '@home/utils';
 
 const REQUIRED_PROCESS_INSTANCE = ['DELIVER', 'READ', 'CC'];
 
@@ -35,7 +38,7 @@ function ApprovalsActions(): JSX.Element {
   const action = useSearchParam('action') || '';
   const reasonRequired = useSearchParam('reasonRequired') || 0;
   const { remark, handleUserIds, taskDefKey, multiplePersonWay, type } = actionStore;
-  const { formValues } = approvalDetailStore;
+  const { formValues } = approvalDetailStore as any;
   const { title, actionName } = getAction(action, approvalDetailStore.title);
   const commonWords = ['我已阅示，非常赞同', '我已阅示，这个情况还是谨慎处理吧', '我已阅示'];
   const [loading, setLoading] = useState(false);
@@ -117,9 +120,10 @@ function ApprovalsActions(): JSX.Element {
       if (reasonRequired && !remark) return;
       return pipelineReject(submitData);
     case 'FILL_IN':
+      const _formData = buildFormDataReqParams(approvalDetailStore?.taskDetails?.formSchema, 'updated', formValues);
       return submitPipelineFillTask({
         id: taskID,
-        forMData: formValues,
+        forMData: _formData,
       });
     case 'CANCEL':
       return pipelineRecall(processInstanceID);
