@@ -46,7 +46,26 @@ function Toolbar({
   const history = useHistory();
 
   const { custom = [], system = [] } = permission;
-
+  const systemApproval: any = [
+    {
+      enabled: true,
+      changeable: false,
+      name: '通过',
+      text: '通过',
+      value: 'AGREE',
+      only: 'approve',
+      reasonRequired: false,
+    },
+    {
+      enabled: true,
+      changeable: false,
+      name: '拒绝',
+      text: '拒绝',
+      value: 'REFUSE',
+      only: 'approve',
+      reasonRequired: true,
+    },
+  ];
   function handleReadOk(): Promise<never> | undefined {
     if (comment && comment.length > 1000) {
       toast.error('字数不能超过1000字');
@@ -104,7 +123,7 @@ function Toolbar({
 
       <div className="right-btns task-default-actions">
         {
-          system?.map(({ name, value, enabled, defaultText, text, reasonRequired }: PermissionItem, idx) => {
+          ((taskType !== FILL_IN && workFlowType === 'WAIT_HANDLE_PAGE' && !system?.length) ? systemApproval : system)?.map(({ name, value, enabled, defaultText, text, reasonRequired }: PermissionItem, idx) => {
             if (!enabled) {
               return null;
             }
