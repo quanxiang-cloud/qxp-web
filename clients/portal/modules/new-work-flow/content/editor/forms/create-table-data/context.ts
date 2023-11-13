@@ -13,3 +13,7 @@ export default React.createContext<ContextType>({
   },
 });
 
+export const valueFromOptions = [
+  { label: '自定义', value: 'fixedValue' },
+  { label: '节点输出', value: 'nodesOutput' },
+];

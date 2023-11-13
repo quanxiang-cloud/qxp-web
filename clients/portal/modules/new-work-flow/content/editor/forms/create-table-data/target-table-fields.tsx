@@ -1,6 +1,7 @@
+/* eslint-disable guard-for-in */
 import React, { useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
-import { pick, pickBy, each, get, set } from 'lodash';
+import { pick, pickBy, each, get, set, cloneDeep } from 'lodash';
 
 import { getFormFieldSchema } from '@newFlow/content/editor/forms/api';
 import { FormRenderer } from '@c/form-builder';
@@ -28,7 +29,23 @@ function TargetTableFields({ appId, tableId }: Props): JSX.Element {
     return currentSchema.componentName !== 'associatedrecords';
   });
   const [schemaToTransform, setSchemaToTransform] = useState({ ...schema, properties: tableSchemaMap });
-
+  const normalTableFields = transformSchema(schemaToTransform, {})?.properties;
+  // set(data, 'subTableRequiredField', initSubTableRequiredFields);
+  useEffect(()=>{
+    const normalTableFieldsArr = [];
+    const _createRule: any = cloneDeep(data.createRule);
+    for (const key in normalTableFields) {
+      normalTableFieldsArr.push(key);
+    }
+    for (const key in _createRule) {
+      if (!normalTableFieldsArr?.includes(key)) {
+        if (_createRule[key]['key']) {
+          _createRule[key]['key'] = '';
+        }
+        // set(data, 'createRule', _createRule);
+      }
+    }
+  }, [normalTableFields]);
   useEffect(() => {
     const initSchemaToTransform = { ...schema, properties: tableSchemaMap };
     Promise.all(

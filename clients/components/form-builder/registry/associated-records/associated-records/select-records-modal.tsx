@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import React, { useRef, useState } from 'react';
 
 import Modal, { FooterBtnProps } from '@c/modal';
@@ -100,7 +101,6 @@ export default function SelectRecordsModal({
         canAcrossPageChoose
         className="p-20"
         allowRequestData
-        // filterConfig={filterConfig}
         filterConfig={getFilterConfig(filterConfig)}
         showCheckbox={multiple}
         customColumns={[]}

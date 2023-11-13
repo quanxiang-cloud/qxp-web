@@ -131,7 +131,8 @@ function DataFilter(props: Props, ref: React.Ref<RefProps>): JSX.Element {
   }, [initConditions]);
 
   const fieldOption = fields.filter((field) => {
-    return FILTER_FIELD.filter((field)=> !disFilterField?.find((disField)=>disField === field))?.includes(field['x-component'] as string) && field.id !== '_id';
+    // return FILTER_FIELD.filter((field)=> !disFilterField?.find((disField)=>disField === field))?.includes(field['x-component'] as string) && field.id !== '_id';
+    return FILTER_FIELD.filter((field)=> !disFilterField?.find((disField)=>disField === field))?.includes(field['x-component'] as string);
   }).map((field) => ({
     value: field.id,
     label: field.title,
