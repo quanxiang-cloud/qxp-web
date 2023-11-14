@@ -149,7 +149,18 @@ function ApprovalsDetailTab(props: ApprovalsDetailTabProps): JSX.Element {
                 className='h-full'
                 value={toJS(task.formData)}
                 schema={toJS(task.formSchema)}
-                onSubmit={(val) => store.formValues = val}
+                onSubmit={(val) =>{
+                  store.formValues = val;
+                }}
+                onFormValueChange={(values)=>{
+                  const _value: any = {};
+                  for (const key in values) {
+                    if (key?.startsWith('field')) {
+                      _value[key] = values[key];
+                    }
+                  }
+                  store.formValues = _value;
+                }}
                 readOnly={type === 'APPLY_PAGE' || type === 'HANDLED_PAGE' }
                 usePermission>
                 <button type='submit' ref={submitRef} className='hidden'/>
