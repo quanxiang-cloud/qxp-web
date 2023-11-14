@@ -22,6 +22,7 @@ import Warning from './warning';
 import { ApprovalDetailParams } from '../../types';
 import approvalDetailStore from '../store';
 import actionStore from './store';
+import detailStore from '@m/pages/new-approvals/detail/store';
 import {
   getStepBackActivityList, pipelineAgree, pipelineRecall, pipelineReject, pipelineUrge, submitPipelineFillTask,
 } from './api';
@@ -102,6 +103,7 @@ function ApprovalsActions(): JSX.Element {
       toast.success(`已${actionName}`);
       history.go(-2);
       approvalDetailStore.isRefresh = true;
+      detailStore.isRefresh = true;
     }).catch((err) => toast.error(err)).finally(() => setLoading(false));
   }
 
