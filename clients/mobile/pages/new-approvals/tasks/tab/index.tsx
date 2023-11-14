@@ -5,19 +5,19 @@ import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 
 import toast from '@lib/toast';
-import { ApprovalsTabProps, Task } from '@m/pages/approvals/types';
+import { ApprovalsTabProps, Task } from '@m/pages/new-approvals/types';
 import PullRefresh from '@m/qxp-ui-mobile/pull-refresh';
 import TaskCard from '@m/components/task-card';
 import List from '@m/qxp-ui-mobile/list';
 import { Empty } from '@m/qxp-ui-mobile/empty';
-import { readAll } from '@home/pages/approvals/api';
+import { readAll } from '@home/pages/new-approvals/api';
 import { approvalDetailPath, approvalDetailPathApproval } from '@m/constant';
-import detailStore from '@m/pages/approvals/detail/store';
+import detailStore from '@m/pages/new-approvals/detail/store';
 
 import { Filter } from './filter';
 import { store } from './store';
 import RadioButtonGroup from '@c/radio/radio-button-group';
-import { APPROVAL, FILL_IN, listData } from '@home/pages/approvals/constant';
+import { APPROVAL, FILL_IN, listData } from '@home/pages/new-approvals/constant';
 
 const mapPageKey: any = {
   APPLY_PAGE: 'FILL_IN_APPLY_PAGE',
