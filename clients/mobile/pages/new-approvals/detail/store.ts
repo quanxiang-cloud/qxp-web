@@ -79,16 +79,16 @@ const formatPipelineDetail = async (processInstanceId: any, { type, taskId, task
       canViewStatusAndMsg: config?.canViewStatusMsg === 1,
       flowName: pipelineInfo?.displayName,
       tableId: tableID,
-      formData: pipelineFormData?.entity,
-      FormData: pipelineFormData?.entity,
+      formData: pipelineFormData?.entity || pipelineFormData,
+      FormData: pipelineFormData?.entity || pipelineFormData,
       formSchema: pipelineFormSchema?.schema,
       ...btnObj,
     };
     const taskDetailModelsObj = {
       taskId: taskId,
       taskDefKey: nodeData?.nodeDefKey,
-      formData: pipelineFormData?.entity,
-      FormData: pipelineFormData?.entity,
+      formData: pipelineFormData?.entity || pipelineFormData,
+      FormData: pipelineFormData?.entity || pipelineFormData,
       formSchema: pipelineFormSchema?.schema,
       fieldPermission: fieldPermission,
       // operatorPermission: !isFinish && (taskType === 'fillIn' ? fillInOperatorPermission : operatorPermission),
@@ -110,15 +110,22 @@ class ApprovalsDetailStore {
   @observable canMsg = false;
   @observable formValues = {};
   @observable isRefresh = false;
+  @observable formSchema = null;
+  @observable defaultValue = {};
 
   @action init = (title: string): void => {
     this.title = title;
+    this.formSchema = null;
+    this.defaultValue = {};
   };
 
   @action initForm = async (
     index: number, processInstanceId: string, type: string, taskId?: string, taskType?: string,
   ): Promise<boolean> => {
     try {
+      this.formSchema = null;
+      this.defaultValue = {};
+
       const resp = await formatPipelineDetail(processInstanceId, { type, taskId, taskType });
 
       const {
@@ -134,12 +141,17 @@ class ApprovalsDetailStore {
         }
         if (model.formSchema?.properties || taskDetailModels.length === 1) {
           const formData = model?.formData;
+          this.formSchema = model.formSchema;
+          this.defaultValue = model?.formData;
           return {
             formSchema: model.formSchema,
             formData,
             ...mapTaskDetail(model),
           };
         }
+        this.formSchema = model?.formSchema;
+        this.defaultValue = model?.formSchema;
+
         return {
           formSchema: model?.formSchema,
           formData: model?.formData,

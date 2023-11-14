@@ -22,12 +22,14 @@ import Warning from './warning';
 import { ApprovalDetailParams } from '../../types';
 import approvalDetailStore from '../store';
 import actionStore from './store';
+import detailStore from '@m/pages/new-approvals/detail/store';
 import {
   getStepBackActivityList, pipelineAgree, pipelineRecall, pipelineReject, pipelineUrge, submitPipelineFillTask,
 } from './api';
 
 import './index.scss';
-import { buildFormDataReqParams } from '@home/utils';
+import { buildFormDataReqParams, formDataDiff } from '@home/utils';
+import { isEmpty } from 'lodash';
 
 const REQUIRED_PROCESS_INSTANCE = ['DELIVER', 'READ', 'CC'];
 
@@ -102,15 +104,23 @@ function ApprovalsActions(): JSX.Element {
       toast.success(`已${actionName}`);
       history.go(-2);
       approvalDetailStore.isRefresh = true;
+      detailStore.isRefresh = true;
     }).catch((err) => toast.error(err)).finally(() => setLoading(false));
   }
 
   function requestAction(): Promise<any> | undefined {
+    let _formData = {};
+    if (isEmpty(detailStore?.defaultValue)) {
+      _formData = buildFormDataReqParams(detailStore?.formSchema, 'create', formValues);
+    } else {
+      const newValue = formDataDiff(formValues, detailStore?.defaultValue, detailStore?.formSchema);
+      _formData = buildFormDataReqParams(detailStore?.formSchema, 'updated', newValue);
+    }
     const submitData = {
       examineID: taskID,
       taskID: processInstanceID,
       remark: remark || '',
-      formData: formValues,
+      formData: _formData,
     };
     switch (action) {
     case 'AGREE':
@@ -120,7 +130,6 @@ function ApprovalsActions(): JSX.Element {
       if (reasonRequired && !remark) return;
       return pipelineReject(submitData);
     case 'FILL_IN':
-      const _formData = buildFormDataReqParams(approvalDetailStore?.taskDetails?.formSchema, 'updated', formValues);
       return submitPipelineFillTask({
         id: taskID,
         forMData: _formData,
