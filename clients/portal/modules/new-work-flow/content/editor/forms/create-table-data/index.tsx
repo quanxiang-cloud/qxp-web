@@ -20,7 +20,6 @@ import TargetTableFields from './target-table-fields';
 import Context from './context';
 import store from '../../store';
 import useObservable from '@lib/hooks/use-observable';
-import CreateNumber from './create-number';
 import { getNodesOutputOptions } from '@portal/modules/new-work-flow/util';
 
 interface Props {
@@ -302,7 +301,7 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel, onChange: _onCh
             <small className="ml-5 text-caption">新增本表数据时不支持再次触发工作流</small>
           </div>
         )} */}
-        {
+        {/* {
           value?.targetTableId &&
           (<CreateNumber
             key={nodesOutputOptions?.length}
@@ -313,7 +312,7 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel, onChange: _onCh
             nodesOutputOptions={nodesOutputOptions}
             ref = {createNumberRef}
           />)
-        }
+        } */}
 
         <TargetTableFields
           key={nodesOutputOptions?.length}
