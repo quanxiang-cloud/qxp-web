@@ -133,7 +133,8 @@ export function getWebhookPathTreeValue(
   });
 }
 export function isUrl(value: string): boolean {
-  return /^(http|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-.,@?^=%&:/~+#]*[\w\-@?^=%&/~+#])?$/.test(value);
+  // return /^(http|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-.,@?^=%&:/~+#]*[\w\-@?^=%&/~+#])?$/.test(value);
+  return /^(http|https):\/\/[^ "]+$/.test(value);
 }
 
 export function inputValidator(value: Input[]): boolean | string {
