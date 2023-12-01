@@ -14,9 +14,10 @@ import MultipleSelect from '@c/form-builder/registry/multiple-select/multiple-se
 import Serial from '@c/form-builder/registry/serial-number/serial';
 import NumberPicker from '@c/form-builder/registry/number-picker/number-picker';
 import AggregationRecords from '@c/form-builder/registry/aggregation-records/summary-field';
+import CustomInput from '@c/form-builder/registry/input/input';
 
 export const components = {
-  input: Input,
+  input: CustomInput,
   radiogroup: RadioGroup,
   checkboxgroup: CheckBoxGroup,
   textarea: Input.TextArea,

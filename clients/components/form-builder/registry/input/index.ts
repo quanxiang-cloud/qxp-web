@@ -1,4 +1,5 @@
-import { Input } from '@formily/antd-components';
+// import { Input } from '@formily/antd-components';
+import Input from './input';
 
 import { validateRegistryElement } from '@c/form-builder/utils';
 
