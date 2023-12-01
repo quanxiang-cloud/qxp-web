@@ -63,12 +63,14 @@ export default function TaskCard({ task, type, taskType }: Props): JSX.Element {
   };
 
   const getCurTaskName = (): string => {
+    const { pipelineInfo, nodeDefKey } = (task || {}) as any;
+    const curentNodeName = pipelineInfo?.spec?.nodes?.find((item: any)=>item?.name === nodeDefKey)?.Metadata?.Annotations?.['web.pipelineNode/name'];
     if (['WAIT_HANDLE_PAGE', 'CC_PAGE'].includes(type)) {
       // 任务维度，节点名取第一层级的name
-      return task.name;
+      return curentNodeName || task.name;
     } else {
       // 流程维度，节点名取nodes.taskName
-      return map(task?.nodes || [], 'taskName').join(', ');
+      return curentNodeName || map(task?.nodes || [], 'taskName').join(', ');
     }
   };
 

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable guard-for-in */
 import { getMyApplyPipelineFillInList, getMyApplyPipelineList, getPipelineAllFillInList, getPipelineAllList, getPipelineAppInfo, getPipelineFormData, getPipelineFormSchemaInfo, getPipelineInfo, getPipelineMyReviewedFillInList, getPipelineMyReviewedList, getPipelineTodoFillInList, getPipelineUserInfo, getPipelineWaitReviewList } from './api';
 
@@ -178,6 +179,9 @@ const formatData = (data: any, res: any, pipelineType: any, type: any)=>{
     };
 
     const processInstanceId = taskID;
+    const _pipelineInfo = pipelineInfo?.find((item: any)=>{
+      return item?.ID === id;
+    });
     const obj = {
       ...item,
       id,
@@ -211,6 +215,7 @@ const formatData = (data: any, res: any, pipelineType: any, type: any)=>{
       },
       urgeNum: 0,
       handled: 'ACTIVE',
+      pipelineInfo: _pipelineInfo,
     };
     return obj;
   });
@@ -300,9 +305,11 @@ export const getAllPipelineProcess = async (approvalProcess: any, fillInProcess:
       fill: 'FILL',
     };
 
-    const getFormatData = (items: any, type: any, operationRecordsObj: any)=>{
+    const getFormatData = (items: any, type: any, operationRecordsObj: any, flowInfo: any)=>{
       const item = items?.[0];
       const nodeInfo = JSON.parse(operationRecordsObj?.[item?.nodeDefKey]?.[0]?.nodeInfo || null);
+      const curentNode = flowInfo?.spec?.nodes?.find((node: any)=>node?.name === item?.nodeDefKey);
+      const curentNodeName = curentNode?.Metadata?.Annotations?.['web.pipelineNode/name'];
       const operationRecords = operationRecordsObj?.[item?.nodeDefKey]?.map((item: any)=>{
         const opCreatorId = userInfo?.find((user: any)=>user?.id === item?.userID)?.id;
         const opCreatorName = userInfo?.find((user: any)=>user?.id === item?.userID)?.name;
@@ -320,7 +327,7 @@ export const getAllPipelineProcess = async (approvalProcess: any, fillInProcess:
       });
       const _result = items?.find((itm: any)=>itm?.result)?.result;
       const _modifyTime = items?.find((itm: any)=>itm?.updatedAt)?.updatedAt;
-      const taskName = nodeInfo?.data?.nodeData?.name;
+      const taskName = curentNodeName || nodeInfo?.data?.nodeData?.name;
       return {
         ...item,
         flowName,
@@ -346,7 +353,7 @@ export const getAllPipelineProcess = async (approvalProcess: any, fillInProcess:
       _approvalProcessList.push(operationRecordsObj?.[key]);
     }
     const _approvalProcess = _approvalProcessList?.map(((item: any)=>{
-      return getFormatData(item, 'approval', operationRecordsObj);
+      return getFormatData(item, 'approval', operationRecordsObj, flowInfo);
     })) || [];
 
     const fillOperationRecordsObj: any = {};
@@ -362,7 +369,7 @@ export const getAllPipelineProcess = async (approvalProcess: any, fillInProcess:
       _fillInProcessList.push(fillOperationRecordsObj?.[key]);
     }
     const _fillInProcess = _fillInProcessList?.map(((item: any)=>{
-      return getFormatData(item, 'fillIn', fillOperationRecordsObj);
+      return getFormatData(item, 'fillIn', fillOperationRecordsObj, flowInfo);
     })) || [];
 
     const allProcess = [..._approvalProcess, ..._fillInProcess].sort((a, b)=>b?.createdAt - a?.createdAt);
