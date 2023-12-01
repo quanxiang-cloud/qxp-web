@@ -2,7 +2,6 @@ import React from 'react';
 import { Input } from 'antd';
 
 function CustomInput(props: any): JSX.Element {
-  console.log('CustomInput', props);
   function handleChange(e: any): void {
     props?.onChange?.(e?.target?.value);
   }

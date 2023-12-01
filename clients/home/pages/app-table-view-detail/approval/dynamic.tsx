@@ -2,14 +2,14 @@ import React from 'react';
 
 import Timeline from '@c/timeline';
 
-import DirectLeaderApproval from '@home/pages/approvals/detail/dynamic-info';
-import WarnTips from '@home/pages/approvals/detail/components/warn-tips';
-import CarbonCopy from '@home/pages/approvals/detail/dynamic/carbon-copy';
-import Approval from '@home/pages/approvals/detail/dynamic/approval';
-import Fill from '@home/pages/approvals/detail/dynamic/fill';
-import Deliver from '@home/pages/approvals/detail/dynamic/deliver';
-import Reading from '@home/pages/approvals/detail/dynamic/reading';
-import NoApprovalStatus from '@home/pages/approvals/detail/dynamic/no-approval-status';
+import DirectLeaderApproval from '@home/pages/new-approvals/detail/dynamic-info';
+import WarnTips from '@home/pages/new-approvals/detail/components/warn-tips';
+import CarbonCopy from '@home/pages/new-approvals/detail/dynamic/carbon-copy';
+import Approval from '@home/pages/new-approvals/detail/dynamic/approval';
+import Fill from '@home/pages/new-approvals/detail/dynamic/fill';
+import Deliver from '@home/pages/new-approvals/detail/dynamic/deliver';
+import Reading from '@home/pages/new-approvals/detail/dynamic/reading';
+import NoApprovalStatus from '@home/pages/new-approvals/detail/dynamic/no-approval-status';
 
 interface Props {
   data: any;
@@ -77,7 +77,9 @@ export default function ProcessHistory(props: Props) {
                 }
                 return (
                   <Timeline.Item key={index} color={color}>
-                    {handleContent(flow)}
+                    <div style={{ fontSize: '12px' }}>
+                      {handleContent(flow)}
+                    </div>
                   </Timeline.Item>
                 );
               })
