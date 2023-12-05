@@ -55,7 +55,7 @@ function GroupCard({ title, list, fullScreen }: Props): JSX.Element {
       </div>
       { isOpen && (
         <div
-          className={cs('grid gap-x-16 grid-flow-row-dense p-16 pr-0',
+          className={cs('grid gap-x-16 grid-flow-row-dense p-16 pr-0 overflow-auto',
             fullScreen ? 'grid-cols-4' : 'grid-cols-2',
             window?.isMobile ? 'is-mobile-info-card-wrap' : '',
           )}
