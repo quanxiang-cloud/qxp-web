@@ -55,6 +55,9 @@ function ApprovalDetail(): JSX.Element {
   const [appID, setAppID] = useState<any>();
   const [tableID, setTableID] = useState<any>();
 
+  const [approvalTaskList, setApprovalTaskList] = useState<any>([]);
+  // const [fillInTaskList, setFillInTaskList] = useState<any>([]);
+
   const { processInstanceID, type, taskID, taskType } = useParams<{
     processInstanceID: string;
     taskID: string;
@@ -74,6 +77,7 @@ function ApprovalDetail(): JSX.Element {
   const getApprovel = () => {
     return getPipelineProcessHistories(processInstanceID as any).then((res)=>{
       const { Data } = res || {};
+      setApprovalTaskList(Data);
       return Data?.find((item: any)=>{
         if (item?.id === taskID) {
           setFlowID(item?.flowID);
@@ -90,6 +94,7 @@ function ApprovalDetail(): JSX.Element {
     return getPipelineFillInDetail(taskID).then((res)=>{
       setFlowID(res?.flowID || res?.flowIDd);
       setNodeData({ flowID: res?.flowIDd, ...res });
+      // setFillInTaskList(res);
       return res;
     }).catch(()=>{
       return null;
@@ -154,7 +159,13 @@ function ApprovalDetail(): JSX.Element {
         }
         const { fieldPermission, operatorPermission } = nodeInfo?.data?.businessData || {};
         const reaultList = ['agree', 'reject', 'recall'];
-        const isFinish = !!reaultList?.includes(nodeData?.result);
+        let isFinish = !!reaultList?.includes(nodeData?.result);
+        if (taskType !== 'fillIn') {
+          const curNodeDefKey = approvalTaskList?.find((item: any)=>item?.id === taskID)?.nodeDefKey;
+          const curNodesResult = approvalTaskList?.filter((item: any)=>item?.nodeDefKey === curNodeDefKey)?.map((item: any)=>item?.nodeResult);
+          isFinish = !curNodesResult?.find((item: any)=>item !== 'Finish');
+        }
+
         const fillInOperatorPermission = {
           custom: null,
           system: [

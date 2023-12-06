@@ -305,8 +305,11 @@ export const getAllPipelineProcess = async (approvalProcess: any, fillInProcess:
       fill: 'FILL',
     };
 
-    const getFormatData = (items: any, type: any, operationRecordsObj: any, flowInfo: any)=>{
-      const item = items?.[0];
+    const getFormatData = (items: any, type: any, operationRecordsObj: any, flowInfo: any, flowFinish?: any)=>{
+      // const item = items?.[0];
+      const nodeDefKey = items?.[0]?.nodeDefKey;
+      const nodeDefKeyNodes = items?.filter((item: any)=>item?.nodeDefKey === nodeDefKey);
+      const item = nodeDefKeyNodes?.find((node: any)=>node?.userID === window?.USER?.id);
       const nodeInfo = JSON.parse(operationRecordsObj?.[item?.nodeDefKey]?.[0]?.nodeInfo || null);
       const curentNode = flowInfo?.spec?.nodes?.find((node: any)=>node?.name === item?.nodeDefKey);
       const curentNodeName = curentNode?.Metadata?.Annotations?.['web.pipelineNode/name'];
@@ -325,19 +328,29 @@ export const getAllPipelineProcess = async (approvalProcess: any, fillInProcess:
           status: '',
         };
       });
+      const isNodesResultFinish = !nodeDefKeyNodes?.find((node: any)=>node?.nodeResult !== 'Finish');
       const _result = items?.find((itm: any)=>itm?.result)?.result;
+      flowFinish && (flowFinish.isNodesResultFinish = isNodesResultFinish);
       const _modifyTime = items?.find((itm: any)=>itm?.updatedAt)?.updatedAt;
       const taskName = curentNodeName || nodeInfo?.data?.nodeData?.name;
+      const _taskType = type === 'approval' ? mapTaskType?.[item?.examineType] : 'FILL';
+      let _status = isNodesResultFinish ? mapStatus?.[_result] : 'REVIEW';
+      if (_taskType === 'AND_APPROVAL') {
+        const hasRefuse = operationRecords?.find((item: any)=>item?.handleType === 'REFUSE');
+        hasRefuse && (_status = 'REFUSE');
+      }
       return {
         ...item,
         flowName,
         creatorName: userInfo?.find((user: any)=>user?.id === item?.createdBy)?.name,
         // taskName: type === 'approval' ? '审批' : '填写',
         taskName: taskName || (type === 'approval' ? '审批' : '填写'),
-        taskType: type === 'approval' ? mapTaskType?.[item?.examineType] : 'FILL',
+        taskType: _taskType,
         operationRecords,
-        status: mapStatus?.[_result] || 'REVIEW',
+        // status: mapStatus?.[_result] || 'REVIEW',
+        status: _status,
         modifyTime: _modifyTime,
+        nodeResult: isNodesResultFinish ? 'Finish' : 'Pending',
       };
     };
     const operationRecordsObj: any = {};
@@ -352,8 +365,11 @@ export const getAllPipelineProcess = async (approvalProcess: any, fillInProcess:
     for (const key in operationRecordsObj) {
       _approvalProcessList.push(operationRecordsObj?.[key]);
     }
-    const _approvalProcess = _approvalProcessList?.map(((item: any)=>{
-      return getFormatData(item, 'approval', operationRecordsObj, flowInfo);
+    const flowFinish = {
+      isNodesResultFinish: false,
+    };
+    const _approvalProcess = _approvalProcessList?.map(((item: any, index: any)=>{
+      return getFormatData(item, 'approval', operationRecordsObj, flowInfo, index === 0 && flowFinish);
     })) || [];
 
     const fillOperationRecordsObj: any = {};
@@ -368,11 +384,19 @@ export const getAllPipelineProcess = async (approvalProcess: any, fillInProcess:
     for (const key in fillOperationRecordsObj) {
       _fillInProcessList.push(fillOperationRecordsObj?.[key]);
     }
-    const _fillInProcess = _fillInProcessList?.map(((item: any)=>{
-      return getFormatData(item, 'fillIn', fillOperationRecordsObj, flowInfo);
+    const _fillInProcess = _fillInProcessList?.map(((item: any, index: any)=>{
+      return getFormatData(item, 'fillIn', fillOperationRecordsObj, flowInfo, index === 0 && flowFinish);
     })) || [];
 
     const allProcess = [..._approvalProcess, ..._fillInProcess].sort((a, b)=>b?.createdAt - a?.createdAt);
+
+    const getIsFinish = (items: any)=>{
+      const nodeDefKey = items?.[0]?.nodeDefKey;
+      const nodeDefKeyNodes = items?.filter((item: any)=>item?.nodeDefKey === nodeDefKey);
+      const isFinsih = !nodeDefKeyNodes?.find((node: any)=>node?.nodeResult !== 'Finish');
+      return isFinsih;
+    };
+
     const item = allProcess?.[0] || {};
     const startNode = {
       id: '',
@@ -408,6 +432,9 @@ export const getAllPipelineProcess = async (approvalProcess: any, fillInProcess:
       reason: '',
     };
     const isFinsih = allProcess?.[0]?.nodeResult === 'Finish';
+    // const isFinsih = flowFinish?.isNodesResultFinish;
+    // const isFinsih = getIsFinish(allProcess);
+
     allProcess.push(startNode);
     isFinsih && allProcess.unshift(endNode);
     return allProcess;

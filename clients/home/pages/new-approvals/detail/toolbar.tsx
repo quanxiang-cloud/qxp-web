@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import cs from 'classnames';
 import { Input } from 'antd';
@@ -9,9 +9,10 @@ import toast from '@lib/toast';
 import Icon from '@c/icon';
 import Button from '@c/button';
 
-import { handleReadTask } from '../api';
+import { getPipelineFillInProcessInfo, getPipelineProcessHistories, handleReadTask } from '../api';
 import actionMap from './action-map';
 import { FILL_IN } from '../constant';
+import { isArray } from 'lodash';
 
 const { TextArea } = Input;
 interface Props {
@@ -45,6 +46,47 @@ function Toolbar({
   const [comment, setComment] = useState('');
   const history = useHistory();
 
+  const [approvalTaskList, setApprovalTaskList] = useState<any>([]);
+  const [fillInTaskList, setFillInTaskList] = useState<any>([]);
+  const [allTaskList, setAllTaskList] = useState<any>([]);
+  const [showBtn, setShowBtn] = useState(true);
+
+  const getApprovel = () => {
+    return getPipelineProcessHistories(processInstanceID as any).then((res)=>{
+      const { Data } = res || {};
+      isArray(Data) && setApprovalTaskList(Data);
+    }).catch(()=>{
+      return null;
+    });
+  };
+
+  const getFillIn = () => {
+    return getPipelineFillInProcessInfo(processInstanceID).then((res)=>{
+      const { data } = res || {};
+      isArray(data) && setFillInTaskList(data);
+      return res;
+    }).catch(()=>{
+      return null;
+    });
+  };
+
+  useEffect(()=>{
+    if (processInstanceID) {
+      getApprovel();
+      getFillIn();
+    }
+  }, [processInstanceID]);
+
+  useEffect(()=>{
+    setAllTaskList([...approvalTaskList, ...fillInTaskList]);
+  }, [approvalTaskList, fillInTaskList]);
+
+  useEffect(()=>{
+    const nodeResult = allTaskList?.find((item: any)=>item?.id === currTask?.taskId)?.nodeResult;
+    if (nodeResult === 'Finish') {
+      setShowBtn(false);
+    }
+  }, [currTask, allTaskList]);
   const { custom = [], system = [] } = permission;
   const systemApproval: any = [
     {
@@ -127,8 +169,19 @@ function Toolbar({
             if (!enabled) {
               return null;
             }
+            if (currTask?.taskType !== 'REVIEW') {
+              return null;
+            }
+
+            if (workFlowType === 'HANDLED_PAGE') {
+              return null;
+            }
 
             if (workFlowType === 'APPLY_PAGE' && !['hasCancelBtn', 'hasUrgeBtn'].includes(value)) {
+              return null;
+            }
+
+            if (!showBtn) {
               return null;
             }
 
@@ -154,6 +207,14 @@ function Toolbar({
           taskType !== FILL_IN &&
           Object.entries(globalActions).map(([action, enabled], idx) => {
             if (!enabled) {
+              return null;
+            }
+
+            if (currTask?.taskType !== 'REVIEW') {
+              return null;
+            }
+
+            if (workFlowType === 'HANDLED_PAGE') {
               return null;
             }
 
@@ -203,6 +264,10 @@ function Toolbar({
             }
 
             if (['canMsg', 'canViewStatusAndMsg'].includes(action)) {
+              return null;
+            }
+
+            if (!showBtn) {
               return null;
             }
 
