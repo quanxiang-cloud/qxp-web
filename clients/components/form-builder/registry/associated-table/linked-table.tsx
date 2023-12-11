@@ -23,7 +23,8 @@ function LinkedTable({ mutators, value }: ISchemaFieldComponentProps): JSX.Eleme
 
   useEffect(() => {
     getFormDataMenuList(store.appID).then((options) => {
-      const filteredOptions = options.filter(({ value }) => value !== store.pageID);
+      // const filteredOptions = options.filter(({ value }) => value !== store.pageID);
+      const filteredOptions = options;
       setLinkageTables(filteredOptions);
     });
   }, []);

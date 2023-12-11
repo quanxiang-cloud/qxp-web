@@ -113,7 +113,8 @@ export default function AssociatedDataWrap(p: ISchemaFieldComponentProps): JSX.E
       selectedValue = {selectedValue}
       onChange={(dataRow, schema) => {
         if (!dataRow) {
-          p.mutators.change(undefined);
+          // p.mutators.change(undefined);
+          p.mutators.change(null);
           setSelectedValue('');
           return;
         }

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, { useContext, useState, useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { get, isEmpty } from 'lodash';
@@ -27,7 +28,7 @@ interface Props {
   tableId?: any;
 }
 
-const excludeComps = ['serial', 'aggregationrecords', 'associatedrecords', 'associateddata', 'subtable'];
+const excludeComps = ['serial', 'aggregationrecords', 'associatedrecords', 'associateddata', 'subtable', 'associatedtable'];
 
 const valueFromOptions: Array<{ label: string, value: string }> = [
   { label: '字段值', value: 'currentFormValue' },

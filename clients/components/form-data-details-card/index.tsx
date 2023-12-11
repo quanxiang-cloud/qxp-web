@@ -72,7 +72,7 @@ function FormDataDetailsCard({
           label: fieldSchema.title as string,
           key: fieldKey,
           value: hasValue ? (
-            <FormDataValueRenderer schema={fieldSchema as ISchema} value={record?.[fieldKey]} />
+            <FormDataValueRenderer schema={fieldSchema as ISchema} value={record?.[fieldKey]} rowData={record} />
           ) : <span className='text-gray-900'>—</span>,
           fieldSchema,
         });
@@ -94,7 +94,7 @@ function FormDataDetailsCard({
             label: fieldSchema.title as string,
             key: fieldKey,
             value: hasValue ? (
-              <FormDataValueRenderer schema={fieldSchema as ISchema} value={record?.[fieldKey]} />
+              <FormDataValueRenderer schema={fieldSchema as ISchema} value={record?.[fieldKey]} rowData={record} />
             ) : <span className='text-gray-900'>—</span>,
             fieldSchema,
           });
