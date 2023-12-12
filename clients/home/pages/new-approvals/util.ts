@@ -306,10 +306,10 @@ export const getAllPipelineProcess = async (approvalProcess: any, fillInProcess:
     };
 
     const getFormatData = (items: any, type: any, operationRecordsObj: any, flowInfo: any, flowFinish?: any)=>{
-      // const item = items?.[0];
+      const item = items?.[0];
       const nodeDefKey = items?.[0]?.nodeDefKey;
       const nodeDefKeyNodes = items?.filter((item: any)=>item?.nodeDefKey === nodeDefKey);
-      const item = nodeDefKeyNodes?.find((node: any)=>node?.userID === window?.USER?.id);
+      // const item = nodeDefKeyNodes?.find((node: any)=>node?.userID === window?.USER?.id);
       const nodeInfo = JSON.parse(operationRecordsObj?.[item?.nodeDefKey]?.[0]?.nodeInfo || null);
       const curentNode = flowInfo?.spec?.nodes?.find((node: any)=>node?.name === item?.nodeDefKey);
       const curentNodeName = curentNode?.Metadata?.Annotations?.['web.pipelineNode/name'];
