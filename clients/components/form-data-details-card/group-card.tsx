@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import cs from 'classnames';
 
 import Icon from '@c/icon';
+import { SYSTEM_FIELDS } from '@c/form-builder/constants';
 
 type Props = {
   fullScreen: boolean;
@@ -14,25 +15,28 @@ const FULL_COMP = ['AssociatedRecords', 'SubTable', 'ImageUpload', 'FileUpload']
 export function InfoCard({ list }: {list: FormInfoCardDataProp}): JSX.Element {
   const { label, value, key, fieldSchema } = list;
   const { display } = fieldSchema;
+  const isSystemField = SYSTEM_FIELDS?.includes(key);
+  const hide = !display && !isSystemField;
   return (
-    <div
-      key={key}
-      className={cs(
-        'flex text-12 p-8 items-center ',
-        {
-          'col-span-full': FULL_COMP.includes(fieldSchema['x-component'] as string),
-          'is-mobile-info-card': window?.isMobile,
-        },
-      )}
-    >
-      <div className='text-gray-600 flex-shrink-0'>{label}：</div>
-      <div className={cs(
-        'text-gray-900 flex-1 card-value break-all pre-line pre-wrap',
-        {
-          'overflow-x-auto': FULL_COMP.includes(fieldSchema['x-component'] as string),
-        },
-      )}>{value}</div>
-    </div>
+    !hide ?
+      (<div
+        key={key}
+        className={cs(
+          'flex text-12 p-8 items-center ',
+          {
+            'col-span-full': FULL_COMP.includes(fieldSchema['x-component'] as string),
+            'is-mobile-info-card': window?.isMobile,
+          },
+        )}
+      >
+        <div className='text-gray-600 flex-shrink-0'>{label}：</div>
+        <div className={cs(
+          'text-gray-900 flex-1 card-value break-all pre-line pre-wrap',
+          {
+            'overflow-x-auto': FULL_COMP.includes(fieldSchema['x-component'] as string),
+          },
+        )}>{value}</div>
+      </div>) : <></>
   );
 }
 
