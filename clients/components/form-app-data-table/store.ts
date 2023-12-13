@@ -11,6 +11,7 @@ import { SizeType } from '@c/table';
 
 import { TableHeaderBtn, TableConfig, ColumnConfig, FormTableConfig, TableUserConfig } from './type';
 import { Config, getPageDataSchema } from './utils';
+import { SYSTEM_FIELDS } from '@c/form-builder/constants';
 
 export type Params = {
   condition?: Condition[] | [],
@@ -139,7 +140,7 @@ class AppPageDataStore {
   }
 
   @computed get tableShowColumns(): UnionColumn<FormData>[] {
-    const _columns = this.tableColumns?.reduce<UnionColumn<FormData>[]>((acc, col) => {
+    let _columns = this.tableColumns?.reduce<UnionColumn<FormData>[]>((acc, col) => {
       const curConfig = this.columnConfig[col.id || ''] || {};
       if (!curConfig.hidden) {
         return [...acc, { ...col, fixed: 'fixed' in curConfig ? curConfig.fixed : col.fixed }];
@@ -147,7 +148,10 @@ class AppPageDataStore {
 
       return acc;
     }, []);
-
+    const hideFields: any = this.fields
+      .filter((item: any)=>item?.display === false && !SYSTEM_FIELDS?.includes(item?.id))
+      .map(({ id })=>id);
+    _columns = _columns?.filter(({ id })=>!hideFields.includes(id));
     return [...this.customColumnsBefore, ..._columns, ...this.customColumns];
   }
 

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { action, observable, reaction, IReactionDisposer, computed } from 'mobx';
 import { UnionColumn } from 'react-table';
 import { values, map } from 'ramda';
@@ -267,7 +268,10 @@ class FormDesignStore {
       const { schema = {}, config = {} } = res || {};
       this.hasSchema = !!res;
       this.formStore = new FormStore({ schema, appID, pageID });
-      this.pageTableColumns = columnStringToObject(config.pageTableColumns || []);
+      const hideFields = this.fieldList
+        .filter((item: any)=>item?.display === false && !SYSTEM_FIELDS?.includes(item?.id))
+        .map(({ id })=>id);
+      this.pageTableColumns = columnStringToObject(config.pageTableColumns || [])?.filter(({ id })=>!hideFields.includes(id));
       this.filters = config.filters || [];
       if (config.pageTableShowRule) {
         this.pageTableShowRule = config.pageTableShowRule;
