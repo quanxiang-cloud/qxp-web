@@ -77,7 +77,7 @@ export default function TaskCard({ task, type, taskType }: Props): JSX.Element {
   const {
     name, flowInstanceEntity, startTime, createTime, creatorName, creatorAvatar, appName, formData,
     formSchema, status, keyFields, dueDate, urgeNum, description,
-    createdAt,
+    createdAt, isFinish,
   } = task as any;
   const taskCardData = (multiTask ? formData : flowInstanceEntity?.formData) || {};
   const properties = (multiTask ? formSchema?.properties : flowInstanceEntity?.formSchema?.properties) || {};
@@ -143,11 +143,19 @@ export default function TaskCard({ task, type, taskType }: Props): JSX.Element {
                   <span className="ml-8">{multiTask ? name : flowInstanceEntity?.name}</span>
                 </div>
               </div>
-              <Status
-                label = {taskType === FILL_IN && !status && '已完成' as any}
-                value={isTodoFillIn ? 'TODO_FILL_IN' : (multiTask ? status : _status) as any}
-                className='task-status'
-              />
+              {
+                type === 'WAIT_HANDLE_PAGE' ?
+                  (<Status
+                    label = {taskType === FILL_IN && !status && '已完成' as any}
+                    value={isTodoFillIn ? 'TODO_FILL_IN' : (multiTask ? status : _status) as any}
+                    className='task-status'
+                  />) :
+                  (<Status
+                    value={ (isFinish ? 'Finish' : 'Pending') as any}
+                    className='task-status'
+                  />)
+              }
+
             </div>
 
             <div className="flex mt-24 bottom-info">

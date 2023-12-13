@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 /* eslint-disable guard-for-in */
-import { getMyApplyPipelineFillInList, getMyApplyPipelineList, getPipelineAllFillInList, getPipelineAllList, getPipelineAppInfo, getPipelineFormData, getPipelineFormSchemaInfo, getPipelineInfo, getPipelineMyReviewedFillInList, getPipelineMyReviewedList, getPipelineTodoFillInList, getPipelineUserInfo, getPipelineWaitReviewList } from './api';
+import { getAllProcessInfo, getMyApplyPipelineFillInList, getMyApplyPipelineList, getPipelineAllFillInList, getPipelineAllList, getPipelineAppInfo, getPipelineFormData, getPipelineFormSchemaInfo, getPipelineInfo, getPipelineMyReviewedFillInList, getPipelineMyReviewedList, getPipelineTodoFillInList, getPipelineUserInfo, getPipelineWaitReviewList } from './api';
 
 const getAppName = (data: any)=>{
   return getPipelineAppInfo(data?.map((item: any)=>item?.appID))
@@ -466,4 +466,15 @@ export const getApplyParams = (query: any)=>{
     taskResult: TaskResult,
   };
   return res;
+};
+
+export const updateFinish = async (dataList: any) => {
+  const updatePromises = dataList.map(async (item: any) => {
+    const { procInstId } = item || {};
+    const processInfo = await getAllProcessInfo(procInstId);
+    const pipelineProcess = await getAllPipelineProcess(processInfo?.[0]?.Data, processInfo?.[1]?.data);
+    const isFinish = pipelineProcess?.[0]?.status === 'END';
+    item.isFinish = isFinish;
+  });
+  await Promise.all(updatePromises);
 };

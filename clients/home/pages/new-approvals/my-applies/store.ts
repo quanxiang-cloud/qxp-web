@@ -3,7 +3,7 @@ import { action, computed, observable, reaction } from 'mobx';
 import day from 'dayjs';
 import Store from '../base-store';
 import { FILL_IN } from '../constant';
-import { formatApprovalTaskCard, formatFillInTaskCard } from '../util';
+import { formatApprovalTaskCard, formatFillInTaskCard, updateFinish } from '../util';
 
 // default query recent 7 days
 const beginDay = day().subtract(7, 'day').format('YYYY-MM-DD');
@@ -57,8 +57,8 @@ class MyAppliedApprovalStore extends Store {
     this.loading = true;
     try {
       const { dataList = [], total } = await formatApprovalTaskCard(this.query, 'myApply');
-      // filter item without id
-      this.approvals = dataList.filter((item: ApprovalTask) => item.id);
+      await updateFinish(dataList);
+      this.approvals = dataList.filter((item: ApprovalTask) => item.id); // filter item without id
       this.total = total - (dataList.length - this.approvals.length);
       this.loading = false;
     } catch (err) {
@@ -72,8 +72,8 @@ class MyAppliedApprovalStore extends Store {
     this.loading = true;
     try {
       const { dataList = [], total } = await formatFillInTaskCard(this.query, 'myApply');
-      // filter item without id
-      this.approvals = dataList.filter((item: ApprovalTask) => item.id);
+      await updateFinish(dataList);
+      this.approvals = dataList.filter((item: ApprovalTask) => item.id); // filter item without id
       this.total = total;
       this.loading = false;
     } catch (err) {
