@@ -13,7 +13,7 @@ import { APPROVAL, FILL_IN, listData } from '../constant';
 // handle type : ALL，REVIEW, WRITE， READ， OTHER
 const status = [
   { label: '全部', value: 'ALL' },
-  { label: '待补充', value: 'SEND_BACK' },
+  // { label: '待补充', value: 'SEND_BACK' },
   { label: '进行中', value: 'REVIEW' },
   { label: '已拒绝', value: 'REFUSE' },
   { label: '已通过', value: 'AGREE' },

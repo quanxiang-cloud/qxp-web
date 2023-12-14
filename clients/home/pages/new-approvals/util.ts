@@ -449,13 +449,17 @@ export const getApplyParams = (query: any)=>{
   let NodeResult; let TaskResult;
   if (query.status === 'REVIEW' || query.status === 'Pending') {
     NodeResult = 'Pending';
-  } else if (query.status === 'REFUSE' || query.status === 'AGREE' || query.status === 'Finish' ) {
+  } else if (query.status === 'REFUSE' || query.status === 'AGREE' || query.status === 'CANCEL' || query.status === 'Finish' ) {
     NodeResult = 'Finish';
     if (query.status === 'REFUSE') {
       TaskResult = 'reject';
     }
     if (query.status === 'AGREE') {
       TaskResult = 'agree';
+    }
+
+    if (query.status === 'CANCEL') {
+      TaskResult = 'recall';
     }
   }
   const res = {
