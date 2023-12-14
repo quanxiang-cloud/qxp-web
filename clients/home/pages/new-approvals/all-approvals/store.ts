@@ -40,8 +40,8 @@ class AllApprovalStore extends Store {
     this.loading = true;
     try {
       // const { dataList = [], total } = await getAllTaskList(this.query);
-      const { dataList = [], total } = await formatApprovalTaskCard(this.query, 'all');
-      await updateFinish(dataList);
+      const { dataList = [], total, validFlowID = [] } = await formatApprovalTaskCard(this.query, 'all');
+      await updateFinish(dataList, validFlowID);
       this.approvals = dataList;
       this.total = total;
       this.loading = false;
@@ -59,9 +59,9 @@ class AllApprovalStore extends Store {
       //   page: this.query.page,
       //   limit: this.query.size,
       // });
-      const { dataList = [], total } = await formatFillInTaskCard(this.query, 'all');
+      const { dataList = [], total, validFlowID = [] } = await formatFillInTaskCard(this.query, 'all');
 
-      await updateFinish(dataList);
+      await updateFinish(dataList, validFlowID);
       // filter item without id
       this.approvals = dataList.filter((item: ApprovalTask) => item.id);
       this.total = total;

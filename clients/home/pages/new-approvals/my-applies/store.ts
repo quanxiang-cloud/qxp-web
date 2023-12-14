@@ -56,8 +56,8 @@ class MyAppliedApprovalStore extends Store {
   fetchAll = async () => {
     this.loading = true;
     try {
-      const { dataList = [], total } = await formatApprovalTaskCard(this.query, 'myApply');
-      await updateFinish(dataList);
+      const { dataList = [], total, validFlowID = [] } = await formatApprovalTaskCard(this.query, 'myApply');
+      await updateFinish(dataList, validFlowID);
       this.approvals = dataList.filter((item: ApprovalTask) => item.id); // filter item without id
       this.total = total - (dataList.length - this.approvals.length);
       this.loading = false;
@@ -71,8 +71,8 @@ class MyAppliedApprovalStore extends Store {
   fetchFillInAll = async () => {
     this.loading = true;
     try {
-      const { dataList = [], total } = await formatFillInTaskCard(this.query, 'myApply');
-      await updateFinish(dataList);
+      const { dataList = [], total, validFlowID = [] } = await formatFillInTaskCard(this.query, 'myApply');
+      await updateFinish(dataList, validFlowID);
       this.approvals = dataList.filter((item: ApprovalTask) => item.id); // filter item without id
       this.total = total;
       this.loading = false;

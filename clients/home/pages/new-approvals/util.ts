@@ -110,10 +110,11 @@ const getArrList = (data: any, type)=>{
 const formatData = (data: any, res: any, pipelineType: any, type: any)=>{
   const appNameList = res?.[0]?.apps;
   const userNameList = res?.[1]?.users;
-  const pipelineInfo = res?.[2];
-  const pipelineFormInfo = res?.[3];
-  const pipelineFormSchemaInfo = res?.[4];
+  const pipelineInfo = res?.[2]?.filter((item: any)=>!!item);
+  const pipelineFormInfo = res?.[3]?.filter((item: any)=>!!item);
+  const pipelineFormSchemaInfo = res?.[4]?.filter((item: any)=>!!item);
 
+  const validFlowID = [...new Set(pipelineInfo?.map((item: any)=>item?.name))];
   const dataList = data?.map((item: any)=>{
     const { id, taskID, userID, createBy, examineType, nodeResult, createdAt, appID, formTableID, formDataID, flowID, nodeDefKey, nodeInfo, createdBy } = item;
     const appName = appNameList?.find((item: any)=>{
@@ -219,7 +220,7 @@ const formatData = (data: any, res: any, pipelineType: any, type: any)=>{
     };
     return obj;
   });
-  return dataList;
+  return { dataList, validFlowID };
 };
 
 export const formatApprovalTaskCard = async (query: any, type?: any)=>{
@@ -238,8 +239,8 @@ export const formatApprovalTaskCard = async (query: any, type?: any)=>{
   const { data, total } = await apiList[type](params) as any; // 获取审批列表
   const arrList = getArrList(data || [], 'approval');
   const res = await Promise.all(arrList?.map((item: any)=>item()));
-  const dataList = formatData(data, res, 'approval', type); // 格式化 data
-  return { dataList, total };
+  const { dataList, validFlowID } = formatData(data, res, 'approval', type); // 格式化 data
+  return { dataList, total, validFlowID };
 };
 
 export const formatFillInTaskCard = async (query: any, type: any)=>{
@@ -258,8 +259,8 @@ export const formatFillInTaskCard = async (query: any, type: any)=>{
   const { data, total } = await apiList[type](params) as any; // 获取填写列表
   const arrList = getArrList(data || [], 'fillIn');
   const res = await Promise.all(arrList?.map((item: any)=>item()));
-  const dataList = formatData(data, res, 'fillIn', type); // 格式化 data
-  return { dataList, total };
+  const { dataList, validFlowID } = formatData(data, res, 'fillIn', type); // 格式化 data
+  return { dataList, total, validFlowID };
 };
 
 // 格式化pipeline 动态
@@ -468,8 +469,9 @@ export const getApplyParams = (query: any)=>{
   return res;
 };
 
-export const updateFinish = async (dataList: any) => {
-  const updatePromises = dataList.map(async (item: any) => {
+export const updateFinish = async (dataList: any, validFlowID: any) => {
+  const _dataList = dataList?.filter((item: any)=>validFlowID?.includes(item?.flowID));
+  const updatePromises = _dataList.map(async (item: any) => {
     const { procInstId } = item || {};
     const processInfo = await getAllProcessInfo(procInstId);
     const pipelineProcess = await getAllPipelineProcess(processInfo?.[0]?.Data, processInfo?.[1]?.data);

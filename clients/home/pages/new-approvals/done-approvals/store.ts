@@ -39,8 +39,8 @@ class DoneApprovalStore extends Store {
   fetchAll = async () => {
     this.loading = true;
     try {
-      const { dataList = [], total } = await formatApprovalTaskCard(this.query, 'Finish');
-      await updateFinish(dataList);
+      const { dataList = [], total, validFlowID = [] } = await formatApprovalTaskCard(this.query, 'Finish');
+      await updateFinish(dataList, validFlowID);
       this.approvals = dataList;
       this.total = total;
       this.loading = false;
@@ -54,7 +54,7 @@ class DoneApprovalStore extends Store {
   fetchFillInAll = async () => {
     this.loading = true;
     try {
-      const { dataList = [], total } = await formatFillInTaskCard({
+      const { dataList = [], total, validFlowID = [] } = await formatFillInTaskCard({
         page: this.query.page,
         size: this.query.size,
       }, 'Finish');
@@ -64,7 +64,7 @@ class DoneApprovalStore extends Store {
       //   limit: this.query.size,
       // });
       // filter item without id
-      await updateFinish(dataList);
+      await updateFinish(dataList, validFlowID);
       this.approvals = dataList.filter((item: ApprovalTask) => item.id);
       this.total = total;
       this.loading = false;
