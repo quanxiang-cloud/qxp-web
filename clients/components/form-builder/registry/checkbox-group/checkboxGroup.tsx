@@ -128,7 +128,7 @@ function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   const isVertical = optionsLayout === 'vertical';
 
   return (
-    <div className="flex items-center">
+    <div className="flex items-center checkbox-group-wrapper">
       <Checkbox.Group onChange={handleCheckBoxChange} value={checkedValues}>
         <div className={cs('flex', isVertical ? 'flex-col' : 'flex-row')}>
           {
