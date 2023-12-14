@@ -46,11 +46,13 @@ function TodoApprovals(): JSX.Element {
   useEffect(()=>{
     switch (currentValue) {
     case FILL_IN:
+      store.pageNumber = 1;
       store.type = FILL_IN;
       store.fetchFillInAll();
       setCurrentStatus(fillStatus);
       break;
     default:
+      store.pageNumber = 1;
       store.type = APPROVAL;
       store.fetchAll();
       setCurrentStatus(status);
