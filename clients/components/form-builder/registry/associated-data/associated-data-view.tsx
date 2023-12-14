@@ -13,7 +13,7 @@ export default function AssociatedDataValueRender({ schema, value }: Props): JSX
 
   return (
     <>
-      <div onClick={() => setVisible(true)} className='text-blue-600 cursor-pointer'>{value.label}</div>
+      <div onClick={() => setVisible(true)} className='text-blue-600 cursor-pointer word-break'>{value.label}</div>
       {visible && (
         <Modal
           title={`${schema.title}详情`}
