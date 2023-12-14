@@ -283,7 +283,7 @@ export const getAllPipelineProcess = async (approvalProcess: any, fillInProcess:
   userIds?.push(createdBy);
 
   const getFlowName = ()=>{
-    return getPipelineInfo(flowID);
+    return flowID ? getPipelineInfo(flowID) : '';
   };
   const getUserInfo = ()=>{
     return getPipelineUserInfo(userIds);
