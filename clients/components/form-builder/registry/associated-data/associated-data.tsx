@@ -53,17 +53,17 @@ export function AssociatedData({
   }
 
   return (
-    <div className='w-full h-32'>
-      <div className={`ant-input h-full flex justify-between py-2 items-center ${window?.isMobile ? 'is-mobile-associated-data' : ''}`}>
+    <div className='w-full h-32 overflow-auto' >
+      <div className={`ant-input h-full flex justify-between py-2 items-center width-fit-content ${window?.isMobile ? 'is-mobile-associated-data' : ''}`}>
         <div className='flex-1'>
           {value ? (
-            <span className='associated-span'>
+            <span className='associated-span nowrap'>
               {value.label}
               <Icon onClick={handleClose} clickable size={16} name='close' />
             </span>
-          ) : <span className='text-gray-300'>{placeholder}</span>}
+          ) : <span className='text-gray-300 nowrap'>{placeholder}</span>}
         </div>
-        <span className='cursor-pointer text-blue-500' onClick={() => setVisible(true)}>
+        <span className='cursor-pointer text-blue-500 nowrap' onClick={() => setVisible(true)}>
           选择关联数据
         </span>
       </div>

@@ -22,5 +22,8 @@
     width: calc(100% - 20px);
     overflow: auto;
   }
+  &>.mega-layout-container{
+    overflow: initial;
+  }
 }
 
