@@ -6,7 +6,7 @@ import { get, set } from 'lodash';
 
 import { getFormFieldSchema } from '@newFlow/content/editor/forms/api';
 import { schemaToMap } from '@lib/schema-convert';
-import { getTableSchema } from '@lib/http-client-form';
+import { buildQueryRef, getTableSchema } from '@lib/http-client-form';
 
 import { transformSchemaTableDataQuery as transformSchema } from '../utils';
 import Button from '@c/button';
@@ -27,7 +27,7 @@ function TargetTableFields({ appId, tableId, queryDataList, onChange }: Props | 
     return currentSchema.componentName !== 'associatedrecords';
   });
   const [schemaToTransform, setSchemaToTransform] = useState({ ...schema, properties: tableSchemaMap });
-
+  const [ref, setRef] = useState<any>();
   const [queryList, setQueryList] = useState<any>(queryDataList || []);
   const [typeOptions, setTypeOptions] = useState<any>([]);
   const [showError, setShowError] = useState<any>(false);
@@ -35,8 +35,17 @@ function TargetTableFields({ appId, tableId, queryDataList, onChange }: Props | 
   const [subFields, setSubFields] = useState<any>([]);
 
   useEffect(()=>{
-    onChange(queryList);
+    onChange(queryList, ref);
   }, [queryList]);
+
+  useEffect(()=>{
+    const ref = buildQueryRef(schema as any);
+    setRef(ref);
+  }, [schema]);
+
+  useEffect(()=>{
+    onChange(queryList, ref);
+  }, [ref]);
 
   useEffect(()=>{
     const normalTableFields = transformSchema(schemaToTransform, {})?.properties;
@@ -78,21 +87,21 @@ function TargetTableFields({ appId, tableId, queryDataList, onChange }: Props | 
         value: key,
       });
     }
-    // for (const key in subFields) {
-    //   const currentSubTableFieldsOption = [];
-    //   const curentSubTableFields = subFields?.[key]?.properties;
-    //   for (const k in curentSubTableFields) {
-    //     currentSubTableFieldsOption.push({
-    //       label: curentSubTableFields?.[k]?.['x-component-props']?.title,
-    //       value: k,
-    //     });
-    //   }
-    //   _typeOptions.push({
-    //     label: subFields?.[key]?.['x-component-props']?.title,
-    //     value: key,
-    //     children: currentSubTableFieldsOption,
-    //   });
-    // }
+    for (const key in subFields) {
+      // const curentSubTableFields = subFields?.[key]?.properties;
+      // for (const k in curentSubTableFields) {
+      //   _typeOptions.push({
+      //     label: `${subFields?.[key]?.['x-component-props']?.title}.${curentSubTableFields?.[k]?.['x-component-props']?.title }`,
+      //     value: `${k}`,
+      //   });
+      // }
+      if (subFields[key]?.['x-component-props']?.['x-component-props']?.subordination === 'foreign_table') {
+        _typeOptions.push({
+          label: `${subFields?.[key]?.['x-component-props']?.title}`,
+          value: `${key}`,
+        });
+      }
+    }
     setTypeOptions(_typeOptions);
   }, [normalFields, subFields]);
 

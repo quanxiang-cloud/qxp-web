@@ -1,3 +1,4 @@
+/* eslint-disable guard-for-in */
 /* eslint-disable no-empty */
 /* eslint-disable max-len */
 import React, { useContext, useEffect, useRef, useState } from 'react';
@@ -16,11 +17,8 @@ import TargetTableFields from './target-table-fields';
 import './styles.scss';
 import useObservable from '@lib/hooks/use-observable';
 import store from '../../store';
-import { getElementParents } from '../webhook/utils';
-import { getFieldSchema } from '../api';
 import RadioButtonGroup from '@c/radio/radio-button-group';
-import { isString } from 'lodash';
-import schemaToFields from '@lib/schema-convert';
+import { getNodesOutputOptions } from '@portal/modules/new-work-flow/util';
 
 interface Props {
   defaultValue: TableDataCreateData | any;
@@ -46,68 +44,13 @@ function FormQueryTableData({ defaultValue, currentNodeElement, onSubmit, onCanc
 
   const [nodesOutputOptions, setNodesOutputOptions] = useState(null);
   const { elements } = useObservable<StoreValue>(store);
-
-  const getNodesOutputOptions = ()=>{
-    const options: any = [];
-    if (elements?.length) {
-      const currentElementParents = getElementParents(currentNodeElement);
-      const allArr: any = [];
-      elements?.forEach(async (item: any, index: number)=>{
-        // if (item.data?.type === 'approve' && currentElementParents.includes(item.id)) {
-        //   const nodeDataName = item?.data?.nodeData?.name;
-        //   options?.push({
-        //     label: nodeDataName,
-        //     value: `$(task.${item?.id}.output.agree`,
-        //   });
-        // }
-        // if (item.data?.type === 'fill' && currentElementParents.includes(item.id)) {
-        //   const nodeDataName = item?.data?.nodeData?.name;
-        //   options?.push({
-        //     label: nodeDataName,
-        //     value: `$(task.${item?.id}.output.agree`,
-        //   });
-        // }
-        if (item.data?.type === 'tableDataQuery' && currentElementParents.includes(item.id)) {
-          const tableID = item?.data?.businessData?.targetTableId;
-          allArr.push(()=>{
-            const nodeDataName = item?.data?.nodeData?.name;
-            const queryList = item?.data?.businessData?.queryList || [];
-            return getFieldSchema({ appID, tableID })
-              .then((res: any)=>{
-                const schemaFields = schemaToFields(res);
-                const normalFields = schemaFields?.filter((fieldSchema) => {
-                  return fieldSchema.componentName !== 'subtable';
-                }).map((fieldSchema) => ({
-                  label: fieldSchema.title,
-                  value: fieldSchema.id,
-                }));
-                queryList?.forEach((child: any)=>{
-                  const lable = normalFields?.find((item: any)=>item?.value === child?.value?.[0])?.label;
-                  if (lable) {
-                    options?.push({
-                      label: nodeDataName + '.' + lable,
-                      // value: `{{.Local.${child?.queryVal}}}`,
-                      value: `$(task.${item?.id}.output.${child?.queryVal})`,
-                      nodeID: item?.id,
-                    });
-                  }
-                });
-                return res;
-              });
-          });
-        }
-      });
-
-      Promise.all(allArr?.map((item: any)=>item()))
-        .then((res)=>{
-          setNodesOutputOptions(options);
-        }).catch((err)=>{
-        });
-    }
-  };
-
   useEffect( ()=>{
-    getNodesOutputOptions();
+    getNodesOutputOptions({
+      elements,
+      currentNodeElement,
+      appID,
+      setNodesOutputOptions,
+    });
   }, [elements?.length]);
 
   useUpdateEffect(() => {
@@ -186,16 +129,16 @@ function FormQueryTableData({ defaultValue, currentNodeElement, onSubmit, onCanc
           setShowErrorText('');
         }
 
-        if (isString(size) && size?.includes('.output.') && !sizeKey) {
-          setShowError(true);
-          // setShowErrorText('查询条数key不能为空');
-          toast.error('查询条数key不能为空');
+        // if (isString(size) && size?.includes('.output.') && !sizeKey) {
+        //   setShowError(true);
+        //   // setShowErrorText('查询条数key不能为空');
+        //   toast.error('查询条数key不能为空');
 
-          return;
-        } else {
-          setShowError(false);
-          setShowErrorText('');
-        }
+        //   return;
+        // } else {
+        //   setShowError(false);
+        //   setShowErrorText('');
+        // }
 
         const keyArr: any = [];
         sizeKey && keyArr?.push(sizeKey);
@@ -282,8 +225,8 @@ function FormQueryTableData({ defaultValue, currentNodeElement, onSubmit, onCanc
     return;
   };
 
-  const handeTargetTableFields = (data: any)=>{
-    setValue({ ...value, queryList: data });
+  const handeTargetTableFields = (data: any, ref: any)=>{
+    setValue({ ...value, queryList: data, ref });
   };
 
   if (isLoading) {

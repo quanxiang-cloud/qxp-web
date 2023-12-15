@@ -13,7 +13,7 @@ import { APPROVAL, FILL_IN, listData } from '../constant';
 // handle type : ALL，REVIEW, WRITE， READ， OTHER
 const status = [
   { label: '全部', value: 'ALL' },
-  { label: '待补充', value: 'SEND_BACK' },
+  // { label: '待补充', value: 'SEND_BACK' },
   { label: '进行中', value: 'REVIEW' },
   { label: '已拒绝', value: 'REFUSE' },
   { label: '已通过', value: 'AGREE' },
@@ -46,11 +46,13 @@ function TodoApprovals(): JSX.Element {
   useEffect(()=>{
     switch (currentValue) {
     case FILL_IN:
+      store.pageNumber = 1;
       store.type = FILL_IN;
       store.fetchFillInAll();
       setCurrentStatus(fillStatus);
       break;
     default:
+      store.pageNumber = 1;
       store.type = APPROVAL;
       store.fetchAll();
       setCurrentStatus(status);

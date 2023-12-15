@@ -67,7 +67,7 @@ const defaultDecorators = [
 function FormulaEditor({
   customRules = [],
   className = '',
-  maxLength = 500,
+  maxLength = 5000,
   help = '文本常量请用双引号括起来',
   onChange,
   onBlur,

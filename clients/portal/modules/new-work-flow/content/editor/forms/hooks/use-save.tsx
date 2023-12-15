@@ -35,7 +35,7 @@ export default function useSave(appID: string, id?: string): (
     callback.current = {
       onOk, onError,
     };
-    const saveData: SaveWorkFlowParamsType = data;
+    const saveData: SaveWorkFlowParamsType | any = data;
     if (id) {
       saveData.id = id;
     }

@@ -75,7 +75,7 @@ export default function Fill({ workData, clickHandle }: Props): JSX.Element {
           ) : (
             <div className="h-24 flex justify-between">
               <div className="flex items-center">
-                {isSingle && <span className="text-h6-bold mr-4">{username}</span>}
+                {isSingle && <span className="text-h6-bold mr-4 nowrap">{username}</span>}
                 <span className="text-gray-600">{taskName}</span>
               </div>
               <ApprovalStatus status={status} />

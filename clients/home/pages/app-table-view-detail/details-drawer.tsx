@@ -97,7 +97,8 @@ function DetailsDrawer(
     if (taskType === 'FILL') {
       _taskType = FILL_IN;
     }
-    if (operationRecords?.[0]?.taskId) {
+    const operationRecord = operationRecords?.find((item: any)=> item?.creatorId === USER?.id);
+    if (operationRecord?.taskId) {
       // window.location = `/approvals/${processInstanceId}/${operationRecords?.[0]?.taskId}/ALL_PAGE/${_taskType}` as any;
       window.location = `/approvals/${taskID}/${id}/ALL_PAGE/${_taskType}` as any;
     } else {

@@ -57,7 +57,7 @@ class TodoApprovalStore extends Store {
   fetchAll = async () => {
     this.loading = true;
     try {
-      const { dataList, total } = await formatApprovalTaskCard(this.query, 'Pending');
+      const { dataList, total, validFlowID = [] } = await formatApprovalTaskCard(this.query, 'Pending');
       this.approvals = dataList || [];
       this.total = total;
       this.loading = false;
@@ -71,7 +71,7 @@ class TodoApprovalStore extends Store {
   fetchFillInAll = async () => {
     this.loading = true;
     try {
-      const { dataList, total } = await formatFillInTaskCard(this.query, 'Pending');
+      const { dataList, total, validFlowID = [] } = await formatFillInTaskCard(this.query, 'Pending');
       this.approvals = dataList || [];
       this.total = total;
       this.loading = false;

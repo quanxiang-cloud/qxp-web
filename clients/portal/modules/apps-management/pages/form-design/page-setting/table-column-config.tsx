@@ -10,6 +10,7 @@ import Icon from '@c/icon';
 import { TableColumnConfig } from '@c/form-app-data-table/type';
 
 import './index.scss';
+import { SYSTEM_FIELDS } from '@c/form-builder/constants';
 
 type ColumnConfigView = { label: string } & TableColumnConfig;
 
@@ -91,7 +92,7 @@ function FieldItem({ field, selected, onChange }: FieldItemProps): JSX.Element {
 
 function TableColumnConfig({ onChange, fieldList, sortChange, selectFields }: Props): JSX.Element {
   const hideFields = fieldList
-    .filter((item: any)=>item?.display === false)
+    .filter((item: any)=>item?.display === false && !SYSTEM_FIELDS?.includes(item?.id))
     .map(({ id })=>id);
   const _selectFields = useMemo(() => {
     const noSelectFieldsTmp: ColumnConfigView[] = [];
@@ -109,7 +110,7 @@ function TableColumnConfig({ onChange, fieldList, sortChange, selectFields }: Pr
       }
     });
 
-    return [...selectFieldsTmp, ...noSelectFieldsTmp].map((field, index) => {
+    const result = [...selectFieldsTmp, ...noSelectFieldsTmp].map((field, index) => {
       const _selected = index <= selectFieldsTmp.length - 1;
       return {
         id: field.id,
@@ -123,7 +124,8 @@ function TableColumnConfig({ onChange, fieldList, sortChange, selectFields }: Pr
           />
         ),
       };
-    });
+    }).filter(({ id })=>!hideFields.includes(id));
+    return result;
   }, [selectFields, fieldList]);
 
   return (

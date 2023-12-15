@@ -35,7 +35,7 @@ export default function ApprovalStatus({ status }: Props): JSX.Element {
   }
 
   return (
-    <div className={classNames('text-center leading-24 cursor-pointer text-12 px-6 corner-4-0-4-0',
+    <div className={classNames('text-center leading-24 cursor-pointer text-12 px-6 corner-4-0-4-0 nowrap',
       value.style.bgColor, value.style.color)}>
       {value.text}
     </div>

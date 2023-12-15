@@ -20,6 +20,22 @@
 
   &>* {
     width: calc(100% - 20px);
+    // overflow: auto;
+  }
+  .radio-group-wrapper{
+    width: 100%;
+    overflow: auto;
+  }
+  .mega-layout-container-content{
+    width: 100%;
+  }
+  .checkbox-group-wrapper{
+    width: 100%;
+    overflow: auto;
+  }
+
+  .associated-data-wrapper{
+    width: 100%;
     overflow: auto;
   }
 }

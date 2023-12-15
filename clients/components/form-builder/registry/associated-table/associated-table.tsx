@@ -7,7 +7,7 @@ import AssociatedTableModal from './associated-table-modal';
 const { onFieldValueChange$ } = FormEffectHooks;
 
 function AssociatedTable(prop: any): JSX.Element {
-  console.log('AssociatedTable', prop);
+  // console.log('AssociatedTable', prop);
   const { props, mutators } = prop;
   const { title } = props as ISchemaFieldComponentProps;
   const componentProps = props?.['x-component-props'] || {};
@@ -42,20 +42,36 @@ function AssociatedTable(prop: any): JSX.Element {
 
       setFilterConfig(filterConfig);
     } else {
-      setFilterConfig(undefined);
+      const filterConfig = {
+        tag: 'must',
+        condition: [
+          {
+            key: `${linkedTableField}.value`,
+            op: 'eq',
+            value: 'noRowDataId',
+            valueFrom: 'fixedValue',
+          },
+        ],
+      };
+      setFilterConfig(filterConfig);
     }
   }, [linkedTableField, rowDataId]);
 
   return (
     <div className='associatet-table-wrap' >
       {
-        rowDataId ?
-          (<div
-            className="text-blue-600 cursor-pointer"
-            onClick={()=>setShowTableModal(true)}>
-            {defaultValue || '查看关联列表'}
-          </div>) :
-          <div className='text-gray-400'>暂无关联列表</div>
+        // rowDataId ?
+        //   (<div
+        //     className="text-blue-600 cursor-pointer"
+        //     onClick={()=>setShowTableModal(true)}>
+        //     {defaultValue || '查看关联列表'}
+        //   </div>) :
+        //   <div className='text-gray-400'>暂无关联列表</div>
+        <div
+          className="text-blue-600 cursor-pointer"
+          onClick={()=>setShowTableModal(true)}>
+          {defaultValue || '查看关联列表'}
+        </div>
       }
       {
         showTableModal &&

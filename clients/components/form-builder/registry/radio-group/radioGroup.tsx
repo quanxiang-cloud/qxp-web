@@ -61,7 +61,7 @@ function RadioGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   }
 
   return (
-    <div className="flex items-center">
+    <div className="flex items-center radio-group-wrapper">
       <Radio.Group onChange={handleRadioChange} value={realValue}>
         <div className={cs('flex', optionsLayout === 'vertical' ? 'flex-col' : 'flex-row')}>
           {labels.map((label) => {

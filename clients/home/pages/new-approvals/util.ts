@@ -1,5 +1,6 @@
+/* eslint-disable max-len */
 /* eslint-disable guard-for-in */
-import { getMyApplyPipelineFillInList, getMyApplyPipelineList, getPipelineAllFillInList, getPipelineAllList, getPipelineAppInfo, getPipelineFormData, getPipelineFormSchemaInfo, getPipelineInfo, getPipelineMyReviewedFillInList, getPipelineMyReviewedList, getPipelineTodoFillInList, getPipelineUserInfo, getPipelineWaitReviewList } from './api';
+import { getAllProcessInfo, getMyApplyPipelineFillInList, getMyApplyPipelineList, getPipelineAllFillInList, getPipelineAllList, getPipelineAppInfo, getPipelineFormData, getPipelineFormSchemaInfo, getPipelineInfo, getPipelineMyReviewedFillInList, getPipelineMyReviewedList, getPipelineTodoFillInList, getPipelineUserInfo, getPipelineWaitReviewList } from './api';
 
 const getAppName = (data: any)=>{
   return getPipelineAppInfo(data?.map((item: any)=>item?.appID))
@@ -109,10 +110,11 @@ const getArrList = (data: any, type)=>{
 const formatData = (data: any, res: any, pipelineType: any, type: any)=>{
   const appNameList = res?.[0]?.apps;
   const userNameList = res?.[1]?.users;
-  const pipelineInfo = res?.[2];
-  const pipelineFormInfo = res?.[3];
-  const pipelineFormSchemaInfo = res?.[4];
+  const pipelineInfo = res?.[2]?.filter((item: any)=>!!item);
+  const pipelineFormInfo = res?.[3]?.filter((item: any)=>!!item);
+  const pipelineFormSchemaInfo = res?.[4]?.filter((item: any)=>!!item);
 
+  const validFlowID = [...new Set(pipelineInfo?.map((item: any)=>item?.name))];
   const dataList = data?.map((item: any)=>{
     const { id, taskID, userID, createBy, examineType, nodeResult, createdAt, appID, formTableID, formDataID, flowID, nodeDefKey, nodeInfo, createdBy } = item;
     const appName = appNameList?.find((item: any)=>{
@@ -178,6 +180,9 @@ const formatData = (data: any, res: any, pipelineType: any, type: any)=>{
     };
 
     const processInstanceId = taskID;
+    const _pipelineInfo = pipelineInfo?.find((item: any)=>{
+      return item?.ID === id;
+    });
     const obj = {
       ...item,
       id,
@@ -211,10 +216,11 @@ const formatData = (data: any, res: any, pipelineType: any, type: any)=>{
       },
       urgeNum: 0,
       handled: 'ACTIVE',
+      pipelineInfo: _pipelineInfo,
     };
     return obj;
   });
-  return dataList;
+  return { dataList, validFlowID };
 };
 
 export const formatApprovalTaskCard = async (query: any, type?: any)=>{
@@ -233,8 +239,8 @@ export const formatApprovalTaskCard = async (query: any, type?: any)=>{
   const { data, total } = await apiList[type](params) as any; // 获取审批列表
   const arrList = getArrList(data || [], 'approval');
   const res = await Promise.all(arrList?.map((item: any)=>item()));
-  const dataList = formatData(data, res, 'approval', type); // 格式化 data
-  return { dataList, total };
+  const { dataList, validFlowID } = formatData(data, res, 'approval', type); // 格式化 data
+  return { dataList, total, validFlowID };
 };
 
 export const formatFillInTaskCard = async (query: any, type: any)=>{
@@ -253,8 +259,8 @@ export const formatFillInTaskCard = async (query: any, type: any)=>{
   const { data, total } = await apiList[type](params) as any; // 获取填写列表
   const arrList = getArrList(data || [], 'fillIn');
   const res = await Promise.all(arrList?.map((item: any)=>item()));
-  const dataList = formatData(data, res, 'fillIn', type); // 格式化 data
-  return { dataList, total };
+  const { dataList, validFlowID } = formatData(data, res, 'fillIn', type); // 格式化 data
+  return { dataList, total, validFlowID };
 };
 
 // 格式化pipeline 动态
@@ -277,7 +283,7 @@ export const getAllPipelineProcess = async (approvalProcess: any, fillInProcess:
   userIds?.push(createdBy);
 
   const getFlowName = ()=>{
-    return getPipelineInfo(flowID);
+    return flowID ? getPipelineInfo(flowID) : '';
   };
   const getUserInfo = ()=>{
     return getPipelineUserInfo(userIds);
@@ -300,9 +306,14 @@ export const getAllPipelineProcess = async (approvalProcess: any, fillInProcess:
       fill: 'FILL',
     };
 
-    const getFormatData = (items: any, type: any, operationRecordsObj: any)=>{
+    const getFormatData = (items: any, type: any, operationRecordsObj: any, flowInfo: any, flowFinish?: any)=>{
       const item = items?.[0];
+      const nodeDefKey = items?.[0]?.nodeDefKey;
+      const nodeDefKeyNodes = items?.filter((item: any)=>item?.nodeDefKey === nodeDefKey);
+      // const item = nodeDefKeyNodes?.find((node: any)=>node?.userID === window?.USER?.id);
       const nodeInfo = JSON.parse(operationRecordsObj?.[item?.nodeDefKey]?.[0]?.nodeInfo || null);
+      const curentNode = flowInfo?.spec?.nodes?.find((node: any)=>node?.name === item?.nodeDefKey);
+      const curentNodeName = curentNode?.Metadata?.Annotations?.['web.pipelineNode/name'];
       const operationRecords = operationRecordsObj?.[item?.nodeDefKey]?.map((item: any)=>{
         const opCreatorId = userInfo?.find((user: any)=>user?.id === item?.userID)?.id;
         const opCreatorName = userInfo?.find((user: any)=>user?.id === item?.userID)?.name;
@@ -318,19 +329,29 @@ export const getAllPipelineProcess = async (approvalProcess: any, fillInProcess:
           status: '',
         };
       });
+      const isNodesResultFinish = !nodeDefKeyNodes?.find((node: any)=>node?.nodeResult !== 'Finish');
       const _result = items?.find((itm: any)=>itm?.result)?.result;
+      flowFinish && (flowFinish.isNodesResultFinish = isNodesResultFinish);
       const _modifyTime = items?.find((itm: any)=>itm?.updatedAt)?.updatedAt;
-      const taskName = nodeInfo?.data?.nodeData?.name;
+      const taskName = curentNodeName || nodeInfo?.data?.nodeData?.name;
+      const _taskType = type === 'approval' ? mapTaskType?.[item?.examineType] : 'FILL';
+      let _status = isNodesResultFinish ? mapStatus?.[_result] : 'REVIEW';
+      if (_taskType === 'AND_APPROVAL') {
+        const hasRefuse = operationRecords?.find((item: any)=>item?.handleType === 'REFUSE');
+        hasRefuse && (_status = 'REFUSE');
+      }
       return {
         ...item,
         flowName,
         creatorName: userInfo?.find((user: any)=>user?.id === item?.createdBy)?.name,
         // taskName: type === 'approval' ? '审批' : '填写',
         taskName: taskName || (type === 'approval' ? '审批' : '填写'),
-        taskType: type === 'approval' ? mapTaskType?.[item?.examineType] : 'FILL',
+        taskType: _taskType,
         operationRecords,
-        status: mapStatus?.[_result] || 'REVIEW',
+        // status: mapStatus?.[_result] || 'REVIEW',
+        status: _status,
         modifyTime: _modifyTime,
+        nodeResult: isNodesResultFinish ? 'Finish' : 'Pending',
       };
     };
     const operationRecordsObj: any = {};
@@ -345,8 +366,11 @@ export const getAllPipelineProcess = async (approvalProcess: any, fillInProcess:
     for (const key in operationRecordsObj) {
       _approvalProcessList.push(operationRecordsObj?.[key]);
     }
-    const _approvalProcess = _approvalProcessList?.map(((item: any)=>{
-      return getFormatData(item, 'approval', operationRecordsObj);
+    const flowFinish = {
+      isNodesResultFinish: false,
+    };
+    const _approvalProcess = _approvalProcessList?.map(((item: any, index: any)=>{
+      return getFormatData(item, 'approval', operationRecordsObj, flowInfo, index === 0 && flowFinish);
     })) || [];
 
     const fillOperationRecordsObj: any = {};
@@ -361,11 +385,19 @@ export const getAllPipelineProcess = async (approvalProcess: any, fillInProcess:
     for (const key in fillOperationRecordsObj) {
       _fillInProcessList.push(fillOperationRecordsObj?.[key]);
     }
-    const _fillInProcess = _fillInProcessList?.map(((item: any)=>{
-      return getFormatData(item, 'fillIn', fillOperationRecordsObj);
+    const _fillInProcess = _fillInProcessList?.map(((item: any, index: any)=>{
+      return getFormatData(item, 'fillIn', fillOperationRecordsObj, flowInfo, index === 0 && flowFinish);
     })) || [];
 
     const allProcess = [..._approvalProcess, ..._fillInProcess].sort((a, b)=>b?.createdAt - a?.createdAt);
+
+    const getIsFinish = (items: any)=>{
+      const nodeDefKey = items?.[0]?.nodeDefKey;
+      const nodeDefKeyNodes = items?.filter((item: any)=>item?.nodeDefKey === nodeDefKey);
+      const isFinsih = !nodeDefKeyNodes?.find((node: any)=>node?.nodeResult !== 'Finish');
+      return isFinsih;
+    };
+
     const item = allProcess?.[0] || {};
     const startNode = {
       id: '',
@@ -401,6 +433,9 @@ export const getAllPipelineProcess = async (approvalProcess: any, fillInProcess:
       reason: '',
     };
     const isFinsih = allProcess?.[0]?.nodeResult === 'Finish';
+    // const isFinsih = flowFinish?.isNodesResultFinish;
+    // const isFinsih = getIsFinish(allProcess);
+
     allProcess.push(startNode);
     isFinsih && allProcess.unshift(endNode);
     return allProcess;
@@ -414,13 +449,17 @@ export const getApplyParams = (query: any)=>{
   let NodeResult; let TaskResult;
   if (query.status === 'REVIEW' || query.status === 'Pending') {
     NodeResult = 'Pending';
-  } else if (query.status === 'REFUSE' || query.status === 'AGREE' || query.status === 'Finish' ) {
+  } else if (query.status === 'REFUSE' || query.status === 'AGREE' || query.status === 'CANCEL' || query.status === 'Finish' ) {
     NodeResult = 'Finish';
     if (query.status === 'REFUSE') {
       TaskResult = 'reject';
     }
     if (query.status === 'AGREE') {
       TaskResult = 'agree';
+    }
+
+    if (query.status === 'CANCEL') {
+      TaskResult = 'recall';
     }
   }
   const res = {
@@ -432,4 +471,16 @@ export const getApplyParams = (query: any)=>{
     taskResult: TaskResult,
   };
   return res;
+};
+
+export const updateFinish = async (dataList: any, validFlowID: any) => {
+  const _dataList = dataList?.filter((item: any)=>validFlowID?.includes(item?.flowID));
+  const updatePromises = _dataList.map(async (item: any) => {
+    const { procInstId } = item || {};
+    const processInfo = await getAllProcessInfo(procInstId);
+    const pipelineProcess = await getAllPipelineProcess(processInfo?.[0]?.Data, processInfo?.[1]?.data);
+    const isFinish = pipelineProcess?.[0]?.status === 'END';
+    item.isFinish = isFinish;
+  });
+  await Promise.all(updatePromises);
 };

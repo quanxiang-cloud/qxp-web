@@ -2,7 +2,7 @@ import toast from '@lib/toast';
 import { action, computed, observable, reaction } from 'mobx';
 import Store from '../base-store';
 import { FILL_IN } from '../constant';
-import { formatApprovalTaskCard, formatFillInTaskCard } from '../util';
+import { formatApprovalTaskCard, formatFillInTaskCard, updateFinish } from '../util';
 
 class DoneApprovalStore extends Store {
   @observable approvals: ApprovalTask[] = [];
@@ -39,7 +39,8 @@ class DoneApprovalStore extends Store {
   fetchAll = async () => {
     this.loading = true;
     try {
-      const { dataList = [], total } = await formatApprovalTaskCard(this.query, 'Finish');
+      const { dataList = [], total, validFlowID = [] } = await formatApprovalTaskCard(this.query, 'Finish');
+      await updateFinish(dataList, validFlowID);
       this.approvals = dataList;
       this.total = total;
       this.loading = false;
@@ -53,7 +54,7 @@ class DoneApprovalStore extends Store {
   fetchFillInAll = async () => {
     this.loading = true;
     try {
-      const { dataList = [], total } = await formatFillInTaskCard({
+      const { dataList = [], total, validFlowID = [] } = await formatFillInTaskCard({
         page: this.query.page,
         size: this.query.size,
       }, 'Finish');
@@ -63,6 +64,7 @@ class DoneApprovalStore extends Store {
       //   limit: this.query.size,
       // });
       // filter item without id
+      await updateFinish(dataList, validFlowID);
       this.approvals = dataList.filter((item: ApprovalTask) => item.id);
       this.total = total;
       this.loading = false;

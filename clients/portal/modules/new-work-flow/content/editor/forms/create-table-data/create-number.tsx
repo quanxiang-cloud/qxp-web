@@ -1,40 +1,34 @@
-import React, { useEffect, useState } from 'react';
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 
-import { valueFromOptions } from '../context';
+import { valueFromOptions } from './context';
 import { InputNumber, Select } from 'antd';
 import { isArray, isString } from 'lodash';
 
 interface Props {
-  size: any;
-  onChange?: (data: Partial<any>) => void;
+  value: any;
+  key: any;
   nodesOutputOptions: any;
+  onChange?: (data: Partial<any>) => void;
 }
 
-function RuleItem(props: any) {
-  const { size, onChange, nodesOutputOptions, sizeKey } = props;
+function CreateNumber(props: any, ref: React.Ref<RefType>) {
+  const { nodesOutputOptions, defaultData = {} } = props;
   const [option, setOption] = useState<any>();
   const [val, setVal] = useState<any>();
-  const [key, setKey] = useState<any>(sizeKey || '');
-
+  const [key, setKey] = useState<any>();
   useEffect(()=>{
-    onChange && onChange({
-      size: val,
-      sizeKey: key,
-      sizeNodeID: nodesOutputOptions?.find((item: any)=>item?.value === val)?.nodeID,
-    });
-  }), [val, key];
-
-  useEffect(()=>{
-    if (!size) {
+    const { value, key } = defaultData;
+    if (!value) {
       setOption('fixedValue');
       return;
     }
-    if (isString(size) && size?.includes('.output.')) {
+    if (isString(value) && value?.includes('.output.')) {
       setOption('nodesOutput');
-      setVal(size );
+      setVal(value );
+      setKey(key );
     } else {
       setOption('fixedValue');
-      setVal(Number(size));
+      setVal(Number(value));
     }
   }, []);
 
@@ -50,10 +44,14 @@ function RuleItem(props: any) {
     }
   }, [nodesOutputOptions, option]);
 
-  const handleChange = (value: any): void => {
-    setVal(value);
-  };
-
+  useImperativeHandle(ref, () => {
+    return {
+      getValues: () => ({
+        val,
+        key,
+      }),
+    };
+  });
   const renderValueBox = () => {
     if (option === 'fixedValue') {
       return (
@@ -61,7 +59,7 @@ function RuleItem(props: any) {
           type='number'
           precision={0}
           value={val}
-          onChange={handleChange}
+          onChange={setVal}
         />
       );
     }
@@ -73,7 +71,7 @@ function RuleItem(props: any) {
             options={nodesOutputOptions}
             value={val}
             onChange={(val)=>{
-              handleChange(val);
+              setVal(val);
               const valArr = val?.replace(')', '')?.split('.');
               const key = valArr?.[valArr?.length - 1];
               setKey(key);
@@ -97,8 +95,8 @@ function RuleItem(props: any) {
   };
 
   return (
-    <div className="flex items-center mb-10">
-      <span className="text-caption">查询条数:</span>
+    <div className="flex items-center mt-20 mb-10">
+      <span className="">新增倍数：</span>
       {
         (
           <>
@@ -110,7 +108,7 @@ function RuleItem(props: any) {
                 setOption(val);
                 setVal('');
               }}
-              // allowClear
+              allowClear
             />
             <div className="inline-flex items-center custom-field__value ml-8">
               {renderValueBox()}
@@ -121,4 +119,4 @@ function RuleItem(props: any) {
   );
 }
 
-export default RuleItem;
+export default forwardRef(CreateNumber);

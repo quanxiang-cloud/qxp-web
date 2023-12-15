@@ -11,9 +11,9 @@ const advancedCompTypes = [
   'CascadeSelector',
   'AssociatedData',
 ];
-export const excludeComps = ['subtable'];
+export const excludeComps = ['subtable', 'associatedtable'];
 
-export const complexFieldTypes = ['subtable', 'associatedrecords', 'associateddata'];
+export const complexFieldTypes = ['subtable', 'associatedrecords', 'associateddata', 'associatedtable'];
 
 type Options = {
   noSystem?: boolean;
@@ -162,7 +162,7 @@ export const transformSchema = (
       });
     } else if (compName) {
       const defaultVal = getCompDefaultValFromData(compName, mergeData, key);
-      if (compName === 'serial' || compName === 'aggregationrecords') return;
+      if (compName === 'serial' || compName === 'aggregationrecords' || compName === 'associatedtable') return;
       Object.assign(acc, {
         [key]: {
           type: 'object',
@@ -192,7 +192,7 @@ export const transformSchemaTableDataQuery = (
     if (options.filterSubTable) {
       return field?.componentName === 'subtable';
     }
-    return field?.componentName !== 'subtable';
+    return (field?.componentName !== 'subtable') && (field?.componentName !== 'associatedtable');
   }, (key, field, acc) => {
     const innerFieldProps = cloneDeep(field);
     const compName = field.componentName;

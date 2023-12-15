@@ -53,17 +53,17 @@ export function AssociatedData({
   }
 
   return (
-    <div className='w-full h-32'>
-      <div className={`ant-input h-full flex justify-between py-2 items-center ${window?.isMobile ? 'is-mobile-associated-data' : ''}`}>
+    <div className='w-full h-32 associated-data-wrapper' >
+      <div className={`ant-input h-full flex justify-between py-2 items-center  ${window?.isMobile ? 'is-mobile-associated-data' : ''}`}>
         <div className='flex-1'>
           {value ? (
-            <span className='associated-span'>
+            <span className='associated-span '>
               {value.label}
               <Icon onClick={handleClose} clickable size={16} name='close' />
             </span>
-          ) : <span className='text-gray-300'>{placeholder}</span>}
+          ) : <span className='text-gray-300 '>{placeholder}</span>}
         </div>
-        <span className='cursor-pointer text-blue-500' onClick={() => setVisible(true)}>
+        <span className='cursor-pointer text-blue-500 ' onClick={() => setVisible(true)}>
           选择关联数据
         </span>
       </div>
@@ -113,7 +113,8 @@ export default function AssociatedDataWrap(p: ISchemaFieldComponentProps): JSX.E
       selectedValue = {selectedValue}
       onChange={(dataRow, schema) => {
         if (!dataRow) {
-          p.mutators.change(undefined);
+          // p.mutators.change(undefined);
+          p.mutators.change(null);
           setSelectedValue('');
           return;
         }

@@ -147,7 +147,8 @@ function AssociatedDataConfig({ initialValue, onChange, subTableSchema }: Props)
     onChange({ ...initialValue, appID });
     getFormDataMenuList(appID).then((pages) => {
       setFieldState('associationTableID', (state) => {
-        state.props.enum = pages.filter(({ value }) => value !== pageID);
+        // state.props.enum = pages.filter(({ value }) => value !== pageID);
+        state.props.enum = pages;
       });
     });
 
