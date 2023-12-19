@@ -5,10 +5,11 @@ import { FlowType, Task, TasksResponse, ApprovalFilter } from '@m/pages/new-appr
 import { getFlowSummary } from '@m/lib/value-render';
 import { NumberString } from '@m/qxp-ui-mobile';
 import {
+  getAllProcessInfo,
   getCCToMeList,
   getWaitReviewList,
 } from '@home/pages/new-approvals/api';
-import { formatApprovalTaskCard, formatFillInTaskCard } from '@home/pages/new-approvals/util';
+import { formatApprovalTaskCard, formatFillInTaskCard, getAllPipelineProcess } from '@home/pages/new-approvals/util';
 
 type RequestType = (params: Record<string, any>, type?: string) => Promise<TasksResponse>;
 
@@ -17,6 +18,7 @@ export interface LoadApprovalsProps {
   filterKey?: string;
   filter?: ApprovalFilter;
   tagType?: string;
+  type?: string;
 }
 
 const limit = 20;
@@ -45,7 +47,7 @@ class ApprovalsStore {
 
   @action
   loadApprovals = async (props: LoadApprovalsProps): Promise<void> => {
-    const { pageKey, filterKey, filter, tagType } = props;
+    const { pageKey, filterKey, filter, tagType, type } = props;
     const params: Record<string, any> = { page: pageKey, limit, orderType: 'DESC', size: limit };
     const filterValue = filter?.value;
     if (filterCheck(filterKey, filterValue)) {
@@ -92,6 +94,11 @@ class ApprovalsStore {
       this.finished = data.length < limit;
       data = data.filter((itm: { isDeleted: any; }) => !itm.isDeleted);
 
+      if (type !== 'WAIT_HANDLE_PAGE') {
+        const validFlowID = data?.filter((item: any)=>!!item?.pipelineInfo)?.map((item: any)=>item?.flowID);
+        await updateFinish(data, validFlowID);
+      }
+
       if (this.type === 'CC_PAGE') {
         this.readAllEnabled = data?.find((itm: { handled: string; }) => itm.handled === 'ACTIVE') !== undefined;
       }
@@ -119,6 +126,18 @@ class ApprovalsStore {
     this.isRefresh = false;
   };
 }
+
+export const updateFinish = async (dataList: any, validFlowID: any) => {
+  const _dataList = dataList?.filter((item: any)=>validFlowID?.includes(item?.flowID));
+  const updatePromises = _dataList.map(async (item: any) => {
+    const { procInstId } = item || {};
+    const processInfo = await getAllProcessInfo(procInstId);
+    const pipelineProcess = await getAllPipelineProcess(processInfo?.[0]?.Data, processInfo?.[1]?.data);
+    const isFinish = pipelineProcess?.[0]?.status === 'END';
+    item.isFinish = isFinish;
+  });
+  await Promise.all(updatePromises);
+};
 
 // const myApplies = new ApprovalsStore('APPLY_PAGE', getMyApplyList);
 // const done = new ApprovalsStore('HANDLED_PAGE', getMyReviewedList);

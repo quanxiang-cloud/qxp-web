@@ -49,14 +49,14 @@ const ApprovalsTab = (props: ApprovalsTabProps): JSX.Element => {
     store[storeType].finished = false;
     store[mapPageKey[storeType]].finished = false;
     if (mapPageKey[storeType]) {
-      store[mapPageKey[storeType]].loadApprovals({ pageKey, filter, filterKey, tagType })
+      store[mapPageKey[storeType]].loadApprovals({ pageKey, filter, filterKey, tagType, type })
         .finally(()=>{
           store[storeType].finished = true;
           store[mapPageKey[storeType]].finished = true;
           detailStore.isRefresh = false;
         });
     }
-    return store[storeType].loadApprovals({ pageKey, filter, filterKey, tagType })
+    return store[storeType].loadApprovals({ pageKey, filter, filterKey, tagType, type })
       .finally(()=>{
         store[storeType].finished = true;
         store[mapPageKey[storeType]].finished = true;
@@ -69,7 +69,7 @@ const ApprovalsTab = (props: ApprovalsTabProps): JSX.Element => {
     store[storeType].clear();
     store[mapPageKey[storeType]].clear();
     loadApprovals(1);
-  }, [props.filter]);
+  }, [JSON.stringify(props.filter)]);
 
   useEffect(() => store[storeType].clear, []);
 

@@ -38,7 +38,7 @@ function FilterRule({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
 
   const replaceText = (str: any) =>{
     const _str = str; // 替换目标字符串
-    const rules = [...variablesRules, ...tableSchemaRules];
+    const rules = [...variablesRules, ...tableSchemaRules]?.sort((a, b)=>b?.name?.length - a?.name?.length);
     const arr = rules?.map((item: any)=>item?.name); // 要替换的字符数组
     const fieldArr = rules?.map((item: any)=>item?.key); // 要替换的字符数组
     const regex = new RegExp(`(${arr.join('|')})|("[^"]*")`, 'g'); // 创建正则表达式，匹配除双引号内的字符以外的所有字符
@@ -78,8 +78,8 @@ function FilterRule({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
         ref={formulaRef}
         customRules={[...variablesRules, ...tableSchemaRules]}
         defaultValue={value}
-        // onChange={handleChange}
-        onChange={mutators.change}
+        onChange={handleChange}
+        // onChange={mutators.change}
       />
     </>
   );

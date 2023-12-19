@@ -10,7 +10,7 @@ import AppPageDataStore from '@c/form-app-data-table/store';
 import { getTableSchema, saveTableSchema } from '@lib/http-client-form';
 import { SYSTEM_FIELDS, INVALID_INVISIBLE } from '@c/form-builder/constants';
 import { TableConfig, TableColumnConfig } from '@c/form-app-data-table/type';
-import { numberTransform, validatePageConfig, validateFieldConfig } from '@c/form-builder/utils';
+import { numberTransform, validatePageConfig, validateFieldConfig, validatePageDisplayName } from '@c/form-builder/utils';
 import {
   setFixedParameters,
   columnStringToObject,
@@ -288,6 +288,8 @@ class FormDesignStore {
     try {
       await validateFieldConfig(this.formStore?.fieldConfigValidator, this.formStore?.getFieldValueFunc);
       await validatePageConfig(this.formStore?.flattenFields.length || 0, this.pageTableColumns?.length);
+      await validatePageDisplayName(JSON.parse(JSON.stringify(this.formStore?.flattenFields || [])));
+
       await this.saveFormConfig();
     } catch (err) {
       toast.error(err);

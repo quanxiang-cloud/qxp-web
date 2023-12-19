@@ -439,6 +439,8 @@ export const getAllPipelineProcess = async (approvalProcess: any, fillInProcess:
     allProcess.push(startNode);
     isFinsih && allProcess.unshift(endNode);
     return allProcess;
+  }).catch((err: any)=>{
+    console.log('err', err);
   });
 };
 
