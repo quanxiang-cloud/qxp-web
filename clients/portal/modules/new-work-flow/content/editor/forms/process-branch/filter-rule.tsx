@@ -78,8 +78,8 @@ function FilterRule({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
         ref={formulaRef}
         customRules={[...variablesRules, ...tableSchemaRules]}
         defaultValue={value}
-        // onChange={handleChange}
-        onChange={mutators.change}
+        onChange={handleChange}
+        // onChange={mutators.change}
       />
     </>
   );
