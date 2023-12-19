@@ -37,9 +37,10 @@ export const allStatus: {
 export interface FlowStatusProps extends Props {
   desc?: string;
   status?: string;
+  label?: string;
 }
 
-export default function FlowStatus({ desc, status, className, style }: FlowStatusProps): JSX.Element | null {
+export default function FlowStatus({ desc, status, className, style, label }: FlowStatusProps | any): JSX.Element | null {
   const [state, setState] = useSetState({ title: '', statusStyle: '' });
 
   useEffect(() => {
@@ -58,7 +59,7 @@ export default function FlowStatus({ desc, status, className, style }: FlowStatu
   return (
     <div style={style}
       className={cs(`body2 text-placeholder flow-status flow-status-${state.statusStyle}`, className)}>
-      {state.title}
+      {label || state.title}
     </div>
   );
 }

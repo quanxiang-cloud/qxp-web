@@ -73,7 +73,7 @@ export const HandleTypes: ApprovalFilter[] = [
 
 export const ApplyStatus: ApprovalFilter[] = [
   { label: '全部', value: '' },
-  { label: '待补充', value: 'SEND_BACK' },
+  // { label: '待补充', value: 'SEND_BACK' },
   { label: '进行中', value: 'REVIEW' },
   { label: '已拒绝', value: 'REFUSE' },
   { label: '已通过', value: 'AGREE' },
@@ -83,7 +83,7 @@ export const ApplyStatus: ApprovalFilter[] = [
 export const FillInApplyStatus: ApprovalFilter[] = [
   { label: '全部', value: '' },
   { label: '进行中', value: 'Pending' },
-  { label: '已完成', value: 'Finsih' },
+  { label: '已完成', value: 'Finish' },
 ];
 
 export const CCStatus: ApprovalFilter[] = [

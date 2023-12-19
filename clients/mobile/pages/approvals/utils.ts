@@ -83,7 +83,7 @@ export const ApplyStatus: ApprovalFilter[] = [
 export const FillInApplyStatus: ApprovalFilter[] = [
   { label: '全部', value: '' },
   { label: '进行中', value: 'Pending' },
-  { label: '已完成', value: 'Finsih' },
+  { label: '已完成', value: 'Finish' },
 ];
 
 export const CCStatus: ApprovalFilter[] = [

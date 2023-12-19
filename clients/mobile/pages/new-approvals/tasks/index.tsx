@@ -65,6 +65,16 @@ export default function Approvals(): JSX.Element {
   const titleDropdown = useRef<DropdownMenuInstance>() as MutableRefObject<DropdownMenuInstance>;
   const filterDropdown = useRef<DropdownMenuInstance>() as MutableRefObject<DropdownMenuInstance>;
 
+  useEffect(()=>{
+    setFilter({
+      WAIT_HANDLE_PAGE: HandleTypes[0],
+      APPLY_PAGE: ApplyStatus[0],
+      CC_PAGE: CCStatus[0],
+      HANDLED_PAGE: emptyFilter,
+      ALL_PAGE: emptyFilter,
+    });
+  }, [currentTaskType]);
+
   const handleApprovalsTabClick = (val: any)=>{
     setCurrentValue(val);
     setTabType(val);

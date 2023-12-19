@@ -11,7 +11,7 @@ import './index.scss';
 import { FILL_IN } from '@home/pages/approvals/constant';
 
 export interface TaskCardProps extends Props {
-  task: Task;
+  task: Task | any;
   type?: FlowType;
   taskType?: string;
   isApply?: boolean;
@@ -41,9 +41,18 @@ export default function TaskCard(props: TaskCardProps): JSX.Element | null {
         <div className='flex-1 title3 text-black truncate ml-8 mr-8'>
           {task.creatorName ? `${task.creatorName}${task.name ? ' · ' + task.name : ''}` : task.name}
         </div>
-        {(!!task.status || taskType === FILL_IN) && (<FlowStatus
-          desc={type === 'WAIT_HANDLE_PAGE' ? task.description : undefined}
-          status={(taskType === FILL_IN && !task.status) ? 'Finish' : task.status}/>)}
+        {
+          (!!task.status || taskType === FILL_IN) && (
+            type === 'WAIT_HANDLE_PAGE' ?
+              (<FlowStatus
+                desc={type === 'WAIT_HANDLE_PAGE' ? task.description : undefined}
+                label={taskType === FILL_IN && type === 'WAIT_HANDLE_PAGE' && '待填写'}
+                status={(taskType === FILL_IN && !task.status) ? 'Finish' : task.status}/>) :
+              (<FlowStatus
+                desc={undefined}
+                status={task?.isFinish ? 'Finish' : 'REVIEW'}/>)
+          )
+        }
       </div>
 
       {!!task.nodeName && type === 'WAIT_HANDLE_PAGE' && (<div className='task-node-row body1 text-placeholder mt-8'>
@@ -56,7 +65,7 @@ export default function TaskCard(props: TaskCardProps): JSX.Element | null {
         <span className='text-secondary'>{task.flowSummary}</span>
       </div>)}
 
-      {!!task.flowSummaryPair?.length && task.flowSummaryPair.map((item) => {
+      {!!task.flowSummaryPair?.length && task.flowSummaryPair.map((item: any) => {
         return (
           <div
             className='task-flow-summary-pair body1 text-second flex justify-center content-center mt-6'
