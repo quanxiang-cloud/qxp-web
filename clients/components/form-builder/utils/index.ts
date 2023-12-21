@@ -240,6 +240,20 @@ export async function validatePageConfig(
   throw new Error('请在页面配置-字段显示和排序至少选择一个字段显示');
 }
 
+export async function validatePageDisplayName(
+  flattenFields: any,
+): Promise<never | boolean> {
+  const flattenFieldsDisplayName = flattenFields?.map((item: any)=>item?.configValue?.title);
+  if (flattenFieldsDisplayName?.length === 0) {
+    return true;
+  }
+  const hasRepeat = new Set(flattenFieldsDisplayName).size !== flattenFieldsDisplayName.length;
+  if (!hasRepeat) {
+    return true;
+  }
+  throw new Error('表单字段标题名称不能重复');
+}
+
 type PermissionToOverwrite = { display?: boolean; readOnly?: boolean };
 export function schemaPermissionTransformer<T extends ISchema>(
   schema: T, readOnly?: boolean,
