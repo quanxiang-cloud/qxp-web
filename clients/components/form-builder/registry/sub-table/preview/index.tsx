@@ -94,7 +94,7 @@ function SubTable({
     return () => {
       delete window[`schema-${definedSchema?.key}`];
     };
-  }, [schema, columns]);
+  }, [JSON.stringify(schema || ''), columns]);
 
   const addAllAssociatedData = ()=>{
     if (defaultAddAllAssociatedData) {
