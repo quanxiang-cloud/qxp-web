@@ -243,7 +243,8 @@ export async function validatePageConfig(
 export async function validatePageDisplayName(
   flattenFields: any,
 ): Promise<never | boolean> {
-  const flattenFieldsDisplayName = flattenFields?.map((item: any)=>item?.configValue?.title);
+  const layoutArr = ['layoutgrid', 'layouttabs'];
+  const flattenFieldsDisplayName = flattenFields?.filter((item: any)=> !layoutArr?.includes(item?.componentName?.toLocaleLowerCase()))?.map((item: any)=>item?.configValue?.title);
   if (flattenFieldsDisplayName?.length === 0) {
     return true;
   }
