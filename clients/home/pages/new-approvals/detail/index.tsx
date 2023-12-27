@@ -65,6 +65,8 @@ function ApprovalDetail(): JSX.Element {
     taskType: string;
   }>();
 
+  const [readOnly, setReadOnly] = useState((type === 'WAIT_HANDLE_PAGE' || type === 'ALL_PAGE') ? true : false);
+
   const history = useHistory();
   const queryRelationKey = showSwitch ? [processInstanceID, type, currentTaskId] : [processInstanceID, type];
   const searchArr = window.location.search?.replace('?', '')?.split('&');
@@ -253,13 +255,21 @@ function ApprovalDetail(): JSX.Element {
   useEffect(()=>{
     if (count > 0) {
       const { value, currTask, reasonRequired } = actionParams;
-      validate ? store.handleClickAction(value, currTask, reasonRequired) : toast.error('必填项未填写完整');
+      if (value === 'REFUSE' && readOnly === true) {
+        store.handleClickAction(value, currTask, reasonRequired);
+      } else {
+        validate ? store.handleClickAction(value, currTask, reasonRequired) : toast.error('必填项未填写完整');
+      }
     }
   }, [count]);
 
   const onSubmitClick = (value: any, currTask: any, reasonRequired: any)=>{
     setActionParams({ value, currTask, reasonRequired });
-    submitRef?.current?.click();
+    if (value === 'REFUSE' && readOnly === true) {
+      setCount(count + 1);
+    } else {
+      submitRef?.current?.click();
+    }
   };
 
   const formatProperties = (data: any, fieldPermission?: any)=>{
@@ -296,11 +306,11 @@ function ApprovalDetail(): JSX.Element {
       <div className='task-form overflow-auto px-24'>
         {
           task?.formSchema &&
-        (<FormRenderer
+        ( <FormRenderer
           value={formData}
           schema={formatFormSchema(task.formSchema, task?.fieldPermission) || {}}
           onFormValueChange={setFormValues}
-          readOnly={taskEnd || type === 'APPLY_PAGE' || type === 'HANDLED_PAGE' || task?.taskType === 'Finish' }
+          readOnly={( readOnly && (type === 'WAIT_HANDLE_PAGE' || type === 'ALL_PAGE') && taskType !== FILL_IN) || taskEnd || type === 'APPLY_PAGE' || type === 'HANDLED_PAGE' || task?.taskType === 'Finish' }
           usePermission
           onValidate={(value) => {
             setValidate(value);
@@ -313,6 +323,10 @@ function ApprovalDetail(): JSX.Element {
 
       </div>
     );
+  };
+
+  const handleEditApproval = ()=>{
+    setReadOnly(!readOnly);
   };
 
   if (isLoading) {
@@ -364,6 +378,8 @@ function ApprovalDetail(): JSX.Element {
                 formData={formValues}
                 onSubmitClick={onSubmitClick}
                 taskType = {taskType}
+                onEditApproval={handleEditApproval}
+                editApproval={!readOnly}
               />
               <div className='flow-name hidden'>{data?.flowName}</div>
               {renderSchemaForm(task)}

@@ -100,7 +100,7 @@ function DetailsDrawer(
     const operationRecord = operationRecords?.find((item: any)=> item?.creatorId === USER?.id);
     if (operationRecord?.taskId) {
       // window.location = `/approvals/${processInstanceId}/${operationRecords?.[0]?.taskId}/ALL_PAGE/${_taskType}` as any;
-      window.location = `/approvals/${taskID}/${id}/ALL_PAGE/${_taskType}` as any;
+      window.location = `/approvals/${taskID}/${id}/WAIT_HANDLE_PAGE/${_taskType}` as any;
     } else {
       // getTaskFormById(processInstanceId, { type: 'ALL_PAGE', taskId: '' })
       //   .then((res: any)=>{
@@ -112,7 +112,7 @@ function DetailsDrawer(
       //   .catch((err)=>{
       //   // window.open(`/approvals/${processInstanceId}/${id}/ALL_PAGE`);
       //   });
-      window.location = `/approvals/${taskID}/${id}/ALL_PAGE/${_taskType}` as any;
+      window.location = `/approvals/${taskID}/${id}/WAIT_HANDLE_PAGE/${_taskType}` as any;
     }
   };
 
