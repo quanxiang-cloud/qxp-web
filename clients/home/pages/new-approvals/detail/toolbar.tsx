@@ -26,6 +26,8 @@ interface Props {
   schema: ISchema;
   formData: Record<string, unknown>;
   taskType?: string;
+  onEditApproval?: () => void;
+  editApproval?: boolean;
 }
 
 const moreActions = [
@@ -40,7 +42,7 @@ const getIconByAction = (action: string): string => {
 
 function Toolbar({
   currTask, permission, onClickAction, globalActions, workFlowType, schema, formData, taskType,
-  onSubmitClick,
+  onSubmitClick, onEditApproval, editApproval,
 }: Props): JSX.Element {
   const { processInstanceID, taskID } = useParams<{ processInstanceID: string; taskID: string }>();
   const [comment, setComment] = useState('');
@@ -122,6 +124,11 @@ function Toolbar({
       }
     }).catch((err) => toast.error(err.message || '操作失败'));
   }
+
+  const handleEditApproval = ()=>{
+    onEditApproval && onEditApproval();
+  };
+
   return (
     <div className="approval-detail-toolbar flex justify-between items-center py-10 px-24 mb-10">
       <div className="left-btns task-custom-actions flex flex-1 flex-wrap">
@@ -164,6 +171,16 @@ function Toolbar({
       </div>
 
       <div className="right-btns task-default-actions">
+        {
+          workFlowType === 'WAIT_HANDLE_PAGE' &&
+          (<Button
+            onClick={handleEditApproval}
+            style={{ border: '1px solid var(--gray-700)' }}
+          >
+            { !editApproval ? '编辑审批内容' : '退出编辑'}
+          </Button>)
+        }
+
         {
           ((taskType !== FILL_IN && workFlowType === 'WAIT_HANDLE_PAGE' && !system?.length) ? systemApproval : system)?.map(({ name, value, enabled, defaultText, text, reasonRequired }: PermissionItem, idx) => {
             if (!enabled) {
