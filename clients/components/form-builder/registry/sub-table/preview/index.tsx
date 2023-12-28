@@ -89,12 +89,15 @@ function SubTable({
     }, []);
     setSubTableState({ componentColumns, rowPlaceHolder });
     if (!subAssociatedFields || subAssociatedFields?.length === 0) {
-      isInitialValueEmpty && mutators?.change([rowPlaceHolder]);
+      const disInitSubRowPlaceHolder = definedSchema?.['x-component-props']?.disInitSubRowPlaceHolder as any;
+      if (!disInitSubRowPlaceHolder) {
+        isInitialValueEmpty && mutators?.change([rowPlaceHolder]);
+      }
     }
     return () => {
       delete window[`schema-${definedSchema?.key}`];
     };
-  }, [JSON.stringify(schema || ''), columns]);
+  }, [JSON.stringify(schema || ''), columns, props?.readOnly]);
 
   const addAllAssociatedData = ()=>{
     if (defaultAddAllAssociatedData) {

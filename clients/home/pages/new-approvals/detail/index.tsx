@@ -65,7 +65,7 @@ function ApprovalDetail(): JSX.Element {
     taskType: string;
   }>();
 
-  const [readOnly, setReadOnly] = useState(type === 'WAIT_HANDLE_PAGE' ? true : false);
+  const [readOnly, setReadOnly] = useState((type === 'WAIT_HANDLE_PAGE' || type === 'ALL_PAGE') ? true : false);
 
   const history = useHistory();
   const queryRelationKey = showSwitch ? [processInstanceID, type, currentTaskId] : [processInstanceID, type];
@@ -258,7 +258,11 @@ function ApprovalDetail(): JSX.Element {
       if (value === 'REFUSE' && readOnly === true) {
         store.handleClickAction(value, currTask, reasonRequired);
       } else {
-        validate ? store.handleClickAction(value, currTask, reasonRequired) : toast.error('必填项未填写完整');
+        if (value) {
+          validate ? store.handleClickAction(value, currTask, reasonRequired) : toast.error('必填项未填写完整');
+        } else {
+          validate ? setReadOnly(!readOnly) : toast.error('必填项未填写完整');
+        }
       }
     }
   }, [count]);
@@ -290,6 +294,10 @@ function ApprovalDetail(): JSX.Element {
             const componentProps: any = data[key]['x-component-props'];
             componentProps['isNew'] = false;
           }
+          if (data[key]?.['x-component'] === 'SubTable') {
+            const componentProps: any = data[key]['x-component-props'];
+            componentProps['disInitSubRowPlaceHolder'] = true;
+          }
         } catch (error) {
           console.log(error);
         }
@@ -310,7 +318,7 @@ function ApprovalDetail(): JSX.Element {
           value={formData}
           schema={formatFormSchema(task.formSchema, task?.fieldPermission) || {}}
           onFormValueChange={setFormValues}
-          readOnly={readOnly || taskEnd || type === 'APPLY_PAGE' || type === 'HANDLED_PAGE' || task?.taskType === 'Finish' }
+          readOnly={( readOnly && (type === 'WAIT_HANDLE_PAGE' || type === 'ALL_PAGE') && taskType !== FILL_IN) || taskEnd || type === 'APPLY_PAGE' || type === 'HANDLED_PAGE' || task?.taskType === 'Finish' }
           usePermission
           onValidate={(value) => {
             setValidate(value);
@@ -326,7 +334,12 @@ function ApprovalDetail(): JSX.Element {
   };
 
   const handleEditApproval = ()=>{
-    setReadOnly(!readOnly);
+    setActionParams({});
+    if (!readOnly) {
+      submitRef?.current?.click();
+    } else {
+      setReadOnly(!readOnly);
+    }
   };
 
   if (isLoading) {

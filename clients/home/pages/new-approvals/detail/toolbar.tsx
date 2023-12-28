@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import cs from 'classnames';
@@ -172,13 +173,15 @@ function Toolbar({
 
       <div className="right-btns task-default-actions">
         {
-          workFlowType === 'WAIT_HANDLE_PAGE' &&
-          (<Button
-            onClick={handleEditApproval}
-            style={{ border: '1px solid var(--gray-700)' }}
-          >
-            { !editApproval ? '编辑审批内容' : '退出编辑'}
-          </Button>)
+          (workFlowType === 'WAIT_HANDLE_PAGE' || workFlowType === 'ALL_PAGE') &&
+         taskType !== FILL_IN &&
+         showBtn &&
+         ( <Button
+           onClick={handleEditApproval}
+           style={{ border: '1px solid var(--gray-700)' }}
+         >
+           { !editApproval ? '编辑' : '保存'}
+         </Button>)
         }
 
         {
