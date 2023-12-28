@@ -181,6 +181,7 @@ export default function SubTableRow({
                     path={path}
                     readOnly={readOnly}
                     form={form}
+                    isSubTableComponent ={true}
                     mutators={{ change: onChange(path, form) }}
                     rules={rules}
                     dataSource={dataSource}

@@ -96,7 +96,12 @@ function CustomSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
             return;
           }
 
-          fieldProps.mutators.change(option.value);
+          // fieldProps.mutators.change(option.value);
+          if (fieldProps?.isSubTableComponent) {
+            fieldProps?.onChange(option.value);
+          } else {
+            fieldProps.mutators.change(option.value);
+          }
         }}
         dropdownRender={(menu) => (
           <DropdownRender
@@ -105,7 +110,12 @@ function CustomSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
             onOtherCustomValueChange={(customValue) => {
               // todo close options after customValue changed
               setOtherCustomValue(customValue);
-              fieldProps.mutators.change(customValue);
+              // fieldProps.mutators.change(customValue);
+              if (fieldProps?.isSubTableComponent) {
+                fieldProps?.onChange(customValue);
+              } else {
+                fieldProps.mutators.change(customValue);
+              }
             }}
           />
         )}

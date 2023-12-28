@@ -71,13 +71,28 @@ function DatePicker(props: ISchemaFieldComponentProps): JSX.Element {
 
   useEffect(() => {
     if (isNow) {
-      props.mutators.change(getDateStr('', format, isNow ));
+      // props.mutators.change(getDateStr('', format, isNow ));
+      if (props?.isSubTableComponent) {
+        props?.onChange(getDateStr('', format, isNow ));
+      } else {
+        props.mutators.change(getDateStr('', format, isNow ));
+      }
     }
-    defaultValue && props.mutators.change(getDateStr(isDate(defaultValue) ? defaultValue : '', format));
+    // defaultValue && props.mutators.change(getDateStr(isDate(defaultValue) ? defaultValue : '', format));
+    if (props?.isSubTableComponent) {
+      defaultValue && props?.onChange(getDateStr(isDate(defaultValue) ? defaultValue : '', format));
+    } else {
+      defaultValue && props.mutators.change(getDateStr(isDate(defaultValue) ? defaultValue : '', format));
+    }
   }, []);
 
   const handleChange = (_: Moment | null, dateString: string): void => {
-    props.mutators.change(getDateStr(dateString, format));
+    // props.mutators.change(getDateStr(dateString, format));
+    if (props?.isSubTableComponent) {
+      props?.onChange(getDateStr(dateString, format));
+    } else {
+      props.mutators.change(getDateStr(dateString, format));
+    }
   };
 
   if (props.props.readOnly) {

@@ -79,7 +79,12 @@ function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   }
 
   function handleCheckBoxChange(value: Array<CheckboxValueType>): void {
-    fieldProps?.mutators?.change(getRealValue((value as string[])));
+    // fieldProps?.mutators?.change(getRealValue((value as string[])));
+    if (fieldProps?.isSubTableComponent) {
+      fieldProps?.onChange(getRealValue((value as string[])));
+    } else {
+      fieldProps?.mutators?.change(getRealValue((value as string[])));
+    }
     setCheckedValues((value as string[]));
   }
 
@@ -100,20 +105,43 @@ function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   function handleBlur(index: number): void {
     const value = customValues[index];
     if (value === '') {
-      fieldProps?.mutators?.change(
-        getRealValue(checkedValues.filter((v: string) => v !== `${CUSTOM_OTHER_VALUE}_${index}`)),
-      );
+      // fieldProps?.mutators?.change(
+      //   getRealValue(checkedValues.filter((v: string) => v !== `${CUSTOM_OTHER_VALUE}_${index}`)),
+      // );
+      if (fieldProps?.isSubTableComponent) {
+        fieldProps?.onChange(
+          getRealValue(checkedValues.filter((v: string) => v !== `${CUSTOM_OTHER_VALUE}_${index}`)),
+        );
+      } else {
+        fieldProps?.mutators?.change(
+          getRealValue(checkedValues.filter((v: string) => v !== `${CUSTOM_OTHER_VALUE}_${index}`)),
+        );
+      }
       return;
     }
     if (options.includes(value) || customValues.filter((v, i) => i !== index).includes(value)) {
       toast.error('不可输入已存在的选项');
       customValues[index] = '';
       setCustomValues([...customValues]);
-      fieldProps?.mutators?.change(
-        getRealValue(checkedValues.filter((v: string) => v !== `${CUSTOM_OTHER_VALUE}_${index}`)),
-      );
+      // fieldProps?.mutators?.change(
+      //   getRealValue(checkedValues.filter((v: string) => v !== `${CUSTOM_OTHER_VALUE}_${index}`)),
+      // );
+      if (fieldProps?.isSubTableComponent) {
+        fieldProps?.onChange(
+          getRealValue(checkedValues.filter((v: string) => v !== `${CUSTOM_OTHER_VALUE}_${index}`)),
+        );
+      } else {
+        fieldProps?.mutators?.change(
+          getRealValue(checkedValues.filter((v: string) => v !== `${CUSTOM_OTHER_VALUE}_${index}`)),
+        );
+      }
     } else {
-      fieldProps?.mutators?.change(getRealValue(checkedValues));
+      // fieldProps?.mutators?.change(getRealValue(checkedValues));
+      if (fieldProps?.isSubTableComponent) {
+        fieldProps?.onChange(getRealValue(checkedValues));
+      } else {
+        fieldProps?.mutators?.change(getRealValue(checkedValues));
+      }
     }
   }
 

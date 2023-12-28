@@ -1,3 +1,5 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable max-len */
 import React, { useEffect } from 'react';
 import { noop } from 'lodash';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
@@ -14,7 +16,12 @@ function CascadeSelectorWarp(props: ISchemaFieldComponentProps): JSX.Element {
     // when initialValue not undefined, is edit mode
     if (!props.initialValue) {
       if (props?.value?.value) return;
-      if (props?.mutators?.change) props.mutators.change(undefined);
+      // if (props?.mutators?.change) props.mutators.change(undefined);
+      if (props?.isSubTableComponent) {
+        if (props?.onChange) props.onChange(undefined);
+      } else {
+        if (props?.mutators?.change) props.mutators.change(undefined);
+      }
     }
   }, [defaultValueFrom]);
 
@@ -26,7 +33,8 @@ function CascadeSelectorWarp(props: ISchemaFieldComponentProps): JSX.Element {
     <CascadeSelector
       {...props.props['x-component-props']}
       defaultValueFrom={defaultValueFrom}
-      onChange={props?.mutators?.change ? props?.mutators?.change : noop}
+      // onChange={props?.mutators?.change ? props?.mutators?.change : noop}
+      onChange={props?.isSubTableComponent ? (props?.onChange ? props?.onChange : noop) : (props?.mutators?.change ? props?.mutators?.change : noop)}
       value={props.value}
     />
   );
