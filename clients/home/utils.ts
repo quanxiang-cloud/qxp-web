@@ -14,7 +14,7 @@ function parseDeleted(
   oldValue: Values[], newValue: Values[],
 ): string[] {
   return (oldValue || [])?.reduce<string[]>((acc, value) => {
-    if (value?._id && !newValue.find(({ _id: id }) => id === value._id)) {
+    if (value?._id && !newValue?.find(({ _id: id }) => id === value._id)) {
       return [...acc, value._id];
     }
 
@@ -54,7 +54,7 @@ export function formDataDiff(
       const deleted = parseDeleted(oldValue, cValue);
       const newValues: Values[] = [];
       const updatedValues = (cValue as Record<string, any>[])?.reduce<Record<string, any>[]>((acc, _value) => {
-        const _oldValue = ((oldValue || []) as Record<string, any>[]).find(({ _id }) => _id === _value._id);
+        const _oldValue = ((oldValue || []) as Record<string, any>[])?.find(({ _id }) => _id === _value._id);
         if (_oldValue) {
           const _newValue = formDataDiff(
             _value,
@@ -69,8 +69,8 @@ export function formDataDiff(
         return acc;
       }, []);
 
-      if (newValues.length || deleted.length || updatedValues.length) {
-        resultValue[fieldKey] = [newValues, deleted, updatedValues];
+      if (newValues?.length || deleted?.length || updatedValues?.length) {
+        resultValue[fieldKey] = [newValues || [], deleted || [], updatedValues || []];
       }
       break;
     }

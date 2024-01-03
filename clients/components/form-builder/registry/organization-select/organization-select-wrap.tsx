@@ -1,3 +1,5 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable max-len */
 import React from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { noop } from 'lodash';
@@ -17,7 +19,8 @@ const OrganizationPickerWrap = (formField: ISchemaFieldComponentProps): JSX.Elem
       defaultValues={defaultValues}
       defaultRange={defaultRange}
       value={formField.value}
-      onChange={formField?.mutators?.change ? formField?.mutators?.change : noop}
+      // onChange={formField?.mutators?.change ? formField?.mutators?.change : noop}
+      onChange={formField?.isSubTableComponent ? (formField?.onChange ? formField?.onChange : noop) : (formField?.mutators?.change ? formField?.mutators?.change : noop)}
     />
   );
 };

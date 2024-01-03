@@ -258,7 +258,11 @@ function ApprovalDetail(): JSX.Element {
       if (value === 'REFUSE' && readOnly === true) {
         store.handleClickAction(value, currTask, reasonRequired);
       } else {
-        validate ? store.handleClickAction(value, currTask, reasonRequired) : toast.error('必填项未填写完整');
+        if (value) {
+          validate ? store.handleClickAction(value, currTask, reasonRequired) : toast.error('必填项未填写完整');
+        } else {
+          validate ? setReadOnly(!readOnly) : toast.error('必填项未填写完整');
+        }
       }
     }
   }, [count]);
@@ -289,6 +293,10 @@ function ApprovalDetail(): JSX.Element {
           if (data[key]?.['x-component'] === 'AssociatedRecords') {
             const componentProps: any = data[key]['x-component-props'];
             componentProps['isNew'] = false;
+          }
+          if (data[key]?.['x-component'] === 'SubTable') {
+            const componentProps: any = data[key]['x-component-props'];
+            componentProps['disInitSubRowPlaceHolder'] = true;
           }
         } catch (error) {
           console.log(error);
@@ -326,7 +334,12 @@ function ApprovalDetail(): JSX.Element {
   };
 
   const handleEditApproval = ()=>{
-    setReadOnly(!readOnly);
+    setActionParams({});
+    if (!readOnly) {
+      submitRef?.current?.click();
+    } else {
+      setReadOnly(!readOnly);
+    }
   };
 
   if (isLoading) {

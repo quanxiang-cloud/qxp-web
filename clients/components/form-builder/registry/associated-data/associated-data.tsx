@@ -114,7 +114,12 @@ export default function AssociatedDataWrap(p: ISchemaFieldComponentProps): JSX.E
       onChange={(dataRow, schema) => {
         if (!dataRow) {
           // p.mutators.change(undefined);
-          p.mutators.change(null);
+          // p.mutators.change(null);
+          if (p?.isSubTableComponent) {
+            p?.onChange(null);
+          } else {
+            p.mutators.change(null);
+          }
           setSelectedValue('');
           return;
         }
@@ -122,7 +127,12 @@ export default function AssociatedDataWrap(p: ISchemaFieldComponentProps): JSX.E
         const value = dataRow[p.props['x-component-props'].fieldName];
         const label = value ? getBasicValue(schema as ISchema, value) : '--';
         executeAssignMent(dataRow);
-        p.mutators.change({ label, value: dataRow._id });
+        // p.mutators.change({ label, value: dataRow._id });
+        if (p?.isSubTableComponent) {
+          p?.onChange({ label, value: dataRow._id });
+        } else {
+          p.mutators.change({ label, value: dataRow._id });
+        }
       }}
       filterConfig={p['x-component-props']?.filterConfig || p.props['x-component-props'].filterConfig}
     />

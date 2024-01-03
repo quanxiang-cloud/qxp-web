@@ -38,17 +38,32 @@ function RadioGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   function handleRadioChange(e: RadioChangeEvent): void {
     const selectedOption = labels.find((label) => label === e.target.value);
     if (selectedOption) {
-      fieldProps.mutators.change(selectedOption);
+      // fieldProps.mutators.change(selectedOption);
+      if (fieldProps?.isSubTableComponent) {
+        fieldProps?.onChange(selectedOption);
+      } else {
+        fieldProps.mutators.change(selectedOption);
+      }
       return;
     }
 
-    fieldProps.mutators.change(otherValue);
+    // fieldProps.mutators.change(otherValue);
+    if (fieldProps?.isSubTableComponent) {
+      fieldProps?.onChange(otherValue);
+    } else {
+      fieldProps.mutators.change(otherValue);
+    }
   }
 
   function handleOtherValueChange(e: React.ChangeEvent<HTMLInputElement>): void {
     setOtherValue(e.target.value);
     if (realValue === CUSTOM_OTHER_VALUE) {
-      fieldProps.mutators.change(e.target.value);
+      // fieldProps.mutators.change(e.target.value);
+      if (fieldProps?.isSubTableComponent) {
+        fieldProps?.onChange(e.target.value);
+      } else {
+        fieldProps.mutators.change(e.target.value);
+      }
     }
   }
 

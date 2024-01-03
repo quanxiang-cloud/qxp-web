@@ -180,7 +180,7 @@ function Toolbar({
            onClick={handleEditApproval}
            style={{ border: '1px solid var(--gray-700)' }}
          >
-           { !editApproval ? '编辑' : '退出'}
+           { !editApproval ? '编辑' : '保存'}
          </Button>)
         }
 

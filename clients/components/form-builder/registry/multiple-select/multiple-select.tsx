@@ -85,12 +85,22 @@ function MultipleSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
         return;
       }
       setAllOptions(newOptions);
-      fieldProps.mutators.change(uniq([...fieldProps.value, otherCustomValue]));
+      // fieldProps.mutators.change(uniq([...fieldProps.value, otherCustomValue]));
+      if (fieldProps?.isSubTableComponent) {
+        fieldProps?.onChange(uniq([...fieldProps.value, otherCustomValue]));
+      } else {
+        fieldProps.mutators.change(uniq([...fieldProps.value, otherCustomValue]));
+      }
     }
   }, [isAllowCustom, options, otherCustomValue]);
 
   function handleOnSelect(v: unknown): void {
-    fieldProps.mutators.change([...fieldProps.value, v]);
+    // fieldProps.mutators.change([...fieldProps.value, v]);
+    if (fieldProps?.isSubTableComponent) {
+      fieldProps?.onChange([...fieldProps.value, v]);
+    } else {
+      fieldProps.mutators.change([...fieldProps.value, v]);
+    }
   }
 
   if (fieldProps.props.readOnly) {
@@ -108,9 +118,18 @@ function MultipleSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
         getPopupContainer={(triggerNode) => triggerNode.parentNode as HTMLElement}
         onSelect={handleOnSelect}
         onDeselect={(v: unknown) => {
-          fieldProps.mutators.change([
-            ...fieldProps.value.filter((value: string) => v !== value),
-          ]);
+          // fieldProps.mutators.change([
+          //   ...fieldProps.value.filter((value: string) => v !== value),
+          // ]);
+          if (fieldProps?.isSubTableComponent) {
+            fieldProps?.onChange([
+              ...fieldProps.value.filter((value: string) => v !== value),
+            ]);
+          } else {
+            fieldProps.mutators.change([
+              ...fieldProps.value.filter((value: string) => v !== value),
+            ]);
+          }
         }}
         dropdownRender={(menu) => (
           <DropdownRender
