@@ -58,6 +58,9 @@ function ApprovalDetail(): JSX.Element {
   const [approvalTaskList, setApprovalTaskList] = useState<any>([]);
   // const [fillInTaskList, setFillInTaskList] = useState<any>([]);
 
+  const [editFormData, setEditFormData] = useState<any>();
+  const [formRenderKey, setFormRenderKey] = useState<any>(new Date().getTime());
+
   const { processInstanceID, type, taskID, taskType } = useParams<{
     processInstanceID: string;
     taskID: string;
@@ -233,6 +236,7 @@ function ApprovalDetail(): JSX.Element {
     ).then((res: any)=>{
       // setFormData(res?.entity);
       setFormData(res);
+      setEditFormData(res);
     }).catch((err) => {
       toast.error(err);
     });
@@ -315,7 +319,9 @@ function ApprovalDetail(): JSX.Element {
         {
           task?.formSchema &&
         ( <FormRenderer
-          value={formData}
+          // value={formData}
+          value={editFormData}
+          key={formRenderKey}
           schema={formatFormSchema(task.formSchema, task?.fieldPermission) || {}}
           onFormValueChange={setFormValues}
           readOnly={( readOnly && (type === 'WAIT_HANDLE_PAGE' || type === 'ALL_PAGE') && taskType !== FILL_IN) || taskEnd || type === 'APPLY_PAGE' || type === 'HANDLED_PAGE' || task?.taskType === 'Finish' }
@@ -333,11 +339,16 @@ function ApprovalDetail(): JSX.Element {
     );
   };
 
-  const handleEditApproval = ()=>{
+  const handleEditApproval = (value?: string)=>{
     setActionParams({});
-    if (!readOnly) {
+    if (!readOnly && value === 'save') {
       submitRef?.current?.click();
-    } else {
+    } else if (!readOnly && value === 'exit') {
+      setFormRenderKey(new Date().getTime());
+      setReadOnly(!readOnly);
+      setFormValues(editFormData);
+    } else if (readOnly && value === 'edit') {
+      setEditFormData(formValues);
       setReadOnly(!readOnly);
     }
   };

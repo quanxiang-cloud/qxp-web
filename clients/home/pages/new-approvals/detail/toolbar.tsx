@@ -27,7 +27,7 @@ interface Props {
   schema: ISchema;
   formData: Record<string, unknown>;
   taskType?: string;
-  onEditApproval?: () => void;
+  onEditApproval?: (value?: string) => void;
   editApproval?: boolean;
 }
 
@@ -126,8 +126,8 @@ function Toolbar({
     }).catch((err) => toast.error(err.message || '操作失败'));
   }
 
-  const handleEditApproval = ()=>{
-    onEditApproval && onEditApproval();
+  const handleEditApproval = (value: any)=>{
+    onEditApproval && onEditApproval(value);
   };
 
   return (
@@ -177,10 +177,22 @@ function Toolbar({
          taskType !== FILL_IN &&
          showBtn &&
          ( <Button
-           onClick={handleEditApproval}
+           onClick={()=>handleEditApproval(!editApproval ? 'edit' : 'save')}
            style={{ border: '1px solid var(--gray-700)' }}
          >
            { !editApproval ? '编辑' : '保存'}
+         </Button>)
+        }
+
+        {
+          (workFlowType === 'WAIT_HANDLE_PAGE' || workFlowType === 'ALL_PAGE') &&
+         taskType !== FILL_IN &&
+         showBtn && editApproval &&
+         ( <Button
+           onClick={()=>handleEditApproval('exit')}
+           style={{ border: '1px solid var(--gray-700)' }}
+         >
+          取消
          </Button>)
         }
 
