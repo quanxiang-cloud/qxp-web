@@ -217,7 +217,7 @@ function Toolbar({
               return null;
             }
 
-            return (
+            return !editApproval ? (
               <Button
                 iconName={getIconByAction(value)}
                 modifier={value === 'REFUSE' ? 'danger' : 'primary'}
@@ -232,7 +232,7 @@ function Toolbar({
               >
                 {text ?? name ?? defaultText}
               </Button>
-            );
+            ) : <></>;
           })
         }
         {
