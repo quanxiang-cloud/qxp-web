@@ -123,7 +123,7 @@ export default function BasicConfig({ type, value, onChange: _onChange }: Props)
       }
       {
         type === 'approve' &&
-        (<>
+        (<div style={{ display: 'none' }}>
           <div className="text-body2-no-color text-gray-600 mb-8">
             <span className="text-red-600">*</span>无{typeText}人时
           </div>
@@ -133,21 +133,21 @@ export default function BasicConfig({ type, value, onChange: _onChange }: Props)
               {noPersonBuilder('转交给管理员', 'transferAdmin')}
             </RadioGroup>
           </div>
-        </>)
+        </div>)
       }
       {type === 'approve' && (
-        <>
+        <div style={{ display: 'none' }}>
           <div className="text-body2-no-color text-gray-600 mb-8">自动审批通过规则</div>
           <div className="flex flex-col">
             {autoApproveBuilder('审批人为发起人时', 'origin')}
             {autoApproveBuilder('审批人与上一节点审批人相同时', 'parent')}
             {autoApproveBuilder('审批人与前置节点 (非上一个节点) 审批人相同时', 'previous')}
           </div>
-        </>
+        </div>
       )}
       {
         type === 'approve' &&
-        (<>
+        (<div style={{ display: 'none' }}>
           <div className="flex items-center justify-between mb-16 mt-24">
             <div>
               <div className="text-body2">{typeText}用时限制</div>
@@ -200,7 +200,7 @@ export default function BasicConfig({ type, value, onChange: _onChange }: Props)
               defaultValue={whenTimeout}
             />
           </div>
-        </>)
+        </div>)
       }
     </div>
   );
