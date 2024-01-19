@@ -197,6 +197,7 @@ export interface FillInData {
   fieldPermission: FieldPermission | NewFieldPermission;
   operatorPermission: OperationPermission;
   events: Record<any, any>;
+  subFieldPermission?: any;
 }
 export interface ProcessBranchData {
   ignore: boolean;

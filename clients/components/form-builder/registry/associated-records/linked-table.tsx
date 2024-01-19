@@ -33,7 +33,7 @@ function LinkedTable({ mutators, value }: ISchemaFieldComponentProps): JSX.Eleme
       mutators.change({
         tableID,
         appID: store.appID,
-        tableName: linkageTables.find(({ value }) => value === tableID)?.label || tableID,
+        tableName: linkageTables.find(({ value }) => value === tableID)?.label || value?.tableName,
         associatedTable: pageSchema?.schema || {},
       });
     });

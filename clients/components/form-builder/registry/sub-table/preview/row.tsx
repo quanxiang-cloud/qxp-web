@@ -168,7 +168,7 @@ export default function SubTableRow({
                 className={cs(
                   {
                     'border-r-1 border-gray-300': idx < componentColumns.length,
-                  }, 'flex items-center justify-center subtable-column-default-item',
+                  }, 'flex items-center justify-center subtable-column-default-item break-all',
                 )}
               >
                 <MegaLayout wrapperCol={24}>

@@ -13,6 +13,8 @@ import { DeadLine, WhenTimeout } from '@newFlow/content/editor/type';
 
 import BasicConfig from '../components/basic-config';
 import FieldPermission from '../components/field-permission';
+import { isObject } from 'lodash';
+import { getSubFieldPermission } from '../components/field-permission/util';
 
 interface Props {
   defaultValue: FillInData;
@@ -25,7 +27,7 @@ interface Props {
 export default function FillInForm({
   defaultValue, onSubmit, onCancel, nodeType, onChange,
 }: Props): JSX.Element {
-  const [value, setValue] = useState<FillInData>(defaultValue || {});
+  const [value, setValue] = useState<FillInData | any>(defaultValue || {});
   const [tabKey, setTabKey] = useState('basicConfig');
   const [falg, setFlag] = useState(true);
 
@@ -39,7 +41,7 @@ export default function FillInForm({
     try {
       if (falg) {
         for (const key in _val?.fieldPermission) {
-          if (_defaultValue.fieldPermission[key]) {
+          if (_defaultValue.fieldPermission[key] && !isObject(_defaultValue.fieldPermission[key])) {
             _val.fieldPermission[key]['x-internal'].permission = _defaultValue.fieldPermission[key];
           }
         }
@@ -51,7 +53,19 @@ export default function FillInForm({
   };
   function handleChange(val: Partial<FillInData>): void {
     setValue((v) => {
-      return ({ ...v, ...formatVal(val) });
+      let flag = false;
+      for (const key in v?.fieldPermission) {
+        if (isObject(v?.fieldPermission?.[key])) {
+          flag = true;
+          break;
+        }
+      }
+      if (flag) {
+        const subFieldPermission = getSubFieldPermission(val?.fieldPermission);
+        return ({ ...v, ...formatVal(val), subFieldPermission });
+      } else {
+        return ({ ...v, ...formatVal(val) });
+      }
     });
   }
 
@@ -107,7 +121,8 @@ export default function FillInForm({
           name: '字段权限',
           content: (
             <FieldPermission
-              value={value.fieldPermission}
+              value={value?.fieldPermission}
+              subPermission = {value?.subFieldPermission}
               onChange={handleChange}
               nodeType={nodeType}
             />

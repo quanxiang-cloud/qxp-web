@@ -7,7 +7,6 @@ import {
 } from '@formily/antd';
 import { Input, Switch, Radio } from '@formily/antd-components';
 
-import FilterConfig from '@c/form-builder/registry/associated-data/filter-config';
 import DefaultValueLinkageConfigBtn from
   '@c/form-builder/form-settings-panel/form-field-config/default-value-linkage-config-btn';
 import { StoreContext } from '@c/form-builder/context';
@@ -23,6 +22,7 @@ import { getTableSchema } from '@lib/http-client-form';
 import schemaToFields, { schemaToMap } from '@lib/schema-convert';
 import { toJS } from 'mobx';
 import SelectAllConfig from './select-all-config';
+import FilterConfig from './filter-config';
 
 interface Props {
   initialValue: AssociatedRecordsConfig;
@@ -43,7 +43,7 @@ const COMPONENTS = {
   SelectAllConfig,
 };
 
-const { onFieldInputChange$ } = FormEffectHooks;
+const { onFieldInputChange$, onFieldValueChange$ } = FormEffectHooks;
 const actions = createFormActions();
 
 export async function getTableFieldsToOptions(
@@ -133,6 +133,20 @@ function AssociatedRecordsConfig({ initialValue, onChange }: Props): JSX.Element
       actions.setFieldState('filterConfig', (state) => {
         state.props['x-component-props'] = { appID, tableID: value.tableID, currentFormSchema: schema };
       });
+    });
+    onFieldValueChange$('linkedTable').subscribe(({ value }) => {
+      if (value?.appID !== initialValue?.linkedTable?.appID ||
+        value?.tableID !== initialValue?.linkedTable?.tableID) {
+        actions.setFieldState('associativeConfig', (state: any) => {
+          if (state.props['x-component-props'].associativeRules) {
+            state.props['x-component-props'].associativeRules = [];
+          }
+          state.value = null;
+        });
+        actions.setFieldState('filterConfig', (state) => {
+          state.value = null;
+        });
+      }
     });
   };
   const search = window.location.search;

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, { useCallback, useContext } from 'react';
 import { noop, get } from 'lodash';
 import { without } from 'ramda';
@@ -11,7 +12,7 @@ import Checkbox from '@c/checkbox';
 import flowContext from '@newFlow/flow-context';
 import useRequest from '@lib/hooks/use-request';
 import type { PERMISSION_KEY } from '@c/form-builder/constants';
-import { schemaToArray, schemaToMap } from '@lib/schema-convert';
+import schemaToFields, { schemaToArray, schemaToMap } from '@lib/schema-convert';
 import type { CustomFieldPermission, FieldValue } from '@newFlow/content/editor/type';
 import { FORM_COMPONENT_VARIABLE_MAP } from '@newFlow/content/editor/utils/constants';
 
@@ -34,6 +35,10 @@ export default function CustomFieldTable({
   schema,
   nodeType,
 }: Props): JSX.Element {
+  // 找出 schema 里的子表单字段
+  const schemaFields = schemaToFields(schema);
+  const subTableFields = schemaFields?.filter((item: any)=>(item?.['x-component']?.toLowerCase() === 'subtable'));
+
   const { flowID: flowId } = useContext(flowContext);
   const schemaMap = schemaToMap(schema, null, { keepLayout: true, parseSubTable: true });
   const layoutFields = schemaToArray(schema, { parseSubTable: true, keepLayout: true })
@@ -127,6 +132,8 @@ export default function CustomFieldTable({
     const fieldId = model.cell.row.id;
     const origPath = get(model.cell.row, 'original.path', '');
     const disabledComps = ['serial', 'aggregationrecords'];
+    const data: any = model?.data?.find((item: any)=>item?.id === fieldId);
+    const { subTableAdd, subTableDelete } = data || {};
     const handleClickCheckbox = useCallback(() => {
       updateFields(model.data.map((dt: CustomFieldPermission) => {
         if (dt.id === fieldId) {
@@ -173,7 +180,19 @@ export default function CustomFieldTable({
             Object.assign(dt, { editable: false, readonly: true, invisible: false });
           }
         }
+        return dt;
+      }));
+    }, []);
 
+    const handleClickSubTableCheckbox = useCallback((type: string) => {
+      updateFields(model.data.map((dt: CustomFieldPermission) => {
+        if (dt.id === fieldId) {
+          return {
+            ...dt,
+            subTableAdd: type === 'subTableAdd' ? !subTableAdd : subTableAdd,
+            subTableDelete: type === 'subTableDelete' ? !subTableDelete : subTableDelete,
+          };
+        }
         return dt;
       }));
     }, []);
@@ -192,7 +211,7 @@ export default function CustomFieldTable({
       );
     }
 
-    if (['readonly', 'invisible', 'editable'].includes(key)) {
+    if (['readonly', 'invisible'].includes(key)) {
       let shouldDisable = false;
       const [, subId] = origPath.split('.');
       const compName = schemaMap[fieldId]?.componentName;
@@ -211,6 +230,61 @@ export default function CustomFieldTable({
           disabled={key === 'editable' && shouldDisable}
         />
       );
+    }
+
+    if (['editable'].includes(key)) {
+      let shouldDisable = false;
+      const [, subId] = origPath.split('.');
+      const compName = schemaMap[fieldId]?.componentName;
+      if (!subId) {
+        shouldDisable = disabledComps.includes(compName);
+      } else if (compName === 'subtable') {
+        const subCompName = get(schemaMap, `${fieldId}.items.properties.${subId}.x-component`, '');
+        shouldDisable = disabledComps.includes(String(subCompName).toLocaleLowerCase());
+      }
+      const isSubTableField = subTableFields?.find((item: any)=>item?.id === origPath);
+      return isSubTableField ? (
+        <div className='flex flex-column'>
+          <Radio
+            value={isChecked}
+            defaultChecked={isChecked}
+            onChange={handleClickRadio}
+            onClick={noop}
+            disabled={shouldDisable}
+          />
+          {
+            isChecked && !shouldDisable &&
+            (<div className='flex flex-column ml-12 mt-4'>
+              <div className='flex mb-4'>
+                <Checkbox
+                  checked={subTableAdd}
+
+                  onChange={noop}
+                  onClick={()=>handleClickSubTableCheckbox('subTableAdd')}
+                />
+                <span className='ml-4'>添加</span>
+              </div>
+
+              <div className='flex'>
+                <Checkbox
+                  checked={subTableDelete}
+                  onChange={noop}
+                  onClick={()=>handleClickSubTableCheckbox('subTableDelete')}
+                />
+                <span className='ml-4'>删除</span>
+              </div>
+            </div>)
+          }
+
+        </div>
+
+      ) : (<Radio
+        value={isChecked}
+        defaultChecked={isChecked}
+        onChange={handleClickRadio}
+        onClick={noop}
+        disabled={shouldDisable}
+      />);
     }
 
     return (

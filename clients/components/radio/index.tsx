@@ -45,7 +45,6 @@ function InternalRadio(props: Props, ref?: Ref<HTMLInputElement>): JSX.Element {
     setChecked(checked);
     onChange && onChange(props.value);
   }
-
   return (
     <div className={cs('flex items-center', className)}>
       <div
