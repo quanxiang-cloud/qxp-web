@@ -12,6 +12,8 @@ import { DeadLine, WhenTimeout } from '@newFlow/content/editor/type';
 import BasicConfig from '../components/basic-config';
 import FieldPermission from '../components/field-permission';
 import OperatorPermission from '../components/operator-permission';
+import { getSubFieldPermission } from '../components/field-permission/util';
+import { isObject } from 'lodash';
 
 interface Props {
   defaultValue: FillInData;
@@ -32,7 +34,24 @@ export default function ApproveForm({
   }, [value]);
 
   function handleChange(val: Partial<FillInData>): void {
-    setValue((v) => ({ ...v, ...val }));
+    // setValue((v) => {
+    //   return ({ ...v, ...val });
+    // });
+    setValue((v: any) => {
+      let flag = false;
+      for (const key in v?.fieldPermission) {
+        if (isObject(v?.fieldPermission?.[key])) {
+          flag = true;
+          break;
+        }
+      }
+      if (flag) {
+        const subFieldPermission = getSubFieldPermission(val?.fieldPermission);
+        return ({ ...v, ...val, subFieldPermission });
+      } else {
+        return ({ ...v, ...val });
+      }
+    });
   }
 
   function onSave(): void {
@@ -88,6 +107,7 @@ export default function ApproveForm({
           content: (
             <FieldPermission
               value={value.fieldPermission}
+              subPermission = {value?.subFieldPermission}
               onChange={handleChange}
             />
           ),

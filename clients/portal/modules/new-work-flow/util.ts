@@ -313,6 +313,10 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
           value: `$(tasks.query.output.${arr[1]})`,
         });
       }
+      pn.spec.params.push({
+        key: 'subFieldPermission',
+        value: JSON.stringify(node?.data?.businessData?.subFieldPermission || {}),
+      });
       break;
     case 'fillIn':
       pn.spec.type = 'fill';
@@ -371,6 +375,10 @@ const bpmnToPipepline = (data: any, flowData: any, communal: any)=>{
       pn.spec.params.push({
         key: 'dealUsers',
         value: fillUsers.join(','),
+      });
+      pn.spec.params.push({
+        key: 'subFieldPermission',
+        value: JSON.stringify(node?.data?.businessData?.subFieldPermission || {}),
       });
       // pn.spec.params.push({
       //   key: 'nodeInfo',
@@ -1295,7 +1303,7 @@ const generageBpmnNode = async (node: any, params: any, newPepelineNodes?: any)=
         parentBranchTargetElementID: node?.parentBranchTargetElementID, // 分流下的分支还有分流的分流节点有该属性 表示分流所在的分流分支上对应的合流节点
       },
       businessData: {
-      },
+      } as any,
     },
   };
   let businessDataObj: any = {};
@@ -1643,17 +1651,20 @@ const generageBpmnNode = async (node: any, params: any, newPepelineNodes?: any)=
 
       break;
     case 'approve':
-      const { nodeInfo: approveNodeInfo } = businessDataObj;
+      const { nodeInfo: approveNodeInfo, subFieldPermission: _approveSubFieldPermission = '{}' } = businessDataObj;
       const _approveNodeInfo = JSON.parse(approveNodeInfo);
       bpmnNode.data.businessData = _approveNodeInfo?.data?.businessData;
+      bpmnNode.data.businessData.subFieldPermission = JSON.parse(_approveSubFieldPermission);
       break;
     case 'fill':
       const {
         // nodeInfo: fillInNodeInfo,
         fieldPermission,
         dealUsers,
+        subFieldPermission: fillSubFieldPermission = '{}',
       } = businessDataObj;
       const _fieldPermission = JSON.parse(fieldPermission);
+      const _fillSubFieldPermission = JSON.parse(fillSubFieldPermission);
       const dealUsersArr = dealUsers?.split(',');
       let _type: any = 'person';
       const _users: any = [];
@@ -1711,6 +1722,7 @@ const generageBpmnNode = async (node: any, params: any, newPepelineNodes?: any)=
             },
           },
           fieldPermission: _fieldPermission,
+          subFieldPermission: _fillSubFieldPermission,
         };
       } else {
         bpmnNode.data.businessData = {
@@ -1722,6 +1734,7 @@ const generageBpmnNode = async (node: any, params: any, newPepelineNodes?: any)=
             },
           },
           fieldPermission: _fieldPermission,
+          subFieldPermission: _fillSubFieldPermission,
         };
       }
 

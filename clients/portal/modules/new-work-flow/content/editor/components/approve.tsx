@@ -45,7 +45,7 @@ export default function ApproveNodeComponent({ data, id, xPos, yPos, isDragging 
     setShowRemover(false);
   }
 
-  const hasApproveRule = !!basicConfig.multiplePersonWay;
+  const hasApproveRule = !!basicConfig?.multiplePersonWay;
   const hasApprovePerson = !!basicConfig?.approvePersons?.departments?.length ||
     !!basicConfig?.approvePersons?.users?.length || basicConfig?.approvePersons?.type !== 'person';
 
@@ -102,7 +102,7 @@ export default function ApproveNodeComponent({ data, id, xPos, yPos, isDragging 
             )}
             {hasApprovePerson && (
               <div className="text-caption-no-color text-gray-400">
-                审批人: <span className="text-gray-600">{getPerson(basicConfig.approvePersons)}</span>
+                审批人: <span className="text-gray-600">{getPerson(basicConfig?.approvePersons)}</span>
               </div>
             )}
           </div>

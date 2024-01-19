@@ -33,9 +33,10 @@ interface Props {
   value: FieldPermissionType | NewFieldPermission;
   onChange: (value: Partial<FillInData>) => void;
   nodeType?: string;
+  subPermission?: any;
 }
 
-export default function FieldPermission({ value, onChange: _onChange, nodeType }: Props): JSX.Element {
+export default function FieldPermission({ value, onChange: _onChange, nodeType, subPermission }: Props): JSX.Element {
   const { appID } = useContext(FlowContext);
   const [editable, setEditable] = useState(false);
   const [dataPermEditable, setDataPermEditable] = useState(false);
@@ -89,7 +90,7 @@ export default function FieldPermission({ value, onChange: _onChange, nodeType }
   }
 
   function mergeField(): void {
-    const { custom = [], system = [] } = fieldPermissionDecoder(value, schema) || {};
+    const { custom = [], system = [] } = fieldPermissionDecoder(value, schema, subPermission) || {};
     const { true: systemData, false: customData } = groupBy(data, ({ isSystem }) => isSystem);
     customData?.forEach((field) => {
       const oldCustomField = custom.find(({ id }) => id === field.value);
@@ -151,6 +152,10 @@ export default function FieldPermission({ value, onChange: _onChange, nodeType }
     return <ErrorTips desc="出错了..." />;
   }
 
+  const getCustomField = (value: any)=>{
+    // return value?.filter((item: any)=>!item?.id?.includes('subtable_field_'));
+    return value;
+  };
   return (
     <>
       {!!mergedFieldPermissions.custom.length && (
@@ -174,7 +179,7 @@ export default function FieldPermission({ value, onChange: _onChange, nodeType }
           <CustomFieldTable
             editable={editable}
             dataPermEditable={dataPermEditable}
-            fields={mergedFieldPermissions.custom}
+            fields={getCustomField(mergedFieldPermissions.custom)}
             schema={schema}
             updateFields={onUpdateFields('custom')}
             nodeType={nodeType}

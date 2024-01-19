@@ -78,7 +78,6 @@ export async function getFormFieldOptions(
   if (parseSubTableForeign) {
     schema = await rebuildSchema(schema);
   }
-
   return {
     options: schemaToOptions(schema, queryKey[3] as SchemaToOptionsOptions),
     schema,

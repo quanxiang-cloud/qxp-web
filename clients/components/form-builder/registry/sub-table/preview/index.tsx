@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, { JSXElementConstructor, useEffect, useState } from 'react';
 import { Rule } from 'rc-field-form/lib/interface';
 import { isObject } from 'lodash';
@@ -53,10 +54,21 @@ function SubTable({
     componentColumns: [], rowPlaceHolder: {},
   });
 
+  const [subPermission, setSubPermission] = useState({
+    subTableAdd: true,
+    subTableDelete: true,
+  });
   const {
     subordination, columns, appID, tableID, rowLimit, layout,
-    defaultAddAllAssociatedData, filterConfig, isNew,
+    defaultAddAllAssociatedData, filterConfig, isNew, subFieldPermission,
   } = definedSchema?.['x-component-props'] || {};
+
+  useEffect(()=>{
+    const _subPer: any = (name && subFieldPermission?.[name]) ? subFieldPermission?.[name] : { subTableAdd: true, subTableDelete: true };
+    (_subPer?.subTableAdd === undefined) && (_subPer.subTableAdd = true);
+    (_subPer?.subTableDelete === undefined) && (_subPer.subTableDelete = true);
+    setSubPermission(_subPer);
+  }, [subFieldPermission]);
 
   let schema = definedSchema?.items as ISchema | undefined;
   const isFromForeign = subordination === 'foreign_table';
@@ -188,7 +200,6 @@ function SubTable({
   if (!componentColumns.length) {
     return null;
   }
-
   return (
     <SubTableList
       name={name}
@@ -205,6 +216,7 @@ function SubTable({
       mutators={mutators}
       rowPlaceHolder={rowPlaceHolder}
       form={form}
+      subPermission={subPermission}
     />
   );
 }

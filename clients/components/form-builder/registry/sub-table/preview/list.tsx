@@ -46,11 +46,12 @@ interface Props {
   mutators?: IMutators;
   rowPlaceHolder?: any;
   form?: any;
+  subPermission?: any;
 }
 
 export default function SubTableList({
   name, value, props: prps, componentColumns, layout, onAddRow, rowLimit, isFromForeign, columns, schema,
-  definedSchema, mutators, rowPlaceHolder, form,
+  definedSchema, mutators, rowPlaceHolder, form, subPermission,
 }: Props): JSX.Element {
   useForeignFormula(isFromForeign, columns, name, schema);
   const itemsComponentProps = definedSchema?.items?.['x-component-props'];
@@ -222,7 +223,7 @@ export default function SubTableList({
                           form={form}
                           layout={layout}
                           mutators={mutators}
-                          removeAble={!prps.readOnly}
+                          removeAble={!prps.readOnly && subPermission?.subTableDelete}
                           subTableList={!!subAssociatedFields?.length && subTableList}
                           subOptionsSchema={!!subAssociatedFields?.length && subOptionsSchema}
                           onRemove={!!subAssociatedFields?.length && onRemove}
@@ -232,7 +233,7 @@ export default function SubTableList({
                   </div>
                   {
                     !subAssociatedFields?.length ?
-                      (rowLimit === 'multiple' && !prps.readOnly) && (
+                      (rowLimit === 'multiple' && !prps.readOnly && subPermission?.subTableAdd) && (
                         <div className="border-t-1 border-gray-300 flex items-center">
                           <Icon
                             name="add"
@@ -243,7 +244,7 @@ export default function SubTableList({
                         </div>
                       ) :
                       (
-                        !prps.readOnly &&
+                        !prps.readOnly && subPermission?.subTableAdd &&
                         (<div className="border-t-1 border-gray-300 flex items-center">
                           <Icon
                             name="add"

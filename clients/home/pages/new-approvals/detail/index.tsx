@@ -139,7 +139,6 @@ function ApprovalDetail(): JSX.Element {
       const appID = params?.find((item: any)=>item?.name === 'appID')?.default;
       const tableID = params?.find((item: any)=>item?.name === 'tableID')?.default;
       const curentNode = nodes?.find((item: any)=>item?.name === nodeData?.nodeDefKey);
-
       setAppID(appID);
       setTableID(tableID);
       const btnObj = {
@@ -200,11 +199,14 @@ function ApprovalDetail(): JSX.Element {
           tableId: tableID,
           ...btnObj,
         };
+
+        const subFieldPermission = JSON.parse(curentNode?.spec?.params?.find((item: any)=>item?.key === 'subFieldPermission')?.value || '{}');
         const taskDetailModelsObj = {
           taskId: taskID,
           taskDefKey: nodeData?.nodeDefKey,
           formSchema: res?.schema,
           fieldPermission: fieldPermission,
+          subFieldPermission: subFieldPermission,
           // operatorPermission: !isFinish && (taskType === 'fillIn' ? fillInOperatorPermission : operatorPermission),
           operatorPermission: type === 'WAIT_HANDLE_PAGE' ? (taskType === 'fillIn' ? fillInOperatorPermission : operatorPermission) : (!isFinish && (taskType === 'fillIn' ? fillInOperatorPermission : operatorPermission)),
           taskType: isFinish ? 'Finish' : 'REVIEW',
@@ -280,7 +282,7 @@ function ApprovalDetail(): JSX.Element {
     }
   };
 
-  const formatProperties = (data: any, fieldPermission?: any)=>{
+  const formatProperties = (data: any, fieldPermission?: any, subFieldPermission?: any)=>{
     for (const key in data) {
       if (data[key].type === 'object') {
         formatProperties(data[key].properties, fieldPermission);
@@ -301,6 +303,7 @@ function ApprovalDetail(): JSX.Element {
           if (data[key]?.['x-component'] === 'SubTable') {
             const componentProps: any = data[key]['x-component-props'];
             componentProps['disInitSubRowPlaceHolder'] = true;
+            componentProps['subFieldPermission'] = subFieldPermission || {};
           }
         } catch (error) {
           console.log(error);
@@ -309,10 +312,11 @@ function ApprovalDetail(): JSX.Element {
     }
   };
 
-  const formatFormSchema = (formSchema: any, fieldPermission?: any)=>{
-    formSchema && formatProperties(formSchema.properties, fieldPermission);
+  const formatFormSchema = (formSchema: any, fieldPermission?: any, subFieldPermission?: any)=>{
+    formSchema && formatProperties(formSchema.properties, fieldPermission, subFieldPermission);
     return formSchema;
   };
+
   const renderSchemaForm = (task: any): JSX.Element | null => {
     return (
       <div className='task-form overflow-auto px-24'>
@@ -322,7 +326,7 @@ function ApprovalDetail(): JSX.Element {
           // value={formData}
           value={editFormData}
           key={formRenderKey}
-          schema={formatFormSchema(task.formSchema, task?.fieldPermission) || {}}
+          schema={formatFormSchema(task?.formSchema, task?.fieldPermission, task?.subFieldPermission) || {}}
           onFormValueChange={setFormValues}
           readOnly={( readOnly && (type === 'WAIT_HANDLE_PAGE' || type === 'ALL_PAGE') && taskType !== FILL_IN) || taskEnd || type === 'APPLY_PAGE' || type === 'HANDLED_PAGE' || task?.taskType === 'Finish' }
           usePermission
