@@ -200,12 +200,14 @@ function ApprovalDetail(): JSX.Element {
           ...btnObj,
         };
 
+        const _fieldPermission = JSON.parse(curentNode?.spec?.params?.find((item: any)=>item?.key === 'fieldPermission')?.value || null);
+
         const subFieldPermission = JSON.parse(curentNode?.spec?.params?.find((item: any)=>item?.key === 'subFieldPermission')?.value || '{}');
         const taskDetailModelsObj = {
           taskId: taskID,
           taskDefKey: nodeData?.nodeDefKey,
           formSchema: res?.schema,
-          fieldPermission: fieldPermission,
+          fieldPermission: fieldPermission | _fieldPermission,
           subFieldPermission: subFieldPermission,
           // operatorPermission: !isFinish && (taskType === 'fillIn' ? fillInOperatorPermission : operatorPermission),
           operatorPermission: type === 'WAIT_HANDLE_PAGE' ? (taskType === 'fillIn' ? fillInOperatorPermission : operatorPermission) : (!isFinish && (taskType === 'fillIn' ? fillInOperatorPermission : operatorPermission)),
