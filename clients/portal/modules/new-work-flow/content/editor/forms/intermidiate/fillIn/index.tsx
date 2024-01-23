@@ -32,7 +32,7 @@ export default function FillInForm({
   const [falg, setFlag] = useState(true);
 
   useUpdateEffect(() => {
-    onChange({ ...value });
+    onChange(value);
   }, [value]);
 
   const formatVal = (val: any)=>{
@@ -41,7 +41,7 @@ export default function FillInForm({
     try {
       if (falg) {
         for (const key in _val?.fieldPermission) {
-          if (_defaultValue.fieldPermission[key]) {
+          if (_defaultValue.fieldPermission[key] && !isObject(_defaultValue.fieldPermission[key])) {
             _val.fieldPermission[key]['x-internal'].permission = _defaultValue.fieldPermission[key];
           }
         }
