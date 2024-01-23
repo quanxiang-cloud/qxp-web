@@ -133,12 +133,11 @@ function AssociatedRecordsConfig({ initialValue, onChange }: Props): JSX.Element
       actions.setFieldState('filterConfig', (state) => {
         state.props['x-component-props'] = { appID, tableID: value.tableID, currentFormSchema: schema };
       });
-    });
-    onFieldValueChange$('linkedTable').subscribe(({ value }) => {
+
       if (value?.appID !== initialValue?.linkedTable?.appID ||
         value?.tableID !== initialValue?.linkedTable?.tableID) {
         actions.setFieldState('associativeConfig', (state: any) => {
-          if (state.props['x-component-props'].associativeRules) {
+          if (state.props['x-component-props']?.associativeRules) {
             state.props['x-component-props'].associativeRules = [];
           }
           state.value = null;
